@@ -332,7 +332,11 @@ export interface TimelineOverlaySetOptions {
  */
 type SingletonOverlay = EntrySelected|TimestampMarker;
 export function overlayIsSingleton(overlay: TimelineOverlay): overlay is SingletonOverlay {
-  return overlay.type === 'TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
+  return overlayTypeIsSingleton(overlay.type);
+}
+
+export function overlayTypeIsSingleton(type: TimelineOverlay['type']): type is SingletonOverlay['type'] {
+  return type === 'TIMESTAMP_MARKER' || type === 'ENTRY_SELECTED';
 }
 
 /**
@@ -453,6 +457,8 @@ export class Overlays extends EventTarget {
    * based on the new position of the timeline.
    */
   #overlaysToElements = new Map<TimelineOverlay, HTMLElement|null>();
+
+  #singletonOverlays = new Map<SingletonOverlay['type'], TimelineOverlay>();
 
   // When the Entries Link Annotation is created, the arrow needs to follow the mouse.
   // Update the mouse coordinates while it is being created.
@@ -581,10 +587,14 @@ export class Overlays extends EventTarget {
      * the existing one, rather than create a new one. This ensures you can only
      * ever have one instance of the overlay type.
      */
-    const existing = this.overlaysOfType<T>(newOverlay.type);
-    if (overlayIsSingleton(newOverlay) && existing[0]) {
-      this.updateExisting(existing[0], newOverlay);
-      return existing[0];
+    if (overlayIsSingleton(newOverlay)) {
+      const existing = this.#singletonOverlays.get(newOverlay.type);
+      if (existing) {
+        this.updateExisting(existing, newOverlay);
+        return existing as T;  // The is a safe cast, thanks to `type` above.
+      }
+
+      this.#singletonOverlays.set(newOverlay.type, newOverlay);
     }
 
     // By setting the value to null, we ensure that on the next render that the
@@ -644,6 +654,16 @@ export class Overlays extends EventTarget {
    * @returns the number of overlays that were removed.
    */
   removeOverlaysOfType(type: TimelineOverlay['type']): number {
+    if (overlayTypeIsSingleton(type)) {
+      const singleton = this.#singletonOverlays.get(type);
+      if (singleton) {
+        this.remove(singleton);
+        return 1;
+      }
+
+      return 0;
+    }
+
     const overlaysToRemove = Array.from(this.#overlaysToElements.keys()).filter(overlay => {
       return overlay.type === type;
     });
@@ -657,6 +677,15 @@ export class Overlays extends EventTarget {
    * @returns all overlays that match the provided type.
    */
   overlaysOfType<T extends TimelineOverlay>(type: T['type']): Array<NoInfer<T>> {
+    if (overlayTypeIsSingleton(type)) {
+      const singleton = this.#singletonOverlays.get(type);
+      if (singleton) {
+        return [singleton as T];
+      }
+
+      return [];
+    }
+
     const matches: T[] = [];
 
     function overlayIsOfType(overlay: TimelineOverlay): overlay is T {
@@ -688,6 +717,9 @@ export class Overlays extends EventTarget {
       this.#overlaysContainer.removeChild(htmlElement);
     }
     this.#overlaysToElements.delete(overlay);
+    if (overlayIsSingleton(overlay)) {
+      this.#singletonOverlays.delete(overlay.type);
+    }
   }
 
   /**

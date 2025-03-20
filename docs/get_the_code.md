@@ -32,16 +32,74 @@ npm run build
 
 The resulting build artifacts can be found in `out/Default/gen/front_end`.
 
-There are two tips to have a faster development workflow:
-* Disabling type checking for TypeScript.
-* Using watch script for faster incremental builds with CSS hot reload.
+The build tools generally assume `Default` as the target (and `out/Default` as the
+build directory). You can pass `-t <name>` (or `--target=<name>`) to use a different
+target. For example
 
-#### Disabling type checking
+```bash
+npm run build -- -t Debug
+```
 
-You can disable type checking for TypeScript by using `devtools_skip_typecheck` argument:
+will build in `out/Debug` instead of `out/Default`. If the directory doesn't exist,
+it'll automatically create and initialize it.
+
+You can disable type checking (via TypeScript) by using the `devtools_skip_typecheck`
+argument in your GN configuration. This uses [esbuild](https://esbuild.github.io/)
+instead of `tsc` to compile the TypeScript files and generally results in much
+shorter build times. To switch the `Default` target to esbuild, use
+
+```bash
+gn gen out/Default --args="devtools_skip_typecheck=true"
+```
+
+or if you don't want to change the default target, use something like
+
 ```bash
 gn gen out/fast-build --args="devtools_skip_typecheck=true"
 ```
+
+and use `npm run build -- -t fast-build` to build this target.
+
+### Rebuilding automatically
+
+You can use
+
+```bash
+npm run build -- --watch
+```
+
+to have the build script watch for changes in source files and automatically trigger
+rebuilds as necessary.
+
+#### Linux system limits
+
+The watch mode uses `inotify` by default on Linux to monitor directories for changes.
+It's fairly common to encounter a system limit on the number of files you can monitor.
+For example, Ubuntu Lucid's (64bit) inotify limit is set to 8192.
+
+You can get your current inotify file watch limit by executing:
+
+```bash
+cat /proc/sys/fs/inotify/max_user_watches
+```
+
+When this limit is not enough to monitor all files inside a directory, the limit must
+be increased for the watch mode to work properly. You can set a new limit temporary with:
+
+```bash
+sudo sysctl fs.inotify.max_user_watches=524288
+sudo sysctl -p
+```
+
+If you like to make your limit permanent, use:
+
+```bash
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+You may also need to pay attention to the values of `max_queued_events` and `max_user_instances`
+if you encounter any errors.
 
 ### Update to latest
 

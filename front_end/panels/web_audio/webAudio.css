@@ -55,39 +55,39 @@
 
 .context-detail-header {
   border-bottom: 1px solid var(--sys-color-divider);
-  padding: 12px 24px;
-  margin-bottom: 10px;
+  padding: var(--sys-size-7) var(--sys-size-9);
+  margin-bottom: var(--sys-size-5);
 }
 
 .context-detail-title {
-  font-size: 15px;
-  font-weight: 400;
+  font: var(--sys-typescale-headline4);
 }
 
 .context-detail-subtitle {
-  font-size: 12px;
-  margin-top: 10px;
+  font: var(--sys-typescale-body4-regular);
   user-select: text;
 }
 
 .context-detail-row {
-  flex-direction: row;
-  display: flex;
+  grid-template-columns: min-content 1fr;
+  display: grid;
   line-height: 18px;
-  padding-left: 24px;
+  margin: var(--sys-size-3) var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
+  gap:  var(--sys-size-6);
 }
 
 .context-detail-row-entry:not(:empty) {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
   overflow: hidden;
-  width: 130px;
+  min-width: 130px;
+  font: var(--sys-typescale-body5-medium);
 }
 
 .context-detail-row-value {
   user-select: text;
-  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  font: var(--sys-typescale-body4-regular);
 }
 
 .context-summary-container {

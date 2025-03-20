@@ -145,12 +145,13 @@ export class TimelineDetailsPane extends
       if (view instanceof AggregatedTimelineTreeView) {
         view.stackView.addEventListener(
             TimelineStackView.Events.TREE_ROW_HOVERED,
-            node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.data));
+            node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data}));
       }
     });
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
       // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.data);
+      this.dispatchEventToListeners(
+          TimelineTreeView.Events.TREE_ROW_HOVERED, {node: node.data.node, events: node.data.events ?? undefined});
     });
 
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => {
@@ -158,7 +159,8 @@ export class TimelineDetailsPane extends
     });
     this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, node => {
       // Re-dispatch through 3P event to get 3P dimmer.
-      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, node.data);
+      this.dispatchEventToListeners(
+          TimelineTreeView.Events.TREE_ROW_CLICKED, {node: node.data.node, events: node.data.events ?? undefined});
     });
 
     this.#networkRequestDetails =

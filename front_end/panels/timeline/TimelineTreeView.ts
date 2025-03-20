@@ -266,7 +266,7 @@ export class TimelineTreeView extends
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
     this.dataGrid.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener(
-        'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null));
+        'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: null}));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OPENED_NODE, this.onGridNodeOpened, this);
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.setRowContextMenuCallback(this.onContextMenu.bind(this));
@@ -585,7 +585,11 @@ export class TimelineTreeView extends
   }
 
   onHover(node: Trace.Extras.TraceTree.Node|null): void {
-    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node);
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node});
+  }
+
+  onClick(node: Trace.Extras.TraceTree.Node|null): void {
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node});
   }
 
   override wasShown(): void {
@@ -603,13 +607,14 @@ export class TimelineTreeView extends
    */
   #onDataGridSelectionChange(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<GridNode>>):
       void {
-    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, (event.data as GridNode).profileNode);
+    this.onClick((event.data as GridNode).profileNode);
     this.onHover((event.data as GridNode).profileNode);
   }
 
   onGridNodeOpened(): void {
     const gridNode = this.dataGrid.selectedNode as TreeGridNode;
-    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, gridNode.profileNode);
+    // Use tree's hover method in case of unique hover experiences (like ThirdPartyTree).
+    this.onHover(gridNode.profileNode);
     this.updateDetailsForSelection();
   }
 
@@ -689,9 +694,9 @@ export namespace TimelineTreeView {
   }
 
   export interface EventTypes {
-    [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
+    [Events.TREE_ROW_HOVERED]: {node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]};
     [Events.BOTTOM_UP_BUTTON_CLICKED]: Trace.Extras.TraceTree.Node|null;
-    [Events.TREE_ROW_CLICKED]: Trace.Extras.TraceTree.Node|null;
+    [Events.TREE_ROW_CLICKED]: {node: Trace.Extras.TraceTree.Node|null, events?: Trace.Types.Events.Event[]};
   }
 }
 
@@ -866,7 +871,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   #bottomUpButtonClicked(): void {
     // We should also trigger an event to "unhover" the 3P tree row. Since this isn't
     // triggered when clicking the bottom up button.
-    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null);
+    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node: null});
     this.treeView.dispatchEventToListeners(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, this.profileNode);
   }
 }
@@ -1147,6 +1152,37 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 
   private static readonly extensionInternalPrefix = 'extensions::';
   private static readonly v8NativePrefix = 'native ';
+
+  override onHover(node: Trace.Extras.TraceTree.Node|null): void {
+    if (node !== null && this.groupBySetting.get() === AggregatedTimelineTreeView.GroupBy.ThirdParties) {
+      const events = this.#getThirdPartyEventsForNode(node);
+      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node, events});
+      return;
+    }
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, {node});
+  }
+
+  override onClick(node: Trace.Extras.TraceTree.Node|null): void {
+    if (node !== null && this.groupBySetting.get() === AggregatedTimelineTreeView.GroupBy.ThirdParties) {
+      const events = this.#getThirdPartyEventsForNode(node);
+      this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node, events});
+      return;
+    }
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, {node});
+  }
+
+  #getThirdPartyEventsForNode(node: Trace.Extras.TraceTree.Node): Trace.Types.Events.Event[]|undefined {
+    if (!node.event) {
+      return;
+    }
+    const entity = this.entityMapper()?.entityForEvent(node.event);
+    // Should be [unattributed]. Just use the node's events.
+    if (!entity) {
+      return node.events;
+    }
+    const events = this.entityMapper()?.eventsForEntity(entity);
+    return events;
+  }
 }
 export namespace AggregatedTimelineTreeView {
   export enum GroupBy {

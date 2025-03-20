@@ -374,17 +374,25 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       this.#overlays.toggleAllOverlaysDisplayed(!event.data);
     });
 
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, e => {
       if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
         return;
       }
 
-      const events = node?.data?.events ?? null;
+      if (e.data.events) {
+        this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, e.data.events);
+        return;
+      }
+      const events = e?.data?.node?.events ?? null;
       this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, events);
     });
 
-    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, node => {
-      const events = node?.data?.events ?? null;
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, e => {
+      if (e.data.events) {
+        this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, e.data.events);
+        return;
+      }
+      const events = e?.data?.node?.events ?? null;
       this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, events);
     });
 

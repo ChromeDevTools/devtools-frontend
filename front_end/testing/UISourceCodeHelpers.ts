@@ -78,6 +78,9 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
     this.#mimeType = mimeType;
     this.#autoMapping = autoMapping;
   }
+  override tooltipForURL(_url: Platform.DevToolsPath.UrlString): string {
+    return 'tooltip-for-url';
+  }
   override supportsAutomapping(): boolean {
     return this.#autoMapping;
   }

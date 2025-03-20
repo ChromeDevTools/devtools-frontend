@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import type * as Diff from '../../third_party/diff/diff.js';
@@ -182,9 +183,20 @@ export class CombinedDiffView extends UI.Widget.Widget {
     const singleDiffViewInputs =
         uiSourceCodeAndDiffs.filter(uiSourceCodeAndDiff => uiSourceCodeAndDiff.diff)
             .map(({uiSourceCode, diff}) => {
+              let displayText = uiSourceCode.fullDisplayName();
+              // If the UISourceCode is backed by a workspace, we show the path as "{workspace-name}/path/relative/to/workspace"
+              const fileSystemUiSourceCode =
+                  Persistence.Persistence.PersistenceImpl.instance().fileSystem(uiSourceCode);
+              if (fileSystemUiSourceCode) {
+                displayText = [
+                  fileSystemUiSourceCode.project().displayName(),
+                  ...Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(
+                      fileSystemUiSourceCode)
+                ].join('/');
+              }
               return {
                 diff: diff as Diff.Diff.DiffArray,  // We already filter above the ones that does not have `diff`.
-                fileName: `${uiSourceCode.isDirty() ? '*' : ''}${uiSourceCode.displayName()}`,
+                fileName: `${uiSourceCode.isDirty() ? '*' : ''}${displayText}`,
                 fileUrl: uiSourceCode.url(),
                 mimeType: uiSourceCode.mimeType(),
                 icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),

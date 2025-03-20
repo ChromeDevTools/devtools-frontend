@@ -15,23 +15,24 @@ const argv = yargs(hideBin(process.argv))
                    default: 'Default',
                    description: 'Specify the target build subdirectory under //out',
                  })
+                 .option('skip-initial-build', {
+                   type: 'boolean',
+                   default: false,
+                   description: 'Skip the initial build (use with --watch)',
+                   implies: 'watch',
+                 })
                  .option('watch', {
                    alias: 'w',
                    type: 'boolean',
                    default: false,
                    description: 'Monitor for changes and automatically rebuild',
                  })
-                 .option('watch-only', {
-                   type: 'boolean',
-                   default: false,
-                   description: 'Skip the initial build',
-                 })
                  .usage('npm run build -- [options]')
                  .help('help')
                  .version(false)
-                 .parse();
+                 .parseSync();
 
-const {target, watch, watchOnly} = argv;
+const {target, watch, skipInitialBuild} = argv;
 const cwd = process.cwd();
 const {env} = process;
 
@@ -40,11 +41,12 @@ const outDir = path.join('out', target);
 if (!fs.existsSync(outDir)) {
   const gnExe = path.join(cwd, 'third_party', 'depot_tools', 'gn');
   fs.mkdirSync(outDir, {recursive: true});
-  childProcess.spawnSync(gnExe, ['gen', outDir], {
+  childProcess.spawnSync(gnExe, ['-q', 'gen', outDir], {
     cwd,
     env,
     stdio: 'inherit',
   });
+  console.log(`Initialized output directory ${outDir}`);
 }
 
 function build() {
@@ -56,12 +58,12 @@ function build() {
   });
 }
 
-// Skip initial build if we should only watch.
-if (!watchOnly) {
+// Perform an initial build (unless we should skip).
+if (!skipInitialBuild) {
   build();
 }
 
-if (watch || watchOnly) {
+if (watch) {
   let timeoutId = -1;
 
   function watchCallback(eventType, filename) {

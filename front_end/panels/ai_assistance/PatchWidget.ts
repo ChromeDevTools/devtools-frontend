@@ -276,13 +276,13 @@ export class PatchWidget extends UI.Widget.Widget {
             <div class="save-or-discard-buttons">
               <devtools-button
                 @click=${input.onDiscard}
-                .jslogContext=${'discard'}
+                .jslogContext=${'patch-widget.discard'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
                   ${lockedString(UIStringsNotTranslate.discard)}
               </devtools-button>
               <devtools-button
                 @click=${input.onSaveAll}
-                .jslogContext=${'save-all'}
+                .jslogContext=${'patch-widget.save-all'}
                 .variant=${Buttons.Button.Variant.PRIMARY}>
                   ${lockedString(UIStringsNotTranslate.saveAll)}
               </devtools-button>

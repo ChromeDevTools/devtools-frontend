@@ -46,7 +46,6 @@ function attributeValue(outputString) {
 /** @typedef {import('eslint').AST.SourceLocation} SourceLocation */
 /** @typedef {import('eslint').Scope.Variable} Variable */
 /** @typedef {import('eslint').Scope.Reference} Reference*/
-/** @typedef {{node: Node, processed?: boolean}} DomFragmentReference*/
 
 class DomFragment {
   /** @type {string|undefined} */ tagName;
@@ -59,7 +58,7 @@ class DomFragment {
   /** @type {DomFragment|undefined} */ parent;
   /** @type {string|undefined} */ expression;
   /** @type {Node|undefined} */ replacementLocation;
-  /** @type {DomFragmentReference[]} */ references = [];
+  /** @type {Node[]} */ references = [];
 
   /** @return {string[]} */
   toTemplateLiteral(sourceCode, indent = 4) {
@@ -162,7 +161,8 @@ module.exports = {
         queue.push(result);
         domFragments.set(key, result);
         if (variable) {
-          result.references = variable.references.map(r => ({node: /** @type {Node} */ (r.identifier)}));
+          result.references = variable.references.map(r => (/** @type {Node} */ (r.identifier)));
+          result.references.push(/** @type {Node} */ (variable.identifiers[0]));
         } else {
           result.expression = sourceCode.getText(node);
           const classDeclaration = getEnclosingClassDeclaration(node);
@@ -172,7 +172,7 @@ module.exports = {
         }
       }
       if (!variable) {
-        result.references.push({node});
+        result.references.push(node);
       }
       return result;
     }
@@ -222,12 +222,12 @@ module.exports = {
     }
 
     /**
-     *  @param {DomFragmentReference} reference
+     *  @param {Node} reference
      *  @param {DomFragment} domFragment
      */
     function processReference(reference, domFragment) {
-      const parent = reference.node.parent;
-      const isAccessed = parent.type === 'MemberExpression' && parent.object === reference.node;
+      const parent = reference.parent;
+      const isAccessed = parent.type === 'MemberExpression' && parent.object === reference;
       const property = isAccessed ? parent.property : null;
       const grandParent = parent.parent;
       const isPropertyAssignment =
@@ -247,7 +247,6 @@ module.exports = {
       const subproperty =
           isSubpropertyAssignment && grandParent.property.type === 'Identifier' ? grandParent.property : null;
       const subpropertyValue = isSubpropertyAssignment ? /** @type {Node} */ (grandGrandParent.right) : null;
-      reference.processed = true;
       if (isPropertyAssignment && isIdentifier(property, 'className')) {
         domFragment.classList.push(propertyValue);
       } else if (isPropertyAssignment && isIdentifier(property, 'textContent')) {
@@ -293,12 +292,43 @@ module.exports = {
         const childFragment = getOrCreateDomFragment(firstArg);
         childFragment.parent = domFragment;
         domFragment.children.push(childFragment);
-      } else {
-        reference.processed = false;
       }
     }
 
-    function maybeReportDomFragment(domFragment, key) {
+    /**
+     * @param {DomFragment} domFragment
+     */
+    function getRangesToRemove(domFragment) {
+      /** @type {[number, number][]} */
+      const ranges = [];
+      for (const reference of domFragment.references) {
+        const expression = getEnclosingExpression(reference);
+        if (!expression) {
+          continue;
+        }
+        const range = expression.range;
+        while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
+          range[0]--;
+        }
+        ranges.push(range);
+        for (const child of domFragment.children) {
+          ranges.push(...getRangesToRemove(child));
+        }
+      }
+      ranges.sort((a, b) => a[0] - b[0]);
+      for (let i = 1; i < ranges.length; i++) {
+        if (ranges[i][0] < ranges[i - 1][1]) {
+          ranges[i] = [ranges[i - 1][1], ranges[i][1]];
+        }
+      }
+
+      return ranges.filter(r => r[0] < r[1]);
+    }
+
+    /**
+     * @param {DomFragment} domFragment
+     */
+    function maybeReportDomFragment(domFragment) {
       if (!domFragment.replacementLocation || domFragment.parent) {
         return;
       }
@@ -320,13 +350,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 `;
           return [
             fixer.insertTextBefore(replacementLocation, text),
-            ...domFragment.references.map(r => getEnclosingExpression(r.node)).filter(Boolean).map(r => {
-              const range = r.range;
-              while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
-                range[0]--;
-              }
-              return fixer.removeRange(range);
-            }),
+            ...getRangesToRemove(domFragment).map(range => fixer.removeRange(range)),
           ];
         }
       });
@@ -399,11 +423,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           for (const reference of domFragment.references) {
             processReference(reference, domFragment);
           }
-          domFragment.references = domFragment.references.filter(r => r.processed);
         }
 
-        for (const [key, domFragment] of domFragments.entries()) {
-          maybeReportDomFragment(domFragment, key);
+        for (const domFragment of domFragments.values()) {
+          maybeReportDomFragment(domFragment);
         }
         domFragments.clear();
       }

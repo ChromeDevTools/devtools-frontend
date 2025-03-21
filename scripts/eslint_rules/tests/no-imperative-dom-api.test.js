@@ -146,8 +146,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const div = document.createElement('div');
-    div.className = 'some-class';
   }
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
@@ -206,9 +204,6 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const filterInput = new UI.Toolbar.ToolbarFilter('some-placeholder', 0.5, 1, undefined, undefined, false, 'some-filter');
-    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged.bind(this));
-    toolbar.appendToolbarItem(filterInput);
   }
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],

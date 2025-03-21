@@ -11,7 +11,7 @@
   justify-content: flex-start;
   align-items: stretch;
   display: flex;
-  min-width: var(--sys-size-30);
+  min-width: min(100vw, var(--sys-size-30));
 }
 
 .dialog-close-button {

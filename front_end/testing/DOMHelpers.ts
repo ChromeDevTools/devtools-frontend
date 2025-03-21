@@ -324,6 +324,11 @@ export function querySelectorErrorOnMissing<T extends HTMLElement = HTMLElement>
 export async function assertScreenshot(filename: string) {
   // To avoid a lot of empty space in the screenshot.
   document.getElementById(TEST_CONTAINER_ID)!.style.width = 'fit-content';
+  let frame: Window|null = window;
+  while (frame) {
+    frame.scrollTo(0, 0);
+    frame = frame.parent !== frame ? frame.parent : null;
+  }
   await raf();
   // @ts-expect-error see karma config.
   const result = await window.assertScreenshot(`#${TEST_CONTAINER_ID}`, filename);

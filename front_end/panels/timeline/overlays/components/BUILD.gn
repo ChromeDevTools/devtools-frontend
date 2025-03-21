@@ -30,6 +30,7 @@ devtools_module("components") {
     "../../../../panels/common:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/icon_button:bundle",
+    "../../../../ui/components/tooltips:bundle",
     "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
   ]

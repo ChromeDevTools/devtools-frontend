@@ -122,3 +122,21 @@
     border-left: none;
   }
 }
+
+/* The tooltip for the AI label generation info */
+.info-tooltip-container {
+  max-width: var(--sys-size-28);
+
+  button.link {
+    cursor: pointer;
+    text-decoration: underline;
+    border: none;
+    padding: 0;
+    background: none;
+    font: inherit;
+    font-weight: var(--ref-typeface-weight-medium);
+    display: block;
+    margin-top: var(--sys-size-4);
+    color: var(--sys-color-primary);
+  }
+}

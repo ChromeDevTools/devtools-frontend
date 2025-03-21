@@ -290,7 +290,11 @@ export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, sele
 export function getCleanTextContentFromSingleElement(el: ShadowRoot|HTMLElement, selector: string): string {
   const element = el.querySelector(selector);
   assert.isOk(element, `Could not find element with selector ${selector}`);
-  return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, ' ') : '';
+  return element.textContent ? cleanTextContent(element.textContent) : '';
+}
+
+export function cleanTextContent(input: string): string {
+  return input.trim().replace(/[ \n]{2,}/g, ' ');
 }
 
 export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string) {

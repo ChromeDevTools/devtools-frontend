@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 import '../../../../ui/components/icon_button/icon_button.js';
+import '../../../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
+import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
@@ -17,7 +19,7 @@ import * as PanelCommon from '../../../common/common.js';
 
 import stylesRaw from './entryLabelOverlay.css.js';
 
-const {html} = Lit;
+const {html, Directives} = Lit;
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -43,6 +45,10 @@ const UIStrings = {
 */
 const UIStringsNotTranslate = {
   /**
+   *@description Tooltip link for the navigating to "AI innovations" page in settings.
+   */
+  learnMore: 'Learn more',
+  /**
    *@description Security disclaimer text displayed when the information icon on a button that generates an AI label is hovered.
    */
   generateLabelSecurityDisclaimer:
@@ -55,12 +61,11 @@ const UIStringsNotTranslate = {
   /**
    *@description The `Generate AI label button` tooltip disclaimer for when the feature is not available and the reason can be checked in settings.
    */
-  autoAnnotationNotAvailableDisclaimer:
-      'Auto anotations are not available, go to AI Innovations in Settings to learn more.',
+  autoAnnotationNotAvailableDisclaimer: 'Auto annotations are not available.',
   /**
    *@description The `Generate AI label button` tooltip disclaimer for when the feature is not available because the user is offline.
    */
-  autoAnnotationNotAvailableOfflineDisclaimer: 'Auto anotations are not available because you are offline.',
+  autoAnnotationNotAvailableOfflineDisclaimer: 'Auto annotations are not available because you are offline.',
   /**
    *@description Header text for the AI-powered annotations suggestions disclaimer dialog.
    */
@@ -137,6 +142,7 @@ export class EntryLabelOverlay extends HTMLElement {
   #connectorLineContainer: SVGAElement|null = null;
   #label: string;
   #shouldDrawBelowEntry: boolean;
+  #richTooltip: Lit.Directives.Ref<HTMLElement> = Directives.createRef();
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -459,6 +465,26 @@ export class EntryLabelOverlay extends HTMLElement {
         !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
   }
 
+  #renderAITooltip(opts: {textContent: string, includeSettingsButton: boolean}): Lit.TemplateResult {
+    // clang-format off
+    return html`<devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(this.#richTooltip)}>
+      <div class="info-tooltip-container">
+        ${opts.textContent}
+        ${opts.includeSettingsButton ? html`
+          <button
+            class="link tooltip-link"
+            role="link"
+            jslog=${VisualLogging.link('open-ai-settings').track({
+              click: true,
+            })}
+            @click=${this.#onTooltipLearnMoreClick}
+          >${lockedString(UIStringsNotTranslate.learnMore)}</button>
+        ` : Lit.nothing}
+      </div>
+    </devtools-tooltip>`;
+    // clang-format on
+  }
+
   #renderAiButton(): Lit.TemplateResult {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
@@ -480,16 +506,24 @@ export class EntryLabelOverlay extends HTMLElement {
           </devtools-icon>
           <span class="generate-label-text">${i18nString(UIStrings.generateLabelButton)}</span>
         </button>
-        <devtools-icon
+        <devtools-button
+          aria-details="info-tooltip"
           class="pen-icon"
-          title=${noLogging ? lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimerLogginOff) : lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimer)}
-          .name=${'info'}
-          .data=${{
-          iconName: 'info', color: 'var(--color-background-inverted)', width: '20px'}}>
-        </devtools-icon>
+          .iconName=${'info'}
+          .variant=${Buttons.Button.Variant.ICON}
+          ></devtools-button>
+        ${this.#renderAITooltip({
+         textContent: noLogging ? lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimerLogginOff) : lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimer),
+         includeSettingsButton: true,
+        })}
       </span>
     `;
     // clang-format on
+  }
+
+  #onTooltipLearnMoreClick(): void {
+    this.#richTooltip?.value?.hidePopover();
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
   // The disabled button rendered when the `generate AI label` feature is not available
@@ -509,13 +543,17 @@ export class EntryLabelOverlay extends HTMLElement {
           ?disabled=${true}
           @click=${this.#handleAiButtonClick}>
           <devtools-icon
+            aria-details="info-tooltip"
             class="pen-icon"
-            title=${noConnection ? lockedString(UIStringsNotTranslate.autoAnnotationNotAvailableOfflineDisclaimer) : lockedString(UIStringsNotTranslate.autoAnnotationNotAvailableDisclaimer)}
             .name=${'pen-spark'}
             .data=${{
             iconName: 'pen-spark', color: 'var(--sys-color-state-disabled)', width: '20px'}}>
           </devtools-icon>
         </button>
+        ${this.#renderAITooltip({
+          textContent: noConnection ? lockedString(UIStringsNotTranslate.autoAnnotationNotAvailableOfflineDisclaimer) : lockedString(UIStringsNotTranslate.autoAnnotationNotAvailableDisclaimer),
+          includeSettingsButton: !noConnection,
+        })}
       </span>
     `;
     // clang-format on

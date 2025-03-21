@@ -590,7 +590,11 @@ export class UILocation {
   linkText(skipTrim = false, showColumnNumber = false): string {
     const displayName = this.uiSourceCode.displayName(skipTrim);
     const lineAndColumnText = this.lineAndColumnText(showColumnNumber);
-    return lineAndColumnText ? displayName + ':' + lineAndColumnText : displayName;
+    let text = lineAndColumnText ? displayName + ':' + lineAndColumnText : displayName;
+    if (this.uiSourceCode.isDirty()) {
+      text = '*' + text;
+    }
+    return text;
   }
 
   lineAndColumnText(showColumnNumber = false): string|undefined {

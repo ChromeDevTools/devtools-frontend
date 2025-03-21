@@ -271,7 +271,7 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
 
     if (fromProvider !== this.uiSourceCode) {
       this.#isAddingRevision = true;
-      this.uiSourceCode.addRevision(newContent);
+      this.uiSourceCode.setWorkingCopy(newContent);
       this.#isAddingRevision = false;
     }
 

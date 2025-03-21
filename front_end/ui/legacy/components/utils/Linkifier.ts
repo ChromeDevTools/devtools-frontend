@@ -94,13 +94,35 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   private readonly anchorsByTarget = new Map<SDK.Target.Target, Element[]>();
   private readonly locationPoolByTarget = new Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>();
   private useLinkDecorator: boolean;
+  readonly #anchorUpdaters: WeakMap<Element, (this: Linkifier, anchor: HTMLElement) => void>;
 
   constructor(maxLengthForDisplayedURLs?: number, useLinkDecorator?: boolean) {
     super();
     this.maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
     this.useLinkDecorator = Boolean(useLinkDecorator);
+    this.#anchorUpdaters = new WeakMap();
     instances.add(this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.WorkingCopyChanged, this.#onWorkingCopyChangedOrCommitted, this);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.WorkingCopyCommitted, this.#onWorkingCopyChangedOrCommitted, this);
+  }
+
+  #onWorkingCopyChangedOrCommitted({
+    data: {uiSourceCode}
+  }: Common.EventTarget.EventTargetEvent<{uiSourceCode: Workspace.UISourceCode.UISourceCode}>): void {
+    const anchors = anchorsByUISourceCode.get(uiSourceCode);
+    if (!anchors) {
+      return;
+    }
+    for (const anchor of anchors) {
+      const updater = this.#anchorUpdaters.get(anchor);
+      if (!updater) {
+        continue;
+      }
+      updater.call(this, anchor as HTMLElement);
+    }
   }
 
   static setLinkDecorator(linkDecorator: LinkDecorator): void {
@@ -436,6 +458,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   }
 
   dispose(): void {
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+        Workspace.Workspace.Events.WorkingCopyChanged, this.#onWorkingCopyChangedOrCommitted, this);
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+        Workspace.Workspace.Events.WorkingCopyCommitted, this.#onWorkingCopyChangedOrCommitted, this);
     // Create a copy of {keys} so {targetRemoved} can safely modify the map.
     for (const target of [...this.anchorsByTarget.keys()]) {
       this.targetRemoved(target);
@@ -473,8 +499,12 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     if (options.revealBreakpoint) {
       Linkifier.bindBreakpoint(anchor, uiLocation);
     }
+
     const text = uiLocation.linkText(true /* skipTrim */, options.showColumnNumber);
     Linkifier.setTrimmedText(anchor, text, this.maxLength);
+    this.#anchorUpdaters.set(anchor, function(this: Linkifier, anchor: HTMLElement) {
+      void this.updateAnchor(anchor, options, liveLocation);
+    });
 
     let titleText: string = uiLocation.uiSourceCode.url();
     if (uiLocation.uiSourceCode.mimeType() === 'application/wasm') {

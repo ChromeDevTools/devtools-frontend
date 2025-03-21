@@ -9,6 +9,7 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -48,8 +49,10 @@ async function createCombinedDiffView({workspaceDiff}: {workspaceDiff: Workspace
   const combinedDiffView = new CombinedDiffView.CombinedDiffView(undefined, view);
   combinedDiffView.workspaceDiff = workspaceDiff;
 
+  const container = document.createElement('div');
+  renderElementIntoDOM(container);
   combinedDiffView.markAsRoot();
-  combinedDiffView.show(document.body);
+  combinedDiffView.show(container);
   await view.nextInput;
 
   return {combinedDiffView, view};

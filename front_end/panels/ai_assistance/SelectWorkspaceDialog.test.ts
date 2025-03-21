@@ -5,7 +5,7 @@
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
-import {dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -36,7 +36,9 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const onProjectSelected = sinon.spy() as sinon.SinonSpy<[Workspace.Workspace.Project], void>;
     const component = new AiAssistance.SelectWorkspaceDialog({dialog, onProjectSelected}, view);
     component.markAsRoot();
-    component.show(document.body);
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    component.show(container);
     assert.strictEqual(view.callCount, 1);
     assert.strictEqual(view.input.selectedIndex, 0);
 

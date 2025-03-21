@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   stubNoopSettings,
@@ -82,16 +83,18 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     assert.exists(sharedStorageModel);
     sinon.stub(sharedStorageModel, 'enable').resolves();
 
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     panel.markAsRoot();
-    panel.show(document.body);
+    panel.show(container);
 
     treeElement = new Application.SharedStorageListTreeElement.SharedStorageListTreeElement(panel);
 
     const view = treeElement.view;
     const wasShownSpy = sinon.spy(view, 'wasShown');
 
-    document.body.appendChild(treeElement.listItemNode);
+    container.appendChild(treeElement.listItemNode);
     treeElement.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeElement.selectable = true;
     treeElement.select();

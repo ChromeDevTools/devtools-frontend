@@ -5,6 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   stubNoopSettings,
@@ -102,9 +103,11 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
       getError: () => undefined,
     });
 
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
     const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     panel.markAsRoot();
-    panel.show(document.body);
+    panel.show(container);
 
     const viewFunction = createViewFunctionStub(Application.SharedStorageItemsView.SharedStorageItemsView);
     const treeElement = new Application.SharedStorageTreeElement.SharedStorageTreeElement(panel, sharedStorage);
@@ -119,7 +122,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
     const refreshedPromise = itemsListener.waitForItemsRefreshed();
 
-    document.body.appendChild(treeElement.listItemNode);
+    container.appendChild(treeElement.listItemNode);
     treeElement.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     treeElement.selectable = true;
     treeElement.select();

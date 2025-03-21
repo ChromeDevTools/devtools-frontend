@@ -4841,6 +4841,17 @@
       invalidate: ["layout", "paint"],
     },
     {
+      name: "print-color-adjust",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      independent: false,  // Actually true, but setting it to false saves a precious bit in ComputedStyleBase.
+      inherited: true,
+      field_template: "keyword",
+      keywords: ["economy", "exact"],
+      default_value: "economy",
+      valid_for_permission_element: true,
+      invalidate: ["paint"],
+    },
+    {
       name: "quotes",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -6647,6 +6658,33 @@
       invalidate: ["layout", "paint"],
     },
     {
+      name: "column-height",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      interpolable: true,
+      field_group: "*",
+      field_template: "primitive",
+      default_value: "0.0f",
+      type_name: "float",
+      computed_style_custom_functions: ["setter"],
+      style_builder_template: "auto",
+      converter: "ConvertComputedLength<float>",
+      keywords: ["auto"],
+      typedom_types: ["Keyword", "Length"],
+      invalidate: ["layout", "paint"],
+      runtime_flag: "MulticolColumnWrapping",
+    },
+    {
+      name: "column-wrap",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_group: "*",
+      field_template: "keyword",
+      keywords: ["nowrap", "wrap"],
+      default_value: "nowrap",
+      typedom_types: ["Keyword"],
+      invalidate: ["layout", "paint"],
+      runtime_flag: "MulticolColumnWrapping",
+    },
+    {
       name: "hyphenate-character",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -6877,17 +6915,6 @@
       affected_by_all: false,
       // Overlaps with perspective-origin.
       legacy_overlapping: true,
-    },
-    {
-      name: "-webkit-print-color-adjust",
-      property_methods: ["CSSValueFromComputedStyleInternal"],
-      independent: false,  // Actually true, but setting it to false saves a precious bit in ComputedStyleBase.
-      inherited: true,
-      field_template: "keyword",
-      keywords: ["economy", "exact"],
-      default_value: "economy",
-      valid_for_permission_element: true,
-      invalidate: ["paint"],
     },
     {
       name: "-webkit-rtl-ordering",
@@ -7852,6 +7879,10 @@
     {
       name: "-webkit-max-logical-height",
       alias_for: "max-block-size",
+    },
+    {
+      name: "-webkit-print-color-adjust",
+      alias_for: "print-color-adjust",
     },
 
     // Properties that we ignore in the StyleBuilder.

@@ -148,14 +148,6 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
-   "economy",
-   "exact"
-  ],
-  "name": "-webkit-print-color-adjust"
- },
- {
-  "inherited": true,
-  "keywords": [
    "logical",
    "visual"
   ],
@@ -301,7 +293,6 @@ export const generatedProperties = [
    "-webkit-mask-box-image-width",
    "-webkit-mask-position-x",
    "-webkit-mask-position-y",
-   "-webkit-print-color-adjust",
    "-webkit-rtl-ordering",
    "-webkit-ruby-position",
    "-webkit-tap-highlight-color",
@@ -421,6 +412,7 @@ export const generatedProperties = [
    "column-count",
    "column-fill",
    "column-gap",
+   "column-height",
    "column-rule-break",
    "column-rule-color",
    "column-rule-outset",
@@ -428,6 +420,7 @@ export const generatedProperties = [
    "column-rule-width",
    "column-span",
    "column-width",
+   "column-wrap",
    "contain",
    "contain-intrinsic-block-size",
    "contain-intrinsic-height",
@@ -628,6 +621,7 @@ export const generatedProperties = [
    "position-try-order",
    "position-visibility",
    "prefix",
+   "print-color-adjust",
    "quotes",
    "r",
    "range",
@@ -1706,6 +1700,12 @@ export const generatedProperties = [
   "name": "column-gap"
  },
  {
+  "keywords": [
+   "auto"
+  ],
+  "name": "column-height"
+ },
+ {
   "longhands": [
    "column-rule-width",
    "column-rule-style",
@@ -1767,6 +1767,13 @@ export const generatedProperties = [
    "auto"
   ],
   "name": "column-width"
+ },
+ {
+  "keywords": [
+   "nowrap",
+   "wrap"
+  ],
+  "name": "column-wrap"
  },
  {
   "longhands": [
@@ -3476,6 +3483,14 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "economy",
+   "exact"
+  ],
+  "name": "print-color-adjust"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "auto",
    "none"
   ],
@@ -4556,12 +4571,6 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
- "-webkit-print-color-adjust": {
-  "values": [
-   "economy",
-   "exact"
-  ]
- },
  "-webkit-rtl-ordering": {
   "values": [
    "logical",
@@ -5090,6 +5099,11 @@ export const generatedPropertyValues = {
    "normal"
   ]
  },
+ "column-height": {
+  "values": [
+   "auto"
+  ]
+ },
  "column-rule-break": {
   "values": [
    "none",
@@ -5132,6 +5146,12 @@ export const generatedPropertyValues = {
  "column-width": {
   "values": [
    "auto"
+  ]
+ },
+ "column-wrap": {
+  "values": [
+   "nowrap",
+   "wrap"
   ]
  },
  "contain": {
@@ -6085,6 +6105,12 @@ export const generatedPropertyValues = {
    "always",
    "anchors-visible",
    "no-overflow"
+  ]
+ },
+ "print-color-adjust": {
+  "values": [
+   "economy",
+   "exact"
   ]
  },
  "quotes": {
@@ -7082,6 +7108,10 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-perspective-origin",
   "perspective-origin"
+ ],
+ [
+  "-webkit-print-color-adjust",
+  "print-color-adjust"
  ],
  [
   "-webkit-shape-image-threshold",

@@ -162,6 +162,13 @@ export class EntryLabelOverlay extends HTMLElement {
     serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
   });
   /**
+   * We track this because when the user is in this flow we don't want the
+   * empty annotation label to be removed on blur, as we take them to the flow &
+   * want to keep the label there for when they come back from the flow having
+   * consented, hopefully!
+   */
+  #inAIConsentDialogFlow = false;
+  /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
    * ________
@@ -247,7 +254,18 @@ export class EntryLabelOverlay extends HTMLElement {
       // Note that we do not stop the event propagating here; this is on
       // purpose because we need it to bubble up into TimelineFlameChartView's
       // handler. That updates the state and deals with the keydown.
-      this.#inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      // In theory blur() should call the blur event listener, which in turn
+      // calls the setLabelEditabilityAndRemoveEmptyLabel method. However, we
+      // have seen this not work as part of the AI FRE flow where the privacy
+      // consent dialog is shown, which takes focus away from the input and
+      // causes the blur() to be a no-op. It's not entirely clear why this
+      // happens as visually it renders as focused, but as a back-up we call
+      // the setLabelEditabilityAndRemoveEmptyLabel method manually. It won't
+      // do anything if the editable state matches what is passed in, so it's
+      // safe to call this just in case the blur() didn't actually trigger.
+      this.#inputField.blur();
+      this.setLabelEditabilityAndRemoveEmptyLabel(false);
+
       return false;
     }
 
@@ -409,6 +427,15 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   setLabelEditabilityAndRemoveEmptyLabel(editable: boolean): void {
+    // Exit out if the current editable state matches the new one.
+    if (editable === this.#isLabelEditable) {
+      return;
+    }
+
+    // We skip this if we have taken the user to the AI FRE flow, because we want the label still there when they come back.
+    if (this.#inAIConsentDialogFlow && editable === false) {
+      return;
+    }
     this.#isLabelEditable = editable;
     this.#render();
     // If the label is editable, focus cursor on it
@@ -446,15 +473,30 @@ export class EntryLabelOverlay extends HTMLElement {
         this.#label = await this.#performanceAgent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
         this.#inputField.innerText = this.#label;
+        // Trigger a re-render to hide the AI Button now the label is generated.
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
       } catch {
         // TODO(b/405354265): handle the error state
       }
     } else {
-      await this.#showUserAiFirstRunDialog();
+      this.#inAIConsentDialogFlow = true;
+      const hasConsented = await this.#showUserAiFirstRunDialog();
+      this.#inAIConsentDialogFlow = false;
+      // This makes sure we put the user back in the editable state.
+      this.setLabelEditabilityAndRemoveEmptyLabel(true);
+      // If the user has consented, we now want to call this function again so
+      // the label generation happens without them having to click the button
+      // again.
+      if (hasConsented) {
+        await this.#handleAiButtonClick();
+      }
     }
   }
 
-  async #showUserAiFirstRunDialog(): Promise<void> {
+  /**
+   * @returns `true` if the user has now consented, and `false` otherwise.
+   */
+  async #showUserAiFirstRunDialog(): Promise<boolean> {
     const userConsented = await PanelCommon.FreDialog.show({
       header: {iconName: 'pen-spark', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: [
@@ -491,6 +533,7 @@ export class EntryLabelOverlay extends HTMLElement {
     if (userConsented) {
       this.#aiAnnotationsEnabledSetting.set(true);
     }
+    return this.#aiAnnotationsEnabledSetting.get();
   }
 
   // Check if the user is logged in, over 18, in a supported location and offline.
@@ -522,9 +565,18 @@ export class EntryLabelOverlay extends HTMLElement {
     // clang-format on
   }
 
-  #renderAiButton(): Lit.TemplateResult {
+  #renderAiButton(): Lit.LitTemplate {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+
+    /**
+     * Right now if the user "retries" the AI label generation the result will
+     * be almost identical because we don't change the input data or prompt. So
+     * we only show the generate button if the label is empty.
+     */
+    if (this.#label.length > 0) {
+      return Lit.nothing;
+    }
 
     // clang-format off
     return html`

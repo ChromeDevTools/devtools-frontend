@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as AiAssistanceModels from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
+import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {cleanTextContent, dispatchClickEvent} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {
@@ -22,6 +24,9 @@ import * as Components from './components/components.js';
 import * as Overlays from './overlays.js';
 
 const FAKE_OVERLAY_ENTRY_QUERIES: Overlays.Overlays.OverlayEntryQueries = {
+  parsedTrace() {
+    return null;
+  },
   isEntryCollapsedByUser() {
     return false;
   },
@@ -277,7 +282,12 @@ describeWithEnvironment('Overlays', () => {
           network: networkFlameChartsContainer,
         },
         charts,
-        entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
+        entryQueries: {
+          ...FAKE_OVERLAY_ENTRY_QUERIES,
+          parsedTrace() {
+            return parsedTrace;
+          },
+        },
       });
       const currManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
       // The Annotations Overlays are added through the ModificationsManager listener
@@ -322,6 +332,7 @@ describeWithEnvironment('Overlays', () => {
       inputField: HTMLElement,
       overlays: Overlays.Overlays.Overlays,
       event: Trace.Types.Events.Event,
+      component: Components.EntryLabelOverlay.EntryLabelOverlay,
     }> {
       updateHostConfig({
         devToolsAiGeneratedTimelineLabels: {
@@ -341,6 +352,7 @@ describeWithEnvironment('Overlays', () => {
         label: label ?? '',
       });
       await overlays.update();
+      await RenderCoordinator.done();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
@@ -353,7 +365,7 @@ describeWithEnvironment('Overlays', () => {
       const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
       assert.isOk(inputField);
 
-      return {elementsWrapper, inputField, overlays, event};
+      return {elementsWrapper, inputField, overlays, event, component};
     }
 
     it('can render an entry selected overlay', async function() {
@@ -483,6 +495,7 @@ describeWithEnvironment('Overlays', () => {
 
          // Double click on the label box to make it editable and focus on it
          inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+         await RenderCoordinator.done();
 
          const aiLabelButtonWrapper =
              elementsWrapper.querySelector<HTMLElement>('.ai-label-button-wrapper') as HTMLSpanElement;
@@ -493,6 +506,7 @@ describeWithEnvironment('Overlays', () => {
          // This dialog should not be visible unless the `generate annotation` button is clicked
          assert.isFalse(showFreDialogStub.called, 'Expected FreDialog to be not shown but it\'s shown');
          aiButton.dispatchEvent(new FocusEvent('click', {bubbles: true}));
+         await RenderCoordinator.done();
 
          // This dialog should be visible
          assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
@@ -556,6 +570,35 @@ describeWithEnvironment('Overlays', () => {
     it('can render provided label for entry label overlay', async function() {
       const {inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'entry label');
       assert.strictEqual(inputField?.innerText, 'entry label');
+    });
+
+    it('generates a label when the user clicks "Generate" if the setting is enabled', async function() {
+      const {elementsWrapper, inputField, component} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
+      Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
+
+      const generateButton = elementsWrapper.querySelector<HTMLElement>('.ai-label-button');
+      assert.isOk(generateButton, 'could not find "Generate label" button');
+      assert.isTrue(generateButton.classList.contains('enabled'));
+      const agent = new AiAssistanceModels.PerformanceAgent({
+        aidaClient: mockAidaClient([[{
+          explanation: 'This is an interesting entry',
+          metadata: {
+            rpcGlobalId: 123,
+          }
+        }]])
+      });
+      component.overrideAIAgentForTest(agent);
+
+      // The Agent call is async, so wait for the change event on the label to ensure the UI is updated.
+      const changeEvent = new Promise<void>(resolve => {
+        component.addEventListener(
+            Components.EntryLabelOverlay.EntryLabelChangeEvent.eventName, () => resolve(), {once: true});
+      });
+      dispatchClickEvent(generateButton);
+      await RenderCoordinator.done();
+      await changeEvent;
+
+      assert.strictEqual(inputField.innerHTML, 'This is an interesting entry');
     });
 
     it('Correct security tooltip on the `generate ai label` info icon hover for the users with logging enabled',

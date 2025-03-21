@@ -6,9 +6,11 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import '../../../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
+import * as AiAssistanceModels from '../../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -16,6 +18,7 @@ import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PanelCommon from '../../../common/common.js';
+import type * as Utils from '../../utils/utils.js';
 
 import stylesRaw from './entryLabelOverlay.css.js';
 
@@ -92,6 +95,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/En
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
+function isAiAssistanceServerSideLoggingEnabled(): boolean {
+  return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+}
+
 export class EmptyEntryLabelRemoveEvent extends Event {
   static readonly eventName = 'emptyentrylabelremoveevent';
 
@@ -143,6 +150,17 @@ export class EntryLabelOverlay extends HTMLElement {
   #label: string;
   #shouldDrawBelowEntry: boolean;
   #richTooltip: Lit.Directives.Ref<HTMLElement> = Directives.createRef();
+
+  /**
+   * Required to generate a label with AI.
+   */
+  #callTree: Utils.AICallTree.AICallTree|null = null;
+  // Creates or gets the setting if it exists.
+  #aiAnnotationsEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
+  #performanceAgent = new AiAssistanceModels.PerformanceAgent({
+    aidaClient: new Host.AidaClient.AidaClient(),
+    serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+  });
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -183,6 +201,13 @@ export class EntryLabelOverlay extends HTMLElement {
     this.#inputField?.setAttribute('aria-label', ariaLabel);
 
     this.#drawConnector();
+  }
+
+  /**
+   * So we can provide a mocked agent in tests. Do not call this method outside of a test!
+   */
+  overrideAIAgentForTest(agent: AiAssistanceModels.PerformanceAgent): void {
+    this.#performanceAgent = agent;
   }
 
   connectedCallback(): void {
@@ -400,6 +425,10 @@ export class EntryLabelOverlay extends HTMLElement {
     }
   }
 
+  set callTree(callTree: Utils.AICallTree.AICallTree|null) {
+    this.#callTree = callTree;
+  }
+
   // Generate the AI label suggestion if:
   // 1. the user has already already seen the fre dialog and confirmed the feature usage
   // or
@@ -407,20 +436,25 @@ export class EntryLabelOverlay extends HTMLElement {
   //
   // Otherwise, show the fre dialog with a 'Got it' button that turns the setting on.
   async #handleAiButtonClick(): Promise<void> {
-    // Creates or gets the setting if it exists.
-    const onboardingCompleteSetting =
-        Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
-
-    if (onboardingCompleteSetting.get()) {
-      // TODO: Actually generate the ai label
-      if (this.#inputField) {
-        this.#label = 'ai generated label';
+    if (this.#aiAnnotationsEnabledSetting.get()) {
+      // TODO(b/405354543): handle the loading state here.
+      if (!this.#callTree || !this.#inputField) {
+        // Shouldn't happen as we only show the Generate UI when we have this, but this satisfies TS.
+        return;
+      }
+      try {
+        this.#label = await this.#performanceAgent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
         this.#inputField.innerText = this.#label;
+      } catch {
+        // TODO(b/405354265): handle the error state
       }
-      return;
+    } else {
+      await this.#showUserAiFirstRunDialog();
     }
+  }
 
+  async #showUserAiFirstRunDialog(): Promise<void> {
     const userConsented = await PanelCommon.FreDialog.show({
       header: {iconName: 'pen-spark', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: [
@@ -449,20 +483,23 @@ export class EntryLabelOverlay extends HTMLElement {
           // clang-format on
         }
       ],
-      // TODO: Update this to handle learn more click.
-      onLearnMoreClick: () => {}
+      onLearnMoreClick: () => {
+        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+      }
     });
 
     if (userConsented) {
-      onboardingCompleteSetting.set(true);
+      this.#aiAnnotationsEnabledSetting.set(true);
     }
   }
 
   // Check if the user is logged in, over 18, in a supported location and offline.
   // If the user is not logged in, `blockedByAge` will return true.
   #isAiAvailable(): boolean|undefined {
-    return !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
+    const aiAvailable = !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
         !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
+    const dataToGenerateLabelAvailable = this.#callTree !== null;
+    return aiAvailable && dataToGenerateLabelAvailable;
   }
 
   #renderAITooltip(opts: {textContent: string, includeSettingsButton: boolean}): Lit.TemplateResult {

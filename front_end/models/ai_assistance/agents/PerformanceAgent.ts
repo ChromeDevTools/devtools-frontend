@@ -245,4 +245,22 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
     const perfEnhancementQuery = treeStr ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
   }
+
+  /**
+   * Used in the Performance panel to automatically generate a label for a selected entry.
+   */
+  async generateAIEntryLabel(callTree: TimelineUtils.AICallTree.AICallTree): Promise<string> {
+    const context = new CallTreeContext(callTree);
+    const response = await Array.fromAsync(this.run(AI_LABEL_GENERATION_PROMPT, {selected: context}));
+    const lastResponse = response.at(-1);
+    if (lastResponse && lastResponse.type === ResponseType.ANSWER && lastResponse.complete === true) {
+      return lastResponse.text.trim();
+    }
+    throw new Error('Failed to generate AI entry label');
+  }
 }
+
+const AI_LABEL_GENERATION_PROMPT =
+    `Generate a very short label for the selected callframe of only a few words describing what the callframe is broadly doing, but provide the most important information for debugging performance.
+
+Important: Describe selected callframe in just 1 sentence under 80 characters without line breaks. We will use your response for this callframe annotation so start with the sentence directly with what the callframe is doing and do not return any other text.`;

@@ -273,6 +273,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         networkProvider: this.networkDataProvider,
       },
       entryQueries: {
+        parsedTrace: () => {
+          return this.#parsedTrace;
+        },
         isEntryCollapsedByUser: (entry: Trace.Types.Events.Event): boolean => {
           return ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry) ?? false;
         },

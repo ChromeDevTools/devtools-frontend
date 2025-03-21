@@ -342,7 +342,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           text: noLogging ? i18nString(UIStrings.generatedAiAnnotationsSendDataNoLogging) :
                             i18nString(UIStrings.generatedAiAnnotationsSendData)
         }],
-        // TODO: Add a relevant link
+        // TODO(b/405316456): Add a relevant link here once we have written the documentation.
         learnMoreLink: {url: '', linkJSLogContext: 'learn-more.ai-annotations'},
         settingExpandState: {
           isSettingExpanded: false,

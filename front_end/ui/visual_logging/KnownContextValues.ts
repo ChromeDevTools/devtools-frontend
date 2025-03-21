@@ -1988,6 +1988,7 @@ export const knownContextValues = new Set([
   'layout-count',
   'layout-shifts',
   'learn-more',
+  'learn-more.ai-annotations',
   'learn-more.ai-assistance',
   'learn-more.console-insights',
   'learn-more.coop-coep',

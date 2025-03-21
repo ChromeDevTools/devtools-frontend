@@ -7,7 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {EntryStyles} from '../../timeline/utils/utils.js';
+import * as Utils from '../utils/utils.js';
 
 import * as Components from './components/components.js';
 
@@ -386,6 +386,7 @@ export interface TimelineCharts {
 }
 
 export interface OverlayEntryQueries {
+  parsedTrace: () => Trace.Handlers.Types.ParsedTrace | null;
   isEntryCollapsedByUser: (entry: Trace.Types.Events.Event) => boolean;
   firstVisibleParentForEntry: (entry: Trace.Types.Events.Event) => Trace.Types.Events.Event | null;
 }
@@ -1528,6 +1529,11 @@ export class Overlays extends EventTarget {
       case 'ENTRY_LABEL': {
         const shouldDrawLabelBelowEntry = Trace.Types.Events.isLegacyTimelineFrame(overlay.entry);
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(overlay.label, shouldDrawLabelBelowEntry);
+        // Generate the AI Call Tree for the AI Auto-Annotation feature.
+        const parsedTrace = this.#queries.parsedTrace();
+        const callTree = parsedTrace ? Utils.AICallTree.AICallTree.fromEvent(overlay.entry, parsedTrace) : null;
+        component.callTree = callTree;
+
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
         });
@@ -1602,7 +1608,7 @@ export class Overlays extends EventTarget {
         return overlayElement;
       }
       case 'TIMINGS_MARKER': {
-        const {color} = EntryStyles.markerDetailsForEvent(overlay.entries[0]);
+        const {color} = Utils.EntryStyles.markerDetailsForEvent(overlay.entries[0]);
         const markersComponent = this.#createTimingsMarkerElement(overlay);
         overlayElement.appendChild(markersComponent);
         overlayElement.style.backgroundColor = color;
@@ -1671,7 +1677,7 @@ export class Overlays extends EventTarget {
     const markers = document.createElement('div');
     markers.classList.add('markers');
     for (const entry of overlay.entries) {
-      const {color, title} = EntryStyles.markerDetailsForEvent(entry);
+      const {color, title} = Utils.EntryStyles.markerDetailsForEvent(entry);
       const marker = document.createElement('div');
       marker.classList.add('marker-title');
       marker.textContent = title;

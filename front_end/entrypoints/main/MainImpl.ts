@@ -120,14 +120,10 @@ const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MainImpl {
-  #readyForTestPromise: Promise<void>;
-  #resolveReadyForTestPromise!: () => void;
+  #readyForTestPromise = Promise.withResolvers<void>();
 
   constructor() {
     MainImpl.instanceForTest = this;
-    this.#readyForTestPromise = new Promise(resolve => {
-      this.#resolveReadyForTestPromise = resolve;
-    });
     void this.#loaded();
   }
 
@@ -613,7 +609,7 @@ export class MainImpl {
     }
     // Used for browser tests.
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.readyForTest();
-    this.#resolveReadyForTestPromise();
+    this.#readyForTestPromise.resolve();
     // Asynchronously run the extensions.
     window.setTimeout(this.#lateInitialization.bind(this), 100);
     await this.#maybeInstallVeInspectionBinding();
@@ -679,7 +675,7 @@ export class MainImpl {
   }
 
   readyForTest(): Promise<void> {
-    return this.#readyForTestPromise;
+    return this.#readyForTestPromise.promise;
   }
 
   #registerMessageSinkListener(): void {

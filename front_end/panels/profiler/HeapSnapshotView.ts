@@ -1657,7 +1657,7 @@ export class HeapProfileHeader extends ProfileHeader {
   receiver: Common.StringOutputStream.OutputStream|null;
   snapshotProxy: HeapSnapshotProxy|null;
   readonly loadPromise: Promise<HeapSnapshotProxy>;
-  fulfillLoad?: (value: HeapSnapshotProxy|PromiseLike<HeapSnapshotProxy>) => void;
+  fulfillLoad: (value: HeapSnapshotProxy|PromiseLike<HeapSnapshotProxy>) => void;
   totalNumberOfChunks: number;
   bufferedWriter: Bindings.TempFile.TempFile|null;
   onTempFileReady: (() => void)|null;
@@ -1673,9 +1673,9 @@ export class HeapProfileHeader extends ProfileHeader {
     this.workerProxy = null;
     this.receiver = null;
     this.snapshotProxy = null;
-    this.loadPromise = new Promise(resolve => {
-      this.fulfillLoad = resolve;
-    });
+    const {promise, resolve} = Promise.withResolvers<HeapSnapshotProxy>();
+    this.loadPromise = promise;
+    this.fulfillLoad = resolve;
     this.totalNumberOfChunks = 0;
     this.bufferedWriter = null;
     this.onTempFileReady = null;
@@ -1803,10 +1803,10 @@ export class HeapProfileHeader extends ProfileHeader {
   }
 
   notifySnapshotReceived(): void {
-    if (this.snapshotProxy && this.fulfillLoad) {
+    if (this.snapshotProxy) {
       this.fulfillLoad(this.snapshotProxy);
     }
-    (this.profileType()).snapshotReceived(this);
+    this.profileType().snapshotReceived(this);
   }
 
   override canSaveToFile(): boolean {

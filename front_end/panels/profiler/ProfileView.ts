@@ -549,15 +549,11 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
   jsonifiedProfile?: string|null;
   profile?: Protocol.Profiler.Profile;
   protocolProfileInternal?: Protocol.Profiler.Profile;
-  #profileReceivedPromise: Promise<void>;
-  #profileReceivedFulfill = (): void => {};
+  #profileReceivedPromise = Promise.withResolvers<void>();
 
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel|null, type: ProfileType, title?: string) {
     super(type, title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}));
     this.debuggerModel = debuggerModel;
-    this.#profileReceivedPromise = new Promise(resolve => {
-      this.#profileReceivedFulfill = resolve;
-    });
   }
 
   onChunkTransferred(_reader: Bindings.FileUtils.ChunkedReader): void {
@@ -595,7 +591,7 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
   }
 
   override async saveToFile(): Promise<void> {
-    await this.#profileReceivedPromise;
+    await this.#profileReceivedPromise.promise;
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     if (!this.fileName) {
       const now = Platform.DateUtilities.toISO8601Compact(new Date());
@@ -649,6 +645,6 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     this.protocolProfileInternal = profile;
     this.tempFile = new Bindings.TempFile.TempFile();
     this.tempFile.write([JSON.stringify(profile)]);
-    this.#profileReceivedFulfill();
+    this.#profileReceivedPromise.resolve();
   }
 }

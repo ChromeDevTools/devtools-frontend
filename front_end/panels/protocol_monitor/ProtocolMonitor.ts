@@ -14,6 +14,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
+// eslint-disable-next-line rulesdir/es-modules-import
+import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -195,24 +197,11 @@ export interface ViewOutput {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-export class ProtocolMonitorImpl extends UI.Panel.Panel {
-  private started: boolean;
-  private startTime: number;
-  private readonly messageForId = new Map<number, Message>();
-  private readonly filterParser: TextUtils.TextUtils.FilterParser;
-  #filterKeys = ['method', 'request', 'response', 'target', 'session'];
-  #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
-  #selectedTargetId: string;
-  #command = '';
-  #sidebarVisible = false;
-  #view: View;
-  #messages: Message[] = [];
-  #selectedMessage: Message|undefined;
-  #filter = '';
-  #editorWidget!: JSONEditor;
-  constructor(view: View = (input, output, target) => {
-    // clang-format off
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
     render(html`
+        <style>${inspectorCommonStyles.cssText}</style>
+        <style>${protocolMonitorStyles.cssText}</style>
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"
                              sidebar-initial-size="400"
@@ -296,7 +285,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
                                                 : '(pending)'}
                         </td>
                         <td data-value=${message.requestTime}>${i18nString(UIStrings.sMs, {PH1: String(message.requestTime)})}</td>
-                        <td>${this.targetToString(message.target)}</td>
+                        <td>${targetToString(message.target)}</td>
                         <td>${message.sessionId || ''}</td>
                       </tr>`)}
                   </table>
@@ -354,8 +343,25 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
         target,
         {host: input}
     );
-    // clang-format on
-  }) {
+  // clang-format on
+};
+
+export class ProtocolMonitorImpl extends UI.Panel.Panel {
+  private started: boolean;
+  private startTime: number;
+  private readonly messageForId = new Map<number, Message>();
+  private readonly filterParser: TextUtils.TextUtils.FilterParser;
+  #filterKeys = ['method', 'request', 'response', 'target', 'session'];
+  #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
+  #selectedTargetId: string;
+  #command = '';
+  #sidebarVisible = false;
+  #view: View;
+  #messages: Message[] = [];
+  #selectedMessage: Message|undefined;
+  #filter = '';
+  #editorWidget!: JSONEditor;
+  constructor(view: View = DEFAULT_VIEW) {
     super('protocol-monitor', true);
     this.#view = view;
     this.started = false;
@@ -523,7 +529,6 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
     if (this.started) {
       return;
     }
-    this.registerRequiredCSS(protocolMonitorStyles);
     this.started = true;
     this.startTime = Date.now();
     this.setRecording(true);
@@ -539,14 +544,6 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
       test.onMessageSent = null;
       test.onMessageReceived = null;
     }
-  }
-
-  private targetToString(target: SDK.Target.Target|undefined): string {
-    if (!target) {
-      return '';
-    }
-    return target.decorateLabel(
-        `${target.name()} ${target === SDK.TargetManager.TargetManager.instance().rootTarget() ? '' : target.id()}`);
   }
 
   private messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
@@ -707,4 +704,12 @@ export function parseCommandInput(input: string): {command: string, parameters: 
   const parameters = json?.parameters || json?.params || json?.args || json?.arguments || {};
 
   return {command, parameters};
+}
+
+function targetToString(target: SDK.Target.Target|undefined): string {
+  if (!target) {
+    return '';
+  }
+  return target.decorateLabel(
+      `${target.name()} ${target === SDK.TargetManager.TargetManager.instance().rootTarget() ? '' : target.id()}`);
 }

@@ -184,13 +184,10 @@ component tree, based on the following guidelines:
 
 | Size | Description                                 | Examples                                                                                                                                                      |
 | :--- | :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| XXS  | Small CL                                    | [Styles bar loses focus in Chrome OS DevTools](http://crbug.com/338348417), [Add 20x CPU throttling preset](https://crbug.com/324978881), [Remove 'Consistent source map variable experiment'](http://crbug.com/40944633), [Autofill tab breaks with phone numbers starting with '+'](https://b.corp.google.com/issues/335409093) |
-| XS   | Medium-sized CL or series of trivial CLs    | [Local overrides for New Tab Page misses one "/" in folder name](http://crbug.com/328210785), [Memory tool should highlight common problems and opportunities](http://crbug.com/337094903), [Improve the developer experience of using compression dictionaries](http://crbug.com/333756098) |
-| S    | Large-sized CL or series of non-trivial CLs | [Excluding sensitive data from HARs (HTTP Archives) by default](https://crbug.com/361717594) |
-| M    | quarter-long single-person project          | [Exceptions in promise constructor should be treated as promise rejection](http://crbug.com/40283985) |
-| L    | multi-quarter or -person project            | [Replace regex-matching in the StylesSidebarPane](http://crbug.com/40945390) |
-| XL   | multi-quarter and -person project           | [MPArch migration](http://crbug.com/40238399), [GM3 adoption](http://crbug.com/40273199) |
-| XXL  | multi-year project with a dedicated team    | [Performance Insights](http://crbug.com/40810111) |
+| S | Small CL | [Styles bar loses focus in Chrome OS DevTools](http://crbug.com/338348417), [Add 20x CPU throttling preset](https://crbug.com/324978881), [Remove 'Consistent source map variable experiment'](http://crbug.com/40944633), [Autofill tab breaks with phone numbers starting with '+'](https://b.corp.google.com/issues/335409093) |
+| M | Medium-sized CL or series of trivial CLs | [Local overrides for New Tab Page misses one "/" in folder name](http://crbug.com/328210785), [Memory tool should highlight common problems and opportunities](http://crbug.com/337094903), [Improve the developer experience of using compression dictionaries](http://crbug.com/333756098) |
+| L | Large-sized CL or series of non-trivial CLs | [Excluding sensitive data from HARs (HTTP Archives) by default](https://crbug.com/361717594), [Exceptions in promise constructor should be treated as promise rejection](http://crbug.com/40283985) |
+| XL | quarter-long single-person or larger project | [Performance Insights](http://crbug.com/40810111), [Replace regex-matching in the StylesSidebarPane](http://crbug.com/40945390), [MPArch migration](http://crbug.com/40238399), [GM3 adoption](http://crbug.com/40273199)  |
 
 ## SLOs
 

@@ -597,8 +597,11 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #render(): void {
+    const hasAiExperiment = Boolean(Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled);
     const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
+
+    const doNotShowAIButton = !hasAiExperiment || aiDisabledByEnterprisePolicy;
     // clang-format off
     Lit.render(
         html`
@@ -617,9 +620,9 @@ export class EntryLabelOverlay extends HTMLElement {
               jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
             ></span>
             ${
-              // If the enterprise policy is disabled, do not render anything. If it is enabled, render either the
-              // enabled or disabled ai button depending on whether the feature is available.
-              aiDisabledByEnterprisePolicy ? Lit.nothing
+              // If the enterprise policy is disabled or the user does not have the feature flag, do not render anything.
+              // If it is enabled, render either the enabled or disabled ai button depending on whether the feature is available.
+              doNotShowAIButton ? Lit.nothing
               : this.#isAiAvailable() ? this.#renderAiButton(): this.#renderDisabledAiButton()
               }
           </span>

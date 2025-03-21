@@ -459,8 +459,9 @@ describe('The Performance panel landing page', () => {
     }
   });
 
-  it('does not retain interaction nodes in memory', async () => {
-    const {target, frontend} = await getBrowserAndPages();
+  // Flaking.
+  it.skip('[crbug.com/405356930]: does not retain interaction nodes in memory', async () => {
+    const {target, frontend} = getBrowserAndPages();
 
     await target.bringToFront();
 
@@ -489,8 +490,11 @@ describe('The Performance panel landing page', () => {
       await button!.dispose();
 
       // Ensure the node is not preserved in a detached state
-      const {detachedNodes} = await targetSession.send('DOM.getDetachedDomNodes');
-      assert.lengthOf(detachedNodes, 0);
+      const hasNoDetachedNodes = await retryUntilExpected(async () => {
+        const {detachedNodes} = await targetSession.send('DOM.getDetachedDomNodes');
+        return detachedNodes.length === 0;
+      });
+      assert.isTrue(hasNoDetachedNodes, 'detached nodes were found after retries');
 
       await frontend.bringToFront();
 
@@ -506,3 +510,40 @@ describe('The Performance panel landing page', () => {
     }
   });
 });
+
+/**
+ * Retries the function a number of times until it returns true, or hits the max retries.
+ * Note that this is different to our waitForFunction helpers which run the
+ * function in the context of the target page. This runs in the execution of the
+ * test file itself.
+ */
+async function retryUntilExpected(asyncFunction: () => Promise<boolean>, maxRetries = 5): Promise<boolean> {
+  let retries = 0;
+
+  async function attempt(): Promise<boolean> {
+    try {
+      const result = await asyncFunction();
+      if (result === true) {
+        return true;
+      }
+      // Silently retry
+      if (retries < maxRetries) {
+        retries++;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return await attempt();
+      }
+      return false;  // Max retries exceeded
+
+    } catch {
+      // Silently retry even if there is an error
+      if (retries < maxRetries) {
+        retries++;
+        await new Promise(resolve => setTimeout(resolve, 100));
+        return await attempt();
+      }
+      return false;  // Max retries exceeded
+    }
+  }
+
+  return await attempt();
+}

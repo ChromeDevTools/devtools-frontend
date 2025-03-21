@@ -190,11 +190,13 @@ export interface CacheableRequest {
 
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): UseCacheInsightModel {
+  const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
+  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
+
   const results: CacheableRequest[] = [];
-  const allRequests = parsedTrace.NetworkRequests.byTime;
   let totalWastedBytes = 0;
   const wastedBytesByRequestId = new Map<string, number>();
-  for (const req of allRequests) {
+  for (const req of contextRequests) {
     if (!isCacheable(req)) {
       continue;
     }

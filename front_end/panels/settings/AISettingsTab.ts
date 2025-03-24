@@ -196,6 +196,10 @@ const UIStrings = {
    * @description Message shown when the user is offline.
    */
   offline: 'This feature is only available with an active internet connection.',
+  /**
+   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+   */
+  notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -518,6 +522,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
   #getDisabledReasons(): string[] {
     const reasons = [];
+    if (Root.Runtime.hostConfig.isOffTheRecord) {
+      reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
+    }
     switch (this.#aidaAvailability) {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:

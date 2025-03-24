@@ -66,6 +66,10 @@ const UIStrings = {
    *@description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
+  /**
+   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+   */
+  notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 } as const;
 
 /*
@@ -1325,6 +1329,9 @@ function renderConsentViewContents(): Lit.TemplateResult {
   let consentViewContents: HTMLSpanElement;
   // TODO(ergunsh): Should this `view` access `hostConfig` at all?
   const config = Root.Runtime.hostConfig;
+  if (config.isOffTheRecord) {
+    return html`${i18nString(UIStrings.notAvailableInIncognitoMode)}`;
+  }
   if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
     consentViewContents = i18n.i18n.getFormatLocalizedString(
         str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});

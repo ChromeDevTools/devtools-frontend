@@ -28,7 +28,6 @@ export class Adorner extends HTMLElement {
     this.name = data.name;
     this.#jslogContext = data.jslogContext;
     if (data.content) {
-      data.content.slot = 'content';
       this.#content?.remove();
       this.append(data.content);
       this.#content = data.content;
@@ -120,7 +119,7 @@ export class Adorner extends HTMLElement {
   }
 
   #render(): void {
-    render(html`<style>${adornerStyles.cssText}</style><slot name="content"></slot>`, this.#shadow, {host: this});
+    render(html`<style>${adornerStyles.cssText}</style><slot></slot>`, this.#shadow, {host: this});
   }
 }
 

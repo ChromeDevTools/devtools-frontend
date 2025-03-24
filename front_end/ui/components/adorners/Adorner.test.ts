@@ -126,7 +126,7 @@ describe('Adorner', () => {
       name: 'foo',
     };
 
-    const slottedChildren = adorner.querySelectorAll('[slot="content"]');
+    const slottedChildren = adorner.children;
     assert.lengthOf(slottedChildren, 1, 'adorner light dom should only have one child with [slot="content"]');
     assert.strictEqual(
         slottedChildren[0].textContent, 'content 3', 'adorner content slot should have the most recent content');

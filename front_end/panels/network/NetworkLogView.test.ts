@@ -1011,7 +1011,7 @@ function getCountAdorner(filterBar: UI.FilterBar.FilterBar): HTMLElement|null {
 
 function getMoreFiltersActiveCount(filterBar: UI.FilterBar.FilterBar): string {
   const countAdorner = getCountAdorner(filterBar);
-  const count = countAdorner?.querySelector('[slot="content"]')?.textContent ?? '';
+  const count = countAdorner?.firstChild?.textContent ?? '';
   return count;
 }
 

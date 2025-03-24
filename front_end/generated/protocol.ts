@@ -12047,6 +12047,7 @@ export namespace Page {
     InterestCohort = 'interest-cohort',
     JoinAdInterestGroup = 'join-ad-interest-group',
     KeyboardMap = 'keyboard-map',
+    LanguageDetector = 'language-detector',
     LocalFonts = 'local-fonts',
     Magnetometer = 'magnetometer',
     MediaPlaybackWhileNotVisible = 'media-playback-while-not-visible',
@@ -12061,6 +12062,7 @@ export namespace Page {
     PrivateStateTokenRedemption = 'private-state-token-redemption',
     PublickeyCredentialsCreate = 'publickey-credentials-create',
     PublickeyCredentialsGet = 'publickey-credentials-get',
+    Rewriter = 'rewriter',
     RunAdAuction = 'run-ad-auction',
     ScreenWakeLock = 'screen-wake-lock',
     Serial = 'serial',
@@ -12071,7 +12073,9 @@ export namespace Page {
     SpeakerSelection = 'speaker-selection',
     StorageAccess = 'storage-access',
     SubApps = 'sub-apps',
+    Summarizer = 'summarizer',
     SyncXhr = 'sync-xhr',
+    Translator = 'translator',
     Unload = 'unload',
     Usb = 'usb',
     UsbUnrestricted = 'usb-unrestricted',
@@ -12080,6 +12084,7 @@ export namespace Page {
     WebPrinting = 'web-printing',
     WebShare = 'web-share',
     WindowManagement = 'window-management',
+    Writer = 'writer',
     XrSpatialTracking = 'xr-spatial-tracking',
   }
 
@@ -18287,6 +18292,14 @@ export namespace BluetoothEmulation {
   }
 
   /**
+   * Indicates the various types of GATT event.
+   */
+  export const enum GATTOperationType {
+    Connection = 'connection',
+    Discovery = 'discovery',
+  }
+
+  /**
    * Stores the manufacturer data
    */
   export interface ManufacturerData {
@@ -18359,6 +18372,21 @@ export namespace BluetoothEmulation {
 
   export interface SimulateAdvertisementRequest {
     entry: ScanEntry;
+  }
+
+  export interface SimulateGATTOperationResponseRequest {
+    address: string;
+    type: GATTOperationType;
+    code: integer;
+  }
+
+  /**
+   * Event for when a GATT operation of |type| to the peripheral with |address|
+   * happened.
+   */
+  export interface GattOperationReceivedEvent {
+    address: string;
+    type: GATTOperationType;
   }
 }
 

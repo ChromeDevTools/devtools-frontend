@@ -17912,6 +17912,7 @@
                         "interest-cohort",
                         "join-ad-interest-group",
                         "keyboard-map",
+                        "language-detector",
                         "local-fonts",
                         "magnetometer",
                         "media-playback-while-not-visible",
@@ -17926,6 +17927,7 @@
                         "private-state-token-redemption",
                         "publickey-credentials-create",
                         "publickey-credentials-get",
+                        "rewriter",
                         "run-ad-auction",
                         "screen-wake-lock",
                         "serial",
@@ -17936,7 +17938,9 @@
                         "speaker-selection",
                         "storage-access",
                         "sub-apps",
+                        "summarizer",
                         "sync-xhr",
+                        "translator",
                         "unload",
                         "usb",
                         "usb-unrestricted",
@@ -17945,6 +17949,7 @@
                         "web-printing",
                         "web-share",
                         "window-management",
+                        "writer",
                         "xr-spatial-tracking"
                     ]
                 },
@@ -27809,6 +27814,15 @@
                     ]
                 },
                 {
+                    "id": "GATTOperationType",
+                    "description": "Indicates the various types of GATT event.",
+                    "type": "string",
+                    "enum": [
+                        "connection",
+                        "discovery"
+                    ]
+                },
+                {
                     "id": "ManufacturerData",
                     "description": "Stores the manufacturer data",
                     "type": "object",
@@ -27953,6 +27967,40 @@
                         {
                             "name": "entry",
                             "$ref": "ScanEntry"
+                        }
+                    ]
+                },
+                {
+                    "name": "simulateGATTOperationResponse",
+                    "description": "Simulates the response code from the peripheral with |address| for a\nGATT operation of |type|. The |code| value follows the HCI Error Codes from\nBluetooth Core Specification Vol 2 Part D 1.3 List Of Error Codes.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "$ref": "GATTOperationType"
+                        },
+                        {
+                            "name": "code",
+                            "type": "integer"
+                        }
+                    ]
+                }
+            ],
+            "events": [
+                {
+                    "name": "gattOperationReceived",
+                    "description": "Event for when a GATT operation of |type| to the peripheral with |address|\nhappened.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "$ref": "GATTOperationType"
                         }
                     ]
                 }

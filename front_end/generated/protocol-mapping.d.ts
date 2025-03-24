@@ -739,6 +739,11 @@ export namespace ProtocolMapping {
      */
     'FedCm.dialogClosed': [Protocol.FedCm.DialogClosedEvent];
     /**
+     * Event for when a GATT operation of |type| to the peripheral with |address|
+     * happened.
+     */
+    'BluetoothEmulation.gattOperationReceived': [Protocol.BluetoothEmulation.GattOperationReceivedEvent];
+    /**
      * Fired when breakpoint is resolved to an actual script and location.
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      */
@@ -4727,6 +4732,15 @@ export namespace ProtocolMapping {
      */
     'BluetoothEmulation.simulateAdvertisement': {
       paramsType: [Protocol.BluetoothEmulation.SimulateAdvertisementRequest];
+      returnType: void;
+    };
+    /**
+     * Simulates the response code from the peripheral with |address| for a
+     * GATT operation of |type|. The |code| value follows the HCI Error Codes from
+     * Bluetooth Core Specification Vol 2 Part D 1.3 List Of Error Codes.
+     */
+    'BluetoothEmulation.simulateGATTOperationResponse': {
+      paramsType: [Protocol.BluetoothEmulation.SimulateGATTOperationResponseRequest];
       returnType: void;
     };
     /**

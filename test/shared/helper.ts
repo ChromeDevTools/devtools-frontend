@@ -11,6 +11,7 @@ import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js
 import {platform} from '../conductor/mocha-interface-helpers.js';
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 import {getTestServerPort} from '../conductor/server_port.js';
+import type {DevToolsPage} from '../e2e_non_hosted/shared/frontend-helper.js';
 
 import {getBrowserAndPagesWrappers} from './non_hosted_wrappers.js';
 
@@ -74,17 +75,10 @@ export async function drainFrontendTaskQueue(): Promise<void> {
 /**
  * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
  */
-export async function clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
-  // Retries here just in case the element gets connected to DOM / becomes visible.
-  await waitForFunction(async () => {
-    try {
-      await element.click(options?.clickOptions);
-      await drainFrontendTaskQueue();
-      return true;
-    } catch {
-      return false;
-    }
-  });
+export async function clickElement(
+    element: puppeteer.ElementHandle, options?: ClickOptions, devToolsPage?: DevToolsPage): Promise<void> {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  await devToolsPage.clickElement(element, options);
 }
 
 /**

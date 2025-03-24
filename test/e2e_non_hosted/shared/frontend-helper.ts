@@ -104,6 +104,10 @@ export class DevToolsPage extends PageWrapper {
     `);
   }
 
+  async useSoftMenu() {
+    await this.page.evaluate('window.DevToolsAPI.setUseSoftMenu(true)');
+  }
+
   /**
    * Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
    */
@@ -225,6 +229,22 @@ export class DevToolsPage extends PageWrapper {
         Array<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>>;
     return elements;
   }
+
+  /**
+   * @deprecated This method is not able to recover from unstable DOM. Use click(selector) instead.
+   */
+  async clickElement(element: puppeteer.ElementHandle, options?: ClickOptions): Promise<void> {
+    // Retries here just in case the element gets connected to DOM / becomes visible.
+    await this.waitForFunction(async () => {
+      try {
+        await element.click(options?.clickOptions);
+        await this.drainFrontendTaskQueue();
+        return true;
+      } catch {
+        return false;
+      }
+    });
+  }
 }
 
 export interface DevtoolsSettings {
@@ -261,5 +281,6 @@ export async function setupDevToolsPage(context: puppeteer.BrowserContext, setti
   await devToolsPage.ensureReadyForTesting();
   await devToolsPage.throttleCPUIfRequired();
   await devToolsPage.delayPromisesIfRequired();
+  await devToolsPage.useSoftMenu();
   return devToolsPage;
 }

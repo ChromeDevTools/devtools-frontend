@@ -3510,7 +3510,6 @@ export const knownContextValues = new Set([
   'timeline-layout-shift-details',
   'timeline-overview',
   'timeline-scope',
-  'timeline-server-timings',
   'timeline-settings-pane',
   'timeline-settings-toggle',
   'timeline-show-all-events',

@@ -370,11 +370,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
-        'Performance panel: enable server timings in the timeline',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
         'Performance panel: enable experimental performance insights',
     );

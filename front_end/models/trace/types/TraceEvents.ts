@@ -402,7 +402,6 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
       initiator?: Initiator,
       requestMethod?: string,
       timing?: ResourceReceiveResponseTimingData,
-      syntheticServerTimings?: SyntheticServerTiming[],
     },
   };
   cat: 'loading';
@@ -1646,25 +1645,6 @@ export interface SyntheticProfileCall extends Event {
 }
 
 /**
- * A synthetic event created from the Server-Timing header of network
- * request. In order to create these synthetic events, the corresponding
- * metric (timing) in the header must contain a "start" param, which
- * corresponds to the timestamp of the metric in the server. The
- * ServerTimingsHandler implements a heuristic to estimate the offset
- * between the client clock and the server clock so that the server
- * timestamp can be translated to the tracing clock.
- */
-export interface SyntheticServerTiming<T extends Phase = Phase.COMPLETE> extends SyntheticBased<T> {
-  rawSourceEvent: ResourceSendRequest;
-  cat: 'devtools.server-timing';
-  args: Args&{
-    data: ArgsData & {
-      desc?: string, origin: string,
-    },
-  };
-}
-
-/**
  * A JS Sample reflects a single sample from the V8 CPU Profile
  */
 export interface SyntheticJSSample extends Event {
@@ -2734,10 +2714,6 @@ export interface FunctionCall extends Complete {
 }
 export function isFunctionCall(event: Event): event is FunctionCall {
   return event.name === Name.FUNCTION_CALL;
-}
-
-export function isSyntheticServerTiming(event: Event): event is SyntheticServerTiming {
-  return event.cat === 'devtools.server-timing';
 }
 
 export interface SchedulePostTaskCallback extends Instant {

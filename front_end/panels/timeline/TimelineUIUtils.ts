@@ -492,10 +492,6 @@ const UIStrings = {
    */
   sSelectorStatsInfo: 'Select "{PH1}" to collect detailed CSS selector matching statistics.',
   /**
-   * @description Label for a description text of a metric.
-   */
-  description: 'Description',
-  /**
    * @description Label for a numeric value that was how long to wait before a function was run.
    */
   delay: 'Delay',
@@ -1184,10 +1180,6 @@ export class TimelineUIUtils {
       for (const [key, value] of event.args.properties || []) {
         contentHelper.appendTextRow(key, value);
       }
-    }
-
-    if (Trace.Types.Events.isSyntheticServerTiming(event) && event.args.data.desc) {
-      contentHelper.appendTextRow(i18nString(UIStrings.description), event.args.data.desc);
     }
 
     const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));

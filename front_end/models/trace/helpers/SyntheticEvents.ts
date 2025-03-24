@@ -50,12 +50,6 @@ export class SyntheticEventsManager {
     }
   }
 
-  static registerServerTiming(syntheticEvent: Omit<Types.Events.SyntheticServerTiming, '_tag'>):
-      Types.Events.SyntheticServerTiming {
-    // TODO(crbug.com/340811171): Implement
-    return syntheticEvent as Types.Events.SyntheticServerTiming;
-  }
-
   private constructor(rawEvents: readonly Types.Events.Event[]) {
     this.#rawTraceEvents = rawEvents;
   }

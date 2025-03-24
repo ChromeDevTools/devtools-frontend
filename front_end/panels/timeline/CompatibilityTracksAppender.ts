@@ -16,7 +16,6 @@ import {ExtensionTrackAppender} from './ExtensionTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
-import {ServerTimingsTrackAppender} from './ServerTimingsTrackAppender.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import {
   EntryType,
@@ -68,7 +67,7 @@ export function entryIsVisibleInTimeline(
     }
   }
 
-  if (Trace.Types.Extensions.isSyntheticExtensionEntry(entry) || Trace.Types.Events.isSyntheticServerTiming(entry)) {
+  if (Trace.Types.Extensions.isSyntheticExtensionEntry(entry)) {
     return true;
   }
 
@@ -200,7 +199,6 @@ export class CompatibilityTracksAppender {
   #gpuTrackAppender: GPUTrackAppender;
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
   #threadAppenders: ThreadAppender[] = [];
-  #serverTimingsTrackAppender: ServerTimingsTrackAppender;
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
 
   /**
@@ -246,8 +244,6 @@ export class CompatibilityTracksAppender {
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#parsedTrace);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
 
-    this.#serverTimingsTrackAppender = new ServerTimingsTrackAppender(this, this.#parsedTrace);
-    this.#allTrackAppenders.push(this.#serverTimingsTrackAppender);
     this.#addThreadAppenders();
     this.#addExtensionAppenders();
 
@@ -381,10 +377,6 @@ export class CompatibilityTracksAppender {
 
   threadAppenders(): ThreadAppender[] {
     return this.#threadAppenders;
-  }
-
-  serverTimingsTrackAppender(): ServerTimingsTrackAppender {
-    return this.#serverTimingsTrackAppender;
   }
 
   eventsInTrack(trackAppender: TrackAppender): Trace.Types.Events.Event[] {

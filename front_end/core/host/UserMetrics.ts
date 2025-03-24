@@ -980,7 +980,6 @@ export enum DevtoolsExperiments {
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
   'timeline-server-timings' = 98,
-  'floating-entry-points-for-ai-assistance' = 101,
   'timeline-experimental-insights' = 102,
   'timeline-dim-unrelated-events' = 103,
   'timeline-alternative-navigation' = 104,

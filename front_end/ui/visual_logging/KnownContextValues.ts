@@ -1497,7 +1497,6 @@ export const knownContextValues = new Set([
   'float',
   'float-32-bit',
   'float-64-bit',
-  'floating-entry-points-for-ai-assistance',
   'flood-color',
   'flood-opacity',
   'focus',

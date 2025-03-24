@@ -375,10 +375,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
-        'Floating entry points for the AI assistance panel');
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
         'Performance panel: enable experimental performance insights',
     );
@@ -396,7 +392,6 @@ export class MainImpl {
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
       Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
-      Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
       Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,
       Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS,
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,

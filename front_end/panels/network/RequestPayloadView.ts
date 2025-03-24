@@ -344,12 +344,10 @@ export class RequestPayloadView extends UI.Widget.VBox {
     for (const param of params || []) {
       const paramNameValue = document.createDocumentFragment();
       if (param.name !== '') {
-        const name =
-            RequestPayloadView.formatParameter(param.name + ': ', 'payload-name', this.decodeRequestParameters);
+        const name = RequestPayloadView.formatParameter(param.name, 'payload-name', this.decodeRequestParameters);
         const value =
             RequestPayloadView.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters);
         paramNameValue.appendChild(name);
-        paramNameValue.createChild('span', 'payload-separator');
         paramNameValue.appendChild(value);
       } else {
         paramNameValue.appendChild(RequestPayloadView.formatParameter(

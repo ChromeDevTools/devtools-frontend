@@ -478,12 +478,12 @@ describe('The Network Request view', () => {
         await Promise.all(payloadOutline.map(async item => item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [
       'Query String Parameters (2)view sourceview URL-encoded',
-      ['id: 42', 'param: a b'],
+      ['id42', 'parama b'],
       'Form Data (4)view sourceview URL-encoded',
       [
-        'foo: alpha',
-        'bar: beta:42:0',
-        'baz: ',
+        'fooalpha',
+        'barbeta:42:0',
+        'baz',
         '(empty)',
       ],
     ].flat();
@@ -615,7 +615,7 @@ describe('The Network Request view', () => {
     await waitFor('[aria-label=Payload][role=tab][aria-selected=true]', networkView);
 
     await selectRequestByName('image.svg');
-    await waitForElementWithTextContent('foo: gamma');
+    await waitForElementWithTextContent('foogamma');
   });
 
   it('no duplicate payload tab on headers update', async () => {

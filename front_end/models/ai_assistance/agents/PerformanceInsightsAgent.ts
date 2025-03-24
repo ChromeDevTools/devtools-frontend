@@ -69,10 +69,10 @@ You will also be provided with external resources. Use the contents of these res
 
 ## Critical requirements
 
-- *CRITICAL* never make the same function call twice.
+- *CRITICAL* never call \`getMainThreadActivity\` more than once in a conversation.
+- *CRITICAL* never call \`getNetworkActivitySummary\` more than once in a conversation.
 - *CRITICAL* make sure you are thorough and call the functions you have access to to give yourself the most information possible to make accurate recommendations.
 - *CRITICAL* your text output should NEVER mention the functions that you called. These are an implementation detail and not important for the user to be aware of.
-- *CRITICAL* if you are asked about the "Interaction to next paint" insight, make sure you call the \`getMainThreadActivity\` function before making suggestions to the user.
 `;
 /* clang-format on */
 
@@ -111,6 +111,8 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
 
 export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAIContext.ActiveInsight> {
   #insight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
+
+  #lastContextForEnhancedQuery: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
   override async *
       handleContextDetails(activeContext: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null):
@@ -223,6 +225,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
 
     this.declareFunction<Record<never, unknown>, {activity: string}>('getMainThreadActivity', {
       description: `Returns the main thread activity for the selected insight.
+
 The tree is represented as a call frame with a root task and a series of children.
 The format of each callframe is:
 
@@ -295,9 +298,17 @@ The fields are:
       return query;
     }
     const formatter = new PerformanceInsightFormatter(selectedInsight.getItem());
-    const extraQuery = `${formatter.formatInsight()}\n\n# User request:\n`;
+
+    // We only need to add Insight info to a prompt when the context changes. For example:
+    // User clicks Insight A. We need to send info on Insight A with the prompt.
+    // User asks follow up question. We do not need to resend Insight A with the prompt.
+    // User clicks Insight B. We now need to send info on Insight B with the prompt.
+    // User clicks Insight A. We should resend the Insight info with the prompt.
+    const includeInsightInfo = selectedInsight !== this.#lastContextForEnhancedQuery;
+    const extraQuery = `${includeInsightInfo ? formatter.formatInsight() + '\n\n' : ''}# User request:\n`;
 
     const finalQuery = `${extraQuery}${query}`;
+    this.#lastContextForEnhancedQuery = selectedInsight;
     return finalQuery;
   }
 

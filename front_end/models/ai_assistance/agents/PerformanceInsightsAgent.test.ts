@@ -20,9 +20,18 @@ import {
 } from '../ai_assistance.js';
 
 const FAKE_LCP_MODEL = {
-  insightKey: 'LCPPhases',
+  insightKey: Trace.Insights.Types.InsightKeys.LCP_PHASES,
   strings: {},
   title: 'LCP by phase' as Common.UIString.LocalizedString,
+  description: 'some description' as Common.UIString.LocalizedString,
+  category: Trace.Insights.Types.InsightCategory.ALL,
+  state: 'fail',
+  frameId: '123',
+} as const;
+const FAKE_INP_MODEL = {
+  insightKey: Trace.Insights.Types.InsightKeys.INTERACTION_TO_NEXT_PAINT,
+  strings: {},
+  title: 'INP by phase' as Common.UIString.LocalizedString,
   description: 'some description' as Common.UIString.LocalizedString,
   category: Trace.Insights.Types.InsightCategory.ALL,
   state: 'fail',
@@ -143,6 +152,38 @@ code
 What is this?`;
 
       assert.strictEqual(finalQuery, expected);
+    });
+
+    it('does not add the context for follow-up queries with the same context', async () => {
+      const agent = new PerformanceInsightsAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+
+      const mockInsight = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_PARSED_TRACE);
+      const context = new InsightContext(mockInsight);
+
+      await agent.enhanceQuery('What is this?', context);
+      const finalQuery = await agent.enhanceQuery('Help me understand?', context);
+      const expected = `# User request:
+Help me understand?`;
+
+      assert.strictEqual(finalQuery, expected);
+    });
+
+    it('does add context to queries if the insight context changes', async () => {
+      const agent = new PerformanceInsightsAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      const mockInsight1 = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_PARSED_TRACE);
+      const mockInsight2 = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_INP_MODEL, FAKE_PARSED_TRACE);
+      const context1 = new InsightContext(mockInsight1);
+      const context2 = new InsightContext(mockInsight2);
+      const firstQuery = await agent.enhanceQuery('Q1', context1);
+      const secondQuery = await agent.enhanceQuery('Q2', context1);
+      const thirdQuery = await agent.enhanceQuery('Q3', context2);
+      assert.include(firstQuery, '## Insight title: LCP by phase');
+      assert.notInclude(secondQuery, '## Insight title');
+      assert.include(thirdQuery, '## Insight title: INP by phase');
     });
   });
 

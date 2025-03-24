@@ -246,8 +246,8 @@ function getEmptyStateSuggestions(
         'How can I reduce the time of this call tree?',
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-      // TODO(b/393061683): Define these.
-      return ['Help me optimize my LCP', 'Suggestions', 'For now'];
+      // TODO(b/405925760): Define these.
+      return ['Help me optimize my LCP', 'Help me optimize my INP', 'For now'];
   }
 }
 

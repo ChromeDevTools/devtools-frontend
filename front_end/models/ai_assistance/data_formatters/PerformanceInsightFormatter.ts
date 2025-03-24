@@ -93,8 +93,7 @@ export class PerformanceInsightFormatter {
 
   formatInsight(): string {
     const {title} = this.#insight;
-    return `*IMPORTANT*: all time units given to you are in milliseconds.
-## Insight title: ${title}
+    return `## Insight title: ${title}
 
 ## Insight Description:
 ${this.#description()}
@@ -207,6 +206,23 @@ The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
     }
 
+    if (Trace.Insights.Models.InteractionToNextPaint.isINP(this.#insight)) {
+      const event = this.#insight.longestInteractionEvent;
+      if (!event) {
+        return '';
+      }
+
+      const inpInfoForEvent =
+          `The longest interaction on the page was a \`${event.type}\` which had a total duration of \`${
+              formatMicro(event.dur)}\`. The timings of each of the three phases were:
+
+1. Input delay: ${formatMicro(event.inputDelay)}
+2. Processing duration: ${formatMicro(event.mainThreadHandling)}
+3. Presentation delay: ${formatMicro(event.presentationDelay)}.`;
+
+      return inpInfoForEvent;
+    }
+
     return '';
   }
 
@@ -227,7 +243,11 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       case 'ImageDelivery':
         return '';
       case 'InteractionToNextPaint':
-        return '';
+        return `- https://web.dev/articles/inp
+- https://web.dev/explore/how-to-optimize-inp
+- https://web.dev/articles/optimize-long-tasks
+- https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing
+`;
       case 'LCPDiscovery':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -270,7 +290,18 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       case 'ImageDelivery':
         return '';
       case 'InteractionToNextPaint':
-        return '';
+        return `Interaction to Next Paint (INP) is a metric that tracks the responsiveness of the page when the user interacts with it. INP is a Core Web Vital and the thresholds for how we categorize a score are:
+- Good: 200 milliseconds or less.
+- Needs improvement: more than 200 milliseconds and 500 milliseconds or less.
+- Bad: over 500 milliseconds.
+
+For a given slow interaction, we can break it down into 3 phases:
+1. Input delay: starts when the user initiates an interaction with the page, and ends when the event callbacks for the interaction begin to run.
+2. Processing duration: the time it takes for the event callbacks to run to completion.
+3. Presentation delay: the time it takes for the browser to present the next frame which contains the visual result of the interaction.
+
+The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
+`;
       case 'LCPDiscovery':
         return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
 1. Did the resource have \`fetchpriority=high\` applied?

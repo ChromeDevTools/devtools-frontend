@@ -52,6 +52,9 @@ You will be told the following information about the Insight:
 
 You will also be provided with external resources. Use the contents of these resources to ensure you give correct, accurate and up to date answers.
 
+ *IMPORTANT*: all time units given to you are in milliseconds.
+
+
 ## Step-by-step instructions
 
 - Call any of the available functions to help you gather more information to inform your suggestions.
@@ -69,6 +72,7 @@ You will also be provided with external resources. Use the contents of these res
 - *CRITICAL* never make the same function call twice.
 - *CRITICAL* make sure you are thorough and call the functions you have access to to give yourself the most information possible to make accurate recommendations.
 - *CRITICAL* your text output should NEVER mention the functions that you called. These are an implementation detail and not important for the user to be aware of.
+- *CRITICAL* if you are asked about the "Interaction to next paint" insight, make sure you call the \`getMainThreadActivity\` function before making suggestions to the user.
 `;
 /* clang-format on */
 

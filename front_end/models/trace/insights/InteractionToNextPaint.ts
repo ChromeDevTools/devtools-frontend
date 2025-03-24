@@ -61,6 +61,10 @@ export type INPInsightModel = InsightModel<typeof UIStrings, {
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
+export function isINP(insight: InsightModel): insight is INPInsightModel {
+  return insight.insightKey === InsightKeys.INTERACTION_TO_NEXT_PAINT;
+}
+
 function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
   return {
     insightKey: InsightKeys.INTERACTION_TO_NEXT_PAINT,

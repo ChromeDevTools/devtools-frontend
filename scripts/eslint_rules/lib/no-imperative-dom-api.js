@@ -249,8 +249,34 @@ module.exports = {
       const subpropertyValue = isSubpropertyAssignment ? /** @type {Node} */ (grandGrandParent.right) : null;
       if (isPropertyAssignment && isIdentifier(property, 'className')) {
         domFragment.classList.push(propertyValue);
-      } else if (isPropertyAssignment && isIdentifier(property, 'textContent')) {
+      } else if (isPropertyAssignment && isIdentifier(property, ['textContent', 'innerHTML'])) {
         domFragment.textContent = propertyValue;
+      } else if (
+          isPropertyAssignment && domFragment.tagName === 'devtools-adorner' && isIdentifier(property, 'data') &&
+          propertyValue.type === 'ObjectExpression') {
+        for (const property of propertyValue.properties) {
+          if (property.type !== 'Property') {
+            continue;
+          }
+          if (isIdentifier(property.key, 'name')) {
+            domFragment.attributes.push({
+              key: 'aria-label',
+              value: /** @type {Node} */ (property.value),
+            });
+          }
+          if (isIdentifier(property.key, 'jslogContext')) {
+            domFragment.attributes.push({
+              key: 'jslog',
+              value: /** @type {Node} */ (
+                  {type: 'Literal', value: '${VisualLogging.adorner(' + sourceCode.getText(property.value) + ')}'})
+            });
+          }
+          if (isIdentifier(property.key, 'content')) {
+            const childFragment = getOrCreateDomFragment(/** @type {Node} */ (property.value));
+            childFragment.parent = domFragment;
+            domFragment.children.push(childFragment);
+          }
+        }
       } else if (isMethodCall && isIdentifier(property, 'setAttribute')) {
         const attribute = firstArg;
         const value = secondArg;
@@ -373,48 +399,83 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       NewExpression(node) {
         if (isMemberExpression(
                 node.callee, n => isMemberExpression(n, n => isIdentifier(n, 'UI'), n => isIdentifier(n, 'Toolbar')),
-                n => isIdentifier(n, 'ToolbarFilter'))) {
+                n => isIdentifier(n, ['ToolbarFilter', 'ToolbarInput']))) {
           const domFragment = getOrCreateDomFragment(node);
           domFragment.tagName = 'devtools-toolbar-input';
+          const type = isIdentifier(node.callee.property, 'ToolbarFilter') ? 'filter' : 'text';
           domFragment.attributes.push({
             key: 'type',
-            value: /** @type {Node} */ ({type: 'Literal', value: 'filter'}),
+            value: /** @type {Node} */ ({type: 'Literal', value: type}),
           });
-          const placeholder = node.arguments[0];
-          const flexGrow = node.arguments[1];
-          const flexShrink = node.arguments[2];
-          const title = node.arguments[3];
-          const jslogContext = node.arguments[6];
+          const args = [...node.arguments];
+          const placeholder = args.shift();
           if (placeholder && !isIdentifier(placeholder, 'undefined')) {
             domFragment.attributes.push({
               key: 'placeholder',
               value: placeholder,
             });
           }
+          if (type === 'text') {
+            const accesiblePlaceholder = args.shift();
+            if (accesiblePlaceholder && !isIdentifier(accesiblePlaceholder, 'undefined')) {
+              domFragment.attributes.push({
+                key: 'aria-label',
+                value: accesiblePlaceholder,
+              });
+            }
+          }
+          const flexGrow = args.shift();
           if (flexGrow && !isIdentifier(flexGrow, 'undefined')) {
             domFragment.style.push({
               key: 'flex-grow',
               value: flexGrow,
             });
           }
+          const flexShrink = args.shift();
           if (flexShrink && !isIdentifier(flexShrink, 'undefined')) {
             domFragment.style.push({
               key: 'flex-shrink',
               value: flexShrink,
             });
           }
+          const title = args.shift();
           if (title && !isIdentifier(title, 'undefined')) {
             domFragment.attributes.push({
               key: 'title',
               value: title,
             });
           }
+          const completions = args.shift();
+          if (completions && !isIdentifier(completions, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'list',
+              value: /** @type {Node} */ ({type: 'Literal', value: 'completions'}),
+            });
+            const dataList = getOrCreateDomFragment(completions);
+            dataList.tagName = 'datalist';
+            dataList.attributes.push({
+              key: 'id',
+              value: /** @type {Node} */ ({type: 'Literal', value: 'completions'}),
+            });
+            dataList.textContent = completions;
+            domFragment.children.push(dataList);
+            dataList.parent = domFragment;
+          }
+          args.shift();  // dynamicCompletions is not supported
+          const jslogContext = args.shift();
           if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
             domFragment.attributes.push({
               key: 'id',
               value: jslogContext,
             });
           }
+        }
+        if (isMemberExpression(
+                node.callee,
+                n => isMemberExpression(n, n => isIdentifier(n, 'Adorners'), n => isIdentifier(n, 'Adorner')),
+                n => isIdentifier(n, 'Adorner'))) {
+          const domFragment = getOrCreateDomFragment(node);
+          domFragment.tagName = 'devtools-adorner';
         }
       },
       'Program:exit'() {

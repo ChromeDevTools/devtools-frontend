@@ -183,7 +183,7 @@ class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
     const toolbar = this.contentElement.createChild('devtools-toolbar');
-    const filterInput = new UI.Toolbar.ToolbarFilter('some-placeholder', 0.5, 1, undefined, undefined, false, 'some-filter');
+    const filterInput = new UI.Toolbar.ToolbarFilter('some-placeholder', 0.5, 1, undefined, this.complete.bind(this), false, 'some-filter');
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged.bind(this));
     toolbar.appendToolbarItem(filterInput);
   }
@@ -194,9 +194,81 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <devtools-toolbar>
-        <devtools-toolbar-input type="filter" placeholder="some-placeholder" id="some-filter"
-            @change=\${this.onFilterChanged.bind(this)} style="flex-grow:0.5; flex-shrink:1"></devtools-toolbar-input>
+        <devtools-toolbar-input type="filter" placeholder="some-placeholder" list="completions"
+            id="some-filter" @change=\${this.onFilterChanged.bind(this)}
+            style="flex-grow:0.5; flex-shrink:1">
+          <datalist id="completions">\${this.complete.bind(this)}</datalist>
+        </devtools-toolbar-input>
       </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    const filterInput = new UI.Toolbar.ToolbarInput('some-placeholder', 'accessible-placeholder', 0.5, 1);
+    toolbar.appendToolbarItem(filterInput);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar>
+        <devtools-toolbar-input type="text" placeholder="some-placeholder"
+            aria-label="accessible-placeholder" style="flex-grow:0.5; flex-shrink:1"></devtools-toolbar-input>
+      </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const adornerContent = document.createElement('span');
+    adornerContent.innerHTML = '<div style="font-size: 12px;">💫</div>';
+    const adorner = new Adorners.Adorner.Adorner();
+    adorner.classList.add('fix-perf-icon');
+    adorner.data = {
+      name: i18nString(UIStrings.fixMe),
+      content: adornerContent,
+      jslogContext: 'fix-perf',
+    };
+    this.contentElement.appendChild(adorner);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-adorner class="fix-perf-icon" aria-label=\${i18nString(UIStrings.fixMe)}
+          jslog=\${VisualLogging.adorner('fix-perf')}>
+        <span><div style="font-size: 12px;">💫</div></span>
+      </devtools-adorner>
     </div>\`,
     target, {host: input});
 };

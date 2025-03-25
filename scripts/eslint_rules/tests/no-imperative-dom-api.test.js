@@ -78,15 +78,18 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    this.contentElement.classList.add('some-class');
-    this.contentElement.addEventListener('click', this.onClick.bind(this));
+    this.container = this.contentElement.createChild('div', 'some-class');
+    this.container.classList.add('container');
+    this.container.addEventListener('click', this.onClick.bind(this));
   }
 }`,
       output: `
 
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
-    <div class="some-class" @click=\${this.onClick.bind(this)}></div>\`,
+    <div>
+      <div class="some-class container" @click=\${this.onClick.bind(this)}></div>
+    </div>\`,
     target, {host: input});
 };
 

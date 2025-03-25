@@ -180,7 +180,7 @@ module.exports = {
      */
     function getOrCreateDomFragment(node) {
       const variable = getEnclosingVariable(node);
-      const key = variable ?? sourceCode.getText(node);
+      const key = variable ?? sourceCode.getText(getEnclosingProperty(node) ?? node);
 
       let result = domFragments.get(key);
       if (!result) {
@@ -226,6 +226,14 @@ module.exports = {
           return null;  // Destructuring assignment
         }
         return variables[0];
+      }
+      return null;
+    }
+
+    function getEnclosingProperty(node) {
+      if (node.parent.type === 'AssignmentExpression' && node.parent.right === node &&
+          isMemberExpression(node.parent.left, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
+        return /** @type {Node} */ (node.parent.left);
       }
       return null;
     }
@@ -381,7 +389,7 @@ module.exports = {
      * @param {DomFragment} domFragment
      */
     function maybeReportDomFragment(domFragment) {
-      if (!domFragment.replacementLocation || domFragment.parent) {
+      if (!domFragment.replacementLocation || domFragment.parent || !domFragment.tagName) {
         return;
       }
       context.report({
@@ -410,9 +418,11 @@ export const DEFAULT_VIEW = (input, _output, target) => {
 
     return {
       MemberExpression(node) {
-        if (node.object.type === 'ThisExpression' && isIdentifier(node.property, 'contentElement')) {
+        if (node.object.type === 'ThisExpression') {
           const domFragment = getOrCreateDomFragment(node);
-          domFragment.tagName = 'div';
+          if (isIdentifier(node.property, 'contentElement')) {
+            domFragment.tagName = 'div';
+          }
         }
         if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement')
             && node.parent.type === 'CallExpression' && node.parent.callee === node) {

@@ -35,6 +35,7 @@ import {
 } from './CSSPropertyParserMatchers.js';
 import {
   CSSFontPaletteValuesRule,
+  CSSFunctionRule,
   CSSKeyframesRule,
   CSSPositionTryRule,
   CSSPropertyRule,
@@ -205,6 +206,7 @@ export interface CSSMatchedStylesPayload {
   animationStylesPayload: Protocol.CSS.CSSAnimationStyle[];
   transitionsStylePayload: Protocol.CSS.CSSStyle|null;
   inheritedAnimatedPayload: Protocol.CSS.InheritedAnimatedStyleEntry[];
+  functionRules: Protocol.CSS.CSSFunctionRule[];
 }
 
 export class CSSRegisteredProperty {
@@ -289,6 +291,7 @@ export class CSSMatchedStyles {
   #mainDOMCascade?: DOMInheritanceCascade;
   #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
+  #functionRules: CSSFunctionRule[];
   readonly #fontPaletteValuesRule: CSSFontPaletteValuesRule|undefined;
 
   static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
@@ -307,6 +310,7 @@ export class CSSMatchedStyles {
     cssPropertyRegistrations,
     fontPaletteValuesRule,
     activePositionFallbackIndex,
+    functionRules,
   }: CSSMatchedStylesPayload) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
@@ -323,6 +327,7 @@ export class CSSMatchedStyles {
         fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
 
     this.#activePositionFallbackIndex = activePositionFallbackIndex;
+    this.#functionRules = functionRules.map(rule => new CSSFunctionRule(cssModel, rule));
   }
 
   private async init({
@@ -757,6 +762,10 @@ export class CSSMatchedStyles {
 
   getRegisteredProperty(name: string): CSSRegisteredProperty|undefined {
     return this.#registeredPropertyMap.get(name);
+  }
+
+  functionRules(): CSSFunctionRule[] {
+    return this.#functionRules;
   }
 
   fontPaletteValuesRule(): CSSFontPaletteValuesRule|undefined {

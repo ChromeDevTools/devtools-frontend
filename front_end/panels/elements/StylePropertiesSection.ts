@@ -786,7 +786,6 @@ export class StylePropertiesSection {
     let supportsIndex = 0;
     let nestingIndex = 0;
     this.nestingLevel = 0;
-    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
     for (const ruleType of rule.ruleTypes) {
       let ancestorRuleElement;
       switch (ruleType) {
@@ -808,11 +807,7 @@ export class StylePropertiesSection {
       }
       if (ancestorRuleElement) {
         this.#ancestorRuleListElement.prepend(ancestorRuleElement);
-        const closingBrace = document.createElement('div');
-        closingBrace.createChild('span', 'styles-clipboard-only').textContent = indent.repeat(this.nestingLevel);
-        closingBrace.style.paddingLeft = `${this.nestingLevel}ch`;
-        closingBrace.append('}');
-        this.#ancestorClosingBracesElement.prepend(closingBrace);
+        this.#ancestorClosingBracesElement.prepend(this.indentElement(this.createClosingBrace(), this.nestingLevel));
         this.nestingLevel++;
       }
     }
@@ -824,14 +819,28 @@ export class StylePropertiesSection {
 
     let curNestingLevel = 0;
     for (const element of this.#ancestorRuleListElement.children) {
-      const indentElement = document.createElement('span');
-      indentElement.classList.add('styles-clipboard-only');
-      indentElement.setAttribute('slot', 'indent');
-      indentElement.textContent = indent.repeat(curNestingLevel);
-      element.prepend(indentElement);
-      (element as HTMLElement).style.paddingLeft = `${curNestingLevel}ch`;
+      this.indentElement(element as HTMLElement, curNestingLevel);
       curNestingLevel++;
     }
+  }
+
+  protected createClosingBrace(): HTMLElement {
+    const closingBrace = document.createElement('div');
+    closingBrace.append('}');
+    return closingBrace;
+  }
+
+  protected indentElement(element: HTMLElement, nestingLevel: number, clipboardOnly?: boolean): HTMLElement {
+    const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
+    const indentElement = document.createElement('span');
+    indentElement.classList.add('styles-clipboard-only');
+    indentElement.setAttribute('slot', 'indent');
+    indentElement.textContent = indent.repeat(nestingLevel);
+    element.prepend(indentElement);
+    if (!clipboardOnly) {
+      element.style.paddingLeft = `${nestingLevel}ch`;
+    }
+    return element;
   }
 
   protected createMediaElement(media: SDK.CSSMedia.CSSMedia): ElementsComponents.CSSQuery.CSSQuery|undefined {
@@ -1072,7 +1081,10 @@ export class StylePropertiesSection {
     this.parentPane.setActiveProperty(null);
     this.nextEditorTriggerButtonIdx = 1;
     this.propertiesTreeOutline.removeChildren();
-    const style = this.styleInternal;
+    this.populateStyle(this.styleInternal, this.propertiesTreeOutline);
+  }
+
+  populateStyle(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, parent: TreeElementParent): void {
     let count = 0;
     const properties = style.leadingProperties();
     const maxProperties = DEFAULT_MAX_PROPERTIES + properties.length - this.originalPropertiesCount;
@@ -1100,7 +1112,7 @@ export class StylePropertiesSection {
       });
       item.setComputedStyles(this.computedStyles);
       item.setParentsComputedStyles(this.parentsComputedStyles);
-      this.propertiesTreeOutline.appendChild(item);
+      parent.appendChild(item);
     }
 
     if (count < properties.length) {
@@ -1750,6 +1762,68 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
   }
 }
 
+export class FunctionRuleSection extends StylePropertiesSection {
+  constructor(
+      stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number,
+      functionName: string, parameters: string[], expandedByDefault: boolean) {
+    super(stylesPane, matchedStyles, style, sectionIdx, null, null, `${functionName}(${parameters.join(', ')})`);
+    if (!expandedByDefault) {
+      this.element.classList.add('hidden');
+    }
+    this.selectorElement.className = 'function-key';
+    this.addChildren(children, this.propertiesTreeOutline);
+  }
+
+  createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement|undefined {
+    if ('media' in condition) {
+      return this.createMediaElement(condition.media);
+    }
+    if ('container' in condition) {
+      return this.createContainerQueryElement(condition.container);
+    }
+    if ('supports' in condition) {
+      return this.createSupportsElement(condition.supports);
+    }
+    return;
+  }
+
+  positionNestingElement(element: HTMLElement): HTMLElement {
+    // Add this class to get the same margins as a property and syntax highlighting.
+    element.classList.add('css-function-inline-block');
+    // Also add the clipboard text, but don't add additional margins because
+    // the tree nesting takes care of that.
+    return this.indentElement(element, this.nestingLevel, true);
+  }
+
+  addChildren(children: SDK.CSSRule.CSSNestedStyle[], parent: TreeElementParent): void {
+    for (const child of children) {
+      if ('style' in child) {
+        this.populateStyle(child.style, parent);
+      } else if ('children' in child) {
+        const conditionElement = this.createConditionElement(child);
+        let newParent = parent;
+        this.nestingLevel++;
+        if (conditionElement) {
+          const treeElement = new UI.TreeOutline.TreeElement();
+          treeElement.listItemElement.appendChild(this.positionNestingElement(conditionElement));
+          treeElement.setExpandable(true);
+          treeElement.setCollapsible(false);
+          parent.appendChild(treeElement);
+          newParent = treeElement;
+        }
+        this.addChildren(child.children, newParent);
+        if (conditionElement) {
+          const treeElement = new UI.TreeOutline.TreeElement();
+          treeElement.listItemElement.appendChild(this.positionNestingElement(this.createClosingBrace()));
+          parent.appendChild(treeElement);
+        }
+        this.nestingLevel--;
+      }
+    }
+  }
+}
+
 export class FontPaletteValuesRuleSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
@@ -1831,4 +1905,8 @@ export class HighlightPseudoStylePropertiesSection extends StylePropertiesSectio
     // be shown in the darker style of non-inherited properties.
     return false;
   }
+}
+
+interface TreeElementParent {
+  appendChild(child: UI.TreeOutline.TreeElement): void;
 }

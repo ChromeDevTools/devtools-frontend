@@ -64,6 +64,7 @@ import {StyleEditorWidget} from './StyleEditorWidget.js';
 import {
   BlankStylePropertiesSection,
   FontPaletteValuesRuleSection,
+  FunctionRuleSection,
   HighlightPseudoStylePropertiesSection,
   KeyframePropertiesSection,
   PositionTryRuleSection,
@@ -148,6 +149,8 @@ const FILTER_IDLE_PERIOD = 500;
 const MIN_FOLDED_SECTIONS_COUNT = 5;
 // Title of the registered properties section
 export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
+// Title of the function section
+export const FUNCTION_SECTION_NAME = '@function';
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -1228,6 +1231,21 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
       blocks.push(block);
     }
+
+    if (matchedStyles.functionRules().length > 0) {
+      const expandedByDefault = matchedStyles.functionRules().length <= MIN_FOLDED_SECTIONS_COUNT;
+      const block = SectionBlock.createFunctionBlock(expandedByDefault);
+      for (const functionRule of matchedStyles.functionRules()) {
+        this.idleCallbackManager.schedule(() => {
+          block.sections.push(new FunctionRuleSection(
+              this, matchedStyles, functionRule.style, functionRule.children(), sectionIdx,
+              functionRule.functionName().text, functionRule.parameters(), expandedByDefault));
+          sectionIdx++;
+        });
+      }
+      blocks.push(block);
+    }
+
     // If we have seen a layer in matched styles we enable
     // the layer widget button.
     if (sawLayers) {
@@ -1711,6 +1729,14 @@ export class SectionBlock {
     const block = new SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = 'sidebar-separator';
     separatorElement.appendChild(document.createTextNode(REGISTERED_PROPERTY_SECTION_NAME));
+    return block;
+  }
+
+  static createFunctionBlock(expandedByDefault: boolean): SectionBlock {
+    const separatorElement = document.createElement('div');
+    const block = new SectionBlock(separatorElement, true, expandedByDefault);
+    separatorElement.className = 'sidebar-separator';
+    separatorElement.appendChild(document.createTextNode(FUNCTION_SECTION_NAME));
     return block;
   }
 

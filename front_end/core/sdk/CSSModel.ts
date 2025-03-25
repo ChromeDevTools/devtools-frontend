@@ -392,6 +392,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       parentLayoutNodeId: matchedStylesResponse.parentLayoutNodeId,
       positionTryRules: matchedStylesResponse.cssPositionTryRules || [],
       propertyRules: matchedStylesResponse.cssPropertyRules ?? [],
+      functionRules: matchedStylesResponse.cssFunctionRules ?? [],
       cssPropertyRegistrations: matchedStylesResponse.cssPropertyRegistrations ?? [],
       fontPaletteValuesRule: matchedStylesResponse.cssFontPaletteValuesRule,
       activePositionFallbackIndex: matchedStylesResponse.activePositionFallbackIndex ?? -1,

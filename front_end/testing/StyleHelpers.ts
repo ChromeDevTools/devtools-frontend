@@ -133,6 +133,7 @@ export function getMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatche
     animationStylesPayload: [],
     transitionsStylePayload: null,
     inheritedAnimatedPayload: [],
+    functionRules: [],
     ...payload,
   });
 }

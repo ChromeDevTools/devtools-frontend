@@ -38,6 +38,7 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
       animationStylesPayload: [],
       transitionsStylePayload: null,
       inheritedAnimatedPayload: [],
+      functionRules: [],
     });
     return {
       stylesSidebarPane,

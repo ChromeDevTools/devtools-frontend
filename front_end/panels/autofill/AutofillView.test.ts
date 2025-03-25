@@ -99,7 +99,6 @@ describeWithMockConnection('AutofillView', () => {
     const maybeAutofillModel = target.model(SDK.AutofillModel.AutofillModel);
     assert.exists(maybeAutofillModel);
     autofillModel = maybeAutofillModel;
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.AUTOFILL_VIEW);
     showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
     AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
   });

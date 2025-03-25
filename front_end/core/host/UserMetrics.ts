@@ -974,7 +974,6 @@ export enum DevtoolsExperiments {
   'highlight-errors-elements-panel' = 73,
   'use-source-map-scopes' = 76,
   'network-panel-filter-bar-redesign' = 79,
-  'autofill-view' = 82,
   'timeline-show-postmessage-events' = 86,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,

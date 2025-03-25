@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Host from '../host/host.js';
@@ -142,8 +141,7 @@ export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxy
   }
 
   enable(): void {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.AUTOFILL_VIEW) || this.#enabled ||
-        Host.InspectorFrontendHost.isUnderTest()) {
+    if (this.#enabled || Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     void this.agent.invoke_enable();

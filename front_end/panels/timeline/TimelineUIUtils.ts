@@ -538,6 +538,17 @@ interface TimeRangeCategoryStats {
 const {SamplesIntegrator} = Trace.Helpers.SamplesIntegrator;
 
 export class TimelineUIUtils {
+  /**
+   * use getGetDebugModeEnabled() to query this variable.
+   */
+  static debugModeEnabled: boolean|undefined = undefined;
+  static getGetDebugModeEnabled(): boolean {
+    if (TimelineUIUtils.debugModeEnabled === undefined) {
+      TimelineUIUtils.debugModeEnabled =
+          Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
+    }
+    return TimelineUIUtils.debugModeEnabled;
+  }
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
     const functionName = maybeResolvedData?.name || frame.functionName;
@@ -578,8 +589,13 @@ export class TimelineUIUtils {
         tokens.push(url);
       }
     }
-    // This works for both legacy and new engine events.
-    appendObjectProperties(traceEvent.args as ContentObject, 2);
+    if (TimelineUIUtils.getGetDebugModeEnabled()) {
+      // When in debug mode append top level properties (like timestamp)
+      // and deeply nested properties.
+      appendObjectProperties(traceEvent as unknown as ContentObject, 4);
+    } else {
+      appendObjectProperties(traceEvent.args as ContentObject, 2);
+    }
     const result = tokens.join('|').match(regExp);
     return result ? result.length > 0 : false;
 

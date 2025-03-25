@@ -226,4 +226,86 @@ div {
 }`);
     });
   });
+
+  describe('stashes', () => {
+    it('can stash changes', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager();
+      const cssModel = createModel();
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {
+          color: 'blue',
+        },
+      });
+      assert(cssModel.setStyleSheetText.calledOnce);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      );
+      await changeManager.stashChanges();
+      assert(cssModel.setStyleSheetText.calledTwice);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '', true],
+      );
+    });
+
+    it('can restore changes', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager();
+      const cssModel = createModel();
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {
+          color: 'blue',
+        },
+      });
+      assert(cssModel.setStyleSheetText.calledOnce);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      );
+      await changeManager.stashChanges();
+      assert(cssModel.setStyleSheetText.calledTwice);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '', true],
+      );
+      await changeManager.popStashedChanges();
+      assert(cssModel.setStyleSheetText.calledThrice);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      );
+    });
+
+    it('can discard changes', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager();
+      const cssModel = createModel();
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {
+          color: 'blue',
+        },
+      });
+      assert(cssModel.setStyleSheetText.calledOnce);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      );
+      await changeManager.stashChanges();
+      assert(cssModel.setStyleSheetText.calledTwice);
+      assert.deepEqual(
+          cssModel.setStyleSheetText.lastCall.args,
+          ['1', '', true],
+      );
+      await changeManager.dropStashedChanges();
+      assert(cssModel.setStyleSheetText.calledTwice);
+    });
+  });
 });

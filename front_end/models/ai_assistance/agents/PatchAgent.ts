@@ -134,7 +134,10 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
             type: Host.AidaClient.ParametersTypes.ARRAY,
             description: 'List of file names from the project',
             nullable: false,
-            items: {type: Host.AidaClient.ParametersTypes.STRING, description: 'File name'}
+            items: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'File name',
+            }
           }
         },
       },

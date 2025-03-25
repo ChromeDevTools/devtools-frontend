@@ -260,6 +260,7 @@ export interface Props {
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   onTextInputChange: (input: string) => void;
+  changeManager: AiAssistanceModel.ChangeManager;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -272,12 +273,8 @@ export interface Props {
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
-  patchSuggestion?: string;
-  patchSuggestionLoading?: boolean;
-  projectName?: string;
   multimodalInputEnabled?: boolean;
   imageInput?: ImageInputData;
-  onApplyToWorkspace?: () => void;
   isTextInputDisabled: boolean;
   emptyStateSuggestions: string[];
   inputPlaceholder: Platform.UIString.LocalizedString;
@@ -472,6 +469,7 @@ export class ChatView extends HTMLElement {
             markdownRenderer: this.#markdownRenderer,
             conversationType: this.#props.conversationType,
             changeSummary: this.#props.changeSummary,
+            changeManager: this.#props.changeManager,
             onSuggestionClick: this.#handleSuggestionClick,
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
             onMessageContainerRef: this.#handleMessageContainerRef,
@@ -957,6 +955,7 @@ function renderMessages({
   userInfo,
   markdownRenderer,
   changeSummary,
+  changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
   onMessageContainerRef,
@@ -968,6 +967,7 @@ function renderMessages({
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
   changeSummary?: string,
+  changeManager?: AiAssistanceModel.ChangeManager,
                onSuggestionClick: (suggestion: string) => void,
                onFeedbackSubmit:
                    (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
@@ -989,9 +989,14 @@ function renderMessages({
           onFeedbackSubmit,
         }),
       )}
-      ${(changeSummary && !isLoading) ? html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
-        changeSummary,
-      })}></devtools-widget>` : Lit.nothing}
+      ${changeSummary && !isLoading
+        ? html`<devtools-widget
+            .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+              changeSummary,
+              changeManager,
+            })}
+          ></devtools-widget>`
+        : Lit.nothing}
     </div>
   `;
   // clang-format on
@@ -1298,8 +1303,8 @@ function renderChatInput({
       </div>
     </div>
   </form>`;
-    // clang-format on
-  }
+  // clang-format on
+}
 
 function renderAidaUnavailableContents(
     aidaAvailability:
@@ -1458,6 +1463,7 @@ function renderMainContents({
   markdownRenderer,
   conversationType,
   changeSummary,
+  changeManager,
   onSuggestionClick,
   onFeedbackSubmit,
   onMessageContainerRef,
@@ -1474,6 +1480,7 @@ function renderMainContents({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
+               changeManager: AiAssistanceModel.ChangeManager,
                onSuggestionClick: (suggestion: string) => void,
                onFeedbackSubmit:
                    (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
@@ -1500,9 +1507,11 @@ function renderMainContents({
       userInfo,
       markdownRenderer,
       changeSummary,
+      changeManager,
       onSuggestionClick,
       onFeedbackSubmit,
       onMessageContainerRef,
+
     });
   }
 

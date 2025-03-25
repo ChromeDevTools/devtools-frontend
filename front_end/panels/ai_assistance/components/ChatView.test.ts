@@ -23,6 +23,7 @@ describeWithEnvironment('ChatView', () => {
       onContextClick: noop,
       onNewConversation: noop,
       onTextInputChange: noop,
+      changeManager: new AiAssistanceModel.ChangeManager(),
       inspectElementToggled: false,
       state: AiAssistancePanel.State.CHAT_VIEW,
       conversationType: AiAssistanceModel.ConversationType.STYLING,

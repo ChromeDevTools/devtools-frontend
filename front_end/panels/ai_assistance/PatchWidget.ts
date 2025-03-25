@@ -152,7 +152,7 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
-
+  changeManager: AiAssistanceModel.ChangeManager|undefined;
   // Whether the user completed first run experience dialog or not.
   #aiPatchingFreCompletedSetting =
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
@@ -526,6 +526,7 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
     const {response, processedFiles} = await this.#applyPatch(changeSummary);
     if (response?.type === AiAssistanceModel.ResponseType.ANSWER) {
+      await this.changeManager?.stashChanges();
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
     } else if (
         response?.type === AiAssistanceModel.ResponseType.ERROR &&
@@ -548,6 +549,7 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
 
     this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     this.#patchSources = undefined;
+    void this.changeManager?.popStashedChanges();
     this.requestUpdate();
   }
 
@@ -558,6 +560,7 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     });
 
     this.#savedToDisk = true;
+    void this.changeManager?.dropStashedChanges();
     this.requestUpdate();
   }
 

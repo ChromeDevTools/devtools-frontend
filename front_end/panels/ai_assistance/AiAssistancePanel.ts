@@ -839,6 +839,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
           isTextInputEmpty: this.#isTextInputEmpty,
+          changeManager: this.#changeManager,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           onHistoryClick: this.#onHistoryClicked.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),

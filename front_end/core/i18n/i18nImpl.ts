@@ -59,7 +59,7 @@ function getLocaleFetchUrl(locale: Intl.UnicodeBCP47LocaleIdentifier, location: 
 
 /**
  * Fetches the locale data of the specified locale.
- * Callers have to ensure that `locale` is an officilly supported locale.
+ * Callers have to ensure that `locale` is an officially supported locale.
  * Depending whether a locale is present in `bundledLocales`, the data will be
  * fetched locally or remotely.
  */
@@ -67,7 +67,7 @@ export async function fetchAndRegisterLocaleData(
     locale: Intl.UnicodeBCP47LocaleIdentifier, location = self.location.toString()): Promise<void> {
   const localeDataTextPromise = fetch(getLocaleFetchUrl(locale, location)).then(result => result.json());
   const timeoutPromise =
-      new Promise((resolve, reject) => window.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
+      new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('timed out fetching locale')), 5000));
   const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
   i18nInstance.registerLocaleData(locale, localeData);
 }

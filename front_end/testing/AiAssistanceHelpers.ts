@@ -235,21 +235,21 @@ export async function createPatchWidget(options?: {
   await view.nextInput;
 
   return {
-    panel: widget,
+    widget,
     view,
     aidaClient,
   };
 }
 
 export async function createPatchWidgetWithDiffView() {
-  const {view, panel, aidaClient} =
+  const {view, widget, aidaClient} =
       await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
-  panel.changeSummary = 'body { background-color: red; }';
+  widget.changeSummary = 'body { background-color: red; }';
   view.input.onApplyToWorkspace();
   assert.strictEqual(
       (await view.nextInput).patchSuggestionState, AiAssistancePanel.PatchWidget.PatchSuggestionState.SUCCESS);
 
-  return {panel, view, aidaClient};
+  return {widget, view, aidaClient};
 }
 
 export function initializePersistenceImplForTests(): void {

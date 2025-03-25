@@ -14,28 +14,29 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import yargs from 'yargs';
 
-const yargsObject = yargs(process.argv.slice(2), process.cwd()).option('web-test-directory', {
-                          type: 'string',
-                          demandOption: true,
-                        })
-                        .option('import', {
-                          type: 'string',
-                          demandOption: true,
-                        })
-                        .option('from', {
-                          type: 'string',
-                          demandOption: true,
-                        })
-                        .option('to', {
-                          type: 'string',
-                          demandOption: true,
-                        })
-                        .strict()
-                        .argv;
+const yargsObject = yargs(process.argv.slice(2), process.cwd())
+  .option('web-test-directory', {
+    type: 'string',
+    demandOption: true,
+  })
+  .option('import', {
+    type: 'string',
+    demandOption: true,
+  })
+  .option('from', {
+    type: 'string',
+    demandOption: true,
+  })
+  .option('to', {
+    type: 'string',
+    demandOption: true,
+  })
+  .strict()
+  .parseSync();
 
 // `createPlainTextSearchRegex` is stolen from string-utilities.ts.
 const SPECIAL_REGEX_CHARACTERS = '^[]{}()\\.^$*+?|-,';
-const createPlainTextSearchRegex = function(query) {
+const createPlainTextSearchRegex = function (query) {
   // This should be kept the same as the one in StringUtil.cpp.
   let regex = '';
   for (let i = 0; i < query.length; ++i) {
@@ -56,7 +57,9 @@ async function findWebTests(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const pathPromises = entries.map(async entry => {
     const p = path.resolve(dir, entry.name);
-    if (entry.isDirectory() && entry.name !== 'resources') {return findWebTests(p);}
+    if (entry.isDirectory() && entry.name !== 'resources') {
+      return findWebTests(p);
+    }
     if (entry.isFile() && entry.name.endsWith('.js')) {
       return [p];
     }
@@ -71,7 +74,9 @@ async function findWebTests(dir) {
  * it to an existing one.
  */
 function addImportIfNecessary(content, importLine) {
-  if (content.includes(importLine)) {return content;}
+  if (content.includes(importLine)) {
+    return content;
+  }
 
   // Find where to insert `importLine`. We'll add it either to
   // an existing import * as block or start a new one below the import {TestRunner} block.
@@ -87,7 +92,9 @@ function addImportIfNecessary(content, importLine) {
     }
   }
 
-  const linesToInsert = onlyHasTestRunnerImports ? ['', importLine] : [importLine];
+  const linesToInsert = onlyHasTestRunnerImports
+    ? ['', importLine]
+    : [importLine];
   lines.splice(lastImportIndex + 1, 0, ...linesToInsert);
   return lines.join('\n');
 }
@@ -96,7 +103,7 @@ const fromRegex = createPlainTextSearchRegex(yargsObject.from);
 const webTestPaths = await findWebTests(yargsObject.webTestDirectory);
 
 for (const filePath of webTestPaths) {
-  const content = await fs.readFile(filePath, { encoding: 'utf-8'});
+  const content = await fs.readFile(filePath, { encoding: 'utf-8' });
 
   let replacedContent = content;
   if (yargsObject.from === yargsObject.to && !content.match(fromRegex)) {
@@ -105,11 +112,13 @@ for (const filePath of webTestPaths) {
     continue;
   } else if (yargsObject.from !== yargsObject.to) {
     replacedContent = content.replaceAll(fromRegex, yargsObject.to);
-    if (replacedContent === content) {continue;}
+    if (replacedContent === content) {
+      continue;
+    }
   }
 
   replacedContent = addImportIfNecessary(replacedContent, yargsObject.import);
-  await fs.writeFile(filePath, replacedContent, {encoding: 'utf-8'});
+  await fs.writeFile(filePath, replacedContent, { encoding: 'utf-8' });
 }
 
 const suggestedCommitMessage = `

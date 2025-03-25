@@ -11,6 +11,7 @@ import {downloadedChromeBinaryPath, rootPath} from './devtools_paths.js';
 
 // The list of features that are enabled by default.
 const ENABLE_FEATURES = [
+  'DevToolsAiGeneratedTimelineLabels',
   'DevToolsAutomaticFileSystems',
   'DevToolsCssValueTracing',
   'DevToolsFreeStyler:patching/true,user_tier/TESTERS',

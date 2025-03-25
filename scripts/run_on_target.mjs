@@ -17,10 +17,6 @@ const argv = yargs(process.argv.slice(2))
 
 const target = argv.target;
 let script = argv.script;
-
-delete argv.target;
-delete argv.script;
-
 let sourceRoot = path.dirname(path.dirname(path.resolve(argv['$0'])));
 
 // Ensure that we can find the node_modules folder even if the out folder is
@@ -79,7 +75,7 @@ if (!fs.existsSync(scriptPath)) {
 const { argv0 } = process;
 const { status } = childProcess.spawnSync(
   argv0,
-  [scriptPath, ...unparse(argv)],
+  [scriptPath, ...unparse({ _: argv._ })],
   { stdio: 'inherit', env },
 );
 process.exit(status);

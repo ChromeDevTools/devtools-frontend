@@ -34,7 +34,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import * as Adorners from '../components/adorners/adorners.js';
+import type * as Adorners from '../components/adorners/adorners.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import {type Action, Events as ActionEvents} from './ActionRegistration.js';
@@ -590,31 +590,21 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
   private text?: string;
   private adorner?: HTMLElement;
 
-  constructor(
-      title: string, glyphOrAdorner?: string|Adorners.Adorner.Adorner, text?: string, jslogContext?: string,
-      button?: Buttons.Button.Button) {
-    let adorner: Adorners.Adorner.Adorner|null = null;
+  constructor(title: string, glyph?: string, text?: string, jslogContext?: string, button?: Buttons.Button.Button) {
     if (!button) {
       button = new Buttons.Button.Button();
-      if (glyphOrAdorner instanceof Adorners.Adorner.Adorner) {
-        button.variant = Buttons.Button.Variant.ADORNER_ICON;
-        adorner = glyphOrAdorner;
-      } else if (typeof glyphOrAdorner === 'string' && !text) {
-        button.data = {variant: Buttons.Button.Variant.ICON, iconName: glyphOrAdorner};
+      if (glyph && !text) {
+        button.data = {variant: Buttons.Button.Variant.ICON, iconName: glyph};
       } else {
         button.variant = Buttons.Button.Variant.TEXT;
         button.reducedFocusRing = true;
-        if (glyphOrAdorner) {
-          button.iconName = glyphOrAdorner;
+        if (glyph) {
+          button.iconName = glyph;
         }
       }
     }
     super(button);
     this.button = button;
-    if (adorner) {
-      this.setAdorner(adorner);
-      this.button.prepend(adorner);
-    }
     button.classList.add('toolbar-button');
     this.element.addEventListener('click', this.clicked.bind(this), false);
     button.textContent = text || '';

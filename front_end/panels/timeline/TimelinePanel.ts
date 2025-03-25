@@ -61,7 +61,6 @@ import * as AnnotationHelpers from './AnnotationHelpers.js';
 import {TraceLoadEvent} from './BenchmarkEvents.js';
 import * as TimelineComponents from './components/components.js';
 import * as TimelineInsights from './components/insights/insights.js';
-import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
@@ -413,8 +412,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private controller!: TimelineController|null;
   private cpuProfiler!: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
-  private brickBreakerToolbarButton: UI.Toolbar.ToolbarButton;
-  private brickBreakerToolbarButtonAdded = false;
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton;
   private homeButton?: UI.Toolbar.ToolbarButton;
@@ -438,7 +435,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
-  readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
   #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
       i18nString(UIStrings.showSidebar),
       i18nString(UIStrings.hideSidebar),
@@ -507,10 +503,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       name: i18nString(UIStrings.fixMe),
       content: adornerContent,
     };
-    this.brickBreakerToolbarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.fixMe), adorner);
-    this.brickBreakerToolbarButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK, () => this.#onBrickBreakerEasterEggClick());
-
     this.#traceEngineModel = traceModel || this.#instantiateNewModel();
     this.#listenForProcessingProgress();
 
@@ -591,12 +583,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
 
     this.flameChart = new TimelineFlameChartView(this);
-    this.#onChartPlayableStateChangeBound = this.#onChartPlayableStateChange.bind(this);
     this.element.addEventListener(
         'toggle-popover', event => this.flameChart.togglePopover((event as CustomEvent).detail));
-
-    this.flameChart.getMainFlameChart().addEventListener(
-        PerfUI.FlameChart.Events.CHART_PLAYABLE_STATE_CHANGED, this.#onChartPlayableStateChangeBound, this);
 
     this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
     this.flameChart.getMainFlameChart().addEventListener(
@@ -929,10 +917,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // Whilst we don't reset this, we hide it, mainly so the user cannot
         // hit Ctrl/Cmd-F and try to search when it isn't visible.
         this.searchableViewInternal.hideWidget();
-
-        // Hide the brick-breaker easter egg
-        this.brickBreakerToolbarButtonAdded = false;
-        this.panelToolbar.removeToolbarItem(this.brickBreakerToolbarButton);
         return;
       }
 
@@ -1002,22 +986,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       throw new Error('No trace engine data found.');
     }
     return data;
-  }
-
-  #onChartPlayableStateChange(event: Common.EventTarget.EventTargetEvent<boolean, unknown>): void {
-    if (event.data) {
-      const dateObj = new Date();
-      const month = dateObj.getUTCMonth() + 1;
-      const day = dateObj.getUTCDate();
-      const isAprilFools = (month === 4 && (day === 1 || day === 2));  // Show only on April fools and the next day
-      if (isAprilFools && !this.brickBreakerToolbarButtonAdded && SHOULD_SHOW_EASTER_EGG) {
-        this.brickBreakerToolbarButtonAdded = true;
-        this.panelToolbar.appendToolbarItem(this.brickBreakerToolbarButton);
-      }
-    } else {
-      this.brickBreakerToolbarButtonAdded = false;
-      this.panelToolbar.removeToolbarItem(this.brickBreakerToolbarButton);
-    }
   }
 
   #onEntryHovered(dataProvider: TimelineFlameChartDataProvider, event: Common.EventTarget.EventTargetEvent<number>):
@@ -1896,13 +1864,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #hasActiveTrace(): boolean {
     return this.#viewMode.mode === 'VIEWING_TRACE';
-  }
-
-  #onBrickBreakerEasterEggClick(): void {
-    if (!this.#hasActiveTrace()) {
-      return;
-    }
-    this.flameChart.runBrickBreakerGame();
   }
 
   #applyActiveFilters(traceIsGeneric: boolean, exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null = null):

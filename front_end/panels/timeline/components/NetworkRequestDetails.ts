@@ -104,6 +104,18 @@ const UIStrings = {
    * @description Text to refer to a 3rd Party entity.
    */
   entity: '3rd party',
+  /**
+   * @description Label for a column containing the names of timings (performance metric) taken in the server side application.
+   */
+  serverTiming: 'Server timing',
+  /**
+   * @description Label for a column containing the values of timings (performance metric) taken in the server side application.
+   */
+  time: 'Time',
+  /**
+   * @description Label for a column containing the description of timings (performance metric) taken in the server side application.
+   */
+  description: 'Description',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -117,6 +129,7 @@ export class NetworkRequestDetails extends HTMLElement {
   #linkifier: LegacyComponents.Linkifier.Linkifier;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
+  #serverTimings: Platform.ServerTiming.ServerTiming[]|null = null;
   constructor(linkifier: LegacyComponents.Linkifier.Linkifier) {
     super();
     this.#linkifier = linkifier;
@@ -136,6 +149,20 @@ export class NetworkRequestDetails extends HTMLElement {
     this.#networkRequest = networkRequest;
     this.#maybeTarget = maybeTarget;
     this.#entityMapper = entityMapper;
+    this.#serverTimings = null;
+
+    for (const header of networkRequest.args.data.responseHeaders) {
+      const headerName = header.name.toLocaleLowerCase();
+      // Some popular hosting providers like vercel or render get rid of
+      // Server-Timing headers added by users, so as a workaround we
+      // also support server timing headers with the `-test` suffix
+      // while this feature is experimental, to enable easier trials.
+      if (headerName === 'server-timing' || headerName === 'server-timing-test') {
+        header.name = 'server-timing';
+        this.#serverTimings = SDK.ServerTiming.ServerTiming.parseHeaders([header]);
+        break;
+      }
+    }
     await this.#render();
   }
 
@@ -163,6 +190,24 @@ export class NetworkRequestDetails extends HTMLElement {
     `;
   }
 
+  #renderServerTimings(): Lit.LitTemplate[]|Lit.LitTemplate {
+    if (!this.#serverTimings) {
+      return Lit.nothing;
+    }
+    return html`
+      <div class="column-divider"></div>
+      <div class="network-request-details-col server-timings">
+          <div class="server-timing-column-header">${i18nString(UIStrings.serverTiming)}</div>
+          <div class="server-timing-column-header">${i18nString(UIStrings.time)}</div>
+          <div class="server-timing-column-header">${i18nString(UIStrings.description)}</div>
+        ${this.#serverTimings.map(timing => html`
+              <div class="value">${timing.metric || '-'}</div>
+              <div class="value">${timing.value || '-'}</div>
+              <div class="value">${timing.description || '-'}</div>
+          `)}
+      </div>
+    `;
+  }
   #renderURL(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
@@ -195,10 +240,10 @@ export class NetworkRequestDetails extends HTMLElement {
         </devtools-request-link-icon>
       `;
       // clang-format on
-      return html`<div class="network-request-details-row">${urlElement}</div>`;
+      return html`<div class="network-request-details-row network-request-url">${urlElement}</div>`;
     }
 
-    return html`<div class="network-request-details-row">${linkifiedURL}</div>`;
+    return html`<div class="network-request-details-row network-request-url">${linkifiedURL}</div>`;
   }
 
   #renderFromCache(): Lit.TemplateResult|null {
@@ -347,11 +392,13 @@ export class NetworkRequestDetails extends HTMLElement {
             ${this.#renderFromCache()}
             ${this.#renderThirdPartyEntity()}
           </div>
+          <div class="column-divider"></div>
           <div class="network-request-details-col">
             <div class="timing-rows">
               ${NetworkRequestTooltip.renderTimings(this.#networkRequest)}
             </div>
           </div>
+          ${this.#renderServerTimings()}
         </div>
         ${this.#renderInitiatedBy()}
       </div>

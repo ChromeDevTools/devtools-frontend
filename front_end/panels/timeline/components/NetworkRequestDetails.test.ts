@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {cleanTextContent} from '../../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
@@ -35,11 +36,11 @@ describeWithMockConnection('NetworkRequestDetails', () => {
     assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(191, 103, 255)');
 
     const rowData = getRowDataForDetailsElement(details.shadowRoot);
-    const durationInnerText = 'Duration12.58 ms' +
-        'Queuing and connecting1.83 ms' +
-        'Request sent and waiting4.80 ms' +
-        'Content downloading1.66 ms' +
-        'Waiting on main thread4.29 ms';
+    const durationInnerText = 'Duration 12.58 ms ' +
+        'Queuing and connecting 1.83 ms ' +
+        'Request sent and waiting 4.80 ms ' +
+        'Content downloading 1.66 ms ' +
+        'Waiting on main thread 4.29 ms';
     assert.deepEqual(
         rowData,
         [
@@ -47,7 +48,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
           {title: 'Request method', value: 'GET'},
           {title: 'Priority', value: 'Highest'},
           {title: 'MIME type', value: 'text/css'},
-          {title: 'Encoded data', value: ' (from cache)'},
+          {title: 'Encoded data', value: '(from cache)'},
           {title: 'Decoded body', value: '96 B'},
           {
             title: 'Blocking',
@@ -63,20 +64,87 @@ describeWithMockConnection('NetworkRequestDetails', () => {
         ],
     );
   });
+  it('renders the server timing details for a network event', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const networkRequests = parsedTrace.NetworkRequests.byTime;
+    const htmlRequest = networkRequests.find(request => {
+      return request.args.data.url === 'https://node-server-tan.vercel.app/waste-time';
+    });
+    if (!htmlRequest) {
+      throw new Error('Could not find expected network request.');
+    }
+
+    const details =
+        new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(new Components.Linkifier.Linkifier());
+    await details.setData(
+        parsedTrace, htmlRequest, Timeline.TargetForEvent.targetForEvent(parsedTrace, htmlRequest), entityMapper);
+
+    if (!details.shadowRoot) {
+      throw new Error('Could not find expected element to test.');
+    }
+
+    const titleSwatch: HTMLElement|null = details.shadowRoot.querySelector('.network-request-details-title div');
+    assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(76, 141, 246)');
+
+    const rowData = getServerTimingDataDetailsElement(details.shadowRoot);
+    assert.deepEqual(
+        rowData,
+        [
+          [
+            'Server timing',
+            'Time',
+            'Description',
+          ],
+          [
+            'response-end',
+            '-',
+            '-',
+          ],
+          [
+            'response-start',
+            '-',
+            '-',
+          ],
+          [
+            'Secondleveltask1',
+            '904.2932819999987',
+            'Description of second level task 1',
+          ],
+          [
+            'Topleveltask1',
+            '1004.2932819999987',
+            'Description of top level task 1',
+          ],
+          [
+            'Topleveltask2',
+            '1000.0925859999988',
+            '-',
+          ],
+        ],
+    );
+  });
 });
 
 function getRowDataForDetailsElement(details: ShadowRoot) {
   return Array.from(details.querySelectorAll<HTMLDivElement>('.network-request-details-row, .timing-rows')).map(row => {
     const title = row.querySelector<HTMLDivElement>('.title')?.innerText;
-    // The innerText in here will contain a `\n` and a few space for each child <div> tag, so just remove these empty
-    // characters for easier test.
-    const regExpForLineBreakAndFollowingSpaces = /\n[\s]+/g;
-    let value =
-        row.querySelector<HTMLDivElement>('.value')?.innerText.replaceAll(regExpForLineBreakAndFollowingSpaces, '');
-
+    let value = cleanTextContent(row.querySelector<HTMLDivElement>('.value')?.innerText || '');
     if (!title && !value) {
-      value = row.innerText.replaceAll(regExpForLineBreakAndFollowingSpaces, '');
+      value = cleanTextContent(row.innerText || '');
     }
     return {title, value};
   });
+}
+
+function getServerTimingDataDetailsElement(details: ShadowRoot) {
+  return Array.from(details.querySelectorAll<HTMLDivElement>('.server-timings > .value, .server-timing-column-header'))
+      .map(row => cleanTextContent(row.innerText))
+      .reduce((result, current, i) => {
+        // group items by rows of three items
+        const rowNumber = Math.floor(i / 3);
+        const row: string[] = result[rowNumber] = result[rowNumber] || [];
+        row.push(current);
+        return result;
+      }, []);
 }

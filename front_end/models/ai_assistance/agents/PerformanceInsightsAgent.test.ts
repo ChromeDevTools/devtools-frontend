@@ -181,9 +181,9 @@ Help me understand?`;
       const firstQuery = await agent.enhanceQuery('Q1', context1);
       const secondQuery = await agent.enhanceQuery('Q2', context1);
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
-      assert.include(firstQuery, '## Insight title: LCP by phase');
-      assert.notInclude(secondQuery, '## Insight title');
-      assert.include(thirdQuery, '## Insight title: INP by phase');
+      assert.include(firstQuery, '## Insight Title: LCP by phase');
+      assert.notInclude(secondQuery, '## Insight Title');
+      assert.include(thirdQuery, '## Insight Title: INP by phase');
     });
   });
 

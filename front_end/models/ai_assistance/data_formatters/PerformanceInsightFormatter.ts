@@ -93,16 +93,16 @@ export class PerformanceInsightFormatter {
 
   formatInsight(): string {
     const {title} = this.#insight;
-    return `## Insight title: ${title}
+    return `## Insight Title: ${title}
 
-## Insight Description:
+## Insight Summary:
 ${this.#description()}
 
-## External resources:
-${this.#links()}
+## Detailed analysis:
+${this.#details()}
 
-## Insight details:
-${this.#details()}`;
+## External resources:
+${this.#links()}`;
   }
 
   #details(): string {
@@ -246,8 +246,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
         return `- https://web.dev/articles/inp
 - https://web.dev/explore/how-to-optimize-inp
 - https://web.dev/articles/optimize-long-tasks
-- https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing
-`;
+- https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing`;
       case 'LCPDiscovery':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -300,8 +299,7 @@ For a given slow interaction, we can break it down into 3 phases:
 2. Processing duration: the time it takes for the event callbacks to run to completion.
 3. Presentation delay: the time it takes for the browser to present the next frame which contains the visual result of the interaction.
 
-The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
-`;
+The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.`;
       case 'LCPDiscovery':
         return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
 1. Did the resource have \`fetchpriority=high\` applied?

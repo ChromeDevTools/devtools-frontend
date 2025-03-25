@@ -353,8 +353,6 @@ export class CookieControlsView extends UI.Widget.VBox {
     this.checkGracePeriodActive().catch(error => {
       console.error(error);
     });
-
-    UI.InspectorView.InspectorView.instance().removeDebuggedTabReloadRequiredWarning();
   }
 
   async checkGracePeriodActive(event?: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): Promise<void> {

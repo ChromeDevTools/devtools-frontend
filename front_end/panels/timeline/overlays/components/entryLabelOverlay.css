@@ -73,6 +73,10 @@
   &.disabled {
     background: var(--sys-color-surface5);
   }
+
+  &:hover {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
 .generate-label-text {

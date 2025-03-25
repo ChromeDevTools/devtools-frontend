@@ -569,15 +569,6 @@ export class EntryLabelOverlay extends HTMLElement {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
-    /**
-     * Right now if the user "retries" the AI label generation the result will
-     * be almost identical because we don't change the input data or prompt. So
-     * we only show the generate button if the label is empty.
-     */
-    if (this.#label.length > 0) {
-      return Lit.nothing;
-    }
-
     // clang-format off
     return html`
       <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->
@@ -652,8 +643,14 @@ export class EntryLabelOverlay extends HTMLElement {
     const hasAiExperiment = Boolean(Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled);
     const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
+    /**
+     * Right now if the user "retries" the AI label generation the result will
+     * be almost identical because we don't change the input data or prompt. So
+     * we only show the generate button if the label is empty.
+     */
+    const labelIsEmpty = this.#label?.length <= 0;
 
-    const doNotShowAIButton = !hasAiExperiment || aiDisabledByEnterprisePolicy;
+    const doNotShowAIButton = !hasAiExperiment || aiDisabledByEnterprisePolicy || !labelIsEmpty;
     // clang-format off
     Lit.render(
         html`
@@ -667,7 +664,12 @@ export class EntryLabelOverlay extends HTMLElement {
               @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
               @keydown=${this.#handleLabelInputKeyDown}
               @paste=${this.#handleLabelInputPaste}
-              @keyup=${this.#handleLabelInputKeyUp}
+              @keyup=${() => {
+                this.#handleLabelInputKeyUp();
+                // Rerender the label component when the label text changes because we need to
+                // make sure the 'auto annotation' button is only shown when the label is empty.
+                this.#render();
+                }}
               contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
               jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
             ></span>

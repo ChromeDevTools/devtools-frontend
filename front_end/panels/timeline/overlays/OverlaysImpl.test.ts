@@ -649,7 +649,7 @@ describeWithEnvironment('Overlays', () => {
       );
     });
 
-    it('Shows disabled `generate ai label` button if the user is not logged into their google account or is under 18',
+    it('Does not show `generate ai label` button if the label is not empty',
        async function() {
          updateHostConfig({
            aidaAvailability: {
@@ -665,6 +665,48 @@ describeWithEnvironment('Overlays', () => {
          const {elementsWrapper, inputField} =
              await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'entry label');
          assert.strictEqual(inputField?.innerText, 'entry label');
+
+         const aiLabelButtonWrapper =
+             elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
+         // Button should not exist
+         assert.isNotOk(aiLabelButtonWrapper);
+       });
+
+    it('Shows the `generate ai label` button if the label is empty', async function() {
+      updateHostConfig({
+        aidaAvailability: {
+          enabled: false,
+          blockedByAge: true,
+          blockedByEnterprisePolicy: false,
+          blockedByGeo: false,
+          disallowLogging: true,
+          enterprisePolicyValue: 1,
+        },
+      });
+
+      const {elementsWrapper, inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, '');
+      assert.strictEqual(inputField?.innerText, '');
+
+      const aiLabelButtonWrapper =
+          elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
+      assert.isOk(aiLabelButtonWrapper);
+    });
+
+    it('Shows disabled `generate ai label` button if the user is not logged into their google account or is under 18',
+       async function() {
+         updateHostConfig({
+           aidaAvailability: {
+             enabled: false,
+             blockedByAge: true,
+             blockedByEnterprisePolicy: false,
+             blockedByGeo: false,
+             disallowLogging: true,
+             enterprisePolicyValue: 1,
+           },
+         });
+
+         const {elementsWrapper, inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, '');
+         assert.strictEqual(inputField?.innerText, '');
 
          const aiLabelButtonWrapper =
              elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
@@ -690,9 +732,8 @@ describeWithEnvironment('Overlays', () => {
         },
       });
 
-      const {elementsWrapper, inputField} =
-          await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'entry label');
-      assert.strictEqual(inputField?.innerText, 'entry label');
+      const {elementsWrapper, inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, '');
+      assert.strictEqual(inputField?.innerText, '');
 
       const aiLabelButtonWrapper =
           elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;

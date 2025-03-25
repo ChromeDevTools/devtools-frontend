@@ -36,6 +36,8 @@
   align-items: center;
   gap: var(--sys-size-4);
   pointer-events: auto;
+  transition:
+    width var(--sys-motion-duration-long2) var(--sys-motion-easing-emphasized);
 
   * {
     /* Make up for the padding in a hovered button to only see the pen icon when it is not hovered */
@@ -48,8 +50,6 @@
   width: fit-content;
   height: var(--sys-size-13);
   padding: var(--sys-size-3) var(--sys-size-5);
-  transition:
-    all var(--sys-motion-duration-long2) var(--sys-motion-easing-emphasized);
   overflow: hidden;
   top: -4px;
 

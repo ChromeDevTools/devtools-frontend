@@ -41,6 +41,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       headless: !TestConfig.debug || TestConfig.headless,
       executablePath: TestConfig.chromeBinary,
       defaultViewport: null,
+      dumpio: true,
       args,
       ignoreDefaultArgs: ['--hide-scrollbars'],
     });

@@ -7326,16 +7326,6 @@ export const NativeFunctions = [
     receivers: ["AITranslatorFactory"]
   },
   {
-    name: "detect",
-    signatures: [["input","?options"]],
-    receivers: ["AILanguageDetector"]
-  },
-  {
-    name: "detect",
-    signatures: [["image"]],
-    receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
-  },
-  {
     name: "registerAnimator",
     signatures: [["name","animatorCtor"]]
   },
@@ -8469,6 +8459,10 @@ export const NativeFunctions = [
   {
     name: "BarcodeDetector",
     signatures: [["?barcodeDetectorOptions"]]
+  },
+  {
+    name: "detect",
+    signatures: [["image"]]
   },
   {
     name: "FaceDetector",

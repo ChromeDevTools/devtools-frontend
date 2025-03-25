@@ -71,9 +71,9 @@ export const UIStrings = {
    */
   GetUserMediaInsecureOrigin: "`getUserMedia()` no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details.",
   /**
-   * @description This warning occurs when a site uses <h1> inside <section>. It means the behavior may change in a future Chrome release, when these special rules are removed.
+   * @description This warning occurs when a site uses <h1> inside <article>, <aside>, <nav>, or <section>. It means the behavior (font size) may change in a future Chrome release, when some special rules are removed from the browser.
    */
-  H1UserAgentFontSizeInSection: "The website has an <h1> tag within an <article>, <aside>, <nav>, or <section>, and relies on deprecated UA stylesheet rules for the resulting font size. See the second block of 'x h1' styles in https://html.spec.whatwg.org/multipage/rendering.html#sections-and-headings. These special rules are deprecated and will be removed. See https://github.com/whatwg/html/issues/7867.",
+  H1UserAgentFontSizeInSection: "Found an <h1> tag within an <article>, <aside>, <nav>, or <section> which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
   /**
    * @description A deprecation warning shown to developers in the DevTools Issues tab when code tries to use the deprecated hostCandidate field, guiding developers to use the equivalent information in the .address and .port fields instead.
    */

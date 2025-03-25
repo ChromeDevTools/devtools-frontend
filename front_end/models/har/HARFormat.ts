@@ -254,6 +254,12 @@ class HARResponse extends HARBase {
     this.custom.set('fetchedViaServiceWorker', Boolean(data['_fetchedViaServiceWorker']));
     this.custom.set('responseCacheStorageCacheName', HARBase.optionalString(data['_responseCacheStorageCacheName']));
     this.custom.set('serviceWorkerResponseSource', HARBase.optionalString(data['_serviceWorkerResponseSource']));
+    this.custom.set(
+        'serviceWorkerRouterRuleIdMatched', HARBase.optionalNumber(data['_serviceWorkerRouterRuleIdMatched']));
+    this.custom.set(
+        'serviceWorkerRouterMatchedSourceType', HARBase.optionalString(data['_serviceWorkerRouterMatchedSourceType']));
+    this.custom.set(
+        'serviceWorkerRouterActualSourceType', HARBase.optionalString(data['_serviceWorkerRouterActualSourceType']));
   }
 }
 
@@ -380,6 +386,8 @@ export class HARTimings extends HARBase {
     this.custom.set('workerReady', HARBase.optionalNumber(data['_workerReady']));
     this.custom.set('workerFetchStart', HARBase.optionalNumber(data['_workerFetchStart']));
     this.custom.set('workerRespondWithSettled', HARBase.optionalNumber(data['_workerRespondWithSettled']));
+    this.custom.set('workerRouterEvaluationStart', HARBase.optionalNumber(data['_workerRouterEvaluationStart']));
+    this.custom.set('workerCacheLookupStart', HARBase.optionalNumber(data['_workerCacheLookupStart']));
   }
 }
 

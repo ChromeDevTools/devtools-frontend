@@ -172,6 +172,20 @@ export class Importer {
       request.setResponseCacheStorageCacheName(responseCacheStorageCacheName);
     }
 
+    const ruleIdMatched = entry.response.customAsNumber('serviceWorkerRouterRuleIdMatched');
+    // The router rule ID is 1-indexed. We add router related optional fields
+    // only when there is a matched router rule.
+    if (ruleIdMatched !== undefined) {
+      const routerInfo: Protocol.Network.ServiceWorkerRouterInfo = {
+        ruleIdMatched,
+        matchedSourceType: entry.response.customAsString('serviceWorkerRouterMatchedSourceType') as
+            Protocol.Network.ServiceWorkerRouterSource,
+        actualSourceType: entry.response.customAsString('serviceWorkerRouterActualSourceType') as
+            Protocol.Network.ServiceWorkerRouterSource,
+      };
+      request.serviceWorkerRouterInfo = routerInfo;
+    }
+
     request.finished = true;
   }
 
@@ -250,6 +264,8 @@ export class Importer {
       workerReady: timings.customAsNumber('workerReady') || -1,
       workerFetchStart: timings.customAsNumber('workerFetchStart') || -1,
       workerRespondWithSettled: timings.customAsNumber('workerRespondWithSettled') || -1,
+      workerRouterEvaluationStart: timings.customAsNumber('workerRouterEvaluationStart'),
+      workerCacheLookupStart: timings.customAsNumber('workerCacheLookupStart'),
 
       sendStart: timings.send >= 0 ? lastEntry : -1,
       sendEnd: accumulateTime(timings.send),

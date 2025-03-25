@@ -151,6 +151,13 @@ describe('HAR', () => {
           request.setResponseCacheStorageCacheName(cacheName);
           request.setServiceWorkerResponseSource(Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
 
+          const serviceWorkerRouterInfo: Protocol.Network.ServiceWorkerRouterInfo = {
+            ruleIdMatched: 1,
+            matchedSourceType: Protocol.Network.ServiceWorkerRouterSource.Cache,
+            actualSourceType: Protocol.Network.ServiceWorkerRouterSource.Network,
+          };
+          request.serviceWorkerRouterInfo = serviceWorkerRouterInfo;
+
           const timingInfo: Protocol.Network.ResourceTiming = {
             requestTime: 500,
             proxyStart: 0,
@@ -171,6 +178,8 @@ describe('HAR', () => {
             pushEnd: 0,
             receiveHeadersStart: 0,
             receiveHeadersEnd: 0,
+            workerRouterEvaluationStart: 200,
+            workerCacheLookupStart: 100,
           };
           request.timing = timingInfo;
 
@@ -180,11 +189,18 @@ describe('HAR', () => {
           assert.strictEqual(entry.response._responseCacheStorageCacheName, cacheName);
           assert.strictEqual(
               entry.response._serviceWorkerResponseSource, Protocol.Network.ServiceWorkerResponseSource.CacheStorage);
+          assert.strictEqual(entry.response._serviceWorkerRouterRuleIdMatched, serviceWorkerRouterInfo.ruleIdMatched);
+          assert.strictEqual(
+              entry.response._serviceWorkerRouterMatchedSourceType, serviceWorkerRouterInfo.matchedSourceType);
+          assert.strictEqual(
+              entry.response._serviceWorkerRouterActualSourceType, serviceWorkerRouterInfo.actualSourceType);
 
           assert.strictEqual(entry.timings._workerStart, timingInfo.workerStart);
           assert.strictEqual(entry.timings._workerReady, timingInfo.workerReady);
           assert.strictEqual(entry.timings._workerFetchStart, timingInfo.workerFetchStart);
           assert.strictEqual(entry.timings._workerRespondWithSettled, timingInfo.workerRespondWithSettled);
+          assert.strictEqual(entry.timings._workerRouterEvaluationStart, timingInfo.workerRouterEvaluationStart);
+          assert.strictEqual(entry.timings._workerCacheLookupStart, timingInfo.workerCacheLookupStart);
         });
       });
     });

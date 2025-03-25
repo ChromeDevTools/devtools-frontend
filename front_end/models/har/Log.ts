@@ -235,6 +235,7 @@ export class Entry {
 
   private buildResponse(): Response {
     const headersText = this.request.responseHeadersText;
+
     return {
       status: this.request.statusCode,
       statusText: this.request.statusText,
@@ -250,6 +251,9 @@ export class Entry {
       _fetchedViaServiceWorker: this.request.fetchedViaServiceWorker,
       _responseCacheStorageCacheName: this.request.getResponseCacheStorageCacheName(),
       _serviceWorkerResponseSource: this.request.serviceWorkerResponseSource(),
+      _serviceWorkerRouterRuleIdMatched: this.request.serviceWorkerRouterInfo?.ruleIdMatched ?? undefined,
+      _serviceWorkerRouterMatchedSourceType: this.request.serviceWorkerRouterInfo?.matchedSourceType ?? undefined,
+      _serviceWorkerRouterActualSourceType: this.request.serviceWorkerRouterInfo?.actualSourceType ?? undefined,
     };
   }
 
@@ -335,6 +339,8 @@ export class Entry {
       result._workerReady = timing.workerReady;
       result._workerFetchStart = timing.workerFetchStart;
       result._workerRespondWithSettled = timing.workerRespondWithSettled;
+      result._workerRouterEvaluationStart = timing.workerRouterEvaluationStart;
+      result._workerCacheLookupStart = timing.workerCacheLookupStart;
     } else if (this.request.responseReceivedTime === -1) {
       // Means that we don't have any more details after blocked, so attribute all to blocked.
       result.blocked = Entry.toMilliseconds(this.request.endTime - issueTime);
@@ -463,6 +469,8 @@ export interface Timing {
   _workerReady?: number;
   _workerFetchStart?: number;
   _workerRespondWithSettled?: number;
+  _workerRouterEvaluationStart?: number;
+  _workerCacheLookupStart?: number;
 }
 
 export interface Parameter {
@@ -505,6 +513,9 @@ export interface Response {
   _fetchedViaServiceWorker: boolean;
   _responseCacheStorageCacheName: string|undefined;
   _serviceWorkerResponseSource: Protocol.Network.ServiceWorkerResponseSource|undefined;
+  _serviceWorkerRouterRuleIdMatched: number|undefined;
+  _serviceWorkerRouterMatchedSourceType: string|undefined;
+  _serviceWorkerRouterActualSourceType: string|undefined;
 }
 
 export interface EntryDTO {

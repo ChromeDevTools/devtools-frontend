@@ -9,14 +9,26 @@
  */
 'use strict';
 
+/**
+ * @param {Node} node
+ * @param {string|Array<string>} name
+ * @return {boolean}
+ */
 function isIdentifier(node, name) {
   return node.type === 'Identifier' && (Array.isArray(name) ? name.includes(node.name) : node.name === name);
 }
 
+/**
+ * @param {Node} node
+ * @param {function(Node): boolean} objectPredicate
+ * @param {function(Node): boolean} propertyPredicate
+ */
 function isMemberExpression(node, objectPredicate, propertyPredicate) {
-  return node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
+  return node.type === 'MemberExpression' && objectPredicate(/** @type {Node} */ (node.object)) &&
+      propertyPredicate(/** @type {Node} */ (node.property));
 }
 
+/** @param {Node} node */
 function getEnclosingExpression(node) {
   while (node.parent) {
     if (node.parent.type === 'BlockStatement') {
@@ -27,6 +39,7 @@ function getEnclosingExpression(node) {
   return null;
 }
 
+/** @param {Node} node */
 function getEnclosingClassDeclaration(node) {
   let parent = node.parent;
   while (parent && parent.type !== 'ClassDeclaration') {
@@ -35,6 +48,7 @@ function getEnclosingClassDeclaration(node) {
   return parent;
 }
 
+/** @param {string} outputString */
 function attributeValue(outputString) {
   if (outputString.startsWith('${') && outputString.endsWith('}')) {
     return outputString;
@@ -50,9 +64,10 @@ function attributeValue(outputString) {
 class DomFragment {
   /** @type {string|undefined} */ tagName;
   /** @type {Node[]} */ classList = [];
-  /** @type {{key: string, value: Node}[]} */ attributes = [];
+  /** @type {{key: string, value: Node|string}[]} */ attributes = [];
   /** @type {{key: string, value: Node}[]} */ style = [];
   /** @type {{key: string, value: Node}[]} */ eventListeners = [];
+  /** @type {{key: string, value: Node|string}[]} */ bindings = [];
   /** @type {Node} */ textContent;
   /** @type {DomFragment[]} */ children = [];
   /** @type {DomFragment|undefined} */ parent;
@@ -65,9 +80,18 @@ class DomFragment {
     if (this.expression && !this.tagName) {
       return [`\n${' '.repeat(indent)}`, '${', this.expression, '}'];
     }
-    function toOutputString(node) {
-      if (node.type === 'Literal') {
-        return node.value;
+
+    /**
+     * @param {Node|string} node
+     * @param {boolean} quoteLiterals
+     * @return {string}
+     */
+    function toOutputString(node, quoteLiterals = false) {
+      if (typeof node === 'string') {
+        return node;
+      }
+      if (node.type === 'Literal' && !quoteLiterals) {
+        return node.value.toString();
       }
       const text = sourceCode.getText(node);
       if (node.type === 'TemplateLiteral') {
@@ -97,13 +121,16 @@ class DomFragment {
       lineLength += this.tagName.length + 1;
     }
     if (this.classList.length) {
-      appendExpression(`class="${this.classList.map(toOutputString).join(' ')}"`);
+      appendExpression(`class="${this.classList.map(c => toOutputString(c)).join(' ')}"`);
     }
     for (const attribute of this.attributes || []) {
       appendExpression(`${attribute.key}=${attributeValue(toOutputString(attribute.value))}`);
     }
     for (const eventListener of this.eventListeners || []) {
       appendExpression(`@${eventListener.key}=${attributeValue(toOutputString(eventListener.value))}`);
+    }
+    for (const binding of this.bindings || []) {
+      appendExpression(`.${binding.key}=${toOutputString(binding.value, /* quoteLiterals=*/ true)}`);
     }
     if (this.style.length) {
       const style = this.style.map(s => `${s.key}:${toOutputString(s.value)}`).join('; ');
@@ -228,7 +255,7 @@ module.exports = {
     function processReference(reference, domFragment) {
       const parent = reference.parent;
       const isAccessed = parent.type === 'MemberExpression' && parent.object === reference;
-      const property = isAccessed ? parent.property : null;
+      const property = isAccessed ? /** @type {Node} */ (parent.property) : null;
       const grandParent = parent.parent;
       const isPropertyAssignment =
           isAccessed && grandParent.type === 'AssignmentExpression' && grandParent.left === parent;
@@ -258,20 +285,18 @@ module.exports = {
           if (property.type !== 'Property') {
             continue;
           }
-          if (isIdentifier(property.key, 'name')) {
+          const key = /** @type {Node} */ (property.key);
+          if (isIdentifier(key, 'name')) {
             domFragment.attributes.push({
               key: 'aria-label',
               value: /** @type {Node} */ (property.value),
             });
           }
-          if (isIdentifier(property.key, 'jslogContext')) {
-            domFragment.attributes.push({
-              key: 'jslog',
-              value: /** @type {Node} */ (
-                  {type: 'Literal', value: '${VisualLogging.adorner(' + sourceCode.getText(property.value) + ')}'})
-            });
+          if (isIdentifier(key, 'jslogContext')) {
+            domFragment.attributes.push(
+                {key: 'jslog', value: '${VisualLogging.adorner(' + sourceCode.getText(property.value) + ')}'});
           }
-          if (isIdentifier(property.key, 'content')) {
+          if (isIdentifier(key, 'content')) {
             const childFragment = getOrCreateDomFragment(/** @type {Node} */ (property.value));
             childFragment.parent = domFragment;
             domFragment.children.push(childFragment);
@@ -294,7 +319,8 @@ module.exports = {
         childFragment.parent = domFragment;
         domFragment.children.push(childFragment);
       } else if (
-          isPropertyMethodCall && isIdentifier(property, 'classList') && isIdentifier(grandParent.property, 'add')) {
+          isPropertyMethodCall && isIdentifier(property, 'classList') &&
+          isIdentifier(/** @type {Node} */ (grandParent.property), 'add')) {
         domFragment.classList.push(propertyMethodArgument);
       } else if (isSubpropertyAssignment && isIdentifier(property, 'style')) {
         const property = subproperty.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
@@ -405,7 +431,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           const type = isIdentifier(node.callee.property, 'ToolbarFilter') ? 'filter' : 'text';
           domFragment.attributes.push({
             key: 'type',
-            value: /** @type {Node} */ ({type: 'Literal', value: type}),
+            value: type,
           });
           const args = [...node.arguments];
           const placeholder = args.shift();
@@ -449,13 +475,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           if (completions && !isIdentifier(completions, 'undefined')) {
             domFragment.attributes.push({
               key: 'list',
-              value: /** @type {Node} */ ({type: 'Literal', value: 'completions'}),
+              value: 'completions',
             });
             const dataList = getOrCreateDomFragment(completions);
             dataList.tagName = 'datalist';
             dataList.attributes.push({
               key: 'id',
-              value: /** @type {Node} */ ({type: 'Literal', value: 'completions'}),
+              value: 'completions',
             });
             dataList.textContent = completions;
             domFragment.children.push(dataList);
@@ -476,6 +502,41 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 n => isIdentifier(n, 'Adorner'))) {
           const domFragment = getOrCreateDomFragment(node);
           domFragment.tagName = 'devtools-adorner';
+        }
+        if (isMemberExpression(
+                node.callee, n => isMemberExpression(n, n => isIdentifier(n, 'UI'), n => isIdentifier(n, 'Toolbar')),
+                n => isIdentifier(n, 'ToolbarButton'))) {
+          const domFragment = getOrCreateDomFragment(node);
+          domFragment.tagName = 'devtools-button';
+          const title = node.arguments[0];
+          domFragment.bindings.push({
+            key: 'variant',
+            value: '${Buttons.Button.Variant.TOOLBAR}',
+          });
+          if (title && !isIdentifier(title, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'title',
+              value: title,
+            });
+          }
+          const glyph = node.arguments[1];
+          if (glyph && !isIdentifier(glyph, 'undefined')) {
+            domFragment.bindings.push({
+              key: 'iconName',
+              value: glyph,
+            });
+          }
+          const text = node.arguments[2];
+          if (text && !isIdentifier(text, 'undefined')) {
+            domFragment.textContent = text;
+          }
+          const jslogContext = node.arguments[3];
+          if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
+            domFragment.bindings.push({
+              key: 'jslogContext',
+              value: jslogContext,
+            });
+          }
         }
       },
       'Program:exit'() {

@@ -280,5 +280,37 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    const filterInput = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
+    toolbar.appendToolbarItem(filterInput);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar>
+        <devtools-button title=\${i18nString(UIStrings.editName)}
+            .variant=\${Buttons.Button.Variant.TOOLBAR} .iconName=\${'edit'}
+            .jslogContext=\${'edit-name'}></devtools-button>
+      </devtools-toolbar>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

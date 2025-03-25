@@ -1,7 +1,7 @@
 Name: Lighthouse
 Short Name: lighthouse
-Version: 12.4.0
-Revision: 37284c955e53bfff15ceabe6ae163c166bde3a6d
+Version: 12.5.0
+Revision: 0e8d2ddf6e2a7060ec9ed3b56798953a165404cc
 URL: https://github.com/GoogleChrome/lighthouse
 License: Apache License 2.0
 License File: LICENSE

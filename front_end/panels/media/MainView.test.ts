@@ -107,4 +107,24 @@ describeWithMockConnection('MediaMainView', () => {
     mainView.detach();
   });
 
+  it('shows a placeholder if all players are hidden after already selecting a player and showing its details', () => {
+    const model = target.model(Media.MediaModel.MediaModel);
+    assert.exists(model);
+
+    // Show main view, which will register event listeners on the model.
+    const mainView = new Media.MainView.MainView();
+    mainView.markAsRoot();
+    mainView.show(document.body);
+
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
+    mainView.renderMainPanel(PLAYER_ID);
+    assert.isNull(mainView.contentElement.querySelector('.empty-state'));
+    mainView.markPlayerForDeletion(PLAYER_ID);
+
+    assert.deepEqual(mainView.contentElement.querySelector('.empty-state-header')?.textContent, 'No media player');
+    assert.deepEqual(
+        mainView.contentElement.querySelector('.empty-state-description span')?.textContent,
+        'On this page you can view and export media player details.');
+    mainView.detach();
+  });
 });

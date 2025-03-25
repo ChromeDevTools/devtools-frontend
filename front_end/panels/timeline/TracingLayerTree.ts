@@ -10,12 +10,11 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as Trace from '../../models/trace/trace.js';
 
 export class TracingLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
-  private tileById: Map<string, TracingLayerTile>;
+  private tileById = new Map<string, TracingLayerTile>();
   private paintProfilerModel: SDK.PaintProfiler.PaintProfilerModel|null;
 
   constructor(target: SDK.Target.Target|null) {
     super(target);
-    this.tileById = new Map();
     this.paintProfilerModel = target?.model(SDK.PaintProfiler.PaintProfilerModel) ?? null;
   }
 

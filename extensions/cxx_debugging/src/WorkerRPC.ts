@@ -80,13 +80,12 @@ export class WorkerRPC<LocalInterface extends Record<string, any>, RemoteInterfa
   private readonly channel: Channel<LocalInterface, RemoteInterface>;
   private readonly localHandler: LocalInterface;
   private readonly requests = new Map<number, {resolve: (params: unknown) => void, reject: (message: Error) => void}>();
-  private readonly semaphore: Int32Array;
+  private readonly semaphore = new Int32Array(new SharedArrayBuffer(4));
 
   constructor(channel: Channel<LocalInterface, RemoteInterface>, localHandler: LocalInterface) {
     this.channel = channel;
     this.channel.onmessage = this.onmessage.bind(this);
     this.localHandler = localHandler;
-    this.semaphore = new Int32Array(new SharedArrayBuffer(4));
   }
 
   sendMessage<Method extends keyof RemoteInterface>(method: Method, ...params: Parameters<RemoteInterface[Method]>):

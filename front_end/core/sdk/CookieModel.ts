@@ -15,18 +15,14 @@ import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 
 export class CookieModel extends SDKModel<EventTypes> {
-  readonly #blockedCookies: Map<string, Cookie>;
-  readonly #cookieToBlockedReasons: Map<Cookie, BlockedReason[]>;
-  readonly #refreshThrottler: Common.Throttler.Throttler;
-  #cookies: Map<string, Cookie[]>;
+  readonly #blockedCookies = new Map<string, Cookie>();
+  readonly #cookieToBlockedReasons = new Map<Cookie, BlockedReason[]>();
+  readonly #refreshThrottler = new Common.Throttler.Throttler(300);
+  #cookies = new Map<string, Cookie[]>();
 
   constructor(target: Target) {
     super(target);
 
-    this.#refreshThrottler = new Common.Throttler.Throttler(300);
-    this.#blockedCookies = new Map();
-    this.#cookieToBlockedReasons = new Map();
-    this.#cookies = new Map();
     target.model(ResourceTreeModel)
         ?.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     target.model(NetworkManager)

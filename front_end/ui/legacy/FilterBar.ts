@@ -316,9 +316,9 @@ customElements.define('devtools-named-bit-set-filter', NamedBitSetFilterUIElemen
 
 export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filtersElement: HTMLDivElement;
-  private readonly typeFilterElementTypeNames: WeakMap<HTMLElement, string>;
-  private allowedTypes: Set<string>;
-  private readonly typeFilterElements: HTMLElement[];
+  private readonly typeFilterElementTypeNames = new WeakMap<HTMLElement, string>();
+  private allowedTypes = new Set<string>();
+  private readonly typeFilterElements: HTMLElement[] = [];
   private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>|undefined;
 
   constructor(items: Item[], setting?: Common.Settings.Setting<{[key: string]: boolean}>) {
@@ -332,9 +332,6 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
                       PH1: KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta.value),
                     }));
 
-    this.typeFilterElementTypeNames = new WeakMap();
-    this.allowedTypes = new Set();
-    this.typeFilterElements = [];
     this.addBit(NamedBitSetFilterUI.ALL_TYPES, i18nString(UIStrings.allStrings), NamedBitSetFilterUI.ALL_TYPES);
     this.typeFilterElements[0].tabIndex = 0;
     this.filtersElement.createChild('div', 'filter-bitset-filter-divider');

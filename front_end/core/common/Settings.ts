@@ -52,12 +52,12 @@ import {
 let settingsInstance: Settings|undefined;
 
 export class Settings {
-  readonly #sessionStorage: SettingsStorage;
-  settingNameSet: Set<string>;
-  orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
-  #eventSupport: ObjectWrapper<GenericEvents>;
-  #registry: Map<string, Setting<unknown>>;
-  readonly moduleSettings: Map<string, Setting<unknown>>;
+  readonly #sessionStorage = new SettingsStorage({});
+  settingNameSet = new Set<string>();
+  orderValuesBySettingCategory = new Map<SettingCategory, Set<number>>();
+  #eventSupport = new ObjectWrapper<GenericEvents>();
+  #registry = new Map<string, Setting<unknown>>();
+  readonly moduleSettings = new Map<string, Setting<unknown>>();
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
 
   private constructor(
@@ -66,15 +66,6 @@ export class Settings {
       readonly localStorage: SettingsStorage,
       logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
   ) {
-    this.#sessionStorage = new SettingsStorage({});
-
-    this.settingNameSet = new Set();
-
-    this.orderValuesBySettingCategory = new Map();
-
-    this.#eventSupport = new ObjectWrapper<GenericEvents>();
-    this.#registry = new Map();
-    this.moduleSettings = new Map();
     this.#logSettingAccess = logSettingAccess;
 
     for (const registration of this.getRegisteredSettings()) {

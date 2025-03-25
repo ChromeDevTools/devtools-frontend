@@ -55,16 +55,16 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   readonly storageAgent: ProtocolProxyApi.StorageApi;
   readonly #securityOriginManager: SecurityOriginManager;
   readonly #storageKeyManager: StorageKeyManager;
-  readonly framesInternal: Map<string, ResourceTreeFrame>;
-  #cachedResourcesProcessed: boolean;
+  readonly framesInternal = new Map<string, ResourceTreeFrame>();
+  #cachedResourcesProcessed = false;
   #pendingReloadOptions: {
     ignoreCache: (boolean|undefined),
     scriptToEvaluateOnLoad: (string|undefined),
-  }|null;
-  #reloadSuspensionCount: number;
-  isInterstitialShowing: boolean;
-  mainFrame: ResourceTreeFrame|null;
-  #pendingBackForwardCacheNotUsedEvents: Set<Protocol.Page.BackForwardCacheNotUsedEvent>;
+  }|null = null;
+  #reloadSuspensionCount = 0;
+  isInterstitialShowing = false;
+  mainFrame: ResourceTreeFrame|null = null;
+  #pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
 
   constructor(target: Target) {
     super(target);
@@ -79,15 +79,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     void this.agent.invoke_enable({});
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.#storageKeyManager = (target.model(StorageKeyManager) as StorageKeyManager);
-    this.#pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
-
-    this.framesInternal = new Map();
-    this.#cachedResourcesProcessed = false;
-    this.#pendingReloadOptions = null;
-    this.#reloadSuspensionCount = 0;
-    this.isInterstitialShowing = false;
-    this.mainFrame = null;
 
     void this.#buildResourceTree();
   }
@@ -660,7 +652,7 @@ export class ResourceTreeFrame {
   #model: ResourceTreeModel;
   #sameTargetParentFrameInternal: ResourceTreeFrame|null;
   readonly #idInternal: Protocol.Page.FrameId;
-  crossTargetParentFrameId: string|null;
+  crossTargetParentFrameId: string|null = null;
   #loaderIdInternal: Protocol.Network.LoaderId;
   #nameInternal: string|null|undefined;
   #urlInternal: Platform.DevToolsPath.UrlString;
@@ -674,9 +666,9 @@ export class ResourceTreeFrame {
   #crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType|null;
   #gatedAPIFeatures: Protocol.Page.GatedAPIFeatures[]|null;
   #creationStackTrace: Protocol.Runtime.StackTrace|null;
-  #creationStackTraceTarget: Target|null;
-  #childFramesInternal: Set<ResourceTreeFrame>;
-  resourcesMap: Map<Platform.DevToolsPath.UrlString, Resource>;
+  #creationStackTraceTarget: Target|null = null;
+  #childFramesInternal = new Set<ResourceTreeFrame>();
+  resourcesMap = new Map<Platform.DevToolsPath.UrlString, Resource>();
   backForwardCacheDetails: {
     restoredFromCache: boolean|undefined,
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
@@ -693,7 +685,6 @@ export class ResourceTreeFrame {
     this.#model = model;
     this.#sameTargetParentFrameInternal = parentFrame;
     this.#idInternal = frameId;
-    this.crossTargetParentFrameId = null;
 
     this.#loaderIdInternal = payload?.loaderId ?? '' as Protocol.Network.LoaderId;
     this.#nameInternal = payload?.name;
@@ -710,11 +701,6 @@ export class ResourceTreeFrame {
     this.#gatedAPIFeatures = payload?.gatedAPIFeatures ?? null;
 
     this.#creationStackTrace = creationStackTrace;
-    this.#creationStackTraceTarget = null;
-
-    this.#childFramesInternal = new Set();
-
-    this.resourcesMap = new Map();
 
     if (this.#sameTargetParentFrameInternal) {
       this.#sameTargetParentFrameInternal.#childFramesInternal.add(this);

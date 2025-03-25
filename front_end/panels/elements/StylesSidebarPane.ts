@@ -172,34 +172,36 @@ const HIGHLIGHTABLE_PROPERTIES = [
 
 export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof ElementsSidebarPane>(
     ElementsSidebarPane) {
-  private matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null;
-  private currentToolbarPane: UI.Widget.Widget|null;
-  private animatedToolbarPane: UI.Widget.Widget|null;
-  private pendingWidget: UI.Widget.Widget|null;
-  private pendingWidgetToggle: UI.Toolbar.ToolbarToggle|null;
-  private toolbar: UI.Toolbar.Toolbar|null;
+  private matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null = null;
+  private currentToolbarPane: UI.Widget.Widget|null = null;
+  private animatedToolbarPane: UI.Widget.Widget|null = null;
+  private pendingWidget: UI.Widget.Widget|null = null;
+  private pendingWidgetToggle: UI.Toolbar.ToolbarToggle|null = null;
+  private toolbar: UI.Toolbar.Toolbar|null = null;
   private toolbarPaneElement: HTMLElement;
-  private lastFilterChange: number|null;
-  private visibleSections: number|null;
+  private lastFilterChange: number|null = null;
+  private visibleSections: number|null = null;
   private noMatchesElement: HTMLElement;
   private sectionsContainer: HTMLElement;
-  sectionByElement: WeakMap<Node, StylePropertiesSection>;
-  private readonly swatchPopoverHelperInternal: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
-  readonly linkifier: Components.Linkifier.Linkifier;
+  sectionByElement = new WeakMap<Node, StylePropertiesSection>();
+  private readonly swatchPopoverHelperInternal = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
+  readonly linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
+
   private readonly decorator: StylePropertyHighlighter;
-  private lastRevealedProperty: SDK.CSSProperty.CSSProperty|null;
-  private userOperation: boolean;
-  isEditingStyle: boolean;
-  private filterRegexInternal: RegExp|null;
-  private isActivePropertyHighlighted: boolean;
-  private initialUpdateCompleted: boolean;
-  hasMatchedStyles: boolean;
-  private sectionBlocks: SectionBlock[];
-  private idleCallbackManager: IdleCallbackManager|null;
-  private needsForceUpdate: boolean;
-  private readonly resizeThrottler: Common.Throttler.Throttler;
-  private readonly resetUpdateThrottler: Common.Throttler.Throttler;
-  private readonly computedStyleUpdateThrottler: Common.Throttler.Throttler;
+
+  private lastRevealedProperty: SDK.CSSProperty.CSSProperty|null = null;
+  private userOperation = false;
+  isEditingStyle = false;
+  private filterRegexInternal: RegExp|null = null;
+  private isActivePropertyHighlighted = false;
+  private initialUpdateCompleted = false;
+  hasMatchedStyles = false;
+  private sectionBlocks: SectionBlock[] = [];
+  private idleCallbackManager: IdleCallbackManager|null = null;
+  private needsForceUpdate = false;
+  private readonly resizeThrottler = new Common.Throttler.Throttler(100);
+  private readonly resetUpdateThrottler = new Common.Throttler.Throttler(500);
+  private readonly computedStyleUpdateThrottler = new Common.Throttler.Throttler(500);
 
   private scrollerElement?: Element;
   private readonly boundOnScroll: (event: Event) => void;
@@ -207,7 +209,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private readonly imagePreviewPopover: ImagePreviewPopover;
   #webCustomData?: WebCustomData;
 
-  activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
+  activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
   #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
   #copyChangesButton?: UI.Toolbar.ToolbarButton;
   #updateAbortController?: AbortController;
@@ -218,50 +220,22 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
-
-    this.currentToolbarPane = null;
-    this.animatedToolbarPane = null;
-    this.pendingWidget = null;
-    this.pendingWidgetToggle = null;
-    this.toolbar = null;
-    this.lastFilterChange = null;
-    this.visibleSections = null;
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
-
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
-
     this.sectionsContainer = this.contentElement.createChild('div');
     UI.ARIAUtils.markAsList(this.sectionsContainer);
     this.sectionsContainer.addEventListener('keydown', this.sectionsContainerKeyDown.bind(this), false);
     this.sectionsContainer.addEventListener('focusin', this.sectionsContainerFocusChanged.bind(this), false);
     this.sectionsContainer.addEventListener('focusout', this.sectionsContainerFocusChanged.bind(this), false);
-    this.sectionByElement = new WeakMap();
 
-    this.swatchPopoverHelperInternal = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
     this.swatchPopoverHelperInternal.addEventListener(
         InlineEditor.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER, this.hideAllPopovers, this);
-    this.linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
     this.decorator = new StylePropertyHighlighter(this);
-    this.matchedStyles = null;
-    this.lastRevealedProperty = null;
-    this.userOperation = false;
-    this.isEditingStyle = false;
-    this.filterRegexInternal = null;
-    this.isActivePropertyHighlighted = false;
-    this.initialUpdateCompleted = false;
-    this.hasMatchedStyles = false;
-
     this.contentElement.classList.add('styles-pane');
 
-    this.sectionBlocks = [];
-    this.idleCallbackManager = null;
-    this.needsForceUpdate = false;
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this.clipboardCopy.bind(this));
-    this.resizeThrottler = new Common.Throttler.Throttler(100);
-    this.resetUpdateThrottler = new Common.Throttler.Throttler(500);
-    this.computedStyleUpdateThrottler = new Common.Throttler.Throttler(500);
     if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover')) {
       this.#webCustomData = WebCustomData.create();
     }
@@ -274,8 +248,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
       return null;
     }, () => this.node());
-
-    this.activeCSSAngle = null;
   }
 
   get webCustomData(): WebCustomData|undefined {

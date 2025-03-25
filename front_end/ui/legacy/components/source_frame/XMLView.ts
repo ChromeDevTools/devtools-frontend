@@ -20,21 +20,18 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/XMLV
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searchable {
-  private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  private searchableView!: UI.SearchableView.SearchableView|null;
-  private currentSearchFocusIndex: number;
-  private currentSearchTreeElements: XMLViewNode[];
-  private searchConfig!: UI.SearchableView.SearchConfig|null;
+  private readonly treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+  private searchableView: UI.SearchableView.SearchableView|null = null;
+  private currentSearchFocusIndex = 0;
+  private currentSearchTreeElements: XMLViewNode[] = [];
+  private searchConfig: UI.SearchableView.SearchConfig|null = null;
 
   constructor(parsedXML: Document) {
     super(true);
     this.registerRequiredCSS(xmlViewStyles);
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
-    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.registerRequiredCSS(xmlTreeStyles);
     this.contentElement.appendChild(this.treeOutline.element);
-    this.currentSearchFocusIndex = 0;
-    this.currentSearchTreeElements = [];
 
     XMLViewNode.populate(this.treeOutline, parsedXML, this);
     const firstChild = this.treeOutline.firstChild();

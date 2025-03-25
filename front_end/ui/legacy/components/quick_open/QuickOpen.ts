@@ -19,21 +19,16 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const history: string[] = [];
 
 export class QuickOpenImpl {
-  private prefix: string|null;
-  private readonly prefixes: string[];
-  private providers: Map<string, {
+  private prefix: string|null = null;
+  private readonly prefixes: string[] = [];
+  private providers = new Map<string, {
     provider: () => Promise<Provider>,
     titlePrefix: (() => string),
     titleSuggestion?: (() => string),
-  }>;
-  private filteredListWidget: FilteredListWidget|null;
+  }>();
+  private filteredListWidget: FilteredListWidget|null = null;
 
   constructor() {
-    this.prefix = null;
-    this.prefixes = [];
-    this.providers = new Map();
-    this.filteredListWidget = null;
-
     getRegisteredProviders().forEach(this.addProvider.bind(this));
     this.prefixes.sort((a, b) => b.length - a.length);
   }

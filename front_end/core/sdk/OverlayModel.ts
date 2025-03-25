@@ -73,8 +73,8 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   readonly #domModel: DOMModel;
   overlayAgent: ProtocolProxyApi.OverlayApi;
   readonly #debuggerModel: DebuggerModel|null;
-  #inspectModeEnabledInternal: boolean;
-  #hideHighlightTimeout: number|null;
+  #inspectModeEnabledInternal = false;
+  #hideHighlightTimeout: number|null = null;
   #defaultHighlighter: Highlighter;
   #highlighter: Highlighter;
   #showPaintRectsSetting: Common.Settings.Setting<boolean>;
@@ -83,11 +83,11 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   #showDebugBordersSetting: Common.Settings.Setting<boolean>;
   #showFPSCounterSetting: Common.Settings.Setting<boolean>;
   #showScrollBottleneckRectsSetting: Common.Settings.Setting<boolean>;
-  #registeredListeners: Common.EventTarget.EventDescriptor[];
-  #showViewportSizeOnResize: boolean;
+  #registeredListeners: Common.EventTarget.EventDescriptor[] = [];
+  #showViewportSizeOnResize = true;
   #persistentHighlighter: OverlayPersistentHighlighter|null;
   readonly #sourceOrderHighlighter: SourceOrderHighlighter;
-  #sourceOrderModeActiveInternal: boolean;
+  #sourceOrderModeActiveInternal = false;
   #windowControls: WindowControls;
 
   constructor(target: Target) {
@@ -111,9 +111,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
           DebuggerModelEvents.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
     }
 
-    this.#inspectModeEnabledInternal = false;
-
-    this.#hideHighlightTimeout = null;
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
 
@@ -126,8 +123,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#showScrollBottleneckRectsSetting =
         Common.Settings.Settings.instance().moduleSetting<boolean>('show-scroll-bottleneck-rects');
 
-    this.#registeredListeners = [];
-    this.#showViewportSizeOnResize = true;
     if (!target.suspended()) {
       void this.overlayAgent.invoke_enable();
       void this.wireAgentToSettings();
@@ -165,7 +160,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     });
 
     this.#sourceOrderHighlighter = new SourceOrderHighlighter(this);
-    this.#sourceOrderModeActiveInternal = false;
     this.#windowControls = new WindowControls(this.#domModel.cssModel());
   }
 

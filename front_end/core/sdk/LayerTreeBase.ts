@@ -87,10 +87,10 @@ export class StickyPositionConstraint {
 export class LayerTreeBase {
   readonly #targetInternal: Target|null;
   #domModel: DOMModel|null;
-  layersById: Map<string|number, Layer>;
-  #rootInternal: Layer|null;
-  #contentRootInternal: Layer|null;
-  readonly #backendNodeIdToNodeInternal: Map<Protocol.DOM.BackendNodeId, DOMNode|null>;
+  layersById = new Map<string|number, Layer>();
+  #rootInternal: Layer|null = null;
+  #contentRootInternal: Layer|null = null;
+  readonly #backendNodeIdToNodeInternal = new Map<Protocol.DOM.BackendNodeId, DOMNode|null>();
   #viewportSizeInternal?: {
     width: number,
     height: number,
@@ -99,10 +99,6 @@ export class LayerTreeBase {
   constructor(target: Target|null) {
     this.#targetInternal = target;
     this.#domModel = target ? target.model(DOMModel) : null;
-    this.layersById = new Map();
-    this.#rootInternal = null;
-    this.#contentRootInternal = null;
-    this.#backendNodeIdToNodeInternal = new Map();
   }
 
   target(): Target|null {

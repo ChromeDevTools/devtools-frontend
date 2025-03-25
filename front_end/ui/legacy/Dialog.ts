@@ -40,13 +40,13 @@ import type {SplitWidget} from './SplitWidget.js';
 import {WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
-  private tabIndexBehavior: OutsideTabIndexBehavior;
-  private tabIndexMap: Map<HTMLElement, number>;
-  private focusRestorer: WidgetFocusRestorer|null;
-  private closeOnEscape: boolean;
-  private targetDocument!: Document|null;
+  private tabIndexBehavior = OutsideTabIndexBehavior.DISABLE_ALL_OUTSIDE_TAB_INDEX;
+  private tabIndexMap = new Map<HTMLElement, number>();
+  private focusRestorer: WidgetFocusRestorer|null = null;
+  private closeOnEscape = true;
+  private targetDocument: Document|null = null;
   private readonly targetDocumentKeyDownHandler: (event: Event) => void;
-  private escapeKeyCallback: ((arg0: Event) => void)|null;
+  private escapeKeyCallback: ((arg0: Event) => void)|null = null;
 
   constructor(jslogContext?: string) {
     super();
@@ -64,12 +64,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
       event.consume(true);
     });
     ARIAUtils.markAsModalDialog(this.contentElement);
-    this.tabIndexBehavior = OutsideTabIndexBehavior.DISABLE_ALL_OUTSIDE_TAB_INDEX;
-    this.tabIndexMap = new Map();
-    this.focusRestorer = null;
-    this.closeOnEscape = true;
     this.targetDocumentKeyDownHandler = this.onKeyDown.bind(this);
-    this.escapeKeyCallback = null;
   }
 
   static hasInstance(): boolean {

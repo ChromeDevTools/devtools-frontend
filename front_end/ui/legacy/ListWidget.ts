@@ -314,13 +314,13 @@ export class Editor<T> {
   private commitButton: Buttons.Button.Button;
   private readonly cancelButton: Buttons.Button.Button;
   private errorMessageContainer: HTMLElement;
-  private readonly controls: EditorControl[];
-  private readonly controlByName: Map<string, EditorControl>;
-  private readonly validators: Array<(arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult>;
-  private commit: (() => void)|null;
-  private cancel: (() => void)|null;
-  private item: T|null;
-  private index: number;
+  private readonly controls: EditorControl[] = [];
+  private readonly controlByName = new Map<string, EditorControl>();
+  private readonly validators: Array<(arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult> = [];
+  private commit: (() => void)|null = null;
+  private cancel: (() => void)|null = null;
+  private item: T|null = null;
+  private index = -1;
 
   constructor() {
     this.element = document.createElement('div');
@@ -363,15 +363,6 @@ export class Editor<T> {
         callback();
       }
     }
-
-    this.controls = [];
-    this.controlByName = new Map();
-    this.validators = [];
-
-    this.commit = null;
-    this.cancel = null;
-    this.item = null;
-    this.index = -1;
   }
 
   contentElement(): Element {

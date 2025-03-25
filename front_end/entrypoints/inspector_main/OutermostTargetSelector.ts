@@ -30,12 +30,11 @@ let outermostTargetSelectorInstance: OutermostTargetSelector;
 
 export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.SoftDropDown.Delegate<SDK.Target.Target>,
                                                 UI.Toolbar.Provider {
-  readonly listItems: UI.ListModel.ListModel<SDK.Target.Target>;
+  readonly listItems = new UI.ListModel.ListModel<SDK.Target.Target>();
   readonly #dropDown: UI.SoftDropDown.SoftDropDown<SDK.Target.Target>;
   readonly #toolbarItem: UI.Toolbar.ToolbarItem;
 
   constructor() {
-    this.listItems = new UI.ListModel.ListModel();
     this.#dropDown = new UI.SoftDropDown.SoftDropDown(this.listItems, this);
     this.#dropDown.setRowHeight(36);
     this.#toolbarItem = new UI.Toolbar.ToolbarItem(this.#dropDown.element);

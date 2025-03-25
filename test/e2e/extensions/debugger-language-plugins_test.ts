@@ -268,12 +268,9 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluateHandle(() => {
       class VariableListingPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private modules = new Map<
+            string,
+            {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -332,13 +329,10 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class InliningPlugin {
-        private modules: Map<string, {
+        private modules = new Map<string, {
           rawLocationRange?: Chrome.DevTools.RawLocationRange,
           sourceLocations?: Chrome.DevTools.SourceLocation[],
-        }>;
-        constructor() {
-          this.modules = new Map();
-        }
+        }>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -440,13 +434,10 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class InliningPlugin {
-        private modules: Map<string, {
+        private modules = new Map<string, {
           rawLocationRange?: Chrome.DevTools.RawLocationRange,
           sourceLocations?: Chrome.DevTools.SourceLocation[],
-        }>;
-        constructor() {
-          this.modules = new Map();
-        }
+        }>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -510,14 +501,10 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
-        private modules: Map<string, {
+        private modules = new Map<string, {
           rawLocationRange?: Chrome.DevTools.RawLocationRange,
           sourceLocations?: Chrome.DevTools.SourceLocation[],
-        }>;
-        constructor() {
-          this.modules = new Map();
-        }
-
+        }>();
         async addRawModule() {
           return {missingSymbolFiles: ['test.wasm']};
         }
@@ -555,13 +542,10 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
-        private modules: Map<string, {
+        private modules = new Map<string, {
           rawLocationRange?: Chrome.DevTools.RawLocationRange,
           sourceLocations?: Chrome.DevTools.SourceLocation[],
-        }>;
-        constructor() {
-          this.modules = new Map();
-        }
+        }>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -681,12 +665,9 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class EvalPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private modules = new Map<
+            string,
+            {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -807,12 +788,9 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class VariableListingPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private modules = new Map<
+            string,
+            {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;
@@ -891,12 +869,9 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class FormattingErrorsPlugin {
-        private modules:
-            Map<string,
-                {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>;
-        constructor() {
-          this.modules = new Map();
-        }
+        private modules = new Map<
+            string,
+            {rawLocationRange?: Chrome.DevTools.RawLocationRange, sourceLocation?: Chrome.DevTools.SourceLocation}>();
 
         async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('unreachable.ll', rawModule.url || symbols).href;

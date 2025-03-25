@@ -81,11 +81,11 @@ interface LoadQueueEntry {
  * resources were loaded, and whether there was a load error.
  */
 export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #currentlyLoading: number;
-  #currentlyLoadingPerTarget: Map<Protocol.Target.TargetID|'main', number>;
+  #currentlyLoading = 0;
+  #currentlyLoadingPerTarget = new Map<Protocol.Target.TargetID|'main', number>();
   readonly #maxConcurrentLoads: number;
-  #pageResources: Map<string, PageResource>;
-  #queuedLoads: LoadQueueEntry[];
+  #pageResources = new Map<string, PageResource>();
+  #queuedLoads: LoadQueueEntry[] = [];
   readonly #loadOverride: ((arg0: string) => Promise<{
                              success: boolean,
                              content: string,
@@ -99,11 +99,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
                      }>)|null,
       maxConcurrentLoads: number) {
     super();
-    this.#currentlyLoading = 0;
-    this.#currentlyLoadingPerTarget = new Map();
     this.#maxConcurrentLoads = maxConcurrentLoads;
-    this.#pageResources = new Map();
-    this.#queuedLoads = [];
     TargetManager.instance().addModelListener(
         ResourceTreeModel, ResourceTreeModelEvents.PrimaryPageChanged, this.onPrimaryPageChanged, this);
     this.#loadOverride = loadOverride;

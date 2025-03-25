@@ -1699,59 +1699,38 @@ export interface DataGridData {
 }
 
 export class DataGridNode<T> {
-  elementInternal: HTMLElement|null;
-  expandedInternal: boolean;
-  private selectedInternal: boolean;
-  private dirty: boolean;
-  private inactive: boolean;
-  private highlighted: boolean;
-  private depthInternal!: number|undefined;
-  revealedInternal!: boolean|undefined;
-  protected attachedInternal: boolean;
+  elementInternal: HTMLElement|null = null;
+  expandedInternal = false;
+  private selectedInternal = false;
+  private dirty = false;
+  private inactive = false;
+  private highlighted = false;
+  private depthInternal: number|undefined;
+  revealedInternal: boolean|undefined;
+  protected attachedInternal = false;
   private savedPosition: {
     parent: DataGridNode<T>,
     index: number,
-  }|null;
-  private shouldRefreshChildrenInternal: boolean;
+  }|null = null;
+  private shouldRefreshChildrenInternal = true;
+
+  children: Array<DataGridNode<T>> = [];
+  dataGrid: DataGridImpl<T>|null = null;
+  parent: DataGridNode<T>|null = null;
+  previousSibling: DataGridNode<T>|null = null;
+  nextSibling: DataGridNode<T>|null = null;
+  #disclosureToggleHitBoxWidth = 20;
+  selectable = true;
+  isRoot = false;
+  nodeAccessibleText = '';
+  cellAccessibleTextMap = new Map<string, string>();
+  isCreationNode = false;
   private dataInternal: DataGridData;
   private hasChildrenInternal: boolean;
-  children: Array<DataGridNode<T>>;
-  dataGrid: DataGridImpl<T>|null;
-  parent: DataGridNode<T>|null;
-  previousSibling: DataGridNode<T>|null;
-  nextSibling: DataGridNode<T>|null;
-  #disclosureToggleHitBoxWidth = 20;
-  selectable: boolean;
-  isRoot: boolean;
-  nodeAccessibleText: string;
-  cellAccessibleTextMap: Map<string, string>;
-  isCreationNode: boolean;
 
   constructor(data?: DataGridData|null, hasChildren?: boolean) {
-    this.elementInternal = null;
-    this.expandedInternal = false;
-    this.selectedInternal = false;
-    this.dirty = false;
-    this.inactive = false;
-    this.highlighted = false;
-    this.attachedInternal = false;
-    this.savedPosition = null;
-    this.shouldRefreshChildrenInternal = true;
     this.dataInternal = data || {};
     this.hasChildrenInternal = hasChildren || false;
-    this.children = [];
-    this.dataGrid = null;
-    this.parent = null;
-    this.previousSibling = null;
-    this.nextSibling = null;
-
-    this.selectable = true;
-
-    this.isRoot = false;
-
-    this.nodeAccessibleText = '';
-    this.cellAccessibleTextMap = new Map();
-    this.isCreationNode = false;
   }
 
   element(): Element {

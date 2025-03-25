@@ -97,26 +97,17 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ConsoleModel extends SDKModel<EventTypes> {
-  #messagesInternal: ConsoleMessage[];
-  readonly #messagesByTimestamp: Platform.MapUtilities.Multimap<number, ConsoleMessage>;
-  readonly #messageByExceptionId: Map<RuntimeModel, Map<number, ConsoleMessage>>;
-  #warningsInternal: number;
-  #errorsInternal: number;
-  #violationsInternal: number;
-  #pageLoadSequenceNumber: number;
-  readonly #targetListeners: WeakMap<Target, Common.EventTarget.EventDescriptor[]>;
+  #messagesInternal: ConsoleMessage[] = [];
+  readonly #messagesByTimestamp = new Platform.MapUtilities.Multimap<number, ConsoleMessage>();
+  readonly #messageByExceptionId = new Map<RuntimeModel, Map<number, ConsoleMessage>>();
+  #warningsInternal = 0;
+  #errorsInternal = 0;
+  #violationsInternal = 0;
+  #pageLoadSequenceNumber = 0;
+  readonly #targetListeners = new WeakMap<Target, Common.EventTarget.EventDescriptor[]>();
 
   constructor(target: Target) {
     super(target);
-
-    this.#messagesInternal = [];
-    this.#messagesByTimestamp = new Platform.MapUtilities.Multimap();
-    this.#messageByExceptionId = new Map();
-    this.#warningsInternal = 0;
-    this.#errorsInternal = 0;
-    this.#violationsInternal = 0;
-    this.#pageLoadSequenceNumber = 0;
-    this.#targetListeners = new WeakMap();
 
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {

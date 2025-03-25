@@ -18,9 +18,9 @@ export class CSSStyleDeclaration {
   styleSheetId?: Protocol.CSS.StyleSheetId;
   range!: TextUtils.TextRange.TextRange|null;
   cssText?: string;
-  #shorthandValues!: Map<string, string>;
-  #shorthandIsImportant!: Set<string>;
-  #activePropertyMap!: Map<string, CSSProperty>;
+  #shorthandValues = new Map<string, string>();
+  #shorthandIsImportant = new Set<string>();
+  #activePropertyMap = new Map<string, CSSProperty>();
   #leadingPropertiesInternal!: CSSProperty[]|null;
   type: Type;
   // For CSSStyles coming from animations,

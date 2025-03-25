@@ -888,17 +888,17 @@ export abstract class HeapSnapshot {
   containmentEdges: Platform.TypedArrayUtilities.BigUint32Array;
   readonly #metaNode: HeapSnapshotMetaInfo;
   readonly #rawSamples: number[];
-  #samples: HeapSnapshotModel.HeapSnapshotModel.Samples|null;
+  #samples: HeapSnapshotModel.HeapSnapshotModel.Samples|null = null;
   strings: string[];
   readonly #locations: number[];
   readonly #progress: HeapSnapshotProgress;
-  readonly #noDistance: number;
-  rootNodeIndexInternal: number;
+  readonly #noDistance = -5;
+  rootNodeIndexInternal = 0;
   #snapshotDiffs: {
     [x: string]: {
       [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
     },
-  };
+  } = {};
   #aggregatesForDiffInternal?: {
     interfaceDefinitions: string,
     aggregates: {
@@ -909,10 +909,10 @@ export abstract class HeapSnapshot {
     [x: string]: {
       [x: string]: AggregatedInfo,
     },
-  };
+  } = {};
   #aggregatesSortedFlags: {
     [x: string]: boolean,
-  };
+  } = {};
   profile: Profile;
   nodeTypeOffset!: number;
   nodeNameOffset!: number;
@@ -964,12 +964,12 @@ export abstract class HeapSnapshot {
   #allocationProfile!: AllocationProfile;
   nodeDetachednessAndClassIndexOffset!: number;
   #locationMap!: Map<number, HeapSnapshotModel.HeapSnapshotModel.Location>;
-  #ignoredNodesInRetainersView: Set<number>;
-  #ignoredEdgesInRetainersView: Set<number>;
+  #ignoredNodesInRetainersView = new Set<number>();
+  #ignoredEdgesInRetainersView = new Set<number>();
   #nodeDistancesForRetainersView: Int32Array|undefined;
   #edgeNamesThatAreNotWeakMaps: Platform.TypedArrayUtilities.BitVector;
   detachednessAndClassIndexArray?: Uint32Array;
-  #interfaceNames: Map<string, number>;
+  #interfaceNames = new Map<string, number>();
   #interfaceDefinitions?: InterfaceDefinition[];
 
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
@@ -977,27 +977,16 @@ export abstract class HeapSnapshot {
     this.containmentEdges = profile.edges;
     this.#metaNode = profile.snapshot.meta;
     this.#rawSamples = profile.samples;
-    this.#samples = null;
     this.strings = profile.strings;
     this.#locations = profile.locations;
     this.#progress = progress;
 
-    this.#noDistance = -5;
-    this.rootNodeIndexInternal = 0;
     if (profile.snapshot.root_index) {
       this.rootNodeIndexInternal = profile.snapshot.root_index;
     }
 
-    this.#snapshotDiffs = {};
-
-    this.#aggregates = {};
-
-    this.#aggregatesSortedFlags = {};
     this.profile = profile;
-    this.#ignoredNodesInRetainersView = new Set();
-    this.#ignoredEdgesInRetainersView = new Set();
     this.#edgeNamesThatAreNotWeakMaps = Platform.TypedArrayUtilities.createBitVector(this.strings.length);
-    this.#interfaceNames = new Map();
   }
 
   async initialize(secondWorker: MessagePort): Promise<void> {

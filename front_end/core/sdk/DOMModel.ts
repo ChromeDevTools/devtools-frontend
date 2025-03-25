@@ -56,7 +56,7 @@ export class DOMNode {
   ownerDocument!: DOMDocument|null;
   #isInShadowTreeInternal!: boolean;
   id!: Protocol.DOM.NodeId;
-  index: number|undefined;
+  index: number|undefined = undefined;
   #backendNodeIdInternal!: Protocol.DOM.BackendNodeId;
   #nodeTypeInternal!: number;
   #nodeNameInternal!: string;
@@ -69,21 +69,21 @@ export class DOMNode {
   #xmlVersion!: string|undefined;
   #isSVGNodeInternal!: boolean;
   #isScrollableInternal!: boolean;
-  #creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null;
-  #pseudoElements: Map<string, DOMNode[]>;
-  #distributedNodesInternal: DOMNodeShortcut[];
-  assignedSlot: DOMNodeShortcut|null;
-  readonly shadowRootsInternal: DOMNode[];
-  #attributesInternal: Map<string, Attribute>;
-  #markers: Map<string, unknown>;
-  #subtreeMarkerCount: number;
+  #creationStackTraceInternal: Promise<Protocol.Runtime.StackTrace|null>|null = null;
+  #pseudoElements = new Map<string, DOMNode[]>();
+  #distributedNodesInternal: DOMNodeShortcut[] = [];
+  assignedSlot: DOMNodeShortcut|null = null;
+  readonly shadowRootsInternal: DOMNode[] = [];
+  #attributesInternal = new Map<string, Attribute>();
+  #markers = new Map<string, unknown>();
+  #subtreeMarkerCount = 0;
   childNodeCountInternal!: number;
-  childrenInternal: DOMNode[]|null;
-  nextSibling: DOMNode|null;
-  previousSibling: DOMNode|null;
-  firstChild: DOMNode|null;
-  lastChild: DOMNode|null;
-  parentNode: DOMNode|null;
+  childrenInternal: DOMNode[]|null = null;
+  nextSibling: DOMNode|null = null;
+  previousSibling: DOMNode|null = null;
+  firstChild: DOMNode|null = null;
+  lastChild: DOMNode|null = null;
+  parentNode: DOMNode|null = null;
   templateContentInternal?: DOMNode;
   contentDocumentInternal?: DOMDocument;
   childDocumentPromiseForTesting?: Promise<DOMDocument|null>;
@@ -97,21 +97,6 @@ export class DOMNode {
   constructor(domModel: DOMModel) {
     this.#domModelInternal = domModel;
     this.#agent = this.#domModelInternal.getAgent();
-    this.index = undefined;
-    this.#creationStackTraceInternal = null;
-    this.#pseudoElements = new Map();
-    this.#distributedNodesInternal = [];
-    this.assignedSlot = null;
-    this.shadowRootsInternal = [];
-    this.#attributesInternal = new Map();
-    this.#markers = new Map();
-    this.#subtreeMarkerCount = 0;
-    this.childrenInternal = null;
-    this.nextSibling = null;
-    this.previousSibling = null;
-    this.firstChild = null;
-    this.lastChild = null;
-    this.parentNode = null;
   }
 
   static create(domModel: DOMModel, doc: DOMDocument|null, isInShadowTree: boolean, payload: Protocol.DOM.Node):
@@ -1135,11 +1120,11 @@ export class DOMDocument extends DOMNode {
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
   idToDOMNode = new Map<Protocol.DOM.NodeId, DOMNode>();
-  #document: DOMDocument|null;
-  readonly #attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
+  #document: DOMDocument|null = null;
+  readonly #attributeLoadNodeIds = new Set<Protocol.DOM.NodeId>();
   readonly runtimeModelInternal: RuntimeModel;
   #lastMutationId!: number;
-  #pendingDocumentRequestPromise: Promise<DOMDocument|null>|null;
+  #pendingDocumentRequestPromise: Promise<DOMDocument|null>|null = null;
   #frameOwnerNode?: DOMNode|null;
   #loadNodeAttributesTimeout?: number;
   #searchId?: string;
@@ -1148,12 +1133,8 @@ export class DOMModel extends SDKModel<EventTypes> {
 
     this.agent = target.domAgent();
 
-    this.#document = null;
-    this.#attributeLoadNodeIds = new Set();
     target.registerDOMDispatcher(new DOMDispatcher(this));
     this.runtimeModelInternal = (target.model(RuntimeModel) as RuntimeModel);
-
-    this.#pendingDocumentRequestPromise = null;
 
     if (!target.suspended()) {
       void this.agent.invoke_enable({});

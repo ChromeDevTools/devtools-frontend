@@ -44,16 +44,16 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   private readonly overviewGrid: OverviewGrid;
   private readonly cursorArea: HTMLElement;
   private cursorElement: HTMLElement;
-  private overviewControls: TimelineOverview[];
-  private markers: Map<number, HTMLDivElement>;
+  private overviewControls: TimelineOverview[] = [];
+  private markers = new Map<number, HTMLDivElement>();
   private readonly overviewInfo: OverviewInfo;
-  private readonly updateThrottler: Common.Throttler.Throttler;
-  private cursorEnabled: boolean;
-  private cursorPosition: number;
-  private lastWidth: number;
-  private windowStartTime: number;
-  private windowEndTime: number;
-  private muteOnWindowChanged: boolean;
+  private readonly updateThrottler = new Common.Throttler.Throttler(100);
+  private cursorEnabled = false;
+  private cursorPosition = 0;
+  private lastWidth = 0;
+  private windowStartTime = 0;
+  private windowEndTime = Infinity;
+  private muteOnWindowChanged = false;
   #dimHighlightSVG: Element;
 
   constructor(prefix: string) {
@@ -74,19 +74,8 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.overviewGrid.addEventListener(OverviewGridEvents.WINDOW_CHANGED_WITH_POSITION, this.onWindowChanged, this);
     this.overviewGrid.addEventListener(OverviewGridEvents.BREADCRUMB_ADDED, this.onBreadcrumbAdded, this);
     this.overviewGrid.setClickHandler(this.onClick.bind(this));
-    this.overviewControls = [];
-    this.markers = new Map();
 
     this.overviewInfo = new OverviewInfo(this.cursorElement);
-    this.updateThrottler = new Common.Throttler.Throttler(100);
-
-    this.cursorEnabled = false;
-    this.cursorPosition = 0;
-    this.lastWidth = 0;
-
-    this.windowStartTime = 0;
-    this.windowEndTime = Infinity;
-    this.muteOnWindowChanged = false;
 
     this.#dimHighlightSVG = UI.UIUtils.createSVGChild(this.element, 'svg', 'timeline-minimap-dim-highlight-svg hidden');
     this.#initializeDimHighlightSVG();

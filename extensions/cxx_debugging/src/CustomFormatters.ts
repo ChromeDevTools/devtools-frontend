@@ -601,7 +601,6 @@ export interface Formatter {
 export class HostWasmInterface {
   private readonly hostInterface: HostInterface;
   private readonly stopId: unknown;
-  private readonly cache: Chrome.DevTools.ForeignObject[] = [];
   readonly view: WasmMemoryView;
   constructor(hostInterface: HostInterface, stopId: unknown) {
     this.hostInterface = hostInterface;

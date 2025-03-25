@@ -12,19 +12,18 @@ let isolateManagerInstance: IsolateManager;
 
 export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<RuntimeModel> {
-  readonly #isolatesInternal: Map<string, Isolate>;
-  #isolateIdByModel: Map<RuntimeModel, string|null>;
-  #observers: Set<Observer>;
-  #pollId: number;
+  readonly #isolatesInternal = new Map<string, Isolate>();
+  /**
+   * Contains null while the isolateId is being retrieved.
+   */
+  #isolateIdByModel = new Map<RuntimeModel, string|null>();
+  #observers = new Set<Observer>();
+  #pollId = 0;
 
   constructor() {
     super();
-    this.#isolatesInternal = new Map();
-    // #isolateIdByModel contains null while the isolateId is being retrieved.
-    this.#isolateIdByModel = new Map();
-    this.#observers = new Set();
+
     TargetManager.instance().observeModels(RuntimeModel, this);
-    this.#pollId = 0;
   }
 
   static instance({forceNew}: {

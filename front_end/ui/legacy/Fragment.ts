@@ -17,12 +17,10 @@ function setNodeData<T>(node: Node, value: T): void {
 
 export class Fragment {
   private readonly elementInternal: Element;
-  private readonly elementsById: Map<string, Element>;
+  private readonly elementsById = new Map<string, Element>();
 
   constructor(element: Element) {
     this.elementInternal = element;
-
-    this.elementsById = new Map();
   }
 
   element(): Element {

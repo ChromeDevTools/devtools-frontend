@@ -39,24 +39,18 @@ import * as SupportedCSSProperties from '../../generated/SupportedCSSProperties.
 import * as Common from '../common/common.js';
 
 export class CSSMetadata {
-  readonly #values: string[];
-  readonly #longhands: Map<string, string[]>;
-  readonly #shorthands: Map<string, string[]>;
-  readonly #inherited: Set<string>;
-  readonly #svgProperties: Set<string>;
-  readonly #propertyValues: Map<string, string[]>;
-  readonly #aliasesFor: Map<string, string>;
+  readonly #values: string[] = [];
+  readonly #longhands = new Map<string, string[]>();
+  readonly #shorthands = new Map<string, string[]>();
+  readonly #inherited = new Set<string>();
+  readonly #svgProperties = new Set<string>();
+  readonly #propertyValues = new Map<string, string[]>();
+  readonly #aliasesFor = new Map<string, string>();
+  readonly #nameValuePresets: string[] = [];
+  readonly #nameValuePresetsIncludingSVG: string[] = [];
   #valuesSet: Set<string>;
-  readonly #nameValuePresetsInternal: string[];
-  readonly #nameValuePresetsIncludingSVG: string[];
 
   constructor(properties: CSSPropertyDefinition[], aliasesFor: Map<string, string>) {
-    this.#values = [];
-    this.#longhands = new Map();
-    this.#shorthands = new Map();
-    this.#inherited = new Set();
-    this.#svgProperties = new Set();
-    this.#propertyValues = new Map();
     this.#aliasesFor = aliasesFor;
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
@@ -117,15 +111,13 @@ export class CSSMetadata {
       this.#propertyValues.set(propertyName, [...values]);
     }
 
-    this.#nameValuePresetsInternal = [];
-    this.#nameValuePresetsIncludingSVG = [];
     for (const name of this.#valuesSet) {
       const values = this.specificPropertyValues(name)
                          .filter(value => CSS.supports(name, value))
                          .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
       const presets = values.map(value => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {
-        this.#nameValuePresetsInternal.push(...presets);
+        this.#nameValuePresets.push(...presets);
       }
       this.#nameValuePresetsIncludingSVG.push(...presets);
     }
@@ -170,7 +162,7 @@ export class CSSMetadata {
   }
 
   nameValuePresets(includeSVG?: boolean): string[] {
-    return includeSVG ? this.#nameValuePresetsIncludingSVG : this.#nameValuePresetsInternal;
+    return includeSVG ? this.#nameValuePresetsIncludingSVG : this.#nameValuePresets;
   }
 
   isSVGProperty(name: string): boolean {

@@ -1597,16 +1597,16 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private parentPaneInternal: StylesSidebarPane;
   #parentSection: StylePropertiesSection;
   isShorthand: boolean;
-  private readonly applyStyleThrottler: Common.Throttler.Throttler;
+  private readonly applyStyleThrottler = new Common.Throttler.Throttler(0);
   private newProperty: boolean;
-  private expandedDueToFilter: boolean;
-  valueElement: HTMLElement|null;
-  nameElement: HTMLElement|null;
-  private expandElement: IconButton.Icon.Icon|null;
-  private originalPropertyText: string;
-  private hasBeenEditedIncrementally: boolean;
-  private prompt: CSSPropertyPrompt|null;
-  private lastComputedValue: string|null;
+  private expandedDueToFilter = false;
+  valueElement: HTMLElement|null = null;
+  nameElement: HTMLElement|null = null;
+  private expandElement: IconButton.Icon.Icon|null = null;
+  private originalPropertyText = '';
+  private hasBeenEditedIncrementally = false;
+  private prompt: CSSPropertyPrompt|null = null;
+  private lastComputedValue: string|null = null;
   private computedStyles: Map<string, string>|null = null;
   private parentsComputedStyles: Map<string, string>|null = null;
   private contextForTest!: Context|undefined;
@@ -1629,20 +1629,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.parentPaneInternal = stylesPane;
     this.#parentSection = section;
     this.isShorthand = isShorthand;
-    this.applyStyleThrottler = new Common.Throttler.Throttler(0);
     this.newProperty = newProperty;
     if (this.newProperty) {
       this.listItemElement.textContent = '';
     }
-    this.expandedDueToFilter = false;
-    this.valueElement = null;
-    this.nameElement = null;
-    this.expandElement = null;
-    this.originalPropertyText = '';
-    this.hasBeenEditedIncrementally = false;
-    this.prompt = null;
-
-    this.lastComputedValue = null;
 
     this.#propertyTextFromSource = property.propertyText || '';
 

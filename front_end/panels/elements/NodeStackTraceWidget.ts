@@ -21,7 +21,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   private readonly noStackTraceElement: HTMLElement;
   private readonly creationStackTraceElement: HTMLElement;
-  private readonly linkifier: Components.Linkifier.Linkifier;
+  private readonly linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
 
   constructor() {
     super(true /* isWebComponent */);
@@ -30,8 +30,6 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
     this.noStackTraceElement.textContent = i18nString(UIStrings.noStackTraceAvailable);
     this.creationStackTraceElement = this.contentElement.createChild('div', 'stack-trace');
-
-    this.linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
   }
 
   override wasShown(): void {

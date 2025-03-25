@@ -54,15 +54,13 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #parentTarget: SDK.Target.Target;
   readonly #targetAgent: ProtocolProxyApi.TargetApi;
-  readonly #childTargets: Map<Protocol.Target.SessionID, SDK.Target.Target>;
-  readonly #childConnections: Map<string, NodeConnection>;
+  readonly #childTargets = new Map<Protocol.Target.SessionID, SDK.Target.Target>();
+  readonly #childConnections = new Map<string, NodeConnection>();
   constructor(parentTarget: SDK.Target.Target) {
     super(parentTarget);
     this.#targetManager = parentTarget.targetManager();
     this.#parentTarget = parentTarget;
     this.#targetAgent = parentTarget.targetAgent();
-    this.#childTargets = new Map();
-    this.#childConnections = new Map();
 
     parentTarget.registerTargetDispatcher(this);
     void this.#targetAgent.invoke_setDiscoverTargets({discover: true});

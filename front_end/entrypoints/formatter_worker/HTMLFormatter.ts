@@ -228,34 +228,26 @@ function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {
 }
 
 export class HTMLModel {
-  #state: ParseState;
+  #state: ParseState = ParseState.INITIAL;
   readonly #documentInternal: FormatterElement;
   #stack: FormatterElement[];
-  readonly #tokens: Token[];
-  #tokenIndex: number;
-  #attributes: Map<string, string>;
-  #attributeName: string;
-  #tagName: string;
-  #isOpenTag: boolean;
+  readonly #tokens: Token[] = [];
+  #tokenIndex = 0;
+  #attributes = new Map<string, string>();
+  #attributeName = '';
+  #tagName = '';
+  #isOpenTag = false;
   #tagStartOffset?: number|null;
   #tagEndOffset?: number|null;
 
   constructor(text: string) {
-    this.#state = ParseState.INITIAL;
     this.#documentInternal = new FormatterElement('document');
     this.#documentInternal.openTag = new Tag('document', 0, 0, new Map(), true, false);
     this.#documentInternal.closeTag = new Tag('document', text.length, text.length, new Map(), false, false);
 
     this.#stack = [this.#documentInternal];
 
-    this.#tokens = [];
-    this.#tokenIndex = 0;
     this.#build(text);
-
-    this.#attributes = new Map();
-    this.#attributeName = '';
-    this.#tagName = '';
-    this.#isOpenTag = false;
   }
 
   #build(text: string): void {

@@ -11,10 +11,10 @@ export class Cookie {
   readonly #nameInternal: string;
   readonly #valueInternal: string;
   readonly #typeInternal: Type|null|undefined;
-  #attributes: Map<Attribute, string|number|boolean|undefined>;
-  #sizeInternal: number;
+  #attributes = new Map<Attribute, string|number|boolean|undefined>();
+  #sizeInternal = 0;
   #priorityInternal: Protocol.Network.CookiePriority;
-  #cookieLine: string|null;
+  #cookieLine: string|null = null;
   #partitionKey: Protocol.Network.CookiePartitionKey|undefined;
 
   constructor(
@@ -23,10 +23,7 @@ export class Cookie {
     this.#nameInternal = name;
     this.#valueInternal = value;
     this.#typeInternal = type;
-    this.#attributes = new Map();
-    this.#sizeInternal = 0;
     this.#priorityInternal = (priority || 'Medium' as Protocol.Network.CookiePriority);
-    this.#cookieLine = null;
     this.#partitionKey = partitionKey;
   }
 

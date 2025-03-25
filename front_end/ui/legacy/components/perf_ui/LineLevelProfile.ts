@@ -134,14 +134,13 @@ export class Memory {
 
 export class Helper {
   private readonly type: string;
-  private readonly locationPool: Bindings.LiveLocation.LiveLocationPool;
-  private updateTimer: number|null;
-  private lineData!: Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, number>>>;
+  private readonly locationPool = new Bindings.LiveLocation.LiveLocationPool();
+  private updateTimer: number|null = null;
+  private lineData =
+      new Map<SDK.Target.Target|null, Map<Platform.DevToolsPath.UrlString|number, Map<number, number>>>();
 
   constructor(type: string) {
     this.type = type;
-    this.locationPool = new Bindings.LiveLocation.LiveLocationPool();
-    this.updateTimer = null;
     this.reset();
   }
 

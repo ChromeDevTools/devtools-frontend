@@ -13,13 +13,13 @@ import type {TargetManager} from './TargetManager.js';
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   readonly #targetManagerInternal: TargetManager;
   #nameInternal: string;
-  #inspectedURLInternal: Platform.DevToolsPath.UrlString;
-  #inspectedURLName: string;
+  #inspectedURLInternal: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
+  #inspectedURLName = '';
   readonly #capabilitiesMask: number;
   #typeInternal: Type;
   readonly #parentTargetInternal: Target|null;
   #idInternal: Protocol.Target.TargetID|'main';
-  #modelByConstructor: Map<new(arg1: Target) => SDKModel, SDKModel>;
+  #modelByConstructor = new Map<new(arg1: Target) => SDKModel, SDKModel>();
   #isSuspended: boolean;
   /**
    * Generally when a target crashes we don't need to know, with one exception.
@@ -44,8 +44,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this.#targetManagerInternal = targetManager;
     this.#nameInternal = name;
-    this.#inspectedURLInternal = Platform.DevToolsPath.EmptyUrlString;
-    this.#inspectedURLName = '';
     this.#capabilitiesMask = 0;
     switch (type) {
       case Type.FRAME:
@@ -102,8 +100,6 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     this.#typeInternal = type;
     this.#parentTargetInternal = parentTarget;
     this.#idInternal = id;
-    /* } */
-    this.#modelByConstructor = new Map();
     this.#isSuspended = suspended;
     this.#targetInfoInternal = targetInfo;
   }

@@ -54,14 +54,13 @@ async function resolveToObjectInWorld(domNode: DOMNode, worldName: string): Prom
  */
 export class AnimationDOMNode {
   #domNode: DOMNode;
-  #scrollListenersById: Map<number, ScrollListener>;
+  #scrollListenersById = new Map<number, ScrollListener>();
   #scrollBindingListener?: BindingListener;
 
   static lastAddedListenerId = 0;
 
   constructor(domNode: DOMNode) {
     this.#domNode = domNode;
-    this.#scrollListenersById = new Map();
   }
 
   async #addReportScrollPositionBinding(): Promise<void> {
@@ -288,10 +287,10 @@ function shouldGroupAnimations(firstAnimation: AnimationImpl, anim: AnimationImp
 export class AnimationModel extends SDKModel<EventTypes> {
   readonly runtimeModel: RuntimeModel;
   readonly agent: ProtocolProxyApi.AnimationApi;
-  #animationsById: Map<string, AnimationImpl>;
-  readonly animationGroups: Map<string, AnimationGroup>;
-  #pendingAnimations: Set<string>;
-  playbackRate: number;
+  #animationsById = new Map<string, AnimationImpl>();
+  readonly animationGroups = new Map<string, AnimationGroup>();
+  #pendingAnimations = new Set<string>();
+  playbackRate = 1;
   readonly #screenshotCapture?: ScreenshotCapture;
   #flushPendingAnimations: () => void;
 
@@ -300,10 +299,6 @@ export class AnimationModel extends SDKModel<EventTypes> {
     this.runtimeModel = (target.model(RuntimeModel) as RuntimeModel);
     this.agent = target.animationAgent();
     target.registerAnimationDispatcher(new AnimationDispatcher(this));
-    this.#animationsById = new Map();
-    this.animationGroups = new Map();
-    this.#pendingAnimations = new Set();
-    this.playbackRate = 1;
 
     if (!target.suspended()) {
       void this.agent.invoke_enable();

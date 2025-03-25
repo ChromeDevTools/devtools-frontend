@@ -53,16 +53,15 @@ import {Capability, type Target, Type} from './Target.js';
 
 export class RuntimeModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.RuntimeApi;
-  readonly #executionContextById: Map<number, ExecutionContext>;
-  #executionContextComparatorInternal: (arg0: ExecutionContext, arg1: ExecutionContext) => number;
+  readonly #executionContextById = new Map<number, ExecutionContext>();
+  #executionContextComparatorInternal:
+      (arg0: ExecutionContext, arg1: ExecutionContext) => number = ExecutionContext.comparator;
   constructor(target: Target) {
     super(target);
 
     this.agent = target.runtimeAgent();
     this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
     void this.agent.invoke_enable();
-    this.#executionContextById = new Map();
-    this.#executionContextComparatorInternal = ExecutionContext.comparator;
 
     if (Common.Settings.Settings.instance().moduleSetting('custom-formatters').get()) {
       void this.agent.invoke_setCustomObjectFormatterEnabled({enabled: true});

@@ -526,26 +526,22 @@ export class FetchDispatcher implements ProtocolProxyApi.FetchDispatcher {
 
 export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   readonly #manager: NetworkManager;
-  #requestsById: Map<string, NetworkRequest>;
-  #requestsByURL: Map<Platform.DevToolsPath.UrlString, NetworkRequest>;
-  #requestsByLoaderId: Map<Protocol.Network.LoaderId, NetworkRequest>;
-  #requestIdToExtraInfoBuilder: Map<string, ExtraInfoBuilder>;
-  readonly #requestIdToTrustTokenEvent: Map<string, Protocol.Network.TrustTokenOperationDoneEvent>;
+  readonly #requestsById = new Map<string, NetworkRequest>();
+  readonly #requestsByURL = new Map<Platform.DevToolsPath.UrlString, NetworkRequest>();
+  readonly #requestsByLoaderId = new Map<Protocol.Network.LoaderId, NetworkRequest>();
+  readonly #requestIdToExtraInfoBuilder = new Map<string, ExtraInfoBuilder>();
+  /**
+   * In case of an early abort or a cache hit, the Trust Token done event is
+   * reported before the request itself is created in `requestWillBeSent`.
+   * This causes the event to be lost as no `NetworkRequest` instance has been
+   * created yet.
+   * This map caches the events temporarily and populates the NetworkRequest
+   * once it is created in `requestWillBeSent`.
+   */
+  readonly #requestIdToTrustTokenEvent = new Map<string, Protocol.Network.TrustTokenOperationDoneEvent>();
+
   constructor(manager: NetworkManager) {
     this.#manager = manager;
-    this.#requestsById = new Map();
-    this.#requestsByURL = new Map();
-    this.#requestsByLoaderId = new Map();
-    this.#requestIdToExtraInfoBuilder = new Map();
-    /**
-     * In case of an early abort or a cache hit, the Trust Token done event is
-     * reported before the request itself is created in `requestWillBeSent`.
-     * This causes the event to be lost as no `NetworkRequest` instance has been
-     * created yet.
-     * This map caches the events temporarliy and populates the NetworKRequest
-     * once it is created in `requestWillBeSent`.
-     */
-    this.#requestIdToTrustTokenEvent = new Map();
 
     MultitargetNetworkManager.instance().addEventListener(
         MultitargetNetworkManager.Events.REQUEST_INTERCEPTED, this.#markAsIntercepted.bind(this));
@@ -1318,46 +1314,36 @@ let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
 
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
     implements SDKModelObserver<NetworkManager> {
-  #userAgentOverrideInternal: string;
-  #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null;
-  #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null;
-  readonly #networkAgents: Set<ProtocolProxyApi.NetworkApi>;
-  readonly #fetchAgents: Set<ProtocolProxyApi.FetchApi>;
-  readonly inflightMainResourceRequests: Map<string, NetworkRequest>;
-  #networkConditionsInternal: Conditions;
-  #updatingInterceptionPatternsPromise: Promise<void>|null;
-  readonly #blockingEnabledSetting: Common.Settings.Setting<boolean>;
-  readonly #blockedPatternsSetting: Common.Settings.Setting<BlockedPattern[]>;
-  #effectiveBlockedURLs: string[];
+  #userAgentOverrideInternal = '';
+  #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null;
+  #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null = null;
+  readonly #networkAgents = new Set<ProtocolProxyApi.NetworkApi>();
+  readonly #fetchAgents = new Set<ProtocolProxyApi.FetchApi>();
+  readonly inflightMainResourceRequests = new Map<string, NetworkRequest>();
+  #networkConditionsInternal: Conditions = NoThrottlingConditions;
+  #updatingInterceptionPatternsPromise: Promise<void>|null = null;
+  readonly #blockingEnabledSetting =
+      Common.Settings.Settings.instance().moduleSetting<boolean>('request-blocking-enabled');
+  readonly #blockedPatternsSetting =
+      Common.Settings.Settings.instance().createSetting<BlockedPattern[]>('network-blocked-patterns', []);
+  #effectiveBlockedURLs: string[] = [];
   readonly #urlsForRequestInterceptor:
-      Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern>;
+      Platform.MapUtilities.Multimap<(arg0: InterceptedRequest) => Promise<void>, InterceptionPattern> =
+      new Platform.MapUtilities.Multimap();
   #extraHeaders?: Protocol.Network.Headers;
   #customUserAgent?: string;
 
   constructor() {
     super();
-    this.#userAgentOverrideInternal = '';
-    this.#userAgentMetadataOverride = null;
-    this.#customAcceptedEncodings = null;
-    this.#networkAgents = new Set();
-    this.#fetchAgents = new Set();
-    this.inflightMainResourceRequests = new Map();
-    this.#networkConditionsInternal = NoThrottlingConditions;
-    this.#updatingInterceptionPatternsPromise = null;
 
     // TODO(allada) Remove these and merge it with request interception.
     const blockedPatternChanged: () => void = () => {
       this.updateBlockedPatterns();
       this.dispatchEventToListeners(MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED);
     };
-    this.#blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
     this.#blockingEnabledSetting.addChangeListener(blockedPatternChanged);
-    this.#blockedPatternsSetting = Common.Settings.Settings.instance().createSetting('network-blocked-patterns', []);
     this.#blockedPatternsSetting.addChangeListener(blockedPatternChanged);
-    this.#effectiveBlockedURLs = [];
     this.updateBlockedPatterns();
-
-    this.#urlsForRequestInterceptor = new Platform.MapUtilities.Multimap();
 
     TargetManager.instance().observeModels(NetworkManager, this);
   }

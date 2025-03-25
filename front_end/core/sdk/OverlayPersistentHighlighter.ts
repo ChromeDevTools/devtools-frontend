@@ -32,54 +32,36 @@ export interface PersistentHighlighterCallbacks {
 
 export class OverlayPersistentHighlighter {
   readonly #model: OverlayModel;
-  readonly #colors: Map<Protocol.DOM.NodeId, Common.Color.Color>;
-  readonly #persistentHighlightSetting: Common.Settings.Setting<PersistentHighlightSettingItem[]>;
-  #gridHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>;
-  #scrollSnapHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
-  #flexHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>;
-  #containerQueryHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
-  #isolatedElementHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.IsolationModeHighlightConfig>;
-  #gridColorGenerator: OverlayColorGenerator;
-  #flexColorGenerator: OverlayColorGenerator;
+  readonly #colors = new Map<Protocol.DOM.NodeId, Common.Color.Color>();
+  readonly #persistentHighlightSetting =
+      Common.Settings.Settings.instance().createLocalSetting<PersistentHighlightSettingItem[]>(
+          'persistent-highlight-setting', []);
+  #gridHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>();
+  #scrollSnapHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>();
+  #flexHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>();
+  #containerQueryHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.ContainerQueryContainerHighlightConfig>();
+  #isolatedElementHighlights = new Map<Protocol.DOM.NodeId, Protocol.Overlay.IsolationModeHighlightConfig>();
+  #gridColorGenerator = new OverlayColorGenerator();
+  #flexColorGenerator = new OverlayColorGenerator();
 
   /**
    * @see `front_end/core/sdk/sdk-meta.ts`
    */
-  readonly #showGridLineLabelsSetting: Common.Settings.Setting<string>;
-  readonly #extendGridLinesSetting: Common.Settings.Setting<boolean>;
-  readonly #showGridAreasSetting: Common.Settings.Setting<boolean>;
-  readonly #showGridTrackSizesSetting: Common.Settings.Setting<boolean>;
+  readonly #showGridLineLabelsSetting =
+      Common.Settings.Settings.instance().moduleSetting<string>('show-grid-line-labels');
+  readonly #extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('extend-grid-lines');
+  readonly #showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting<boolean>('show-grid-areas');
+  readonly #showGridTrackSizesSetting =
+      Common.Settings.Settings.instance().moduleSetting<boolean>('show-grid-track-sizes');
 
   readonly #callbacks: PersistentHighlighterCallbacks;
   constructor(model: OverlayModel, callbacks: PersistentHighlighterCallbacks) {
     this.#model = model;
     this.#callbacks = callbacks;
 
-    this.#persistentHighlightSetting =
-        Common.Settings.Settings.instance().createLocalSetting('persistent-highlight-setting', []);
-
-    this.#gridHighlights = new Map();
-
-    this.#scrollSnapHighlights = new Map();
-
-    this.#flexHighlights = new Map();
-
-    this.#containerQueryHighlights = new Map();
-
-    this.#isolatedElementHighlights = new Map();
-
-    this.#colors = new Map();
-
-    this.#gridColorGenerator = new OverlayColorGenerator();
-    this.#flexColorGenerator = new OverlayColorGenerator();
-
-    this.#showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-line-labels');
     this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
-    this.#extendGridLinesSetting = Common.Settings.Settings.instance().moduleSetting('extend-grid-lines');
     this.#extendGridLinesSetting.addChangeListener(this.onSettingChange, this);
-    this.#showGridAreasSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-areas');
     this.#showGridAreasSetting.addChangeListener(this.onSettingChange, this);
-    this.#showGridTrackSizesSetting = Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes');
     this.#showGridTrackSizesSetting.addChangeListener(this.onSettingChange, this);
   }
 

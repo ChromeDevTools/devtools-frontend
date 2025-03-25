@@ -66,28 +66,26 @@ export const enum ColorScheme {
 export class CSSModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.CSSApi;
   readonly #domModel: DOMModel;
-  readonly #fontFaces: Map<string, CSSFontFace>;
-  readonly #originalStyleSheetText: Map<CSSStyleSheetHeader, Promise<string|null>>;
+  readonly #fontFaces = new Map<string, CSSFontFace>();
+  readonly #originalStyleSheetText = new Map<CSSStyleSheetHeader, Promise<string|null>>();
   readonly #resourceTreeModel: ResourceTreeModel|null;
   readonly #sourceMapManager: SourceMapManager<CSSStyleSheetHeader>;
   readonly #styleLoader: ComputedStyleLoader;
-  readonly #stylePollingThrottler: Common.Throttler.Throttler;
-  readonly #styleSheetIdsForURL: Map<Platform.DevToolsPath.UrlString, Map<string, Set<Protocol.CSS.StyleSheetId>>>;
-  readonly #styleSheetIdToHeader: Map<Protocol.CSS.StyleSheetId, CSSStyleSheetHeader>;
-  #cachedMatchedCascadeNode: DOMNode|null;
-  #cachedMatchedCascadePromise: Promise<CSSMatchedStyles|null>|null;
-  #cssPropertyTracker: CSSPropertyTracker|null;
-  #isCSSPropertyTrackingEnabled: boolean;
-  #isEnabled: boolean;
-  #isRuleUsageTrackingEnabled: boolean;
-  #isTrackingRequestPending: boolean;
+  readonly #stylePollingThrottler = new Common.Throttler.Throttler(StylePollingInterval);
+  readonly #styleSheetIdsForURL =
+      new Map<Platform.DevToolsPath.UrlString, Map<string, Set<Protocol.CSS.StyleSheetId>>>();
+  readonly #styleSheetIdToHeader = new Map<Protocol.CSS.StyleSheetId, CSSStyleSheetHeader>();
+  #cachedMatchedCascadeNode: DOMNode|null = null;
+  #cachedMatchedCascadePromise: Promise<CSSMatchedStyles|null>|null = null;
+  #cssPropertyTracker: CSSPropertyTracker|null = null;
+  #isCSSPropertyTrackingEnabled = false;
+  #isEnabled = false;
+  #isRuleUsageTrackingEnabled = false;
+  #isTrackingRequestPending = false;
   #colorScheme: ColorScheme|undefined;
 
   constructor(target: Target) {
     super(target);
-    this.#isEnabled = false;
-    this.#cachedMatchedCascadeNode = null;
-    this.#cachedMatchedCascadePromise = null;
     this.#domModel = (target.model(DOMModel) as DOMModel);
     this.#sourceMapManager = new SourceMapManager(target);
     this.agent = target.cssAgent();
@@ -101,19 +99,6 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (!target.suspended()) {
       void this.enable();
     }
-    this.#styleSheetIdToHeader = new Map();
-    this.#styleSheetIdsForURL = new Map();
-
-    this.#originalStyleSheetText = new Map();
-
-    this.#isRuleUsageTrackingEnabled = false;
-
-    this.#fontFaces = new Map();
-
-    this.#cssPropertyTracker = null;  // TODO: support multiple trackers when we refactor the backend
-    this.#isCSSPropertyTrackingEnabled = false;
-    this.#isTrackingRequestPending = false;
-    this.#stylePollingThrottler = new Common.Throttler.Throttler(StylePollingInterval);
 
     this.#sourceMapManager.setEnabled(
         Common.Settings.Settings.instance().moduleSetting<boolean>('css-source-maps-enabled').get());
@@ -1077,10 +1062,9 @@ class CSSDispatcher implements ProtocolProxyApi.CSSDispatcher {
 
 class ComputedStyleLoader {
   #cssModel: CSSModel;
-  #nodeIdToPromise: Map<number, Promise<Map<string, string>|null>>;
+  #nodeIdToPromise = new Map<number, Promise<Map<string, string>|null>>();
   constructor(cssModel: CSSModel) {
     this.#cssModel = cssModel;
-    this.#nodeIdToPromise = new Map();
   }
 
   computedStylePromise(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {

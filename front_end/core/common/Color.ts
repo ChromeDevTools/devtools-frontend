@@ -2414,13 +2414,12 @@ export class Generator {
   readonly #satSpace: Space;
   readonly #lightnessSpace: Space;
   readonly #alphaSpace: Space;
-  readonly #colors: Map<string, string>;
+  readonly #colors = new Map<string, string>();
   constructor(hueSpace?: Space, satSpace?: Space, lightnessSpace?: Space, alphaSpace?: Space) {
     this.#hueSpace = hueSpace || {min: 0, max: 360, count: undefined};
     this.#satSpace = satSpace || 67;
     this.#lightnessSpace = lightnessSpace || 80;
     this.#alphaSpace = alphaSpace || 1;
-    this.#colors = new Map();
   }
 
   setColorForID(id: string, color: string): void {

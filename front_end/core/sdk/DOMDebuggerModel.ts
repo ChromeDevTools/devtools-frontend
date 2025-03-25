@@ -519,24 +519,22 @@ let domDebuggerManagerInstance: DOMDebuggerManager;
 
 export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   readonly #xhrBreakpointsSetting: Common.Settings.Setting<Array<{url: string, enabled: boolean}>>;
-  readonly #xhrBreakpointsInternal: Map<string, boolean>;
-  readonly #cspViolationsToBreakOn: CSPViolationBreakpoint[];
-  readonly #eventListenerBreakpointsInternal: DOMEventListenerBreakpoint[];
+  readonly #xhrBreakpointsInternal = new Map<string, boolean>();
+
+  readonly #cspViolationsToBreakOn: CSPViolationBreakpoint[] = [];
+  readonly #eventListenerBreakpointsInternal: DOMEventListenerBreakpoint[] = [];
 
   constructor() {
     this.#xhrBreakpointsSetting = Common.Settings.Settings.instance().createLocalSetting('xhr-breakpoints', []);
-    this.#xhrBreakpointsInternal = new Map();
     for (const breakpoint of this.#xhrBreakpointsSetting.get()) {
       this.#xhrBreakpointsInternal.set(breakpoint.url, breakpoint.enabled);
     }
 
-    this.#cspViolationsToBreakOn = [];
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
         Category.TRUSTED_TYPE_VIOLATION, Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation));
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
         Category.TRUSTED_TYPE_VIOLATION, Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation));
 
-    this.#eventListenerBreakpointsInternal = [];
     this.createEventListenerBreakpoints(
         Category.MEDIA,
         [

@@ -143,9 +143,9 @@ export interface EventTypes {
 }
 
 export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  #metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
-  #typesByName: Map<string, Parameter[]>;
-  #enumsByName: Map<string, Record<string, string>>;
+  #metadataByCommand = new Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>();
+  #typesByName = new Map<string, Parameter[]>();
+  #enumsByName = new Map<string, Record<string, string>>();
   #parameters: Parameter[] = [];
   #targets: SDK.Target.Target[] = [];
   #command = '';
@@ -155,9 +155,6 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   constructor(element: HTMLElement) {
     super(/* useShadowDom=*/ true, undefined, element);
     this.registerRequiredCSS(editorWidgetStyles);
-    this.#metadataByCommand = new Map();
-    this.#typesByName = new Map();
-    this.#enumsByName = new Map();
     this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
     this.contentElement.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

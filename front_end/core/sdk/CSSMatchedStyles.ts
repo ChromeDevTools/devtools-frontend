@@ -1057,22 +1057,17 @@ function* forEachInclusive<T>(array: T[], startAt?: T): Generator<T> {
 }
 
 class DOMInheritanceCascade {
+  readonly #propertiesState = new Map<CSSProperty, PropertyState>();
+  readonly #availableCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|null>>();
+  readonly #computedCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|null>>();
+  readonly #styleToNodeCascade = new Map<CSSStyleDeclaration, NodeCascade>();
+  #initialized = false;
   readonly #nodeCascades: NodeCascade[];
-  readonly #propertiesState: Map<CSSProperty, PropertyState>;
-  readonly #availableCSSVariables: Map<NodeCascade, Map<string, CSSVariableValue|null>>;
-  readonly #computedCSSVariables: Map<NodeCascade, Map<string, CSSVariableValue|null>>;
-  #initialized: boolean;
-  readonly #styleToNodeCascade: Map<CSSStyleDeclaration, NodeCascade>;
   #registeredProperties: CSSRegisteredProperty[];
   constructor(nodeCascades: NodeCascade[], registeredProperties: CSSRegisteredProperty[]) {
     this.#nodeCascades = nodeCascades;
-    this.#propertiesState = new Map();
-    this.#availableCSSVariables = new Map();
-    this.#computedCSSVariables = new Map();
-    this.#initialized = false;
     this.#registeredProperties = registeredProperties;
 
-    this.#styleToNodeCascade = new Map();
     for (const nodeCascade of nodeCascades) {
       for (const style of nodeCascade.styles) {
         this.#styleToNodeCascade.set(style, nodeCascade);

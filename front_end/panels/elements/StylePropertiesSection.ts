@@ -131,14 +131,14 @@ export class StylePropertiesSection {
   private computedStyles: Map<string, string>|null;
   private parentsComputedStyles: Map<string, string>|null;
   editable: boolean;
-  private hoverTimer: number|null;
-  private willCauseCancelEditing: boolean;
-  private forceShowAll: boolean;
+  private hoverTimer: number|null = null;
+  private willCauseCancelEditing = false;
+  private forceShowAll = false;
   private readonly originalPropertiesCount: number;
   element: HTMLDivElement;
   readonly #styleRuleElement: HTMLElement;
   private readonly titleElement: HTMLElement;
-  propertiesTreeOutline: UI.TreeOutline.TreeOutlineInShadow;
+  propertiesTreeOutline: UI.TreeOutline.TreeOutlineInShadow = new UI.TreeOutline.TreeOutlineInShadow();
   private showAllButton: Buttons.Button.Button;
   protected selectorElement: HTMLSpanElement;
   private readonly newStyleRuleToolbar: UI.Toolbar.Toolbar|undefined;
@@ -146,7 +146,7 @@ export class StylePropertiesSection {
   private readonly fontEditorSectionManager: FontEditorSectionManager|undefined;
   private readonly fontEditorButton: UI.Toolbar.ToolbarButton|undefined;
   private selectedSinceMouseDown: boolean;
-  private readonly elementToSelectorIndex: WeakMap<Element, number>;
+  private readonly elementToSelectorIndex = new WeakMap<Element, number>();
   navigable: boolean|null|undefined;
   protected readonly selectorRefElement: HTMLElement;
   private hoverableSelectorsMode: boolean;
@@ -176,9 +176,6 @@ export class StylePropertiesSection {
     this.computedStyles = computedStyles;
     this.parentsComputedStyles = parentsComputedStyles;
     this.editable = Boolean(style.styleSheetId && style.range);
-    this.hoverTimer = null;
-    this.willCauseCancelEditing = false;
-    this.forceShowAll = false;
     this.originalPropertiesCount = style.leadingProperties().length;
 
     const rule = style.parentRule;
@@ -208,7 +205,6 @@ export class StylePropertiesSection {
     this.titleElement =
         this.#styleRuleElement.createChild('div', 'styles-section-title ' + (rule ? 'styles-selector' : ''));
 
-    this.propertiesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.propertiesTreeOutline.setFocusable(false);
     this.propertiesTreeOutline.registerRequiredCSS(stylePropertiesTreeOutlineStyles);
     this.propertiesTreeOutline.element.classList.add('style-properties', 'matched-styles', 'monospace');
@@ -293,8 +289,6 @@ export class StylePropertiesSection {
     this.element.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.element.addEventListener('mouseleave', this.onMouseLeave.bind(this), false);
     this.selectedSinceMouseDown = false;
-
-    this.elementToSelectorIndex = new WeakMap();
 
     if (rule) {
       // Prevent editing the user agent and user rules.

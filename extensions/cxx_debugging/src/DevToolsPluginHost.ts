@@ -9,13 +9,9 @@ import type {WasmValue} from './WasmTypes.js';
 import {type AsyncHostInterface, type WorkerInterface, WorkerRPC} from './WorkerRPC.js';
 
 export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, AsyncHostInterface {
-  private readonly worker: Worker;
-  private readonly rpc: WorkerRPC<AsyncHostInterface, WorkerInterface>;
+  private readonly worker = new Worker('DevToolsPluginWorkerMain.bundle.js', {type: 'module'});
+  private readonly rpc = new WorkerRPC<AsyncHostInterface, WorkerInterface>(this.worker, this);
 
-  constructor() {
-    this.worker = new Worker('DevToolsPluginWorkerMain.bundle.js', {type: 'module'});
-    this.rpc = new WorkerRPC<AsyncHostInterface, WorkerInterface>(this.worker, this);
-  }
   getWasmLinearMemory(offset: number, length: number, stopId: unknown): Promise<ArrayBuffer> {
     return chrome.devtools.languageServices.getWasmLinearMemory(offset, length, stopId);
   }

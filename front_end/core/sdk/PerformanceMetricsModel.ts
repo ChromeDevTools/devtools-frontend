@@ -10,26 +10,22 @@ import {Capability, type Target} from './Target.js';
 
 export class PerformanceMetricsModel extends SDKModel<void> {
   readonly #agent: ProtocolProxyApi.PerformanceApi;
-  readonly #metricModes: Map<string, MetricMode>;
-  readonly #metricData: Map<string, {
+  readonly #metricModes = new Map<string, MetricMode>([
+    ['TaskDuration', MetricMode.CUMULATIVE_TIME],
+    ['ScriptDuration', MetricMode.CUMULATIVE_TIME],
+    ['LayoutDuration', MetricMode.CUMULATIVE_TIME],
+    ['RecalcStyleDuration', MetricMode.CUMULATIVE_TIME],
+    ['LayoutCount', MetricMode.CUMULATIVE_COUNT],
+    ['RecalcStyleCount', MetricMode.CUMULATIVE_COUNT],
+  ]);
+  readonly #metricData = new Map<string, {
     lastValue: (number | undefined),
     lastTimestamp: (number|undefined),
-  }>;
+  }>();
 
   constructor(target: Target) {
     super(target);
     this.#agent = target.performanceAgent();
-
-    this.#metricModes = new Map([
-      ['TaskDuration', MetricMode.CUMULATIVE_TIME],
-      ['ScriptDuration', MetricMode.CUMULATIVE_TIME],
-      ['LayoutDuration', MetricMode.CUMULATIVE_TIME],
-      ['RecalcStyleDuration', MetricMode.CUMULATIVE_TIME],
-      ['LayoutCount', MetricMode.CUMULATIVE_COUNT],
-      ['RecalcStyleCount', MetricMode.CUMULATIVE_COUNT],
-    ]);
-
-    this.#metricData = new Map();
   }
 
   enable(): Promise<Object> {

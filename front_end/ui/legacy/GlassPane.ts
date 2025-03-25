@@ -10,23 +10,23 @@ import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
 export class GlassPane {
-  private readonly widgetInternal: Widget;
+  private readonly widgetInternal = new Widget(true);
+
   element: typeof Widget.prototype.element;
   contentElement: typeof Widget.prototype.contentElement;
   private readonly arrowElement: HTMLSpanElement;
   private readonly onMouseDownBound: (event: Event) => void;
-  private onClickOutsideCallback: ((arg0: Event) => void)|null;
-  private maxSize: Size|null;
-  private positionX: number|null;
-  private positionY: number|null;
-  private anchorBox: AnchorBox|null;
-  private anchorBehavior: AnchorBehavior;
-  private sizeBehavior: SizeBehavior;
-  private marginBehavior: MarginBehavior;
+  private onClickOutsideCallback: ((arg0: Event) => void)|null = null;
+  private maxSize: Size|null = null;
+  private positionX: number|null = null;
+  private positionY: number|null = null;
+  private anchorBox: AnchorBox|null = null;
+  private anchorBehavior = AnchorBehavior.PREFER_TOP;
+  private sizeBehavior = SizeBehavior.SET_EXACT_SIZE;
+  private marginBehavior = MarginBehavior.DEFAULT_MARGIN;
   #ignoreLeftMargin = false;
 
   constructor(jslog?: string) {
-    this.widgetInternal = new Widget(true);
     this.widgetInternal.markAsRoot();
     this.element = this.widgetInternal.element;
     this.contentElement = this.widgetInternal.contentElement;
@@ -43,14 +43,6 @@ export class GlassPane {
     this.setPointerEventsBehavior(PointerEventsBehavior.PIERCE_GLASS_PANE);
 
     this.onMouseDownBound = this.onMouseDown.bind(this);
-    this.onClickOutsideCallback = null;
-    this.maxSize = null;
-    this.positionX = null;
-    this.positionY = null;
-    this.anchorBox = null;
-    this.anchorBehavior = AnchorBehavior.PREFER_TOP;
-    this.sizeBehavior = SizeBehavior.SET_EXACT_SIZE;
-    this.marginBehavior = MarginBehavior.DEFAULT_MARGIN;
   }
 
   setJsLog(jslog: string): void {

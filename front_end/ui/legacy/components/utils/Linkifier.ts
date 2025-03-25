@@ -91,15 +91,13 @@ let linkHandlerSettingInstance: Common.Settings.Setting<string>;
 
 export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
   private readonly maxLength: number;
-  private readonly anchorsByTarget: Map<SDK.Target.Target, Element[]>;
-  private readonly locationPoolByTarget: Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>;
+  private readonly anchorsByTarget = new Map<SDK.Target.Target, Element[]>();
+  private readonly locationPoolByTarget = new Map<SDK.Target.Target, Bindings.LiveLocation.LiveLocationPool>();
   private useLinkDecorator: boolean;
 
   constructor(maxLengthForDisplayedURLs?: number, useLinkDecorator?: boolean) {
     super();
     this.maxLength = maxLengthForDisplayedURLs || UI.UIUtils.MaxLengthForDisplayedURLs;
-    this.anchorsByTarget = new Map();
-    this.locationPoolByTarget = new Map();
     this.useLinkDecorator = Boolean(useLinkDecorator);
     instances.add(this);
     SDK.TargetManager.TargetManager.instance().observeTargets(this);

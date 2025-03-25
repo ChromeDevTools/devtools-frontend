@@ -43,15 +43,13 @@ function mapFieldInfo(apiFieldInfo: SymbolsBackend.FieldInfo): Formatters.FieldI
 }
 
 class ModuleInfo {
-  readonly fileNameToUrl: Map<string, string>;
-  readonly urlToFileName: Map<string, string>;
+  readonly fileNameToUrl = new Map<string, string>();
+  readonly urlToFileName = new Map<string, string>();
   readonly dwarfSymbolsPlugin: SymbolsBackend.DWARFSymbolsPlugin;
 
   constructor(
       readonly symbolsUrl: string, readonly symbolsFileName: string, readonly symbolsDwpFileName: string|undefined,
       readonly backend: SymbolsBackend.Module) {
-    this.fileNameToUrl = new Map<string, string>();
-    this.urlToFileName = new Map<string, string>();
     this.dwarfSymbolsPlugin = new backend.DWARFSymbolsPlugin();
   }
 

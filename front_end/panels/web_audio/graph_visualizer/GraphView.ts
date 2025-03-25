@@ -14,38 +14,29 @@ import {NodeLabelGenerator, NodeView} from './NodeView.js';
 // A class that tracks all the nodes and edges of an audio graph.
 export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   contextId: string;
-  private readonly nodes: Map<string, NodeView>;
-  private readonly edges: Map<string, EdgeView>;
-  private readonly outboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
-  private readonly inboundEdgeMap: Platform.MapUtilities.Multimap<string, string>;
-  private readonly nodeLabelGenerator: NodeLabelGenerator;
-  private readonly paramIdToNodeIdMap: Map<string, string>;
+  private readonly nodes = new Map<string, NodeView>();
+  private readonly edges = new Map<string, EdgeView>();
+  /**
+   * For each node ID, keep a set of all out-bound edge IDs.
+   */
+  private readonly outboundEdgeMap = new Platform.MapUtilities.Multimap<string, string>();
+  /**
+   * For each node ID, keep a set of all in-bound edge IDs.
+   */
+  private readonly inboundEdgeMap = new Platform.MapUtilities.Multimap<string, string>();
+  /**
+   * Use concise node label to replace the long UUID.
+   * Each graph has its own label generator so that the label starts from 0.
+   */
+  private readonly nodeLabelGenerator = new NodeLabelGenerator();
+  /**
+   * For each param ID, save its corresponding node Id.
+   */
+  private readonly paramIdToNodeIdMap = new Map<string, string>();
   constructor(contextId: string) {
     super();
 
     this.contextId = contextId;
-
-    this.nodes = new Map();
-    this.edges = new Map();
-
-    /**
-     * For each node ID, keep a set of all out-bound edge IDs.
-     */
-    this.outboundEdgeMap = new Platform.MapUtilities.Multimap();
-
-    /**
-     * For each node ID, keep a set of all in-bound edge IDs.
-     */
-    this.inboundEdgeMap = new Platform.MapUtilities.Multimap();
-
-    // Use concise node label to replace the long UUID.
-    // Each graph has its own label generator so that the label starts from 0.
-    this.nodeLabelGenerator = new NodeLabelGenerator();
-
-    /**
-     * For each param ID, save its corresponding node Id.
-     */
-    this.paramIdToNodeIdMap = new Map();
   }
 
   /**

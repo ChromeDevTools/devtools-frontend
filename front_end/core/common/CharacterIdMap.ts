@@ -3,15 +3,9 @@
 // found in the LICENSE file.
 
 export class CharacterIdMap<T> {
-  readonly #elementToCharacter: Map<T, string>;
-  readonly #characterToElement: Map<string, T>;
-  #charCode: number;
-
-  constructor() {
-    this.#elementToCharacter = new Map();
-    this.#characterToElement = new Map();
-    this.#charCode = 33;
-  }
+  readonly #elementToCharacter = new Map<T, string>();
+  readonly #characterToElement = new Map<string, T>();
+  #charCode = 33;
 
   toChar(object: T): string {
     let character = this.#elementToCharacter.get(object);

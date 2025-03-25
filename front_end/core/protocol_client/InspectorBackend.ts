@@ -251,25 +251,18 @@ const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
 
 export class SessionRouter {
   readonly #connectionInternal: Connection;
-  #lastMessageId: number;
-  #pendingResponsesCount: number;
-  readonly #pendingLongPollingMessageIds: Set<number>;
-  readonly #sessions: Map<string, {
+  #lastMessageId = 1;
+  #pendingResponsesCount = 0;
+  readonly #pendingLongPollingMessageIds = new Set<number>();
+  readonly #sessions = new Map<string, {
     target: TargetBase,
     callbacks: Map<number, CallbackWithDebugInfo>,
     proxyConnection: ((Connection | undefined)|null),
-  }>;
-  #pendingScripts: Array<() => void>;
+  }>();
+  #pendingScripts: Array<() => void> = [];
 
   constructor(connection: Connection) {
     this.#connectionInternal = connection;
-    this.#lastMessageId = 1;
-    this.#pendingResponsesCount = 0;
-    this.#pendingLongPollingMessageIds = new Set();
-
-    this.#sessions = new Map();
-
-    this.#pendingScripts = [];
 
     test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
     test.sendRawMessage = this.sendRawMessageForTesting.bind(this);

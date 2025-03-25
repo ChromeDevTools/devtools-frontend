@@ -15,6 +15,8 @@ const ENABLE_FEATURES = [
   'DevToolsCssValueTracing',
   'DevToolsFreeStyler:patching/true,user_tier/TESTERS',
   'DevToolsWellKnown',
+  'DevToolsAiGeneratedTimelineLabels',
+  'DevToolsAiAssistancePerformanceAgent:insights_enabled/true',
 ];
 
 // The list of features that are disabled by default.

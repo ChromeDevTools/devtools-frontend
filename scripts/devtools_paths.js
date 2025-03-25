@@ -170,6 +170,7 @@ module.exports = {
   mochaExecutablePath,
   nodeModulesPath,
   nodePath,
+  rootPath,
   stylelintExecutablePath,
   thirdPartyPath,
   tsconfigJsonPath,

@@ -28,7 +28,7 @@
     "lint": "vpython3 third_party/node/node.py --output scripts/test/run_lint_check.mjs",
     "prebuild": "gn gen out/Default",
     "rdb": "rdb stream -new -realm chrome:public --",
-    "start": "vpython3 scripts/run_start.py",
+    "start": "vpython3 third_party/node/node.py --output scripts/run_start.mjs",
     "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",
     "watch": "vpython3 third_party/node/node.py --output scripts/watch_build.js",
     "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"

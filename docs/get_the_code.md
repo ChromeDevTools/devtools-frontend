@@ -150,13 +150,13 @@ source files for changes while Chrome is running and automatically trigger a reb
 By default, `npm start` will automatically open DevTools for every new tab, you can use
 
 ```bash
-npm start -- --no-auto-open-devtools-for-tabs
+npm start -- --no-open
 ```
 
 to disable this behavior. You can also use
 
 ```bash
-npm start -- --canary
+npm start -- --browser=canary
 ```
 
 to run in Chrome Canary instead of Chrome for Testing; this requires you to install Chrome Canary manually first

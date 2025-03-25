@@ -97,16 +97,6 @@ describeWithMockConnection('NetworkRequestDetails', () => {
             'Description',
           ],
           [
-            'response-end',
-            '-',
-            '-',
-          ],
-          [
-            'response-start',
-            '-',
-            '-',
-          ],
-          [
             'Secondleveltask1',
             '904.2932819999987',
             'Description of second level task 1',

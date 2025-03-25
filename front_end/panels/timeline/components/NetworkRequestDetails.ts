@@ -129,7 +129,7 @@ export class NetworkRequestDetails extends HTMLElement {
   #linkifier: LegacyComponents.Linkifier.Linkifier;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
-  #serverTimings: Platform.ServerTiming.ServerTiming[]|null = null;
+  #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
   constructor(linkifier: LegacyComponents.Linkifier.Linkifier) {
     super();
     this.#linkifier = linkifier;

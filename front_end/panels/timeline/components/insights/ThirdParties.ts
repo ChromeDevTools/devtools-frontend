@@ -43,6 +43,14 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     const overlays = [];
     const events = summary.relatedEvents ?? [];
     for (const event of events) {
+      // The events found for a third party can be vast, as they gather every
+      // single main thread task along with everything else on the page. If the
+      // main thread is busy with large icicles, we can easily create tens of
+      // thousands of overlays. Therefore, only create overlays for events of at least 1ms.
+      if (event.dur === undefined || event.dur < 1_000) {
+        continue;
+      }
+
       const overlay: Overlays.Overlays.TimelineOverlay = {
         type: 'ENTRY_OUTLINE',
         entry: event,
@@ -52,6 +60,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     }
     return overlays;
   }
+
   #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.Summary> = {
     mapToRow: summary => ({
       values: [summary.entity.name, i18n.TimeUtilities.millisToString(summary.mainThreadTime)],

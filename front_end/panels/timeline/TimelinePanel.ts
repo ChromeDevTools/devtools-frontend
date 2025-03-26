@@ -632,21 +632,25 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       // Open the summary panel for the 3p insight.
       if (model.insightKey === Trace.Insights.Types.InsightKeys.THIRD_PARTIES) {
-        this.#openSummaryTab();
+        void window.scheduler.postTask(() => {
+          this.#openSummaryTab();
+        }, {priority: 'background'});
       }
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
       const {overlays, options} = event;
 
-      this.flameChart.setOverlays(overlays, options);
+      void window.scheduler.postTask(() => {
+        this.flameChart.setOverlays(overlays, options);
 
-      const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(overlays);
-      if (overlaysBounds) {
-        this.#minimapComponent.highlightBounds(overlaysBounds, /* withBracket */ true);
-      } else {
-        this.#minimapComponent.clearBoundsHighlight();
-      }
+        const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(overlays);
+        if (overlaysBounds) {
+          this.#minimapComponent.highlightBounds(overlaysBounds, /* withBracket */ true);
+        } else {
+          this.#minimapComponent.clearBoundsHighlight();
+        }
+      }, {priority: 'user-visible'});
     });
 
     this.#sideBar.contentElement.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
@@ -1460,7 +1464,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const blob = file.slice(0, maximumTraceFileLengthToDetermineEnhancedTraces);
     const content = await blob.text();
     if (content.includes('enhancedTraceVersion')) {
-      await window.scheduler?.postTask(() => {
+      await window.scheduler.postTask(() => {
         this.#launchRehydratedSession(file);
       }, {priority: 'background'});
     } else {

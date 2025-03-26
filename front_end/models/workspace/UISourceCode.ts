@@ -52,124 +52,111 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     TextUtils.ContentProvider.ContentProvider {
-  private projectInternal: Project;
-  private urlInternal: Platform.DevToolsPath.UrlString;
-  private readonly originInternal: Platform.DevToolsPath.UrlString;
-  private readonly parentURLInternal: Platform.DevToolsPath.UrlString;
-  private nameInternal: string;
-  private contentTypeInternal: Common.ResourceType.ResourceType;
-  private requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
-  private decorations = new Map<string, any>();
-  private hasCommitsInternal: boolean;
-  private messagesInternal: Set<Message>|null;
-  private contentInternal: TextUtils.ContentData.ContentDataOrError|null;
-  private forceLoadOnCheckContentInternal: boolean;
-  private checkingContent: boolean;
-  private lastAcceptedContent: string|null;
-  private workingCopyInternal: string|null;
-  private workingCopyGetter: (() => string)|null;
-  private disableEditInternal: boolean;
-  private contentEncodedInternal?: boolean;
-  private isKnownThirdPartyInternal: boolean;
-  private isUnconditionallyIgnoreListedInternal: boolean;
+  readonly #origin: Platform.DevToolsPath.UrlString;
+  readonly #parentURL: Platform.DevToolsPath.UrlString;
+  #project: Project;
+  #url: Platform.DevToolsPath.UrlString;
+  #name: string;
+  #contentType: Common.ResourceType.ResourceType;
+  #requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null = null;
+  #decorations = new Map<string, any>();
+  #hasCommits = false;
+  #messages: Set<Message>|null = null;
+  #content: TextUtils.ContentData.ContentDataOrError|null = null;
+  #forceLoadOnCheckContent = false;
+  #checkingContent = false;
+  #lastAcceptedContent: string|null = null;
+  #workingCopy: string|null = null;
+  #workingCopyGetter: (() => string)|null = null;
+  #disableEdit = false;
+  #contentEncoded: boolean|undefined;
+  #isKnownThirdParty = false;
+  #isUnconditionallyIgnoreListed = false;
   #containsAiChanges = false;
 
   constructor(project: Project, url: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType) {
     super();
-    this.projectInternal = project;
-    this.urlInternal = url;
+    this.#project = project;
+    this.#url = url;
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
     if (parsedURL) {
-      this.originInternal = parsedURL.securityOrigin();
-      this.parentURLInternal =
-          Common.ParsedURL.ParsedURL.concatenate(this.originInternal, parsedURL.folderPathComponents);
+      this.#origin = parsedURL.securityOrigin();
+      this.#parentURL = Common.ParsedURL.ParsedURL.concatenate(this.#origin, parsedURL.folderPathComponents);
       if (parsedURL.queryParams && !(parsedURL.lastPathComponent && contentType.isFromSourceMap())) {
         // If there is a query param, display it like a URL. Unless it is from a source map,
         // in which case the query param is probably a hash that is best left hidden.
-        this.nameInternal = parsedURL.lastPathComponent + '?' + parsedURL.queryParams;
+        this.#name = parsedURL.lastPathComponent + '?' + parsedURL.queryParams;
       } else {
         // file name looks best decoded
-        this.nameInternal = decodeURIComponent(parsedURL.lastPathComponent);
+        this.#name = decodeURIComponent(parsedURL.lastPathComponent);
       }
     } else {
-      this.originInternal = Platform.DevToolsPath.EmptyUrlString;
-      this.parentURLInternal = Platform.DevToolsPath.EmptyUrlString;
-      this.nameInternal = url;
+      this.#origin = Platform.DevToolsPath.EmptyUrlString;
+      this.#parentURL = Platform.DevToolsPath.EmptyUrlString;
+      this.#name = url;
     }
 
-    this.contentTypeInternal = contentType;
-    this.requestContentPromise = null;
-    this.hasCommitsInternal = false;
-    this.messagesInternal = null;
-    this.contentInternal = null;
-    this.forceLoadOnCheckContentInternal = false;
-    this.checkingContent = false;
-    this.lastAcceptedContent = null;
-    this.workingCopyInternal = null;
-    this.workingCopyGetter = null;
-    this.disableEditInternal = false;
-    this.isKnownThirdPartyInternal = false;
-    this.isUnconditionallyIgnoreListedInternal = false;
+    this.#contentType = contentType;
   }
 
   requestMetadata(): Promise<UISourceCodeMetadata|null> {
-    return this.projectInternal.requestMetadata(this);
+    return this.#project.requestMetadata(this);
   }
 
   name(): string {
-    return this.nameInternal;
+    return this.#name;
   }
 
   mimeType(): string {
-    return this.projectInternal.mimeType(this);
+    return this.#project.mimeType(this);
   }
 
   url(): Platform.DevToolsPath.UrlString {
-    return this.urlInternal;
+    return this.#url;
   }
 
   // Identifier used for deduplicating scripts that are considered by the
   // DevTools UI to be the same script. For now this is just the url but this
   // is likely to change in the future.
-  canononicalScriptId(): string {
-    return `${this.contentTypeInternal.name()},${this.urlInternal}`;
+  canonicalScriptId(): string {
+    return `${this.#contentType.name()},${this.#url}`;
   }
 
   parentURL(): Platform.DevToolsPath.UrlString {
-    return this.parentURLInternal;
+    return this.#parentURL;
   }
 
   origin(): Platform.DevToolsPath.UrlString {
-    return this.originInternal;
+    return this.#origin;
   }
 
   fullDisplayName(): string {
-    return this.projectInternal.fullDisplayName(this);
+    return this.#project.fullDisplayName(this);
   }
 
   displayName(skipTrim?: boolean): string {
-    if (!this.nameInternal) {
+    if (!this.#name) {
       return i18nString(UIStrings.index);
     }
-    const name = this.nameInternal;
+    const name = this.#name;
     return skipTrim ? name : Platform.StringUtilities.trimEndWithMaxLength(name, 100);
   }
 
   canRename(): boolean {
-    return this.projectInternal.canRename();
+    return this.#project.canRename();
   }
 
   rename(newName: Platform.DevToolsPath.RawPathString): Promise<boolean> {
     const {resolve, promise} = Promise.withResolvers<boolean>();
-    this.projectInternal.rename(this, newName, innerCallback.bind(this));
+    this.#project.rename(this, newName, innerCallback.bind(this));
     return promise;
 
     function innerCallback(
         this: UISourceCode, success: boolean, newName?: string, newURL?: Platform.DevToolsPath.UrlString,
         newContentType?: Common.ResourceType.ResourceType): void {
       if (success) {
-        this.updateName(
+        this.#updateName(
             newName as Platform.DevToolsPath.RawPathString, newURL as Platform.DevToolsPath.UrlString,
             newContentType as Common.ResourceType.ResourceType);
       }
@@ -178,21 +165,21 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   remove(): void {
-    this.projectInternal.deleteFile(this);
+    this.#project.deleteFile(this);
   }
 
-  private updateName(
+  #updateName(
       name: Platform.DevToolsPath.RawPathString, url: Platform.DevToolsPath.UrlString,
       contentType?: Common.ResourceType.ResourceType): void {
-    const oldURL = this.urlInternal;
-    this.nameInternal = name;
+    const oldURL = this.#url;
+    this.#name = name;
     if (url) {
-      this.urlInternal = url;
+      this.#url = url;
     } else {
-      this.urlInternal = Common.ParsedURL.ParsedURL.relativePathToUrlString(name, oldURL);
+      this.#url = Common.ParsedURL.ParsedURL.relativePathToUrlString(name, oldURL);
     }
     if (contentType) {
-      this.contentTypeInternal = contentType;
+      this.#contentType = contentType;
     }
     this.dispatchEventToListeners(Events.TitleChanged, this);
     this.project().workspace().dispatchEventToListeners(
@@ -204,48 +191,47 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   contentType(): Common.ResourceType.ResourceType {
-    return this.contentTypeInternal;
+    return this.#contentType;
   }
 
   project(): Project {
-    return this.projectInternal;
+    return this.#project;
   }
 
   requestContentData({cachedWasmOnly}: {cachedWasmOnly?: boolean} = {}):
       Promise<TextUtils.ContentData.ContentDataOrError> {
-    if (this.requestContentPromise) {
-      return this.requestContentPromise;
+    if (this.#requestContentPromise) {
+      return this.#requestContentPromise;
     }
 
-    if (this.contentInternal) {
-      return Promise.resolve(this.contentInternal);
+    if (this.#content) {
+      return Promise.resolve(this.#content);
     }
 
     if (cachedWasmOnly && this.mimeType() === 'application/wasm') {
       return Promise.resolve(new TextUtils.WasmDisassembly.WasmDisassembly([], [], []));
     }
 
-    this.requestContentPromise = this.requestContentImpl();
-    return this.requestContentPromise;
+    this.#requestContentPromise = this.#requestContent();
+    return this.#requestContentPromise;
   }
 
   async requestContent(options: {cachedWasmOnly?: boolean} = {}): Promise<TextUtils.ContentProvider.DeferredContent> {
     return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestContentData(options));
   }
 
-  private async requestContentImpl(): Promise<TextUtils.ContentData.ContentDataOrError> {
-    if (this.contentInternal) {
-      throw new Error(
-          'Called UISourceCode#requestContentImpl even though content is available for ' + this.urlInternal);
+  async #requestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
+    if (this.#content) {
+      throw new Error('Called UISourceCode#requestContentImpl even though content is available for ' + this.#url);
     }
 
     try {
-      this.contentInternal = await this.projectInternal.requestFileContent(this);
+      this.#content = await this.#project.requestFileContent(this);
     } catch (err) {
-      this.contentInternal = {error: err ? String(err) : ''};
+      this.#content = {error: err ? String(err) : ''};
     }
 
-    return this.contentInternal;
+    return this.#content;
   }
 
   #decodeContent(content: TextUtils.ContentProvider.DeferredContent|null): string|null {
@@ -264,38 +250,38 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   async checkContentUpdated(): Promise<void> {
-    if (!this.contentInternal && !this.forceLoadOnCheckContentInternal) {
+    if (!this.#content && !this.#forceLoadOnCheckContent) {
       return;
     }
 
-    if (!this.projectInternal.canSetFileContent() || this.checkingContent) {
+    if (!this.#project.canSetFileContent() || this.#checkingContent) {
       return;
     }
 
-    this.checkingContent = true;
+    this.#checkingContent = true;
     const updatedContent =
-        TextUtils.ContentData.ContentData.asDeferredContent(await this.projectInternal.requestFileContent(this));
+        TextUtils.ContentData.ContentData.asDeferredContent(await this.#project.requestFileContent(this));
     if ('error' in updatedContent) {
       return;
     }
-    this.checkingContent = false;
+    this.#checkingContent = false;
     if (updatedContent.content === null) {
       const workingCopy = this.workingCopy();
-      this.contentCommitted('', false);
+      this.#contentCommitted('', false);
       this.setWorkingCopy(workingCopy);
       return;
     }
-    if (this.lastAcceptedContent === updatedContent.content) {
+    if (this.#lastAcceptedContent === updatedContent.content) {
       return;
     }
 
-    if (this.#unsafeDecodeContentData(this.contentInternal) === this.#decodeContent(updatedContent)) {
-      this.lastAcceptedContent = null;
+    if (this.#unsafeDecodeContentData(this.#content) === this.#decodeContent(updatedContent)) {
+      this.#lastAcceptedContent = null;
       return;
     }
 
-    if (!this.isDirty() || this.workingCopyInternal === updatedContent.content) {
-      this.contentCommitted(updatedContent.content, false);
+    if (!this.isDirty() || this.#workingCopy === updatedContent.content) {
+      this.#contentCommitted(updatedContent.content, false);
       return;
     }
 
@@ -306,46 +292,45 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
     const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
     if (shouldUpdate) {
-      this.contentCommitted(updatedContent.content, false);
+      this.#contentCommitted(updatedContent.content, false);
     } else {
-      this.lastAcceptedContent = updatedContent.content;
+      this.#lastAcceptedContent = updatedContent.content;
     }
   }
 
   forceLoadOnCheckContent(): void {
-    this.forceLoadOnCheckContentInternal = true;
+    this.#forceLoadOnCheckContent = true;
   }
 
-  private commitContent(content: string): void {
-    if (this.projectInternal.canSetFileContent()) {
-      void this.projectInternal.setFileContent(this, content, false);
+  #commitContent(content: string): void {
+    if (this.#project.canSetFileContent()) {
+      void this.#project.setFileContent(this, content, false);
     }
-    this.contentCommitted(content, true);
+    this.#contentCommitted(content, true);
   }
 
-  private contentCommitted(content: string, committedByUser: boolean): void {
-    this.lastAcceptedContent = null;
-    this.contentInternal =
-        new TextUtils.ContentData.ContentData(content, Boolean(this.contentEncodedInternal), this.mimeType());
-    this.requestContentPromise = null;
+  #contentCommitted(content: string, committedByUser: boolean): void {
+    this.#lastAcceptedContent = null;
+    this.#content = new TextUtils.ContentData.ContentData(content, Boolean(this.#contentEncoded), this.mimeType());
+    this.#requestContentPromise = null;
 
-    this.hasCommitsInternal = true;
+    this.#hasCommits = true;
 
-    this.innerResetWorkingCopy();
-    const data = {uiSourceCode: this, content, encoded: this.contentEncodedInternal};
+    this.#resetWorkingCopy();
+    const data = {uiSourceCode: this, content, encoded: this.#contentEncoded};
     this.dispatchEventToListeners(Events.WorkingCopyCommitted, data);
-    this.projectInternal.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommitted, data);
+    this.#project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommitted, data);
     if (committedByUser) {
-      this.projectInternal.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommittedByUser, data);
+      this.#project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyCommittedByUser, data);
     }
   }
 
   addRevision(content: string): void {
-    this.commitContent(content);
+    this.#commitContent(content);
   }
 
   hasCommits(): boolean {
-    return this.hasCommitsInternal;
+    return this.#hasCommits;
   }
 
   workingCopy(): string {
@@ -357,35 +342,33 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   workingCopyContentData(): TextUtils.ContentData.ContentData {
-    if (this.workingCopyGetter) {
-      this.workingCopyInternal = this.workingCopyGetter();
-      this.workingCopyGetter = null;
+    if (this.#workingCopyGetter) {
+      this.#workingCopy = this.#workingCopyGetter();
+      this.#workingCopyGetter = null;
     }
-    const contentData = this.contentInternal ?
-        TextUtils.ContentData.ContentData.contentDataOrEmpty(this.contentInternal) :
-        TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA;
-    if (this.workingCopyInternal !== null) {
-      return new TextUtils.ContentData.ContentData(
-          this.workingCopyInternal, /* isBase64 */ false, contentData.mimeType);
+    const contentData = this.#content ? TextUtils.ContentData.ContentData.contentDataOrEmpty(this.#content) :
+                                        TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA;
+    if (this.#workingCopy !== null) {
+      return new TextUtils.ContentData.ContentData(this.#workingCopy, /* isBase64 */ false, contentData.mimeType);
     }
     return contentData;
   }
 
   resetWorkingCopy(): void {
-    this.innerResetWorkingCopy();
-    this.workingCopyChanged();
+    this.#resetWorkingCopy();
+    this.#workingCopyChanged();
   }
 
-  private innerResetWorkingCopy(): void {
-    this.workingCopyInternal = null;
-    this.workingCopyGetter = null;
+  #resetWorkingCopy(): void {
+    this.#workingCopy = null;
+    this.#workingCopyGetter = null;
     this.setContainsAiChanges(false);
   }
 
   setWorkingCopy(newWorkingCopy: string): void {
-    this.workingCopyInternal = newWorkingCopy;
-    this.workingCopyGetter = null;
-    this.workingCopyChanged();
+    this.#workingCopy = newWorkingCopy;
+    this.#workingCopyGetter = null;
+    this.#workingCopyChanged();
   }
 
   setContainsAiChanges(containsAiChanges: boolean): void {
@@ -397,56 +380,55 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   setContent(content: string, isBase64: boolean): void {
-    this.contentEncodedInternal = isBase64;
-    if (this.projectInternal.canSetFileContent()) {
-      void this.projectInternal.setFileContent(this, content, isBase64);
+    this.#contentEncoded = isBase64;
+    if (this.#project.canSetFileContent()) {
+      void this.#project.setFileContent(this, content, isBase64);
     }
-    this.contentCommitted(content, true);
+    this.#contentCommitted(content, true);
   }
 
   setWorkingCopyGetter(workingCopyGetter: () => string): void {
-    this.workingCopyGetter = workingCopyGetter;
-    this.workingCopyChanged();
+    this.#workingCopyGetter = workingCopyGetter;
+    this.#workingCopyChanged();
   }
 
-  private workingCopyChanged(): void {
-    this.removeAllMessages();
+  #workingCopyChanged(): void {
+    this.#removeAllMessages();
     this.dispatchEventToListeners(Events.WorkingCopyChanged, this);
-    this.projectInternal.workspace().dispatchEventToListeners(
-        WorkspaceImplEvents.WorkingCopyChanged, {uiSourceCode: this});
+    this.#project.workspace().dispatchEventToListeners(WorkspaceImplEvents.WorkingCopyChanged, {uiSourceCode: this});
   }
 
   removeWorkingCopyGetter(): void {
-    if (!this.workingCopyGetter) {
+    if (!this.#workingCopyGetter) {
       return;
     }
-    this.workingCopyInternal = this.workingCopyGetter();
-    this.workingCopyGetter = null;
+    this.#workingCopy = this.#workingCopyGetter();
+    this.#workingCopyGetter = null;
   }
 
   commitWorkingCopy(): void {
     if (this.isDirty()) {
-      this.commitContent(this.workingCopy());
+      this.#commitContent(this.workingCopy());
     }
   }
 
   isDirty(): boolean {
-    return this.workingCopyInternal !== null || this.workingCopyGetter !== null;
+    return this.#workingCopy !== null || this.#workingCopyGetter !== null;
   }
 
   isKnownThirdParty(): boolean {
-    return this.isKnownThirdPartyInternal;
+    return this.#isKnownThirdParty;
   }
 
   markKnownThirdParty(): void {
-    this.isKnownThirdPartyInternal = true;
+    this.#isKnownThirdParty = true;
   }
 
   /**
    * {@link markAsUnconditionallyIgnoreListed}
    */
   isUnconditionallyIgnoreListed(): boolean {
-    return this.isUnconditionallyIgnoreListedInternal;
+    return this.#isUnconditionallyIgnoreListed;
   }
 
   isFetchXHR(): boolean {
@@ -459,35 +441,35 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
    * setting. We use this to mark breakpoint/logpoint condition scripts for now.
    */
   markAsUnconditionallyIgnoreListed(): void {
-    this.isUnconditionallyIgnoreListedInternal = true;
+    this.#isUnconditionallyIgnoreListed = true;
   }
 
   extension(): string {
-    return Common.ParsedURL.ParsedURL.extractExtension(this.nameInternal);
+    return Common.ParsedURL.ParsedURL.extractExtension(this.#name);
   }
 
   content(): string {
-    if (!this.contentInternal || 'error' in this.contentInternal) {
+    if (!this.#content || 'error' in this.#content) {
       return '';
     }
-    return this.contentInternal.text;
+    return this.#content.text;
   }
 
   loadError(): string|null {
-    return (this.contentInternal && 'error' in this.contentInternal && this.contentInternal.error) || null;
+    return (this.#content && 'error' in this.#content && this.#content.error) || null;
   }
 
   searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
-    if (!this.contentInternal || 'error' in this.contentInternal) {
-      return this.projectInternal.searchInFileContent(this, query, caseSensitive, isRegex);
+    if (!this.#content || 'error' in this.#content) {
+      return this.#project.searchInFileContent(this, query, caseSensitive, isRegex);
     }
     return Promise.resolve(
-        TextUtils.TextUtils.performSearchInContentData(this.contentInternal, query, caseSensitive, isRegex));
+        TextUtils.TextUtils.performSearchInContentData(this.#content, query, caseSensitive, isRegex));
   }
 
   contentLoaded(): boolean {
-    return Boolean(this.contentInternal);
+    return Boolean(this.#content);
   }
 
   uiLocation(lineNumber: number, columnNumber?: number): UILocation {
@@ -495,7 +477,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   messages(): Set<Message> {
-    return this.messagesInternal ? new Set(this.messagesInternal) : new Set();
+    return this.#messages ? new Set(this.#messages) : new Set();
   }
 
   addLineMessage(
@@ -508,46 +490,46 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   addMessage(message: Message): void {
-    if (!this.messagesInternal) {
-      this.messagesInternal = new Set();
+    if (!this.#messages) {
+      this.#messages = new Set();
     }
-    this.messagesInternal.add(message);
+    this.#messages.add(message);
     this.dispatchEventToListeners(Events.MessageAdded, message);
   }
 
   removeMessage(message: Message): void {
-    if (this.messagesInternal?.delete(message)) {
+    if (this.#messages?.delete(message)) {
       this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
   }
 
-  private removeAllMessages(): void {
-    if (!this.messagesInternal) {
+  #removeAllMessages(): void {
+    if (!this.#messages) {
       return;
     }
-    for (const message of this.messagesInternal) {
+    for (const message of this.#messages) {
       this.dispatchEventToListeners(Events.MessageRemoved, message);
     }
-    this.messagesInternal = null;
+    this.#messages = null;
   }
 
   setDecorationData(type: string, data: any): void {
-    if (data !== this.decorations.get(type)) {
-      this.decorations.set(type, data);
+    if (data !== this.#decorations.get(type)) {
+      this.#decorations.set(type, data);
       this.dispatchEventToListeners(Events.DecorationChanged, type);
     }
   }
 
   getDecorationData(type: string): any {
-    return this.decorations.get(type);
+    return this.#decorations.get(type);
   }
 
   disableEdit(): void {
-    this.disableEditInternal = true;
+    this.#disableEdit = true;
   }
 
   editDisabled(): boolean {
-    return this.disableEditInternal;
+    return this.#disableEdit;
   }
 }
 
@@ -562,7 +544,7 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface WorkingCopyCommitedEvent {
+export interface WorkingCopyCommittedEvent {
   uiSourceCode: UISourceCode;
   content: string;
   encoded: boolean|undefined;
@@ -570,7 +552,7 @@ export interface WorkingCopyCommitedEvent {
 
 export interface EventTypes {
   [Events.WorkingCopyChanged]: UISourceCode;
-  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent;
+  [Events.WorkingCopyCommitted]: WorkingCopyCommittedEvent;
   [Events.TitleChanged]: UISourceCode;
   [Events.MessageAdded]: Message;
   [Events.MessageRemoved]: Message;

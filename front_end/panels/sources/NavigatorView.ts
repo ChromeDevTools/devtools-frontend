@@ -1680,7 +1680,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
   constructor(
       navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode,
       frame: SDK.ResourceTreeModel.ResourceTreeFrame|null) {
-    super(navigatorView, 'UISourceCode:' + uiSourceCode.canononicalScriptId(), Types.File);
+    super(navigatorView, 'UISourceCode:' + uiSourceCode.canonicalScriptId(), Types.File);
     this.uiSourceCodeInternal = uiSourceCode;
     this.treeElement = null;
     this.eventListeners = [];
@@ -1752,7 +1752,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.treeElement.tooltip = tooltip;
     this.treeElement.updateAccessibleName();
 
-    this.updateId('UISourceCode:' + this.uiSourceCodeInternal.canononicalScriptId());
+    this.updateId('UISourceCode:' + this.uiSourceCodeInternal.canonicalScriptId());
   }
 
   override hasChildren(): boolean {

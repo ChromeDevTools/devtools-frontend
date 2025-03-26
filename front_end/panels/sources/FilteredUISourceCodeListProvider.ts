@@ -58,7 +58,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
         for (const uiSourceCode of project.uiSourceCodes()) {
           if (this.filterUISourceCode(uiSourceCode)) {
             this.uiSourceCodes.push(uiSourceCode);
-            this.uiSourceCodeIds.add(uiSourceCode.canononicalScriptId());
+            this.uiSourceCodeIds.add(uiSourceCode.canonicalScriptId());
           }
         }
       }
@@ -66,7 +66,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   private filterUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    if (this.uiSourceCodeIds.has(uiSourceCode.canononicalScriptId())) {
+    if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.JUST_MY_CODE) &&
@@ -228,7 +228,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
       return;
     }
     this.uiSourceCodes.push(uiSourceCode);
-    this.uiSourceCodeIds.add(uiSourceCode.canononicalScriptId());
+    this.uiSourceCodeIds.add(uiSourceCode.canonicalScriptId());
     this.refresh();
   }
 

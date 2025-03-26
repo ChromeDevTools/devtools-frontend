@@ -29,7 +29,7 @@ describe('UISourceCode', () => {
     const sutObject = setupMockedUISourceCode('https://example.com/');
     sutObject.contentTypeStub.name.returns('nameExample');
 
-    const result = sutObject.sut.canononicalScriptId();
+    const result = sutObject.sut.canonicalScriptId();
 
     assert.strictEqual(result, 'nameExample,https://example.com/');
   });

@@ -407,12 +407,12 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   private canonicalUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Workspace.UISourceCode.UISourceCode {
     // Check if we have already a UISourceCode for this url
-    const existingSourceCode = this.idToUISourceCode.get(uiSourceCode.canononicalScriptId());
+    const existingSourceCode = this.idToUISourceCode.get(uiSourceCode.canonicalScriptId());
     if (existingSourceCode) {
       // Ignore incoming uiSourceCode, we already have this file.
       return existingSourceCode;
     }
-    this.idToUISourceCode.set(uiSourceCode.canononicalScriptId(), uiSourceCode);
+    this.idToUISourceCode.set(uiSourceCode.canonicalScriptId(), uiSourceCode);
     this.uriToUISourceCode.set(uiSourceCode.url(), uiSourceCode);
     return uiSourceCode;
   }
@@ -427,7 +427,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       uiSourceCode.disableEdit();
     }
 
-    if (this.currentFileInternal?.canononicalScriptId() === uiSourceCode.canononicalScriptId()) {
+    if (this.currentFileInternal?.canonicalScriptId() === uiSourceCode.canonicalScriptId()) {
       return;
     }
 
@@ -472,8 +472,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       if (this.uriToUISourceCode.get(uiSourceCode.url()) === uiSourceCode) {
         this.uriToUISourceCode.delete(uiSourceCode.url());
       }
-      if (this.idToUISourceCode.get(uiSourceCode.canononicalScriptId()) === uiSourceCode) {
-        this.idToUISourceCode.delete(uiSourceCode.canononicalScriptId());
+      if (this.idToUISourceCode.get(uiSourceCode.canonicalScriptId()) === uiSourceCode) {
+        this.idToUISourceCode.delete(uiSourceCode.canonicalScriptId());
       }
     }
     this.tabbedPane.closeTabs(tabIds);
@@ -565,7 +565,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     const {tabId, isUserGesture} = event.data;
     const uiSourceCode = this.files.get(tabId);
     if (this.currentFileInternal &&
-        this.currentFileInternal.canononicalScriptId() === uiSourceCode?.canononicalScriptId()) {
+        this.currentFileInternal.canonicalScriptId() === uiSourceCode?.canonicalScriptId()) {
       this.removeViewListeners();
       this.currentView = null;
       this.currentFileInternal = null;
@@ -647,7 +647,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
     // Remove from map under old id if it has changed.
     for (const [k, v] of this.idToUISourceCode) {
-      if (v === uiSourceCode && k !== v.canononicalScriptId()) {
+      if (v === uiSourceCode && k !== v.canonicalScriptId()) {
         this.idToUISourceCode.delete(k);
       }
     }
@@ -662,7 +662,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
   }
 
   private uiSourceCodeWorkingCopyCommitted(
-      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.WorkingCopyCommitedEvent>): void {
+      event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.WorkingCopyCommittedEvent>): void {
     const uiSourceCode = event.data.uiSourceCode;
     this.updateFileTitle(uiSourceCode);
   }

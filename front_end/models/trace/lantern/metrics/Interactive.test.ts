@@ -8,7 +8,9 @@ import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.
 
 const {Interactive, FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
-describe('Metrics: Lantern TTI', () => {
+describe('Metrics: Lantern TTI', function() {
+  TraceLoader.setTestTimeout(this);
+
   let trace: Lantern.Types.Trace;
   let iframeTrace: Lantern.Types.Trace;
   before(async function() {

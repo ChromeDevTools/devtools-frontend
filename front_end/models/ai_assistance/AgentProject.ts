@@ -64,7 +64,12 @@ export class AgentProject {
     }
     this.#processedFiles.add(filepath);
     // TODO: needs additional handling for binary files.
-    return uiSourceCode.workingCopyContentData().text;
+    const content = uiSourceCode.workingCopyContentData();
+    if (!content.isTextContent) {
+      return;
+    }
+
+    return content.text;
   }
 
   /**

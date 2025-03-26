@@ -347,10 +347,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     // clang-format off
     return html`
     <devtools-report-section-header>${i18n.i18n.lockedString('Origin trials')}</devtools-report-section-header>
-    <devtools-report-section>
-        ${i18nString(UIStrings.originTrialsExplanation)}
+    <devtools-report-section><span class="report-section">${i18nString(UIStrings.originTrialsExplanation)}
         <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-        jslog=${VisualLogging.link('learn-more.origin-trials').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+        jslog=${VisualLogging.link('learn-more.origin-trials').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link></span>
     </devtools-report-section>
     ${this.#originTrialTreeView}
     <devtools-report-divider></devtools-report-divider>
@@ -732,9 +731,12 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     return html`
       <devtools-report-section-header>${i18nString(UIStrings.apiAvailability)}</devtools-report-section-header>
       <devtools-report-section>
-        ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
-        <x-link href="https://web.dev/why-coop-coep/" class="link" jslog=${
-        VisualLogging.link('learn-more.coop-coep').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+        <span class="report-section">${
+        i18nString(
+            UIStrings
+                .availabilityOfCertainApisDepends)}<x-link href="https://web.dev/why-coop-coep/" class="link" jslog=${
+        VisualLogging.link('learn-more.coop-coep').track({click: true})}>${
+        i18nString(UIStrings.learnMore)}</x-link></span>
       </devtools-report-section>
       ${this.#renderSharedArrayBufferAvailability()}
       ${this.#renderMeasureMemoryAvailability()}

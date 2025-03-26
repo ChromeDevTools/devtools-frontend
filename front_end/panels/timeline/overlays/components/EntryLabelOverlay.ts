@@ -4,6 +4,7 @@
 
 import '../../../../ui/components/icon_button/icon_button.js';
 import '../../../../ui/components/tooltips/tooltips.js';
+import '../../../../ui/components/spinners/spinners.js';
 
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
@@ -73,6 +74,10 @@ const UIStringsNotTranslate = {
    *@description Header text for the AI-powered annotations suggestions disclaimer dialog.
    */
   freDisclaimerHeader: 'Get AI-powered annotation suggestions',
+  /**
+   *@description Text shown when the AI-powered annotation is being generated.
+   */
+  generatingLabel: 'Generating label',
   /**
    *@description First disclaimer item text for the fre dialog - AI won't always get it right.
    */
@@ -168,6 +173,8 @@ export class EntryLabelOverlay extends HTMLElement {
    * consented, hopefully!
    */
   #inAIConsentDialogFlow = false;
+  // Keep track of the AI label loading state to render a loading component if the label is being generated
+  #isAILabelLoading = false;
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -470,15 +477,22 @@ export class EntryLabelOverlay extends HTMLElement {
         return;
       }
       try {
+        // Trigger a re-render to display the loading component in the place of the button when the label is being generated.
+        this.#isAILabelLoading = true;
+        await void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+
         this.#label = await this.#performanceAgent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
         this.#inputField.innerText = this.#label;
-        // Trigger a re-render to hide the AI Button now the label is generated.
+
+        this.#isAILabelLoading = false;
+        // Trigger a re-render to hide the AI Button and display the generated label.
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
       } catch {
         // TODO(b/405354265): handle the error state
       }
     } else {
+      this.#isAILabelLoading = false;
       this.#inAIConsentDialogFlow = true;
       const hasConsented = await this.#showUserAiFirstRunDialog();
       this.#inAIConsentDialogFlow = false;
@@ -569,11 +583,23 @@ export class EntryLabelOverlay extends HTMLElement {
     const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
+    if (this.#isAILabelLoading) {
+      // clang-format off
+    return html`
+      <span
+        class="ai-label-loading">
+        <devtools-spinner></devtools-spinner>
+        <span class="generate-label-text">${lockedString(UIStringsNotTranslate.generatingLabel)}</span>
+      </span>
+    `;
+      // clang-format on
+    }
+
     // clang-format off
     return html`
       <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->
       <span
-        class="ai-label-button-wrapper"
+        class="ai-label-button-wrapper only-pen-wrapper"
         @mousedown=${(e: Event) => e.preventDefault()}>
         <button
           class="ai-label-button enabled"
@@ -616,7 +642,7 @@ export class EntryLabelOverlay extends HTMLElement {
     return html`
       <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->
       <span
-        class="ai-label-disabled-button-wrapper"
+        class="ai-label-disabled-button-wrapper only-pen-wrapper"
         @mousedown=${(e: Event) => e.preventDefault()}>
         <button
           class="ai-label-button disabled"

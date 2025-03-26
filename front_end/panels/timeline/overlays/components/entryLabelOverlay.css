@@ -17,7 +17,8 @@
 }
 
 .ai-label-button-wrapper,
-.ai-label-disabled-button-wrapper {
+.ai-label-disabled-button-wrapper,
+.ai-label-loading {
   /* position the button wrapper on the very right of the label */
   position: absolute;
   left: 100%;
@@ -25,10 +26,6 @@
   /* Since the ai-button is a bit bigger than the label, lift it up for it to appear more centered */
   transform: translateY(-3px);
   flex-flow: row nowrap;
-  /* when the button wrapper is not hovered, set the max width to only fit the pen icon */
-  overflow: hidden;
-  width: var(--sys-size-12);
-  height: var(--sys-size-12);
   border: none;
   border-radius: var(--sys-shape-corner-large);
   background: var(--sys-color-surface3);
@@ -39,10 +36,22 @@
   transition:
     width var(--sys-motion-duration-long2) var(--sys-motion-easing-emphasized);
 
+  &.only-pen-wrapper {
+    /* when the button wrapper is not hovered, set the max width to only fit the pen icon */
+    overflow: hidden;
+    width: var(--sys-size-12);
+    height: var(--sys-size-12);
+  }
+
   * {
     /* Make up for the padding in a hovered button to only see the pen icon when it is not hovered */
     transform: translateX(-2px);
   }
+}
+
+.ai-label-loading {
+  gap: var(--sys-size-6);
+  padding: var(--sys-size-5) var(--sys-size-8);
 }
 
 .ai-label-button-wrapper:focus,

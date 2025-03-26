@@ -348,6 +348,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #serverSentEvents?: ServerSentEvents;
   responseReceivedPromise?: Promise<void>;
   responseReceivedPromiseResolve?: () => void;
+  directSocketInfo?: DirectSocketInfo;
 
   constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -2086,3 +2087,43 @@ export interface WebBundleInnerRequestInfo {
 }
 
 export type OverrideType = 'content'|'headers';
+
+export enum DirectSocketType {
+  TCP = 1,
+  UDP_BOUND = 2,
+  UDP_CONNECTED = 3,
+}
+
+export enum DirectSocketStatus {
+  OPENING = 1,
+  OPEN = 2,
+  CLOSED = 3,
+  ABORTED = 4,
+}
+
+export interface DirectSocketCreateOptions {
+  remoteAddr?: string;
+  remotePort?: number;
+  localAddr?: string;
+  localPort?: number;
+  noDelay?: boolean;
+  keepAliveDelay?: number;
+  sendBufferSize?: number;
+  receiveBufferSize?: number;
+  dnsQueryType?: Protocol.Network.DirectSocketDnsQueryType;
+}
+
+export interface DirectSocketOpenInfo {
+  remoteAddr?: string;
+  remotePort?: number;
+  localAddr?: string;
+  localPort?: number;
+}
+
+export interface DirectSocketInfo {
+  type: DirectSocketType;
+  status: DirectSocketStatus;
+  errorMessage?: string;
+  createOptions: DirectSocketCreateOptions;
+  openInfo?: DirectSocketOpenInfo;
+}

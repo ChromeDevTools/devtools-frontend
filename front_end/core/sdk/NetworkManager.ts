@@ -45,6 +45,8 @@ import * as Root from '../root/root.js';
 import {Cookie} from './Cookie.js';
 import {
   type BlockedCookieWithReason,
+  DirectSocketStatus,
+  DirectSocketType,
   Events as NetworkRequestEvents,
   type ExtraRequestInfo,
   type ExtraResponseInfo,
@@ -52,7 +54,7 @@ import {
   type NameValue,
   NetworkRequest,
   type WebBundleInfo,
-  type WebBundleInnerRequestInfo,
+  type WebBundleInnerRequestInfo
 } from './NetworkRequest.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
@@ -116,6 +118,22 @@ const UIStrings = {
    *@example {https://example.com} PH3
    */
   sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
+  /**
+   *@description One of direct socket connection statuses
+   */
+  directSocketStatusOpening: 'Opening',
+  /**
+   *@description One of direct socket connection statuses
+   */
+  directSocketStatusOpen: 'Open',
+  /**
+   *@description One of direct socket connection statuses
+   */
+  directSocketStatusClosed: 'Closed',
+  /**
+   *@description One of direct socket connection statuses
+   */
+  directSocketStatusAborted: 'Aborted',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1219,6 +1237,77 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.finishNetworkRequest(networkRequest, time, 0);
   }
 
+  directTCPSocketCreated(event: Protocol.Network.DirectTCPSocketCreatedEvent): void {
+    const requestURL = event.remotePort === 0 ? event.remoteAddr : `${event.remoteAddr}:${event.remotePort}`;
+    const networkRequest = NetworkRequest.createForWebSocket(
+        event.identifier, requestURL as Platform.DevToolsPath.UrlString, event.initiator);
+    networkRequest.hasNetworkData = true;
+    networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
+    networkRequest.protocol = i18n.i18n.lockedString('tcp');
+
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusOpening);
+    networkRequest.directSocketInfo = {
+      type: DirectSocketType.TCP,
+      status: DirectSocketStatus.OPENING,
+      createOptions: {
+        remoteAddr: event.remoteAddr,
+        remotePort: event.remotePort,
+        noDelay: event.options.noDelay,
+        keepAliveDelay: event.options.keepAliveDelay,
+        sendBufferSize: event.options.sendBufferSize,
+        receiveBufferSize: event.options.receiveBufferSize,
+        dnsQueryType: event.options.dnsQueryType,
+      }
+    };
+    networkRequest.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
+    networkRequest.setIssueTime(event.timestamp, event.timestamp);
+
+    requestToManagerMap.set(networkRequest, this.#manager);
+    this.startNetworkRequest(networkRequest, null);
+  }
+
+  directTCPSocketOpened(event: Protocol.Network.DirectTCPSocketOpenedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    networkRequest.responseReceivedTime = event.timestamp;
+    networkRequest.directSocketInfo.status = DirectSocketStatus.OPEN;
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusOpen);
+    networkRequest.directSocketInfo.openInfo = {
+      remoteAddr: event.remoteAddr,
+      remotePort: event.remotePort,
+      localAddr: event.localAddr,
+      localPort: event.localPort,
+    };
+    networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
+    const requestURL = event.remotePort === 0 ? event.remoteAddr : `${event.remoteAddr}:${event.remotePort}`;
+    networkRequest.setUrl(requestURL as Platform.DevToolsPath.UrlString);
+    this.updateNetworkRequest(networkRequest);
+  }
+
+  directTCPSocketAborted(event: Protocol.Network.DirectTCPSocketAbortedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    networkRequest.failed = true;
+    networkRequest.directSocketInfo.status = DirectSocketStatus.ABORTED;
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusAborted);
+    networkRequest.directSocketInfo.errorMessage = event.errorMessage;
+    this.finishNetworkRequest(networkRequest, event.timestamp, 0);
+  }
+
+  directTCPSocketClosed(event: Protocol.Network.DirectTCPSocketClosedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusClosed);
+    networkRequest.directSocketInfo.status = DirectSocketStatus.CLOSED;
+    this.finishNetworkRequest(networkRequest, event.timestamp, 0);
+  }
+
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {
     const request = this.#requestsById.get(event.requestId);
     if (!request) {
@@ -1281,18 +1370,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   policyUpdated(): void {
-  }
-
-  directTCPSocketCreated(_: Protocol.Network.DirectTCPSocketCreatedEvent): void {
-  }
-
-  directTCPSocketOpened(_: Protocol.Network.DirectTCPSocketOpenedEvent): void {
-  }
-
-  directTCPSocketAborted(_: Protocol.Network.DirectTCPSocketAbortedEvent): void {
-  }
-
-  directTCPSocketClosed(_: Protocol.Network.DirectTCPSocketClosedEvent): void {
   }
 
   /**

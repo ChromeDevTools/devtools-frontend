@@ -109,3 +109,21 @@ export function parseCacheControl(header: string|null): CacheControl|null {
 
   return cacheControlOptions;
 }
+
+const SECURE_LOCALHOST_DOMAINS = ['localhost', '127.0.0.1'];
+
+/**
+ * Is the host localhost-enough to satisfy the "secure context" definition
+ * https://github.com/GoogleChrome/lighthouse/pull/11766#discussion_r582340683
+ */
+export function isSyntheticNetworkRequestLocalhost(event: SyntheticNetworkRequest): boolean {
+  try {
+    const hostname = new URL(event.args.data.url).hostname;
+    // Any hostname terminating in `.localhost` is considered to be local.
+    // https://w3c.github.io/webappsec-secure-contexts/#localhost
+    // This method doesn't consider IPs that resolve to loopback, IPv6 or other loopback edgecases
+    return SECURE_LOCALHOST_DOMAINS.includes(hostname) || hostname.endsWith('.localhost');
+  } catch {
+    return false;
+  }
+}

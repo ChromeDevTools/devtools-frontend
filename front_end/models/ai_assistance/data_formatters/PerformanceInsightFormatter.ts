@@ -266,6 +266,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
         return '';
       case 'UseCache':
         return '';
+      case 'ModernHTTP':
+        return '';
     }
   }
 
@@ -320,6 +322,8 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'Viewport':
         return '';
       case 'UseCache':
+        return '';
+      case 'ModernHTTP':
         return '';
     }
   }

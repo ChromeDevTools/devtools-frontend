@@ -280,3 +280,7 @@ A page that has a few render blocking requests:
 - a script including some blocking `sleepFor` call that blocks the main thread
 
 All of which delays the LCP image from rendering.
+
+### http1.1
+
+Contains several image requests from the same 3P origin that use HTTP/1.1

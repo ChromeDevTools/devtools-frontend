@@ -372,6 +372,7 @@ export class TraceProcessor extends EventTarget {
       SlowCSSSelector: null,
       ForcedReflow: null,
       UseCache: null,
+      ModernHTTP: null,
     };
 
     // Determine the weights for each metric based on field data, utilizing the same scoring curve that Lighthouse uses.

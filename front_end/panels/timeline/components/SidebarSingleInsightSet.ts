@@ -118,6 +118,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   ThirdParties: Insights.ThirdParties.ThirdParties,
   Viewport: Insights.Viewport.Viewport,
   UseCache: Insights.UseCache.UseCache,
+  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
 };
 
 export class SidebarSingleInsightSet extends HTMLElement {

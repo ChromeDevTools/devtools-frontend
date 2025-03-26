@@ -397,6 +397,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'SlowCSSSelector',
         'ForcedReflow',
         'UseCache',
+        'ModernHTTP',
       ]);
 
       const orderWithMetadata = await getInsightOrder(true);
@@ -418,6 +419,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'SlowCSSSelector',
         'ForcedReflow',
         'UseCache',
+        'ModernHTTP',
       ]);
     });
   });

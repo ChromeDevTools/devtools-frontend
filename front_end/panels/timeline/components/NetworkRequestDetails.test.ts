@@ -46,6 +46,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
         [
           {title: undefined, value: 'chromedevtools.github.io/performance-stories/lcp-web-font/app.css'},
           {title: 'Request method', value: 'GET'},
+          {title: 'Protocol', value: 'unknown'},
           {title: 'Priority', value: 'Highest'},
           {title: 'MIME type', value: 'text/css'},
           {title: 'Encoded data', value: '(from cache)'},

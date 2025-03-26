@@ -37,6 +37,10 @@ const UIStrings = {
    */
   requestMethod: 'Request method',
   /**
+   *@description Text that refers to the network request protocol
+   */
+  protocol: 'Protocol',
+  /**
    *@description Text to show the priority of an item
    */
   priority: 'Priority',
@@ -384,6 +388,7 @@ export class NetworkRequestDetails extends HTMLElement {
         <div class="network-request-details-cols">
           <div class="network-request-details-col">
             ${this.#renderRow(i18nString(UIStrings.requestMethod), networkData.requestMethod)}
+            ${this.#renderRow(i18nString(UIStrings.protocol), networkData.protocol)}
             ${this.#renderRow(i18nString(UIStrings.priority), NetworkRequestTooltip.renderPriorityValue(this.#networkRequest))}
             ${this.#renderRow(i18nString(UIStrings.mimeType), networkData.mimeType)}
             ${this.#renderEncodedDataLength()}

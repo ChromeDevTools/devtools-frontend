@@ -35,6 +35,7 @@ copy_to_gen("traces") {
     "forced-reflow.json.gz",
     "generic-about-tracing.json.gz",
     "history-api-no-nav.json.gz",
+    "http1.1.json.gz",
     "idle-callback.json.gz",
     "idle-tasks.json.gz",
     "iframe-shift.json.gz",

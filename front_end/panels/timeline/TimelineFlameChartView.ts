@@ -1440,11 +1440,17 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     // Note that we do not change the Context back to `null` if the user picks
     // an invalid event - we don't want to reset it back as it may be they are
     // clicking around in order to understand something.
+    // We also do this in a rAF to not block the UI updating to show the selected event first.
     if (selectionIsEvent(selection) && this.#parsedTrace) {
-      const aiCallTree = Utils.AICallTree.AICallTree.fromEvent(selection.event, this.#parsedTrace);
-      if (aiCallTree) {
-        UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
-      }
+      requestAnimationFrame(() => {
+        if (!this.#parsedTrace) {
+          return;
+        }
+        const aiCallTree = Utils.AICallTree.AICallTree.fromEvent(selection.event, this.#parsedTrace);
+        if (aiCallTree) {
+          UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+        }
+      });
     }
   }
 

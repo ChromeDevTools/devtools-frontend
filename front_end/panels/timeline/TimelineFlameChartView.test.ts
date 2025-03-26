@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
+import {doubleRaf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -796,6 +797,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
       const selection = Timeline.TimelineSelection.selectionFromEvent(task);
       flameChartView.setSelectionAndReveal(selection);
+      await doubleRaf();  // the updating of the AI Call Tree is done in a rAF to not block.
       const flavor = UI.Context.Context.instance().flavor(Utils.AICallTree.AICallTree);
       assert.instanceOf(flavor, Utils.AICallTree.AICallTree);
     });

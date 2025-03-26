@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -9,6 +10,10 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Utils from './utils.js';
 
 describeWithEnvironment('AICallTree', () => {
+  beforeEach(() => {
+    Root.Runtime.experiments.disableForTest('timeline-show-all-events');
+  });
+
   it('will not build a tree from non-main-thread events', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
     // A random RasterizerTask. Although this does technically run on the
@@ -161,6 +166,20 @@ dur: 0.2
 self: 0.2
 `.trim();
     assert.strictEqual(callTree?.serialize(), expectedData);
+  });
+
+  it('can serialize a tree from an event that is not shown unless "show all events" is enabled', async function() {
+    Root.Runtime.experiments.enableForTest('timeline-show-all-events');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    // find a "v8.run" function that would not normally be shown
+    const event = parsedTrace.Renderer.allTraceEntries.find(entry => {
+      return entry.name === 'v8.run' && entry.ts === 122411196071;
+    });
+    assert.exists(event);
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(event, parsedTrace);
+    assert.isNotNull(callTree);
+    const treeStr = callTree.serialize();
+    assert.include(treeStr, 'v8.run');  // make sure the event is in the tree
   });
 
   it('serializes a tree with lots of recursion', async function() {

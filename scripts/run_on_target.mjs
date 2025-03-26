@@ -9,11 +9,17 @@ import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
 const argv = yargs(process.argv.slice(2))
+  .parserConfiguration({
+    'strip-aliased': true,
+  })
   .command('$0 [script]')
   .option('target', { alias: 't', type: 'string', default: 'Default' })
   .help(false)
   .version(false)
   .parseSync();
+
+delete argv.target;
+delete argv.script;
 
 const target = argv.target;
 let script = argv.script;
@@ -75,7 +81,7 @@ if (!fs.existsSync(scriptPath)) {
 const { argv0 } = process;
 const { status } = childProcess.spawnSync(
   argv0,
-  [scriptPath, ...unparse({ _: argv._ })],
+  [scriptPath, ...unparse(argv)],
   { stdio: 'inherit', env },
 );
 process.exit(status);

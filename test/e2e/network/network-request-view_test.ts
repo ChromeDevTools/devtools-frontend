@@ -477,9 +477,9 @@ describe('The Network Request view', () => {
     const payloadOutlineText =
         await Promise.all(payloadOutline.map(async item => item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [
-      'Query String Parameters (2)view sourceview URL-encoded',
+      'Query String Parameters (2)View sourceView URL-encoded',
       ['id42', 'parama b'],
-      'Form Data (4)view sourceview URL-encoded',
+      'Form Data (4)View sourceView URL-encoded',
       [
         'fooalpha',
         'barbeta:42:0',
@@ -497,7 +497,7 @@ describe('The Network Request view', () => {
     assert.strictEqual(await readClipboard(), 'alpha');
 
     // Context menu to copy the raw payload.
-    const viewSource = await waitForElementWithTextContent('view source');
+    const viewSource = await waitForElementWithTextContent('View source');
     await viewSource.click();
     const source = await waitForElementWithTextContent('id=42&param=a%20b');
     await source.click({button: 'right'});

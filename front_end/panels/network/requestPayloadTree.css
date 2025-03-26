@@ -20,7 +20,7 @@
   margin-top: -1px;
   display: flex;
   align-items: center;
-  height: 26px;
+  height: var(--sys-size-13);
 }
 
 .tree-outline li {
@@ -56,9 +56,6 @@
   display: inline;
   margin-left: 30px;
   font-weight: normal;
-  color: var(--sys-color-on-surface);
-  background: none;
-  border: none;
 }
 
 .tree-outline li.expanded .payload-toggle:focus-visible {

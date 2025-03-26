@@ -12,11 +12,22 @@ import { CallbackInterface } from "./productions/callback-interface.js";
 import { autoParenter } from "./productions/helpers.js";
 import { Eof } from "./productions/token.js";
 
+/** @typedef {'callbackInterface'|'dictionary'|'interface'|'mixin'|'namespace'} ExtendableInterfaces */
+/** @typedef {{ extMembers?: import("./productions/container.js").AllowedMember[]}} Extension */
+/** @typedef {Partial<Record<ExtendableInterfaces, Extension>>} Extensions */
+
+/**
+ * Parser options.
+ * @typedef {Object} ParserOptions
+ * @property {string} [sourceName]
+ * @property {boolean} [concrete]
+ * @property {Function[]} [productions]
+ * @property {Extensions} [extensions]
+ */
+
 /**
  * @param {Tokeniser} tokeniser
- * @param {object} options
- * @param {boolean} [options.concrete]
- * @param {Function[]} [options.productions]
+ * @param {ParserOptions} options
  */
 function parseByTokens(tokeniser, options) {
   const source = tokeniser.source;
@@ -33,7 +44,9 @@ function parseByTokens(tokeniser, options) {
     const callback = consume("callback");
     if (!callback) return;
     if (tokeniser.probe("interface")) {
-      return CallbackInterface.parse(tokeniser, callback);
+      return CallbackInterface.parse(tokeniser, callback, {
+        ...options?.extensions?.callbackInterface,
+      });
     }
     return CallbackFunction.parse(tokeniser, callback);
   }
@@ -41,20 +54,32 @@ function parseByTokens(tokeniser, options) {
   function interface_(opts) {
     const base = consume("interface");
     if (!base) return;
-    const ret =
-      Mixin.parse(tokeniser, base, opts) ||
-      Interface.parse(tokeniser, base, opts) ||
-      error("Interface has no proper body");
-    return ret;
+    return (
+      Mixin.parse(tokeniser, base, {
+        ...opts,
+        ...options?.extensions?.mixin,
+      }) ||
+      Interface.parse(tokeniser, base, {
+        ...opts,
+        ...options?.extensions?.interface,
+      }) ||
+      error("Interface has no proper body")
+    );
   }
 
   function partial() {
     const partial = consume("partial");
     if (!partial) return;
     return (
-      Dictionary.parse(tokeniser, { partial }) ||
+      Dictionary.parse(tokeniser, {
+        partial,
+        ...options?.extensions?.dictionary,
+      }) ||
       interface_({ partial }) ||
-      Namespace.parse(tokeniser, { partial }) ||
+      Namespace.parse(tokeniser, {
+        partial,
+        ...options?.extensions?.namespace,
+      }) ||
       error("Partial doesn't apply to anything")
     );
   }
@@ -73,11 +98,11 @@ function parseByTokens(tokeniser, options) {
       callback() ||
       interface_() ||
       partial() ||
-      Dictionary.parse(tokeniser) ||
+      Dictionary.parse(tokeniser, options?.extensions?.dictionary) ||
       Enum.parse(tokeniser) ||
       Typedef.parse(tokeniser) ||
       Includes.parse(tokeniser) ||
-      Namespace.parse(tokeniser)
+      Namespace.parse(tokeniser, options?.extensions?.namespace)
     );
   }
 
@@ -100,6 +125,7 @@ function parseByTokens(tokeniser, options) {
     }
     return defs;
   }
+
   const res = definitions();
   if (tokeniser.position < source.length) error("Unrecognised tokens");
   return res;
@@ -107,11 +133,7 @@ function parseByTokens(tokeniser, options) {
 
 /**
  * @param {string} str
- * @param {object} [options]
- * @param {*} [options.sourceName]
- * @param {boolean} [options.concrete]
- * @param {Function[]} [options.productions]
- * @return {import("./productions/base.js").Base[]}
+ * @param {ParserOptions} [options]
  */
 export function parse(str, options = {}) {
   const tokeniser = new Tokeniser(str);

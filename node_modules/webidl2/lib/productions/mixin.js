@@ -6,14 +6,13 @@ import { stringifier } from "./helpers.js";
 
 export class Mixin extends Container {
   /**
-   * @typedef {import("../tokeniser.js").Token} Token
-   *
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
-   * @param {Token} base
+   * @param {import("../tokeniser.js").Token} base
    * @param {object} [options]
-   * @param {Token} [options.partial]
+   * @param {import("./container.js").AllowedMember[]} [options.extMembers]
+   * @param {import("../tokeniser.js").Token} [options.partial]
    */
-  static parse(tokeniser, base, { partial } = {}) {
+  static parse(tokeniser, base, { extMembers = [], partial } = {}) {
     const tokens = { partial, base };
     tokens.mixin = tokeniser.consume("mixin");
     if (!tokens.mixin) {
@@ -24,6 +23,7 @@ export class Mixin extends Container {
       new Mixin({ source: tokeniser.source, tokens }),
       {
         allowedMembers: [
+          ...extMembers,
           [Constant.parse],
           [stringifier],
           [Attribute.parse, { noInherit: true }],

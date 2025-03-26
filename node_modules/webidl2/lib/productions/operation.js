@@ -9,12 +9,10 @@ import { validationError } from "../error.js";
 
 export class Operation extends Base {
   /**
-   * @typedef {import("../tokeniser.js").Token} Token
-   *
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {object} [options]
-   * @param {Token} [options.special]
-   * @param {Token} [options.regular]
+   * @param {import("../tokeniser.js").Token} [options.special]
+   * @param {import("../tokeniser.js").Token} [options.regular]
    */
   static parse(tokeniser, { special, regular } = {}) {
     const tokens = { special };

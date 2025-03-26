@@ -16,6 +16,19 @@ function inheritance(tokeniser) {
   return { colon, inheritance };
 }
 
+/**
+ * Parser callback.
+ * @callback ParserCallback
+ * @param {import("../tokeniser.js").Tokeniser} tokeniser
+ * @param {...*} args
+ */
+
+/**
+ * A parser callback and optional option object.
+ * @typedef AllowedMember
+ * @type {[ParserCallback, object?]}
+ */
+
 export class Container extends Base {
   /**
    * @param {import("../tokeniser.js").Tokeniser} tokeniser

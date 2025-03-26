@@ -9,9 +9,10 @@ export class Namespace extends Container {
   /**
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {object} [options]
+   * @param {import("./container.js").AllowedMember[]} [options.extMembers]
    * @param {import("../tokeniser.js").Token} [options.partial]
    */
-  static parse(tokeniser, { partial } = {}) {
+  static parse(tokeniser, { extMembers = [], partial } = {}) {
     const tokens = { partial };
     tokens.base = tokeniser.consume("namespace");
     if (!tokens.base) {
@@ -22,6 +23,7 @@ export class Namespace extends Container {
       new Namespace({ source: tokeniser.source, tokens }),
       {
         allowedMembers: [
+          ...extMembers,
           [Attribute.parse, { noInherit: true, readonly: true }],
           [Constant.parse],
           [Operation.parse, { regular: true }],

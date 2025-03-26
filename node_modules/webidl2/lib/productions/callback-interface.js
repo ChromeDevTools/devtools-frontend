@@ -5,8 +5,11 @@ import { Constant } from "./constant.js";
 export class CallbackInterface extends Container {
   /**
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
+   * @param {*} callback
+   * @param {object} [options]
+   * @param {import("./container.js").AllowedMember[]} [options.extMembers]
    */
-  static parse(tokeniser, callback, { partial = null } = {}) {
+  static parse(tokeniser, callback, { extMembers = [] } = {}) {
     const tokens = { callback };
     tokens.base = tokeniser.consume("interface");
     if (!tokens.base) {
@@ -16,8 +19,8 @@ export class CallbackInterface extends Container {
       tokeniser,
       new CallbackInterface({ source: tokeniser.source, tokens }),
       {
-        inheritable: !partial,
         allowedMembers: [
+          ...extMembers,
           [Constant.parse],
           [Operation.parse, { regular: true }],
         ],

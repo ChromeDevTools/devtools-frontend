@@ -34,8 +34,12 @@ function static_member(tokeniser) {
 export class Interface extends Container {
   /**
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
+   * @param {import("../tokeniser.js").Token} base
+   * @param {object} [options]
+   * @param {import("./container.js").AllowedMember[]} [options.extMembers]
+   * @param {import("../tokeniser.js").Token|null} [options.partial]
    */
-  static parse(tokeniser, base, { partial = null } = {}) {
+  static parse(tokeniser, base, { extMembers = [], partial = null } = {}) {
     const tokens = { partial, base };
     return Container.parse(
       tokeniser,
@@ -43,6 +47,7 @@ export class Interface extends Container {
       {
         inheritable: !partial,
         allowedMembers: [
+          ...extMembers,
           [Constant.parse],
           [Constructor.parse],
           [static_member],

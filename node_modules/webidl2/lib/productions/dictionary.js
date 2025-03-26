@@ -5,9 +5,10 @@ export class Dictionary extends Container {
   /**
    * @param {import("../tokeniser.js").Tokeniser} tokeniser
    * @param {object} [options]
+   * @param {import("./container.js").AllowedMember[]} [options.extMembers]
    * @param {import("../tokeniser.js").Token} [options.partial]
    */
-  static parse(tokeniser, { partial } = {}) {
+  static parse(tokeniser, { extMembers = [], partial } = {}) {
     const tokens = { partial };
     tokens.base = tokeniser.consume("dictionary");
     if (!tokens.base) {
@@ -18,7 +19,7 @@ export class Dictionary extends Container {
       new Dictionary({ source: tokeniser.source, tokens }),
       {
         inheritable: !partial,
-        allowedMembers: [[Field.parse]],
+        allowedMembers: [...extMembers, [Field.parse]],
       }
     );
   }

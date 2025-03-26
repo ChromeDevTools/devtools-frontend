@@ -199,6 +199,7 @@ properties:
    * `no-constructible-global`: Interfaces with `[Global]` cannot have constructors.
    * `renamed-legacy`: Legacy extended attributes must use their new names.
    * `replace-void`: `void` type is replaced by `undefined` type.
+   * `migrate-allowshared`: `[AllowShared] BufferSource` is replaced by `AllowSharedBufferSource`.
 * `input`: a short peek at the text at the point where the error happened
 * `tokens`: the five tokens at the point of error, as understood by the tokeniser
   (this is the same content as `input`, but seen from the tokeniser's point of view)

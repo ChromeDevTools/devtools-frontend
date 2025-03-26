@@ -1,5 +1,8 @@
 import { validationError } from "../error.js";
-import { idlTypeIncludesDictionary } from "../validators/helpers.js";
+import {
+  idlTypeIncludesDictionary,
+  idlTypeIncludesEnforceRange,
+} from "../validators/helpers.js";
 import { Base } from "./base.js";
 import {
   type_with_extended_attributes,
@@ -72,32 +75,32 @@ export class Attribute extends Base {
     yield* this.extAttrs.validate(defs);
     yield* this.idlType.validate(defs);
 
-    switch (this.idlType.generic) {
-      case "sequence":
-      case "record": {
-        const message = `Attributes cannot accept ${this.idlType.generic} types.`;
-        yield validationError(
-          this.tokens.name,
-          this,
-          "attr-invalid-type",
-          message
-        );
-        break;
+    if (["sequence", "record"].includes(this.idlType.generic)) {
+      const message = `Attributes cannot accept ${this.idlType.generic} types.`;
+      yield validationError(
+        this.tokens.name,
+        this,
+        "attr-invalid-type",
+        message
+      );
+    }
+
+    {
+      const { reference } = idlTypeIncludesDictionary(this.idlType, defs) || {};
+      if (reference) {
+        const targetToken = (this.idlType.union ? reference : this.idlType)
+          .tokens.base;
+        const message = "Attributes cannot accept dictionary types.";
+        yield validationError(targetToken, this, "attr-invalid-type", message);
       }
-      default: {
-        const { reference } =
-          idlTypeIncludesDictionary(this.idlType, defs) || {};
-        if (reference) {
-          const targetToken = (this.idlType.union ? reference : this.idlType)
-            .tokens.base;
-          const message = "Attributes cannot accept dictionary types.";
-          yield validationError(
-            targetToken,
-            this,
-            "attr-invalid-type",
-            message
-          );
-        }
+    }
+
+    if (this.readonly) {
+      if (idlTypeIncludesEnforceRange(this.idlType, defs)) {
+        const targetToken = this.idlType.tokens.base;
+        const message =
+          "Readonly attributes cannot accept [EnforceRange] extended attribute.";
+        yield validationError(targetToken, this, "attr-invalid-type", message);
       }
     }
   }

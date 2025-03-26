@@ -1,8 +1,10 @@
 /**
+ * @typedef {import("../validator.js").Definitions} Definitions
  * @typedef {import("../productions/dictionary.js").Dictionary} Dictionary
+ * @typedef {import("../../lib/productions/type").Type} Type
  *
- * @param {*} idlType
- * @param {import("../validator.js").Definitions} defs
+ * @param {Type} idlType
+ * @param {Definitions} defs
  * @param {object} [options]
  * @param {boolean} [options.useNullableInner] use when the input idlType is nullable and you want to use its inner type
  * @return {{ reference: *, dictionary: Dictionary }} the type reference that ultimately includes dictionary.
@@ -56,8 +58,8 @@ export function idlTypeIncludesDictionary(
 }
 
 /**
- * @param {*} dict dictionary type
- * @param {import("../validator.js").Definitions} defs
+ * @param {Dictionary} dict dictionary type
+ * @param {Definitions} defs
  * @return {boolean}
  */
 export function dictionaryIncludesRequiredField(dict, defs) {
@@ -79,4 +81,32 @@ export function dictionaryIncludesRequiredField(dict, defs) {
   }
   defs.cache.dictionaryIncludesRequiredField.set(dict, result);
   return result;
+}
+
+/**
+ * For now this only checks the most frequent cases:
+ * 1. direct inclusion of [EnforceRange]
+ * 2. typedef of that
+ *
+ * More complex cases with dictionaries and records are not covered yet.
+ *
+ * @param {Type} idlType
+ * @param {Definitions} defs
+ */
+export function idlTypeIncludesEnforceRange(idlType, defs) {
+  if (idlType.union) {
+    // TODO: This should ideally be checked too
+    return false;
+  }
+
+  if (idlType.extAttrs.some((e) => e.name === "EnforceRange")) {
+    return true;
+  }
+
+  const def = defs.unique.get(idlType.idlType);
+  if (def?.type !== "typedef") {
+    return false;
+  }
+
+  return def.idlType.extAttrs.some((e) => e.name === "EnforceRange");
 }

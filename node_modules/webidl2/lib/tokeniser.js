@@ -18,6 +18,7 @@ const tokenRe = {
 
 export const typeNameKeywords = [
   "ArrayBuffer",
+  "SharedArrayBuffer",
   "DataView",
   "Int8Array",
   "Int16Array",

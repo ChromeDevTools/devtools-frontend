@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import type * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import {
@@ -20,6 +20,7 @@ import {
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -38,8 +39,13 @@ describeWithMockConnection('PatchWidget', () => {
 
   describe('applyToWorkspace', () => {
     beforeEach(() => {
-      createTestFilesystem('file://test');
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
+      createContentProviderUISourceCode({
+        url: Platform.DevToolsPath.urlString`file://test/index.html`,
+        content: 'content',
+        mimeType: 'text/javascript',
+        projectType: Workspace.Workspace.projectTypes.Network,
+        metadata: new Workspace.UISourceCode.UISourceCodeMetadata(null, 'content'.length),
+      });
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -146,7 +152,7 @@ describeWithMockConnection('PatchWidget', () => {
     it('should show files uploaded', async () => {
       const {view, widget} = await createPatchWidget({
         aidaClient: mockAidaClient([
-          [{explanation: '', functionCalls: [{name: 'updateFiles', args: {files: ['index.html']}}]}], [{
+          [{explanation: '', functionCalls: [{name: 'updateFiles', args: {files: ['/index.html']}}]}], [{
             explanation: 'done',
           }]
         ]),
@@ -155,9 +161,9 @@ describeWithMockConnection('PatchWidget', () => {
 
       view.input.onApplyToWorkspace();
 
-      assert.strictEqual((await view.nextInput).sources, `Filenames in test.
+      assert.strictEqual((await view.nextInput).sources, `Filenames in page.
 Files:
-* index.html`);
+* /index.html`);
     });
 
     it('should show error state when applyToWorkspace fails', async () => {
@@ -181,111 +187,15 @@ Files:
     });
   });
 
-  describe('workspace', () => {
-    let project: Persistence.FileSystemWorkspaceBinding.FileSystem;
-
-    beforeEach(() => {
-      project = createTestFilesystem('file://test').project;
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-          patching: true,
-        },
-      });
-    });
-
-    it('does not select a workspace project if patching is disabled', async () => {
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-          patching: false,
-        },
-      });
-      const {view} = await createPatchWidget();
-      assert.isUndefined(view.input.projectName);
-    });
-
-    it('does not select a workspace project if setting does not exist', async () => {
-      const {view} = await createPatchWidget();
-      assert.isUndefined(view.input.projectName);
-    });
-
-    it('selects a workspace project matching the setting', async () => {
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
-      const {view} = await createPatchWidget();
-      assert.strictEqual(view.input.projectName, 'test');
-    });
-
-    it('removes a selected workspace project upon workspace removal', async () => {
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
-      const {view} = await createPatchWidget();
-      assert.strictEqual(view.input.projectName, 'test');
-
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      const input = await view.nextInput;
-      assert.isUndefined(input.projectName);
-    });
-
-    it('selection is triggered by applyToWorkspace click if no workspace is (pre-)selected', async () => {
-      let handler: (project: Workspace.Workspace.Project) => void = () => {};
-      const showSelectWorkspaceDialogStub =
-          sinon.stub(AiAssistance.SelectWorkspaceDialog, 'show').callsFake((handleProjectSelected, _project) => {
-            handler = handleProjectSelected;
-          });
-      const {view, widget} =
-          await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'suggested patch'}]])});
-      widget.changeSummary = 'body { background-color: red; }';
-      assert.isUndefined(view.input.projectName);
-
-      // Simulate clicking the "Apply to workspace" button
-      view.input.onApplyToWorkspace();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
-
-      // Simulate selecting a workspace with the SelectWorkspaceDialog
-      handler(project);
-      const input = await view.nextInput;
-
-      // Assert that a patch has been generated and a project has been selected
-      assert.strictEqual(input.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.SUCCESS);
-      assert.strictEqual(input.projectName, 'test');
-    });
-
-    it('selection is triggered by the "change"-button if a workspace is already (pre-)selected', async () => {
-      const {project: project2} = createTestFilesystem('file://test2');
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
-      let handler: (project: Workspace.Workspace.Project) => void = () => {};
-      const showSelectWorkspaceDialogStub =
-          sinon.stub(AiAssistance.SelectWorkspaceDialog, 'show').callsFake((onProjectSelected, _project) => {
-            handler = onProjectSelected;
-          });
-      const {view, widget} = await createPatchWidget();
-      widget.changeSummary = 'body { background-color: red; }';
-      assert.strictEqual(view.input.projectName, 'test');
-
-      // Simulate clicking the "Change" button
-      assert.isTrue(showSelectWorkspaceDialogStub.notCalled);
-      view.input.onChangeWorkspaceClick();
-      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
-
-      // Simulate selecting a different workspace with the SelectWorkspaceDialog
-      handler(project2);
-      const input = await view.nextInput;
-
-      // Assert that the project has been updated
-      assert.strictEqual(input.projectName, 'test2');
-    });
-  });
-
   describe('diff view', () => {
-    let uiSourceCode: Workspace.UISourceCode.UISourceCode;
+    let fileSystemUISourceCode: Workspace.UISourceCode.UISourceCode;
     let commitWorkingCopyStub:
         sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.commitWorkingCopy>>;
     let resetWorkingCopyStub:
         sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.resetWorkingCopy>>;
 
     beforeEach(() => {
-      uiSourceCode = createTestFilesystem('file://test').uiSourceCode;
+      fileSystemUISourceCode = createTestFilesystem('file://test').uiSourceCode;
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
       updateHostConfig({
         devToolsFreestyler: {
@@ -318,7 +228,7 @@ Files:
          const {view, widget} = await createPatchWidgetWithDiffView();
          const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
          widget.changeManager = changeManager;
-         uiSourceCode.setWorkingCopy('working copy');
+         fileSystemUISourceCode.setWorkingCopy('working copy');
 
          view.input.onSaveAll();
          const nextInput = await view.nextInput;
@@ -332,7 +242,7 @@ Files:
       const {view, widget} = await createPatchWidgetWithDiffView();
       const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
       widget.changeManager = changeManager;
-      uiSourceCode.setWorkingCopy('working copy');
+      fileSystemUISourceCode.setWorkingCopy('working copy');
 
       view.input.onDiscard();
       const nextInput = await view.nextInput;

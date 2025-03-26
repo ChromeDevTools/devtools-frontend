@@ -13,7 +13,6 @@ generate_css("css_files") {
     "./aiAssistancePanel.css",
     "./components/chatView.css",
     "./components/userActionRow.css",
-    "./selectWorkspaceDialog.css",
   ]
 }
 
@@ -21,7 +20,6 @@ devtools_module("ai_assistance") {
   sources = [
     "AiAssistancePanel.ts",
     "PatchWidget.ts",
-    "SelectWorkspaceDialog.ts",
     "components/ChatView.ts",
     "components/MarkdownRendererWithCodeBlock.ts",
     "components/UserActionRow.ts",
@@ -83,7 +81,6 @@ ts_library("unittests") {
   sources = [
     "AiAssistancePanel.test.ts",
     "PatchWidget.test.ts",
-    "SelectWorkspaceDialog.test.ts",
     "components/ChatView.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/UserActionRow.test.ts",

@@ -22299,31 +22299,36 @@
                     ]
                 },
                 {
-                    "id": "SharedStorageAccessType",
-                    "description": "Enum of shared storage access types.",
+                    "id": "SharedStorageAccessScope",
+                    "description": "Enum of shared storage access scopes.",
                     "type": "string",
                     "enum": [
-                        "documentAddModule",
-                        "documentSelectURL",
-                        "documentRun",
-                        "documentSet",
-                        "documentAppend",
-                        "documentDelete",
-                        "documentClear",
-                        "documentGet",
-                        "workletSet",
-                        "workletAppend",
-                        "workletDelete",
-                        "workletClear",
-                        "workletGet",
-                        "workletKeys",
-                        "workletEntries",
-                        "workletLength",
-                        "workletRemainingBudget",
-                        "headerSet",
-                        "headerAppend",
-                        "headerDelete",
-                        "headerClear"
+                        "window",
+                        "sharedStorageWorklet",
+                        "protectedAudienceWorklet",
+                        "header"
+                    ]
+                },
+                {
+                    "id": "SharedStorageAccessMethod",
+                    "description": "Enum of shared storage access methods.",
+                    "type": "string",
+                    "enum": [
+                        "addModule",
+                        "createWorklet",
+                        "selectURL",
+                        "run",
+                        "batchUpdate",
+                        "set",
+                        "append",
+                        "delete",
+                        "clear",
+                        "get",
+                        "keys",
+                        "values",
+                        "entries",
+                        "length",
+                        "remainingBudget"
                     ]
                 },
                 {
@@ -23874,9 +23879,14 @@
                             "$ref": "Network.TimeSinceEpoch"
                         },
                         {
-                            "name": "type",
+                            "name": "scope",
+                            "description": "Enum value indicating the access scope.",
+                            "$ref": "SharedStorageAccessScope"
+                        },
+                        {
+                            "name": "method",
                             "description": "Enum value indicating the Shared Storage API method invoked.",
-                            "$ref": "SharedStorageAccessType"
+                            "$ref": "SharedStorageAccessMethod"
                         },
                         {
                             "name": "mainFrameId",
@@ -23885,7 +23895,12 @@
                         },
                         {
                             "name": "ownerOrigin",
-                            "description": "Serialized origin for the context that invoked the Shared Storage API.",
+                            "description": "Serialization of the origin owning the Shared Storage data.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "ownerSite",
+                            "description": "Serialization of the site owning the Shared Storage data.",
                             "type": "string"
                         },
                         {

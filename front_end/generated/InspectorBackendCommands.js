@@ -1084,7 +1084,8 @@ inspectorBackend.registerEnum("Storage.StorageType", {Cookies: "cookies", File_s
 inspectorBackend.registerEnum("Storage.InterestGroupAccessType", {Join: "join", Leave: "leave", Update: "update", Loaded: "loaded", Bid: "bid", Win: "win", AdditionalBid: "additionalBid", AdditionalBidWin: "additionalBidWin", TopLevelBid: "topLevelBid", TopLevelAdditionalBid: "topLevelAdditionalBid", Clear: "clear"});
 inspectorBackend.registerEnum("Storage.InterestGroupAuctionEventType", {Started: "started", ConfigResolved: "configResolved"});
 inspectorBackend.registerEnum("Storage.InterestGroupAuctionFetchType", {BidderJs: "bidderJs", BidderWasm: "bidderWasm", SellerJs: "sellerJs", BidderTrustedSignals: "bidderTrustedSignals", SellerTrustedSignals: "sellerTrustedSignals"});
-inspectorBackend.registerEnum("Storage.SharedStorageAccessType", {DocumentAddModule: "documentAddModule", DocumentSelectURL: "documentSelectURL", DocumentRun: "documentRun", DocumentSet: "documentSet", DocumentAppend: "documentAppend", DocumentDelete: "documentDelete", DocumentClear: "documentClear", DocumentGet: "documentGet", WorkletSet: "workletSet", WorkletAppend: "workletAppend", WorkletDelete: "workletDelete", WorkletClear: "workletClear", WorkletGet: "workletGet", WorkletKeys: "workletKeys", WorkletEntries: "workletEntries", WorkletLength: "workletLength", WorkletRemainingBudget: "workletRemainingBudget", HeaderSet: "headerSet", HeaderAppend: "headerAppend", HeaderDelete: "headerDelete", HeaderClear: "headerClear"});
+inspectorBackend.registerEnum("Storage.SharedStorageAccessScope", {Window: "window", SharedStorageWorklet: "sharedStorageWorklet", ProtectedAudienceWorklet: "protectedAudienceWorklet", Header: "header"});
+inspectorBackend.registerEnum("Storage.SharedStorageAccessMethod", {AddModule: "addModule", CreateWorklet: "createWorklet", SelectURL: "selectURL", Run: "run", BatchUpdate: "batchUpdate", Set: "set", Append: "append", Delete: "delete", Clear: "clear", Get: "get", Keys: "keys", Values: "values", Entries: "entries", Length: "length", RemainingBudget: "remainingBudget"});
 inspectorBackend.registerEnum("Storage.StorageBucketsDurability", {Relaxed: "relaxed", Strict: "strict"});
 inspectorBackend.registerEnum("Storage.AttributionReportingSourceType", {Navigation: "navigation", Event: "event"});
 inspectorBackend.registerEnum("Storage.AttributionReportingTriggerDataMatching", {Exact: "exact", Modulus: "modulus"});
@@ -1099,7 +1100,7 @@ inspectorBackend.registerEvent("Storage.indexedDBListUpdated", ["origin", "stora
 inspectorBackend.registerEvent("Storage.interestGroupAccessed", ["accessTime", "type", "ownerOrigin", "name", "componentSellerOrigin", "bid", "bidCurrency", "uniqueAuctionId"]);
 inspectorBackend.registerEvent("Storage.interestGroupAuctionEventOccurred", ["eventTime", "type", "uniqueAuctionId", "parentAuctionId", "auctionConfig"]);
 inspectorBackend.registerEvent("Storage.interestGroupAuctionNetworkRequestCreated", ["type", "requestId", "auctions"]);
-inspectorBackend.registerEvent("Storage.sharedStorageAccessed", ["accessTime", "type", "mainFrameId", "ownerOrigin", "params"]);
+inspectorBackend.registerEvent("Storage.sharedStorageAccessed", ["accessTime", "scope", "method", "mainFrameId", "ownerOrigin", "ownerSite", "params"]);
 inspectorBackend.registerEvent("Storage.storageBucketCreatedOrUpdated", ["bucketInfo"]);
 inspectorBackend.registerEvent("Storage.storageBucketDeleted", ["bucketId"]);
 inspectorBackend.registerEvent("Storage.attributionReportingSourceRegistered", ["registration", "result"]);

@@ -117,8 +117,11 @@ describeWithMockConnection('SharedStorageModel', () => {
   let listener: SharedStorageListener;
 
   const TEST_ORIGIN_A = 'http://a.test';
+  const TEST_SITE_A = TEST_ORIGIN_A;
   const TEST_ORIGIN_B = 'http://b.test';
+  const TEST_SITE_B = TEST_ORIGIN_B;
   const TEST_ORIGIN_C = 'http://c.test';
+  const TEST_SITE_C = TEST_ORIGIN_C;
 
   const METADATA = {
     creationTime: 100 as Protocol.Network.TimeSinceEpoch,
@@ -145,45 +148,57 @@ describeWithMockConnection('SharedStorageModel', () => {
   const EVENTS = [
     {
       accessTime: 0,
-      type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+      method: Protocol.Storage.SharedStorageAccessMethod.Append,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_A,
+      ownerSite: TEST_SITE_A,
       params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.Window,
     },
     {
       accessTime: 10,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletGet,
+      method: Protocol.Storage.SharedStorageAccessMethod.Get,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_A,
+      ownerSite: TEST_SITE_A,
       params: {key: 'key0'} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 15,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
+      method: Protocol.Storage.SharedStorageAccessMethod.Length,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_B,
+      ownerSite: TEST_SITE_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 20,
-      type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
+      method: Protocol.Storage.SharedStorageAccessMethod.Clear,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_B,
+      ownerSite: TEST_SITE_B,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.Window,
     },
     {
       accessTime: 100,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
+      method: Protocol.Storage.SharedStorageAccessMethod.Set,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_C,
+      ownerSite: TEST_SITE_C,
       params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 150,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletRemainingBudget,
+      method: Protocol.Storage.SharedStorageAccessMethod.RemainingBudget,
       mainFrameId: MAIN_FRAME_ID,
       ownerOrigin: TEST_ORIGIN_C,
+      ownerSite: TEST_SITE_C,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
   ];
 
@@ -382,9 +397,11 @@ describeWithMockConnection('SharedStorageModel', () => {
     assert.deepEqual(listener.changeEventsForStorage(storageA), [
       {
         accessTime: 0,
-        type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+        method: Protocol.Storage.SharedStorageAccessMethod.Append,
         mainFrameId: MAIN_FRAME_ID,
+        ownerSite: TEST_SITE_A,
         params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
+        scope: Protocol.Storage.SharedStorageAccessScope.Window,
       },
     ]);
 
@@ -393,9 +410,11 @@ describeWithMockConnection('SharedStorageModel', () => {
     assert.deepEqual(listener.changeEventsForStorage(storageB), [
       {
         accessTime: 20,
-        type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
+        method: Protocol.Storage.SharedStorageAccessMethod.Clear,
         mainFrameId: MAIN_FRAME_ID,
+        ownerSite: TEST_SITE_B,
         params: {} as Protocol.Storage.SharedStorageAccessParams,
+        scope: Protocol.Storage.SharedStorageAccessScope.Window,
       },
     ]);
 
@@ -404,9 +423,11 @@ describeWithMockConnection('SharedStorageModel', () => {
     assert.deepEqual(listener.changeEventsForStorage(storageC), [
       {
         accessTime: 100,
-        type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
+        method: Protocol.Storage.SharedStorageAccessMethod.Set,
         mainFrameId: MAIN_FRAME_ID,
+        ownerSite: TEST_SITE_C,
         params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
+        scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
       },
     ]);
   });

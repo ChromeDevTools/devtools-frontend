@@ -39,25 +39,35 @@ describeWithLocale('SharedStorageAccessGrid', () => {
     const component = await renderSharedStorageAccessGrid([
       {
         accessTime: 0,
-        type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+        method: Protocol.Storage.SharedStorageAccessMethod.Append,
         mainFrameId: noId,
         ownerOrigin: 'https://owner1.com',
+        ownerSite: 'https://owner1.com',
         params: params1,
+        scope: Protocol.Storage.SharedStorageAccessScope.Window,
       },
       {
         accessTime: 10,
-        type: Protocol.Storage.SharedStorageAccessType.WorkletDelete,
+        method: Protocol.Storage.SharedStorageAccessMethod.Delete,
         mainFrameId: noId,
         ownerOrigin: 'https://owner2.com',
+        ownerSite: 'https://owner2.com',
         params: params2,
+        scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
       },
     ]);
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);
     const expectedValues = [
-      [(new Date(0 * 1e3)).toLocaleString(), 'documentAppend', 'https://owner1.com', JSON.stringify(params1)],
-      [(new Date(10 * 1e3)).toLocaleString(), 'workletDelete', 'https://owner2.com', JSON.stringify(params2)],
+      [
+        (new Date(0 * 1e3)).toLocaleString(), 'window', 'append', 'https://owner1.com', 'https://owner1.com',
+        JSON.stringify(params1)
+      ],
+      [
+        (new Date(10 * 1e3)).toLocaleString(), 'sharedStorageWorklet', 'delete', 'https://owner2.com',
+        'https://owner2.com', JSON.stringify(params2)
+      ],
     ];
     assert.deepEqual(rowValues, expectedValues);
   });

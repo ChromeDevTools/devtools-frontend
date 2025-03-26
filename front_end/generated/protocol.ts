@@ -14886,30 +14886,34 @@ export namespace Storage {
   }
 
   /**
-   * Enum of shared storage access types.
+   * Enum of shared storage access scopes.
    */
-  export const enum SharedStorageAccessType {
-    DocumentAddModule = 'documentAddModule',
-    DocumentSelectURL = 'documentSelectURL',
-    DocumentRun = 'documentRun',
-    DocumentSet = 'documentSet',
-    DocumentAppend = 'documentAppend',
-    DocumentDelete = 'documentDelete',
-    DocumentClear = 'documentClear',
-    DocumentGet = 'documentGet',
-    WorkletSet = 'workletSet',
-    WorkletAppend = 'workletAppend',
-    WorkletDelete = 'workletDelete',
-    WorkletClear = 'workletClear',
-    WorkletGet = 'workletGet',
-    WorkletKeys = 'workletKeys',
-    WorkletEntries = 'workletEntries',
-    WorkletLength = 'workletLength',
-    WorkletRemainingBudget = 'workletRemainingBudget',
-    HeaderSet = 'headerSet',
-    HeaderAppend = 'headerAppend',
-    HeaderDelete = 'headerDelete',
-    HeaderClear = 'headerClear',
+  export const enum SharedStorageAccessScope {
+    Window = 'window',
+    SharedStorageWorklet = 'sharedStorageWorklet',
+    ProtectedAudienceWorklet = 'protectedAudienceWorklet',
+    Header = 'header',
+  }
+
+  /**
+   * Enum of shared storage access methods.
+   */
+  export const enum SharedStorageAccessMethod {
+    AddModule = 'addModule',
+    CreateWorklet = 'createWorklet',
+    SelectURL = 'selectURL',
+    Run = 'run',
+    BatchUpdate = 'batchUpdate',
+    Set = 'set',
+    Append = 'append',
+    Delete = 'delete',
+    Clear = 'clear',
+    Get = 'get',
+    Keys = 'keys',
+    Values = 'values',
+    Entries = 'entries',
+    Length = 'length',
+    RemainingBudget = 'remainingBudget',
   }
 
   /**
@@ -15749,17 +15753,25 @@ export namespace Storage {
      */
     accessTime: Network.TimeSinceEpoch;
     /**
+     * Enum value indicating the access scope.
+     */
+    scope: SharedStorageAccessScope;
+    /**
      * Enum value indicating the Shared Storage API method invoked.
      */
-    type: SharedStorageAccessType;
+    method: SharedStorageAccessMethod;
     /**
      * DevTools Frame Token for the primary frame tree's root.
      */
     mainFrameId: Page.FrameId;
     /**
-     * Serialized origin for the context that invoked the Shared Storage API.
+     * Serialization of the origin owning the Shared Storage data.
      */
     ownerOrigin: string;
+    /**
+     * Serialization of the site owning the Shared Storage data.
+     */
+    ownerSite: string;
     /**
      * The sub-parameters wrapped by `params` are all optional and their
      * presence/absence depends on `type`.

@@ -56,8 +56,10 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   let target: SDK.Target.Target;
 
   const TEST_ORIGIN_A = 'http://www.example.com/';
+  const TEST_SITE_A = 'http://example.com';
   const TEST_ORIGIN_B = 'http://www.example.org/';
   const TEST_ORIGIN_C = 'http://www.example.net/';
+  const TEST_SITE_C = 'http://example.net';
 
   const TEST_EXTENSION_NAME = 'Test Extension';
 
@@ -66,45 +68,57 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   const EVENTS = [
     {
       accessTime: 0,
-      type: Protocol.Storage.SharedStorageAccessType.DocumentAppend,
+      method: Protocol.Storage.SharedStorageAccessMethod.Append,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_A,
+      ownerSite: TEST_SITE_A,
       params: {key: 'key0', value: 'value0'} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.Window,
     },
     {
       accessTime: 10,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletGet,
+      method: Protocol.Storage.SharedStorageAccessMethod.Get,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_A,
+      ownerSite: TEST_SITE_A,
       params: {key: 'key0'} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 15,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletLength,
+      method: Protocol.Storage.SharedStorageAccessMethod.Length,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_A,
+      ownerSite: TEST_SITE_A,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 20,
-      type: Protocol.Storage.SharedStorageAccessType.DocumentClear,
+      method: Protocol.Storage.SharedStorageAccessMethod.Clear,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_C,
+      ownerSite: TEST_SITE_C,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.Window,
     },
     {
       accessTime: 100,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletSet,
+      method: Protocol.Storage.SharedStorageAccessMethod.Set,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_C,
+      ownerSite: TEST_SITE_C,
       params: {key: 'key0', value: 'value1', ignoreIfPresent: true} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
     {
       accessTime: 150,
-      type: Protocol.Storage.SharedStorageAccessType.WorkletRemainingBudget,
+      method: Protocol.Storage.SharedStorageAccessMethod.RemainingBudget,
       mainFrameId: ID,
       ownerOrigin: TEST_ORIGIN_C,
+      ownerSite: TEST_SITE_C,
       params: {} as Protocol.Storage.SharedStorageAccessParams,
+      scope: Protocol.Storage.SharedStorageAccessScope.SharedStorageWorklet,
     },
   ];
 

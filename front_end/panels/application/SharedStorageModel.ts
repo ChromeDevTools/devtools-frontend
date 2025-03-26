@@ -56,8 +56,10 @@ export namespace SharedStorageForOrigin {
 
   export interface SharedStorageChangedEvent {
     accessTime: Protocol.Network.TimeSinceEpoch;
-    type: Protocol.Storage.SharedStorageAccessType;
+    scope: Protocol.Storage.SharedStorageAccessScope;
+    method: Protocol.Storage.SharedStorageAccessMethod;
     mainFrameId: Protocol.Page.FrameId;
+    ownerSite: string;
     params: Protocol.Storage.SharedStorageAccessParams;
   }
 
@@ -178,15 +180,11 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
   isChangeEvent(event: Protocol.Storage.SharedStorageAccessedEvent): boolean {
     return [
-      Protocol.Storage.SharedStorageAccessType.DocumentSet,
-      Protocol.Storage.SharedStorageAccessType.DocumentAppend,
-      Protocol.Storage.SharedStorageAccessType.DocumentDelete,
-      Protocol.Storage.SharedStorageAccessType.DocumentClear,
-      Protocol.Storage.SharedStorageAccessType.WorkletSet,
-      Protocol.Storage.SharedStorageAccessType.WorkletAppend,
-      Protocol.Storage.SharedStorageAccessType.WorkletDelete,
-      Protocol.Storage.SharedStorageAccessType.WorkletClear,
-    ].includes(event.type);
+      Protocol.Storage.SharedStorageAccessMethod.Set,
+      Protocol.Storage.SharedStorageAccessMethod.Append,
+      Protocol.Storage.SharedStorageAccessMethod.Delete,
+      Protocol.Storage.SharedStorageAccessMethod.Clear,
+    ].includes(event.method);
   }
 
   sharedStorageAccessed(event: Protocol.Storage.SharedStorageAccessedEvent): void {
@@ -194,8 +192,14 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
       const sharedStorage = this.storageForOrigin(event.ownerOrigin);
 
       if (sharedStorage) {
-        const eventData =
-            {accessTime: event.accessTime, type: event.type, mainFrameId: event.mainFrameId, params: event.params};
+        const eventData = {
+          accessTime: event.accessTime,
+          method: event.method,
+          mainFrameId: event.mainFrameId,
+          ownerSite: event.ownerSite,
+          params: event.params,
+          scope: event.scope,
+        };
 
         // Forward events that may have changed `sharedStorage` to listeners for `sharedStorage`.
         sharedStorage.dispatchEventToListeners(SharedStorageForOrigin.Events.SHARED_STORAGE_CHANGED, eventData);

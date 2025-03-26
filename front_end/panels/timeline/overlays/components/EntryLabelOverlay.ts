@@ -550,13 +550,39 @@ export class EntryLabelOverlay extends HTMLElement {
     return this.#aiAnnotationsEnabledSetting.get();
   }
 
-  // Check if the user is logged in, over 18, in a supported location and offline.
-  // If the user is not logged in, `blockedByAge` will return true.
-  #isAiAvailable(): boolean|undefined {
+  #shouldRenderAIButton(): 'enabled'|'disabled'|'hidden' {
+    const hasAiExperiment = Boolean(Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled);
+    const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
+    // If the call tree is not available, the entry is in a track other than the main track.
+    // Therefore, hide the button because, at the moment, the label can only be generated for main tracks
+    const dataToGenerateLabelAvailable = this.#callTree !== null;
+    /**
+     * Right now if the user "retries" the AI label generation the result will
+     * be almost identical because we don't change the input data or prompt. So
+     * we only show the generate button if the label is empty.
+     */
+    const labelIsEmpty = this.#label?.length <= 0;
+
+    if (!hasAiExperiment || aiDisabledByEnterprisePolicy || !dataToGenerateLabelAvailable || !labelIsEmpty) {
+      return 'hidden';
+    }
+
+    // To verify whether AI can be used, check if the user is logged in, over 18, in a supported
+    // location and offline. If the user is not logged in, `blockedByAge` will return true.
     const aiAvailable = !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
         !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
-    const dataToGenerateLabelAvailable = this.#callTree !== null;
-    return aiAvailable && dataToGenerateLabelAvailable;
+    if (aiAvailable) {
+      return 'enabled';
+    }
+
+    // If AI features are not available, we show a disabled button.
+    if (!aiAvailable) {
+      return 'disabled';
+    }
+
+    console.error('\'Generate label\' button is hidden for an unknown reason');
+    return 'hidden';
   }
 
   #renderAITooltip(opts: {textContent: string, includeSettingsButton: boolean}): Lit.TemplateResult {
@@ -666,17 +692,6 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #render(): void {
-    const hasAiExperiment = Boolean(Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled);
-    const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
-    /**
-     * Right now if the user "retries" the AI label generation the result will
-     * be almost identical because we don't change the input data or prompt. So
-     * we only show the generate button if the label is empty.
-     */
-    const labelIsEmpty = this.#label?.length <= 0;
-
-    const doNotShowAIButton = !hasAiExperiment || aiDisabledByEnterprisePolicy || !labelIsEmpty;
     // clang-format off
     Lit.render(
         html`
@@ -699,12 +714,16 @@ export class EntryLabelOverlay extends HTMLElement {
               contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
               jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
             ></span>
-            ${
-              // If the enterprise policy is disabled or the user does not have the feature flag, do not render anything.
-              // If it is enabled, render either the enabled or disabled ai button depending on whether the feature is available.
-              doNotShowAIButton ? Lit.nothing
-              : this.#isAiAvailable() ? this.#renderAiButton(): this.#renderDisabledAiButton()
+            ${(() => {
+              switch (this.#shouldRenderAIButton()) {
+                case 'hidden':
+                  return Lit.nothing;
+                case 'enabled':
+                  return this.#renderAiButton();
+                case 'disabled':
+                  return this.#renderDisabledAiButton();
               }
+            })()}
           </span>
           <svg class="connectorContainer">
             <line/>

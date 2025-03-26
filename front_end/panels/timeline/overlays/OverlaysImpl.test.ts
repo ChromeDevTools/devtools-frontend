@@ -327,7 +327,8 @@ describeWithEnvironment('Overlays', () => {
     }
 
     async function createAnnotationsLabelElement(
-        context: Mocha.Suite|Mocha.Context|null, file: string, entryIndex: number, label?: string): Promise<{
+        context: Mocha.Suite|Mocha.Context|null, file: string, entryIndex: number, label?: string,
+        isEventOnMainChart = true): Promise<{
       elementsWrapper: HTMLElement,
       inputField: HTMLElement,
       overlays: Overlays.Overlays.Overlays,
@@ -342,7 +343,12 @@ describeWithEnvironment('Overlays', () => {
 
       const {parsedTrace} = await TraceLoader.traceEngine(context, file);
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
-      const event = charts.mainProvider.eventByIndex?.(entryIndex);
+      let event;
+      if (isEventOnMainChart) {
+        event = charts.mainProvider.eventByIndex?.(entryIndex);
+      } else {
+        event = charts.networkProvider.eventByIndex?.(entryIndex);
+      }
       assert.isOk(event);
 
       // Create an entry label overlay
@@ -599,6 +605,14 @@ describeWithEnvironment('Overlays', () => {
       await changeEvent;
 
       assert.strictEqual(inputField.innerHTML, 'This is an interesting entry');
+    });
+
+    it('"Generate label" button does not appear on tracks other than main', async function() {
+      const {elementsWrapper} =
+          await createAnnotationsLabelElement(this, 'web-dev.json.gz', 0, '', /* isEventOnMainChart */ false);
+      const generateButton = elementsWrapper.querySelector<HTMLElement>('.ai-label-button');
+      // The button should not appear next to a network event
+      assert.isNotOk(generateButton, 'could not find "Generate label" button');
     });
 
     it('shows correct tooltip on the `generate ai label` hover for the users with logging enabled', async function() {

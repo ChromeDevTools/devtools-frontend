@@ -43,16 +43,20 @@ const uiSourceCodeToStyleMap = new WeakMap<Workspace.UISourceCode.UISourceCode, 
 
 export class StylesSourceMapping implements SourceMapping {
   #cssModel: SDK.CSSModel.CSSModel;
-  #project: ContentProviderBasedProject;
+  #networkProject: ContentProviderBasedProject;
+  #inspectorProject: ContentProviderBasedProject;
   readonly #styleFiles: Map<string, StyleFile>;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
 
   constructor(cssModel: SDK.CSSModel.CSSModel, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.#cssModel = cssModel;
     const target = this.#cssModel.target();
-    this.#project = new ContentProviderBasedProject(
+    this.#networkProject = new ContentProviderBasedProject(
         workspace, 'css:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
-    NetworkProject.setTargetForProject(this.#project, target);
+    NetworkProject.setTargetForProject(this.#networkProject, target);
+    this.#inspectorProject = new ContentProviderBasedProject(
+        workspace, 'inspector:' + target.id(), Workspace.Workspace.projectTypes.Inspector, '',
+        true /* isServiceProject */);
 
     this.#styleFiles = new Map();
     this.#eventListeners = [
@@ -131,7 +135,8 @@ export class StylesSourceMapping implements SourceMapping {
     const url = header.resourceURL();
     let styleFile = this.#styleFiles.get(url);
     if (!styleFile) {
-      styleFile = new StyleFile(this.#cssModel, this.#project, header);
+      const project = header.isViaInspector() ? this.#inspectorProject : this.#networkProject;
+      styleFile = new StyleFile(this.#cssModel, project, header);
       this.#styleFiles.set(url, styleFile);
     } else {
       styleFile.addHeader(header);
@@ -173,7 +178,8 @@ export class StylesSourceMapping implements SourceMapping {
     }
     this.#styleFiles.clear();
     Common.EventTarget.removeEventListeners(this.#eventListeners);
-    this.#project.removeProject();
+    this.#inspectorProject.removeProject();
+    this.#networkProject.removeProject();
   }
 }
 

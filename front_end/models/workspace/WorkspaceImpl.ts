@@ -85,6 +85,7 @@ export interface Project {
 export enum projectTypes {
   Debugger = 'debugger',
   Formatter = 'formatter',
+  Inspector = 'inspector',
   Network = 'network',
   FileSystem = 'filesystem',
   ContentScripts = 'contentscripts',

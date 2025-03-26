@@ -88,7 +88,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <div class="some-class container" @click=\${this.onClick.bind(this)}></div>
+      <div class="container some-class" @click=\${this.onClick.bind(this)}></div>
     </div>\`,
     target, {host: input});
 };

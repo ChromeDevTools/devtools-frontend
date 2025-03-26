@@ -167,7 +167,6 @@ devtools-recording-list-view {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 
-    /* stylelint-disable-next-line selector-type-no-unknown */
     > x-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);

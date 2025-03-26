@@ -12,7 +12,7 @@
   border: 1px solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-small);
   background-color: var(--app-color-menu-background);
-  box-shadow: var(--sys-elevation-level3); /* stylelint-disable-line plugin/use_theme_colors */
+  box-shadow: var(--sys-elevation-level3);
 }
 
 :host-context(.theme-with-dark-background) .soft-context-menu {

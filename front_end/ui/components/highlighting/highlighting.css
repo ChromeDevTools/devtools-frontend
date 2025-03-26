@@ -4,7 +4,6 @@
  * found in the LICENSE file.
  */
 
-/* stylelint-disable-next-line selector-pseudo-element-no-unknown,selector-type-no-unknown */
 :root::highlight(search-highlight) {
   background-color: var(--sys-color-yellow-outline);
 }

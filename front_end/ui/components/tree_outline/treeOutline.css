@@ -105,7 +105,6 @@ li.is-top-level:last-child {
 }
 
 ul[role="tree"]:focus-within [role="treeitem"].selected > .arrow-and-key-wrapper {
-  /* stylelint-disable-next-line color-named */
   background-color: var(--sys-color-tonal-container);
 }
 

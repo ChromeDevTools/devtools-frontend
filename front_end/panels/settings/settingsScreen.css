@@ -77,8 +77,8 @@ div:has(.settings-select) + div:has(.settings-select) {
   overflow: auto;
   position: absolute;
   inset: var(--sys-size-8) 0 0;
-  container-type: inline-size; /* stylelint-disable-line property-no-unknown */
-  container-name: settings-content; /* stylelint-disable-line property-no-unknown */
+  container-type: inline-size;
+  container-name: settings-content;
 }
 
 .settings-card-container,
@@ -98,7 +98,6 @@ div:has(.settings-select) + div:has(.settings-select) {
 
 /* In multi-column mode, we adopt single-column styles unless
    enough space is available to actually show two columns (at 850px) */
-/* stylelint-disable-next-line at-rule-no-unknown */
 @container settings-content (min-width: 850px) {
   .settings-multicolumn-card-container {
     display: block;

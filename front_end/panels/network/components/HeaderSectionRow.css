@@ -131,7 +131,7 @@
   color: var(--sys-color-token-subtle);
 }
 
-x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
+x-link .inline-icon {
   padding-right: 3px;
 }
 

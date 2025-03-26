@@ -1,8 +1,6 @@
 {
   "extends": "stylelint-config-standard",
-  "plugins": [
-    "./scripts/stylelint_rules/lib/use_theme_colors.mjs"
-  ],
+  "plugins": ["./scripts/stylelint_rules/lib/use_theme_colors.mjs"],
   "rules": {
     "plugin/use_theme_colors": true,
     "alpha-value-notation": "percentage",
@@ -14,10 +12,7 @@
     "selector-type-no-unknown": [
       true,
       {
-        "ignoreTypes": [
-          "/^devtools-/",
-          "/^dt-/"
-        ]
+        "ignoreTypes": ["/^devtools-/", "/^dt-/", "x-link"]
       }
     ],
     "selector-class-pattern": null,
@@ -27,5 +22,7 @@
     "value-no-vendor-prefix": null,
     "media-feature-name-no-vendor-prefix": null,
     "no-descending-specificity": null
-  }
+  },
+  "reportNeedlessDisables": true,
+  "reportUnscopedDisables": true
 }

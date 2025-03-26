@@ -56,7 +56,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
       return {
         values: [source, i18n.ByteUtilities.bytesToString(data.estimatedDuplicateBytes)],
         overlays: [...scriptToOverlay.values()],
-        subRows: data.duplicates.map(({script, attributedSize: resourceSize}) => {
+        subRows: data.duplicates.map(({script, attributedSize: resourceSize}, index) => {
           let overlays: Overlays.Overlays.TimelineOverlay[]|undefined;
           const overlay = scriptToOverlay.get(script);
           if (overlay) {
@@ -66,7 +66,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
           return {
             values: [
               script.request ? eventRef(script.request) : script.url ?? 'unknown',
-              i18n.ByteUtilities.bytesToString(resourceSize),
+              index === 0 ? '--' : i18n.ByteUtilities.bytesToString(resourceSize),
             ],
             overlays,
           };
@@ -80,7 +80,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
         <devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.columnSource), i18nString(UIStrings.columnResourceSize)],
+            headers: [i18nString(UIStrings.columnSource), i18nString(UIStrings.columnDuplicatedBytes)],
             rows,
           } as TableData}>
         </devtools-performance-table>

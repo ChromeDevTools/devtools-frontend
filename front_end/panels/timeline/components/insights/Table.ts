@@ -223,13 +223,16 @@ export class Table extends HTMLElement {
     const flattenedRows: TableDataRow[] = [];
     const rowEls: Lit.TemplateResult[] = [];
     function traverse(row: TableDataRow, depth = 0): void {
-      const styles = Lit.Directives.styleMap({
+      const thStyles = Lit.Directives.styleMap({
         paddingLeft: `calc(${depth} * var(--sys-size-5))`,
         borderLeft: depth ? 'var(--sys-size-1) solid var(--sys-color-divider)' : '',
       });
+      const trStyles = Lit.Directives.styleMap({
+        color: depth ? 'var(--sys-color-on-surface-subtle)' : '',
+      });
       const columnEls = row.values.map(
-          (value, i) => i === 0 ? html`<th scope="row" style=${styles}>${value}</th>` : html`<td>${value}</td>`);
-      rowEls.push(html`<tr>${columnEls}</tr>`);
+          (value, i) => i === 0 ? html`<th scope="row" style=${thStyles}>${value}</th>` : html`<td>${value}</td>`);
+      rowEls.push(html`<tr style=${trStyles}>${columnEls}</tr>`);
 
       flattenedRows.push(row);
 

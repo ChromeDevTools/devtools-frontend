@@ -18,11 +18,12 @@ const argv = yargs(process.argv.slice(2))
   .version(false)
   .parseSync();
 
+const target = argv.target;
+let script = argv.script;
+
 delete argv.target;
 delete argv.script;
 
-const target = argv.target;
-let script = argv.script;
 let sourceRoot = path.dirname(path.dirname(path.resolve(argv['$0'])));
 
 // Ensure that we can find the node_modules folder even if the out folder is

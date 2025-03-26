@@ -14,7 +14,7 @@ const ENABLE_FEATURES = [
   'DevToolsAiGeneratedTimelineLabels',
   'DevToolsAutomaticFileSystems',
   'DevToolsCssValueTracing',
-  'DevToolsFreeStyler:patching/true,user_tier/TESTERS',
+  'DevToolsFreestyler:patching/true,user_tier/TESTERS',
   'DevToolsWellKnown',
   'DevToolsAiGeneratedTimelineLabels',
   'DevToolsAiAssistancePerformanceAgent:insights_enabled/true',

@@ -55,6 +55,7 @@ class DomFragment {
         result.references = key.references.filter(r => !key.identifiers.includes(r.identifier))
                                 .map(r => ({node: /** @type {EsLintNode} */ (r.identifier)}));
         result.initializer = /** @type {EsLintNode} */ (key.identifiers[0]);
+        result.expression = key.name;
       }
     }
     if (key instanceof ClassMember) {

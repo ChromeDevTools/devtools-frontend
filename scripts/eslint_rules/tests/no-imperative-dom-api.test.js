@@ -400,5 +400,33 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor(label: HTMLElement) {
+    super();
+    this.contentElement.appendChild(label);
+    label.addEventListener('click', () => this.doSomething.bind(this));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      \${label}
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor(label: HTMLElement) {
+    super();
+    label.addEventListener('click', () => this.doSomething.bind(this));
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

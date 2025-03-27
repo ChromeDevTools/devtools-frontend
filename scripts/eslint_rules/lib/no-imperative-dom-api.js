@@ -213,6 +213,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       },
       'Program:exit'() {
         for (const domFragment of DomFragment.values()) {
+          if (!domFragment.tagName) {
+            continue;
+          }
           for (const reference of domFragment.references) {
             if (processReference(reference.node, domFragment)) {
               reference.processed = true;

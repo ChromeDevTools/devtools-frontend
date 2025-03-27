@@ -267,6 +267,9 @@ export class EntryLabelOverlay extends HTMLElement {
     if (labelBoxTextContent !== this.#label) {
       this.#label = labelBoxTextContent;
       this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
+      // Dispatch a fake change event; because we use contenteditable rather than an input, this event does not fire.
+      // But we want to listen to the change event in the VE logs, so we dispatch it here.
+      this.#inputField?.dispatchEvent(new Event('change', {bubbles: true, composed: true}));
     }
     this.#inputField?.setAttribute('aria-label', labelBoxTextContent);
   }
@@ -821,7 +824,7 @@ export class EntryLabelOverlay extends HTMLElement {
                 this.#render();
                 }}
               contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
-              jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
+              jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true, change: true})}
               tabindex="0"
             ></span>
             ${(() => {

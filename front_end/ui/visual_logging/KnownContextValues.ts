@@ -1286,6 +1286,7 @@ export const knownContextValues = new Set([
   'elements.css-hint',
   'elements.css-property-doc',
   'elements.css-selector-specificity',
+  'elements.css-value-trace',
   'elements.css-var',
   'elements.dom-breakpoints',
   'elements.dom-creation',

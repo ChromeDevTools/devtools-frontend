@@ -397,7 +397,6 @@ export class DebuggerPlugin extends Plugin {
         new UI.PopoverHelper.PopoverHelper(editor, this.getPopoverRequest.bind(this), 'sources.object-properties');
     this.popoverHelper.setDisableOnClick(true);
     this.popoverHelper.setTimeout(250, 250);
-    this.popoverHelper.setHasPadding(true);
   }
 
   static override accepts(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {

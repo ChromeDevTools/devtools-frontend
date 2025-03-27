@@ -238,7 +238,6 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.contentElement, event => this.#handlePopoverDescriptions(event), 'protocol-monitor.hint');
     this.#hintPopoverHelper.setDisableOnClick(true);
     this.#hintPopoverHelper.setTimeout(300);
-    this.#hintPopoverHelper.setHasPadding(true);
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.addEventListener(
         SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#handleAvailableTargetsChanged, this);
@@ -468,7 +467,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const replyArgs = elementData.replyArgs;
     let popupContent = '';
     // replyArgs and type cannot get into conflict because replyArgs is attached to a command and type to a parameter
-    if (replyArgs) {
+    if (replyArgs && replyArgs.length > 0) {
       popupContent = tail + `Returns: ${replyArgs}<br>`;
     } else if (type) {
       popupContent = tail + `<br>Type: ${type}<br>`;
@@ -480,7 +479,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       box: hintElement.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
         const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
-          getMessage: () => `<code><span>${head}</span></code>`,
+          getMessage: () => `<span>${head}</span>`,
           getPossibleFixMessage: () => popupContent,
           getLearnMoreLink: () =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,

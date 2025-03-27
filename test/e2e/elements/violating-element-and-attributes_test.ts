@@ -38,7 +38,7 @@ describe.skip('[crbug.com/1399414]: Element has violating properties', function(
       if (!node.shadowRoot) {
         throw new Error('Node shadow root not found.');
       }
-      const popup = node.shadowRoot.querySelector('div.widget.has-padding');
+      const popup = node.shadowRoot.querySelector('div.widget');
       if (!popup) {
         throw new Error('Popup not found.');
       }
@@ -47,7 +47,7 @@ describe.skip('[crbug.com/1399414]: Element has violating properties', function(
 
     assert.strictEqual(popupText, 'View issue:A form field element should have an id or name attribute');
     // Open the issue panel and look for the title;
-    await click('div.widget.has-padding a');
+    await click('div.widget a');
     const highlitedIssue = await waitFor('.issue .header .title');
     const issueTitle = await highlitedIssue.evaluate(async (node: Element) => node.textContent);
     assert.strictEqual(issueTitle, 'A form field element should have an id or name attribute');
@@ -76,7 +76,7 @@ describe('The elements panel', function() {
       if (!node.shadowRoot) {
         throw new Error('Node shadow root not found.');
       }
-      const popup = node.shadowRoot.querySelector('div.widget.has-padding');
+      const popup = node.shadowRoot.querySelector('div.widget');
       if (!popup) {
         throw new Error('Popup not found.');
       }
@@ -96,7 +96,7 @@ describe('The elements panel', function() {
       if (!node.shadowRoot) {
         throw new Error('Node shadow root not found.');
       }
-      const popup = node.shadowRoot.querySelector('div.widget.has-padding');
+      const popup = node.shadowRoot.querySelector('div.widget');
       if (!popup) {
         throw new Error('Popup not found.');
       }
@@ -108,7 +108,7 @@ describe('The elements panel', function() {
     });
 
     assert.strictEqual(popupText, 'Interactive element inside of a <legend> element');
-    await click('div.widget.has-padding x-link');
+    await click('div.widget x-link');
     const highlitedIssue = await waitFor('.issue .header .title');
     const issueTitle = await highlitedIssue.evaluate(async (node: Element) => node.textContent);
     assert.strictEqual(issueTitle, 'Interactive element inside of a <legend> element');

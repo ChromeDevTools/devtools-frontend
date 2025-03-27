@@ -5,10 +5,11 @@
  */
 
 .object-popover-content {
-  display: block;
+  display: flex;
   position: relative;
   overflow: hidden;
   flex: 1 1 auto;
+  flex-direction: column;
 }
 
 .object-popover-title {
@@ -18,6 +19,7 @@
   font-weight: bold;
   padding-left: 18px;
   padding-bottom: 2px;
+  flex-shrink: 0;
 }
 
 .object-popover-tree {

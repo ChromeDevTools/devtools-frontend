@@ -6,21 +6,12 @@
 
 .widget {
   display: flex;
-  background: var(--sys-color-cdt-base-container);
-  border: 1px solid transparent;
-  box-shadow: var(--drop-shadow);
-  border-radius: 2px;
-  overflow: auto;
-  user-select: text;
-  line-height: 11px;
-
-  &.borderless-popover {
-    border: 0;
-  }
-}
-
-.widget.has-padding {
-  padding: 6px;
+  font: var(--sys-typescale-body4-regular);
+  box-shadow: var(--sys-elevation-level2);
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-base-container-elevated);
+  border-radius: var(--sys-shape-corner-small);
+  padding: var(--sys-size-6) var(--sys-size-8);
 }
 
 .squiggles-content {

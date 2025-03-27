@@ -267,7 +267,6 @@ export class NetworkLogViewColumns {
 
     this.popoverHelper = new UI.PopoverHelper.PopoverHelper(
         this.networkLogView.element, this.getPopoverRequest.bind(this), 'network.initiator-stacktrace');
-    this.popoverHelper.setHasPadding(true);
     this.popoverHelper.setTimeout(300, 300);
     this.dataGridInternal = new DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>(({
       displayName: (i18nString(UIStrings.networkLog) as string),

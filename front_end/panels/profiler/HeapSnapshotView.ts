@@ -475,7 +475,6 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.popoverHelper = new UI.PopoverHelper.PopoverHelper(
         this.element, this.getPopoverRequest.bind(this), 'profiler.heap-snapshot-object');
     this.popoverHelper.setDisableOnClick(true);
-    this.popoverHelper.setHasPadding(true);
     this.element.addEventListener('scroll', this.popoverHelper.hidePopover.bind(this.popoverHelper), true);
 
     this.currentPerspectiveIndex = 0;

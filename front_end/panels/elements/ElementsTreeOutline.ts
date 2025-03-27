@@ -232,7 +232,6 @@ export class ElementsTreeOutline extends
         };
       }, 'elements.issue');
       this.#popupHelper.setTimeout(300);
-      this.#popupHelper.setHasPadding(true);
     }
   }
 

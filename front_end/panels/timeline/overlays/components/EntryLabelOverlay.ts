@@ -45,7 +45,15 @@ const UIStrings = {
   /**
    *@description Label used for screenreaders on the FRE dialog
    */
-  freDialog: 'Get AI-powered annotation suggestions dialog'
+  freDialog: 'Get AI-powered annotation suggestions dialog',
+  /**
+   *@description Screen-reader text for a tooltip link for navigating to "AI innovations" settings where the user can learn more about auto-annotations.
+   */
+  learnMoreAriaLabel: 'Learn more about auto annotations in settings',
+  /**
+   *@description Screen-reader text for a tooltip icon.
+   */
+  moreInfoAriaLabel: 'More info',
 } as const;
 
 /*
@@ -55,7 +63,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Tooltip link for the navigating to "AI innovations" page in settings.
    */
-  learnMore: 'Learn more',
+  learnMore: 'Learn more in settings',
   /**
    *@description Security disclaimer text displayed when the information icon on a button that generates an AI label is hovered.
    */
@@ -606,7 +614,11 @@ export class EntryLabelOverlay extends HTMLElement {
 
   #renderAITooltip(opts: {textContent: string, includeSettingsButton: boolean}): Lit.TemplateResult {
     // clang-format off
-    return html`<devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(this.#richTooltip)}>
+    return html`<devtools-tooltip
+    variant="rich"
+    id="info-tooltip"
+    aria-label=${i18nString(UIStrings.moreInfoAriaLabel)}
+    ${Directives.ref(this.#richTooltip)}>
       <div class="info-tooltip-container">
         ${opts.textContent}
         ${opts.includeSettingsButton ? html`
@@ -617,6 +629,7 @@ export class EntryLabelOverlay extends HTMLElement {
               click: true,
             })}
             @click=${this.#onTooltipLearnMoreClick}
+            aria-label=${i18nString(UIStrings.learnMoreAriaLabel)}
           >${lockedString(UIStringsNotTranslate.learnMore)}</button>
         ` : Lit.nothing}
       </div>

@@ -261,7 +261,8 @@ export class EntryLabelOverlay extends HTMLElement {
     // We do not want to create multi-line labels.
     // Therefore, if the new key is `Enter` key, treat it
     // as the end of the label input and blur the input field.
-    if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
+    if ((event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) &&
+        this.#isLabelEditable) {
       // Note that we do not stop the event propagating here; this is on
       // purpose because we need it to bubble up into TimelineFlameChartView's
       // handler. That updates the state and deals with the keydown.
@@ -276,7 +277,6 @@ export class EntryLabelOverlay extends HTMLElement {
       // safe to call this just in case the blur() didn't actually trigger.
       this.#inputField.blur();
       this.setLabelEditabilityAndRemoveEmptyLabel(false);
-
       return false;
     }
 
@@ -307,19 +307,10 @@ export class EntryLabelOverlay extends HTMLElement {
     }
 
     const pastedText = clipboardData.getData('text');
-
     const newText = this.#inputField.textContent + pastedText;
     const trimmedText = newText.slice(0, EntryLabelOverlay.MAX_LABEL_LENGTH + 1);
-
     this.#inputField.textContent = trimmedText;
-
-    // Reset the selection to the end
-    const selection = window.getSelection();
-    const range = document.createRange();
-    range.selectNodeContents(this.#inputField);
-    range.collapse(false);
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+    this.#placeCursorAtInputEnd();
   }
 
   set entryLabelVisibleHeight(entryLabelVisibleHeight: number) {
@@ -449,8 +440,9 @@ export class EntryLabelOverlay extends HTMLElement {
     }
     this.#isLabelEditable = editable;
     this.#render();
-    // If the label is editable, focus cursor on it
-    if (editable) {
+    // If the label is editable, focus cursor on it & put the cursor at the end
+    if (editable && this.#inputField) {
+      this.#placeCursorAtInputEnd();
       this.#focusInputBox();
     }
     // On MacOS when clearing the input box it is left with a new line, so we
@@ -461,6 +453,23 @@ export class EntryLabelOverlay extends HTMLElement {
       this.#isPendingRemoval = true;
       this.dispatchEvent(new EmptyEntryLabelRemoveEvent());
     }
+  }
+
+  /**
+   * Places the user's cursor at the end of the input. We do this when the user
+   * focuses the input with either the keyboard or mouse, and when they paste in
+   * text, so that the cursor is placed in a useful position to edit.
+   */
+  #placeCursorAtInputEnd(): void {
+    if (!this.#inputField) {
+      return;
+    }
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(this.#inputField);
+    range.collapse(false);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
   }
 
   set callTree(callTree: Utils.AICallTree.AICallTree|null) {
@@ -706,7 +715,12 @@ export class EntryLabelOverlay extends HTMLElement {
             <span
               class="input-field"
               role="textbox"
-              @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
+              @focus=${() => {
+                this.setLabelEditabilityAndRemoveEmptyLabel(true);
+              }}
+              @dblclick=${() => {
+                this.setLabelEditabilityAndRemoveEmptyLabel(true);
+              }}
               @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
               @keydown=${this.#handleLabelInputKeyDown}
               @paste=${this.#handleLabelInputPaste}
@@ -718,6 +732,7 @@ export class EntryLabelOverlay extends HTMLElement {
                 }}
               contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
               jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
+              tabindex="0"
             ></span>
             ${(() => {
               switch (this.#shouldRenderAIButton()) {

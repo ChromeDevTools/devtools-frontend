@@ -47,7 +47,7 @@ function isInChromiumDirectory() {
   }
 
   const normalizedPath = PATH_TO_EXECUTED_FILE.split(path.sep).join('/');
-  const devtoolsPath = 'src/third_party/devtools-frontend';
+  const devtoolsPath = 'third_party/devtools-frontend/src';
   const isInChromium = normalizedPath.includes(devtoolsPath);
   const potentialChromiumDir = PATH_TO_EXECUTED_FILE.substring(
       0,
@@ -78,7 +78,7 @@ function devtoolsRootPath() {
 function rootPath() {
   const {isInChromium, chromiumDirectory} = isInChromiumDirectory();
   if (isInChromium) {
-    return path.join(chromiumDirectory, 'src');
+    return chromiumDirectory;
   }
   return devtoolsRootPath();
 }
@@ -166,6 +166,7 @@ function downloadedChromeBinaryPath() {
 module.exports = {
   devtoolsRootPath,
   downloadedChromeBinaryPath,
+  isInChromiumDirectory,
   litAnalyzerExecutablePath,
   mochaExecutablePath,
   nodeModulesPath,

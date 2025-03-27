@@ -8,6 +8,8 @@ import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
+import {rootPath} from './devtools_paths.js';
+
 const argv = yargs(hideBin(process.argv))
                  .option('target', {
                    alias: 't',
@@ -37,7 +39,7 @@ const cwd = process.cwd();
 const {env} = process;
 
 // Create and initialize the `out/<target>` directory as needed.
-const outDir = path.join('out', target);
+const outDir = path.join(rootPath(), 'out', target);
 if (!fs.existsSync(outDir)) {
   const gnExe = path.join(cwd, 'third_party', 'depot_tools', 'gn');
   fs.mkdirSync(outDir, {recursive: true});
@@ -51,7 +53,7 @@ if (!fs.existsSync(outDir)) {
 
 function build() {
   const autoninjaExe = path.join(cwd, 'third_party', 'depot_tools', 'autoninja');
-  childProcess.spawnSync(autoninjaExe, ['-C', outDir], {
+  childProcess.spawnSync(autoninjaExe, ['-C', outDir, 'devtools_all_files'], {
     cwd,
     env,
     stdio: 'inherit',

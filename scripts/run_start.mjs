@@ -7,7 +7,7 @@ import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
-import {downloadedChromeBinaryPath, rootPath} from './devtools_paths.js';
+import {downloadedChromeBinaryPath, isInChromiumDirectory, rootPath} from './devtools_paths.js';
 
 // The list of features that are enabled by default.
 const ENABLE_FEATURES = [
@@ -30,7 +30,7 @@ const argv = yargs(hideBin(process.argv))
                  .option('browser', {
                    type: 'string',
                    choices: ['cft', 'canary'],
-                   default: 'cft',
+                   default: isInChromiumDirectory().isInChromium ? 'canary' : 'cft',
                    description: 'Launch in the specified browser',
                  })
                  .option('open', {
@@ -62,7 +62,7 @@ const runBuildPath = path.join(import.meta.dirname, 'run_build.mjs');
 function findBrowserBinary() {
   if (browser === 'canary') {
     const binary = ({
-      linux: path.join('/usr', 'bin', 'google-chrome-canary'),
+      linux: path.join('/usr', 'bin', 'google-chrome-unstable'),
       darwin: path.join('/Applications', 'Google Chrome Canary.app', 'Contents', 'MacOS', 'Google Chrome Canary'),
     })[process.platform];
     if (verbose) {
@@ -107,7 +107,10 @@ function start() {
   args.push(`--enable-features=${ENABLE_FEATURES.join(',')}`);
 
   // Open with our freshly built DevTools front-end.
-  const customDevToolsFrontEndPath = path.join(rootPath(), 'out', target, 'gen', 'front_end');
+  const genDir = path.join(rootPath(), 'out', target, 'gen');
+  const customDevToolsFrontEndPath = isInChromiumDirectory().isInChromium ?
+      path.join(genDir, 'third_party', 'devtools-frontend', 'src', 'front_end') :
+      path.join(genDir, 'front_end');
   args.push(`--custom-devtools-frontend=file://${customDevToolsFrontEndPath}`);
 
   // Chrome flags and URLs.

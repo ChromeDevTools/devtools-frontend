@@ -40,12 +40,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/common/common.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FreDialog {
-  static show({
-    header,
-    reminderItems,
-    onLearnMoreClick,
-    ariaLabel,
-  }: {
+  static show({header, reminderItems, onLearnMoreClick, ariaLabel, learnMoreButtonTitle}: {
     header: {
       iconName: string,
       text: Platform.UIString.LocalizedString,
@@ -56,6 +51,7 @@ export class FreDialog {
     }>,
     onLearnMoreClick: () => void,
     ariaLabel?: string,
+    learnMoreButtonTitle?: string,
   }): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog();
     if (ariaLabel) {
@@ -90,7 +86,7 @@ export class FreDialog {
             @click=${onLearnMoreClick}
             .jslogContext=${'fre-disclaimer.learn-more'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
-            ${i18nString(UIStrings.learnMore)}
+            ${learnMoreButtonTitle ?? i18nString(UIStrings.learnMore)}
           </devtools-button>
           <div class="right-buttons">
             <devtools-button

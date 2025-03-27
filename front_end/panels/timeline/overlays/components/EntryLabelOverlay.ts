@@ -98,6 +98,10 @@ const UIStringsNotTranslate = {
    *@description Third disclaimer item text part for the fre dialog part - settings panel text.
    */
   settingsPanel: 'settings panel',
+  /**
+   *@description Text for the 'learn more' button displayed in fre.
+   */
+  learnMoreButton: 'Learn more about auto annotations',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
@@ -551,11 +555,12 @@ export class EntryLabelOverlay extends HTMLElement {
               })}
             >${lockedString(UIStringsNotTranslate.settingsPanel)}</x-link>`,
           // clang-format on
-        }
+        },
       ],
       onLearnMoreClick: () => {
-        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-      }
+        UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/performance/reference#auto-annotations');
+      },
+      learnMoreButtonTitle: UIStringsNotTranslate.learnMoreButton,
     });
 
     if (userConsented) {

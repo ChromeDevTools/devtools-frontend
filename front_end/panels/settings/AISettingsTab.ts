@@ -339,15 +339,17 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         settingDescription: i18nString(UIStrings.getAIAnnotationsSuggestions),
         enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),
         settingItems: [
-          {iconName: 'pen', text: i18nString(UIStrings.getAIAnnotationsSuggestions)},
+          {iconName: 'pen-spark', text: i18nString(UIStrings.getAIAnnotationsSuggestions)},
         ],
         toConsiderSettingItems: [{
           iconName: 'google',
           text: noLogging ? i18nString(UIStrings.generatedAiAnnotationsSendDataNoLogging) :
                             i18nString(UIStrings.generatedAiAnnotationsSendData)
         }],
-        // TODO(b/405316456): Add a relevant link here once we have written the documentation.
-        learnMoreLink: {url: '', linkJSLogContext: 'learn-more.ai-annotations'},
+        learnMoreLink: {
+          url: 'https://developer.chrome.com/docs/devtools/performance/reference#auto-annotations',
+          linkJSLogContext: 'learn-more.auto-annotations'
+        },
         settingExpandState: {
           isSettingExpanded: false,
           expandSettingJSLogContext: 'freestyler.accordion',

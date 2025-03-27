@@ -66,6 +66,10 @@ export function generateInsight(
       return false;
     }
 
+    if (script.url?.startsWith('chrome-extension://')) {
+      return false;
+    }
+
     return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts);
   });
 

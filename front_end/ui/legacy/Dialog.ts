@@ -103,6 +103,10 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     Dialog.instance = null;
   }
 
+  setAriaLabel(label: string): void {
+    ARIAUtils.setLabel(this.contentElement, label);
+  }
+
   setCloseOnEscape(close: boolean): void {
     this.closeOnEscape = close;
   }

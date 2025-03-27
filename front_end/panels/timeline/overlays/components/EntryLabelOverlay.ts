@@ -42,6 +42,10 @@ const UIStrings = {
    *@description Text displayed on a button that generates an AI label.
    */
   generateLabelButton: 'Generate label',
+  /**
+   *@description Label used for screenreaders on the FRE dialog
+   */
+  freDialog: 'Get AI-powered annotation suggestions dialog'
 } as const;
 
 /*
@@ -479,7 +483,7 @@ export class EntryLabelOverlay extends HTMLElement {
       try {
         // Trigger a re-render to display the loading component in the place of the button when the label is being generated.
         this.#isAILabelLoading = true;
-        await void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
 
         this.#label = await this.#performanceAgent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
@@ -512,6 +516,7 @@ export class EntryLabelOverlay extends HTMLElement {
    */
   async #showUserAiFirstRunDialog(): Promise<boolean> {
     const userConsented = await PanelCommon.FreDialog.show({
+      ariaLabel: i18nString(UIStrings.freDialog),
       header: {iconName: 'pen-spark', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: [
         {

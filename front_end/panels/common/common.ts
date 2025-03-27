@@ -44,6 +44,7 @@ export class FreDialog {
     header,
     reminderItems,
     onLearnMoreClick,
+    ariaLabel,
   }: {
     header: {
       iconName: string,
@@ -54,8 +55,12 @@ export class FreDialog {
       content: Platform.UIString.LocalizedString|Lit.LitTemplate,
     }>,
     onLearnMoreClick: () => void,
+    ariaLabel?: string,
   }): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog();
+    if (ariaLabel) {
+      dialog.setAriaLabel(ariaLabel);
+    }
     const result = Promise.withResolvers<boolean>();
     // clang-format off
     Lit.render(html`

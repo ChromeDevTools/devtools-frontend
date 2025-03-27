@@ -11,7 +11,6 @@ import * as PanelUtils from '../../../panels/utils/utils.js';
 import * as Trace from '../../trace/trace.js';
 
 import {
-  AgentType,
   AiAgent,
   type ContextResponse,
   ConversationContext,
@@ -199,7 +198,6 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
  * instance for a new conversation.
  */
 export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTree> {
-  override readonly type = AgentType.PERFORMANCE;
   readonly preamble = preamble;
 
   // We have to set the type of clientFeature here to be the entire enum

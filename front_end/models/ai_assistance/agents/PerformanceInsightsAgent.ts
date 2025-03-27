@@ -13,7 +13,6 @@ import {debugLog} from '../debug.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
-  AgentType,
   AiAgent,
   type ContextDetail,
   type ContextResponse,
@@ -206,7 +205,6 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
     yield {type: ResponseType.CONTEXT, title, details: [titleDetail]};
   }
 
-  override readonly type = AgentType.PERFORMANCE_INSIGHT;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_INSIGHTS_AGENT;
 

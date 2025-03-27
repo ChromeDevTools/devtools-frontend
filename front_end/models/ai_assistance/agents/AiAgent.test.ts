@@ -36,7 +36,6 @@ function mockConversationContext(): AiAssistance.ConversationContext<unknown> {
 }
 
 class AiAgentMock extends AiAgent<unknown> {
-  type = AiAssistance.AgentType.STYLING;
   override preamble = 'preamble';
 
   // eslint-disable-next-line require-yield
@@ -164,7 +163,6 @@ describeWithEnvironment('AiAgent', () => {
 
     it('builds a request without preamble', async () => {
       class AiAgentMockWithoutPreamble extends AiAgent<unknown> {
-        type = AiAssistance.AgentType.STYLING;
         override preamble = undefined;
         // eslint-disable-next-line require-yield
         override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
@@ -384,7 +382,6 @@ describeWithEnvironment('AiAgent', () => {
 
   describe('functions', () => {
     class AgentWithFunction extends AiAgent<unknown> {
-      type = AiAssistance.AgentType.STYLING;
       override preamble = 'preamble';
       called = 0;
 

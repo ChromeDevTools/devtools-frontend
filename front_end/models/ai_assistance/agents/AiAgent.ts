@@ -130,15 +130,6 @@ export interface ParsedStep {
 
 export type ParsedResponse = ParsedAnswer|ParsedStep;
 
-export const enum AgentType {
-  STYLING = 'freestyler',
-  FILE = 'drjones-file',
-  NETWORK = 'drjones-network-request',
-  PERFORMANCE = 'drjones-performance',
-  PERFORMANCE_INSIGHT = 'performance-insight',
-  PATCH = 'patch',
-}
-
 export const MAX_STEPS = 10;
 
 export abstract class ConversationContext<T> {
@@ -231,8 +222,6 @@ interface AidaFetchResult {
  * more than MAX_STEPS iterations.
  */
 export abstract class AiAgent<T> {
-  /** Subclasses need to define these. */
-  abstract readonly type: AgentType;
   /**
    * WARNING: preamble defined in code is only used when userTier is
    * TESTERS. Otherwise, a server-side preamble is used (see

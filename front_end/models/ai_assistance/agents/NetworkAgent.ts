@@ -10,7 +10,6 @@ import * as PanelUtils from '../../../panels/utils/utils.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
-  AgentType,
   AiAgent,
   type ContextDetail,
   type ContextResponse,
@@ -123,7 +122,6 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
  * instance for a new conversation.
  */
 export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
-  override readonly type = AgentType.NETWORK;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier(): string|undefined {

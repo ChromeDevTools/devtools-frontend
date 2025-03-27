@@ -10,7 +10,6 @@ import type * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {
-  AgentType,
   AiAgent,
   type ContextDetail,
   type ContextResponse,
@@ -110,7 +109,6 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
  * instance for a new conversation.
  */
 export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
-  override readonly type = AgentType.FILE;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier(): string|undefined {

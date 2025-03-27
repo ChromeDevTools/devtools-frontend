@@ -18,7 +18,6 @@ import {AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME} from '../injected.j
 
 import {
   type AgentOptions as BaseAgentOptions,
-  AgentType,
   AiAgent,
   type ContextResponse,
   ConversationContext,
@@ -262,7 +261,6 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
  * instance for a new conversation.
  */
 export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
-  override readonly type = AgentType.STYLING;
   protected override functionCallEmulationEnabled = true;
 
   preamble = preamble;

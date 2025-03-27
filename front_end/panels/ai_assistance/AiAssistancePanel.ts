@@ -378,22 +378,27 @@ function createPerfInsightContext(insight: TimelineUtils.InsightAIContext.Active
   return new AiAssistanceModel.InsightContext(insight);
 }
 
-function agentTypeToConversationType(type: AiAssistanceModel.AgentType): AiAssistanceModel.ConversationType {
-  switch (type) {
-    case AiAssistanceModel.AgentType.STYLING:
-      return AiAssistanceModel.ConversationType.STYLING;
-    case AiAssistanceModel.AgentType.NETWORK:
-      return AiAssistanceModel.ConversationType.NETWORK;
-    case AiAssistanceModel.AgentType.FILE:
-      return AiAssistanceModel.ConversationType.FILE;
-    case AiAssistanceModel.AgentType.PERFORMANCE:
-      return AiAssistanceModel.ConversationType.PERFORMANCE;
-    case AiAssistanceModel.AgentType.PERFORMANCE_INSIGHT:
-      return AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
-    case AiAssistanceModel.AgentType.PATCH:
-      throw new Error(
-          'PATCH AiAssistanceModel.AgentType does not have a corresponding AiAssistanceModels.ConversationType.');
+function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiAssistanceModel.ConversationType {
+  if (agent instanceof AiAssistanceModel.StylingAgent) {
+    return AiAssistanceModel.ConversationType.STYLING;
   }
+
+  if (agent instanceof AiAssistanceModel.NetworkAgent) {
+    return AiAssistanceModel.ConversationType.NETWORK;
+  }
+  if (agent instanceof AiAssistanceModel.FileAgent) {
+    return AiAssistanceModel.ConversationType.FILE;
+  }
+
+  if (agent instanceof AiAssistanceModel.PerformanceAgent) {
+    return AiAssistanceModel.ConversationType.PERFORMANCE;
+  }
+
+  if (agent instanceof AiAssistanceModel.PerformanceInsightsAgent) {
+    return AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
+  }
+
+  throw new Error('Provided agent does not have a corresponding conversation type');
 }
 
 let panelInstance: AiAssistancePanel;
@@ -578,7 +583,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetConversationType = AiAssistanceModel.ConversationType.PERFORMANCE;
     }
 
-    if (this.#conversationAgent?.type === targetConversationType) {
+    if (this.#conversation?.type === targetConversationType) {
       // The above if makes sure even if we have an active agent it's empty
       // So we can just reuse it
       return;
@@ -604,7 +609,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // create a new conversation along side it
       if (agent) {
         this.#conversation = new AiAssistanceModel.Conversation(
-            agentTypeToConversationType(agent.type),
+            agentToConversationType(agent),
             [],
             agent.id,
             false,

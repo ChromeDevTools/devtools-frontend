@@ -10,7 +10,6 @@ import {debugLog} from '../debug.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
-  AgentType,
   AiAgent,
   type ContextResponse,
   type ConversationContext,
@@ -46,7 +45,6 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
     return;
   }
 
-  override readonly type = AgentType.PATCH;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 
@@ -230,7 +228,6 @@ export class FileUpdateAgent extends AiAgent<Workspace.Workspace.Project> {
     return;
   }
 
-  override readonly type = AgentType.PATCH;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 

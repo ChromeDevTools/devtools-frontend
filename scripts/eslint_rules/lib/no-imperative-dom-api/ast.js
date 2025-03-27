@@ -6,7 +6,8 @@
  */
 'use strict';
 
-/** @typedef {import('eslint').Rule.Node} Node */
+/** @typedef {import('estree').Node} Node */
+/** @typedef {import('eslint').Rule.Node} EsLintNode */
 
 /**
  * @param {Node} node
@@ -23,12 +24,12 @@ function isIdentifier(node, name) {
  * @param {function(Node): boolean} propertyPredicate
  */
 function isMemberExpression(node, objectPredicate, propertyPredicate) {
-  return node.type === 'MemberExpression' && objectPredicate(/** @type {Node} */ (node.object)) &&
-      propertyPredicate(/** @type {Node} */ (node.property));
+  return node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
 }
 
-/** @param {Node} node */
-function getEnclosingExpression(node) {
+/** @param {Node} estreeNode */
+function getEnclosingExpression(estreeNode) {
+  let node = /** @type {EsLintNode} */ (estreeNode);
   while (node.parent) {
     if (node.parent.type === 'BlockStatement') {
       return node;
@@ -38,17 +39,19 @@ function getEnclosingExpression(node) {
   return null;
 }
 
-function getEnclosingProperty(node) {
+/** @param {Node} estreeNode */
+function getEnclosingProperty(estreeNode) {
+  const node = /** @type {EsLintNode} */ (estreeNode);
   if (node.parent.type === 'AssignmentExpression' && node.parent.right === node &&
       isMemberExpression(node.parent.left, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
-    return /** @type {Node} */ (node.parent.left);
+    return node.parent.left;
   }
   return null;
 }
 
 /** @param {Node} node */
 function getEnclosingClassDeclaration(node) {
-  let parent = node.parent;
+  let parent = /** @type {EsLintNode} */ (node).parent;
   while (parent && parent.type !== 'ClassDeclaration') {
     parent = parent.parent;
   }

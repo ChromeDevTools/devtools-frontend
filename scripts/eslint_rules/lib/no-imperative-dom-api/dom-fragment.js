@@ -8,7 +8,8 @@
 
 const {getEnclosingProperty, getEnclosingClassDeclaration} = require('./ast.js');
 
-/** @typedef {import('eslint').Rule.Node} Node */
+/** @typedef {import('estree').Node} Node */
+/** @typedef {import('eslint').Rule.Node} EsLintNode */
 /** @typedef {import('eslint').Scope.Variable} Variable */
 /** @typedef {import('eslint').SourceCode} SourceCode */
 
@@ -26,15 +27,16 @@ class DomFragment {
   /** @type {DomFragment[]} */ children = [];
   /** @type {DomFragment|undefined} */ parent;
   /** @type {string|undefined} */ expression;
-  /** @type {Node|undefined} */ replacementLocation;
-  /** @type {Node[]} */ references = [];
+  /** @type {EsLintNode|undefined} */ replacementLocation;
+  /** @type {EsLintNode[]} */ references = [];
 
   /**
-   * @param {Node} node
+   * @param {Node} estreeNode
    * @param {SourceCode} sourceCode
    * @return {DomFragment}
    */
-  static getOrCreate(node, sourceCode) {
+  static getOrCreate(estreeNode, sourceCode) {
+    const node = /** @type {EsLintNode} */ (estreeNode);
     const variable = getEnclosingVariable(node, sourceCode);
     const key = variable ?? sourceCode.getText(getEnclosingProperty(node) ?? node);
 
@@ -43,8 +45,8 @@ class DomFragment {
       result = new DomFragment();
       domFragments.set(key, result);
       if (variable) {
-        result.references = variable.references.map(r => (/** @type {Node} */ (r.identifier)));
-        result.references.push(/** @type {Node} */ (variable.identifiers[0]));
+        result.references = variable.references.map(r => (/** @type {EsLintNode} */ (r.identifier)));
+        result.references.push(/** @type {EsLintNode} */ (variable.identifiers[0]));
       } else {
         result.expression = sourceCode.getText(node);
         const classDeclaration = getEnclosingClassDeclaration(node);
@@ -146,11 +148,12 @@ class DomFragment {
 }
 
 /**
- * @param {Node} node
+ * @param {Node} estreeNode
  * @param {SourceCode} sourceCode
  * @return {Variable|null}
  */
-function getEnclosingVariable(node, sourceCode) {
+function getEnclosingVariable(estreeNode, sourceCode) {
+  const node = /** @type {EsLintNode} */ (estreeNode);
   if (node.type === 'Identifier') {
     let scope = sourceCode.getScope(node);
     const variableName = node.name;

@@ -27,19 +27,18 @@ module.exports = {
             if (property.type !== 'Property') {
               continue;
             }
-            const key = /** @type {Node} */ (property.key);
-            if (isIdentifier(key, 'name')) {
+            if (isIdentifier(property.key, 'name')) {
               domFragment.attributes.push({
                 key: 'aria-label',
-                value: /** @type {Node} */ (property.value),
+                value: property.value,
               });
             }
-            if (isIdentifier(key, 'jslogContext')) {
+            if (isIdentifier(property.key, 'jslogContext')) {
               domFragment.attributes.push(
                   {key: 'jslog', value: '${VisualLogging.adorner(' + sourceCode.getText(property.value) + ')}'});
             }
-            if (isIdentifier(key, 'content')) {
-              const childFragment = DomFragment.getOrCreate(/** @type {Node} */ (property.value), sourceCode);
+            if (isIdentifier(property.key, 'content')) {
+              const childFragment = DomFragment.getOrCreate(property.value, sourceCode);
               childFragment.parent = domFragment;
               domFragment.children.push(childFragment);
             }

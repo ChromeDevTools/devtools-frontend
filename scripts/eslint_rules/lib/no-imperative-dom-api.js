@@ -17,7 +17,8 @@ const {DomFragment} = require('./no-imperative-dom-api/dom-fragment.js');
 const toolbar = require('./no-imperative-dom-api/toolbar.js');
 const widget = require('./no-imperative-dom-api/widget.js');
 
-/** @typedef {import('eslint').Rule.Node} Node */
+/** @typedef {import('estree').Node} Node */
+/** @typedef {import('eslint').Rule.Node} EsLintNode */
 /** @typedef {import('eslint').AST.SourceLocation} SourceLocation */
 /** @typedef {import('eslint').Scope.Variable} Variable */
 /** @typedef {import('eslint').Scope.Reference} Reference*/
@@ -64,31 +65,31 @@ module.exports = {
     }
 
     /**
-     *  @param {Node} reference
+     *  @param {EsLintNode} reference
      *  @param {DomFragment} domFragment
      */
     function processReference(reference, domFragment) {
       const parent = reference.parent;
       const isAccessed = parent.type === 'MemberExpression' && parent.object === reference;
-      const property = isAccessed ? /** @type {Node} */ (parent.property) : null;
+      const property = isAccessed ? parent.property : null;
       const grandParent = parent.parent;
       const isPropertyAssignment =
           isAccessed && grandParent.type === 'AssignmentExpression' && grandParent.left === parent;
-      const propertyValue = isPropertyAssignment ? /** @type {Node} */(grandParent.right) : null;
+      const propertyValue = isPropertyAssignment ? grandParent.right : null;
       const isMethodCall = isAccessed && grandParent.type === 'CallExpression' && grandParent.callee === parent;
-      const firstArg = isMethodCall ?  /** @type {Node} */(grandParent.arguments[0]) : null;
-      const secondArg = isMethodCall ? /** @type {Node} */(grandParent.arguments[1]) : null;
+      const firstArg = isMethodCall ? grandParent.arguments[0] : null;
+      const secondArg = isMethodCall ? grandParent.arguments[1] : null;
       const grandGrandParent = grandParent.parent;
       const isPropertyMethodCall = isAccessed && grandParent.type === 'MemberExpression' &&
           grandParent.object === parent && grandGrandParent.type === 'CallExpression' &&
           grandGrandParent.callee === grandParent;
-      const propertyMethodArgument = isPropertyMethodCall ? /** @type {Node} */ (grandGrandParent.arguments[0]) : null;
+      const propertyMethodArgument = isPropertyMethodCall ? grandGrandParent.arguments[0] : null;
       const isSubpropertyAssignment = isAccessed && grandParent.type === 'MemberExpression' &&
           grandParent.object === parent && grandParent.property.type === 'Identifier' &&
           grandGrandParent.type === 'AssignmentExpression' && grandGrandParent.left === grandParent;
       const subproperty =
           isSubpropertyAssignment && grandParent.property.type === 'Identifier' ? grandParent.property : null;
-      const subpropertyValue = isSubpropertyAssignment ? /** @type {Node} */ (grandGrandParent.right) : null;
+      const subpropertyValue = isSubpropertyAssignment ? grandGrandParent.right : null;
       for (const rule of subrules) {
         if (isPropertyAssignment) {
           rule.propertyAssignment?.(property, propertyValue, domFragment);
@@ -151,7 +152,7 @@ module.exports = {
         node: domFragment.replacementLocation,
         messageId: 'preferTemplateLiterals',
         fix(fixer) {
-          let replacementLocation = /** @type {Node} */(domFragment.replacementLocation);
+          let replacementLocation = domFragment.replacementLocation;
           if (replacementLocation.parent.type === 'ExportNamedDeclaration') {
             replacementLocation = replacementLocation.parent;
           }

@@ -28,7 +28,7 @@ npm i magic-string
 To use in browser, grab the [magic-string.umd.js](https://unpkg.com/magic-string/dist/magic-string.umd.js) file and add it to your page:
 
 ```html
-<script src='magic-string.umd.js'></script>
+<script src="magic-string.umd.js"></script>
 ```
 
 (It also works with various module systems, if you prefer that sort of thing - it has a dependency on [vlq](https://github.com/Rich-Harris/vlq).)
@@ -39,7 +39,7 @@ These examples assume you're in node.js, or something similar:
 
 ```js
 import MagicString from 'magic-string';
-import fs from 'fs'
+import fs from 'fs';
 
 const s = new MagicString('problems = 99');
 
@@ -53,9 +53,9 @@ s.prepend('var ').append(';'); // most methods are chainable
 s.toString(); // 'var answer = 42;'
 
 const map = s.generateMap({
-  source: 'source.js',
-  file: 'converted.js.map',
-  includeContent: true
+	source: 'source.js',
+	file: 'converted.js.map',
+	includeContent: true,
 }); // generates a v3 sourcemap
 
 fs.writeFileSync('converted.js', s.toString());
@@ -66,12 +66,30 @@ You can pass an options argument:
 
 ```js
 const s = new MagicString(someCode, {
-  // these options will be used if you later call `bundle.addSource( s )` - see below
-  filename: 'foo.js',
-  indentExclusionRanges: [/*...*/],
-  // mark source as ignore in DevTools, see below #Bundling
-  ignoreList: false
+	// these options will be used if you later call `bundle.addSource( s )` - see below
+	filename: 'foo.js',
+	indentExclusionRanges: [
+		/*...*/
+	],
+	// mark source as ignore in DevTools, see below #Bundling
+	ignoreList: false,
+	// adjust the incoming position - see below
+	offset: 0,
 });
+```
+
+## Properties
+
+### s.offset
+
+Sets the offset property to adjust the incoming position for the following APIs: `slice`, `update`, `overwrite`, `appendLeft`, `prependLeft`, `appendRight`, `prependRight`, `move`, `reset`, and `remove`.
+
+Example usage:
+
+```ts
+const s = new MagicString('hello world', { offset: 0 });
+s.offset = 6;
+s.slice() === 'world';
 ```
 
 ## Methods
@@ -86,11 +104,11 @@ Appends the specified content to the end of the string. Returns `this`.
 
 ### s.appendLeft( index, content )
 
-Appends the specified `content` at the `index` in the original string. If a range *ending* with `index` is subsequently moved, the insert will be moved with it. Returns `this`. See also `s.prependLeft(...)`.
+Appends the specified `content` at the `index` in the original string. If a range _ending_ with `index` is subsequently moved, the insert will be moved with it. Returns `this`. See also `s.prependLeft(...)`.
 
 ### s.appendRight( index, content )
 
-Appends the specified `content` at the `index` in the original string. If a range *starting* with `index` is subsequently moved, the insert will be moved with it. Returns `this`. See also `s.prependRight(...)`.
+Appends the specified `content` at the `index` in the original string. If a range _starting_ with `index` is subsequently moved, the insert will be moved with it. Returns `this`. See also `s.prependRight(...)`.
 
 ### s.clone()
 
@@ -104,15 +122,15 @@ Generates a sourcemap object with raw mappings in array form, rather than encode
 
 Generates a [version 3 sourcemap](https://docs.google.com/document/d/1U1RGAehQwRypUTovF1KRlpiOFze0b-_2gc6fAH0KY0k/edit). All options are, well, optional:
 
-* `file` - the filename where you plan to write the sourcemap
-* `source` - the filename of the file containing the original source
-* `includeContent` - whether to include the original content in the map's `sourcesContent` array
-* `hires` - whether the mapping should be high-resolution. Hi-res mappings map every single character, meaning (for example) your devtools will always be able to pinpoint the exact location of function calls and so on. With lo-res mappings, devtools may only be able to identify the correct line - but they're quicker to generate and less bulky. You can also set `"boundary"` to generate a semi-hi-res mappings segmented per word boundary instead of per character, suitable for string semantics that are separated by words. If sourcemap locations have been specified with `s.addSourcemapLocation()`, they will be used here.
+- `file` - the filename where you plan to write the sourcemap
+- `source` - the filename of the file containing the original source
+- `includeContent` - whether to include the original content in the map's `sourcesContent` array
+- `hires` - whether the mapping should be high-resolution. Hi-res mappings map every single character, meaning (for example) your devtools will always be able to pinpoint the exact location of function calls and so on. With lo-res mappings, devtools may only be able to identify the correct line - but they're quicker to generate and less bulky. You can also set `"boundary"` to generate a semi-hi-res mappings segmented per word boundary instead of per character, suitable for string semantics that are separated by words. If sourcemap locations have been specified with `s.addSourcemapLocation()`, they will be used here.
 
 The returned sourcemap has two (non-enumerable) methods attached for convenience:
 
-* `toString` - returns the equivalent of `JSON.stringify(map)`
-* `toUrl` - returns a DataURI containing the sourcemap. Useful for doing this sort of thing:
+- `toString` - returns the equivalent of `JSON.stringify(map)`
+- `toUrl` - returns a DataURI containing the sourcemap. Useful for doing this sort of thing:
 
 ```js
 code += '\n//# sourceMappingURL=' + map.toUrl();
@@ -166,34 +184,35 @@ Prepends the string with the specified content. Returns `this`.
 
 ### s.prependLeft ( index, content )
 
-Same as `s.appendLeft(...)`, except that the inserted content will go *before* any previous appends or prepends at `index`
+Same as `s.appendLeft(...)`, except that the inserted content will go _before_ any previous appends or prepends at `index`
 
 ### s.prependRight ( index, content )
 
-Same as `s.appendRight(...)`, except that the inserted content will go *before* any previous appends or prepends at `index`
+Same as `s.appendRight(...)`, except that the inserted content will go _before_ any previous appends or prepends at `index`
 
 ### s.replace( regexpOrString, substitution )
 
 String replacement with RegExp or string. When using a RegExp, replacer function is also supported. Returns `this`.
 
 ```ts
-import MagicString from 'magic-string'
+import MagicString from 'magic-string';
 
-const s = new MagicString(source)
+const s = new MagicString(source);
 
-s.replace('foo', 'bar')
-s.replace(/foo/g, 'bar')
-s.replace(/(\w)(\d+)/g, (_, $1, $2) => $1.toUpperCase() + $2)
+s.replace('foo', 'bar');
+s.replace(/foo/g, 'bar');
+s.replace(/(\w)(\d+)/g, (_, $1, $2) => $1.toUpperCase() + $2);
 ```
 
-The differences from [`String.replace`]((https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)):
+The differences from [`String.replace`](<(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)>):
+
 - It will always match against the **original string**
 - It mutates the magic string state (use `.clone()` to be immutable)
 
 ### s.replaceAll( regexpOrString, substitution )
 
 Same as `s.replace`, but replace all matched strings instead of just one.
-If `substitution` is a regex, then it must have the global (`g`) flag set, or a `TypeError` is thrown. Matches the behavior of the builtin [`String.property.replaceAll`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll).
+If `regexpOrString` is a regex, then it must have the global (`g`) flag set, or a `TypeError` is thrown. Matches the behavior of the builtin [`String.property.replaceAll`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll). Returns `this`.
 
 ### s.remove( start, end )
 
@@ -248,31 +267,32 @@ To concatenate several sources, use `MagicString.Bundle`:
 const bundle = new MagicString.Bundle();
 
 bundle.addSource({
-  filename: 'foo.js',
-  content: new MagicString('var answer = 42;')
+	filename: 'foo.js',
+	content: new MagicString('var answer = 42;'),
 });
 
 bundle.addSource({
-  filename: 'bar.js',
-  content: new MagicString('console.log( answer )')
+	filename: 'bar.js',
+	content: new MagicString('console.log( answer )'),
 });
 
 // Sources can be marked as ignore-listed, which provides a hint to debuggers
 // to not step into this code and also don't show the source files depending
 // on user preferences.
 bundle.addSource({
-  filename: 'some-3rdparty-library.js',
-  content: new MagicString('function myLib(){}'),
-  ignoreList: false // <--
-})
+	filename: 'some-3rdparty-library.js',
+	content: new MagicString('function myLib(){}'),
+	ignoreList: false, // <--
+});
 
 // Advanced: a source can include an `indentExclusionRanges` property
 // alongside `filename` and `content`. This will be passed to `s.indent()`
 // - see documentation above
 
-bundle.indent() // optionally, pass an indent string, otherwise it will be guessed
-  .prepend('(function () {\n')
-  .append('}());');
+bundle
+	.indent() // optionally, pass an indent string, otherwise it will be guessed
+	.prepend('(function () {\n')
+	.append('}());');
 
 bundle.toString();
 // (function () {
@@ -282,9 +302,9 @@ bundle.toString();
 
 // options are as per `s.generateMap()` above
 const map = bundle.generateMap({
-  file: 'bundle.js',
-  includeContent: true,
-  hires: true
+	file: 'bundle.js',
+	includeContent: true,
+	hires: true,
 });
 ```
 
@@ -293,7 +313,7 @@ As an alternative syntax, if you a) don't have `filename` or `indentExclusionRan
 ```js
 const bundle = new MagicString.Bundle();
 const source = new MagicString(someCode, {
-  filename: 'foo.js'
+	filename: 'foo.js',
 });
 
 bundle.addSource(source);

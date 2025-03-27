@@ -33,8 +33,6 @@
     "@lezer/lr": "1.4.2",
     "@replit/codemirror-indentation-markers": "6.5.0",
     "@replit/codemirror-lang-svelte": "6.0.0",
-    "@rollup/plugin-node-resolve": "15.3.0",
-    "@rollup/plugin-terser": "0.4.4",
     "rollup-plugin-dts": "6.1.1",
     "style-mod": "4.1.0"
   }

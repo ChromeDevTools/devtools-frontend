@@ -1107,7 +1107,7 @@ var require_stringify = __commonJS({
 });
 
 // package/lib/index.js
-var require_lib = __commonJS({
+var require_index = __commonJS({
   "package/lib/index.js"(exports, module) {
     var parse = require_parse();
     var stringify = require_stringify();
@@ -1118,4 +1118,4 @@ var require_lib = __commonJS({
     module.exports = JSON5;
   }
 });
-export default require_lib();
+export default require_index();

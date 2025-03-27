@@ -129,7 +129,7 @@
 				// '  test'.trim()
 				//     split   -> '  ' + 'test'
 				//   ✔️ edit    -> '' + 'test'
-				//   ✖️ edit    -> 'test' + '' 
+				//   ✖️ edit    -> 'test' + ''
 				// TODO is this block necessary?...
 				newChunk.edit('', false);
 				this.content = '';
@@ -315,6 +315,9 @@
 			if (typeof properties.x_google_ignoreList !== 'undefined') {
 				this.x_google_ignoreList = properties.x_google_ignoreList;
 			}
+			if (typeof properties.debugId !== 'undefined') {
+				this.debugId = properties.debugId;
+			}
 		}
 
 		toString() {
@@ -466,6 +469,7 @@
 					this.raw[this.generatedCodeLine] = this.rawSegments = [];
 					this.generatedCodeColumn = 0;
 					first = true;
+					charInHiresBoundary = false;
 				} else {
 					if (this.hires || first || sourcemapLocations.has(originalCharIndex)) {
 						const segment = [this.generatedCodeColumn, sourceIndex, loc.line, loc.column];
@@ -543,6 +547,7 @@
 				storedNames: { writable: true, value: {} },
 				indentStr: { writable: true, value: undefined },
 				ignoreList: { writable: true, value: options.ignoreList },
+				offset: { writable: true, value: options.offset || 0 },
 			});
 
 			this.byStart[0] = chunk;
@@ -561,6 +566,8 @@
 		}
 
 		appendLeft(index, content) {
+			index = index + this.offset;
+
 			if (typeof content !== 'string') throw new TypeError('inserted content must be a string');
 
 			this._split(index);
@@ -576,6 +583,8 @@
 		}
 
 		appendRight(index, content) {
+			index = index + this.offset;
+
 			if (typeof content !== 'string') throw new TypeError('inserted content must be a string');
 
 			this._split(index);
@@ -591,7 +600,7 @@
 		}
 
 		clone() {
-			const cloned = new MagicString(this.original, { filename: this.filename });
+			const cloned = new MagicString(this.original, { filename: this.filename, offset: this.offset });
 
 			let originalChunk = this.firstChunk;
 			let clonedChunk = (cloned.firstChunk = cloned.lastSearchedChunk = originalChunk.clone());
@@ -789,7 +798,7 @@
 			if (!warned.insertLeft) {
 				console.warn(
 					'magicString.insertLeft(...) is deprecated. Use magicString.appendLeft(...) instead',
-				); // eslint-disable-line no-console
+				);
 				warned.insertLeft = true;
 			}
 
@@ -800,7 +809,7 @@
 			if (!warned.insertRight) {
 				console.warn(
 					'magicString.insertRight(...) is deprecated. Use magicString.prependRight(...) instead',
-				); // eslint-disable-line no-console
+				);
 				warned.insertRight = true;
 			}
 
@@ -808,6 +817,10 @@
 		}
 
 		move(start, end, index) {
+			start = start + this.offset;
+			end = end + this.offset;
+			index = index + this.offset;
+
 			if (index >= start && index <= end) throw new Error('Cannot move a selection inside itself');
 
 			this._split(start);
@@ -850,6 +863,9 @@
 		}
 
 		update(start, end, content, options) {
+			start = start + this.offset;
+			end = end + this.offset;
+
 			if (typeof content !== 'string') throw new TypeError('replacement content must be a string');
 
 			if (this.original.length !== 0) {
@@ -870,7 +886,7 @@
 				if (!warned.storeName) {
 					console.warn(
 						'The final argument to magicString.overwrite(...) should be an options object. See https://github.com/rich-harris/magic-string',
-					); // eslint-disable-line no-console
+					);
 					warned.storeName = true;
 				}
 
@@ -921,6 +937,8 @@
 		}
 
 		prependLeft(index, content) {
+			index = index + this.offset;
+
 			if (typeof content !== 'string') throw new TypeError('inserted content must be a string');
 
 			this._split(index);
@@ -936,6 +954,8 @@
 		}
 
 		prependRight(index, content) {
+			index = index + this.offset;
+
 			if (typeof content !== 'string') throw new TypeError('inserted content must be a string');
 
 			this._split(index);
@@ -951,6 +971,9 @@
 		}
 
 		remove(start, end) {
+			start = start + this.offset;
+			end = end + this.offset;
+
 			if (this.original.length !== 0) {
 				while (start < 0) start += this.original.length;
 				while (end < 0) end += this.original.length;
@@ -977,6 +1000,9 @@
 		}
 
 		reset(start, end) {
+			start = start + this.offset;
+			end = end + this.offset;
+
 			if (this.original.length !== 0) {
 				while (start < 0) start += this.original.length;
 				while (end < 0) end += this.original.length;
@@ -1041,7 +1067,10 @@
 			return this.intro + lineStr;
 		}
 
-		slice(start = 0, end = this.original.length) {
+		slice(start = 0, end = this.original.length - this.offset) {
+			start = start + this.offset;
+			end = end + this.offset;
+
 			if (this.original.length !== 0) {
 				while (start < 0) start += this.original.length;
 				while (end < 0) end += this.original.length;
@@ -1277,11 +1306,7 @@
 					if (match.index != null) {
 						const replacement = getReplacement(match, this.original);
 						if (replacement !== match[0]) {
-							this.overwrite(
-								match.index,
-								match.index + match[0].length,
-								replacement
-							);
+							this.overwrite(match.index, match.index + match[0].length, replacement);
 						}
 					}
 				});
@@ -1290,11 +1315,7 @@
 				if (match && match.index != null) {
 					const replacement = getReplacement(match, this.original);
 					if (replacement !== match[0]) {
-						this.overwrite(
-							match.index,
-							match.index + match[0].length,
-							replacement
-						);
+						this.overwrite(match.index, match.index + match[0].length, replacement);
 					}
 				}
 			}
@@ -1329,8 +1350,7 @@
 				index = original.indexOf(string, index + stringLength)
 			) {
 				const previous = original.slice(index, index + stringLength);
-				if (previous !== replacement)
-					this.overwrite(index, index + stringLength, replacement);
+				if (previous !== replacement) this.overwrite(index, index + stringLength, replacement);
 			}
 
 			return this;

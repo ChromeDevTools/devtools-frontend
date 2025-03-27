@@ -7,6 +7,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {isRequestCompressed} from './Common.js';
 import {
   type Checklist,
   InsightCategory,
@@ -101,15 +102,7 @@ function getServerResponseTime(request: Types.Events.SyntheticNetworkRequest): T
 }
 
 function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): number {
-  // Check from headers if compression was already applied.
-  // Older devtools logs are lower case, while modern logs are Cased-Like-This.
-  const patterns = [
-    /^content-encoding$/i,
-    /^x-content-encoding-over-network$/i,
-  ];
-  const compressionTypes = ['gzip', 'br', 'deflate', 'zstd'];
-  const isCompressed = request.args.data.responseHeaders.some(
-      header => patterns.some(p => header.name.match(p)) && compressionTypes.includes(header.value));
+  const isCompressed = isRequestCompressed(request);
   if (isCompressed) {
     return 0;
   }

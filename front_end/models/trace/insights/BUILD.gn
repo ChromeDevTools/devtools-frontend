@@ -59,6 +59,7 @@ ts_library("unittests") {
     "Common.test.ts",
     "DOMSize.test.ts",
     "DocumentLatency.test.ts",
+    "DuplicatedJavaScript.test.ts",
     "FontDisplay.test.ts",
     "ForcedReflow.test.ts",
     "ImageDelivery.test.ts",

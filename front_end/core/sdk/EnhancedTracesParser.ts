@@ -234,7 +234,12 @@ export class EnhancedTracesParser {
       return;
     }
 
-    return `data:text/plain;base64,${btoa(JSON.stringify(sourceMap))}`;
+    try {
+      return `data:text/plain;base64,${btoa(JSON.stringify(sourceMap))}`;
+    } catch {
+      // TODO(cjamcl): getting InvalidCharacterError (try loading dupe-js.json.gz).
+      return;
+    }
   }
 
   private getSourceMapFromMetadata(script: RehydratingScript): SourceMapV3|undefined {

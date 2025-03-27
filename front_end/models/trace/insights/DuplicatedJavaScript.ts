@@ -7,6 +7,7 @@ import * as Extras from '../extras/extras.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 
+import {estimateCompressionRatioForScript, metricSavingsForWastedBytes} from './Common.js';
 import {
   InsightCategory,
   InsightKeys,
@@ -77,11 +78,28 @@ export function generateInsight(
 
   const {duplication, duplicationGroupedByNodeModules} = Extras.ScriptDuplication.computeScriptDuplication({scripts});
   const scriptsWithDuplication = [...duplication.values().flatMap(data => data.duplicates.map(d => d.script))];
+
+  const wastedBytesByRequestId = new Map<string, number>();
+  for (const {duplicates} of duplication.values()) {
+    for (let i = 1; i < duplicates.length; i++) {
+      const sourceData = duplicates[i];
+      if (!sourceData.script.request) {
+        continue;
+      }
+
+      const compressionRatio = estimateCompressionRatioForScript(sourceData.script);
+      const transferSize = Math.round(sourceData.attributedSize * compressionRatio);
+      const requestId = sourceData.script.request.args.data.requestId;
+      wastedBytesByRequestId.set(requestId, (wastedBytesByRequestId.get(requestId) || 0) + transferSize);
+    }
+  }
+
   return finalize({
     duplication,
     duplicationGroupedByNodeModules,
     scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
     scripts,
     mainDocumentUrl: context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL,
+    metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
   });
 }

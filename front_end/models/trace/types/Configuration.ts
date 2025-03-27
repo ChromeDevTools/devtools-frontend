@@ -82,4 +82,6 @@ export interface ResolveSourceMapParams {
   scriptUrl: Platform.DevToolsPath.UrlString;
   sourceMapUrl: Platform.DevToolsPath.UrlString;
   frame: Protocol.Page.FrameId;
+  /** Set only if the raw source map was found on the provided metadata. Never set for source maps from data urls. */
+  cachedRawSourceMap?: SDK.SourceMap.SourceMapV3;
 }

@@ -2486,7 +2486,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     return async function resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams) {
-      const {scriptId, scriptUrl, sourceMapUrl, frame} = params;
+      const {scriptId, scriptUrl, sourceMapUrl, frame, cachedRawSourceMap} = params;
+
+      if (cachedRawSourceMap) {
+        return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, cachedRawSourceMap);
+      }
 
       // For still-active frames, the source map is likely already fetched or at least in-flight.
       if (isFreshRecording) {

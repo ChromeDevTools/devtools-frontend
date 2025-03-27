@@ -200,6 +200,25 @@ export function getScriptGeneratedSizes(script: Script): GeneratedFileSizes|null
   return script.sizes ?? null;
 }
 
+function findCachedRawSourceMap(
+    sourceMapUrl: string, options: Types.Configuration.ParseOptions): SDK.SourceMap.SourceMapV3|undefined {
+  if (!sourceMapUrl) {
+    return;
+  }
+
+  // If loading from disk, check the metadata for source maps.
+  // The metadata doesn't store data url source maps.
+  const isDataUrl = sourceMapUrl.startsWith('data:');
+  if (!options.isFreshRecording && options.metadata?.sourceMaps && !isDataUrl) {
+    const cachedSourceMap = options.metadata.sourceMaps.find(m => m.sourceMapUrl === sourceMapUrl);
+    if (cachedSourceMap) {
+      return cachedSourceMap.sourceMap;
+    }
+  }
+
+  return;
+}
+
 export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
   const networkRequests = [...networkRequestsHandlerData().byId.values()];
   for (const script of scriptById.values()) {
@@ -248,6 +267,7 @@ export async function finalize(options: Types.Configuration.ParseOptions): Promi
       scriptUrl: sourceUrl as Platform.DevToolsPath.UrlString,
       sourceMapUrl: sourceMapUrl as Platform.DevToolsPath.UrlString,
       frame: script.frame as Protocol.Page.FrameId,
+      cachedRawSourceMap: findCachedRawSourceMap(sourceMapUrl, options),
     };
     const promise = options.resolveSourceMap(params).then(sourceMap => {
       if (sourceMap) {

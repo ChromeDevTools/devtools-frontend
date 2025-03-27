@@ -284,3 +284,7 @@ All of which delays the LCP image from rendering.
 ### http1.1
 
 Contains several image requests from the same 3P origin that use HTTP/1.1
+
+### dupe-js
+
+A bunch of bundles with the exact same content: https://dupe-modules-lh-2.surge.sh/

@@ -47,6 +47,10 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
     Utils.Treemap.openTreemap(this.#treemapData, this.model.mainDocumentUrl, windowNameSuffix);
   }
 
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
+    return this.model?.metricSavings?.FCP ?? null;
+  }
+
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {
       return [];

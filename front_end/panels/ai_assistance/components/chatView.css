@@ -878,7 +878,7 @@ main {
       gap: var(--sys-size-3);
     }
 
-    .apply-to-workspace-container {
+    .apply-to-page-tree-container {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);

@@ -68,7 +68,7 @@ describeWithMockConnection('PatchWidget', () => {
            const {view, widget} = await createPatchWidget();
            widget.changeSummary = 'body { background-color: red; }';
 
-           view.input.onApplyToWorkspace();
+           view.input.onApplyToPageTree();
 
            assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
            assert.exists(showFreDialogStub.lastCall.args[0].reminderItems.find(
@@ -89,7 +89,7 @@ describeWithMockConnection('PatchWidget', () => {
            const {view, widget} = await createPatchWidget();
            widget.changeSummary = 'body { background-color: red; }';
 
-           view.input.onApplyToWorkspace();
+           view.input.onApplyToPageTree();
 
            assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
            assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
@@ -110,7 +110,7 @@ describeWithMockConnection('PatchWidget', () => {
            const {view} = await createPatchWidget();
 
            assert.include(
-               view.input.applyToWorkspaceTooltipText, 'This data will not be used to improve Google’s AI models.');
+               view.input.disclaimerTooltipText, 'This data will not be used to improve Google’s AI models.');
          });
 
       it('should tooltip text not include no logging case when the enterprise policy value is ALLOW', async () => {
@@ -125,7 +125,7 @@ describeWithMockConnection('PatchWidget', () => {
         const {view} = await createPatchWidget();
 
         assert.notInclude(
-            view.input.applyToWorkspaceTooltipText, 'This data will not be used to improve Google’s AI models.');
+            view.input.disclaimerTooltipText, 'This data will not be used to improve Google’s AI models.');
       });
     });
 
@@ -134,7 +134,7 @@ describeWithMockConnection('PatchWidget', () => {
       const {view, widget} = await createPatchWidget();
       widget.changeSummary = 'body { background-color: red; }';
 
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
 
       assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
     });
@@ -144,7 +144,7 @@ describeWithMockConnection('PatchWidget', () => {
       const {view, widget} = await createPatchWidget();
       widget.changeSummary = 'body { background-color: red; }';
 
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
 
       assert.isFalse(showFreDialogStub.called, 'Expected FreDialog to be not shown but it\'s shown');
     });
@@ -159,7 +159,7 @@ describeWithMockConnection('PatchWidget', () => {
       });
       widget.changeSummary = 'body { background-color: red; }';
 
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
 
       assert.strictEqual((await view.nextInput).sources, `Filenames in page.
 Files:
@@ -170,7 +170,7 @@ Files:
       const {view, widget} = await createPatchWidget({aidaClient: mockAidaClient([[MockAidaFetchError]])});
       widget.changeSummary = 'body { background-color: red; }';
 
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
 
       const input = await view.nextInput;
       assert.strictEqual(input.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.ERROR);
@@ -180,7 +180,7 @@ Files:
       const {view, widget} = await createPatchWidget({aidaClient: mockAidaClient([[MockAidaAbortError]])});
       widget.changeSummary = 'body { background-color: red; }';
 
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
 
       const input = await view.nextInput;
       assert.strictEqual(input.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.INITIAL);
@@ -218,7 +218,7 @@ Files:
       widget.changeSummary = 'body { background-color: red; }';
       const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
       widget.changeManager = changeManager;
-      view.input.onApplyToWorkspace();
+      view.input.onApplyToPageTree();
       await view.nextInput;
       assert.isTrue(changeManager.stashChanges.calledOnce);
     });

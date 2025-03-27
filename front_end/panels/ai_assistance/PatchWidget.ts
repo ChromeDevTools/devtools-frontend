@@ -34,13 +34,13 @@ const UIStringsNotTranslate = {
   /**
    *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
    */
-  applyingToWorkspace: 'Applying to page…',
+  applyingToPageTree: 'Applying to page tree…',
   /**
-   *@description Button text for staging changes to workspace.
+   *@description Button text for applying chanes to page tree.
    */
-  applyToWorkspace: 'Apply to page',
+  applyToPageTree: 'Apply to page tree',
   /**
-   *@description Button text to cancel applying to workspace
+   *@description Button text to cancel applying to page tree.
    */
   cancel: 'Cancel',
   /**
@@ -60,14 +60,15 @@ const UIStringsNotTranslate = {
    */
   codeDisclaimer: 'Use code snippets with caution',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to workspace" button
+   *@description Tooltip text for the info icon beside the "Apply to page tree" button
    */
-  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions.',
+  disclaimerTooltip:
+      'The source code of the inspected page and its assets, and any data the inspected page can access is sent to Google to generate code suggestions.',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to workspace" button when enterprise logging is off
+   *@description Tooltip text for the info icon beside the "Apply to page tree" button when enterprise logging is off
    */
-  applyToWorkspaceTooltipNoLogging:
-      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+  disclaimerTooltipNoLogging:
+      'The source code of the inspected page and its assets, and any data the inspected page can access is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
   /**
    *@description Tooltip link for the navigating to "AI innovations" page in settings.
    */
@@ -103,9 +104,9 @@ const UIStringsNotTranslate = {
    */
   opensInNewTab: '(opens in a new tab)',
   /**
-   * @description Generic error text for the case the changes were not applied to the workspace.
+   * @description Generic error text for the case the changes were not applied to the page tree.
    */
-  genericErrorMessage: 'Changes couldn’t be applied to your workspace.',
+  genericErrorMessage: 'Changes couldn’t be applied to the page tree.',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -113,10 +114,22 @@ const lockedString = i18n.i18n.lockedString;
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 
 export enum PatchSuggestionState {
-  INITIAL = 'initial',  // The user did not attempt patching yet.
-  LOADING = 'loading',  // Applying to workspace is in progress.
-  SUCCESS = 'success',  // Applying to workspace succeeded.
-  ERROR = 'error',      // Applying to workspace failed.
+  /**
+   * The user did not attempt patching yet
+   */
+  INITIAL = 'initial',
+  /**
+   * Applying to page tree is in progress
+   */
+  LOADING = 'loading',
+  /**
+   * Applying to page tree succeeded
+   */
+  SUCCESS = 'success',
+  /**
+   * Applying to page tree failed
+   */
+  ERROR = 'error',
 }
 
 export interface ViewInput {
@@ -125,9 +138,9 @@ export interface ViewInput {
   changeSummary?: string;
   sources?: string;
   savedToDisk?: boolean;
-  applyToWorkspaceTooltipText: Platform.UIString.LocalizedString;
+  disclaimerTooltipText: Platform.UIString.LocalizedString;
   onLearnMoreTooltipClick: () => void;
-  onApplyToWorkspace: () => void;
+  onApplyToPageTree: () => void;
   onCancel: () => void;
   onDiscard: () => void;
   onSaveAll: () => void;
@@ -278,20 +291,20 @@ export class PatchWidget extends UI.Widget.Widget {
 
         return html`
         <div class="footer">
-          <div class="apply-to-workspace-container">
+          <div class="apply-to-page-tree-container">
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`
               <div class="loading-text-container">
                 <devtools-spinner></devtools-spinner>
                 <span>
-                  ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
+                  ${lockedString(UIStringsNotTranslate.applyingToPageTree)}
                 </span>
               </div>
             ` : html`
               <devtools-button
-                @click=${input.onApplyToWorkspace}
-                .jslogContext=${'stage-to-workspace'}
+                @click=${input.onApplyToPageTree}
+                .jslogContext=${'apply-to-page-tree'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
-                ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
+                ${lockedString(UIStringsNotTranslate.applyToPageTree)}
               </devtools-button>
             `}
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
@@ -307,7 +320,7 @@ export class PatchWidget extends UI.Widget.Widget {
               ></devtools-button>
             <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
               <div class="info-tooltip-container">
-                ${input.applyToWorkspaceTooltipText}
+                ${input.disclaimerTooltipText}
                 <button
                   class="link tooltip-link"
                   role="link"
@@ -356,11 +369,10 @@ export class PatchWidget extends UI.Widget.Widget {
           patchSuggestionState: this.#patchSuggestionState,
           sources: this.#patchSources,
           savedToDisk: this.#savedToDisk,
-          applyToWorkspaceTooltipText: this.#noLogging ?
-              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging) :
-              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip),
+          disclaimerTooltipText: this.#noLogging ? lockedString(UIStringsNotTranslate.disclaimerTooltipNoLogging) :
+                                                   lockedString(UIStringsNotTranslate.disclaimerTooltip),
           onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
-          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
+          onApplyToPageTree: this.#onApplyToPageTree.bind(this),
           onCancel: () => {
             this.#applyPatchAbortController?.abort();
           },
@@ -423,7 +435,7 @@ export class PatchWidget extends UI.Widget.Widget {
     return result;
   }
 
-  async #onApplyToWorkspace(): Promise<void> {
+  async #onApplyToPageTree(): Promise<void> {
     if (!isAiAssistancePatchingEnabled()) {
       return;
     }

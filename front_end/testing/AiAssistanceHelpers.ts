@@ -249,7 +249,7 @@ export async function createPatchWidgetWithDiffView() {
   const {view, widget, aidaClient} =
       await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
   widget.changeSummary = 'body { background-color: red; }';
-  view.input.onApplyToWorkspace();
+  view.input.onApplyToPageTree();
   assert.strictEqual(
       (await view.nextInput).patchSuggestionState, AiAssistancePanel.PatchWidget.PatchSuggestionState.SUCCESS);
 

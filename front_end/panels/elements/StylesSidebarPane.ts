@@ -44,10 +44,9 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Workspace from '../../models/workspace/workspace.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import {PanelUtils} from '../../panels/utils/utils.js';
-import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -1323,73 +1322,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       sections = sections.concat(block.sections);
     }
     return sections;
-  }
-
-  async trackURLForChanges(url: Platform.DevToolsPath.UrlString): Promise<void> {
-    const currentTracker = this.#urlToChangeTracker.get(url);
-    if (currentTracker) {
-      WorkspaceDiff.WorkspaceDiff.workspaceDiff().unsubscribeFromDiffChange(
-          currentTracker.uiSourceCode, currentTracker.diffChangeCallback);
-    }
-
-    // We get a refreshed uiSourceCode each time because the underlying instance may be recreated.
-    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
-    if (!uiSourceCode) {
-      return;
-    }
-    const diffChangeCallback = this.refreshChangedLines.bind(this, uiSourceCode);
-    WorkspaceDiff.WorkspaceDiff.workspaceDiff().subscribeToDiffChange(uiSourceCode, diffChangeCallback);
-    const newTracker = {
-      uiSourceCode,
-      changedLines: new Set<number>(),
-      diffChangeCallback,
-    };
-    this.#urlToChangeTracker.set(url, newTracker);
-    await this.refreshChangedLines(newTracker.uiSourceCode);
-  }
-
-  isPropertyChanged(property: SDK.CSSProperty.CSSProperty): boolean {
-    const url = property.ownerStyle.parentRule?.resourceURL();
-    if (!url) {
-      return false;
-    }
-    const changeTracker = this.#urlToChangeTracker.get(url);
-    if (!changeTracker) {
-      return false;
-    }
-    const {changedLines, formattedCurrentMapping} = changeTracker;
-    const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(property, true);
-    if (!uiLocation) {
-      return false;
-    }
-    if (!formattedCurrentMapping) {
-      // UILocation's lineNumber starts at 0, but changedLines start at 1.
-      return changedLines.has(uiLocation.lineNumber + 1);
-    }
-    const formattedLineNumber =
-        formattedCurrentMapping.originalToFormatted(uiLocation.lineNumber, uiLocation.columnNumber)[0];
-    return changedLines.has(formattedLineNumber + 1);
-  }
-
-  private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    const changeTracker = this.#urlToChangeTracker.get(uiSourceCode.url());
-    if (!changeTracker) {
-      return;
-    }
-    const diffResponse = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode);
-    const changedLines = new Set<number>();
-    changeTracker.changedLines = changedLines;
-    if (!diffResponse) {
-      return;
-    }
-    const {diff, formattedCurrentMapping} = diffResponse;
-    const {rows} = DiffView.DiffView.buildDiffRows(diff);
-    for (const row of rows) {
-      if (row.type === DiffView.DiffView.RowType.ADDITION) {
-        changedLines.add(row.currentLineNumber);
-      }
-    }
-    changeTracker.formattedCurrentMapping = formattedCurrentMapping;
   }
 
   async getFormattedChanges(): Promise<string> {

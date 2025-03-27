@@ -161,7 +161,7 @@ export class StylePropertiesSection {
   private sectionIdx = 0;
 
   #customHeaderText: string|undefined;
-  readonly #specificiyTooltips: HTMLSpanElement;
+  readonly #specificityTooltips: HTMLSpanElement;
   static #nextSpecificityTooltipId = 0;
 
   constructor(
@@ -227,7 +227,7 @@ export class StylePropertiesSection {
     selectorContainer.appendChild(this.selectorElement);
     this.selectorElement.addEventListener('mouseenter', this.onMouseEnterSelector.bind(this), false);
     this.selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
-    this.#specificiyTooltips = selectorContainer.createChild('span');
+    this.#specificityTooltips = selectorContainer.createChild('span');
 
     // We only add braces for style rules with selectors and non-style rules, which create their own sections.
     if (headerText.length > 0 || !(rule instanceof SDK.CSSRule.CSSStyleRule)) {
@@ -1173,7 +1173,7 @@ export class StylePropertiesSection {
       selectors: Array<{text: string, specificity?: Protocol.CSS.Specificity}>, matchingSelectors: boolean[],
       elementToSelectorIndex: WeakMap<Element, number>): void {
     this.selectorElement.removeChildren();
-    this.#specificiyTooltips.removeChildren();
+    this.#specificityTooltips.removeChildren();
     for (const [i, selector] of selectors.entries()) {
       if (i > 0) {
         this.selectorElement.append(', ');
@@ -1186,7 +1186,7 @@ export class StylePropertiesSection {
       if (specificityTooltipId && selector.specificity) {
         span.setAttribute('aria-details', specificityTooltipId);
         const PH1 = `(${selector.specificity.a},${selector.specificity.b},${selector.specificity.c})`;
-        const tooltip = this.#specificiyTooltips.appendChild(new Tooltips.Tooltip.Tooltip({
+        const tooltip = this.#specificityTooltips.appendChild(new Tooltips.Tooltip.Tooltip({
           id: specificityTooltipId,
           anchor: span,
           variant: 'rich',
@@ -1468,7 +1468,7 @@ export class StylePropertiesSection {
     // Reset selector marks in group, and normalize whitespace.
     const textContent = element.textContent;
     if (textContent !== null) {
-      this.#specificiyTooltips.querySelectorAll('devtools-tooltip')?.forEach(tooltip => tooltip.hidePopover());
+      this.#specificityTooltips.querySelectorAll('devtools-tooltip')?.forEach(tooltip => tooltip.hidePopover());
       element.textContent = textContent.replace(/\s+/g, ' ').trim();
     }
 

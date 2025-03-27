@@ -31,7 +31,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
       return false;
     }
 
-    return this.model.scripts.length > 0;
+    return this.model.scripts.some(script => !!script.url);
   }
 
   #openTreemap(): void {
@@ -49,6 +49,19 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScri
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.FCP ?? null;
+  }
+
+  override getEstimatedSavingsBytes(): number|null {
+    if (!this.model) {
+      return null;
+    }
+
+    let totalDuplicatedBytes = 0;
+    for (const data of this.model.duplicationGroupedByNodeModules.values()) {
+      totalDuplicatedBytes += data.estimatedDuplicateBytes;
+    }
+
+    return totalDuplicatedBytes;
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

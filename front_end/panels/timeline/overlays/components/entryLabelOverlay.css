@@ -115,7 +115,8 @@
 * empty annotation, and then tab to the GenerateAI button, the text field
 * styling doesn't change. */
 .input-field:focus,
-.label-parts-wrapper:focus-within .input-field {
+.label-parts-wrapper:focus-within .input-field,
+.input-field.fake-focus-state {
   background-color: var(--color-background);
   color: var(--color-background-inverted);
   outline: 2px solid var(--color-background-inverted);

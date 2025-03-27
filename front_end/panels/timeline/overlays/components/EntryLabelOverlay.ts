@@ -454,11 +454,6 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   setLabelEditabilityAndRemoveEmptyLabel(editable: boolean): void {
-    // Exit out if the current editable state matches the new one.
-    if (editable === this.#isLabelEditable) {
-      return;
-    }
-
     // We skip this if we have taken the user to the AI FRE flow, because we want the label still there when they come back.
     if (this.#inAIConsentDialogFlow && editable === false) {
       return;
@@ -538,6 +533,7 @@ export class EntryLabelOverlay extends HTMLElement {
     } else {
       this.#isAILabelLoading = false;
       this.#inAIConsentDialogFlow = true;
+      this.#render();
       const hasConsented = await this.#showUserAiFirstRunDialog();
       this.#inAIConsentDialogFlow = false;
       // This makes sure we put the user back in the editable state.
@@ -793,16 +789,22 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #render(): void {
+    const inputFieldClasses = Lit.Directives.classMap({
+      'input-field': true,
+      // When the consent modal pops up, we want the input to look like it has focus so it visually doesn't change.
+      // Once the consent flow is closed, we restore focus and maintain the appearance.
+      'fake-focus-state': this.#inAIConsentDialogFlow,
+    });
     // clang-format off
     Lit.render(
         html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}
-        @focusout=${this.#handleFocusOutEvent}
+          @focusout=${this.#handleFocusOutEvent}
         >
           <span
             class="label-button-input-wrapper">
             <span
-              class="input-field"
+              class=${inputFieldClasses}
               role="textbox"
               @focus=${() => {
                 this.setLabelEditabilityAndRemoveEmptyLabel(true);

@@ -53,7 +53,7 @@ class DomFragment {
         }
       }
     }
-    if (!variable) {
+    if (!variable && !result.references.includes(node)) {
       result.references.push(node);
     }
     return result;

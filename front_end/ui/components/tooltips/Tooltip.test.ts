@@ -199,6 +199,28 @@ describe('Tooltip', () => {
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
   });
 
+  it('should not hide the tooltip if focus moves from the anchor into deep DOM within the tooltip', async () => {
+    const container = renderTooltip({variant: 'rich', attribute: 'aria-details'});
+    const anchor = container.querySelector('button');
+    assert.exists(anchor);
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
+    // Make some nested DOM for this; this test exists because of a bug where
+    // the tooltip only stayed open if the focused element was an immediate
+    // child, so for this test we make a nested DOM structure and test on that.
+    tooltip.innerHTML = '<div><span><p class="deep-nested">nested</p></span></div>';
+
+    anchor.dispatchEvent(new FocusEvent('focus'));
+    await checkForPendingActivity();
+    assert.isTrue(tooltip.open);
+    const richContents = container.querySelector('devtools-tooltip')?.querySelector('p.deep-nested');
+    assert.exists(richContents);
+
+    anchor.dispatchEvent(new FocusEvent('blur', {relatedTarget: richContents}));
+    await checkForPendingActivity();
+    assert.isTrue(tooltip.open);  // tooltip should still be open
+  });
+
   it('automatically sets and updates jslog', () => {
     const container = renderTooltip({jslogContext: 'context'});
     const tooltip = container.querySelector('devtools-tooltip');

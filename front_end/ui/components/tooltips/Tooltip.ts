@@ -160,6 +160,17 @@ export class Tooltip extends HTMLElement {
     if (this.#timeout) {
       window.clearTimeout(this.#timeout);
     }
+    // If the event is a blur event, then:
+    // 1. event.currentTarget = the element that got blurred
+    // 2. event.relatedTarget = the element that gained focus
+    // https://developer.mozilla.org/en-US/docs/Web/API/FocusEvent/relatedTarget
+    // If the blurred element (1) was our anchor, and the newly focused element
+    // (2) is within the tooltip, we do not want to hide the tooltip.
+    if (event && this.variant === 'rich' && event.target === this.#anchor && event.relatedTarget instanceof Node &&
+        this.contains(event.relatedTarget)) {
+      return;
+    }
+
     // Don't hide a rich tooltip when hovering over the tooltip itself.
     if (event && this.variant === 'rich' &&
         (event.relatedTarget === this || (event.relatedTarget as Element)?.parentElement === this)) {

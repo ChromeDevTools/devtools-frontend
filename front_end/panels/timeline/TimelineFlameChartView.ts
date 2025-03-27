@@ -286,6 +286,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       },
     });
 
+    this.#overlays.addEventListener(Overlays.Overlays.ConsentDialogVisibilityChange.eventName, e => {
+      const event = e as Overlays.Overlays.ConsentDialogVisibilityChange;
+      if (event.isVisible) {
+        // If the dialog is visible, we do not want anything in the performance
+        // panel capturing tab focus.
+        // https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert
+        this.element.setAttribute('inert', 'inert');
+      } else {
+        this.element.removeAttribute('inert');
+      }
+    });
+
     this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {
       const {overlay} = (event as Overlays.Overlays.EntryLabelMouseClick);
       this.dispatchEventToListeners(

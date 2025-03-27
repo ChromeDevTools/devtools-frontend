@@ -402,6 +402,12 @@ export class AnnotationOverlayActionEvent extends Event {
     super(AnnotationOverlayActionEvent.eventName);
   }
 }
+export class ConsentDialogVisibilityChange extends Event {
+  static readonly eventName = 'consentdialogvisibilitychange';
+  constructor(public isVisible: boolean) {
+    super(ConsentDialogVisibilityChange.eventName, {bubbles: true, composed: true});
+  }
+}
 
 export class TimeRangeMouseOverEvent extends Event {
   static readonly eventName = 'timerangemouseoverevent';
@@ -1534,6 +1540,11 @@ export class Overlays extends EventTarget {
         const callTree = parsedTrace ? Utils.AICallTree.AICallTree.fromEvent(overlay.entry, parsedTrace) : null;
         component.callTree = callTree;
 
+        component.addEventListener(
+            Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisiblityChange.eventName, e => {
+              const event = e as Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisiblityChange;
+              this.dispatchEvent(new ConsentDialogVisibilityChange(event.isVisible));
+            });
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
         });

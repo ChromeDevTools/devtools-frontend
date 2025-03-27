@@ -85,7 +85,7 @@ const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
     color: 'var(--sys-color-inverse-surface)',
     name: node.localName(),
     domId: node.getAttribute('id'),
-    domClasses: className ? className.split(/\s+/).filter(s => Boolean(s)) : undefined,
+    domClasses: className ? className.split(/\s+/).filter(s => !!s) : undefined,
     enabled: false,
     reveal: () => {
       void Common.Revealer.reveal(node);
@@ -488,7 +488,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
                                            .variant=${Buttons.Button.Variant.ICON}
                                            @click=${onElementClick}></devtools-button>
     </div>`;
-            // clang-format on
+          // clang-format on
   }
 
   #renderBooleanSetting(setting: BooleanSetting): Lit.TemplateResult {

@@ -1229,7 +1229,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                                 return undefined;
                             }
                           })
-                          .filter((b): b is Text => Boolean(b));
+                          .filter(b => !!b);
         return {
           nodes,
           nodeGroups: [nodes],

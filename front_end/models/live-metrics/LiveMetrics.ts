@@ -234,7 +234,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       this.#lcpValue?.nodeRef,
       ...this.#interactions.values().map(i => i.nodeRef),
       ...this.#layoutShifts.flatMap(shift => shift.affectedNodeRefs),
-    ].filter((nodeRef): nodeRef is NodeRef => Boolean(nodeRef));
+    ].filter(nodeRef => !!nodeRef);
 
     const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.node.backendNodeId()));
     const nodes = await domModel.pushNodesByBackendIdsToFrontend(idsToRefresh);
@@ -351,8 +351,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           return this.#resolveNodeRef(nodeIndex, executionContextId);
         });
 
-        const affectedNodes =
-            (await Promise.all(nodePromises)).filter((nodeRef): nodeRef is NodeRef => Boolean(nodeRef));
+        const affectedNodes = (await Promise.all(nodePromises)).filter(nodeRef => !!nodeRef);
 
         const layoutShift: LayoutShift = {
           score: webVitalsEvent.score,

@@ -146,7 +146,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
       },
     ];
 
-    return labels.filter(label => Boolean(label.value)).map(label => `${label.label}: ${label.value}`).join('\n');
+    return labels.filter(label => !!label.value).map(label => `${label.label}: ${label.value}`).join('\n');
   }
 
   #formatRequestInitiated(

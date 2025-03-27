@@ -1675,8 +1675,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       lineNumber: number|undefined, columnNumber: number|undefined): Promise<{frames: Chrome.DevTools.FunctionInfo[]}> {
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-    const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => Boolean(f)) as
-        Workspace.UISourceCode.UISourceCode[];
+    const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => !!f);
     const scripts =
         uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
     if (scripts.length) {

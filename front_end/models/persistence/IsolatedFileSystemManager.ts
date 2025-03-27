@@ -150,7 +150,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     function onFileSystemsAdded(fileSystems: Array<IsolatedFileSystem|null>): void {
-      resolve(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
+      resolve(fileSystems.filter(fs => !!fs));
     }
   }
 

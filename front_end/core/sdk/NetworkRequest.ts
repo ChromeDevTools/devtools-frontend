@@ -1197,7 +1197,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       ...this.responseCookies,
       ...this.blockedRequestCookies().map(blockedRequestCookie => blockedRequestCookie.cookie),
       ...this.blockedResponseCookies().map(blockedResponseCookie => blockedResponseCookie.cookie),
-    ].filter(v => Boolean(v)) as Cookie[];
+    ].filter(v => !!v);
   }
 
   get serverTimings(): ServerTiming[]|null {

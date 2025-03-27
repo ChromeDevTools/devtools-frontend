@@ -346,7 +346,7 @@ export const getAllPropertiesFromComputedPane = async () => {
              value: value.textContent ? value.textContent.trim().replace(/;$/, '') : '',
            };
          }))))
-      .filter(prop => Boolean(prop));
+      .filter(prop => !!prop);
 };
 
 export const getPropertyFromComputedPane = async (name: string) => {
@@ -625,7 +625,7 @@ export const getDisplayedCSSPropertyData =
                                    };
                                  },
                                  )))
-                                .filter(c => Boolean(c.propertyName));
+                                .filter(c => !!c.propertyName);
   return propertyNamesData;
 };
 
@@ -634,7 +634,7 @@ export const getDisplayedCSSPropertyNames = async (propertiesSection: puppeteer.
   const propertyNamesText = (await Promise.all(cssPropertyNames.map(
                                  node => node.evaluate(n => n.textContent),
                                  )))
-                                .filter(c => Boolean(c));
+                                .filter(c => !!c);
   return propertyNamesText;
 };
 

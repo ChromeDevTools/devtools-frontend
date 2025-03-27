@@ -628,7 +628,7 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
     const location = new StackTraceTopFrameLocation(updateDelegate, locationPool);
     const locationsPromises = rawLocations.map(
         rawLocation => binding.createLiveLocation(rawLocation, location.scheduleUpdate.bind(location), locationPool));
-    location.#locations = ((await Promise.all(locationsPromises)).filter(l => Boolean(l)) as Location[]);
+    location.#locations = ((await Promise.all(locationsPromises)).filter(l => !!l));
     await location.updateLocation();
     return location;
   }

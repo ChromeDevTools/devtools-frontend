@@ -68,7 +68,7 @@ const isIgnorableInputElement = (element: Element): boolean => {
 };
 
 const getShortcutLength = (shortcut: Shortcut): string => {
-  return Object.values(shortcut).filter(key => Boolean(key)).length.toString();
+  return Object.values(shortcut).filter(key => !!key).length.toString();
 };
 
 class RecordingClient {

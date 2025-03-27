@@ -141,7 +141,7 @@ export class CoverageDecorationManager {
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
       let locations = await this.#debuggerBinding.uiLocationToRawLocations(uiSourceCode, line, column);
-      locations = locations.filter(location => Boolean(location.script()));
+      locations = locations.filter(location => !!location.script());
       for (const location of locations) {
         const script = location.script();
         if (!script) {

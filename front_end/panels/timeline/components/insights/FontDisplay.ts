@@ -36,8 +36,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   createAggregatedTableRow(remaining: Trace.Insights.Models.FontDisplay.RemoteFont[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length), ''],
-      overlays: remaining.map(r => this.#overlayForRequest.get(r.request))
-                    .filter((o): o is Overlays.Overlays.TimelineOverlay => Boolean(o)),
+      overlays: remaining.map(r => this.#overlayForRequest.get(r.request)).filter(o => !!o),
     };
   }
 

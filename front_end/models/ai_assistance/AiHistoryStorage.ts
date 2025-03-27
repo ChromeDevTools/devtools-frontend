@@ -199,7 +199,7 @@ export class AiHistoryStorage {
                                         }
                                         return undefined;
                                       })
-                                      .filter(item => Boolean(item));
+                                      .filter(item => !!item);
       this.#historySetting.set(
           history.filter(entry => entry.id !== id),
       );

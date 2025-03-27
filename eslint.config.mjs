@@ -205,7 +205,7 @@ export default [
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': 'error',
+      'no-implicit-coercion': ['error', { allow: ['!!'] }],
 
       'no-array-constructor': 'error',
 

@@ -577,6 +577,7 @@ export default [
     rules: {
       'no-console': 'off',
       'rulesdir/es-modules-import': 'off',
+      'import/no-default-export': 'off',
     },
   },
   {

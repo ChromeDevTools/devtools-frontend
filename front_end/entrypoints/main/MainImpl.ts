@@ -330,10 +330,6 @@ export class MainImpl {
     // New cookie features.
     Root.Runtime.experiments.register('experimental-cookie-features', 'Enable experimental cookie features');
 
-    // Integrate CSS changes in the Styles pane.
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES, 'Sync CSS changes in the Styles tab');
-
     // Highlights a violating node or attribute by rendering a squiggly line under it and adding a tooltip linking to the issues panel.
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,

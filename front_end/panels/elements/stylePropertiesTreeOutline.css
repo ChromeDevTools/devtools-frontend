@@ -148,35 +148,6 @@ input.enabled-button.small {
   opacity: 50%;
 }
 
-.changed {
-  background-color: var(--sys-color-tertiary-container);
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: -4px;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    background-color: var(--sys-color-tertiary);
-  }
-}
-
-.copy {
-  display: none;
-
-  .changed:hover & {
-    position: absolute;
-    right: -4px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    display: inline-block;
-    cursor: pointer;
-    transform: scale(0.9);
-  }
-}
-
 .hint-wrapper {
   align-items: center;
   display: inline-block;

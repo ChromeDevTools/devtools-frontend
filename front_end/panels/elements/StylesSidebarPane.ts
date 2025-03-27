@@ -123,14 +123,6 @@ const UIStrings = {
    */
   automaticDarkMode: 'Automatic dark mode',
   /**
-   *@description Tooltip text that appears when hovering over the css changes button in the Styles Sidebar Pane of the Elements panel
-   */
-  copyAllCSSChanges: 'Copy CSS changes',
-  /**
-   *@description Tooltip text that appears after clicking on the copy CSS changes button
-   */
-  copiedToClipboard: 'Copied to clipboard',
-  /**
    *@description Text displayed on layer separators in the styles sidebar pane.
    */
   layer: 'Layer',
@@ -211,7 +203,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
   #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
-  #copyChangesButton?: UI.Toolbar.ToolbarButton;
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;
 
@@ -586,11 +577,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
-        this.#copyChangesButton = this.createCopyAllChangesButton();
-        this.appendToolbarItem(this.#copyChangesButton);
-        this.#copyChangesButton.element.classList.add('hidden');
-      }
       this.dispatchEventToListeners(Events.INITIAL_UPDATE_COMPLETED);
     }
 
@@ -1057,16 +1043,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // the matched styles we reenable the button.
     LayersWidget.ButtonProvider.instance().item().setVisible(false);
 
-    const refreshedURLs = new Set<string>();
     for (const style of matchedStyles.nodeStyles()) {
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES) && style.parentRule) {
-        const url = style.parentRule.resourceURL();
-        if (url && !refreshedURLs.has(url)) {
-          await this.trackURLForChanges(url);
-          refreshedURLs.add(url);
-        }
-      }
-
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
@@ -1394,22 +1371,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return changedLines.has(formattedLineNumber + 1);
   }
 
-  updateChangeStatus(): void {
-    if (!this.#copyChangesButton) {
-      return;
-    }
-
-    let hasChangedStyles = false;
-    for (const changeTracker of this.#urlToChangeTracker.values()) {
-      if (changeTracker.changedLines.size > 0) {
-        hasChangedStyles = true;
-        break;
-      }
-    }
-
-    this.#copyChangesButton.element.classList.toggle('hidden', !hasChangedStyles);
-  }
-
   private async refreshChangedLines(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const changeTracker = this.#urlToChangeTracker.get(uiSourceCode.url());
     if (!changeTracker) {
@@ -1585,27 +1546,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }, {capture: true});
 
     return button;
-  }
-
-  private createCopyAllChangesButton(): UI.Toolbar.ToolbarButton {
-    const copyAllChangesButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllCSSChanges), 'copy');
-    // TODO(1296947): implement a dedicated component to share between all copy buttons
-    copyAllChangesButton.element.setAttribute('data-content', i18nString(UIStrings.copiedToClipboard));
-    let timeout: number|undefined;
-    copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, async () => {
-      const allChanges = await this.getFormattedChanges();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = undefined;
-      }
-      copyAllChangesButton.element.classList.add('copied-to-clipboard');
-      timeout = window.setTimeout(() => {
-        copyAllChangesButton.element.classList.remove('copied-to-clipboard');
-        timeout = undefined;
-      }, 2000);
-    });
-    return copyAllChangesButton;
   }
 }
 

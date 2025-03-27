@@ -308,7 +308,6 @@ export const enum ExperimentName {
   ALL = '*',
   PROTOCOL_MONITOR = 'protocol-monitor',
   FULL_ACCESSIBILITY_TREE = 'full-accessibility-tree',
-  STYLES_PANE_CSS_CHANGES = 'styles-pane-css-changes',
   HEADER_OVERRIDES = 'header-overrides',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
   AUTHORED_DEPLOYED_GROUPING = 'authored-deployed-grouping',

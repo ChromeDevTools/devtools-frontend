@@ -3380,7 +3380,6 @@ export const knownContextValues = new Set([
   'style-sheet-id',
   'styles',
   'styles-metrics',
-  'styles-pane-css-changes',
   'stylesheet',
   'subdomain',
   'subgrid',

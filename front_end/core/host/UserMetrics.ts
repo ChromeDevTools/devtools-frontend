@@ -967,7 +967,6 @@ export enum DevtoolsExperiments {
   'full-accessibility-tree' = 42,
   'contrast-issues' = 44,
   'experimental-cookie-features' = 45,
-  'styles-pane-css-changes' = 55,
   'instrumentation-breakpoints' = 61,
   'authored-deployed-grouping' = 63,
   'just-my-code' = 65,

@@ -116,7 +116,6 @@ const REGISTERED_EXPERIMENTS = [
   'timeline-v8-runtime-call-stats',
   'timeline-invalidation-tracking',
   Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-  Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES,
   Root.Runtime.ExperimentName.HEADER_OVERRIDES,
   Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
   Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES,

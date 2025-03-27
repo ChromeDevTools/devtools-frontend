@@ -1610,7 +1610,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private computedStyles: Map<string, string>|null = null;
   private parentsComputedStyles: Map<string, string>|null = null;
   private contextForTest!: Context|undefined;
-  #propertyTextFromSource: string;
   #gridNames: Set<string>|undefined = undefined;
 
   constructor(
@@ -1633,8 +1632,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.newProperty) {
       this.listItemElement.textContent = '';
     }
-
-    this.#propertyTextFromSource = property.propertyText || '';
 
     this.property.addEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, () => {
       this.updateTitle();
@@ -1800,8 +1797,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else {
       this.listItemElement.classList.remove('disabled');
     }
-
-    this.listItemElement.classList.toggle('changed', this.isPropertyChanged(this.property));
   }
 
   node(): SDK.DOMModel.DOMNode|null {
@@ -1836,14 +1831,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.matchedStylesInternal.resetActiveProperties();
     this.updatePane();
     this.styleTextAppliedForTest();
-  }
-
-  private isPropertyChanged(property: SDK.CSSProperty.CSSProperty): boolean {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES)) {
-      return false;
-    }
-    // Check local cache first, then check against diffs from the workspace.
-    return this.#propertyTextFromSource !== property.propertyText || this.parentPane().isPropertyChanged(property);
   }
 
   async #getLonghandProperties(): Promise<SDK.CSSProperty.CSSProperty[]> {
@@ -2104,14 +2091,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         UI.ARIAUtils.setLabel(
             enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
       }
-
-      const copyIcon = IconButton.Icon.create('copy', 'copy');
-      UI.Tooltip.Tooltip.install(copyIcon, i18nString(UIStrings.copyDeclaration));
-      copyIcon.addEventListener('click', () => {
-        const propertyText = `${this.property.name}: ${this.property.value};`;
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyText);
-      });
-      this.listItemElement.append(copyIcon);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
   }
@@ -2921,10 +2900,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
       this.styleTextAppliedForTest();
       return;
-    }
-    if (updatedProperty) {
-      this.listItemElement.classList.toggle('changed', this.isPropertyChanged(updatedProperty));
-      this.parentPane().updateChangeStatus();
     }
 
     this.matchedStylesInternal.resetActiveProperties();

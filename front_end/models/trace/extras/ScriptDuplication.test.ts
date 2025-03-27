@@ -29,6 +29,7 @@ async function loadScriptFixture(
     scriptId: `1.${name}` as Protocol.Runtime.ScriptId,
     frame: 'abcdef',
     ts: 0 as Trace.Types.Timing.Micro,
+    inline: false,
     content: fixture.content,
     sourceMap: new SDK.SourceMap.SourceMap(compiledUrl, mapUrl, fixture.sourceMapJson),
   };
@@ -38,8 +39,8 @@ describeWithEnvironment('ScriptDuplication', function() {
   describe('computeGeneratedFileSizes', () => {
     it('works (simple map)', async function() {
       const script = await loadScriptFixture('foo.min');
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         files: {
           'node_modules/browser-pack/_prelude.js': 480,
           'src/bar.js': 104,
@@ -52,8 +53,8 @@ describeWithEnvironment('ScriptDuplication', function() {
 
     it('works (complex map)', async function() {
       const script = await loadScriptFixture('squoosh');
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         files: {
           'webpack:///node_modules/comlink/comlink.js': 4117,
           'webpack:///node_modules/linkstate/dist/linkstate.es.js': 412,
@@ -140,8 +141,8 @@ describeWithEnvironment('ScriptDuplication', function() {
         // @ts-expect-error
         map.sources[1] = null;
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         files: {
           'node_modules/browser-pack/_prelude.js': 480,
           null: 104,
@@ -156,8 +157,8 @@ describeWithEnvironment('ScriptDuplication', function() {
       const script = await loadScriptFixture('foo.min', fixture => {
         fixture.sourceMapJson.mappings = 'blahblah blah';
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         files: {},
         totalBytes: 718,
         unmappedBytes: 718,
@@ -168,8 +169,8 @@ describeWithEnvironment('ScriptDuplication', function() {
       const script = await loadScriptFixture('foo.min', fixture => {
         fixture.content = 'blahblah blah';
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         errorMessage: 'foo.min.js.map mapping for last column out of bounds: 1:14',
       });
     });
@@ -178,8 +179,8 @@ describeWithEnvironment('ScriptDuplication', function() {
       const script = await loadScriptFixture('foo.min', fixture => {
         fixture.content = '';
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         errorMessage: 'foo.min.js.map mapping for column out of bounds: 1:1',
       });
     });
@@ -194,8 +195,8 @@ describeWithEnvironment('ScriptDuplication', function() {
             'AAAA';
         fixture.sourceMapJson.mappings = newMappings.join(',');
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         errorMessage: 'foo.min.js.map mapping for last column out of bounds: 1:685',
       });
     });
@@ -208,8 +209,8 @@ describeWithEnvironment('ScriptDuplication', function() {
         // See https://sourcemaps.info/spec.html#:~:text=broken%20down%20as%20follows
         fixture.sourceMapJson.mappings = ';'.repeat(10) + fixture.sourceMapJson.mappings;
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         errorMessage: 'foo.min.js.map mapping for line out of bounds: 11',
       });
     });
@@ -218,8 +219,8 @@ describeWithEnvironment('ScriptDuplication', function() {
       const script = await loadScriptFixture('foo.min', fixture => {
         fixture.sourceMapJson.names = ['blah'];
       });
-      const results = Trace.Extras.ScriptDuplication.computeGeneratedFileSizes(script);
-      assert.deepEqual(results, {
+      const sizes = Trace.Handlers.ModelHandlers.Scripts.getScriptGeneratedSizes(script);
+      assert.deepEqual(sizes, {
         files: {
           'node_modules/browser-pack/_prelude.js': 480,
           'src/bar.js': 104,
@@ -232,12 +233,17 @@ describeWithEnvironment('ScriptDuplication', function() {
   });
 
   describe('computeScriptDuplication', () => {
+    function getDuplication(scriptsData: Trace.Handlers.ModelHandlers.Scripts.ScriptsData):
+        Trace.Extras.ScriptDuplication.ScriptDuplication {
+      return Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData).duplicationGroupedByNodeModules;
+    }
+
     it('works (simple, no duplication)', async () => {
       const scriptsData: Trace.Handlers.ModelHandlers.Scripts.ScriptsData = {
         scripts: [await loadScriptFixture('foo.min')],
       };
 
-      const results = Object.fromEntries(Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData));
+      const results = Object.fromEntries(getDuplication(scriptsData));
       assert.deepEqual(results, {});
     });
 
@@ -246,8 +252,8 @@ describeWithEnvironment('ScriptDuplication', function() {
         scripts: [await loadScriptFixture('coursehero-bundle-1'), await loadScriptFixture('coursehero-bundle-2')],
       };
 
-      const results = Object.fromEntries(
-          [...Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData).entries()].map(([key, data]) => {
+      const results =
+          Object.fromEntries([...getDuplication(scriptsData).entries()].map(([key, data]) => {
             return [
               key, data.duplicates.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.attributedSize}))
             ];

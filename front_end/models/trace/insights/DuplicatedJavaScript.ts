@@ -36,12 +36,14 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type DuplicateJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   duplication: Extras.ScriptDuplication.ScriptDuplication,
+  duplicationGroupedByNodeModules: Extras.ScriptDuplication.ScriptDuplication,
   scriptsWithDuplication: Handlers.ModelHandlers.Scripts.Script[],
+  scripts: Handlers.ModelHandlers.Scripts.Script[],
+  mainDocumentUrl: string,
 }>;
 
 function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
-  const requests = partialModel.scriptsWithDuplication.map(script => script.request)
-                       .filter(e => !!e);  // eslint-disable-line no-implicit-coercion
+  const requests = partialModel.scriptsWithDuplication.map(script => script.request).filter(e => !!e);
 
   return {
     insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
@@ -73,10 +75,13 @@ export function generateInsight(
     return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts);
   });
 
-  const duplication = Extras.ScriptDuplication.computeScriptDuplication({scripts});
+  const {duplication, duplicationGroupedByNodeModules} = Extras.ScriptDuplication.computeScriptDuplication({scripts});
   const scriptsWithDuplication = [...duplication.values().flatMap(data => data.duplicates.map(d => d.script))];
   return finalize({
     duplication,
+    duplicationGroupedByNodeModules,
     scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
+    scripts,
+    mainDocumentUrl: context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL,
   });
 }

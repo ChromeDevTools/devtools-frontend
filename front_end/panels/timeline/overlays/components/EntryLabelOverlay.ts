@@ -91,6 +91,10 @@ const UIStringsNotTranslate = {
    */
   generatingLabel: 'Generating label',
   /**
+   *@description Text shown when the generation of the AI-powered annotation failed.
+   */
+  generationFailed: 'Generation failed',
+  /**
    *@description First disclaimer item text for the fre dialog - AI won't always get it right.
    */
   freDisclaimerAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
@@ -191,6 +195,8 @@ export class EntryLabelOverlay extends HTMLElement {
   #inAIConsentDialogFlow = false;
   // Keep track of the AI label loading state to render a loading component if the label is being generated
   #isAILabelLoading = false;
+  // Set to true when the generation of an AI label failed so we know when to display the 'generation failed' disclaimer
+  #isAILabelGenerationFailed = false;
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -518,7 +524,9 @@ export class EntryLabelOverlay extends HTMLElement {
         // Trigger a re-render to hide the AI Button and display the generated label.
         this.#render();
       } catch {
-        // TODO(b/405354265): handle the error state
+        this.#isAILabelLoading = false;
+        this.#isAILabelGenerationFailed = true;
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
       }
     } else {
       this.#isAILabelLoading = false;
@@ -657,6 +665,24 @@ export class EntryLabelOverlay extends HTMLElement {
       // clang-format on
     }
 
+    if (this.#isAILabelGenerationFailed) {
+      // Only show the error message on the first component render render after the failure.
+      this.#isAILabelGenerationFailed = false;
+      // clang-format off
+      return html`
+        <span
+          class="ai-label-error">
+          <devtools-icon
+            class="warning"
+            .name=${'warning'}
+            .data=${{
+            iconName: 'warning', color: 'var(--ref-palette-error50)', width: '20px'}}>
+          </devtools-icon>
+          <span class="generate-label-text">${lockedString(UIStringsNotTranslate.generationFailed)}</span>
+        </span>
+      `;
+      // clang-format on
+    }
     // clang-format off
     return html`
       <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->

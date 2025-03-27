@@ -18,7 +18,8 @@
 
 .ai-label-button-wrapper,
 .ai-label-disabled-button-wrapper,
-.ai-label-loading {
+.ai-label-loading,
+.ai-label-error {
   /* position the button wrapper on the very right of the label */
   position: absolute;
   left: 100%;
@@ -49,7 +50,8 @@
   }
 }
 
-.ai-label-loading {
+.ai-label-loading,
+.ai-label-error {
   gap: var(--sys-size-6);
   padding: var(--sys-size-5) var(--sys-size-8);
 }

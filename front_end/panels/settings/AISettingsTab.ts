@@ -334,7 +334,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     if (this.#aiAnnotationsSetting) {
       const aiAssistanceData: AiSettingParams = {
-        settingName: i18n.i18n.lockedString('AI annotations'),
+        settingName: i18n.i18n.lockedString('Auto annotations'),
         iconName: 'pen-spark',
         settingDescription: i18nString(UIStrings.getAIAnnotationsSuggestions),
         enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),

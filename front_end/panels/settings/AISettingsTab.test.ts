@@ -92,7 +92,7 @@ describeWithEnvironment('AISettingsTab', () => {
 
     const settingCards = view.shadowRoot.querySelectorAll('.setting-card h2');
     const settingNames = Array.from(settingCards).map(element => element.textContent);
-    assert.deepEqual(settingNames, ['Console Insights', 'AI assistance', 'AI annotations']);
+    assert.deepEqual(settingNames, ['Console Insights', 'AI assistance', 'Auto annotations']);
 
     const settingCardDesc = view.shadowRoot.querySelectorAll('.setting-description');
     assert.strictEqual(settingCardDesc[0].textContent, 'Helps you understand and fix console warnings and errors');

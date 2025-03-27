@@ -6,7 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as AiAssistanceModels from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {cleanTextContent, dispatchClickEvent} from '../../../testing/DOMHelpers.js';
+import {cleanTextContent, dispatchClickEvent, doubleRaf} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {
   makeInstantEvent,
@@ -668,28 +668,27 @@ describeWithEnvironment('Overlays', () => {
       );
     });
 
-    it('Does not show `generate ai label` button if the label is not empty',
-       async function() {
-         updateHostConfig({
-           aidaAvailability: {
-             enabled: false,
-             blockedByAge: true,
-             blockedByEnterprisePolicy: false,
-             blockedByGeo: false,
-             disallowLogging: true,
-             enterprisePolicyValue: 1,
-           },
-         });
+    it('Does not show `generate ai label` button if the label is not empty', async function() {
+      updateHostConfig({
+        aidaAvailability: {
+          enabled: false,
+          blockedByAge: true,
+          blockedByEnterprisePolicy: false,
+          blockedByGeo: false,
+          disallowLogging: true,
+          enterprisePolicyValue: 1,
+        },
+      });
 
-         const {elementsWrapper, inputField} =
-             await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'entry label');
-         assert.strictEqual(inputField?.innerText, 'entry label');
+      const {elementsWrapper, inputField} =
+          await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'entry label');
+      assert.strictEqual(inputField?.innerText, 'entry label');
 
-         const aiLabelButtonWrapper =
-             elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
-         // Button should not exist
-         assert.isNotOk(aiLabelButtonWrapper);
-       });
+      const aiLabelButtonWrapper =
+          elementsWrapper.querySelector<HTMLElement>('.ai-label-disabled-button-wrapper') as HTMLSpanElement;
+      // Button should not exist
+      assert.isNotOk(aiLabelButtonWrapper);
+    });
 
     it('Shows the `generate ai label` button if the label is empty', async function() {
       updateHostConfig({
@@ -905,7 +904,7 @@ describeWithEnvironment('Overlays', () => {
       assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 2);
     });
 
-    it('Removes empty label if it is empty when navigated away from (removed focused from)', async function() {
+    it('removes empty label if it is empty when it loses focus', async function() {
       const {inputField, overlays, event} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
 
       // Double click on the label box to make it editable and focus on it
@@ -916,7 +915,8 @@ describeWithEnvironment('Overlays', () => {
 
       // Change the content to not editable by changing the element blur like when clicking outside of it.
       // The label is empty since no initial value was passed into it and no characters were entered.
-      inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      inputField.dispatchEvent(new FocusEvent('focusout', {bubbles: true}));
+      await doubleRaf();
 
       // Ensure that the entry overlay has been removed because it was saved empty
       assert.lengthOf(overlays.overlaysForEntry(event), 0);
@@ -1135,7 +1135,8 @@ describeWithEnvironment('Overlays', () => {
 
       // Make the content to editable by changing the element blur like when clicking outside of it.
       // When that happens, the content should be set to not editable.
-      inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      inputField.dispatchEvent(new FocusEvent('focusout', {bubbles: true}));
+      await doubleRaf();
       assert.isFalse(inputField.isContentEditable);
 
       // Double click on the label to make it editable again

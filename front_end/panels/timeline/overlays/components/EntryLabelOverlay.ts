@@ -496,7 +496,6 @@ export class EntryLabelOverlay extends HTMLElement {
   // Otherwise, show the fre dialog with a 'Got it' button that turns the setting on.
   async #handleAiButtonClick(): Promise<void> {
     if (this.#aiAnnotationsEnabledSetting.get()) {
-      // TODO(b/405354543): handle the loading state here.
       if (!this.#callTree || !this.#inputField) {
         // Shouldn't happen as we only show the Generate UI when we have this, but this satisfies TS.
         return;
@@ -504,6 +503,11 @@ export class EntryLabelOverlay extends HTMLElement {
       try {
         // Trigger a re-render to display the loading component in the place of the button when the label is being generated.
         this.#isAILabelLoading = true;
+        // Trigger a re-render to put focus back on the input box, otherwise
+        // when the button changes to a loading spinner, it loses focus and the
+        // editing state is reset because the component loses focus.
+        this.#render();
+        this.#focusInputBox();
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
 
         this.#label = await this.#performanceAgent.generateAIEntryLabel(this.#callTree);
@@ -512,7 +516,7 @@ export class EntryLabelOverlay extends HTMLElement {
 
         this.#isAILabelLoading = false;
         // Trigger a re-render to hide the AI Button and display the generated label.
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        this.#render();
       } catch {
         // TODO(b/405354265): handle the error state
       }
@@ -723,11 +727,41 @@ export class EntryLabelOverlay extends HTMLElement {
     // clang-format on
   }
 
+  #handleFocusOutEvent(): void {
+    /**
+     * Usually when the text box loses focus, we want to stop the edit mode and
+     * just display the annotation. However, if the user tabs from the text box
+     * to focus the GenerateAI button, we need to ensure that we do not exit
+     * edit mode. The only reliable method is to listen to the focusout event
+     * (which bubbles, unlike `blur`) on the parent.
+     * This means we get any updates on the focus state of anything inside this component.
+     * Once we get the event, we check to see if focus is still within this
+     * component (which means either the input, or the button, or the disclaimer popup).
+     * If it is, we do nothing, but if we have lost focus,  we can then exit editable mode.
+     *
+     * If you are thinking "why not `blur` on the span" it's because blur does
+     * not propagate; the span itself never blurs, but the elements inside it
+     * do as the span is not focusable.
+     *
+     * The reason we do it inside a rAF is because on the first run the values
+     * for `this.hasFocus()` are not accurate. I'm not quite sure why, but by
+     * letting the browser have a frame to update, it then accurately reports
+     * the up to date values for `this.hasFocus()`
+     */
+    requestAnimationFrame(() => {
+      if (!this.hasFocus()) {
+        this.setLabelEditabilityAndRemoveEmptyLabel(false);
+      }
+    });
+  }
+
   #render(): void {
     // clang-format off
     Lit.render(
         html`
-        <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
+        <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}
+        @focusout=${this.#handleFocusOutEvent}
+        >
           <span
             class="label-button-input-wrapper">
             <span
@@ -739,7 +773,6 @@ export class EntryLabelOverlay extends HTMLElement {
               @dblclick=${() => {
                 this.setLabelEditabilityAndRemoveEmptyLabel(true);
               }}
-              @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
               @keydown=${this.#handleLabelInputKeyDown}
               @paste=${this.#handleLabelInputPaste}
               @keyup=${() => {

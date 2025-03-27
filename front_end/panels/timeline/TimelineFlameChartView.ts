@@ -403,7 +403,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
      * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:
      * ENTRY_SELECTED: is KEYBOARD ONLY selection of events (e.g. navigating through the flamechart with your arrow keys)
      * ENTRY_HOVERED: is MOUSE ONLY when an event is hovered over with the mouse.
-     * ENTRY_INVOKED: is when the user cilcks on an event, or hits the "enter" key whilst an event is selected.
+     * ENTRY_INVOKED: is when the user clicks on an event, or hits the "enter" key whilst an event is selected.
      */
     this.onMainEntrySelected = this.onEntrySelected.bind(this, this.mainDataProvider);
     this.onNetworkEntrySelected = this.onEntrySelected.bind(this, this.networkDataProvider);

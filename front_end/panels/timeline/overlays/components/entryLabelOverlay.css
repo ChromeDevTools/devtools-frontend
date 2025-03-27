@@ -55,6 +55,7 @@
 }
 
 .ai-label-button-wrapper:focus,
+.ai-label-button-wrapper:focus-within,
 .ai-label-button-wrapper:hover {
   width: fit-content;
   height: var(--sys-size-13);
@@ -105,7 +106,15 @@
   font-weight: var(--ref-typeface-weight-medium);
 }
 
-.input-field:focus {
+
+/* When the input field is focused we want to style it as a light background so
+ * it's clear that the user is in it and can edit the text.
+* However we also do this styling when the user's focus is on the GenerateAI
+* button (using the :focus-within on the parent). This is so if you open an
+* empty annotation, and then tab to the GenerateAI button, the text field
+* styling doesn't change. */
+.input-field:focus,
+.label-parts-wrapper:focus-within .input-field {
   background-color: var(--color-background);
   color: var(--color-background-inverted);
   outline: 2px solid var(--color-background-inverted);

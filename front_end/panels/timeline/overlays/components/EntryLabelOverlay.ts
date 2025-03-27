@@ -565,15 +565,17 @@ export class EntryLabelOverlay extends HTMLElement {
           // clang-format off
           content: html`
             ${lockedString(UIStringsNotTranslate.freDisclaimerControlSettingFrom)}
-            <x-link
+            <button
               @click=${() => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
               }}
               class="link"
+              role="link"
               jslog=${VisualLogging.link('open-ai-settings').track({
                 click: true
               })}
-            >${lockedString(UIStringsNotTranslate.settingsPanel)}</x-link>`,
+              tabindex="0"
+            >${lockedString(UIStringsNotTranslate.settingsPanel)}</button>`,
           // clang-format on
         },
       ],

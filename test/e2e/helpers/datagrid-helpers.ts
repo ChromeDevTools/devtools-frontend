@@ -24,7 +24,7 @@ export async function getDataGridRows(
     });
   })();
 
-  return await Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[jslog]:not(.hidden)', handler)));
+  return await Promise.all(handlers.map(handler => $$('td[jslog]:not(.hidden)', handler)));
 }
 
 export async function getDataGrid(root?: ElementHandle) {

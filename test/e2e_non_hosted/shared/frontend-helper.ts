@@ -151,8 +151,8 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async waitFor<ElementType extends Element = Element>(
-      selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
+  async waitFor<ElementType extends Element|null = null, Selector extends string = string>(
+      selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) {
     return await asyncScope.exec(() => this.waitForFunction(async () => {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
       return (element || undefined);

@@ -29,7 +29,7 @@ describe('The Window Controls Overlay', () => {
 
     // Verify selecting an option
     void selectOption(await controlsDropDown.toElement('select'), 'Linux');
-    const selectedOption = await controlsDropDown.evaluate(input => (input as HTMLInputElement).value);
+    const selectedOption = await controlsDropDown.evaluate(input => input.value);
     assert.strictEqual(selectedOption, 'Linux');
 
     // Verify clicking the checkbox

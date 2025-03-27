@@ -505,6 +505,12 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
 
 customElements.define('devtools-data-grid', DataGridElement);
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-data-grid': DataGridElement;
+  }
+}
+
 function hasBooleanAttribute(element: Element, name: string): boolean {
   return element.hasAttribute(name) && element.getAttribute(name) !== 'false';
 }

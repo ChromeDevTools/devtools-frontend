@@ -224,14 +224,14 @@ export const getVisibleTextContents = async (selector: string) => {
   return texts.filter(content => typeof (content) === 'string');
 };
 
-export const waitFor = async<ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
+export const waitFor = async<ElementType extends Element|null = null, Selector extends string = string>(
+    selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   const {devToolsPage} = getBrowserAndPagesWrappers();
-  return await devToolsPage.waitFor<ElementType>(selector, root, asyncScope, handler);
+  return await devToolsPage.waitFor<ElementType, Selector>(selector, root, asyncScope, handler);
 };
 
-export const waitForVisible = async<ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
+export const waitForVisible = async<ElementType extends Element|null = null, Selector extends string = string>(
+    selector: Selector, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const element = await $<ElementType, typeof selector>(selector, root, handler);
                                  const visible = await element.evaluate(node => node.checkVisibility());
@@ -239,11 +239,11 @@ export const waitForVisible = async<ElementType extends Element = Element>(
                                }, asyncScope), `Waiting for element matching selector '${selector}' to be visible`);
 };
 
-export const waitForMany = async (
-    selector: string, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+export const waitForMany = async<ElementType extends Element|null = null, Selector extends string = string>(
+    selector: Selector, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
     handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const elements = await $$(selector, root, handler);
+                                 const elements = await $$<ElementType, typeof selector>(selector, root, handler);
                                  return elements.length >= count ? elements : undefined;
                                }, asyncScope), `Waiting for ${count} elements to match selector '${selector}'`);
 };

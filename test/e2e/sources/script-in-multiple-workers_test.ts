@@ -85,7 +85,7 @@ describe('Multi-Workers', function() {
         await validateNavigationTree();
 
         const {target, frontend} = getBrowserAndPages();
-        installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+        await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
 
         await step('Send message to a worker to trigger break', async () => {
           await target.evaluate('workers[3].postMessage({command:"break"});');

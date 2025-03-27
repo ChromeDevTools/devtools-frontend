@@ -11,7 +11,7 @@ export async function clickStylePropertyEditorButton(
   const gridEditorButtons = await $$(`[title="${title}"]`);
   assert.lengthOf(gridEditorButtons, 1);
   const gridEditorButton = gridEditorButtons[0];
-  gridEditorButton.click();
+  await gridEditorButton.click();
   await waitFor(editorElement);
 }
 
@@ -20,5 +20,5 @@ export async function clickPropertyButton(selector: string) {
   const buttons = await $$(selector);
   assert.lengthOf(buttons, 1);
   const button = buttons[0];
-  button.click();
+  await button.click();
 }

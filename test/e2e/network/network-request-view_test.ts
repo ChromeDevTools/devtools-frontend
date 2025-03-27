@@ -174,7 +174,7 @@ describe('The Network Request view', () => {
     const color = await p.evaluate(e => getComputedStyle(e).color);
 
     assert.deepEqual(color, 'rgb(0, 0, 0)');
-    await waitForFunction(async () => await styleSrcError.caught);
+    await waitForFunction(async () => styleSrcError.caught);
   });
 
   it('permits inline styles on the preview tab.', async () => {
@@ -475,7 +475,7 @@ describe('The Network Request view', () => {
     const payloadView = await waitFor('.request-payload-view');
     const payloadOutline = await $$('[role=treeitem]:not(.hidden)', payloadView);
     const payloadOutlineText =
-        await Promise.all(payloadOutline.map(async item => item.evaluate(el => el.textContent || '')));
+        await Promise.all(payloadOutline.map(async item => await item.evaluate(el => el.textContent || '')));
     const expectedPayloadContent = [
       'Query String Parameters (2)View sourceView URL-encoded',
       ['id42', 'parama b'],
@@ -621,7 +621,7 @@ describe('The Network Request view', () => {
   it('no duplicate payload tab on headers update', async () => {
     await navigateToNetworkTab('requests.html');
     const {target} = getBrowserAndPages();
-    target.evaluate(() => fetch('image.svg?delay'));
+    void target.evaluate(() => fetch('image.svg?delay'));
     await waitForSomeRequestsToAppear(2);
 
     await selectRequestByName('image.svg?delay');

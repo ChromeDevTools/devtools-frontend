@@ -178,7 +178,7 @@ export async function navigateToSharedStorageForTopDomain() {
 
 async function doubleClickTreeItem(selector: string) {
   const element = await waitFor(selector);
-  element.evaluate(el => el.scrollIntoView(true));
+  await element.evaluate(el => el.scrollIntoView(true));
   await click(selector, {clickOptions: {clickCount: 2}});
 }
 

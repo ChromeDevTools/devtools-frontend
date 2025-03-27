@@ -445,7 +445,7 @@ export const activeElement = async () => {
 
   await waitForAnimationFrame();
 
-  return frontend.evaluateHandle(() => {
+  return await frontend.evaluateHandle(() => {
     let activeElement = document.activeElement;
 
     while (activeElement?.shadowRoot) {
@@ -462,12 +462,12 @@ export const activeElement = async () => {
 
 export const activeElementTextContent = async () => {
   const element = await activeElement();
-  return element.evaluate(node => node.textContent);
+  return await element.evaluate(node => node.textContent);
 };
 
 export const activeElementAccessibleName = async () => {
   const element = await activeElement();
-  return element.evaluate(node => node.getAttribute('aria-label') || node.getAttribute('title'));
+  return await element.evaluate(node => node.getAttribute('aria-label') || node.getAttribute('title'));
 };
 
 export const tabForward = async (page?: puppeteer.Page) => {
@@ -505,7 +505,7 @@ export const selectTextFromNodeToNode = async (
   // The clipboard api does not allow you to copy, unless the tab is focused.
   await target.bringToFront();
 
-  return target.evaluate(async (from, to, direction) => {
+  return await target.evaluate(async (from, to, direction) => {
     const selection = (from.getRootNode() as Document).getSelection();
     const range = document.createRange();
     if (direction === 'down') {

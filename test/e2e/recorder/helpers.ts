@@ -32,7 +32,7 @@ export async function getRecordingController() {
 
 export async function onRecordingStateChanged(): Promise<unknown> {
   const view = await getRecordingController();
-  return view.evaluate(el => {
+  return await view.evaluate(el => {
     return new Promise(resolve => {
       el.addEventListener(
           'recordingstatechanged',
@@ -47,7 +47,7 @@ export async function onRecordingStateChanged(): Promise<unknown> {
 
 export async function onRecorderAttachedToTarget(): Promise<unknown> {
   const {frontend} = getBrowserAndPages();
-  return frontend.evaluate(() => {
+  return await frontend.evaluate(() => {
     return new Promise(resolve => {
       window.addEventListener('recorderAttachedToTarget', resolve, {
         once: true,
@@ -58,7 +58,7 @@ export async function onRecorderAttachedToTarget(): Promise<unknown> {
 
 export async function onReplayFinished(): Promise<unknown> {
   const view = await getRecordingController();
-  return view.evaluate(el => {
+  return await view.evaluate(el => {
     return new Promise(resolve => {
       el.addEventListener('replayfinished', resolve, {once: true});
     });

@@ -840,7 +840,7 @@ export class WasmLocationLabels {
     const {target} = getBrowserAndPages();
     await this.addBreakpointsForLabelInSource(label);
 
-    target.evaluate(script);
+    void target.evaluate(script);
     await this.checkLocationForLabel(label);
   }
 
@@ -848,7 +848,7 @@ export class WasmLocationLabels {
     const {target} = getBrowserAndPages();
     await this.addBreakpointsForLabelInWasm(label);
 
-    target.evaluate(script);
+    void target.evaluate(script);
     await this.checkLocationForLabel(label);
   }
 

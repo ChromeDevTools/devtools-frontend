@@ -32,7 +32,7 @@ describe('ColorPicker', () => {
 
     await clickElement(palette);
     await waitForFunction(
-        async () => (await waitFor('.spectrum-overlay'))
+        async () => await (await waitFor('.spectrum-overlay'))
                         .evaluate(e => e.computedStyleMap().get('visibility')?.toString() === 'hidden'));
 
     await click('.spectrum-palette-switcher');

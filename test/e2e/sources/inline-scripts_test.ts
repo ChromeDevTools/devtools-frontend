@@ -25,7 +25,7 @@ describe('The Sources Tab', () => {
     await addBreakpointForLine(frontend, 4);
     await addBreakpointForLine(frontend, 11);
 
-    target.reload();
+    await target.reload();
     await waitFor(PAUSE_INDICATOR_SELECTOR);
 
     let names = await getCallFrameNames();

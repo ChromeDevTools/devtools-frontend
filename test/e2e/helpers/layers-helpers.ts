@@ -11,7 +11,7 @@ export const LAYERS_TAB_SELECTOR = '#tab-layers';
 export async function getCurrentUrl() {
   await waitFor('[aria-label="layers"]');
   const element = await waitFor('[aria-label="layers"]');
-  return element.evaluate(e => e.getAttribute('test-current-url'));
+  return await element.evaluate(e => e.getAttribute('test-current-url'));
 }
 
 export function veImpressionForLayersPanel() {

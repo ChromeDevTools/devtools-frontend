@@ -14,7 +14,7 @@ describe('The Console Tab', () => {
     await navigateToConsoleTab();
     const {target} = getBrowserAndPages();
 
-    target.reload();
+    await target.reload();
 
     const result = (await getConsoleMessages('alert-toString-exception'))[0];
     assert.strictEqual(result, 'Uncaught Exception in toString().');

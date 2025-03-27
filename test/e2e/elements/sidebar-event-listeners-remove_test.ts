@@ -29,10 +29,11 @@ describe('Removing event listeners in the elements sidebar', () => {
     assert.include(firstListenerText, 'button#test-button');
     const removeButtonSelector = `${listenerSelector} devtools-button`;
     const removeButton = await waitFor(removeButtonSelector);
-    removeButton.evaluate(n => {
+    const buttonTitle = await removeButton.evaluate(n => {
       const button = n.shadowRoot?.querySelector('button');
-      assert.strictEqual(button?.title, 'Delete event listener');
+      return button?.title;
     });
+    assert.strictEqual(buttonTitle, 'Delete event listener');
 
     await click(removeButtonSelector);
 

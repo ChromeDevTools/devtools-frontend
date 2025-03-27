@@ -32,7 +32,7 @@ describe('The Sources Tab', () => {
    */
   async function getLineDecorationDescriptor(line: number): Promise<string> {
     const {frontend} = getBrowserAndPages();
-    return frontend.$eval(
+    return await frontend.$eval(
         `pierce/.cm-content > :nth-child(${line})`,
         contentEl => [...contentEl.childNodes]
                          .map(lineSegment => {

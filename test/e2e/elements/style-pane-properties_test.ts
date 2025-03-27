@@ -501,7 +501,7 @@ describe('The Styles pane', () => {
     const nodeLabelName = await waitFor('.node-label-name', containerLink);
     const nodeLabelNameContent = await nodeLabelName.evaluate(node => node.textContent as string);
     assert.strictEqual(nodeLabelNameContent, 'body', 'container link name does not match');
-    containerLink.hover();
+    await containerLink.hover();
     const queriedSizeDetails = await waitFor('.queried-size-details');
     const queriedSizeDetailsContent = await queriedSizeDetails.evaluate(node => (node as HTMLElement).innerText);
     assert.strictEqual(

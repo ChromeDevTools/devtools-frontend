@@ -32,7 +32,7 @@ const GROUP_HEADER_TITLE_SELECTOR = '.group-header-title';
 const CODE_SNIPPET_SELECTOR = '.code-snippet';
 
 async function extractTextContentIfConnected(element: puppeteer.ElementHandle): Promise<string|null> {
-  return element.evaluate(element => element.isConnected ? element.textContent : null);
+  return await element.evaluate(element => element.isConnected ? element.textContent : null);
 }
 
 describe('The Breakpoints Sidebar', () => {

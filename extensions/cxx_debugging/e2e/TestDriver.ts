@@ -88,7 +88,7 @@ describe('CXX Debugging Extension Test Suite', function() {
               async () => ((await getPendingEvents(frontend, 'DevTools.DebuggerPaused')) || []).length > 0);
 
           const stopped = await waitFor(PAUSE_INDICATOR_SELECTOR);
-          const stoppedText = await waitForFunction(async () => stopped.evaluate(node => node.textContent));
+          const stoppedText = await waitForFunction(async () => await stopped.evaluate(node => node.textContent));
 
           assert.strictEqual(stoppedText, pausedReasonText(reason));
 
@@ -148,7 +148,8 @@ describe('CXX Debugging Extension Test Suite', function() {
 
           if (thread) {
             const threadElement = await waitFor(SELECTED_THREAD_SELECTOR);
-            const threadText = await waitForFunction(async () => threadElement.evaluate(node => node.textContent));
+            const threadText =
+                await waitForFunction(async () => await threadElement.evaluate(node => node.textContent));
             assert.include(threadText, thread, 'selected thread is not as expected');
           }
 

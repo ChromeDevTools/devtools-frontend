@@ -851,7 +851,7 @@ describe('Recorder', function() {
 
     await waitForFunction(async () => {
       const controller = await getRecordingController();
-      return controller.evaluate(
+      return await controller.evaluate(
           c => c.getCurrentRecordingForTesting()?.flow.steps.length === 5,
       );
     });
@@ -1080,7 +1080,7 @@ describe('Recorder', function() {
     await openPopupButton?.click();
     await waitForFunction(async () => {
       const controller = await getRecordingController();
-      return controller.evaluate(c => {
+      return await controller.evaluate(c => {
         const steps = c.getCurrentRecordingForTesting()?.flow.steps;
         return steps?.length === 3 && steps[1].assertedEvents?.length === 1;
       });
@@ -1099,7 +1099,7 @@ describe('Recorder', function() {
     await buttonInPopup?.click();
     await waitForFunction(async () => {
       const controller = await getRecordingController();
-      return controller.evaluate(
+      return await controller.evaluate(
           c => c.getCurrentRecordingForTesting()?.flow.steps.length === 4,
       );
     });
@@ -1399,7 +1399,7 @@ describe('Recorder', function() {
 
     // Find the button.
     const button = await waitForFunction(async () => {
-      return frontend.$('pierce/.add-assertion-button');
+      return await frontend.$('pierce/.add-assertion-button');
     });
     if (!button) {
       throw new Error('Add assertion button not found.');

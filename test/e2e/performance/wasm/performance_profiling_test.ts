@@ -34,7 +34,7 @@ async function expandAndCheckActivityTree(frontend: puppeteer.Page, expectedActi
   do {
     await waitForFunction(async () => {
       if (parentItem) {
-        parentItem.evaluate(e => e.scrollIntoView());
+        await parentItem.evaluate(e => e.scrollIntoView());
       }
       const treeItem = await $<HTMLElement>('.data-grid-data-grid-node.selected.revealed .activity-name');
       if (!treeItem) {

@@ -21,7 +21,7 @@ describe('Cookie Deprecation Metadata issue', () => {
   it.skip('[crbug.com/380046260] should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'CookieDeprecationMetadataIssue',
         details: {

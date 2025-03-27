@@ -29,7 +29,7 @@ async function timeFixture(fixture: string): Promise<number> {
   });
   const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
   await uploadProfileHandle.uploadFile(path.join(GEN_DIR, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`));
-  return eventPromise;
+  return await eventPromise;
 }
 
 describe('Performance panel trace load performance', () => {

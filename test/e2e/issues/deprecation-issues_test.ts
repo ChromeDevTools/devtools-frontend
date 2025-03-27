@@ -20,7 +20,7 @@ describe('Deprecation Issues', () => {
   it('evaluation works', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'DeprecationIssue',
         details: {

@@ -148,12 +148,12 @@ export async function clickStartButton() {
 export async function isGenerateReportButtonDisabled() {
   const buttonContainer = await waitFor<HTMLElement>('.lighthouse-start-button-container');
   const button = await waitFor('button', buttonContainer);
-  return button.evaluate(element => element.hasAttribute('disabled'));
+  return await button.evaluate(element => element.hasAttribute('disabled'));
 }
 
 export async function getHelpText() {
   const helpTextHandle = await waitFor('.lighthouse-start-view .lighthouse-help-text');
-  return helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
+  return await helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
 }
 
 export async function openStorageView() {
@@ -214,18 +214,18 @@ export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
 
 export async function getTargetViewport() {
   const {target} = await getBrowserAndPages();
-  return target.evaluate(() => ({
-                           innerHeight: window.innerHeight,
-                           innerWidth: window.innerWidth,
-                           outerWidth: window.outerWidth,
-                           outerHeight: window.outerHeight,
-                           devicePixelRatio: window.devicePixelRatio,
-                         }));
+  return await target.evaluate(() => ({
+                                 innerHeight: window.innerHeight,
+                                 innerWidth: window.innerWidth,
+                                 outerWidth: window.outerWidth,
+                                 outerHeight: window.outerHeight,
+                                 devicePixelRatio: window.devicePixelRatio,
+                               }));
 }
 
 export async function getServiceWorkerCount() {
   const {target} = await getBrowserAndPages();
-  return target.evaluate(async () => {
+  return await target.evaluate(async () => {
     return (await navigator.serviceWorker.getRegistrations()).length;
   });
 }

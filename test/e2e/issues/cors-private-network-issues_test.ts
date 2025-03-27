@@ -20,7 +20,7 @@ describe('Cors Private Network issue', () => {
   it('should display correct information for insecure contexts', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -94,7 +94,7 @@ describe('Cors Private Network issue', () => {
   it('should display correct information for secure contexts', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -167,7 +167,7 @@ describe('Cors Private Network issue', () => {
   it('should display correct information for preflight request errors', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {
@@ -244,7 +244,7 @@ describe('Cors Private Network issue', () => {
   it('should display correct information for failed preflight requests', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'CorsIssue',
         details: {

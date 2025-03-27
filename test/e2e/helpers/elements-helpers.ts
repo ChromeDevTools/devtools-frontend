@@ -480,7 +480,7 @@ export const getComputedStylesForDomNode =
     async (elementSelector: string, styleAttribute: keyof CSSStyleDeclaration) => {
   const {target} = getBrowserAndPages();
 
-  return target.evaluate((elementSelector, styleAttribute) => {
+  return await target.evaluate((elementSelector, styleAttribute) => {
     const element = document.querySelector(elementSelector);
     if (!element) {
       throw new Error(`${elementSelector} could not be found`);
@@ -874,7 +874,7 @@ export const getSelectedBreadcrumbTextContent = async () => {
     }
     return Array.from(node.shadowRoot.querySelectorAll('span') || []).map(span => span.textContent).join('');
   });
-  return text;
+  return await text;
 };
 
 export const navigateToElementsTab = async () => {

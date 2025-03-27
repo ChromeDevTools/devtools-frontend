@@ -20,7 +20,7 @@ describe('Privacy Sandbox Extensions API', () => {
   it('should report privacy sandbox extensions api deprecation issues', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'DeprecationIssue',
         details: {

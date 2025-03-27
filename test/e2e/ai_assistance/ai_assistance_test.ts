@@ -547,7 +547,7 @@ STOP`,
     await openConversationFromHistory('aria/Change the background color for this element to blue, unchecked');
     await openConversationFromHistory('aria/Change the background color for this element to green, unchecked');
 
-    frontend.waitForSelector('aria/Canceled');
+    await frontend.waitForSelector('aria/Canceled');
   });
 
   it('modifies styles to a selector with high specificity', async () => {

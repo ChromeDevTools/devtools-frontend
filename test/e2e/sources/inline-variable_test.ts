@@ -9,7 +9,8 @@ import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '
 
 async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
   const editor = await waitFor('[aria-label="Code editor"]');
-  return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
+  return await editor.evaluate(
+      node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
 describe('Sources Tab', function() {

@@ -107,7 +107,7 @@ export const shortcutInputValues = async () => {
   if (!shortcutInputs.length) {
     assert.fail('shortcut input not found');
   }
-  const shortcutValues = await Promise.all(shortcutInputs.map(async input => input.getProperty('value')));
+  const shortcutValues = await Promise.all(shortcutInputs.map(async input => await input.getProperty('value')));
   return await Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
 

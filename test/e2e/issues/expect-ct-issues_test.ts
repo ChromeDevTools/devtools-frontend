@@ -16,7 +16,7 @@ describe('Expect-CT Issue', () => {
   it('should display deprecation issue for Expect-CT header', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'DeprecationIssue',
         details: {

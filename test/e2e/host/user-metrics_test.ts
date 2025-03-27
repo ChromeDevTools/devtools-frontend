@@ -287,7 +287,7 @@ describe('User Metrics', () => {
     await waitFor('.keybinds-set-select');
 
     const keybindSetSelect = await $('.keybinds-set-select select') as puppeteer.ElementHandle<HTMLSelectElement>;
-    keybindSetSelect.select('vsCode');
+    await keybindSetSelect.select('vsCode');
 
     await assertHistogramEventsInclude([
       {

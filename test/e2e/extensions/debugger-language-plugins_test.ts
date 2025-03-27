@@ -1106,7 +1106,7 @@ describe('The Debugger Language Plugins', () => {
     await goToWasmResource('stepping.wasm', {autoLoadModule: true});
     await openSourcesPanel();
 
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     await locationLabels.setBreakpointInWasmAndRun('FIRST_PAUSE', 'window.Module.instance.exports.Main(16)');
     await waitFor('.paused-status');
     await locationLabels.checkLocationForLabel('FIRST_PAUSE');
@@ -1202,7 +1202,7 @@ describe('The Debugger Language Plugins', () => {
 
     await waitFor('.paused-status');
     await locationLabels.checkLocationForLabel('FIRST_PAUSE');
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
     await stepOver();
     await locationLabels.checkLocationForLabel('SECOND_PAUSE');
     await stepOver();

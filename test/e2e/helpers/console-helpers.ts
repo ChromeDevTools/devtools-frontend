@@ -151,7 +151,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, level = Leve
   await expectVeEvents([veImpressionForConsoleMessage()], await veRoot());
 
   // Get the messages from the console.
-  return frontend.evaluate(selector => {
+  return await frontend.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(message => message.textContent as string);
   }, selector);
 }
@@ -204,7 +204,7 @@ export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) 
   }, {timeout: 0}, CONSOLE_ALL_MESSAGES_SELECTOR));
   await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
 
-  return devToolsPage.evaluate(selector => {
+  return await devToolsPage.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(wrapper => {
       const message = wrapper.querySelector('.console-message-text')?.textContent;
       const source = wrapper.querySelector('.devtools-link')?.textContent;
@@ -267,7 +267,7 @@ export async function typeIntoConsole(message: string) {
   // Sometimes the autocomplete suggests `assert` when typing `console.clear()` which made a test flake.
   // The following checks if there is any autocomplete text and dismisses it by pressing escape.
   if (autocomplete && await autocomplete.evaluate(e => e.textContent)) {
-    consoleElement.press('Escape');
+    void consoleElement.press('Escape');
   }
   await asyncScope.exec(
       () =>

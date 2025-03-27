@@ -285,14 +285,14 @@ describe('The Memory Panel', function() {
     });
     const rows = await getDataGridRows('.retaining-paths-view table.data');
     const propertyNameElement = await rows[0].$('span.property-name');
-    propertyNameElement!.hover();
+    await propertyNameElement!.hover();
     const el = await waitFor('div.vbox.flex-auto.no-pointer-events');
     await waitFor('.source-code', el);
 
     await setSearchFilter('system / descriptorarray');
     await findSearchResult('system / DescriptorArray');
     const searchResultElement = await waitFor('.selected.data-grid-data-grid-node span.object-value-null');
-    searchResultElement!.hover();
+    await searchResultElement!.hover();
     await waitFor('.widget .object-popover-footer');
   });
 
@@ -421,8 +421,8 @@ describe('The Memory Panel', function() {
       }
 
       // Verify the link to the source code.
-      const linkText =
-          await waitForFunction(async () => element?.evaluate(e => e.querySelector('.devtools-link')?.textContent));
+      const linkText = await waitForFunction(
+          async () => await element?.evaluate(e => e.querySelector('.devtools-link')?.textContent));
       assert.strictEqual(linkText, entry.link);
     }
   });

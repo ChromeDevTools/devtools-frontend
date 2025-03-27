@@ -98,7 +98,7 @@ describe('The Privacy and security panel', function() {
 
     // Populate with test issues to be filtered
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue1 = {
         code: 'CookieIssue',
         details: {
@@ -140,8 +140,8 @@ describe('The Privacy and security panel', function() {
     assert.lengthOf(await getDataGridRows(2, undefined, true), 2);
 
     const searchFilter = await waitForAria('Filter');
-    searchFilter.evaluate(el => assert.isNotNull(el));
-    searchFilter.type('a.test');
+    assert(await searchFilter.evaluate(el => el !== null));
+    await searchFilter.type('a.test');
 
     // The second issue should be filtered out.
     assert.lengthOf(await getDataGridRows(1, undefined, true), 1);

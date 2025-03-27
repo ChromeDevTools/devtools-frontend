@@ -15,7 +15,7 @@ function createSelectorsForEvalWorker(fileName: string) {
 async function openNestedWorkerFile(selectors: NestedFileSelector) {
   const workerFile = await expandFileTree(selectors);
 
-  return workerFile.evaluate(node => node.textContent);
+  return await workerFile.evaluate(node => node.textContent);
 }
 
 describe('The Sources Tab', function() {

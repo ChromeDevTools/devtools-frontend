@@ -39,7 +39,7 @@ describe('LinearMemoryInspector', () => {
     await waitForFunction(async () => ((await getPendingEvents(frontend, 'DevTools.DebuggerPaused')) || []).length > 0);
 
     const stopped = await waitFor(PAUSE_INDICATOR_SELECTOR);
-    const stoppedText = await waitForFunction(async () => stopped.evaluate(node => node.textContent));
+    const stoppedText = await waitForFunction(async () => await stopped.evaluate(node => node.textContent));
 
     assert.strictEqual(stoppedText, 'Paused on breakpoint');
 

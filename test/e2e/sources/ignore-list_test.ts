@@ -83,7 +83,7 @@ describe('Ignore list', function() {
   it('skips frames when stepping in and out', async function() {
     await setIgnoreListPattern('thirdparty');
     const {target, frontend} = getBrowserAndPages();
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
 
     await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');
     await addBreakpointForLine(frontend, 8);
@@ -110,7 +110,7 @@ describe('Ignore list', function() {
   it('skips instrumentation breakpoints', async function() {
     await setIgnoreListPattern('thirdparty');
     const {target, frontend} = getBrowserAndPages();
-    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+    await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
 
     await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');
     await setEventListenerBreakpoint('Timer', 'setTimeout');

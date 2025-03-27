@@ -138,7 +138,7 @@ export async function getTextFilterContent(): Promise<string> {
   const textFilterContent = toolbarHandle.evaluate(toolbar => {
     return toolbar.querySelector('[aria-label="Filter"]')?.textContent ?? '';
   });
-  return textFilterContent;
+  return await textFilterContent;
 }
 
 export async function clearTextFilter(): Promise<void> {

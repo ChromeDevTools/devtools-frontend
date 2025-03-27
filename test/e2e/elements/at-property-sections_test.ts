@@ -111,7 +111,7 @@ describe('The styles pane', () => {
       const section = await click('pierceShadowText/@property', {root: stylesPane});
       await waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
       const rule = await getStyleRule('--custom-prop-4');
-      return rule.evaluate(e => !e.classList.contains('hidden'));
+      return await rule.evaluate(e => !e.classList.contains('hidden'));
     });
   });
 

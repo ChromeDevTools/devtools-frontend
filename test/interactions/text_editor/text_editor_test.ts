@@ -10,7 +10,7 @@ import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';
 import {loadComponentDocExample} from '../helpers/shared.js';
 
 async function getEditorContent(textEditor: ElementHandle): Promise<string> {
-  return textEditor.evaluate(node => (node as TextEditor.TextEditor.TextEditor).state.doc.toString());
+  return await textEditor.evaluate(node => (node as TextEditor.TextEditor.TextEditor).state.doc.toString());
 }
 
 async function getEditorSelection(textEditor: ElementHandle): Promise<{anchor: number, head: number}> {

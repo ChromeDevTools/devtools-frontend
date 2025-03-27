@@ -21,7 +21,7 @@ describe('Heavy Ad issue', () => {
   it.skip('[crbug.com/375892666]: should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
-    frontend.evaluate(() => {
+    await frontend.evaluate(() => {
       const issue = {
         code: 'HeavyAdIssue',
         details: {

@@ -172,13 +172,13 @@ export const clickToggleButton = async () => {
 export const getWidthOfDevice = async () => {
   // Read the width of spanned duo to make sure spanning works.
   const widthInput = await waitFor(SCREEN_DIM_INPUT_SELECTOR);
-  return widthInput.evaluate(e => (e as HTMLInputElement).value);
+  return await widthInput.evaluate(e => (e as HTMLInputElement).value);
 };
 
 export const getZoom = async () => {
   // Read the width of spanned duo to make sure spanning works.
   const widthInput = await waitFor(ZOOM_LIST_DROPDOWN_SELECTOR);
-  return widthInput.evaluate(e => (e as HTMLInputElement).innerText);
+  return await widthInput.evaluate(e => (e as HTMLInputElement).innerText);
 };
 
 export const toggleAutoAdjustZoom = async () => {

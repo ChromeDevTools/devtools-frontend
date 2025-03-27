@@ -100,6 +100,10 @@ const UIStrings = {
    */
   origin: 'origin',
   /**
+   *@description Noun. Shown in a table cell as the reason why a network request failed. "integrity" here refers to the integrity of the network request itself in a cryptographic sense: signature verification might have failed, for instance.
+   */
+  integrity: 'integrity',
+  /**
    *@description Reason in Network Data Grid Node of the Network panel
    */
   devtools: 'devtools',
@@ -1208,6 +1212,10 @@ export class NetworkRequestNode extends NetworkNode {
         case Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep:
           displayShowHeadersLink = true;
           reason = i18n.i18n.lockedString('NotSameOriginAfterDefaultedToSameOriginByCoep');
+          break;
+        case Protocol.Network.BlockedReason.SriMessageSignatureMismatch:
+          displayShowHeadersLink = true;
+          reason = i18nString(UIStrings.integrity);
           break;
       }
       if (displayShowHeadersLink) {

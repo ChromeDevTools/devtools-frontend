@@ -9,6 +9,7 @@ import("../../visibility.gni")
 devtools_module("insights") {
   sources = [
     "CLSCulprits.ts",
+    "Cache.ts",
     "Common.ts",
     "DOMSize.ts",
     "DocumentLatency.ts",
@@ -26,7 +27,6 @@ devtools_module("insights") {
     "SlowCSSSelector.ts",
     "Statistics.ts",
     "ThirdParties.ts",
-    "UseCache.ts",
     "Viewport.ts",
     "types.ts",
   ]
@@ -55,6 +55,7 @@ ts_library("unittests") {
 
   sources = [
     "CLSCulprits.test.ts",
+    "Cache.test.ts",
     "Common.test.ts",
     "DOMSize.test.ts",
     "DocumentLatency.test.ts",
@@ -70,7 +71,6 @@ ts_library("unittests") {
     "SlowCSSSelector.test.ts",
     "Statistics.test.ts",
     "ThirdParties.test.ts",
-    "UseCache.test.ts",
     "Viewport.test.ts",
   ]
 

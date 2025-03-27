@@ -20,6 +20,7 @@ devtools_module("insights") {
   sources = [
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",
+    "Cache.ts",
     "Checklist.ts",
     "DOMSize.ts",
     "DocumentLatency.ts",
@@ -40,7 +41,6 @@ devtools_module("insights") {
     "SlowCSSSelector.ts",
     "Table.ts",
     "ThirdParties.ts",
-    "UseCache.ts",
     "Viewport.ts",
     "types.ts",
   ]

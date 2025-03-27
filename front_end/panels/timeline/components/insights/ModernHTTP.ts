@@ -18,8 +18,8 @@ const {UIStrings, i18nString} = Trace.Insights.Models.ModernHTTP;
 const {html} = Lit;
 
 export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-use-modern-http`;
-  override internalName = 'use-modern-http';
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-modern-http`;
+  override internalName = 'modern-http';
 
   mapToRow(req: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
     return {values: [eventRef(req), req.args.data.protocol], overlays: [this.#createOverlayForRequest(req)]};
@@ -76,8 +76,8 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-use-modern-http': ModernHTTP;
+    'devtools-performance-modern-http': ModernHTTP;
   }
 }
 
-customElements.define('devtools-performance-use-modern-http', ModernHTTP);
+customElements.define('devtools-performance-modern-http', ModernHTTP);

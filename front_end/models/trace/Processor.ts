@@ -371,7 +371,7 @@ export class TraceProcessor extends EventTarget {
       DuplicatedJavaScript: null,
       SlowCSSSelector: null,
       ForcedReflow: null,
-      UseCache: null,
+      Cache: null,
       ModernHTTP: null,
     };
 

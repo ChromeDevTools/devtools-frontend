@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as BaseInsightComponent from './BaseInsightComponent.js';
+import * as Cache from './Cache.js';
 import * as Checklist from './Checklist.js';
 import * as CLSCulprits from './CLSCulprits.js';
 import * as DocumentLatency from './DocumentLatency.js';
@@ -25,11 +26,11 @@ import * as SlowCSSSelector from './SlowCSSSelector.js';
 import * as Table from './Table.js';
 import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
-import * as UseCache from './UseCache.js';
 import * as Viewport from './Viewport.js';
 
 export {
   BaseInsightComponent,
+  Cache,
   Checklist,
   CLSCulprits,
   DocumentLatency,
@@ -52,6 +53,5 @@ export {
   Table,
   ThirdParties,
   Types,
-  UseCache,
   Viewport,
 };

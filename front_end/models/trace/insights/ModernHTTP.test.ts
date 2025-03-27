@@ -9,7 +9,7 @@ import * as Trace from '../trace.js';
 import * as ModernHTTP from './ModernHTTP.js';
 const {determineNonHttp2Resources} = ModernHTTP;
 
-describeWithEnvironment('UseCache', function() {
+describeWithEnvironment('Cache', function() {
   describe('determineNonHttp2Resources', () => {
     function createNRequests(cb: (i: number) => Trace.Types.Events.SyntheticNetworkRequest, num: number) {
       const reqs: Trace.Types.Events.SyntheticNetworkRequest[] = [];

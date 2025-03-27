@@ -396,7 +396,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DuplicatedJavaScript',
         'SlowCSSSelector',
         'ForcedReflow',
-        'UseCache',
+        'Cache',
         'ModernHTTP',
       ]);
 
@@ -418,7 +418,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DuplicatedJavaScript',
         'SlowCSSSelector',
         'ForcedReflow',
-        'UseCache',
+        'Cache',
         'ModernHTTP',
       ]);
     });

@@ -5,7 +5,7 @@
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {UseCacheInsightModel} from '../../../../models/trace/insights/UseCache.js';
+import type {UseCacheInsightModel} from '../../../../models/trace/insights/Cache.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -14,28 +14,28 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.UseCache;
+const {UIStrings, i18nString} = Trace.Insights.Models.Cache;
 
 const {html} = Lit;
 
-export class UseCache extends BaseInsightComponent<UseCacheInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-use-cache`;
+export class Cache extends BaseInsightComponent<UseCacheInsightModel> {
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cache`;
 
-  mapToRow(req: Trace.Insights.Models.UseCache.CacheableRequest): TableDataRow {
+  mapToRow(req: Trace.Insights.Models.Cache.CacheableRequest): TableDataRow {
     return {
       values: [eventRef(req.request), i18n.TimeUtilities.secondsToString(req.ttl)],
       overlays: [this.#createOverlayForRequest(req.request)],
     };
   }
 
-  createAggregatedTableRow(remaining: Trace.Insights.Models.UseCache.CacheableRequest[]): TableDataRow {
+  createAggregatedTableRow(remaining: Trace.Insights.Models.Cache.CacheableRequest[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length), ''],
       overlays: remaining.flatMap(r => this.#createOverlayForRequest(r.request)),
     };
   }
 
-  override internalName = 'use-cache';
+  override internalName = 'cache';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {
@@ -89,8 +89,8 @@ export class UseCache extends BaseInsightComponent<UseCacheInsightModel> {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-use-cache': UseCache;
+    'devtools-performance-cache': Cache;
   }
 }
 
-customElements.define('devtools-performance-use-cache', UseCache);
+customElements.define('devtools-performance-cache', Cache);

@@ -117,7 +117,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
   ThirdParties: Insights.ThirdParties.ThirdParties,
   Viewport: Insights.Viewport.Viewport,
-  UseCache: Insights.UseCache.UseCache,
+  Cache: Insights.Cache.Cache,
   ModernHTTP: Insights.ModernHTTP.ModernHTTP,
 };
 

@@ -46,7 +46,7 @@ export const UIStrings = {
   others: '{PH1} others',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('models/trace/insights/UseCache.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Cache.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type UseCacheInsightModel = InsightModel<typeof UIStrings, {
@@ -63,7 +63,7 @@ const IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 
 function finalize(partialModel: PartialInsightModel<UseCacheInsightModel>): UseCacheInsightModel {
   return {
-    insightKey: 'UseCache',
+    insightKey: 'Cache',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

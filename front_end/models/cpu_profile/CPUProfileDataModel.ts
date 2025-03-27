@@ -557,5 +557,13 @@ export type ExtendedProfileNode = Protocol.Profiler.ProfileNode&{parent?: number
 export type ExtendedProfile = Protocol.Profiler.Profile&{
   nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[],
   lines?: number[],
+  /**
+   * A sample can be manually collected with v8::CpuProfiler::collectSample.
+   * When this is done an id (trace id) can be passed to the API to
+   * identify the collected sample in the resulting CPU profile. We
+   * do this for several trace events, to efficiently calculate their
+   * stack trace and improve the JS flamechart we build. This property
+   * contains the mapping of the trace ids with the shape traceId -> nodeId
+   */
   traceIds?: Record<string, number>,
 };

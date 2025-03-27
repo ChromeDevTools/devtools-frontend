@@ -71,12 +71,6 @@ export class SamplesIntegrator {
    */
   #lockedJsStackDepth: number[] = [];
   /**
-   * For samples with a trace id, creates a profile call and keeps it
-   * in a record keyed by that id. The value is typed as an union with
-   * undefined to avoid nullish accesses when a key is not present.
-   */
-  #callsByTraceIds: Record<number, Types.Events.SyntheticProfileCall|undefined> = {};
-  /**
    * Used to keep track when samples should be integrated even if they
    * are not children of invocation trace events. This is useful in
    * cases where we can be missing the start of JS invocation events if
@@ -237,7 +231,6 @@ export class SamplesIntegrator {
   callsFromProfileSamples(): Types.Events.SyntheticProfileCall[] {
     const samples = this.#profileModel.samples;
     const timestamps = this.#profileModel.timestamps;
-    const debugModeEnabled = this.#engineConfig.debugMode;
     if (!samples) {
       return [];
     }
@@ -249,16 +242,10 @@ export class SamplesIntegrator {
       if (!node) {
         continue;
       }
-      const maybeTraceId = this.#profileModel.traceIds?.[i];
       const call = makeProfileCall(node, this.#profileId, i, timestamp, this.#processId, this.#threadId);
-      // Separate samples with trace ids so that they are only used when
-      // processing the owner event.
-      if (maybeTraceId === undefined) {
-        calls.push(call);
-      } else {
-        this.#callsByTraceIds[maybeTraceId] = call;
-      }
-      if (debugModeEnabled) {
+      calls.push(call);
+
+      if (this.#engineConfig.debugMode) {
         const traceId = this.#profileModel.traceIds?.[i];
         this.jsSampleEvents.push(this.#makeJSSampleEvent(call, timestamp, traceId));
       }
@@ -322,6 +309,19 @@ export class SamplesIntegrator {
     return callFrames;
   }
 
+  #getStackForSampleTraceId(traceId: number, timestamp: Types.Timing.Micro): Types.Events.SyntheticProfileCall[]|null {
+    const nodeId = this.#profileModel.traceIds?.[traceId];
+    const node = nodeId && this.#profileModel.nodeById(nodeId);
+    const maybeCallForTraceId =
+        node && makeProfileCall(node, this.#profileId, -1, timestamp, this.#processId, this.#threadId);
+    if (!maybeCallForTraceId) {
+      return null;
+    }
+    if (this.#engineConfig.debugMode) {
+      this.jsSampleEvents.push(this.#makeJSSampleEvent(maybeCallForTraceId, timestamp, traceId));
+    }
+    return this.#makeProfileCallsForStack(maybeCallForTraceId);
+  }
   /**
    * Update tracked stack using this event's call stack.
    */
@@ -331,11 +331,9 @@ export class SamplesIntegrator {
       stackTrace = this.#makeProfileCallsForStack(event);
     }
     const traceId = extractSampleTraceId(event);
-    if (traceId !== null) {
-      const maybeCallForTraceId = this.#callsByTraceIds[traceId];
-      if (maybeCallForTraceId) {
-        stackTrace = this.#makeProfileCallsForStack(maybeCallForTraceId, event.ts);
-      }
+    const maybeCallForTraceId = traceId && this.#getStackForSampleTraceId(traceId, event.ts);
+    if (maybeCallForTraceId) {
+      stackTrace = maybeCallForTraceId;
     }
 
     SamplesIntegrator.filterStackFrames(stackTrace, this.#engineConfig);

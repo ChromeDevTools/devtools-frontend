@@ -3655,6 +3655,7 @@ export const knownContextValues = new Set([
   'timeline.toggle-insight.cls-culprits',
   'timeline.toggle-insight.document-latency',
   'timeline.toggle-insight.dom-size',
+  'timeline.toggle-insight.duplicated-javascript',
   'timeline.toggle-insight.font-display',
   'timeline.toggle-insight.forced-reflow',
   'timeline.toggle-insight.image-delivery',

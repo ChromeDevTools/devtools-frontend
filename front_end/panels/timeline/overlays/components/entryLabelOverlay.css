@@ -35,7 +35,7 @@
   gap: var(--sys-size-4);
   pointer-events: auto;
   transition:
-    width var(--sys-motion-duration-long2) var(--sys-motion-easing-emphasized);
+    all var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized);
 
   &.only-pen-wrapper {
     /* when the button wrapper is not hovered, set the max width to only fit the pen icon */
@@ -45,7 +45,7 @@
   }
 
   * {
-    /* Make up for the padding in a hovered button to only see the pen icon when it is not hovered */
+    /* When unhovered, shift the contents left you don't see the border of the .ai-label-button  */
     transform: translateX(-2px);
   }
 }
@@ -59,11 +59,10 @@
 .ai-label-button-wrapper:focus,
 .ai-label-button-wrapper:focus-within,
 .ai-label-button-wrapper:hover {
-  width: fit-content;
+  width: auto;
   height: var(--sys-size-13);
   padding: var(--sys-size-3) var(--sys-size-5);
-  overflow: hidden;
-  top: -4px;
+  transform: translateY(-9px); /* -9px is the original -3px minus 6px (coming from the padding adjustment) */
 
   * {
     transform: translateX(0);

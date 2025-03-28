@@ -1456,9 +1456,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.contentElement.prepend(this.gutterContainer);
     if (isOpeningTag(this.tagTypeContext)) {
       this.contentElement.append(this.tagTypeContext.adornerContainer);
-      if (this.tagTypeContext.slot) {
-        this.contentElement.append(this.tagTypeContext.slot);
-      }
     }
     delete this.selectionElement;
     delete this.hintElement;
@@ -2226,12 +2223,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!adornerContainer) {
       return Promise.resolve();
     }
+    const adorners = [...context.adorners].sort(adornerComparator);
+    if (context.slot) {
+      adorners.push(context.slot);
+    }
 
     adornerContainer.removeChildren();
-    for (const adorner of [...context.adorners].sort(adornerComparator)) {
+    for (const adorner of adorners) {
       adornerContainer.appendChild(adorner);
     }
-    adornerContainer.classList.toggle('hidden', context.adorners.size === 0);
+    adornerContainer.classList.toggle('hidden', adorners.length === 0);
     return Promise.resolve();
   }
 

@@ -64,7 +64,7 @@ export const enum IssueCode {
   VALIDATION_FAILED_INTEGRITY_MISMATCH = 'SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch',
 }
 
-function getIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails): IssueCode {
+function errorToIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails): IssueCode {
   switch (details.error) {
     case Protocol.Audits.SRIMessageSignatureError.MissingSignatureHeader:
       return IssueCode.MISSING_SIGNATURE_HEADER;
@@ -111,15 +111,28 @@ function getIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails):
   }
 }
 
+function generateGroupingIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails): string {
+  const issueCode = errorToIssueCode(details);
+  if (details.error === Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureMismatch) {
+    // Signature mismatch errors should be grouped by "signature base".
+    return issueCode + details.signatureBase;
+  }
+  if (details.error === Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch) {
+    // Integrity mismatch errors should be grouped by integrity assertion.
+    return issueCode + details.integrityAssertions.join();
+  }
+
+  // Otherwise, simply group by issue type:
+  return issueCode;
+}
+
 export class SRIMessageSignatureIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails;
 
   constructor(issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(
         {
-          // Append the signature base to the enum's code in order to prevent
-          // distinct error details from coalescing in the issues panel.
-          code: getIssueCode(issueDetails) + issueDetails.signatureBase,
+          code: generateGroupingIssueCode(issueDetails),
           umaCode: [
             Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,
             issueDetails.error,
@@ -151,6 +164,10 @@ export class SRIMessageSignatureIssue extends Issue {
     }
     if (this.#issueDetails.signatureBase !== '') {
       description.substitutions = new Map([['PLACEHOLDER_signatureBase', () => this.#issueDetails.signatureBase]]);
+    } else if (this.#issueDetails.integrityAssertions.length) {
+      description.substitutions = new Map([
+        ['PLACEHOLDER_integrityAssertions', () => '\n<li>' + this.#issueDetails.integrityAssertions.join('\n<li>')]
+      ]);
     }
     return resolveLazyDescription(description);
   }
@@ -305,6 +322,13 @@ const issueDescriptions = new Map<Protocol.Audits.SRIMessageSignatureError, Lazy
     Protocol.Audits.SRIMessageSignatureError.ValidationFailedInvalidLength,
     {
       file: 'sriValidationFailedInvalidLength.md',
+      links: specLinks,
+    },
+  ],
+  [
+    Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch,
+    {
+      file: 'sriValidationFailedIntegrityMismatch.md',
       links: specLinks,
     },
   ],

@@ -41,6 +41,7 @@ describeWithLocale('SRIMessageSignatureIssue', () => {
       Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureExpired,
       Protocol.Audits.SRIMessageSignatureError.ValidationFailedInvalidLength,
       Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureMismatch,
+      Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch,
     ];
     for (const errorReason of errorReasons) {
       const issueDetails = {

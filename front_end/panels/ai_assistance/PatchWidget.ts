@@ -7,7 +7,6 @@ import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 import '../../ui/legacy/legacy.js';
 
-import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
@@ -20,7 +19,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ChangesPanel from '../changes/changes.js';
-import * as PanelCommon from '../common/common.js';
 
 const {classMap} = Directives;
 
@@ -75,27 +73,6 @@ const UIStringsNotTranslate = {
    */
   learnMore: 'Learn more',
   /**
-   *@description Header text for the AI-powered code suggestions disclaimer dialog.
-   */
-  freDisclaimerHeader: 'Get AI-powered code suggestions for your workspace',
-  /**
-   *@description First disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
-  /**
-   *@description Second disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
-  /**
-   *@description Second disclaimer item text for the fre dialog when enterprise logging is off.
-   */
-  freDisclaimerTextPrivacyNoLogging:
-      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
-  /**
-   *@description Third disclaimer item text for the fre dialog.
-   */
-  freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
-  /**
    * @description Title of the link opening data that was used to
    * produce a code suggestion.
    */
@@ -111,8 +88,6 @@ const UIStringsNotTranslate = {
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
-
-const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 
 export enum PatchSuggestionState {
   /**
@@ -156,9 +131,6 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
   changeManager: AiAssistanceModel.ChangeManager|undefined;
-  // Whether the user completed first run experience dialog or not.
-  #aiPatchingFreCompletedSetting =
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
   #view: View;
   #viewOutput: ViewOutput = {};
   #aidaClient: Host.AidaClient.AidaClient;
@@ -397,64 +369,10 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
-  async #showFreDisclaimerIfNeeded(): Promise<boolean> {
-    const isAiPatchingFreCompleted = this.#aiPatchingFreCompletedSetting.get();
-    if (isAiPatchingFreCompleted) {
-      return true;
-    }
-
-    const result = await PanelCommon.FreDialog.show({
-      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
-      reminderItems: [
-        {
-          iconName: 'psychiatry',
-          content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
-        },
-        {
-          iconName: 'google',
-          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
-                                     lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
-        },
-        {
-          iconName: 'warning',
-          // clang-format off
-          content: html`<x-link
-            href=${CODE_SNIPPET_WARNING_URL}
-            class="link"
-            jslog=${VisualLogging.link('code-snippets-explainer.patch-widget').track({
-              click: true
-            })}
-          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
-          // clang-format on
-        }
-      ],
-      onLearnMoreClick: () => {
-        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-      }
-    });
-
-    if (result) {
-      this.#aiPatchingFreCompletedSetting.set(true);
-    }
-    return result;
-  }
-
   async #onApplyToPageTree(): Promise<void> {
     if (!isAiAssistancePatchingEnabled()) {
       return;
     }
-
-    // Show the FRE dialog if needed and only continue when
-    // the user accepted the disclaimer.
-    const freDisclaimerCompleted = await this.#showFreDisclaimerIfNeeded();
-    if (!freDisclaimerCompleted) {
-      return;
-    }
-
-    await this.#applyPatchAndUpdateUI();
-  }
-
-  async #applyPatchAndUpdateUI(): Promise<void> {
     const changeSummary = this.changeSummary;
     if (!changeSummary) {
       throw new Error('Change summary does not exist');

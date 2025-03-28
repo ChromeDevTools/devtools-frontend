@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as PanelCommon from '../../panels/common/common.js';
 import {
   cleanup,
   createPatchWidget,
@@ -24,11 +22,7 @@ import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '.
 import * as AiAssistance from './ai_assistance.js';
 
 describeWithMockConnection('PatchWidget', () => {
-  let showFreDialogStub: sinon.SinonStub<Parameters<typeof PanelCommon.FreDialog.show>, Promise<boolean>>;
   beforeEach(() => {
-    Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(true);
-    showFreDialogStub = sinon.stub(PanelCommon.FreDialog, 'show');
-
     initializePersistenceImplForTests();
   });
 
@@ -54,51 +48,8 @@ describeWithMockConnection('PatchWidget', () => {
     });
 
     describe('enterprise text cases', () => {
-      it('should FRE text include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
-         async () => {
-           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
-           updateHostConfig({
-             devToolsFreestyler: {
-               enabled: true,
-               patching: true,
-             },
-             aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING}
-           });
-           const {view, widget} = await createPatchWidget();
-           widget.changeSummary = 'body { background-color: red; }';
-
-           view.input.onApplyToPageTree();
-
-           assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
-           assert.exists(showFreDialogStub.lastCall.args[0].reminderItems.find(
-               reminderItem => reminderItem.content.toString().includes(
-                   'This data will not be used to improve Google’s AI models.')));
-         });
-
-      it('should FRE text not include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
-         async () => {
-           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
-           updateHostConfig({
-             devToolsFreestyler: {
-               enabled: true,
-               patching: true,
-             },
-             aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW}
-           });
-           const {view, widget} = await createPatchWidget();
-           widget.changeSummary = 'body { background-color: red; }';
-
-           view.input.onApplyToPageTree();
-
-           assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
-           assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
-               reminderItem => reminderItem.content.toString().includes(
-                   'This data will not be used to improve Google’s AI models.')));
-         });
-
       it('should tooltip text include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
          async () => {
-           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
            updateHostConfig({
              devToolsFreestyler: {
                enabled: true,
@@ -113,7 +64,6 @@ describeWithMockConnection('PatchWidget', () => {
          });
 
       it('should tooltip text not include no logging case when the enterprise policy value is ALLOW', async () => {
-        Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
         updateHostConfig({
           devToolsFreestyler: {
             enabled: true,
@@ -126,26 +76,6 @@ describeWithMockConnection('PatchWidget', () => {
         assert.notInclude(
             view.input.disclaimerTooltipText, 'This data will not be used to improve Google’s AI models.');
       });
-    });
-
-    it('should show FRE dialog on applyToPageTree click if the setting is false', async () => {
-      Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
-      const {view, widget} = await createPatchWidget();
-      widget.changeSummary = 'body { background-color: red; }';
-
-      view.input.onApplyToPageTree();
-
-      assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
-    });
-
-    it('should not show FRE dialog on applyToPageTree click if the setting is true', async () => {
-      Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(true);
-      const {view, widget} = await createPatchWidget();
-      widget.changeSummary = 'body { background-color: red; }';
-
-      view.input.onApplyToPageTree();
-
-      assert.isFalse(showFreDialogStub.called, 'Expected FreDialog to be not shown but it\'s shown');
     });
 
     it('should show files uploaded', async () => {

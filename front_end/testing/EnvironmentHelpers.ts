@@ -294,9 +294,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.AI, 'ai-assistance-history-entries', [], Common.Settings.SettingType.ARRAY),
     createSettingValue(
-        Common.Settings.SettingCategory.AI, 'ai-assistance-patching-fre-completed', false,
-        Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
         Common.Settings.SettingCategory.MOBILE, 'emulation.show-device-outline', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(

@@ -334,7 +334,6 @@ export const knownContextValues = new Set([
   'ai-assistance-enabled',
   'ai-assistance-history-entries',
   'ai-assistance-history-images',
-  'ai-assistance-patching-fre-completed',
   'ai-assistance-patching-selected-project-id',
   'ai_assistance',
   'align-content',

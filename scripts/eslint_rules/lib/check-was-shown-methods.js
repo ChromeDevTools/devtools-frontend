@@ -21,13 +21,40 @@ module.exports = {
   create: function(context) {
     return {
       MethodDefinition(node) {
+        if (node.key.type !== 'Identifier') {
+          return;
+        }
+
         const nodeName = node.key.name;
-        if (node.parent.parent.superClass?.property?.name === 'Widget' && nodeName === 'wasShown') {
+        if (nodeName !== 'wasShown') {
+          return;
+        }
+
+        const ancestorClass = node.parent.parent;
+        if (ancestorClass.type !== 'ClassDeclaration') {
+          return;
+        }
+        if (
+          ancestorClass.superClass?.type === 'MemberExpression' &&
+          ancestorClass.superClass.property.type === 'Identifier' &&
+          ancestorClass.superClass.property.name === 'Widget'
+        ) {
           const topBodyNode = node.value.body.body[0];
-          if (!(topBodyNode.type === 'ExpressionStatement' && topBodyNode.expression.type === 'CallExpression' &&
-                topBodyNode.expression.callee.object.type === 'Super' &&
-                topBodyNode.expression.callee.property.name === 'wasShown')) {
-            context.report({node, message: 'Please make sure the first call in wasShown is to super.wasShown().'});
+          if (
+            !(
+              topBodyNode.type === 'ExpressionStatement' &&
+              topBodyNode.expression.type === 'CallExpression' &&
+              topBodyNode.expression.callee.type === 'MemberExpression' &&
+              topBodyNode.expression.callee.object.type === 'Super' &&
+              topBodyNode.expression.callee.property.type === 'Identifier' &&
+              topBodyNode.expression.callee.property.name === 'wasShown'
+            )
+          ) {
+            context.report({
+              node,
+              message:
+                'Please make sure the first call in wasShown is to super.wasShown().',
+            });
           }
         }
       }

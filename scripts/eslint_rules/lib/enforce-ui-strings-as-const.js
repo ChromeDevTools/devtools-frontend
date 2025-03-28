@@ -58,8 +58,15 @@ module.exports = {
           node: declaration,
           messageId: 'invalidUIStringsObject',
           fix: fixer => {
-            const objectEnd = declaration.init.range[1];
-            return fixer.insertTextAfterRange([objectEnd - 1, objectEnd], ' as const');
+            const objectEnd = declaration.init?.range?.[1];
+            if (!objectEnd) {
+              return null;
+            }
+
+            return fixer.insertTextAfterRange(
+                [objectEnd - 1, objectEnd],
+                ' as const',
+            );
           },
         });
       },

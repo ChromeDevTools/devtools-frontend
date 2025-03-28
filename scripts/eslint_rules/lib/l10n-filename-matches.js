@@ -90,8 +90,8 @@ module.exports = {
 
         const previousFileLocationArgument = callExpression.arguments[0];
         const actualPath = path.join(
-          frontEndDirectory,
-          previousFileLocationArgument.value,
+            frontEndDirectory,
+            `${previousFileLocationArgument.value}`,
         );
         if (!allowedPathArguments.includes(actualPath)) {
           const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');

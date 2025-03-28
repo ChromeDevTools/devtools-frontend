@@ -28,13 +28,16 @@ module.exports = {
   },
   create: function(context) {
     function findConstructorAndSuperCallAndFirstArgumentToSuper(node) {
+      /**
+       * @type {{constructor: any, superExpression: any, firstArgumentToSuper: any}}
+       */
       const foundNodes = {
         constructor: undefined,
         superExpression: undefined,
         firstArgumentToSuper: undefined,
       };
       const constructor = node.body.body.find(bodyNode => {
-        return bodyNode.type === 'MethodDefinition' && bodyNode.key?.name === 'constructor';
+        return (bodyNode.type === 'MethodDefinition' && bodyNode.key?.name === 'constructor');
       });
       if (!constructor) {
         return foundNodes;
@@ -165,7 +168,7 @@ module.exports = {
           return;
         }
 
-        if (!node.superClass) {
+        if (!node.superClass || node.superClass.type !== 'Identifier') {
           return;
         }
         if (node.superClass.name !== 'Event') {

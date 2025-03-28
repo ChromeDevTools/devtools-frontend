@@ -12,7 +12,7 @@ const {isIdentifier} = require('./ast.js');
 /** @typedef {import('./dom-fragment.js').DomFragment} DomFragment */
 
 module.exports = {
-  create : function(context) {
+  create: function (context) {
     const sourceCode = context.getSourceCode();
 
     return {
@@ -34,7 +34,8 @@ module.exports = {
             return true;
           }
         }
-      }
+        return false;
+      },
     };
-  }
+  },
 };

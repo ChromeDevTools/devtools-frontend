@@ -51,12 +51,16 @@ module.exports = {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       MemberExpression(node) {
+        if (node.object.type !== 'Identifier' || node.property.type !== 'Identifier') {
+          return;
+        }
+
         if ((node.object.name === 'it' || node.object.name === 'describe' || node.object.name === 'itScreenshot') &&
             (node.property.name === 'skip' || node.property.name === 'skipOnPlatforms') &&
             node.parent.type === 'CallExpression') {
           const testNameNode = node.property.name === 'skip' ? node.parent.arguments[0] : node.parent.arguments[1];
 
-          if(!testNameNode) {
+          if (!testNameNode) {
             return;
           }
 
@@ -78,7 +82,7 @@ module.exports = {
       },
 
       CallExpression(node) {
-        if (node.callee.name === 'it' && node.arguments[0]) {
+        if (node.callee.type === 'Identifier' && node.callee.name === 'it' && node.arguments[0]) {
           const textValue = getTextValue(node.arguments[0]);
 
           if (textValue && TEST_NAME_REGEX.test(textValue)) {

@@ -22,19 +22,20 @@ module.exports = {
     return {
       ClassDeclaration(node) {
         // Only enforce this rule for custom elements
-        if (!node.superClass || node.superClass.name !== 'HTMLElement') {
+        if (!node.superClass || node.superClass.type !== 'Identifier' || node.superClass.name !== 'HTMLElement') {
           return;
         }
 
         const dataSetterDefinition = node.body.body.find(methodDefinition => {
-          return methodDefinition.kind === 'set' && methodDefinition.key.name === 'data';
+          return (
+              'kind' in methodDefinition && methodDefinition.kind === 'set' && methodDefinition.key.name === 'data');
         });
 
-        if (!dataSetterDefinition) {
+        if (!dataSetterDefinition || dataSetterDefinition.type === 'StaticBlock') {
           return;
         }
 
-        const dataSetterParam = dataSetterDefinition.value.params[0];
+        const dataSetterParam = dataSetterDefinition.value?.params?.[0];
         if (!dataSetterParam) {
           context.report(
               {node: dataSetterDefinition, message: 'A data setter must take a parameter that is explicitly typed.'});

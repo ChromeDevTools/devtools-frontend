@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 1;
+process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 'true';
 const rule = require('../lib/jslog-context-list.js');
 
 const {RuleTester} = require('./utils/utils.js');
-
 new RuleTester().run('jslog-context-list', rule, {
   invalid: [
     {

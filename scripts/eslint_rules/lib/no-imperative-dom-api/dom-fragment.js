@@ -60,7 +60,9 @@ class DomFragment {
       }
     }
     if (key instanceof ClassMember) {
-      result.references = [...key.references].map(r => ({node: /** @type {EsLintNode} */ (r)}));
+      result.references = [...key.references].map(r => ({
+                                                    node: /** @type {EsLintNode} */ (r),
+                                                  }));
       result.initializer = /** @type {EsLintNode} */ (key.initializer);
     }
     return result;
@@ -90,7 +92,7 @@ class DomFragment {
         return node;
       }
       if (node.type === 'Literal' && !quoteLiterals) {
-        return node.value.toString();
+        return node.value?.toString() ?? '';
       }
       const text = sourceCode.getText(node);
       if (node.type === 'TemplateLiteral') {
@@ -120,16 +122,31 @@ class DomFragment {
       lineLength += this.tagName.length + 1;
     }
     if (this.classList.length) {
-      appendExpression(`class="${this.classList.map(c => toOutputString(c)).join(' ')}"`);
+      appendExpression(
+          `class="${this.classList.map(c => toOutputString(c)).join(' ')}"`,
+      );
     }
     for (const attribute of this.attributes || []) {
-      appendExpression(`${attribute.key}=${attributeValue(toOutputString(attribute.value))}`);
+      appendExpression(
+          `${attribute.key}=${attributeValue(toOutputString(attribute.value))}`,
+      );
     }
     for (const eventListener of this.eventListeners || []) {
-      appendExpression(`@${eventListener.key}=${attributeValue(toOutputString(eventListener.value))}`);
+      appendExpression(
+          `@${eventListener.key}=${
+              attributeValue(
+                  toOutputString(eventListener.value),
+                  )}`,
+      );
     }
     for (const binding of this.bindings || []) {
-      appendExpression(`.${binding.key}=${toOutputString(binding.value, /* quoteLiterals=*/ true)}`);
+      appendExpression(
+          `.${binding.key}=${
+              toOutputString(
+                  binding.value,
+                  /* quoteLiterals=*/ true,
+                  )}`,
+      );
     }
     if (this.style.length) {
       const style = this.style.map(s => `${s.key}:${toOutputString(s.value)}`).join('; ');
@@ -147,7 +164,9 @@ class DomFragment {
       }
       components.push(`\n${' '.repeat(indent)}`);
     }
-    components.push('</', this.tagName, '>');
+    if (this.tagName) {
+      components.push('</', this.tagName, '>');
+    }
     return components;
   }
 

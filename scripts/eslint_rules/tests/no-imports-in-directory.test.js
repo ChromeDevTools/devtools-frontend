@@ -29,7 +29,6 @@ new RuleTester().run('no-imports-in-directory', rule, {
           ],
         },
       ],
-      errors: [{messageId: 'invalidImport'}],
     },
   ],
   invalid: [

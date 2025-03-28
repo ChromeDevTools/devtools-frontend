@@ -35,8 +35,8 @@ module.exports = {
     const fileNameOfFileBeingChecked = path.resolve(filename);
 
     return {
-      'ImportDeclaration'(node) {
-        const importPath = path.resolve(path.dirname(fileNameOfFileBeingChecked), node.source.value);
+      ImportDeclaration(node) {
+        const importPath = path.resolve(path.dirname(fileNameOfFileBeingChecked), `${node.source.value}`);
         for (const banned of bannedPaths) {
           if (importPath.includes(banned)) {
             context.report({

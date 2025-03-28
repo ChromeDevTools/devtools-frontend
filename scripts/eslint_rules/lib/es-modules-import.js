@@ -175,9 +175,9 @@ module.exports = {
         if (!node.source) {
           return;
         }
-        const importPath = path.normalize(node.source.value);
-
-        const importPathForErrorMessage = node.source.value.replace(/\\/g, '/');
+        const value = `${node.source.value}`;
+        const importPath = path.normalize(value);
+        const importPathForErrorMessage = value.replace(/\\/g, '/');
         checkImportExtension(
           importPath,
           importPathForErrorMessage,
@@ -186,12 +186,13 @@ module.exports = {
         );
       },
       ImportDeclaration(node) {
-        if (node.source.value.includes('//')) {
+        const value = `${node.source.value}`;
+        if (value.includes('//')) {
           context.report({
             node,
             messageId: 'doubleSlashInImportPath',
             fix(fixer) {
-              const fixedValue = node.source.value.replaceAll('//', '/');
+              const fixedValue = value.replaceAll('//', '/');
               // Replace the original import string with the fixed one. We need
               // the extra quotes around the value to ensure we produce valid
               // JS - else it would end up as `import X from ../some/path.js`
@@ -199,8 +200,9 @@ module.exports = {
             },
           });
         }
-        const importPath = path.normalize(node.source.value);
-        const importPathForErrorMessage = node.source.value.replace(/\\/g, '/');
+
+        const importPath = path.normalize(value);
+        const importPathForErrorMessage = value.replace(/\\/g, '/');
 
         checkImportExtension(
           node.source.value,
@@ -210,12 +212,15 @@ module.exports = {
         );
 
         // Type imports are unrestricted
+        // @ts-expect-error needs typescript
         if (node.importKind === 'type') {
           // `import type ... from ...` syntax
           return;
         }
+        // @ts-expect-error needs typescript
         if (node.importKind === 'value') {
           // `import {type ...} from ...` syntax
+          // @ts-expect-error needs typescript
           if (node.specifiers.every(spec => spec.importKind === 'type')) {
             return;
           }
@@ -228,10 +233,7 @@ module.exports = {
         //
         // Don't use `importPath` here, as `path.normalize` removes
         // the `./` from same-folder import paths.
-        if (
-          !node.source.value.startsWith('.') &&
-          !/^[\w\-_]+$/.test(node.source.value)
-        ) {
+        if (!value.startsWith('.') && !/^[\w\-_]+$/.test(value)) {
           context.report({
             node,
             message:

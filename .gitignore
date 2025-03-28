@@ -51,3 +51,4 @@ test/perf/.generated
 # Linters caches
 .eslintcache
 .stylelintcache
+**/tsconfig.tsbuildinfo

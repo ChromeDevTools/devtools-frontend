@@ -23,19 +23,23 @@ module.exports = {
     },
     schema: []  // no options
   },
-  create: function(context) {
-  const MOCHA_CALLS_TO_CHECK = new Set([
-    'it',
-    'before',
-    'beforeEach',
-    'after',
-    'afterEach',
-  ]);
-  function walkUpTreeToFindMochaFunctionCall(node) {
-      if(node.type === 'CallExpression' && node.callee.type === 'Identifier' && MOCHA_CALLS_TO_CHECK.has(node.callee.name)) {
+  create: function (context) {
+    const MOCHA_CALLS_TO_CHECK = new Set([
+      'it',
+      'before',
+      'beforeEach',
+      'after',
+      'afterEach',
+    ]);
+    function walkUpTreeToFindMochaFunctionCall(node) {
+      if (
+        node.type === 'CallExpression' &&
+        node.callee.type === 'Identifier' &&
+        MOCHA_CALLS_TO_CHECK.has(node.callee.name)
+      ) {
         return node;
       }
-      if(!node || !node.parent) {
+      if (!node || !node.parent) {
         return null;
       }
       return walkUpTreeToFindMochaFunctionCall(node.parent);
@@ -43,14 +47,18 @@ module.exports = {
 
     return {
       MemberExpression(node) {
-        const objectIsTraceLoader = node.object.type === 'Identifier' && node.object.name === 'TraceLoader';
-        if(!objectIsTraceLoader) {
+        const objectIsTraceLoader =
+          node.object.type === 'Identifier' &&
+          node.object.name === 'TraceLoader';
+        if (!objectIsTraceLoader) {
           return;
         }
         // Find out if this is an await call (which needs the additional test timeout).
         const callExpression = node.parent;
-        const isAwait = callExpression.parent && callExpression.parent.type === 'AwaitExpression';
-        if(!isAwait) {
+        const isAwait =
+          callExpression.parent &&
+          callExpression.parent.type === 'AwaitExpression';
+        if (!isAwait) {
           return;
         }
         // We now know that we have await TraceLoader.[something]();
@@ -58,24 +66,25 @@ module.exports = {
         // we can then check that its function is defined via a function
         // and not as an arrow function.
         const mochaFunctionCall = walkUpTreeToFindMochaFunctionCall(node);
-        if(!mochaFunctionCall) {
+        if (!mochaFunctionCall) {
           return;
         }
         // This code is within a mocha call. If the call is an `it`, we need
         // the second argument, otherwise we use the first argument (Mocha
         // functions like `beforeEach` take only a function as the argument.)
-        const functionArg = mochaFunctionCall.callee.name === 'it' ?
-          mochaFunctionCall.arguments[1] :
-          mochaFunctionCall.arguments[0];
+        const functionArg =
+          mochaFunctionCall.callee.name === 'it'
+            ? mochaFunctionCall.arguments[1]
+            : mochaFunctionCall.arguments[0];
 
-        if(!functionArg) {
+        if (!functionArg) {
           // The node unexpectedly does not have a function passed. The
           // developer is probably in the middle of writing it, so we should
           // just stop and leave them to it.
           return;
         }
 
-        if(functionArg.type === 'ArrowFunctionExpression') {
+        if (functionArg.type === 'ArrowFunctionExpression') {
           context.report({
             node: functionArg,
             messageId: 'needsFunction',
@@ -87,11 +96,13 @@ module.exports = {
                 functionArg.range[0],
                 functionArg.range[0] + 11,
               ];
+
+              // @ts-expect-error the wrapper function is not typed
               return fixer.replaceTextRange(rangeToReplace, 'async function()');
-            }
+            },
           });
         }
-      }
+      },
     };
-  }
+  },
 };

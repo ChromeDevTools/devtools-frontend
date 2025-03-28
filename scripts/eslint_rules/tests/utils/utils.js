@@ -12,7 +12,7 @@ const eslint = require('eslint');
  */
 class RuleTester extends eslint.RuleTester {
   /**
-   * @param {import(eslint).Linter.Config} config
+   * @param {import('eslint').Linter.Config} config
    */
   constructor(config = {}) {
     super({

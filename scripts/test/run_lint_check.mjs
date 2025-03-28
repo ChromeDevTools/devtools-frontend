@@ -15,6 +15,7 @@ import {
   devtoolsRootPath,
   litAnalyzerExecutablePath,
   nodePath,
+  nodeModulesPath,
   tsconfigJsonPath,
 } from '../devtools_paths.js';
 
@@ -29,6 +30,11 @@ const flags = yargs(hideBin(process.argv))
     default: false,
     describe:
       'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+  })
+  .option('tsc', {
+    type: 'boolean',
+    default: false,
+    describe: 'Temperary here while fixing EsLint rule',
   })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     yargs.positional('files', {
@@ -268,6 +274,61 @@ function shouldIgnoreFile(path) {
   return false;
 }
 
+async function runEslintRulesTypeCheck(_files) {
+  const tscPath = join(nodeModulesPath(), '.bin', 'tsc');
+  const tsConfigEslintRules = join(
+    devtoolsRootPath(),
+    'scripts',
+    'eslint_rules',
+    'tsconfig.json',
+  );
+  const args = [tscPath, '-b', tsConfigEslintRules];
+  /**
+   * @returns {Promise<{output: string, error: string, status:boolean}>}
+   */
+  async function runTypeCheck() {
+    const result = {
+      output: '',
+      error: '',
+      status: false,
+    };
+
+    return await new Promise(resolve => {
+      const litAnalyzerProcess = spawn(nodePath(), args, {
+        encoding: 'utf-8',
+        cwd: devtoolsRootPath(),
+      });
+
+      litAnalyzerProcess.stdout.on('data', data => {
+        result.output += `\n${data.toString()}`;
+      });
+      litAnalyzerProcess.stderr.on('data', data => {
+        result.error += `\n${data.toString()}`;
+      });
+
+      litAnalyzerProcess.on('error', message => {
+        result.error += `\n${message}`;
+        resolve(result);
+      });
+
+      litAnalyzerProcess.on('exit', code => {
+        result.status = code === 0;
+        resolve(result);
+      });
+    });
+  }
+
+  const result = await runTypeCheck();
+
+  if (result.output && !result.output.includes('Found 0 problems')) {
+    console.log(result.output);
+  }
+  if (result.error) {
+    console.log(result.error);
+  }
+  return result.status;
+}
+
 async function run() {
   const scripts = [];
   const styles = [];
@@ -287,6 +348,9 @@ async function run() {
   }
 
   const frontEndFiles = scripts.filter(script => script.includes('front_end'));
+  const esLintRules = scripts.filter(script =>
+    script.includes('scripts/eslint_rules'),
+  );
 
   let succeed = true;
   if (scripts.length !== 0) {
@@ -298,6 +362,10 @@ async function run() {
   if (styles.length !== 0) {
     succeed &&= await runStylelint(styles);
   }
+  if (esLintRules.length !== 0 && flags.tsc) {
+    succeed &&= await runEslintRulesTypeCheck();
+  }
+
   return succeed;
 }
 

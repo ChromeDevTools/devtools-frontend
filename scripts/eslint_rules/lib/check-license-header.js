@@ -19,7 +19,7 @@ const FRONT_END_FOLDER = path.join(
     'front_end',
 );
 
-const CURRENT_YEAR = new Date().getFullYear();
+const CURRENT_YEAR = `${new Date().getFullYear()}`;
 const LINE_LICENSE_HEADER = [
   `Copyright ${CURRENT_YEAR} The Chromium Authors. All rights reserved.`,
   'Use of this source code is governed by a BSD-style license that can be',

@@ -33,7 +33,7 @@ module.exports = {
     const filename = context.filename ?? context.getFilename();
     return {
       ImportDeclaration(node) {
-        const importPath = path.normalize(node.source.value);
+        const importPath = path.normalize(`${node.source.value}`);
 
         if (importPath.endsWith('.css.js')) {
           const importingFileName = path.resolve(filename);

@@ -24,7 +24,7 @@ module.exports = {
     return {
       ClassDeclaration(node) {
         // Use `extends LitElement` as a signal.
-        if (node.superClass?.name !== 'LitElement') {
+        if (node.superClass?.type !== 'Identifier' || node.superClass?.name !== 'LitElement') {
           return;
         }
         // Existing components are still allowed.

@@ -24,18 +24,22 @@ const widget = require('./no-imperative-dom-api/widget.js');
 /** @typedef {import('eslint').Scope.Variable} Variable */
 /** @typedef {import('eslint').Scope.Reference} Reference*/
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
-  meta : {
-    type : 'problem',
-    docs : {
-      description : 'Prefer template literals over imperative DOM API calls',
-      category : 'Possible Errors',
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Prefer template literals over imperative DOM API calls',
+      category: 'Possible Errors',
     },
     messages: {
-      preferTemplateLiterals: 'Prefer template literals over imperative DOM API calls',
+      preferTemplateLiterals:
+        'Prefer template literals over imperative DOM API calls',
     },
-    fixable : 'code',
-    schema : []  // no options
+    fixable: 'code',
+    schema: [], // no options
   },
   create : function(context) {
     const sourceCode = context.getSourceCode();
@@ -60,7 +64,7 @@ module.exports = {
         }
       }
       if (event.type === 'Literal') {
-        return event.value.toString();
+        return event.value?.toString() ?? null;
       }
       return null;
     }

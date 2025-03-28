@@ -30,38 +30,47 @@ module.exports = {
     return {
       CallExpression(node) {
         if (
-          node.callee.type === 'MemberExpression' &&
-          node.callee.object.name === 'assert' &&
-          node.callee.property.name === 'equal'
+          node.callee.type !== 'MemberExpression' ||
+          node.callee.object.type !== 'Identifier' ||
+          node.callee.object.name !== 'assert' ||
+          node.callee.property.type !== 'Identifier' ||
+          node.callee.property.name !== 'equal'
         ) {
-          context.report({
-            node,
-            message:
-              'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
-            fix(fixer) {
-              /**
-               * Get the type of the second argument and try to match it to a assert type
-               */
-              const compareToType = node.arguments.at(1)?.type;
-              if (
-                // Match number or string
-                compareToType === 'Literal' ||
-                // Match `` string
-                compareToType === 'TemplateElement'
-              ) {
-                return fixer.replaceText(node.callee.property, 'strictEqual');
-              }
-              if (
-                // Match any object `{...}`
-                compareToType === 'ObjectExpression' ||
-                // Match any array `[...]`
-                compareToType === 'ArrayExpression'
-              ) {
-                return fixer.replaceText(node.callee.property, 'deepEqual');
-              }
-            },
-          });
+          return;
         }
+
+        const calleeProperty = node.callee.property;
+
+        context.report({
+          node,
+          message:
+            'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+          fix(fixer) {
+            /**
+             * Get the type of the second argument and try to match it to a assert type
+             */
+            const compareToType = node.arguments.at(1)?.type;
+            if (
+              // Match number or string
+              compareToType === 'Literal' ||
+              // Match `` string
+              // @ts-expect-error
+              compareToType === 'TemplateElement'
+            ) {
+              return fixer.replaceText(calleeProperty, 'strictEqual');
+            }
+            if (
+              // Match any object `{...}`
+              compareToType === 'ObjectExpression' ||
+              // Match any array `[...]`
+              compareToType === 'ArrayExpression'
+            ) {
+              return fixer.replaceText(calleeProperty, 'deepEqual');
+            }
+
+            return null;
+          },
+        });
       },
     };
   },

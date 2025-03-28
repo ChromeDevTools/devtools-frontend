@@ -7,7 +7,7 @@
 const path = require('path');
 
 function isStarAsImportSpecifier(specifiers) {
-  return specifiers.length === 1 && specifiers[0].type === 'ImportNamespaceSpecifier';
+  return (specifiers.length === 1 && specifiers[0].type === 'ImportNamespaceSpecifier');
 }
 
 /**
@@ -49,8 +49,9 @@ module.exports = {
           // conventions for module imports.
           return;
         }
-        const importPath = path.normalize(node.source.value);
-        const importPathForErrorMessage = node.source.value.replace(/\\/g, '/');
+        const value = `${node.source.value}`;
+        const importPath = path.normalize(value);
+        const importPathForErrorMessage = value.replace(/\\/g, '/');
         const absoluteImportPath = path.resolve(importingDir, importPath);
 
         const importNameInCode = node.specifiers[0].local.name;

@@ -74,8 +74,11 @@ module.exports = {
         if (isIdentifier(property, 'setAttribute')) {
           const attribute = firstArg;
           const value = secondArg;
-          if (attribute.type === 'Literal' && value.type !== 'SpreadElement') {
-            domFragment.attributes.push({key: attribute.value.toString(), value});
+          if (attribute.type === 'Literal' && attribute.value && value.type !== 'SpreadElement') {
+            domFragment.attributes.push({
+              key: attribute.value.toString(),
+              value,
+            });
             return true;
           }
         }

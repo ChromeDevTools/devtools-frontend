@@ -5,7 +5,7 @@
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {DuplicateJavaScriptInsightModel} from '../../../../models/trace/insights/DuplicatedJavaScript.js';
+import type {DuplicatedJavaScriptInsightModel} from '../../../../models/trace/insights/DuplicatedJavaScript.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -21,7 +21,7 @@ const {UIStrings, i18nString} = Trace.Insights.Models.DuplicatedJavaScript;
 
 const {html} = Lit;
 
-export class DuplicatedJavaScript extends BaseInsightComponent<DuplicateJavaScriptInsightModel> {
+export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScriptInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-duplicated-javascript`;
   override internalName = 'duplicated-javascript';
   #treemapData: Utils.Treemap.TreemapData|null = null;

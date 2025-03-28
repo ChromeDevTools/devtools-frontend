@@ -35,7 +35,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DuplicatedJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type DuplicateJavaScriptInsightModel = InsightModel<typeof UIStrings, {
+export type DuplicatedJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   duplication: Extras.ScriptDuplication.ScriptDuplication,
   duplicationGroupedByNodeModules: Extras.ScriptDuplication.ScriptDuplication,
   scriptsWithDuplication: Handlers.ModelHandlers.Scripts.Script[],
@@ -43,7 +43,8 @@ export type DuplicateJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   mainDocumentUrl: string,
 }>;
 
-function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
+function finalize(partialModel: PartialInsightModel<DuplicatedJavaScriptInsightModel>):
+    DuplicatedJavaScriptInsightModel {
   const requests = partialModel.scriptsWithDuplication.map(script => script.request).filter(e => !!e);
 
   return {
@@ -59,7 +60,7 @@ function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightMo
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicateJavaScriptInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicatedJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {
     if (!context.navigation) {
       return false;

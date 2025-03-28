@@ -71,6 +71,7 @@ export function openTreemap(treemapData: TreemapData, mainDocumentUrl: string, w
         locale: i18n.DevToolsLocale.DevToolsLocale.instance().locale,
       },
     },
+    initialView: 'duplicate-modules',
   };
   const url = 'https://googlechrome.github.io/lighthouse/treemap/';
   const windowName = `treemap-${windowNameSuffix}`;

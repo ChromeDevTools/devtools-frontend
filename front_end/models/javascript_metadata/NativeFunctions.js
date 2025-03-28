@@ -225,12 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AILanguageModelFactory","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
-  },
-  {
-    name: "create",
-    signatures: [["options"]],
-    receivers: ["AITranslatorFactory"]
+    receivers: ["CredentialsContainer","AILanguageModelFactory"]
   },
   {
     name: "defineProperty",
@@ -6794,7 +6789,7 @@ export const NativeFunctions = [
   {
     name: "redirect",
     signatures: [["url"]],
-    receivers: ["NavigateEvent"]
+    receivers: ["NavigationPrecommitController"]
   },
   {
     name: "Blob",
@@ -7317,13 +7312,7 @@ export const NativeFunctions = [
   },
   {
     name: "availability",
-    signatures: [["?options"]],
-    receivers: ["AILanguageModelFactory","AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
-  },
-  {
-    name: "availability",
-    signatures: [["options"]],
-    receivers: ["AITranslatorFactory"]
+    signatures: [["?options"]]
   },
   {
     name: "registerAnimator",

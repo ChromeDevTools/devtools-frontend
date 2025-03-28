@@ -4218,6 +4218,16 @@ declare namespace ProtocolProxyApi {
      */
     invoke_simulateGATTOperationResponse(params: Protocol.BluetoothEmulation.SimulateGATTOperationResponseRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Adds a service with |uuid| to the peripheral with |address|.
+     */
+    invoke_addService(params: Protocol.BluetoothEmulation.AddServiceRequest): Promise<Protocol.BluetoothEmulation.AddServiceResponse>;
+
+    /**
+     * Removes the service respresented by |id| from the peripheral with |address|.
+     */
+    invoke_removeService(params: Protocol.BluetoothEmulation.RemoveServiceRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface BluetoothEmulationDispatcher {
     /**

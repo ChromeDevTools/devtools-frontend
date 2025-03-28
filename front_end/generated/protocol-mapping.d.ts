@@ -4744,6 +4744,20 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Adds a service with |uuid| to the peripheral with |address|.
+     */
+    'BluetoothEmulation.addService': {
+      paramsType: [Protocol.BluetoothEmulation.AddServiceRequest];
+      returnType: Protocol.BluetoothEmulation.AddServiceResponse;
+    };
+    /**
+     * Removes the service respresented by |id| from the peripheral with |address|.
+     */
+    'BluetoothEmulation.removeService': {
+      paramsType: [Protocol.BluetoothEmulation.RemoveServiceRequest];
+      returnType: void;
+    };
+    /**
      * Continues execution until specific location is reached.
      */
     'Debugger.continueToLocation': {

@@ -1099,6 +1099,7 @@ export namespace Audits {
     ValidationFailedSignatureExpired = 'ValidationFailedSignatureExpired',
     ValidationFailedInvalidLength = 'ValidationFailedInvalidLength',
     ValidationFailedSignatureMismatch = 'ValidationFailedSignatureMismatch',
+    ValidationFailedIntegrityMismatch = 'ValidationFailedIntegrityMismatch',
   }
 
   /**
@@ -1141,6 +1142,7 @@ export namespace Audits {
   export interface SRIMessageSignatureIssueDetails {
     error: SRIMessageSignatureError;
     signatureBase: string;
+    integrityAssertions: string[];
     request: AffectedRequest;
   }
 
@@ -9363,6 +9365,7 @@ export namespace Network {
     NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
     PortMismatch = 'PortMismatch',
     SchemeMismatch = 'SchemeMismatch',
+    AnonymousContext = 'AnonymousContext',
   }
 
   /**
@@ -18390,6 +18393,23 @@ export namespace BluetoothEmulation {
     address: string;
     type: GATTOperationType;
     code: integer;
+  }
+
+  export interface AddServiceRequest {
+    address: string;
+    serviceUuid: string;
+  }
+
+  export interface AddServiceResponse extends ProtocolResponseWithError {
+    /**
+     * An identifier that uniquely represents this service.
+     */
+    id: string;
+  }
+
+  export interface RemoveServiceRequest {
+    address: string;
+    id: string;
   }
 
   /**

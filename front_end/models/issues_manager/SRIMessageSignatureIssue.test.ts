@@ -50,6 +50,7 @@ describeWithLocale('SRIMessageSignatureIssue', () => {
           url: 'https://example.com/',
         },
         signatureBase: 'test-signature-base',
+        integrityAssertions: [],
       };
       const issue = createProtocolIssue(issueDetails);
       const sriMessageSignatureIssues =

@@ -61,6 +61,7 @@ export const enum IssueCode {
   VALIDATION_FAILED_SIGNATURE_EXPIRED = 'SRIMessageSignatureIssue::ValidationFailedSignatureExpired',
   VALIDATION_FAILED_INVALID_LENGTH = 'SRIMessageSignatureIssue::ValidationFailedInvalidLength',
   VALIDATION_FAILED_SIGNATURE_MISMATCH = 'SRIMessageSignatureIssue::ValidationFailedSignatureMismatch',
+  VALIDATION_FAILED_INTEGRITY_MISMATCH = 'SRIMessageSignatureIssue::ValidationFailedIntegrityMismatch',
 }
 
 function getIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails): IssueCode {
@@ -105,6 +106,8 @@ function getIssueCode(details: Protocol.Audits.SRIMessageSignatureIssueDetails):
       return IssueCode.VALIDATION_FAILED_INVALID_LENGTH;
     case Protocol.Audits.SRIMessageSignatureError.ValidationFailedSignatureMismatch:
       return IssueCode.VALIDATION_FAILED_SIGNATURE_MISMATCH;
+    case Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch:
+      return IssueCode.VALIDATION_FAILED_INTEGRITY_MISMATCH;
   }
 }
 

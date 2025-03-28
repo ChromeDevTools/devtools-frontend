@@ -1,9 +1,6 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import * as Platform from '../../core/platform/platform.js';
-
 import type {Size} from './Geometry.js';
 import glassPaneStyles from './glassPane.css.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
@@ -14,7 +11,6 @@ export class GlassPane {
 
   element: typeof Widget.prototype.element;
   contentElement: typeof Widget.prototype.contentElement;
-  private readonly arrowElement: HTMLSpanElement;
   private readonly onMouseDownBound: (event: Event) => void;
   private onClickOutsideCallback: ((arg0: Event) => void)|null = null;
   private maxSize: Size|null = null;
@@ -32,11 +28,6 @@ export class GlassPane {
     this.contentElement = this.widgetInternal.contentElement;
     if (jslog) {
       this.contentElement.setAttribute('jslog', jslog);
-    }
-    this.arrowElement = document.createElement('span');
-    this.arrowElement.classList.add('arrow', 'hidden');
-    if (this.element.shadowRoot) {
-      this.element.shadowRoot.appendChild(this.arrowElement);
     }
 
     this.registerRequiredCSS(glassPaneStyles);
@@ -103,7 +94,6 @@ export class GlassPane {
 
   setMarginBehavior(behavior: MarginBehavior): void {
     this.marginBehavior = behavior;
-    this.arrowElement.classList.toggle('hidden', behavior !== MarginBehavior.ARROW);
   }
 
   setIgnoreLeftMargin(ignore: boolean): void {
@@ -151,10 +141,9 @@ export class GlassPane {
       return;
     }
 
-    const showArrow = this.marginBehavior === MarginBehavior.ARROW;
-    const gutterSize = showArrow ? 8 : (this.marginBehavior === MarginBehavior.NO_MARGIN ? 0 : 3);
+    const gutterSize = this.marginBehavior === MarginBehavior.NO_MARGIN ? 0 : 3;
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
-    const arrowSize = 10;
+    const offsetSize = 10;
 
     const container = (containers.get((this.element.ownerDocument))) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
@@ -190,7 +179,6 @@ export class GlassPane {
       const anchorBox = this.anchorBox.relativeToElement(container);
       let behavior: AnchorBehavior.PREFER_BOTTOM|AnchorBehavior.PREFER_TOP|AnchorBehavior.PREFER_RIGHT|
           AnchorBehavior.PREFER_LEFT|AnchorBehavior = this.anchorBehavior;
-      this.arrowElement.classList.remove('arrow-none', 'arrow-top', 'arrow-bottom', 'arrow-left', 'arrow-right');
 
       if (behavior === AnchorBehavior.PREFER_TOP || behavior === AnchorBehavior.PREFER_BOTTOM) {
         const top = anchorBox.y - 2 * gutterSize;
@@ -202,35 +190,28 @@ export class GlassPane {
           behavior = AnchorBehavior.PREFER_TOP;
         }
 
-        let arrowY;
         let enoughHeight = true;
         if (behavior === AnchorBehavior.PREFER_TOP) {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           const spaceTop = anchorBox.y - positionY - gutterSize;
           if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
             if (height > spaceTop) {
-              this.arrowElement.classList.add('arrow-none');
               enoughHeight = false;
             }
           } else {
             height = Math.min(height, spaceTop);
           }
-          this.arrowElement.classList.add('arrow-bottom');
-          arrowY = anchorBox.y - gutterSize;
         } else {
           positionY = anchorBox.y + anchorBox.height + gutterSize;
           const spaceBottom = containerHeight - positionY - gutterSize;
           if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
             if (height > spaceBottom) {
-              this.arrowElement.classList.add('arrow-none');
               positionY = containerHeight - gutterSize - height;
               enoughHeight = false;
             }
           } else {
             height = Math.min(height, spaceBottom);
           }
-          this.arrowElement.classList.add('arrow-top');
-          arrowY = anchorBox.y + anchorBox.height + gutterSize;
         }
 
         const naturalPositionX = Math.min(anchorBox.x, containerWidth - width - gutterSize);
@@ -240,18 +221,11 @@ export class GlassPane {
         }
 
         if (!enoughHeight) {
-          positionX = Math.min(positionX + arrowSize, containerWidth - width - gutterSize);
-        } else if (showArrow && positionX - arrowSize >= gutterSize) {
-          positionX -= arrowSize;
+          positionX = Math.min(positionX + offsetSize, containerWidth - width - gutterSize);
+        } else if (positionX - offsetSize >= gutterSize) {
+          positionX -= offsetSize;
         }
         width = Math.min(width, containerWidth - positionX - gutterSize);
-        if (2 * arrowSize >= width) {
-          this.arrowElement.classList.add('arrow-none');
-        } else {
-          let arrowX: number = anchorBox.x + Math.min(50, Math.floor(anchorBox.width / 2));
-          arrowX = Platform.NumberUtilities.clamp(arrowX, positionX + arrowSize, positionX + width - arrowSize);
-          this.arrowElement.positionAt(arrowX, arrowY, container);
-        }
       } else {
         const left = anchorBox.x - 2 * gutterSize;
         const right = containerWidth - anchorBox.x - anchorBox.width - 2 * gutterSize;
@@ -262,58 +236,43 @@ export class GlassPane {
           behavior = AnchorBehavior.PREFER_LEFT;
         }
 
-        let arrowX;
         let enoughWidth = true;
         if (behavior === AnchorBehavior.PREFER_LEFT) {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           const spaceLeft = anchorBox.x - positionX - gutterSize;
           if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
             if (width > spaceLeft) {
-              this.arrowElement.classList.add('arrow-none');
               enoughWidth = false;
             }
           } else {
             width = Math.min(width, spaceLeft);
           }
-          this.arrowElement.classList.add('arrow-right');
-          arrowX = anchorBox.x - gutterSize;
         } else {
           positionX = anchorBox.x + anchorBox.width + gutterSize;
           const spaceRight = containerWidth - positionX - gutterSize;
           if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
             if (width > spaceRight) {
-              this.arrowElement.classList.add('arrow-none');
               positionX = containerWidth - gutterSize - width;
               enoughWidth = false;
             }
           } else {
             width = Math.min(width, spaceRight);
           }
-          this.arrowElement.classList.add('arrow-left');
-          arrowX = anchorBox.x + anchorBox.width + gutterSize;
         }
 
         positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
         if (!enoughWidth) {
-          positionY = Math.min(positionY + arrowSize, containerHeight - height - gutterSize);
-        } else if (showArrow && positionY - arrowSize >= gutterSize) {
-          positionY -= arrowSize;
+          positionY = Math.min(positionY + offsetSize, containerHeight - height - gutterSize);
+        } else if (positionY - offsetSize >= gutterSize) {
+          positionY -= offsetSize;
         }
         height = Math.min(height, containerHeight - positionY - gutterSize);
-        if (2 * arrowSize >= height) {
-          this.arrowElement.classList.add('arrow-none');
-        } else {
-          let arrowY: number = anchorBox.y + Math.min(50, Math.floor(anchorBox.height / 2));
-          arrowY = Platform.NumberUtilities.clamp(arrowY, positionY + arrowSize, positionY + height - arrowSize);
-          this.arrowElement.positionAt(arrowX, arrowY, container);
-        }
       }
     } else {
       positionX = this.positionX !== null ? this.positionX : (containerWidth - width) / 2;
       positionY = this.positionY !== null ? this.positionY : (containerHeight - height) / 2;
       width = Math.min(width, containerWidth - positionX - gutterSize);
       height = Math.min(height, containerHeight - positionY - gutterSize);
-      this.arrowElement.classList.add('arrow-none');
     }
 
     this.contentElement.style.width = width + 'px';

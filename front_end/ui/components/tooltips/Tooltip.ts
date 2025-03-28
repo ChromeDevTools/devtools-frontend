@@ -34,6 +34,7 @@ export interface TooltipProperties {
  */
 export class Tooltip extends HTMLElement {
   static readonly observedAttributes = ['id', 'variant', 'jslogcontext'];
+  static lastOpenedTooltipId: string|null = null;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #anchor: HTMLElement|null = null;
@@ -113,7 +114,7 @@ export class Tooltip extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (!this.isConnected) {
       // There is no need to do anything before the connectedCallback is called.
       return;
@@ -121,6 +122,9 @@ export class Tooltip extends HTMLElement {
     if (name === 'id') {
       this.#removeEventListeners();
       this.#attachToAnchor();
+      if (Tooltip.lastOpenedTooltipId === oldValue) {
+        Tooltip.lastOpenedTooltipId = newValue;
+      }
     } else if (name === 'jslogcontext') {
       this.#updateJslog();
     }
@@ -140,6 +144,10 @@ export class Tooltip extends HTMLElement {
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
+
+    if (Tooltip.lastOpenedTooltipId === this.id) {
+      this.showPopover();
+    }
   }
 
   disconnectedCallback(): void {
@@ -153,6 +161,7 @@ export class Tooltip extends HTMLElement {
     }
     this.#timeout = window.setTimeout(() => {
       this.showPopover();
+      Tooltip.lastOpenedTooltipId = this.id;
     }, this.hoverDelay);
   };
 
@@ -175,6 +184,9 @@ export class Tooltip extends HTMLElement {
     if (event && this.variant === 'rich' &&
         (event.relatedTarget === this || (event.relatedTarget as Element)?.parentElement === this)) {
       return;
+    }
+    if (this.open && Tooltip.lastOpenedTooltipId === this.id) {
+      Tooltip.lastOpenedTooltipId = null;
     }
     this.#timeout = window.setTimeout(() => {
       this.hidePopover();

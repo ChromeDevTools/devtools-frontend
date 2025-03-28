@@ -16,6 +16,7 @@ interface RenderProps {
   useClick?: boolean;
   useHotkey?: boolean;
   jslogContext?: string;
+  id?: string;
 }
 
 function renderTooltip({
@@ -24,16 +25,17 @@ function renderTooltip({
   useClick = false,
   useHotkey = false,
   jslogContext = undefined,
+  id = 'tooltip-id',
 }: RenderProps = {}) {
   const container = document.createElement('div');
   // clang-format off
   Lit.render(html`
     ${attribute === 'aria-details' ?
-      html`<button aria-details="tooltip-id">Button</button>` :
-      html`<button aria-describedby="tooltip-id">Button</button>`
+      html`<button aria-details=${id}>Button</button>` :
+      html`<button aria-describedby=${id}>Button</button>`
     }
     <devtools-tooltip
-     id="tooltip-id"
+     id=${id}
      variant=${variant}
      ?use-click=${useClick}
      ?use-hotkey=${useHotkey}
@@ -236,5 +238,30 @@ describe('Tooltip', () => {
         new Tooltips.Tooltip.Tooltip({id: 'constructed-tooltip-id', jslogContext: 'context3', anchor});
     container.appendChild(constructedTooltip);
     assert.strictEqual(constructedTooltip.getAttribute('jslog'), 'Popover; context: context3; parent: mapped');
+  });
+
+  it('automatically opens a new tooltip with the same id on re-attach', async () => {
+    const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
+
+    const waitForOpen = Promise.withResolvers<Event>();
+    tooltip.ontoggle = waitForOpen.resolve;
+    tooltip.showTooltip();
+    await waitForOpen.promise;
+    assert.isTrue(tooltip.open);
+
+    container.remove();
+    const container2 = renderTooltip();
+    const tooltip2 = container2.querySelector('devtools-tooltip');
+    assert.exists(tooltip2);
+    assert.isTrue(tooltip2.open);
+
+    tooltip2.id = 'tooltip-id-2';
+    container2.remove();
+    const container3 = renderTooltip({id: 'tooltip-id-2'});
+    const tooltip3 = container3.querySelector('devtools-tooltip');
+    assert.exists(tooltip3);
+    assert.isTrue(tooltip3.open);
   });
 });

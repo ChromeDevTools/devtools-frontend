@@ -163,6 +163,8 @@ export class StylePropertiesSection {
   #customHeaderText: string|undefined;
   readonly #specificityTooltips: HTMLSpanElement;
   static #nextSpecificityTooltipId = 0;
+  static #nextSectionTooltipIdPrefix = 0;
+  readonly sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
 
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,

@@ -75,7 +75,7 @@ export class CSSVariableParserError extends HTMLElement {
 export class CSSVariableValueView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly variableName: string;
-  readonly value: string|undefined;
+  #value: string|undefined;
   readonly details: RegisteredPropertyDetails|undefined;
 
   constructor({
@@ -90,8 +90,16 @@ export class CSSVariableValueView extends HTMLElement {
     super();
     this.#shadow.adoptedStyleSheets = [cssVariableValueViewStyles];
     this.variableName = variableName;
-    this.value = value;
     this.details = details;
+    this.value = value;
+  }
+
+  get value(): string|undefined {
+    return this.#value;
+  }
+
+  set value(value: string|undefined) {
+    this.#value = value;
     this.#render();
   }
 

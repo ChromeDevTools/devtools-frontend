@@ -601,7 +601,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   getVariablePopoverContents(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string,
-      computedValue: string|null): HTMLElement|undefined {
+      computedValue: string|null): ElementsComponents.CSSVariableValueView.CSSVariableValueView {
     return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
       variableName,
       value: computedValue ?? undefined,

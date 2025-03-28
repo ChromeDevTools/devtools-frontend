@@ -267,17 +267,21 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
 }
 
 const AI_LABEL_GENERATION_PROMPT = `## Instruction:
-Generate a concise label (max 60 chars, single line) describing the *user-visible effect* of the selected call tree's activity, based solely on the provided call tree data.
+Generate a concise label (max 60 chars, single line) describing the selected call tree's activity, based solely on the provided call tree data.
+
+You should focus on:
+1. What activity is happening within the call tree.
+2. What the code within the call tree is doing.
+3. What (if any) visible impact to the user there is.
 
 ## Strict Constraints:
 - Output must be a single line of text.
 - Maximum 60 characters.
 - No full stops.
-- Focus on user impact, not internal operations.
+- Base the description only on the information present within the call tree data.
 - Do not include the name of the selected event.
 - Do not make assumptions about when the activity happened.
-- Base the description only on the information present within the call tree data.
+- Only include details on activity that you are highly confident about.
 - Prioritize brevity.
 - Only include third-party script names if their identification is highly confident.
-- Always use "responsiveness" rather than "user interaction responsiveness".
 `;

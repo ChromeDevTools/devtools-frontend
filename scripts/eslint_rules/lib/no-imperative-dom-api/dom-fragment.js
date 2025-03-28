@@ -54,8 +54,11 @@ class DomFragment {
       } else {
         result.references = key.references.filter(r => !key.identifiers.includes(r.identifier))
                                 .map(r => ({node: /** @type {EsLintNode} */ (r.identifier)}));
-        result.initializer = /** @type {EsLintNode} */ (key.identifiers[0]);
-        result.replacementLocation = result.initializer.parent;
+        const initializer = /** @type {EsLintNode} */ (key.identifiers[0]);
+        if (initializer?.parent?.type === 'VariableDeclarator') {
+          result.initializer = initializer;
+        }
+        result.replacementLocation = result.initializer?.parent;
         result.expression = key.name;
       }
     }

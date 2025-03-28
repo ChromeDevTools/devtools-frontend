@@ -406,10 +406,12 @@ class SomeWidget extends UI.Widget.Widget {
       filename: 'front_end/ui/components/component/file.ts',
       code: `
 class SomeWidget extends UI.Widget.Widget {
-  constructor(label: HTMLElement) {
+  constructor(label: HTMLElement, details: HTMLElement) {
     super();
     this.contentElement.appendChild(label);
     label.addEventListener('click', () => this.doSomething.bind(this));
+    this.contentElement.appendChild(details);
+    details.createChild('span');
   }
 }`,
       output: `
@@ -418,14 +420,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       \${label}
+      \${details}
     </div>\`,
     target, {host: input});
 };
 
 class SomeWidget extends UI.Widget.Widget {
-  constructor(label: HTMLElement) {
+  constructor(label: HTMLElement, details: HTMLElement) {
     super();
     label.addEventListener('click', () => this.doSomething.bind(this));
+    details.createChild('span');
   }
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],

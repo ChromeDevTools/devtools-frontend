@@ -107,7 +107,8 @@ describeWithEnvironment('TimelineDetailsView', function() {
     assert.isNotNull(layoutShiftDetails);
   });
 
-  it('renders the layout shift component for a selected cluster', async function() {
+  // Semi-regularly flaking on CQ bots.
+  it.skip('[crbug.com/406981939]: renders the layout shift component for a selected cluster', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     await detailsView.setModel({

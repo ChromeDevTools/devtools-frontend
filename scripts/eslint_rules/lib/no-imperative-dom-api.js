@@ -173,14 +173,23 @@ module.exports = {
         node: domFragment.replacementLocation,
         messageId: 'preferTemplateLiterals',
         fix(fixer) {
+          const template = 'html`' + domFragment.toTemplateLiteral(sourceCode).join('') + '`';
           let replacementLocation = domFragment.replacementLocation;
+
+          if (replacementLocation.type === 'VariableDeclarator') {
+            domFragment.initializer = null;
+            return [
+              fixer.replaceText(replacementLocation.init, template),
+              ...getRangesToRemove(domFragment).map(range => fixer.removeRange(range)),
+            ];
+          }
+
           if (replacementLocation.parent.type === 'ExportNamedDeclaration') {
             replacementLocation = replacementLocation.parent;
           }
-          const template = domFragment.toTemplateLiteral(sourceCode).join('');
           const text = `
 export const DEFAULT_VIEW = (input, _output, target) => {
-  render(html\`${template}\`,
+  render(${template},
     target, {host: input});
 };
 

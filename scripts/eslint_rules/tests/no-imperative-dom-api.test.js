@@ -373,6 +373,7 @@ class SomeWidget extends UI.Widget.Widget {
     const filterInput = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
     toolbar.appendToolbarItem(filterInput);
     const anotherElement = document.createElement('div');
+    anotherElement.className = 'another-element';
     this.process(filterInput, anotherElement);
   }
 }`,
@@ -394,11 +395,12 @@ class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
     const filterInput = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
-    const anotherElement = document.createElement('div');
+    const anotherElement = html\`
+    <div class="another-element"></div>\`;
     this.process(filterInput, anotherElement);
   }
 }`,
-      errors: [{messageId: 'preferTemplateLiterals'}],
+      errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
     },
     {
       filename: 'front_end/ui/components/component/file.ts',

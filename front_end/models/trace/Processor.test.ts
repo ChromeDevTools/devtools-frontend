@@ -398,6 +398,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'ForcedReflow',
         'Cache',
         'ModernHTTP',
+        'LegacyJavaScript',
       ]);
 
       const orderWithMetadata = await getInsightOrder(true);
@@ -420,6 +421,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'ForcedReflow',
         'Cache',
         'ModernHTTP',
+        'LegacyJavaScript',
       ]);
     });
   });

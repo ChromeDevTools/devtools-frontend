@@ -13,6 +13,7 @@ export * as ImageDelivery from './ImageDelivery.js';
 export * as InteractionToNextPaint from './InteractionToNextPaint.js';
 export * as LCPDiscovery from './LCPDiscovery.js';
 export * as LCPPhases from './LCPPhases.js';
+export * as LegacyJavaScript from './LegacyJavaScript.js';
 export * as ModernHTTP from './ModernHTTP.js';
 export * as NetworkDependencyTree from './NetworkDependencyTree.js';
 export * as RenderBlocking from './RenderBlocking.js';

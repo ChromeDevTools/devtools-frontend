@@ -1,0 +1,12 @@
+Name: legacy-javascript
+Short Name: legacy-javascript
+URL: https://github.com/GoogleChrome/lighthouse/tree/main/core/lib/legacy-javascript
+Version: 0.0.1
+Revision: 410adb1220ca0d36c317f64cdbc652b798561413
+License: Apache
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+
+Description:
+Identify legacy polyfills and code transforms.

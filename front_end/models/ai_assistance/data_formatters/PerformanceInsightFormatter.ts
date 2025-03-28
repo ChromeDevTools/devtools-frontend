@@ -268,6 +268,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
         return '';
       case 'ModernHTTP':
         return '';
+      case 'LegacyJavaScript':
+        return '';
     }
   }
 
@@ -324,6 +326,8 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'Cache':
         return '';
       case 'ModernHTTP':
+        return '';
+      case 'LegacyJavaScript':
         return '';
     }
   }

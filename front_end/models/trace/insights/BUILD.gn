@@ -20,6 +20,7 @@ devtools_module("insights") {
     "InteractionToNextPaint.ts",
     "LCPDiscovery.ts",
     "LCPPhases.ts",
+    "LegacyJavaScript.ts",
     "Models.ts",
     "ModernHTTP.ts",
     "NetworkDependencyTree.ts",
@@ -32,6 +33,7 @@ devtools_module("insights") {
   ]
 
   deps = [
+    "../../../third_party/legacy-javascript:bundle",
     "../../../third_party/third-party-web:bundle",
     "../extras:bundle",
     "../handlers:bundle",
@@ -66,6 +68,7 @@ ts_library("unittests") {
     "InteractionToNextPaint.test.ts",
     "LCPDiscovery.test.ts",
     "LCPPhases.test.ts",
+    "LegacyJavaScript.test.ts",
     "ModernHTTP.test.ts",
     "NetworkDependencyTree.test.ts",
     "RenderBlocking.test.ts",

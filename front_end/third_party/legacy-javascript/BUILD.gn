@@ -1,0 +1,27 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
+
+devtools_pre_built("legacy-javascript") {
+  sources_are_release = false
+
+  sources = [
+    "legacy-javascript-tsconfig.json",
+    "lib/legacy-javascript.d.ts",
+    "lib/legacy-javascript.js",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "legacy-javascript.ts"
+
+  deps = [ ":legacy-javascript" ]
+
+  visibility = [ "../../models/trace/*" ]
+
+  visibility += devtools_third_party_visibility
+}

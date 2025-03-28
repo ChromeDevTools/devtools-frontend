@@ -260,9 +260,9 @@ describeWithMockConnection('MetricCard', () => {
 
       const phaseTable = getPhaseTable(view);
       assert.deepEqual(phaseTable, [
-        ['TTFB', '400 ms', '500 ms'],
-        ['Phase 1', '10 ms', '0 ms'],
-        ['Phase 2', '100 ms', '124 ms'],
+        ['TTFB', '500 ms', '400 ms'],
+        ['Phase 1', '0 ms', '10 ms'],
+        ['Phase 2', '124 ms', '100 ms'],
       ]);
     });
   });

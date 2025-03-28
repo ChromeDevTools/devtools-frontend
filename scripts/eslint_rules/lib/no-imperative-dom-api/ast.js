@@ -42,6 +42,9 @@ function getEnclosingExpression(estreeNode) {
 /** @param {Node} estreeNode */
 function getEnclosingProperty(estreeNode) {
   const node = /** @type {EsLintNode} */ (estreeNode);
+  if (isMemberExpression(node, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
+    return node;
+  }
   if (node.parent.type === 'AssignmentExpression' && node.parent.right === node &&
       isMemberExpression(node.parent.left, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
     return node.parent.left;

@@ -88,7 +88,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <div class="container some-class" @click=\${this.onClick.bind(this)}></div>
+      <div class="some-class container" @click=\${this.onClick.bind(this)}></div>
     </div>\`,
     target, {host: input});
 };
@@ -314,6 +314,54 @@ class SomeWidget extends UI.Widget.Widget {
   }
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class Widget1 extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.createChild('div', 'widget1');
+  }
+}
+
+class Widget2 extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.createChild('div', 'widget2');
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <div class="widget1"></div>
+    </div>\`,
+    target, {host: input});
+};
+
+class Widget1 extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}
+
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <div class="widget2"></div>
+    </div>\`,
+    target, {host: input});
+};
+
+class Widget2 extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
     },
   ],
 });

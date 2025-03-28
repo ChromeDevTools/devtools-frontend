@@ -6,14 +6,15 @@
  */
 'use strict';
 
-const {getEnclosingProperty, getEnclosingClassDeclaration} = require('./ast.js');
+const {getEnclosingProperty} = require('./ast.js');
+const {ClassMember} = require('./class-member.js');
 
 /** @typedef {import('estree').Node} Node */
 /** @typedef {import('eslint').Rule.Node} EsLintNode */
 /** @typedef {import('eslint').Scope.Variable} Variable */
 /** @typedef {import('eslint').SourceCode} SourceCode */
 
-/** @type {Map<string|Variable, DomFragment>} */
+/** @type {Map<EsLintNode|ClassMember|Variable, DomFragment>} */
 const domFragments = new Map();
 
 class DomFragment {
@@ -37,26 +38,25 @@ class DomFragment {
    */
   static getOrCreate(estreeNode, sourceCode) {
     const node = /** @type {EsLintNode} */ (estreeNode);
-    const variable = getEnclosingVariable(node, sourceCode);
-    const key = variable ?? sourceCode.getText(getEnclosingProperty(node) ?? node);
+    const key = getKey(node, sourceCode);
 
     let result = domFragments.get(key);
     if (!result) {
       result = new DomFragment();
       domFragments.set(key, result);
-      if (variable) {
-        result.references = variable.references.map(r => (/** @type {EsLintNode} */ (r.identifier)));
-        result.references.push(/** @type {EsLintNode} */ (variable.identifiers[0]));
-      } else {
+      if ('parent' in key) {
         result.expression = sourceCode.getText(node);
-        const classDeclaration = getEnclosingClassDeclaration(node);
-        if (classDeclaration) {
-          result.replacementLocation = classDeclaration;
-        }
+        result.references.push(node);
+      } else if (key instanceof ClassMember) {
+        result.replacementLocation = /** @type {EsLintNode} */ (key.classDeclaration);
+        result.expression = sourceCode.getText(node);
+      } else {
+        result.references = key.references.map(r => (/** @type {EsLintNode} */ (r.identifier)));
+        result.references.push(/** @type {EsLintNode} */ (key.identifiers[0]));
       }
     }
-    if (!variable && !result.references.includes(node)) {
-      result.references.push(node);
+    if (key instanceof ClassMember) {
+      result.references = /** @type {EsLintNode[]} */ ([...key.references]);
     }
     return result;
   }
@@ -181,6 +181,22 @@ function attributeValue(outputString) {
     return outputString;
   }
   return '"' + outputString + '"';
+}
+
+/**
+ * @param {EsLintNode} node
+ * @param {SourceCode} sourceCode
+ */
+function getKey(node, sourceCode) {
+  const variable = getEnclosingVariable(node, sourceCode);
+  if (variable) {
+    return variable;
+  }
+  const property = getEnclosingProperty(node);
+  if (property) {
+    return ClassMember.getOrCreate(property, sourceCode);
+  }
+  return node;
 }
 
 exports.DomFragment = DomFragment;

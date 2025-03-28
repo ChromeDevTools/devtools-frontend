@@ -11,6 +11,7 @@
 
 const adorner = require('./no-imperative-dom-api/adorner.js');
 const {isIdentifier, getEnclosingExpression} = require('./no-imperative-dom-api/ast.js');
+const {ClassMember} = require('./no-imperative-dom-api/class-member.js');
 const domApiDevtoolsExtensions = require('./no-imperative-dom-api/dom-api-devtools-extensions.js');
 const domApi = require('./no-imperative-dom-api/dom-api.js');
 const {DomFragment} = require('./no-imperative-dom-api/dom-fragment.js');
@@ -175,7 +176,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     return {
       MemberExpression(node) {
         if (node.object.type === 'ThisExpression') {
-          DomFragment.getOrCreate(node, sourceCode);
+          ClassMember.getOrCreate(node, sourceCode);
         }
         for (const rule of subrules) {
           if ('MemberExpression' in rule) {

@@ -1,13 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "webworker",
-      "webworker.iterable"
-    ],
+    "lib": ["esnext", "dom", "dom.iterable", "webworker", "webworker.iterable"],
     "outDir": "ignored-for-vscode"
   },
   "include": [
@@ -16,5 +10,6 @@
     "../../scripts/**/*.ts",
     "../../test/**/*.ts",
     "../../extensions/**/*.ts",
+    "../../extension-api/**/*.ts"
   ]
 }

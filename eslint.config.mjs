@@ -63,8 +63,6 @@ export default [
       'front_end/third_party/puppeteer-replay/**/*.ts',
       // Third party code we did not author for extensions
       'extensions/cxx_debugging/third_party/**/*',
-      // Not in tsconfig project.
-      'extension-api/ExtensionAPI.d.ts',
 
       '**/node_modules',
       'scripts/build/typescript/tests',

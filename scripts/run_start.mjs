@@ -8,28 +8,26 @@ import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
+import {FeatureSet} from './devtools_build.mjs';
 import {
   downloadedChromeBinaryPath,
   isInChromiumDirectory,
   rootPath,
 } from './devtools_paths.js';
 
-// The list of features that are enabled by default.
-const ENABLE_FEATURES = [
-  'DevToolsAiGeneratedTimelineLabels',
-  'DevToolsAutomaticFileSystems',
-  'DevToolsCssValueTracing',
-  'DevToolsFreestyler:patching/true,user_tier/TESTERS',
-  'DevToolsWellKnown',
-  'DevToolsAiGeneratedTimelineLabels',
-  'DevToolsAiAssistancePerformanceAgent:insights_enabled/true',
-];
+// The default feature set.
+const DEFAULT_FEATURE_SET = new FeatureSet();
+process.platform === 'darwin' && DEFAULT_FEATURE_SET.disable('MediaRouter');
+DEFAULT_FEATURE_SET.enable('DevToolsAiAssistancePerformanceAgent', {insights_enabled: true});
+DEFAULT_FEATURE_SET.enable('DevToolsAiGeneratedTimelineLabels');
+DEFAULT_FEATURE_SET.enable('DevToolsAutomaticFileSystems');
+DEFAULT_FEATURE_SET.enable('DevToolsCssValueTracing');
+DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {patching: true, user_tier: 'TESTERS'});
+DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
 
-// The list of features that are disabled by default.
-const DISABLE_FEATURES = [];
-if (process.platform === 'darwin') {
-  DISABLE_FEATURES.push('MediaRouter');
-}
+// The unstable feature set (can be enabled via `--enable-unstable-features`).
+const UNSTABLE_FEATURE_SET = new FeatureSet();
+UNSTABLE_FEATURE_SET.enable('DevToolsFreestyler', {multimodal: true});
 
 const argv = yargs(hideBin(process.argv))
                  .option('browser', {
@@ -45,6 +43,22 @@ const argv = yargs(hideBin(process.argv))
 
                      throw new Error(`Unsupported channel "${arg}"`);
                    },
+                 })
+                 .option('unstable-features', {
+                   alias: 'u',
+                   type: 'boolean',
+                   default: false,
+                   description: 'Enable potentially unstable features',
+                 })
+                 .option('enable-features', {
+                   type: 'string',
+                   default: '',
+                   description: 'Enable specific features (just like with Chrome)',
+                 })
+                 .option('disable-features', {
+                   type: 'string',
+                   default: '',
+                   description: 'Disable specific features (just like with Chrome)',
                  })
                  .option('open', {
                    type: 'boolean',
@@ -62,12 +76,13 @@ const argv = yargs(hideBin(process.argv))
                    default: false,
                    description: 'Enable verbose logging',
                  })
+                 .group(['unstable-features', 'enable-features', 'disable-features'], 'Feature set:')
                  .usage('npm start -- [options] [urls...]')
                  .help('help')
                  .version(false)
                  .parseSync();
 
-const {browser, target, open, verbose} = argv;
+const {browser, disableFeatures, enableFeatures, unstableFeatures, open, target, verbose} = argv;
 const cwd = process.cwd();
 const {env} = process;
 const runBuildPath = path.join(import.meta.dirname, 'run_build.mjs');
@@ -94,7 +109,7 @@ function findBrowserBinary() {
   }
 
   if (verbose) {
-    console.debug(`Launching custom binary at ${binary}.`);
+    console.debug(`Launching custom binary at ${browser}.`);
   }
   return browser;
 }
@@ -121,9 +136,19 @@ function start() {
     args.push('--use-mock-keychain');
   }
 
-  // Disable/Enable experimental features.
-  args.push(`--disable-features=${DISABLE_FEATURES.join(',')}`);
-  args.push(`--enable-features=${ENABLE_FEATURES.join(',')}`);
+  // Disable/Enable features.
+  const featureSet = new FeatureSet();
+  featureSet.merge(DEFAULT_FEATURE_SET);
+  if (unstableFeatures) {
+    featureSet.merge(UNSTABLE_FEATURE_SET);
+  }
+  for (const {feature} of FeatureSet.parse(disableFeatures)) {
+    featureSet.disable(feature);
+  }
+  for (const {feature, parameters} of FeatureSet.parse(enableFeatures)) {
+    featureSet.enable(feature, parameters);
+  }
+  args.push(...featureSet);
 
   // Open with our freshly built DevTools front-end.
   const genDir = path.join(rootPath(), 'out', target, 'gen');

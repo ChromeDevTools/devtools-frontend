@@ -169,6 +169,29 @@ npm start -- http://www.example.com
 
 to automatically open `http://www.example.com` in the newly spawned Chrome tab.
 
+
+##### Controlling the feature set
+
+By default `npm start` will enable a bunch of experimental features (related to DevTools) that are considered ready for teamfood.
+To also enable experimental features that aren't yet considered sufficiently stable to enable them by default for the team, run:
+
+```bash
+# Long version
+npm start -- --unstable-features
+
+# Short version
+npm start -- -u
+```
+
+Just like with Chrome itself, you can also control the set of enabled and disabled features using
+
+```bash
+npm start -- --enable-features=DevToolsAutomaticFileSystems
+npm start -- --disable-features=DevToolsWellKnown --enable-features=DevToolsFreestyler:multimodal/true
+```
+
+which you can use to override the default feature set.
+
 #### Running from file system
 
 This works with Chromium 79 or later.

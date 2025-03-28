@@ -118,14 +118,17 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 });
 
 function getRowDataForDetailsElement(details: ShadowRoot) {
-  return Array.from(details.querySelectorAll<HTMLDivElement>('.network-request-details-row, .timing-rows')).map(row => {
-    const title = row.querySelector<HTMLDivElement>('.title')?.innerText;
-    let value = cleanTextContent(row.querySelector<HTMLDivElement>('.value')?.innerText || '');
-    if (!title && !value) {
-      value = cleanTextContent(row.innerText || '');
-    }
-    return {title, value};
-  });
+  return Array
+      .from(details.querySelectorAll<HTMLDivElement>(
+          '.network-request-details-item, .network-request-details-row, .timing-rows'))
+      .map(row => {
+        const title = row.querySelector<HTMLDivElement>('.title')?.innerText;
+        let value = cleanTextContent(row.querySelector<HTMLDivElement>('.value')?.innerText || '');
+        if (!title && !value) {
+          value = cleanTextContent(row.innerText || '');
+        }
+        return {title, value};
+      });
 }
 
 function getServerTimingDataDetailsElement(details: ShadowRoot) {

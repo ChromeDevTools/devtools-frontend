@@ -50,7 +50,7 @@
   gap: 0;
 }
 
-.network-request-details-col, .network-request-url {
+.network-request-details-item, .network-request-details-col {
   padding: 5px 10px;
 }
 

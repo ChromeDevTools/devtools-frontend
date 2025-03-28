@@ -53,7 +53,8 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
     const content = detailsContentElement.firstElementChild?.shadowRoot;
     assert(content);
-    assert.lengthOf(content.querySelectorAll('div.network-request-details-row'), 11);
+    assert.lengthOf(content.querySelectorAll('div.network-request-details-row'), 9);
+    assert.lengthOf(content.querySelectorAll('div.network-request-details-item'), 2);
     assert.lengthOf(content.querySelectorAll('devtools-related-insight-chips'), 1);
   });
 

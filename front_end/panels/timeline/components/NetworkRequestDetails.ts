@@ -244,10 +244,10 @@ export class NetworkRequestDetails extends HTMLElement {
         </devtools-request-link-icon>
       `;
       // clang-format on
-      return html`<div class="network-request-details-row network-request-url">${urlElement}</div>`;
+      return html`<div class="network-request-details-item">${urlElement}</div>`;
     }
 
-    return html`<div class="network-request-details-row network-request-url">${linkifiedURL}</div>`;
+    return html`<div class="network-request-details-item">${linkifiedURL}</div>`;
   }
 
   #renderFromCache(): Lit.TemplateResult|null {
@@ -298,33 +298,33 @@ export class NetworkRequestDetails extends HTMLElement {
     }
 
     const hasStackTrace = Trace.Helpers.Trace.stackTraceInEvent(this.#networkRequest) !== null;
-
+    let link: HTMLElement|null = null;
     // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
     if (hasStackTrace) {
       const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(this.#networkRequest)?.at(0) ?? null;
       if (topFrame) {
-        const link = this.#linkifier.maybeLinkifyConsoleCallFrame(
+        link = this.#linkifier.maybeLinkifyConsoleCallFrame(
             this.#maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});
-        if (link) {
-          return this.#renderRow(i18nString(UIStrings.initiatedBy), link);
-        }
       }
     }
     // If we do not, we can see if the network handler found an initiator and try to link by URL
     const initiator = this.#parsedTrace?.NetworkRequests.eventToInitiator.get(this.#networkRequest);
     if (initiator) {
-      const link = this.#linkifier.maybeLinkifyScriptLocation(
+      link = this.#linkifier.maybeLinkifyScriptLocation(
           this.#maybeTarget,
           null,  // this would be the scriptId, but we don't have one. The linkifier will fallback to using the URL.
           initiator.args.data.url as Platform.DevToolsPath.UrlString,
           undefined,  // line number
       );
-      if (link) {
-        return this.#renderRow(i18nString(UIStrings.initiatedBy), link);
-      }
     }
 
-    return null;
+    if (!link) {
+      return null;
+    }
+    return html`
+      <div class="network-request-details-item"><div class="title">${
+        i18nString(UIStrings.initiatedBy)}</div><div class="value">${link}</div></div>
+    `;
   }
 
   #renderBlockingRow(): Lit.TemplateResult|null {
@@ -368,7 +368,7 @@ export class NetworkRequestDetails extends HTMLElement {
 
     const requestPreviewElement = this.#requestPreviewElements.get(this.#networkRequest);
     if (requestPreviewElement) {
-      return html`<div class="network-request-details-row">${requestPreviewElement}</div>`;
+      return html`<div class="network-request-details-item">${requestPreviewElement}</div>`;
     }
     return null;
   }

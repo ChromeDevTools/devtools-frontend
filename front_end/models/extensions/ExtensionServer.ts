@@ -281,27 +281,27 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   notifySearchAction(panelId: string, action: string, searchString?: string): void {
-    this.postNotification(PrivateAPI.Events.PanelSearch + panelId, action, searchString);
+    this.postNotification(PrivateAPI.Events.PanelSearch + panelId, [action, searchString]);
   }
 
   notifyViewShown(identifier: string, frameIndex?: number): void {
-    this.postNotification(PrivateAPI.Events.ViewShown + identifier, frameIndex);
+    this.postNotification(PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
   }
 
   notifyViewHidden(identifier: string): void {
-    this.postNotification(PrivateAPI.Events.ViewHidden + identifier);
+    this.postNotification(PrivateAPI.Events.ViewHidden + identifier, []);
   }
 
   notifyButtonClicked(identifier: string): void {
-    this.postNotification(PrivateAPI.Events.ButtonClicked + identifier);
+    this.postNotification(PrivateAPI.Events.ButtonClicked + identifier, []);
   }
 
   profilingStarted(): void {
-    this.postNotification(PrivateAPI.Events.ProfilingStarted);
+    this.postNotification(PrivateAPI.Events.ProfilingStarted, []);
   }
 
   profilingStopped(): void {
-    this.postNotification(PrivateAPI.Events.ProfilingStopped);
+    this.postNotification(PrivateAPI.Events.ProfilingStopped, []);
   }
 
   private registerLanguageExtensionEndpoint(
@@ -449,13 +449,16 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.status.OK();
   }
 
-  private onSetFunctionRangesForScript(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+  private onSetFunctionRangesForScript(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record {
     if (message.command !== PrivateAPI.Commands.SetFunctionRangesForScript) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetFunctionRangesForScript}`);
     }
     const {scriptUrl, ranges} = message;
     if (!scriptUrl || !ranges?.length) {
       return this.status.E_BADARG('command', 'expected valid scriptUrl and non-empty NamedFunctionRanges');
+    }
+    if (!this.extensionAllowedOnURL(scriptUrl as Platform.DevToolsPath.UrlString, port)) {
+      return this.status.E_FAILED('Permission denied');
     }
     const uiSourceCode =
         Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptUrl as Platform.DevToolsPath.UrlString);
@@ -527,7 +530,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.requests = new Map();
     this.enableExtensions();
     const url = event.data.inspectedURL();
-    this.postNotification(PrivateAPI.Events.InspectedURLChanged, url);
+    this.postNotification(PrivateAPI.Events.InspectedURLChanged, [url]);
     const extensions = this.#pendingExtensions.splice(0);
     extensions.forEach(e => this.addExtension(e));
   }
@@ -536,20 +539,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.subscribers.has(type);
   }
 
-  private isNotificationAllowedForExtension(port: MessagePort, type: string, ..._args: unknown[]): boolean {
-    if (type === PrivateAPI.Events.NetworkRequestFinished) {
-      const entry = _args[1] as HAR.Log.EntryDTO;
-      const origin = extensionOrigins.get(port);
-      const extension = origin && this.registeredExtensions.get(origin);
-      if (extension?.isAllowedOnTarget(entry.request.url)) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  }
-
-  private postNotification(type: string, ..._vararg: unknown[]): void {
+  private postNotification(type: string, args: unknown[], filter?: (extension: RegisteredExtension) => boolean): void {
     if (!this.extensionsEnabled) {
       return;
     }
@@ -557,11 +547,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!subscribers) {
       return;
     }
-    const message = {command: 'notify-' + type, arguments: Array.prototype.slice.call(arguments, 1)};
+    const message = {command: 'notify-' + type, arguments: args};
     for (const subscriber of subscribers) {
-      if (this.extensionEnabled(subscriber) && this.isNotificationAllowedForExtension(subscriber, type, ..._vararg)) {
-        subscriber.postMessage(message);
+      if (!this.extensionEnabled(subscriber)) {
+        continue;
       }
+      if (filter) {
+        const origin = extensionOrigins.get(subscriber);
+        const extension = origin && this.registeredExtensions.get(origin);
+        if (!extension || !filter(extension)) {
+          continue;
+        }
+      }
+      subscriber.postMessage(message);
     }
   }
 
@@ -848,8 +846,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private handleOpenURL(
       port: MessagePort, contentProvider: TextUtils.ContentProvider.ContentProvider, lineNumber: number): void {
-    port.postMessage(
-        {command: 'open-resource', resource: this.makeResource(contentProvider), lineNumber: lineNumber + 1});
+    if (this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+      port.postMessage(
+          {command: 'open-resource', resource: this.makeResource(contentProvider), lineNumber: lineNumber + 1});
+    }
   }
 
   private extensionAllowedOnURL(url: Platform.DevToolsPath.UrlString, port: MessagePort): boolean {
@@ -936,7 +936,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }>();
     function pushResourceData(
         this: ExtensionServer, contentProvider: TextUtils.ContentProvider.ContentProvider): boolean {
-      if (!resources.has(contentProvider.contentURL())) {
+      if (!resources.has(contentProvider.contentURL()) &&
+          this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
         resources.set(contentProvider.contentURL(), this.makeResource(contentProvider));
       }
       return false;
@@ -999,7 +1000,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private onAttachSourceMapToResource(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+  private onAttachSourceMapToResource(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record
+      |undefined {
     if (message.command !== PrivateAPI.Commands.AttachSourceMapToResource) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
     }
@@ -1009,6 +1011,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const url = message.contentUrl as Platform.DevToolsPath.UrlString;
+    if (!this.extensionAllowedOnURL(url, port)) {
+      return this.status.E_FAILED('Permission denied');
+    }
     const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     if (!contentProvider) {
       return this.status.E_NOTFOUND(url);
@@ -1145,34 +1150,42 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
-    this.postNotification(PrivateAPI.Events.ResourceAdded, this.makeResource(uiSourceCode));
+    this.postNotification(
+        PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
+        extension => extension.isAllowedOnTarget(uiSourceCode.url()));
   }
 
   private notifyUISourceCodeContentCommitted(
       event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.WorkingCopyCommitedEvent>): void {
     const {uiSourceCode, content} = event.data;
-    this.postNotification(PrivateAPI.Events.ResourceContentCommitted, this.makeResource(uiSourceCode), content);
+    this.postNotification(
+        PrivateAPI.Events.ResourceContentCommitted, [this.makeResource(uiSourceCode), content],
+        extension => extension.isAllowedOnTarget(uiSourceCode.url()));
   }
 
   private async notifyRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>):
       Promise<void> {
     const request = event.data;
     const entry = await HAR.Log.Entry.build(request, {sanitize: false});
-    this.postNotification(PrivateAPI.Events.NetworkRequestFinished, this.requestId(request), entry);
+    this.postNotification(
+        PrivateAPI.Events.NetworkRequestFinished, [this.requestId(request), entry],
+        extension => extension.isAllowedOnTarget(entry.request.url));
   }
 
   private notifyElementsSelectionChanged(): void {
-    this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'elements');
+    this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'elements', []);
   }
 
   sourceSelectionChanged(url: Platform.DevToolsPath.UrlString, range: TextUtils.TextRange.TextRange): void {
-    this.postNotification(PrivateAPI.Events.PanelObjectSelected + 'sources', {
-      startLine: range.startLine,
-      startColumn: range.startColumn,
-      endLine: range.endLine,
-      endColumn: range.endColumn,
-      url,
-    });
+    this.postNotification(
+        PrivateAPI.Events.PanelObjectSelected + 'sources', [{
+          startLine: range.startLine,
+          startColumn: range.startColumn,
+          endLine: range.endLine,
+          endColumn: range.endColumn,
+          url,
+        }],
+        extension => extension.isAllowedOnTarget(url));
   }
 
   private setInspectedTabId(event: Common.EventTarget.EventTargetEvent<string>): void {

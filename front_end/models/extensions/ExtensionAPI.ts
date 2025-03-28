@@ -699,9 +699,7 @@ self.injectedExtensionAPI = function(
         userAction = true;
         try {
           const {resource, lineNumber} = message as {resource: APIImpl.ResourceData, lineNumber: number};
-          if (canAccessResource(resource)) {
-            callback.call(null, new (Constructor(Resource))(resource), lineNumber);
-          }
+          callback.call(null, new (Constructor(Resource))(resource), lineNumber);
         } finally {
           userAction = false;
         }
@@ -1228,29 +1226,10 @@ self.injectedExtensionAPI = function(
     },
   };
 
-  const protocolGet = Object.getOwnPropertyDescriptor(URL.prototype, 'protocol')?.get;
-  function getProtocol(url: string): string {
-    if (!protocolGet) {
-      throw new Error('URL.protocol is not available');
-    }
-    return protocolGet.call(new URL(url));
-  }
-
-  function canAccessResource(resource: APIImpl.ResourceData): boolean {
-    try {
-      return extensionInfo.allowFileAccess || getProtocol(resource.url) !== 'file:';
-    } catch {
-      return false;
-    }
-  }
-
   function InspectedWindow(this: PublicAPI.Chrome.DevTools.InspectedWindow): void {
     function dispatchResourceEvent(
         this: APIImpl.EventSink<(resource: APIImpl.Resource) => unknown>, message: {arguments: unknown[]}): void {
       const resourceData = message.arguments[0] as APIImpl.ResourceData;
-      if (!canAccessResource(resourceData)) {
-        return;
-      }
       this._fire(new (Constructor(Resource))(resourceData));
     }
 
@@ -1258,9 +1237,6 @@ self.injectedExtensionAPI = function(
         this: APIImpl.EventSink<(resource: APIImpl.Resource, content: string) => unknown>,
         message: {arguments: unknown[]}): void {
       const resourceData = message.arguments[0] as APIImpl.ResourceData;
-      if (!canAccessResource(resourceData)) {
-        return;
-      }
       this._fire(new (Constructor(Resource))(resourceData), message.arguments[1] as string);
     }
 
@@ -1323,16 +1299,13 @@ self.injectedExtensionAPI = function(
         return new (Constructor(Resource))(resourceData);
       }
       function callbackWrapper(resources: unknown): void {
-        callback?.((resources as APIImpl.ResourceData[]).filter(canAccessResource).map(wrapResource));
+        callback?.((resources as APIImpl.ResourceData[]).map(wrapResource));
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callback && callbackWrapper);
     },
   };
 
   function ResourceImpl(this: APIImpl.Resource, resourceData: APIImpl.ResourceData): void {
-    if (!canAccessResource(resourceData)) {
-      throw new Error('Resource access not allowed');
-    }
     this._url = resourceData.url;
     this._type = resourceData.type;
   }

@@ -57,11 +57,11 @@ describeWithMockConnection('NetworkRequestDetails', () => {
           },
           {title: 'From cache', value: 'Yes'},
           {title: '3rd party', value: 'GitHub'},
+          {title: undefined, value: durationInnerText},
           {
             title: 'Initiated by',
             value: 'chromedevtools.github.io/performance-stories/lcp-web-font/index.html',
           },
-          {title: undefined, value: durationInnerText},
         ],
     );
   });

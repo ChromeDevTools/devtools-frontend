@@ -70,8 +70,6 @@
   padding-right: 10px;
   display: inline-block;
   vertical-align: top;
-  white-space: nowrap;
-  min-width: min-content;
 }
 
 .value {
@@ -79,12 +77,6 @@
   user-select: text;
   text-overflow: ellipsis;
   overflow: hidden;
-
-  .text-button {
-    text-overflow: ellipsis;
-    max-width: 100%;
-    overflow: hidden;
-  }
 }
 
 .devtools-link,

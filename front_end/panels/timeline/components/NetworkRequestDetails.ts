@@ -396,7 +396,6 @@ export class NetworkRequestDetails extends HTMLElement {
             ${this.#renderBlockingRow()}
             ${this.#renderFromCache()}
             ${this.#renderThirdPartyEntity()}
-            ${this.#renderInitiatedBy()}
           </div>
           <div class="column-divider"></div>
           <div class="network-request-details-col">
@@ -406,8 +405,9 @@ export class NetworkRequestDetails extends HTMLElement {
           </div>
           ${this.#renderServerTimings()}
         </div>
+        ${this.#renderInitiatedBy()}
       </div>
-    `;
+    `; // The last items are outside the 2 column layout because InitiatedBy can be very wide
     // clang-format on
     Lit.render(output, this.#shadow, {host: this});
   }

@@ -2,12 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {computeSystemExecutablePath} from '@puppeteer/browsers';
 import childProcess from 'node:child_process';
 import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
-import {downloadedChromeBinaryPath, isInChromiumDirectory, rootPath} from './devtools_paths.js';
+import {
+  downloadedChromeBinaryPath,
+  isInChromiumDirectory,
+  rootPath,
+} from './devtools_paths.js';
 
 // The list of features that are enabled by default.
 const ENABLE_FEATURES = [
@@ -29,9 +34,17 @@ if (process.platform === 'darwin') {
 const argv = yargs(hideBin(process.argv))
                  .option('browser', {
                    type: 'string',
-                   choices: ['cft', 'canary'],
+                   // CfT is not downloaded in Chromium checkout
                    default: isInChromiumDirectory().isInChromium ? 'canary' : 'cft',
-                   description: 'Launch in the specified browser',
+                   description: 'Launch in specified Chrome channel, CfT or a custom binary',
+                   coerce(arg) {
+                     if (arg.includes(path.sep) || arg.includes(path.posix.sep) ||
+                         ['cft', 'stable', 'beta', 'dev', 'canary'].includes(arg)) {
+                       return arg;
+                     }
+
+                     throw new Error(`Unsupported channel "${arg}"`);
+                   },
                  })
                  .option('open', {
                    type: 'boolean',
@@ -60,32 +73,38 @@ const {env} = process;
 const runBuildPath = path.join(import.meta.dirname, 'run_build.mjs');
 
 function findBrowserBinary() {
-  if (browser === 'canary') {
-    const binary = ({
-      linux: path.join('/usr', 'bin', 'google-chrome-unstable'),
-      darwin: path.join('/Applications', 'Google Chrome Canary.app', 'Contents', 'MacOS', 'Google Chrome Canary'),
-    })[process.platform];
+  if (browser === 'cft') {
+    const binary = downloadedChromeBinaryPath();
     if (verbose) {
-      console.debug('Located Chrome Canary binary in %s.', binary);
+      console.debug('Located Chrome for Testing binary at %s.', binary);
     }
     return binary;
   }
-  const binary = downloadedChromeBinaryPath();
-  if (verbose) {
-    console.debug('Located Chrome for Testing binary in %s.', binary);
+
+  if (['stable', 'beta', 'dev', 'canary'].includes(browser)) {
+    const binary = computeSystemExecutablePath({
+      browser: 'chrome',
+      channel: browser,
+    });
+
+    if (verbose) {
+      console.debug(`Located Chrome ${browser} binary at ${binary}.`);
+    }
+    return binary;
   }
-  return binary;
+
+  if (verbose) {
+    console.debug(`Launching custom binary at ${binary}.`);
+  }
+  return browser;
 }
 
 // Perform the initial build.
-childProcess.spawnSync(
-    process.argv[0],
-    [
-      runBuildPath,
-      `--target=${target}`,
-    ],
-    {cwd, env, stdio: 'inherit'},
-);
+childProcess.spawnSync(process.argv[0], [runBuildPath, `--target=${target}`], {
+  cwd,
+  env,
+  stdio: 'inherit',
+});
 
 // Launch Chrome with our custom DevTools front-end.
 function start() {
@@ -130,13 +149,9 @@ function start() {
 // devtools-frontend whenever there are changes detected.
 const watcher = childProcess.spawn(
     process.argv[0],
-    [
-      runBuildPath,
-      '--skip-initial-build',
-      `--target=${target}`,
-      '--watch',
-    ],
-    {cwd, env, stdio: 'inherit'});
+    [runBuildPath, '--skip-initial-build', `--target=${target}`, '--watch'],
+    {cwd, env, stdio: 'inherit'},
+);
 try {
   // Launch chrome.
   start();

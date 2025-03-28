@@ -115,6 +115,7 @@ gclient sync
 The revisions of git dependencies must always be in sync between the entry in DEPS and the git submodule. PRESUBMIT will
 reject CLs that try to submit changes to one but not the other.
 It can happen that dependencies go out of sync for three main reasons:
+
 1. The developer attempted a manual roll by only updating the DEPS file (which was the process before migrating to git
    submodules, see [below](#Managing-dependencies)),
 1. after switching branches or checking out new commit the developer didn't run `gclient sync`, or
@@ -195,7 +196,7 @@ Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path t
 
 Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
 
-If you get errors along the line of `Uncaught TypeError: Cannot read property 'setInspectedTabId'` you probably specified an incorrect path - the path has to be absolute. On Mac and Linux, the file url will start with __three__ slashes: `file:///Users/...`.
+If you get errors along the line of `Uncaught TypeError: Cannot read property 'setInspectedTabId'` you probably specified an incorrect path - the path has to be absolute. On Mac and Linux, the file url will start with **three** slashes: `file:///Users/...`.
 
 **Tip**: You can inspect DevTools with DevTools by undocking DevTools and then opening a second instance of DevTools (see keyboard shortcut above).
 
@@ -226,6 +227,7 @@ Then start Chrome, allowing for accesses from the web server:
 ```
 
 Get the list of pages together with their DevTools frontend URLs:
+
 ```bash
 $ curl http://localhost:9222/json -s | grep '\(url\|devtoolsFrontend\)'
    "devtoolsFrontendUrl": "/devtools/inspector.html?ws=localhost:9222/devtools/page/BADADD4E55BADADD4E55BADADD4E5511",

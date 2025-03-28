@@ -124,6 +124,8 @@ export enum ClientFeature {
   CHROME_NETWORK_AGENT = 7,
   // Chrome AI Assistance Performance Agent.
   CHROME_PERFORMANCE_AGENT = 8,
+  // Chrome AI Annotations Performance Agent
+  CHROME_PERFORMANCE_ANNOTATIONS_AGENT = 20,
   // Chrome AI Assistance File Agent.
   CHROME_FILE_AGENT = 9,
   // Chrome AI Patch Agent.

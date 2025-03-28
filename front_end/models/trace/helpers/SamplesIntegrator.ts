@@ -7,7 +7,7 @@ import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
 import {milliToMicro} from './Timing.js';
-import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder} from './Trace.js';
+import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder, sortTraceEventsInPlace} from './Trace.js';
 
 /**
  * This is a helper that integrates CPU profiling data coming in the
@@ -162,6 +162,7 @@ export class SamplesIntegrator {
         this.#onTraceEventEnd(last);
       }
     }
+    sortTraceEventsInPlace(this.jsSampleEvents);
     return this.#constructedProfileCalls;
   }
 

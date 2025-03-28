@@ -208,7 +208,8 @@ export class PanelUtils {
     if (resourceType.name() === Common.ResourceType.resourceTypes.Wasm.name()) {
       return {iconName: 'file-wasm', color: 'var(--icon-default)'};
     }
-    if (resourceType.name() === Common.ResourceType.resourceTypes.WebSocket.name()) {
+    if (resourceType.name() === Common.ResourceType.resourceTypes.WebSocket.name() ||
+        resourceType.name() === Common.ResourceType.resourceTypes.DirectSocket.name()) {
       return {iconName: 'file-websocket', color: 'var(--icon-default)'};
     }
     if (resourceType.name() === Common.ResourceType.resourceTypes.Media.name()) {

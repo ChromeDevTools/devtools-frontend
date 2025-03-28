@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -53,6 +54,7 @@ describeWithMockConnection('NetworkItemView', () => {
   it('reveals header in RequestHeadersView', async () => {
     const networkItemView = renderNetworkItemView();
     const headersViewComponent = networkItemView.getHeadersViewComponent();
+    assert.exists(headersViewComponent);
     const headersViewComponentSpy = sinon.spy(headersViewComponent, 'revealHeader');
 
     assert.isTrue(headersViewComponentSpy.notCalled);
@@ -136,6 +138,31 @@ describeWithEnvironment('NetworkItemView', () => {
 
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.EVENT_SOURCE));
     assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE));
+
+    networkItemView.detach();
+  });
+
+  it('shows the ConnectionInfo tab for DirectSocket requests', () => {
+    request.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
+    request.directSocketInfo = {
+      type: SDK.NetworkRequest.DirectSocketType.TCP,
+      status: SDK.NetworkRequest.DirectSocketStatus.OPENING,
+      createOptions: {
+        remoteAddr: '127.0.0.1',
+        remotePort: 2545,
+        noDelay: false,
+        keepAliveDelay: 1000,
+        sendBufferSize: 1002,
+        receiveBufferSize: 1003,
+        dnsQueryType: undefined,
+      }
+    };
+
+    const networkItemView = renderNetworkItemView(request);
+
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION));
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.INITIATOR));
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.TIMING));
 
     networkItemView.detach();
   });

@@ -58,6 +58,10 @@ const UIStrings = {
    */
   headers: 'Headers',
   /**
+   *@description Text for network connection info. In case the request is not made over http.
+   */
+  connectionInfo: 'Connection Info',
+  /**
    *@description Text in Network Item View of the Network panel
    */
   payload: 'Payload',
@@ -147,11 +151,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly resourceViewTabSetting: Common.Settings.Setting<NetworkForward.UIRequestLocation.UIRequestTabs>;
-  private readonly headersViewComponent: NetworkComponents.RequestHeadersView.RequestHeadersView;
+  private readonly headersViewComponent: NetworkComponents.RequestHeadersView.RequestHeadersView|undefined;
   private payloadView: RequestPayloadView|null;
   private readonly responseView: RequestResponseView|undefined;
   private cookiesView: RequestCookiesView|null;
   private initialTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
+  private readonly firstTab: NetworkForward.UIRequestLocation.UIRequestTabs;
 
   constructor(
       request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator,
@@ -163,15 +168,22 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
                                         keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
                                       })}`);
 
-    const headersTab = NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
-    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting(
-        'resource-view-tab', NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+    if (request.resourceType() === Common.ResourceType.resourceTypes.DirectSocket) {
+      this.firstTab = NetworkForward.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION;
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION, i18nString(UIStrings.connectionInfo),
+          new NetworkComponents.DirectSocketConnectionView.DirectSocketConnectionView(request),
+          i18nString(UIStrings.headers));
+    } else {
+      this.firstTab = NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
+      this.headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
+      this.appendTab(
+          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, i18nString(UIStrings.headers),
+          LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, this.headersViewComponent),
+          i18nString(UIStrings.headers));
+    }
 
-    this.headersViewComponent = new NetworkComponents.RequestHeadersView.RequestHeadersView(request);
-    this.appendTab(
-        headersTab, i18nString(UIStrings.headers),
-        LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, this.headersViewComponent),
-        i18nString(UIStrings.headers));
+    this.resourceViewTabSetting = Common.Settings.Settings.instance().createSetting('resource-view-tab', this.firstTab);
 
     if (this.requestInternal.hasOverriddenHeaders()) {
       const statusDot = document.createElement('div');
@@ -190,6 +202,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.WS_FRAMES, i18nString(UIStrings.messages), frameView,
           i18nString(UIStrings.websocketMessages));
+    } else if (request.resourceType() === Common.ResourceType.resourceTypes.DirectSocket) {
+      // TODO(@vkrot): add direct socket messages tab
     } else if (request.mimeType === Platform.MimeType.MimeType.EVENTSTREAM) {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.EVENT_SOURCE, i18nString(UIStrings.eventstream),
@@ -328,7 +342,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       // it makes sense to retry on the next tick
       window.setTimeout(() => {
         if (!this.selectTab(tabId)) {
-          this.selectTab(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+          this.selectTab(this.firstTab);
         }
       }, 0);
     }
@@ -352,10 +366,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
   revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header: string|undefined): void {
     this.selectTabInternal(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
-    this.headersViewComponent.revealHeader(section, header);
+    this.headersViewComponent?.revealHeader(section, header);
   }
 
-  getHeadersViewComponent(): NetworkComponents.RequestHeadersView.RequestHeadersView {
+  getHeadersViewComponent(): NetworkComponents.RequestHeadersView.RequestHeadersView|undefined {
     return this.headersViewComponent;
   }
 }

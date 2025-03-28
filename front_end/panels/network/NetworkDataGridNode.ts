@@ -1239,6 +1239,8 @@ export class NetworkRequestNode extends NetworkNode {
       const statusText = this.requestInternal.getInferredStatusText();
       this.appendSubtitle(cell, statusText);
       UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + statusText);
+    } else if (this.requestInternal.statusText) {
+      this.setTextAndTitle(cell, this.requestInternal.statusText);
     } else if (this.requestInternal.finished) {
       this.setTextAndTitle(cell, i18nString(UIStrings.finished));
     } else if (this.requestInternal.preserved) {

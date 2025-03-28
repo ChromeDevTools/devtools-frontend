@@ -28,6 +28,7 @@ export const enum UIRequestTabs {
   TIMING = 'timing',
   TRUST_TOKENS = 'trust-tokens',
   WS_FRAMES = 'web-socket-frames',
+  DIRECT_SOCKET_CONNECTION = 'direct-socket-connection',
 }
 
 export interface FilterOptions {

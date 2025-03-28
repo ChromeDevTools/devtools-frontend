@@ -172,6 +172,8 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
         return ['How do I make sure my page is optimized for mobile viewing?'];
       case 'ModernHTTP':
         return ['Is my site being served using the recommended HTTP best practices?'];
+      case 'LegacyJavaScript':
+        return ['Is my site polyfilling modern JavaScript features?'];
       default:
         Platform.assertNever(this.#insight.insight.insightKey, 'Unknown insight key');
     }

@@ -1034,6 +1034,6 @@ describe('LoggingDriver', () => {
     ]);
     assert.deepInclude(
         VisualLoggingTesting.NonDomState.getNonDomLoggables(parent),
-        {loggable, config: {ve: 1, context: '123'}, parent});
+        {loggable, config: {ve: 1, context: '123'}, parent, size: undefined});
   });
 });

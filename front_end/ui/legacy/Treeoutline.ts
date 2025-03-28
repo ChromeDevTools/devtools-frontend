@@ -843,7 +843,8 @@ export class TreeElement {
       this.collapse();
       ARIAUtils.unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.expand()}`, this.listItemNode);
+      VisualLogging.registerLoggable(
+          this.expandLoggable, `${VisualLogging.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
       ARIAUtils.setExpanded(this.listItemNode, false);
     }
   }

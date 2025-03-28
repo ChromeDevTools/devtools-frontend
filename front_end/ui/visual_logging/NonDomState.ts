@@ -8,6 +8,7 @@ interface LoggableRegistration {
   loggable: Loggable;
   config: LoggingConfig;
   parent?: Loggable;
+  size?: DOMRect;
 }
 
 let registry = new WeakMap<Loggable, LoggableRegistration[]>();
@@ -16,9 +17,9 @@ function getLoggables(parent?: Loggable): LoggableRegistration[] {
   return registry.get(parent || nullParent) || [];
 }
 
-export function registerLoggable(loggable: Loggable, config: LoggingConfig, parent?: Loggable): void {
+export function registerLoggable(loggable: Loggable, config: LoggingConfig, parent?: Loggable, size?: DOMRect): void {
   const values = getLoggables(parent);
-  values.push({loggable, config, parent});
+  values.push({loggable, config, parent, size});
   registry.set(parent || nullParent, values);
 }
 

@@ -120,9 +120,9 @@ describeWithEnvironment('ContextMenu', () => {
     const menuId = impressions.find(i => !i.parent)?.id;
     assert.exists(menuId);
     assert.sameDeepMembers(impressions.map(i => ({...i, id: 0})), [
-      {id: 0, type: 67, height: 0, width: 0},
-      {id: 0, type: 29, parent: menuId, context: 42, height: 0, width: 0},
-      {id: 0, type: 29, parent: menuId, context: 44, height: 0, width: 0},
+      {id: 0, type: 67, height: 40, width: 200},
+      {id: 0, type: 29, parent: menuId, context: 42, height: 20, width: 200},
+      {id: 0, type: 29, parent: menuId, context: 44, height: 20, width: 200},
     ]);
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(

@@ -20,11 +20,11 @@ export const logKeyDown = async(l: Loggable|null, e: Event, context?: string): P
     await LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(l, e, context);
 export {registerParentProvider, setMappedParent} from './LoggingState.js';
 
-export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {
+export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null, size: DOMRect): void {
   if (!LoggingDriver.isLogging()) {
     return;
   }
-  NonDomState.registerLoggable(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
+  NonDomState.registerLoggable(loggable, LoggingConfig.parseJsLog(config), parent || undefined, size);
   void LoggingDriver.scheduleProcessing();
 }
 

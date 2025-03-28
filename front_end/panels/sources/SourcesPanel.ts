@@ -506,13 +506,14 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = {debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {}};
       VisualLogging.registerLoggable(
-          this.overlayLoggables.debuggerPausedMessage, `${VisualLogging.dialog('debugger-paused')}`, null);
+          this.overlayLoggables.debuggerPausedMessage, `${VisualLogging.dialog('debugger-paused')}`, null,
+          new DOMRect(0, 0, 200, 20));
       VisualLogging.registerLoggable(
           this.overlayLoggables.resumeButton, `${VisualLogging.action('debugger.toggle-pause')}`,
-          this.overlayLoggables.debuggerPausedMessage);
+          this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 20, 20));
       VisualLogging.registerLoggable(
           this.overlayLoggables.stepOverButton, `${VisualLogging.action('debugger.step-over')}`,
-          this.overlayLoggables.debuggerPausedMessage);
+          this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 20, 20));
     }
     this.#lastPausedTarget = new WeakRef(details.debuggerModel.target());
   }

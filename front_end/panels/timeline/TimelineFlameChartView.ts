@@ -1285,7 +1285,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         // This is the first time this group has been created, so register its loggable.
         this.#loggableForGroupByLogContext.set(group.jslogContext, loggable);
         VisualLogging.registerLoggable(
-            loggable, `${VisualLogging.section().context(`timeline.${group.jslogContext}`)}`, this.delegate.element);
+            loggable, `${VisualLogging.section().context(`timeline.${group.jslogContext}`)}`, this.delegate.element,
+            new DOMRect(0, 0, 200, 100));
       }
     }
   }

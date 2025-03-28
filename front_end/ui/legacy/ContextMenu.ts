@@ -426,6 +426,9 @@ export interface ContextMenuOptions {
   y?: number;
 }
 
+const MENU_ITEM_HEIGHT_FOR_LOGGING = 20;
+const MENU_ITEM_WIDTH_FOR_LOGGING = 200;
+
 export class ContextMenu extends SubMenu {
   protected override contextMenu: this;
   private pendingTargets: unknown[];
@@ -545,14 +548,15 @@ export class ContextMenu extends SubMenu {
         if (descriptor.type === 'checkbox') {
           VisualLogging.registerLoggable(
               descriptor, `${VisualLogging.toggle().track({click: true}).context(descriptor.jslogContext)}`,
-              parent || descriptors);
+              parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === 'item') {
           VisualLogging.registerLoggable(
               descriptor, `${VisualLogging.action().track({click: true}).context(descriptor.jslogContext)}`,
-              parent || descriptors);
+              parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === 'subMenu') {
           VisualLogging.registerLoggable(
-              descriptor, `${VisualLogging.item().context(descriptor.jslogContext)}`, parent || descriptors);
+              descriptor, `${VisualLogging.item().context(descriptor.jslogContext)}`, parent || descriptors,
+              new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         }
         if (descriptor.subItems) {
           this.registerLoggablesWithin(descriptor.subItems, descriptor);
@@ -592,7 +596,9 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       }
-      VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, this.loggableParent);
+      VisualLogging.registerLoggable(
+          menuObject, `${VisualLogging.menu()}`, this.loggableParent,
+          new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),

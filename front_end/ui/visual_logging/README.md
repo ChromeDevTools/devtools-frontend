@@ -186,7 +186,7 @@ and an optional parent JavaScript object. For a native menu item, this is:
 ```js
 VisualLogging.registerLoggable(descriptor, `${VisualLogging.action()
     .track({click: true}).context(descriptor.jslogContext)}`,
-    parent || descriptors);
+    parent || descriptors, size);
 ```
 
 This only registers the element and doesn’t log anything yet. To log

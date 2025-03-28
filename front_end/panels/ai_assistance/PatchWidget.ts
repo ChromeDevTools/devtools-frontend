@@ -13,6 +13,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -48,9 +49,9 @@ const UIStringsNotTranslate = {
    */
   discard: 'Discard',
   /**
-   *@description Button text to save all the suggested changes to file system
+   *@description Button text to save all the suggested changes to the file system
    */
-  saveAll: 'Save all',
+  saveToWorkspace: 'Save to workspace',
   /**
    *@description Header text after the user saved the changes to the disk.
    */
@@ -143,7 +144,7 @@ export interface ViewInput {
   onApplyToPageTree: () => void;
   onCancel: () => void;
   onDiscard: () => void;
-  onSaveAll: () => void;
+  onSaveToWorkspace?: () => void;
 }
 
 export interface ViewOutput {
@@ -167,6 +168,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #patchSuggestionState = PatchSuggestionState.INITIAL;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+  #persistence = Persistence.Persistence.PersistenceImpl.instance();
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -278,12 +280,14 @@ export class PatchWidget extends UI.Widget.Widget {
                 .variant=${Buttons.Button.Variant.OUTLINED}>
                   ${lockedString(UIStringsNotTranslate.discard)}
               </devtools-button>
-              <devtools-button
-                @click=${input.onSaveAll}
-                .jslogContext=${'patch-widget.save-all'}
-                .variant=${Buttons.Button.Variant.PRIMARY}>
-                  ${lockedString(UIStringsNotTranslate.saveAll)}
-              </devtools-button>
+              ${input.onSaveToWorkspace ? html`
+                <devtools-button
+                  @click=${input.onSaveToWorkspace}
+                  .jslogContext=${'patch-widget.save-to-workspace'}
+                  .variant=${Buttons.Button.Variant.PRIMARY}>
+                    ${lockedString(UIStringsNotTranslate.saveToWorkspace)}
+                </devtools-button>
+              ` : nothing}
             </div>
           </div>
           `;
@@ -377,7 +381,7 @@ export class PatchWidget extends UI.Widget.Widget {
             this.#applyPatchAbortController?.abort();
           },
           onDiscard: this.#onDiscard.bind(this),
-          onSaveAll: this.#onSaveAll.bind(this),
+          onSaveToWorkspace: this.#canSaveToWorkspace() ? this.#onSaveToWorkspace.bind(this) : undefined,
         },
         this.#viewOutput, this.contentElement);
   }
@@ -487,10 +491,23 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.requestUpdate();
   }
 
-  #onSaveAll(): void {
-    // TODO: What should we do for the inspector stylesheet?
+  #canSaveToWorkspace(): boolean {
+    if (this.#patchSuggestionState !== PatchSuggestionState.SUCCESS) {
+      return false;
+    }
+    // TODO(crbug.com/406699819): investigate why the inspector-stylesheet shows up here
+    const filteredModifiedUISourceCodes =
+        this.#workspaceDiff.modifiedUISourceCodes().filter(sourceCode => sourceCode.origin() !== 'inspector://');
+    return filteredModifiedUISourceCodes.length > 0 &&
+        filteredModifiedUISourceCodes.every(sourceCode => this.#persistence.binding(sourceCode));
+  }
+
+  #onSaveToWorkspace(): void {
     this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      modifiedUISourceCode.commitWorkingCopy();
+      const binding = this.#persistence.binding(modifiedUISourceCode);
+      if (binding) {
+        binding.fileSystem.commitWorkingCopy();
+      }
     });
 
     this.#savedToDisk = true;

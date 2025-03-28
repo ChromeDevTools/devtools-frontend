@@ -2633,7 +2633,7 @@ export const knownContextValues = new Set([
   'passive',
   'paste',
   'patch-widget.discard',
-  'patch-widget.save-all',
+  'patch-widget.save-to-workspace',
   'path',
   'pattern',
   'pause',

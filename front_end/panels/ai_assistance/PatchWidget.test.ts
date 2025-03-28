@@ -12,7 +12,6 @@ import {
   cleanup,
   createPatchWidget,
   createPatchWidgetWithDiffView,
-  createTestFilesystem,
   initializePersistenceImplForTests,
   MockAidaAbortError,
   mockAidaClient,
@@ -20,7 +19,7 @@ import {
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import {createContentProviderUISourceCode, createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -37,7 +36,7 @@ describeWithMockConnection('PatchWidget', () => {
     cleanup();
   });
 
-  describe('applyToWorkspace', () => {
+  describe('applyToPageTree', () => {
     beforeEach(() => {
       createContentProviderUISourceCode({
         url: Platform.DevToolsPath.urlString`file://test/index.html`,
@@ -129,7 +128,7 @@ describeWithMockConnection('PatchWidget', () => {
       });
     });
 
-    it('should show FRE dialog on applyToWorkspace click if the setting is false', async () => {
+    it('should show FRE dialog on applyToPageTree click if the setting is false', async () => {
       Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
       const {view, widget} = await createPatchWidget();
       widget.changeSummary = 'body { background-color: red; }';
@@ -139,7 +138,7 @@ describeWithMockConnection('PatchWidget', () => {
       assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
     });
 
-    it('should not show FRE dialog on applyToWorkspace click if the setting is true', async () => {
+    it('should not show FRE dialog on applyToPageTree click if the setting is true', async () => {
       Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(true);
       const {view, widget} = await createPatchWidget();
       widget.changeSummary = 'body { background-color: red; }';
@@ -166,7 +165,7 @@ Files:
 * /index.html`);
     });
 
-    it('should show error state when applyToWorkspace fails', async () => {
+    it('should show error state when applyToPageTree fails', async () => {
       const {view, widget} = await createPatchWidget({aidaClient: mockAidaClient([[MockAidaFetchError]])});
       widget.changeSummary = 'body { background-color: red; }';
 
@@ -188,6 +187,7 @@ Files:
   });
 
   describe('diff view', () => {
+    const origContent = 'window.foo = () => "foo";\n';
     let fileSystemUISourceCode: Workspace.UISourceCode.UISourceCode;
     let commitWorkingCopyStub:
         sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.commitWorkingCopy>>;
@@ -195,8 +195,6 @@ Files:
         sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.resetWorkingCopy>>;
 
     beforeEach(() => {
-      fileSystemUISourceCode = createTestFilesystem('file://test').uiSourceCode;
-      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -204,11 +202,31 @@ Files:
         },
       });
 
+      const url = Platform.DevToolsPath.urlString`https://example.com/script.js`;
+      createContentProviderUISourceCode({
+        url,
+        content: origContent,
+        mimeType: 'text/javascript',
+        projectType: Workspace.Workspace.projectTypes.Network,
+        metadata: new Workspace.UISourceCode.UISourceCodeMetadata(null, origContent.length),
+      });
+
       commitWorkingCopyStub =
           sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'commitWorkingCopy').callThrough();
       resetWorkingCopyStub =
           sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'resetWorkingCopy').callThrough();
     });
+
+    const createBoundFileSystemUISourceCode = () => {
+      const localUrl = Platform.DevToolsPath.urlString`file:///var/www/script.js`;
+      ({uiSourceCode: fileSystemUISourceCode} = createFileSystemUISourceCode({
+         url: localUrl,
+         mimeType: 'text/javascript',
+         content: origContent,
+         autoMapping: true,
+         metadata: new Workspace.UISourceCode.UISourceCodeMetadata(null, origContent.length),
+       }));
+    };
 
     it('on apply should call handle function and stash changes', async () => {
       const {
@@ -223,22 +241,31 @@ Files:
       assert.isTrue(changeManager.stashChanges.calledOnce);
     });
 
-    it('save all should commit the working copy of the changed UI codes to the disk and render savedToDisk view',
-       async () => {
-         const {view, widget} = await createPatchWidgetWithDiffView();
-         const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
-         widget.changeManager = changeManager;
-         fileSystemUISourceCode.setWorkingCopy('working copy');
+    it('"save to workspace" is not available if there is no matching file system mapping', async () => {
+      const {view, widget} = await createPatchWidgetWithDiffView();
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      widget.changeManager = changeManager;
+      assert.isUndefined(view.input.onSaveToWorkspace);
+    });
 
-         view.input.onSaveAll();
-         const nextInput = await view.nextInput;
+    it('"save to workspace" should commit the working copy of the files to disk and update the view', async () => {
+      createBoundFileSystemUISourceCode();
+      fileSystemUISourceCode.setWorkingCopy('working copy');
+      const {view, widget} = await createPatchWidgetWithDiffView();
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      widget.changeManager = changeManager;
 
-         assert.isTrue(nextInput.savedToDisk);
-         assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
-         assert.isTrue(changeManager.dropStashedChanges.calledOnce);
-       });
+      assert.isDefined(view.input.onSaveToWorkspace);
+      view.input.onSaveToWorkspace();
+      const nextInput = await view.nextInput;
+
+      assert.isTrue(nextInput.savedToDisk);
+      assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
+      assert.isTrue(changeManager.dropStashedChanges.calledOnce);
+    });
 
     it('discard should discard the working copy and render the view without patchSuggestion', async () => {
+      createBoundFileSystemUISourceCode();
       const {view, widget} = await createPatchWidgetWithDiffView();
       const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
       widget.changeManager = changeManager;

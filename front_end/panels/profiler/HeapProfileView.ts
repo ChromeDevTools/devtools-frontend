@@ -263,12 +263,12 @@ export class SamplingHeapProfileTypeBase extends
     if (this.recording) {
       void this.stopRecordingProfile();
     } else {
-      this.startRecordingProfile();
+      void this.startRecordingProfile();
     }
     return this.recording;
   }
 
-  startRecordingProfile(): void {
+  async startRecordingProfile(): Promise<void> {
     const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     if (this.profileBeingRecorded() || !heapProfilerModel) {
       return;
@@ -282,6 +282,12 @@ export class SamplingHeapProfileTypeBase extends
     UI.InspectorView.InspectorView.instance().setPanelWarnings('heap-profiler', warnings);
 
     this.recording = true;
+    const target = heapProfilerModel.target();
+    const animationModel = target.model(SDK.AnimationModel.AnimationModel);
+    if (animationModel) {
+      // TODO(b/406904348): Remove this once we correctly release animations on the backend.
+      await animationModel.releaseAllAnimations();
+    }
     this.startSampling();
   }
 

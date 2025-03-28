@@ -1526,13 +1526,19 @@ export class TrackingHeapSnapshotProfileType extends
     return this.toggleRecording();
   }
 
-  startRecordingProfile(): void {
+  async startRecordingProfile(): Promise<void> {
     if (this.profileBeingRecorded()) {
       return;
     }
     const heapProfilerModel = this.addNewProfile();
     if (!heapProfilerModel) {
       return;
+    }
+
+    const animationModel = heapProfilerModel.target().model(SDK.AnimationModel.AnimationModel);
+    if (animationModel) {
+      // TODO(b/406904348): Remove this once we correctly release animations on the backend.
+      await animationModel.releaseAllAnimations();
     }
     void heapProfilerModel.startTrackingHeapObjects(this.recordAllocationStacksSettingInternal.get());
   }
@@ -1593,7 +1599,7 @@ export class TrackingHeapSnapshotProfileType extends
     if (this.recording) {
       void this.stopRecordingProfile();
     } else {
-      this.startRecordingProfile();
+      void this.startRecordingProfile();
     }
     return this.recording;
   }

@@ -191,6 +191,7 @@ group("unittests") {
     "panels/network:unittests",
     "panels/network/components:unittests",
     "panels/performance_monitor:unittests",
+    "panels/profiler:unittests",
     "panels/protocol_monitor:unittests",
     "panels/recorder:unittests",
     "panels/recorder/components:unittests",

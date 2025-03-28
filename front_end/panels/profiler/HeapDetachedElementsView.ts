@@ -118,9 +118,14 @@ export class DetachedElementsProfileType extends
     const heapProfilerModel = UI.Context.Context.instance().flavor(SDK.HeapProfilerModel.HeapProfilerModel);
     const target = heapProfilerModel?.target();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
-
     if (!heapProfilerModel || !target || !domModel) {
       return;
+    }
+
+    const animationModel = target?.model(SDK.AnimationModel.AnimationModel);
+    if (animationModel) {
+      // TODO(b/406904348): Remove this once we correctly release animations on the backend.
+      await animationModel.releaseAllAnimations();
     }
     const data = await domModel.getDetachedDOMNodes();
 

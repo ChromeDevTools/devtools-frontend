@@ -96,3 +96,18 @@ devtools_entrypoint("meta") {
 
   visibility = [ "../../entrypoints/*" ]
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "HeapDetachedElementsView.test.ts",
+    "HeapProfileView.test.ts",
+    "HeapSnapshotView.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

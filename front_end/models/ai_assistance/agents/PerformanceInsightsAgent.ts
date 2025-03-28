@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import type * as Lit from '../../../ui/lit/lit.js';
@@ -110,6 +111,70 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
 
   override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
     return `Insight: ${this.#insight.title()}`;
+  }
+
+  /**
+   * Presents the default suggestions that are shown when the user first clicks
+   * "Ask AI" on an Insight.
+   */
+  override getSuggestions(): [string, ...string[]] {
+    switch (this.#insight.insight.insightKey) {
+      case 'CLSCulprits':
+        return [
+          'How can I improve my CLS score',
+          'How can I prevent layout shifts on this page?',
+        ];
+      case 'DocumentLatency':
+        return [
+          'How do I decrease the initial loading time of my page?',
+          'Did anything slow down the request for this document?',
+
+        ];
+      case 'DOMSize':
+        return ['How can I reduce the size of my DOM?'];
+      case 'DuplicatedJavaScript':
+        return ['How do I deduplicate the identified scripts in my bundle?'];
+      case 'FontDisplay':
+        return ['How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?'];
+      case 'ForcedReflow':
+        return ['How can I avoid layout thrashing?', 'What is forced reflow and why is it problematic?'];
+      case 'ImageDelivery':
+        return ['What should I do to improve and optimize the time taken to fetch and display images on the page?'];
+      case 'InteractionToNextPaint':
+        return [
+          'Help me optimize my INP score', 'Help me understand why a large INP score is problematic',
+          'What was the biggest contributor to my longest interaction duration time?'
+        ];
+      case 'LCPDiscovery':
+        return [
+          'Help me optimize my LCP score', 'What can I do to reduce my LCP discovery time?',
+          'Why is LCP discovery time important?'
+        ];
+      case 'LCPPhases':
+        return [
+          'Help me optimize my LCP score', 'Which LCP phase was most problematic?',
+          'What can I do to reduce the LCP time for this page load?'
+        ];
+      case 'NetworkDependencyTree':
+        return ['How do I optimize my network dependency tree?'];
+      case 'RenderBlocking':
+        return [
+          'Show me the render blocking requests, listed by impact',
+          'How can I reduce the number of render blocking requests?'
+        ];
+      case 'SlowCSSSelector':
+        return ['How can I optimize my CSS to increase the performance of CSS selectors?'];
+      case 'ThirdParties':
+        return ['Which third parties are having the largest impact on my page performance?'];
+      case 'Cache':
+        return ['What caching strategies can I apply to improve my page performance?'];
+      case 'Viewport':
+        return ['How do I make sure my page is optimized for mobile viewing?'];
+      case 'ModernHTTP':
+        return ['Is my site being served using the recommended HTTP best practices?'];
+      default:
+        Platform.assertNever(this.#insight.insight.insightKey, 'Unknown insight key');
+    }
   }
 }
 

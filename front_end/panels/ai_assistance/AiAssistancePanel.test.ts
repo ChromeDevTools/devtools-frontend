@@ -238,8 +238,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         flavor: TimelineUtils.InsightAIContext.ActiveInsight,
         createContext: () => {
-          return new AiAssistanceModel.InsightContext(
+          const context = new AiAssistanceModel.InsightContext(
               sinon.createStubInstance(TimelineUtils.InsightAIContext.ActiveInsight));
+          sinon.stub(AiAssistanceModel.InsightContext.prototype, 'getSuggestions').returns(['test suggestion']);
+          return context;
         },
         action: 'drjones.performance-insight-context'
       },

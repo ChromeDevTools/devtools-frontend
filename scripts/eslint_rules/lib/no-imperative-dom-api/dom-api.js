@@ -23,9 +23,13 @@ module.exports = {
       propertyAssignment(property, propertyValue, domFragment) {
         if (isIdentifier(property, 'className')) {
           domFragment.classList.push(propertyValue);
-        } else if (isIdentifier(property, ['textContent', 'innerHTML'])) {
-          domFragment.textContent = propertyValue;
+          return true;
         }
+        if (isIdentifier(property, ['textContent', 'innerHTML'])) {
+          domFragment.textContent = propertyValue;
+          return true;
+        }
+        return false;
       },
       /**
        * @param {Node} property
@@ -36,7 +40,9 @@ module.exports = {
       propertyMethodCall(property, method, firstArg, domFragment) {
         if (isIdentifier(property, 'classList') && isIdentifier(method, 'add')) {
           domFragment.classList.push(firstArg);
+          return true;
         }
+        return false;
       },
       /**
        * @param {Node} property
@@ -52,8 +58,10 @@ module.exports = {
               key: property,
               value: subpropertyValue,
             });
+            return true;
           }
         }
+        return false;
       },
       /**
        * @param {Node} property
@@ -68,12 +76,14 @@ module.exports = {
           const value = secondArg;
           if (attribute.type === 'Literal' && value.type !== 'SpreadElement') {
             domFragment.attributes.push({key: attribute.value.toString(), value});
+            return true;
           }
-        } else if (isIdentifier(property, 'appendChild')) {
-          const childFragment = DomFragment.getOrCreate(firstArg, sourceCode);
-          childFragment.parent = domFragment;
-          domFragment.children.push(childFragment);
         }
+        if (isIdentifier(property, 'appendChild')) {
+          domFragment.appendChild(firstArg, sourceCode);
+          return true;
+        }
+        return false;
       },
       MemberExpression(node) {
         if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement')

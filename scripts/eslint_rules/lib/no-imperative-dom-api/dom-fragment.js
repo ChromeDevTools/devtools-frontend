@@ -29,7 +29,8 @@ class DomFragment {
   /** @type {DomFragment|undefined} */ parent;
   /** @type {string|undefined} */ expression;
   /** @type {EsLintNode|undefined} */ replacementLocation;
-  /** @type {EsLintNode[]} */ references = [];
+  /** @type {EsLintNode|undefined} */ initializer;
+  /** @type {{node: EsLintNode, processed?: boolean}[]} */ references = [];
 
   /**
    * @param {Node} estreeNode
@@ -46,17 +47,19 @@ class DomFragment {
       domFragments.set(key, result);
       if ('parent' in key) {
         result.expression = sourceCode.getText(node);
-        result.references.push(node);
+        result.references.push({node});
       } else if (key instanceof ClassMember) {
         result.replacementLocation = /** @type {EsLintNode} */ (key.classDeclaration);
         result.expression = sourceCode.getText(node);
       } else {
-        result.references = key.references.map(r => (/** @type {EsLintNode} */ (r.identifier)));
-        result.references.push(/** @type {EsLintNode} */ (key.identifiers[0]));
+        result.references = key.references.filter(r => !key.identifiers.includes(r.identifier))
+                                .map(r => ({node: /** @type {EsLintNode} */ (r.identifier)}));
+        result.initializer = /** @type {EsLintNode} */ (key.identifiers[0]);
       }
     }
     if (key instanceof ClassMember) {
-      result.references = /** @type {EsLintNode[]} */ ([...key.references]);
+      result.references = [...key.references].map(r => ({node: /** @type {EsLintNode} */ (r)}));
+      result.initializer = /** @type {EsLintNode} */ (key.initializer);
     }
     return result;
   }
@@ -144,6 +147,22 @@ class DomFragment {
     }
     components.push('</', this.tagName, '>');
     return components;
+  }
+
+  /**
+   *  @param {Node} node
+   *  @param {SourceCode} sourceCode
+   */
+  appendChild(node, sourceCode) {
+    const child = DomFragment.getOrCreate(node, sourceCode);
+    this.children.push(child);
+    child.parent = this;
+    for (const reference of child.references) {
+      if (reference.node === node) {
+        reference.processed = true;
+      }
+    }
+    return child;
   }
 }
 

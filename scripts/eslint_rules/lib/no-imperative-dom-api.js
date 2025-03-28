@@ -66,8 +66,9 @@ module.exports = {
     }
 
     /**
-     *  @param {EsLintNode} reference
-     *  @param {DomFragment} domFragment
+     * @param {EsLintNode} reference
+     * @param {DomFragment} domFragment
+     * @return {boolean}
      */
     function processReference(reference, domFragment) {
       const parent = reference.parent;
@@ -93,7 +94,9 @@ module.exports = {
       const subpropertyValue = isSubpropertyAssignment ? grandGrandParent.right : null;
       for (const rule of subrules) {
         if (isPropertyAssignment) {
-          rule.propertyAssignment?.(property, propertyValue, domFragment);
+          if (rule.propertyAssignment?.(property, propertyValue, domFragment)) {
+            return true;
+          }
         } else if (isMethodCall) {
           if (isIdentifier(property, 'addEventListener')) {
             const event = getEvent(firstArg);
@@ -101,15 +104,22 @@ module.exports = {
             if (event && value.type !== 'SpreadElement') {
               domFragment.eventListeners.push({key: event, value});
             }
-            return;
+            return true;
           }
-          rule.methodCall?.(property, firstArg, secondArg, domFragment, grandParent);
+          if (rule.methodCall?.(property, firstArg, secondArg, domFragment, grandParent)) {
+            return true;
+          }
         } else if (isPropertyMethodCall) {
-          rule.propertyMethodCall?.(property, grandParent.property, propertyMethodArgument, domFragment);
+          if (rule.propertyMethodCall?.(property, grandParent.property, propertyMethodArgument, domFragment)) {
+            return true;
+          }
         } else if (isSubpropertyAssignment) {
-          rule.subpropertyAssignment?.(property, subproperty, subpropertyValue, domFragment);
+          if (rule.subpropertyAssignment?.(property, subproperty, subpropertyValue, domFragment)) {
+            return true;
+          }
         }
       }
+      return false;
     }
 
     /**
@@ -119,23 +129,32 @@ module.exports = {
       /** @type {[number, number][]} */
       const ranges = [];
       for (const reference of domFragment.references) {
-        const expression = getEnclosingExpression(reference);
+        if (!reference.processed) {
+          continue;
+        }
+        const expression = getEnclosingExpression(reference.node);
         if (!expression) {
           continue;
         }
         const range = expression.range;
-        while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
-          range[0]--;
-        }
         ranges.push(range);
         for (const child of domFragment.children) {
           ranges.push(...getRangesToRemove(child));
         }
       }
+
+      if (domFragment.initializer && domFragment.references.every(r => r.processed)) {
+        ranges.push(getEnclosingExpression(domFragment.initializer).range);
+      }
+      for (const range of ranges) {
+        while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
+          range[0]--;
+        }
+      }
       ranges.sort((a, b) => a[0] - b[0]);
       for (let i = 1; i < ranges.length; i++) {
         if (ranges[i][0] < ranges[i - 1][1]) {
-          ranges[i] = [ranges[i - 1][1], ranges[i][1]];
+          ranges[i] = [ranges[i - 1][1], Math.max(ranges[i][1], ranges[i - 1][1])];
         }
       }
 
@@ -146,7 +165,8 @@ module.exports = {
      * @param {DomFragment} domFragment
      */
     function maybeReportDomFragment(domFragment) {
-      if (!domFragment.replacementLocation || domFragment.parent || !domFragment.tagName) {
+      if (!domFragment.replacementLocation || domFragment.parent || !domFragment.tagName ||
+          domFragment.references.every(r => !r.processed)) {
         return;
       }
       context.report({
@@ -194,7 +214,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       'Program:exit'() {
         for (const domFragment of DomFragment.values()) {
           for (const reference of domFragment.references) {
-            processReference(reference, domFragment);
+            if (processReference(reference.node, domFragment)) {
+              reference.processed = true;
+            }
           }
         }
 

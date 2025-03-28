@@ -21,6 +21,9 @@ class ClassMember {
   /** @type {Node} */
   classDeclaration;
 
+  /** @type {Node|undefined} */
+  initializer;
+
   /**
    * @param {Node} node
    * @param {SourceCode} sourceCode
@@ -44,6 +47,9 @@ class ClassMember {
       classMembers.set(memberName, classMember);
     }
     classMember.references.add(node);
+    if (node.type === 'AssignmentExpression') {
+      classMember.initializer = node;
+    }
     return classMember;
   }
 }

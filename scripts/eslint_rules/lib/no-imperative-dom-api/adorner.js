@@ -38,11 +38,10 @@ module.exports = {
                   {key: 'jslog', value: '${VisualLogging.adorner(' + sourceCode.getText(property.value) + ')}'});
             }
             if (isIdentifier(property.key, 'content')) {
-              const childFragment = DomFragment.getOrCreate(property.value, sourceCode);
-              childFragment.parent = domFragment;
-              domFragment.children.push(childFragment);
+              domFragment.appendChild(property.value, sourceCode);
             }
           }
+          return true;
         }
       },
       NewExpression(node) {

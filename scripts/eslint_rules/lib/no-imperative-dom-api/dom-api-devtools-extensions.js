@@ -7,9 +7,9 @@
 'use strict';
 
 const {isIdentifier} = require('./ast.js');
-const {DomFragment} = require('./dom-fragment.js');
 
 /** @typedef {import('eslint').Rule.Node} Node */
+/** @typedef {import('./dom-fragment.js').DomFragment} DomFragment */
 
 module.exports = {
   create : function(context) {
@@ -26,13 +26,12 @@ module.exports = {
       methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'createChild')) {
           if (firstArg?.type === 'Literal') {
-            const childFragment = DomFragment.getOrCreate(call, sourceCode);
+            const childFragment = domFragment.appendChild(call, sourceCode);
             childFragment.tagName = String(firstArg.value);
-            childFragment.parent = domFragment;
-            domFragment.children.push(childFragment);
             if (secondArg) {
               childFragment.classList.push(secondArg);
             }
+            return true;
           }
         }
       }

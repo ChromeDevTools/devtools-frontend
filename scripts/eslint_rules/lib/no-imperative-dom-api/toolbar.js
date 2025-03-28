@@ -39,10 +39,10 @@ module.exports = {
        */
       methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'appendToolbarItem')) {
-          const childFragment = DomFragment.getOrCreate(firstArg, sourceCode);
-          childFragment.parent = domFragment;
-          domFragment.children.push(childFragment);
+          domFragment.appendChild(firstArg, sourceCode);
+          return true;
         }
+        return false;
       },
       NewExpression(node) {
         if (isMemberExpression(
@@ -99,15 +99,13 @@ module.exports = {
               key: 'list',
               value: 'completions',
             });
-            const dataList = DomFragment.getOrCreate(completions, sourceCode);
+            const dataList = domFragment.appendChild(completions, sourceCode);
             dataList.tagName = 'datalist';
             dataList.attributes.push({
               key: 'id',
               value: 'completions',
             });
             dataList.textContent = completions;
-            domFragment.children.push(dataList);
-            dataList.parent = domFragment;
           }
           args.shift();  // dynamicCompletions is not supported
           const jslogContext = args.shift();

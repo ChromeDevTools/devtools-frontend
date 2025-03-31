@@ -434,5 +434,62 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'some-placeholder';
+    input.value = 'some-value';
+    input.disabled = !this.enabled;
+    input.checked = true
+    this.contentElement.append(input);
+
+    const anchor = document.createElement('a');
+    anchor.href = 'https://www.google.com';
+    anchor.innerText = 'some-text';
+    anchor.dataset.someKey = 'some-value';
+    this.contentElement.insertBefore(anchor, input);
+
+    const img = document.createElement('img');
+    img.src = 'https://www.google.com/some-image.png';
+    img.alt = 'some-alt';
+    img.draggable = true;
+    img.height = 100;
+    img.hidden = 'hidden';
+    img.href = 'https://www.google.com';
+    img.id = 'some-id';
+    img.name = 'some-name';
+    img.rel = 'some-rel';
+    img.scope = 'some-scope';
+
+    input.insertAdjacentElement('beforebegin', img);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <a href="https://www.google.com" data-some-key="some-value">some-text</a>
+      <img src="https://www.google.com/some-image.png" alt="some-alt" draggable="true" height="100"
+          hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
+          scope="some-scope"></img>
+      <input type="text" placeholder="some-placeholder" value="some-value"
+          ?disabled=\${!this.enabled} ?checked=\${true}></input>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

@@ -27,6 +27,15 @@ function isMemberExpression(node, objectPredicate, propertyPredicate) {
   return node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
 }
 
+/**
+ * @param {Node} node
+ * @param {string|number|boolean} value
+ * @return {boolean}
+ */
+function isLiteral(node, value) {
+  return node.type === 'Literal' && node.value === value;
+}
+
 /** @param {Node} estreeNode */
 function getEnclosingExpression(estreeNode) {
   let node = /** @type {EsLintNode} */ (estreeNode);
@@ -55,13 +64,14 @@ function getEnclosingProperty(estreeNode) {
 /** @param {Node} node */
 function getEnclosingClassDeclaration(node) {
   let parent = /** @type {EsLintNode} */ (node).parent;
-  while (parent && parent.type !== 'ClassDeclaration') {
+  while (parent && !['ClassDeclaration', 'ClassExpression'].includes(parent.type)) {
     parent = parent.parent;
   }
   return parent;
 }
 
 exports.isIdentifier = isIdentifier;
+exports.isLiteral = isLiteral;
 exports.isMemberExpression = isMemberExpression;
 exports.getEnclosingExpression = getEnclosingExpression;
 exports.getEnclosingProperty = getEnclosingProperty;

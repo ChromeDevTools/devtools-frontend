@@ -188,6 +188,23 @@ class DomFragment {
     }
     return child;
   }
+
+  /**
+   * @param {Node} node
+   * @param {number} index
+   * @param {SourceCode} sourceCode
+   */
+  insertChildAt(node, index, sourceCode) {
+    const child = DomFragment.getOrCreate(node, sourceCode);
+    this.children.splice(index, 0, child);
+    child.parent = this;
+    for (const reference of child.references) {
+      if (reference.node === node) {
+        reference.processed = true;
+      }
+    }
+    return child;
+  }
 }
 
 /**

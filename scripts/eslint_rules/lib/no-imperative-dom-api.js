@@ -225,16 +225,24 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         }
       },
       'Program:exit'() {
-        for (const domFragment of DomFragment.values()) {
-          if (!domFragment.tagName) {
-            continue;
-          }
-          for (const reference of domFragment.references) {
-            if (processReference(reference.node, domFragment)) {
-              reference.processed = true;
+        let processedSome = false;
+        do {
+          processedSome = false;
+          for (const domFragment of DomFragment.values()) {
+            if (!domFragment.tagName) {
+              continue;
+            }
+            for (const reference of domFragment.references) {
+              if (reference.processed) {
+                continue;
+              }
+              if (processReference(reference.node, domFragment)) {
+                reference.processed = true;
+                processedSome = true;
+              }
             }
           }
-        }
+        } while (processedSome);
 
         for (const domFragment of DomFragment.values()) {
           maybeReportDomFragment(domFragment);

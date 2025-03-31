@@ -6,17 +6,19 @@
  */
 'use strict';
 
-const {isIdentifier} = require('./ast.js');
+const {isIdentifier, isLiteral} = require('./ast.js');
 const {DomFragment} = require('./dom-fragment.js');
 
-/** @typedef {import('eslint').Rule.Node} Node */
+/** @typedef {import('estree').Node} Node */
+/** @typedef {import('estree').Identifier} Identifier */
+/** @typedef {import('estree').CallExpression} CallExpression */
 
 module.exports = {
   create : function(context) {
     const sourceCode = context.getSourceCode();
     return {
       /**
-       * @param {Node} property
+       * @param {Identifier} property
        * @param {Node} propertyValue
        * @param {DomFragment} domFragment
        */
@@ -25,14 +27,28 @@ module.exports = {
           domFragment.classList.push(propertyValue);
           return true;
         }
-        if (isIdentifier(property, ['textContent', 'innerHTML'])) {
+        if (isIdentifier(property, ['textContent', 'innerHTML', 'innerText'])) {
           domFragment.textContent = propertyValue;
+          return true;
+        }
+        if (isIdentifier(property, [
+              'alt', 'draggable', 'height', 'hidden', 'href', 'id', 'name', 'placeholder', 'rel', 'scope', 'slot',
+              'spellcheck', 'src', 'tabindex', 'title', 'type', 'value', 'width'
+            ])) {
+          domFragment.attributes.push({key: property.name.toLowerCase(), value: propertyValue});
+          return true;
+        }
+        if (isIdentifier(property, ['checked', 'disabled'])) {
+          domFragment.attributes.push({
+            key: '?' + property.name.toLowerCase(),
+            value: isLiteral(propertyValue, true) ? '${true}' : propertyValue
+          });
           return true;
         }
         return false;
       },
       /**
-       * @param {Node} property
+       * @param {Identifier} property
        * @param {Node} method
        * @param {Node} firstArg
        * @param {DomFragment} domFragment
@@ -45,7 +61,7 @@ module.exports = {
         return false;
       },
       /**
-       * @param {Node} property
+       * @param {Identifier} property
        * @param {Node} subproperty
        * @param {Node} subpropertyValue
        * @param {DomFragment} domFragment
@@ -61,30 +77,74 @@ module.exports = {
             return true;
           }
         }
+        if (isIdentifier(property, 'dataset') && subproperty.type === 'Identifier') {
+          const property = 'data-' + subproperty.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+          if (subpropertyValue.type !== 'SpreadElement') {
+            domFragment.attributes.push({
+              key: property,
+              value: subpropertyValue,
+            });
+            return true;
+          }
+        }
         return false;
       },
       /**
-       * @param {Node} property
+       * @param {Identifier} property
        * @param {Node} firstArg
        * @param {Node} secondArg
        * @param {DomFragment} domFragment
-       * @param {Node} call
+       * @param {CallExpression} call
        */
       methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'setAttribute')) {
           const attribute = firstArg;
           const value = secondArg;
-          if (attribute.type === 'Literal' && attribute.value && value.type !== 'SpreadElement') {
-            domFragment.attributes.push({
-              key: attribute.value.toString(),
-              value,
-            });
+          if (attribute.type === 'Literal' && value.type !== 'SpreadElement') {
+            domFragment.attributes.push({key: attribute.value.toString(), value});
             return true;
           }
         }
         if (isIdentifier(property, 'appendChild')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;
+        }
+        if (isIdentifier(property, 'append')) {
+          for (const child of call.arguments) {
+            domFragment.appendChild(child, sourceCode);
+          }
+          return true;
+        }
+        if (isIdentifier(property, 'prepend')) {
+          for (const child of call.arguments) {
+            domFragment.insertChildAt(child, 0, sourceCode);
+          }
+          return true;
+        }
+        if (isIdentifier(property, 'insertBefore')) {
+          const index = domFragment.children.indexOf(DomFragment.getOrCreate(secondArg, sourceCode));
+          if (index !== -1) {
+            for (const reference of domFragment.children[index].references) {
+              if (reference.node === secondArg) {
+                reference.processed = true;
+              }
+            }
+            domFragment.insertChildAt(firstArg, index, sourceCode);
+            return true;
+          }
+        }
+        if (isIdentifier(property, 'insertAdjacentElement')) {
+          if (domFragment.parent) {
+            const index = domFragment.parent.children.indexOf(domFragment);
+            if (isLiteral(firstArg, 'afterend')) {
+              domFragment.parent.insertChildAt(secondArg, index + 1, sourceCode);
+              return true;
+            }
+            if (isLiteral(firstArg, 'beforebegin')) {
+              domFragment.parent.insertChildAt(secondArg, index, sourceCode);
+              return true;
+            }
+          }
         }
         return false;
       },

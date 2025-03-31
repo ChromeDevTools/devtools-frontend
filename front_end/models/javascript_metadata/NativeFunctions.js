@@ -112,11 +112,6 @@ export const NativeFunctions = [
     receivers: ["CookieStore"]
   },
   {
-    name: "get",
-    signatures: [["instrumentKey"]],
-    receivers: ["PaymentInstruments"]
-  },
-  {
     name: "set",
     signatures: [["v"]],
     receivers: ["PropertyDescriptor"]
@@ -170,11 +165,6 @@ export const NativeFunctions = [
     name: "set",
     signatures: [["cookieInit"],["name","value"]],
     receivers: ["CookieStore"]
-  },
-  {
-    name: "set",
-    signatures: [["instrumentKey","details"]],
-    receivers: ["PaymentInstruments"]
   },
   {
     name: "toLocaleString",
@@ -1582,11 +1572,6 @@ export const NativeFunctions = [
     receivers: ["CookieStore"]
   },
   {
-    name: "delete",
-    signatures: [["instrumentKey"]],
-    receivers: ["PaymentInstruments"]
-  },
-  {
     name: "matchAll",
     signatures: [["?request","?options"]],
     receivers: ["Cache","BackgroundFetchRegistration"]
@@ -1655,11 +1640,6 @@ export const NativeFunctions = [
     name: "has",
     signatures: [["value"]],
     receivers: ["Set","ReadonlySet","WeakSet","ReadonlySetLike"]
-  },
-  {
-    name: "has",
-    signatures: [["instrumentKey"]],
-    receivers: ["PaymentInstruments"]
   },
   {
     name: "open",
@@ -8855,7 +8835,7 @@ export const NativeFunctions = [
   },
   {
     name: "copyBufferToBuffer",
-    signatures: [["src","srcOffset","dst","dstOffset","size"]]
+    signatures: [["source","destination","?size"],["source","sourceOffset","destination","destinationOffset","?size"]]
   },
   {
     name: "copyBufferToTexture",

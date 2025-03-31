@@ -27922,6 +27922,53 @@
                             "$ref": "ScanRecord"
                         }
                     ]
+                },
+                {
+                    "id": "CharacteristicProperties",
+                    "description": "Describes the properties of a characteristic. This follows Bluetooth Core\nSpecification BT 4.2 Vol 3 Part G 3.3.1. Characteristic Properties.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "broadcast",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "read",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "writeWithoutResponse",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "write",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "notify",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "indicate",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "authenticatedSignedWrites",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "extendedProperties",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -28014,7 +28061,7 @@
                 },
                 {
                     "name": "addService",
-                    "description": "Adds a service with |uuid| to the peripheral with |address|.",
+                    "description": "Adds a service with |serviceUuid| to the peripheral with |address|.",
                     "parameters": [
                         {
                             "name": "address",
@@ -28027,7 +28074,7 @@
                     ],
                     "returns": [
                         {
-                            "name": "id",
+                            "name": "serviceId",
                             "description": "An identifier that uniquely represents this service.",
                             "type": "string"
                         }
@@ -28035,14 +28082,61 @@
                 },
                 {
                     "name": "removeService",
-                    "description": "Removes the service respresented by |id| from the peripheral with |address|.",
+                    "description": "Removes the service respresented by |serviceId| from the peripheral with\n|address|.",
                     "parameters": [
                         {
                             "name": "address",
                             "type": "string"
                         },
                         {
-                            "name": "id",
+                            "name": "serviceId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "addCharacteristic",
+                    "description": "Adds a characteristic with |characteristicUuid| and |properties| to the\nservice represented by |serviceId| in the peripheral with |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "serviceId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "characteristicUuid",
+                            "type": "string"
+                        },
+                        {
+                            "name": "properties",
+                            "$ref": "CharacteristicProperties"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "characteristicId",
+                            "description": "An identifier that uniquely represents this characteristic.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "removeCharacteristic",
+                    "description": "Removes the characteristic respresented by |characteristicId| from the\nservice respresented by |serviceId| in the peripheral with |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "serviceId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "characteristicId",
                             "type": "string"
                         }
                     ]

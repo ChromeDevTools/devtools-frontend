@@ -4,15 +4,16 @@
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Platform from '../platform/platform.js';
 
 import type {NameValue} from './NetworkRequest.js';
 
 const UIStrings = {
   /**
    *@description Text in Server Timing
+   *@example {sql-lookup} PH1
    */
-  deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>',
+  deprecatedSyntaxFoundPleaseUse:
+      'Deprecated syntax found for metric "{PH1}". Please use: <name>;dur=<duration>;desc=<description>',
   /**
    *@description Text in Server Timing
    *@example {https} PH1
@@ -42,6 +43,21 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServerTiming.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * Represents an authored single server timing metric. https://w3c.github.io/server-timing/#the-server-timing-header-field
+ */
+export interface ServerTimingMetric {
+  /** The name of the metric, a single token */
+  name: string;
+  /** A human-readable description of the metric. */
+  desc?: string;
+  /** The duration; milliseconds is recommended. https://w3c.github.io/server-timing/#duration-attribute. */
+  dur?: number;
+}
+
+export const cloudflarePrefix = '(cf) ';
+export const cloudinaryPrefix = '(cld) ';
+
 export class ServerTiming {
   metric: string;
   value: number|null;
@@ -59,27 +75,17 @@ export class ServerTiming {
       return null;
     }
 
-    const serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
+    const serverTimings = rawServerTimingHeaders.reduce((timings, header) => {
       const timing = this.createFromHeaderValue(header.value);
-      memo.push(...timing.map(function(entry) {
-        return new ServerTiming(
-            entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
+      timings.push(...timing.map(function(entry) {
+        return new ServerTiming(entry.name, entry.dur ?? null, entry.desc ?? '');
       }));
-      return memo;
+      return timings;
     }, ([] as ServerTiming[]));
-    serverTimings.sort((a, b) => Platform.StringUtilities.compare(a.metric.toLowerCase(), b.metric.toLowerCase()));
     return serverTimings;
   }
 
-  /**
-   * TODO(crbug.com/1011811): Instead of using !Object<string, *> we should have a proper type
-   *                          with #name, desc and dur properties.
-   */
-  static createFromHeaderValue(valueString: string): Array<{
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [x: string]: any,
-  }> {
+  static createFromHeaderValue(valueString: string): ServerTimingMetric[] {
     function trimLeadingWhiteSpace(): void {
       valueString = valueString.replace(/^\s*/, '');
     }
@@ -146,13 +152,13 @@ export class ServerTiming {
       }
     }
 
-    const result = [];
+    const result: ServerTimingMetric[] = [];
     let name;
     while ((name = consumeToken()) !== null) {
-      const entry = {name};
+      const entry: ServerTimingMetric = {name};
 
       if (valueString.charAt(0) === '=') {
-        this.showWarning(i18nString(UIStrings.deprecatedSyntaxFoundPleaseUse));
+        this.showWarning(i18nString(UIStrings.deprecatedSyntaxFoundPleaseUse, {PH1: name}));
       }
 
       while (consumeDelimiter(';')) {
@@ -184,11 +190,29 @@ export class ServerTiming {
           parseParameter.call(this, entry, paramValue);
         } else {
           // paramName is not valid
+          // TODO(paulirish): consider showing other included params, like `start`: https://github.com/w3c/server-timing/issues/43
           this.showWarning(i18nString(UIStrings.unrecognizedParameterS, {PH1: paramName}));
         }
       }
 
       result.push(entry);
+
+      // Special parsing for cloudflare's bespoke format. https://blog.cloudflare.com/new-standards/#measuring-impact
+      // We extract the individual items of the cfL4 server-timing for clear presentation
+      if (entry.name === 'cfL4' && entry.desc) {
+        new URLSearchParams(entry.desc).entries().forEach(([key, val]) => {
+          result.push({name: `${cloudflarePrefix}${key}`, desc: val});
+        });
+      }
+
+      // Special parsing for cloudinary's bespoke format. https://cloudinary.com/blog/inside_the_black_box_with_server_timing#what_details_are_you_sharing_
+      // The format has changed since this blog post
+      if (entry.name === 'content-info' && entry.desc) {
+        new URLSearchParams(entry.desc.replace(/,/g, '&')).entries().forEach(([key, val]) => {
+          result.push({name: `${cloudinaryPrefix}${key}`, desc: val});
+        });
+      }
+
       if (!consumeDelimiter(',')) {
         break;
       }
@@ -200,24 +224,10 @@ export class ServerTiming {
     return result;
   }
 
-  static getParserForParameter(paramName: string):
-      ((arg0: {
-         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-         [x: string]: any,
-       },
-        arg1: string|null) => void)|null {
+  static getParserForParameter(paramName: string): ((arg0: ServerTimingMetric, arg1: string|null) => void)|null {
     switch (paramName) {
       case 'dur': {
-        function durParser(
-            entry: {
-              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              [x: string]: any,
-            },
-            // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            paramValue: any): void {
+        function durParser(entry: ServerTimingMetric, paramValue: string|null): void {
           entry.dur = 0;
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
@@ -232,13 +242,7 @@ export class ServerTiming {
       }
 
       case 'desc': {
-        function descParser(
-            entry: {
-              // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              [x: string]: any,
-            },
-            paramValue: string|null): void {
+        function descParser(entry: ServerTimingMetric, paramValue: string|null): void {
           entry.desc = paramValue || '';
         }
         return descParser;

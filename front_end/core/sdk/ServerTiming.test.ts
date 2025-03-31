@@ -65,6 +65,51 @@ describeWithLocale('SDK.ServerTiming.ServerTiming.createFromHeaderValue', () => 
     assert.deepEqual(actual, expected);
   });
 
+  it('parses the custom non-standard cfL4 headers correctly', () => {
+    const actual = SDK.ServerTiming.ServerTiming.createFromHeaderValue(
+        'cfL4;desc="?proto=TCP&rtt=6699&sent=35&recv=35&lost=0&retrans=0&sent_bytes=29507&recv_bytes=3329&delivery_rate=2064884&cwnd=228&unsent_bytes=0&cid=2c16ce0a54b8174d&ts=215&x=0"');
+    const expected: SDK.ServerTiming.ServerTimingMetric[] = [
+      {
+        name: 'cfL4',
+        desc:
+            '?proto=TCP&rtt=6699&sent=35&recv=35&lost=0&retrans=0&sent_bytes=29507&recv_bytes=3329&delivery_rate=2064884&cwnd=228&unsent_bytes=0&cid=2c16ce0a54b8174d&ts=215&x=0',
+      },
+      {name: '(cf) proto', desc: 'TCP'},
+      {name: '(cf) rtt', desc: '6699'},
+      {name: '(cf) sent', desc: '35'},
+      {name: '(cf) recv', desc: '35'},
+      {name: '(cf) lost', desc: '0'},
+      {name: '(cf) retrans', desc: '0'},
+      {name: '(cf) sent_bytes', desc: '29507'},
+      {name: '(cf) recv_bytes', desc: '3329'},
+      {name: '(cf) delivery_rate', desc: '2064884'},
+      {name: '(cf) cwnd', desc: '228'},
+      {name: '(cf) unsent_bytes', desc: '0'},
+      {name: '(cf) cid', desc: '2c16ce0a54b8174d'},
+      {name: '(cf) ts', desc: '215'},
+      {name: '(cf) x', desc: '0'},
+    ];
+    assert.deepEqual(actual, expected);
+  });
+
+  it('parses the custom non-standard cloudinary headers correctly', () => {
+    const actual = SDK.ServerTiming.ServerTiming.createFromHeaderValue(
+        'cld-fastly;dur=2;cpu=0;start=2025-03-31T21:29:17.654Z;desc=hit,rtt;dur=13,content-info;desc="width=1440,height=328,bytes=6066,format=\\"svg\\",o=1,crt=1736894672,ef=(17)"');
+    const expected: SDK.ServerTiming.ServerTimingMetric[] = [
+      {name: 'cld-fastly', dur: 2, desc: 'hit'},
+      {name: 'rtt', dur: 13},
+      {name: 'content-info', desc: 'width=1440,height=328,bytes=6066,format=\"svg\",o=1,crt=1736894672,ef=(17)'},
+      {name: '(cld) width', desc: '1440'},
+      {name: '(cld) height', desc: '328'},
+      {name: '(cld) bytes', desc: '6066'},
+      {name: '(cld) format', desc: '"svg"'},
+      {name: '(cld) o', desc: '1'},
+      {name: '(cld) crt', desc: '1736894672'},
+      {name: '(cld) ef', desc: '(17)'},
+    ];
+    assert.deepEqual(actual, expected);
+  });
+
   it('parses Server Timing metric names correctly', () => {
     assert.deepEqual(SDK.ServerTiming.ServerTiming.createFromHeaderValue('metric'), [{name: 'metric'}]);
     assert.deepEqual(

@@ -202,13 +202,16 @@ export class NetworkRequestDetails extends HTMLElement {
       <div class="column-divider"></div>
       <div class="network-request-details-col server-timings">
           <div class="server-timing-column-header">${i18nString(UIStrings.serverTiming)}</div>
-          <div class="server-timing-column-header">${i18nString(UIStrings.time)}</div>
           <div class="server-timing-column-header">${i18nString(UIStrings.description)}</div>
-        ${this.#serverTimings.map(timing => html`
-              <div class="value">${timing.metric || '-'}</div>
-              <div class="value">${timing.value || '-'}</div>
-              <div class="value">${timing.description || '-'}</div>
-          `)}
+          <div class="server-timing-column-header">${i18nString(UIStrings.time)}</div>
+        ${this.#serverTimings.map(timing => {
+      const classes = timing.metric.startsWith('(c') ? 'synthetic value' : 'value';
+      return html`
+              <div class=${classes}>${timing.metric || '-'}</div>
+              <div class=${classes}>${timing.description || '-'}</div>
+              <div class=${classes}>${timing.value || '-'}</div>
+          `;
+    })}
       </div>
     `;
   }

@@ -94,23 +94,23 @@ describeWithMockConnection('NetworkRequestDetails', () => {
         [
           [
             'Server timing',
-            'Time',
             'Description',
-          ],
-          [
-            'Secondleveltask1',
-            '904.2932819999987',
-            'Description of second level task 1',
+            'Time',
           ],
           [
             'Topleveltask1',
-            '1004.2932819999987',
             'Description of top level task 1',
+            '1004.2932819999987',
+          ],
+          [
+            'Secondleveltask1',
+            'Description of second level task 1',
+            '904.2932819999987',
           ],
           [
             'Topleveltask2',
-            '1000.0925859999988',
             '-',
+            '1000.0925859999988',
           ],
         ],
     );

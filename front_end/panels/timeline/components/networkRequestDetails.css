@@ -77,6 +77,10 @@
   user-select: text;
   text-overflow: ellipsis;
   overflow: hidden;
+
+  &.synthetic {
+    font-style: italic;
+  }
 }
 
 .devtools-link,

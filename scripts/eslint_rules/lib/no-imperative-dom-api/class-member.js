@@ -21,13 +21,18 @@ class ClassMember {
   /** @type {Node} */
   classDeclaration;
 
+  /** @param {Node} classDeclaration */
+  constructor(classDeclaration) {
+    this.classDeclaration = classDeclaration;
+  }
+
   /** @type {Node|undefined} */
   initializer;
 
   /**
    * @param {Node} node
    * @param {SourceCode} sourceCode
-   * @return {ClassMember}
+   * @return {ClassMember|null}
    */
   static getOrCreate(node, sourceCode) {
     const classDeclaration = getEnclosingClassDeclaration(node);
@@ -42,8 +47,7 @@ class ClassMember {
     const memberName = sourceCode.getText(node);
     let classMember = classMembers.get(memberName);
     if (!classMember) {
-      classMember = new ClassMember();
-      classMember.classDeclaration = classDeclaration;
+      classMember = new ClassMember(classDeclaration);
       classMembers.set(memberName, classMember);
     }
     classMember.references.add(node);

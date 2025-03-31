@@ -43,6 +43,7 @@ module.exports = {
           }
           return true;
         }
+        return false;
       },
       NewExpression(node) {
         if (isMemberExpression(

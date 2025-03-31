@@ -77,22 +77,21 @@ module.exports = {
     function processReference(reference, domFragment) {
       const parent = reference.parent;
       const isAccessed = parent.type === 'MemberExpression' && parent.object === reference;
-      const property = isAccessed ? parent.property : null;
+      if (!isAccessed) {
+        return false;
+      }
+      const property = parent.property;
       const grandParent = parent.parent;
-      const isPropertyAssignment =
-          isAccessed && grandParent.type === 'AssignmentExpression' && grandParent.left === parent;
+      const isPropertyAssignment = grandParent.type === 'AssignmentExpression' && grandParent.left === parent;
       const propertyValue = isPropertyAssignment ? grandParent.right : null;
-      const isMethodCall = isAccessed && grandParent.type === 'CallExpression' && grandParent.callee === parent;
-      const firstArg = isMethodCall ? grandParent.arguments[0] : null;
-      const secondArg = isMethodCall ? grandParent.arguments[1] : null;
+      const isMethodCall = grandParent.type === 'CallExpression' && grandParent.callee === parent;
       const grandGrandParent = grandParent.parent;
-      const isPropertyMethodCall = isAccessed && grandParent.type === 'MemberExpression' &&
-          grandParent.object === parent && grandGrandParent.type === 'CallExpression' &&
-          grandGrandParent.callee === grandParent;
+      const isPropertyMethodCall = grandParent.type === 'MemberExpression' && grandParent.object === parent &&
+          grandGrandParent.type === 'CallExpression' && grandGrandParent.callee === grandParent;
       const propertyMethodArgument = isPropertyMethodCall ? grandGrandParent.arguments[0] : null;
-      const isSubpropertyAssignment = isAccessed && grandParent.type === 'MemberExpression' &&
-          grandParent.object === parent && grandParent.property.type === 'Identifier' &&
-          grandGrandParent.type === 'AssignmentExpression' && grandGrandParent.left === grandParent;
+      const isSubpropertyAssignment = grandParent.type === 'MemberExpression' && grandParent.object === parent &&
+          grandParent.property.type === 'Identifier' && grandGrandParent.type === 'AssignmentExpression' &&
+          grandGrandParent.left === grandParent;
       const subproperty =
           isSubpropertyAssignment && grandParent.property.type === 'Identifier' ? grandParent.property : null;
       const subpropertyValue = isSubpropertyAssignment ? grandGrandParent.right : null;
@@ -102,6 +101,8 @@ module.exports = {
             return true;
           }
         } else if (isMethodCall) {
+          const firstArg = grandParent.arguments[0];
+          const secondArg = grandParent.arguments[1];
           if (isIdentifier(property, 'addEventListener')) {
             const event = getEvent(firstArg);
             const value = secondArg;
@@ -136,11 +137,10 @@ module.exports = {
         if (!reference.processed) {
           continue;
         }
-        const expression = getEnclosingExpression(reference.node);
-        if (!expression) {
+        const range = getEnclosingExpression(reference.node)?.range;
+        if (!range) {
           continue;
         }
-        const range = expression.range;
         ranges.push(range);
         for (const child of domFragment.children) {
           ranges.push(...getRangesToRemove(child));
@@ -148,7 +148,10 @@ module.exports = {
       }
 
       if (domFragment.initializer && domFragment.references.every(r => r.processed)) {
-        ranges.push(getEnclosingExpression(domFragment.initializer).range);
+        const range = getEnclosingExpression(domFragment.initializer)?.range;
+        if (range) {
+          ranges.push(range);
+        }
       }
       for (const range of ranges) {
         while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
@@ -180,15 +183,15 @@ module.exports = {
           const template = 'html`' + domFragment.toTemplateLiteral(sourceCode).join('') + '`';
           let replacementLocation = domFragment.replacementLocation;
 
-          if (replacementLocation.type === 'VariableDeclarator') {
-            domFragment.initializer = null;
+          if (replacementLocation?.type === 'VariableDeclarator') {
+            domFragment.initializer = undefined;
             return [
               fixer.replaceText(replacementLocation.init, template),
               ...getRangesToRemove(domFragment).map(range => fixer.removeRange(range)),
             ];
           }
 
-          if (replacementLocation.parent.type === 'ExportNamedDeclaration') {
+          if (replacementLocation?.parent?.type === 'ExportNamedDeclaration') {
             replacementLocation = replacementLocation.parent;
           }
           const text = `

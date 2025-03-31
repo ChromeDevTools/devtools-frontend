@@ -24,7 +24,7 @@ class DomFragment {
   /** @type {{key: string, value: Node}[]} */ style = [];
   /** @type {{key: string, value: Node}[]} */ eventListeners = [];
   /** @type {{key: string, value: Node|string}[]} */ bindings = [];
-  /** @type {Node} */ textContent;
+  /** @type {Node|undefined} */ textContent;
   /** @type {DomFragment[]} */ children = [];
   /** @type {DomFragment|undefined} */ parent;
   /** @type {string|undefined} */ expression;
@@ -255,7 +255,10 @@ function getKey(node, sourceCode) {
   }
   const property = getEnclosingProperty(node);
   if (property) {
-    return ClassMember.getOrCreate(property, sourceCode);
+    const classMember = ClassMember.getOrCreate(property, sourceCode);
+    if (classMember) {
+      return classMember;
+    }
   }
   return node;
 }

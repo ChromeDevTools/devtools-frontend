@@ -58,7 +58,7 @@ export class TraceLoader {
     if (!context || context.timeout() >= 10_000) {
       return;
     }
-    context.timeout(10_000);
+    context.timeout(15_000);
   }
 
   /**

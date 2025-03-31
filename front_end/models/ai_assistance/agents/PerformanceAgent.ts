@@ -31,7 +31,7 @@ import {
  *
  * Check token length in https://aistudio.google.com/
  */
-const preamble = `You are an expert performance analyst specializing in Chrome DevTools.
+const preamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
 This tree originates from the root task associated with the selected call frame.

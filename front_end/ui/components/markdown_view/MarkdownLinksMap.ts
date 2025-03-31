@@ -82,6 +82,9 @@ export const getMarkdownLink = (key: string): string => {
   if (/^https:\/\/web\.dev\//.test(key)) {
     return key;
   }
+  if (key === 'https://philipwalton.com/articles/the-state-of-es5-on-the-web/') {
+    return key;
+  }
   const link = markdownLinks.get(key);
   if (!link) {
     throw new Error(`Markdown link with key '${key}' is not available, please check MarkdownLinksMap.ts`);

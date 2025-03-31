@@ -101,6 +101,7 @@ type InsightNameToComponentMapping =
  * Order does not matter (but keep alphabetized).
  */
 const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
+  Cache: Insights.Cache.Cache,
   CLSCulprits: Insights.CLSCulprits.CLSCulprits,
   DocumentLatency: Insights.DocumentLatency.DocumentLatency,
   DOMSize: Insights.DOMSize.DOMSize,
@@ -111,13 +112,13 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
   LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
   LCPPhases: Insights.LCPPhases.LCPPhases,
+  LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
+  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
   NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
   RenderBlocking: Insights.RenderBlocking.RenderBlocking,
   SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
   ThirdParties: Insights.ThirdParties.ThirdParties,
   Viewport: Insights.Viewport.Viewport,
-  Cache: Insights.Cache.Cache,
-  ModernHTTP: Insights.ModernHTTP.ModernHTTP,
 };
 
 export class SidebarSingleInsightSet extends HTMLElement {

@@ -135,5 +135,6 @@ copy_to_gen("traces") {
     "web-dev.json.gz",
     "web-sockets.json.gz",
     "wrong-main-frame-bug.json.gz",
+    "yahoo-news.json.gz",
   ]
 }

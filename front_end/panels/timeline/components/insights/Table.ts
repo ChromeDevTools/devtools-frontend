@@ -220,6 +220,7 @@ export class Table extends HTMLElement {
       return;
     }
 
+    const numColumns = this.#headers.length;
     const flattenedRows: TableDataRow[] = [];
     const rowEls: Lit.TemplateResult[] = [];
     function traverse(row: TableDataRow, depth = 0): void {
@@ -231,7 +232,12 @@ export class Table extends HTMLElement {
         color: depth ? 'var(--sys-color-on-surface-subtle)' : '',
       });
       const columnEls = row.values.map(
-          (value, i) => i === 0 ? html`<th scope="row" style=${thStyles}>${value}</th>` : html`<td>${value}</td>`);
+          (value, i) => i === 0 ? html`<th
+                scope="row"
+                colspan=${i === row.values.length - 1 ? numColumns - i : 1}
+                style=${thStyles}>${value}
+              </th>` :
+                                  html`<td>${value}</td>`);
       rowEls.push(html`<tr style=${trStyles}>${columnEls}</tr>`);
 
       flattenedRows.push(row);

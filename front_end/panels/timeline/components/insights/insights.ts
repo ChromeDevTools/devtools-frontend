@@ -17,6 +17,7 @@ import * as ImageDelivery from './ImageDelivery.js';
 import * as InteractionToNextPaint from './InteractionToNextPaint.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LCPPhases from './LCPPhases.js';
+import * as LegacyJavaScript from './LegacyJavaScript.js';
 import * as ModernHTTP from './ModernHTTP.js';
 import * as NetworkDependencyTree from './NetworkDependencyTree.js';
 import * as NodeLink from './NodeLink.js';
@@ -44,6 +45,7 @@ export {
   InteractionToNextPaint,
   LCPDiscovery,
   LCPPhases,
+  LegacyJavaScript,
   ModernHTTP,
   NetworkDependencyTree,
   NodeLink,

@@ -72,6 +72,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Forced reflow',
       'Use efficient cache lifetimes',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -90,6 +91,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Forced reflow',
       'Use efficient cache lifetimes',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
   });
 
@@ -130,6 +132,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'CSS Selector costs',
       'Forced reflow',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -147,6 +150,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'CSS Selector costs',
       'Forced reflow',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
   });
 
@@ -189,6 +193,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'CSS Selector costs',
       'Forced reflow',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -205,6 +210,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'CSS Selector costs',
       'Forced reflow',
       'Modern HTTP',
+      'Legacy JavaScript',
     ]);
   });
 

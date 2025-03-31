@@ -26,7 +26,12 @@ export const UIStrings = {
   /**
    * @description Description of an insight that identifies polyfills for modern JavaScript features, and recommends their removal.
    */
-  description: 'Legacy JavaScript',
+  description:
+      'Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren\'t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support legacy browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)',
+  /** Label for a column in a data table; entries will be the individual JavaScript scripts. */
+  columnScript: 'Script',
+  /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
+  columnWastedBytes: 'Wasted bytes',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LegacyJavaScript.ts', UIStrings);
@@ -48,6 +53,8 @@ type LegacyJavaScriptResults = Map<Handlers.ModelHandlers.Scripts.Script, Legacy
 export type LegacyJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   legacyJavaScriptResults: LegacyJavaScriptResults,
 }>;
+
+const BYTE_THRESHOLD = 5000;
 
 function finalize(partialModel: PartialInsightModel<LegacyJavaScriptInsightModel>): LegacyJavaScriptInsightModel {
   const requests = [...partialModel.legacyJavaScriptResults.keys()].map(script => script.request).filter(e => !!e);
@@ -86,11 +93,15 @@ export function generateInsight(
   const wastedBytesByRequestId = new Map<string, number>();
 
   for (const script of scripts) {
-    if (!script.content) {
+    if (!script.content || script.content.length < BYTE_THRESHOLD) {
       continue;
     }
 
     const result = detectLegacyJavaScript(script.content, script.sourceMap);
+    if (result.estimatedByteSavings < BYTE_THRESHOLD) {
+      continue;
+    }
+
     legacyJavaScriptResults.set(script, result);
 
     if (script.request) {
@@ -101,8 +112,11 @@ export function generateInsight(
     }
   }
 
+  const sorted =
+      new Map([...legacyJavaScriptResults].sort((a, b) => b[1].estimatedByteSavings - a[1].estimatedByteSavings));
+
   return finalize({
-    legacyJavaScriptResults,
+    legacyJavaScriptResults: sorted,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
   });
 }

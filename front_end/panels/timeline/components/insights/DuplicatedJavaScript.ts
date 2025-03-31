@@ -14,7 +14,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import * as Utils from '../../utils/utils.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {eventRef} from './EventRef.js';
+import {scriptRef} from './ScriptRef.js';
 import type {TableData, TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.DuplicatedJavaScript;
@@ -108,7 +108,7 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScr
 
           return {
             values: [
-              script.request ? eventRef(script.request) : script.url ?? 'unknown',
+              scriptRef(script),
               index === 0 ? '--' : i18n.ByteUtilities.bytesToString(resourceSize),
             ],
             overlays,

@@ -891,6 +891,10 @@ class ToolbarInputElement extends HTMLElement {
     });
   }
 
+  override focus(): void {
+    this.item.focus();
+  }
+
   async #onAutocomplete(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
     if (!prefix && !force && expression || !this.datalist) {
       return [];

@@ -26,18 +26,13 @@ fieldset {
   border: none;
 }
 
-.experiments-filter {
-  padding-top: 1px;
-  display: flex;
-  align-items: center;
-}
-
 label {
   padding-right: 8px;
 }
 
-.experiments-filter label {
-  padding-bottom: 0;
+.experiments-filter {
+  width: 100%;
+  padding: 0 var(--sys-size-4) 0 var(--sys-size-3);
 }
 
 .settings-select {

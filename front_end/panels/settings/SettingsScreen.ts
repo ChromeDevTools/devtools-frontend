@@ -39,6 +39,7 @@ import type * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
@@ -81,10 +82,6 @@ const UIStrings = {
    */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
   /**
-   * @description Label for a filter text input that controls which experiments are shown.
-   */
-  filterExperimentsLabel: 'Filter',
-  /**
    * @description Warning text shown when the user has entered text to filter the
    * list of experiments, but no experiments match the filter.
    */
@@ -97,6 +94,10 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to a feedback form
    */
   sendFeedback: 'Send feedback',
+  /**
+   *@description Placeholder text in search bar
+   */
+  searchExperiments: 'Search experiments',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -393,28 +394,31 @@ export class GenericSettingsTab extends SettingsTab {
 export class ExperimentsSettingsTab extends SettingsTab {
   #experimentsSection: Cards.Card.Card|undefined;
   #unstableExperimentsSection: Cards.Card.Card|undefined;
-  #inputElement: HTMLInputElement;
   private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
 
   constructor() {
     super('experiments-tab-content');
     this.containerElement.classList.add('settings-card-container');
+    this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
 
     const filterSection = this.containerElement.createChild('div');
     filterSection.classList.add('experiments-filter');
+    render(
+        html`
+        <devtools-toolbar>
+          <devtools-toolbar-input type="filter" placeholder=${
+            i18nString(UIStrings.searchExperiments)} style="flex-grow:1" @change=${
+            this.#onFilterChanged.bind(this)}></devtools-toolbar-input>
+        </devtools-toolbar>
+    `,
+        filterSection);
+    this.renderExperiments('');
+    const filter = filterSection.querySelector('devtools-toolbar-input') as HTMLElement;
+    this.setDefaultFocusedElement(filter);
+  }
 
-    this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
-
-    const labelElement = filterSection.createChild('label');
-    labelElement.textContent = i18nString(UIStrings.filterExperimentsLabel);
-    this.#inputElement = UI.UIUtils.createInput('', 'text', 'experiments-filter');
-    UI.ARIAUtils.bindLabelToControl(labelElement, this.#inputElement);
-    filterSection.appendChild(this.#inputElement);
-    this.#inputElement.addEventListener(
-        'input', () => this.renderExperiments(this.#inputElement.value.toLowerCase()), false);
-    this.setDefaultFocusedElement(this.#inputElement);
-
-    this.setFilter('');
+  #onFilterChanged(e: CustomEvent<string>): void {
+    this.renderExperiments(e.detail.toLowerCase());
   }
 
   private renderExperiments(filterText: string): void {
@@ -528,11 +532,6 @@ export class ExperimentsSettingsTab extends SettingsTab {
         PanelUtils.highlightElement(element);
       }
     }
-  }
-
-  setFilter(filterText: string): void {
-    this.#inputElement.value = filterText;
-    this.#inputElement.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
   }
 
   override wasShown(): void {

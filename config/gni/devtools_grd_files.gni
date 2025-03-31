@@ -991,6 +991,7 @@ grd_files_debug_sources = [
   "front_end/models/ai_assistance/agents/NetworkAgent.js",
   "front_end/models/ai_assistance/agents/PatchAgent.js",
   "front_end/models/ai_assistance/agents/PerformanceAgent.js",
+  "front_end/models/ai_assistance/agents/PerformanceAnnotationsAgent.js",
   "front_end/models/ai_assistance/agents/PerformanceInsightsAgent.js",
   "front_end/models/ai_assistance/agents/StylingAgent.js",
   "front_end/models/ai_assistance/data_formatters/FileFormatter.js",

@@ -201,7 +201,11 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
 export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTree> {
   override readonly type = AgentType.PERFORMANCE;
   readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
+
+  // We have to set the type of clientFeature here to be the entire enum
+  // because in PerformanceAnnotationsAgent.ts we override it.
+  // TODO(b/406961576): split the agents apart rather than have one extend the other.
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
@@ -251,37 +255,4 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
     const perfEnhancementQuery = treeStr ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
   }
-
-  /**
-   * Used in the Performance panel to automatically generate a label for a selected entry.
-   */
-  async generateAIEntryLabel(callTree: TimelineUtils.AICallTree.AICallTree): Promise<string> {
-    const context = new CallTreeContext(callTree);
-    const response = await Array.fromAsync(this.run(AI_LABEL_GENERATION_PROMPT, {selected: context}));
-    const lastResponse = response.at(-1);
-    if (lastResponse && lastResponse.type === ResponseType.ANSWER && lastResponse.complete === true) {
-      return lastResponse.text.trim();
-    }
-    throw new Error('Failed to generate AI entry label');
-  }
 }
-
-const AI_LABEL_GENERATION_PROMPT = `## Instruction:
-Generate a concise label (max 60 chars, single line) describing the selected call tree's activity, based solely on the provided call tree data.
-
-You should focus on:
-1. What activity is happening within the call tree.
-2. What the code within the call tree is doing.
-3. What (if any) visible impact to the user there is.
-
-## Strict Constraints:
-- Output must be a single line of text.
-- Maximum 60 characters.
-- No full stops.
-- Base the description only on the information present within the call tree data.
-- Do not include the name of the selected event.
-- Do not make assumptions about when the activity happened.
-- Only include details on activity that you are highly confident about.
-- Prioritize brevity.
-- Only include third-party script names if their identification is highly confident.
-`;

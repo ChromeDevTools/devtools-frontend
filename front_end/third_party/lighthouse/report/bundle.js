@@ -2626,7 +2626,7 @@ details[open] .lh-clump-toggletext--hide { display: block;}
     }
     .lh-tools__button.lh-active + .lh-tools__dropdown {
       opacity: 1;
-      clip: rect(-1px, 194px, 270px, -3px);
+      clip: rect(-1px, 194px, 305px, -3px);
       visibility: visible;
     }
     .lh-tools__dropdown {

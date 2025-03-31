@@ -207,7 +207,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderContent(): LitTemplate {
-        if (!input.changeSummary || input.savedToDisk) {
+        if ((!input.changeSummary || input.savedToDisk)  && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
           return nothing;
         }
 
@@ -218,7 +218,7 @@ export class PatchWidget extends UI.Widget.Widget {
         }
 
         return html`<devtools-code-block
-          .code=${input.changeSummary}
+          .code=${input.changeSummary ?? ''}
           .codeLang=${'css'}
           .displayNotice=${true}
         ></devtools-code-block>

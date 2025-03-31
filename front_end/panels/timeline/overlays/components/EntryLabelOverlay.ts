@@ -649,7 +649,6 @@ export class EntryLabelOverlay extends HTMLElement {
     return html`<devtools-tooltip
     variant="rich"
     id="info-tooltip"
-    aria-label=${i18nString(UIStrings.moreInfoAriaLabel)}
     ${Directives.ref(this.#richTooltip)}>
       <div class="info-tooltip-container">
         ${opts.textContent}
@@ -722,6 +721,7 @@ export class EntryLabelOverlay extends HTMLElement {
         </button>
         <devtools-button
           aria-details="info-tooltip"
+          aria-label=${i18nString(UIStrings.moreInfoAriaLabel)}
           class="pen-icon"
           .iconName=${'info'}
           .variant=${Buttons.Button.Variant.ICON}

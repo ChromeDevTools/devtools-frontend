@@ -49,14 +49,6 @@ describeWithEnvironment('Ignore List Setting', () => {
     return newRegexInput;
   }
 
-  function getValidationResultElement(component: HTMLElement): HTMLDivElement {
-    assert.isNotNull(component.shadowRoot);
-    const validationResultElement = component.shadowRoot.querySelector<HTMLDivElement>('.input-validation');
-
-    assert.exists(validationResultElement);
-    return validationResultElement;
-  }
-
   before(() => {
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
@@ -177,76 +169,6 @@ describeWithEnvironment('Ignore List Setting', () => {
     assert.isFalse(isIgnoreRegexDisabled('rule 1'));
   });
 
-  it('Do not show warning message for valid rule', async () => {
-    const component = await renderIgnoreListSetting();
-    const newRegexInput = getNewRegexInput(component);
-
-    dispatchFocusEvent(newRegexInput);
-    newRegexInput.value = 'rule 1';
-    dispatchInputEvent(newRegexInput);
-    await RenderCoordinator.done();
-
-    const validationResultElement = component.shadowRoot?.querySelector<HTMLDivElement>('.input-validation');
-    assert.notExists(validationResultElement);
-
-    // We need this to simulate the 'finish editing' with empty input, so it can remove the temp regex. Otherwise the
-    // future tests will be messed up.
-    // The 'finish editing' part will be tested later
-    newRegexInput.value = '';
-    dispatchBlurEvent(newRegexInput);
-  });
-
-  it('Show error message for invalid rule', async () => {
-    // One example of invalid rule is duplicate input.
-    ignoreRegex('rule 1');
-    assert.isTrue(isRegexInIgnoredList('rule 1'));
-
-    const component = await renderIgnoreListSetting();
-    const newRegexInput = getNewRegexInput(component);
-
-    dispatchFocusEvent(newRegexInput);
-    newRegexInput.value = 'rule 1';
-    dispatchInputEvent(newRegexInput);
-    await RenderCoordinator.done();
-
-    const validationResultElement = getValidationResultElement(component);
-    assert.isFalse(validationResultElement.hidden);
-    assert.isTrue(validationResultElement.classList.contains('input-validation-error'));
-    assert.isNotEmpty(validationResultElement.textContent);
-
-    // We need this to simulate the 'finish editing' with empty input, so it can remove the temp regex. Otherwise the
-    // future tests will be messed up.
-    // The 'finish editing' part will be tested later
-    newRegexInput.value = '';
-    dispatchBlurEvent(newRegexInput);
-  });
-
-  it('Show warning message for valid rule with warning message', async () => {
-    // One example of valid rule with warning message is when a rule is disabled and it is added again.
-    ignoreRegex('rule 1');
-    disableIgnoreRegex('rule 1');
-    assert.isTrue(isIgnoreRegexDisabled('rule 1'));
-
-    const component = await renderIgnoreListSetting();
-    const newRegexInput = getNewRegexInput(component);
-
-    dispatchFocusEvent(newRegexInput);
-    newRegexInput.value = 'rule 1';
-    dispatchInputEvent(newRegexInput);
-    await RenderCoordinator.done();
-
-    const validationResultElement = getValidationResultElement(component);
-    assert.isFalse(validationResultElement.hidden);
-    assert.isFalse(validationResultElement.classList.contains('input-validation-error'));
-    assert.isNotEmpty(validationResultElement.textContent);
-
-    // We need this to simulate the 'finish editing' with empty input, so it can remove the temp regex. Otherwise the
-    // future tests will be messed up.
-    // The 'finish editing' part will be tested later
-    newRegexInput.value = '';
-    dispatchBlurEvent(newRegexInput);
-  });
-
   describe('preview the result', () => {
     it('Add an empty regex when focusing on the input', async () => {
       const regexPatterns = getIgnoredRegexes();
@@ -340,41 +262,20 @@ describeWithEnvironment('Ignore List Setting', () => {
 describeWithEnvironment('Pattern validator', () => {
   it('Can validate the valid pattern', () => {
     const validPattern = '^hello$';
-    const result = TimelineComponents.IgnoreListSetting.patternValidator([], validPattern);
-    assert.isTrue(result.valid);
+    const result = TimelineComponents.IgnoreListSetting.regexInputIsValid(validPattern);
+    assert.isTrue(result);
   });
 
-  it('Returns the reason for the empty pattern', () => {
+  it('Returns false for the empty pattern', () => {
     const emptyPattern = '';
-    const result = TimelineComponents.IgnoreListSetting.patternValidator([], emptyPattern);
-    assert.isFalse(result.valid);
-    assert.strictEqual(result.message, 'Rule can\'t be empty');
+    const result = TimelineComponents.IgnoreListSetting.regexInputIsValid(emptyPattern);
+    assert.isFalse(result);
   });
 
-  it('Returns the reason for the existed pattern', () => {
-    const duplicatePattern = 'abc';
-    const existedRegex = {pattern: duplicatePattern, disabled: false};
-
-    const result = TimelineComponents.IgnoreListSetting.patternValidator([existedRegex], duplicatePattern);
-    assert.isFalse(result.valid);
-    assert.strictEqual(result.message, 'Rule already exists');
-  });
-
-  it('Returns true for the disabled existed pattern', () => {
-    const duplicatePattern = 'abc';
-    const existedRegex = {pattern: duplicatePattern, disabled: true};
-
-    const result = TimelineComponents.IgnoreListSetting.patternValidator([existedRegex], duplicatePattern);
-    assert.isTrue(result.valid);
-    assert.strictEqual(
-        result.message, 'This rule already exists but is disabled. Saving this value will re-enable the rule');
-  });
-
-  it('Returns the reason for the invalid pattern', () => {
+  it('Returns false for the invalid pattern', () => {
     const invalidPattern = '[';
-    const result = TimelineComponents.IgnoreListSetting.patternValidator([], invalidPattern);
-    assert.isFalse(result.valid);
-    assert.strictEqual(result.message, 'Rule must be a valid regular expression');
+    const result = TimelineComponents.IgnoreListSetting.regexInputIsValid(invalidPattern);
+    assert.isFalse(result);
   });
 });
 

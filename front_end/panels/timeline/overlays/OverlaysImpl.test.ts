@@ -787,20 +787,22 @@ describeWithEnvironment('Overlays', () => {
       assert.isNotOk(aiLabelButtonWrapper);
     });
 
-    it('Inputting `Enter`into label overlay makes it non-editable', async function() {
-      const {inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'label');
+    it('Inputting `Enter` into label overlay makes it non-editable', async function() {
+      const {inputField, component} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'label');
 
       // Double click on the label box to make it editable and focus on it
       inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
 
       // Ensure the label content is editable
       assert.isTrue(inputField.isContentEditable);
+      assert.isTrue(component.hasAttribute('data-user-editing-label'));
 
       // Press `Enter` to make the label not editable
       inputField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
 
       // Ensure the label content is not editable
       assert.isFalse(inputField.isContentEditable);
+      assert.isFalse(component.hasAttribute('data-user-editing-label'));
     });
 
     it('Inputting `Enter` into time range label field when the label is empty removes the overlay', async function() {

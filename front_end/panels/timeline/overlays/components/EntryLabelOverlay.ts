@@ -461,6 +461,15 @@ export class EntryLabelOverlay extends HTMLElement {
     if (this.#inAIConsentDialogFlow && editable === false) {
       return;
     }
+
+    // Set an attribute on the host; this is used in the overlays CSS to bring
+    // the focused, editable label to the top above any others.
+    if (editable) {
+      this.setAttribute('data-user-editing-label', 'true');
+    } else {
+      this.removeAttribute('data-user-editing-label');
+    }
+
     this.#isLabelEditable = editable;
     this.#render();
     // If the label is editable, focus cursor on it & put the cursor at the end

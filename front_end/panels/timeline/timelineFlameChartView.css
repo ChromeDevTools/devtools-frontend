@@ -22,7 +22,13 @@
 .overlay-type-ENTRY_LABEL {
   /* keep these above the selected entry overline, else they can become hard to read */
   z-index: 2;
+
+  /* if an overlay is being edited, keep it above the rest so the user is not obstructed */
+  &:has([data-user-editing-label]) {
+    z-index: 3;
+  }
 }
+
 
 .overlay-type-ENTRY_SELECTED,
 .overlay-type-ENTRY_OUTLINE {

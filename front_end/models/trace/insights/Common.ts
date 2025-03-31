@@ -84,11 +84,11 @@ export function getCLS(
   return {value: maxScore, worstClusterEvent: worstCluster ?? null};
 }
 
-export function evaluateLCPMetricScore(value: number): number {
+export function evaluateLCPMetricScore(value: Types.Timing.Milli): number {
   return getLogNormalScore({p10: 2500, median: 4000}, value);
 }
 
-export function evaluateINPMetricScore(value: number): number {
+export function evaluateINPMetricScore(value: Types.Timing.Milli): number {
   return getLogNormalScore({p10: 200, median: 500}, value);
 }
 
@@ -212,8 +212,8 @@ export function calculateMetricWeightsForSorting(
   const fieldLcp = fieldMetrics.lcp?.value ?? null;
   const fieldInp = fieldMetrics.inp?.value ?? null;
   const fieldCls = fieldMetrics.cls?.value ?? null;
-  const fieldLcpScore = fieldLcp !== null ? evaluateLCPMetricScore(fieldLcp) : 0;
-  const fieldInpScore = fieldInp !== null ? evaluateINPMetricScore(fieldInp) : 0;
+  const fieldLcpScore = fieldLcp !== null ? evaluateLCPMetricScore(Helpers.Timing.microToMilli(fieldLcp)) : 0;
+  const fieldInpScore = fieldInp !== null ? evaluateINPMetricScore(Helpers.Timing.microToMilli(fieldInp)) : 0;
   const fieldClsScore = fieldCls !== null ? evaluateCLSMetricScore(fieldCls) : 0;
   const fieldLcpScoreInverted = 1 - fieldLcpScore;
   const fieldInpScoreInverted = 1 - fieldInpScore;

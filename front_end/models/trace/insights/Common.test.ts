@@ -53,7 +53,7 @@ describeWithEnvironment('Common', function() {
       const {insightSet, metadata} = await process(this, 'image-delivery.json.gz');
 
       const weights = calculateMetricWeightsForSorting(insightSet, metadata);
-      assert.deepEqual(weights, {lcp: 0.48649783990559314, inp: 0.48649783990559314, cls: 0.027004320188813675});
+      assert.deepEqual(weights, {lcp: 0.07778127820223579, inp: 0.5504200439526509, cls: 0.37179867784511333});
     });
   });
 

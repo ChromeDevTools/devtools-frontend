@@ -405,13 +405,16 @@ export class TimelineDetailsPane extends
     if (!this.#filmStrip) {
       return null;
     }
+
     const screenshotTime = (frame.idle ? frame.startTime : frame.endTime);
     const filmStripFrame = Trace.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, screenshotTime);
     if (!filmStripFrame) {
       return null;
     }
+
     const frameTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
-    return frameTimeMilliSeconds - frame.endTime < 10 ? filmStripFrame : null;
+    const frameEndTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(frame.endTime);
+    return frameTimeMilliSeconds - frameEndTimeMilliSeconds < 10 ? filmStripFrame : null;
   }
 
   #setSelectionForTimelineFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {

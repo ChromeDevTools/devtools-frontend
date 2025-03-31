@@ -381,13 +381,15 @@ export class TraceProcessor extends EventTarget {
 
     // Normalize the estimated savings to a single number, weighted by its relative impact
     // to the page experience based on the same scoring curve that Lighthouse uses.
-    const observedLcp = Insights.Common.getLCP(insights, insightSet.id)?.value;
+    const observedLcpMicro = Insights.Common.getLCP(insights, insightSet.id)?.value;
+    const observedLcp = observedLcpMicro ? Helpers.Timing.microToMilli(observedLcpMicro) : Types.Timing.Milli(0);
     const observedCls = Insights.Common.getCLS(insights, insightSet.id).value;
 
     // INP is special - if users did not interact with the page, we'll have no INP, but we should still
     // be able to prioritize insights based on this metric. When we observe no interaction, instead use
     // a default value for the baseline INP.
-    const observedInp = Insights.Common.getINP(insights, insightSet.id)?.value ?? 200;
+    const observedInpMicro = Insights.Common.getINP(insights, insightSet.id)?.value;
+    const observedInp = observedInpMicro ? Helpers.Timing.microToMilli(observedInpMicro) : Types.Timing.Milli(200);
 
     const observedLcpScore =
         observedLcp !== undefined ? Insights.Common.evaluateLCPMetricScore(observedLcp) : undefined;
@@ -400,8 +402,9 @@ export class TraceProcessor extends EventTarget {
       const inp = model.metricSavings?.INP ?? 0;
       const cls = model.metricSavings?.CLS ?? 0;
 
-      const lcpPostSavings = observedLcp !== undefined ? Math.max(0, observedLcp - lcp) : undefined;
-      const inpPostSavings = Math.max(0, observedInp - inp);
+      const lcpPostSavings =
+          observedLcp !== undefined ? Math.max(0, observedLcp - lcp) as Types.Timing.Milli : undefined;
+      const inpPostSavings = Math.max(0, observedInp - inp) as Types.Timing.Milli;
       const clsPostSavings = Math.max(0, observedCls - cls);
 
       let score = 0;

@@ -102,6 +102,7 @@ export class ChangeManager {
         .flatMap(
             changesPerStylesheet => changesPerStylesheet.filter(change => change.groupId === groupId)
                                         .map(change => this.#formatChange(change, includeSourceLocation)))
+        .filter(change => change !== '')
         .join('\n\n');
   }
 

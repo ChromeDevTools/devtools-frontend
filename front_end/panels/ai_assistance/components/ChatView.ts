@@ -973,6 +973,21 @@ function renderMessages({
                    (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
                onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
+  function renderPatchWidget(): Lit.LitTemplate {
+    if (isLoading) {
+      return Lit.nothing;
+    }
+
+    // clang-format off
+    return html`<devtools-widget
+      .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+        changeSummary,
+        changeManager,
+      })}
+    ></devtools-widget>`;
+    // clang-format on
+  }
+
   // clang-format off
   return html`
     <div class="messages-container" ${ref(onMessageContainerRef)}>
@@ -989,14 +1004,7 @@ function renderMessages({
           onFeedbackSubmit,
         }),
       )}
-      ${changeSummary && !isLoading
-        ? html`<devtools-widget
-            .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
-              changeSummary,
-              changeManager,
-            })}
-          ></devtools-widget>`
-        : Lit.nothing}
+      ${renderPatchWidget()}
     </div>
   `;
   // clang-format on

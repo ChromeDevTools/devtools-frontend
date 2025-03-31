@@ -152,7 +152,7 @@ export class PatchWidget extends UI.Widget.Widget {
 
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
-      if (!input.changeSummary) {
+      if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
         return;
       }
       output.tooltipRef = output.tooltipRef ?? Directives.createRef<HTMLElement>();
@@ -429,6 +429,7 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     });
 
     this.#savedToDisk = true;
+    this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     void this.changeManager?.dropStashedChanges();
     this.requestUpdate();
   }

@@ -36,7 +36,9 @@ function isPropertyDefinitionViaBindCallToThis(propertyDefinition) {
     return false;
   }
 
-  const isCalleeObjectThis = isMemberExpressionOnThis(propertyDefinition.value.callee);
+  const isCalleeObjectThis = isMemberExpressionOnThis(
+      propertyDefinition.value.callee,
+  );
   // Whether the CallExpression is on a property of `this` (this.xxx.yyy.bind)
   if (!isCalleeObjectThis) {
     return false;
@@ -69,45 +71,74 @@ module.exports = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Enforce render method to be bound while calling scheduleRender',
+      description:
+        'Enforce render method to be bound while calling scheduleRender',
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
+  create: function (context) {
     return {
       CallExpression(node) {
         // Calls in the form of `ScheduledRender.scheduleRender`
-        const isScheduleRenderCall = node.callee.type === 'MemberExpression' &&
-            node.callee.object?.property?.name === 'ScheduledRender' && node.callee.property?.name === 'scheduleRender';
-        if (!isScheduleRenderCall) {
+        if (
+          node.callee.type !== 'MemberExpression' ||
+          node.callee.object.type !== 'MemberExpression' ||
+          node.callee.object.property.type !== 'Identifier' ||
+          node.callee.object.property?.name !== 'ScheduledRender' ||
+          node.callee.property.type !== 'Identifier' ||
+          node.callee.property.name !== 'scheduleRender'
+        ) {
           return;
         }
 
         const callbackArgument = node.arguments[1];
         // Whether the second argument points to a property of `this`
         // like `ScheduledRender.scheduleRender(<any>, this.<any>)
-        if (callbackArgument.type !== 'MemberExpression' || callbackArgument.object.type !== 'ThisExpression') {
+        if (
+          callbackArgument.type !== 'MemberExpression' ||
+          callbackArgument.object.type !== 'ThisExpression'
+        ) {
           return;
         }
 
         const containingClassForTheCall = goToClassDeclaration(node);
         // Only care about the calls in custom components
-        if (!containingClassForTheCall.superClass || containingClassForTheCall.superClass.name !== 'HTMLElement') {
+        if (
+          !containingClassForTheCall.superClass ||
+          containingClassForTheCall.superClass.name !== 'HTMLElement'
+        ) {
           return;
         }
 
         const calledMethod = callbackArgument.property;
+        if (
+          calledMethod.type !== 'Identifier' &&
+          calledMethod.type !== 'PrivateIdentifier'
+        ) {
+          return;
+        }
+
         // Check whether the called method is bound (it should be 'PropertyDefinition')
         const propertyDefinition = containingClassForTheCall.body.body.find(
-            bodyNode => bodyNode.type === 'PropertyDefinition' && bodyNode.key.name === calledMethod.name);
-        if (!propertyDefinition ||
-            (!isPropertyDefinitionViaArrowFunction(propertyDefinition) &&
-             !isPropertyDefinitionViaBindCallToThis(propertyDefinition))) {
-          context.report({node, message: 'Bind `render` method of `scheduleRender` to `this` in components'});
+          bodyNode =>
+            bodyNode.type === 'PropertyDefinition' &&
+            'name' in bodyNode.key &&
+            bodyNode.key.name === calledMethod.name,
+        );
+        if (
+          !propertyDefinition ||
+          (!isPropertyDefinitionViaArrowFunction(propertyDefinition) &&
+            !isPropertyDefinitionViaBindCallToThis(propertyDefinition))
+        ) {
+          context.report({
+            node,
+            message:
+              'Bind `render` method of `scheduleRender` to `this` in components',
+          });
         }
-      }
+      },
     };
-  }
+  },
 };

@@ -65,7 +65,7 @@ module.exports = {
 
     return {
       ClassDeclaration(node) {
-        if (node.superClass?.name !== 'HTMLElement') {
+        if (node.superClass?.type !== 'Identifier' || node.superClass?.name !== 'HTMLElement') {
           return;
         }
 

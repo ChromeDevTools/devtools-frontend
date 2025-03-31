@@ -27,6 +27,10 @@ module.exports = {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     function removeExportKeywordFromUIStrings(fixer, exportNamedDeclaration) {
       const exportToken = sourceCode.getFirstToken(exportNamedDeclaration);
+      if (!exportToken) {
+        return [];
+      }
+
       if (exportToken.type === 'Keyword' && exportToken.value === 'export') {
         return fixer.remove(exportToken);
       }

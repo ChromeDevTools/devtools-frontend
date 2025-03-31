@@ -25,36 +25,42 @@ module.exports = {
         lastImport = node;
       },
       VariableDeclarator(node) {
-        if (
-          (sourceCode.getScope ? sourceCode.getScope(node) : context.getScope())
-            .type !== 'module'
-        ) {
+        const scope = sourceCode.getScope ? sourceCode.getScope(node) : context.getScope();
+        if (scope.type !== 'module') {
           return;
         }
-        if (node.id.name === 'html') {
+        if (node.id.type === 'Identifier' && node.id.name === 'html') {
           shorthandDefined = true;
         }
+
+        if (node.id.type !== 'ObjectPattern') {
+          return;
+        }
+
         for (const property of node.id.properties || []) {
-          if (property.key.name === 'html') {
+          if (property.type === 'Property' && property.key.type === 'Identifier' && property.key.name === 'html') {
             shorthandDefined = true;
           }
         }
       },
       TaggedTemplateExpression(node) {
         const tag = node.tag;
-        if (
-          tag.type === 'MemberExpression' &&
-          tag.object.name === 'Lit' &&
-          tag.property.name === 'html'
-        ) {
+        if (tag.type === 'MemberExpression' && tag.object.type === 'Identifier' && tag.object.name === 'Lit' &&
+            tag.property.type === 'Identifier' && tag.property.name === 'html') {
           context.report({
             node,
-            message:
-              'Use unqualified html tagged template for compatibility with lit-analyzer',
+            message: 'Use unqualified html tagged template for compatibility with lit-analyzer',
             fix(fixer) {
-              const result = [
-                fixer.removeRange([tag.object.range[0], tag.property.range[0]]),
-              ];
+              const result = [];
+              if (tag.object?.range?.[0] && tag.property?.range?.[0]) {
+                result.push(
+                    fixer.removeRange([
+                      tag.object.range[0],
+                      tag.property.range[0],
+                    ]),
+                );
+              }
+
               if (lastImport && !shorthandDefined) {
                 result.push(
                   fixer.insertTextAfter(lastImport, '\n\nconst {html} = Lit;'),

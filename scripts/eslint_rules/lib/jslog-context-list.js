@@ -28,12 +28,15 @@ module.exports = {
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
-    const formattedValues = new Set(fs.readFileSync(ABSOLUTE_FILE_PATH, 'utf-8')
+  create: function (context) {
+    const formattedValues = new Set(
+      fs
+        .readFileSync(ABSOLUTE_FILE_PATH, 'utf-8')
         .split('\n')
-        .filter(l=>l.startsWith('  \'')));
+        .filter(l => l.startsWith('  \'')),
+    );
     const checkValue = (value, node) => {
       if (typeof value !== 'string') {
         return;
@@ -41,37 +44,60 @@ module.exports = {
       if (!value.length) {
         return;
       }
-      const formattedValue = '  ' + JSON.stringify(value).replaceAll('"', '\'') + ',';
+      const formattedValue =
+        '  ' + JSON.stringify(value).replaceAll('"', '\'') + ',';
       if (formattedValues.has(formattedValue)) {
         return;
       }
       formattedValues.add(formattedValue);
       if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
-        context.report({node, message: `Found jslog context value '${value}' that is not listed in ${FILE}`});
+        context.report({
+          node,
+          message: `Found jslog context value '${value}' that is not listed in ${FILE}`,
+        });
       }
     };
 
     const checkPropertyValue = (propertyName, node) => {
       for (const property of node?.properties || []) {
-        if (property.key?.name === propertyName || property.key?.value === propertyName) {
+        if (
+          property.key?.name === propertyName ||
+          property.key?.value === propertyName
+        ) {
           checkValue(property.value?.value, node);
         }
       }
     };
     return {
       CallExpression(node) {
-        if (node.callee?.object?.name === 'VisualLogging') {
-          checkValue(node.arguments[0]?.value, node);
-        } else {
-          const propertyName = node.callee?.property?.name;
+        const firstArg = node.arguments[0];
+        if (!firstArg) {
+          return;
+        }
+
+        if (
+          node.callee.type === 'MemberExpression' &&
+          node.callee.object.type === 'Identifier' &&
+          node.callee.object.name === 'VisualLogging'
+        ) {
+          if (firstArg.type === 'Literal') {
+            checkValue(firstArg.value, node);
+          }
+        } else if (
+          node.callee.type === 'MemberExpression' &&
+          node.callee.property.type === 'Identifier'
+        ) {
+          const propertyName = node.callee.property.name;
           if (propertyName === 'registerActionExtension') {
-            checkPropertyValue('actionId', node.arguments[0]);
+            checkPropertyValue('actionId', firstArg);
           } else if (propertyName === 'registerViewExtension') {
-            checkPropertyValue('id', node.arguments[0]);
+            checkPropertyValue('id', firstArg);
           } else if (propertyName === 'registerSettingExtension') {
-            checkPropertyValue('settingName', node.arguments[0]);
+            checkPropertyValue('settingName', firstArg);
           } else if (propertyName === 'createSetting') {
-            checkValue(node.arguments[0]?.value, node);
+            if (firstArg.type === 'Literal') {
+              checkValue(firstArg.value, node);
+            }
           }
         }
       },
@@ -79,15 +105,33 @@ module.exports = {
         checkPropertyValue('jslogContext', node);
       },
       VariableDeclarator(node) {
-        if (node.id.type === 'Identifier' && node.id.name === 'generatedProperties') {
-          for (const element of node.init?.elements || []) {
+        if (
+          node.id.type === 'Identifier' &&
+          node.id.name === 'generatedProperties' &&
+          node.init?.type === 'ArrayExpression'
+        ) {
+          for (const element of node.init.elements) {
             checkPropertyValue('name', element);
           }
         }
-        if (node.id.type === 'Identifier' && node.id.name === 'generatedAliasesFor') {
-          for (const outerElement of node.init?.arguments?.[0]?.elements || []) {
-            for (const innerElement of outerElement.elements || []) {
-              checkValue(innerElement.value, innerElement);
+        if (
+          node.id.type === 'Identifier' &&
+          node.id.name === 'generatedAliasesFor' &&
+          node.init?.type === 'NewExpression'
+        ) {
+          const firstArg = node.init?.arguments?.[0];
+          const elements =
+            firstArg.type === 'ArrayExpression' ? firstArg.elements : [];
+
+          for (const outerElement of elements) {
+            const innerElements =
+              outerElement?.type === 'ArrayExpression'
+                ? outerElement.elements
+                : [];
+            for (const innerElement of innerElements) {
+              if (innerElement && 'value' in innerElement) {
+                checkValue(innerElement.value, innerElement);
+              }
             }
           }
         }
@@ -96,10 +140,13 @@ module.exports = {
         if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
           return;
         }
-        const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
-            [...formattedValues].sort().join('\n') + '\n]);\n';
+        const finalContents =
+          LICENSE_HEADER +
+          'export const knownContextValues = new Set([\n' +
+          [...formattedValues].sort().join('\n') +
+          '\n]);\n';
         fs.writeFileSync(ABSOLUTE_FILE_PATH, finalContents, 'utf-8');
-      }
+      },
     };
-  }
+  },
 };

@@ -16,12 +16,14 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      inlineTypeImport: 'Type imports must be imported in the same import statement as values, using the type keyword',
-      convertTypeImport: 'Type imports must use the type modifier on each item, not on the overall import statement',
+      inlineTypeImport:
+        'Type imports must be imported in the same import statement as values, using the type keyword',
+      convertTypeImport:
+        'Type imports must use the type modifier on each item, not on the overall import statement',
     },
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
+  create: function (context) {
     // Stores any type imports (import type {} from ...).
     // The key is the literal import path ("../foo.js");
     const typeImports = new Map();
@@ -51,31 +53,30 @@ module.exports = {
       });
 
       // Find the last value specifier, which we will then insert the type imports to.
-      const lastValueSpecifier = valueImportNode.specifiers[valueImportNode.specifiers.length - 1];
+      const lastValueSpecifier =
+        valueImportNode.specifiers[valueImportNode.specifiers.length - 1];
 
       // Remember that we don't need to concern ourselves with indentation: in
       // PRESUBMIT clang-format runs _after_ ESLint, so we can let Clang tidy
       // up any rough edges.
-      const textToImport = ', ' +
-          typeImportSpecifiers
-              .map(spec => `type ${spec}`)
-              .join(', ');
+      const textToImport =
+        ', ' + typeImportSpecifiers.map(spec => `type ${spec}`).join(', ');
 
       return [
         // Remove the type import
         fixer.remove(typeImportNode),
         // Add the type imports to the existing import
-        fixer.insertTextAfter(lastValueSpecifier, textToImport)
+        fixer.insertTextAfter(lastValueSpecifier, textToImport),
       ];
     }
 
     function extractTypeImportKeyword(fixer, valueImportNode) {
       const importStart = valueImportNode.range[0];
-      const typeImportStart = importStart + 6;    // 6 here = length of "import"
+      const typeImportStart = importStart + 6; // 6 here = length of "import"
       // We need to remove the " type" text after "import".
       const addTypeToSpecifiersFixers = valueImportNode.specifiers.map(spec => {
         const typeImportStart = spec.range[0];
-        const typeImportEnd = typeImportStart + 5;  // 5 here = length of "type" + 1 to remove the space after it.
+        const typeImportEnd = typeImportStart + 5; // 5 here = length of "type" + 1 to remove the space after it.
         return fixer.removeRange([typeImportStart, typeImportEnd]);
       });
 
@@ -114,8 +115,10 @@ module.exports = {
 
         // Store the import
         const importFilePath = node.source.value;
+        // @ts-expect-error needs typescript-eslint
         if (node.importKind === 'type') {
           typeImports.set(importFilePath, node);
+          // @ts-expect-error needs typescript-eslint
         } else if (node.importKind === 'value') {
           valueImports.set(importFilePath, node);
         }
@@ -126,22 +129,29 @@ module.exports = {
         // Looping this way means if there are any value imports without a
         // matching type import, we leave them alone.
         for (const [typeImportFilePath, typeImportNode] of typeImports) {
-          const valueImportNodeForFilePath = valueImports.get(typeImportFilePath);
+          const valueImportNodeForFilePath =
+            valueImports.get(typeImportFilePath);
           if (valueImportNodeForFilePath) {
-          // If we've got here, we have two imports for the same file-path, one
-          // for types, and one for values, so let's merge them.
+            // If we've got here, we have two imports for the same file-path, one
+            // for types, and one for values, so let's merge them.
             context.report({
               node: typeImportNode,
               messageId: 'inlineTypeImport',
               fix(fixer) {
-                return mergeImports(fixer, typeImportNode, valueImportNodeForFilePath);
-              }
+                return mergeImports(
+                  fixer,
+                  typeImportNode,
+                  valueImportNodeForFilePath,
+                );
+              },
             });
             continue;
           }
         }
         for (const valueImportNode of valueImports.values()) {
-          const typeOnly = valueImportNode.specifiers.every(s => s.importKind === 'type');
+          const typeOnly = valueImportNode.specifiers.every(
+            s => s.importKind === 'type',
+          );
           if (typeOnly) {
             // BEFORE: import {type A, type B} from '...';
             // AFTER: import type {A, B} from '...';
@@ -150,11 +160,11 @@ module.exports = {
               messageId: 'convertTypeImport',
               fix(fixer) {
                 return extractTypeImportKeyword(fixer, valueImportNode);
-              }
+              },
             });
           }
         }
       },
     };
-  }
+  },
 };

@@ -38,5 +38,5 @@ Generate a concise label (max 60 chars, single line) describing the *user-visibl
 - Base the description only on the information present within the call tree data.
 - Prioritize brevity.
 - Only include third-party script names if their identification is highly confident.
-- Always use "responsiveness" rather than "user interaction responsiveness".
+- Very important: Only output the 60 character label text, your response will be used in full to show to the user as an annotation in the timeline.
 `;

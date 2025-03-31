@@ -28,6 +28,11 @@ export const DiffWrapper = {
     const text1 = lines1.map(line => idMap.toChar(line)).join('');
     const text2 = lines2.map(line => idMap.toChar(line)).join('');
 
+    // If both text are the same don't emit a diff
+    if(text1 === text2){
+      return [];
+    }
+
     const diff = DiffWrapper.charDiff(text1, text2);
     const lineDiff = [];
     for (let i = 0; i < diff.length; i++) {

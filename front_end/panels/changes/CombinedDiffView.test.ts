@@ -46,16 +46,16 @@ function createWorkspaceDiff({workspace}: {workspace: Workspace.Workspace.Worksp
 
 async function createCombinedDiffView({workspaceDiff}: {workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl}) {
   const view = createViewFunctionStub(CombinedDiffView.CombinedDiffView);
-  const combinedDiffView = new CombinedDiffView.CombinedDiffView(undefined, view);
-  combinedDiffView.workspaceDiff = workspaceDiff;
+  const widget = new CombinedDiffView.CombinedDiffView(undefined, view);
+  widget.workspaceDiff = workspaceDiff;
 
   const container = document.createElement('div');
   renderElementIntoDOM(container);
-  combinedDiffView.markAsRoot();
-  combinedDiffView.show(container);
+  widget.markAsRoot();
+  widget.show(container);
   await view.nextInput;
 
-  return {combinedDiffView, view};
+  return {widget, view};
 }
 
 describeWithEnvironment('CombinedDiffView', () => {

@@ -178,18 +178,22 @@ export class CombinedDiffView extends UI.Widget.Widget {
   }
 
   override async performUpdate(): Promise<void> {
-    const uiSourceCodeAndDiffs = await Promise.all(this.#modifiedUISourceCodes.map(async modifiedUISourceCode => {
-      // `requestDiff` caches the response from the previous `requestDiff` calls if the file did not change
-      // so we can safely call it here without concerns for performance.
-      const diffResponse = await this.#workspaceDiff?.requestDiff(modifiedUISourceCode);
-      return {
-        diff: diffResponse?.diff,
-        uiSourceCode: modifiedUISourceCode,
-      };
-    }));
+    const uiSourceCodeAndDiffs = (await Promise.all(this.#modifiedUISourceCodes.map(async modifiedUISourceCode => {
+                                   // `requestDiff` caches the response from the previous `requestDiff` calls if the file did not change
+                                   // so we can safely call it here without concerns for performance.
+                                   const diffResponse = await this.#workspaceDiff?.requestDiff(modifiedUISourceCode);
+                                   if (!diffResponse || diffResponse.diff.length === 0) {
+                                     return;
+                                   }
+
+                                   return {
+                                     diff: diffResponse.diff,
+                                     uiSourceCode: modifiedUISourceCode,
+                                   };
+                                 }))).filter(uiSourceCodeAndDiff => !!uiSourceCodeAndDiff);
 
     const singleDiffViewInputs =
-        uiSourceCodeAndDiffs.filter(uiSourceCodeAndDiff => Boolean(uiSourceCodeAndDiff.diff))
+        uiSourceCodeAndDiffs
             .map(({uiSourceCode, diff}) => {
               let displayText = uiSourceCode.fullDisplayName();
               // If the UISourceCode is backed by a workspace, we show the path as "{workspace-name}/path/relative/to/workspace"
@@ -203,7 +207,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
                 ].join('/');
               }
               return {
-                diff: diff as Diff.Diff.DiffArray,  // We already filter above the ones that does not have `diff`.
+                diff,
                 fileName: `${uiSourceCode.isDirty() ? '*' : ''}${displayText}`,
                 fileUrl: uiSourceCode.url(),
                 mimeType: uiSourceCode.mimeType(),

@@ -16,7 +16,6 @@ export async function getCurrentUrl() {
 
 export function veImpressionForLayersPanel() {
   return veImpression('Panel', 'layers', [
-    veImpression('Pane', 'sidebar'),
     veImpression(
         'Pane', 'layers-3d-view',
         [
@@ -31,7 +30,5 @@ export function veImpressionForLayersPanel() {
               ]),
           veImpression('Canvas', 'layers'),
         ]),
-    veImpression('Pane', 'layers-details', [veImpression('Section', 'empty-view')]),
-    veImpression('PanelTabHeader', 'details'),
   ]);
 }

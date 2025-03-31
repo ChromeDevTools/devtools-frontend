@@ -77,9 +77,11 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
 
     this.rightSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'layer-details-split-view-state');
     this.splitWidget().setMainWidget(this.rightSplitWidget);
+    this.splitWidget().hideSidebar();
 
     this.layers3DView = new LayerViewer.Layers3DView.Layers3DView(this.layerViewHost);
     this.rightSplitWidget.setMainWidget(this.layers3DView);
+    this.rightSplitWidget.hideSidebar();
     this.layers3DView.addEventListener(
         LayerViewer.Layers3DView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfileRequested, this);
     this.layers3DView.addEventListener(LayerViewer.Layers3DView.Events.SCALE_CHANGED, this.onScaleChanged, this);
@@ -155,6 +157,8 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
 
   update(): void {
     if (this.model) {
+      this.splitWidget().showBoth();
+      this.rightSplitWidget.showBoth();
       this.layerViewHost.setLayerTree(this.model.layerTree());
       const resourceModel = this.model.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (resourceModel) {

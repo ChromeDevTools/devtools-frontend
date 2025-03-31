@@ -51,9 +51,9 @@ const UIStringsNotTranslate = {
    */
   saveToWorkspace: 'Save to workspace',
   /**
-   *@description Header text after the user saved the changes to the disk.
+   *@description Header text after the user saved the changes to a  workspace.
    */
-  savedToDisk: 'Saved to disk',
+  savedToWorkspace: 'Changes saved to workspace',
   /**
    *@description Disclaimer text shown for using code snippets with caution
    */
@@ -85,6 +85,14 @@ const UIStringsNotTranslate = {
    * @description Generic error text for the case the changes were not applied to the page tree.
    */
   genericErrorMessage: 'Changes couldn’t be applied to the page tree.',
+  /**
+   * @description Button text for creating and exporting a patch file containing the diff.
+   */
+  exportPatchFile: 'Export patch file',
+  /**
+   * @description Button text for creating and exporting a patch file containing the diff.
+   */
+  exportedPatchFile: 'Changes exported as patch file',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -106,6 +114,14 @@ export enum PatchSuggestionState {
    * Applying to page tree failed
    */
   ERROR = 'error',
+  /**
+   * Successfully exported diff as patch
+   */
+  EXPORTED_AS_PATCH = 'exportedAsPatch',
+  /**
+   * Successfully applied diff to workspace
+   */
+  SAVED_TO_WORKSPACE = 'savedToWorkspace',
 }
 
 export interface ViewInput {
@@ -113,13 +129,13 @@ export interface ViewInput {
   patchSuggestionState: PatchSuggestionState;
   changeSummary?: string;
   sources?: string;
-  savedToDisk?: boolean;
   disclaimerTooltipText: Platform.UIString.LocalizedString;
   onLearnMoreTooltipClick: () => void;
   onApplyToPageTree: () => void;
   onCancel: () => void;
   onDiscard: () => void;
   onSaveToWorkspace?: () => void;
+  onExportPatchFile: () => void;
 }
 
 export interface ViewOutput {
@@ -136,7 +152,6 @@ export class PatchWidget extends UI.Widget.Widget {
   #aidaClient: Host.AidaClient.AidaClient;
   #applyPatchAbortController?: AbortController;
   #patchSources?: string;
-  #savedToDisk?: boolean;
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #patchSuggestionState = PatchSuggestionState.INITIAL;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
@@ -172,11 +187,11 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderHeader(): LitTemplate {
-        if (input.savedToDisk) {
+        if (input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
           return html`
             <devtools-icon class="green-bright-icon summary-badge" .name=${'check-circle'}></devtools-icon>
             <span class="header-text">
-              ${lockedString(UIStringsNotTranslate.savedToDisk)}
+              ${input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH ? lockedString(UIStringsNotTranslate.exportedPatchFile) : lockedString(UIStringsNotTranslate.savedToWorkspace)}
             </span>
           `;
         }
@@ -207,7 +222,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderContent(): LitTemplate {
-        if ((!input.changeSummary || input.savedToDisk)  && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
+        if ((!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) || input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
           return nothing;
         }
 
@@ -231,7 +246,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderFooter(): LitTemplate {
-        if (input.savedToDisk) {
+        if (input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
           return nothing;
         }
 
@@ -260,6 +275,12 @@ export class PatchWidget extends UI.Widget.Widget {
                     ${lockedString(UIStringsNotTranslate.saveToWorkspace)}
                 </devtools-button>
               ` : nothing}
+              <devtools-button
+                @click=${input.onExportPatchFile}
+                .jslogContext=${'patch-widget.export-patch-file'}
+                .variant=${Buttons.Button.Variant.PRIMARY}>
+                  ${lockedString(UIStringsNotTranslate.exportPatchFile)}
+              </devtools-button>
             </div>
           </div>
           `;
@@ -315,7 +336,7 @@ export class PatchWidget extends UI.Widget.Widget {
         html`
           <details class=${classMap({
             'change-summary': true,
-            'saved-to-disk': Boolean(input.savedToDisk)
+            exported: input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE,
           })}>
             <summary>
               ${renderHeader()}
@@ -344,7 +365,6 @@ export class PatchWidget extends UI.Widget.Widget {
           changeSummary: this.changeSummary,
           patchSuggestionState: this.#patchSuggestionState,
           sources: this.#patchSources,
-          savedToDisk: this.#savedToDisk,
           disclaimerTooltipText: this.#noLogging ? lockedString(UIStringsNotTranslate.disclaimerTooltipNoLogging) :
                                                    lockedString(UIStringsNotTranslate.disclaimerTooltip),
           onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
@@ -354,6 +374,7 @@ export class PatchWidget extends UI.Widget.Widget {
           },
           onDiscard: this.#onDiscard.bind(this),
           onSaveToWorkspace: this.#canSaveToWorkspace() ? this.#onSaveToWorkspace.bind(this) : undefined,
+          onExportPatchFile: this.#onExportPatchFile.bind(this),
         },
         this.#viewOutput, this.contentElement);
   }
@@ -428,9 +449,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
       }
     });
 
-    this.#savedToDisk = true;
-    this.#patchSuggestionState = PatchSuggestionState.INITIAL;
+    this.#patchSuggestionState = PatchSuggestionState.SAVED_TO_WORKSPACE;
     void this.changeManager?.dropStashedChanges();
+    this.requestUpdate();
+  }
+
+  #onExportPatchFile(): void {
+    // TODO(crbug.com/406218495): implement patch file export
+    this.#patchSuggestionState = PatchSuggestionState.EXPORTED_AS_PATCH;
     this.requestUpdate();
   }
 

@@ -758,7 +758,7 @@ main {
   margin: 0 var(--sys-size-5);
   padding: 0 var(--sys-size-5);
 
-  &.saved-to-disk {
+  &.exported {
     pointer-events: none;
   }
 
@@ -815,7 +815,7 @@ main {
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 
-  &[open]:not(.saved-to-disk) {
+  &[open]:not(.exported) {
     &::details-content {
       height: fit-content;
       padding: var(--sys-size-2) 0;

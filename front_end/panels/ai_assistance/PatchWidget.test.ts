@@ -189,9 +189,25 @@ Files:
       view.input.onSaveToWorkspace();
       const nextInput = await view.nextInput;
 
-      assert.isTrue(nextInput.savedToDisk);
+      assert.strictEqual(
+          nextInput.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.SAVED_TO_WORKSPACE);
       assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
       assert.isTrue(changeManager.dropStashedChanges.calledOnce);
+    });
+
+    it('"export patch file" should update the view', async () => {
+      createBoundFileSystemUISourceCode();
+      fileSystemUISourceCode.setWorkingCopy('working copy');
+      const {view, widget} = await createPatchWidgetWithDiffView();
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      widget.changeManager = changeManager;
+
+      view.input.onExportPatchFile();
+      const nextInput = await view.nextInput;
+      // TODO(crbug.com/406218495): test that a patch file is generated
+
+      assert.strictEqual(
+          nextInput.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.EXPORTED_AS_PATCH);
     });
 
     it('discard should discard the working copy and render the view without patchSuggestion', async () => {

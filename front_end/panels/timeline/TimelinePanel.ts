@@ -78,6 +78,7 @@ import {
   rangeForSelection,
   selectionFromEvent,
   selectionIsRange,
+  selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
 import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
@@ -2662,6 +2663,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       UI.ARIAUtils.alert(i18nString(UIStrings.selectionCleared));
     }
     if (newSelection === null) {
+      return;
+    }
+
+    if (oldSelection && selectionsEqual(oldSelection, newSelection)) {
+      // Don't announce to the user if the selection has not changed.
       return;
     }
 

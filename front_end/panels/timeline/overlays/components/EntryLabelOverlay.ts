@@ -523,6 +523,7 @@ export class EntryLabelOverlay extends HTMLElement {
       try {
         // Trigger a re-render to display the loading component in the place of the button when the label is being generated.
         this.#isAILabelLoading = true;
+        UI.ARIAUtils.alert(UIStringsNotTranslate.generatingLabel);
         // Trigger a re-render to put focus back on the input box, otherwise
         // when the button changes to a loading spinner, it loses focus and the
         // editing state is reset because the component loses focus.

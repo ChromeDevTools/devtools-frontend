@@ -175,11 +175,9 @@ module.exports = {
 
         const comments = sourceCode.getCommentsBefore(node.body[0]);
 
-        if (
-          !comments ||
-          comments.length === 0 ||
-          (comments.length === 1 && comments[0].type === 'Shebang')
-        ) {
+        if (!comments || comments.length === 0 ||
+            // @ts-expect-error Shebang is not on the types
+            (comments.length === 1 && comments[0].type === 'Shebang')) {
           context.report({
             node,
             message: 'Missing license header',
@@ -194,6 +192,7 @@ module.exports = {
         let commentsToCheck = comments;
         let firstCommentToCheck = comments[0];
 
+        // @ts-expect-error Shebang is not on the types
         if (comments[0].type === 'Shebang') {
           commentsToCheck = comments.slice(1);
           firstCommentToCheck = commentsToCheck[0];

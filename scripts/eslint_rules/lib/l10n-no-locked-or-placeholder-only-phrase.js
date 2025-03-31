@@ -17,36 +17,49 @@ module.exports = {
     type: 'problem',
     docs: {
       description:
-          'UIStrings object literals are not allowed to have phrases that are fully locked, or consist only of a single placeholder.',
+        'UIStrings object literals are not allowed to have phrases that are fully locked, or consist only of a single placeholder.',
       category: 'Possible Errors',
     },
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
+  create: function (context) {
     return {
       VariableDeclarator(variableDeclarator) {
-        if (!l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)) {
+        if (
+          !l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)
+        ) {
           return;
         }
 
+        // @ts-ignore needs TypeScript types
+        if (variableDeclarator.init?.type !== 'TSAsExpression') {
+          return;
+        }
+
+        // @ts-ignore needs TypeScript types
         for (const property of variableDeclarator.init.expression.properties) {
-          if (property.type !== 'Property' || property.value.type !== 'Literal') {
+          if (
+            property.type !== 'Property' ||
+            property.value.type !== 'Literal'
+          ) {
             continue;
           }
 
           if (FULLY_LOCKED_PHRASE_REGEX.test(property.value.value)) {
             context.report({
               node: property.value,
-              message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.',
+              message:
+                'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.',
             });
           } else if (SINGLE_PLACEHOLDER_REGEX.test(property.value.value)) {
             context.report({
               node: property.value,
-              message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.',
+              message:
+                'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.',
             });
           }
         }
       },
     };
-  }
+  },
 };

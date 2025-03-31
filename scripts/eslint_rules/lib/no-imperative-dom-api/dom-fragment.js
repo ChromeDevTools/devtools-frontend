@@ -205,6 +205,7 @@ function getEnclosingVariable(estreeNode, sourceCode) {
       if (variable) {
         return variable;
       }
+      // @ts-expect-error need the above to be typed to undefined
       scope = scope.upper;
     }
   }

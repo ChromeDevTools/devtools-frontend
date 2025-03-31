@@ -18,14 +18,15 @@ module.exports = {
     messages: {
       saveNotRestored:
         'Found a block that has more context.save() calls than context.restore() calls',
-      uselessRestore: 'Found a context.restore() call with no context.save() prior to it',
+      uselessRestore:
+        'Found a context.restore() call with no context.save() prior to it',
     },
     schema: [], // no options
   },
   create: function (context) {
     // To track canvas calls across scopes we keep a stack which we push nodes on with every new scope that we find.
     // When we then leave a scope, we can check all the calls in that scope and see if they align or not.
-    /** @type {Array<ASTNode>} */
+    /** @type {Array<import('estree').Node>} */
     let stack = [];
 
     // The key is a node's range as a string. The value is a stack of
@@ -48,8 +49,12 @@ module.exports = {
      */
     function exitScope() {
       const lastScope = stack.pop();
+      if (!lastScope) {
+        return;
+      }
+
       const stackForCurrentScope = scopeToCanvasCalls.get(
-        nodeToKeyForMap(lastScope)
+        nodeToKeyForMap(lastScope),
       );
 
       // We have no issues to report if:
@@ -60,10 +65,10 @@ module.exports = {
       }
 
       // If we got here it means the stack for the scope has items in, which means that it is unbalanced.
-        context.report({
-          node: lastScope,
-          messageId: 'saveNotRestored',
-        });
+      context.report({
+        node: lastScope,
+        messageId: 'saveNotRestored',
+      });
     }
 
     /**
@@ -72,32 +77,34 @@ module.exports = {
      **/
     function trackContextCall(methodName) {
       const currentScopeNode = stack.at(-1);
-      const stackForCurrentScope = scopeToCanvasCalls.get(
-        nodeToKeyForMap(currentScopeNode)
-      ) || [];
+      if (!currentScopeNode) {
+        return;
+      }
+      const stackForCurrentScope =
+        scopeToCanvasCalls.get(nodeToKeyForMap(currentScopeNode)) || [];
 
-      if(methodName === 'save') {
+      if (methodName === 'save') {
         stackForCurrentScope.push('save');
-      } else if(methodName === 'restore') {
+      } else if (methodName === 'restore') {
         // If we get a restore() call but the stack is empty, this means that
         // we have nothing to restore as we did not save anything in this
         // scope. Either the user has forgotten a save() call, or this
         // restore() has been accidentally left behind after a refactor and
         // shold be removed.
-        if(stackForCurrentScope.length === 0) {
+        if (stackForCurrentScope.length === 0) {
           context.report({
             messageId: 'uselessRestore',
             node: currentScopeNode,
           });
         } else {
           // Pop the stack, so that the last save() is accounted for.
-        stackForCurrentScope.pop();
+          stackForCurrentScope.pop();
         }
       }
 
       scopeToCanvasCalls.set(
         nodeToKeyForMap(currentScopeNode),
-        stackForCurrentScope
+        stackForCurrentScope,
       );
     }
 
@@ -108,9 +115,12 @@ module.exports = {
       MemberExpression(node) {
         const methodCallsToTrack = ['save', 'restore'];
         if (
+          node.object.type === 'Identifier' &&
           node.object?.name === 'context' &&
+          node.property.type === 'Identifier' &&
           methodCallsToTrack.includes(node.property?.name)
         ) {
+          // @ts-expect-error the methodCallsToTrack needs `as const`
           trackContextCall(node.property.name);
         }
       },

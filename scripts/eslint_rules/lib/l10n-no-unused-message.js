@@ -55,8 +55,9 @@ module.exports = {
       // Are there comments in front of the property?
       // Move the line we want to remove to the line of the first comment.
       const comments = source.getCommentsBefore(property);
-      if (comments.length > 0) {
-        lineToRemoveStart = source.getLocFromIndex(comments[0].range[0]).line;
+      const firstComment = comments[0];
+      if (firstComment && firstComment.range) {
+        lineToRemoveStart = source.getLocFromIndex(firstComment.range[0]).line;
       }
 
       const removeStart = source.getIndexFromLoc({
@@ -86,6 +87,7 @@ module.exports = {
           return;
         }
 
+        // @ts-expect-error the function above is not typed
         for (const property of variableDeclarator.init.expression.properties) {
           if (
             property.type !== 'Property' ||
@@ -100,6 +102,7 @@ module.exports = {
         if (!isStandardUIStringsMemberExpression(memberExpression)) {
           return;
         }
+        // @ts-expect-error the function above is not typed
         usedUIStringsKeys.add(memberExpression.property.name);
       },
       'Program:exit': function () {

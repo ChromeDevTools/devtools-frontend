@@ -12,51 +12,72 @@ module.exports = {
     type: 'problem',
 
     docs: {
-      description: 'check data setters have an explicit type reference for their parameter',
+      description:
+        'check data setters have an explicit type reference for their parameter',
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
+  create: function (context) {
     return {
       ClassDeclaration(node) {
         // Only enforce this rule for custom elements
-        if (!node.superClass || node.superClass.type !== 'Identifier' || node.superClass.name !== 'HTMLElement') {
+        if (
+          !node.superClass ||
+          node.superClass.type !== 'Identifier' ||
+          node.superClass.name !== 'HTMLElement'
+        ) {
           return;
         }
 
         const dataSetterDefinition = node.body.body.find(methodDefinition => {
           return (
-              'kind' in methodDefinition && methodDefinition.kind === 'set' && methodDefinition.key.name === 'data');
+            'kind' in methodDefinition &&
+            methodDefinition.kind === 'set' &&
+            'key' in methodDefinition &&
+            methodDefinition.key.type === 'Identifier' &&
+            methodDefinition.key.name === 'data'
+          );
         });
 
-        if (!dataSetterDefinition || dataSetterDefinition.type === 'StaticBlock') {
+        if (
+          !dataSetterDefinition ||
+          dataSetterDefinition.type === 'StaticBlock'
+        ) {
           return;
         }
-
+        // @ts-expect-error needs proper check of eslint.type
         const dataSetterParam = dataSetterDefinition.value?.params?.[0];
         if (!dataSetterParam) {
-          context.report(
-              {node: dataSetterDefinition, message: 'A data setter must take a parameter that is explicitly typed.'});
+          context.report({
+            node: dataSetterDefinition,
+            message:
+              'A data setter must take a parameter that is explicitly typed.',
+          });
           return;
         }
 
         if (!dataSetterParam.typeAnnotation) {
           context.report({
             node: dataSetterDefinition,
-            message: 'The type of a parameter in a data setter must be explicitly defined.'
+            message:
+              'The type of a parameter in a data setter must be explicitly defined.',
           });
           return;
         }
 
-        if (dataSetterParam.typeAnnotation.typeAnnotation.type !== 'TSTypeReference') {
+        if (
+          dataSetterParam.typeAnnotation.typeAnnotation.type !==
+          'TSTypeReference'
+        ) {
           context.report({
             node: dataSetterDefinition,
-            message: 'A data setter parameter\'s type must be a type reference, not a literal type defined inline.'
+            message:
+              'A data setter parameter\'s type must be a type reference, not a literal type defined inline.',
           });
         }
-      }
+      },
     };
-  }
+  },
 };

@@ -8,8 +8,6 @@ import * as path from 'path';
 import yargs from 'yargs';
 import unparse from 'yargs-unparser';
 
-import {isInChromiumDirectory, nodeModulesPath, rootPath} from './devtools_paths.js';
-
 const argv = yargs(process.argv.slice(2))
   .parserConfiguration({
     'strip-aliased': true,
@@ -26,22 +24,32 @@ let script = argv.script;
 delete argv.target;
 delete argv.script;
 
-const sourceRoot = rootPath();
+let sourceRoot = path.dirname(path.dirname(path.resolve(argv['$0'])));
 
 // Ensure that we can find the node_modules folder even if the out folder is
 // not a sibling of the node_modules folder.
 const env = process.env;
-env.NODE_PATH = nodeModulesPath();
+env.NODE_PATH = path.join(sourceRoot, 'node_modules');
 
-const cwd = path.join(sourceRoot, 'out', target);
+let cwd = path.join(sourceRoot, 'out', target);
 
-if (isInChromiumDirectory().isInChromium) {
-  // Check if we need to change the location of the gen folder.
-  const pathParts = script.split(path.sep);
-  if (pathParts[0] === 'gen') {
-    pathParts.shift();
-    pathParts.unshift('gen', 'third_party', 'devtools-frontend', 'src');
-    script = pathParts.join(path.sep);
+if (!fs.existsSync(cwd)) {
+  // Check if we are in a Chromium checkout and look for the out folder there.
+  const maybeChromiumRoot = path.dirname(
+    path.dirname(path.dirname(sourceRoot)),
+  );
+  if (
+    sourceRoot ===
+    path.join(maybeChromiumRoot, 'third_party', 'devtools-frontend', 'src')
+  ) {
+    sourceRoot = maybeChromiumRoot;
+    cwd = path.join(sourceRoot, 'out', target);
+    const pathParts = script.split(path.sep);
+    if (pathParts[0] === 'gen') {
+      pathParts.shift();
+      pathParts.unshift('gen', 'third_party', 'devtools-frontend', 'src');
+      script = pathParts.join(path.sep);
+    }
   }
 }
 

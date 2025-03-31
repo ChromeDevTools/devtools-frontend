@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../../core/common/common.js';
+import * as Root from '../../../../core/root/root.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../../testing/EnvironmentHelpers.js';
@@ -135,6 +136,22 @@ describeWithEnvironment('BaseInsightComponent', () => {
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
+    });
+
+    it('does not render the "Ask AI" button if disabled by enterprise policy', async () => {
+      updateHostConfig({
+        devToolsAiAssistancePerformanceAgent: {
+          enabled: true,
+          insightsEnabled: true,
+        },
+        aidaAvailability: {
+          enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.DISABLE,
+        }
+      });
+      const component = await renderComponent({insightHasAISupport: true});
+      assert.isOk(component.shadowRoot);
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isNull(button);
     });
 
     it('does not show the button if the feature is enabled but the Insight does not support it', async () => {

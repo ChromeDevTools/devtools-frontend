@@ -611,6 +611,7 @@ export default [
           allowIIFEs: true,
         },
       ],
+      'rulesdir/no-imperative-dom-api': 'error',
       'rulesdir/no-importing-images-from-src': 'error',
       'rulesdir/enforce-bound-render-for-schedule-render': 'error',
       'rulesdir/enforce-custom-event-names': 'error',
@@ -698,6 +699,7 @@ export default [
       'rulesdir/no-assert-deep-strict-equal': 'error',
       'rulesdir/no-assert-equal': 'error',
       'rulesdir/no-assert-equal-boolean-null-undefined': 'error',
+      'rulesdir/no-imperative-dom-api': 'off',
       'rulesdir/no-screenshot-test-outside-perf-panel': 'error',
       'rulesdir/prefer-assert-instance-of': 'error',
       'rulesdir/prefer-assert-is-ok': 'error',
@@ -797,6 +799,7 @@ export default [
       // We use Lit to help render examples sometimes and we don't use
       // {host: this} as often the `this` is the window.
       'rulesdir/lit-host-this': 'off',
+      'rulesdir/no-imperative-dom-api': 'off',
     },
   },
   {

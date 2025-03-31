@@ -11,8 +11,8 @@ const {getEnclosingClassDeclaration} = require('./ast.js');
 /** @typedef {import('estree').Node} Node */
 /** @typedef {import('eslint').SourceCode} SourceCode */
 
-/** @type {Map<Node, Map<string, ClassMember>>} */
-const classes = new Map();
+/** @type {WeakMap<Node, Map<string, ClassMember>>} */
+const classes = new WeakMap();
 
 class ClassMember {
   /** @type {Set<Node>} */

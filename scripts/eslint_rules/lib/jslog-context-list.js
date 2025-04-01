@@ -16,6 +16,10 @@ const LICENSE_HEADER = `// Copyright 2024 The Chromium Authors. All rights reser
 
 `;
 
+const formattedValues = new Set(
+    fs.readFileSync(ABSOLUTE_FILE_PATH, 'utf-8').split('\n').filter(l => l.startsWith('  \'')),
+);
+
 /**
  * @type {import('eslint').Rule.RuleModule}
  */
@@ -30,13 +34,8 @@ module.exports = {
     fixable: 'code',
     schema: [], // no options
   },
+  defaultOptions: [],
   create: function (context) {
-    const formattedValues = new Set(
-      fs
-        .readFileSync(ABSOLUTE_FILE_PATH, 'utf-8')
-        .split('\n')
-        .filter(l => l.startsWith('  \'')),
-    );
     const checkValue = (value, node) => {
       if (typeof value !== 'string') {
         return;

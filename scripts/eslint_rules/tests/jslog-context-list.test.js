@@ -24,7 +24,7 @@ new RuleTester().run('jslog-context-list', rule, {
       code: `
         Lit.render(Lit.html\`
           <dialog @click=\${this.#handlePointerEvent} @pointermove=\${this.#handlePointerEvent} @cancel=\${this.#onCancel}
-                  jslog=\${VisualLogging.dialog('uNkNown').track({resize: true, keydown: 'Escape'}).parent('mapped')}>
+                  jslog=\${VisualLogging.dialog('uNkNown2').track({resize: true, keydown: 'Escape'}).parent('mapped')}>
             <div id="content-wrap">
               <div id="content">
                 <slot></slot>
@@ -36,7 +36,7 @@ new RuleTester().run('jslog-context-list', rule, {
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown2\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -45,7 +45,7 @@ new RuleTester().run('jslog-context-list', rule, {
       code: `
         UI.ActionRegistration.registerActionExtension({
           category: UI.ActionRegistration.ActionCategory.RECORDER,
-          actionId: 'uNkNown',
+          actionId: 'uNkNown3',
           title: i18nLazyString(UIStrings.createRecording),
           async loadActionDelegate() {
             const Recorder = await loadRecorderModule();
@@ -56,7 +56,7 @@ new RuleTester().run('jslog-context-list', rule, {
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown3\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -65,7 +65,7 @@ new RuleTester().run('jslog-context-list', rule, {
       code: `
         UI.ViewManager.registerViewExtension({
           location: UI.ViewManager.ViewLocationValues.PANEL,
-          id: 'uNkNown',
+          id: 'uNkNown4',
           commandPrompt: i18nLazyString(UIStrings.showSources),
           title: i18nLazyString(UIStrings.sources),
           order: 30,
@@ -78,7 +78,7 @@ new RuleTester().run('jslog-context-list', rule, {
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown4\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -87,7 +87,7 @@ new RuleTester().run('jslog-context-list', rule, {
       code: `
         Common.Settings.registerSettingExtension({
           storageType: Common.Settings.SettingStorageType.Synced,
-          settingName: 'uNkNown',
+          settingName: 'uNkNown5',
           settingType: Common.Settings.SettingType.REGEX,
           defaultValue: '/node_modules/|/bower_components/',
         });
@@ -95,7 +95,7 @@ new RuleTester().run('jslog-context-list', rule, {
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown5\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -103,12 +103,12 @@ new RuleTester().run('jslog-context-list', rule, {
     {
       code: `
     this.disableCaptureJSProfileSetting =
-        Common.Settings.Settings.instance().createSetting('uNkNown', false);
+        Common.Settings.Settings.instance().createSetting('uNkNown6', false);
             `,
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown6\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -116,12 +116,12 @@ new RuleTester().run('jslog-context-list', rule, {
     {
       code: `
         contextMenu.defaultSection().appendItem(
-            i18nString(UIStrings.refresh), this.refreshCallback.bind(this), {jslogContext: 'uNkNown'});
+            i18nString(UIStrings.refresh), this.refreshCallback.bind(this), {jslogContext: 'uNkNown7'});
             `,
       errors: [
         {
           message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+              'Found jslog context value \'uNkNown7\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
         },
       ],
       filename: 'front_end/components/test.ts',

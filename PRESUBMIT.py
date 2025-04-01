@@ -304,15 +304,8 @@ def _CheckDevToolsLint(input_api, output_api):
     ]
 
     lint_related_files = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'eslint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'stylelint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               '@typescript-eslint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                'eslint.config.mjs'),
-        input_api.os_path.join(scripts_directory, 'eslint_rules'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -324,8 +317,20 @@ def _CheckDevToolsLint(input_api, output_api):
                                'run_lint_check.mjs'),
     ]
 
-    lint_config_files = _getAffectedFiles(input_api, lint_related_files, [],
-                                          ['.js', '.py'])
+    lint_related_directories = [
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               'eslint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               'stylelint'),
+        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
+                               '@typescript-eslint'),
+        input_api.os_path.join(scripts_directory, 'eslint_rules'),
+    ]
+
+    lint_config_files = _getAffectedFiles(
+        input_api, lint_related_directories,
+        [], [".js", ".mjs", ".ts"]) + _getAffectedFiles(
+            input_api, lint_related_files, [], [])
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,

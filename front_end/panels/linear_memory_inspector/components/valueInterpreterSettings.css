@@ -24,22 +24,20 @@
 
 .group {
   font-weight: bold;
-  margin-bottom: 11px;
+  margin-bottom: var(--sys-size-6);
 }
 
 .type-label {
+  display: flex;
+  flex-direction: row;;
+  align-items: center;
   white-space: nowrap;
 }
 
-.group + .type-label {
-  margin-top: 5px;
-}
-
 .type-label input {
-  margin: 0 6px 0 0;
-  padding: 0;
+  margin-right: var(--sys-size-4);
 }
 
 .type-label + .type-label {
-  margin-top: 6px;
+  margin-top: var(--sys-size-4);
 }

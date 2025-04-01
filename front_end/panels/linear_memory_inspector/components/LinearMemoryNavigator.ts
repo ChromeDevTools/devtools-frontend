@@ -5,6 +5,7 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -186,12 +187,14 @@ export class LinearMemoryNavigator extends HTMLElement {
   #createButton(data: {icon: string, title: string, event: Event, enabled: boolean, jslogContext: string}):
       Lit.TemplateResult {
     return html`
-      <button class="navigator-button" ?disabled=${!data.enabled}
+      <devtools-button class="navigator-button"
+        .data=${
+        {variant: Buttons.Button.Variant.ICON, iconName: data.icon, disabled: !data.enabled} as
+        Buttons.Button.ButtonData}
         jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}
         data-button=${data.event.type} title=${data.title}
-        @click=${this.dispatchEvent.bind(this, data.event)}>
-        <devtools-icon name=${data.icon}></devtools-icon>
-      </button>`;
+        @click=${this.dispatchEvent.bind(this, data.event)}
+      ></devtools-button>`;
   }
 }
 

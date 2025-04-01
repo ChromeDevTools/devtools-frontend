@@ -12,6 +12,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 import {
@@ -118,7 +119,7 @@ describeWithLocale('LinearMemoryInspector', () => {
     component.data = data;
 
     const navigator = getNavigator(component);
-    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
+    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
     const [backwardButton] = buttons;
 
     const viewer = getViewer(component);
@@ -145,7 +146,7 @@ describeWithLocale('LinearMemoryInspector', () => {
     const {component, data: {address}} = setUpComponent();
 
     const navigator = getNavigator(component);
-    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, HTMLButtonElement);
+    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_HISTORY_BUTTON_SELECTOR, Buttons.Button.Button);
     const [backwardButton, forwardButton] = buttons;
 
     const viewer = getViewer(component);
@@ -181,7 +182,7 @@ describeWithLocale('LinearMemoryInspector', () => {
   it('can turn the page back and forth', () => {
     const {component} = setUpComponent();
     const navigator = getNavigator(component);
-    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_PAGE_BUTTON_SELECTOR, HTMLButtonElement);
+    const buttons = getElementsWithinComponent(navigator, NAVIGATOR_PAGE_BUTTON_SELECTOR, Buttons.Button.Button);
     const [backwardButton, forwardButton] = buttons;
 
     const address = getElementWithinComponent(navigator, NAVIGATOR_ADDRESS_SELECTOR, HTMLInputElement);

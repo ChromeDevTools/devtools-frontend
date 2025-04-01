@@ -607,6 +607,13 @@ export class Item {
       liveLocationPromises.push(
           Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createCallFrameLiveLocation(
               rawLocation, item.update.bind(item), locationPool));
+      void SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(frame, debuggerModel.target())
+          .then(functionName => {
+            if (functionName && functionName !== frame.functionName) {
+              item.title = functionName;
+              item.updateDelegate(item);
+            }
+          });
       asyncFrameItems.push(item);
     }
 

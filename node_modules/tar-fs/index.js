@@ -120,6 +120,8 @@ exports.extract = function extract (cwd, opts) {
   if (!cwd) cwd = '.'
   if (!opts) opts = {}
 
+  cwd = path.resolve(cwd)
+
   const xfs = opts.fs || fs
   const ignore = opts.ignore || opts.filter || noop
   const mapStream = opts.mapStream || echo
@@ -216,6 +218,9 @@ exports.extract = function extract (cwd, opts) {
     function onsymlink () {
       if (win32) return next() // skip symlinks on win for now before it can be tested
       xfs.unlink(name, function () {
+        const dst = path.resolve(path.dirname(name), header.linkname)
+        if (!inCwd(dst)) return next(new Error(name + ' is not a valid symlink'))
+
         xfs.symlink(header.linkname, name, stat)
       })
     }
@@ -223,17 +228,21 @@ exports.extract = function extract (cwd, opts) {
     function onlink () {
       if (win32) return next() // skip links on win for now before it can be tested
       xfs.unlink(name, function () {
-        const srcpath = path.join(cwd, path.join('/', header.linkname))
+        const dst = path.join(cwd, path.join('/', header.linkname))
 
-        xfs.link(srcpath, name, function (err) {
+        xfs.link(dst, name, function (err) {
           if (err && err.code === 'EPERM' && opts.hardlinkAsFilesFallback) {
-            stream = xfs.createReadStream(srcpath)
+            stream = xfs.createReadStream(dst)
             return onfile()
           }
 
           stat(err)
         })
       })
+    }
+
+    function inCwd (dst) {
+      return dst.startsWith(cwd)
     }
 
     function onfile () {

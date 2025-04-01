@@ -522,7 +522,7 @@ const formatName = (name) => {
       );
     });
 
-    it('for overriden methods', () => {
+    it('for overridden methods', () => {
       assert.deepEqual(
           typeScriptOutline(
               'class Foo extends Bar {\n' +

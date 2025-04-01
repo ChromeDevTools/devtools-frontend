@@ -1100,7 +1100,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 
   // This is our groupingFunction that returns the eventId in Domain, Subdomain, and ThirdParty groupBy scenarios.
   // The eventid == the identity of a node that we expect in a bottomUp tree (either without grouping or with the groupBy grouping)
-  // A "top node" (in `ungrouppedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
+  // A "top node" (in `ungroupedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
   private domainByEvent(groupBy: AggregatedTimelineTreeView.GroupBy, event: Trace.Types.Events.Event): string {
     const parsedTrace = this.parsedTrace();
     if (!parsedTrace) {

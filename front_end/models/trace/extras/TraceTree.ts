@@ -394,7 +394,7 @@ export class BottomUpRootNode extends Node {
   // If no grouping is applied, the nodes returned here are what's initially shown in the bottom-up view.
   // "No grouping" == no grouping in UI dropdown == no groupingFunction…
   // … HOWEVER, nodes are still aggregated via `generateEventID`, which is ~= the event name.
-  private ungrouppedTopNodes(): ChildrenCache {
+  private ungroupedTopNodes(): ChildrenCache {
     const root = this;
     const startTime = this.startTime;
     const endTime = this.endTime;
@@ -488,7 +488,7 @@ export class BottomUpRootNode extends Node {
   }
 
   private grouppedTopNodes(): ChildrenCache {
-    const flatNodes = this.ungrouppedTopNodes();
+    const flatNodes = this.ungroupedTopNodes();
     if (!this.eventGroupIdCallback) {
       return flatNodes;
     }

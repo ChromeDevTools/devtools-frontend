@@ -232,7 +232,7 @@ export class AICallTree {
     // eslint-disable-next-line no-console
     console.log('🎆', str);
     if (str.length > 45_000) {
-      // Manual testing shows 45k fits. 50k doesnt.
+      // Manual testing shows 45k fits. 50k doesn't.
       // Max is 32k _tokens_, but tokens to bytes is wishywashy, so... hard to know for sure.
       console.warn('Output will likely not fit in the context window. Expect an AIDA error.');
     }

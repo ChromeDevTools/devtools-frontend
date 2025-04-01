@@ -27,7 +27,7 @@ const UIStrings = {
    */
   title: 'Third-party cookies',
   /**
-   *@description Explaination in the header about the cookies listed in the report
+   *@description Explanation in the header about the cookies listed in the report
    */
   body: 'This site might not work if third-party cookies and other cookies are limited in Chrome.',
   /**
@@ -101,7 +101,7 @@ const UIStrings = {
    */
   gracePeriod: 'Review {PH1}. Grace period exception is active.',
   /**
-   *@description Label for a link to third-party cookie site compatability look-up.
+   *@description Label for a link to third-party cookie site compatibility look-up.
    */
   reportedIssues: 'reported issues',
   /**

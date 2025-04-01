@@ -84,38 +84,37 @@ export class DuplicatedJavaScript extends BaseInsightComponent<DuplicatedJavaScr
       return Lit.nothing;
     }
 
-    const rows: TableDataRow[] = [
-      ...this.model.duplicationGroupedByNodeModules.entries()
-    ].slice(0, 10).map(([source, data]) => {
-      const scriptToOverlay = new Map();
-      for (const {script} of data.duplicates) {
-        scriptToOverlay.set(script, {
-          type: 'ENTRY_OUTLINE',
-          entry: script.request,
-          outlineReason: 'ERROR',
-        });
-      }
-
-      return {
-        values: [source, i18n.ByteUtilities.bytesToString(data.estimatedDuplicateBytes)],
-        overlays: [...scriptToOverlay.values()],
-        subRows: data.duplicates.map(({script, attributedSize: resourceSize}, index) => {
-          let overlays: Overlays.Overlays.TimelineOverlay[]|undefined;
-          const overlay = scriptToOverlay.get(script);
-          if (overlay) {
-            overlays = [overlay];
+    const rows: TableDataRow[] =
+        [...this.model.duplicationGroupedByNodeModules.entries()].slice(0, 10).map(([source, data]) => {
+          const scriptToOverlay = new Map();
+          for (const {script} of data.duplicates) {
+            scriptToOverlay.set(script, {
+              type: 'ENTRY_OUTLINE',
+              entry: script.request,
+              outlineReason: 'ERROR',
+            });
           }
 
           return {
-            values: [
-              scriptRef(script),
-              index === 0 ? '--' : i18n.ByteUtilities.bytesToString(resourceSize),
-            ],
-            overlays,
+            values: [source, i18n.ByteUtilities.bytesToString(data.estimatedDuplicateBytes)],
+            overlays: [...scriptToOverlay.values()],
+            subRows: data.duplicates.map(({script, attributedSize: resourceSize}, index) => {
+              let overlays: Overlays.Overlays.TimelineOverlay[]|undefined;
+              const overlay = scriptToOverlay.get(script);
+              if (overlay) {
+                overlays = [overlay];
+              }
+
+              return {
+                values: [
+                  scriptRef(script),
+                  index === 0 ? '--' : i18n.ByteUtilities.bytesToString(resourceSize),
+                ],
+                overlays,
+              };
+            })
           };
-        })
-      };
-    });
+        });
 
     let treemapButton;
     if (this.#shouldShowTreemap()) {

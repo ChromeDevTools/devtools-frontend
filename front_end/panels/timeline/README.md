@@ -199,7 +199,7 @@ The Summary (ThirdParty), Bottom-Up, Call Tree, and Event Log views primarily us
 - **Lazily built:** trees are lazily built - child nodes are not created until
   they are needed. In most cases, trees are fully built when `.children()` is called from `refreshTree()`
 - **Single Track Focus:** `this.selectedEvents()` only captures events from a _single_ track at a time. Selecting the main track will not include what one would consider
-"relevant events" from other tracks (e.g. a Frame's track).
+  "relevant events" from other tracks (e.g. a Frame's track).
 - **No Synthetic Network Events:** Tree views do not consume `SyntheticNetworkEvents` due to their unique "overlapping" behavior, which differs from standard trace events.
 - **Filters:** Filters can be applied to determine which events are included when building the tree.
 
@@ -210,5 +210,5 @@ The Summary (ThirdParty), Bottom-Up, Call Tree, and Event Log views primarily us
 **Aggregation Logic for BottomUp tree views:**
 
 1.  **Default Aggregation:** By default, aggregation is determined by the `generateEventID()` function, and optionally by `eventGroupIdCallback`.
-2.  **Pre-Grouping (`ungrouppedTopNodes`)**: Before explicit grouping, `ungrouppedTopNodes()` organizes events into a `ChildrenCache` map (`<string, Node>`). Even without explicit `GroupBy` grouping, `ungrouppedTopNodes()` aggregates nodes by event name using `generateEventID()`.
+2.  **Pre-Grouping (`ungroupedTopNodes`)**: Before explicit grouping, `ungroupedTopNodes()` organizes events into a `ChildrenCache` map (`<string, Node>`). Even without explicit `GroupBy` grouping, `ungroupedTopNodes()` aggregates nodes by event name using `generateEventID()`.
 3.  **Third Party Grouping (`forceGroupIdCallback`)**: In `ThirdPartyTreeView`, `forceGroupIdCallback` is used to ensure that `eventGroupIdCallback` is used to generate the node ID. This is crucial because events with the same name can belong to different third parties. Without this, the initial aggregation by event name would lead to incorrect third-party grouping.

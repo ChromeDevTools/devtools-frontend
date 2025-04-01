@@ -91,7 +91,7 @@ const UIStrings = {
    */
   errorBody: 'Something went wrong. Try again.',
   /**
-   * @description Label for screenreaders that is added to the end of the link
+   * @description Label for screen readers that is added to the end of the link
    * title to indicate that the link will be opened in a new tab.
    */
   opensInNewTab: '(opens in a new tab)',
@@ -191,7 +191,7 @@ function localizeType(sourceType: SourceType): string {
 const TERMS_OF_SERVICE_URL = 'https://policies.google.com/terms';
 const PRIVACY_POLICY_URL = 'https://policies.google.com/privacy';
 const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
-const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
+const LEARN_MORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
 const SIGN_IN_URL = 'https://accounts.google.com' as Platform.DevToolsPath.UrlString;
@@ -673,7 +673,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderLearnMoreAboutInsights(): Lit.TemplateResult {
     // clang-format off
-    return html`<x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
+    return html`<x-link href=${LEARN_MORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
       ${i18nString(UIStrings.learnMore)}
     </x-link>`;
     // clang-format on
@@ -917,7 +917,7 @@ export class ConsoleInsight extends HTMLElement {
         jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
       >Open settings</button>
       or
-      <x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>learn more</x-link>
+      <x-link href=${LEARN_MORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>learn more</x-link>
     </span>`;
     // clang-format on
   }

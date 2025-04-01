@@ -108,18 +108,18 @@ export class PanelUtils {
       return iconElement;
     }
 
-    const isHeaderOverriden = request.hasOverriddenHeaders();
-    const isContentOverriden = request.hasOverriddenContent;
-    if (isHeaderOverriden || isContentOverriden) {
+    const isHeaderOverridden = request.hasOverriddenHeaders();
+    const isContentOverridden = request.hasOverriddenContent;
+    if (isHeaderOverridden || isContentOverridden) {
       const iconData = {
         iconName: 'document',
         color: 'var(--icon-default)',
       };
 
       let title: Common.UIString.LocalizedString;
-      if (isHeaderOverriden && isContentOverriden) {
+      if (isHeaderOverridden && isContentOverridden) {
         title = i18nString(UIStrings.requestContentHeadersOverridden);
-      } else if (isContentOverriden) {
+      } else if (isContentOverridden) {
         title = i18nString(UIStrings.requestContentOverridden);
       } else {
         title = i18nString(UIStrings.requestHeadersOverridden);

@@ -364,8 +364,8 @@ export class IssueView extends UI.TreeOutline.TreeElement {
 
     // Handle sub type for cookie issues.
     if (category === IssuesManager.Issue.IssueCategory.COOKIE) {
-      const cookieIssueSubCatagory = IssuesManager.CookieIssue.CookieIssue.getSubCategory(this.#issue.code());
-      Host.userMetrics.issuesPanelIssueExpanded(cookieIssueSubCatagory);
+      const cookieIssueSubCategory = IssuesManager.CookieIssue.CookieIssue.getSubCategory(this.#issue.code());
+      Host.userMetrics.issuesPanelIssueExpanded(cookieIssueSubCategory);
     } else {
       Host.userMetrics.issuesPanelIssueExpanded(category);
     }

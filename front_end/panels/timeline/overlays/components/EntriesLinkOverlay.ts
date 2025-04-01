@@ -16,7 +16,7 @@ const UIStrings = {
   /**
    *@description Accessible label used to explain to a user that they are viewing an arrow representing a link between two entries.
    */
-  diagram: 'Links bteween entries',
+  diagram: 'Links between entries',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntriesLinkOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

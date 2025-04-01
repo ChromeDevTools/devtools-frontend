@@ -200,6 +200,30 @@ describe('Button', () => {
     assert.strictEqual(onKeydown.getCall(0).args[0].key, 'x');
   });
 
+  it('devtools-button width should not expand its content\'s width', () => {
+    const button = new Buttons.Button.Button();
+    button.data = {variant: Buttons.Button.Variant.PRIMARY};
+    button.textContent = 'test';
+
+    const fullWidthContainer = document.createElement('div');
+    fullWidthContainer.style.width = '400px';
+    fullWidthContainer.style.height = '400px';
+    fullWidthContainer.style.display = 'flex';
+    fullWidthContainer.style.flexDirection = 'column';
+    fullWidthContainer.appendChild(button);
+
+    renderElementIntoDOM(fullWidthContainer);
+    const buttonWidth = button.getBoundingClientRect().width;
+    const fullWidthContainerWidth = fullWidthContainer.getBoundingClientRect().width;
+    assert.isBelow(buttonWidth, fullWidthContainerWidth);
+    assert.isAbove(buttonWidth, 0);
+
+    const buttonHeight = button.getBoundingClientRect().height;
+    const bigContainerHeight = fullWidthContainer.getBoundingClientRect().height;
+    assert.isBelow(buttonHeight, bigContainerHeight);
+    assert.isAbove(buttonHeight, 0);
+  });
+
   describe('in forms', () => {
     function renderForm(data: Buttons.Button.ButtonData = {
       variant: Buttons.Button.Variant.PRIMARY,

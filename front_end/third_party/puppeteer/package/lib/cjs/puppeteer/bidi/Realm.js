@@ -156,9 +156,10 @@ class BidiRealm extends Realm_js_1.Realm {
         if ('type' in result && result.type === 'exception') {
             throw (0, util_js_2.createEvaluationError)(result.exceptionDetails);
         }
-        return returnByValue
-            ? Deserializer_js_1.BidiDeserializer.deserialize(result.result)
-            : this.createHandle(result.result);
+        if (returnByValue) {
+            return Deserializer_js_1.BidiDeserializer.deserialize(result.result);
+        }
+        return this.createHandle(result.result);
     }
     createHandle(result) {
         if ((result.type === 'node' || result.type === 'window') &&

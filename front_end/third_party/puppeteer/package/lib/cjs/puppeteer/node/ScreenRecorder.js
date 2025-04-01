@@ -48,6 +48,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScreenRecorder = void 0;
 const node_child_process_1 = require("node:child_process");
+const node_os_1 = __importDefault(require("node:os"));
 const node_stream_1 = require("node:stream");
 const debug_1 = __importDefault(require("debug"));
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
@@ -85,16 +86,43 @@ let ScreenRecorder = (() => {
         #process;
         #controller = new AbortController();
         #lastFrame;
+        #fps;
         /**
          * @internal
          */
-        constructor(page, width, height, { speed, scale, crop, format, path } = {}) {
+        constructor(page, width, height, { speed, scale, crop, format, fps, loop, delay, quality, colors, path, } = {}) {
             super({ allowHalfOpen: false });
+            format ??= 'webm';
+            fps ??= DEFAULT_FPS;
+            // Maps 0 to -1 as ffmpeg maps 0 to infinity.
+            loop ||= -1;
+            delay ??= -1;
+            quality ??= CRF_VALUE;
+            colors ??= 256;
             path ??= 'ffmpeg';
+            this.#fps = fps;
             // Tests if `ffmpeg` exists.
             const { error } = (0, node_child_process_1.spawnSync)(path);
             if (error) {
                 throw error;
+            }
+            const filters = [
+                `crop='min(${width},iw):min(${height},ih):0:0'`,
+                `pad=${width}:${height}:0:0`,
+            ];
+            if (speed) {
+                filters.push(`setpts=${1 / speed}*PTS`);
+            }
+            if (crop) {
+                filters.push(`crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}`);
+            }
+            if (scale) {
+                filters.push(`scale=iw*${scale}:-1:flags=lanczos`);
+            }
+            const formatArgs = this.#getFormatArgs(format, fps, loop, delay, quality, colors);
+            const vf = formatArgs.indexOf('-vf');
+            if (vf !== -1) {
+                filters.push(formatArgs.splice(vf, 2).at(-1) ?? '');
             }
             this.#process = (0, node_child_process_1.spawn)(path, 
             // See https://trac.ffmpeg.org/wiki/Encode/VP9 for more information on flags.
@@ -122,16 +150,14 @@ let ScreenRecorder = (() => {
                 // VP9 tries to use all available threads?
                 ['-threads', '1'],
                 // Specifies the frame rate we are giving ffmpeg.
-                ['-framerate', `${DEFAULT_FPS}`],
-                // Specifies the encoding and format we are using.
-                this.#getFormatArgs(format ?? 'webm'),
+                ['-framerate', `${fps}`],
                 // Disable bitrate.
                 ['-b:v', '0'],
-                // Filters to ensure the images are piped correctly.
-                [
-                    '-vf',
-                    `${speed ? `setpts=${1 / speed}*PTS,` : ''}crop='min(${width},iw):min(${height},ih):0:0',pad=${width}:${height}:0:0${crop ? `,crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}` : ''}${scale ? `,scale=iw*${scale}:-1` : ''}`,
-                ],
+                // Specifies the encoding and format we are using.
+                formatArgs,
+                // Filters to ensure the images are piped correctly,
+                // combined with any format-specific filters.
+                ['-vf', filters.join()],
                 'pipe:1',
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);
@@ -155,35 +181,63 @@ let ScreenRecorder = (() => {
                     timestamp: event.metadata.timestamp,
                 };
             }), (0, rxjs_js_1.bufferCount)(2, 1), (0, rxjs_js_1.concatMap)(([{ timestamp: previousTimestamp, buffer }, { timestamp }]) => {
-                return (0, rxjs_js_1.from)(Array(Math.round(DEFAULT_FPS * Math.max(timestamp - previousTimestamp, 0))).fill(buffer));
+                return (0, rxjs_js_1.from)(Array(Math.round(fps * Math.max(timestamp - previousTimestamp, 0))).fill(buffer));
             }), (0, rxjs_js_1.map)(buffer => {
                 void this.#writeFrame(buffer);
                 return [buffer, performance.now()];
             }), (0, rxjs_js_1.takeUntil)((0, rxjs_js_1.fromEvent)(this.#controller.signal, 'abort'))), { defaultValue: [Buffer.from([]), performance.now()] });
         }
-        #getFormatArgs(format) {
+        #getFormatArgs(format, fps, loop, delay, quality, colors) {
+            const libvpx = [
+                // Sets the codec to use.
+                ['-c:v', 'vp9'],
+                // Sets the quality. Lower the better.
+                ['-crf', `${quality}`],
+                // Sets the quality and how efficient the compression will be.
+                [
+                    '-deadline',
+                    'realtime',
+                    '-cpu-used',
+                    `${Math.min(node_os_1.default.cpus().length / 2, 8)}`,
+                ],
+            ];
             switch (format) {
                 case 'webm':
                     return [
-                        // Sets the codec to use.
-                        ['-c:v', 'vp9'],
+                        ...libvpx,
                         // Sets the format
                         ['-f', 'webm'],
-                        // Sets the quality. Lower the better.
-                        ['-crf', `${CRF_VALUE}`],
-                        // Sets the quality and how efficient the compression will be.
-                        ['-deadline', 'realtime', '-cpu-used', '8'],
                     ].flat();
                 case 'gif':
+                    fps = DEFAULT_FPS === fps ? 20 : 'source_fps';
+                    if (loop === Infinity) {
+                        loop = 0;
+                    }
+                    if (delay !== -1) {
+                        // ms to cs
+                        delay /= 10;
+                    }
                     return [
                         // Sets the frame rate and uses a custom palette generated from the
                         // input.
                         [
                             '-vf',
-                            'fps=5,split[s0][s1];[s0]palettegen=stats_mode=diff[p];[s1][p]paletteuse',
+                            `fps=${fps},split[s0][s1];[s0]palettegen=stats_mode=diff:max_colors=${colors}[p];[s1][p]paletteuse=dither=bayer`,
                         ],
+                        // Sets the number of times to loop playback.
+                        ['-loop', `${loop}`],
+                        // Sets the delay between iterations of a loop.
+                        ['-final_delay', `${delay}`],
                         // Sets the format
                         ['-f', 'gif'],
+                    ].flat();
+                case 'mp4':
+                    return [
+                        ...libvpx,
+                        // Fragment file during stream to avoid errors.
+                        ['-movflags', 'hybrid_fragmented'],
+                        // Sets the format
+                        ['-f', 'mp4'],
                     ].flat();
             }
         }
@@ -202,7 +256,7 @@ let ScreenRecorder = (() => {
             this.#controller.abort();
             // Repeat the last frame for the remaining frames.
             const [buffer, timestamp] = await this.#lastFrame;
-            await Promise.all(Array(Math.max(1, Math.round((DEFAULT_FPS * (performance.now() - timestamp)) / 1000)))
+            await Promise.all(Array(Math.max(1, Math.round((this.#fps * (performance.now() - timestamp)) / 1000)))
                 .fill(buffer)
                 .map(this.#writeFrame.bind(this)));
             // Close stdin to notify FFmpeg we are done.

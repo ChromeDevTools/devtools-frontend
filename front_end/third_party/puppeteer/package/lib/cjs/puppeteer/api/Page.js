@@ -855,8 +855,8 @@ let Page = (() => {
          *
          * @remarks
          *
-         * All recordings will be {@link https://www.webmproject.org/ | WebM} format using
-         * the {@link https://www.webmproject.org/vp9/ | VP9} video codec. The FPS is 30.
+         * By default, all recordings will be {@link https://www.webmproject.org/ | WebM} format using
+         * the {@link https://www.webmproject.org/vp9/ | VP9} video codec, with a frame rate of 30 FPS.
          *
          * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
          */

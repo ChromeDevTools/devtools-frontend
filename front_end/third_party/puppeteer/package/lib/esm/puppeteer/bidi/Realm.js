@@ -153,9 +153,10 @@ export class BidiRealm extends Realm {
         if ('type' in result && result.type === 'exception') {
             throw createEvaluationError(result.exceptionDetails);
         }
-        return returnByValue
-            ? BidiDeserializer.deserialize(result.result)
-            : this.createHandle(result.result);
+        if (returnByValue) {
+            return BidiDeserializer.deserialize(result.result);
+        }
+        return this.createHandle(result.result);
     }
     createHandle(result) {
         if ((result.type === 'node' || result.type === 'window') &&

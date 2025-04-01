@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.4.0';
+  const packageVersion = '24.5.0';
 
   /**
    * @license
@@ -11209,8 +11209,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * @remarks
        *
-       * All recordings will be {@link https://www.webmproject.org/ | WebM} format using
-       * the {@link https://www.webmproject.org/vp9/ | VP9} video codec. The FPS is 30.
+       * By default, all recordings will be {@link https://www.webmproject.org/ | WebM} format using
+       * the {@link https://www.webmproject.org/vp9/ | VP9} video codec, with a frame rate of 30 FPS.
        *
        * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
        */
@@ -15779,7 +15779,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (exceptionDetails) {
         throw createEvaluationError(exceptionDetails);
       }
-      return returnByValue ? valueFromRemoteObject(remoteObject) : _classPrivateFieldGet(_world3, this).createCdpHandle(remoteObject);
+      if (returnByValue) {
+        return valueFromRemoteObject(remoteObject);
+      }
+      return _classPrivateFieldGet(_world3, this).createCdpHandle(remoteObject);
     }
     const functionDeclaration = stringifyFunction(pageFunction);
     const functionDeclarationWithSourceUrl = SOURCE_URL_REGEX.test(functionDeclaration) ? functionDeclaration : `${functionDeclaration}\n${sourceUrlComment}\n`;
@@ -15814,7 +15817,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (exceptionDetails) {
       throw createEvaluationError(exceptionDetails);
     }
-    return returnByValue ? valueFromRemoteObject(remoteObject) : _classPrivateFieldGet(_world3, this).createCdpHandle(remoteObject);
+    if (returnByValue) {
+      return valueFromRemoteObject(remoteObject);
+    }
+    return _classPrivateFieldGet(_world3, this).createCdpHandle(remoteObject);
     async function convertArgumentAsync(context, arg) {
       if (arg instanceof LazyArg) {
         arg = await arg.get(context);
@@ -24379,9 +24385,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '134.0.6998.35',
-    'chrome-headless-shell': '134.0.6998.35',
-    firefox: 'stable_136.0'
+    chrome: '134.0.6998.165',
+    'chrome-headless-shell': '134.0.6998.165',
+    firefox: 'stable_136.0.4'
   });
 
   /**

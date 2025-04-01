@@ -5,7 +5,7 @@
  */
 import { PassThrough } from 'node:stream';
 import type { BoundingBox } from '../api/ElementHandle.js';
-import type { Page } from '../api/Page.js';
+import type { Page, FileFormat } from '../api/Page.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 /**
  * @internal
@@ -13,7 +13,12 @@ import { asyncDisposeSymbol } from '../util/disposable.js';
 export interface ScreenRecorderOptions {
     speed?: number;
     crop?: BoundingBox;
-    format?: 'gif' | 'webm';
+    format?: FileFormat;
+    fps?: number;
+    loop?: number;
+    delay?: number;
+    quality?: number;
+    colors?: number;
     scale?: number;
     path?: string;
 }
@@ -25,7 +30,7 @@ export declare class ScreenRecorder extends PassThrough {
     /**
      * @internal
      */
-    constructor(page: Page, width: number, height: number, { speed, scale, crop, format, path }?: ScreenRecorderOptions);
+    constructor(page: Page, width: number, height: number, { speed, scale, crop, format, fps, loop, delay, quality, colors, path, }?: ScreenRecorderOptions);
     /**
      * Stops the recorder.
      *

@@ -346,9 +346,10 @@ export class ExecutionContext extends EventEmitter {
             if (exceptionDetails) {
                 throw createEvaluationError(exceptionDetails);
             }
-            return returnByValue
-                ? valueFromRemoteObject(remoteObject)
-                : this.#world.createCdpHandle(remoteObject);
+            if (returnByValue) {
+                return valueFromRemoteObject(remoteObject);
+            }
+            return this.#world.createCdpHandle(remoteObject);
         }
         const functionDeclaration = stringifyFunction(pageFunction);
         const functionDeclarationWithSourceUrl = SOURCE_URL_REGEX.test(functionDeclaration)
@@ -386,9 +387,10 @@ export class ExecutionContext extends EventEmitter {
         if (exceptionDetails) {
             throw createEvaluationError(exceptionDetails);
         }
-        return returnByValue
-            ? valueFromRemoteObject(remoteObject)
-            : this.#world.createCdpHandle(remoteObject);
+        if (returnByValue) {
+            return valueFromRemoteObject(remoteObject);
+        }
+        return this.#world.createCdpHandle(remoteObject);
         async function convertArgumentAsync(context, arg) {
             if (arg instanceof LazyArg) {
                 arg = await arg.get(context);

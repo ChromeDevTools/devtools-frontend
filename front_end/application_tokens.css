@@ -124,7 +124,7 @@
   --legacy-input-validation-error: #db1600;
   --legacy-selection-bg-color: var(--legacy-accent-color);
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
-  --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
+  --legacy-focus-ring-active-shadow: 0 0 0 1px var(--sys-color-state-focus-ring);
 
   /* Color for strokestyle of canvas in flame chart */
   /* It is the same color as sys-color-primary but with a 10% opacity */

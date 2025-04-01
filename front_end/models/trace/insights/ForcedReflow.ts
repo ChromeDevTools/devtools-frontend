@@ -43,7 +43,11 @@ export const UIStrings = {
   /**
    * @description Text to describe CPU processor tasks that could not be attributed to any specific source code.
    */
-  unattributed: 'Unattributed',
+  unattributed: '[unattributed]',
+  /**
+   * @description Text for the name of anonymous functions
+   */
+  anonymous: '(anonymous)',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ForcedReflow.ts', UIStrings);

@@ -5,7 +5,6 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type {ForcedReflowInsightModel} from '../../../../models/trace/insights/ForcedReflow.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -40,27 +39,33 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
   override internalName = 'forced-reflow';
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame|null): Lit.LitTemplate {
+    const style = 'display: flex; gap: 4px; padding: 4px 0; overflow: hidden; white-space: nowrap';
     if (!callFrame) {
-      // TODO: Remove this style hack.
-      return html`<div style="margin: 4px 10px; font-style: italic">${i18nString(UIStrings.unattributed)}</div>`;
+      return html`<div style=${style}>${i18nString(UIStrings.unattributed)}</div>`;
     }
 
     const linkifier = new LegacyComponents.Linkifier.Linkifier();
-    const stackTrace: Protocol.Runtime.StackTrace = {
-      callFrames: [
-        {
-          functionName: callFrame.functionName,
-          scriptId: callFrame.scriptId as Protocol.Runtime.ScriptId,
-          url: callFrame.url,
-          lineNumber: callFrame.lineNumber,
+    const location = linkifier.linkifyScriptLocation(
+        null, callFrame.scriptId as Protocol.Runtime.ScriptId, callFrame.url as Platform.DevToolsPath.UrlString,
+        callFrame.lineNumber, {
           columnNumber: callFrame.columnNumber,
-        },
-      ],
-    };
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
-        target, linkifier, {stackTrace, tabStops: true, showColumnNumber: true});
-    return html`${callFrameContents.element}`;
+          showColumnNumber: true,
+          inlineFrameIndex: 0,
+          tabStop: true,
+        });
+
+    if (location instanceof HTMLElement) {
+      location.style.maxWidth = 'max-content';
+      location.style.overflow = 'hidden';
+      location.style.textOverflow = 'ellipsis';
+      location.style.whiteSpace = 'normal';
+      location.style.verticalAlign = 'top';
+      location.style.textAlign = 'left';
+      location.style.flex = '1';
+    }
+
+    const functionName = callFrame.functionName || i18nString(UIStrings.anonymous);
+    return html`<div style=${style}>${functionName}<span> @ </span> ${location}</div>`;
   }
 
   override renderContent(): Lit.LitTemplate {

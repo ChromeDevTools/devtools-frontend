@@ -13,13 +13,35 @@ new RuleTester().run('no-imperative-dom-api', rule, {
       code: `class SomeWidget extends UI.Widget.Widget {
           constructor() {
             super();
-            this.element.className = 'some-class';
+            this.someElement.className = 'some-class';
           }
       }`,
     },
   ],
 
   invalid: [
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `class SomeWidget extends UI.Widget.Widget {
+          constructor() {
+            super();
+            this.element.className = 'some-class';
+          }
+      }`,
+      output: `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div class="some-class"></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+          constructor() {
+            super();
+          }
+      }`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
     {
       filename: 'front_end/ui/components/component/file.ts',
       code: `

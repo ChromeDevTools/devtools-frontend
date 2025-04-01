@@ -15,7 +15,7 @@ module.exports = {
     const sourceCode = context.getSourceCode();
     return {
       MemberExpression(node) {
-        if (node.object.type === 'ThisExpression' && isIdentifier(node.property, 'contentElement')) {
+        if (node.object.type === 'ThisExpression' && isIdentifier(node.property, ['element', 'contentElement'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'div';
         }

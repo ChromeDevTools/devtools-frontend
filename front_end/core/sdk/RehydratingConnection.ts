@@ -121,12 +121,15 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
 
     this.trace = payload;
     const enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser(payload);
-    const dataPerTarget = enhancedTracesParser.data();
+    const hydratingData = enhancedTracesParser.data();
 
     let sessionId = 0;
     // Set up default rehydrating session.
     this.sessions.set(sessionId, new RehydratingSessionBase(this));
-    for (const [target, [executionContexts, scripts]] of dataPerTarget.entries()) {
+    for (const hydratingDataPerTarget of hydratingData) {
+      const target = hydratingDataPerTarget.target;
+      const executionContexts = hydratingDataPerTarget.executionContexts;
+      const scripts = hydratingDataPerTarget.scripts;
       this.postToFrontend({
         method: 'Target.targetCreated',
         params: {

@@ -23,6 +23,7 @@ export interface RehydratingScript {
   length?: number;
   sourceText?: string;
   auxData?: RehydratingExecutionContextAuxData;
+  pid?: number;
 }
 
 export interface RehydratingExecutionContextAuxData {
@@ -37,18 +38,22 @@ export interface RehydratingExecutionContext {
   v8Context?: string;
   name?: string;
   auxData?: RehydratingExecutionContextAuxData;
-  isolate?: string;
+  isolate: string;
 }
 
 export interface RehydratingTarget {
-  targetId: Protocol.Page.FrameId;
+  targetId: Protocol.Target.TargetID;
   type: string;
   url: string;
   pid?: number;
   isolate?: string;
 }
 
-export type HydratingDataPerTarget = Map<RehydratingTarget, [RehydratingExecutionContext[], RehydratingScript[]]>;
+export interface HydratingDataPerTarget {
+  target: RehydratingTarget;
+  executionContexts: RehydratingExecutionContext[];
+  scripts: RehydratingScript[];
+}
 
 export interface ProtocolMessage {
   id: number;

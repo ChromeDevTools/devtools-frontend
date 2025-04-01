@@ -9,7 +9,7 @@ import type {
   RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from './RehydratingObject.js';
 
 const mockTarget1: RehydratingTarget = {
-  targetId: 'ABCDE' as Protocol.Page.FrameId,
+  targetId: 'ABCDE' as Protocol.Target.TargetID,
   type: 'page',
   isolate: '12345',
   url: 'example.com',

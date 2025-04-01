@@ -37,7 +37,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LegacyJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface PatternMatchResult {
+export interface PatternMatchResult {
   name: string;
   line: number;
   column: number;

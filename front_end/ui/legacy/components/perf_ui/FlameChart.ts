@@ -3173,9 +3173,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-
-    context.fillStyle = '#7f5050';
-    context.strokeStyle = '#7f5050';
+    const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface-subtle');
+    context.fillStyle = arrowColor;
+    context.strokeStyle = arrowColor;
 
     for (let i = 0; i < td.initiatorsData.length; ++i) {
       const initiatorsData = td.initiatorsData[i];
@@ -3229,16 +3229,18 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const endY = this.levelToOffset(endLevel) + this.levelHeight(endLevel) / 2;
       const lineLength = endX - startX;
 
-      // Make line an arrow if the line is long enough to fit the arrow head. Otherwise, draw a thinner line without the arrow head.
+      context.lineWidth = 1;
+      context.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      context.shadowOffsetX = 2;
+      context.shadowOffsetY = 2;
+      context.shadowBlur = 3;
       if (lineLength > arrowWidth) {
-        context.lineWidth = 0.5;
+        // Add an arrow to the line if the line is long enough.
         context.beginPath();
         context.moveTo(endX, endY);
         context.lineTo(endX - arrowLineWidth, endY - 3);
         context.lineTo(endX - arrowLineWidth, endY + 3);
         context.fill();
-      } else {
-        context.lineWidth = 0.2;
       }
 
       if (initiatorEndsBeforeInitiatedStart) {

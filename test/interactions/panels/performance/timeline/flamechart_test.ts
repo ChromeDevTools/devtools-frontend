@@ -33,7 +33,7 @@ describe('FlameChart', function() {
     await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_decorations.png');
   });
 
-  itScreenshot('can add initiators to events', async () => {
+  it('can add initiators to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#initiators');
     await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png');

@@ -6955,6 +6955,10 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
+    name: "isTypeSupported",
+    signatures: [["type"]]
+  },
+  {
     name: "TrackEvent",
     signatures: [["type","?eventInitDict"]]
   },
@@ -7752,10 +7756,6 @@ export const NativeFunctions = [
   {
     name: "MediaRecorder",
     signatures: [["stream","?options"]]
-  },
-  {
-    name: "isTypeSupported",
-    signatures: [["type"]]
   },
   {
     name: "MediaMetadata",

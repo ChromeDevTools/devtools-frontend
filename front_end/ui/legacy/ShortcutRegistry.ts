@@ -11,7 +11,7 @@ import {type Action, getRegisteredActionExtensions, KeybindSet} from './ActionRe
 import type {ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
-import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';
+import {type Key, KeyboardShortcut, type Modifier, Modifiers, Type} from './KeyboardShortcut.js';
 import {isEditing} from './UIUtils.js';
 
 let shortcutRegistryInstance: ShortcutRegistry|undefined;
@@ -119,11 +119,33 @@ export class ShortcutRegistry {
     return keys;
   }
 
+  keysForAction(actionId: string): number[] {
+    const keys = [...this.actionToShortcut.get(actionId)].flatMap(
+        shortcut => shortcut.descriptors.map(descriptor => descriptor.key));
+    return keys;
+  }
+
   shortcutTitleForAction(actionId: string): string|undefined {
     for (const shortcut of this.actionToShortcut.get(actionId)) {
       return shortcut.title();
     }
     return undefined;
+  }
+
+  keyAndModifiersForAction(actionId: string): {key: Key, modifier: Modifier}|undefined {
+    for (const keys of this.keysForAction(actionId)) {
+      const {keyCode, modifiers} = KeyboardShortcut.keyCodeAndModifiersFromKey(keys);
+      const key = KeyboardShortcut.keyCodeToKey(keyCode);
+      if (key) {
+        return {key, modifier: KeyboardShortcut.modifierValueToModifier(modifiers) || Modifiers.None};
+      }
+    }
+    return undefined;
+  }
+
+  // DevTools and Chrome modifier values do not match, see latter here: crsrc.org/c/ui/events/event_constants.h;l=24
+  devToolsToChromeModifier(devToolsModifier: Modifier): number {
+    return devToolsModifier.value * 2;
   }
 
   handleShortcut(event: KeyboardEvent, handlers?: {

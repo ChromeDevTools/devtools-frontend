@@ -216,6 +216,14 @@ export class KeyboardShortcut {
       return (modifiers || 0) & m.value ? /** @type {string} */ modifierNames.get(m) as string : '';
     }
   }
+
+  static keyCodeToKey(keyCode: number): Key|undefined {
+    return Object.values(Keys).find(key => key.code === keyCode);
+  }
+
+  static modifierValueToModifier(modifierValue: number): Modifier|undefined {
+    return Object.values(Modifiers).find(modifier => modifier.value === modifierValue);
+  }
 }
 
 export interface Modifier {
@@ -321,8 +329,10 @@ export const Keys: {
   C: {code: 67, name: 'C'},
   H: {code: 72, name: 'H'},
   N: {code: 78, name: 'N'},
+  O: {code: 79, name: 'O'},
   P: {code: 80, name: 'P'},
   R: {code: 82, name: 'R'},
+  S: {code: 83, name: 'S'},
   U: {code: 85, name: 'U'},
   V: {code: 86, name: 'V'},
   X: {code: 88, name: 'X'},

@@ -675,7 +675,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     const rect = this.dropDownButton.getBoundingClientRect();
     const menu = new ContextMenu(event, {
-      useSoftMenu: false,
       x: rect.left,
       y: rect.bottom,
       onSoftMenuClosed: () => {

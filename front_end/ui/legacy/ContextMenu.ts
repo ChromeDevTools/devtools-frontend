@@ -158,7 +158,8 @@ export class Item {
   }
 
   setAccelerator(key: Key, modifiers: Modifier[]): void {
-    const modifierSum = modifiers.reduce((result, modifier) => result + modifier.value, 0);
+    const modifierSum = modifiers.reduce(
+        (result, modifier) => result + ShortcutRegistry.instance().devToolsToChromeModifier(modifier), 0);
     this.accelerator = {keyCode: key.code, modifiers: modifierSum};
   }
 
@@ -230,6 +231,10 @@ export class Section {
       jslogContext: actionId,
     });
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
+    const keyAndModifier = ShortcutRegistry.instance().keyAndModifiersForAction(actionId);
+    if (keyAndModifier) {
+      result.setAccelerator(keyAndModifier.key, [keyAndModifier.modifier]);
+    }
     if (shortcut) {
       result.setShortcut(shortcut);
     }

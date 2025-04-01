@@ -10,7 +10,6 @@ import shlex
 import subprocess
 import sys
 import re
-from pathlib import Path
 
 from os import path
 

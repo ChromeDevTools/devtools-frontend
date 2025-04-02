@@ -119,6 +119,22 @@ export class TextPrompt extends HTMLElement {
     return this.#input().value || '';
   }
 
+  connectedCallback(): void {
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'dir') {
+          const writingDirection = this.#input().getAttribute('dir');
+          if (!writingDirection) {
+            this.#suggestion().removeAttribute('dir');
+            return;
+          }
+          this.#suggestion().setAttribute('dir', writingDirection);
+        }
+      }
+    });
+    observer.observe(this.#input(), {attributeFilter: ['dir']});
+  }
+
   #render(): void {
     const output = html`
       <style>${textPromptStyles.cssText}</style>

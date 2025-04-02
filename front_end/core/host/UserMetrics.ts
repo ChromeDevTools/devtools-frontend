@@ -51,16 +51,6 @@ export class UserMetrics {
     }
   }
 
-  panelShownInLocation(panelName: string, location: 'main'|'drawer'): void {
-    const panelWithLocationName = `${panelName}-${location}`;
-    const panelWithLocation = PanelWithLocation[panelWithLocationName as keyof typeof PanelWithLocation] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.PanelShownInLocation,
-        panelWithLocation,
-        PanelWithLocation.MAX_VALUE,
-    );
-  }
-
   settingsPanelShown(settingsViewId: string): void {
     this.panelShown('settings-' + settingsViewId);
   }

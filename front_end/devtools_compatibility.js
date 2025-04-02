@@ -423,7 +423,6 @@ const EnumeratedHistogram = {
   LighthouseModeRun: 'DevTools.LighthouseModeRun',
   LighthouseCategoryUsed: 'DevTools.LighthouseCategoryUsed',
   PanelShown: 'DevTools.PanelShown',
-  PanelShownInLocation: 'DevTools.PanelShownInLocation',
   RecordingAssertion: 'DevTools.RecordingAssertion',
   RecordingCodeToggled: 'DevTools.RecordingCodeToggled',
   RecordingCopiedToClipboard: 'DevTools.RecordingCopiedToClipboard',

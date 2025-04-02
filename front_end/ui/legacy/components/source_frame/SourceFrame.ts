@@ -101,7 +101,7 @@ const UIStrings = {
    */
   allowPasting: 'allow pasting',
   /**
-   *@description Input box placeholder which instructs the user to type 'allow pasing' into the input box.
+   *@description Input box placeholder which instructs the user to type 'allow pasting' into the input box.
    *@example {allow pasting} PH1
    */
   typeAllowPasting: 'Type \'\'{PH1}\'\'',

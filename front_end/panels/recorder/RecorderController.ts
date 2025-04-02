@@ -138,7 +138,7 @@ const UIStrings = {
    */
   allowImporting: 'allow importing',
   /**
-   *@description Input box placeholder which instructs the user to type 'allow pasing' into the input box.
+   *@description Input box placeholder which instructs the user to type 'allow importing' into the input box.
    *@example {allow importing} PH1
    */
   typeAllowImporting: 'Type \'\'{PH1}\'\'',

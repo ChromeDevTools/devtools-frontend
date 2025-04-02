@@ -123,7 +123,7 @@ const UIStrings = {
   /**
    *@description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
    *             defined and can't be linked to.
-   *@example {--my-custom-property-name} PH1
+   *@example {--my-linkable-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
   /**

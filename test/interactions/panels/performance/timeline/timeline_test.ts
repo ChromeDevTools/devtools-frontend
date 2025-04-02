@@ -117,7 +117,7 @@ describe('Performance panel', function() {
         await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png');
       });
 
-  it('renders the window range bounds correctly when loading multiple profiles', async () => {
+  itScreenshot('renders the window range bounds correctly when loading multiple profiles', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=basic');
     let timingTitleHandle = await waitFor('.summary-range');
     let timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);

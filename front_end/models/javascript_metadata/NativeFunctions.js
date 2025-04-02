@@ -3824,7 +3824,7 @@ export const NativeFunctions = [
   {
     name: "removeItem",
     signatures: [["index"]],
-    receivers: ["SVGLengthList","SVGNumberList","SVGPointList","SVGStringList","SVGTransformList"]
+    receivers: ["SVGLengthList","SVGNumberList","SVGPointList","SVGStringList","SVGTransformList","SpeechRecognitionPhraseList"]
   },
   {
     name: "removeItem",
@@ -8514,16 +8514,16 @@ export const NativeFunctions = [
     signatures: [["type","?initDict"]]
   },
   {
+    name: "SpeechRecognitionPhraseList",
+    signatures: [["phrases"]]
+  },
+  {
     name: "addItem",
     signatures: [["item"]]
   },
   {
     name: "SpeechRecognitionPhrase",
     signatures: [["phrase","?boost"]]
-  },
-  {
-    name: "updateContext",
-    signatures: [["context"]]
   },
   {
     name: "availableOnDevice",

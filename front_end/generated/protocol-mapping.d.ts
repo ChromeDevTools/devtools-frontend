@@ -1312,6 +1312,11 @@ export namespace ProtocolMapping {
      * For example, a value of '1em' is evaluated according to the computed
      * 'font-size' of the element and a value 'calc(1px + 2px)' will be
      * resolved to '3px'.
+     * If the `propertyName` was specified the `values` are resolved as if
+     * they were property's declaration. If a value cannot be parsed according
+     * to the provided property syntax, the value is parsed using combined
+     * syntax as if null `propertyName` was provided. If the value cannot be
+     * resolved even then, return the provided value without any changes.
      */
     'CSS.resolveValues': {
       paramsType: [Protocol.CSS.ResolveValuesRequest];
@@ -4772,6 +4777,24 @@ export namespace ProtocolMapping {
      */
     'BluetoothEmulation.removeCharacteristic': {
       paramsType: [Protocol.BluetoothEmulation.RemoveCharacteristicRequest];
+      returnType: void;
+    };
+    /**
+     * Adds a descriptor with |descriptorUuid| to the characteristic respresented
+     * by |characteristicId| in the service represented by |serviceId| of the
+     * peripheral with |address|.
+     */
+    'BluetoothEmulation.addDescriptor': {
+      paramsType: [Protocol.BluetoothEmulation.AddDescriptorRequest];
+      returnType: Protocol.BluetoothEmulation.AddDescriptorResponse;
+    };
+    /**
+     * Removes the descriptor with |descriptorId| from the characteristic
+     * respresented by |characteristicId| in the service represented by |serviceId|
+     * of the peripheral with |address|.
+     */
+    'BluetoothEmulation.removeDescriptor': {
+      paramsType: [Protocol.BluetoothEmulation.RemoveDescriptorRequest];
       returnType: void;
     };
     /**

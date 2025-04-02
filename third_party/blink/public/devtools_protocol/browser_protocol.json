@@ -1875,7 +1875,8 @@
                         "RelyingPartyOriginIsOpaque",
                         "TypeNotMatching",
                         "UiDismissedNoEmbargo",
-                        "CorsError"
+                        "CorsError",
+                        "SuppressedBySegmentationPlatform"
                     ]
                 },
                 {
@@ -5046,7 +5047,8 @@
                 },
                 {
                     "name": "resolveValues",
-                    "description": "Resolve the specified values in the context of the provided element.\nFor example, a value of '1em' is evaluated according to the computed\n'font-size' of the element and a value 'calc(1px + 2px)' will be\nresolved to '3px'.",
+                    "description": "Resolve the specified values in the context of the provided element.\nFor example, a value of '1em' is evaluated according to the computed\n'font-size' of the element and a value 'calc(1px + 2px)' will be\nresolved to '3px'.\nIf the `propertyName` was specified the `values` are resolved as if\nthey were property's declaration. If a value cannot be parsed according\nto the provided property syntax, the value is parsed using combined\nsyntax as if null `propertyName` was provided. If the value cannot be\nresolved even then, return the provided value without any changes.",
+                    "experimental": true,
                     "parameters": [
                         {
                             "name": "values",
@@ -5070,14 +5072,12 @@
                         {
                             "name": "pseudoType",
                             "description": "Pseudo element type, only works for pseudo elements that generate\nelements in the tree, such as ::before and ::after.",
-                            "experimental": true,
                             "optional": true,
                             "$ref": "DOM.PseudoType"
                         },
                         {
                             "name": "pseudoIdentifier",
                             "description": "Pseudo element custom ident.",
-                            "experimental": true,
                             "optional": true,
                             "type": "string"
                         }
@@ -28137,6 +28137,57 @@
                         },
                         {
                             "name": "characteristicId",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "addDescriptor",
+                    "description": "Adds a descriptor with |descriptorUuid| to the characteristic respresented\nby |characteristicId| in the service represented by |serviceId| of the\nperipheral with |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "serviceId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "characteristicId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "descriptorUuid",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "descriptorId",
+                            "description": "An identifier that uniquely represents this descriptor.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "removeDescriptor",
+                    "description": "Removes the descriptor with |descriptorId| from the characteristic\nrespresented by |characteristicId| in the service represented by |serviceId|\nof the peripheral with |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        },
+                        {
+                            "name": "serviceId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "characteristicId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "descriptorId",
                             "type": "string"
                         }
                     ]

@@ -1275,6 +1275,7 @@ export namespace Audits {
     TypeNotMatching = 'TypeNotMatching',
     UiDismissedNoEmbargo = 'UiDismissedNoEmbargo',
     CorsError = 'CorsError',
+    SuppressedBySegmentationPlatform = 'SuppressedBySegmentationPlatform',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -18445,6 +18446,27 @@ export namespace BluetoothEmulation {
     address: string;
     serviceId: string;
     characteristicId: string;
+  }
+
+  export interface AddDescriptorRequest {
+    address: string;
+    serviceId: string;
+    characteristicId: string;
+    descriptorUuid: string;
+  }
+
+  export interface AddDescriptorResponse extends ProtocolResponseWithError {
+    /**
+     * An identifier that uniquely represents this descriptor.
+     */
+    descriptorId: string;
+  }
+
+  export interface RemoveDescriptorRequest {
+    address: string;
+    serviceId: string;
+    characteristicId: string;
+    descriptorId: string;
   }
 
   /**

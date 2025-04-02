@@ -1117,26 +1117,30 @@ export class RecorderController extends LitElement {
   }
 
   #getShortcutsInfo(): Dialogs.ShortcutDialog.Shortcut[] {
-    const getBindingForAction = (action: Actions.RecorderActions): string[][] => {
+    const getBindingForAction = (action: Actions.RecorderActions): Dialogs.ShortcutDialog.ShortcutPart[][] => {
       const shortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(action);
-      const shortcutsWithSplitBindings =
-          shortcuts.map(shortcut => shortcut.title().split(/[\s+]+/).map(word => word.trim()));
+      const shortcutsWithSplitBindings = shortcuts.map(shortcut => shortcut.title().split(/[\s+]+/).map(word => {
+        return {key: word.trim()};
+      }));
       return shortcutsWithSplitBindings;
     };
 
     return [
       {
         title: i18nString(UIStrings.startStopRecording),
-        bindings: getBindingForAction(Actions.RecorderActions.START_RECORDING),
+        rows: getBindingForAction(Actions.RecorderActions.START_RECORDING),
       },
       {
         title: i18nString(UIStrings.replayRecording),
-        bindings: getBindingForAction(Actions.RecorderActions.REPLAY_RECORDING),
+        rows: getBindingForAction(Actions.RecorderActions.REPLAY_RECORDING),
       },
-      {title: i18nString(UIStrings.copyShortcut), bindings: Host.Platform.isMac() ? [['⌘', 'C']] : [['Ctrl', 'C']]},
+      {
+        title: i18nString(UIStrings.copyShortcut),
+        rows: Host.Platform.isMac() ? [[{key: '⌘'}, {key: 'C'}]] : [[{key: 'Ctrl'}, {key: 'C'}]]
+      },
       {
         title: i18nString(UIStrings.toggleCode),
-        bindings: getBindingForAction(Actions.RecorderActions.TOGGLE_CODE_VIEW),
+        rows: getBindingForAction(Actions.RecorderActions.TOGGLE_CODE_VIEW),
       },
     ];
   }

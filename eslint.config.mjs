@@ -315,7 +315,6 @@ export default [
       parser: tsParser,
       parserOptions: {
         allowAutomaticSingleRunInference: true,
-        projectService: true,
         project: join(
           import.meta.dirname,
           'config',

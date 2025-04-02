@@ -73,7 +73,7 @@ async function showTrace(
   view.showTrace(
       property, null, matchedStyles, new Map(),
       Elements.StylePropertyTreeElement.getPropertyRenderers(
-          property.ownerStyle, treeElement.parentPane(), matchedStyles, treeElement,
+          property.name, property.ownerStyle, treeElement.parentPane(), matchedStyles, treeElement,
           treeElement.getComputedStyles() ?? new Map()));
   return await viewFunction.nextInput;
 }

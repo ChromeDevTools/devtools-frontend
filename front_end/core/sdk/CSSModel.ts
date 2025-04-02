@@ -43,6 +43,7 @@ import * as Root from '../root/root.js';
 import {CSSFontFace} from './CSSFontFace.js';
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
 import {CSSMedia} from './CSSMedia.js';
+import {cssMetadata} from './CSSMetadata.js';
 import {CSSStyleRule} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
@@ -117,9 +118,16 @@ export class CSSModel extends SDKModel<EventTypes> {
     return this.#colorScheme;
   }
 
-  async resolveValues(nodeId: Protocol.DOM.NodeId, ...values: string[]): Promise<string[]|null> {
-    const response = await this.agent.invoke_resolveValues({values, nodeId});
-    return response.getError() ? null : response.results;
+  async resolveValues(propertyName: string|undefined, nodeId: Protocol.DOM.NodeId, ...values: string[]):
+      Promise<string[]|null> {
+    if (propertyName && cssMetadata().getLonghands(propertyName)?.length) {
+      return null;
+    }
+    const response = await this.agent.invoke_resolveValues({values, nodeId, propertyName});
+    if (response.getError()) {
+      return null;
+    }
+    return response.results;
   }
 
   headersForSourceURL(sourceURL: Platform.DevToolsPath.UrlString): CSSStyleSheetHeader[] {

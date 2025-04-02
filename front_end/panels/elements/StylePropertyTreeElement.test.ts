@@ -286,7 +286,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
             Elements.StylePropertyTreeElement.getPropertyRenderers(
-                matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map()),
+                property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map()),
             context);
 
         const colorSwatch = valueElement.querySelector('devtools-color-swatch');
@@ -1657,7 +1657,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const addPopoverPromise = Promise.withResolvers<void>();
       sinon.stub(Elements.StylePropertyTreeElement.LengthRenderer.prototype, 'popOverAttachedForTest')
           .callsFake(() => addPopoverPromise.resolve());
-      const stylePropertyTreeElement = getTreeElement('margin', '5px 2em');
+      const stylePropertyTreeElement = getTreeElement('property', '5px 2em');
       setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({computedStyle: {}}));
 
       await stylePropertyTreeElement.onpopulate();
@@ -1665,6 +1665,17 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await addPopoverPromise.promise;
       const popover = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
       assert.strictEqual(popover?.innerText, '15px');
+    });
+
+    it('passes the property name to evaluations', async () => {
+      const cssModel = stylesSidebarPane.cssModel();
+      assert.exists(cssModel);
+      const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').resolves([]);
+      const stylePropertyTreeElement = getTreeElement('left', '2%');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.isTrue(resolveValuesStub.calledOnce);
+      assert.strictEqual(resolveValuesStub.args[0][0], 'left');
     });
   });
 
@@ -1718,12 +1729,28 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
-              property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
 
       assert.isTrue(evaluationSpy.calledOnce);
       const originalText = evaluationSpy.args[0][0].textContent;
       await evaluationSpy.returnValues[0];
       assert.strictEqual(originalText, evaluationSpy.args[0][0].textContent);
+    });
+
+    it('shows the original text during tracing when evaluation fails', async () => {
+      const cssModel = stylesSidebarPane.cssModel();
+      assert.exists(cssModel);
+      const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').resolves([]);
+      const property = addProperty('width', 'calc(1 + 1)');
+
+      const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, () => {});
+      view.showTrace(
+          property, null, matchedStyles, new Map(),
+          Elements.StylePropertyTreeElement.getPropertyRenderers(
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
+
+      assert.isTrue(resolveValuesStub.calledOnce);
+      assert.strictEqual(resolveValuesStub.args[0][0], 'width');
     });
   });
 

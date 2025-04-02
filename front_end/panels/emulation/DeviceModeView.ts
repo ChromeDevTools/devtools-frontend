@@ -474,7 +474,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       // Cap the height to not hit the GPU limit.
       // https://crbug.com/1260828
       canvas.height = Math.min((1 << 14), Math.floor(outlineRect.height));
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', {willReadFrequently: true});
       if (!ctx) {
         throw new Error('Could not get 2d context from canvas.');
       }
@@ -516,7 +516,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       // Cap the height to not hit the GPU limit.
       // https://crbug.com/1260828
       canvas.height = Math.min((1 << 14), Math.floor(pageImage.naturalHeight));
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', {willReadFrequently: true});
       if (!ctx) {
         throw new Error('Could not get 2d context for base64 screenshot.');
       }

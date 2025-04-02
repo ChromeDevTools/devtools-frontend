@@ -1028,7 +1028,7 @@
       let blueCount = 0;
 
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', {willReadFrequently: true});
       for (const image of images) {
         test.assertTrue(image.naturalWidth > 10);
         test.assertTrue(image.naturalHeight > 10);

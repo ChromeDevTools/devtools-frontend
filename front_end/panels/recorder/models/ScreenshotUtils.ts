@@ -33,7 +33,7 @@ export async function resizeScreenshot(data: Screenshot): Promise<Screenshot> {
   await promise;
 
   const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext('2d', {willReadFrequently: true});
   if (!context) {
     throw new Error('Could not create context.');
   }

@@ -902,6 +902,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   updatePopoverContents(popoverElement: Element): void {
     this.popoverElement.removeChildren();
     this.popoverElement.appendChild(popoverElement);
+    // Must update the offset AFTER the new content has been added.
     this.updatePopoverOffset();
     this.lastPopoverState.entryIndex = -1;
   }

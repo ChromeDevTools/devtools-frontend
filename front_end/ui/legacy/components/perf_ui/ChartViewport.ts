@@ -191,7 +191,9 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   scrollOffset(): number {
-    return this.vScrollElement.scrollTop;
+    // Return the cached value, rather than the live value (which typically incurs a forced reflow)
+    // In practice, this is true whenever scrollOffset() is called:  `this.scrollTop === this.vScrollElement.scrollTop`
+    return this.scrollTop;
   }
 
   chartHeight(): number {

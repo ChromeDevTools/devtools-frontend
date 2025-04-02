@@ -558,13 +558,12 @@ export class Overlays extends EventTarget {
   // because `overlaysContainer` doesn't have events to enable the interaction with the
   // Flamecharts beneath it.
   #updateMouseCoordinatesProgressEntriesLink(event: Event, chart: EntryChartLocation): void {
-    const mouseEvent = (event as MouseEvent);
-    this.#lastMouseOffsetX = mouseEvent.offsetX;
-    this.#lastMouseOffsetY = mouseEvent.offsetY;
-
     if (this.#entriesLinkInProgress?.state !== Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT) {
       return;
     }
+    const mouseEvent = (event as MouseEvent);
+    this.#lastMouseOffsetX = mouseEvent.offsetX;
+    this.#lastMouseOffsetY = mouseEvent.offsetY;
 
     // The Overlays layer coordinates cover both Network and Main Charts, while the mousemove
     // coordinates are received from the charts individually and start from 0 for each chart.

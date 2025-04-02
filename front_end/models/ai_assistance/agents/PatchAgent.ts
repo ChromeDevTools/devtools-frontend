@@ -59,9 +59,9 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
     };
   }
 
-  constructor(opts: BaseAgentOptions&{fileUpdateAgent?: FileUpdateAgent}) {
+  constructor(opts: BaseAgentOptions&{fileUpdateAgent?: FileUpdateAgent, project: Workspace.Workspace.Project}) {
     super(opts);
-    this.#project = new AgentProject();
+    this.#project = new AgentProject(opts.project);
     this.#fileUpdateAgent = opts.fileUpdateAgent ?? new FileUpdateAgent(opts);
     this.declareFunction<Record<never, unknown>>('listFiles', {
       description: 'Returns a list of all files in the project.',

@@ -3,23 +3,28 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
+import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
-import '../../ui/legacy/legacy.js';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ChangesPanel from '../changes/changes.js';
+import * as PanelCommon from '../common/common.js';
+
+import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 
 const {classMap} = Directives;
 
@@ -34,13 +39,17 @@ const UIStringsNotTranslate = {
   /**
    *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
    */
-  applyingToPageTree: 'Applying to page tree…',
+  applyingToWorkspace: 'Applying to workspace…',
   /**
-   *@description Button text for applying chanes to page tree.
+   *@description Button text for staging changes to workspace.
    */
-  applyToPageTree: 'Apply to page tree',
+  applyToWorkspace: 'Apply to workspace',
   /**
-   *@description Button text to cancel applying to page tree.
+   *@description Button text to change the selected workspace
+   */
+  change: 'Change',
+  /**
+   *@description Button text to cancel applying to workspace
    */
   cancel: 'Cancel',
   /**
@@ -48,31 +57,51 @@ const UIStringsNotTranslate = {
    */
   discard: 'Discard',
   /**
-   *@description Button text to save all the suggested changes to the file system
+   *@description Button text to save all the suggested changes to file system
    */
-  saveToWorkspace: 'Save to workspace',
+  saveAll: 'Save all',
   /**
-   *@description Header text after the user saved the changes to a  workspace.
+   *@description Header text after the user saved the changes to the disk.
    */
-  savedToWorkspace: 'Changes saved to workspace',
+  savedToDisk: 'Saved to disk',
   /**
    *@description Disclaimer text shown for using code snippets with caution
    */
   codeDisclaimer: 'Use code snippets with caution',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to page tree" button
+   *@description Tooltip text for the info icon beside the "Apply to workspace" button
    */
-  disclaimerTooltip:
-      'The source code of the inspected page and its assets, and any data the inspected page can access is sent to Google to generate code suggestions.',
+  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions.',
   /**
-   *@description Tooltip text for the info icon beside the "Apply to page tree" button when enterprise logging is off
+   *@description Tooltip text for the info icon beside the "Apply to workspace" button when enterprise logging is off
    */
-  disclaimerTooltipNoLogging:
-      'The source code of the inspected page and its assets, and any data the inspected page can access is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+  applyToWorkspaceTooltipNoLogging:
+      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
   /**
    *@description Tooltip link for the navigating to "AI innovations" page in settings.
    */
   learnMore: 'Learn more',
+  /**
+   *@description Header text for the AI-powered code suggestions disclaimer dialog.
+   */
+  freDisclaimerHeader: 'Get AI-powered code suggestions for your workspace',
+  /**
+   *@description First disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
+  /**
+   *@description Second disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  /**
+   *@description Second disclaimer item text for the fre dialog when enterprise logging is off.
+   */
+  freDisclaimerTextPrivacyNoLogging:
+      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+  /**
+   *@description Third disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
   /**
    * @description Title of the link opening data that was used to
    * produce a code suggestion.
@@ -83,20 +112,14 @@ const UIStringsNotTranslate = {
    */
   opensInNewTab: '(opens in a new tab)',
   /**
-   * @description Generic error text for the case the changes were not applied to the page tree.
+   * @description Generic error text for the case the changes were not applied to the workspace.
    */
-  genericErrorMessage: 'Changes couldn’t be applied to the page tree.',
-  /**
-   * @description Button text for creating and exporting a patch file containing the diff.
-   */
-  exportPatchFile: 'Export patch file',
-  /**
-   * @description Button text for creating and exporting a patch file containing the diff.
-   */
-  exportedPatchFile: 'Changes exported as patch file',
+  genericErrorMessage: 'Changes couldn’t be applied to your workspace.',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
+
+const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 
 export enum PatchSuggestionState {
   /**
@@ -115,14 +138,6 @@ export enum PatchSuggestionState {
    * Applying to page tree failed
    */
   ERROR = 'error',
-  /**
-   * Successfully exported diff as patch
-   */
-  EXPORTED_AS_PATCH = 'exportedAsPatch',
-  /**
-   * Successfully applied diff to workspace
-   */
-  SAVED_TO_WORKSPACE = 'savedToWorkspace',
 }
 
 export interface ViewInput {
@@ -130,13 +145,16 @@ export interface ViewInput {
   patchSuggestionState: PatchSuggestionState;
   changeSummary?: string;
   sources?: string;
-  disclaimerTooltipText: Platform.UIString.LocalizedString;
+  projectName?: string;
+  savedToDisk?: boolean;
+  projectPath: Platform.DevToolsPath.UrlString;
+  applyToWorkspaceTooltipText: Platform.UIString.LocalizedString;
   onLearnMoreTooltipClick: () => void;
-  onApplyToPageTree: () => void;
+  onApplyToWorkspace: () => void;
   onCancel: () => void;
   onDiscard: () => void;
-  onSaveToWorkspace?: () => void;
-  onExportPatchFile: () => void;
+  onSaveAll: () => void;
+  onChangeWorkspaceClick: () => void;
 }
 
 export interface ViewOutput {
@@ -148,15 +166,22 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
   changeManager: AiAssistanceModel.ChangeManager|undefined;
+  // Whether the user completed first run experience dialog or not.
+  #aiPatchingFreCompletedSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
+  #projectIdSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', '');
   #view: View;
   #viewOutput: ViewOutput = {};
   #aidaClient: Host.AidaClient.AidaClient;
   #applyPatchAbortController?: AbortController;
+  #project?: Workspace.Workspace.Project;
   #patchSources?: string;
+  #savedToDisk?: boolean;
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #patchSuggestionState = PatchSuggestionState.INITIAL;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
-  #persistence = Persistence.Persistence.PersistenceImpl.instance();
+  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -188,11 +213,11 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderHeader(): LitTemplate {
-        if (input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
+        if (input.savedToDisk) {
           return html`
             <devtools-icon class="green-bright-icon summary-badge" .name=${'check-circle'}></devtools-icon>
             <span class="header-text">
-              ${input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH ? lockedString(UIStringsNotTranslate.exportedPatchFile) : lockedString(UIStringsNotTranslate.savedToWorkspace)}
+              ${lockedString(UIStringsNotTranslate.savedToDisk)}
             </span>
           `;
         }
@@ -201,7 +226,7 @@ export class PatchWidget extends UI.Widget.Widget {
           return html`
             <devtools-icon class="on-tonal-icon summary-badge" .name=${'difference'}></devtools-icon>
             <span class="header-text">
-              ${lockedString('File changes in page')}
+              ${lockedString(`File changes in ${input.projectName}`)}
             </span>
             <devtools-icon
               class="arrow"
@@ -223,7 +248,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderContent(): LitTemplate {
-        if ((!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) || input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
+        if ((!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) || input.savedToDisk) {
           return nothing;
         }
 
@@ -247,7 +272,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderFooter(): LitTemplate {
-        if (input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE) {
+        if (input.savedToDisk) {
           return nothing;
         }
 
@@ -268,19 +293,11 @@ export class PatchWidget extends UI.Widget.Widget {
                 .variant=${Buttons.Button.Variant.OUTLINED}>
                   ${lockedString(UIStringsNotTranslate.discard)}
               </devtools-button>
-              ${input.onSaveToWorkspace ? html`
-                <devtools-button
-                  @click=${input.onSaveToWorkspace}
-                  .jslogContext=${'patch-widget.save-to-workspace'}
-                  .variant=${Buttons.Button.Variant.PRIMARY}>
-                    ${lockedString(UIStringsNotTranslate.saveToWorkspace)}
-                </devtools-button>
-              ` : nothing}
               <devtools-button
-                @click=${input.onExportPatchFile}
-                .jslogContext=${'patch-widget.export-patch-file'}
+                @click=${input.onSaveAll}
+                .jslogContext=${'patch-widget.save-all'}
                 .variant=${Buttons.Button.Variant.PRIMARY}>
-                  ${lockedString(UIStringsNotTranslate.exportPatchFile)}
+                  ${lockedString(UIStringsNotTranslate.saveAll)}
               </devtools-button>
             </div>
           </div>
@@ -289,20 +306,33 @@ export class PatchWidget extends UI.Widget.Widget {
 
         return html`
         <div class="footer">
-          <div class="apply-to-page-tree-container">
+          ${input.projectName ? html`
+            <div class="change-workspace">
+              <div class="selected-folder">
+                <devtools-icon .name=${'folder'}></devtools-icon> <span title=${input.projectPath}>${input.projectName}</span>
+              </div>
+              <devtools-button
+                @click=${input.onChangeWorkspaceClick}
+                .jslogContext=${'change-workspace'}
+                .variant=${Buttons.Button.Variant.TEXT}>
+                  ${lockedString(UIStringsNotTranslate.change)}
+              </devtools-button>
+            </div>
+          ` : nothing}
+          <div class="apply-to-workspace-container">
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`
               <div class="loading-text-container">
                 <devtools-spinner></devtools-spinner>
                 <span>
-                  ${lockedString(UIStringsNotTranslate.applyingToPageTree)}
+                  ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
                 </span>
               </div>
             ` : html`
               <devtools-button
-                @click=${input.onApplyToPageTree}
-                .jslogContext=${'apply-to-page-tree'}
+                @click=${input.onApplyToWorkspace}
+                .jslogContext=${'stage-to-workspace'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
-                ${lockedString(UIStringsNotTranslate.applyToPageTree)}
+                ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
               </devtools-button>
             `}
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`<devtools-button
@@ -318,7 +348,7 @@ export class PatchWidget extends UI.Widget.Widget {
               ></devtools-button>
             <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
               <div class="info-tooltip-container">
-                ${input.disclaimerTooltipText}
+                ${input.applyToWorkspaceTooltipText}
                 <button
                   class="link tooltip-link"
                   role="link"
@@ -337,7 +367,7 @@ export class PatchWidget extends UI.Widget.Widget {
         html`
           <details class=${classMap({
             'change-summary': true,
-            exported: input.patchSuggestionState === PatchSuggestionState.EXPORTED_AS_PATCH || input.patchSuggestionState === PatchSuggestionState.SAVED_TO_WORKSPACE,
+            'saved-to-disk': Boolean(input.savedToDisk)
           })}>
             <summary>
               ${renderHeader()}
@@ -366,24 +396,32 @@ export class PatchWidget extends UI.Widget.Widget {
           changeSummary: this.changeSummary,
           patchSuggestionState: this.#patchSuggestionState,
           sources: this.#patchSources,
-          disclaimerTooltipText: this.#noLogging ? lockedString(UIStringsNotTranslate.disclaimerTooltipNoLogging) :
-                                                   lockedString(UIStringsNotTranslate.disclaimerTooltip),
+          projectName: this.#project?.displayName(),
+          projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+              (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
+          savedToDisk: this.#savedToDisk,
+          applyToWorkspaceTooltipText: this.#noLogging ?
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging) :
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip),
           onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
-          onApplyToPageTree: this.#onApplyToPageTree.bind(this),
+          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
           onCancel: () => {
             this.#applyPatchAbortController?.abort();
           },
           onDiscard: this.#onDiscard.bind(this),
-          onSaveToWorkspace: this.#canSaveToWorkspace() ? this.#onSaveToWorkspace.bind(this) : undefined,
-          onExportPatchFile: this.#onExportPatchFile.bind(this),
+          onSaveAll: this.#onSaveAll.bind(this),
+          onChangeWorkspaceClick: this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}),
         },
         this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
+    this.#selectDefaultProject();
 
     if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
+
       // @ts-expect-error temporary global function for local testing.
       window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
         return await this.#applyPatch(changeSummary);
@@ -391,10 +429,107 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
-  async #onApplyToPageTree(): Promise<void> {
+  override willHide(): void {
+    if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
+    }
+  }
+
+  async #showFreDisclaimerIfNeeded(): Promise<boolean> {
+    const isAiPatchingFreCompleted = this.#aiPatchingFreCompletedSetting.get();
+    if (isAiPatchingFreCompleted) {
+      return true;
+    }
+
+    const result = await PanelCommon.FreDialog.show({
+      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
+      reminderItems: [
+        {
+          iconName: 'psychiatry',
+          content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
+        },
+        {
+          iconName: 'google',
+          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
+                                     lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
+        },
+        {
+          iconName: 'warning',
+          // clang-format off
+          content: html`<x-link
+            href=${CODE_SNIPPET_WARNING_URL}
+            class="link"
+            jslog=${VisualLogging.link('code-snippets-explainer.patch-widget').track({
+              click: true
+            })}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+          // clang-format on
+        }
+      ],
+      onLearnMoreClick: () => {
+        void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+      }
+    });
+
+    if (result) {
+      this.#aiPatchingFreCompletedSetting.set(true);
+    }
+    return result;
+  }
+
+  #selectDefaultProject(): void {
+    const project = this.#workspace.project(this.#projectIdSetting.get());
+    if (project) {
+      this.#project = project;
+    } else {
+      this.#project = undefined;
+      this.#projectIdSetting.set('');
+    }
+    this.requestUpdate();
+  }
+
+  #onProjectRemoved(): void {
+    if (this.#project && !this.#workspace.project(this.#project.id())) {
+      this.#projectIdSetting.set('');
+      this.#project = undefined;
+      this.requestUpdate();
+    }
+  }
+
+  #showSelectWorkspaceDialog(options: {applyPatch: boolean} = {applyPatch: false}): void {
+    const onProjectSelected = (project: Workspace.Workspace.Project): void => {
+      this.#project = project;
+      this.#projectIdSetting.set(project.id());
+      if (options.applyPatch) {
+        void this.#applyPatchAndUpdateUI();
+      } else {
+        this.requestUpdate();
+      }
+    };
+
+    SelectWorkspaceDialog.show(onProjectSelected, this.#project);
+  }
+
+  async #onApplyToWorkspace(): Promise<void> {
     if (!isAiAssistancePatchingEnabled()) {
       return;
     }
+
+    // Show the FRE dialog if needed and only continue when
+    // the user accepted the disclaimer.
+    const freDisclaimerCompleted = await this.#showFreDisclaimerIfNeeded();
+    if (!freDisclaimerCompleted) {
+      return;
+    }
+
+    if (this.#project) {
+      await this.#applyPatchAndUpdateUI();
+    } else {
+      this.#showSelectWorkspaceDialog({applyPatch: true});
+    }
+  }
+
+  async #applyPatchAndUpdateUI(): Promise<void> {
     const changeSummary = this.changeSummary;
     if (!changeSummary) {
       throw new Error('Change summary does not exist');
@@ -414,7 +549,7 @@ export class PatchWidget extends UI.Widget.Widget {
     } else {
       this.#patchSuggestionState = PatchSuggestionState.ERROR;
     }
-    this.#patchSources = `Filenames in page.
+    this.#patchSources = `Filenames in ${this.#project?.displayName()}.
 Files:
 ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.requestUpdate();
@@ -431,33 +566,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.requestUpdate();
   }
 
-  #canSaveToWorkspace(): boolean {
-    if (this.#patchSuggestionState !== PatchSuggestionState.SUCCESS) {
-      return false;
-    }
-    // TODO(crbug.com/406699819): investigate why the inspector-stylesheet shows up here
-    const filteredModifiedUISourceCodes =
-        this.#workspaceDiff.modifiedUISourceCodes().filter(sourceCode => sourceCode.origin() !== 'inspector://');
-    return filteredModifiedUISourceCodes.length > 0 &&
-        filteredModifiedUISourceCodes.every(sourceCode => this.#persistence.binding(sourceCode));
-  }
-
-  #onSaveToWorkspace(): void {
+  #onSaveAll(): void {
+    // TODO: What should we do for the inspector stylesheet?
     this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      const binding = this.#persistence.binding(modifiedUISourceCode);
-      if (binding) {
-        binding.fileSystem.commitWorkingCopy();
-      }
+      modifiedUISourceCode.commitWorkingCopy();
     });
 
-    this.#patchSuggestionState = PatchSuggestionState.SAVED_TO_WORKSPACE;
+    this.#savedToDisk = true;
     void this.changeManager?.dropStashedChanges();
-    this.requestUpdate();
-  }
-
-  #onExportPatchFile(): void {
-    // TODO(crbug.com/406218495): implement patch file export
-    this.#patchSuggestionState = PatchSuggestionState.EXPORTED_AS_PATCH;
     this.requestUpdate();
   }
 
@@ -465,10 +581,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     response: AiAssistanceModel.ResponseData | undefined,
     processedFiles: string[],
   }> {
+    if (!this.#project) {
+      throw new Error('Project does not exist');
+    }
     this.#applyPatchAbortController = new AbortController();
     const agent = new AiAssistanceModel.PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
+      project: this.#project,
     });
     const {responses, processedFiles} =
         await agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal});

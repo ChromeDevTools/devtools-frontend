@@ -19,11 +19,7 @@ import {findMenuItemWithLabel, getMenu} from './ContextMenuHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
-import {
-  createContentProviderUISourceCode,
-  createContentProviderUISourceCodes,
-  createFileSystemUISourceCode
-} from './UISourceCodeHelpers.js';
+import {createContentProviderUISourceCodes, createFileSystemUISourceCode} from './UISourceCodeHelpers.js';
 import {createViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.AidaClient.AidaClient {
@@ -249,7 +245,7 @@ export async function createPatchWidgetWithDiffView() {
   const {view, widget, aidaClient} =
       await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
   widget.changeSummary = 'body { background-color: red; }';
-  view.input.onApplyToPageTree();
+  view.input.onApplyToWorkspace();
   assert.strictEqual(
       (await view.nextInput).patchSuggestionState, AiAssistancePanel.PatchWidget.PatchSuggestionState.SUCCESS);
 
@@ -297,27 +293,6 @@ export function openHistoryContextMenu(
     contextMenu,
     id: freestylerEntry?.id(),
   };
-}
-
-export function createNetworkProject(fileSystemPath: string, files?: Array<{path: string, content: string}>) {
-  const {project, uiSourceCode} = createContentProviderUISourceCode({
-    url: Platform.DevToolsPath.urlString`${fileSystemPath}/index.html`,
-    content: 'content',
-    mimeType: 'text/html',
-    projectType: Workspace.Workspace.projectTypes.Network,
-    metadata: new Workspace.UISourceCode.UISourceCodeMetadata(null, 'content'.length),
-  });
-
-  uiSourceCode.setWorkingCopy('content');
-
-  for (const file of files ?? []) {
-    const uiSourceCode = project.createUISourceCode(
-        Platform.DevToolsPath.urlString`${fileSystemPath}/${file.path}`, Common.ResourceType.resourceTypes.Script);
-    project.addUISourceCode(uiSourceCode);
-    uiSourceCode.setWorkingCopy(file.content);
-  }
-
-  return {project, uiSourceCode};
 }
 
 export function createTestFilesystem(fileSystemPath: string, files?: Array<{

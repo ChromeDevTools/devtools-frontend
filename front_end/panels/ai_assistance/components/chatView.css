@@ -758,7 +758,7 @@ main {
   margin: 0 var(--sys-size-5);
   padding: 0 var(--sys-size-5);
 
-  &.exported {
+  &.saved-to-disk {
     pointer-events: none;
   }
 
@@ -815,7 +815,7 @@ main {
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 
-  &[open]:not(.exported) {
+  &[open]:not(.saved-to-disk) {
     &::details-content {
       height: fit-content;
       padding: var(--sys-size-2) 0;
@@ -860,6 +860,18 @@ main {
       align-self: center;
     }
 
+    .selected-folder {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-3);
+    }
+
+    .change-workspace {
+      display: flex;
+      flex-direction: row;
+      gap: var(--sys-size-2);
+    }
+
     .info-tooltip-container {
       max-width: var(--sys-size-28);
 
@@ -878,7 +890,7 @@ main {
       gap: var(--sys-size-3);
     }
 
-    .apply-to-page-tree-container {
+    .apply-to-workspace-container {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);

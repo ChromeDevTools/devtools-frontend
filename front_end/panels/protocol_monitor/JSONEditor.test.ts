@@ -997,10 +997,12 @@ describeWithEnvironment('JSONEditor', () => {
          };
 
          jsonEditor.parameters = inputParameters as ProtocolMonitor.JSONEditor.Parameter[];
+         await jsonEditor.updateComplete;
 
          const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
 
-         dispatchKeyDownEvent(jsonEditor.contentElement, {key: 'Enter', ctrlKey: true, metaKey: true});
+         dispatchKeyDownEvent(
+             jsonEditor.contentElement.querySelector('.wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
 
          const response = await promise;
 
@@ -1259,7 +1261,8 @@ describeWithEnvironment('JSONEditor', () => {
        const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
 
        // We send the command
-       dispatchKeyDownEvent(jsonEditor.contentElement, {key: 'Enter', ctrlKey: true, metaKey: true});
+       dispatchKeyDownEvent(
+           jsonEditor.contentElement.querySelector('.wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
 
        const response = await promise;
 

@@ -54,6 +54,7 @@
     "@typescript-eslint/eslint-plugin": "8.26.0",
     "@typescript-eslint/parser": "8.26.0",
     "@typescript-eslint/utils": "8.26.0",
+    "@typescript-eslint/rule-tester": "8.26.0",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",
     "chai": "4.3.4",
     "cssnano": "7.0.6",

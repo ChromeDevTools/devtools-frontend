@@ -184,6 +184,8 @@ class ScriptsMochaTests extends Tests {
     return super.run(
         tests.map(test => ScriptPathPair.getFromPair(test)),
         [
+          '--experimental-strip-types',
+          '--no-warnings=ExperimentalWarning',
           path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
         ],
     );

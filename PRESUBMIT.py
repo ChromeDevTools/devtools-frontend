@@ -344,7 +344,11 @@ def _CheckDevToolsLint(input_api, output_api):
         files_to_lint = []
 
     results.extend(
-        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
+        _checkWithNodeScript(input_api,
+                             output_api,
+                             lint_path,
+                             files_to_lint,
+                             allow_typescript=True))
     return results
 
 
@@ -690,7 +694,8 @@ def _getAffectedFiles(input_api, parent_directories, excluded_actions,
 def _checkWithNodeScript(input_api,
                          output_api,
                          script_path,
-                         script_arguments=[]):  # pylint: disable=invalid-name
+                         script_arguments=[],
+                         allow_typescript=False):
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [
@@ -700,9 +705,14 @@ def _checkWithNodeScript(input_api,
     finally:
         sys.path = original_sys_path
 
-    return _ExecuteSubProcess(input_api, output_api,
-                              [devtools_paths.node_path(), script_path],
-                              script_arguments, [])
+    process = [devtools_paths.node_path(), script_path]
+
+    if allow_typescript:
+        process.insert(1, '--no-warnings=ExperimentalWarning')
+        process.insert(1, '--experimental-strip-types')
+
+    return _ExecuteSubProcess(input_api, output_api, process, script_arguments,
+                              [])
 
 
 def _getFilesToLint(input_api, output_api, lint_config_files,

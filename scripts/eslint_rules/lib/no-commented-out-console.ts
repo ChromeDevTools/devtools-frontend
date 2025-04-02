@@ -1,28 +1,34 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+import {createRule} from './tsUtils.ts';
+
+export default createRule({
+  name: 'no-commented-out-console',
   meta: {
     type: 'problem',
     docs: {
       description: 'check for commented out console.{warn/log/etc} lines',
       category: 'Possible Errors',
     },
+    messages: {
+      foundComment: 'Found a commented out console call.',
+    },
     fixable: 'code',
-    schema: []  // no options
+    schema: [],  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
 
     function checkCommentAndReportError(comment) {
       const trimmed = comment.value.trim();
       if (trimmed.startsWith('console.log(')) {
-        context.report({node: comment, message: 'Found a commented out console call.'});
+        context.report({
+          node: comment,
+          messageId: 'foundComment',
+        });
       }
     }
 
@@ -35,7 +41,7 @@ module.exports = {
         for (const comment of comments) {
           checkCommentAndReportError(comment);
         }
-      }
+      },
     };
-  }
-};
+  },
+});

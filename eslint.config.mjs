@@ -9,16 +9,10 @@ import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
-import rulesdirPlugin from 'eslint-plugin-rulesdir';
 import globals from 'globals';
 import { join } from 'path';
 
-rulesdirPlugin.RULES_DIR = join(
-  import.meta.dirname,
-  'scripts',
-  'eslint_rules',
-  'lib',
-);
+import rulesdirPlugin from './scripts/eslint_rules/rules-dir.mjs';
 
 /**
  * @type {import('eslint').Linter.Config[]}

@@ -328,7 +328,6 @@ export const enum SizeBehavior {
 }
 
 export const enum MarginBehavior {
-  ARROW = 'Arrow',
   DEFAULT_MARGIN = 'DefaultMargin',
   NO_MARGIN = 'NoMargin',
 }

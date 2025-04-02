@@ -78,6 +78,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           'A track group — Custom track',
           'Another Extension Track',
           'An Extension Track — Custom track',
+          'TimeStamp track — Custom track',
           'Main — http://localhost:3000/',
           'Thread pool',
           'Thread pool worker 1',

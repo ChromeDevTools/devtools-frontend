@@ -1,0 +1,81 @@
+// Copyright 2025 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+'use strict';
+const rule = require('../lib/no-lit-render-outside-of-view.js');
+
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-lit-render-outside-of-view', rule, {
+  valid: [
+    {
+      code: `const DEFAULT_VIEW = (input, output, target) => {
+        render(html\`<div>Hello world</div>\`, target, {host: input});
+      }`,
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      code: `function defaultView(viewInput, viewOutput, target) {
+        render(html\`<div>Hello world</div>\`, target, {host: viewInput});
+      }`,
+      filename: 'front_end/panels/recorder/test.ts',
+    },
+    {
+      code: `class SomeWidget extends UI.Widget.Widget {
+          construtor(view = (input, _output, target) => {
+            render(html\`<div>Hello world</div>\`, target, {host: input});
+          }) {
+          super(view);
+        }
+      }`,
+      filename: 'front_end/panels/recorder/test.ts',
+    },
+  ],
+  invalid: [
+    {
+      code: `class SomeWidget extends UI.Widget.Widget {
+        constructor() {
+          super();
+          render(html\`<div>Hello world</div>\`, target, {host: this});
+        }
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'litRenderShouldBeInsideOfView'}],
+    },
+    {
+      code: `class SomeWidget extends UI.Widget.Widget {
+        constructor() {
+          super();
+          this.render();
+        }
+
+        render() {
+          render(html\`<div>Hello world</div>\`, target, {host: this});
+        }
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'litRenderShouldBeInsideOfView'}],
+    },
+    {
+      code: `const DEFAULT_VIEW = (input, output, target) => {
+        render(html\`<div>Hello world</div>\`, target);
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'litRenderShouldBeInsideOfView'}],
+    },
+    {
+      code: `const DEFAULT_VIEW = (input, output, target) => {
+        render(html\`<div>Hello world</div>\`, target, {host: this});
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'litRenderShouldBeInsideOfView'}],
+    },
+    {
+      code: `const DEFAULT_VIEW = (input, output, target) => {
+        render(html\`<div>Hello world</div>\`, this.contentElement, {host: input});
+      }`,
+      filename: 'front_end/components/test.ts',
+      errors: [{messageId: 'litRenderShouldBeInsideOfView'}],
+    },
+  ],
+});

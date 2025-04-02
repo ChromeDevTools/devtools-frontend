@@ -44,8 +44,7 @@
   align-items: center;
 
   .keybinds-join-text, .footnote {
-    color: var(--color-text-primary);
-    opacity: 50%;
+    color: var(--sys-color-on-surface-subtle);
   }
 
   .footnote {

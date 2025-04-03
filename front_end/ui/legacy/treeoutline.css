@@ -190,9 +190,15 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   }
 
-  &.selected:focus .selection {
-    display: block;
-    background-color: var(--app-color-navigation-drawer-background-selected);
+  &.selected:focus {
+    &.parent::before {
+      background-color: var(--app-color-navigation-drawer-label-selected);
+    }
+
+    .selection {
+      display: block;
+      background-color: var(--app-color-navigation-drawer-background-selected);
+    }
   }
 
   & .leading-icons {

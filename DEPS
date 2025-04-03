@@ -15,13 +15,13 @@ vars = {
   'build_revision': 'e13953ced04ed05f45aa3c961bd6d802aced74ec',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '299cb62c60f608d3b152fd3ba337f4e084e1a3b4',
+  'buildtools_revision': '4b3b2242db3a2124c5251d4123eb424fafbbee7b',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
   'depot_tools_revision': 'f40ddcd8d51626fb7be3ab3c418b3f3be801623f',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '940abfc668be2591483f7132145593c6a047f3cf',
+  'inspector_protocol_revision': '6d1ae0f13aae6ad381ca31b17b88a0f5af29ca94',
 
   # Keeping track of the last time we rollerd the browser protocol files.
   'chromium_browser_protocol_revision' : 'a378d80bfbb44011499907b1282f71a050b4a16e',
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:9e4e007a51fdfd51e809d2817a3d6bbd3ec3b648',
+  'siso_version': 'git_revision:0dd559fac7db9d72c9cbee525ab596b8a10b79d0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

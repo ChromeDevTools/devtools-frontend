@@ -72,24 +72,34 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             consoles = ["ci", "beta", "stable", "extended"],
             properties = {
                 "perf_benchmarks": True,
+                "coverage": False,
             },
         ),
         builder_descriptor(
             name = "Stand-alone Shuffled Linux",
             recipe_name = "devtools/dtf-shuffled",
             consoles = ["shuffled"],
+            properties = {
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Stand-alone Win",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
             dims = dimensions.win10,
+            properties = {
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Linux Compile Debug",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
-            properties = {"builder_config": "Debug"},
+            properties = {
+                "builder_config": "Debug",
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Linux Compile Debug Fastbuild",
@@ -108,13 +118,19 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             name = "Linux Compile Full Release",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci"],
-            properties = {"clobber": True},
+            properties = {
+                "clobber": True,
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Stand-alone Mac",
             recipe_name = "devtools/devtools-frontend",
             dims = dimensions.mac,
             consoles = ["ci"],
+            properties = {
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Stand-alone Mac-arm64",
@@ -122,12 +138,18 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             dims = dimensions.mac_arm64,
             consoles = ["ci"],
             notification_muted = True,
+            properties = {
+                "coverage": False,
+            },
         ),
         builder_descriptor(
             name = "Linux Official",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
-            properties = {"is_official_build": True},
+            properties = {
+                "is_official_build": True,
+                "coverage": False,
+            },
             notification_muted = True,
         ),
     ],

@@ -257,6 +257,8 @@ export abstract class AiAgent<T> {
   #id: string = crypto.randomUUID();
   #history: Host.AidaClient.Content[] = [];
 
+  #facts: Set<Host.AidaClient.RequestFact> = new Set<Host.AidaClient.RequestFact>();
+
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
@@ -266,6 +268,28 @@ export abstract class AiAgent<T> {
   async enhanceQuery(query: string, selected: ConversationContext<T>|null, hasImageInput?: boolean): Promise<string>;
   async enhanceQuery(query: string): Promise<string> {
     return query;
+  }
+
+  currentFacts(): ReadonlySet<Host.AidaClient.RequestFact> {
+    return this.#facts;
+  }
+
+  /**
+   * Add a fact which will be sent for any subsequent requests.
+   * Returns the new list of all facts.
+   * Facts are never automatically removed.
+   */
+  addFact(fact: Host.AidaClient.RequestFact): ReadonlySet<Host.AidaClient.RequestFact> {
+    this.#facts.add(fact);
+    return this.#facts;
+  }
+
+  removeFact(fact: Host.AidaClient.RequestFact): boolean {
+    return this.#facts.delete(fact);
+  }
+
+  clearFacts(): void {
+    this.#facts.clear();
   }
 
   buildRequest(
@@ -291,13 +315,14 @@ export abstract class AiAgent<T> {
     const enableAidaFunctionCalling = declarations.length && !this.functionCallEmulationEnabled;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
     const premable = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
+    const facts = Array.from(this.#facts);
     const request: Host.AidaClient.AidaRequest = {
       client: Host.AidaClient.CLIENT_NAME,
-
       current_message: currentMessage,
       preamble: premable,
 
       historical_contexts: history.length ? history : undefined,
+      facts: facts.length ? facts : undefined,
 
       ...(enableAidaFunctionCalling ? {function_declarations: declarations} : {}),
       options: {

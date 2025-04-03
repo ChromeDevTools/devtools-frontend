@@ -109,6 +109,7 @@ describeWithEnvironment('PerformanceAgent', () => {
                 parts: [{text: 'answer'}],
               },
             ],
+            facts: undefined,
             metadata: {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',

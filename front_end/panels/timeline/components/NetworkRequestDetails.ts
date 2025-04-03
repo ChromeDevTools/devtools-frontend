@@ -130,7 +130,7 @@ export class NetworkRequestDetails extends HTMLElement {
 
   #networkRequest: Trace.Types.Events.SyntheticNetworkRequest|null = null;
   #maybeTarget: SDK.Target.Target|null = null;
-  #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLImageElement>();
+  #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>();
   #linkifier: LegacyComponents.Linkifier.Linkifier;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
@@ -352,27 +352,29 @@ export class NetworkRequestDetails extends HTMLElement {
   }
 
   async #renderPreviewElement(): Promise<Lit.TemplateResult|null> {
-    if (!this.#networkRequest) {
+    if (!this.#networkRequest || !this.#networkRequest.args.data.url || !this.#maybeTarget) {
       return null;
     }
-    if (!this.#requestPreviewElements.get(this.#networkRequest) && this.#networkRequest.args.data.url &&
-        this.#maybeTarget) {
-      const previewElement =
-          (await LegacyComponents.ImagePreview.ImagePreview.build(
-               this.#maybeTarget, this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, false, {
-                 imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(
-                     this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString),
-                 precomputedFeatures: undefined,
-                 align: LegacyComponents.ImagePreview.Align.START,
-                 hideFileData: true,
-               }) as HTMLImageElement);
+    if (!this.#requestPreviewElements.get(this.#networkRequest)) {
+      const previewOpts = {
+        imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(
+            this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString),
+        precomputedFeatures: undefined,
+        align: LegacyComponents.ImagePreview.Align.START,
+        hideFileData: true,
+      };
 
-      this.#requestPreviewElements.set(this.#networkRequest, previewElement);
+      const previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(
+          this.#maybeTarget, this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, false, previewOpts);
+      previewElement && this.#requestPreviewElements.set(this.#networkRequest, previewElement);
     }
 
     const requestPreviewElement = this.#requestPreviewElements.get(this.#networkRequest);
     if (requestPreviewElement) {
-      return html`<div class="network-request-details-item">${requestPreviewElement}</div>`;
+      return html`
+        <div class="network-request-details-col">${requestPreviewElement}</div>
+        <div class="column-divider"></div>
+      `;
     }
     return null;
   }
@@ -388,8 +390,8 @@ export class NetworkRequestDetails extends HTMLElement {
       <div class="network-request-details-content">
         ${this.#renderTitle()}
         ${this.#renderURL()}
-        ${await this.#renderPreviewElement()}
         <div class="network-request-details-cols">
+          ${await this.#renderPreviewElement()}
           <div class="network-request-details-col">
             ${this.#renderRow(i18nString(UIStrings.requestMethod), networkData.requestMethod)}
             ${this.#renderRow(i18nString(UIStrings.protocol), networkData.protocol)}

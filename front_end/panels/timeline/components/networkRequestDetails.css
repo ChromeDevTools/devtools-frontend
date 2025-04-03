@@ -35,7 +35,7 @@
 }
 
 .network-request-details-col {
-  width: 300px;
+  max-width: 300px;
 }
 
 .column-divider {

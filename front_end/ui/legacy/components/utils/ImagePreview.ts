@@ -79,7 +79,7 @@ export class ImagePreview {
         align: Align,
         hideFileData?: boolean,
       }|undefined = {precomputedFeatures: undefined, imageAltText: undefined, align: Align.CENTER}):
-      Promise<Element|null> {
+      Promise<HTMLDivElement|null> {
     const {precomputedFeatures, imageAltText, align} = options;
 
     let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalImageURL);

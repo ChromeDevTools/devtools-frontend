@@ -13,6 +13,8 @@ import {type BrowserWrapper, DEFAULT_BROWSER_SETTINGS, Launcher} from '../shared
 import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
 import {setupInspectedPage} from '../shared/target-helper.js';
 
+import {screenshotError} from './mocha-interface-helpers.js';
+
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,
   ...DEFAULT_DEVTOOLS_SETTINGS
@@ -38,6 +40,8 @@ export class StateProvider {
       // eslint-disable-next-line no-debugger
       debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
       return await testFn.call(context, state);
+    } catch (e) {
+      throw await screenshotError(state, e);
     } finally {
       await browsingContext.close();
       dumpCollectedErrors();

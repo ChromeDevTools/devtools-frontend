@@ -25,14 +25,17 @@ async function createScreenshotError(test: Mocha.Runnable|undefined, error: Erro
     console.error('Missing browsing state. Unable to take screenshots for the error:', error);
     return error;
   }
-  const sate = test.parent.state;
+  return await screenshotError(test.parent.state, error);
+}
+
+export async function screenshotError(state: E2E.State, error: Error) {
   console.error('Taking screenshots for the error:', error);
   if (!TestConfig.debug) {
     try {
       const screenshotTimeout = 5_000;
       let timer: ReturnType<typeof setTimeout>;
       const {target, frontend} = await Promise.race([
-        takeScreenshots(sate).then(result => {
+        takeScreenshots(state).then(result => {
           clearTimeout(timer);
           return result;
         }),
@@ -89,7 +92,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
               if (abortController.signal.aborted) {
                 return;
               }
-              reject(await createScreenshotError(this.test, err));
+              reject(err instanceof ScreenshotError ? err : await createScreenshotError(this.test, err));
             })
         .finally(() => {
           clearTimeout(t);

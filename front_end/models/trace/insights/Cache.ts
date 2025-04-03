@@ -49,7 +49,7 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Cache.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type UseCacheInsightModel = InsightModel<typeof UIStrings, {
+export type CacheInsightModel = InsightModel<typeof UIStrings, {
   requests: Array<{
     request: Types.Events.SyntheticNetworkRequest,
     ttl: number,
@@ -61,7 +61,7 @@ export type UseCacheInsightModel = InsightModel<typeof UIStrings, {
 // Threshold for cache hits.
 const IGNORE_THRESHOLD_IN_PERCENT = 0.925;
 
-function finalize(partialModel: PartialInsightModel<UseCacheInsightModel>): UseCacheInsightModel {
+function finalize(partialModel: PartialInsightModel<CacheInsightModel>): CacheInsightModel {
   return {
     insightKey: 'Cache',
     strings: UIStrings,
@@ -189,7 +189,7 @@ export interface CacheableRequest {
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): UseCacheInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): CacheInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
   const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
 
@@ -216,6 +216,12 @@ export function generateInsight(
       continue;
     }
     ttl = ttl || 0;
+
+    // Ignore >= 30d.
+    const ttlDays = ttl / 86400;
+    if (ttlDays >= 30) {
+      continue;
+    }
 
     // If cache lifetime is high enough, let's skip.
     const cacheHitProbability = getCacheHitProbability(ttl);

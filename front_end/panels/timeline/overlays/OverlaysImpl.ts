@@ -1174,7 +1174,8 @@ export class Overlays extends EventTarget {
           }
         }
 
-      } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
+      } else {
+        // If the 'to' entry does not exist, the link is being created.
         // The second coordinate for in progress link gets updated on mousemove
         this.#entriesLinkInProgress = overlay;
       }

@@ -82,9 +82,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
         SelectorEvents.CONTEXT_SELECTED,
         (event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext|null>) => {
           const context = event.data;
-          if (context) {
-            this.updateDetailView(context);
-          }
+          this.updateDetailView(context);
           void this.doUpdate();
         });
 
@@ -180,10 +178,10 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   }
 
   private reset(): void {
+    this.contextSelector.reset();
     if (this.landingPage.isShowing()) {
       this.landingPage.detach();
     }
-    this.contextSelector.reset();
     this.detailViewContainer.removeChildren();
     this.landingPage.show(this.detailViewContainer);
     this.graphManager.clearGraphs();
@@ -335,7 +333,13 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     });
   }
 
-  private updateDetailView(context: Protocol.WebAudio.BaseAudioContext): void {
+  private updateDetailView(context: Protocol.WebAudio.BaseAudioContext|null): void {
+    if (!context) {
+      this.landingPage.detach();
+      this.detailViewContainer.removeChildren();
+      this.landingPage.show(this.detailViewContainer);
+      return;
+    }
     if (this.landingPage.isShowing()) {
       this.landingPage.detach();
     }

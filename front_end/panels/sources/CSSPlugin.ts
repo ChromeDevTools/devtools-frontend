@@ -492,7 +492,6 @@ const theme = CodeMirror.EditorView.baseTheme({
   '.cm-tooltip.cm-tooltip-swatchEdit': {
     'box-shadow': 'var(--sys-elevation-level2)',
     'background-color': 'var(--sys-color-base-container-elevated)',
-    'border-radius': 'var(--sys-shape-corner-small)',
-    padding: 'var(--sys-size-6) var(--sys-size-8)',
+    'border-radius': 'var(--sys-shape-corner-extra-small)',
   },
 });

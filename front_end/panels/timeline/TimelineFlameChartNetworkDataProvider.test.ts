@@ -55,6 +55,31 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.preferredHeight(), 17 * 7);
   });
 
+  it('renders initiators and clears them when events are deselected', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    const timelineData1 = dataProvider.timelineData();
+    assert.lengthOf(timelineData1.initiatorsData, 0);  // no initiators by default
+
+    // A network event that has an initiator - nothing special about the exact event.
+    const event = parsedTrace.NetworkRequests.byId.get('90829.57');
+    assert.exists(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isNotNull(index);
+
+    dataProvider.buildFlowForInitiator(index);
+    const timelineData2 = dataProvider.timelineData();
+    // The selected event kicks off a chain of 3 initiators.
+    assert.lengthOf(timelineData2.initiatorsData, 3);
+
+    // Deselect and ensure they are removed
+    dataProvider.buildFlowForInitiator(-1);
+    const timelineData3 = dataProvider.timelineData();
+    assert.lengthOf(timelineData3.initiatorsData, 0);
+  });
+
   it('can return the group for a given entryIndex', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');

@@ -134,7 +134,7 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     const testRetry = ((test as unknown) as TestRetry);
     const result = {
       testId: ResultsDb.sanitizedTestId(testId),
-      duration: `${test.duration || 0}ms`,
+      duration: `${(test.duration || 0) * .001}s`,
       tags: [{key: 'run', value: String(testRetry.currentRetry() + 1)}],
     };
     const hookName = this.maybeHook(test);

@@ -117,6 +117,14 @@ const UIStringsNotTranslate = {
   learnMoreButton: 'Learn more about auto annotations',
 } as const;
 
+const enum AIButtonState {
+  ENABLED = 'enabled',
+  DISABLED = 'disabled',
+  HIDDEN = 'hidden',
+  GENERATION_FAILED = 'generation_failed',
+  GENERATING_LABEL = 'generating_label',
+}
+
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
@@ -201,10 +209,8 @@ export class EntryLabelOverlay extends HTMLElement {
    * consented, hopefully!
    */
   #inAIConsentDialogFlow = false;
-  // Keep track of the AI label loading state to render a loading component if the label is being generated
-  #isAILabelLoading = false;
-  // Set to true when the generation of an AI label failed so we know when to display the 'generation failed' disclaimer
-  #isAILabelGenerationFailed = false;
+  #currAIButtonState: AIButtonState = AIButtonState.HIDDEN;
+
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -507,6 +513,8 @@ export class EntryLabelOverlay extends HTMLElement {
 
   set callTree(callTree: Utils.AICallTree.AICallTree|null) {
     this.#callTree = callTree;
+    // If the entry has a calltree, we need to check if we need to show the 'generate label' button.
+    this.#setAIButtonRenderState();
   }
 
   // Generate the AI label suggestion if:
@@ -523,7 +531,7 @@ export class EntryLabelOverlay extends HTMLElement {
       }
       try {
         // Trigger a re-render to display the loading component in the place of the button when the label is being generated.
-        this.#isAILabelLoading = true;
+        this.#currAIButtonState = AIButtonState.GENERATING_LABEL;
         UI.ARIAUtils.alert(UIStringsNotTranslate.generatingLabel);
         // Trigger a re-render to put focus back on the input box, otherwise
         // when the button changes to a loading spinner, it loses focus and the
@@ -535,17 +543,16 @@ export class EntryLabelOverlay extends HTMLElement {
         this.#label = await this.#agent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
         this.#inputField.innerText = this.#label;
-
-        this.#isAILabelLoading = false;
+        this.#placeCursorAtInputEnd();
+        // Reset the button state because we want to hide it if the label is not empty.
+        this.#setAIButtonRenderState();
         // Trigger a re-render to hide the AI Button and display the generated label.
         this.#render();
       } catch {
-        this.#isAILabelLoading = false;
-        this.#isAILabelGenerationFailed = true;
+        this.#currAIButtonState = AIButtonState.GENERATION_FAILED;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
       }
     } else {
-      this.#isAILabelLoading = false;
       this.#inAIConsentDialogFlow = true;
       this.#render();
       const hasConsented = await this.#showUserAiFirstRunDialog();
@@ -610,7 +617,7 @@ export class EntryLabelOverlay extends HTMLElement {
     return this.#aiAnnotationsEnabledSetting.get();
   }
 
-  #shouldRenderAIButton(): 'enabled'|'disabled'|'hidden' {
+  #setAIButtonRenderState(): void {
     const hasAiExperiment = Boolean(Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled);
     const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
@@ -625,24 +632,19 @@ export class EntryLabelOverlay extends HTMLElement {
     const labelIsEmpty = this.#label?.length <= 0;
 
     if (!hasAiExperiment || aiDisabledByEnterprisePolicy || !dataToGenerateLabelAvailable || !labelIsEmpty) {
-      return 'hidden';
+      this.#currAIButtonState = AIButtonState.HIDDEN;
+    } else {
+      // To verify whether AI can be used, check if the user is logged in, over 18, in a supported
+      // location and offline. If the user is not logged in, `blockedByAge` will return true.
+      const aiAvailable = !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
+          !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
+      if (aiAvailable) {
+        this.#currAIButtonState = AIButtonState.ENABLED;
+      } else {
+        // If AI features are not available, we show a disabled button.
+        this.#currAIButtonState = AIButtonState.DISABLED;
+      }
     }
-
-    // To verify whether AI can be used, check if the user is logged in, over 18, in a supported
-    // location and offline. If the user is not logged in, `blockedByAge` will return true.
-    const aiAvailable = !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
-        !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
-    if (aiAvailable) {
-      return 'enabled';
-    }
-
-    // If AI features are not available, we show a disabled button.
-    if (!aiAvailable) {
-      return 'disabled';
-    }
-
-    console.error('\'Generate label\' button is hidden for an unknown reason');
-    return 'hidden';
   }
 
   #renderAITooltip(opts: {textContent: string, includeSettingsButton: boolean}): Lit.TemplateResult {
@@ -668,26 +670,24 @@ export class EntryLabelOverlay extends HTMLElement {
     </devtools-tooltip>`;
     // clang-format on
   }
-
-  #renderAiButton(): Lit.LitTemplate {
-    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
-        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
-
-    if (this.#isAILabelLoading) {
-      // clang-format off
-    return html`
+  #renderGeneratingLabelAiButton(): Lit.LitTemplate {
+    // clang-format off
+      return html`
       <span
         class="ai-label-loading">
         <devtools-spinner></devtools-spinner>
         <span class="generate-label-text">${lockedString(UIStringsNotTranslate.generatingLabel)}</span>
       </span>
     `;
-      // clang-format on
-    }
+    // clang-format on
+  }
 
-    if (this.#isAILabelGenerationFailed) {
+  #renderAiButton(): Lit.LitTemplate {
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+
+    if (this.#currAIButtonState === AIButtonState.GENERATION_FAILED) {
       // Only show the error message on the first component render render after the failure.
-      this.#isAILabelGenerationFailed = false;
       // clang-format off
       return html`
         <span
@@ -830,6 +830,7 @@ export class EntryLabelOverlay extends HTMLElement {
               @paste=${this.#handleLabelInputPaste}
               @keyup=${() => {
                 this.#handleLabelInputKeyUp();
+                this.#setAIButtonRenderState();
                 // Rerender the label component when the label text changes because we need to
                 // make sure the 'auto annotation' button is only shown when the label is empty.
                 this.#render();
@@ -839,12 +840,16 @@ export class EntryLabelOverlay extends HTMLElement {
               tabindex="0"
             ></span>
             ${(() => {
-              switch (this.#shouldRenderAIButton()) {
-                case 'hidden':
+              switch (this.#currAIButtonState) {
+                case AIButtonState.HIDDEN:
                   return Lit.nothing;
-                case 'enabled':
+                case AIButtonState.ENABLED:
                   return this.#renderAiButton();
-                case 'disabled':
+                case AIButtonState.GENERATING_LABEL:
+                  return this.#renderGeneratingLabelAiButton();
+                case AIButtonState.GENERATION_FAILED:
+                  return this.#renderAiButton();
+                case AIButtonState.DISABLED:
                   return this.#renderDisabledAiButton();
               }
             })()}

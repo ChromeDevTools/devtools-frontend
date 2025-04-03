@@ -54,7 +54,7 @@ const UIStrings = {
   /**
    *@description Screen-reader text for a tooltip icon.
    */
-  moreInfoAriaLabel: 'More info',
+  moreInfoAriaLabel: 'More information about this feature',
 } as const;
 
 /*
@@ -722,8 +722,8 @@ export class EntryLabelOverlay extends HTMLElement {
         </button>
         <devtools-button
           aria-details="info-tooltip"
-          aria-label=${i18nString(UIStrings.moreInfoAriaLabel)}
           class="pen-icon"
+          .title=${i18nString(UIStrings.moreInfoAriaLabel)}
           .iconName=${'info'}
           .variant=${Buttons.Button.Variant.ICON}
           ></devtools-button>

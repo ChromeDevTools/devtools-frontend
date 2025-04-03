@@ -65,9 +65,9 @@ export const ResultsDBReporter = function(
     const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
     const expected = success || skipped;
     const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
-    let duration = '1ms';
+    let duration = '.001s';
     if (startTime < endTime) {
-      duration = (endTime - startTime).toString() + 'ms';
+      duration = ((endTime - startTime) * .001).toString() + 's';
     }
 
     const consoleLog = capturedLog.map(({type, log}) => `${type.toUpperCase()}: ${log}`);

@@ -67,7 +67,7 @@ export const ResultsDBReporter = function(
     const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
     let duration = '.001s';
     if (startTime < endTime) {
-      duration = ((endTime - startTime) * .001).toString() + 's';
+      duration = ((endTime - startTime) * .001).toFixed(3) + 's';
     }
 
     const consoleLog = capturedLog.map(({type, log}) => `${type.toUpperCase()}: ${log}`);

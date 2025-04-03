@@ -5,14 +5,15 @@
  * @fileoverview Rule to identify Lit render calls that are not inside of a
  * view function.
  */
-'use strict';
+import type {Rule} from 'eslint';
+import type {ArrowFunctionExpression, FunctionDeclaration, FunctionExpression} from 'estree';
 
-const {isLitHtmlRenderCall} = require('./utils.js');
+import {createRule} from './tsUtils.ts';
+import {isLitHtmlRenderCall} from './utils.js';
+type Node = Rule.Node;
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'no-lit-render-outside-of-view',
   meta: {
     type: 'problem',
     docs: {
@@ -20,12 +21,12 @@ module.exports = {
       category: 'Possible Errors',
     },
     messages: {
-      litRenderShouldBeInsideOfView:
-        'Lit render calls should be inside of a view function',
+      litRenderShouldBeInsideOfView: 'Lit render calls should be inside of a view function',
     },
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create : function(context) {
+  defaultOptions: [],
+  create: function(context) {
     return {
       CallExpression(node) {
         if (!isLitHtmlRenderCall(node)) {
@@ -38,8 +39,9 @@ module.exports = {
           });
           return;
         }
-        let functionNode = node.parent;
-        while (functionNode && !['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(functionNode.type)) {
+        let functionNode = node.parent as Node | undefined;
+        while (functionNode &&
+               !['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(functionNode.type)) {
           functionNode = functionNode.parent;
         }
         if (!functionNode) {
@@ -49,11 +51,11 @@ module.exports = {
           });
           return;
         }
-        /** @typedef {import('estree').FunctionDeclaration|import('estree').FunctionExpression|import('estree').ArrowFunctionExpression} FunctionLike */
-        const paramNames = /** @type {FunctionLike} */(functionNode).params.filter(p => p.type === 'Identifier').map(param => param.name);
+        type FunctionLike = FunctionDeclaration|FunctionExpression|ArrowFunctionExpression;
+        const paramNames =
+            (functionNode as FunctionLike).params.filter(p => p.type === 'Identifier').map(param => param.name);
         if (paramNames.length !== 3 || !paramNames[0].toLowerCase().endsWith('input') ||
-            !paramNames[1].toLowerCase().endsWith('output') ||
-            !paramNames[2].toLowerCase().endsWith('target')) {
+            !paramNames[1].toLowerCase().endsWith('output') || !paramNames[2].toLowerCase().endsWith('target')) {
           context.report({
             node,
             messageId: 'litRenderShouldBeInsideOfView',
@@ -88,4 +90,4 @@ module.exports = {
       },
     };
   }
-};
+});

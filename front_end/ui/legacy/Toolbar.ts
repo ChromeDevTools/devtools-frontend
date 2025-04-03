@@ -1072,7 +1072,7 @@ export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
       keepOpen: this.keepOpen,
-      x: this.element.getBoundingClientRect().left,
+      x: this.element.getBoundingClientRect().right,
       y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
       // Without adding a delay, pointer events will be un-ignored too early, and a single click causes
       // the context menu to be closed and immediately re-opened on Windows (https://crbug.com/339560549).

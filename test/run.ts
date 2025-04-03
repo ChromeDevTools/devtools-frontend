@@ -38,7 +38,7 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .strict()
                     .parseSync();
 
-const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'bail', 'b', 'verbose', 'v', 'watch'];
+const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'verbose', 'v', 'watch'];
 
 let logLevel = 'error';
 if (options['verbose'] === 1) {

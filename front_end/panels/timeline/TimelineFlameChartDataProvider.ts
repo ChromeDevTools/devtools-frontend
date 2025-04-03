@@ -1249,16 +1249,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.timelineDataInternal) {
       return false;
     }
-    if (this.lastInitiatorEntry === entryIndex) {
-      if (this.lastInitiatorsData) {
-        this.timelineDataInternal.initiatorsData = this.lastInitiatorsData;
-      }
-      return false;
-    }
-    if (!this.compatibilityTracksAppender) {
-      return false;
-    }
-
     // Remove all previously assigned decorations indicating that the flow event entries are hidden
     const previousInitiatorsDataLength = this.timelineDataInternal.initiatorsData.length;
     // |entryIndex| equals -1 means there is no entry selected, just clear the
@@ -1273,6 +1263,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // Reset to clear any previous arrows from the last event.
       this.timelineDataInternal.resetFlowData();
       return true;
+    }
+    if (this.lastInitiatorEntry === entryIndex) {
+      if (this.lastInitiatorsData) {
+        this.timelineDataInternal.initiatorsData = this.lastInitiatorsData;
+      }
+      return false;
+    }
+    if (!this.compatibilityTracksAppender) {
+      return false;
     }
 
     const entryType = this.#entryTypeForIndex(entryIndex);

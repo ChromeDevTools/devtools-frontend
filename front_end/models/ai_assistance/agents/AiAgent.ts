@@ -157,7 +157,7 @@ export abstract class ConversationContext<T> {
     return;
   }
 
-  getSuggestions(): [string, ...string[]]|undefined {
+  async getSuggestions(): Promise<[string, ...string[]]|undefined> {
     return;
   }
 }

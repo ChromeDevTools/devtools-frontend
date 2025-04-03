@@ -28,10 +28,6 @@ function mockConversationContext(): AiAssistance.ConversationContext<unknown> {
     override getTitle(): string {
       return 'title';
     }
-
-    override getSuggestions(): undefined {
-      return;
-    }
   })();
 }
 
@@ -374,10 +370,6 @@ describeWithEnvironment('AiAgent', () => {
         }
         override getItem(): undefined {
           return undefined;
-        }
-
-        override getSuggestions(): undefined {
-          return;
         }
       }
       return new TestContext();

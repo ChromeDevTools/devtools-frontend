@@ -217,6 +217,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
           const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
             nodeType: Node.ELEMENT_NODE,
           });
+          sinon.stub(AiAssistanceModel.NodeContext.prototype, 'getSuggestions')
+              .returns(Promise.resolve(['test suggestion']));
           return new AiAssistanceModel.NodeContext(node);
         },
         action: 'freestyler.elements-floating-button',
@@ -240,7 +242,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         createContext: () => {
           const context = new AiAssistanceModel.InsightContext(
               sinon.createStubInstance(TimelineUtils.InsightAIContext.ActiveInsight));
-          sinon.stub(AiAssistanceModel.InsightContext.prototype, 'getSuggestions').returns(['test suggestion']);
+          sinon.stub(AiAssistanceModel.InsightContext.prototype, 'getSuggestions')
+              .returns(Promise.resolve(['test suggestion']));
           return context;
         },
         action: 'drjones.performance-insight-context'

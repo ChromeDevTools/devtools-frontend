@@ -254,6 +254,52 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
         ElementsPanel.DOMLinkifier.linkifyNodeReference(this.#node, {hiddenClassList}),
     );
   }
+
+  override async getSuggestions(): Promise<[string, ...string[]]|undefined> {
+    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
+
+    if (!layoutProps) {
+      return;
+    }
+
+    if (layoutProps.isFlex) {
+      return [
+        'How can I make flex items wrap?',
+        'How do I distribute flex items evenly?',
+        'What is flexbox?',
+      ];
+    }
+    if (layoutProps.isSubgrid) {
+      return [
+        'Where is this grid defined?',
+        'How to overwrite parent grid properties?',
+        'How do subgrids work? ',
+      ];
+    }
+    if (layoutProps.isGrid) {
+      return [
+        'How do I align items in a grid?',
+        'How to add spacing between grid items?',
+        'How does grid layout work?',
+      ];
+    }
+    if (layoutProps.hasScroll) {
+      return [
+        'How do I remove scrollbars for this element?',
+        'How can I style a scrollbar?',
+        'Why does this element scroll?',
+      ];
+    }
+    if (layoutProps.isContainer) {
+      return [
+        'What are container queries?',
+        'How do I use container-type?',
+        'What\'s the container context for this element?',
+      ];
+    }
+
+    return;
+  }
 }
 
 /**

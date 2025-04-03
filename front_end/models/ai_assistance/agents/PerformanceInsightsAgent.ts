@@ -116,7 +116,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
    * Presents the default suggestions that are shown when the user first clicks
    * "Ask AI" on an Insight.
    */
-  override getSuggestions(): [string, ...string[]] {
+  override async getSuggestions(): Promise<[string, ...string[]]> {
     switch (this.#insight.insight.insightKey) {
       case 'CLSCulprits':
         return [

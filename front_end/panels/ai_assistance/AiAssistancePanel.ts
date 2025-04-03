@@ -205,11 +205,11 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-function getEmptyStateSuggestions(
+async function getEmptyStateSuggestions(
     context: AiAssistanceModel.ConversationContext<unknown>|null,
-    conversationType?: AiAssistanceModel.ConversationType): string[] {
+    conversationType?: AiAssistanceModel.ConversationType): Promise<string[]> {
   if (context) {
-    const specialSuggestions = context.getSuggestions();
+    const specialSuggestions = await context.getSuggestions();
 
     if (specialSuggestions) {
       return specialSuggestions;
@@ -821,6 +821,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   override async performUpdate(): Promise<void> {
+    const emptyStateSuggestions = await getEmptyStateSuggestions(this.#selectedContext, this.#conversation?.type);
+
     this.view(
         {
           state: this.#getChatUiState(),
@@ -840,7 +842,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           imageInput: this.#imageInput,
           isDeleteHistoryButtonVisible: Boolean(this.#conversation && !this.#conversation.isEmpty),
           isTextInputDisabled: this.#isTextInputDisabled(),
-          emptyStateSuggestions: getEmptyStateSuggestions(this.#selectedContext, this.#conversation?.type),
+          emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
           isTextInputEmpty: this.#isTextInputEmpty,

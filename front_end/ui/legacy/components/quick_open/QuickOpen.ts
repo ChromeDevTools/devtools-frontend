@@ -73,7 +73,7 @@ export class QuickOpenImpl {
     const titlePrefixFunction = this.providers.get(prefix)?.titlePrefix;
     this.filteredListWidget.setCommandPrefix(titlePrefixFunction ? titlePrefixFunction() : '');
     const titleSuggestionFunction = (query === prefix) && this.providers.get(prefix)?.titleSuggestion;
-    this.filteredListWidget.setCommandSuggestion(titleSuggestionFunction ? titleSuggestionFunction() : '');
+    this.filteredListWidget.setCommandSuggestion(titleSuggestionFunction ? prefix + titleSuggestionFunction() : '');
 
     if (this.prefix === prefix) {
       return;

@@ -66,19 +66,6 @@ describe('TextPrompt', () => {
       assert.lengthOf(textPromptInputs, 1);
       assert.strictEqual((textPromptInputs[0] as HTMLInputElement).value.trim(), 'text');
     });
-
-    it('sets the input and suggestion text correctly', () => {
-      const component = renderTextPrompt(defaultTextPromptData);
-      renderElementIntoDOM(component);
-
-      component.setText('@');
-      component.setSuggestion('Command');
-
-      const textPromptInputs = component.shadowRoot!.querySelectorAll('.input');
-      assert.strictEqual((textPromptInputs[0] as HTMLInputElement).value.trim(), '@');
-      const textPromptSuggestions = component.shadowRoot!.querySelectorAll('.suggestion');
-      assert.strictEqual((textPromptSuggestions[0] as HTMLInputElement).value.trim(), '@Command');
-    });
   });
 
   it('focus on the input element correctly', () => {

@@ -365,6 +365,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
       }
       this.inputBoxElement.focus();
       this.inputBoxElement.setText(completion);
+      this.inputBoxElement.setSuggestion('');
       this.setQuerySelectedRange(userEnteredText.length, completion.length);
       return true;
     }

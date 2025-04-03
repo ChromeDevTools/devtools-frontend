@@ -61,11 +61,6 @@ export class TextPrompt extends HTMLElement {
     this.setSelectedRange(this.#text().length, this.#text().length);
   }
 
-  onInput(): void {
-    this.#suggestion().value = this.#text();
-    this.dispatchEvent(new PromptInputEvent(this.#text()));
-  }
-
   onKeyDown(event: KeyboardEvent): void {
     if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
       event.preventDefault();
@@ -93,13 +88,12 @@ export class TextPrompt extends HTMLElement {
 
   setSuggestion(suggestion: string): void {
     this.#suggestionText = suggestion;
-    this.#suggestion().value += this.#suggestionText;
+    this.#suggestion().value = this.#suggestionText;
     this.#render();
   }
 
   setText(text: string): void {
     this.#input().value = text;
-    this.#suggestion().value = this.#text();
 
     if (this.#input().hasFocus()) {
       this.moveCaretToEndOfInput();
@@ -140,8 +134,9 @@ export class TextPrompt extends HTMLElement {
       <style>${textPromptStyles.cssText}</style>
       <span class="prefix">${this.#prefixText} </span>
       <span class="text-prompt-input"><input class="input" aria-label=${
-        this.#ariaLabelText} spellcheck="false" @input=${this.onInput} @keydown=${
-        this.onKeyDown}/><input class="suggestion" tabindex=-1 aria-label=${
+        this.#ariaLabelText} spellcheck="false" @input=${
+        () => this.dispatchEvent(new PromptInputEvent(
+            this.#text()))} @keydown=${this.onKeyDown}/><input class="suggestion" tabindex=-1 aria-label=${
         this.#ariaLabelText + ' Suggestion'}></span>`;
     render(output, this.#shadow, {host: this});
   }

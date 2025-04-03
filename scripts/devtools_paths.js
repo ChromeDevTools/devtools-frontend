@@ -127,6 +127,14 @@ function nodeModulesPath() {
   return path.join(devtoolsRootPath(), 'node_modules');
 }
 
+function autoninjaExecutablePath() {
+  return path.join(thirdPartyPath(), 'depot_tools', 'autoninja');
+}
+
+function gnExecutablePath() {
+  return path.join(thirdPartyPath(), 'depot_tools', 'gn');
+}
+
 function stylelintExecutablePath() {
   return path.join(nodeModulesPath(), 'stylelint', 'bin', 'stylelint.js');
 }
@@ -164,9 +172,11 @@ function downloadedChromeBinaryPath() {
 }
 
 module.exports = {
+  autoninjaExecutablePath,
   devtoolsRootPath,
   downloadedChromeBinaryPath,
   isInChromiumDirectory,
+  gnExecutablePath,
   litAnalyzerExecutablePath,
   mochaExecutablePath,
   nodeModulesPath,

@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import childProcess from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
 
-import {rootPath} from './devtools_paths.js';
+import {build} from './devtools_build.mjs';
 
 const argv = yargs(hideBin(process.argv))
                  .option('target', {
@@ -35,50 +34,61 @@ const argv = yargs(hideBin(process.argv))
                  .parseSync();
 
 const {target, watch, skipInitialBuild} = argv;
-const cwd = process.cwd();
-const {env} = process;
-
-// Create and initialize the `out/<target>` directory as needed.
-const outDir = path.join(rootPath(), 'out', target);
-if (!fs.existsSync(outDir)) {
-  const gnExe = path.join(cwd, 'third_party', 'depot_tools', 'gn');
-  fs.mkdirSync(outDir, {recursive: true});
-  childProcess.spawnSync(gnExe, ['-q', 'gen', outDir], {
-    cwd,
-    env,
-    stdio: 'inherit',
-  });
-  console.log(`Initialized output directory ${outDir}`);
-}
-
-function build() {
-  const autoninjaExe = path.join(cwd, 'third_party', 'depot_tools', 'autoninja');
-  childProcess.spawnSync(autoninjaExe, ['-C', outDir, 'devtools_all_files'], {
-    cwd,
-    env,
-    stdio: 'inherit',
-  });
-}
+const timeFormatter = new Intl.NumberFormat('en-US', {
+  style: 'unit',
+  unit: 'second',
+  unitDisplay: 'narrow',
+  maximumFractionDigits: 2,
+});
 
 // Perform an initial build (unless we should skip).
 if (!skipInitialBuild) {
-  build();
+  console.log('Building…');
+  try {
+    const {time} = await build(target);
+    console.log(`Build ready (${timeFormatter.format(time)})`);
+  } catch (error) {
+    console.log(error.toString());
+    process.exit(1);
+  }
 }
 
 if (watch) {
   let timeoutId = -1;
+  let buildPromise = Promise.resolve();
+  let abortController = new AbortController();
 
   function watchCallback(eventType, filename) {
     if (eventType !== 'change') {
       return;
     }
-    if (['BUILD.gn'].includes(filename) || ['.css', '.js', '.ts'].includes(path.extname(filename))) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(build, 250);
+    if (!/^(BUILD\.gn)|(.*\.(css|js|ts))$/.test(filename)) {
+      return;
     }
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(watchRebuild, 250);
   }
 
-  const WATCHLIST = ['front_end', 'inspector_overlay', 'test'];
+  function watchRebuild() {
+    // Abort any currently running build.
+    abortController.abort();
+    abortController = new AbortController();
+    const {signal} = abortController;
+
+    buildPromise = buildPromise.then(async () => {
+      try {
+        console.log('Rebuilding...');
+        const {time} = await build(target, signal);
+        console.log(`Rebuild successfully (${timeFormatter.format(time)})`);
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.log(error.toString());
+        }
+      }
+    });
+  }
+
+  const WATCHLIST = ['front_end', 'test'];
   for (const dirname of WATCHLIST) {
     fs.watch(
         dirname,

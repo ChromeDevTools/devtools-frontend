@@ -149,7 +149,8 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can show DOM interactions', async () => {
+  // Flaky test
+  it.skip('[crbug.com/408135804] can show DOM interactions', async () => {
     const messages = await getConsoleMessages('dom-interactions');
 
     assert.deepEqual(messages, [

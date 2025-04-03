@@ -101,9 +101,11 @@ async function runESLint(scriptFiles) {
   );
   if (usedDeprecatedRules.length) {
     console.log('Used deprecated rules:');
-    for (const { ruleId, replaceBy } of usedDeprecatedRules) {
+    for (const { ruleId, replacedBy } of usedDeprecatedRules) {
       console.log(
-        ` Rule ${ruleId} can be replaced with ${replaceBy ?? 'none'}`,
+        ` Rule ${ruleId} can be replaced with ${
+          replacedBy.join(',') ?? 'none'
+        }`,
       );
     }
   }

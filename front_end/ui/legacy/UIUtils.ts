@@ -60,6 +60,7 @@ import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import type {TreeOutline} from './Treeoutline.js';
 import {Widget} from './Widget.js';
+import type {XWidget} from './XWidget.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -1830,14 +1831,12 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
 
 function updateXWidgetfocusWidgetForNode(node: Node|null): void {
   node = node?.parentNodeOrShadowHost() ?? null;
-  const XWidgetCtor = customElements.get('x-widget');
+  const XWidgetConstructor = customElements.get('x-widget') as Platform.Constructor.Constructor<XWidget>| undefined;
   let widget = null;
   while (node) {
-    if (XWidgetCtor && node instanceof XWidgetCtor) {
+    if (XWidgetConstructor && node instanceof XWidgetConstructor) {
       if (widget) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).defaultFocusedElement = widget;
+        node.defaultFocusedElement = widget;
       }
       widget = node;
     }

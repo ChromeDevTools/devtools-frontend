@@ -1148,30 +1148,32 @@ export class Overlays extends EventTarget {
       const entryToWrapper = component.entryToWrapper();
 
       if (entryTo && entryToWrapper) {
-        let toEntryX = 0;
+        let toEntryX = this.xPixelForEventStartOnChart(entryTo) ?? 0;
         // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point to. If not, get the canvas edge coordate to point the arrow to.
         let toEntryY = this.#yCoordinateForNotVisibleEntry(entryTo);
+        const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
 
-        if (entryToVisibility) {
-          const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
+        if (toEntryParams) {
+          const toEntryHeight = toEntryParams?.entryHeight;
+          const toEntryWidth = toEntryParams?.entryWidth;
+          const toCutOffHeight = toEntryParams?.cutOffHeight;
+          toEntryX = toEntryParams?.x;
+          toEntryY = toEntryParams?.y;
 
-          if (toEntryParams) {
-            const toEntryHeight = toEntryParams?.entryHeight;
-            const toEntryWidth = toEntryParams?.entryWidth;
-            const toCutOffHeight = toEntryParams?.cutOffHeight;
-            toEntryX = toEntryParams?.x;
-            toEntryY = toEntryParams?.y;
-
-            component.toEntryCoordinateAndDimensions = {
-              x: toEntryX,
-              y: toEntryY,
-              length: toEntryWidth,
-              height: toEntryHeight - toCutOffHeight,
-            };
-          } else {
-            // Something went if the entry is visible and we cannot get its' parameters.
-            return;
-          }
+          component.toEntryCoordinateAndDimensions = {
+            x: toEntryX,
+            y: toEntryY,
+            length: toEntryWidth,
+            height: toEntryHeight - toCutOffHeight,
+          };
+        } else {
+          // if the entry exists and we cannot get its' parameters, it is probably loaded and is off screen.
+          // In this case, assign the coordinates so we can draw the arrow in the right direction.
+          component.toEntryCoordinateAndDimensions = {
+            x: toEntryX,
+            y: toEntryY,
+          };
+          return;
         }
 
       } else {

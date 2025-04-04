@@ -44,10 +44,22 @@ const UIStrings = {
    */
   estimatedSavingsTimingAndBytes: 'Est savings: {PH1} & {PH2}',
   /**
+   * @description Text to tell the user the estimated time or size savings for this insight that is used for screen readers.
+   * @example {401 ms} PH1
+   * @example {112 kB} PH1
+   */
+  estimatedSavingsAria: 'Estimated savings for this insight: {PH1}',
+  /**
+   * @description Text to tell the user the estimated time and size savings for this insight that is used for screen readers.
+   * @example {401 ms} PH1
+   * @example {112 kB} PH2
+   */
+  estimatedSavingsTimingAndBytesAria: 'Estimated savings for this insight: {PH1} and {PH2}',
+  /**
    * @description Used for screen-readers as a label on the button to expand an insight to view details
    * @example {LCP by phase} PH1
    */
-  viewDetails: 'View details for {PH1}',
+  viewDetails: 'View details for {PH1} insight.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/BaseInsightComponent.ts', UIStrings);
@@ -256,7 +268,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     return null;
   }
 
-  #getEstimatedSavingsString(): string|null {
+  #getEstimatedSavingsTextParts(): {bytesString?: string, timeString?: string} {
     const savingsTime = this.getEstimatedSavingsTime();
     const savingsBytes = this.getEstimatedSavingsBytes();
 
@@ -267,6 +279,37 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     if (savingsBytes) {
       bytesString = i18n.ByteUtilities.bytesToString(savingsBytes);
     }
+    return {
+      timeString,
+      bytesString,
+    };
+  }
+
+  #getEstimatedSavingsAriaLabel(): string|null {
+    const {bytesString, timeString} = this.#getEstimatedSavingsTextParts();
+
+    if (timeString && bytesString) {
+      return i18nString(UIStrings.estimatedSavingsTimingAndBytesAria, {
+        PH1: timeString,
+        PH2: bytesString,
+      });
+    }
+    if (timeString) {
+      return i18nString(UIStrings.estimatedSavingsAria, {
+        PH1: timeString,
+      });
+    }
+    if (bytesString) {
+      return i18nString(UIStrings.estimatedSavingsAria, {
+        PH1: bytesString,
+      });
+    }
+
+    return null;
+  }
+
+  #getEstimatedSavingsString(): string|null {
+    const {bytesString, timeString} = this.#getEstimatedSavingsTextParts();
 
     if (timeString && bytesString) {
       return i18nString(UIStrings.estimatedSavingsTimingAndBytes, {
@@ -335,6 +378,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     if (!this.#selected) {
       return Lit.nothing;
     }
+
+    const ariaLabel = `Ask AI about ${insightModel.title} insight`;
     // Only render the insight body content if it is selected.
     // To avoid re-rendering triggered from elsewhere.
     const content = this.renderContent();
@@ -351,6 +396,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
               data-insights-ask-ai
               jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({click: true})}
               @click=${this.#askAIButtonClick}
+              aria-label=${ariaLabel}
             >Ask AI</devtools-button>
           </div>
         `: Lit.nothing}
@@ -369,6 +415,13 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       closed: !this.#selected,
     });
     const estimatedSavingsString = this.#getEstimatedSavingsString();
+    const estimatedSavingsAriaLabel = this.#getEstimatedSavingsAriaLabel();
+
+    let ariaLabel = `${i18nString(UIStrings.viewDetails, {PH1: this.#model.title})}`;
+    if (estimatedSavingsAriaLabel) {
+      // space prefix is deliberate to add a gap after the view details text
+      ariaLabel += ` ${estimatedSavingsAriaLabel}`;
+    }
 
     // clang-format off
     const output = html`
@@ -379,7 +432,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
           tabIndex="0"
           role="button"
           aria-expanded=${this.#selected}
-          aria-label=${i18nString(UIStrings.viewDetails, {PH1: this.#model.title})}
+          aria-label=${ariaLabel}
         >
           ${this.#renderHoverIcon(this.#selected)}
           <h3 class="insight-title">${this.#model?.title}</h3>

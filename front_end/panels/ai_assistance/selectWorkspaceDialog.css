@@ -35,7 +35,7 @@ ul {
   padding: 0;
   margin: var(--sys-size-6) 0 var(--sys-size-4) 0;
   max-height: var(--sys-size-23);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 li {

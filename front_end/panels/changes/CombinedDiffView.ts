@@ -83,6 +83,11 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
 }
 
 export class CombinedDiffView extends UI.Widget.Widget {
+  /**
+   * Ignores urls that start with any in the list
+   */
+  ignoredUrls: string[] = [];
+
   #workspaceDiff?: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   #modifiedUISourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
   #copiedFiles: Record<string, boolean> = {};
@@ -180,6 +185,12 @@ export class CombinedDiffView extends UI.Widget.Widget {
 
   override async performUpdate(): Promise<void> {
     const uiSourceCodeAndDiffs = (await Promise.all(this.#modifiedUISourceCodes.map(async modifiedUISourceCode => {
+                                   for (const ignoredUrl of this.ignoredUrls) {
+                                     if (modifiedUISourceCode.url().startsWith(ignoredUrl)) {
+                                       return;
+                                     }
+                                   }
+
                                    // `requestDiff` caches the response from the previous `requestDiff` calls if the file did not change
                                    // so we can safely call it here without concerns for performance.
                                    const diffResponse = await this.#workspaceDiff?.requestDiff(modifiedUISourceCode);

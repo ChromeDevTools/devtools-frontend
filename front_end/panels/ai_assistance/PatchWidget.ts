@@ -255,6 +255,8 @@ export class PatchWidget extends UI.Widget.Widget {
         if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
           return html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(ChangesPanel.CombinedDiffView.CombinedDiffView, {
             workspaceDiff: input.workspaceDiff,
+            // Ignore user creates inspector-stylesheets
+            ignoredUrls: ['inspector://']
           })}></devtools-widget>`;
         }
 
@@ -567,13 +569,12 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   #onSaveAll(): void {
-    // TODO: What should we do for the inspector stylesheet?
     this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
       modifiedUISourceCode.commitWorkingCopy();
     });
 
     this.#savedToDisk = true;
-    void this.changeManager?.dropStashedChanges();
+    this.changeManager?.dropStashedChanges();
     this.requestUpdate();
   }
 

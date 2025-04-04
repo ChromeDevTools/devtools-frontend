@@ -130,4 +130,23 @@ describeWithEnvironment('CombinedDiffView', () => {
       assert.strictEqual((await view.nextInput).singleDiffViewInputs[0].fileName, '*/tmp/non-mapped.html');
     });
   });
+
+  describe('ignoredUrl', () => {
+    it('should ignore files in ignoredFileNames', async () => {
+      const {uiSourceCode} = createFileSystemUISourceCode({
+        url: urlString`inspector:///inspector-stylesheet`,
+        content: ORIGINAL_CONTENT,
+        autoMapping: true,
+        mimeType: 'text/css',
+        fileSystemPath: ''
+      });
+      const {widget, view} = await createCombinedDiffView({workspaceDiff});
+      widget.ignoredUrls = ['inspector://'];
+      uiSourceCode.setWorkingCopy('const data={original:false}');
+
+      const input = await view.nextInput;
+
+      assert.deepEqual(input.singleDiffViewInputs, []);
+    });
+  });
 });

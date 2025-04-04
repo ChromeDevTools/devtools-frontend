@@ -33,7 +33,9 @@ async function cssSelectorStatsRecording(testName: string, devToolsPage: DevTool
   await stopRecording(devToolsPage);
 }
 
-describe('The Performance panel', function() {
+describe('The Performance panel', () => {
+  setup({dockingMode: 'undocked'});
+
   it('Can navigate to CSS file in source panel via available link in selector stats table',
      async ({devToolsPage, inspectedPage}) => {
        await cssSelectorStatsRecording('selectorStats/page-with-style', devToolsPage, inspectedPage);

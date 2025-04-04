@@ -270,7 +270,7 @@ export const DEFAULT_DEVTOOLS_SETTINGS = {
   devToolsSettings: {
     isUnderTest: true,
   },
-  dockingMode: 'undocked',
+  dockingMode: 'right',
 };
 
 export async function setupDevToolsPage(context: puppeteer.BrowserContext, settings: DevtoolsSettings) {

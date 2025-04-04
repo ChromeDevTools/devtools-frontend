@@ -28,6 +28,10 @@ declare global {
       state: E2E.State;
       browser: BrowserWrapper;
     }
+
+    export interface HookFunction {
+      (fn: E2E.SuiteSettings): void;
+    }
   }
   namespace E2E {
     export type HarnessSettings = BrowserSettings&DevtoolsSettings;

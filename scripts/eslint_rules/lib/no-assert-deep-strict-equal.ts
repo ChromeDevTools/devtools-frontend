@@ -1,7 +1,8 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+
+import {createRule} from './tsUtils.ts';
 
 /**
  * @fileoverview Disallow usage of `assert.deepStrictEqual`.
@@ -16,11 +17,10 @@
 // Rule Definition
 // ------------------------------------------------------------------------------
 
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule({
+  name: 'no-assert-deep-strict-equal',
   meta: {
     type: 'suggestion',
-
     docs: {
       description: 'Disallow usage of `assert.deepStrictEqual` in favor of `assert.deepEqual`.',
       category: 'Best Practices',
@@ -29,15 +29,14 @@ module.exports = {
       unexpectedAssertDeepStrictEqual: 'Unexpected assert.deepStrictEqual. Use assert.deepEqual instead.',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create: function (context) {
-    function isAssertDeepStrictEqual(calleeNode) {
-      return calleeNode.type === 'MemberExpression' &&
-             calleeNode.object.type === 'Identifier' &&
-             calleeNode.object.name === 'assert' &&
-             calleeNode.property.type === 'Identifier' &&
-             calleeNode.property.name === 'deepStrictEqual';
+  defaultOptions: [],
+  create(context) {
+    function isAssertDeepStrictEqual(calleeNode): boolean {
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          calleeNode.property.name === 'deepStrictEqual';
     }
 
     function reportError(node) {
@@ -58,4 +57,4 @@ module.exports = {
       }
     };
   },
-};
+});

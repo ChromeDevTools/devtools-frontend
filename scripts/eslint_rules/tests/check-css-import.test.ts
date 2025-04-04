@@ -1,11 +1,10 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/check-css-import.js');
+import rule from '../lib/check-css-import.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('check-css-import', rule, {
   valid: [
@@ -26,7 +25,7 @@ new RuleTester().run('check-css-import', rule, {
       filename: 'front_end/ui/components/component/file.ts',
       errors: [
         {
-          message: 'File styles.css does not exist. Check you are importing the correct file.',
+          messageId: 'fileDoesNotExist',
         },
       ],
     },
@@ -36,7 +35,7 @@ new RuleTester().run('check-css-import', rule, {
       filename: 'front_end/ui/components/icon_button/file.ts',
       errors: [
         {
-          message: 'File check_css_import_tests_file.css does not exist. Check you are importing the correct file.',
+          messageId: 'fileDoesNotExist',
         },
       ],
     },

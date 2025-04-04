@@ -1,36 +1,34 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
 /**
  * @fileoverview Prevent usage of customElements.define() and use the helper
  * function instead
  */
 
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
+import * as fs from 'fs';
+import * as path from 'path';
 
-const fs = require('fs');
-const path = require('path');
+import {createRule} from './tsUtils.ts';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'check-css-import',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'check CSS file imports',
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    messages: {
+      fileDoesNotExist: 'File {{filename}} does not exist. Check you are importing the correct file.',
+    },
+    schema: [],  // no options
   },
+  defaultOptions: [],
   create: function(context) {
-    const filename = context.filename ?? context.getFilename();
+    const filename = context.getFilename();
     return {
       ImportDeclaration(node) {
         const importPath = path.normalize(`${node.source.value}`);
@@ -43,11 +41,12 @@ module.exports = {
           if (!fs.existsSync(importedCSS)) {
             context.report({
               node,
-              message: `File ${path.basename(importedCSS)} does not exist. Check you are importing the correct file.`
+              messageId: 'fileDoesNotExist',
+              data: {filename: path.basename(importedCSS)},
             });
           }
         }
-      }
+      },
     };
-  }
-};
+  },
+});

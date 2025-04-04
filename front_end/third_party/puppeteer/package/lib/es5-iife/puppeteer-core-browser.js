@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.5.0';
+  const packageVersion = '24.6.0';
 
   /**
    * @license
@@ -11066,7 +11066,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const frame = await page.waitForFrame(async frame => {
-       *   return frame.name() === 'Test';
+       *   const frameElement = await frame.frameElement();
+       *   if (!frameElement) {
+       *     return false;
+       *   }
+       *   const name = await frameElement.evaluate(el => el.getAttribute('name'));
+       *   return name === 'test';
        * });
        * ```
        */
@@ -22453,9 +22458,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (parsed.sessionId === 'pageTargetSessionId') {
         delete parsed.sessionId;
       }
-      chrome.debugger.sendCommand(
-      // @ts-expect-error sessionId is not in stable yet.
-      {
+      chrome.debugger.sendCommand({
         tabId: _classPrivateFieldGet(_tabId, this),
         sessionId: parsed.sessionId
       }, parsed.method, parsed.params).then(response => {
@@ -24385,9 +24388,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '134.0.6998.165',
-    'chrome-headless-shell': '134.0.6998.165',
-    firefox: 'stable_136.0.4'
+    chrome: '135.0.7049.42',
+    'chrome-headless-shell': '135.0.7049.42',
+    firefox: 'stable_137.0'
   });
 
   /**

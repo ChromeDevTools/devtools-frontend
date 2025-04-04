@@ -269,6 +269,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private contextMenu?: UI.ContextMenu.ContextMenu;
   private viewportElement: HTMLElement;
   private canvas: HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
   private popoverElement: HTMLElement;
   private readonly markerHighlighElement: HTMLElement;
   readonly highlightElement: HTMLElement;
@@ -367,6 +368,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.viewportElement = this.chartViewport.viewportElement;
     this.canvas = this.viewportElement.createChild('canvas', 'fill');
+    this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.candyStripePattern = this.candyStripePatternGray = null;
 
     this.canvas.tabIndex = 0;
@@ -619,7 +621,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const candyStripeCanvas = document.createElement('canvas');
     candyStripeCanvas.width = size;
     candyStripeCanvas.height = size;
-    const ctx = candyStripeCanvas.getContext('2d') as CanvasRenderingContext2D;
+    const ctx = candyStripeCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D;
 
     // Rotate the stripe by 45deg to the right.
     ctx.translate(size * 0.5, size * 0.5);
@@ -2071,7 +2073,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         if (y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[nextIndex]) {
           // This section is used to calculate the position of current group's header
           // If we are in edit mode, the track label is pushed right to make room for the icons.
-          const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+          const context = this.context;
           context.save();
           context.font = this.#font;
           const headerRight = HEADER_LEFT_PADDING + (this.#inTrackConfigEditMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0) +
@@ -2191,7 +2193,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     const canvasWidth = this.offsetWidth;
     const canvasHeight = this.offsetHeight;
-    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = this.context;
 
     context.save();
     const ratio = window.devicePixelRatio;
@@ -2657,7 +2659,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * there is no group being hovered.
    */
   private drawGroupHeaders(width: number, height: number): void {
-    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = this.context;
     const top = this.chartViewport.scrollOffset();
     const ratio = window.devicePixelRatio;
     if (!this.rawTimelineData) {
@@ -3091,7 +3093,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const range = new Common.SegmentedRange.SegmentedRange<string>(mergeCallback);
     const timeWindowLeft = this.chartViewport.windowLeftTime();
     const timeWindowRight = this.chartViewport.windowRightTime();
-    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = this.context;
     const groupBarHeight = group.style.height;
     if (!this.rawTimelineData) {
       return;
@@ -3326,7 +3328,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const rightBoundary = this.maximumBoundary();
     const timeToPixel = this.chartViewport.timeToPixel();
 
-    const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
+    const context = this.context;
     context.save();
     const ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);

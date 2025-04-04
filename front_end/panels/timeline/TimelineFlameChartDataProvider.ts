@@ -27,6 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -106,8 +107,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
-  private droppedFramePatternCanvas: HTMLCanvasElement;
-  private partialFramePatternCanvas: HTMLCanvasElement;
+  private droppedFramePattern: CanvasPattern|null;
+  private partialFramePattern: CanvasPattern|null;
   private timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
   private currentLevel = 0;
 
@@ -150,9 +151,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     super();
     this.reset();
 
-    this.droppedFramePatternCanvas = document.createElement('canvas');
-    this.partialFramePatternCanvas = document.createElement('canvas');
-    this.preparePatternCanvas();
+    [this.droppedFramePattern, this.partialFramePattern] = this.preparePatternCanvas();
 
     this.framesGroupStyle = this.buildGroupStyle({useFirstLineForOverview: true});
     this.screenshotsGroupStyle =
@@ -900,40 +899,38 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return '';
   }
 
-  private preparePatternCanvas(): void {
+  private preparePatternCanvas(): Array<CanvasPattern|null> {
     // Set the candy stripe pattern to 17px so it repeats well.
     const size = 17;
-    this.droppedFramePatternCanvas.width = size;
-    this.droppedFramePatternCanvas.height = size;
+    const droppedFrameCanvas = document.createElement('canvas');
+    const partialFrameCanvas = document.createElement('canvas');
+    droppedFrameCanvas.width = droppedFrameCanvas.height = size;
+    partialFrameCanvas.width = partialFrameCanvas.height = size;
 
-    this.partialFramePatternCanvas.width = size;
-    this.partialFramePatternCanvas.height = size;
+    const ctx = droppedFrameCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D;
+    // Make a dense solid-line pattern.
+    ctx.translate(size * 0.5, size * 0.5);
+    ctx.rotate(Math.PI * 0.25);
+    ctx.translate(-size * 0.5, -size * 0.5);
 
-    const ctx = this.droppedFramePatternCanvas.getContext('2d');
-    if (ctx) {
-      // Make a dense solid-line pattern.
-      ctx.translate(size * 0.5, size * 0.5);
-      ctx.rotate(Math.PI * 0.25);
-      ctx.translate(-size * 0.5, -size * 0.5);
-
-      ctx.fillStyle = 'rgb(255, 255, 255)';
-      for (let x = -size; x < size * 2; x += 3) {
-        ctx.fillRect(x, -size, 1, size * 3);
-      }
+    ctx.fillStyle = 'rgb(255, 255, 255)';
+    for (let x = -size; x < size * 2; x += 3) {
+      ctx.fillRect(x, -size, 1, size * 3);
     }
+    const droppedFramePattern = ctx.createPattern(droppedFrameCanvas, 'repeat');
 
-    const ctx2 = this.partialFramePatternCanvas.getContext('2d');
-    if (ctx2) {
-      // Make a sparse dashed-line pattern.
-      ctx2.strokeStyle = 'rgb(255, 255, 255)';
-      ctx2.lineWidth = 2;
-      ctx2.beginPath();
-      ctx2.moveTo(17, 0);
-      ctx2.lineTo(10, 7);
-      ctx2.moveTo(8, 9);
-      ctx2.lineTo(2, 15);
-      ctx2.stroke();
-    }
+    const ctx2 = partialFrameCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D;
+    // Make a sparse dashed-line pattern.
+    ctx2.strokeStyle = 'rgb(255, 255, 255)';
+    ctx2.lineWidth = 2;
+    ctx2.beginPath();
+    ctx2.moveTo(17, 0);
+    ctx2.lineTo(10, 7);
+    ctx2.moveTo(8, 9);
+    ctx2.lineTo(2, 15);
+    ctx2.stroke();
+    const partialFramePattern = ctx.createPattern(partialFrameCanvas, 'repeat');
+    return [droppedFramePattern, partialFramePattern];
   }
 
   private drawFrame(
@@ -946,20 +943,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     context.fillStyle = transformColor(this.entryColor(entryIndex));
 
     if (frame.dropped) {
+      context.fillRect(barX, barY, barWidth, barHeight);
       if (frame.isPartial) {
         // For partially presented frame boxes, paint a yellow background with
         // a sparse white dashed-line pattern overlay.
-        context.fillRect(barX, barY, barWidth, barHeight);
-
-        const overlay = context.createPattern(this.partialFramePatternCanvas, 'repeat');
-        context.fillStyle = overlay || context.fillStyle;
+        context.fillStyle = this.partialFramePattern || context.fillStyle;
       } else {
         // For dropped frame boxes, paint a red background with a dense white
         // solid-line pattern overlay.
-        context.fillRect(barX, barY, barWidth, barHeight);
-
-        const overlay = context.createPattern(this.droppedFramePatternCanvas, 'repeat');
-        context.fillStyle = overlay || context.fillStyle;
+        context.fillStyle = this.droppedFramePattern || context.fillStyle;
       }
     }
     context.fillRect(barX, barY, barWidth, barHeight);

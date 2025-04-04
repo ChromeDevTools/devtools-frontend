@@ -660,7 +660,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     const size = 32;
     pattern.width = size * 2;
     pattern.height = size * 2;
-    const pctx = pattern.getContext('2d') as CanvasRenderingContext2D;
+    const pctx = pattern.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D;
 
     pctx.fillStyle = 'var(--sys-color-neutral-outline)';
     pctx.fillRect(0, 0, size * 2, size * 2);

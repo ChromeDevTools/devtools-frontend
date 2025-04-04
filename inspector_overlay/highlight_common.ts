@@ -206,7 +206,7 @@ export function hatchFillPath(
     offscreenCanvas.width = delta;
     offscreenCanvas.height = HATCH_LINE_LENGTH + HATCH_LINE_GAP;
 
-    const offscreenCtx = offscreenCanvas.getContext('2d') as CanvasRenderingContext2D;
+    const offscreenCtx = offscreenCanvas.getContext('2d', {willReadFrequently: true}) as CanvasRenderingContext2D;
     offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
     offscreenCtx.rect(0, 0, 1, HATCH_LINE_LENGTH);
     offscreenCtx.fillStyle = color;

@@ -420,7 +420,20 @@ export class BottomUpRootNode extends Node {
         } else {
           node.events.push(e);
         }
-        node.transferSize += e.args.data.encodedDataLength;
+
+        // ResourceReceivedData events tally up the transfer size over time, but the
+        // ResourceReceiveResponse / ResourceFinish events hold the final result.
+        if (e.name === 'ResourceReceivedData') {
+          node.transferSize += e.args.data.encodedDataLength;
+        } else if (e.args.data.encodedDataLength > 0) {
+          // For some reason, ResourceFinish can be zero even if data was sent.
+          // Ignore that case.
+          // Note: this will count the entire resource size if just the last bit of a
+          // request is in view. If it isn't in view, the transfer size is counted
+          // gradually, in proportion with the ResourceReceivedData events in the
+          // current view.
+          node.transferSize = e.args.data.encodedDataLength;
+        }
       }
     };
 

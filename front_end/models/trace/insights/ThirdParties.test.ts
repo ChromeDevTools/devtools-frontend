@@ -20,7 +20,7 @@ describeWithEnvironment('ThirdParties', function() {
     ]);
     const summaryResult = insight.summaries.map(s => [s.entity.name, s.transferSize, s.mainThreadTime.toFixed(2)]);
     assert.deepEqual(summaryResult, [
-      ['localhost', 2254, '24.95'],
+      ['localhost', 1503, '24.95'],
       ['Google Fonts', 25325, '0.00'],
     ]);
   });
@@ -43,12 +43,12 @@ describeWithEnvironment('ThirdParties', function() {
 
     const summaryResult = insight.summaries.map(s => [s.entity.name, s.transferSize, s.mainThreadTime.toFixed(2)]);
     assert.deepEqual(summaryResult, [
-      ['paulirish.com', 439223, '85.54'],
-      ['Google Fonts', 169258, '0.00'],
-      ['Google Tag Manager', 367917, '19.95'],
-      ['Google Analytics', 75811, '5.86'],
-      ['Disqus', 3748, '0.34'],
-      ['Firebase', 6564, '0.00'],
+      ['paulirish.com', 157130, '85.54'],
+      ['Google Fonts', 80003, '0.00'],
+      ['Google Tag Manager', 95375, '19.95'],
+      ['Google Analytics', 20865, '5.86'],
+      ['Disqus', 1551, '0.34'],
+      ['Firebase', 2847, '0.00'],
     ]);
   });
 });

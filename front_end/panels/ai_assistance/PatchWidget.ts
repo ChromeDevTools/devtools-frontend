@@ -541,7 +541,6 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
     const {response, processedFiles} = await this.#applyPatch(changeSummary);
     if (response?.type === AiAssistanceModel.ResponseType.ANSWER) {
-      await this.changeManager?.stashChanges();
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
     } else if (
         response?.type === AiAssistanceModel.ResponseType.ERROR &&
@@ -570,11 +569,15 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
 
   #onSaveAll(): void {
     this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      modifiedUISourceCode.commitWorkingCopy();
+      if (!modifiedUISourceCode.url().startsWith('inspector://')) {
+        modifiedUISourceCode.commitWorkingCopy();
+      }
+    });
+    void this.changeManager?.stashChanges().then(() => {
+      this.changeManager?.dropStashedChanges();
     });
 
     this.#savedToDisk = true;
-    this.changeManager?.dropStashedChanges();
     this.requestUpdate();
   }
 

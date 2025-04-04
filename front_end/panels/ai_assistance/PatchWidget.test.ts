@@ -281,8 +281,6 @@ Files:
     let uiSourceCode: Workspace.UISourceCode.UISourceCode;
     let commitWorkingCopyStub:
         sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.commitWorkingCopy>>;
-    let resetWorkingCopyStub:
-        sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.resetWorkingCopy>>;
 
     beforeEach(() => {
       uiSourceCode = createTestFilesystem('file://test').uiSourceCode;
@@ -296,41 +294,43 @@ Files:
 
       commitWorkingCopyStub =
           sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'commitWorkingCopy').callThrough();
-      resetWorkingCopyStub =
-          sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'resetWorkingCopy').callThrough();
     });
 
-    it('on apply should call handle function and stash changes', async () => {
+    it('on apply should should not call stashChanges', async () => {
       const {
         view,
         widget,
-      } = await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
+      } = await createPatchWidget({
+        aidaClient: mockAidaClient([[{explanation: 'patch applied'}]]),
+      });
       widget.changeSummary = 'body { background-color: red; }';
       const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      changeManager.stashChanges.returns(Promise.resolve());
       widget.changeManager = changeManager;
       view.input.onApplyToWorkspace();
       await view.nextInput;
-      assert.isTrue(changeManager.stashChanges.calledOnce);
+      assert.isTrue(changeManager.stashChanges.notCalled);
     });
 
-    it('save all should commit the working copy of the changed UI codes to the disk and render savedToDisk view',
-       async () => {
-         const {view, widget} = await createPatchWidgetWithDiffView();
-         const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
-         widget.changeManager = changeManager;
-         uiSourceCode.setWorkingCopy('working copy');
+    it('on save should stash changes', async () => {
+      const {view, widget} = await createPatchWidgetWithDiffView();
+      const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      changeManager.stashChanges.returns(Promise.resolve());
+      widget.changeManager = changeManager;
+      uiSourceCode.setWorkingCopy('working copy');
 
-         view.input.onSaveAll();
-         const nextInput = await view.nextInput;
+      view.input.onSaveAll();
+      const nextInput = await view.nextInput;
 
-         assert.isTrue(nextInput.savedToDisk);
-         assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
-         assert.isTrue(changeManager.dropStashedChanges.calledOnce);
-       });
+      assert.isTrue(nextInput.savedToDisk);
+      assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
+      assert.isTrue(changeManager.stashChanges.calledOnce);
+    });
 
     it('discard should discard the working copy and render the view without patchSuggestion', async () => {
       const {view, widget} = await createPatchWidgetWithDiffView();
       const changeManager = sinon.createStubInstance(AiAssistanceModel.ChangeManager);
+      changeManager.stashChanges.returns(Promise.resolve());
       widget.changeManager = changeManager;
       uiSourceCode.setWorkingCopy('working copy');
 
@@ -338,7 +338,6 @@ Files:
       const nextInput = await view.nextInput;
 
       assert.strictEqual(nextInput.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.INITIAL);
-      assert.isTrue(resetWorkingCopyStub.called, 'Expected resetWorkingCopy to be called but it is not called');
       assert.isTrue(changeManager.popStashedChanges.calledOnce);
     });
   });

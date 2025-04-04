@@ -454,9 +454,6 @@ export abstract class AiAgent<T> {
               complete: false,
             };
           }
-          if (functionCall) {
-            break;
-          }
         }
       } catch (err) {
         debugLog('Error calling the AIDA API', err);

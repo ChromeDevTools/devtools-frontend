@@ -3,31 +3,42 @@
 // found in the LICENSE file.
 /**
  * @fileoverview Rule to identify and templatize manually constructed DOM.
- *
- * To check types, run
- * $ npx tsc --noEmit --allowJS --checkJS --downlevelIteration scripts/eslint_rules/lib/no-imperative-dom-api.js
  */
-'use strict';
 
-const adorner = require('./no-imperative-dom-api/adorner.js');
-const {isIdentifier, getEnclosingExpression} = require('./no-imperative-dom-api/ast.js');
-const {ClassMember} = require('./no-imperative-dom-api/class-member.js');
-const domApiDevtoolsExtensions = require('./no-imperative-dom-api/dom-api-devtools-extensions.js');
-const domApi = require('./no-imperative-dom-api/dom-api.js');
-const {DomFragment} = require('./no-imperative-dom-api/dom-fragment.js');
-const toolbar = require('./no-imperative-dom-api/toolbar.js');
-const widget = require('./no-imperative-dom-api/widget.js');
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('estree').Node} Node */
-/** @typedef {import('eslint').Rule.Node} EsLintNode */
-/** @typedef {import('eslint').AST.SourceLocation} SourceLocation */
-/** @typedef {import('eslint').Scope.Variable} Variable */
-/** @typedef {import('eslint').Scope.Reference} Reference*/
+import {adorner} from './no-imperative-dom-api/adorner.ts';
+import {getEnclosingExpression, isIdentifier} from './no-imperative-dom-api/ast.ts';
+import {ClassMember} from './no-imperative-dom-api/class-member.ts';
+import {domApiDevtoolsExtensions} from './no-imperative-dom-api/dom-api-devtools-extensions.ts';
+import {domApi} from './no-imperative-dom-api/dom-api.ts';
+import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
+import {toolbar} from './no-imperative-dom-api/toolbar.ts';
+import {widget} from './no-imperative-dom-api/widget.ts';
+import {createRule} from './tsUtils.ts';
+type CallExpression = TSESTree.CallExpression;
+type Identifier = TSESTree.Identifier;
+type MemberExpression = TSESTree.MemberExpression;
+type NewExpression = TSESTree.NewExpression;
+type Node = TSESTree.Node;
+type Range = TSESTree.Range;
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+type Subrule = Partial<{
+  getEvent(event: Node): string | null,
+  propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment): boolean,
+  methodCall(property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression):
+      boolean,
+  propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean,
+  subpropertyAssignment(
+      property: Identifier, subproperty: Identifier, subpropertyValue: Node, domFragment: DomFragment): boolean,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MemberExpression: (node: MemberExpression) => void,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  NewExpression: (node: NewExpression) => void,
+}>;
+
+export default createRule({
+  name: 'no-imperative-dom-api',
   meta: {
     type: 'problem',
     docs: {
@@ -35,16 +46,16 @@ module.exports = {
       category: 'Possible Errors',
     },
     messages: {
-      preferTemplateLiterals:
-        'Prefer template literals over imperative DOM API calls',
+      preferTemplateLiterals: 'Prefer template literals over imperative DOM API calls',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create : function(context) {
+  defaultOptions: [],
+  create: function(context) {
     const sourceCode = context.getSourceCode();
 
-    const subrules = [
+    const subrules: Subrule[] = [
       adorner.create(context),
       domApi.create(context),
       domApiDevtoolsExtensions.create(context),
@@ -52,13 +63,9 @@ module.exports = {
       widget.create(context),
     ];
 
-    /**
-     * @param {Node} event
-     * @return {string|null}
-     */
-    function getEvent(event) {
+    function getEvent(event: Node): string|null {
       for (const rule of subrules) {
-        const result = rule.getEvent?.(event);
+        const result = 'getEvent' in rule ? rule.getEvent?.(event) : null;
         if (result) {
           return result;
         }
@@ -69,35 +76,37 @@ module.exports = {
       return null;
     }
 
-    /**
-     * @param {EsLintNode} reference
-     * @param {DomFragment} domFragment
-     * @return {boolean}
-     */
-    function processReference(reference, domFragment) {
+    function processReference(reference: Node, domFragment: DomFragment): boolean {
       const parent = reference.parent;
+      if (!parent) {
+        return false;
+      }
       const isAccessed = parent.type === 'MemberExpression' && parent.object === reference;
       if (!isAccessed) {
         return false;
       }
       const property = parent.property;
+      if (property.type !== 'Identifier') {
+        return false;
+      }
       const grandParent = parent.parent;
       const isPropertyAssignment = grandParent.type === 'AssignmentExpression' && grandParent.left === parent;
       const propertyValue = isPropertyAssignment ? grandParent.right : null;
       const isMethodCall = grandParent.type === 'CallExpression' && grandParent.callee === parent;
       const grandGrandParent = grandParent.parent;
       const isPropertyMethodCall = grandParent.type === 'MemberExpression' && grandParent.object === parent &&
-          grandGrandParent.type === 'CallExpression' && grandGrandParent.callee === grandParent;
+          grandGrandParent?.type === 'CallExpression' && grandGrandParent?.callee === grandParent &&
+          grandParent.property.type === 'Identifier';
       const propertyMethodArgument = isPropertyMethodCall ? grandGrandParent.arguments[0] : null;
       const isSubpropertyAssignment = grandParent.type === 'MemberExpression' && grandParent.object === parent &&
-          grandParent.property.type === 'Identifier' && grandGrandParent.type === 'AssignmentExpression' &&
-          grandGrandParent.left === grandParent;
+          grandParent.property.type === 'Identifier' && grandGrandParent?.type === 'AssignmentExpression' &&
+          grandGrandParent?.left === grandParent;
       const subproperty =
           isSubpropertyAssignment && grandParent.property.type === 'Identifier' ? grandParent.property : null;
       const subpropertyValue = isSubpropertyAssignment ? grandGrandParent.right : null;
       for (const rule of subrules) {
-        if (isPropertyAssignment) {
-          if (rule.propertyAssignment?.(property, propertyValue, domFragment)) {
+        if (isPropertyAssignment && propertyValue) {
+          if ('propertyAssignment' in rule && rule.propertyAssignment?.(property, propertyValue, domFragment)) {
             return true;
           }
         } else if (isMethodCall) {
@@ -111,15 +120,17 @@ module.exports = {
             }
             return true;
           }
-          if (rule.methodCall?.(property, firstArg, secondArg, domFragment, grandParent)) {
+          if ('methodCall' in rule && rule.methodCall?.(property, firstArg, secondArg, domFragment, grandParent)) {
             return true;
           }
-        } else if (isPropertyMethodCall) {
-          if (rule.propertyMethodCall?.(property, grandParent.property, propertyMethodArgument, domFragment)) {
+        } else if (isPropertyMethodCall && propertyMethodArgument) {
+          if ('propertyMethodCall' in rule &&
+              rule.propertyMethodCall?.(property, grandParent.property, propertyMethodArgument, domFragment)) {
             return true;
           }
-        } else if (isSubpropertyAssignment) {
-          if (rule.subpropertyAssignment?.(property, subproperty, subpropertyValue, domFragment)) {
+        } else if (isSubpropertyAssignment && subproperty && subpropertyValue) {
+          if ('subpropertyAssignment' in rule &&
+              rule.subpropertyAssignment?.(property, subproperty, subpropertyValue, domFragment)) {
             return true;
           }
         }
@@ -127,12 +138,8 @@ module.exports = {
       return false;
     }
 
-    /**
-     * @param {DomFragment} domFragment
-     */
-    function getRangesToRemove(domFragment) {
-      /** @type {[number, number][]} */
-      const ranges = [];
+    function getRangesToRemove(domFragment: DomFragment): Range[] {
+      const ranges: Range[] = [];
       for (const reference of domFragment.references) {
         if (!reference.processed) {
           continue;
@@ -168,22 +175,21 @@ module.exports = {
       return ranges.filter(r => r[0] < r[1]);
     }
 
-    /**
-     * @param {DomFragment} domFragment
-     */
-    function maybeReportDomFragment(domFragment) {
-      if (!domFragment.replacementLocation || domFragment.parent || !domFragment.tagName ||
+    function maybeReportDomFragment(domFragment: DomFragment): void {
+      const replacementLocation = domFragment.replacementLocation?.parent?.type === 'ExportNamedDeclaration' ?
+          domFragment.replacementLocation.parent :
+          domFragment.replacementLocation;
+      if (!replacementLocation || domFragment.parent || !domFragment.tagName ||
           domFragment.references.every(r => !r.processed)) {
         return;
       }
       context.report({
-        node: domFragment.replacementLocation,
+        node: replacementLocation,
         messageId: 'preferTemplateLiterals',
         fix(fixer) {
           const template = 'html`' + domFragment.toTemplateLiteral(sourceCode).join('') + '`';
-          let replacementLocation = domFragment.replacementLocation;
 
-          if (replacementLocation?.type === 'VariableDeclarator') {
+          if (replacementLocation.type === 'VariableDeclarator' && replacementLocation.init) {
             domFragment.initializer = undefined;
             return [
               fixer.replaceText(replacementLocation.init, template),
@@ -191,9 +197,6 @@ module.exports = {
             ];
           }
 
-          if (replacementLocation?.parent?.type === 'ExportNamedDeclaration') {
-            replacementLocation = replacementLocation.parent;
-          }
           const text = `
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(${template},
@@ -210,20 +213,20 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     }
 
     return {
-      MemberExpression(node) {
+      MemberExpression(node: MemberExpression) {
         if (node.object.type === 'ThisExpression') {
           ClassMember.getOrCreate(node, sourceCode);
         }
         for (const rule of subrules) {
           if ('MemberExpression' in rule) {
-            rule.MemberExpression(node);
+            rule.MemberExpression?.(node);
           }
         }
       },
       NewExpression(node) {
         for (const rule of subrules) {
           if ('NewExpression' in rule) {
-            rule.NewExpression(node);
+            rule.NewExpression?.(node);
           }
         }
       },
@@ -254,4 +257,4 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       }
     };
   }
-};
+});

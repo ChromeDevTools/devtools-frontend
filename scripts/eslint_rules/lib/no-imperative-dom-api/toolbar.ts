@@ -4,40 +4,29 @@
 /**
  * @fileoverview A library to identify and templatize manually constructed Toolbars.
  */
-'use strict';
 
-const {isIdentifier, isMemberExpression} = require('./ast.js');
-const {DomFragment} = require('./dom-fragment.js');
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('eslint').Rule.Node} Node */
+import {isIdentifier, isMemberExpression} from './ast.ts';
+import {DomFragment} from './dom-fragment.ts';
+type Node = TSESTree.Node;
 
-module.exports = {
+export const toolbar = {
   create(context) {
     const sourceCode = context.getSourceCode();
     return {
-
-      /**
-       * @param {Node} event
-       * @return {string|null}
-       */
-      getEvent(event) {
-        switch (sourceCode.getText(event)) {
-          case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
-            return 'change';
-          case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
-            return 'submit';
-          default:
-            return null;
-        }
-      },
-      /**
-       * @param {Node} property
-       * @param {Node} firstArg
-       * @param {Node} secondArg
-       * @param {DomFragment} domFragment
-       * @param {Node} call
-       */
-      methodCall(property, firstArg, secondArg, domFragment, call) {
+      getEvent(event: Node): string |
+          null {
+            switch (sourceCode.getText(event)) {
+              case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
+                return 'change';
+              case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
+                return 'submit';
+              default:
+                return null;
+            }
+          },
+      methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, _call: Node): boolean {
         if (isIdentifier(property, 'appendToolbarItem')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;

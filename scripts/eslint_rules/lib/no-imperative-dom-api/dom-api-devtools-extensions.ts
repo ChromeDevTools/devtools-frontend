@@ -4,26 +4,19 @@
 /**
  * @fileoverview Library to identify and templatize manually calls to DevTools DOM API extensions.
  */
-'use strict';
 
-const {isIdentifier} = require('./ast.js');
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('eslint').Rule.Node} Node */
-/** @typedef {import('./dom-fragment.js').DomFragment} DomFragment */
+import {isIdentifier} from './ast.ts';
+import type {DomFragment} from './dom-fragment.ts';
+type Node = TSESTree.Node;
 
-module.exports = {
-  create: function (context) {
+export const domApiDevtoolsExtensions = {
+  create: function(context) {
     const sourceCode = context.getSourceCode();
 
     return {
-      /**
-       * @param {Node} property
-       * @param {Node} firstArg
-       * @param {Node} secondArg
-       * @param {DomFragment} domFragment
-       * @param {Node} call
-       */
-      methodCall(property, firstArg, secondArg, domFragment, call) {
+      methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: Node): boolean {
         if (isIdentifier(property, 'createChild')) {
           if (firstArg?.type === 'Literal') {
             const childFragment = domFragment.appendChild(call, sourceCode);

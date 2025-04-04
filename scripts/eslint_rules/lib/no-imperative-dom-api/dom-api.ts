@@ -4,25 +4,20 @@
 /**
  * @fileoverview Library to identify and templatize manually DOM API calls.
  */
-'use strict';
 
-const {isIdentifier, isLiteral} = require('./ast.js');
-const {DomFragment} = require('./dom-fragment.js');
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('estree').Node} Node */
-/** @typedef {import('estree').Identifier} Identifier */
-/** @typedef {import('estree').CallExpression} CallExpression */
+import {isIdentifier, isLiteral} from './ast.ts';
+import {DomFragment} from './dom-fragment.ts';
+type CallExpression = TSESTree.CallExpression;
+type Identifier = TSESTree.Identifier;
+type Node = TSESTree.Node;
 
-module.exports = {
-  create : function(context) {
+export const domApi = {
+  create: function(context) {
     const sourceCode = context.getSourceCode();
     return {
-      /**
-       * @param {Identifier} property
-       * @param {Node} propertyValue
-       * @param {DomFragment} domFragment
-       */
-      propertyAssignment(property, propertyValue, domFragment) {
+      propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
         if (isIdentifier(property, 'className')) {
           domFragment.classList.push(propertyValue);
           return true;
@@ -47,26 +42,14 @@ module.exports = {
         }
         return false;
       },
-      /**
-       * @param {Identifier} property
-       * @param {Node} method
-       * @param {Node} firstArg
-       * @param {DomFragment} domFragment
-       */
-      propertyMethodCall(property, method, firstArg, domFragment) {
+      propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean {
         if (isIdentifier(property, 'classList') && isIdentifier(method, 'add')) {
           domFragment.classList.push(firstArg);
           return true;
         }
         return false;
       },
-      /**
-       * @param {Identifier} property
-       * @param {Node} subproperty
-       * @param {Node} subpropertyValue
-       * @param {DomFragment} domFragment
-       */
-      subpropertyAssignment(property, subproperty, subpropertyValue, domFragment) {
+      subpropertyAssignment(property: Identifier, subproperty: Node, subpropertyValue: Node, domFragment: DomFragment) {
         if (isIdentifier(property, 'style') && subproperty.type === 'Identifier') {
           const property = subproperty.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
           if (subpropertyValue.type !== 'SpreadElement') {
@@ -89,14 +72,8 @@ module.exports = {
         }
         return false;
       },
-      /**
-       * @param {Identifier} property
-       * @param {Node} firstArg
-       * @param {Node} secondArg
-       * @param {DomFragment} domFragment
-       * @param {CallExpression} call
-       */
-      methodCall(property, firstArg, secondArg, domFragment, call) {
+      methodCall(
+          property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression) {
         if (isIdentifier(property, 'setAttribute')) {
           const attribute = firstArg;
           const value = secondArg;
@@ -149,8 +126,8 @@ module.exports = {
         return false;
       },
       MemberExpression(node) {
-        if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement')
-            && node.parent.type === 'CallExpression' && node.parent.callee === node) {
+        if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement') &&
+            node.parent.type === 'CallExpression' && node.parent.callee === node) {
           const domFragment = DomFragment.getOrCreate(node.parent, sourceCode);
           if (node.parent.arguments.length >= 1 && node.parent.arguments[0].type === 'Literal') {
             domFragment.tagName = node.parent.arguments[0].value;

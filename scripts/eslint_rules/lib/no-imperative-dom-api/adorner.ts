@@ -4,23 +4,19 @@
 /**
  * @fileoverview A library to identify and templatize manually constructed Adorner.
  */
-'use strict';
 
-const {isIdentifier, isMemberExpression} = require('./ast.js');
-const {DomFragment} = require('./dom-fragment.js');
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('eslint').Rule.Node} Node */
+import {isIdentifier, isMemberExpression} from './ast.ts';
+import {DomFragment} from './dom-fragment.ts';
+type Identifier = TSESTree.Identifier;
+type Node = TSESTree.Node;
 
-module.exports = {
+export const adorner = {
   create(context) {
     const sourceCode = context.getSourceCode();
     return {
-      /**
-       * @param {Node} property
-       * @param {Node} propertyValue
-       * @param {DomFragment} domFragment
-       */
-      propertyAssignment(property, propertyValue, domFragment) {
+      propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
         if (domFragment.tagName === 'devtools-adorner' && isIdentifier(property, 'data') &&
             propertyValue.type === 'ObjectExpression') {
           for (const property of propertyValue.properties) {

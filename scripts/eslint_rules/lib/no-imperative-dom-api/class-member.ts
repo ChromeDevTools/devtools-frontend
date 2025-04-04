@@ -4,37 +4,28 @@
 /**
  * @fileoverview A library to associate class members with their parent class.
  */
-'use strict';
 
-const {getEnclosingClassDeclaration} = require('./ast.js');
+import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('estree').Node} Node */
-/** @typedef {import('eslint').SourceCode} SourceCode */
+import {getEnclosingClassDeclaration} from './ast.ts';
 
-/** @type {WeakMap<Node, Map<string, ClassMember>>} */
-const classes = new WeakMap();
+type Node = TSESTree.Node;
+type SourceCode = TSESLint.SourceCode;
 
-class ClassMember {
-  /** @type {Set<Node>} */
-  references = new Set();
+const classes = new WeakMap<Node, Map<string, ClassMember>>();
 
-  /** @type {Node} */
-  classDeclaration;
+export class ClassMember {
+  references = new Set<Node>();
 
-  /** @param {Node} classDeclaration */
-  constructor(classDeclaration) {
+  classDeclaration: Node;
+
+  constructor(classDeclaration: Node) {
     this.classDeclaration = classDeclaration;
   }
 
-  /** @type {Node|undefined} */
-  initializer;
+  initializer?: Node;
 
-  /**
-   * @param {Node} node
-   * @param {SourceCode} sourceCode
-   * @return {ClassMember|null}
-   */
-  static getOrCreate(node, sourceCode) {
+  static getOrCreate(node: Node, sourceCode: Readonly<SourceCode>): ClassMember|null {
     const classDeclaration = getEnclosingClassDeclaration(node);
     if (!classDeclaration) {
       return null;
@@ -57,5 +48,3 @@ class ClassMember {
     return classMember;
   }
 }
-
-exports.ClassMember = ClassMember;

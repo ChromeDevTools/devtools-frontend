@@ -4,41 +4,36 @@
 /**
  * @fileoverview A library to associate DOM fragments with their construction code.
  */
-'use strict';
 
-const {getEnclosingProperty} = require('./ast.js');
-const {ClassMember} = require('./class-member.js');
+import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 
-/** @typedef {import('estree').Node} Node */
-/** @typedef {import('eslint').Rule.Node} EsLintNode */
-/** @typedef {import('eslint').Scope.Variable} Variable */
-/** @typedef {import('eslint').SourceCode} SourceCode */
+import {getEnclosingProperty} from './ast.ts';
+import {ClassMember} from './class-member.ts';
 
-/** @type {Map<EsLintNode|ClassMember|Variable, DomFragment>} */
-const domFragments = new Map();
+type Variable = TSESLint.Scope.Variable;
+type Node = TSESTree.Node;
+type Identifier = TSESTree.Identifier;
+type SourceCode = TSESLint.SourceCode;
+type Scope = TSESLint.Scope.Scope;
 
-class DomFragment {
-  /** @type {string|undefined} */ tagName;
-  /** @type {Node[]} */ classList = [];
-  /** @type {{key: string, value: Node|string}[]} */ attributes = [];
-  /** @type {{key: string, value: Node}[]} */ style = [];
-  /** @type {{key: string, value: Node}[]} */ eventListeners = [];
-  /** @type {{key: string, value: Node|string}[]} */ bindings = [];
-  /** @type {Node|undefined} */ textContent;
-  /** @type {DomFragment[]} */ children = [];
-  /** @type {DomFragment|undefined} */ parent;
-  /** @type {string|undefined} */ expression;
-  /** @type {EsLintNode|undefined} */ replacementLocation;
-  /** @type {EsLintNode|undefined} */ initializer;
-  /** @type {{node: EsLintNode, processed?: boolean}[]} */ references = [];
+const domFragments = new Map<Node|ClassMember|Variable, DomFragment>();
 
-  /**
-   * @param {Node} estreeNode
-   * @param {SourceCode} sourceCode
-   * @return {DomFragment}
-   */
-  static getOrCreate(estreeNode, sourceCode) {
-    const node = /** @type {EsLintNode} */ (estreeNode);
+export class DomFragment {
+  tagName?: string;
+  classList: Node[] = [];
+  attributes: Array<{key: string, value: Node|string}> = [];
+  style: Array<{key: string, value: Node}> = [];
+  eventListeners: Array<{key: string, value: Node}> = [];
+  bindings: Array<{key: string, value: Node|string}> = [];
+  textContent?: Node;
+  children: DomFragment[] = [];
+  parent?: DomFragment;
+  expression?: string;
+  replacementLocation?: Node;
+  initializer?: Node;
+  references: Array<{node: Node, processed?: boolean}> = [];
+
+  static getOrCreate(node: Node, sourceCode: SourceCode): DomFragment {
     const key = getKey(node, sourceCode);
 
     let result = domFragments.get(key);
@@ -49,12 +44,12 @@ class DomFragment {
         result.expression = sourceCode.getText(node);
         result.references.push({node});
       } else if (key instanceof ClassMember) {
-        result.replacementLocation = /** @type {EsLintNode} */ (key.classDeclaration);
+        result.replacementLocation = key.classDeclaration;
         result.expression = sourceCode.getText(node);
-      } else {
-        result.references = key.references.filter(r => !key.identifiers.includes(r.identifier))
-                                .map(r => ({node: /** @type {EsLintNode} */ (r.identifier)}));
-        const initializer = /** @type {EsLintNode} */ (key.identifiers[0]);
+      } else if ('references' in key) {
+        result.references = key.references.filter(r => !key.identifiers.includes(r.identifier as Identifier))
+                                .map(r => ({node: r.identifier}));
+        const initializer = key.identifiers[0];
         if (initializer?.parent?.type === 'VariableDeclarator') {
           result.initializer = initializer;
         }
@@ -64,9 +59,9 @@ class DomFragment {
     }
     if (key instanceof ClassMember) {
       result.references = [...key.references].map(r => ({
-                                                    node: /** @type {EsLintNode} */ (r),
+                                                    node: r,
                                                   }));
-      result.initializer = /** @type {EsLintNode} */ (key.initializer);
+      result.initializer = key.initializer;
     }
     return result;
   }
@@ -79,18 +74,12 @@ class DomFragment {
     return domFragments.values();
   }
 
-  /** @return {string[]} */
-  toTemplateLiteral(sourceCode, indent = 4) {
+  toTemplateLiteral(sourceCode: Readonly<SourceCode>, indent = 4): string[] {
     if (this.expression && !this.tagName) {
       return [`\n${' '.repeat(indent)}`, '${', this.expression, '}'];
     }
 
-    /**
-     * @param {Node|string} node
-     * @param {boolean} quoteLiterals
-     * @return {string}
-     */
-    function toOutputString(node, quoteLiterals = false) {
+    function toOutputString(node: Node|string, quoteLiterals = false): string {
       if (typeof node === 'string') {
         return node;
       }
@@ -104,7 +93,7 @@ class DomFragment {
       return '${' + text + '}';
     }
 
-    /** @type {string[]} */ const components = [];
+    const components: string[] = [];
     const MAX_LINE_LENGTH = 100;
     components.push(`\n${' '.repeat(indent)}`);
     let lineLength = indent;
@@ -173,11 +162,7 @@ class DomFragment {
     return components;
   }
 
-  /**
-   *  @param {Node} node
-   *  @param {SourceCode} sourceCode
-   */
-  appendChild(node, sourceCode) {
+  appendChild(node: Node, sourceCode: SourceCode): DomFragment {
     const child = DomFragment.getOrCreate(node, sourceCode);
     this.children.push(child);
     child.parent = this;
@@ -189,12 +174,7 @@ class DomFragment {
     return child;
   }
 
-  /**
-   * @param {Node} node
-   * @param {number} index
-   * @param {SourceCode} sourceCode
-   */
-  insertChildAt(node, index, sourceCode) {
+  insertChildAt(node: Node, index: number, sourceCode: SourceCode): DomFragment {
     const child = DomFragment.getOrCreate(node, sourceCode);
     this.children.splice(index, 0, child);
     child.parent = this;
@@ -207,26 +187,19 @@ class DomFragment {
   }
 }
 
-/**
- * @param {Node} estreeNode
- * @param {SourceCode} sourceCode
- * @return {Variable|null}
- */
-function getEnclosingVariable(estreeNode, sourceCode) {
-  const node = /** @type {EsLintNode} */ (estreeNode);
+function getEnclosingVariable(node: Node, sourceCode: SourceCode): Variable|null {
   if (node.type === 'Identifier') {
-    let scope = sourceCode.getScope(node);
+    let scope: Scope|null = sourceCode.getScope(node);
     const variableName = node.name;
     while (scope) {
       const variable = scope.variables.find(v => v.name === variableName);
       if (variable) {
         return variable;
       }
-      // @ts-expect-error need the above to be typed to undefined
       scope = scope.upper;
     }
   }
-  if (node.parent.type === 'VariableDeclarator') {
+  if (node.parent?.type === 'VariableDeclarator') {
     const variables = sourceCode.getDeclaredVariables(node.parent);
     if (variables.length > 1) {
       return null;  // Destructuring assignment
@@ -236,19 +209,14 @@ function getEnclosingVariable(estreeNode, sourceCode) {
   return null;
 }
 
-/** @param {string} outputString */
-function attributeValue(outputString) {
+function attributeValue(outputString: string): string {
   if (outputString.startsWith('${') && outputString.endsWith('}')) {
     return outputString;
   }
   return '"' + outputString + '"';
 }
 
-/**
- * @param {EsLintNode} node
- * @param {SourceCode} sourceCode
- */
-function getKey(node, sourceCode) {
+function getKey(node: Node, sourceCode: SourceCode): Node|ClassMember|Variable {
   const variable = getEnclosingVariable(node, sourceCode);
   if (variable) {
     return variable;
@@ -262,5 +230,3 @@ function getKey(node, sourceCode) {
   }
   return node;
 }
-
-exports.DomFragment = DomFragment;

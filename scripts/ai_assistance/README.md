@@ -12,10 +12,11 @@ takes these results and presents them in a UI for evaluation.
 * You need to have a version of Chrome that contains the AI Assistance feature. (i.e. you also need to be logged in & have sync enabled)
 
 **Steps**
-1. Run a AI Assistance enabled Chrome executable with `--remote-debugging-port 9222` and `--auto-open-devtools-for-tabs` targeting `about:blank`. For example:
+1. Run a AI Assistance enabled Chrome executable with `--remote-debugging-port 9222`, `--user-data-dir=/tmp/aida` and `--auto-open-devtools-for-tabs` targeting `about:blank` and login with a Google account. For example:
 ```
-/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --remote-debugging-port=9222 --auto-open-devtools-for-tabs about:blank
+/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --remote-debugging-port=9222 --user-data-dir=/tmp/aida --auto-open-devtools-for-tabs about:blank
 ```
+> `--user-data-dir` is now required for `--remote-debugging-port` to take effect.
 
 2. Make sure you use en-US locale in DevTools.
 

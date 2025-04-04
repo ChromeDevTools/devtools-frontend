@@ -31,6 +31,11 @@ const yargsInput = yargs(hideBin(process.argv))
                          boolean: true,
                          default: true,
                        })
+                       .option('times', {
+                         describe: 'How many times do you want to run an example?',
+                         number: true,
+                         default: 1,
+                       })
                        .option('label', {string: true, default: 'run'})
                        .option('include-follow-up', {
                          boolean: true,
@@ -46,7 +51,19 @@ const yargsInput = yargs(hideBin(process.argv))
 // Map the args to a more accurate interface for better type safety.
 const userArgs = /** @type {import('./types.d.ts').YargsInput} **/ (yargsInput);
 
+/** @type {string[]} */
+const exampleUrls = [];
 const OUTPUT_DIR = path.resolve(__dirname, 'data');
+
+for (const exampleUrl of userArgs.exampleUrls) {
+  for (let i = 0; i < userArgs.times; i++) {
+    const url = new URL(exampleUrl);
+    if (i !== 0) {
+      url.searchParams.set('iteration', `${i + 1}`);
+    }
+    exampleUrls.push(url.toString());
+  }
+}
 
 /**
  * Performance examples have a trace file so that this script does not have to
@@ -589,7 +606,8 @@ class Example {
       this.log(
           `[Info]: Running the user prompt "${query}" (This step might take long time)`,
       );
-      const result = await prompt(query);
+      // The randomness needed for evading query caching on the AIDA side.
+      const result = await prompt(`${query} ${`${(Math.random() * 1000)}`.split('.')[0]}`);
       results.push(...result);
     }
 
@@ -610,11 +628,11 @@ class Example {
    * @param {string} text
    */
   log(text) {
-    const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
+    const indexOfExample = exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url,
         indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
+        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
     );
   }
 
@@ -622,11 +640,11 @@ class Example {
    * @param {string} text
    */
   error(text) {
-    const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
+    const indexOfExample = exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url,
         indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`,
+        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`,
     );
   }
 }
@@ -729,9 +747,7 @@ async function main() {
   }
 
   logger.head('Preparing examples...');
-  const examples = userArgs.exampleUrls.map(
-      exampleUrl => new Example(exampleUrl, browser),
-  );
+  const examples = exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
   /** @type {import('./types').IndividualPromptRequestResponse[]} */
   let allExampleResults = [];
   /** @type {import('./types').ExampleMetadata[]} */

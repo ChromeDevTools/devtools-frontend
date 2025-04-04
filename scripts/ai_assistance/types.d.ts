@@ -47,6 +47,7 @@ export interface YargsInput {
   label: string;
   parallel: boolean;
   includeFollowUp: boolean;
+  times: number;
   testTarget: TestTarget;
 }
 export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights';

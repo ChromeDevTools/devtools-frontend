@@ -310,6 +310,22 @@ describeWithMockConnection('AI Assistance Panel', () => {
       UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
       assert.isNull((await view.nextInput).selectedContext);
     });
+
+    it('should clear the text input when the context changes to null', async () => {
+      const chatView = sinon.createStubInstance(AiAssistancePanel.ChatView);
+      const {panel, view} = await createAiAssistancePanel({chatView});
+
+      // Firstly, start a conversation and set a context
+      const context =
+          new AiAssistanceModel.CallTreeContext(sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+      UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, context.getItem());
+      panel.handleAction('drjones.performance-panel-context');
+      await view.nextInput;
+
+      // Now clear the context and check we cleared out the text
+      UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
+      assert.strictEqual(chatView.clearTextInput.callCount, 1);
+    });
   });
 
   describe('toggle search element action', () => {

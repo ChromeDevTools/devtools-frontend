@@ -182,10 +182,11 @@ export async function createAiAssistancePanel(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
+  chatView?: AiAssistancePanel.ChatView,
 }) {
   let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
 
-  const view = createViewFunctionStub(AiAssistancePanel.AiAssistancePanel);
+  const view = createViewFunctionStub(AiAssistancePanel.AiAssistancePanel, {chatView: options?.chatView});
   const aidaClient = options?.aidaClient ?? mockAidaClient();
   const checkAccessPreconditionsStub =
       sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions').callsFake(() => {

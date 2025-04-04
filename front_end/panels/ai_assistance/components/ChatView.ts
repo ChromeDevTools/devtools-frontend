@@ -327,6 +327,14 @@ export class ChatView extends HTMLElement {
     this.#messagesContainerResizeObserver.disconnect();
   }
 
+  clearTextInput(): void {
+    const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
+    if (!textArea) {
+      return;
+    }
+    textArea.value = '';
+  }
+
   focusTextInput(): void {
     const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
     if (!textArea) {

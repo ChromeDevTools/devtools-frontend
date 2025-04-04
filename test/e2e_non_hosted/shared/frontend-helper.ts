@@ -76,10 +76,6 @@ export class DevToolsPage extends PageWrapper {
     })()`);
   }
 
-  async reload() {
-    await this.page.reload();
-  }
-
   async setDockingSide(side: string) {
     await this.evaluate(`
       (async function() {
@@ -245,6 +241,22 @@ export class DevToolsPage extends PageWrapper {
       }
     });
   }
+
+  waitForElementWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return this.waitFor(textContent, root, asyncScope, 'pierceShadowText');
+  }
+
+  async scrollElementIntoView(selector: string, root?: puppeteer.ElementHandle) {
+    const element = await this.$(selector, root);
+
+    if (!element) {
+      throw new Error(`Unable to find element with selector "${selector}"`);
+    }
+
+    await element.evaluate(el => {
+      el.scrollIntoView();
+    });
+  }
 }
 
 export interface DevtoolsSettings {
@@ -258,7 +270,7 @@ export const DEFAULT_DEVTOOLS_SETTINGS = {
   devToolsSettings: {
     isUnderTest: true,
   },
-  dockingMode: 'UNDOCKED',
+  dockingMode: 'undocked',
 };
 
 export async function setupDevToolsPage(context: puppeteer.BrowserContext, settings: DevtoolsSettings) {
@@ -276,11 +288,11 @@ export async function setupDevToolsPage(context: puppeteer.BrowserContext, setti
   for (const experiment of settings.enabledDevToolsExperiments) {
     await devToolsPage.enableExperiment(experiment);
   }
-  await devToolsPage.setDockingSide(settings.dockingMode);
   await devToolsPage.reload();
   await devToolsPage.ensureReadyForTesting();
   await devToolsPage.throttleCPUIfRequired();
   await devToolsPage.delayPromisesIfRequired();
   await devToolsPage.useSoftMenu();
+  await devToolsPage.setDockingSide(settings.dockingMode);
   return devToolsPage;
 }

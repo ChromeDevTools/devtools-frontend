@@ -156,10 +156,11 @@ export async function dumpVeEvents(label: string) {
 
 // Verifies that VE events contains all the expected events in given order.
 // Unexpected VE events are ignored.
-export async function expectVeEvents(expectedEvents: TestLogEntry[], root?: string, devToolsPage?: DevToolsPage) {
+export async function expectVeEvents(
+    expectedEvents: TestLogEntry[], root?: string,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   collapseConsecutiveImpressions(expectedEvents);
   prependRoot(expectedEvents, root);
-  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   // @ts-expect-error
   await devToolsPage.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
 }

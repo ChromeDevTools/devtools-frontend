@@ -21,4 +21,8 @@ export class PageWrapper {
       encoding: 'base64',
     });
   }
+
+  async reload() {
+    await this.page.reload();
+  }
 }

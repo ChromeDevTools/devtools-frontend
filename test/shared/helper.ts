@@ -265,8 +265,9 @@ export const waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle
 };
 
 export const waitForElementWithTextContent =
-    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
-      return waitFor(textContent, root, asyncScope, 'pierceShadowText');
+    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+     devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+      return devToolsPage.waitForElementWithTextContent(textContent, root, asyncScope);
     };
 
 export const waitForElementsWithTextContent =
@@ -597,16 +598,10 @@ export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectEle
   }, value);
 };
 
-export const scrollElementIntoView = async (selector: string, root?: puppeteer.ElementHandle) => {
-  const element = await $(selector, root);
-
-  if (!element) {
-    throw new Error(`Unable to find element with selector "${selector}"`);
-  }
-
-  await element.evaluate(el => {
-    el.scrollIntoView();
-  });
+export const scrollElementIntoView = async (
+    selector: string, root?: puppeteer.ElementHandle,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.scrollElementIntoView(selector, root);
 };
 
 export const installEventListener = function(frontend: puppeteer.Page, eventType: string) {

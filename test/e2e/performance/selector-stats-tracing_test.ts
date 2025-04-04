@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, scrollElementIntoView, step, waitForFunction} from '../../shared/helper.js';
+import {getBrowserAndPages, step} from '../../shared/helper.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
@@ -18,17 +18,6 @@ import {
   startRecording,
   stopRecording,
 } from '../helpers/performance-helpers.js';
-import {getOpenSources} from '../helpers/sources-helpers.js';
-
-async function validateSourceTabs() {
-  await step('Validate exactly one source file is open', async () => {
-    const openSources = await waitForFunction(async () => {
-      const sources = await getOpenSources();
-      return sources.length ? sources : undefined;
-    });
-    assert.deepEqual(openSources, ['page-with-style.css']);
-  });
-}
 
 describe('The Performance panel', function() {
   // These tests move between panels, which takes time.
@@ -63,27 +52,6 @@ describe('The Performance panel', function() {
       assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
     });
   });
-
-  // Flaky test.
-  it.skip(
-      '[crbug.com/408134244] Can navigate to CSS file in source panel via available link in selector stats table',
-      async () => {
-        await cssSelectorStatsRecording('selectorStats/page-with-style');
-
-        await step('Check that the selector stats table was rendered successfully by default', async () => {
-          await navigateToSelectorStatsTab();
-          const rows = await getDataGridRows(
-              1 /* expectedNumberOfRows*/, undefined /* root*/, false /* matchExactNumberOfRows*/);
-          assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
-        });
-
-        await step('Validate source file is open via available link in selector stats table', async () => {
-          await scrollElementIntoView('devtools-linkifier');
-          await click('devtools-linkifier');
-          // Look at source tabs
-          await validateSourceTabs();
-        });
-      });
 
   // Flaking on multiple bots on CQ.
   it.skip('[crbug.com/349787448] CSS selector stats performance test', async () => {

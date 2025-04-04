@@ -5,11 +5,12 @@
 import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
   click,
   drainFrontendTaskQueue,
-  goToResource,
   summonSearchBox,
   waitFor,
   waitForAria,
@@ -17,6 +18,7 @@ import {
   waitForFunction,
   waitForMany,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
   expectVeEvents,
@@ -43,30 +45,34 @@ const SELECTOR_STATS_SELECTOR = '[aria-label="Selector stats"]';
 const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats (slow)';
 const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
-export async function navigateToPerformanceTab(testName?: string) {
-  const {frontend} = getBrowserAndPages();
-  await frontend.evaluate(() => {
+export async function navigateToPerformanceTab(
+    testName?: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await devToolsPage.evaluate(() => {
     // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
     // time the performance panel is opened, from opening in tests.
     localStorage.setItem('hide-shortcuts-dialog-for-test', 'true');
   });
 
   if (testName) {
-    await goToResource(`performance/${testName}.html`);
+    await inspectedPage.goToResource(`performance/${testName}.html`);
   }
 
   // Click on the tab.
-  await click('#tab-timeline');
+  await devToolsPage.click('#tab-timeline');
 
   // Make sure the landing page is shown.
-  await waitFor('.timeline-landing-page');
-  await expectVeEvents([veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()]);
+  await devToolsPage.waitFor('.timeline-landing-page');
+  await expectVeEvents(
+      [veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()], undefined,
+      devToolsPage);
 }
 
-export async function openCaptureSettings(sectionClassName: string) {
-  const captureSettingsButton = await waitForAria('Capture settings');
+export async function openCaptureSettings(
+    sectionClassName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const captureSettingsButton = await devToolsPage.waitForAria('Capture settings');
   await captureSettingsButton.click();
-  await waitFor(sectionClassName);
+  await devToolsPage.waitFor(sectionClassName);
   await expectVeEvents(
       [
         veClick('Toolbar > Toggle: timeline-settings-toggle'),
@@ -81,7 +87,7 @@ export async function openCaptureSettings(sectionClassName: string) {
               veImpression('Toggle', 'timeline-show-extension-data'),
             ]),
       ],
-      'Panel: timeline');
+      'Panel: timeline', devToolsPage);
 }
 
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
@@ -221,13 +227,14 @@ export async function toggleMatchWholeWordButtonBottomUp() {
       'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-whole-word')]);
 }
 
-export async function startRecording() {
-  await click(RECORD_BUTTON_SELECTOR);
+export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(RECORD_BUTTON_SELECTOR);
 
   // Wait for the button to turn to its stop state.
-  await waitFor(STOP_BUTTON_SELECTOR);
+  await devToolsPage.waitFor(STOP_BUTTON_SELECTOR);
   await expectVeEvents(
-      [veClick('Toolbar > Toggle: timeline.toggle-recording'), veImpressionForStatusDialog()], 'Panel: timeline');
+      [veClick('Toolbar > Toggle: timeline.toggle-recording'), veImpressionForStatusDialog()], 'Panel: timeline',
+      devToolsPage);
 }
 
 export async function reloadAndRecord() {
@@ -240,19 +247,19 @@ export async function reloadAndRecord() {
       [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline');
 }
 
-export async function stopRecording() {
-  await click(STOP_BUTTON_SELECTOR);
+export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(STOP_BUTTON_SELECTOR);
 
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.waitFor('devtools-performance-timeline-summary');
   await expectVeEvents(
       [
         veClick('Toolbar > Toggle: timeline.toggle-recording'),
         veResize('Dialog: timeline-status'),
       ],
-      'Panel: timeline');
+      'Panel: timeline', devToolsPage);
 }
 
 export async function getTotalTimeFromSummary(): Promise<number> {
@@ -291,8 +298,9 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
   return tree;
 }
 
-export async function navigateToSelectorStatsTab() {
-  await click(SELECTOR_STATS_SELECTOR);
+export async function navigateToSelectorStatsTab(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(SELECTOR_STATS_SELECTOR);
   await expectVeEvents(
       [
         veClick('Toolbar: sidebar > PanelTabHeader: selector-stats'),
@@ -308,7 +316,7 @@ export async function navigateToSelectorStatsTab() {
               veImpression('TableRow', undefined, [veImpression('TableCell', 'elapsed-us')]),
             ]),
       ],
-      'Panel: timeline > Section: timeline.flame-chart-view');
+      'Panel: timeline > Section: timeline.flame-chart-view', devToolsPage);
 }
 
 export async function selectRecalculateStylesEvent() {
@@ -325,16 +333,16 @@ export async function selectRecalculateStylesEvent() {
   });
 }
 
-export async function enableCSSSelectorStats() {
-  const timelineSettingsPane = await waitFor(TIMELINE_SETTINGS_PANE);
+export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const timelineSettingsPane = await devToolsPage.waitFor(TIMELINE_SETTINGS_PANE);
   if (await timelineSettingsPane.isHidden()) {
-    await openCaptureSettings(TIMELINE_SETTINGS_PANE);
+    await openCaptureSettings(TIMELINE_SETTINGS_PANE, devToolsPage);
   }
 
   // Wait for the checkbox to load
-  const toggle =
-      await waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as puppeteer.ElementHandle<HTMLInputElement>;
-  await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
+  const toggle = await devToolsPage.waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as
+      puppeteer.ElementHandle<HTMLInputElement>;
+  await devToolsPage.waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
     if (e.disabled) {
       return false;
     }
@@ -344,7 +352,8 @@ export async function enableCSSSelectorStats() {
     return true;
   }));
   await expectVeEvents(
-      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
+      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')], undefined,
+      devToolsPage);
 }
 
 export async function disableCSSSelectorStats() {

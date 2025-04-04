@@ -1130,7 +1130,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   private deselectAllEntries(): void {
     this.selectedEntryIndex = -1;
-    this.rawTimelineData?.resetFlowData();
+    this.rawTimelineData?.emptyInitiators();
     this.draw();
   }
 
@@ -1218,7 +1218,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             (groupIndex >= groups.length - 1 || groups[groupIndex + 1].startLevel > level)) {
           this.selectedEntryIndex = -1;
           // Reset all flow arrows when we deselect the entry.
-          this.rawTimelineData.resetFlowData();
+          this.rawTimelineData.emptyInitiators();
         }
       }
     }
@@ -4150,7 +4150,7 @@ export class FlameChartTimelineData {
     );
   }
 
-  resetFlowData(): void {
+  emptyInitiators(): void {
     this.initiatorsData = [];
   }
 }

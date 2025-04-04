@@ -132,13 +132,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private entryTypeByLevel: EntryType[] = [];
   private entryIndexToTitle: string[] = [];
-  private lastInitiatorEntry = -1;
-  private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
+  #lastInitiatorEntryIndex = -1;
 
   private lastSelection: Selection|null = null;
   readonly #font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
   #eventIndexByEvent = new WeakMap<Trace.Types.Events.Event, number|null>();
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+
+  /**
+   * When we create initiator chains for a selected event, we store those
+   * chains in this map so that if the user reselects the same event we do not
+   * have to recalculate. This is reset when the trace changes.
+   */
+  #initiatorsCache = new Map<number, PerfUI.FlameChart.FlameChartInitiatorData[]>();
 
   constructor() {
     super();
@@ -543,6 +549,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineDataInternal = null;
     this.parsedTrace = null;
     this.#entityMapper = null;
+    this.#lastInitiatorEntryIndex = -1;
+    this.#initiatorsCache.clear();
   }
 
   maxStackDepth(): number {
@@ -1243,45 +1251,52 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * @returns if we should re-render the flame chart (canvas)
    */
   buildFlowForInitiator(entryIndex: number): boolean {
-    if (!this.parsedTrace) {
-      return false;
-    }
-    if (!this.timelineDataInternal) {
-      return false;
-    }
-    // Remove all previously assigned decorations indicating that the flow event entries are hidden
-    const previousInitiatorsDataLength = this.timelineDataInternal.initiatorsData.length;
-    // |entryIndex| equals -1 means there is no entry selected, just clear the
-    // initiator cache if there is any previous arrow and return true to
-    // re-render.
-    if (entryIndex === -1) {
-      this.lastInitiatorEntry = entryIndex;
-      if (previousInitiatorsDataLength === 0) {
-        // This means there is no arrow before, so we don't need to re-render.
-        return false;
-      }
-      // Reset to clear any previous arrows from the last event.
-      this.timelineDataInternal.resetFlowData();
-      return true;
-    }
-    if (this.lastInitiatorEntry === entryIndex) {
-      if (this.lastInitiatorsData) {
-        this.timelineDataInternal.initiatorsData = this.lastInitiatorsData;
-      }
-      return false;
-    }
-    if (!this.compatibilityTracksAppender) {
+    if (!this.parsedTrace || !this.compatibilityTracksAppender || !this.timelineDataInternal) {
       return false;
     }
 
+    if (this.#lastInitiatorEntryIndex === entryIndex) {
+      // If the user clicks on an entry twice by mistake, this can fire. But if
+      // the entry matches the selected entry, then there is nothing more for
+      // us to do.
+      return false;
+    }
+
+    this.#lastInitiatorEntryIndex = entryIndex;
+
+    const previousInitiatorsDataLength = this.timelineDataInternal.initiatorsData.length;
+
+    if (entryIndex === -1) {
+      // User has deselected an event, so if it had any initiators we need to clear them.
+      if (this.timelineDataInternal.initiatorsData.length === 0) {
+        // The previous selected entry had no initiators, so we can early exit and not redraw anything.
+        return false;
+      }
+      // Clear initiator data and trigger a re-render.
+      this.timelineDataInternal.emptyInitiators();
+      return true;
+    }
+
+    // If the user hasn't clicked on an event, bail, as there are no initiators
+    // for screenshots or frames.
     const entryType = this.#entryTypeForIndex(entryIndex);
     if (entryType !== EntryType.TRACK_APPENDER) {
       return false;
     }
+
+    // Avoid re-building the initiators if we already did it previously.
+    const cached = this.#initiatorsCache.get(entryIndex);
+    if (cached) {
+      this.timelineDataInternal.initiatorsData = cached;
+      return true;
+    }
+
+    // At this point, we know we:
+    // 1. Have an event to build initiators for.
+    // 2. Know that it's not an event with initiators that are cached.
     const event = this.entryData[entryIndex];
     // Reset to clear any previous arrows from the last event.
-    this.timelineDataInternal.resetFlowData();
-    this.lastInitiatorEntry = entryIndex;
+    this.timelineDataInternal.emptyInitiators();
 
     const hiddenEvents: Trace.Types.Events.Event[] =
         ModificationsManager.activeManager()?.getEntriesFilter().invisibleEntries() ?? [];
@@ -1294,10 +1309,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         hiddenEvents,
         expandableEntries,
     );
-    // This means there is no change for arrows.
+
+    if (initiatorsData.length === 0) {
+      // Small optimization: cache if this entry has 0 initiators, meaning if
+      // it gets reselected we don't redo the work to find out it has 0
+      // initiators.
+      this.#initiatorsCache.set(entryIndex, []);
+    }
+
+    // Previous event had 0 initiators, new event has 0, therefore exit early and don't render.
     if (previousInitiatorsDataLength === 0 && initiatorsData.length === 0) {
       return false;
     }
+
     for (const initiatorData of initiatorsData) {
       const eventIndex = this.indexForEvent(initiatorData.event);
       const initiatorIndex = this.indexForEvent(initiatorData.initiator);
@@ -1311,7 +1335,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         isEntryHidden: initiatorData.isEntryHidden,
       });
     }
-    this.lastInitiatorsData = this.timelineDataInternal.initiatorsData;
+    this.#initiatorsCache.set(entryIndex, this.timelineDataInternal.initiatorsData);
     return true;
   }
 

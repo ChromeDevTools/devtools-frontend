@@ -554,13 +554,13 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
         return false;
       }
       // Reset to clear any previous arrows from the last event.
-      this.#timelineDataInternal.resetFlowData();
+      this.#timelineDataInternal.emptyInitiators();
       return true;
     }
 
     const event = this.#events[entryIndex];
     // Reset to clear any previous arrows from the last event.
-    this.#timelineDataInternal.resetFlowData();
+    this.#timelineDataInternal.emptyInitiators();
     this.#lastInitiatorEntry = entryIndex;
 
     const initiatorsData = initiatorsDataToDrawForNetwork(this.#parsedTrace, event);

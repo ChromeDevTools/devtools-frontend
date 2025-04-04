@@ -63,6 +63,46 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.lengthOf(timelineData3.initiatorsData, 0);
   });
 
+  it('caches initiator arrows for the same event', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+    // a postTask scheduled event - picked as it has an initiator
+    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+      return event.name === Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK && event.ts === 512724961655;
+    });
+    assert.exists(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isNotNull(index);
+    dataProvider.buildFlowForInitiator(index);
+    const initiatorDataBefore = dataProvider.timelineData().initiatorsData;
+    dataProvider.buildFlowForInitiator(-1);
+    dataProvider.buildFlowForInitiator(index);
+    const initiatorDataAfter = dataProvider.timelineData().initiatorsData;
+    assert.strictEqual(initiatorDataBefore, initiatorDataAfter);
+  });
+
+  it('does not trigger a redraw if there are no initiators for the old and new selection', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.timelineData();
+    // a RunTask event with no initiators
+    const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+      return event.name === Trace.Types.Events.Name.RUN_TASK && event.ts === 512724754996;
+    });
+    assert.exists(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isNotNull(index);
+    const shouldRedraw = dataProvider.buildFlowForInitiator(index);
+    assert.isFalse(shouldRedraw);  // this event has no initiators
+    const shouldRedrawAgain = dataProvider.buildFlowForInitiator(-1);
+    assert.isFalse(shouldRedrawAgain);  // previous event has no initiators & user has selected no event
+  });
+
   describe('groupTreeEvents', function() {
     it('returns the correct events for tree views given a flame chart group', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();

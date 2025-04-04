@@ -4,7 +4,8 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -177,12 +178,12 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const viewInput = {
-      projects:
-          this.#projects.map(project => ({
-                               name: project.displayName(),
-                               path: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
-                                   (project?.id() || '') as Platform.DevToolsPath.UrlString),
-                             })),
+      projects: this.#projects.map(project => ({
+                                     name: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
+                                         project.displayName() as Platform.DevToolsPath.EncodedPathString),
+                                     path: Common.ParsedURL.ParsedURL.urlToRawPathString(
+                                         project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
+                                   })),
       selectedIndex: this.#selectedIndex,
       onProjectSelected: (index: number) => {
         this.#selectedIndex = index;

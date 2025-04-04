@@ -156,14 +156,16 @@ const API = {
     for (const example of examples) {
       const exampleId = example.exampleId;
       const request = example.request.input || example.request.current_message.parts[0].text;
-      const response = example.response;
+      // Even though we don't collect `response` texts anymore, we still need it for backwards compatibility.
+      // TODO: Show function calling responses here as well.
+      const response = example.aidaResponse?.explanation || example.response;
       if (!examplesMap[exampleId]) {
         examplesMap[exampleId] = [];
       }
 
       examplesMap[exampleId].push({
         exampleId,
-        request: {input: request},
+        request,
         response,
       });
     }
@@ -261,7 +263,7 @@ function renderExample(container, sourceMap, {onEvaluationChange}) {
 
   let i = 0;
   for (const requestResponse of requestResponses) {
-    const text = `${requestResponse.request.input}\n\n${requestResponse.response}`;
+    const text = `${requestResponse.request}\n\n${requestResponse.response}`;
     const evaluationId = JSON.stringify({
       datasetTitle: viewState.dataId,
       exampleId,

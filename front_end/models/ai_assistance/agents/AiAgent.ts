@@ -244,8 +244,7 @@ export abstract class AiAgent<T> {
    */
   readonly #structuredLog: Array<{
     request: Host.AidaClient.AidaRequest,
-    response: string,
-    aidaResponse?: Host.AidaClient.AidaResponse,
+    aidaResponse: Host.AidaClient.AidaResponse,
   }> = [];
 
   /**
@@ -651,7 +650,6 @@ export abstract class AiAgent<T> {
       #aidaFetch(request: Host.AidaClient.AidaRequest, options?: {signal?: AbortSignal}):
           AsyncGenerator<AidaFetchResult, void, void> {
     let aidaResponse: Host.AidaClient.AidaResponse|undefined = undefined;
-    let response = '';
     let rpcId: Host.AidaClient.RpcGlobalId|undefined;
 
     for await (aidaResponse of this.#aidaClient.fetch(request, options)) {
@@ -680,7 +678,6 @@ export abstract class AiAgent<T> {
         }
       }
 
-      response = aidaResponse.explanation;
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
       yield {
         rpcId,
@@ -693,10 +690,9 @@ export abstract class AiAgent<T> {
       request,
       response: aidaResponse,
     });
-    if (isDebugMode()) {
+    if (isDebugMode() && aidaResponse) {
       this.#structuredLog.push({
         request: structuredClone(request),
-        response,
         aidaResponse,
       });
       localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));

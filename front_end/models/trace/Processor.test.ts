@@ -374,7 +374,7 @@ describeWithEnvironment('TraceProcessor', function() {
         // It's been sorted already ... but let's add some fake estimated savings and re-sort to
         // better test the sorting.
         insightSet.model.CLSCulprits.metricSavings = {CLS: 0.07};
-        processor.sortInsightSet(processor.insights, insightSet, metadata ?? null);
+        processor.sortInsightSet(insightSet, metadata ?? null);
 
         return Object.keys(insightSet.model);
       };

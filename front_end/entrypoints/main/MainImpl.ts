@@ -316,7 +316,7 @@ export class MainImpl {
     // Full Accessibility Tree
     Root.Runtime.experiments.register(
         'full-accessibility-tree', 'Enable full accessibility tree view in the Elements panel', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-90/#accesibility-tree',
+        'https://developer.chrome.com/blog/new-in-devtools-90/#accessibility-tree',
         'https://g.co/devtools/a11y-tree-feedback');
 
     // Font Editor

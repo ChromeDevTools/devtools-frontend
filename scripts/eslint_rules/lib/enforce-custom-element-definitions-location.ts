@@ -1,29 +1,25 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+import path from 'node:path';
 
-const path = require('path');
+import {createRule} from './tsUtils.ts';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongFolder'>({
+  name: 'enforce-custom-element-definitions-location',
   meta: {
     type: 'problem',
 
     docs: {
-      description:
-        'ensure that custom element definitions are in the correct folders.',
+      description: 'ensure that custom element definitions are in the correct folders.',
       category: 'Possible Errors',
     },
     fixable: 'code',
     messages: {
-      definitionInWrongFolder:
-        'A custom element definition was found in a folder that ' +
-        'should not contain element definitions. If you want to define a custom element, ' +
-        'either place it in `ui/components/` or in a `components` sub-folder of a panel. ' +
-        'E.g. `panels/elements/components/`.',
+      definitionInWrongFolder: 'A custom element definition was found in a folder that ' +
+          'should not contain element definitions. If you want to define a custom element, ' +
+          'either place it in `ui/components/` or in a `components` sub-folder of a panel. ' +
+          'E.g. `panels/elements/components/`.',
     },
     schema: [
       {
@@ -37,17 +33,18 @@ module.exports = {
       },
     ],
   },
-  create: function (context) {
+  defaultOptions: [{rootFrontendDirectory: ''}],
+  create: function(context) {
     const filename = context.filename ?? context.getFilename();
     const classDefiningFileName = path.resolve(filename);
 
     let frontEndDirectory = '';
-    if (context.options?.[0]?.rootFrontendDirectory) {
+    if (context.options[0]?.rootFrontendDirectory) {
       frontEndDirectory = context.options[0].rootFrontendDirectory;
     }
     if (!frontEndDirectory) {
       throw new Error(
-        'rootFrontEndDirectory must be provided to custom_elements_definitions_location.',
+          'rootFrontEndDirectory must be provided to custom_elements_definitions_location.',
       );
     }
 
@@ -77,10 +74,10 @@ module.exports = {
 
         if (classDefiningFileName.startsWith(PANELS_DIRECTORY)) {
           const filePathWithPanelName = classDefiningFileName.substring(
-            PANELS_DIRECTORY.length + 1,
+              PANELS_DIRECTORY.length + 1,
           );
           const filePathWithoutPanelName = filePathWithPanelName.substring(
-            filePathWithPanelName.indexOf(path.sep) + 1,
+              filePathWithPanelName.indexOf(path.sep) + 1,
           );
 
           if (filePathWithoutPanelName.includes(`components${path.sep}`)) {
@@ -95,4 +92,4 @@ module.exports = {
       },
     };
   },
-};
+});

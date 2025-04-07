@@ -1,15 +1,13 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+import rule from '../lib/html-tagged-template.ts';
 
-const rule = require('../lib/html-tagged-template.js');
-
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 const error = {
-  message: 'Use unqualified html tagged template for compatibility with lit-analyzer',
-};
+  messageId: 'useUnqualifiedHtmlTaggedTemplate',
+} as const;
 
 new RuleTester().run('html-tagged-template', rule, {
   valid: [

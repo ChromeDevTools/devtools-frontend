@@ -1,11 +1,10 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 'true';
-const rule = require('../lib/jslog-context-list.js');
+import rule from '../lib/jslog-context-list.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
+process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 'true';
 new RuleTester().run('jslog-context-list', rule, {
   invalid: [
     {
@@ -14,8 +13,8 @@ new RuleTester().run('jslog-context-list', rule, {
       `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -35,8 +34,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown2\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown2'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -55,8 +54,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown3\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown3'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -77,8 +76,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown4\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown4'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -94,8 +93,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown5\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown5'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -107,8 +106,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown6\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown6'},
         },
       ],
       filename: 'front_end/components/test.ts',
@@ -120,8 +119,8 @@ new RuleTester().run('jslog-context-list', rule, {
             `,
       errors: [
         {
-          message:
-              'Found jslog context value \'uNkNown7\' that is not listed in front_end/ui/visual_logging/KnownContextValues.ts',
+          messageId: 'unknownJslogContextValue',
+          data: {value: 'uNkNown7'},
         },
       ],
       filename: 'front_end/components/test.ts',

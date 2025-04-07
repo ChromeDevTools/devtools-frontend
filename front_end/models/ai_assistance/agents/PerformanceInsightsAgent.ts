@@ -89,9 +89,19 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
   }
 
   getOrigin(): string {
-    // TODO: probably use the origin of the navigation the insight is
-    // associated with? We can put that into the context.
-    return '';
+    /**
+     * We want to force a new conversation when the user imports / records a
+     * new trace. There is no concept of a "trace ID" in the trace events, and
+     * we can't use something like the main frame ID or main process ID as those
+     * can be the same if you record the same site / in the same session. We
+     * also can't use something like a URL, as people might record once, fix
+     * something, and re-record the same domain. So, we take the min & max time
+     * bounds and use that. It's not perfect but the chances of someone
+     * recording two traces with the exact same microsec start & end time are
+     * pretty small...
+     */
+    const {min, max} = this.#insight.parsedTrace.Meta.traceBounds;
+    return `trace-${min}-${max}`;
   }
 
   getItem(): TimelineUtils.InsightAIContext.ActiveInsight {

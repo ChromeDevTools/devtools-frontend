@@ -37,9 +37,21 @@ const FAKE_INP_MODEL = {
   state: 'fail',
   frameId: '123',
 } as const;
-const FAKE_PARSED_TRACE = {} as unknown as Trace.Handlers.Types.ParsedTrace;
+const FAKE_PARSED_TRACE = {
+  Meta: {traceBounds: {min: 0, max: 10}},
+} as unknown as Trace.Handlers.Types.ParsedTrace;
 
 describeWithEnvironment('PerformanceInsightsAgent', () => {
+  it('uses the min and max bounds of the trace as the origin', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    assert.isOk(insights);
+    const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
+    const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+    const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+    const context = new InsightContext(activeInsight);
+    assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
+  });
+
   it('outputs the right title for the selected insight', async () => {
     const mockInsight = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_PARSED_TRACE);
     const context = new InsightContext(mockInsight);

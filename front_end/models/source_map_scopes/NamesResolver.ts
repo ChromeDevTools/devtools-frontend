@@ -741,7 +741,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   }
 
   override callFunctionJSON<T, U>(
-      functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[]): Promise<T> {
+      functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[]): Promise<T|null> {
     return this.object.callFunctionJSON(functionDeclaration, args);
   }
 

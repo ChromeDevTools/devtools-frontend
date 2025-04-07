@@ -194,7 +194,7 @@ export class ImagePreview {
 
     const featuresObject = await object.callFunctionJSON(features, undefined);
     object.release();
-    return featuresObject;
+    return featuresObject ?? undefined;
 
     function features(this: HTMLImageElement): PrecomputedFeatures {
       return {

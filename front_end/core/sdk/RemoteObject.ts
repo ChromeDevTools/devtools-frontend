@@ -242,7 +242,7 @@ export abstract class RemoteObject {
 
   callFunctionJSON<T, U>(
       _functionDeclaration: (this: U, ...args: any[]) => T,
-      _args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
+      _args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
     throw new Error('Not implemented');
   }
 
@@ -568,7 +568,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   override async callFunctionJSON<T, U>(
       functionDeclaration: (this: U, ...args: any[]) => T,
-      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
+      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectIdInternal,
       functionDeclaration: functionDeclaration.toString(),
@@ -577,7 +577,7 @@ export class RemoteObjectImpl extends RemoteObject {
       returnByValue: true,
     });
     if (response.getError() || response.exceptionDetails) {
-      return null as T;
+      return null;
     }
 
     return response.result.value;
@@ -973,7 +973,7 @@ export class RemoteArrayBuffer {
     return this.#objectInternal.arrayBufferByteLength();
   }
 
-  async bytes(start = 0, end = this.byteLength()): Promise<number[]> {
+  async bytes(start = 0, end = this.byteLength()): Promise<number[]|null> {
     if (start < 0 || start >= this.byteLength()) {
       throw new RangeError('start is out of range');
     }

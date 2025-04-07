@@ -53,7 +53,8 @@ export class RemoteArrayBufferWrapper implements LazyUint8Array {
       return new Uint8Array(0);
     }
     const array = await this.#remoteArrayBuffer.bytes(start, newEnd);
-    return new Uint8Array(array);
+
+    return new Uint8Array(array ?? []);
   }
 }
 

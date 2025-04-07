@@ -75,7 +75,11 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
         return {type: this.type, useCapture: this.useCapture, passive: this.passive, once: this.once};
       }
 
-      function storeTruncatedListener(truncatedListener: TruncatedEventListenerObjectInInspectedPage): void {
+      function storeTruncatedListener(truncatedListener: TruncatedEventListenerObjectInInspectedPage|null): void {
+        if (!truncatedListener) {
+          return;
+        }
+
         if (truncatedListener.type !== undefined) {
           type = truncatedListener.type;
         }

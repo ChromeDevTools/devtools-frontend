@@ -710,7 +710,7 @@ async function prototypesFromObject(object: SDK.RemoteObject.RemoteObject): Prom
       }
     }
     return result;
-  }, []);
+  }, []) ?? [];
 }
 
 // Given a function object that is probably a bound function, try to

@@ -21,6 +21,11 @@ describeWithEnvironment('BaseInsightComponent', () => {
   const {BaseInsightComponent} = Insights.BaseInsightComponent;
   class TestInsightComponentNoAISupport extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
     override internalName = 'test-insight';
+
+    override hasAskAiSupport() {
+      return false;
+    }
+
     override createOverlays(): TimelineOverlay[] {
       return [];
     }
@@ -30,7 +35,9 @@ describeWithEnvironment('BaseInsightComponent', () => {
   }
   class TestInsightComponentWithAISupport extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
     override internalName = 'test-insight';
-    protected override hasAskAISupport = true;
+    override hasAskAiSupport() {
+      return true;
+    }
     override createOverlays(): TimelineOverlay[] {
       return [];
     }

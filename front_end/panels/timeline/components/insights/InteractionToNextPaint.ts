@@ -20,7 +20,10 @@ const {html} = Lit;
 export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp`;
   override internalName = 'inp';
-  protected override hasAskAISupport = true;
+
+  protected override hasAskAiSupport(): boolean {
+    return this.model?.longestInteractionEvent !== undefined;
+  }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

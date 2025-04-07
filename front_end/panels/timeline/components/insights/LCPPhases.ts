@@ -25,8 +25,11 @@ interface PhaseData {
 export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-by-phases`;
   override internalName = 'lcp-by-phase';
-  protected override hasAskAISupport = true;
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
+
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
 
   #getPhaseData(): PhaseData[] {
     if (!this.model) {

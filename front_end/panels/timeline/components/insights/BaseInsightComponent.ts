@@ -64,14 +64,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overwrite this.
   static readonly litTagName = Lit.StaticHtml.literal``;
-
   protected readonly shadow = this.attachShadow({mode: 'open'});
 
-  // Flipped to true for Insights that have support for the "Ask AI" Insights
-  // experience. The "Ask AI" button will only be shown for an Insight if this
-  // is true and if the feature has been enabled by the user and they meet the
-  // requirements to use AI.
-  protected readonly hasAskAISupport: boolean = false;
   // This flag tracks if the Insights AI feature is enabled within Chrome for
   // the active user.
   #insightsAskAiEnabled = false;
@@ -84,7 +78,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   get model(): T|null {
     return this.#model;
   }
-
   protected data: BaseInsightData = {
     bounds: null,
     insightSetKey: null,
@@ -99,6 +92,14 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   protected scheduleRender(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  // Insights that do support the AI feature can override this to return true.
+  // The "Ask AI" button will only be shown for an Insight if this
+  // is true and if the feature has been enabled by the user and they meet the
+  // requirements to use AI.
+  protected hasAskAiSupport(): boolean {
+    return false;
   }
 
   connectedCallback(): void {
@@ -327,7 +328,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     const aiDisabledByEnterprisePolicy = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.DISABLE;
 
-    return !aiDisabledByEnterprisePolicy && this.#insightsAskAiEnabled && this.hasAskAISupport;
+    return !aiDisabledByEnterprisePolicy && this.#insightsAskAiEnabled && this.hasAskAiSupport();
   }
 
   #renderInsightContent(insightModel: T): Lit.LitTemplate {

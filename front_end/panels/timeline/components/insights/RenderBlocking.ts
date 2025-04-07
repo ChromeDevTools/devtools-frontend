@@ -36,8 +36,11 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     };
   }
 
-  protected override hasAskAISupport = true;
   override internalName = 'render-blocking-requests';
+
+  protected override hasAskAiSupport(): boolean {
+    return !!this.model;
+  }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

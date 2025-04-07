@@ -21,10 +21,9 @@ export interface TestResult {
   };
 }
 
-class SanitizedTestIdTag {
-  private sanitizedTag: (string|undefined);
-}
-export type SanitizedTestId = string&SanitizedTestIdTag;
+export type SanitizedTestId = string&{
+  _sanitizedTag?: string,
+};
 
 // ResultSink checks the testId against the regex /^[[print]]{1,512}$/:
 // https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/pbutil/test_result.go;l=43;drc=7ba090da753a71be5a0f37785558e9102e57fa10

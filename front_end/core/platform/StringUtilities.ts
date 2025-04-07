@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {Brand} from './Brand.js';
+
 export const escapeCharacters = (inputString: string, charsToEscape: string): string => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
@@ -487,11 +489,7 @@ export const createPlainTextSearchRegex = function(query: string, flags?: string
   return new RegExp(regex, flags || '');
 };
 
-class LowerCaseStringTag {
-  private lowerCaseStringTag: (string|undefined);
-}
-
-export type LowerCaseString = string&LowerCaseStringTag;
+export type LowerCaseString = Brand<string, 'lowerCaseStringTag'>;
 
 export const toLowerCaseString = function(input: string): LowerCaseString {
   return input.toLowerCase() as LowerCaseString;

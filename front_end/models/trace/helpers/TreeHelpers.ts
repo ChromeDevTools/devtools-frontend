@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 
 import {eventIsInBounds} from './Timing.js';
@@ -37,11 +38,7 @@ export interface TraceEntryNode {
   children: TraceEntryNode[];
 }
 
-class TraceEntryNodeIdTag {
-  /* eslint-disable-next-line no-unused-private-class-members */
-  readonly #tag: (symbol|undefined);
-}
-export type TraceEntryNodeId = number&TraceEntryNodeIdTag;
+export type TraceEntryNodeId = Platform.Brand.Brand<number, 'traceEntryNodeIdTag'>;
 
 /**
  * Builds a hierarchy of the entries (trace events and profile calls) in

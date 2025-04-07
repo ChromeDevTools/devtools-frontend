@@ -18,6 +18,7 @@ node_ts_library("tests") {
     "assertion",
     "elements",
     "performance",
+    "sources",
     "targets",
     "webaudio",
   ]

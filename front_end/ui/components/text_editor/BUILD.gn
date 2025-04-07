@@ -45,7 +45,7 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility = [
-    "../../../../test/interactions/text_editor/*",
+    "../../../../test/e2e_non_hosted/*",
     "../../legacy/components/*",
   ]
   visibility += default_components_visibility

@@ -17,7 +17,6 @@ node_ts_library("tests") {
     "helpers",
     "panels/explain",
     "panels/performance/timeline",
-    "text_editor",
     "tree_outline",
     "ui/components",
   ]

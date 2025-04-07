@@ -6,6 +6,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {installPageErrorHandlers} from '../../conductor/events.js';
+import {platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
 import {PageWrapper} from './page-wrapper.js';
@@ -200,6 +201,47 @@ export class DevToolsPage extends PageWrapper {
 
   timeout(duration: number) {
     return new Promise<void>(resolve => setTimeout(resolve, duration));
+  }
+
+  async typeText(text: string) {
+    await this.page.keyboard.type(text);
+    await this.drainFrontendTaskQueue();
+  }
+
+  async pressKey(key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) {
+    if (modifiers) {
+      if (modifiers.control) {
+        if (platform === 'mac') {
+          // Use command key on mac
+          await this.page.keyboard.down('Meta');
+        } else {
+          await this.page.keyboard.down('Control');
+        }
+      }
+      if (modifiers.alt) {
+        await this.page.keyboard.down('Alt');
+      }
+      if (modifiers.shift) {
+        await this.page.keyboard.down('Shift');
+      }
+    }
+    await this.page.keyboard.press(key);
+    if (modifiers) {
+      if (modifiers.shift) {
+        await this.page.keyboard.up('Shift');
+      }
+      if (modifiers.alt) {
+        await this.page.keyboard.up('Alt');
+      }
+      if (modifiers.control) {
+        if (platform === 'mac') {
+          // Use command key on mac
+          await this.page.keyboard.up('Meta');
+        } else {
+          await this.page.keyboard.up('Control');
+        }
+      }
+    }
   }
 
   async click(selector: string, options?: ClickOptions) {

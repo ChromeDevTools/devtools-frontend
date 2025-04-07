@@ -50,7 +50,7 @@ export interface YargsInput {
   times: number;
   testTarget: TestTarget;
 }
-export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights';
+export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights'|'elements-multimodal';
 
 // Clang cannot handle the Record<> syntax over multiple lines, it seems.
 /* clang-format off */

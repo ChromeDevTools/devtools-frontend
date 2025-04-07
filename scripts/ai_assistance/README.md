@@ -37,6 +37,7 @@ node scripts/ai_assistance/auto-run.js --label title-change --example-urls <exam
 ## `--test-target` values
 
 * `elements`: tests the entrypoint via right clicking on an element in the Elements panel.
+* `elements-multimodal`: tests the multimodal support for Elements entrypoint by providing screenshot input with the prompt.
 * `performance-main-thread`: tests the entrypoint via right clicking on an event in the Performance panel main thread.
 * `performance-insights`: tests the entrypoint via the "Ask AI" button shown on an individual Insight in the Performance panel sidebar.
 

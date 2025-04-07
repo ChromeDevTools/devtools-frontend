@@ -21,32 +21,33 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-const yargsInput = yargs(hideBin(process.argv))
-                       .option('example-urls', {
-                         string: true,
-                         type: 'array',
-                         demandOption: true,
-                       })
-                       .option('parallel', {
-                         boolean: true,
-                         default: true,
-                       })
-                       .option('times', {
-                         describe: 'How many times do you want to run an example?',
-                         number: true,
-                         default: 1,
-                       })
-                       .option('label', {string: true, default: 'run'})
-                       .option('include-follow-up', {
-                         boolean: true,
-                         default: false,
-                       })
-                       .option('test-target', {
-                         describe: 'Which panel do you want to run the examples against?',
-                         choices: ['elements', 'performance-main-thread', 'performance-insights'],
-                         demandOption: true,
-                       })
-                       .parseSync();
+const yargsInput =
+    yargs(hideBin(process.argv))
+        .option('example-urls', {
+          string: true,
+          type: 'array',
+          demandOption: true,
+        })
+        .option('parallel', {
+          boolean: true,
+          default: true,
+        })
+        .option('times', {
+          describe: 'How many times do you want to run an example?',
+          number: true,
+          default: 1,
+        })
+        .option('label', {string: true, default: 'run'})
+        .option('include-follow-up', {
+          boolean: true,
+          default: false,
+        })
+        .option('test-target', {
+          describe: 'Which panel do you want to run the examples against?',
+          choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal'],
+          demandOption: true,
+        })
+        .parseSync();
 
 // Map the args to a more accurate interface for better type safety.
 const userArgs = /** @type {import('./types.d.ts').YargsInput} **/ (yargsInput);
@@ -409,7 +410,7 @@ class Example {
     await devtoolsPage.keyboard.press('Escape');
     await devtoolsPage.keyboard.press('Escape');
 
-    if (userArgs.testTarget === 'elements') {
+    if (userArgs.testTarget === 'elements' || userArgs.testTarget === 'elements-multimodal') {
       await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
       this.log('[Info]: Opened Elements panel');
 
@@ -513,6 +514,7 @@ class Example {
   #getLocator() {
     switch (userArgs.testTarget) {
       case 'elements':
+      case 'elements-multimodal':
         return 'aria/Ask a question about the selected element';
       case 'performance-main-thread':
         return 'aria/Ask a question about the selected item and its call tree';
@@ -550,6 +552,10 @@ class Example {
         throw new Error('Cannot prompt without DevTools page.');
       }
       const devtoolsPage = this.#devtoolsPage;
+
+      if (userArgs.testTarget === 'elements-multimodal') {
+        await devtoolsPage.locator('aria/Take screenshot').click();
+      }
 
       const inputSelector = this.#getLocator();
       await devtoolsPage.locator(inputSelector).click();

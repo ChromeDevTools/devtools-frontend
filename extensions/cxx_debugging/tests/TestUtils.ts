@@ -67,7 +67,7 @@ export function relativePathname(url: URL, base: URL): string {
 
 export function nonNull<T>(value: T|null|undefined): T {
   assert.exists(value);
-  return value as T;
+  return value;
 }
 
 export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null):
@@ -226,7 +226,7 @@ export class TestValue implements Value {
     if (typeof member === 'number' || !member.includes('.')) {
       return this.members[member];
     }
-    let value = this as Value;
+    let value: Value = this;
     for (const prop of member.split('.')) {
       value = value.$(prop);
     }

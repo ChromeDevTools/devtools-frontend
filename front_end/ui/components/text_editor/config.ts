@@ -428,10 +428,8 @@ class CompletionHint extends CM.WidgetType {
 }
 
 export const showCompletionHint = CM.ViewPlugin.fromClass(class {
-decorations:
-  CM.DecorationSet = CM.Decoration.none;
-currentHint:
-  string|null = null;
+  decorations: CM.DecorationSet = CM.Decoration.none;
+  currentHint: string|null = null;
 
   update(update: CM.ViewUpdate): void {
     const top = this.currentHint = this.topCompletion(update.state);

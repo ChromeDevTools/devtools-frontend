@@ -405,7 +405,7 @@ export class DOMNode {
       return null;
     }
 
-    let current: (DOMNode|null) = (this as DOMNode | null);
+    let current: DOMNode|null = this;
     while (current && !current.isShadowRoot()) {
       current = current.parentNode;
     }
@@ -603,7 +603,7 @@ export class DOMNode {
     }
 
     const path = [];
-    let node: (DOMNode|null) = (this as DOMNode | null);
+    let node: (DOMNode|null) = this;
     while (node) {
       const key = getNodeKey(node);
       if (key === null) {
@@ -838,22 +838,22 @@ export class DOMNode {
       }
 
       this.#markers.delete(name);
-      for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
+      for (let node: (DOMNode|null) = this; node; node = node.parentNode) {
         --node.#subtreeMarkerCount;
       }
-      for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
+      for (let node: (DOMNode|null) = this; node; node = node.parentNode) {
         this.#domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
       }
       return;
     }
 
     if (this.parentNode && !this.#markers.has(name)) {
-      for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
+      for (let node: (DOMNode|null) = this; node; node = node.parentNode) {
         ++node.#subtreeMarkerCount;
       }
     }
     this.#markers.set(name, value);
-    for (let node: (DOMNode|null) = (this as DOMNode | null); node; node = node.parentNode) {
+    for (let node: (DOMNode|null) = this; node; node = node.parentNode) {
       this.#domModelInternal.dispatchEventToListeners(Events.MarkersChanged, node);
     }
   }
@@ -888,7 +888,7 @@ export class DOMNode {
     if (!url) {
       return url as Platform.DevToolsPath.UrlString;
     }
-    for (let frameOwnerCandidate: (DOMNode|null) = (this as DOMNode | null); frameOwnerCandidate;
+    for (let frameOwnerCandidate: (DOMNode|null) = this; frameOwnerCandidate;
          frameOwnerCandidate = frameOwnerCandidate.parentNode) {
       if (frameOwnerCandidate instanceof DOMDocument && frameOwnerCandidate.baseURL) {
         return Common.ParsedURL.ParsedURL.completeURL(frameOwnerCandidate.baseURL, url);
@@ -941,7 +941,7 @@ export class DOMNode {
   }
 
   enclosingElementOrSelf(): DOMNode|null {
-    let node: DOMNode|null|(DOMNode | null) = (this as DOMNode | null);
+    let node: DOMNode|null = this;
     if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode) {
       node = node.parentNode;
     }

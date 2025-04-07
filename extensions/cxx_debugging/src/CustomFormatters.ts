@@ -346,13 +346,13 @@ export class CXXValue implements Value, LazyObject {
     if (this.type.hasValue && this.type.arraySize === 0) {
       const formatter = CustomFormatters.get(this.type);
       if (!formatter) {
-        const type = 'undefined' as Chrome.DevTools.RemoteObjectType;
+        const type = 'undefined';
         const description = '<not displayable>';
         return {type, description, hasChildren: false};
       }
 
       if (this.location === undefined || (!this.data && this.location === 0xffffffff)) {
-        const type = 'undefined' as Chrome.DevTools.RemoteObjectType;
+        const type = 'undefined';
         const description = '<optimized out>';
         return {type, description, hasChildren: false};
       }
@@ -369,7 +369,7 @@ export class CXXValue implements Value, LazyObject {
       }
     }
 
-    const type = (this.type.arraySize > 0 ? 'array' : 'object') as Chrome.DevTools.RemoteObjectType;
+    const type = this.type.arraySize > 0 ? 'array' : 'object';
     const {objectId} = this;
     return {
       type,

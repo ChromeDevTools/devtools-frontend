@@ -98,7 +98,7 @@ export class TopDownNode extends Node {
   private buildChildren(): ChildrenCache {
     // Tracks the ancestor path of this node, includes the current node.
     const path: TopDownNode[] = [];
-    for (let node: TopDownNode = (this as TopDownNode); node.parent && !node.isGroupNode(); node = node.parent) {
+    for (let node: TopDownNode = this; node.parent && !node.isGroupNode(); node = node.parent) {
       path.push((node));
     }
     path.reverse();

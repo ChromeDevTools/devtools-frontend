@@ -157,7 +157,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     VisualLogging.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
     // TODO(dgozman): take document as a parameter.
     this.glassPane.show(document);
-    const suggestion = ({text: '1', subtitle: '12'} as Suggestion);
+    const suggestion: Suggestion = {text: '1', subtitle: '12'};
     this.rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this.element).height;
     ARIAUtils.setControls(this.suggestBoxDelegate.ownerElement(), this.element);
     ARIAUtils.setExpanded(this.suggestBoxDelegate.ownerElement(), true);

@@ -127,7 +127,7 @@ export abstract class RemoteObject {
       return {value: object};
     }
     if (type === 'bigint') {
-      return {unserializableValue: (unserializableDescription as string)};
+      return {unserializableValue: unserializableDescription ?? undefined};
     }
     if (type === 'string' || type === 'boolean') {
       return {value: object};
@@ -166,7 +166,7 @@ export abstract class RemoteObject {
     const ownProperties = result[1].properties;
     const internalProperties = result[1].internalProperties;
     if (!ownProperties || !accessorProperties) {
-      return {properties: null, internalProperties: null} as GetPropertiesResult;
+      return {properties: null, internalProperties: null};
     }
     const propertiesMap = new Map<string, RemoteObjectProperty>();
     const propertySymbols = [];
@@ -285,18 +285,18 @@ export abstract class RemoteObject {
 }
 
 export class RemoteObjectImpl extends RemoteObject {
-  runtimeModelInternal: RuntimeModel;
+  #runtimeModel: RuntimeModel;
   readonly #runtimeAgent: ProtocolProxyApi.RuntimeApi;
-  readonly #typeInternal: string;
-  readonly #subtypeInternal: string|undefined;
-  #objectIdInternal: Protocol.Runtime.RemoteObjectId|undefined;
-  #descriptionInternal: string|undefined;
-  hasChildrenInternal: boolean;
-  readonly #previewInternal: Protocol.Runtime.ObjectPreview|undefined;
-  readonly #unserializableValueInternal: string|undefined;
-  readonly #valueInternal: typeof RemoteObject.prototype.value;
-  readonly #customPreviewInternal: Protocol.Runtime.CustomPreview|null;
-  readonly #classNameInternal: string|null;
+  readonly #type: string;
+  readonly #subtype: string|undefined;
+  #objectId: Protocol.Runtime.RemoteObjectId|undefined;
+  #description: string|undefined;
+  #hasChildren: boolean;
+  readonly #preview: Protocol.Runtime.ObjectPreview|undefined;
+  readonly #unserializableValue: string|undefined;
+  readonly #value: typeof RemoteObject.prototype.value;
+  readonly #customPreview: Protocol.Runtime.CustomPreview|null;
+  readonly #className: string|null;
 
   constructor(
       runtimeModel: RuntimeModel,
@@ -312,89 +312,89 @@ export class RemoteObjectImpl extends RemoteObject {
   ) {
     super();
 
-    this.runtimeModelInternal = runtimeModel;
+    this.#runtimeModel = runtimeModel;
     this.#runtimeAgent = runtimeModel.target().runtimeAgent();
 
-    this.#typeInternal = type;
-    this.#subtypeInternal = subtype;
+    this.#type = type;
+    this.#subtype = subtype;
     if (objectId) {
       // handle
-      this.#objectIdInternal = objectId;
-      this.#descriptionInternal = description;
-      this.hasChildrenInternal = (type !== 'symbol');
-      this.#previewInternal = preview;
+      this.#objectId = objectId;
+      this.#description = description;
+      this.#hasChildren = (type !== 'symbol');
+      this.#preview = preview;
     } else {
-      this.#descriptionInternal = description;
+      this.#description = description;
       if (!this.description && unserializableValue) {
-        this.#descriptionInternal = unserializableValue;
+        this.#description = unserializableValue;
       }
-      if (!this.#descriptionInternal && (typeof value !== 'object' || value === null)) {
-        this.#descriptionInternal = String(value);
+      if (!this.#description && (typeof value !== 'object' || value === null)) {
+        this.#description = String(value);
       }
-      this.hasChildrenInternal = false;
+      this.#hasChildren = false;
       if (typeof unserializableValue === 'string') {
-        this.#unserializableValueInternal = unserializableValue;
+        this.#unserializableValue = unserializableValue;
         if (unserializableValue === UnserializableNumber.INFINITY ||
             unserializableValue === UnserializableNumber.NEGATIVE_INFINITY ||
             unserializableValue === UnserializableNumber.NEGATIVE_ZERO ||
             unserializableValue === UnserializableNumber.NAN) {
-          this.#valueInternal = Number(unserializableValue);
+          this.#value = Number(unserializableValue);
         } else if (type === 'bigint' && unserializableValue.endsWith('n')) {
-          this.#valueInternal = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
+          this.#value = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
         } else {
-          this.#valueInternal = unserializableValue;
+          this.#value = unserializableValue;
         }
 
       } else {
-        this.#valueInternal = value;
+        this.#value = value;
       }
     }
-    this.#customPreviewInternal = customPreview || null;
-    this.#classNameInternal = typeof className === 'string' ? className : null;
+    this.#customPreview = customPreview || null;
+    this.#className = typeof className === 'string' ? className : null;
   }
 
   override customPreview(): Protocol.Runtime.CustomPreview|null {
-    return this.#customPreviewInternal;
+    return this.#customPreview;
   }
 
   override get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
-    return this.#objectIdInternal;
+    return this.#objectId;
   }
 
   override get type(): string {
-    return this.#typeInternal;
+    return this.#type;
   }
 
   override get subtype(): string|undefined {
-    return this.#subtypeInternal;
+    return this.#subtype;
   }
 
   override get value(): typeof RemoteObject.prototype.value {
-    return this.#valueInternal;
+    return this.#value;
   }
 
   override unserializableValue(): string|undefined {
-    return this.#unserializableValueInternal;
+    return this.#unserializableValue;
   }
 
   override get description(): string|undefined {
-    return this.#descriptionInternal;
+    return this.#description;
   }
 
   override set description(description: string|undefined) {
-    this.#descriptionInternal = description;
+    this.#description = description;
   }
 
   override get hasChildren(): boolean {
-    return this.hasChildrenInternal;
+    return this.#hasChildren;
   }
 
   override get preview(): Protocol.Runtime.ObjectPreview|undefined {
-    return this.#previewInternal;
+    return this.#preview;
   }
 
   override get className(): string|null {
-    return this.#classNameInternal;
+    return this.#className;
   }
 
   override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
@@ -408,60 +408,60 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   async createRemoteObject(object: Protocol.Runtime.RemoteObject): Promise<RemoteObject> {
-    return this.runtimeModelInternal.createRemoteObject(object);
+    return this.#runtimeModel.createRemoteObject(object);
   }
 
   async doGetProperties(
       ownProperties: boolean, accessorPropertiesOnly: boolean, nonIndexedPropertiesOnly: boolean,
       generatePreview: boolean): Promise<GetPropertiesResult> {
-    if (!this.#objectIdInternal) {
-      return {properties: null, internalProperties: null} as GetPropertiesResult;
+    if (!this.#objectId) {
+      return {properties: null, internalProperties: null};
     }
 
     const response = await this.#runtimeAgent.invoke_getProperties({
-      objectId: this.#objectIdInternal,
+      objectId: this.#objectId,
       ownProperties,
       accessorPropertiesOnly,
       nonIndexedPropertiesOnly,
       generatePreview,
     });
     if (response.getError()) {
-      return {properties: null, internalProperties: null} as GetPropertiesResult;
+      return {properties: null, internalProperties: null};
     }
     if (response.exceptionDetails) {
-      this.runtimeModelInternal.exceptionThrown(Date.now(), response.exceptionDetails);
-      return {properties: null, internalProperties: null} as GetPropertiesResult;
+      this.#runtimeModel.exceptionThrown(Date.now(), response.exceptionDetails);
+      return {properties: null, internalProperties: null};
     }
     const {result: properties = [], internalProperties = [], privateProperties = []} = response;
     const result = [];
     for (const property of properties) {
       const propertyValue = property.value ? await this.createRemoteObject(property.value) : null;
-      const propertySymbol = property.symbol ? this.runtimeModelInternal.createRemoteObject(property.symbol) : null;
+      const propertySymbol = property.symbol ? this.#runtimeModel.createRemoteObject(property.symbol) : null;
       const remoteProperty = new RemoteObjectProperty(
           property.name, propertyValue, Boolean(property.enumerable), Boolean(property.writable),
           Boolean(property.isOwn), Boolean(property.wasThrown), propertySymbol);
 
       if (typeof property.value === 'undefined') {
         if (property.get && property.get.type !== 'undefined') {
-          remoteProperty.getter = this.runtimeModelInternal.createRemoteObject(property.get);
+          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
         }
         if (property.set && property.set.type !== 'undefined') {
-          remoteProperty.setter = this.runtimeModelInternal.createRemoteObject(property.set);
+          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
         }
       }
       result.push(remoteProperty);
     }
     for (const property of privateProperties) {
-      const propertyValue = property.value ? this.runtimeModelInternal.createRemoteObject(property.value) : null;
+      const propertyValue = property.value ? this.#runtimeModel.createRemoteObject(property.value) : null;
       const remoteProperty = new RemoteObjectProperty(
           property.name, propertyValue, true, true, true, false, undefined, false, undefined, true);
 
       if (typeof property.value === 'undefined') {
         if (property.get && property.get.type !== 'undefined') {
-          remoteProperty.getter = this.runtimeModelInternal.createRemoteObject(property.get);
+          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
         }
         if (property.set && property.set.type !== 'undefined') {
-          remoteProperty.setter = this.runtimeModelInternal.createRemoteObject(property.set);
+          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
         }
       }
       result.push(remoteProperty);
@@ -472,7 +472,7 @@ export class RemoteObjectImpl extends RemoteObject {
       if (!property.value) {
         continue;
       }
-      const propertyValue = this.runtimeModelInternal.createRemoteObject(property.value);
+      const propertyValue = this.#runtimeModel.createRemoteObject(property.value);
       internalPropertiesResult.push(
           new RemoteObjectProperty(property.name, propertyValue, true, false, undefined, undefined, undefined, true));
     }
@@ -481,7 +481,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
   override async setPropertyValue(name: string|Protocol.Runtime.CallArgument, value: string):
       Promise<string|undefined> {
-    if (!this.#objectIdInternal) {
+    if (!this.#objectId) {
       return 'Can’t set a property of non-object.';
     }
 
@@ -514,7 +514,7 @@ export class RemoteObjectImpl extends RemoteObject {
 
     const argv = [name, RemoteObject.toCallArgument(result)];
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectIdInternal,
+      objectId: this.#objectId,
       functionDeclaration: setPropertyValueFunction,
       arguments: argv,
       silent: true,
@@ -524,13 +524,13 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
-    if (!this.#objectIdInternal) {
+    if (!this.#objectId) {
       return 'Can’t delete a property of non-object.';
     }
 
     const deletePropertyFunction = 'function(a) { delete this[a]; return !(a in this); }';
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectIdInternal,
+      objectId: this.#objectId,
       functionDeclaration: deletePropertyFunction,
       arguments: [name],
       silent: true,
@@ -551,7 +551,7 @@ export class RemoteObjectImpl extends RemoteObject {
       functionDeclaration: (this: U, ...args: any[]) => T,
       args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectIdInternal,
+      objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
@@ -561,7 +561,7 @@ export class RemoteObjectImpl extends RemoteObject {
     }
     // TODO: release exceptionDetails object
     return {
-      object: this.runtimeModelInternal.createRemoteObject(response.result),
+      object: this.#runtimeModel.createRemoteObject(response.result),
       wasThrown: Boolean(response.exceptionDetails),
     };
   }
@@ -570,7 +570,7 @@ export class RemoteObjectImpl extends RemoteObject {
       functionDeclaration: (this: U, ...args: any[]) => T,
       args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectIdInternal,
+      objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
@@ -584,10 +584,10 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override release(): void {
-    if (!this.#objectIdInternal) {
+    if (!this.#objectId) {
       return;
     }
-    void this.#runtimeAgent.invoke_releaseObject({objectId: this.#objectIdInternal});
+    void this.#runtimeAgent.invoke_releaseObject({objectId: this.#objectId});
   }
 
   override arrayLength(): number {
@@ -599,15 +599,15 @@ export class RemoteObjectImpl extends RemoteObject {
   }
 
   override debuggerModel(): DebuggerModel {
-    return this.runtimeModelInternal.debuggerModel();
+    return this.#runtimeModel.debuggerModel();
   }
 
   override runtimeModel(): RuntimeModel {
-    return this.runtimeModelInternal;
+    return this.#runtimeModel;
   }
 
   override isNode(): boolean {
-    return Boolean(this.#objectIdInternal) && this.type === 'object' && this.subtype === 'node';
+    return Boolean(this.#objectId) && this.type === 'object' && this.subtype === 'node';
   }
 
   override isLinearMemoryInspectable(): boolean {
@@ -632,7 +632,7 @@ export class ScopeRemoteObject extends RemoteObjectImpl {
   override async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
       Promise<GetPropertiesResult> {
     if (accessorPropertiesOnly) {
-      return {properties: [], internalProperties: []} as GetPropertiesResult;
+      return {properties: [], internalProperties: []};
     }
 
     if (this.#savedScopeProperties) {
@@ -766,13 +766,13 @@ export class RemoteObjectProperty {
 // or functions.
 
 export class LocalJSONObject extends RemoteObject {
-  valueInternal: typeof RemoteObject.prototype.value;
+  #value: typeof RemoteObject.prototype.value;
   #cachedDescription!: string;
   #cachedChildren!: RemoteObjectProperty[];
 
   constructor(value: typeof RemoteObject.prototype.value) {
     super();
-    this.valueInternal = value;
+    this.#value = value;
   }
 
   override get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
@@ -780,11 +780,11 @@ export class LocalJSONObject extends RemoteObject {
   }
 
   override get value(): typeof RemoteObject.prototype.value {
-    return this.valueInternal;
+    return this.#value;
   }
 
   override unserializableValue(): string|undefined {
-    const unserializableDescription = RemoteObject.unserializableDescription(this.valueInternal);
+    const unserializableDescription = RemoteObject.unserializableDescription(this.#value);
     return unserializableDescription || undefined;
   }
 
@@ -811,7 +811,7 @@ export class LocalJSONObject extends RemoteObject {
           this.#cachedDescription = this.concatenate('[', ']', formatArrayItem.bind(this));
           break;
         case 'date':
-          this.#cachedDescription = String(this.valueInternal);
+          this.#cachedDescription = String(this.#value);
           break;
         case 'null':
           this.#cachedDescription = 'null';
@@ -820,7 +820,7 @@ export class LocalJSONObject extends RemoteObject {
           this.#cachedDescription = this.concatenate('{', '}', formatObjectItem.bind(this));
       }
     } else {
-      this.#cachedDescription = String(this.valueInternal);
+      this.#cachedDescription = String(this.#value);
     }
 
     return this.#cachedDescription;
@@ -858,19 +858,19 @@ export class LocalJSONObject extends RemoteObject {
   }
 
   override get type(): string {
-    return typeof this.valueInternal;
+    return typeof this.#value;
   }
 
   override get subtype(): string|undefined {
-    if (this.valueInternal === null) {
+    if (this.#value === null) {
       return 'null';
     }
 
-    if (Array.isArray(this.valueInternal)) {
+    if (Array.isArray(this.#value)) {
       return 'array';
     }
 
-    if (this.valueInternal instanceof Date) {
+    if (this.#value instanceof Date) {
       return 'date';
     }
 
@@ -878,10 +878,10 @@ export class LocalJSONObject extends RemoteObject {
   }
 
   override get hasChildren(): boolean {
-    if ((typeof this.valueInternal !== 'object') || (this.valueInternal === null)) {
+    if ((typeof this.#value !== 'object') || (this.#value === null)) {
       return false;
     }
-    return Boolean(Object.keys((this.valueInternal as Object)).length);
+    return Boolean(Object.keys(this.#value).length);
   }
 
   override async getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly = false):
@@ -912,7 +912,7 @@ export class LocalJSONObject extends RemoteObject {
       return [];
     }
     if (!this.#cachedChildren) {
-      this.#cachedChildren = Object.entries(this.valueInternal).map(([name, value]) => {
+      this.#cachedChildren = Object.entries(this.#value).map(([name, value]) => {
         return new RemoteObjectProperty(
             name, value instanceof RemoteObject ? value : RemoteObject.fromLocalObject(value));
       });
@@ -921,13 +921,13 @@ export class LocalJSONObject extends RemoteObject {
   }
 
   override arrayLength(): number {
-    return Array.isArray(this.valueInternal) ? this.valueInternal.length : 0;
+    return Array.isArray(this.#value) ? this.#value.length : 0;
   }
 
   override async callFunction<T, U>(
       functionDeclaration: (this: U, ...args: any[]) => T,
       args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult> {
-    const target = this.valueInternal as U;
+    const target = this.#value as U;
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
     let result;
@@ -940,13 +940,13 @@ export class LocalJSONObject extends RemoteObject {
 
     const object = RemoteObject.fromLocalObject(result);
 
-    return {object, wasThrown} as CallFunctionResult;
+    return {object, wasThrown};
   }
 
   override async callFunctionJSON<T, U>(
       functionDeclaration: (this: U, ...args: any[]) => T,
-      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
-    const target = this.valueInternal as U;
+      args: Protocol.Runtime.CallArgument[]|undefined): Promise<T|null> {
+    const target = this.#value as U;
     const rawArgs = args ? args.map(arg => arg.value) : [];
 
     let result;
@@ -956,21 +956,21 @@ export class LocalJSONObject extends RemoteObject {
       result = null;
     }
 
-    return result as T;
+    return result;
   }
 }
 
 export class RemoteArrayBuffer {
-  readonly #objectInternal: RemoteObject;
+  readonly #object: RemoteObject;
   constructor(object: RemoteObject) {
     if (object.type !== 'object' || object.subtype !== 'arraybuffer') {
       throw new Error('Object is not an arraybuffer');
     }
-    this.#objectInternal = object;
+    this.#object = object;
   }
 
   byteLength(): number {
-    return this.#objectInternal.arrayBufferByteLength();
+    return this.#object.arrayBufferByteLength();
   }
 
   async bytes(start = 0, end = this.byteLength()): Promise<number[]|null> {
@@ -980,7 +980,7 @@ export class RemoteArrayBuffer {
     if (end < start || end > this.byteLength()) {
       throw new RangeError('end is out of range');
     }
-    return await this.#objectInternal.callFunctionJSON(bytes, [{value: start}, {value: end - start}]);
+    return await this.#object.callFunctionJSON(bytes, [{value: start}, {value: end - start}]);
 
     function bytes(this: ArrayBuffer, offset: number, length: number): number[] {
       return [...new Uint8Array(this, offset, length)];
@@ -988,14 +988,14 @@ export class RemoteArrayBuffer {
   }
 
   object(): RemoteObject {
-    return this.#objectInternal;
+    return this.#object;
   }
 }
 
 export class RemoteArray {
-  readonly #objectInternal: RemoteObject;
+  readonly #object: RemoteObject;
   constructor(object: RemoteObject) {
-    this.#objectInternal = object;
+    this.#object = object;
   }
 
   static objectAsArray(object: RemoteObject|null): RemoteArray {
@@ -1021,11 +1021,10 @@ export class RemoteArray {
   }
 
   async at(index: number): Promise<RemoteObject> {
-    if (index < 0 || index > this.#objectInternal.arrayLength()) {
+    if (index < 0 || index > this.#object.arrayLength()) {
       throw new Error('Out of range');
     }
-    const result =
-        await this.#objectInternal.callFunction<unknown, unknown[]>(at, [RemoteObject.toCallArgument(index)]);
+    const result = await this.#object.callFunction<unknown, unknown[]>(at, [RemoteObject.toCallArgument(index)]);
     if (result.wasThrown || !result.object) {
       throw new Error('Exception in callFunction or result value is empty');
     }
@@ -1037,7 +1036,7 @@ export class RemoteArray {
   }
 
   length(): number {
-    return this.#objectInternal.arrayLength();
+    return this.#object.arrayLength();
   }
 
   map<T>(func: (arg0: RemoteObject) => Promise<T>): Promise<T[]> {
@@ -1049,7 +1048,7 @@ export class RemoteArray {
   }
 
   object(): RemoteObject {
-    return this.#objectInternal;
+    return this.#object;
   }
 }
 

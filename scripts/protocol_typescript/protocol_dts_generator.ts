@@ -327,8 +327,6 @@ const getCommandMapping = (command: Protocol.Command, domainName: string,
   };
 };
 
-const flatten = <T>(arr: T[][]) => ([] as T[]).concat(...arr);
-
 const emitMapping = (moduleName: string, protocolModuleName: string, domains: Protocol.Domain[]) => {
   moduleName = toTitleCase(moduleName);
   emitHeaderComments();
@@ -336,18 +334,22 @@ const emitMapping = (moduleName: string, protocolModuleName: string, domains: Pr
   emitOpenBlock(`export namespace ${moduleName}`);
 
   const protocolModulePrefix = toTitleCase(protocolModuleName);
-  const eventDefs = flatten(domains.map(d => {
-    const domainName = toTitleCase(d.domain);
-    return (d.events || []).map(e => getEventMapping(e, domainName, protocolModulePrefix));
-  }));
+  const eventDefs = domains
+                        .map(d => {
+                          const domainName = toTitleCase(d.domain);
+                          return (d.events || []).map(e => getEventMapping(e, domainName, protocolModulePrefix));
+                        })
+                        .flat();
   emitInterface('Events', eventDefs);
 
   emitLine();
 
-  const commandDefs = flatten(domains.map(d => {
-    const domainName = toTitleCase(d.domain);
-    return (d.commands || []).map(c => getCommandMapping(c, domainName, protocolModulePrefix));
-  }));
+  const commandDefs = domains
+                          .map(d => {
+                            const domainName = toTitleCase(d.domain);
+                            return (d.commands || []).map(c => getCommandMapping(c, domainName, protocolModulePrefix));
+                          })
+                          .flat();
   emitInterface('Commands', commandDefs);
 
   emitCloseBlock();

@@ -377,7 +377,7 @@ export class SoftContextMenu {
   }
 
   private root(): SoftContextMenu {
-    let root: SoftContextMenu = (this as SoftContextMenu);
+    let root: SoftContextMenu = this;
     while (root.parentMenu) {
       root = root.parentMenu;
     }
@@ -546,8 +546,7 @@ export class SoftContextMenu {
     }
   }
 
-  private menuKeyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
+  private menuKeyDown(keyboardEvent: KeyboardEvent): void {
     function onEnterOrSpace(this: SoftContextMenu): void {
       if (!this.highlightedMenuItemElement) {
         return;

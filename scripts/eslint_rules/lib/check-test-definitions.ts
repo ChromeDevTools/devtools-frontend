@@ -2,37 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @fileoverview Rule to check test definitions
- * @author Tim van der Lippe
- */
-'use strict';
+import type {TSESTree} from '@typescript-eslint/types';
+
+import {createRule} from './tsUtils.ts';
 
 const TEST_NAME_REGEX = /^\[crbug.com\/\d+\]/;
 
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
-
-function getTextValue(node) {
+function getTextValue(node: TSESTree.Node): string|undefined {
   if (node.type === 'Literal') {
-    return node.value;
+    return node.value?.toString();
   }
   if (node.type === 'TemplateLiteral') {
     if (node.quasis.length === 0) {
-      return undefined;
+      return;
     }
     return node.quasis[0].value.cooked;
   }
+  return;
 }
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'check-test-definitions',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'check test implementations',
       category: 'Possible Errors',
@@ -42,11 +34,12 @@ module.exports = {
           'Skipped tests must have a CRBug included in the description: `it.skip(\'[crbug.com/BUGID]: testname\', async() => {})',
       extraBugId:
           'Non-skipped tests cannot include a CRBug tag at the beginning of the description: `it.skip(\'testname (crbug.com/BUGID)\', async() => {})',
-      comment: 'A skipped test must have an attached comment with an explanation written before the test'
+      comment: 'A skipped test must have an attached comment with an explanation written before the test',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [],  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
@@ -57,7 +50,7 @@ module.exports = {
 
         if ((node.object.name === 'it' || node.object.name === 'describe' || node.object.name === 'itScreenshot') &&
             (node.property.name === 'skip' || node.property.name === 'skipOnPlatforms') &&
-            node.parent.type === 'CallExpression') {
+            node.parent?.type === 'CallExpression') {
           const testNameNode = node.property.name === 'skip' ? node.parent.arguments[0] : node.parent.arguments[1];
 
           if (!testNameNode) {
@@ -81,7 +74,7 @@ module.exports = {
         }
       },
 
-      CallExpression(node) {
+      CallExpression(node: TSESTree.CallExpression) {
         if (node.callee.type === 'Identifier' && node.callee.name === 'it' && node.arguments[0]) {
           const textValue = getTextValue(node.arguments[0]);
 
@@ -92,7 +85,7 @@ module.exports = {
             });
           }
         }
-      }
+      },
     };
-  }
-};
+  },
+});

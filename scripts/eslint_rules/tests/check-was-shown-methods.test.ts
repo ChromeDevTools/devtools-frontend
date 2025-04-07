@@ -1,13 +1,10 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/check-was-shown-methods.js');
+import rule from '../lib/check-was-shown-methods.ts';
 
-const {RuleTester} = require('./utils/utils.js');
-
-const EXPECTED_ERROR_MESSAGE = 'Please make sure the first call in wasShown is to super.wasShown().';
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('check-was-shown-methods', rule, {
   valid: [
@@ -74,7 +71,7 @@ new RuleTester().run('check-was-shown-methods', rule, {
       }
       `,
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'superFirstCall'}],
     },
     {
       code: `
@@ -88,7 +85,7 @@ new RuleTester().run('check-was-shown-methods', rule, {
       }
       `,
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'superFirstCall'}],
     },
     {
       code: `
@@ -100,7 +97,7 @@ new RuleTester().run('check-was-shown-methods', rule, {
       }
       `,
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'superFirstCall'}],
     },
   ],
 });

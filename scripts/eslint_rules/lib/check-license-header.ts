@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @fileoverview Rule to check license headers
- * @author Tim van der Lippe
- */
-'use strict';
+import type {TSESTree} from '@typescript-eslint/utils';
+import * as path from 'path';
 
-const path = require('path');
+import {createRule} from './tsUtils.ts';
 
 const FRONT_END_FOLDER = path.join(
-    __filename,
+    // If we want to fix this we need to change to .mts or use a package.json
+    // with type : module
+    // @ts-expect-error we don't build the file to CJS
+    import.meta.filename,
     '..',
     '..',
     '..',
@@ -111,14 +111,10 @@ const OTHER_LICENSE_HEADERS = [
   'ui/Widget.js',
 ];
 
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
-
 /**
- * Check each linecomment that should (combined) result in the LINE_LICENSE_HEADER.
+ * Check each line comment that should (combined) result in the LINE_LICENSE_HEADER.
  */
-function isMissingLineCommentLicense(comments) {
+function isMissingLineCommentLicense(comments: TSESTree.Comment[]) {
   for (let i = 0; i < LINE_REGEXES.length; i++) {
     if (!comments[i] || !LINE_REGEXES[i].test(comments[i].value)) {
       return true;
@@ -131,39 +127,36 @@ function isMissingLineCommentLicense(comments) {
 /**
  * We match the whole block comment, including potential leading asterisks of the jsdoc.
  */
-function isMissingBlockLineCommentLicense(licenseText) {
+function isMissingBlockLineCommentLicense(licenseText: string) {
   return !BLOCK_REGEX.test(licenseText);
 }
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'check-license-header',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'check license headers',
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
+    messages: {
+      missingLicense: 'Missing license header',
+      incorrectLineLicense: 'Incorrect line license header',
+      incorrectBlockLicense: 'Incorrect block license header',
+    },
   },
-  create: function (context) {
+  defaultOptions: [],
+  create: function(context) {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     const filename = context.filename ?? context.getFilename();
     const fileName = filename;
     // Fix windows paths for exemptions
-    const relativePath = path
-      .relative(FRONT_END_FOLDER, fileName)
-      .replace(/\\/g, '/');
+    const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');
 
-    if (
-      relativePath.startsWith('third_party') ||
-      fileName.endsWith('TestRunner.js') ||
-      EXCLUDED_FILES.includes(relativePath) ||
-      OTHER_LICENSE_HEADERS.includes(relativePath)
-    ) {
+    if (relativePath.startsWith('third_party') || fileName.endsWith('TestRunner.js') ||
+        EXCLUDED_FILES.includes(relativePath) || OTHER_LICENSE_HEADERS.includes(relativePath)) {
       return {};
     }
 
@@ -180,7 +173,7 @@ module.exports = {
             (comments.length === 1 && comments[0].type === 'Shebang')) {
           context.report({
             node,
-            message: 'Missing license header',
+            messageId: 'missingLicense',
             fix(fixer) {
               return fixer.insertTextBefore(node, LICENSE_HEADER_ADDITION);
             },
@@ -202,25 +195,23 @@ module.exports = {
           if (isMissingLineCommentLicense(commentsToCheck)) {
             context.report({
               node,
-              message: 'Incorrect line license header',
+              messageId: 'incorrectLineLicense',
               fix(fixer) {
                 return fixer.insertTextBefore(
-                  firstCommentToCheck,
-                  LICENSE_HEADER_ADDITION,
+                    firstCommentToCheck,
+                    LICENSE_HEADER_ADDITION,
                 );
               },
             });
           }
-        } else if (
-          isMissingBlockLineCommentLicense(firstCommentToCheck.value)
-        ) {
+        } else if (isMissingBlockLineCommentLicense(firstCommentToCheck.value)) {
           context.report({
             node,
-            message: 'Incorrect block license header',
+            messageId: 'incorrectBlockLicense',
             fix(fixer) {
               return fixer.insertTextBefore(
-                firstCommentToCheck,
-                LICENSE_HEADER_ADDITION,
+                  firstCommentToCheck,
+                  LICENSE_HEADER_ADDITION,
               );
             },
           });
@@ -228,4 +219,4 @@ module.exports = {
       },
     };
   },
-};
+});

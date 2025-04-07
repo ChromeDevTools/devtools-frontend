@@ -1,11 +1,10 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/check-test-definitions.js');
+import rule from '../lib/check-test-definitions.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('check-test-definitions', rule, {
   valid: [

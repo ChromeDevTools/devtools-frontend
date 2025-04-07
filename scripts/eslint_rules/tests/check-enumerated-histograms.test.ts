@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/check-enumerated-histograms.js');
+import rule from '../lib/check-enumerated-histograms.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('check-enumerated-histograms', rule, {
   valid: [
@@ -25,8 +25,7 @@ new RuleTester().run('check-enumerated-histograms', rule, {
       filename: 'front_end/components/test.ts',
       errors: [
         {
-          message:
-              'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MAX_VALUE\'.',
+          messageId: 'invalidArgument',
         },
       ],
     },

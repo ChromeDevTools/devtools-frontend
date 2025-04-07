@@ -19,18 +19,6 @@ const globalThis: any = global;
 
 let loadExtensionPromise: Promise<unknown> = Promise.resolve();
 
-// FIXME(chromium:1248945): Replace with crypto.randomUUID() once Chromium updates its version of node.js
-function guid() {
-  const digits = '0123456789abcdef';
-  const rnd = () => digits[Math.floor(Math.random() * (digits.length - 1))];
-  const eight = new Array(8).fill('0').map(rnd).join('');
-  const four = new Array(4).fill('0').map(rnd).join('');
-  const version = new Array(3).fill('0').map(rnd).join('');
-  const variant = new Array(3).fill('0').map(rnd).join('');
-  const twelve = new Array(12).fill('0').map(rnd).join('');
-  return `${eight}-${four}-4${version}-8${variant}-${twelve}`;
-}
-
 export function getResourcesPathWithDevToolsHostname() {
   return getResourcesPath(getDevToolsFrontendHostname());
 }
@@ -56,7 +44,7 @@ export async function loadExtension(name: string, startPage?: string, allowFileA
       window.chrome = window.chrome || {};
     }
 
-    const extensionScriptId = guid();
+    const extensionScriptId = crypto.randomUUID();
     const injectedScriptId = await session.send(
         'Page.addScriptToEvaluateOnNewDocument',
         {source: `(${declareChrome})();${injectedAPI}('${extensionScriptId}')`});

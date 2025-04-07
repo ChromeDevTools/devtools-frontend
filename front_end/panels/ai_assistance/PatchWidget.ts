@@ -310,7 +310,7 @@ export class PatchWidget extends UI.Widget.Widget {
           ${input.projectName ? html`
             <div class="change-workspace">
               <div class="selected-folder">
-                <devtools-icon .name=${'folder'}></devtools-icon> <span title=${input.projectPath}>${input.projectName}</span>
+                <devtools-icon .name=${'folder'}></devtools-icon> <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               </div>
               <devtools-button
                 @click=${input.onChangeWorkspaceClick}

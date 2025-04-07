@@ -74,3 +74,9 @@ li.selected {
     color: var(--app-color-navigation-drawer-label-selected);
   }
 }
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

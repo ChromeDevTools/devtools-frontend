@@ -111,7 +111,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
                     title=${project.path}
                   >
                     <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
-                    ${project.name}
+                    <span class="ellipsis">${project.name}</span>
                   </li>`;
               })}
             </ul>

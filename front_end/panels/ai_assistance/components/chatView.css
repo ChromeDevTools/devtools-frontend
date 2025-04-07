@@ -757,6 +757,7 @@ main {
   position: relative;
   margin: 0 var(--sys-size-5);
   padding: 0 var(--sys-size-5);
+  min-width: var(--sys-size-31);
 
   &.saved-to-disk {
     pointer-events: none;
@@ -864,12 +865,20 @@ main {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);
+      overflow: hidden;
+
+      .folder-name {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
     .change-workspace {
       display: flex;
       flex-direction: row;
       gap: var(--sys-size-2);
+      overflow: hidden;
     }
 
     .info-tooltip-container {

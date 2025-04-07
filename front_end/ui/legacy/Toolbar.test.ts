@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import {dispatchClickEvent, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
@@ -207,6 +208,24 @@ describeWithLocale('Toolbar', () => {
       menuButton.setEnabled(false);
       await dispatchMouseDownEvent(menuButton.element);
       assert.isFalse(contextHandler.called);
+    });
+  });
+
+  describeWithEnvironment('ToolbarSettingComboBox', () => {
+    it('updates its title with the currently active setting', async () => {
+      const setting = Common.Settings.Settings.instance().createSetting<string>('test-combo-box-setting', 'option-1');
+      setting.set('option-1');
+      const box = new UI.Toolbar.ToolbarSettingComboBox(
+          [{value: 'option-1', label: 'Option 1'}, {value: 'option-2', label: 'Option 2'}], setting, 'title-value');
+      assert.strictEqual(box.element.title, 'Option 1');
+      const options = box.options();
+      // Ensure it works with select()
+      box.select(options[1]);
+      assert.strictEqual(box.element.title, 'Option 2');
+
+      // Ensure it works with setSelectedIndex()
+      box.setSelectedIndex(0);
+      assert.strictEqual(box.element.title, 'Option 1');
     });
   });
 });

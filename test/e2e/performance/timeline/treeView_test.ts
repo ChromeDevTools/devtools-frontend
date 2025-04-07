@@ -153,7 +153,8 @@ describe('The Performance tool, Bottom-up panel', function() {
       if (!rootActivity) {
         assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
       }
-      const dropdown = await waitFor('select[aria-label="Group by"]');
+
+      const dropdown = await waitFor('select[aria-label="No grouping"]');
       await dropdown.evaluate(el => {
         (el as HTMLSelectElement).selectedIndex = 2;
         el.dispatchEvent(new Event('change'));

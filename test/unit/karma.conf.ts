@@ -10,6 +10,7 @@ import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
 import * as ResultsDb from '../../test/conductor/resultsdb.js';
 import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
+import {ScreenshotError} from '../conductor/screenshot-error.js';
 import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
 
 const puppeteer = require('puppeteer-core');
@@ -61,8 +62,12 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
         await assertElementScreenshotUnchanged(element, filename, {
           captureBeyondViewport: false,
         });
-      } catch (err) {
-        return err.message;
+        return undefined;
+      } catch (error) {
+        if (error instanceof ScreenshotError) {
+          ScreenshotError.errors.push(error);
+        }
+        return `ScreenshotError: ${error.message}`;
       }
     });
 

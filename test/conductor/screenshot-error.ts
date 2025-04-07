@@ -17,6 +17,7 @@ export class ScreenshotError extends Error {
   // The max length of the summary is 4000, but we need to leave some room for
   // the rest of the HTML formatting (e.g. <pre> and </pre>).
   static readonly SUMMARY_LENGTH_CUTOFF = 3900;
+  static errors: ScreenshotError[] = [];
   readonly screenshots: ArtifactGroup;
 
   private constructor(screenshots: ArtifactGroup, message?: string, cause?: Error) {

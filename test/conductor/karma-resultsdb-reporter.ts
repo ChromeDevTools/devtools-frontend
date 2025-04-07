@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as ResultsDb from './resultsdb.js';
+import {ScreenshotError} from './screenshot-error.js';
 
 const chalk = require('chalk');
 const diff = require('diff');
@@ -113,6 +114,19 @@ export const ResultsDBReporter = function(
     }
 
     const testResult: ResultsDb.TestResult = {testId, duration, status, expected, summaryHtml};
+
+    if (result.log?.[0]?.startsWith('Error: ScreenshotError')) {
+      const screenshotError = ScreenshotError.errors.shift();
+      if (screenshotError) {
+        // Assert that the screenshot error matches the log.
+        // If it does not, it means something is wrong
+        // with the order of assertions and tests.«
+        if (!result.log?.[0]?.includes(screenshotError.message)) {
+          throw new Error('Unexpected screenshot assertion error');
+        }
+        [testResult.artifacts, testResult.summaryHtml] = screenshotError.toMiloArtifacts();
+      }
+    }
     ResultsDb.sendTestResult(testResult);
   };
   this.specSuccess = specComplete;

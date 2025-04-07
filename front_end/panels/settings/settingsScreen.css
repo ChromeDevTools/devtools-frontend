@@ -32,7 +32,12 @@ label {
 
 .experiments-filter {
   width: 100%;
-  padding: 0 var(--sys-size-4) 0 var(--sys-size-3);
+  padding: 0 var(--sys-size-9) 0 var(--sys-size-8);
+  max-width: var(--sys-size-35);
+
+  > devtools-toolbar {
+    min-width: var(--sys-size-31);
+  }
 }
 
 .settings-select {

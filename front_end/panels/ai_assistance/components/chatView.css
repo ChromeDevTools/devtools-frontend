@@ -859,9 +859,11 @@ main {
       align-self: center;
     }
 
-    .sources-link {
+    .left-side {
       flex-grow: 1;
+      display: flex;
       align-self: center;
+      gap: var(--sys-size-3);
     }
 
     .selected-folder {

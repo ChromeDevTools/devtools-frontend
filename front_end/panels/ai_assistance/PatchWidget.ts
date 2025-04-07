@@ -203,7 +203,7 @@ export class PatchWidget extends UI.Widget.Widget {
         }
 
         return html`<x-link
-          class="link sources-link"
+          class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
           href="data:text/plain,${encodeURIComponent(input.sources)}"
           jslog=${VisualLogging.link('files-used-in-patching').track({click: true})}>
@@ -266,7 +266,9 @@ export class PatchWidget extends UI.Widget.Widget {
         ></devtools-code-block>
         ${input.patchSuggestionState === PatchSuggestionState.ERROR
           ? html`<div class="error-container">
-              <devtools-icon .name=${'cross-circle-filled'}></devtools-icon>${lockedString(UIStringsNotTranslate.genericErrorMessage)} ${renderSourcesLink()}
+              <devtools-icon .name=${'cross-circle-filled'}></devtools-icon>${
+              lockedString(UIStringsNotTranslate.genericErrorMessage)
+              } ${renderSourcesLink()}
             </div>`
           : nothing
         }`;
@@ -280,13 +282,15 @@ export class PatchWidget extends UI.Widget.Widget {
         if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
           return html`
           <div class="footer">
-            <x-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslog=${
-              VisualLogging.link('code-disclaimer').track({
-                click: true,
-              })}>
-              ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
-            </x-link>
-            ${renderSourcesLink()}
+            <div class="left-side">
+              <x-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslog=${
+                VisualLogging.link('code-disclaimer').track({
+                  click: true,
+                })}>
+                ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
+              </x-link>
+              ${renderSourcesLink()}
+            </div>
             <div class="save-or-discard-buttons">
               <devtools-button
                 @click=${input.onDiscard}

@@ -793,6 +793,9 @@ main {
     & .header-text {
       font: var(--sys-typescale-body4);
       color: var(--sys-color-on-surface);
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
     }
 
     & .arrow {
@@ -865,11 +868,11 @@ main {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);
-      overflow: hidden;
+      overflow-x: hidden;
 
       .folder-name {
         white-space: nowrap;
-        overflow: hidden;
+        overflow-x: hidden;
         text-overflow: ellipsis;
       }
     }
@@ -878,7 +881,8 @@ main {
       display: flex;
       flex-direction: row;
       gap: var(--sys-size-2);
-      overflow: hidden;
+      max-width: 50%;
+      min-width: 0;
     }
 
     .info-tooltip-container {
@@ -904,6 +908,7 @@ main {
       align-items: center;
       gap: var(--sys-size-3);
       margin-left: auto;
+      min-width: fit-content;
 
       devtools-icon {
         /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */

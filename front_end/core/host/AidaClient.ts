@@ -131,7 +131,7 @@ export enum ClientFeature {
   // Chrome AI Patch Agent.
   CHROME_PATCH_AGENT = 12,
   // Chrome AI Assistance Performance Insights Agent.
-  CHROME_PERFORMANCE_INSIGHTS_AGENT = 14,
+  CHROME_PERFORMANCE_INSIGHTS_AGENT = 13,
 }
 
 export enum UserTier {

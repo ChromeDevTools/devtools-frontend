@@ -245,36 +245,18 @@ export class CookiesTable extends UI.Widget.VBox {
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
                     ?highlighted=${cookie.flagged}>
-                  <td>
-                    ${cookie.icons?.name}
-                    ${cookie.name}
-                  </td>
+                  <td>${cookie.icons?.name}${cookie.name}</td>
                   <td>${cookie.value}</td>
-                  <td>
-                    ${cookie.icons?.domain}
-                    ${cookie.domain}
-                  </td>
-                  <td>
-                    ${cookie.icons?.path}
-                    ${cookie.path}
-                  </td>
-                  <td title=${ifDefined(cookie.expiresTooltip)}>
-                    ${cookie.expires}
-                  </td>
+                  <td>${cookie.icons?.domain}${cookie.domain}</td>
+                  <td>${cookie.icons?.path}${cookie.path}</td>
+                  <td title=${ifDefined(cookie.expiresTooltip)}>${cookie.expires}</td>
                   <td>${cookie.size}</td>
                   <td data-value=${Boolean(cookie['http-only'])}></td>
-                  <td data-value=${Boolean(cookie.secure)}>
-                    ${cookie.icons?.secure}
-                  </td>
-                  <td>
-                    ${cookie.icons?.['same-site']}
-                    ${cookie['same-site']}
-                  </td>
+                  <td data-value=${Boolean(cookie.secure)}>${cookie.icons?.secure}</td>
+                  <td>${cookie.icons?.['same-site']}${cookie['same-site']}</td>
                   <td>${cookie['partition-key-site']}</td>
                   <td data-value=${Boolean(cookie['has-cross-site-ancestor'])}></td>
-                  <td data-value=${ifDefined(cookie.priorityValue)}>
-                    ${cookie.priority}
-                  </td>
+                  <td data-value=${ifDefined(cookie.priorityValue)}>${cookie.priority}</td>
                   ${input.schemeBindingEnabled ? html`
                     <td title=${i18nString(UIStrings.sourceSchemeTooltip)}>${cookie['source-scheme']}</td>` : ''}
                   ${input.portBindingEnabled ? html`

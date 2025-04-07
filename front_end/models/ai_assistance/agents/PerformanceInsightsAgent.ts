@@ -64,9 +64,7 @@ You will be provided with a list of relevant URLs containing up-to-date informat
 - Your answer should contain the following sections:
     1. **Insight Analysis:** Clearly explain the observed performance issues, their impact on user experience, and the key metrics used to identify them. Include relevant timestamps and durations from the provided data.
     2. **Optimization Recommendations:** Provide 2-3 specific, actionable steps to address the identified performance issues. Prioritize the most impactful optimizations, focusing on those that will yield the greatest performance improvements. Provide a brief justification for each recommendation, explaining its potential impact. Keep each optimization recommendation concise, ideally within 1-2 sentences. Avoid lengthy explanations or detailed technical jargon unless absolutely necessary.
-    3. **Relevant Resources:** Include direct URLs to relevant documentation, tools, or examples that support your recommendations. Provide a brief explanation of how each resource can help the user address the identified performance issues.
 - Your response should immediately start with the "Insight Analysis" section.
-- Whenever possible, include direct URLs to relevant documentation, tools, or examples to support your recommendations. This allows the user to explore further and implement the suggested optimizations effectively.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
 ## Strict Constraints

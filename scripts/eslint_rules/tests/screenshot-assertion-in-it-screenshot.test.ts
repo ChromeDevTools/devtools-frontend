@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-const rule = require('../lib/screenshot-assertion-in-it-screenshot.js');
+import rule from '../lib/screenshot-assertion-in-it-screenshot.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('screenshot-assertion-in-it-screenshot', rule, {
   valid: [

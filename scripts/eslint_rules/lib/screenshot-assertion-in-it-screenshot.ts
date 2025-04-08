@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+import type {TSESTree} from '@typescript-eslint/utils';
+
+import {createRule} from './tsUtils.ts';
+
+export default createRule({
+  name: 'screenshot-assertion-in-it-screenshot',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'ensure screenshots are asserted in an itScreenshot block',
       category: 'Possible Errors',
@@ -20,6 +20,7 @@ module.exports = {
     fixable: 'code',
     schema: []  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     const SCREENSHOT_ASSERTION_FUNCTIONS =
         new Set(['assertElementScreenshotUnchanged', 'assertPageScreenshotUnchanged']);
@@ -53,7 +54,7 @@ module.exports = {
     }
 
     function findItParentForNode(node) {
-      if (!node || !node.parent) {
+      if (!node?.parent) {
         return null;
       }
 
@@ -96,15 +97,14 @@ module.exports = {
     }
 
     return {
-      'CallExpression[callee.type="Identifier"][callee.name="it"]'(node) {
+      'CallExpression[callee.type="Identifier"][callee.name="it"]'(node: TSESTree.CallExpression) {
         const testCallback = node.arguments[1];
-        const validCallbackTypes = ['ArrowFunctionExpression', 'FunctionExpression'];
-        if (!testCallback || !validCallbackTypes.includes(testCallback.type)) {
-          // Oddly structured it: bail.
-          return;
+        if (testCallback.type === 'ArrowFunctionExpression' || testCallback.type === 'FunctionExpression') {
+          if (testCallback.body.type === 'BlockStatement') {
+            checkForScreenshotCalls(testCallback.body.body);
+          }
         }
-        checkForScreenshotCalls(testCallback.body.body);
       }
     };
   }
-};
+});

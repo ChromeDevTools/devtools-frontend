@@ -341,9 +341,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
     const isInWrapper = UI.Context.Context.instance().flavor(QuickSourceView) &&
         !UI.InspectorView.InspectorView.instance().isDrawerMinimized();
     if (panel.splitWidget.isVertical() || isInWrapper) {
-      panel.splitWidget.uninstallResizer(panel.sourcesViewInternal.toolbarContainerElement());
+      panel.splitWidget.uninstallResizer(panel.sourcesViewInternal.scriptViewToolbar());
     } else {
-      panel.splitWidget.installResizer(panel.sourcesViewInternal.toolbarContainerElement());
+      panel.splitWidget.installResizer(panel.sourcesViewInternal.scriptViewToolbar());
     }
     if (!isInWrapper) {
       panel.sourcesViewInternal.leftToolbar().appendToolbarItem(panel.toggleNavigatorSidebarButton);

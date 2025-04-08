@@ -11,7 +11,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private contrastRatioThresholds: {
     [x: string]: number,
   }|null;
-  private readonly contrastRationAPCAThreshold: number|null;
+  private readonly contrastRatioAPCAThresholdInternal: number|null;
   private fgColor: Common.Color.Legacy|null;
   private bgColorInternal: Common.Color.Legacy|null;
   private colorFormatInternal: Common.Color.Format|undefined;
@@ -21,7 +21,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     this.contrastRatioInternal = null;
     this.contrastRatioAPCAInternal = null;
     this.contrastRatioThresholds = null;
-    this.contrastRationAPCAThreshold = 0;
+    this.contrastRatioAPCAThresholdInternal = 0;
     this.fgColor = null;
     this.bgColorInternal = null;
 
@@ -29,16 +29,19 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
       return;
     }
 
-    if (!contrastInfo.computedFontSize || !contrastInfo.computedFontWeight || !contrastInfo.backgroundColors ||
-        contrastInfo.backgroundColors.length !== 1) {
+    if (!contrastInfo.computedFontSize || !contrastInfo.computedFontWeight) {
       return;
     }
 
     this.isNullInternal = false;
     this.contrastRatioThresholds =
         Common.ColorUtils.getContrastThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
-    this.contrastRationAPCAThreshold =
+    this.contrastRatioAPCAThresholdInternal =
         Common.ColorUtils.getAPCAThreshold(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
+
+    if (!contrastInfo.backgroundColors || contrastInfo.backgroundColors.length !== 1) {
+      return;
+    }
     const bgColorText = contrastInfo.backgroundColors[0];
     const bgColor = Common.Color.parse(bgColorText)?.asLegacyColor();
     if (bgColor) {
@@ -74,7 +77,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   contrastRatioAPCAThreshold(): number|null {
-    return this.contrastRationAPCAThreshold;
+    return this.contrastRatioAPCAThresholdInternal;
   }
 
   setBgColor(bgColor: Common.Color.Legacy): void {

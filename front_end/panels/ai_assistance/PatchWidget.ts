@@ -159,6 +159,7 @@ export interface ViewInput {
 
 export interface ViewOutput {
   tooltipRef?: Directives.Ref<HTMLElement>;
+  changeRef?: Directives.Ref<HTMLElement>;
 }
 
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -197,6 +198,7 @@ export class PatchWidget extends UI.Widget.Widget {
         return;
       }
       output.tooltipRef = output.tooltipRef ?? Directives.createRef<HTMLElement>();
+      output.changeRef = output.changeRef ?? Directives.createRef<HTMLElement>();
 
       function renderSourcesLink(): LitTemplate {
         if (!input.sources) {
@@ -320,9 +322,9 @@ export class PatchWidget extends UI.Widget.Widget {
               <devtools-button
                 @click=${input.onChangeWorkspaceClick}
                 .jslogContext=${'change-workspace'}
-                .variant=${Buttons.Button.Variant.TEXT}>
-                  ${lockedString(UIStringsNotTranslate.change)}
-              </devtools-button>
+                .variant=${Buttons.Button.Variant.TEXT}
+                ${Directives.ref(output.changeRef)}
+              >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
             </div>
           ` : nothing}
           <div class="apply-to-workspace-container">
@@ -575,6 +577,9 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.#patchSources = undefined;
     void this.changeManager?.popStashedChanges();
     this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#viewOutput.changeRef?.value?.focus();
+    });
   }
 
   #onSaveAll(): void {

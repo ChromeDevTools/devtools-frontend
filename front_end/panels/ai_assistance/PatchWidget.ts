@@ -48,6 +48,11 @@ const UIStringsNotTranslate = {
    */
   change: 'Change',
   /**
+   * @description Accessible title of the Change button to indicate that
+   * the button can be used to change the root folder.
+   */
+  changeRootFolder: 'Change project root folder',
+  /**
    *@description Button text to cancel applying to workspace
    */
   cancel: 'Cancel',
@@ -323,6 +328,7 @@ export class PatchWidget extends UI.Widget.Widget {
                 @click=${input.onChangeWorkspaceClick}
                 .jslogContext=${'change-workspace'}
                 .variant=${Buttons.Button.Variant.TEXT}
+                .title=${lockedString(UIStringsNotTranslate.changeRootFolder)}
                 ${Directives.ref(output.changeRef)}
               >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
             </div>

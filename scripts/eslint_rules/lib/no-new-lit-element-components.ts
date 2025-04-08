@@ -1,24 +1,28 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+
+import {createRule} from './tsUtils.ts';
 
 const allowedPaths = [
   'front_end/panels/recorder/',
   'front_end/ui/components/suggestion_input/',
 ];
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+
+export default createRule({
+  name: 'no-new-lit-element-components',
   meta: {
     type: 'problem',
     docs: {
       description: 'Check that no new LitElement components are introduced',
       category: 'Possible Errors',
     },
+    messages: {
+      noNewLitElementComponents: 'New LitElement components are banned.',
+    },
     schema: []  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     const filename = context.filename ?? context.getFilename();
     return {
@@ -33,10 +37,9 @@ module.exports = {
         }
         context.report({
           node,
-          message:
-              'New LitElement components are banned.',
+          messageId: 'noNewLitElementComponents',
         });
       },
     };
   }
-};
+});

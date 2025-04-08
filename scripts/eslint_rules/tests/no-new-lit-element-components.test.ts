@@ -1,12 +1,10 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-const rule = require('../lib/no-new-lit-element-components.js');
 
-const {RuleTester} = require('./utils/utils.js');
+import rule from '../lib/no-new-lit-element-components.ts';
 
-const EXPECTED_ERROR_MESSAGE = 'New LitElement components are banned.';
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('no-new-lit-element-components', rule, {
   valid: [
@@ -23,7 +21,7 @@ new RuleTester().run('no-new-lit-element-components', rule, {
     {
       code: 'class A extends LitElement {}',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'noNewLitElementComponents'}],
     },
   ],
 });

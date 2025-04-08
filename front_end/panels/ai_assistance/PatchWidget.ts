@@ -353,7 +353,8 @@ export class PatchWidget extends UI.Widget.Widget {
               aria-details="info-tooltip"
               .iconName=${'info'}
               .variant=${Buttons.Button.Variant.ICON}
-              ></devtools-button>
+              .title=${input.applyToWorkspaceTooltipText}
+            ></devtools-button>
             <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
               <div class="info-tooltip-container">
                 ${input.applyToWorkspaceTooltipText}

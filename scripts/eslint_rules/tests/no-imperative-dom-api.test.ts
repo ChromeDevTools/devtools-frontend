@@ -473,6 +473,7 @@ class SomeWidget extends UI.Widget.Widget {
     anchor.href = 'https://www.google.com';
     anchor.innerText = 'some-text';
     anchor.dataset.someKey = 'some-value';
+    anchor.role = 'some-role';
     this.contentElement.insertBefore(anchor, input);
 
     const img = document.createElement('img');
@@ -495,7 +496,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <a href="https://www.google.com" data-some-key="some-value">some-text</a>
+      <a href="https://www.google.com" data-some-key="some-value" role="some-role">some-text</a>
       <img src="https://www.google.com/some-image.png" alt="some-alt" draggable="true" height="100"
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
           scope="some-scope"></img>

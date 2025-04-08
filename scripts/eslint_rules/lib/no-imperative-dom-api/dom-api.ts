@@ -27,8 +27,8 @@ export const domApi = {
           return true;
         }
         if (isIdentifier(property, [
-              'alt', 'draggable', 'height', 'hidden', 'href', 'id', 'name', 'placeholder', 'rel', 'scope', 'slot',
-              'spellcheck', 'src', 'tabindex', 'title', 'type', 'value', 'width'
+              'alt', 'draggable', 'height', 'hidden', 'href', 'id', 'name', 'placeholder', 'rel', 'role', 'scope',
+              'slot', 'spellcheck', 'src', 'tabindex', 'title', 'type', 'value', 'width'
             ])) {
           domFragment.attributes.push({key: property.name.toLowerCase(), value: propertyValue});
           return true;

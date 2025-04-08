@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
+import {createRule} from './tsUtils.ts';
 
 function hasPublicMethodForUnderscoredProperty(node) {
   const nodeName = node.key.name;
@@ -15,6 +15,7 @@ function hasPublicMethodForUnderscoredProperty(node) {
   });
   return hasMethodDeclaredWithNonUnderscoredName;
 }
+
 function checkNodeForUnderscoredProperties(context, node, typeOfNode) {
   if (node.key.type !== 'Identifier') {
     return;
@@ -33,23 +34,25 @@ function checkNodeForUnderscoredProperties(context, node, typeOfNode) {
   context.report({
     node,
     data: {propName: nodeName, typeOfNode},
-    message: 'Class {{typeOfNode}} {{propName}} should not begin with an underscore.'
+    messageId: 'underscorePrefix',
   });
 }
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+
+export default createRule({
+  name: 'no-underscored-properties',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'enforce that class properties and methods do not start with an underscore',
       category: 'Possible Errors',
     },
+    messages: {
+      underscorePrefix: 'Class {{typeOfNode}} {{propName}} should not begin with an underscore.',
+    },
     fixable: 'code',
     schema: []  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     return {
       PropertyDefinition(node) {
@@ -64,4 +67,4 @@ module.exports = {
       }
     };
   }
-};
+});

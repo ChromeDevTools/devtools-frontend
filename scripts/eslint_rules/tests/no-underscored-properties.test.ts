@@ -1,10 +1,10 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-const rule = require('../lib/no-underscored-properties.js');
 
-const {RuleTester} = require('./utils/utils.js');
+import rule from '../lib/no-underscored-properties.ts';
+
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('no-underscored-properties', rule, {
   valid: [
@@ -53,7 +53,7 @@ new RuleTester().run('no-underscored-properties', rule, {
         private _foo: string = '';
       }`,
       errors: [
-        {message: 'Class property _foo should not begin with an underscore.'},
+        {messageId: 'underscorePrefix'},
       ],
     },
     {
@@ -62,7 +62,7 @@ new RuleTester().run('no-underscored-properties', rule, {
         public _foo: string = '';
       }`,
       errors: [
-        {message: 'Class property _foo should not begin with an underscore.'},
+        {messageId: 'underscorePrefix'},
       ],
     },
     {
@@ -71,7 +71,7 @@ new RuleTester().run('no-underscored-properties', rule, {
         _foo: string = '';
       }`,
       errors: [
-        {message: 'Class property _foo should not begin with an underscore.'},
+        {messageId: 'underscorePrefix'},
       ],
     },
     {
@@ -81,7 +81,7 @@ new RuleTester().run('no-underscored-properties', rule, {
         }
       }`,
       errors: [
-        {message: 'Class method _foo should not begin with an underscore.'},
+        {messageId: 'underscorePrefix'},
       ],
     },
     {
@@ -92,7 +92,7 @@ new RuleTester().run('no-underscored-properties', rule, {
         }
       }`,
       errors: [
-        {message: 'Class method _foo should not begin with an underscore.'},
+        {messageId: 'underscorePrefix'},
       ],
     },
   ],

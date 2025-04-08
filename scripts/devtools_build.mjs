@@ -5,10 +5,14 @@
 import childProcess from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {performance} from 'node:perf_hooks';
+import { performance } from 'node:perf_hooks';
 import util from 'node:util';
 
-import {autoninjaExecutablePath, gnExecutablePath, rootPath} from './devtools_paths.js';
+import {
+  autoninjaExecutablePath,
+  gnExecutablePath,
+  rootPath,
+} from './devtools_paths.js';
 
 const execFile = util.promisify(childProcess.execFile);
 
@@ -74,7 +78,7 @@ export class FeatureSet {
    * Yields the command line parameters to pass to the invocation of
    * a Chrome binary for achieving the state of the feature set.
    */
-  * [Symbol.iterator]() {
+  *[Symbol.iterator]() {
     const disabledFeatures = [...this.#disabled];
     if (disabledFeatures.length) {
       yield `--disable-features=${disabledFeatures.sort().join(',')}`;
@@ -104,7 +108,9 @@ export class FeatureSet {
       if (parts.length > 1) {
         const args = parts[1].split('/');
         if (args.length % 2 !== 0) {
-          throw new Error(`Invalid parameters '${parts[1]}' for feature ${feature}`);
+          throw new Error(
+            `Invalid parameters '${parts[1]}' for feature ${feature}`,
+          );
         }
         for (let i = 0; i < args.length; i += 2) {
           const key = args[i + 0];
@@ -112,7 +118,7 @@ export class FeatureSet {
           parameters[key] = value;
         }
       }
-      features.push({feature, parameters});
+      features.push({ feature, parameters });
     }
     return features;
   }
@@ -134,8 +140,8 @@ export class BuildError extends Error {
    * @param {string} options.target the target relative to `//out`.
    */
   constructor(step, options) {
-    const {cause, outDir, target} = options;
-    super(`Failed to build target ${target} in ${outDir}`, {cause});
+    const { cause, outDir, target } = options;
+    super(`Failed to build target ${target} in ${outDir}`, { cause });
     this.name = 'BuildError';
     this.step = step;
     this.target = target;
@@ -143,7 +149,7 @@ export class BuildError extends Error {
   }
 
   toString() {
-    const {stdout} = this.cause;
+    const { stdout } = this.cause;
     return stdout;
   }
 }
@@ -156,11 +162,9 @@ export class BuildError extends Error {
 
 /**
  * @param {string} target
- * @param {AbortSignal=} signal
- * @return {Promise<BuildResult>} a `BuildResult` with statistics for the build.
+ * @return {Promise<void>}
  */
-export async function build(target, signal) {
-  const startTime = performance.now();
+export async function prepareBuild(target) {
   const outDir = path.join(rootPath(), 'out', target);
 
   // Prepare the build directory first.
@@ -170,14 +174,21 @@ export async function build(target, signal) {
     try {
       const gnExe = gnExecutablePath();
       const gnArgs = ['-q', 'gen', outDir];
-      await execFile(gnExe, gnArgs, {signal});
+      await execFile(gnExe, gnArgs);
     } catch (cause) {
-      if (cause.name === 'AbortError') {
-        throw cause;
-      }
-      throw new BuildError(BuildStep.GN, {cause, outDir, target});
+      throw new BuildError(BuildStep.GN, { cause, outDir, target });
     }
   }
+}
+
+/**
+ * @param {string} target
+ * @param {AbortSignal=} signal
+ * @return {Promise<BuildResult>} a `BuildResult` with statistics for the build.
+ */
+export async function build(target, signal) {
+  const startTime = performance.now();
+  const outDir = path.join(rootPath(), 'out', target);
 
   // Build just the devtools-frontend resources in |outDir|. This is important
   // since we might be running in a full Chromium checkout and certainly don't
@@ -185,15 +196,15 @@ export async function build(target, signal) {
   try {
     const autoninjaExe = autoninjaExecutablePath();
     const autoninjaArgs = ['-C', outDir, '--quiet', 'devtools_all_files'];
-    await execFile(autoninjaExe, autoninjaArgs, {signal});
+    await execFile(autoninjaExe, autoninjaArgs, { signal });
   } catch (cause) {
     if (cause.name === 'AbortError') {
       throw cause;
     }
-    throw new BuildError(BuildStep.AUTONINJA, {cause, outDir, target});
+    throw new BuildError(BuildStep.AUTONINJA, { cause, outDir, target });
   }
 
   // Report the build result.
   const time = (performance.now() - startTime) / 1000;
-  return {time};
+  return { time };
 }

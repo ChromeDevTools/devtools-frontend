@@ -1,23 +1,25 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const {isLitHtmlTemplateCall} = require('./utils.js');
+import {createRule} from './tsUtils.ts';
+import {isLitHtmlTemplateCall} from './utils.js';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'no-self-closing-custom-element-tagnames',
   meta: {
     type: 'problem',
     docs: {
       description: 'Check for self closing custom element tag names in Lit templates.',
       category: 'Possible Errors',
     },
+    messages: {
+      requiredEndTag: 'Custom elements should not be self-closing.',
+    },
     fixable: 'code',
     schema: []  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     return {
       TaggedTemplateExpression(node) {
@@ -31,10 +33,10 @@ module.exports = {
         if (text.match(/<@TEMPLATE_EXPRESSION\(\)([^>]*?)\/>/)) {
           context.report({
             node,
-            message: 'Custom elements should not be self closing.',
+            messageId: 'requiredEndTag',
           });
         }
       },
     };
   }
-};
+});

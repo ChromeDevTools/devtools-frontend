@@ -196,6 +196,23 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
 
   #lastContextForEnhancedQuery: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
+  /**
+   * Store results (as facts) for the functions that are pure and return the
+   * same data for the same insight.
+   * This fact is then passed into the request on all future
+   * queries for the conversation. This means that the LLM is far less likely to
+   * call the function again, because we have provided the same data as a
+   * fact. We cache based on the active insight to ensure that if the user
+   * changes which insight they are focusing we will call the function again.
+   * It's important that we store it as a Fact in the cache, because the AI
+   * Agent stores facts in a set, and we need to pass the same object through to
+   * make sure it isn't mistakenly duplicated in the request.
+   */
+  #functionCallCache = new Map<TimelineUtils.InsightAIContext.ActiveInsight, {
+    getNetworkActivitySummary?: Host.AidaClient.RequestFact,
+    getMainThreadActivity?: Host.AidaClient.RequestFact,
+  }>();
+
   override async *
       handleContextDetails(activeContext: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null):
           AsyncGenerator<ContextResponse, void, void> {
@@ -263,6 +280,15 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         );
         const formatted =
             requests.map(r => TraceEventFormatter.networkRequest(r, activeInsight.parsedTrace, {verbose: false}));
+        const summaryFact: Host.AidaClient.RequestFact = {
+          text:
+              `This is the network summary for this insight. You can use this and not call getNetworkActivitySummary again:\n${
+                  formatted.join('\n')}`,
+          metadata: {source: 'getNetworkActivitySummary()'}
+        };
+        const cacheForInsight = this.#functionCallCache.get(activeInsight) ?? {};
+        cacheForInsight.getNetworkActivitySummary = summaryFact;
+        this.#functionCallCache.set(activeInsight, cacheForInsight);
         return {result: {requests: formatted}};
       },
     });
@@ -349,7 +375,18 @@ The fields are:
         if (!tree) {
           return {error: 'No main thread activity found'};
         }
-        return {result: {activity: tree.serialize()}};
+        const activity = tree.serialize();
+        const activityFact: Host.AidaClient.RequestFact = {
+          text:
+              `This is the main thread activity for this insight. You can use this and not call getMainThreadActivity again:\n${
+                  activity}`,
+          metadata: {source: 'getMainThreadActivity()'},
+        };
+        const cacheForInsight = this.#functionCallCache.get(activeInsight) ?? {};
+        cacheForInsight.getMainThreadActivity = activityFact;
+        this.#functionCallCache.set(activeInsight, cacheForInsight);
+
+        return {result: {activity}};
       },
 
     });
@@ -397,6 +434,15 @@ The fields are:
     signal?: AbortSignal, selected: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null,
   }): AsyncGenerator<ResponseData, void, void> {
     this.#insight = options.selected ?? undefined;
+
+    // Clear any previous facts in case the user changed the active context.
+    this.clearFacts();
+    const cachedFunctionCalls = this.#insight ? this.#functionCallCache.get(this.#insight.getItem()) : null;
+    if (cachedFunctionCalls) {
+      for (const fact of Object.values(cachedFunctionCalls)) {
+        this.addFact(fact);
+      }
+    }
 
     return yield* super.run(initialQuery, options);
   }

@@ -14,6 +14,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -159,7 +160,7 @@ export interface ViewInput {
   onCancel: () => void;
   onDiscard: () => void;
   onSaveAll: () => void;
-  onChangeWorkspaceClick: () => void;
+  onChangeWorkspaceClick?: () => void;
 }
 
 export interface ViewOutput {
@@ -188,6 +189,8 @@ export class PatchWidget extends UI.Widget.Widget {
   #patchSuggestionState = PatchSuggestionState.INITIAL;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  #automaticFileSystem =
+      Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -324,13 +327,15 @@ export class PatchWidget extends UI.Widget.Widget {
               <div class="selected-folder">
                 <devtools-icon .name=${'folder'}></devtools-icon> <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               </div>
-              <devtools-button
-                @click=${input.onChangeWorkspaceClick}
-                .jslogContext=${'change-workspace'}
-                .variant=${Buttons.Button.Variant.TEXT}
-                .title=${lockedString(UIStringsNotTranslate.changeRootFolder)}
-                ${Directives.ref(output.changeRef)}
-              >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
+              ${input.onChangeWorkspaceClick ? html`
+                <devtools-button
+                  @click=${input.onChangeWorkspaceClick}
+                  .jslogContext=${'change-workspace'}
+                  .variant=${Buttons.Button.Variant.TEXT}
+                  .title=${lockedString(UIStringsNotTranslate.changeRootFolder)}
+                  ${Directives.ref(output.changeRef)}
+                >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
+              ` : nothing}
             </div>
           ` : nothing}
           <div class="apply-to-workspace-container">
@@ -412,6 +417,15 @@ export class PatchWidget extends UI.Widget.Widget {
         Common.ParsedURL.ParsedURL.urlToRawPathString(
             this.#project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()) :
         Platform.DevToolsPath.EmptyRawPathString;
+    const automaticFileSystemProject =
+        this.#automaticFileSystem ? this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root) : null;
+    const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+                         .filter(
+                             project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
+                                 project.fileSystem().type() ===
+                                     Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT);
+    const showChangeButton = projects.length > 1 || this.#project !== automaticFileSystemProject;
+
     this.#view(
         {
           workspaceDiff: this.#workspaceDiff,
@@ -431,7 +445,8 @@ export class PatchWidget extends UI.Widget.Widget {
           },
           onDiscard: this.#onDiscard.bind(this),
           onSaveAll: this.#onSaveAll.bind(this),
-          onChangeWorkspaceClick: this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}),
+          onChangeWorkspaceClick: showChangeButton ? this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}) :
+                                                     undefined,
         },
         this.#viewOutput, this.contentElement);
   }
@@ -499,7 +514,9 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   #selectDefaultProject(): void {
-    const project = this.#workspace.project(this.#projectIdSetting.get());
+    const automaticFileSystemProject =
+        this.#automaticFileSystem ? this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root) : null;
+    const project = automaticFileSystemProject || this.#workspace.project(this.#projectIdSetting.get());
     if (project) {
       this.#project = project;
     } else {

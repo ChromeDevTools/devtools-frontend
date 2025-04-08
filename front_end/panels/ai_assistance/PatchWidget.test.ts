@@ -17,6 +17,7 @@ import {
   MockAidaAbortError,
   mockAidaClient,
   MockAidaFetchError,
+  setupAutomaticFileSystem,
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -30,6 +31,7 @@ describeWithMockConnection('PatchWidget', () => {
     showFreDialogStub = sinon.stub(PanelCommon.FreDialog, 'show');
 
     initializePersistenceImplForTests();
+    setupAutomaticFileSystem();
   });
 
   afterEach(() => {
@@ -265,6 +267,7 @@ Files:
 
       // Simulate clicking the "Change" button
       assert.isTrue(showSelectWorkspaceDialogStub.notCalled);
+      assert.isDefined(view.input.onChangeWorkspaceClick);
       view.input.onChangeWorkspaceClick();
       assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
 

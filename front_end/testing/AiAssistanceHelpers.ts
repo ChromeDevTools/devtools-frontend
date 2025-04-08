@@ -11,6 +11,7 @@ import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
+import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
@@ -215,6 +216,25 @@ export async function createAiAssistancePanel(options?: {
     stubAidaCheckAccessPreconditions,
   };
 }
+
+export const setupAutomaticFileSystem = (options: {hasFileSystem: boolean} = {
+  hasFileSystem: false
+}): void => {
+  const root = '/path/to/my-automatic-file-system';
+  const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
+  const hostConfig = {devToolsAutomaticFileSystems: {enabled: true}};
+  const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
+  const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+  sinon.stub(projectSettingsModel, 'projectSettings').value(options.hasFileSystem ? {workspace: {root, uuid}} : {});
+
+  const manager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
+    forceNew: true,
+    hostConfig,
+    inspectorFrontendHost,
+    projectSettingsModel,
+  });
+  sinon.stub(manager, 'connectAutomaticFileSystem').resolves(true);
+};
 
 let patchWidgets: AiAssistancePanel.PatchWidget.PatchWidget[] = [];
 /**

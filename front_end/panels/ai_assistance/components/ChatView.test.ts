@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
+import {initializePersistenceImplForTests, setupAutomaticFileSystem} from '../../../testing/AiAssistanceHelpers.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
@@ -46,6 +47,9 @@ describeWithEnvironment('ChatView', () => {
 
   describe('SideEffects', () => {
     it('should show SideEffects when the step contains "sideEffect" object', async () => {
+      initializePersistenceImplForTests();
+      setupAutomaticFileSystem();
+
       const props = getProp({
         messages: [
           {

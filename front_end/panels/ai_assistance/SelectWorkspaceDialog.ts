@@ -49,11 +49,15 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+interface Folder {
+  name: string;
+  path: string;
+  project?: Workspace.Workspace.Project;
+  automaticFileSystem?: Persistence.AutomaticFileSystemManager.AutomaticFileSystem;
+}
+
 interface ViewInput {
-  projects: Array<{
-    name: string,
-    path: string,
-  }>;
+  folders: Folder[];
   selectedIndex: number;
   onProjectSelected: (index: number) => void;
   onSelectButtonClick: () => void;
@@ -66,11 +70,12 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #view: View;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
-  #projects: Workspace.Workspace.Project[] = [];
   #selectedIndex = 0;
   #onProjectSelected: (project: Workspace.Workspace.Project) => void;
   #boundOnKeyDown: (event: KeyboardEvent) => void;
   #dialog: UI.Dialog.Dialog;
+  #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+  #folders: Folder[] = [];
 
   constructor(
       options: {
@@ -84,16 +89,16 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     this.registerRequiredCSS(selectWorkspaceDialogStyles);
     this.#boundOnKeyDown = this.#onKeyDown.bind(this);
     this.#onProjectSelected = options.onProjectSelected;
-    this.#projects = this.#getProjects();
     this.#dialog = options.dialog;
+    this.#updateProjectsAndFolders();
 
     if (options.currentProject) {
-      this.#selectedIndex = this.#projects.indexOf(options.currentProject);
+      this.#selectedIndex = Math.max(0, this.#folders.findIndex(folder => folder.project === options.currentProject));
     }
 
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
-      const hasProjects = input.projects.length > 0;
+      const hasFolders = input.folders.length > 0;
       render(
         html`
           <div class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</div>
@@ -101,17 +106,17 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
             <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
             <div>${lockedString(UIStringsNotTranslate.sourceCodeSent)}</div>
           </div>
-          ${input.projects.length > 0 ? html`
+          ${hasFolders ? html`
             <ul>
-              ${input.projects.map((project, index) => {
+              ${input.folders.map((folder, index) => {
                 return html`
                   <li
                     @click=${() => input.onProjectSelected(index)}
                     class=${index === input.selectedIndex ? 'selected' : ''}
-                    title=${project.path}
+                    title=${folder.path}
                   >
                     <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
-                    <span class="ellipsis">${project.name}</span>
+                    <span class="ellipsis">${folder.name}</span>
                   </li>`;
               })}
             </ul>
@@ -130,8 +135,8 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
               .iconName=${'plus'}
               .jslogContext=${'add-folder'}
               @click=${input.onAddFolderButtonClick}
-              .variant=${hasProjects ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
-            ${hasProjects ? html`
+              .variant=${hasFolders ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
+            ${hasFolders ? html`
               <devtools-button
                 title=${lockedString(UIStringsNotTranslate.select)}
                 aria-label="Select"
@@ -166,7 +171,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #onKeyDown(event: KeyboardEvent): void {
     switch (event.key) {
       case 'ArrowDown':
-        this.#selectedIndex = Math.min(this.#selectedIndex + 1, this.#projects.length - 1);
+        this.#selectedIndex = Math.min(this.#selectedIndex + 1, this.#folders.length - 1);
         this.requestUpdate();
         break;
       case 'ArrowUp':
@@ -178,20 +183,20 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
 
   override performUpdate(): void {
     const viewInput = {
-      projects: this.#projects.map(project => ({
-                                     name: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
-                                         project.displayName() as Platform.DevToolsPath.EncodedPathString),
-                                     path: Common.ParsedURL.ParsedURL.urlToRawPathString(
-                                         project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
-                                   })),
+      folders: this.#folders,
       selectedIndex: this.#selectedIndex,
       onProjectSelected: (index: number) => {
         this.#selectedIndex = index;
         this.requestUpdate();
       },
       onSelectButtonClick: () => {
-        this.#dialog.hide();
-        this.#onProjectSelected(this.#projects[this.#selectedIndex]);
+        const selectedFolder = this.#folders[this.#selectedIndex];
+        if (selectedFolder.project) {
+          this.#dialog.hide();
+          this.#onProjectSelected(selectedFolder.project);
+        } else {
+          void this.#connectToAutomaticFilesystem();
+        }
       },
       onCancelButtonClick: () => {
         this.#dialog.hide();
@@ -204,18 +209,64 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     this.#view(viewInput, undefined, this.contentElement);
   }
 
-  #getProjects(): Workspace.Workspace.Project[] {
-    return this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
-        .filter(
-            project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
-                project.fileSystem().type() ===
-                    Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT);
+  async #connectToAutomaticFilesystem(): Promise<void> {
+    const success = await this.#automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true);
+    // In the success-case, we will receive a 'ProjectAdded' event and handle it in '#onProjectAdded'.
+    // Only the failure-case is handled here.
+    if (!success) {
+      this.#dialog.hide();
+    }
+  }
+
+  #updateProjectsAndFolders(): void {
+    this.#folders = [];
+    const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
+
+    // The automatic workspace folder is always added in first position.
+    if (automaticFileSystem) {
+      this.#folders.push({
+        name: Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
+        path: automaticFileSystem.root,
+        automaticFileSystem,
+      });
+    }
+
+    const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+                         .filter(
+                             project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
+                                 project.fileSystem().type() ===
+                                     Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT);
+    for (const project of projects) {
+      // Deduplication prevents a connected automatic workspace folder from being listed twice.
+      if (automaticFileSystem && project === this.#workspace.projectForFileSystemRoot(automaticFileSystem.root)) {
+        this.#folders[0].project = project;
+        continue;
+      }
+
+      this.#folders.push({
+        name: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
+            project.displayName() as Platform.DevToolsPath.EncodedPathString),
+        path: Common.ParsedURL.ParsedURL.urlToRawPathString(
+            project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
+        project,
+      });
+    }
   }
 
   #onProjectAdded(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
     const addedProject = event.data;
-    this.#projects = this.#getProjects();
-    const projectIndex = this.#projects.indexOf(addedProject);
+
+    // After connecting to an automatic workspace folder, wait for the 'projectAdded' event,
+    // then close the dialog and continue with the selected project.
+    const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
+    if (automaticFileSystem && addedProject === this.#workspace.projectForFileSystemRoot(automaticFileSystem.root)) {
+      this.#dialog.hide();
+      this.#onProjectSelected(addedProject);
+      return;
+    }
+
+    this.#updateProjectsAndFolders();
+    const projectIndex = this.#folders.findIndex(folder => folder.project === addedProject);
     if (projectIndex !== -1) {
       this.#selectedIndex = projectIndex;
     }
@@ -223,18 +274,20 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   }
 
   #onProjectRemoved(): void {
-    const selectedProject = (this.#selectedIndex >= 0 && this.#selectedIndex < this.#projects.length) ?
-        this.#projects[this.#selectedIndex] :
+    const selectedProject = (this.#selectedIndex >= 0 && this.#selectedIndex < this.#folders.length) ?
+        this.#folders[this.#selectedIndex].project :
         null;
-    this.#projects = this.#getProjects();
+    this.#updateProjectsAndFolders();
+
     if (selectedProject) {
-      const projectIndex = this.#projects.indexOf(selectedProject);
+      const projectIndex = this.#folders.findIndex(folder => folder.project === selectedProject);
+
       // If the previously selected project still exists, select it again.
       // If the previously selected project has been removed, select the project which is now in its
       // position. If the previously selected and now removed project was in last position, select
       // the project which is now in last position.
       this.#selectedIndex =
-          projectIndex === -1 ? Math.min(this.#projects.length - 1, this.#selectedIndex) : projectIndex;
+          projectIndex === -1 ? Math.min(this.#folders.length - 1, this.#selectedIndex) : projectIndex;
     } else {
       this.#selectedIndex = 0;
     }

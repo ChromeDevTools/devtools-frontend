@@ -402,6 +402,9 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
     // Now try render a color swatch if the result is parsable.
     const color = Common.Color.parse(colorText);
     if (!color) {
+      if (match.node.name === 'CallExpression') {
+        return Renderer.render(ASTUtils.children(match.node), context).nodes;
+      }
       return [document.createTextNode(colorText)];
     }
     const swatch = this.renderColorSwatch(color, valueChild);

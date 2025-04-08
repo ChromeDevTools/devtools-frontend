@@ -860,6 +860,13 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isOk(colorSwatch.getColor());
       assert.strictEqual(colorSwatch?.getColor()?.asString(Common.Color.Format.HSL), 'hsl(240deg 50% 50%)');
     });
+
+    it('renders fallbacks correctly when the color fails to parse', () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'lch(50 min(1, 8) 8deg)');
+      stylePropertyTreeElement.updateTitle();
+      const angle = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
+      assert.exists(angle);
+    });
   });
 
   describe('BezierRenderer', () => {

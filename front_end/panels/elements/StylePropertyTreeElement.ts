@@ -210,7 +210,6 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
     }
 
     const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    UI.UIUtils.createTextChild(swatch, match.text);
     swatch.data = {
       text: match.text,
       tooltip: resolvedProperty ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: match.text})},

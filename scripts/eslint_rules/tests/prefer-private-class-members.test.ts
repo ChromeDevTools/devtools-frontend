@@ -1,10 +1,10 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-const rule = require('../lib/prefer-private-class-members.js');
 
-const {RuleTester} = require('./utils/utils.js');
+import rule from '../lib/prefer-private-class-members.ts';
+
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('prefer-private-class-members', rule, {
   valid: [

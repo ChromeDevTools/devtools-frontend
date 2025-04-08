@@ -1,25 +1,13 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-/**
- * @fileoverview Prefer `assert.isOk` and `assert.isNotOk` over `assert.ok`
- * and `assert.notOk`.
- *
- * For consistency with the other `assert.isXXX` checks, we standardize on
- * `assert.isOk` and `assert.isNotOk`. We still also allow plain `assert`.
- */
+import {createRule} from './tsUtils.ts';
 
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
-
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule({
+  name: 'prefer-assert-is-ok',
   meta: {
     type: 'suggestion',
-
     docs: {
       description: 'Prefer `assert.isOk` and `assert.isNotOk` over `assert.ok` and `assert.notOk`.',
       category: 'Best Practices',
@@ -29,23 +17,20 @@ module.exports = {
       useAssertIsNotOk: 'Use `assert.isNotOk(e)` or `assert(!e)` instead of `assert.notOk(e)`',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create: function (context) {
+  defaultOptions: [],
+  create: function(context) {
     function isAssertOk(calleeNode) {
-      return calleeNode.type === 'MemberExpression' &&
-             calleeNode.object.type === 'Identifier' &&
-             calleeNode.object.name === 'assert' &&
-             calleeNode.property.type === 'Identifier' &&
-             calleeNode.property.name === 'ok';
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          calleeNode.property.name === 'ok';
     }
 
     function isAssertNotOk(calleeNode) {
-      return calleeNode.type === 'MemberExpression' &&
-             calleeNode.object.type === 'Identifier' &&
-             calleeNode.object.name === 'assert' &&
-             calleeNode.property.type === 'Identifier' &&
-             calleeNode.property.name === 'notOk';
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          calleeNode.property.name === 'notOk';
     }
 
     function reportError(node, calleeText, messageId) {
@@ -68,4 +53,4 @@ module.exports = {
       }
     };
   },
-};
+});

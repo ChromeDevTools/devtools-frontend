@@ -77,9 +77,10 @@ const UIStringsNotTranslate = {
   applyToWorkspaceTooltipNoLogging:
       'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
   /**
-   *@description Tooltip link for the navigating to "AI innovations" page in settings.
+   *@description The footer disclaimer that links to more information
+   * about the AI feature. Same text as in ChatView.
    */
-  learnMore: 'Learn more',
+  learnMore: 'Learn about AI in DevTools',
   /**
    *@description Header text for the AI-powered code suggestions disclaimer dialog.
    */

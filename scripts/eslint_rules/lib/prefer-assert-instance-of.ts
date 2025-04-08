@@ -1,22 +1,14 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-/**
- * @fileoverview Prefer `assert.instanceOf` to assert that a value is an instance
- * of a class.
- */
-
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
+import {createRule} from './tsUtils.ts';
 
 const FALSY_ASSERTIONS = new Set(['isFalse', 'isNotOk', 'isNotTrue', 'notOk']);
 const TRUTHY_ASSERTIONS = new Set(['isNotFalse', 'isOk', 'isTrue', 'ok']);
 
-/** @type {import('eslint').Rule.RuleModule} */
-module.exports = {
+export default createRule({
+  name: 'prefer-assert-instance-of',
   meta: {
     type: 'suggestion',
 
@@ -29,32 +21,27 @@ module.exports = {
       useAssertNotInstanceOf: 'Use `assert.notInstanceOf` to assert that a value is not an instance of a class',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create: function (context) {
+  defaultOptions: [],
+  create: function(context) {
     function isTruthyAssertion(calleeNode) {
-      if (calleeNode.type === 'Identifier' &&
-          calleeNode.name === 'assert') {
+      if (calleeNode.type === 'Identifier' && calleeNode.name === 'assert') {
         return true;
       }
-      return calleeNode.type === 'MemberExpression' &&
-             calleeNode.object.type === 'Identifier' &&
-             calleeNode.object.name === 'assert' &&
-             calleeNode.property.type === 'Identifier' &&
-             TRUTHY_ASSERTIONS.has(calleeNode.property.name);
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          TRUTHY_ASSERTIONS.has(calleeNode.property.name);
     }
 
     function isFalsyAssertion(calleeNode) {
-      return calleeNode.type === 'MemberExpression' &&
-             calleeNode.object.type === 'Identifier' &&
-             calleeNode.object.name === 'assert' &&
-             calleeNode.property.type === 'Identifier' &&
-             FALSY_ASSERTIONS.has(calleeNode.property.name);
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          FALSY_ASSERTIONS.has(calleeNode.property.name);
     }
 
     function isInstanceofExpression(argumentNode) {
-      return argumentNode.type === 'BinaryExpression' &&
-             argumentNode.operator === 'instanceof';
+      return argumentNode.type === 'BinaryExpression' && argumentNode.operator === 'instanceof';
     }
 
     function reportError(node, calleeText, messageId) {
@@ -86,4 +73,4 @@ module.exports = {
       }
     };
   },
-};
+});

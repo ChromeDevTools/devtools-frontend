@@ -504,7 +504,9 @@ export class PatchWidget extends UI.Widget.Widget {
       ],
       onLearnMoreClick: () => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-      }
+      },
+      ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
+      learnMoreButtonTitle: lockedString(UIStringsNotTranslate.learnMore),
     });
 
     if (result) {

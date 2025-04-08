@@ -512,5 +512,40 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const toolbar = this.contentElement.createChild('devtools-toolbar');
+    this.filterInput = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
+    toolbar.appendToolbarItem(this.filterInput);
+    this.#banner = this.contentElement.createChild('div', 'banner');
+    this.#banner.textContent = 'some-text';
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-toolbar>
+        <devtools-button title=\${i18nString(UIStrings.editName)}
+            .variant=\${Buttons.Button.Variant.TOOLBAR} .iconName=\${'edit'}
+            .jslogContext=\${'edit-name'}></devtools-button>
+      </devtools-toolbar>
+      <div class="banner">some-text</div>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

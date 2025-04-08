@@ -32,11 +32,14 @@ export function getEnclosingExpression(node: Node): Node|null {
 }
 
 export function getEnclosingProperty(node: Node): Node|null {
-  if (isMemberExpression(node, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
+  if (isMemberExpression(
+          node, n => n.type === 'ThisExpression', n => ['Identifier', 'PrivateIdentifier'].includes(n.type))) {
     return node;
   }
   if (node.parent?.type === 'AssignmentExpression' && node.parent.right === node &&
-      isMemberExpression(node.parent.left, n => n.type === 'ThisExpression', n => n.type === 'Identifier')) {
+      isMemberExpression(
+          node.parent.left, n => n.type === 'ThisExpression',
+          n => ['Identifier', 'PrivateIdentifier'].includes(n.type))) {
     return node.parent.left;
   }
   return null;

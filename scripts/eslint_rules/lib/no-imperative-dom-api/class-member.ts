@@ -41,9 +41,10 @@ export class ClassMember {
       classMember = new ClassMember(classDeclaration);
       classMembers.set(memberName, classMember);
     }
-    classMember.references.add(node);
-    if (node.type === 'AssignmentExpression') {
+    if (node.parent?.type === 'AssignmentExpression') {
       classMember.initializer = node;
+    } else {
+      classMember.references.add(node);
     }
     return classMember;
   }

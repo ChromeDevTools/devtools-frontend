@@ -78,7 +78,6 @@ export class SuggestBox implements ListDelegate<Suggestion> {
   private readonly maxItemsHeight: number|undefined;
   private rowHeight: number;
   private userEnteredText: string;
-  private readonly defaultSelectionIsDimmed: boolean;
   private onlyCompletion: Suggestion|null;
   private readonly items: ListModel<Suggestion>;
   private readonly list: ListControl<Suggestion>;
@@ -90,7 +89,6 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this.maxItemsHeight = maxItemsHeight;
     this.rowHeight = 17;
     this.userEnteredText = '';
-    this.defaultSelectionIsDimmed = false;
 
     this.onlyCompletion = null;
 

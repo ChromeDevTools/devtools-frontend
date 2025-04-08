@@ -1586,8 +1586,6 @@ export class ElementsTreeOutline extends
       void treeElement.tagTypeContext.adornersThrottler.schedule(async () => treeElement.updateScrollAdorner());
     }
   }
-
-  private static treeOutlineSymbol = Symbol('treeOutline');
 }
 
 export namespace ElementsTreeOutline {

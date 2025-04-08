@@ -1248,7 +1248,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   node!: NavigatorTreeNode;
   private hovered?: boolean;
   private isIgnoreListed?: boolean;
-  private isFromSourceMap: boolean;
 
   constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
     super('', true, NavigatorFolderTreeElement.#contextForType(type));
@@ -1259,7 +1258,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
     this.tooltip = title;
     this.navigatorView = navigatorView;
     this.hoverCallback = hoverCallback;
-    this.isFromSourceMap = false;
 
     let iconType = 'folder';
 
@@ -1300,7 +1298,6 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   setFromSourceMap(isFromSourceMap: boolean): void {
-    this.isFromSourceMap = isFromSourceMap;
     this.listItemElement.classList.toggle('is-from-source-map', isFromSourceMap);
   }
 

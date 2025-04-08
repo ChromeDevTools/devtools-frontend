@@ -89,7 +89,6 @@ export class Toolbar extends HTMLElement {
   private items: ToolbarItem[] = [];
   enabled = true;
   private compactLayout = false;
-  private mutationObserver = new MutationObserver(this.onItemsChange.bind(this));
 
   constructor() {
     super();
@@ -931,12 +930,10 @@ export namespace ToolbarInput {
 }
 
 export class ToolbarToggle extends ToolbarButton {
-  private readonly untoggledGlyph: string|undefined;
   private readonly toggledGlyph: string|undefined;
 
   constructor(title: string, glyph?: string, toggledGlyph?: string, jslogContext?: string, toggleOnClick?: boolean) {
     super(title, glyph, '');
-    this.untoggledGlyph = glyph;
     this.toggledGlyph = toggledGlyph ? toggledGlyph : glyph;
     this.setToggledIcon(this.toggledGlyph || '');
     this.setToggleType(Buttons.Button.ToggleType.PRIMARY);

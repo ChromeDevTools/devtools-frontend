@@ -137,7 +137,7 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const attributeName = (this.nameElement as HTMLSpanElement).textContent || '';
-    this.prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(attributeName), this);
+    this.prompt = new ARIAAttributePrompt(ariaMetadata().valuesForProperty(attributeName));
     this.prompt.setAutocompletionTimeout(0);
     const proxyElement =
         this.prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent)) as HTMLElement;
@@ -195,13 +195,11 @@ export class ARIAAttributesTreeElement extends UI.TreeOutline.TreeElement {
 
 export class ARIAAttributePrompt extends UI.TextPrompt.TextPrompt {
   private readonly ariaCompletions: string[];
-  private readonly treeElement: ARIAAttributesTreeElement;
-  constructor(ariaCompletions: string[], treeElement: ARIAAttributesTreeElement) {
+  constructor(ariaCompletions: string[]) {
     super();
     this.initialize(this.buildPropertyCompletions.bind(this));
 
     this.ariaCompletions = ariaCompletions;
-    this.treeElement = treeElement;
   }
 
   private async buildPropertyCompletions(expression: string, prefix: string, force?: boolean):

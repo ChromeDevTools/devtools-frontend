@@ -202,9 +202,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private lastModificationTime: number;
   private pausedInternal?: boolean;
   private switchToPausedTargetTimeout?: number;
-  private ignoreExecutionLineEvents?: boolean;
   private executionLineLocation?: Bindings.DebuggerWorkspaceBinding.Location|null;
-  private pauseOnExceptionButton?: UI.Toolbar.ToolbarToggle;
   private sidebarPaneStack?: UI.View.ViewLocation;
   private tabbedLocationHeader?: Element|null;
   private extensionSidebarPanesContainer?: UI.View.ViewLocation;

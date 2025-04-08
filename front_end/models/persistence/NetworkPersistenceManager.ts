@@ -25,7 +25,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private bindings: WeakMap<Workspace.UISourceCode.UISourceCode, PersistenceBinding>;
   private readonly originalResponseContentPromises: WeakMap<Workspace.UISourceCode.UISourceCode, Promise<string|null>>;
   private savingForOverrides: WeakSet<Workspace.UISourceCode.UISourceCode>;
-  private readonly savingSymbol: symbol;
   private enabledSetting: Common.Settings.Setting<boolean>;
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
   private readonly networkUISourceCodeForEncodedPath:
@@ -34,7 +33,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       (interceptedRequest: SDK.NetworkManager.InterceptedRequest) => Promise<void>;
   private readonly updateInterceptionThrottler: Common.Throttler.Throttler;
   private projectInternal: Workspace.Workspace.Project|null;
-  private readonly activeProject: Workspace.Workspace.Project|null;
   private activeInternal: boolean;
   private enabled: boolean;
   private eventDescriptors: Common.EventTarget.EventDescriptor[];
@@ -48,7 +46,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.bindings = new WeakMap();
     this.originalResponseContentPromises = new WeakMap();
     this.savingForOverrides = new WeakSet();
-    this.savingSymbol = Symbol('SavingForOverrides');
 
     this.enabledSetting = Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled');
     this.enabledSetting.addChangeListener(this.enabledChanged, this);
@@ -62,7 +59,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.#headerOverridesForEventDispatch = new Set();
 
     this.projectInternal = null;
-    this.activeProject = null;
 
     this.activeInternal = false;
     this.enabled = false;

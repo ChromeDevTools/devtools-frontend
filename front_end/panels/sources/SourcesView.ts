@@ -58,7 +58,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements TabbedEditorContainerDelegate, UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
-  private selectedIndex: number;
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
   private readonly sourceViewByUISourceCode: Map<Workspace.UISourceCode.UISourceCode, UI.Widget.Widget>;
   editorContainer: TabbedEditorContainer;
@@ -77,8 +76,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.element.id = 'sources-panel-sources-view';
     this.element.setAttribute('jslog', `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`);
     this.setMinimumAndPreferredSizes(88, 52, 150, 100);
-
-    this.selectedIndex = 0;
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
 

@@ -1376,7 +1376,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
    * @deprecated
    * This method is only kept for usage in a web test.
    */
-  private createNetworkRequest(
+  protected createNetworkRequest(
       requestId: Protocol.Network.RequestId, frameId: Protocol.Page.FrameId, loaderId: Protocol.Network.LoaderId,
       url: string, documentURL: string, initiator: Protocol.Network.Initiator|null): NetworkRequest {
     const request = NetworkRequest.create(

@@ -342,9 +342,7 @@ export class LinearGradientMatcher extends matcherBase(LinearGradientMatch) {
 
 export class ColorMatch implements Match {
   computedText: (() => string | null)|undefined;
-  constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode,
-      private readonly currentColorCallback?: () => string | null) {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, currentColorCallback?: () => string | null) {
     this.computedText = currentColorCallback;
   }
 }

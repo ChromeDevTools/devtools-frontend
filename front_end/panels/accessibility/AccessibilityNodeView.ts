@@ -317,7 +317,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   appendRelatedNodeInline(relatedNode: Protocol.Accessibility.AXRelatedNode): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
-    const linkedNode = new AXRelatedNodeElement({deferredNode, idref: undefined}, relatedNode);
+    const linkedNode = new AXRelatedNodeElement({deferredNode, idref: undefined});
     this.listItemElement.appendChild(linkedNode.render());
   }
 
@@ -545,7 +545,7 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
     super('');
 
     this.value = value;
-    this.axRelatedNodeElement = new AXRelatedNodeElement(node, value);
+    this.axRelatedNodeElement = new AXRelatedNodeElement(node);
     this.selectable = true;
   }
 
@@ -570,16 +570,12 @@ export class AXRelatedNodeSourceTreeElement extends UI.TreeOutline.TreeElement {
 export class AXRelatedNodeElement {
   private readonly deferredNode: SDK.DOMModel.DeferredDOMNode|undefined;
   private readonly idref: string|undefined;
-  private readonly value: Protocol.Accessibility.AXRelatedNode|undefined;
-  constructor(
-      node: {
-        deferredNode?: SDK.DOMModel.DeferredDOMNode,
-        idref?: string,
-      },
-      value?: Protocol.Accessibility.AXRelatedNode) {
+  constructor(node: {
+    deferredNode?: SDK.DOMModel.DeferredDOMNode,
+    idref?: string,
+  }) {
     this.deferredNode = node.deferredNode;
     this.idref = node.idref;
-    this.value = value;
   }
 
   render(): Element {

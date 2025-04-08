@@ -636,7 +636,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.buildHiddenCache(0, this.consoleMessages.slice());
   }
 
-  private setImmediatelyFilterMessagesForTest(): void {
+  protected setImmediatelyFilterMessagesForTest(): void {
     this.immediatelyFilterMessagesForTest = true;
   }
 

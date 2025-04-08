@@ -162,7 +162,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private searchResults: SearchMatch[];
   private searchRegex: UI.SearchableView.SearchRegexResult|null;
   private loadError: boolean;
-  private muteChangeEventsForSetContent: boolean;
   private readonly sourcePosition: UI.Toolbar.ToolbarText;
   private searchableView: UI.SearchableView.SearchableView|null;
   private editable: boolean;
@@ -216,8 +215,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.searchResults = [];
     this.searchRegex = null;
     this.loadError = false;
-
-    this.muteChangeEventsForSetContent = false;
 
     this.sourcePosition = new UI.Toolbar.ToolbarText();
 
@@ -751,7 +748,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   async setContent(content: string|CodeMirror.Text): Promise<void> {
-    this.muteChangeEventsForSetContent = true;
     const {textEditor} = this;
     const wasLoaded = this.loadedInternal;
     const scrollTop = textEditor.editor.scrollDOM.scrollTop;
@@ -778,7 +774,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.delayedFindSearchMatches();
       this.delayedFindSearchMatches = null;
     }
-    this.muteChangeEventsForSetContent = false;
   }
 
   setSearchableView(view: UI.SearchableView.SearchableView|null): void {

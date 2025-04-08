@@ -414,8 +414,6 @@ export class SubMenu extends Item {
       }
     }
   }
-
-  private static uniqueSectionName = 0;
 }
 
 export interface ContextMenuOptions {
@@ -438,7 +436,6 @@ export class ContextMenu extends SubMenu {
   private x: number;
   private y: number;
   private onSoftMenuClosed?: () => void;
-  private jsLogContext?: string;
   private readonly handlers: Map<number, () => void>;
   override idInternal: number;
   private softMenu?: SoftContextMenu;

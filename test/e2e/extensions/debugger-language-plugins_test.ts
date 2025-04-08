@@ -501,10 +501,6 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
-        private modules = new Map<string, {
-          rawLocationRange?: Chrome.DevTools.RawLocationRange,
-          sourceLocations?: Chrome.DevTools.SourceLocation[],
-        }>();
         async addRawModule() {
           return {missingSymbolFiles: ['test.wasm']};
         }

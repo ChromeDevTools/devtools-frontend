@@ -73,7 +73,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private width!: number;
   private height!: number;
   private model?: SDK.PerformanceMetricsModel.PerformanceMetricsModel|null;
-  private startTimestamp?: number;
   private pollTimer?: number;
 
   constructor(pollIntervalMs = 500) {
@@ -163,7 +162,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   }
 
   private startPolling(): void {
-    this.startTimestamp = 0;
     this.pollTimer = window.setInterval(() => this.poll(), this.pollIntervalMs);
     this.onResize();
     const animate = (): void => {

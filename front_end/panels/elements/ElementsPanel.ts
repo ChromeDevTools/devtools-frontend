@@ -1228,8 +1228,8 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     adornerSet.delete(adorner);
   }
 
-  private static firstInspectElementCompletedForTest = function(): void {};
-  private static firstInspectElementNodeNameForTest = '';
+  protected static firstInspectElementCompletedForTest = function(): void {};
+  protected static firstInspectElementNodeNameForTest = '';
 }
 
 // @ts-expect-error exported for Tests.js

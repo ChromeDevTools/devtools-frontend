@@ -151,9 +151,7 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 export class StatusView {
   private readonly panel: LighthousePanel;
-  private statusView: Element|null;
   private statusHeader: Element|null;
-  private progressWrapper: Element|null;
   private progressBar: Element|null;
   private statusText: Element|null;
   private cancelButton: Buttons.Button.Button|null;
@@ -167,9 +165,7 @@ export class StatusView {
   constructor(panel: LighthousePanel) {
     this.panel = panel;
 
-    this.statusView = null;
     this.statusHeader = null;
-    this.progressWrapper = null;
     this.progressBar = null;
     this.statusText = null;
     this.cancelButton = null;
@@ -210,9 +206,7 @@ export class StatusView {
 
     lighthouseViewElement.appendChild(fragment.element());
 
-    this.statusView = fragment.$('status-view');
     this.statusHeader = fragment.$('status-header');
-    this.progressWrapper = fragment.$('progress-wrapper');
     this.progressBar = fragment.$('progress-bar');
     this.statusText = fragment.$('status-text');
     // Use StatusPhases array index as progress bar value

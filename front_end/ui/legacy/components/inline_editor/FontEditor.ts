@@ -8,7 +8,6 @@ import '../../legacy.js';
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as SDK from '../../../../core/sdk/sdk.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
@@ -121,7 +120,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/Fon
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  private readonly selectedNode: SDK.DOMModel.DOMNode|null;
   private readonly propertyMap: Map<string, string>;
   private readonly fontSelectorSection: HTMLElement;
   private fontSelectors: FontEditor.FontSelectorObject[];
@@ -130,8 +128,6 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   constructor(propertyMap: Map<string, string>) {
     super(true);
     this.registerRequiredCSS(fontEditorStyles);
-    this.selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-
     this.propertyMap = propertyMap;
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(
@@ -460,7 +456,6 @@ class FontPropertyInputs {
   private initialRange: FontEditor.PropertyRange;
   private readonly boundUpdateCallback: (arg0: string, arg1: string) => void;
   private readonly boundResizeCallback: () => void;
-  private readonly selectedNode: SDK.DOMModel.DOMNode|null;
   private sliderInput: HTMLInputElement;
   private textBoxInput: HTMLInputElement;
   private unitInput: HTMLSelectElement;
@@ -496,7 +491,6 @@ class FontPropertyInputs {
 
     this.boundUpdateCallback = updateCallback;
     this.boundResizeCallback = resizeCallback;
-    this.selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     const propertyLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label');
     propertyField.append(propertyLabel);
     this.sliderInput = this.createSliderInput(propertyField, propertyName);

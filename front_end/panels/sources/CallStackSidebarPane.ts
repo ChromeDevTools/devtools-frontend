@@ -453,13 +453,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     void contextMenu.show();
   }
 
-  private onClick(event: Event): void {
-    const item = this.list.itemForNode((event.target as Node | null));
-    if (item) {
-      this.activateItem(item);
-    }
-  }
-
   private activateItem(item: Item): void {
     const uiLocation = item.uiLocation;
     if (this.muteActivateItem || !uiLocation) {

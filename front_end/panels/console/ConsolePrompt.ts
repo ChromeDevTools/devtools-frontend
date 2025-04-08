@@ -48,14 +48,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private editor: TextEditor.TextEditor.TextEditor;
   private readonly eagerPreviewElement: HTMLDivElement;
   private textChangeThrottler: Common.Throttler.Throttler;
-  private readonly formatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private requestPreviewBound: () => Promise<void>;
   private requestPreviewCurrent = 0;
   private readonly innerPreviewElement: HTMLElement;
   private readonly promptIcon: IconButton.Icon.Icon;
   private readonly iconThrottler: Common.Throttler.Throttler;
   private readonly eagerEvalSetting: Common.Settings.Setting<boolean>;
-  private previewRequestForTest: Promise<void>|null;
+  protected previewRequestForTest: Promise<void>|null;
   private highlightingNode: boolean;
   // The CodeMirror state field that controls whether the argument hints are showing.
   // If they are, the escape key will clear them. However, if they aren't, then the
@@ -97,7 +96,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.eagerPreviewElement = document.createElement('div');
     this.eagerPreviewElement.classList.add('console-eager-preview');
     this.textChangeThrottler = new Common.Throttler.Throttler(150);
-    this.formatter = new ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
     this.requestPreviewBound = this.requestPreview.bind(this);
     this.innerPreviewElement = this.eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
     const previewIcon = new IconButton.Icon.Icon();
@@ -236,10 +234,6 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   clearAutocomplete(): void {
     CodeMirror.closeCompletion(this.editor.editor);
-  }
-
-  private isCaretAtEndOfPrompt(): boolean {
-    return this.editor.state.selection.main.head === this.editor.state.doc.length;
   }
 
   moveCaretToEndOfPrompt(): void {

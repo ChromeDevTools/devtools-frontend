@@ -650,10 +650,6 @@ export class DebuggerPlugin extends Plugin {
     return true;
   }
 
-  private isVariableIdentifier(tokenType: string): boolean {
-    return tokenType === 'VariableName' || tokenType === 'VariableDefinition';
-  }
-
   private isIdentifier(tokenType: string): boolean {
     return tokenType === 'VariableName' || tokenType === 'VariableDefinition' || tokenType === 'PropertyName' ||
         tokenType === 'PropertyDefinition';

@@ -478,12 +478,10 @@ export interface EventTypes {
 }
 
 export class Swatch {
-  private readonly parentElement: Element;
   private readonly swatchElement: Element;
   private swatchInnerElement: HTMLElement;
   private textPreview: HTMLElement;
   constructor(parentElement: Element) {
-    this.parentElement = parentElement;
     this.swatchElement = parentElement.createChild('span', 'swatch contrast swatch-inner-white');
     this.swatchInnerElement = this.swatchElement.createChild('span', 'swatch-inner');
     this.textPreview = this.swatchElement.createChild('div', 'text-preview');

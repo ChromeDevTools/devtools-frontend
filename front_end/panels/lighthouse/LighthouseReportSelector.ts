@@ -99,13 +99,11 @@ export class ReportSelector {
 }
 
 export class Item {
-  private readonly lighthouseResult: ReportRenderer.ReportJSON;
   private readonly renderReport: () => void;
   private readonly showLandingCallback: () => void;
   private readonly element: HTMLOptionElement;
 
   constructor(lighthouseResult: ReportRenderer.ReportJSON, renderReport: () => void, showLandingCallback: () => void) {
-    this.lighthouseResult = lighthouseResult;
     this.renderReport = renderReport;
     this.showLandingCallback = showLandingCallback;
 

@@ -114,7 +114,7 @@ export class FreDialog {
     // clang-format on
 
     dialog.setOutsideClickCallback(ev => {
-      ev.consume();
+      ev.consume(true);  // true = preventDefault()
       dialog.hide();
       result.resolve(false);
     });

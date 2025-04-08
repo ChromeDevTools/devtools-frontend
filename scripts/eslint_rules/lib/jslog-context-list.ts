@@ -18,10 +18,42 @@ const LICENSE_HEADER = `// Copyright 2024 The Chromium Authors. All rights reser
 // found in the LICENSE file.
 
 `;
+let formattedValues = new Set();
 
-const formattedValues = new Set(
-    fs.readFileSync(ABSOLUTE_FILE_PATH, 'utf-8').split('\n').filter(l => l.startsWith('  \'')),
-);
+const statsCache = {
+  mtimeMs: Infinity,
+  size: Infinity,
+};
+
+function writeToFile() {
+  const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
+      [...formattedValues].sort().join('\n') + '\n]);\n';
+  fs.writeFileSync(ABSOLUTE_FILE_PATH, finalContents, 'utf-8');
+  const stats = fs.statSync(ABSOLUTE_FILE_PATH);
+  statsCache.mtimeMs = stats.mtimeMs;
+  statsCache.size = stats.size;
+}
+
+function updateLocalCacheIfNeeded() {
+  const stats = fs.statSync(ABSOLUTE_FILE_PATH);
+  let needsUpdate = false;
+
+  if (stats.mtimeMs !== statsCache.mtimeMs) {
+    statsCache.mtimeMs = stats.mtimeMs;
+    needsUpdate = true;
+  }
+
+  if (stats.size !== statsCache.size) {
+    statsCache.size = stats.size;
+    needsUpdate = true;
+  }
+
+  if (needsUpdate) {
+    formattedValues = new Set(
+        fs.readFileSync(ABSOLUTE_FILE_PATH, 'utf-8').split('\n').filter(l => l.startsWith('  \'')),
+    );
+  }
+}
 
 export default createRule({
   name: 'jslog-context-list',
@@ -40,6 +72,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
+    let valuesAdded = false;
     const checkValue = (value, node) => {
       if (typeof value !== 'string') {
         return;
@@ -52,6 +85,7 @@ export default createRule({
         return;
       }
       formattedValues.add(formattedValue);
+      valuesAdded = true;
       if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
         context.report({
           node,
@@ -68,6 +102,8 @@ export default createRule({
         }
       }
     };
+
+    updateLocalCacheIfNeeded();
     return {
       CallExpression(node) {
         const firstArg = node.arguments[0];
@@ -121,12 +157,10 @@ export default createRule({
         }
       },
       'Program:exit'() {
-        if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
+        if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE || !valuesAdded) {
           return;
         }
-        const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
-            [...formattedValues].sort().join('\n') + '\n]);\n';
-        fs.writeFileSync(ABSOLUTE_FILE_PATH, finalContents, 'utf-8');
+        writeToFile();
       },
     };
   },

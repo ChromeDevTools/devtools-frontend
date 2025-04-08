@@ -2,14 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+import {createRule} from './tsUtils.ts';
+
+export default createRule({
+  name: 'single-screenshot-assertion-per-test',
   meta: {
     type: 'problem',
-
     docs: {
       description: 'prevent submitting with variables set to true or false',
       category: 'Possible Errors',
@@ -20,6 +18,7 @@ module.exports = {
     fixable: 'code',
     schema: []  // no options
   },
+  defaultOptions: [],
   create: function(context) {
     function nodeIsFunctionCallToCheck(node) {
       if (node.expression.type === 'CallExpression') {
@@ -83,4 +82,4 @@ module.exports = {
       }
     };
   }
-};
+});

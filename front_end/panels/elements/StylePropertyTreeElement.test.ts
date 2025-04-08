@@ -1587,9 +1587,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const originalDeclaration = mockResolvedKeyword('width', keyword);
       const stylePropertyTreeElement = getTreeElement(originalDeclaration.name, keyword);
       stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
 
-      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-link-swatch');
       assert.isOk(linkSwatch);
+      assert.strictEqual(linkSwatch.innerText, keyword);
       const spy = sinon.spy(stylePropertyTreeElement.parentPane(), 'revealProperty');
       (linkSwatch.querySelector('button') as HTMLElement | undefined)?.click();
       assert.isTrue(spy.calledOnceWithExactly(originalDeclaration));

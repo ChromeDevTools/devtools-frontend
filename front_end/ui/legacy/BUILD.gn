@@ -144,6 +144,7 @@ devtools_entrypoint("bundle") {
     "../../panels/*",
     "../../services/window_bounds/*",
     "../../testing/*",
+    "../components/copy_to_clipboard:*",
     "../components/data_grid:*",
     "../components/docs/combo_box/*",
     "../components/docs/performance_panel/*",

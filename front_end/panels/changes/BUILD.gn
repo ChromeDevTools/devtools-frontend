@@ -34,6 +34,7 @@ devtools_module("changes") {
     "../../panels/snippets:bundle",
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
+    "../../ui/components/copy_to_clipboard:bundle",
     "../../ui/components/diff_view:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

@@ -299,6 +299,10 @@ export interface InspectorFrontendHostAPI {
 
   closeWindow(): void;
 
+  /**
+   * Don't use directly - use {@link CopyToClipboard.copyTextToClipboard} instead.
+   * @deprecated Marked to restrict usage.
+   */
   copyText(text: string|null|undefined): void;
 
   inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void;

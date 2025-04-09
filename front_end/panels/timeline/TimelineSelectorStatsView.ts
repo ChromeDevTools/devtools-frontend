@@ -11,6 +11,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as CopyToClipboard from '../../ui/components/copy_to_clipboard/copy_to_clipboard.js';
 import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
@@ -215,8 +216,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         ].join('\t'));
       }
       const data = tableData.join('\n');
-      void navigator.clipboard.writeText(data);
-      UI.ARIAUtils.alert(i18nString(UIStrings.tableCopiedToClipboard));
+      CopyToClipboard.copyTextToClipboard(data, i18nString(UIStrings.tableCopiedToClipboard));
     });
   }
 

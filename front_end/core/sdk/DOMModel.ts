@@ -36,7 +36,6 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
-import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
@@ -572,14 +571,6 @@ export class DOMNode {
         callback(response.getError() || null);
       }
     });
-  }
-
-  async copyNode(): Promise<string|null> {
-    const {outerHTML} = await this.#agent.invoke_getOuterHTML({nodeId: this.id});
-    if (outerHTML !== null) {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(outerHTML);
-    }
-    return outerHTML;
   }
 
   path(): string {

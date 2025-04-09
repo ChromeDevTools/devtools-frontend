@@ -41,6 +41,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as CopyToClipboard from '../../ui/components/copy_to_clipboard/copy_to_clipboard.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -376,8 +377,11 @@ export class ElementsTreeOutline extends
     if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
       return;
     }
-
-    void node.copyNode();
+    void node.getOuterHTML().then(outerHTML => {
+      if (outerHTML !== null) {
+        CopyToClipboard.copyTextToClipboard(outerHTML);
+      }
+    });
     this.setClipboardData({node, isCut});
   }
 

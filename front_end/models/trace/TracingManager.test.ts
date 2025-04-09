@@ -42,7 +42,7 @@ describeWithMockConnection('TracingManager', () => {
     const client = new FakeClient();
     const bufferUsageSpy = sinon.spy(client, 'tracingBufferUsage');
 
-    await manager.start(client, 'devtools-timeline', 'options');
+    await manager.start(client, 'devtools-timeline');
     manager.bufferUsage(10);
     assert.isTrue(bufferUsageSpy.calledWith(10));
   });
@@ -54,7 +54,7 @@ describeWithMockConnection('TracingManager', () => {
     const eventsRetrievalProgressSpy = sinon.spy(client, 'eventsRetrievalProgress');
     const eventsCollectedSpy = sinon.spy(client, 'traceEventsCollected');
 
-    await manager.start(client, 'devtools-timeline', 'options');
+    await manager.start(client, 'devtools-timeline');
     manager.bufferUsage(0, 0);
 
     manager.eventsCollected(fakeEvents);
@@ -67,7 +67,7 @@ describeWithMockConnection('TracingManager', () => {
     const manager = new Trace.TracingManager.TracingManager(target);
     const client = new FakeClient();
     const tracingCompleteSpy = sinon.spy(client, 'tracingComplete');
-    await manager.start(client, 'devtools-timeline', 'options');
+    await manager.start(client, 'devtools-timeline');
     manager.bufferUsage(0, 0);
     manager.eventsCollected(fakeEvents);
     manager.tracingComplete();
@@ -78,11 +78,11 @@ describeWithMockConnection('TracingManager', () => {
     const target = createTarget();
     const manager = new Trace.TracingManager.TracingManager(target);
     const client = new FakeClient();
-    await manager.start(client, 'devtools-timeline', 'options');
+    await manager.start(client, 'devtools-timeline');
     // The assert.throws() helper does not work with async/await, hence the manual try catch
     let didThrow = false;
     try {
-      await manager.start(client, 'devtools-timeline', 'options');
+      await manager.start(client, 'devtools-timeline');
     } catch (error) {
       didThrow = true;
       assert.strictEqual(error.message, 'Tracing is already started');

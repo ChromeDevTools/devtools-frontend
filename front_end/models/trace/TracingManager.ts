@@ -67,10 +67,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     this.#finishing = false;
   }
 
-  // TODO(petermarshall): Use the traceConfig argument instead of deprecated
-  // categories + options.
-  async start(client: TracingManagerClient, categoryFilter: string, options: string):
-      Promise<Protocol.ProtocolResponseWithError> {
+  async start(client: TracingManagerClient, categoryFilter: string): Promise<Protocol.ProtocolResponseWithError> {
     if (this.#activeClient) {
       throw new Error('Tracing is already started');
     }
@@ -78,9 +75,12 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     this.#activeClient = client;
     const args = {
       bufferUsageReportingInterval: bufferUsageReportingIntervalMs,
-      categories: categoryFilter,
-      options,
       transferMode: Protocol.Tracing.StartRequestTransferMode.ReportEvents,
+      traceConfig: {
+        recordMode: Protocol.Tracing.TraceConfigRecordMode.RecordUntilFull,
+        traceBufferSizeInKb: 400 * 1000,
+        includedCategories: categoryFilter.split(','),
+      },
     };
     const response = await this.#tracingAgent.invoke_start(args);
     if (response.getError()) {

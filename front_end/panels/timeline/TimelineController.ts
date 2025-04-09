@@ -236,7 +236,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     // all the functions data.
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
     this.tracingCompletePromise = Promise.withResolvers();
-    const response = await this.tracingManager.start(this, categories, '');
+    const response = await this.tracingManager.start(this, categories);
     await this.warmupJsProfiler();
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStarted();
     return response;

@@ -237,7 +237,7 @@ export async function getToolbarText() {
   return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
-export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
+export async function addBreakpointForLine(index: number|string) {
   const breakpointLine = await getLineNumberElement(index);
   assertNotNullOrUndefined(breakpointLine);
 
@@ -247,7 +247,7 @@ export async function addBreakpointForLine(frontend: puppeteer.Page, index: numb
   await waitForFunction(async () => await isBreakpointSet(index));
 }
 
-export async function removeBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
+export async function removeBreakpointForLine(index: number|string) {
   const breakpointLine = await getLineNumberElement(index);
   assertNotNullOrUndefined(breakpointLine);
 
@@ -823,20 +823,18 @@ export class WasmLocationLabels {
   }
 
   async addBreakpointsForLabelInSource(label: string) {
-    const {frontend} = getBrowserAndPages();
     await openFileInEditor(path.basename(this.#source));
-    await Promise.all(this.#mappings.get(label)!.map(({sourceLine}) => addBreakpointForLine(frontend, sourceLine)));
+    await Promise.all(this.#mappings.get(label)!.map(({sourceLine}) => addBreakpointForLine(sourceLine)));
   }
 
   async addBreakpointsForLabelInWasm(label: string) {
-    const {frontend} = getBrowserAndPages();
     await openFileInEditor(path.basename(this.#wasm));
     const visibleLines = await $$(CODE_LINE_SELECTOR);
     const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
     const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
     await Promise.all(this.#mappings.get(label)!.map(
 
-        ({moduleOffset}) => addBreakpointForLine(frontend, lineNumberLabels.get(moduleOffset)!)));
+        ({moduleOffset}) => addBreakpointForLine(lineNumberLabels.get(moduleOffset)!)));
   }
 
   async setBreakpointInSourceAndRun(label: string, script: string) {

@@ -52,22 +52,19 @@ describe('The Sources Tab', () => {
   }
 
   it('shows inline decorations when setting a breakpoint on a line with multiple locations', async () => {
-    const {frontend} = getBrowserAndPages();
-    await addBreakpointForLine(frontend, 3);
+    await addBreakpointForLine(3);
 
     await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
   });
 
   it('shows no inline decorations when setting a breakpoint on a line with a single location', async () => {
-    const {frontend} = getBrowserAndPages();
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(5);
 
     await checkLineDecorationDescriptor(5, '    return p;');
   });
 
   it('removes the breakpoint when the last inline breakpoint is disabled', async () => {
-    const {frontend} = getBrowserAndPages();
-    await addBreakpointForLine(frontend, 3);
+    await addBreakpointForLine(3);
     await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
 
     await disableInlineBreakpointForLine(3, 1, true);
@@ -75,8 +72,7 @@ describe('The Sources Tab', () => {
   });
 
   it('can enable/disable inline breakpoints by clicking on the decorations', async () => {
-    const {frontend} = getBrowserAndPages();
-    await addBreakpointForLine(frontend, 3);
+    await addBreakpointForLine(3);
 
     await step('click the second inline breakpoint', async () => {
       await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
@@ -94,10 +90,10 @@ describe('The Sources Tab', () => {
   });
 
   it('chooses inline pause location when setting a breakpoint on that line', async () => {
-    const {frontend, target} = await getBrowserAndPages();
+    const {target} = await getBrowserAndPages();
     const donePromise = target.evaluate('pauseInline();');
     await waitFor(PAUSE_INDICATOR_SELECTOR);
-    await addBreakpointForLine(frontend, 10);
+    await addBreakpointForLine(10);
     await checkLineDecorationDescriptor(10, '    %return Promise.%resolve().%then(()=>{ @debugger; %});');
     await click(RESUME_BUTTON);
     await donePromise;

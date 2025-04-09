@@ -57,11 +57,11 @@ export const ResultsDBReporter = function(
   this.USE_COLORS = true;
 
   const capturedLog: Array<{log: string, type: string}> = [];
-  this.onBrowserLog = (browser: any, log: string, type: string) => {
+  this.onBrowserLog = (_browser: any, log: string, type: string) => {
     capturedLog.push({log, type});
   };
 
-  const specComplete = (browser: any, result: any) => {
+  const specComplete = (_browser: any, result: any) => {
     const {suite, description, log, startTime, endTime, success, skipped} = result;
     const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
     const expected = success || skipped;

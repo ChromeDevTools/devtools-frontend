@@ -13,7 +13,7 @@ export function assertNotNullOrUndefined<T>(val: T, message?: string): asserts v
   }
 }
 
-export function assertNever(type: never, message: string): never {
+export function assertNever(_type: never, message: string): never {
   throw new Error(message);
 }
 

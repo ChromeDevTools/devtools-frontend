@@ -171,7 +171,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     this.stopId = stopId;
   }
 
-  override async doGetProperties(ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
+  override async doGetProperties(_ownProperties: boolean, accessorPropertiesOnly: boolean, _generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: []} as SDK.RemoteObject.GetPropertiesResult;
@@ -350,7 +350,7 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
     return this.extensionObject.description;
   }
 
-  override set description(description: string|undefined) {
+  override set description(_description: string|undefined) {
   }
 
   override get hasChildren(): boolean {

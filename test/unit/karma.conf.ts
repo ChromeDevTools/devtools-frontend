@@ -36,7 +36,7 @@ interface BrowserWithArgs {
 }
 const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: BrowserWithArgs, _config: unknown) {
   require('karma-chrome-launcher')['launcher:Chrome'][1].apply(this, arguments);
-  this._execCommand = async function(cmd: string, args: string[]) {
+  this._execCommand = async function(_cmd: string, args: string[]) {
     const url = args.pop();
     const browser = await puppeteer.launch({
       headless: !TestConfig.debug || TestConfig.headless,
@@ -113,7 +113,7 @@ const ProgressWithDiffReporter = function(
     this: any, formatError: unknown, reportSlow: unknown, useColors: unknown, browserConsoleLogOptions: unknown) {
   BaseProgressReporter.call(this, formatError, reportSlow, useColors, browserConsoleLogOptions);
   const baseSpecFailure = this.specFailure;
-  this.specFailure = function(this: any, browser: unknown, result: any) {
+  this.specFailure = function(this: any, _browser: unknown, result: any) {
     baseSpecFailure.apply(this, arguments);
     const patch = formatAsPatch(resultAssertionsDiff(result));
     if (patch) {

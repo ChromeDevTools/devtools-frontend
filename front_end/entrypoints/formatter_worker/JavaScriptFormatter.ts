@@ -45,7 +45,7 @@ export class JavaScriptFormatter {
     this.#builder = builder;
   }
 
-  format(text: string, lineEndings: number[], fromOffset: number, toOffset: number): void {
+  format(text: string, _lineEndings: number[], fromOffset: number, toOffset: number): void {
     this.#fromOffset = fromOffset;
     this.#toOffset = toOffset;
     this.#content = text.substring(this.#fromOffset, this.#toOffset);

@@ -70,11 +70,10 @@ describe('The Breakpoints Sidebar', () => {
     const fileName = 'click-breakpoint.js';
 
     beforeEach(async () => {
-      const {frontend} = getBrowserAndPages();
       await openSourceCodeEditorForFile(fileName, 'click-breakpoint.html');
 
       for (const location of expectedLocations) {
-        await addBreakpointForLine(frontend, location);
+        await addBreakpointForLine(location);
       }
 
       await waitForMany(BREAKPOINT_ITEM_SELECTOR, 3);
@@ -109,9 +108,8 @@ describe('The Breakpoints Sidebar', () => {
 
   describe('for wasm files', () => {
     it('shows the correct code snippets', async () => {
-      const {frontend} = getBrowserAndPages();
       await openSourceCodeEditorForFile('memory.wasm', 'wasm/memory.html');
-      await addBreakpointForLine(frontend, '0x037');
+      await addBreakpointForLine('0x037');
 
       const codeSnippetHandle = await waitFor(`${BREAKPOINT_ITEM_SELECTOR} ${CODE_SNIPPET_SELECTOR}`);
       const actualCodeSnippet = await extractTextContentIfConnected(codeSnippetHandle);

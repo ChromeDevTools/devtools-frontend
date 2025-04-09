@@ -11,10 +11,10 @@ const LAST_ELEMENT_SELECTOR = '.cm-executionLine > span:last-child';
 
 describe('Sources Tab', function() {
   it('shows correct preview for `object.foo` member expressions', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('popover.js', 'popover.html');
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(5);
 
     const scriptEvaluation = target.evaluate('f1();');
     await hover(LAST_ELEMENT_SELECTOR);
@@ -28,10 +28,10 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `array[1].foo` member expressions', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('popover.js', 'popover.html');
-    await addBreakpointForLine(frontend, 9);
+    await addBreakpointForLine(9);
 
     const scriptEvaluation = target.evaluate('f2();');
     await hover(LAST_ELEMENT_SELECTOR);
@@ -45,10 +45,10 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `array[i][0]` member expressions', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('popover.js', 'popover.html');
-    await addBreakpointForLine(frontend, 13);
+    await addBreakpointForLine(13);
 
     const scriptEvaluation = target.evaluate('f3(3);');
     await hover(LAST_ELEMENT_SELECTOR);
@@ -62,10 +62,10 @@ describe('Sources Tab', function() {
   });
 
   it('shows correct preview for `this.#x` member expressions in TypeScript', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('popover-typescript.ts', 'popover-typescript.html');
-    await addBreakpointForLine(frontend, 5);
+    await addBreakpointForLine(5);
 
     const scriptEvaluation = target.evaluate('test();');
     await hover(LAST_ELEMENT_SELECTOR);

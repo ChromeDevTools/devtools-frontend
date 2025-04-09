@@ -145,22 +145,22 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   closeWindow(): void {
   }
 
-  setIsDocked(isDocked: boolean, callback: () => void): void {
+  setIsDocked(_isDocked: boolean, callback: () => void): void {
     window.setTimeout(callback, 0);
   }
 
-  showSurvey(trigger: string, callback: (arg0: ShowSurveyResult) => void): void {
+  showSurvey(_trigger: string, callback: (arg0: ShowSurveyResult) => void): void {
     window.setTimeout(() => callback({surveyShown: false}), 0);
   }
 
-  canShowSurvey(trigger: string, callback: (arg0: CanShowSurveyResult) => void): void {
+  canShowSurvey(_trigger: string, callback: (arg0: CanShowSurveyResult) => void): void {
     window.setTimeout(() => callback({canShowSurvey: false}), 0);
   }
 
   /**
    * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
    */
-  setInspectedPageBounds(bounds: {
+  setInspectedPageBounds(_bounds: {
     x: number,
     y: number,
     width: number,
@@ -171,7 +171,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   inspectElementCompleted(): void {
   }
 
-  setInjectedScriptForOrigin(origin: string, script: string): void {
+  setInjectedScriptForOrigin(_origin: string, _script: string): void {
   }
 
   inspectedURLChanged(url: Platform.DevToolsPath.UrlString): void {
@@ -192,19 +192,19 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     window.open(url, '_blank');
   }
 
-  openSearchResultsInNewTab(query: string): void {
+  openSearchResultsInNewTab(_query: string): void {
     Common.Console.Console.instance().error(
         'Search is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
-  showItemInFolder(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
+  showItemInFolder(_fileSystemPath: Platform.DevToolsPath.RawPathString): void {
     Common.Console.Console.instance().error(
         'Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
   }
 
   save(
-      url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, forceSaveAs: boolean,
-      isBase64: boolean): void {
+      url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString, content: string, _forceSaveAs: boolean,
+      _isBase64: boolean): void {
     let buffer = this.#urlsBeingSaved.get(url);
     if (!buffer) {
       buffer = [];
@@ -246,7 +246,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     URL.revokeObjectURL(blobUrl);
   }
 
-  sendMessageToBackend(message: string): void {
+  sendMessageToBackend(_message: string): void {
   }
 
   recordCountHistogram(histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number):
@@ -257,7 +257,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     this.recordedCountHistograms.push({histogramName, sample, min, exclusiveMax, bucketSize});
   }
 
-  recordEnumeratedHistogram(actionName: EnumeratedHistogram, actionCode: number, bucketSize: number): void {
+  recordEnumeratedHistogram(actionName: EnumeratedHistogram, actionCode: number, _bucketSize: number): void {
     if (this.recordedEnumeratedHistograms.length >= MAX_RECORDED_HISTOGRAMS_SIZE) {
       this.recordedEnumeratedHistograms.shift();
     }
@@ -271,7 +271,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     this.recordedPerformanceHistograms.push({histogramName, duration});
   }
 
-  recordUserMetricsAction(umaName: string): void {
+  recordUserMetricsAction(_umaName: string): void {
   }
 
   connectAutomaticFileSystem(
@@ -283,14 +283,14 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     queueMicrotask(() => callback({success: false}));
   }
 
-  disconnectAutomaticFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
+  disconnectAutomaticFileSystem(_fileSystemPath: Platform.DevToolsPath.RawPathString): void {
   }
 
   requestFileSystems(): void {
     this.events.dispatchEventToListeners(Events.FileSystemsLoaded, []);
   }
 
-  addFileSystem(type?: string): void {
+  addFileSystem(_type?: string): void {
     const onFileSystem = (fs: FileSystem): void => {
       this.#fileSystem = fs;
       const fileSystem = {
@@ -304,7 +304,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     window.webkitRequestFileSystem(window.TEMPORARY, 1024 * 1024, onFileSystem);
   }
 
-  removeFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
+  removeFileSystem(_fileSystemPath: Platform.DevToolsPath.RawPathString): void {
     const removalCallback = (entries: Entry[]): void => {
       entries.forEach(entry => {
         if (entry.isDirectory) {
@@ -323,12 +323,12 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     this.events.dispatchEventToListeners(Events.FileSystemRemoved, OVERRIDES_FILE_SYSTEM_PATH);
   }
 
-  isolatedFileSystem(fileSystemId: string, registeredName: string): FileSystem|null {
+  isolatedFileSystem(_fileSystemId: string, _registeredName: string): FileSystem|null {
     return this.#fileSystem;
   }
 
   loadNetworkResource(
-      url: string, headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
+      url: string, _headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
     // Read the first 3 bytes looking for the gzip signature in the file header
     function isGzip(ab: ArrayBuffer): boolean {
       const buf = new Uint8Array(ab);
@@ -376,7 +376,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         });
   }
 
-  registerPreference(name: string, options: {synced?: boolean}): void {
+  registerPreference(_name: string, _options: {synced?: boolean}): void {
   }
 
   getPreferences(callback: (arg0: {
@@ -452,16 +452,16 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     callback(hostConfigForHostedMode);
   }
 
-  upgradeDraggedFileSystemPermissions(fileSystem: FileSystem): void {
+  upgradeDraggedFileSystemPermissions(_fileSystem: FileSystem): void {
   }
 
-  indexPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, excludedFolders: string): void {
+  indexPath(_requestId: number, _fileSystemPath: Platform.DevToolsPath.RawPathString, _excludedFolders: string): void {
   }
 
-  stopIndexing(requestId: number): void {
+  stopIndexing(_requestId: number): void {
   }
 
-  searchInPath(requestId: number, fileSystemPath: Platform.DevToolsPath.RawPathString, query: string): void {
+  searchInPath(_requestId: number, _fileSystemPath: Platform.DevToolsPath.RawPathString, _query: string): void {
   }
 
   zoomFactor(): number {
@@ -477,16 +477,16 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   resetZoom(): void {
   }
 
-  setWhitelistedShortcuts(shortcuts: string): void {
+  setWhitelistedShortcuts(_shortcuts: string): void {
   }
 
-  setEyeDropperActive(active: boolean): void {
+  setEyeDropperActive(_active: boolean): void {
   }
 
-  showCertificateViewer(certChain: string[]): void {
+  showCertificateViewer(_certChain: string[]): void {
   }
 
-  reattach(callback: () => void): void {
+  reattach(_callback: () => void): void {
   }
 
   readyForTest(): void {
@@ -495,22 +495,22 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   connectionReady(): void {
   }
 
-  setOpenNewWindowForPopups(value: boolean): void {
+  setOpenNewWindowForPopups(_value: boolean): void {
   }
 
-  setDevicesDiscoveryConfig(config: Adb.Config): void {
+  setDevicesDiscoveryConfig(_config: Adb.Config): void {
   }
 
-  setDevicesUpdatesEnabled(enabled: boolean): void {
+  setDevicesUpdatesEnabled(_enabled: boolean): void {
   }
 
-  openRemotePage(browserId: string, url: string): void {
+  openRemotePage(_browserId: string, _url: string): void {
   }
 
   openNodeFrontend(): void {
   }
 
-  showContextMenuAtPoint(x: number, y: number, items: ContextMenuDescriptor[], document: Document): void {
+  showContextMenuAtPoint(_x: number, _y: number, _items: ContextMenuDescriptor[], _document: Document): void {
     throw new Error('Soft context menu should be used');
   }
 
@@ -518,7 +518,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return true;
   }
 
-  setAddExtensionCallback(callback: (arg0: ExtensionDescriptor) => void): void {
+  setAddExtensionCallback(_callback: (arg0: ExtensionDescriptor) => void): void {
     // Extensions are not supported in hosted mode.
   }
 
@@ -526,33 +526,33 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return null;
   }
 
-  doAidaConversation(request: string, streamId: number, callback: (result: DoAidaConversationResult) => void): void {
+  doAidaConversation(_request: string, _streamId: number, callback: (result: DoAidaConversationResult) => void): void {
     callback({
       error: 'Not implemented',
     });
   }
 
-  registerAidaClientEvent(request: string, callback: (result: AidaClientResult) => void): void {
+  registerAidaClientEvent(_request: string, callback: (result: AidaClientResult) => void): void {
     callback({
       error: 'Not implemented',
     });
   }
 
-  recordImpression(event: ImpressionEvent): void {
+  recordImpression(_event: ImpressionEvent): void {
   }
-  recordResize(event: ResizeEvent): void {
+  recordResize(_event: ResizeEvent): void {
   }
-  recordClick(event: ClickEvent): void {
+  recordClick(_event: ClickEvent): void {
   }
-  recordHover(event: HoverEvent): void {
+  recordHover(_event: HoverEvent): void {
   }
-  recordDrag(event: DragEvent): void {
+  recordDrag(_event: DragEvent): void {
   }
-  recordChange(event: ChangeEvent): void {
+  recordChange(_event: ChangeEvent): void {
   }
-  recordKeyDown(event: KeyDownEvent): void {
+  recordKeyDown(_event: KeyDownEvent): void {
   }
-  recordSettingAccess(event: SettingAccessEvent): void {
+  recordSettingAccess(_event: SettingAccessEvent): void {
   }
 }
 
@@ -568,7 +568,7 @@ class InspectorFrontendAPIImpl {
     }
   }
 
-  private dispatch(name: symbol, signature: string[], runOnceLoaded: boolean, ...params: string[]): void {
+  private dispatch(name: symbol, signature: string[], _runOnceLoaded: boolean, ...params: string[]): void {
     // Single argument methods get dispatched with the param.
     if (signature.length < 2) {
       try {

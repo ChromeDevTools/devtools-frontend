@@ -68,8 +68,8 @@ const FLEXIBILITY_ARROW_THICKNESS = 1;
 const FLEXIBILITY_ARROW_TIP_SIZE = 5;
 
 export function drawLayoutFlexItemHighlight(
-    highlight: FlexItemHighlight, itemPath: PathCommands, context: CanvasRenderingContext2D, deviceScaleFactor: number,
-    canvasWidth: number, canvasHeight: number, emulationScaleFactor: number) {
+    highlight: FlexItemHighlight, itemPath: PathCommands, context: CanvasRenderingContext2D,
+    emulationScaleFactor: number) {
   const {baseSize, isHorizontalFlow} = highlight;
 
   const itemQuad = rectPathToQuad(itemPath);
@@ -175,8 +175,10 @@ function drawFlexibilityArrow(
 }
 
 export function drawLayoutFlexContainerHighlight(
-    highlight: FlexContainerHighlight, context: CanvasRenderingContext2D, deviceScaleFactor: number,
-    canvasWidth: number, canvasHeight: number, emulationScaleFactor: number) {
+    highlight: FlexContainerHighlight,
+    context: CanvasRenderingContext2D,
+    emulationScaleFactor: number,
+) {
   const config = highlight.flexContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);

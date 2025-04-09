@@ -28,7 +28,7 @@ describe('Source Tab', () => {
     });
 
     await step(`add a breakpoint to line No.${breakpointLine}`, async () => {
-      await addBreakpointForLine(frontend, breakpointLine);
+      await addBreakpointForLine(breakpointLine);
     });
 
     await step('reload the page', async () => {

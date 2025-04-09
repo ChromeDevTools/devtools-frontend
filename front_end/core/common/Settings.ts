@@ -519,7 +519,7 @@ export class Setting<V> {
       try {
         this.storage.set(this.name, settingString);
       } catch (e) {
-        this.printSettingsSavingError(e.message, this.name, settingString);
+        this.printSettingsSavingError(e.message, settingString);
       }
     } catch (e) {
       Console.instance().error('Cannot stringify setting with name: ' + this.name + ', error: ' + e.message);
@@ -606,7 +606,7 @@ export class Setting<V> {
     return this.#deprecation;
   }
 
-  private printSettingsSavingError(message: string, name: string, value: string): void {
+  private printSettingsSavingError(message: string, value: string): void {
     const errorMessage =
         'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;
     console.error(errorMessage);

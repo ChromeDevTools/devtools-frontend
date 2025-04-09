@@ -137,7 +137,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopedObservers.delete(observer);
   }
 
-  modelAdded(target: Target, modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
+  modelAdded(modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
       if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelAdded(model);
@@ -145,7 +145,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
   }
 
-  private modelRemoved(target: Target, modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
+  private modelRemoved(modelClass: ModelClass, model: SDKModel, inScope: boolean): void {
     for (const observer of this.#modelObservers.get(modelClass).values()) {
       if (!this.#scopedObservers.has(observer) || inScope) {
         observer.modelRemoved(model);
@@ -228,7 +228,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
 
     for (const [modelClass, model] of target.models().entries()) {
-      this.modelAdded(target, modelClass, model, inScope);
+      this.modelAdded(modelClass, model, inScope);
     }
 
     for (const key of this.#modelListeners.keysArray()) {
@@ -259,7 +259,7 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     for (const modelClass of target.models().keys()) {
       const model = target.models().get(modelClass);
       assertNotNullOrUndefined(model);
-      this.modelRemoved(target, modelClass, model, inScope);
+      this.modelRemoved(modelClass, model, inScope);
     }
 
     // Iterate over a copy. #observers might be modified during iteration.

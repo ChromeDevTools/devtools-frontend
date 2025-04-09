@@ -15,10 +15,10 @@ async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
 
 describe('Sources Tab', function() {
   it('shows correct inline variable at definition', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('inline-variable.js', 'inline-variable.html');
-    await addBreakpointForLine(frontend, 3);
+    await addBreakpointForLine(3);
 
     const scriptEvaluation = target.evaluate('simple(41);');
 

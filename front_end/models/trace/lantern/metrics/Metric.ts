@@ -60,33 +60,29 @@ class Metric {
     throw new Core.LanternError('coefficients unimplemented!');
   }
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-
   /**
    * Returns the coefficients, scaled by the throttling settings if needed by the metric.
    * Some lantern metrics (speed-index) use components in their estimate that are not
    * from the simulator. In this case, we need to adjust the coefficients as the target throttling
    * settings change.
    */
-  static getScaledCoefficients(rttMs: number): MetricCoefficients {
+  static getScaledCoefficients(_rttMs: number): MetricCoefficients {
     return this.coefficients;
   }
 
-  static getOptimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation):
+  static getOptimisticGraph(_dependencyGraph: Graph.Node, _processedNavigation: Types.Simulation.ProcessedNavigation):
       Graph.Node {
     throw new Core.LanternError('Optimistic graph unimplemented!');
   }
 
-  static getPessimisticGraph(dependencyGraph: Graph.Node, processedNavigation: Types.Simulation.ProcessedNavigation):
+  static getPessimisticGraph(_dependencyGraph: Graph.Node, _processedNavigation: Types.Simulation.ProcessedNavigation):
       Graph.Node {
     throw new Core.LanternError('Pessmistic graph unimplemented!');
   }
 
-  static getEstimateFromSimulation(simulationResult: Simulation.Result, extras: Extras): Simulation.Result {
+  static getEstimateFromSimulation(simulationResult: Simulation.Result, _extras: Extras): Simulation.Result {
     return simulationResult;
   }
-
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   static compute(data: MetricComputationDataInput, extras?: Omit<Extras, 'optimistic'>): MetricResult {
     const {simulator, graph, processedNavigation} = data;

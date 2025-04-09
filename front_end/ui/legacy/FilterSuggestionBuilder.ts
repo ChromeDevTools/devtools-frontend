@@ -13,7 +13,7 @@ export class FilterSuggestionBuilder {
 
   constructor(keys: string[], valueSorter?: ((arg0: string, arg1: string[]) => void)) {
     this.keys = keys;
-    this.valueSorter = valueSorter || ((key: string, result: string[]) => result.sort());
+    this.valueSorter = valueSorter || ((_: string, result: string[]) => result.sort());
   }
 
   completions(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {

@@ -42,7 +42,7 @@ describe('Live edit', () => {
     });
 
     await step('set a breakpoint in the "await" line', async () => {
-      await addBreakpointForLine(frontend, 9);
+      await addBreakpointForLine(9);
     });
 
     await step('reload the page and verify that the breakpoint has moved', async () => {

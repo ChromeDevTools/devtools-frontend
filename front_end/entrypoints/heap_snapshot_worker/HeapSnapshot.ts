@@ -1399,7 +1399,7 @@ export abstract class HeapSnapshot {
     switch (filterName) {
       case 'objectsRetainedByDetachedDomNodes':
         // Traverse the graph, avoiding detached nodes.
-        traverse((node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
+        traverse((_node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
           return edge.node().detachedness() !== DOMLinkState.DETACHED;
         });
         markUnreachableNodes();

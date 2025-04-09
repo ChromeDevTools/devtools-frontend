@@ -2684,7 +2684,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
     // Fill the gap between groups.
-    this.forEachGroupInViewport((offset, index, group) => {
+    this.forEachGroupInViewport((offset, _, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
         return;
@@ -2700,7 +2700,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-container');
     context.beginPath();
     // Draw a separator line at the beginning of each top-level group (except the first one).
-    this.forEachGroupInViewport((offset, index, group, isFirst) => {
+    this.forEachGroupInViewport((offset, _, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
         return;
       }
@@ -2804,7 +2804,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.beginPath();
     context.stroke();
 
-    this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
+    this.forEachGroupInViewport((offset, index, group, _isFirst, groupHeight) => {
       if (this.isGroupFocused(index)) {
         const lineWidth = 2;
         const bracketLength = 10;

@@ -22,7 +22,7 @@ async function breakAndCheckFocusedPanel(expectedPanel: string) {
   });
 
   await step('add a breakpoint to line No.4', async () => {
-    await addBreakpointForLine(frontend, 4);
+    await addBreakpointForLine(4);
   });
 
   await step('navigate to the elements tab', async () => {

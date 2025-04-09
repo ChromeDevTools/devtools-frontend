@@ -27,7 +27,7 @@ export class JSONFormatter {
     tokenize(text.substring(this.fromOffset, this.toOffset), this.tokenCallback.bind(this));
   }
 
-  tokenCallback(token: string, type: string|null, startPosition: number): void {
+  tokenCallback(token: string, _type: string|null, startPosition: number): void {
     switch (token.charAt(0)) {
       case '{':
       case '[':

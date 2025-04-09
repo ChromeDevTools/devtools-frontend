@@ -21,12 +21,12 @@ describe('Extension panels', () => {
 
     const page = new URL(`${getResourcesPath()}/extensions/test_panel.html`).pathname;
 
-    await extension.evaluate(async (title: string, page: string) => {
+    await extension.evaluate(async (page: string) => {
       window.searchEvents = [];
       const panel = await new Promise<Chrome.DevTools.ExtensionPanel>(
           r => window.chrome.devtools.panels.create('TestPanel', '', page, r));
       panel.onSearch.addListener((action, queryString) => window.searchEvents.push({action, queryString}));
-    }, PAGE_TITLE, page);
+    }, page);
 
     await click(`[aria-label=${PAGE_TITLE}]`);
 

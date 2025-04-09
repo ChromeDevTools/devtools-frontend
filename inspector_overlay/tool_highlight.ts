@@ -222,8 +222,7 @@ export class HighlightOverlay extends Overlay {
 
     if (highlight.flexInfo) {
       for (const flex of highlight.flexInfo) {
-        drawLayoutFlexContainerHighlight(
-            flex, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor);
+        drawLayoutFlexContainerHighlight(flex, this.context, this.emulationScaleFactor);
       }
     }
 
@@ -245,9 +244,7 @@ export class HighlightOverlay extends Overlay {
         if (!path) {
           continue;
         }
-        drawLayoutFlexItemHighlight(
-            flexItem, path, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
-            this.emulationScaleFactor);
+        drawLayoutFlexItemHighlight(flexItem, path, this.context, this.emulationScaleFactor);
       }
     }
     this.context.restore();

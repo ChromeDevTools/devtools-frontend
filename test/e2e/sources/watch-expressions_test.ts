@@ -51,7 +51,7 @@ describe('Watch Expression Pane', () => {
     const watchValue = '11';
 
     await step('Run to outer scope breakpoint', async () => {
-      await addBreakpointForLine(frontend, 2);
+      await addBreakpointForLine(2);
 
       void target.evaluate('foo(10);');
 

@@ -104,7 +104,7 @@ describe('The Debugger Language Plugins', () => {
     await extension.evaluate(() => {
       // A simple plugin that resolves to a single source file
       class SingleFilePlugin {
-        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
+        async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const fileUrl = new URL('/source_file.c', rawModule.url || symbols);
           return [fileUrl.href];
         }
@@ -985,7 +985,7 @@ describe('The Debugger Language Plugins', () => {
         constructor() {
         }
 
-        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
+        async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('can_access_wasm_data.wat', rawModule.url || symbols).href;
           return [sourceFileURL];
         }
@@ -1056,7 +1056,7 @@ describe('The Debugger Language Plugins', () => {
     await extension.evaluate(() => {
       // A simple plugin that resolves to a single source file
       class DWARFSymbolsWithSingleFilePlugin {
-        async addRawModule(rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
+        async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           if (symbols !== 'foobar81') {
             return [];
           }

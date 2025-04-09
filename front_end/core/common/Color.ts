@@ -512,7 +512,7 @@ export function desiredLuminance(luminance: number, contrast: number, lighter: b
  * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
  */
 export function approachColorValue(
-    candidateHSVA: Color4D, bgRGBA: Color4D, index: number, desiredLuminance: number,
+    candidateHSVA: Color4D, index: number, desiredLuminance: number,
     candidateLuminance: (arg0: Color4D) => number): number|null {
   const epsilon = 0.0002;
 
@@ -567,12 +567,12 @@ export function findFgColorForContrast(fgColor: Legacy, bgColor: Legacy, require
   const saturationComponentIndex = 1;
   const valueComponentIndex = 2;
 
-  if (approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desired, candidateLuminance)) {
+  if (approachColorValue(candidateHSVA, valueComponentIndex, desired, candidateLuminance)) {
     return Legacy.fromHSVA(candidateHSVA);
   }
 
   candidateHSVA[valueComponentIndex] = 1;
-  if (approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desired, candidateLuminance)) {
+  if (approachColorValue(candidateHSVA, saturationComponentIndex, desired, candidateLuminance)) {
     return Legacy.fromHSVA(candidateHSVA);
   }
 
@@ -581,7 +581,6 @@ export function findFgColorForContrast(fgColor: Legacy, bgColor: Legacy, require
 
 export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, requiredContrast: number): Legacy|null {
   const candidateHSVA = fgColor.as(Format.HSL).hsva();
-  const bgRGBA = bgColor.rgba();
 
   const candidateLuminance = (candidateHSVA: Color4D): number => {
     return luminanceAPCA(Legacy.fromHSVA(candidateHSVA).rgba());
@@ -595,7 +594,7 @@ export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, req
   const saturationComponentIndex = 1;
   const valueComponentIndex = 2;
 
-  if (approachColorValue(candidateHSVA, bgRGBA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
+  if (approachColorValue(candidateHSVA, valueComponentIndex, desiredLuminance, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
     if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
       return candidate;
@@ -603,7 +602,7 @@ export function findFgColorForContrastAPCA(fgColor: Legacy, bgColor: Legacy, req
   }
 
   candidateHSVA[valueComponentIndex] = 1;
-  if (approachColorValue(candidateHSVA, bgRGBA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
+  if (approachColorValue(candidateHSVA, saturationComponentIndex, desiredLuminance, candidateLuminance)) {
     const candidate = Legacy.fromHSVA(candidateHSVA);
     if (Math.abs(contrastRatioAPCA(bgColor.rgba(), candidate.rgba())) >= requiredContrast) {
       return candidate;

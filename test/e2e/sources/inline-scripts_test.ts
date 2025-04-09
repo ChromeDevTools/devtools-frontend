@@ -20,10 +20,10 @@ import {
 describe('The Sources Tab', () => {
   // Skip this test until the flakiness is fixed.
   it.skip('[crbug.com/1466450]: sets the breakpoint in the first script for multiple inline scripts', async () => {
-    const {frontend, target} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     await openSourceCodeEditorForFile('inline-scripts.html', 'inline-scripts.html');
-    await addBreakpointForLine(frontend, 4);
-    await addBreakpointForLine(frontend, 11);
+    await addBreakpointForLine(4);
+    await addBreakpointForLine(11);
 
     await target.reload();
     await waitFor(PAUSE_INDICATOR_SELECTOR);

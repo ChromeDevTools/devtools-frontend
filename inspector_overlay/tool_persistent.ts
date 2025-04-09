@@ -139,9 +139,7 @@ export class PersistentOverlay extends Overlay {
 
   drawFlexContainerHighlight(highlight: FlexContainerHighlight) {
     this.context.save();
-    drawLayoutFlexContainerHighlight(
-        highlight, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight,
-        this.emulationScaleFactor);
+    drawLayoutFlexContainerHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 

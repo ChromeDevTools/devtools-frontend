@@ -76,10 +76,10 @@ describe('Sources Tab', function() {
   });
 
   it('can add a breakpoint in raw wasm', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html');
-    await addBreakpointForLine(frontend, '0x023');
+    await addBreakpointForLine('0x023');
 
     const scriptLocation = await retrieveTopCallFrameScriptLocation('main();', target);
     assert.deepEqual(scriptLocation, 'add.wasm:0x23');
@@ -94,7 +94,7 @@ describe('Sources Tab', function() {
     });
 
     await step('add a breakpoint to line No.0x027', async () => {
-      await addBreakpointForLine(frontend, '0x027');
+      await addBreakpointForLine('0x027');
     });
 
     await step('reload the page', async () => {
@@ -109,7 +109,7 @@ describe('Sources Tab', function() {
     });
 
     await step('remove the breakpoint from the line 0x027', async () => {
-      await removeBreakpointForLine(frontend, '0x027');
+      await removeBreakpointForLine('0x027');
     });
 
     await step('resume script execution', async () => {
@@ -125,7 +125,7 @@ describe('Sources Tab', function() {
     await checkBreakpointDidNotActivate();
 
     await step('add a breakpoint to line No.0x028', async () => {
-      await addBreakpointForLine(frontend, '0x028');
+      await addBreakpointForLine('0x028');
     });
 
     await step('reload the page', async () => {
@@ -141,7 +141,7 @@ describe('Sources Tab', function() {
   });
 
   it('shows variable value in popover', async function() {
-    const {target, frontend} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     const fileName = 'add.wasm';
 
     await step('navigate to a page and open the Sources tab', async () => {
@@ -149,7 +149,7 @@ describe('Sources Tab', function() {
     });
 
     await step('add a breakpoint to line No.0x023', async () => {
-      await addBreakpointForLine(frontend, '0x023');
+      await addBreakpointForLine('0x023');
     });
 
     await step('reload the page', async () => {
@@ -175,8 +175,6 @@ describe('Sources Tab', function() {
   });
 
   it('cannot set a breakpoint on non-breakable line in raw wasm', async () => {
-    const {frontend} = getBrowserAndPages();
-
     await openSourceCodeEditorForFile('add.wasm', 'wasm/call-to-add-wasm.html');
     assert.deepEqual(await getNonBreakableLines(), [
       0x000,
@@ -185,7 +183,7 @@ describe('Sources Tab', function() {
     ]);
     assert.deepEqual(await getBreakpointDecorators(), []);
     // Line 3 is breakable.
-    await addBreakpointForLine(frontend, '0x023');
+    await addBreakpointForLine('0x023');
     assert.deepEqual(await getBreakpointDecorators(), [0x023]);
   });
 
@@ -198,7 +196,7 @@ describe('Sources Tab', function() {
     });
 
     await step('add a breakpoint to line No.0x060', async () => {
-      await addBreakpointForLine(frontend, '0x060');
+      await addBreakpointForLine('0x060');
     });
 
     await step('reload the page', async () => {
@@ -232,11 +230,11 @@ describe('Sources Tab', function() {
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
-      await removeBreakpointForLine(frontend, '0x060');
+      await removeBreakpointForLine('0x060');
     });
 
     await step('add a breakpoint to line No.0x048', async () => {
-      await addBreakpointForLine(frontend, '0x048');
+      await addBreakpointForLine('0x048');
     });
 
     await step('reload the page', async () => {
@@ -307,7 +305,7 @@ describe('Sources Tab', function() {
         0x06c,
         0x0c1,
       ]);
-      await addBreakpointForLine(frontend, '0x060');
+      await addBreakpointForLine('0x060');
     });
 
     await step('reload the page', async () => {
@@ -341,11 +339,11 @@ describe('Sources Tab', function() {
     });
 
     await step('remove the breakpoint from the line 0x060', async () => {
-      await removeBreakpointForLine(frontend, '0x060');
+      await removeBreakpointForLine('0x060');
     });
 
     await step('add a breakpoint to line No.0x048', async () => {
-      await addBreakpointForLine(frontend, '0x048');
+      await addBreakpointForLine('0x048');
     });
 
     await step('reload the page', async () => {
@@ -381,7 +379,7 @@ describe('Sources Tab', function() {
     });
 
     await step('remove the breakpoint from the 8th line', async () => {
-      await removeBreakpointForLine(frontend, '0x048');
+      await removeBreakpointForLine('0x048');
     });
 
     await step('resume script execution', async () => {
@@ -419,7 +417,7 @@ describe('Sources Tab', function() {
     });
 
     await step('add a breakpoint to line No.0x06d', async () => {
-      await addBreakpointForLine(frontend, '0x06d');
+      await addBreakpointForLine('0x06d');
     });
 
     await step('reload the page', async () => {
@@ -457,11 +455,11 @@ describe('Sources Tab', function() {
     });
 
     await step('remove the breakpoint from line 0x06d', async () => {
-      await removeBreakpointForLine(frontend, '0x06d');
+      await removeBreakpointForLine('0x06d');
     });
 
     await step('add a breakpoint to line No.0x050', async () => {
-      await addBreakpointForLine(frontend, '0x050');
+      await addBreakpointForLine('0x050');
     });
 
     await step('reload the page', async () => {

@@ -20,10 +20,10 @@ import {
 
 describe('Sources Tab', () => {
   async function runTest(filename: string, functionName: string) {
-    const {frontend, target} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
 
     await openFileInEditor(filename);
-    await addBreakpointForLine(frontend, 2);
+    await addBreakpointForLine(2);
 
     const scriptEvaluation = target.evaluate(functionName + '();');
     await waitFor(RESUME_BUTTON);

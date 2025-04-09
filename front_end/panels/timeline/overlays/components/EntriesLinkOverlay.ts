@@ -274,33 +274,24 @@ export class EntriesLinkOverlay extends HTMLElement {
   }
 
   /*
-   * When only one entry from the connection is visible, the connection
-   * line becomes a gradient from the visible entry to the edge of
-   * the screen towards the entry that is not visible.
+   * Calculates the gradient stop percentage when only one entry is visible.
+   * This percentage represents the portion of the line visible within the canvas,
+   * used to create a fade effect towards the off-screen entry.
+   * When one entry is off-screen, it is impossible to tell where exactly the line
+   * is going to. Therefore, to not needlessly take space, the faded line is very short.
    *
    * To achieve this, we need to calculate what percentage of the
-   * visible screen the connection is currently occupying and apply
+   * shole connection the short line is currently occupying and apply
    * that gradient to the visible connection part.
    */
   #partlyVisibleConnectionLinePercentage(): number {
     if (!this.#canvasRect) {
       return 100;
     }
+    const fadedLineLength = 25;
 
     const lineLength = this.#coordinateTo.x - (this.#coordinateFrom.x + this.#fromEntryDimensions.width);
-    let visibleLineLength = 0;
-
-    // If the visible entry is the 'From' entry, find the length of the visible arrow by
-    // subtracting the point where the arrow starts from the whole canvas length.
-    // If the 'to' entry is visible, the coordinate of the entry will be equal to
-    // the visible arrow length.
-    if (this.#entryFromVisible && !this.#entryToVisible) {
-      visibleLineLength = this.#canvasRect.width - (this.#coordinateFrom.x + this.#fromEntryDimensions.width);
-    } else if (!this.#entryFromVisible && this.#entryToVisible) {
-      visibleLineLength = this.#coordinateTo.x;
-    }
-
-    const visibleLineFromTotalPercentage = (visibleLineLength * 100) / lineLength;
+    const visibleLineFromTotalPercentage = (fadedLineLength * 100) / lineLength;
 
     return (visibleLineFromTotalPercentage < 100) ? visibleLineFromTotalPercentage : 100;
   }

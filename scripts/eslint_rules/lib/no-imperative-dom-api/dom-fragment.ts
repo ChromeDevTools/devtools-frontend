@@ -76,7 +76,10 @@ export class DomFragment {
 
   toTemplateLiteral(sourceCode: Readonly<SourceCode>, indent = 4): string[] {
     if (this.expression && !this.tagName) {
-      return [`\n${' '.repeat(indent)}`, '${', this.expression, '}'];
+      const value = this.initializer?.parent?.type === 'VariableDeclarator' ? this.initializer?.parent?.init : null;
+      const expression =
+          (this.references.every(r => r.processed) && value) ? sourceCode.getText(value) : this.expression;
+      return [`\n${' '.repeat(indent)}`, '${', expression, '}'];
     }
 
     function toOutputString(node: Node|string, quoteLiterals = false): string {

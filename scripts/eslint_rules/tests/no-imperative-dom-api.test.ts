@@ -433,6 +433,8 @@ class SomeWidget extends UI.Widget.Widget {
     label.addEventListener('click', () => this.doSomething.bind(this));
     this.contentElement.appendChild(details);
     details.createChild('span');
+    const banner = createBanner();
+    this.contentElement.appendChild(banner);
   }
 }`,
       output: `
@@ -442,6 +444,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <div>
       \${label}
       \${details}
+      \${createBanner()}
     </div>\`,
     target, {host: input});
 };

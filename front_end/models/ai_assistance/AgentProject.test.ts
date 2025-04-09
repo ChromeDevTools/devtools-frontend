@@ -65,10 +65,198 @@ describeWithEnvironment('AgentProject', () => {
     assert.deepEqual(project.getProcessedFiles(), ['index.html']);
   });
 
-  it('can write files files', async () => {
-    const {project} = await mockProject();
-    project.writeFile('index.html', 'updated');
-    assert.deepEqual(project.readFile('index.html'), 'updated');
+  describe('write file', () => {
+    describe('full', () => {
+      it('can write files files', async () => {
+        const {project} = await mockProject();
+        project.writeFile('index.html', 'updated');
+        assert.deepEqual(project.readFile('index.html'), 'updated');
+      });
+    });
+
+    describe('unified', () => {
+      it('can write files', async () => {
+        const {project} = await mockProject();
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.html
++++ b/index.html
+@@ -817,5 +817,5 @@
+-content
++updated
+\`\`\`\`\``;
+
+        project.writeFile('index.html', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.html'), 'updated');
+      });
+
+      it('can write files with multiple changes', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: `Line:1
+Line:2
+Line:3
+Line:4
+Line:5`,
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@
+-Line:1
++LineUpdated:1
+@@ -856,7 +857,7 @@
+-Line:4
++LineUpdated:4
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), `LineUpdated:1
+Line:2
+Line:3
+LineUpdated:4
+Line:5`);
+      });
+
+      it('can write files with only addition', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: '',
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@
++Line:1
++Line:4
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), `Line:1
+Line:4`);
+      });
+
+      it('can write files with multiple additions', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: `Line:1
+Line:2
+Line:3
+Line:4
+Line:5`,
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@
+-Line:1
++LineUpdated:1
++LineUpdated:1.5
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), `LineUpdated:1
+LineUpdated:1.5
+Line:2
+Line:3
+Line:4
+Line:5`);
+      });
+
+      it('can write files with only deletion', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: `Line:1
+Line:2
+Line:3
+Line:4
+Line:5`,
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@
+ Line:1
+-Line:2
+ Line:3
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), `Line:1
+Line:3
+Line:4
+Line:5`);
+      });
+
+      it('can write files with only deletion no search lines', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: 'Line:1',
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@
+-Line:1
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), '');
+      });
+
+      it('can write files with first line next to @@', async () => {
+        const {project} = await mockProject(
+            [
+              {
+                path: 'index.css',
+                content: `Line:1
+Line:2
+Line:3
+Line:4
+Line:5`,
+              },
+            ],
+        );
+        const unifiedDiff = `\`\`\`\`\`
+diff
+--- a/index.css
++++ b/index.css
+@@ -817,1 +817,1 @@-Line:1
+-Line:2
+ Line:3
+\`\`\`\`\``;
+
+        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(project.readFile('index.css'), `Line:3
+Line:4
+Line:5`);
+      });
+    });
   });
 
   describe('limits', () => {

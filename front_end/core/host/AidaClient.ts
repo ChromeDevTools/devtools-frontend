@@ -228,7 +228,7 @@ export enum CitationSourceType {
   TRAINING_DATA = 'TRAINING_DATA',
   WORLD_FACTS = 'WORLD_FACTS',
   LOCAL_FACTS = 'LOCAL_FACTS',
-  INDIRECT = 'INDERECT',
+  INDIRECT = 'INDIRECT',
 }
 
 export interface Citation {

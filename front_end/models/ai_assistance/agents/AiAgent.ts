@@ -313,12 +313,12 @@ export abstract class AiAgent<T> {
     }
     const enableAidaFunctionCalling = declarations.length && !this.functionCallEmulationEnabled;
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
-    const premable = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
+    const preamble = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
     const facts = Array.from(this.#facts);
     const request: Host.AidaClient.AidaRequest = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
-      preamble: premable,
+      preamble,
 
       historical_contexts: history.length ? history : undefined,
       facts: facts.length ? facts : undefined,

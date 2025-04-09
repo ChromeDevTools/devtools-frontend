@@ -150,6 +150,8 @@ devtools_svg_sources = [
   "flex-wrap.svg",
   "flow.svg",
   "fold-more.svg",
+  "folder-asterisk.svg",
+  "folder-off.svg",
   "folder.svg",
   "frame-crossed.svg",
   "frame-icon.svg",

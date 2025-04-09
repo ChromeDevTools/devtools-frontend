@@ -144,14 +144,34 @@ export enum PatchSuggestionState {
   ERROR = 'error',
 }
 
+enum SelectedProjectType {
+  /**
+   * No project selected
+   */
+  NONE = 'none',
+  /**
+   * The selected project is not an automatic workspace project
+   */
+  REGULAR = 'regular',
+  /**
+   * The selected project is a disconnected automatic workspace project
+   */
+  AUTOMATIC_DISCONNECTED = 'automaticDisconncted',
+  /**
+   * The selected project is a connected automatic workspace project
+   */
+  AUTOMATIC_CONNECTED = 'automaticConnected',
+}
+
 export interface ViewInput {
   workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   patchSuggestionState: PatchSuggestionState;
   changeSummary?: string;
   sources?: string;
-  projectName?: string;
-  savedToDisk?: boolean;
+  projectName: string;
   projectPath: Platform.DevToolsPath.RawPathString;
+  projectType: SelectedProjectType;
+  savedToDisk?: boolean;
   applyToWorkspaceTooltipText: Platform.UIString.LocalizedString;
   onLearnMoreTooltipClick: () => void;
   onApplyToWorkspace: () => void;
@@ -318,12 +338,13 @@ export class PatchWidget extends UI.Widget.Widget {
           `;
         }
 
+        const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? 'folder-off' : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? 'folder-asterisk' : 'folder';
         return html`
         <div class="footer">
           ${input.projectName ? html`
             <div class="change-workspace">
               <div class="selected-folder">
-                <devtools-icon .name=${'folder'}></devtools-icon> <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
+                <devtools-icon .name=${iconName}></devtools-icon> <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               </div>
               ${input.onChangeWorkspaceClick ? html`
                 <devtools-button
@@ -346,7 +367,7 @@ export class PatchWidget extends UI.Widget.Widget {
                 </span>
               </div>
             ` : html`
-              <devtools-button
+                <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'stage-to-workspace'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
@@ -412,22 +433,48 @@ export class PatchWidget extends UI.Widget.Widget {
     void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
-  override performUpdate(): void {
-    const projectName = this.#project ? Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
-                                            this.#project.displayName() as Platform.DevToolsPath.EncodedPathString) :
-                                        undefined;
-    const projectPath = this.#project ?
-        Common.ParsedURL.ParsedURL.urlToRawPathString(
-            this.#project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()) :
-        Platform.DevToolsPath.EmptyRawPathString;
+  #getDisplayedProject(): {projectName: string, projectPath: Platform.DevToolsPath.RawPathString} {
+    if (this.#project) {
+      return {
+        projectName: Common.ParsedURL.ParsedURL.encodedPathToRawPathString(
+            this.#project.displayName() as Platform.DevToolsPath.EncodedPathString),
+        projectPath: Common.ParsedURL.ParsedURL.urlToRawPathString(
+            this.#project.id() as Platform.DevToolsPath.UrlString, Host.Platform.isWin()),
+      };
+    }
+    if (this.#automaticFileSystem) {
+      return {
+        projectName: Common.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
+        projectPath: this.#automaticFileSystem.root,
+      };
+    }
+    return {
+      projectName: '',
+      projectPath: Platform.DevToolsPath.EmptyRawPathString,
+    };
+  }
+
+  #shouldShowChangeButton(): boolean {
     const automaticFileSystemProject =
         this.#automaticFileSystem ? this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root) : null;
-    const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
-                         .filter(
-                             project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
-                                 project.fileSystem().type() ===
-                                     Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT);
-    const showChangeButton = projects.length > 1 || this.#project !== automaticFileSystemProject;
+    const regularProjects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+                                .filter(
+                                    project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
+                                        project.fileSystem().type() ===
+                                            Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT)
+                                .filter(project => project !== automaticFileSystemProject);
+    return regularProjects.length > 0;
+  }
+
+  #getSelectedProjectType(projectPath: Platform.DevToolsPath.RawPathString): SelectedProjectType {
+    if (this.#automaticFileSystem && this.#automaticFileSystem.root === projectPath) {
+      return this.#project ? SelectedProjectType.AUTOMATIC_CONNECTED : SelectedProjectType.AUTOMATIC_DISCONNECTED;
+    }
+    return this.#project ? SelectedProjectType.NONE : SelectedProjectType.REGULAR;
+  }
+
+  override performUpdate(): void {
+    const {projectName, projectPath} = this.#getDisplayedProject();
 
     this.#view(
         {
@@ -437,6 +484,7 @@ export class PatchWidget extends UI.Widget.Widget {
           sources: this.#patchSources,
           projectName,
           projectPath,
+          projectType: this.#getSelectedProjectType(projectPath),
           savedToDisk: this.#savedToDisk,
           applyToWorkspaceTooltipText: this.#noLogging ?
               lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging) :
@@ -448,8 +496,9 @@ export class PatchWidget extends UI.Widget.Widget {
           },
           onDiscard: this.#onDiscard.bind(this),
           onSaveAll: this.#onSaveAll.bind(this),
-          onChangeWorkspaceClick: showChangeButton ? this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}) :
-                                                     undefined,
+          onChangeWorkspaceClick: this.#shouldShowChangeButton() ?
+              this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}) :
+              undefined,
         },
         this.#viewOutput, this.contentElement);
   }
@@ -459,6 +508,7 @@ export class PatchWidget extends UI.Widget.Widget {
     this.#selectDefaultProject();
 
     if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
 
       // @ts-expect-error temporary global function for local testing.
@@ -470,6 +520,7 @@ export class PatchWidget extends UI.Widget.Widget {
 
   override willHide(): void {
     if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
       this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
     }
   }
@@ -529,6 +580,12 @@ export class PatchWidget extends UI.Widget.Widget {
       this.#projectIdSetting.set('');
     }
     this.requestUpdate();
+  }
+
+  #onProjectAdded(): void {
+    if (this.#project === undefined) {
+      this.#selectDefaultProject();
+    }
   }
 
   #onProjectRemoved(): void {

@@ -204,12 +204,12 @@ Files:
         },
       });
       const {view} = await createPatchWidget();
-      assert.isUndefined(view.input.projectName);
+      assert.strictEqual(view.input.projectName, '');
     });
 
     it('does not select a workspace project if setting does not exist', async () => {
       const {view} = await createPatchWidget();
-      assert.isUndefined(view.input.projectName);
+      assert.strictEqual(view.input.projectName, '');
     });
 
     it('selects a workspace project matching the setting', async () => {
@@ -225,7 +225,7 @@ Files:
 
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
       const input = await view.nextInput;
-      assert.isUndefined(input.projectName);
+      assert.strictEqual(input.projectName, '');
     });
 
     it('selection is triggered by applyToWorkspace click if no workspace is (pre-)selected', async () => {
@@ -237,7 +237,7 @@ Files:
       const {view, widget} =
           await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'suggested patch'}]])});
       widget.changeSummary = 'body { background-color: red; }';
-      assert.isUndefined(view.input.projectName);
+      assert.strictEqual(view.input.projectName, '');
 
       // Simulate clicking the "Apply to workspace" button
       view.input.onApplyToWorkspace();

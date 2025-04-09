@@ -148,6 +148,8 @@ grd_files_release_sources = [
   "front_end/Images/flex-wrap.svg",
   "front_end/Images/flow.svg",
   "front_end/Images/fold-more.svg",
+  "front_end/Images/folder-asterisk.svg",
+  "front_end/Images/folder-off.svg",
   "front_end/Images/folder.svg",
   "front_end/Images/frame-crossed.svg",
   "front_end/Images/frame-icon.svg",

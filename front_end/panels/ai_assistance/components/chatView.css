@@ -763,7 +763,7 @@ main {
     pointer-events: none;
   }
 
-  summary {
+  & .header-container {
     display: flex;
     align-items: center;
     gap: var(--sys-size-3);
@@ -807,7 +807,7 @@ main {
     }
   }
 
-  &:not(&[open]):hover::after {
+  &:not(.saved-to-disk, &[open]):hover::after {
     content: '';
     height: 100%;
     width: 100%;

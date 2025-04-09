@@ -26,8 +26,6 @@ import * as PanelCommon from '../common/common.js';
 
 import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 
-const {classMap} = Directives;
-
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -383,22 +381,26 @@ export class PatchWidget extends UI.Widget.Widget {
         </div>`;
       }
 
-      render(
-        html`
-          <details class=${classMap({
-            'change-summary': true,
-            'saved-to-disk': Boolean(input.savedToDisk)
-          })}>
-            <summary>
+      // Use a simple div for the "Saved to disk" state as it's not expandable,
+      // otherwise use the interactive <details> element.
+      const template = input.savedToDisk
+        ? html`
+          <div class="change-summary saved-to-disk" role="status" aria-live="polite">
+            <div class="header-container">
+             ${renderHeader()}
+             </div>
+          </div>`
+        : html`
+          <details class="change-summary">
+            <summary class="header-container">
               ${renderHeader()}
             </summary>
             ${renderContent()}
             ${renderFooter()}
           </details>
-        `,
-        target,
-        {host: target}
-      );
+        `;
+
+      render(template, target, {host: target});
     });
     // clang-format on
     this.requestUpdate();

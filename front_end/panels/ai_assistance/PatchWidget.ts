@@ -331,6 +331,7 @@ export class PatchWidget extends UI.Widget.Widget {
                   .jslogContext=${'change-workspace'}
                   .variant=${Buttons.Button.Variant.TEXT}
                   .title=${lockedString(UIStringsNotTranslate.changeRootFolder)}
+                  .disabled=${input.patchSuggestionState === PatchSuggestionState.LOADING}
                   ${Directives.ref(output.changeRef)}
                 >${lockedString(UIStringsNotTranslate.change)}</devtools-button>
               ` : nothing}

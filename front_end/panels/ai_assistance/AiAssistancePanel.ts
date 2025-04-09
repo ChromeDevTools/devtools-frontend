@@ -256,7 +256,8 @@ interface ToolbarViewInput {
   onDeleteClick: () => void;
   onHelpClick: () => void;
   onSettingsClick: () => void;
-  isDeleteHistoryButtonVisible: boolean;
+  showDeleteHistoryAction: boolean;
+  showChatActions: boolean;
 }
 
 export type ViewInput = ChatViewProps&ToolbarViewInput;
@@ -271,7 +272,8 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
   return html`
     <div class="toolbar-container" role="toolbar" .jslogContext=${VisualLogging.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-        <devtools-button
+      ${input.showChatActions
+        ? html`<devtools-button
           title=${i18nString(UIStrings.newChat)}
           aria-label=${i18nString(UIStrings.newChat)}
           .iconName=${'plus'}
@@ -285,8 +287,9 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .iconName=${'history'}
           .jslogContext=${'freestyler.history'}
           .variant=${Buttons.Button.Variant.TOOLBAR}
-          @click=${input.onHistoryClick}></devtools-button>
-        ${input.isDeleteHistoryButtonVisible
+          @click=${input.onHistoryClick}></devtools-button>`
+          : Lit.nothing}
+        ${input.showDeleteHistoryAction
           ? html`<devtools-button
               title=${i18nString(UIStrings.deleteChat)}
               aria-label=${i18nString(UIStrings.deleteChat)}
@@ -839,7 +842,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
               this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
           imageInput: this.#imageInput,
-          isDeleteHistoryButtonVisible: Boolean(this.#conversation && !this.#conversation.isEmpty),
+          showDeleteHistoryAction: Boolean(this.#conversation && !this.#conversation.isEmpty),
+          showChatActions: this.#shouldShowChatActions(),
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -906,6 +910,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     return false;
+  }
+
+  #shouldShowChatActions(): boolean {
+    const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
+    const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    if (!aiAssistanceSetting || isBlockedByAge) {
+      return false;
+    }
+    if (this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL ||
+        this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED) {
+      return false;
+    }
+    return true;
   }
 
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {

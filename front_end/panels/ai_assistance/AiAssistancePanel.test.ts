@@ -373,6 +373,49 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onSettingsClick();
       assert.isTrue(stub.calledWith('chrome-ai'));
     });
+
+    it('should not show chat and delete history actions when ai assistance enabled setting is disabled', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
+
+      const {view} = await createAiAssistancePanel();
+
+      assert.isFalse(view.input.showChatActions);
+      assert.isFalse(view.input.showDeleteHistoryAction);
+    });
+
+    it('should not show chat and delete history actions when ai assistance setting is marked as false', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
+
+      const {view} = await createAiAssistancePanel();
+
+      assert.isFalse(view.input.showChatActions);
+      assert.isFalse(view.input.showDeleteHistoryAction);
+    });
+
+    it('should not show chat and delete history actions when the user is blocked by age', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      updateHostConfig({
+        aidaAvailability: {
+          blockedByAge: true,
+        },
+      });
+
+      const {view} = await createAiAssistancePanel();
+
+      assert.isFalse(view.input.showChatActions);
+      assert.isFalse(view.input.showDeleteHistoryAction);
+    });
+
+    it('should not show chat and delete history actions when Aida availability status is SYNC IS PAUSED', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+
+      const {view} =
+          await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED});
+
+      assert.isFalse(view.input.showChatActions);
+      assert.isFalse(view.input.showDeleteHistoryAction);
+    });
   });
 
   describe('history interactions', () => {

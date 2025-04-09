@@ -60,6 +60,15 @@ export interface ProjectSettings {
   readonly workspace?: {readonly root: Platform.DevToolsPath.RawPathString, readonly uuid: string};
 }
 
+/**
+ * Indicates the availability of the project settings feature.
+ *
+ * `'available'` means that the feature is enabled, the origin of the inspected
+ * page is `localhost`. It doesn't however indicate whether or not the page is
+ * actually providing a `com.chrome.devtools.json` or not.
+ */
+export type ProjectSettingsAvailability = 'available'|'unavailable';
+
 const EMPTY_PROJECT_SETTINGS: ProjectSettings = Object.freeze({});
 const IDLE_PROMISE: Promise<void> = Promise.resolve();
 
@@ -68,8 +77,23 @@ let projectSettingsModelInstance: ProjectSettingsModel|undefined;
 export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly #pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader;
   readonly #targetManager: SDK.TargetManager.TargetManager;
+  #availability: ProjectSettingsAvailability = 'unavailable';
   #projectSettings: ProjectSettings = EMPTY_PROJECT_SETTINGS;
   #promise: Promise<void> = IDLE_PROMISE;
+
+  /**
+   * Yields the availability of the project settings feature.
+   *
+   * `'available'` means that the feature is enabled, the origin of the inspected
+   * page is `localhost`. It doesn't however indicate whether or not the page is
+   * actually providing a `com.chrome.devtools.json` or not.
+   *
+   * @return `'available'` if the feature is enabled and the inspected page is
+   *         `localhost`, otherwise `'unavailable'`.
+   */
+  get availability(): ProjectSettingsAvailability {
+    return this.#availability;
+  }
 
   /**
    * Yields the current project settings.
@@ -169,7 +193,15 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
   async #loadAndValidateProjectSettings(target: SDK.Target.Target): Promise<ProjectSettings> {
     const frame = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame;
     if (!isLocalFrame(frame)) {
+      if (this.#availability !== 'unavailable') {
+        this.#availability = 'unavailable';
+        this.dispatchEventToListeners(Events.AVAILABILITY_CHANGED, this.#availability);
+      }
       return EMPTY_PROJECT_SETTINGS;
+    }
+    if (this.#availability !== 'available') {
+      this.#availability = 'available';
+      this.dispatchEventToListeners(Events.AVAILABILITY_CHANGED, this.#availability);
     }
     const initiatorUrl = frame.url;
     const frameId = frame.id;
@@ -199,10 +231,27 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 }
 
+/**
+ * Events emitted by the `ProjectSettingsModel`.
+ */
 export const enum Events {
+  /**
+   * Emitted whenever the `availability` property of the
+   * `ProjectSettingsModel` changes.
+   */
+  AVAILABILITY_CHANGED = 'AvailabilityChanged',
+
+  /**
+   * Emitted whenever the `projectSettings` property of the
+   * `ProjectSettingsModel` changes.
+   */
   PROJECT_SETTINGS_CHANGED = 'ProjectSettingsChanged',
 }
 
+/**
+ * @internal
+ */
 export interface EventTypes {
+  [Events.AVAILABILITY_CHANGED]: ProjectSettingsAvailability;
   [Events.PROJECT_SETTINGS_CHANGED]: ProjectSettings;
 }

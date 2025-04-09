@@ -207,4 +207,54 @@ describe('ProjectSettingsModel', () => {
 
     assert.isTrue(targetManager.addEventListener.notCalled);
   });
+
+  it('reports unavailable when `devToolsWellKnown` is disabled', () => {
+    const hostConfig = {devToolsWellKnown: {enabled: false}};
+    const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
+    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
+
+    const projectSettingsModel = ProjectSettingsModel.instance({
+      forceNew: true,
+      hostConfig,
+      pageResourceLoader,
+      targetManager,
+    });
+
+    assert.strictEqual(projectSettingsModel.availability, 'unavailable');
+  });
+
+  it('reports available for local origins', async () => {
+    const hostConfig = {devToolsWellKnown: {enabled: true}};
+    const pageResourceLoader = sinon.createStubInstance(SDK.PageResourceLoader.PageResourceLoader);
+    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
+
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    targetManager.primaryPageTarget.returns(target);
+
+    const resourceTreeModel = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeModel);
+    target.model.withArgs(SDK.ResourceTreeModel.ResourceTreeModel).returns(resourceTreeModel);
+
+    const url = urlString`http://localhost:5713/.well-known/appspecific/com.chrome.devtools.json`;
+    const frameId = 'frame1';
+    const initiatorUrl = urlString`http://localhost:5713/index.html`;
+    const frame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+    resourceTreeModel.mainFrame = frame;
+    sinon.stub(frame, 'securityOriginDetails').get(() => ({isLocalhost: true}));
+    sinon.stub(frame, 'url').get(() => initiatorUrl);
+    sinon.stub(frame, 'id').get(() => frameId);
+
+    const content = '{"workspace":{"root":"/home/foo","uuid":"8f7b028c-0323-485f-bcb9-b404edc0f186"}}';
+    pageResourceLoader.loadResource.withArgs(url, sinon.match({target, frameId, initiatorUrl}))
+        .returns(Promise.resolve({content}));
+
+    const projectSettingsModel = ProjectSettingsModel.instance({
+      forceNew: true,
+      hostConfig,
+      pageResourceLoader,
+      targetManager,
+    });
+    await projectSettingsModel.projectSettingsPromise;
+
+    assert.strictEqual(projectSettingsModel.availability, 'available');
+  });
 });

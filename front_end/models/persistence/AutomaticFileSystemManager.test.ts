@@ -21,6 +21,7 @@ describe('AutomaticFileSystemManager', () => {
   it('initially doesn\'t report an automatic file system', () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({});
 
     const manager = AutomaticFileSystemManager.instance({
@@ -51,6 +52,7 @@ describe('AutomaticFileSystemManager', () => {
   it('attempts to automatically connect the file system initially', () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({workspace: {root, uuid}});
 
     const manager = AutomaticFileSystemManager.instance({
@@ -67,6 +69,7 @@ describe('AutomaticFileSystemManager', () => {
   it('reflects state correctly when automatic connection succeeds', async () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({workspace: {root, uuid}});
 
     const manager = AutomaticFileSystemManager.instance({
@@ -86,6 +89,7 @@ describe('AutomaticFileSystemManager', () => {
   it('reflects state correctly when automatic connection fails', async () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({workspace: {root, uuid}});
 
     const manager = AutomaticFileSystemManager.instance({
@@ -105,6 +109,7 @@ describe('AutomaticFileSystemManager', () => {
   it('performs first-time setup of automatic file system correctly', async () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({workspace: {root, uuid}});
     const manager = AutomaticFileSystemManager.instance({
       forceNew: true,
@@ -134,6 +139,7 @@ describe('AutomaticFileSystemManager', () => {
   it('correctly disconnects automatic file systems', async () => {
     const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
     const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
     sinon.stub(projectSettingsModel, 'projectSettings').value({workspace: {root, uuid}});
     const manager = AutomaticFileSystemManager.instance({
       forceNew: true,
@@ -152,5 +158,52 @@ describe('AutomaticFileSystemManager', () => {
     assert(inspectorFrontendHost.disconnectAutomaticFileSystem.calledOnceWith(root));
     assert.strictEqual(manager.automaticFileSystem, automaticFileSystem);
     assert.deepEqual(manager.automaticFileSystem, {root, uuid, state: 'disconnected'});
+  });
+
+  it('reports unavailable when `devToolsAutomaticFileSystems` is off', () => {
+    const hostConfig = {devToolsAutomaticFileSystems: {enabled: false}};
+    const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
+    const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+
+    const manager = AutomaticFileSystemManager.instance({
+      forceNew: true,
+      hostConfig,
+      inspectorFrontendHost,
+      projectSettingsModel,
+    });
+
+    assert.strictEqual(manager.availability, 'unavailable');
+  });
+
+  it('reports available when project settings are available', () => {
+    const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
+    const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('available');
+    sinon.stub(projectSettingsModel, 'projectSettings').value({});
+
+    const manager = AutomaticFileSystemManager.instance({
+      forceNew: true,
+      hostConfig,
+      inspectorFrontendHost,
+      projectSettingsModel,
+    });
+
+    assert.strictEqual(manager.availability, 'available');
+  });
+
+  it('reports unavailable when project settings are unavailable', () => {
+    const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
+    const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    sinon.stub(projectSettingsModel, 'availability').value('unavailable');
+    sinon.stub(projectSettingsModel, 'projectSettings').value({});
+
+    const manager = AutomaticFileSystemManager.instance({
+      forceNew: true,
+      hostConfig,
+      inspectorFrontendHost,
+      projectSettingsModel,
+    });
+
+    assert.strictEqual(manager.availability, 'unavailable');
   });
 });

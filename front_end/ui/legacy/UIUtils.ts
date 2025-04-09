@@ -1343,11 +1343,10 @@ export class CheckboxLabel extends HTMLElement {
   }
 
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */
-  static createWithStringLiteral(
-      title?: string, checked?: boolean, subtitle?: Platform.UIString.LocalizedString, jslogContext?: string,
-      small?: boolean): CheckboxLabel {
+  static createWithStringLiteral(title?: string, checked?: boolean, jslogContext?: string, small?: boolean):
+      CheckboxLabel {
     const stringLiteral = title as Platform.UIString.LocalizedString;
-    return CheckboxLabel.create(stringLiteral, checked, subtitle, jslogContext, small);
+    return CheckboxLabel.create(stringLiteral, checked, undefined, jslogContext, small);
   }
 
   private static lastId = 0;

@@ -112,8 +112,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     const createElementStateCheckbox = (state: string): HTMLDivElement => {
       const div = document.createElement('div');
       div.id = state;
-      const label =
-          UI.UIUtils.CheckboxLabel.createWithStringLiteral(':' + state, undefined, undefined, undefined, true);
+      const label = UI.UIUtils.CheckboxLabel.createWithStringLiteral(':' + state, undefined, undefined, true);
       const input = label.checkboxElement;
       this.inputStates.set(input, state);
       input.addEventListener('click', (clickListener as EventListener), false);

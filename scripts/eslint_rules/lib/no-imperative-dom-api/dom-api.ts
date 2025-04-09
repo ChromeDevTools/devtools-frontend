@@ -73,17 +73,27 @@ export const domApi = {
         return false;
       },
       methodCall(
-          property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression) {
+          property: Identifier, firstArg: Node, secondArg: Node|undefined, domFragment: DomFragment,
+          call: CallExpression) {
         if (isIdentifier(property, 'setAttribute')) {
           const attribute = firstArg;
           const value = secondArg;
-          if (attribute.type === 'Literal' && value.type !== 'SpreadElement' && attribute.value) {
+          if (attribute.type === 'Literal' && value && value.type !== 'SpreadElement' && attribute.value) {
             domFragment.attributes.push({key: attribute.value.toString(), value});
             return true;
           }
         }
         if (isIdentifier(property, 'appendChild')) {
           domFragment.appendChild(firstArg, sourceCode);
+          return true;
+        }
+        if (domFragment.tagName === 'select' && isIdentifier(property, 'add')) {
+          if (secondArg) {
+            const index = domFragment.children.indexOf(DomFragment.getOrCreate(secondArg, sourceCode));
+            domFragment.insertChildAt(secondArg, index, sourceCode);
+          } else {
+            domFragment.appendChild(firstArg, sourceCode);
+          }
           return true;
         }
         if (isIdentifier(property, 'append')) {
@@ -98,7 +108,7 @@ export const domApi = {
           }
           return true;
         }
-        if (isIdentifier(property, 'insertBefore')) {
+        if (isIdentifier(property, 'insertBefore') && secondArg) {
           const index = domFragment.children.indexOf(DomFragment.getOrCreate(secondArg, sourceCode));
           if (index !== -1) {
             for (const reference of domFragment.children[index].references) {
@@ -110,7 +120,7 @@ export const domApi = {
             return true;
           }
         }
-        if (isIdentifier(property, 'insertAdjacentElement')) {
+        if (isIdentifier(property, 'insertAdjacentElement') && secondArg) {
           if (domFragment.parent) {
             const index = domFragment.parent.children.indexOf(domFragment);
             if (isLiteral(firstArg, 'afterend')) {

@@ -551,5 +551,46 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const select = document.createElement('select');
+    select.add(UI.UIUtils.createOption('Option 1', '1', 'option-1'));
+    this.contentElement.appendChild(UI.UIUtils.createLabel('Some label:', 'some-label', select));
+    this.contentElement.appendChild(UI.UIUtils.createTextButton('Some button', onClick, {
+      className: 'some-class',
+      jslogContext: 'some-button',
+      variant: Buttons.Button.Variant.PRIMARY,
+      title: i18nString(UIStrings.someTitle),
+      iconName: 'some-icon'
+    }));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <label class="some-label">Some label:
+        <select>
+          <option value="1" jslog=\${VisualLogging.dropDown('1').track({click: true})}>Option 1</option>
+        </select>
+      </label>
+      <devtools-button class="some-class" title=\${i18nString(UIStrings.someTitle)} @click=\${onClick}
+          .jslogContext=\${'some-button'} .variant=\${Buttons.Button.Variant.PRIMARY}>Some button</devtools-button>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

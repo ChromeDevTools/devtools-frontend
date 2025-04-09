@@ -153,7 +153,8 @@ export class DomFragment {
     components.push('>');
     if (this.textContent) {
       components.push(toOutputString(this.textContent));
-    } else if (this.children?.length) {
+    }
+    if (this.children?.length) {
       for (const child of this.children || []) {
         components.push(...child.toTemplateLiteral(sourceCode, indent + 2));
       }

@@ -14,6 +14,7 @@ import {domApiDevtoolsExtensions} from './no-imperative-dom-api/dom-api-devtools
 import {domApi} from './no-imperative-dom-api/dom-api.ts';
 import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
+import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
 import {createRule} from './tsUtils.ts';
 type CallExpression = TSESTree.CallExpression;
@@ -35,6 +36,8 @@ type Subrule = Partial<{
   MemberExpression: (node: MemberExpression) => void,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   NewExpression: (node: NewExpression) => void,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  CallExpression: (node: CallExpression) => void,
 }>;
 
 export default createRule({
@@ -60,6 +63,7 @@ export default createRule({
       domApi.create(context),
       domApiDevtoolsExtensions.create(context),
       toolbar.create(context),
+      uiUtils.create(context),
       widget.create(context),
     ];
 
@@ -227,6 +231,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         for (const rule of subrules) {
           if ('NewExpression' in rule) {
             rule.NewExpression?.(node);
+          }
+        }
+      },
+      CallExpression(node) {
+        for (const rule of subrules) {
+          if ('CallExpression' in rule) {
+            rule.CallExpression?.(node);
           }
         }
       },

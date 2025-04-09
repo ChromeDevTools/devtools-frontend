@@ -91,7 +91,30 @@ To check if your setup is correct, you can try out Benedikt’s
 [Hello World][hello-world] demo project. Just follow the steps outlined in the
 `README.md` there.
 
-## Vite
+### Vanilla Web App
+
+To use the Automatic Workspace Folders feature with a vanilla web app, all you
+need to do is to create a `.well-known/appspecific` folder and place a
+`com.chrome.devtools.json` file there. Let's assume you're using [serve][serve]
+and you're directly serving the artifacts for your project from its source
+directory in `/Users/foo/bar`, then you could can accomplish the setup via:
+
+```
+cd /Users/foo/bar
+mkdir -p .well-known/appspecific
+echo "{\"workspace\":{\"root\":\"${PWD}\",\"uuid\":\"`npx --package uuid uuid v1`\"}}" > .well-known/appspecific/com.chrome.devtools.json
+npx serve
+```
+
+If everything is working correctly, you'll see requests from DevTools to
+`/.well-known/appspecific/com.chrome.devtools.json` in your `serve` output, e.g.:
+
+```
+ HTTP  4/9/2025 9:21:32 AM ::1 GET /.well-known/appspecific/com.chrome.devtools.json
+ HTTP  4/9/2025 9:21:32 AM ::1 Returned 304 in 2 ms
+```
+
+### Vite
 
 There's also a proof-of-concept plugin for [vite](http://vite.dev) available at
 [ChromeDevTools/vite-plugin-devtools-json][vite-plugin], which you can easily
@@ -101,7 +124,8 @@ add to your existing project.
 [design-doc]: http://go/chrome-devtools:automatic-workspace-folders-design
 [demo]: http://go/chrome-devtools:automatic-workspace-folders-demo
 [workspace-doc]: https://developer.chrome.com/docs/devtools/workspaces
-[workspaces-announcement]: https://developer.chrome.com/blog/new-in-devtools-63#workspaces
+[workspace-announcement]: https://developer.chrome.com/blog/new-in-devtools-63#workspaces
 [design-doc-json]: https://goo.gle/devtools-json-design
 [hello-world]: https://github.com/bmeurer/automatic-workspace-folders-hello-world
+[serve]: https://www.npmjs.com/package/serve
 [vite-plugin]: https://github.com/ChromeDevTools/vite-plugin-devtools-json

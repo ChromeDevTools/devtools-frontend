@@ -548,7 +548,7 @@ export class PatchWidget extends UI.Widget.Widget {
           // clang-format off
           content: html`<x-link
             href=${CODE_SNIPPET_WARNING_URL}
-            class="link"
+            class="link devtools-link"
             jslog=${VisualLogging.link('code-snippets-explainer.patch-widget').track({
               click: true
             })}

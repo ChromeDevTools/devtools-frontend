@@ -102,7 +102,7 @@ directory in `/Users/foo/bar`, then you could can accomplish the setup via:
 ```
 cd /Users/foo/bar
 mkdir -p .well-known/appspecific
-echo "{\"workspace\":{\"root\":\"${PWD}\",\"uuid\":\"`npx --package uuid uuid v1`\"}}" > .well-known/appspecific/com.chrome.devtools.json
+echo "{\"workspace\":{\"root\":\"${PWD}\",\"uuid\":\"`npx --package uuid uuid v4`\"}}" > .well-known/appspecific/com.chrome.devtools.json
 npx serve
 ```
 

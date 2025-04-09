@@ -101,7 +101,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       const hasFolders = input.folders.length > 0;
       render(
         html`
-          <div class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</div>
+          <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
           <div class="main-content">
             <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
             <div>${lockedString(UIStringsNotTranslate.sourceCodeSent)}</div>

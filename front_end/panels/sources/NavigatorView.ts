@@ -39,8 +39,10 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as FloatingButton from '../../ui/components/floating_button/floating_button.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Spinners from '../../ui/components/spinners/spinners.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
@@ -150,12 +152,23 @@ const UIStrings = {
    *@example {compile.html} PH1
    */
   sIgnoreListed: '{PH1} (ignore listed)',
+  /**
+   * @description Text for the button in the Workspace tab of the Sources panel,
+   *              which allows the user to connect automatic workspace folders.
+   */
+  connect: 'Connect',
+  /**
+   * @description A context menu item in the Workspace tab of the Sources panel, which
+   *              shows up for disconnected automatic workspace folders.
+   */
+  connectFolderToWorkspace: 'Connect to workspace',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const Types = {
   Authored: 'authored',
+  ConnectableFileSystem: 'connectable-fs',
   Deployed: 'deployed',
   Domain: 'domain',
   File: 'file',
@@ -177,6 +190,7 @@ const TYPE_ORDERS = new Map([
   [Types.File, 10],
   [Types.Frame, 70],
   [Types.Worker, 90],
+  [Types.ConnectableFileSystem, 100],
   [Types.FileSystem, 100],
 ]);
 
@@ -545,12 +559,19 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private projectAdded(project: Workspace.Workspace.Project): void {
     const rootOrDeployed = this.rootOrDeployedNode();
-    if (!this.acceptProject(project) || project.type() !== Workspace.Workspace.projectTypes.FileSystem ||
+    const FILE_SYSTEM_TYPES = [
+      Workspace.Workspace.projectTypes.ConnectableFileSystem,
+      Workspace.Workspace.projectTypes.FileSystem,
+    ];
+    if (!this.acceptProject(project) || !FILE_SYSTEM_TYPES.includes(project.type()) ||
         Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) || rootOrDeployed.child(project.id())) {
       return;
     }
-    rootOrDeployed.appendChild(
-        new NavigatorGroupTreeNode(this, project, project.id(), Types.FileSystem, project.displayName()));
+    rootOrDeployed.appendChild(new NavigatorGroupTreeNode(
+        this, project, project.id(),
+        project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem ? Types.ConnectableFileSystem :
+                                                                                    Types.FileSystem,
+        project.displayName()));
     this.selectDefaultTreeNode();
   }
 
@@ -598,7 +619,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   removeProject(project: Workspace.Workspace.Project): void {
     this.removeUISourceCodes(project.uiSourceCodes());
-    if (project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
+    if (project.type() !== Workspace.Workspace.projectTypes.ConnectableFileSystem &&
+        project.type() !== Workspace.Workspace.projectTypes.FileSystem) {
       return;
     }
     const fileSystemNode = this.rootNode.child(project.id());
@@ -1071,7 +1093,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const project = node.project || null;
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    NavigatorView.appendSearchItem(contextMenu, path);
+    if (project?.type() !== Workspace.Workspace.projectTypes.ConnectableFileSystem) {
+      NavigatorView.appendSearchItem(contextMenu, path);
+    }
 
     if (!project) {
       return;
@@ -1107,6 +1131,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.excludeFolder), this.handleContextMenuExclude.bind(this, project, path),
           {jslogContext: 'exclude-folder'});
+    }
+
+    if (project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem) {
+      const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+      const {automaticFileSystem} = automaticFileSystemManager;
+      if (automaticFileSystem?.state === 'disconnected') {
+        contextMenu.defaultSection().appendItem(i18nString(UIStrings.connectFolderToWorkspace), async () => {
+          await automaticFileSystemManager.connectAutomaticFileSystem(
+              /* addIfMissing= */ true);
+        }, {jslogContext: 'automatic-workspace-folders.connect'});
+      }
     }
 
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
@@ -1250,7 +1285,8 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   private isIgnoreListed?: boolean;
 
   constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
-    super('', true, NavigatorFolderTreeElement.#contextForType(type));
+    const expandable = type !== Types.ConnectableFileSystem;
+    super('', expandable, NavigatorFolderTreeElement.#contextForType(type));
     this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
     UI.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
     this.nodeType = type;
@@ -2033,6 +2069,34 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     }
     this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, this.hoverCallback);
     this.treeElement.setNode(this);
+    if (this.project && this.project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem) {
+      const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+      const {automaticFileSystem} = automaticFileSystemManager;
+      switch (automaticFileSystem?.state) {
+        case 'connecting': {
+          const spinner = new Spinners.Spinner.Spinner();
+          this.treeElement.listItemElement.append(spinner);
+          break;
+        }
+        case 'disconnected': {
+          const button = new Buttons.Button.Button();
+          button.data = {
+            variant: Buttons.Button.Variant.OUTLINED,
+            size: Buttons.Button.Size.MICRO,
+            title: i18nString(UIStrings.connectFolderToWorkspace),
+            jslogContext: 'automatic-workspace-folders.connect',
+          };
+          button.textContent = i18nString(UIStrings.connect);
+          button.addEventListener('click', async event => {
+            event.consume();
+            await automaticFileSystemManager.connectAutomaticFileSystem(
+                /* addIfMissing= */ true);
+          });
+          this.treeElement.listItemElement.append(button);
+          break;
+        }
+      }
+    }
     return this.treeElement;
   }
 

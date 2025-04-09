@@ -88,6 +88,7 @@ export enum projectTypes {
   Inspector = 'inspector',
   Network = 'network',
   FileSystem = 'filesystem',
+  ConnectableFileSystem = 'connectablefilesystem',
   ContentScripts = 'contentscripts',
   Service = 'service',
 }

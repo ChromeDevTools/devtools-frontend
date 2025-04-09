@@ -509,11 +509,16 @@ export class MainImpl {
       targetManager,
     });
 
-    Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
+    const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
       forceNew: true,
       hostConfig: Root.Runtime.hostConfig,
       inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
       projectSettingsModel,
+    });
+    Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding.instance({
+      forceNew: true,
+      automaticFileSystemManager,
+      workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
 
     AutofillManager.AutofillManager.AutofillManager.instance();

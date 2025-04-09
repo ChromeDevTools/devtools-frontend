@@ -489,7 +489,6 @@ export const knownContextValues = new Set([
   'autofill-view',
   'autofill-view-documentation',
   'autofill-view-feedback',
-  'automatic-workspace-folders',
   'automatic-workspace-folders.connect',
   'automatically-ignore-list-known-third-party-scripts',
   'auxclick',

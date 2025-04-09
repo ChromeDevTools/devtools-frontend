@@ -112,17 +112,6 @@ const UIStrings = {
    */
   saveAs: 'Save as...',
   /**
-   * @description Text in Workspace tab in the Sources panel when an automatic
-   *              workspace folder is detected.
-   * @example {/path/to/foo} PH1
-   */
-  automaticWorkspaceFolderDetected: 'Workspace folder {PH1} detected',
-  /**
-   * @description Button description in Workspace tab in the Sources panel
-   *              to connect to an automatic workspace folder.
-   */
-  automaticWorkspaceFolderConnect: 'Connect',
-  /**
    * @description Message shown in the Workspace tab of the Sources panel to nudge
    *              developers into utilizing the Automatic Workspace Folders feature
    *              in Chrome DevTools by setting up a `com.chrome.devtools.json`
@@ -206,7 +195,6 @@ export class NetworkNavigatorView extends NavigatorView {
 
 export class FilesNavigatorView extends NavigatorView {
   #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
-  #infobar: UI.Infobar.Infobar|null = null;
   #eventListeners: Common.EventTarget.EventDescriptor[] = [];
   #automaticFileSystemNudge: HTMLSpanElement;
 
@@ -258,6 +246,9 @@ export class FilesNavigatorView extends NavigatorView {
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
+    if (project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem) {
+      return true;
+    }
     return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides' &&
         !Snippets.ScriptSnippetFileSystem.isSnippetsProject(project);
@@ -270,31 +261,9 @@ export class FilesNavigatorView extends NavigatorView {
   }
 
   #automaticFileSystemChanged(
-      event: Common.EventTarget.EventTargetEvent<Persistence.AutomaticFileSystemManager.AutomaticFileSystem|null>):
+      _event: Common.EventTarget.EventTargetEvent<Persistence.AutomaticFileSystemManager.AutomaticFileSystem|null>):
       void {
     this.#availabilityChanged({data: this.#automaticFileSystemManager.availability});
-    const automaticFileSystem = event.data;
-    if (automaticFileSystem === null || automaticFileSystem.state !== 'disconnected') {
-      this.#infobar?.dispose();
-      this.#infobar = null;
-    } else {
-      this.#infobar = UI.Infobar.Infobar.create(
-          UI.Infobar.Type.INFO,
-          i18nString(UIStrings.automaticWorkspaceFolderDetected, {PH1: automaticFileSystem.root}),
-          [{
-            text: i18nString(UIStrings.automaticWorkspaceFolderConnect),
-            delegate: () => this.#automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true),
-            dismiss: true,
-            jslogContext: 'automatic-workspace-folders.connect',
-          }],
-          Common.Settings.Settings.instance().moduleSetting('persistence-automatic-workspace-folders'),
-          'automatic-workspace-folders',
-      );
-      if (this.#infobar) {
-        this.#infobar.element.classList.add('automatic-workspace-infobar');
-        this.contentElement.append(this.#infobar.element);
-      }
-    }
   }
 
   #availabilityChanged(

@@ -19,6 +19,7 @@ devtools_module("persistence") {
   sources = [
     "Automapping.ts",
     "AutomaticFileSystemManager.ts",
+    "AutomaticFileSystemWorkspaceBinding.ts",
     "EditFileSystemView.ts",
     "FileSystemWorkspaceBinding.ts",
     "IsolatedFileSystem.ts",

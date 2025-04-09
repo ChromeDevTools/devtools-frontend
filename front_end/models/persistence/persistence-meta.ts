@@ -52,10 +52,6 @@ const UIStrings = {
    *@description Title of a setting under the Persistence category that can be invoked through the Command Menu
    */
   disableOverrideNetworkRequests: 'Disable override network requests',
-  /**
-   * @description Title of a setting to enable the Automatic Workspace Folders.
-   */
-  enableAutomaticWorkspaceFolders: 'Enable automatic workspace folders',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/persistence-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -80,14 +76,6 @@ UI.ViewManager.registerViewExtension({
     return new Persistence.WorkspaceSettingsTab.WorkspaceSettingsTab();
   },
   iconName: 'folder',
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.PERSISTENCE,
-  title: i18nLazyString(UIStrings.enableAutomaticWorkspaceFolders),
-  settingName: 'persistence-automatic-workspace-folders',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
 });
 
 Common.Settings.registerSettingExtension({

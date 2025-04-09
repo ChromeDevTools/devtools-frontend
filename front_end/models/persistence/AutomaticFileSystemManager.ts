@@ -100,7 +100,7 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
     if (!automaticFileSystemManagerInstance || forceNew) {
       if (!hostConfig || !inspectorFrontendHost || !projectSettingsModel) {
         throw new Error(
-            'Unable to create AutomaticFileSysteManager: ' +
+            'Unable to create AutomaticFileSystemManager: ' +
             'hostConfig, inspectorFrontendHost, and projectSettingsModel must be provided');
       }
       automaticFileSystemManagerInstance = new AutomaticFileSystemManager(

@@ -4,6 +4,7 @@
 
 import * as Automapping from './Automapping.js';
 import * as AutomaticFileSystemManager from './AutomaticFileSystemManager.js';
+import * as AutomaticFileSystemWorkspaceBinding from './AutomaticFileSystemWorkspaceBinding.js';
 import * as EditFileSystemView from './EditFileSystemView.js';
 import * as FileSystemWorkspaceBinding from './FileSystemWorkspaceBinding.js';
 import * as IsolatedFileSystem from './IsolatedFileSystem.js';
@@ -18,6 +19,7 @@ import * as WorkspaceSettingsTab from './WorkspaceSettingsTab.js';
 export {
   Automapping,
   AutomaticFileSystemManager,
+  AutomaticFileSystemWorkspaceBinding,
   EditFileSystemView,
   FileSystemWorkspaceBinding,
   IsolatedFileSystem,

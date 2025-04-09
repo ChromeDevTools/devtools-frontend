@@ -17,7 +17,7 @@ import * as Utils from '../utils/utils.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import stylesRaw from './sidebarInsightsTab.css.js';
-import type {SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
+import type {SidebarSingleInsightSet, SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -194,6 +194,19 @@ export class SidebarInsightsTab extends HTMLElement {
     // clang-format on
   }
 
+  highlightActiveInsight(): void {
+    if (!this.#activeInsight) {
+      return;
+    }
+    // Find the right set for this insight via the set key.
+    const set = this.#shadow?.querySelector<SidebarSingleInsightSet>(
+        `devtools-performance-sidebar-single-navigation[data-insight-set-key="${this.#activeInsight.insightSetKey}"]`);
+    if (!set) {
+      return;
+    }
+    set.highlightActiveInsight();
+  }
+
   #render(): void {
     if (!this.#parsedTrace || !this.#insights) {
       Lit.render(Lit.nothing, this.#shadow, {host: this});
@@ -219,6 +232,7 @@ export class SidebarInsightsTab extends HTMLElement {
 
           const contents = html`
             <devtools-performance-sidebar-single-navigation
+              data-insight-set-key=${id}
               .data=${data}>
             </devtools-performance-sidebar-single-navigation>
           `;

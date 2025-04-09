@@ -14,6 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {md} from '../utils/Helpers.js';
 
+import type {BaseInsightComponent} from './insights/BaseInsightComponent.js';
 import {shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
@@ -90,8 +91,7 @@ export interface SidebarSingleInsightSetData {
  * "enable experimental performance insights" experiment. This is used to enable
  * us to ship incrementally without turning insights on by default for all
  * users. */
-const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
-]);
+const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([]);
 
 type InsightNameToComponentMapping =
     Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
@@ -126,6 +126,8 @@ export class SidebarSingleInsightSet extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #renderBound = this.#render.bind(this);
 
+  #activeInsightElement: BaseInsightComponent<Trace.Insights.Types.InsightModel>|null = null;
+
   #data: SidebarSingleInsightSetData = {
     insights: null,
     insightSetKey: null,
@@ -136,6 +138,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   };
 
   #dismissedFieldMismatchNotice = false;
+  #activeHighlightTimeout = -1;
 
   set data(data: SidebarSingleInsightSetData) {
     this.#data = data;
@@ -144,6 +147,26 @@ export class SidebarSingleInsightSet extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.#render();
+  }
+
+  disconnectedCallback(): void {
+    window.clearTimeout(this.#activeHighlightTimeout);
+  }
+
+  highlightActiveInsight(): void {
+    if (!this.#activeInsightElement) {
+      return;
+    }
+    // First clear any existing highlight that is going on.
+    this.#activeInsightElement.removeAttribute('highlight-insight');
+    window.clearTimeout(this.#activeHighlightTimeout);
+
+    requestAnimationFrame(() => {
+      this.#activeInsightElement?.setAttribute('highlight-insight', 'true');
+      this.#activeHighlightTimeout = window.setTimeout(() => {
+        this.#activeInsightElement?.removeAttribute('highlight-insight');
+      }, 2_000);
+    });
   }
 
   #metricIsVisible(label: 'LCP'|'CLS'|'INP'): boolean {
@@ -389,6 +412,11 @@ export class SidebarSingleInsightSet extends HTMLElement {
       const component = html`<div>
         <${componentClass.litTagName}
           .selected=${this.#data.activeInsight?.model === model}
+          ${Lit.Directives.ref(elem => {
+            if(this.#data.activeInsight?.model === model && elem) {
+              this.#activeInsightElement = elem as BaseInsightComponent<Trace.Insights.Types.InsightModel>;
+            }
+          })}
           .model=${model}
           .bounds=${insightSet.bounds}
           .insightSetKey=${insightSetKey}

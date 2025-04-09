@@ -5,6 +5,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Trace from '../../../models/trace/trace.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
@@ -120,8 +121,10 @@ export class SidebarWidget extends UI.Widget.VBox {
     );
   }
 
-  setActiveInsight(activeInsight: ActiveInsight|null): void {
-    this.#insightsView.setActiveInsight(activeInsight);
+  setActiveInsight(activeInsight: ActiveInsight|null, opts: {
+    highlight: boolean,
+  }): void {
+    this.#insightsView.setActiveInsight(activeInsight, opts);
 
     if (activeInsight) {
       this.#tabbedPane.selectTab(SidebarTabs.INSIGHTS);
@@ -147,8 +150,16 @@ class InsightsView extends UI.Widget.VBox {
     this.#component.insights = data;
   }
 
-  setActiveInsight(active: ActiveInsight|null): void {
+  setActiveInsight(active: ActiveInsight|null, opts: {highlight: boolean}): void {
     this.#component.activeInsight = active;
+    if (opts.highlight && active) {
+      // Wait for the rendering of the component to be done, otherwise we
+      // might highlight the wrong insight. The UI needs to be fully
+      // re-rendered before we can highlight the newly-expanded insight.
+      void RenderCoordinator.done().then(() => {
+        this.#component.highlightActiveInsight();
+      });
+    }
   }
 }
 

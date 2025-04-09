@@ -715,13 +715,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
-  #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
-    // When an insight is selected, ensure that the 3P checkbox is disabled
-    // to avoid dimming interference.
+  /**
+   * Activates an insight and ensures the sidebar is open too.
+   * Pass `highlightInsight: true` to flash the insight with the background highlight colour.
+   */
+  #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null, opts: {
+    highlightInsight: boolean,
+  } = {highlightInsight: false}): void {
     if (insight) {
       this.#splitWidget.showBoth();
     }
-    this.#sideBar.setActiveInsight(insight);
+    this.#sideBar.setActiveInsight(insight, {highlight: opts.highlightInsight});
     this.flameChart.setActiveInsight(insight);
 
     if (insight) {
@@ -2796,6 +2800,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.setSelectionAndReveal(null);
     this.flameChart.selectDetailsViewTab(Tab.Details, null);
   }
+
+  /**
+   * Used to reveal an insight - and is called from the AI Assistance panel when the user clicks on the Insight context button that is shown.
+   * Revealing an insight should:
+   * 1. Ensure the sidebar is open
+   * 2. Ensure the insight is expanded
+   *    (both of these should be true in the AI Assistance case)
+   * 3. Flash the Insight with the highlight colour we use in other panels.
+   */
+  revealInsight(insightModel: Trace.Insights.Types.InsightModel): void {
+    const insightSetKey = insightModel.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
+    this.#setActiveInsight({model: insightModel, insightSetKey}, {highlightInsight: true});
+  }
 }
 
 export const enum State {
@@ -3004,6 +3021,13 @@ export class EventRevealer implements Common.Revealer.Revealer<SDK.TraceObject.R
   async reveal(rEvent: SDK.TraceObject.RevealableEvent): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('timeline');
     TimelinePanel.instance().select(selectionFromEvent(rEvent.event));
+  }
+}
+
+export class InsightRevealer implements Common.Revealer.Revealer<Utils.InsightAIContext.ActiveInsight> {
+  async reveal(revealable: Utils.InsightAIContext.ActiveInsight): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+    TimelinePanel.instance().revealInsight(revealable.insight);
   }
 }
 

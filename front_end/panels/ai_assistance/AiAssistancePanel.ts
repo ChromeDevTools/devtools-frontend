@@ -1005,6 +1005,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       const trace = new SDK.TraceObject.RevealableEvent(event);
       return Common.Revealer.reveal(trace);
     }
+    if (context instanceof AiAssistanceModel.InsightContext) {
+      const item = context.getItem();
+      return Common.Revealer.reveal(item);
+    }
     // Node picker is using linkifier.
   }
 

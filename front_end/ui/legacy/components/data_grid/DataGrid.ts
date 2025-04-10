@@ -28,6 +28,7 @@
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../../../core/common/common.js';
+import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -1375,7 +1376,20 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
 
-    if ((event as MouseEvent).metaKey) {
+    /**
+     * Support Meta-Click (Cmd/Alt) or Ctrl-Click to toggle; if the row is
+     * selected we will then deselect it. You might think: why do we even gate
+     * this behind an additional key?
+     * Well, we tried to change that, but there are instances where we have
+     * multiple click handlers on a row, and so we cannot rely on select() only
+     * being called once. Sometimes by the time this event listener gets called,
+     * another click() handler has already marked this node as selected, so if
+     * we deselect it here, we are making the user unable to actually select a
+     * node. See crbug.com/409474445 for some cotext
+     */
+    const mouseEvent = event as MouseEvent;
+    const modifier = Host.Platform.platform() === 'mac' ? mouseEvent.metaKey : mouseEvent.ctrlKey;
+    if (modifier) {
       if (gridNode.selected) {
         gridNode.deselect();
       } else {

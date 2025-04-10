@@ -97,7 +97,6 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
       disabledByDefault('devtools.timeline.frame'),
       disabledByDefault('devtools.timeline.stack'),
       disabledByDefault('devtools.timeline'),
-      disabledByDefault('devtools.v8-source-rundown-sources'),
       disabledByDefault('devtools.v8-source-rundown'),
       disabledByDefault('v8.compile'),
       disabledByDefault('v8.inspector'),
@@ -108,6 +107,10 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
       'cppgc',
       'navigation,rail',
     ];
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES)) {
+      categoriesArray.push(disabledByDefault('devtools.v8-source-rundown-sources'));
+    }
 
     if (Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));

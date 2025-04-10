@@ -184,6 +184,7 @@ export interface ViewInput {
 export interface ViewOutput {
   tooltipRef?: Directives.Ref<HTMLElement>;
   changeRef?: Directives.Ref<HTMLElement>;
+  summaryRef?: Directives.Ref<HTMLElement>;
 }
 
 type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
@@ -226,6 +227,7 @@ export class PatchWidget extends UI.Widget.Widget {
       }
       output.tooltipRef = output.tooltipRef ?? Directives.createRef<HTMLElement>();
       output.changeRef = output.changeRef ?? Directives.createRef<HTMLElement>();
+      output.summaryRef = output.summaryRef ?? Directives.createRef<HTMLElement>();
 
       function renderSourcesLink(): LitTemplate {
         if (!input.sources) {
@@ -358,7 +360,7 @@ export class PatchWidget extends UI.Widget.Widget {
               ` : nothing}
             </div>
           ` : nothing}
-          <div class="apply-to-workspace-container">
+          <div class="apply-to-workspace-container" aria-live="polite">
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`
               <div class="loading-text-container">
                 <devtools-spinner></devtools-spinner>
@@ -414,7 +416,7 @@ export class PatchWidget extends UI.Widget.Widget {
           </div>`
         : html`
           <details class="change-summary">
-            <summary class="header-container">
+            <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}
             </summary>
             ${renderContent()}
@@ -663,6 +665,12 @@ export class PatchWidget extends UI.Widget.Widget {
 Files:
 ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.requestUpdate();
+
+    if (this.#patchSuggestionState === PatchSuggestionState.SUCCESS) {
+      void this.updateComplete.then(() => {
+        this.#viewOutput.summaryRef?.value?.focus();
+      });
+    }
   }
 
   #onDiscard(): void {

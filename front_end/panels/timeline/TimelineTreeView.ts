@@ -600,10 +600,12 @@ export class TimelineTreeView extends
 
   override wasShown(): void {
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection, this);
   }
 
   override childWasDetached(_widget: UI.Widget.Widget): void {
     this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.DESELECTED_NODE, this.#onDataGridDeselection);
   }
 
   /**
@@ -615,6 +617,17 @@ export class TimelineTreeView extends
       void {
     this.onClick((event.data as GridNode).profileNode);
     this.onHover((event.data as GridNode).profileNode);
+  }
+
+  /**
+   * Called when the user deselects a row.
+   * This can either be because they have selected a new row
+   * (you should expect a SELECTED_NODE event after this one)
+   * or because they have deselected without a new selection.
+   */
+  #onDataGridDeselection(): void {
+    this.onClick(null);
+    this.onHover(null);
   }
 
   onGridNodeOpened(): void {

@@ -168,7 +168,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const Types = {
   Authored: 'authored',
-  ConnectableFileSystem: 'connectable-fs',
+  AutomaticFileSystem: 'automatic-fs',
   Deployed: 'deployed',
   Domain: 'domain',
   File: 'file',
@@ -190,7 +190,7 @@ const TYPE_ORDERS = new Map([
   [Types.File, 10],
   [Types.Frame, 70],
   [Types.Worker, 90],
-  [Types.ConnectableFileSystem, 100],
+  [Types.AutomaticFileSystem, 100],
   [Types.FileSystem, 100],
 ]);
 
@@ -567,11 +567,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         Snippets.ScriptSnippetFileSystem.isSnippetsProject(project) || rootOrDeployed.child(project.id())) {
       return;
     }
-    rootOrDeployed.appendChild(new NavigatorGroupTreeNode(
-        this, project, project.id(),
-        project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem ? Types.ConnectableFileSystem :
-                                                                                    Types.FileSystem,
-        project.displayName()));
+    const type =
+        (project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem ||
+         (project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem && project.fileSystem().automatic)) ?
+        Types.AutomaticFileSystem :
+        Types.FileSystem;
+    rootOrDeployed.appendChild(new NavigatorGroupTreeNode(this, project, project.id(), type, project.displayName()));
     this.selectDefaultTreeNode();
   }
 
@@ -1284,8 +1285,9 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
   private hovered?: boolean;
   private isIgnoreListed?: boolean;
 
-  constructor(navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void)) {
-    const expandable = type !== Types.ConnectableFileSystem;
+  constructor(
+      navigatorView: NavigatorView, type: string, title: string, hoverCallback?: ((arg0: boolean) => void),
+      expandable = true) {
     super('', expandable, NavigatorFolderTreeElement.#contextForType(type));
     this.listItemElement.classList.add('navigator-' + type + '-tree-item', 'navigator-folder-tree-item');
     UI.ARIAUtils.setLabel(this.listItemElement, `${title}, ${type}`);
@@ -1307,6 +1309,8 @@ export class NavigatorFolderTreeElement extends UI.TreeOutline.TreeElement {
       iconType = 'code';
     } else if (type === Types.Deployed) {
       iconType = 'deployed';
+    } else if (type === Types.AutomaticFileSystem) {
+      iconType = 'folder-asterisk';
     }
 
     const icon = IconButton.Icon.create(iconType);
@@ -2067,11 +2071,12 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     if (this.treeElement) {
       return this.treeElement;
     }
-    this.treeElement = new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, this.hoverCallback);
+    const expandable = !(this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem);
+    this.treeElement =
+        new NavigatorFolderTreeElement(this.navigatorView, this.type, this.title, this.hoverCallback, expandable);
     this.treeElement.setNode(this);
-    if (this.project && this.project.type() === Workspace.Workspace.projectTypes.ConnectableFileSystem) {
-      const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
-      const {automaticFileSystem} = automaticFileSystemManager;
+    if (this.project instanceof Persistence.AutomaticFileSystemWorkspaceBinding.FileSystem) {
+      const {automaticFileSystem, automaticFileSystemManager} = this.project;
       switch (automaticFileSystem?.state) {
         case 'connecting': {
           const spinner = new Spinners.Spinner.Spinner();

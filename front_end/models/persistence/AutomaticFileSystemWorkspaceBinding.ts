@@ -12,16 +12,22 @@ import * as Workspace from '../workspace/workspace.js';
 import {type AutomaticFileSystem, type AutomaticFileSystemManager, Events} from './AutomaticFileSystemManager.js';
 
 /**
- * @internal
+ * Placeholder project that acts as an empty file system within the workspace,
+ * and automatically disappears when the user connects the automatic workspace
+ * folder.
  *
  * @see AutomaticFileSystemWorkspaceBinding
  */
-class ConnectableFileSystemProject implements Workspace.Workspace.Project {
+export class FileSystem implements Workspace.Workspace.Project {
   readonly automaticFileSystem: Readonly<AutomaticFileSystem>;
+  readonly automaticFileSystemManager: AutomaticFileSystemManager;
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
 
-  constructor(automaticFileSystem: Readonly<AutomaticFileSystem>, workspace: Workspace.Workspace.WorkspaceImpl) {
+  constructor(
+      automaticFileSystem: Readonly<AutomaticFileSystem>, automaticFileSystemManager: AutomaticFileSystemManager,
+      workspace: Workspace.Workspace.WorkspaceImpl) {
     this.automaticFileSystem = automaticFileSystem;
+    this.automaticFileSystemManager = automaticFileSystemManager;
     this.#workspace = workspace;
   }
 
@@ -156,7 +162,7 @@ let automaticFileSystemWorkspaceBindingInstance: AutomaticFileSystemWorkspaceBin
  */
 export class AutomaticFileSystemWorkspaceBinding {
   readonly #automaticFileSystemManager: AutomaticFileSystemManager;
-  #automaticFileSystemProject: ConnectableFileSystemProject|null = null;
+  #fileSystem: FileSystem|null = null;
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
 
   /**
@@ -206,8 +212,8 @@ export class AutomaticFileSystemWorkspaceBinding {
   }
 
   #dispose(): void {
-    if (this.#automaticFileSystemProject) {
-      this.#workspace.removeProject(this.#automaticFileSystemProject);
+    if (this.#fileSystem) {
+      this.#workspace.removeProject(this.#fileSystem);
     }
     this.#automaticFileSystemManager.removeEventListener(
         Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystemChanged, this);
@@ -215,16 +221,20 @@ export class AutomaticFileSystemWorkspaceBinding {
 
   #automaticFileSystemChanged(event: Common.EventTarget.EventTargetEvent<AutomaticFileSystem|null>): void {
     const automaticFileSystem = event.data;
-    if (this.#automaticFileSystemProject !== null) {
-      if (this.#automaticFileSystemProject.automaticFileSystem === automaticFileSystem) {
+    if (this.#fileSystem !== null) {
+      if (this.#fileSystem.automaticFileSystem === automaticFileSystem) {
         return;
       }
-      this.#workspace.removeProject(this.#automaticFileSystemProject);
-      this.#automaticFileSystemProject = null;
+      this.#workspace.removeProject(this.#fileSystem);
+      this.#fileSystem = null;
     }
     if (automaticFileSystem !== null && automaticFileSystem.state !== 'connected') {
-      this.#automaticFileSystemProject = new ConnectableFileSystemProject(automaticFileSystem, this.#workspace);
-      this.#workspace.addProject(this.#automaticFileSystemProject);
+      this.#fileSystem = new FileSystem(
+          automaticFileSystem,
+          this.#automaticFileSystemManager,
+          this.#workspace,
+      );
+      this.#workspace.addProject(this.#fileSystem);
     }
   }
 }

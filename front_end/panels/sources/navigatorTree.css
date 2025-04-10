@@ -47,7 +47,7 @@
   color: var(--icon-folder-workspace);
 }
 
-.navigator-connectable-fs-tree-item devtools-icon,
+.navigator-automatic-fs-tree-item devtools-icon,
 .navigator-fs-tree-item devtools-icon {
   color: var(--icon-file-authored);
 }

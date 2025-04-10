@@ -98,6 +98,7 @@ ts_library("unittests") {
 
   sources = [
     "AutomaticFileSystemManager.test.ts",
+    "AutomaticFileSystemWorkspaceBinding.test.ts",
     "NetworkPersistenceManager.test.ts",
     "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",

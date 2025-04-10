@@ -568,7 +568,7 @@ class InspectorFrontendAPIImpl {
     }
   }
 
-  private dispatch(name: symbol, signature: string[], _runOnceLoaded: boolean, ...params: string[]): void {
+  private dispatch(name: Events, signature: string[], _runOnceLoaded: boolean, ...params: string[]): void {
     // Single argument methods get dispatched with the param.
     if (signature.length < 2) {
       try {
@@ -579,9 +579,7 @@ class InspectorFrontendAPIImpl {
       }
       return;
     }
-    const data: {
-      [x: string]: string,
-    } = {};
+    const data: Record<string, string> = {};
     for (let i = 0; i < signature.length; ++i) {
       data[signature[i]] = params[i];
     }

@@ -67,7 +67,7 @@ export const EventDescriptors = [
   [Events.SetInspectedTabId, 'setInspectedTabId', ['tabId']],
   [Events.SetUseSoftMenu, 'setUseSoftMenu', ['useSoftMenu']],
   [Events.ShowPanel, 'showPanel', ['panelName']],
-];
+] as const;
 
 export interface DispatchMessageChunkEvent {
   messageChunk: string;

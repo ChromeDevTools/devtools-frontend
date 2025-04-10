@@ -4,8 +4,7 @@
 
 export namespace Chrome {
   export namespace DevTools {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    export interface EventSink<ListenerT extends(...args: any) => void> {
+    export interface EventSink<ListenerT extends(...args: any[]) => void> {
       addListener(listener: ListenerT): void;
       removeListener(listener: ListenerT): void;
     }

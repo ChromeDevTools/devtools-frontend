@@ -60,7 +60,7 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
       return null;
     }
 
-    const columns = ([] as ColumnDescriptor[]);
+    const columns: ColumnDescriptor[] = [];
     for (let i = 0; i < columnNames.length; ++i) {
       const id = String(i);
       columns.push(({id, title: columnNames[i], sortable: true} as ColumnDescriptor));
@@ -78,7 +78,7 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
       nodes.push(node);
     }
 
-    const dataGrid = new SortableDataGrid(({displayName, columns} as Parameters));
+    const dataGrid = new SortableDataGrid({displayName, columns});
     const length = nodes.length;
     const rootNode = dataGrid.rootNode();
     for (let i = 0; i < length; ++i) {

@@ -220,10 +220,7 @@ export class ResourceType {
   }
 
   static fromName(name: string): ResourceType|null {
-    for (const resourceTypeId in resourceTypes) {
-      const resourceType = (resourceTypes as {
-        [x: string]: ResourceType,
-      })[resourceTypeId];
+    for (const resourceType of Object.values(resourceTypes)) {
       if (resourceType.name() === name) {
         return resourceType;
       }
@@ -427,7 +424,7 @@ export const resourceTypes = {
   SourceMapStyleSheet:
       new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
   WebBundle: new ResourceType('webbundle', i18nLazyString(UIStrings.webbundle), resourceCategories.Other, false),
-};
+} as const;
 
 const mimeTypeByName = new Map([
   // CoffeeScript

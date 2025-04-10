@@ -1398,7 +1398,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       // Wait for TypeScript to support the definition of EyeDropper API:
       // https://github.com/microsoft/TypeScript/issues/48638
       /* eslint-disable  @typescript-eslint/no-explicit-any */
-      const eyeDropper = new (<any>window).EyeDropper();
+      const eyeDropper = new (window as any).EyeDropper();
       this.eyeDropperAbortController = new AbortController();
 
       try {

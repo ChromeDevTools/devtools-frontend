@@ -1371,7 +1371,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'scoop',
       'bevel',
       'notch',
-      'straight',
+      'square',
       'squircle',
       'superellipse(0.5)',
       'superellipse(infinity)',

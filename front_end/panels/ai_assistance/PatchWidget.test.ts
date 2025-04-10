@@ -278,6 +278,27 @@ Files:
       // Assert that the project has been updated
       assert.strictEqual(input.projectName, 'test2');
     });
+
+    it('preselects an automatic workspace folder and allows connecting to it', async () => {
+      setupAutomaticFileSystem({hasFileSystem: true});
+      const showSelectWorkspaceDialogSpy = sinon.spy(AiAssistance.SelectWorkspaceDialog, 'show');
+      const applyChangesSpy = sinon.spy(AiAssistanceModel.PatchAgent.prototype, 'applyChanges');
+
+      const {view, widget} = await createPatchWidget();
+      widget.changeSummary = 'body { background-color: red; }';
+      assert.strictEqual(view.input.projectName, 'my-automatic-file-system');
+      assert.strictEqual(view.input.projectPath, '/path/to/my-automatic-file-system');
+
+      // Clicking on "Apply to workspace" does not open a SelectWorkspaceDialog
+      view.input.onApplyToWorkspace();
+      assert.isTrue(showSelectWorkspaceDialogSpy.notCalled);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.isTrue(applyChangesSpy.notCalled);
+
+      // This simulates the user confirming the file permissions dialog
+      createTestFilesystem('file:///path/to/my-automatic-file-system');
+      assert.isTrue(applyChangesSpy.calledOnce);
+    });
   });
 
   describe('diff view', () => {

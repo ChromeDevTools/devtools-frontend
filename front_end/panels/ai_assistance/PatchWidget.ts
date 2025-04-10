@@ -209,6 +209,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
   #automaticFileSystem =
       Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
+  #applyToDisconnectedAutomaticWorkspace = false;
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -518,6 +519,7 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   override willHide(): void {
+    this.#applyToDisconnectedAutomaticWorkspace = false;
     if (isAiAssistancePatchingEnabled()) {
       this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
       this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
@@ -581,8 +583,14 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onProjectAdded(): void {
-    if (this.#project === undefined) {
+  #onProjectAdded(event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.Project>): void {
+    const addedProject = event.data;
+    if (this.#applyToDisconnectedAutomaticWorkspace && this.#automaticFileSystem &&
+        addedProject === this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root)) {
+      this.#applyToDisconnectedAutomaticWorkspace = false;
+      this.#project = addedProject;
+      void this.#applyPatchAndUpdateUI();
+    } else if (this.#project === undefined) {
       this.#selectDefaultProject();
     }
   }
@@ -623,6 +631,10 @@ export class PatchWidget extends UI.Widget.Widget {
 
     if (this.#project) {
       await this.#applyPatchAndUpdateUI();
+    } else if (this.#automaticFileSystem) {
+      this.#applyToDisconnectedAutomaticWorkspace = true;
+      await Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().connectAutomaticFileSystem(
+          /* addIfMissing= */ true);
     } else {
       this.#showSelectWorkspaceDialog({applyPatch: true});
     }

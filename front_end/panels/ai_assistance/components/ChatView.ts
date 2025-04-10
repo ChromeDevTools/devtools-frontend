@@ -76,7 +76,11 @@ const UIStrings = {
   /**
    *@description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
    */
-  inputTextAriraDescription: 'You can also use one of the suggested prompts above to start your conversation'
+  inputTextAriraDescription: 'You can also use one of the suggested prompts above to start your conversation',
+  /**
+   *@description Label added to the button that reveals the selected context item in DevTools
+   */
+  revealContextDescription: 'Reveal the selected context item in DevTools',
 } as const;
 
 /*
@@ -953,6 +957,7 @@ function renderSelection({
       tabindex=${hasPickerBehavior ? '-1' : '0'}
       @click=${onContextClick}
       @keydown=${handleKeyDown}
+      aria-label=${i18nString(UIStrings.revealContextDescription)}
     >
       ${icon}${selectedContext?.getTitle() ?? html`<span>${
         lockedString(UIStringsNotTranslate.noElementSelected)

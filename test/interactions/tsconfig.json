@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "baseUrl": ".",
 
     "checkJs": false,
@@ -12,7 +12,7 @@
     },
     {
       "path": "../e2e/tsconfig.json"
-    },
+    }
   ],
   "extends": "../../config/typescript/tsconfig.base.json"
 }

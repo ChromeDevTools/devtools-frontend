@@ -160,8 +160,8 @@ template("ts_library") {
       args += [ "--verify-lib-check" ]
     }
 
-    if (defined(invoker.module)) {
-      args += [ "--module=" + invoker.module ]
+    if (defined(invoker.runs_in)) {
+      args += [ "--runs-in=" + invoker.runs_in ]
     }
 
     if (defined(invoker.reset_timestamps) && invoker.reset_timestamps) {
@@ -259,7 +259,7 @@ set_defaults("ts_library") {
 
 template("node_ts_library") {
   ts_library(target_name) {
-    module = "commonjs"
+    runs_in = "node"
     testonly = true
     reset_timestamps = true
 

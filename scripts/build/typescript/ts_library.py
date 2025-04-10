@@ -158,7 +158,8 @@ def runEsbuild(opts, tsconfig_output_location, tsconfig_output_directory):
         '--sourcemap',
     ]
 
-    if opts.module == 'commonjs':
+    # TODO: Remove once we switch the repo to ESM
+    if opts.runs_in == 'node':
         cmd += ['--format=cjs']
 
     cmd += opts.sources
@@ -205,7 +206,7 @@ def main():
     parser.add_argument('--no-emit', action='store_true')
     parser.add_argument('--verify-lib-check', action='store_true')
     parser.add_argument('--is_web_worker', action='store_true')
-    parser.add_argument('--module', required=False)
+    parser.add_argument('--runs-in', required=False)
     parser.add_argument('--reset_timestamps', action='store_true')
     parser.add_argument('--additional-type-definitions',
                         nargs='*',
@@ -217,7 +218,7 @@ def main():
                         no_emit=False,
                         verify_lib_check=False,
                         reset_timestamps=False,
-                        module='esnext')
+                        runs_in='browser')
 
     opts = parser.parse_args()
     with open(BASE_TS_CONFIG_LOCATION) as root_tsconfig:
@@ -231,7 +232,7 @@ def main():
                                          opts.tsconfig_output_location)
     tsconfig_output_directory = path.dirname(tsconfig_output_location)
     tsbuildinfo_name = path.basename(tsconfig_output_location) + '.tsbuildinfo'
-    runs_in_node_environment = opts.module == "commonjs"
+    runs_in_node_environment = opts.runs_in == 'node'
 
     def get_relative_path_from_output_directory(file_to_resolve):
         return path.relpath(path.join(os.getcwd(), file_to_resolve),
@@ -252,7 +253,8 @@ def main():
 
     if (opts.deps is not None):
         tsconfig['references'] = [{'path': src} for src in opts.deps]
-    tsconfig['compilerOptions']['module'] = opts.module
+    tsconfig['compilerOptions'][
+        'module'] = 'nodenext' if runs_in_node_environment else "esnext"
     if (not opts.verify_lib_check):
         tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions'][
@@ -272,10 +274,8 @@ def main():
         if runs_in_node_environment:
             tsconfig['compilerOptions']['types'] += ["node"]
     if runs_in_node_environment:
-        tsconfig['compilerOptions']['moduleResolution'] = 'node'
-        tsconfig['compilerOptions'][
-            'baseUrl'] = get_relative_path_from_output_directory(
-                NODE_MODULES_DIRECTORY)
+        tsconfig['compilerOptions']['moduleResolution'] = 'nodenext'
+
     if opts.no_emit:
         tsconfig['compilerOptions']['emitDeclarationOnly'] = True
     tsconfig['compilerOptions']['outDir'] = '.'

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {Argv} from 'yargs';
+import type * as Yargs from 'yargs';
 
 export enum DiffBehaviors {
   UPDATE = 'update',
@@ -38,7 +38,7 @@ function validateDiffBehaviors(args: undefined|string|string[]) {
   return asArray(args);
 }
 
-export function commandLineArgs<T = Record<string, unknown>>(yargs: Argv<T>) {
+export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>) {
   return yargs
       .parserConfiguration({
         'camel-case-expansion': false,

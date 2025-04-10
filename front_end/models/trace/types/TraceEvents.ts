@@ -1540,14 +1540,22 @@ const enum FrameType {
   BACKFILL = 'BACKFILL',
 }
 
+// TODO(crbug.com/409484302): Remove once Chrome migrates from
+// ChromeTrackEvent.chrome_frame_reporter to ChromeTrackEvent.frame_reporter.
+export interface OldChromeFrameReporterArgs {
+  chrome_frame_reporter: ChromeFrameReporter;
+}
+
+export interface NewChromeFrameReporterArgs {
+  frame_reporter: ChromeFrameReporter;
+}
+
 export interface PipelineReporter extends Event {
   id2?: {
     local?: string,
   };
   ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
-  args: Args&{
-    chrome_frame_reporter: ChromeFrameReporter,
-  };
+  args: Args&(OldChromeFrameReporterArgs|NewChromeFrameReporterArgs);
 }
 
 export function isPipelineReporter(event: Event): event is PipelineReporter {

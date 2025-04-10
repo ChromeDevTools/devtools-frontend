@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import * as ProjectSettings from '../project_settings/project_settings.js';
@@ -76,6 +76,8 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
     this.#inspectorFrontendHost = inspectorFrontendHost;
     this.#projectSettingsModel = projectSettingsModel;
     if (hostConfig.devToolsAutomaticFileSystems?.enabled) {
+      this.#inspectorFrontendHost.events.addEventListener(
+          Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
       this.#projectSettingsModel.addEventListener(
           ProjectSettings.ProjectSettingsModel.Events.AVAILABILITY_CHANGED, this.#availabilityChanged, this);
       this.#availabilityChanged({data: this.#projectSettingsModel.availability});
@@ -123,6 +125,8 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
   }
 
   #dispose(): void {
+    this.#inspectorFrontendHost.events.removeEventListener(
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
     this.#projectSettingsModel.removeEventListener(
         ProjectSettings.ProjectSettingsModel.Events.AVAILABILITY_CHANGED, this.#availabilityChanged, this);
     this.#projectSettingsModel.removeEventListener(
@@ -136,6 +140,19 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
     if (this.#availability !== availability) {
       this.#availability = availability;
       this.dispatchEventToListeners(Events.AVAILABILITY_CHANGED, this.#availability);
+    }
+  }
+
+  #fileSystemRemoved(event: Common.EventTarget.EventTargetEvent<Platform.DevToolsPath.RawPathString>): void {
+    if (this.#automaticFileSystem === null) {
+      return;
+    }
+    if (this.#automaticFileSystem.root === event.data) {
+      this.#automaticFileSystem = Object.freeze({
+        ...this.#automaticFileSystem,
+        state: 'disconnected',
+      });
+      this.dispatchEventToListeners(Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystem);
     }
   }
 

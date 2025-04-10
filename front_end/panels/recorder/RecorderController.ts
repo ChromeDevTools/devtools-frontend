@@ -73,7 +73,7 @@ const UIStrings = {
   /**
    * @description The title of the button that opens a menu with various options of exporting a recording to file.
    */
-  exportRecording: 'Export',
+  exportRecording: 'Export recording',
   /**
    * @description The title of shortcut for starting and stopping recording.
    */

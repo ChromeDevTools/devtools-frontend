@@ -73,7 +73,7 @@ describe('Recorder', function() {
     for (const [button, filename, expectedSubstring] of tests) {
       it(`should ${button.toLowerCase()}`, async () => {
         const {frontend} = getBrowserAndPages();
-        const exportButton = await waitForAria('Export');
+        const exportButton = await waitForAria('Export recording');
         await exportButton.click();
         const exportMenuItem = await waitForAria(button);
         await frontend.evaluate(`

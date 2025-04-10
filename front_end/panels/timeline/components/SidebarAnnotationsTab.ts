@@ -41,7 +41,7 @@ const UIStrings = {
   /**
    * @description Text for how to create an entry label.
    */
-  entryLabelTutorialDescription: 'Double-click on an item and type to create an item label.',
+  entryLabelTutorialDescription: 'Double-click or press Enter on an item and type to create an item label.',
   /**
    * @description  Title for diagram.
    */

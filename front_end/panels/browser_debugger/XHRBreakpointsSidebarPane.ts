@@ -241,7 +241,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     return listItemElement;
   }
 
-  selectedItemChanged(from: string|null, to: string|null, fromElement: HTMLElement|null, toElement: HTMLElement|null):
+  selectedItemChanged(_from: string|null, _to: string|null, fromElement: HTMLElement|null, toElement: HTMLElement|null):
       void {
     if (fromElement) {
       const breakpointEntryElement = containerToBreakpointEntry.get(fromElement);

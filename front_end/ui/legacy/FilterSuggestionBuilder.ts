@@ -16,7 +16,7 @@ export class FilterSuggestionBuilder {
     this.valueSorter = valueSorter || ((_: string, result: string[]) => result.sort());
   }
 
-  completions(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
+  completions(_expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
     if (!prefix && !force) {
       return Promise.resolve([]);
     }
@@ -33,7 +33,7 @@ export class FilterSuggestionBuilder {
       const matcher = new RegExp('^' + Platform.StringUtilities.escapeForRegExp(prefix), 'i');
       for (const key of this.keys) {
         if (matcher.test(key)) {
-          suggestions.push(({text: modifier + key + ':'} as Suggestion));
+          suggestions.push(({text: modifier + key + ':'}));
         }
       }
     } else {
@@ -44,7 +44,7 @@ export class FilterSuggestionBuilder {
       this.valueSorter(key, values);
       for (const item of values) {
         if (matcher.test(item) && (item !== value)) {
-          suggestions.push(({text: modifier + key + ':' + item} as Suggestion));
+          suggestions.push(({text: modifier + key + ':' + item}));
         }
       }
     }

@@ -103,7 +103,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
       callback(currentX, size);
     }
 
-    function maxSizeCallback(x: number, size: number): void {
+    function maxSizeCallback(_x: number, size: number): void {
       maxSize = Math.max(maxSize, size);
     }
 

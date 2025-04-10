@@ -472,7 +472,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
     this.dispatchEventToListeners(Events.BreakpointAdded, breakpointLocation);
   }
 
-  uiLocationRemoved(breakpoint: Breakpoint, uiLocation: Workspace.UISourceCode.UILocation): void {
+  uiLocationRemoved(uiLocation: Workspace.UISourceCode.UILocation): void {
     const breakpoints = this.#breakpointsForUISourceCode.get(uiLocation.uiSourceCode);
     if (!breakpoints) {
       return;
@@ -707,7 +707,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       this.uiSourceCodes.delete(uiSourceCode);
       this.breakpointManager.removeHomeUISourceCode(uiSourceCode, this);
       if (!this.bound()) {
-        this.breakpointManager.uiLocationRemoved(this, this.defaultUILocation(uiSourceCode));
+        this.breakpointManager.uiLocationRemoved(this.defaultUILocation(uiSourceCode));
       }
     }
 
@@ -716,7 +716,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       for (const uiLocation of this.#uiLocations) {
         if (uiLocation.uiSourceCode === uiSourceCode) {
           this.#uiLocations.delete(uiLocation);
-          this.breakpointManager.uiLocationRemoved(this, uiLocation);
+          this.breakpointManager.uiLocationRemoved(uiLocation);
         }
       }
 
@@ -754,7 +754,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   uiLocationRemoved(uiLocation: Workspace.UISourceCode.UILocation): void {
     if (this.#uiLocations.has(uiLocation)) {
       this.#uiLocations.delete(uiLocation);
-      this.breakpointManager.uiLocationRemoved(this, uiLocation);
+      this.breakpointManager.uiLocationRemoved(uiLocation);
       if (!this.bound() && !this.isRemoved) {
         this.addAllUnboundLocations();
       }
@@ -878,7 +878,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
   private removeAllUnboundLocations(): void {
     for (const uiSourceCode of this.uiSourceCodes) {
-      this.breakpointManager.uiLocationRemoved(this, this.defaultUILocation(uiSourceCode));
+      this.breakpointManager.uiLocationRemoved(this.defaultUILocation(uiSourceCode));
     }
   }
 

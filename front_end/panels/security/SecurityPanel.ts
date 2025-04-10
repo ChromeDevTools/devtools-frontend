@@ -559,7 +559,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   private securityModel: SecurityModel|null;
   readonly splitWidget!: UI.SplitWidget.SplitWidget;
 
-  constructor(private view: View = (input, output, target) => {
+  constructor(private view: View = (_input, output, target) => {
     // clang-format off
     render(
       html`

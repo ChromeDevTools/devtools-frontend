@@ -200,7 +200,7 @@ export class FlexItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FLEX_ITEM;
   }
 
-  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+  getHint(propertyName: string, _computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
     if (!parentComputedStyles) {
       return;
@@ -311,7 +311,7 @@ export class GridItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.GRID_ITEM;
   }
 
-  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+  getHint(propertyName: string, _computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
     if (!parentComputedStyles) {
       return;
@@ -347,7 +347,7 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
     return Host.UserMetrics.CSSHintType.FLEX_OR_GRID_ITEM;
   }
 
-  getHint(propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
+  getHint(propertyName: string, _computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>): Hint
       |undefined {
     if (!parentComputedStyles) {
       return;
@@ -610,7 +610,7 @@ export class SizingValidator extends CSSRuleValidator {
   }
 
   getHint(
-      propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
+      propertyName: string, computedStyles?: Map<string, string>, _parentComputedStyles?: Map<string, string>,
       nodeName?: string): Hint|undefined {
     if (!computedStyles || !nodeName) {
       return;
@@ -654,8 +654,8 @@ export class FontVariationSettingsValidator extends CSSRuleValidator {
   }
 
   getHint(
-      propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
-      nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined {
+      _propertyName: string, computedStyles?: Map<string, string>, _parentComputedStyles?: Map<string, string>,
+      _nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined {
     if (!computedStyles) {
       return;
     }

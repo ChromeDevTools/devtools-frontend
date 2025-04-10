@@ -156,7 +156,7 @@ export class FilePathScoreFunction {
     return score;
   }
 
-  private sequenceCharScore(query: string, data: string, i: number, j: number, sequenceLength: number): number {
+  private sequenceCharScore(data: string, j: number, sequenceLength: number): number {
     const isFileName = j > this.fileNameIndex;
     const isPathTokenStart = j === 0 || data[j - 1] === '/';
     let score = 10;
@@ -178,6 +178,6 @@ export class FilePathScoreFunction {
     if (!consecutiveMatch) {
       return this.singleCharScore(query, data, i, j);
     }
-    return this.sequenceCharScore(query, data, i, j - consecutiveMatch, consecutiveMatch);
+    return this.sequenceCharScore(data, j - consecutiveMatch, consecutiveMatch);
   }
 }

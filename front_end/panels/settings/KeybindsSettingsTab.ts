@@ -222,7 +222,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   selectedItemChanged(
-      from: KeybindsItem|null, to: KeybindsItem|null, fromElement: HTMLElement|null,
+      _from: KeybindsItem|null, to: KeybindsItem|null, fromElement: HTMLElement|null,
       toElement: HTMLElement|null): void {
     if (fromElement) {
       fromElement.tabIndex = -1;

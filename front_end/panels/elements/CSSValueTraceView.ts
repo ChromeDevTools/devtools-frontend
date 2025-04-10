@@ -152,14 +152,12 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     if (!matchedResult) {
       return undefined;
     }
-    return this.#showTrace(property, matchedResult, matchedStyles, computedStyles, renderers);
+    return this.#showTrace(property, matchedResult, renderers);
   }
 
   #showTrace(
       property: SDK.CSSProperty.CSSProperty,
       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>|null,
       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
       ): void {
     this.#highlighting = new Highlighting();

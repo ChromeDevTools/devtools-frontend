@@ -172,7 +172,7 @@ export function assignMeta(
     threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>): void {
   assignOrigin(processes, rendererProcessesByFrame);
   assignIsMainFrame(processes, mainFrameId, rendererProcessesByFrame);
-  assignThreadName(processes, rendererProcessesByFrame, threadsInProcess);
+  assignThreadName(processes, threadsInProcess);
 }
 
 /**
@@ -233,7 +233,7 @@ export function assignIsMainFrame(
  * @see assignMeta
  */
 export function assignThreadName(
-    processes: Map<Types.Events.ProcessID, RendererProcess>, rendererProcessesByFrame: FrameProcessData,
+    processes: Map<Types.Events.ProcessID, RendererProcess>,
     threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>): void {
   for (const [pid, process] of processes) {
     for (const [tid, threadInfo] of threadsInProcess.get(pid) ?? []) {

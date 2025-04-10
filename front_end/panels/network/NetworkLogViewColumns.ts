@@ -325,9 +325,8 @@ export class NetworkLogViewColumns {
 
     this.switchViewMode(false);
 
-    function handleContextMenu(this: NetworkLogViewColumns, ev: Event): void {
-      const event = (ev as MouseEvent);
-      const node = this.waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
+    function handleContextMenu(this: NetworkLogViewColumns, event: MouseEvent): void {
+      const node = this.waterfallColumn.getNodeFromPoint(event.offsetY);
       if (!node) {
         return;
       }
@@ -341,29 +340,26 @@ export class NetworkLogViewColumns {
     }
   }
 
-  private onMouseWheel(shouldConsume: boolean, ev: Event): void {
+  private onMouseWheel(shouldConsume: boolean, event: WheelEvent): void {
     if (shouldConsume) {
-      ev.consume(true);
+      event.consume(true);
     }
-    const event = (ev as WheelEvent);
     const hasRecentWheel = Date.now() - this.lastWheelTime < 80;
     this.activeScroller.scrollBy({top: event.deltaY, behavior: hasRecentWheel ? 'auto' : 'smooth'});
     this.syncScrollers();
     this.lastWheelTime = Date.now();
   }
 
-  private onTouchStart(ev: Event): void {
-    const event = (ev as TouchEvent);
+  private onTouchStart(event: TouchEvent): void {
     this.hasScrollerTouchStarted = true;
     this.scrollerTouchStartPos = event.changedTouches[0].pageY;
   }
 
-  private onTouchMove(ev: Event): void {
+  private onTouchMove(event: TouchEvent): void {
     if (!this.hasScrollerTouchStarted) {
       return;
     }
 
-    const event = (ev as TouchEvent);
     const currentPos = event.changedTouches[0].pageY;
     const delta = (this.scrollerTouchStartPos as number) - currentPos;
 

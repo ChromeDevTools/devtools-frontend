@@ -155,8 +155,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
   }
 
-  async preciseCoverageDeltaUpdate(
-      timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]): Promise<void> {
+  async preciseCoverageDeltaUpdate(timestamp: number, coverageData: Protocol.Profiler.ScriptCoverage[]): Promise<void> {
     this.coverageUpdateTimes.add(timestamp);
     const result = await this.backlogOrProcessJSCoverage(coverageData, timestamp);
     if (result.length) {

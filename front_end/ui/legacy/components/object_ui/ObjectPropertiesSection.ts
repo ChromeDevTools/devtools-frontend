@@ -350,7 +350,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static createPropertyValueWithCustomSupport(
-      value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, parentElement?: Element,
+      value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
       linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean,
       variableName?: string): ObjectPropertyValue {
     if (value.customPreview()) {
@@ -359,7 +359,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
       return new ObjectPropertyValue(result);
     }
     return ObjectPropertiesSection.createPropertyValue(
-        value, wasThrown, showPreview, parentElement, linkifier, isSyntheticProperty, variableName);
+        value, wasThrown, showPreview, linkifier, isSyntheticProperty, variableName);
   }
 
   static appendMemoryIcon(element: Element, object: SDK.RemoteObject.RemoteObject, expression?: string): void {
@@ -393,7 +393,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   }
 
   static createPropertyValue(
-      value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, parentElement?: Element,
+      value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean,
       linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty = false,
       variableName?: string): ObjectPropertyValue {
     let propertyValue;
@@ -1026,8 +1026,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     } else if (this.property.value) {
       const showPreview = this.property.name !== '[[Prototype]]';
       this.propertyValue = ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-          this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this.linkifier,
-          this.property.synthetic, this.path() /* variableName */);
+          this.property.value, this.property.wasThrown, showPreview, this.linkifier, this.property.synthetic,
+          this.path() /* variableName */);
       this.valueElement = (this.propertyValue.element as HTMLElement);
     } else if (this.property.getter) {
       this.valueElement = document.createElement('span');

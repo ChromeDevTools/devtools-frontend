@@ -1095,7 +1095,7 @@ export class TimelineUIUtils {
         let previewElement: (Element|null)|null = null;
         const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace);
         if (url) {
-          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(maybeTarget, url, false, {
+          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
             precomputedFeatures: undefined,
             align: LegacyComponents.ImagePreview.Align.START,
@@ -2182,7 +2182,7 @@ export class TimelineUIUtils {
       title: string,
     }> = [];
 
-    function appendLegendRow(name: string, title: string, value: number, color: string): void {
+    function appendLegendRow(title: string, value: number, color: string): void {
       if (!value) {
         return;
       }
@@ -2194,16 +2194,20 @@ export class TimelineUIUtils {
       const selfTimeMilli = Trace.Helpers.Timing.microToMilli(selfTime || 0 as Trace.Types.Timing.Micro);
       if (selfTime) {
         appendLegendRow(
-            selfCategory.name, i18nString(UIStrings.sSelf, {PH1: selfCategory.title}), selfTimeMilli,
-            selfCategory.getCSSValue());
+            i18nString(UIStrings.sSelf, {PH1: selfCategory.title}),
+            selfTimeMilli,
+            selfCategory.getCSSValue(),
+        );
       }
       // Children of the same category.
       const categoryTime = aggregatedStats[selfCategory.name];
       const value = categoryTime - (selfTimeMilli || 0);
       if (value > 0) {
         appendLegendRow(
-            selfCategory.name, i18nString(UIStrings.sChildren, {PH1: selfCategory.title}), value,
-            selfCategory.getCSSValue());
+            i18nString(UIStrings.sChildren, {PH1: selfCategory.title}),
+            value,
+            selfCategory.getCSSValue(),
+        );
       }
     }
 
@@ -2216,7 +2220,7 @@ export class TimelineUIUtils {
         // self and children times).
         continue;
       }
-      appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.getCSSValue());
+      appendLegendRow(category.title, aggregatedStats[category.name], category.getCSSValue());
     }
 
     pieChart.data = {

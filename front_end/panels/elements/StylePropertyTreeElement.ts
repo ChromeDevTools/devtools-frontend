@@ -2262,7 +2262,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             if (this.treeOutline) {
               const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
               // order matters here: this.editingCancelled may invalidate this.treeOutline.
-              this.editingCancelled(null, context);
+              this.editingCancelled(context);
               await this.toggleDisabled(!this.property.disabled);
               event.consume();
               this.parentPaneInternal.continueEditingElement(sectionIndex, propertyIndex);
@@ -2546,7 +2546,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (result) {
       switch (result) {
         case 'cancel':
-          this.editingCancelled(null, context);
+          this.editingCancelled(context);
           break;
         case 'forward':
         case 'backward':
@@ -2674,7 +2674,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.parentPaneInternal.setEditingStyle(false);
   }
 
-  editingCancelled(element: Element|null, context: Context): void {
+  editingCancelled(context: Context): void {
     this.removePrompt();
 
     if (this.hasBeenEditedIncrementally) {

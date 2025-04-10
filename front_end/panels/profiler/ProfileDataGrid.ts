@@ -608,7 +608,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     return matchesQuery;
   }
 
-  performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {
+  performSearch(searchConfig: UI.SearchableView.SearchConfig, _shouldJump: boolean, jumpBackwards?: boolean): void {
     this.onSearchCanceled();
     const matchesQuery = this.matchFunction(searchConfig);
     if (!matchesQuery) {

@@ -45,18 +45,18 @@ export class PopoverHelper {
   private getRequest: (arg0: MouseEvent|KeyboardEvent) => PopoverRequest | null;
   private scheduledRequest: PopoverRequest|null;
   private hidePopoverCallback: (() => void)|null;
-  readonly container: Element;
+  readonly container: HTMLElement;
   private showTimeout: number;
   private hideTimeout: number;
   private hidePopoverTimer: number|null;
   private showPopoverTimer: number|null;
-  private readonly boundMouseDown: (event: Event) => void;
-  private readonly boundMouseMove: (ev: Event) => void;
-  private readonly boundMouseOut: (event: Event) => void;
-  private readonly boundKeyUp: (ev: Event) => void;
+  private readonly boundMouseDown: (event: MouseEvent) => void;
+  private readonly boundMouseMove: (ev: MouseEvent) => void;
+  private readonly boundMouseOut: (event: MouseEvent) => void;
+  private readonly boundKeyUp: (ev: KeyboardEvent) => void;
   jslogContext?: string;
   constructor(
-      container: Element, getRequest: (arg0: MouseEvent|KeyboardEvent) => PopoverRequest | null,
+      container: HTMLElement, getRequest: (arg0: MouseEvent|KeyboardEvent) => PopoverRequest | null,
       jslogContext?: string) {
     this.disableOnClick = false;
     this.getRequest = getRequest;
@@ -88,12 +88,11 @@ export class PopoverHelper {
     this.disableOnClick = disableOnClick;
   }
 
-  private eventInScheduledContent(ev: Event): boolean {
-    const event = (ev as MouseEvent);
+  private eventInScheduledContent(event: MouseEvent): boolean {
     return this.scheduledRequest ? this.scheduledRequest.box.contains(event.clientX, event.clientY) : false;
   }
 
-  private mouseDown(event: Event): void {
+  private mouseDown(event: MouseEvent): void {
     if (this.disableOnClick) {
       this.hidePopover();
       return;
@@ -104,11 +103,10 @@ export class PopoverHelper {
 
     this.startHidePopoverTimer(0);
     this.stopShowPopoverTimer();
-    this.startShowPopoverTimer((event as MouseEvent), 0);
+    this.startShowPopoverTimer(event, 0);
   }
 
-  private keyUp(ev: Event): void {
-    const event = ev as KeyboardEvent;
+  private keyUp(event: KeyboardEvent): void {
     if (event.altKey && event.key === 'ArrowDown') {
       if (this.isPopoverVisible()) {
         this.hidePopover();
@@ -117,15 +115,14 @@ export class PopoverHelper {
         this.startHidePopoverTimer(0);
         this.startShowPopoverTimer(event, 0);
       }
-      ev.stopPropagation();
+      event.stopPropagation();
     } else if (event.key === 'Escape' && this.isPopoverVisible()) {
       this.hidePopover();
-      ev.stopPropagation();
+      event.stopPropagation();
     }
   }
 
-  private mouseMove(ev: Event): void {
-    const event = (ev as MouseEvent);
+  private mouseMove(event: MouseEvent): void {
     if (this.eventInScheduledContent(event)) {
       // Reschedule showing popover since mouse moved and
       // we only want to show the popover when the mouse is
@@ -147,8 +144,7 @@ export class PopoverHelper {
     this.stopHidePopoverTimer();
   }
 
-  private popoverMouseOut(popover: GlassPane, ev: Event): void {
-    const event = (ev as MouseEvent);
+  private popoverMouseOut(popover: GlassPane, event: MouseEvent): void {
     if (!popover.isShowing()) {
       return;
     }
@@ -158,7 +154,7 @@ export class PopoverHelper {
     }
   }
 
-  private mouseOut(event: Event): void {
+  private mouseOut(event: MouseEvent): void {
     if (!this.isPopoverVisible()) {
       return;
     }

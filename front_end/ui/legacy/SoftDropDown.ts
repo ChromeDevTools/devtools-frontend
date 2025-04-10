@@ -144,8 +144,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     event.consume(true);
   }
 
-  private onKeyDownButton(ev: Event): void {
-    const event = (ev as KeyboardEvent);
+  private onKeyDownButton(event: KeyboardEvent): void {
     let handled = false;
     switch (event.key) {
       case 'ArrowUp':
@@ -172,8 +171,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     }
   }
 
-  private onKeyDownList(ev: Event): void {
-    const event = (ev as KeyboardEvent);
+  private onKeyDownList(event: KeyboardEvent): void {
     let handled = false;
     switch (event.key) {
       case 'ArrowLeft':

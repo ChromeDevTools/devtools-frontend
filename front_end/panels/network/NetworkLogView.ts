@@ -596,7 +596,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     filterBar.addFilter(this.textFilterUI);
 
     this.invertFilterUI = new UI.FilterBar.CheckboxFilterUI(
-        'invert-filter', i18nString(UIStrings.invertFilter), true, this.networkInvertFilterSetting, 'invert-filter');
+        i18nString(UIStrings.invertFilter), true, this.networkInvertFilterSetting, 'invert-filter');
     this.invertFilterUI.addEventListener(
         UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
@@ -625,15 +625,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       filterBar.addFilter(this.resourceCategoryFilterUI);
     } else {
       this.dataURLFilterUI = new UI.FilterBar.CheckboxFilterUI(
-          'hide-data-url', i18nString(UIStrings.hideDataUrls), true, this.networkHideDataURLSetting, 'hide-data-urls');
+          i18nString(UIStrings.hideDataUrls), true, this.networkHideDataURLSetting, 'hide-data-urls');
       this.dataURLFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.dataURLFilterUI.element(), i18nString(UIStrings.hidesDataAndBlobUrls));
       filterBar.addFilter(this.dataURLFilterUI);
 
       this.hideChromeExtensionsUI = new UI.FilterBar.CheckboxFilterUI(
-          'chrome-extension', i18nString(UIStrings.chromeExtensions), true, this.networkHideChromeExtensions,
-          'hide-extension-urls');
+          i18nString(UIStrings.chromeExtensions), true, this.networkHideChromeExtensions, 'hide-extension-urls');
       this.hideChromeExtensionsUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.hideChromeExtensionsUI.element(), i18nString(UIStrings.hideChromeExtension));
@@ -647,8 +646,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       filterBar.addFilter(this.resourceCategoryFilterUI);
 
       this.onlyBlockedResponseCookiesFilterUI = new UI.FilterBar.CheckboxFilterUI(
-          'only-show-blocked-cookies', i18nString(UIStrings.hasBlockedCookies), true,
-          this.networkShowBlockedCookiesOnlySetting, 'only-show-blocked-cookies');
+          i18nString(UIStrings.hasBlockedCookies), true, this.networkShowBlockedCookiesOnlySetting,
+          'only-show-blocked-cookies');
       this.onlyBlockedResponseCookiesFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(
@@ -656,16 +655,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       filterBar.addFilter(this.onlyBlockedResponseCookiesFilterUI);
 
       this.onlyBlockedRequestsUI = new UI.FilterBar.CheckboxFilterUI(
-          'only-show-blocked-requests', i18nString(UIStrings.blockedRequests), true,
-          this.networkOnlyBlockedRequestsSetting, 'only-show-blocked-requests');
+          i18nString(UIStrings.blockedRequests), true, this.networkOnlyBlockedRequestsSetting,
+          'only-show-blocked-requests');
       this.onlyBlockedRequestsUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(this.onlyBlockedRequestsUI.element(), i18nString(UIStrings.onlyShowBlockedRequests));
       filterBar.addFilter(this.onlyBlockedRequestsUI);
 
       this.onlyThirdPartyFilterUI = new UI.FilterBar.CheckboxFilterUI(
-          'only-show-third-party', i18nString(UIStrings.thirdParty), true, this.networkOnlyThirdPartySetting,
-          'only-show-third-party');
+          i18nString(UIStrings.thirdParty), true, this.networkOnlyThirdPartySetting, 'only-show-third-party');
       this.onlyThirdPartyFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged.bind(this), this);
       UI.Tooltip.Tooltip.install(

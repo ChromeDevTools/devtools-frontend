@@ -493,7 +493,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     } else {
       const propertyValue =
           ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createPropertyValueWithCustomSupport(
-              expressionValue, Boolean(exceptionDetails), false /* showPreview */, titleElement, this.linkifier);
+              expressionValue, Boolean(exceptionDetails), false /* showPreview */, this.linkifier);
       this.valueElement = propertyValue.element;
     }
     const separatorElement = document.createElement('span');

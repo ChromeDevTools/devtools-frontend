@@ -1390,8 +1390,7 @@ export class TabbedPaneTab {
     return true;
   }
 
-  private tabDragging(ev: Event): void {
-    const event = (ev as MouseEvent);
+  private tabDragging(event: MouseEvent): void {
     const tabElements = this.tabbedPane.tabsElement.childNodes;
     for (let i = 0; i < tabElements.length; ++i) {
       let tabElement: HTMLElement = (tabElements[i] as HTMLElement);

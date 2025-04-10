@@ -423,8 +423,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     }
   }
 
-  private onTypeFilterKeydown(ev: Event): void {
-    const event = (ev as KeyboardEvent);
+  private onTypeFilterKeydown(event: KeyboardEvent): void {
     const element = (event.target as HTMLElement | null);
     if (!element) {
       return;
@@ -498,8 +497,11 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
   private label: CheckboxLabel;
   private checkboxElement: HTMLInputElement;
   constructor(
-      className: string, title: Common.UIString.LocalizedString, activeWhenChecked?: boolean,
-      setting?: Common.Settings.Setting<boolean>, jslogContext?: string) {
+      title: Common.UIString.LocalizedString,
+      activeWhenChecked?: boolean,
+      setting?: Common.Settings.Setting<boolean>,
+      jslogContext?: string,
+  ) {
     super();
     this.filterElement = document.createElement('div');
     this.filterElement.classList.add('filter-checkbox-filter');

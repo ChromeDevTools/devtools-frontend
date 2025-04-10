@@ -1545,8 +1545,8 @@ export class Overlays extends EventTarget {
         component.callTree = callTree;
 
         component.addEventListener(
-            Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisiblityChange.eventName, e => {
-              const event = e as Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisiblityChange;
+            Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisibilityChange.eventName, e => {
+              const event = e as Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisibilityChange;
               this.dispatchEvent(new ConsentDialogVisibilityChange(event.isVisible));
             });
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {

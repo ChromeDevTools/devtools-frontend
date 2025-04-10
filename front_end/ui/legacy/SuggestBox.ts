@@ -253,7 +253,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     return true;
   }
 
-  selectedItemChanged(from: Suggestion|null, to: Suggestion|null, fromElement: Element|null, toElement: Element|null):
+  selectedItemChanged(_from: Suggestion|null, _to: Suggestion|null, fromElement: Element|null, toElement: Element|null):
       void {
     if (fromElement) {
       fromElement.classList.remove('selected', 'force-white-icons');

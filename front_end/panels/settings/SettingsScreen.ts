@@ -549,7 +549,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'settings.show':
         void SettingsScreen.showSettingsScreen({focusTabHeader: true} as ShowSettingsScreenOptions);

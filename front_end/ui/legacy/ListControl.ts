@@ -313,8 +313,7 @@ export class ListControl<T> {
     }
   }
 
-  private onKeyDown(ev: Event): void {
-    const event = (ev as KeyboardEvent);
+  private onKeyDown(event: KeyboardEvent): void {
     let selected = false;
     switch (event.key) {
       case 'ArrowUp':

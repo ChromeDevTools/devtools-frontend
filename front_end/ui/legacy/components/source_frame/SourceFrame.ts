@@ -906,7 +906,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     });
   }
 
-  replaceSelectionWith(searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
+  replaceSelectionWith(_searchConfig: UI.SearchableView.SearchConfig, replacement: string): void {
     const range = this.searchResults[this.currentSearchResultIndex];
     if (!range) {
       return;

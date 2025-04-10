@@ -213,7 +213,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return element;
   }
 
-  removeItemRequested(item: LocationDescription, index: number): void {
+  removeItemRequested(_item: LocationDescription, index: number): void {
     const list = this.customSetting.get();
     list.splice(index, 1);
     this.customSetting.set(list);
@@ -291,7 +291,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     return editor;
 
     function titleValidator(
-        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const maxLength = 50;
       const value = input.value.trim();
 
@@ -309,7 +309,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function latValidator(
-        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLat = -90;
       const maxLat = 90;
       const value = input.value.trim();
@@ -335,7 +335,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function longValidator(
-        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const minLong = -180;
       const maxLong = 180;
       const value = input.value.trim();
@@ -361,7 +361,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function timezoneIdValidator(
-        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Chromium uses ICU's timezone implementation, which is very
       // liberal in what it accepts. ICU does not simply use an allowlist
@@ -378,7 +378,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     }
 
     function localeValidator(
-        item: LocationDescription, index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const value = input.value.trim();
       // Similarly to timezone IDs, there's not much point in validating
       // input locales other than checking if it contains at least two

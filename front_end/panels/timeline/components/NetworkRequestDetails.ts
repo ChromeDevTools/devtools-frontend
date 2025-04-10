@@ -365,7 +365,7 @@ export class NetworkRequestDetails extends HTMLElement {
       };
 
       const previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(
-          this.#maybeTarget, this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, false, previewOpts);
+          this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, false, previewOpts);
       previewElement && this.#requestPreviewElements.set(this.#networkRequest, previewElement);
     }
 

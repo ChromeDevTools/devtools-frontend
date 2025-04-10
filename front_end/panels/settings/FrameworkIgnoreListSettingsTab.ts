@@ -239,7 +239,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     }
   }
 
-  removeItemRequested(item: Common.Settings.RegExpSettingItem, index: number): void {
+  removeItemRequested(_item: Common.Settings.RegExpSettingItem, index: number): void {
     const patterns = this.setting.getAsArray();
     patterns.splice(index, 1);
     this.setting.setAsArray(patterns);
@@ -283,7 +283,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     return editor;
 
     function patternValidator(
-        this: FrameworkIgnoreListSettingsTab, item: Common.Settings.RegExpSettingItem, index: number,
+        this: FrameworkIgnoreListSettingsTab, _item: Common.Settings.RegExpSettingItem, index: number,
         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
       const pattern = input.value.trim();
       const patterns = this.setting.getAsArray();

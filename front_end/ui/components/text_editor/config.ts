@@ -222,7 +222,7 @@ const AutoDetectIndent = CM.StateField.define<string>({
 
 function preservedLength(ch: CM.ChangeDesc): number {
   let len = 0;
-  ch.iterGaps((from, to, l) => {
+  ch.iterGaps((_from, _to, l) => {
     len += l;
   });
   return len;

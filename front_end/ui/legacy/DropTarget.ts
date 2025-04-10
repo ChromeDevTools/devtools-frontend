@@ -7,7 +7,7 @@ import dropTargetStyles from './dropTarget.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class DropTarget {
-  private element: Element;
+  private element: HTMLElement;
   private readonly transferTypes: Array<{
     kind: string,
     type: RegExp,
@@ -15,10 +15,10 @@ export class DropTarget {
   private messageText: string;
   private readonly handleDrop: (arg0: DataTransfer) => void;
   private enabled: boolean;
-  private dragMaskElement: Element|null;
+  private dragMaskElement: HTMLElement|null;
 
   constructor(
-      element: Element, transferTypes: Array<{
+      element: HTMLElement, transferTypes: Array<{
         kind: string,
         type: RegExp,
       }>,
@@ -37,14 +37,13 @@ export class DropTarget {
     this.enabled = enabled;
   }
 
-  private onDragEnter(event: Event): void {
+  private onDragEnter(event: DragEvent): void {
     if (this.enabled && this.hasMatchingType(event)) {
       event.consume(true);
     }
   }
 
-  private hasMatchingType(ev: Event): boolean {
-    const event = (ev as DragEvent);
+  private hasMatchingType(event: DragEvent): boolean {
     if (!event.dataTransfer) {
       return false;
     }
@@ -59,8 +58,7 @@ export class DropTarget {
     return false;
   }
 
-  private onDragOver(ev: Event): void {
-    const event = (ev as DragEvent);
+  private onDragOver(event: DragEvent): void {
     if (!this.enabled || !this.hasMatchingType(event)) {
       return;
     }
@@ -78,8 +76,7 @@ export class DropTarget {
     this.dragMaskElement.addEventListener('dragleave', this.onDragLeave.bind(this), true);
   }
 
-  private onDrop(ev: Event): void {
-    const event = (ev as DragEvent);
+  private onDrop(event: DragEvent): void {
     event.consume(true);
     this.removeMask();
     if (this.enabled && event.dataTransfer) {

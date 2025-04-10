@@ -73,13 +73,15 @@ function isImageResource(resource: SDK.Resource.Resource|null): boolean {
 
 export class ImagePreview {
   static async build(
-      target: SDK.Target.Target, originalImageURL: Platform.DevToolsPath.UrlString, showDimensions: boolean, options: {
+      originalImageURL: Platform.DevToolsPath.UrlString,
+      showDimensions: boolean,
+      options: {
         precomputedFeatures: (PrecomputedFeatures|undefined),
         imageAltText: (string|undefined),
         align: Align,
         hideFileData?: boolean,
-      }|undefined = {precomputedFeatures: undefined, imageAltText: undefined, align: Align.CENTER}):
-      Promise<HTMLDivElement|null> {
+      }|undefined = {precomputedFeatures: undefined, imageAltText: undefined, align: Align.CENTER},
+      ): Promise<HTMLDivElement|null> {
     const {precomputedFeatures, imageAltText, align} = options;
 
     let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalImageURL);

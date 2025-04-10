@@ -1519,10 +1519,10 @@ export class StylePropertiesSection {
   }
 
   editingSelectorCommitted(
-      element: Element,
+      _element: Element,
       newContent: string,
       oldContent: string|null,
-      context: Context|undefined,
+      _context: Context|undefined,
       moveDirection: string,
       ): void {
     this.editingSelectorEnded();

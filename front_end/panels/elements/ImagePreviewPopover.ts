@@ -18,7 +18,7 @@ export class ImagePreviewPopover {
   private readonly getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null;
   private readonly popover: UI.PopoverHelper.PopoverHelper;
   constructor(
-      container: Element, getLinkElement: (arg0: Event) => Element | null,
+      container: HTMLElement, getLinkElement: (arg0: Event) => Element | null,
       getDOMNode: (arg0: Element) => SDK.DOMModel.DOMNode | null) {
     this.getLinkElement = getLinkElement;
     this.getDOMNode = getDOMNode;
@@ -45,7 +45,7 @@ export class ImagePreviewPopover {
           return false;
         }
         const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
-        const preview = await Components.ImagePreview.ImagePreview.build(node.domModel().target(), href, true, {
+        const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
           imageAltText: undefined,
           precomputedFeatures,
           align: Components.ImagePreview.Align.CENTER,

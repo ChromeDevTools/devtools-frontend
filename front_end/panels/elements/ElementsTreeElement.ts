@@ -1391,7 +1391,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
   }
 
-  private textNodeEditingCommitted(textNode: SDK.DOMModel.DOMNode, element: Element, newText: string): void {
+  private textNodeEditingCommitted(textNode: SDK.DOMModel.DOMNode, _element: Element, newText: string): void {
     this.editing = null;
 
     function callback(this: ElementsTreeElement): void {

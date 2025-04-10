@@ -22,7 +22,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     this.#eventsRetrieved = 0;
   }
 
-  bufferUsage(usage?: number, eventCount?: number, percentFull?: number): void {
+  bufferUsage(usage?: number, percentFull?: number): void {
     if (this.#activeClient) {
       this.#activeClient.tracingBufferUsage(usage || percentFull || 0);
     }
@@ -116,8 +116,8 @@ class TracingDispatcher implements ProtocolProxyApi.TracingDispatcher {
   }
 
   // `eventCount` will always be 0 as perfetto no longer calculates `approximate_event_count`
-  bufferUsage({value, eventCount, percentFull}: Protocol.Tracing.BufferUsageEvent): void {
-    this.#tracingManager.bufferUsage(value, eventCount, percentFull);
+  bufferUsage({value, percentFull}: Protocol.Tracing.BufferUsageEvent): void {
+    this.#tracingManager.bufferUsage(value, percentFull);
   }
 
   dataCollected({value}: Protocol.Tracing.DataCollectedEvent): void {

@@ -182,8 +182,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
         SDK.HeapProfilerModel.HeapProfilerModel, this.updateProfileTypeSpecificUI, this);
   }
 
-  onKeyDown(ev: Event): void {
-    const event = (ev as KeyboardEvent);
+  onKeyDown(event: KeyboardEvent): void {
     let handled = false;
     if (event.key === 'ArrowDown' && !event.altKey) {
       handled = this.sidebarTree.selectNext();

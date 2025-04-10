@@ -1207,7 +1207,7 @@ function renderParameters(
   // clang-format on
 }
 
-export const DEFAULT_VIEW: View = (input, output, target) => {
+export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
     <div jslog=${VisualLogging.pane('command-editor').track({resize: true})}>

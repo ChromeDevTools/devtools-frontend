@@ -348,8 +348,8 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.detailViewContainer.appendChild(detailBuilder.getFragment());
   }
 
-  private updateSummaryBar(contextId: string, contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
-    const summaryBuilder = new ContextSummaryBuilder(contextId, contextRealtimeData);
+  private updateSummaryBar(contextRealtimeData: Protocol.WebAudio.ContextRealtimeData): void {
+    const summaryBuilder = new ContextSummaryBuilder(contextRealtimeData);
     this.summaryBarContainer.removeChildren();
     this.summaryBarContainer.appendChild(summaryBuilder.getFragment());
   }
@@ -373,7 +373,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
         }
         const realtimeData = await model.requestRealtimeData(context.contextId);
         if (realtimeData) {
-          this.updateSummaryBar(context.contextId, realtimeData);
+          this.updateSummaryBar(realtimeData);
         }
       } else {
         this.clearSummaryBar();

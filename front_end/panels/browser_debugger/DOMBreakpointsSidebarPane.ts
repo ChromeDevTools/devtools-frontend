@@ -273,7 +273,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
   }
 
   selectedItemChanged(
-      from: SDK.DOMDebuggerModel.DOMBreakpoint|null, to: SDK.DOMDebuggerModel.DOMBreakpoint|null,
+      _from: SDK.DOMDebuggerModel.DOMBreakpoint|null, _to: SDK.DOMDebuggerModel.DOMBreakpoint|null,
       fromElement: HTMLElement|null, toElement: HTMLElement|null): void {
     if (fromElement) {
       fromElement.tabIndex = -1;
@@ -406,7 +406,7 @@ const BreakpointTypeLabels = new Map([
 ]);
 
 export class ContextMenuProvider implements UI.ContextMenu.Provider<SDK.DOMModel.DOMNode> {
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void {
+  appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, node: SDK.DOMModel.DOMNode): void {
     if (node.pseudoType()) {
       return;
     }

@@ -145,7 +145,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
     return element;
   }
 
-  removeItemRequested(rule: Adb.PortForwardingRule, index: number): void {
+  removeItemRequested(_rule: Adb.PortForwardingRule, index: number): void {
     this.#networkDiscoveryConfig.splice(index, 1);
     this.#list.removeItem(index);
     this.#update();

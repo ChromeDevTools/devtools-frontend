@@ -942,7 +942,7 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
     return widget;
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
     const widget = Widget.get(this) as SplitWidget | null;
     if (!widget) {
       return;

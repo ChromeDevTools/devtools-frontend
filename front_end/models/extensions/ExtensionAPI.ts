@@ -682,7 +682,7 @@ self.injectedExtensionAPI = function(
   (Panels.prototype as
    Pick<APIImpl.Panels, 'create'|'setOpenResourceHandler'|'openResource'|'SearchAction'|'setThemeChangeHandler'>) = {
     create: function(
-        title: string, icon: string, page: string,
+        title: string, _icon: string, page: string,
         callback: (panel: PublicAPI.Chrome.DevTools.ExtensionPanel) => unknown): void {
       const id = 'extension-panel-' + extensionServer.nextObjectId();
       extensionServer.sendRequest(

@@ -541,7 +541,7 @@ export const elementSymbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'debugger.next-call-frame':
         CallStackSidebarPane.instance().selectNextCallFrameOnStack();

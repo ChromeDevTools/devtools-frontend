@@ -451,7 +451,7 @@ export class SnippetsNavigatorView extends NavigatorView {
 }
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'sources.create-snippet':
         void Snippets.ScriptSnippetFileSystem.findSnippetsProject()

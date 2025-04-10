@@ -149,10 +149,10 @@ export class EntryLabelChangeEvent extends Event {
   }
 }
 
-export class LabelAnnotationsConsentDialogVisiblityChange extends Event {
+export class LabelAnnotationsConsentDialogVisibilityChange extends Event {
   static readonly eventName = 'labelannotationsconsentdialogvisiblitychange';
   constructor(public isVisible: boolean) {
-    super(LabelAnnotationsConsentDialogVisiblityChange.eventName, {bubbles: true, composed: true});
+    super(LabelAnnotationsConsentDialogVisibilityChange.eventName, {bubbles: true, composed: true});
   }
 }
 
@@ -572,7 +572,7 @@ export class EntryLabelOverlay extends HTMLElement {
    * @returns `true` if the user has now consented, and `false` otherwise.
    */
   async #showUserAiFirstRunDialog(): Promise<boolean> {
-    this.dispatchEvent(new LabelAnnotationsConsentDialogVisiblityChange(true));
+    this.dispatchEvent(new LabelAnnotationsConsentDialogVisibilityChange(true));
     const userConsented = await PanelCommon.FreDialog.show({
       ariaLabel: i18nString(UIStrings.freDialog),
       header: {iconName: 'pen-spark', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
@@ -609,7 +609,7 @@ export class EntryLabelOverlay extends HTMLElement {
       },
       learnMoreButtonTitle: UIStringsNotTranslate.learnMoreButton,
     });
-    this.dispatchEvent(new LabelAnnotationsConsentDialogVisiblityChange(false));
+    this.dispatchEvent(new LabelAnnotationsConsentDialogVisibilityChange(false));
 
     if (userConsented) {
       this.#aiAnnotationsEnabledSetting.set(true);

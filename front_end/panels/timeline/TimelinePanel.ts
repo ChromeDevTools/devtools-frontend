@@ -1344,7 +1344,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void contextMenu.show();
   }
 
-  async saveToFile(isEnhancedTrace = false, addModifications = false): Promise<void> {
+  async saveToFile(savingEnhancedTrace = false, addModifications = false): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
@@ -1357,17 +1357,32 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    if (!isEnhancedTrace ||
-        !Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES)) {
-      traceEvents = traceEvents.filter(event => {
-        return event.cat !== 'disabled-by-default-devtools.v8-source-rundown-sources';
+    const shouldRetainScriptSources = savingEnhancedTrace &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES);
+    if (!shouldRetainScriptSources) {
+      traceEvents = traceEvents.map(event => {
+        if (Trace.Types.Events.isAnyScriptCatchupEvent(event) && event.name !== 'StubScriptCatchup') {
+          return {
+            cat: event.cat,
+            name: 'StubScriptCatchup',
+            ts: event.ts,
+            ph: event.ph,
+            pid: event.pid,
+            tid: event.tid,
+            args: {
+              data: {isolate: event.args.data.isolate, scriptId: event.args.data.scriptId},
+            },
+          } as Trace.Types.Events.V8SourceRundownSourcesStubScriptCatchupEvent;
+        }
+
+        return event;
       });
     }
 
     if (metadata) {
       metadata.modifications = addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
       metadata.enhancedTraceVersion =
-          isEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
+          savingEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
     }
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
@@ -1402,7 +1417,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       } else {
         const formattedTraceIter = traceJsonGenerator(traceEvents, {
           ...metadata,
-          sourceMaps: isEnhancedTrace ? metadata?.sourceMaps : undefined,
+          sourceMaps: savingEnhancedTrace ? metadata?.sourceMaps : undefined,
         });
         traceAsString = Array.from(formattedTraceIter).join('');
       }

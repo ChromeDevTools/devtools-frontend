@@ -3154,3 +3154,24 @@ export function isV8SourceRundownSourcesLargeScriptCatchupEvent(event: Event):
     event is V8SourceRundownSourcesLargeScriptCatchupEvent {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'LargeScriptCatchup';
 }
+
+export interface V8SourceRundownSourcesStubScriptCatchupEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'StubScriptCatchup';
+  args: Args&{
+    data: {
+      isolate: string,
+      scriptId: number,
+    },
+  };
+}
+
+export function isV8SourceRundownSourcesStubScriptCatchupEvent(event: Event):
+    event is V8SourceRundownSourcesStubScriptCatchupEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'StubScriptCatchup';
+}
+
+export function isAnyScriptCatchupEvent(event: Event): event is V8SourceRundownSourcesScriptCatchupEvent|
+    V8SourceRundownSourcesLargeScriptCatchupEvent|V8SourceRundownSourcesStubScriptCatchupEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
+}

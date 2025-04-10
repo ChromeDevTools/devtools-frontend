@@ -757,7 +757,6 @@ main {
   position: relative;
   margin: 0 var(--sys-size-5);
   padding: 0 var(--sys-size-5);
-  min-width: var(--sys-size-31);
 
   &.saved-to-disk {
     pointer-events: none;
@@ -850,10 +849,10 @@ main {
 
   .footer {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: space-between;
     margin: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-2);
-    gap: var(--sys-size-6);
+    gap: var(--sys-size-6) var(--sys-size-5);
 
     .disclaimer-link {
       align-self: center;
@@ -866,25 +865,26 @@ main {
       gap: var(--sys-size-3);
     }
 
-    .selected-folder {
+    .save-or-discard-buttons {
+      flex-grow: 1;
       display: flex;
+      justify-content: flex-end;
+      gap: var(--sys-size-3);
+    }
+
+    .change-workspace {
+      display: flex;
+      flex-direction: row;
       align-items: center;
       gap: var(--sys-size-3);
-      overflow-x: hidden;
+      min-width: var(--sys-size-22);
+      flex: 1 1 40%;
 
       .folder-name {
         white-space: nowrap;
         overflow-x: hidden;
         text-overflow: ellipsis;
       }
-    }
-
-    .change-workspace {
-      display: flex;
-      flex-direction: row;
-      gap: var(--sys-size-2);
-      max-width: 50%;
-      min-width: 0;
     }
 
     .info-tooltip-container {
@@ -909,8 +909,10 @@ main {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);
-      margin-left: auto;
       min-width: fit-content;
+      justify-content: flex-end;
+      flex-grow: 1;
+      flex-shrink: 1;
 
       devtools-icon {
         /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */

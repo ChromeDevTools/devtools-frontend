@@ -153,12 +153,8 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = o
 
 customElements.define('devtools-widget', WidgetElement);
 
-interface Constructor<T, Args extends unknown[]> {
-  new(...args: Args): T;
-}
-
 export function widgetRef<T extends Widget, Args extends unknown[]>(
-    type: Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref> {
+    type: Platform.Constructor.Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref> {
   return Lit.Directives.ref((e?: Element) => {
     if (!(e instanceof HTMLElement)) {
       return;

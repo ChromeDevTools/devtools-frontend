@@ -23,7 +23,7 @@ export class RootView extends VBox {
     }
     this.window = document.defaultView;
     this.doResize();
-    this.show((document.body as Element));
+    this.show(document.body);
   }
 
   override doResize(): void {

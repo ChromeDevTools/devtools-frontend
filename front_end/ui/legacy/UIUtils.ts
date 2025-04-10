@@ -1305,21 +1305,21 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLElement {
-  private readonly shadowRootInternal!: DocumentFragment;
+  readonly #shadowRoot!: DocumentFragment;
   checkboxElement!: HTMLInputElement;
-  textElement!: HTMLElement;
+  #textElement!: HTMLElement;
 
   constructor() {
     super();
     CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
-    this.shadowRootInternal = createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles});
-    this.checkboxElement = this.shadowRootInternal.createChild('input');
+    this.#shadowRoot = createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles});
+    this.checkboxElement = this.#shadowRoot.createChild('input');
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
-    this.textElement = this.shadowRootInternal.createChild('label', 'dt-checkbox-text');
-    this.textElement.setAttribute('for', id);
-    this.shadowRootInternal.createChild('slot');
+    this.#textElement = this.#shadowRoot.createChild('label', 'dt-checkbox-text');
+    this.#textElement.setAttribute('for', id);
+    this.#shadowRoot.createChild('slot');
   }
 
   static create(
@@ -1332,10 +1332,10 @@ export class CheckboxLabel extends HTMLElement {
           'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
     }
     if (title !== undefined) {
-      element.textElement.textContent = title;
+      element.#textElement.textContent = title;
       element.checkboxElement.title = title;
       if (subtitle !== undefined) {
-        element.textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
+        element.#textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
       }
     }
     element.checkboxElement.classList.toggle('small', small);

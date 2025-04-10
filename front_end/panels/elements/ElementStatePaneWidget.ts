@@ -135,7 +135,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
             enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,
             disable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOff,
           });
-      UI.Tooltip.Tooltip.install(label.textElement, i18nString(UIStrings.emulatesAFocusedPage));
+      UI.Tooltip.Tooltip.install(label, i18nString(UIStrings.emulatesAFocusedPage));
 
       const learnMoreButton = new Buttons.Button.Button();
       learnMoreButton.data = {

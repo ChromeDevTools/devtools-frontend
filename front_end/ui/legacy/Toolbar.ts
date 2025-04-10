@@ -905,7 +905,7 @@ class ToolbarInputElement extends HTMLElement {
     return [...options].map((({value}) => value)).filter(value => value.startsWith(prefix)).map(text => ({text}));
   }
 
-  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (name === 'value') {
       if (this.item && this.item.value() !== newValue) {
         this.item.setValue(newValue, true);
@@ -1320,7 +1320,7 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
     if (tooltip) {
       // install on the checkbox
       Tooltip.install(this.inputElement, tooltip);
-      Tooltip.install((this.element as CheckboxLabel).textElement, tooltip);
+      Tooltip.install(this.element, tooltip);
     }
     if (listener) {
       this.inputElement.addEventListener('click', listener, false);

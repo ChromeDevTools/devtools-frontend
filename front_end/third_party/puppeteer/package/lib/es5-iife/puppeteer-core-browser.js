@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.6.0';
+  const packageVersion = '24.6.1';
 
   /**
    * @license
@@ -2865,9 +2865,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   function stringToTypedArray(string, base64Encoded = false) {
     if (base64Encoded) {
-      const binaryString = atob(string);
-      // @ts-expect-error There are non-proper overloads
-      return Uint8Array.from(binaryString, m => {
+      // TODO: use
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/fromBase64
+      // once available.
+      if (typeof Buffer === 'function') {
+        return Buffer.from(string, 'base64');
+      }
+      return Uint8Array.from(atob(string), m => {
         return m.codePointAt(0);
       });
     }
@@ -3422,15 +3426,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   async function getReadableFromProtocolStream(client, handle) {
     return new ReadableStream({
       async pull(controller) {
-        function getUnit8Array(data, isBase64) {
-          if (isBase64) {
-            return Uint8Array.from(atob(data), m => {
-              return m.codePointAt(0);
-            });
-          }
-          const encoder = new TextEncoder();
-          return encoder.encode(data);
-        }
         const {
           data,
           base64Encoded,
@@ -3438,7 +3433,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         } = await client.send('IO.read', {
           handle
         });
-        controller.enqueue(getUnit8Array(data, base64Encoded ?? false));
+        controller.enqueue(stringToTypedArray(data, base64Encoded ?? false));
         if (eof) {
           await client.send('IO.close', {
             handle
@@ -8544,7 +8539,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * To understand frames, you can think of frames as `<iframe>` elements. Just
    * like iframes, frames can be nested, and when JavaScript is executed in a
-   * frame, the JavaScript does not effect frames inside the ambient frame the
+   * frame, the JavaScript does not affect frames inside the ambient frame the
    * JavaScript executes in.
    *
    * @example
@@ -8577,9 +8572,25 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * An example of getting text from an iframe element:
    *
    * ```ts
-   * const frame = page.frames().find(frame => frame.name() === 'myframe');
-   * const text = await frame.$eval('.selector', element => element.textContent);
-   * console.log(text);
+   * const frames = page.frames();
+   * let frame = null;
+   * for (const currentFrame of frames) {
+   *   const frameElement = await currentFrame.frameElement();
+   *   const name = await frameElement.evaluate(el => el.getAttribute('name'));
+   *   if (name === 'myframe') {
+   *     frame = currentFrame;
+   *     break;
+   *   }
+   * }
+   * if (frame) {
+   *   const text = await frame.$eval(
+   *     '.selector',
+   *     element => element.textContent,
+   *   );
+   *   console.log(text);
+   * } else {
+   *   console.error('Frame with name "myframe" not found.');
+   * }
    * ```
    *
    * @remarks
@@ -24388,9 +24399,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '135.0.7049.42',
-    'chrome-headless-shell': '135.0.7049.42',
-    firefox: 'stable_137.0'
+    chrome: '135.0.7049.84',
+    'chrome-headless-shell': '135.0.7049.84',
+    firefox: 'stable_137.0.1'
   });
 
   /**

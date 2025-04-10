@@ -159,7 +159,6 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   private readonly filterTextInput: UI.Toolbar.ToolbarInput;
   private filterRegex: RegExp|null;
   private readonly frameEmptyWidget: UI.EmptyWidget.EmptyWidget;
-  private readonly selectedNode: ResourceWebSocketFrameNode|null;
   private currentSelectedNode?: ResourceWebSocketFrameNode|null;
 
   private messageFilterSetting: Common.Settings.Setting<string> =
@@ -246,7 +245,6 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
         i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectMessageToBrowseItsContent));
     this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
 
-    this.selectedNode = null;
     if (filter) {
       this.applyFilter(filter);
     }

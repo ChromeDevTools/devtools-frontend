@@ -423,11 +423,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
   private traceLoadStart!: Trace.Types.Timing.Milli|null;
-  private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
-  // Note: this is technically unused, but we need it to define the promiseCallback function above.
-  private primaryPageTargetPromise = new Promise<SDK.Target.Target>(res => {
-    this.primaryPageTargetPromiseCallback = res;
-  });
 
   #traceEngineModel: Trace.TraceModel.Model;
   #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
@@ -704,15 +699,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           },
         },
     );
-    SDK.TargetManager.TargetManager.instance().observeTargets({
-      targetAdded: (target: SDK.Target.Target) => {
-        if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
-          return;
-        }
-        this.primaryPageTargetPromiseCallback(target);
-      },
-      targetRemoved: (_: SDK.Target.Target) => {},
-    });
   }
 
   /**
@@ -1681,7 +1667,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // If we profile all target, but this will cause some bugs like time for the function is calculated wrong,
         // because the profiles will be concated and sorted together, so the total time will be amplified.
         // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
-        // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
+        // or when you let DevTools listen to both localhost:9229 & 127.0.0.1:9229.
         const firstNodeTarget =
             SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.NODE);
         if (!firstNodeTarget) {

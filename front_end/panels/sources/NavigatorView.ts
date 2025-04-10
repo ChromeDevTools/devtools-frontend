@@ -1232,7 +1232,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
   }
 
-  private resetForTest(): void {
+  protected resetForTest(): void {
     this.reset();
     this.workspaceInternal.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
   }

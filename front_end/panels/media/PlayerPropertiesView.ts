@@ -172,7 +172,6 @@ export const enum PlayerPropertyKeys {
 }
 
 export class PropertyRenderer extends UI.Widget.VBox {
-  private readonly title: Platform.UIString.LocalizedString;
   private readonly contents: HTMLElement;
   private value: string|null;
   private pseudoColorProtectionElement: HTMLDivElement|null;
@@ -183,7 +182,6 @@ export class PropertyRenderer extends UI.Widget.VBox {
     const titleElement = this.contentElement.createChild('span', 'media-property-renderer-title');
     this.contents = this.contentElement.createChild('div', 'media-property-renderer-contents');
     UI.UIUtils.createTextChild(titleElement, title);
-    this.title = title;
     this.value = null;
     this.pseudoColorProtectionElement = null;
     this.contentElement.classList.add('media-property-renderer-hidden');
@@ -437,7 +435,6 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
   private readonly mediaElements: PropertyRenderer[];
   private readonly videoDecoderElements: PropertyRenderer[];
   private readonly audioDecoderElements: PropertyRenderer[];
-  private readonly textTrackElements: PropertyRenderer[];
   private readonly attributeMap: Map<string, PropertyRenderer|TrackManager>;
   private readonly videoProperties: AttributesView;
   private readonly videoDecoderProperties: AttributesView;
@@ -457,7 +454,6 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     this.mediaElements = [];
     this.videoDecoderElements = [];
     this.audioDecoderElements = [];
-    this.textTrackElements = [];
     this.attributeMap = new Map();
 
     this.populateAttributesAndElements();

@@ -555,7 +555,6 @@ export const _backgroundColors: {
 };
 
 export class NetworkRequestNode extends NetworkNode {
-  private nameCell: Element|null;
   private initiatorCell: Element|null;
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly isNavigationRequestInternal: boolean;
@@ -566,7 +565,6 @@ export class NetworkRequestNode extends NetworkNode {
 
   constructor(parentView: NetworkLogViewInterface, request: SDK.NetworkRequest.NetworkRequest) {
     super(parentView);
-    this.nameCell = null;
     this.initiatorCell = null;
     this.requestInternal = request;
     this.isNavigationRequestInternal = false;
@@ -912,7 +910,6 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   override createCells(element: Element): void {
-    this.nameCell = null;
     this.initiatorCell = null;
 
     element.classList.toggle('network-warning-row', this.isWarning());
@@ -1086,7 +1083,6 @@ export class NetworkRequestNode extends NetworkNode {
       const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
       cell.style.setProperty('padding-left', leftPadding);
       cell.tabIndex = -1;
-      this.nameCell = cell;
       cell.addEventListener('dblclick', this.openInNewTab.bind(this), false);
       cell.addEventListener('mousedown', () => {
         // When the request panel isn't visible yet, firing the RequestActivated event

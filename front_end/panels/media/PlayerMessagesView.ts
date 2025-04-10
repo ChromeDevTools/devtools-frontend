@@ -99,7 +99,6 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
   private readonly itemMap: Map<number, SelectableLevel>;
   private hiddenLevels: string[];
   private bitFieldValue: MessageLevelBitfield;
-  private readonly savedBitFieldValue: MessageLevelBitfield;
   private readonly defaultTitleInternal: Common.UIString.LocalizedString;
   private readonly customTitle: Common.UIString.LocalizedString;
   private readonly allTitle: Common.UIString.LocalizedString;
@@ -113,7 +112,6 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
     this.hiddenLevels = [];
 
     this.bitFieldValue = MessageLevelBitfield.DEFAULT;
-    this.savedBitFieldValue = MessageLevelBitfield.DEFAULT;
 
     this.defaultTitleInternal = i18nString(UIStrings.default);
     this.customTitle = i18nString(UIStrings.custom);

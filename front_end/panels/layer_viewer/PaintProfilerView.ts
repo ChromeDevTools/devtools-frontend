@@ -495,13 +495,11 @@ export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWid
 export class LogTreeElement extends UI.TreeOutline.TreeElement {
   readonly logItem: SDK.PaintProfiler.PaintProfilerLogItem;
   private readonly ownerView: PaintProfilerCommandLogView;
-  private readonly filled: boolean;
 
   constructor(ownerView: PaintProfilerCommandLogView, logItem: SDK.PaintProfiler.PaintProfilerLogItem) {
     super('', Boolean(logItem.params));
     this.logItem = logItem;
     this.ownerView = ownerView;
-    this.filled = false;
   }
 
   override onattach(): void {

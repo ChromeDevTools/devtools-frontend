@@ -53,7 +53,6 @@ export interface EventProperties {
   duration?: number;
   name: string;
   color?: string;
-  hoverData?: Object|null;
 }
 
 /**
@@ -69,12 +68,11 @@ export class Event {
   title: string;
   private colorInternal: string;
   private fontColorInternal: string;
-  private readonly hoverData: Object;
 
   constructor(
       timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventHandlers: EventHandlers,
       eventProperties: EventProperties|
-      undefined = {color: undefined, duration: undefined, hoverData: {}, level: 0, name: '', startTime: 0}) {
+      undefined = {color: undefined, duration: undefined, level: 0, name: '', startTime: 0}) {
     // These allow the event to privately change it's own data in the timeline.
     this.timelineData = timelineData;
     this.setLive = eventHandlers.setLive;
@@ -100,7 +98,6 @@ export class Event {
     this.title = eventProperties['name'] || '';
     this.colorInternal = eventProperties['color'] || HotColorScheme[0];
     this.fontColorInternal = calculateFontColor(this.colorInternal);
-    this.hoverData = eventProperties['hoverData'] || {};
   }
 
   /**

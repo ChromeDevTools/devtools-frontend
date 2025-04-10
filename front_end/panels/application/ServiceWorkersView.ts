@@ -492,7 +492,6 @@ export class Section {
   private sourceField: Element;
   private readonly statusField: Element;
   private readonly clientsField: Element;
-  private readonly linkifier: Components.Linkifier.Linkifier;
   private readonly clientInfoCache: Map<string, Protocol.Target.TargetInfo>;
   private readonly throttler: Common.Throttler.Throttler;
   private updateCycleField?: Element;
@@ -552,7 +551,6 @@ export class Section {
     this.createUpdateCycleField();
     this.maybeCreateRouterField();
 
-    this.linkifier = new Components.Linkifier.Linkifier();
     this.clientInfoCache = new Map();
     this.throttler = new Common.Throttler.Throttler(500);
   }

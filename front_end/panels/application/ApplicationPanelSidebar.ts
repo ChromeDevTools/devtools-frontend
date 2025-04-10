@@ -1004,10 +1004,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.resourcesSection.revealAndSelectFrame(frame);
   }
 
-  private innerShowView(view: UI.Widget.Widget): void {
-    this.panel.showView(view);
-  }
-
   showPreloadingRuleSetView(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void {
     if (this.preloadingSummaryTreeElement) {
       this.preloadingSummaryTreeElement.expandAndRevealRuleSet(revealInfo);
@@ -2170,7 +2166,6 @@ export class ResourcesSection implements SDK.TargetManager.Observer {
 export class FrameTreeElement extends ApplicationPanelTreeElement {
   private section: ResourcesSection;
   private frame: SDK.ResourceTreeModel.ResourceTreeFrame;
-  private frameId: string;
   private readonly categoryElements: Map<string, ExpandableApplicationPanelTreeElement>;
   private readonly treeElementForResource: Map<string, FrameResourceTreeElement>;
   private treeElementForWindow: Map<Protocol.Target.TargetID, FrameWindowTreeElement>;
@@ -2182,7 +2177,6 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     super(section.panel, '', false, 'frame');
     this.section = section;
     this.frame = frame;
-    this.frameId = frame.id;
     this.categoryElements = new Map();
     this.treeElementForResource = new Map();
     this.treeElementForWindow = new Map();
@@ -2207,7 +2201,6 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     this.setLeadingIcons([icon]);
     this.invalidateChildren();
 
-    this.frameId = frame.id;
     if (this.title !== frame.displayName()) {
       this.title = frame.displayName();
       UI.ARIAUtils.setLabel(this.listItemElement, this.title);

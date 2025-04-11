@@ -139,7 +139,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                 </th>
               </tr>
               ${rows.map(({ruleSet, preloadsStatusSummary}) => {
-                const location = PreloadingString.ruleSetLocationShort(ruleSet, pageURL);
+                const location = PreloadingString.ruleSetTagOrLocationShort(ruleSet, pageURL);
                 const revealInElements = ruleSet.backendNodeId !== undefined;
                 const revealInNetwork = ruleSet.url !== undefined && ruleSet.requestId;
                 return html`

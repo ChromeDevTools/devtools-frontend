@@ -61,6 +61,36 @@ describeWithEnvironment('RuleSetGrid', () => {
     );
   });
 
+  it('renders tag instead of url correctly', async () => {
+    await assertRenderResult(
+        {
+          rows: [{
+            ruleSet: {
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
+{
+  "tag": "tag1",
+  "prefetch":[
+    {
+      "source": "list",
+      "urls": ["/prefetched.html"]
+    }
+  ]
+}
+`,
+            },
+            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+          }],
+          pageURL: urlString`https://example.com/`,
+        },
+        ['Rule set', 'Status'],
+        [
+          ['\"tag1\"', '1 Not triggered, 2 Ready, 3 Failure'],
+        ],
+    );
+  });
+
   it('shows short url for out-of-document speculation rules', async () => {
     await assertRenderResult(
         {

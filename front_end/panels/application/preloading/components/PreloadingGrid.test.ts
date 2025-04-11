@@ -78,6 +78,50 @@ describeWithEnvironment('PreloadingGrid', () => {
     );
   });
 
+  it('renders tag instead of url correctly', async () => {
+    await assertRenderResult(
+        {
+          rows: [{
+            id: 'id',
+            pipeline: SDK.PreloadingModel.PreloadPipeline.newFromAttemptsForTesting([{
+              action: Protocol.Preload.SpeculationAction.Prefetch,
+              key: {
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                action: Protocol.Preload.SpeculationAction.Prefetch,
+                url: urlString`https://example.com/prefetched.html`,
+              },
+              pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
+              status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
+              prefetchStatus: null,
+              requestId: 'requestId:1' as Protocol.Network.RequestId,
+              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+            }]),
+            ruleSets: [{
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
+{
+  "tag": "tag1",
+  "prefetch":[
+    {
+      "source": "list",
+      "urls": ["/prefetched.html"]
+    }
+  ]
+}
+`,
+            }],
+          }],
+          pageURL: urlString`https://example.com/`,
+        },
+        ['URL', 'Action', 'Rule set', 'Status'],
+        [
+          ['/prefetched.html', 'Prefetch', '\"tag1"', 'Running'],
+        ],
+    );
+  });
+
   it('shows full URL for cross-origin preloading', async () => {
     await assertRenderResult(
         {

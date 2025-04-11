@@ -728,6 +728,17 @@ export function ruleSetLocationShort(
   return Bindings.ResourceUtils.displayNameForURL(url);
 }
 
+export function ruleSetTagOrLocationShort(
+    ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string {
+  if (!ruleSet.errorMessage) {
+    const parsedRuleset = JSON.parse(ruleSet['sourceText']);
+    if ('tag' in parsedRuleset) {
+      return '"' + parsedRuleset['tag'] + '"';
+    }
+  }
+  return ruleSetLocationShort(ruleSet, pageURL);
+}
+
 export function capitalizedAction(action: Protocol.Preload.SpeculationAction): Common.UIString.LocalizedString {
   // Use "prefetch"/"prerender" as is in SpeculationRules.
   switch (action) {

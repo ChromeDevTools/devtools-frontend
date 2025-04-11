@@ -9,12 +9,16 @@ import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
 const schedulerToRunEntryPoints = new Map<Types.Events.Event, Types.Events.Event[]>();
+
+const taskScheduleForTaskRunEvent =
+    new Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled>();
 const asyncCallToScheduler =
     new Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}>();
 
 export function reset(): void {
   schedulerToRunEntryPoints.clear();
   asyncCallToScheduler.clear();
+  taskScheduleForTaskRunEvent.clear();
 }
 
 export function handleEvent(_: Types.Events.Event): void {
@@ -25,17 +29,48 @@ export async function finalize(): Promise<void> {
   const {entryToNode} = rendererHandlerData();
   // Process async task flows
   for (const flow of flows) {
-    const asyncTaskScheduled = flow.at(0);
-    if (!asyncTaskScheduled || !Types.Events.isDebuggerAsyncTaskScheduled(asyncTaskScheduled)) {
+    let maybeAsyncTaskScheduled = flow.at(0);
+    if (!maybeAsyncTaskScheduled) {
       continue;
     }
-    const taskName = asyncTaskScheduled.args.taskName;
+    if (Types.Events.isDebuggerAsyncTaskRun(maybeAsyncTaskScheduled)) {
+      // Sometimes a AsyncTaskRun event run can incorrectly appear as
+      // initiated by another AsyncTaskRun from Perfetto's flows
+      // perspective.
+      // For example, in this snippet:
+      //
+      // const myTask = console.createTask('hola'); // creates an AsyncTaskSchedule
+      // myTask.run(something); // creates an AsyncTaskRun
+      // myTask.run(somethingElse); // creates an AsyncTaskRun
+      //
+      // or also in this one
+      //
+      // setInterval(something); // creates multiple connected AsyncTaskRun.
+      //
+      // Because the flow id is created based on the task's memory address,
+      // the three events will end up belonging to the same flow (even if
+      // in the frontend we receive it as pairs), and elements in a flow
+      // are connected to their immediately consecutive neighbor.
+      //
+      // To ensure we use the right Schedule event, if the "initiating"
+      // portion of the flow is a Run event, we look for any corresponding
+      // Schedule event that we might have found before.
+      maybeAsyncTaskScheduled = taskScheduleForTaskRunEvent.get(maybeAsyncTaskScheduled);
+    }
+    if (!maybeAsyncTaskScheduled || !Types.Events.isDebuggerAsyncTaskScheduled(maybeAsyncTaskScheduled)) {
+      continue;
+    }
+    const taskName = maybeAsyncTaskScheduled.args.taskName;
     const asyncTaskRun = flow.at(1);
     if (!asyncTaskRun || !Types.Events.isDebuggerAsyncTaskRun(asyncTaskRun)) {
       // Unexpected flow shape, ignore.
       continue;
     }
-    const asyncCaller = findNearestJSAncestor(asyncTaskScheduled, entryToNode);
+    // Cache the Schedule event for this Run for future reference.
+    taskScheduleForTaskRunEvent.set(asyncTaskRun, maybeAsyncTaskScheduled);
+
+    // Get the JS call scheduled the task.
+    const asyncCaller = findNearestJSAncestor(maybeAsyncTaskScheduled, entryToNode);
     if (!asyncCaller) {
       // Unexpected async call trace data shape, ignore.
       continue;

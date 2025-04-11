@@ -157,6 +157,35 @@ describe('AsyncJSCallsHandler', function() {
       assert.strictEqual(testRunEntryPoints?.[0], firstJSTaskRunEntryPoint);
       assert.strictEqual(testRunEntryPoints?.[1], secondJSTaskRunEntryPoint);
     });
+
+    it('assigns the right scheduled events to an event that scheduled multiple tasks', async function() {
+      const jsTaskScheduler = makeProfileCall('setInterval', 0, 30, pid, tid);
+      const asyncTaskScheduled =
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
+
+      // Simulate two async task runs caused by the same scheduled event.
+      const asyncTaskRun1 = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint1 = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
+
+      const asyncTaskRun2 = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 260, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint2 = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 270, 20, cat, tid, pid);
+
+      // Create flow events in the same way perfetto does for traces (as separate pairs).
+      // schedule -> run 1, run 1 -> run 2.
+      const flowEvents = [
+        ...makeFlowEvents([asyncTaskScheduled, asyncTaskRun1], 0), ...makeFlowEvents([asyncTaskRun1, asyncTaskRun2], 1)
+      ];
+      const rendererEvents = [
+        jsTaskScheduler, asyncTaskScheduled, asyncTaskRun1, jsTaskRunEntryPoint1, asyncTaskRun2, jsTaskRunEntryPoint2
+      ];
+      const allEvents = [...rendererEvents, ...flowEvents];
+
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
+      const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
+      assert.strictEqual(testRunEntryPoints?.length, 2);
+      assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint1);
+      assert.strictEqual(testRunEntryPoints?.[1], jsTaskRunEntryPoint2);
+    });
   });
   describe('Resolving async JS tasks to schedulers', function() {
     it('associates an async JS task to its scheduler', async function() {
@@ -207,5 +236,42 @@ describe('AsyncJSCallsHandler', function() {
       testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2)?.scheduler;
       assert.isUndefined(testScheduler);
     });
+    it('returns the right scheduler for a task with multiple run events', async function() {
+      const jsTaskScheduler = makeProfileCall('setInterval', 0, 50, pid, tid);
+      const asyncTaskScheduled =
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid) as
+          Trace.Types.Events.DebuggerAsyncTaskScheduled;
+      asyncTaskScheduled.args.taskName = 'interval';
+
+      // Simulate two async task runs caused by the same scheduled event.
+      const asyncTaskRun1 = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint1 = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
+      const asyncJSTask1 = makeProfileCall('scheduledFunction1', 71, 10, pid, tid);
+
+      const asyncTaskRun2 = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 160, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint2 = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 170, 20, cat, tid, pid);
+      const asyncJSTask2 = makeProfileCall('scheduledFunction2', 171, 10, pid, tid);
+
+      // Create flow events in the same way perfetto does for traces (as separate pairs).
+      // schedule -> run 1, run 1 -> run 2.
+      const flowEvents = [
+        ...makeFlowEvents([asyncTaskScheduled, asyncTaskRun1], 0), ...makeFlowEvents([asyncTaskRun1, asyncTaskRun2], 1)
+      ];
+      const rendererEvents = [
+        jsTaskScheduler, asyncTaskScheduled, asyncTaskRun1, jsTaskRunEntryPoint1, asyncJSTask1, asyncTaskRun2,
+        jsTaskRunEntryPoint2, asyncJSTask2
+      ];
+      const allEvents = [...rendererEvents, ...flowEvents];
+
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
+      let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
+      assert.strictEqual(testScheduler?.scheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
+
+      testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2);
+      assert.strictEqual(testScheduler?.scheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
+    });
+
   });
 });

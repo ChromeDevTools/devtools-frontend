@@ -187,13 +187,13 @@ describe('ConnectionPool', () => {
       requests.forEach(request => pool.acquire(request));
 
       assert.lengthOf(pool.connectionsInUse(), 6);
-      assert.isOk(!pool.acquire(requests[6]), 'had connection that is in use');
+      assert.isNotOk(pool.acquire(requests[6]), 'had connection that is in use');
 
       pool.release(requests[0]);
       assert.lengthOf(pool.connectionsInUse(), 5);
 
       assert.isOk(pool.acquire(requests[6]), 'could not reissue released connection');
-      assert.isOk(!pool.acquire(requests[0]), 'had connection that is in use');
+      assert.isNotOk(pool.acquire(requests[0]), 'had connection that is in use');
     });
   });
 });

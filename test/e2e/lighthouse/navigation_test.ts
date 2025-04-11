@@ -131,7 +131,7 @@ describe('Navigation', function() {
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);
-    assert.isOk(!viewTraceButton);
+    assert.isNotOk(viewTraceButton);
 
     // Test view trace button behavior
     // For some reason the CDP click command doesn't work here even if the tools menu is open.

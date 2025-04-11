@@ -1447,7 +1447,7 @@ describe('Recorder', function() {
         return element.getCurrentPageForTesting();
       });
 
-      assert.isTrue(page !== 'CreateRecordingPage');
+      assert.notStrictEqual(page, 'CreateRecordingPage');
 
       await stopRecording();
     });

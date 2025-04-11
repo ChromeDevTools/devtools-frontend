@@ -534,10 +534,10 @@ describe('The Memory Panel', function() {
     await waitForSearchResultNumber(2);
     await setFilterDropdown('Objects retained by detached DOM nodes');
     await getCategoryRow('ObjectRetainedByDetachedDom');
-    assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
+    assert.isNotOk(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false));
     await setFilterDropdown('Objects retained by DevTools Console');
     await getCategoryRow('ObjectRetainedByConsole');
-    assert.isTrue(!(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false)));
+    assert.isNotOk(await getCategoryRow('ObjectRetainedByBothDetachedDomAndConsole', false));
   });
 
   it('Groups HTML elements by tag name', async () => {
@@ -560,7 +560,7 @@ describe('The Memory Panel', function() {
     await setClassFilter('{a, b, c, d, ');
     // Objects should be grouped by interface if there are at least two matching instances.
     assert.strictEqual(2, await getCountFromCategoryRowWithName('{a, b, c, d, p, q, r}'));
-    assert.isTrue(!(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false)));
+    assert.isNotOk(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false));
     const {frontend, target} = await getBrowserAndPages();
     await target.bringToFront();
     await target.click('button#update');
@@ -573,7 +573,7 @@ describe('The Memory Panel', function() {
     // so the comparison should report only one new object of the following type, not two.
     assert.strictEqual(1, await getAddedCountFromComparisonRowWithName('{a, b, c, d, e}'));
     // Only one of these objects remains, so it's no longer a category.
-    assert.isTrue(!(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false)));
+    assert.isNotOk(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false));
   });
 
   // Failing with crbug.com/361078921

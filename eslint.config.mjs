@@ -699,6 +699,7 @@ export default [
       'rulesdir/prefer-assert-instance-of': 'error',
       'rulesdir/prefer-assert-is-ok': 'error',
       'rulesdir/prefer-assert-length-of': 'error',
+      'rulesdir/prefer-assert-strict-equal': 'error',
       'rulesdir/prefer-sinon-assert': 'error',
       'rulesdir/prefer-url-string': 'error',
       'rulesdir/trace-engine-test-timeouts': 'error',

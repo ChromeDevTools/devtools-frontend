@@ -4,6 +4,9 @@
 
 import {createRule} from './tsUtils.ts';
 
+const FALSY_ASSERTIONS = new Set(['isFalse', 'isNotOk', 'isNotTrue', 'notOk']);
+const TRUTHY_ASSERTIONS = new Set(['isNotFalse', 'isOk', 'isTrue', 'ok']);
+
 export default createRule({
   name: 'prefer-assert-is-ok',
   meta: {
@@ -14,7 +17,9 @@ export default createRule({
     },
     messages: {
       useAssertIsOk: 'Use `assert.isOk(e)` or `assert(e)` instead of `assert.ok(e)`',
+      useAssertIsOkInsteadOfNegation: 'Use `assert.isOk(e)` instead of `assert.isNotOk(!e)`',
       useAssertIsNotOk: 'Use `assert.isNotOk(e)` or `assert(!e)` instead of `assert.notOk(e)`',
+      useAssertIsNotOkInsteadOfNegation: 'Use `assert.isNotOk(e)` instead of `assert.isOk(!e)`',
     },
     fixable: 'code',
     schema: [],  // no options
@@ -33,22 +38,55 @@ export default createRule({
           calleeNode.property.name === 'notOk';
     }
 
-    function reportError(node, calleeText, messageId) {
+    function isTruthyAssertion(calleeNode) {
+      if (calleeNode.type === 'Identifier' && calleeNode.name === 'assert') {
+        return true;
+      }
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          TRUTHY_ASSERTIONS.has(calleeNode.property.name);
+    }
+
+    function isFalsyAssertion(calleeNode) {
+      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
+          FALSY_ASSERTIONS.has(calleeNode.property.name);
+    }
+
+    function reportError(node, calleeText, firstArgNode, messageId) {
       context.report({
         node,
         messageId,
         fix(fixer) {
-          return fixer.replaceText(node.callee, calleeText);
+          const {sourceCode} = context;
+          return [
+            fixer.replaceText(node.callee, calleeText),
+            fixer.replaceText(node.arguments[0], sourceCode.getText(firstArgNode)),
+          ];
         }
       });
     }
 
     return {
       CallExpression(node) {
-        if (isAssertOk(node.callee)) {
-          reportError(node, 'assert.isOk', 'useAssertIsOk');
-        } else if (isAssertNotOk(node.callee)) {
-          reportError(node, 'assert.isNotOk', 'useAssertIsNotOk');
+        if (node.arguments.length >= 1) {
+          const [argumentNode] = node.arguments;
+          if (argumentNode.type === 'UnaryExpression' && argumentNode.operator === '!') {
+            if (isTruthyAssertion(node.callee)) {
+              reportError(node, 'assert.isNotOk', argumentNode.argument, 'useAssertIsNotOkInsteadOfNegation');
+              return;
+            }
+            if (isFalsyAssertion(node.callee)) {
+              reportError(node, 'assert.isOk', argumentNode.argument, 'useAssertIsOkInsteadOfNegation');
+              return;
+            }
+          }
+
+          if (isAssertOk(node.callee)) {
+            reportError(node, 'assert.isOk', argumentNode, 'useAssertIsOk');
+          } else if (isAssertNotOk(node.callee)) {
+            reportError(node, 'assert.isNotOk', argumentNode, 'useAssertIsNotOk');
+          }
         }
       }
     };

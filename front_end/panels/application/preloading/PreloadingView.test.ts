@@ -86,7 +86,7 @@ class NavigationEmulator {
     this.seq++;
     this.loaderId = `loaderId:${this.seq}` as Protocol.Network.LoaderId;
 
-    assert.isFalse(url === this.prerenderTarget?.targetInfo()?.url);
+    assert.notStrictEqual(url, this.prerenderTarget?.targetInfo()?.url);
 
     dispatchEvent(this.primaryTarget, 'Page.frameNavigated', {
       frame: {
@@ -107,7 +107,7 @@ class NavigationEmulator {
     const url = 'https://example.com/' + path;
 
     assert.exists(this.prerenderTarget);
-    assert.isTrue(url === this.prerenderTarget.targetInfo()?.url);
+    assert.strictEqual(url, this.prerenderTarget.targetInfo()?.url);
     assert.exists(this.prerenderStatusUpdatedEvent);
 
     this.seq++;

@@ -62,7 +62,7 @@ describeWithMockConnection('ReportingApiView', () => {
 
     networkManager.dispatchEventToListeners(
         SDK.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, {origin: 'dummy', endpoints: []});
-    assert.isTrue(view.showMode() === UI.SplitWidget.ShowMode.BOTH);
+    assert.strictEqual(view.showMode(), UI.SplitWidget.ShowMode.BOTH);
     assert.isNotNull(view.mainWidget());
     assert.instanceOf(view.mainWidget(), Application.ReportingApiReportsView.ReportingApiReportsView);
     assert.isNotNull(view.sidebarElement());
@@ -94,7 +94,7 @@ describeWithMockConnection('ReportingApiView', () => {
     };
 
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, report);
-    assert.isTrue(view.showMode() === UI.SplitWidget.ShowMode.BOTH);
+    assert.strictEqual(view.showMode(), UI.SplitWidget.ShowMode.BOTH);
     assert.isNotNull(view.mainWidget());
     assert.instanceOf(view.mainWidget(), Application.ReportingApiReportsView.ReportingApiReportsView);
     assert.isNotNull(view.sidebarElement());

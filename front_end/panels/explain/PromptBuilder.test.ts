@@ -27,23 +27,23 @@ const {urlString} = Platform.DevToolsPath;
 describeWithLocale('PromptBuilder', () => {
   describe('allowHeader', () => {
     it('disallows cookie headers', () => {
-      assert(!Explain.allowHeader({name: 'Cookie', value: ''}));
-      assert(!Explain.allowHeader({name: 'cookiE', value: ''}));
-      assert(!Explain.allowHeader({name: 'cookie', value: ''}));
-      assert(!Explain.allowHeader({name: 'set-cookie', value: ''}));
-      assert(!Explain.allowHeader({name: 'Set-cOokie', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'Cookie', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'cookiE', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'cookie', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'set-cookie', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'Set-cOokie', value: ''}));
     });
 
     it('disallows authorization headers', () => {
-      assert(!Explain.allowHeader({name: 'AuthoRization', value: ''}));
-      assert(!Explain.allowHeader({name: 'authorization', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'AuthoRization', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'authorization', value: ''}));
     });
 
     it('disallows custom headers', () => {
-      assert(!Explain.allowHeader({name: 'X-smth', value: ''}));
-      assert(!Explain.allowHeader({name: 'X-', value: ''}));
-      assert(!Explain.allowHeader({name: 'x-smth', value: ''}));
-      assert(!Explain.allowHeader({name: 'x-', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'X-smth', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'X-', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'x-smth', value: ''}));
+      assert.isNotOk(Explain.allowHeader({name: 'x-', value: ''}));
     });
   });
 

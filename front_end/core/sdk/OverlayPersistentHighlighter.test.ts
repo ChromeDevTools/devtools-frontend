@@ -113,7 +113,7 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
     highlighter.hideFlexInOverlay(EXISTING_NODE_ID);
     assert.deepEqual(
         stubbedCallbacks.onFlexOverlayStateChanged.secondCall.args, [{nodeId: EXISTING_NODE_ID, enabled: false}]);
-    assert(!highlighter.isFlexHighlighted(EXISTING_NODE_ID));
+    assert.isNotOk(highlighter.isFlexHighlighted(EXISTING_NODE_ID));
     assertSavedSettingState([]);
   });
 
@@ -131,7 +131,7 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
     highlighter.hideGridInOverlay(EXISTING_NODE_ID);
     assert.deepEqual(
         stubbedCallbacks.onGridOverlayStateChanged.secondCall.args, [{nodeId: EXISTING_NODE_ID, enabled: false}]);
-    assert(!highlighter.isGridHighlighted(EXISTING_NODE_ID));
+    assert.isNotOk(highlighter.isGridHighlighted(EXISTING_NODE_ID));
     assertSavedSettingState([]);
   });
 
@@ -147,7 +147,7 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
     }]);
 
     highlighter.hideScrollSnapInOverlay(EXISTING_NODE_ID);
-    assert(!highlighter.isScrollSnapHighlighted(EXISTING_NODE_ID));
+    assert.isNotOk(highlighter.isScrollSnapHighlighted(EXISTING_NODE_ID));
     assert.deepEqual(
         stubbedCallbacks.onScrollSnapOverlayStateChanged.secondCall.args, [{nodeId: EXISTING_NODE_ID, enabled: false}]);
     assertSavedSettingState([]);
@@ -166,7 +166,7 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
     }]);
 
     highlighter.hideContainerQueryInOverlay(EXISTING_NODE_ID);
-    assert(!highlighter.isContainerQueryHighlighted(EXISTING_NODE_ID));
+    assert.isNotOk(highlighter.isContainerQueryHighlighted(EXISTING_NODE_ID));
     assert.deepEqual(
         stubbedCallbacks.onContainerQueryOverlayStateChanged.secondCall.args,
         [{nodeId: EXISTING_NODE_ID, enabled: false}]);
@@ -183,7 +183,7 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
     }]);
 
     highlighter.hideIsolatedElementInOverlay(EXISTING_NODE_ID);
-    assert(!highlighter.isIsolatedElementHighlighted(EXISTING_NODE_ID));
+    assert.isNotOk(highlighter.isIsolatedElementHighlighted(EXISTING_NODE_ID));
     assertSavedSettingState([]);
   });
 

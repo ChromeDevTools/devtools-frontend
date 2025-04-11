@@ -63,7 +63,7 @@ describeWithMockConnection('TimelineSummary', () => {
     const categorySummaries = summary.shadowRoot.querySelector('.category-summary');
     // Should just have the "Total" row.
     const rows = categorySummaries?.querySelectorAll('.category-row') || [];
-    assert.isTrue(rows.length === 1);
+    assert.lengthOf(rows, 1);
 
     const swatch = rows[0].querySelector('.category-swatch');
     assert.isNotNull(swatch);

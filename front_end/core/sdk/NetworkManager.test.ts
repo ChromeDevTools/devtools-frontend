@@ -432,14 +432,14 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
         {requestId, loaderId: '', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
 
     const {request} = await requestPromise;
-    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === initialNetworkManager);
+    assert.strictEqual(SDK.NetworkManager.NetworkManager.forRequest(request), initialNetworkManager);
     assert.isOk(multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
 
     const workerNetworkManager = workerTarget.model(SDK.NetworkManager.NetworkManager)!;
     workerNetworkManager.dispatcher.loadingFinished({requestId} as Protocol.Network.LoadingFinishedEvent);
 
-    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === workerNetworkManager);
-    assert.isOk(!multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
+    assert.strictEqual(SDK.NetworkManager.NetworkManager.forRequest(request), workerNetworkManager);
+    assert.isNotOk(multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
   });
 
   it('uses main frame to get certificate', () => {

@@ -269,9 +269,9 @@ describe('StringUtilities', () => {
       const stringA = ' '.repeat(10000);
       const stringB = stringA + ' ';
       const hashA = Platform.StringUtilities.hashCode(stringA);
-      assert.isTrue(hashA !== Platform.StringUtilities.hashCode(stringB));
+      assert.notStrictEqual(hashA, Platform.StringUtilities.hashCode(stringB));
       assert.isTrue(isFinite(hashA));
-      assert.isTrue(hashA + 1 !== hashA);
+      assert.notStrictEqual(hashA + 1, hashA);
     });
   });
 

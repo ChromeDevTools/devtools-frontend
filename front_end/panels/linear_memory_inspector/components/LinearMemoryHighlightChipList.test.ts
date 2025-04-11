@@ -48,7 +48,7 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
   it('focuses a highlight chip button', async () => {
     const chip = component.shadowRoot!.querySelector(HIGHLIGHT_CHIP);
     assert.instanceOf(chip, HTMLDivElement);
-    assert.isTrue(!chip.classList.contains('focused'));
+    assert.isNotOk(chip.classList.contains('focused'));
 
     const highlightedMemory = {
       startAddress: 10,

@@ -36,6 +36,27 @@ new RuleTester().run('prefer-assert-is-ok', rule, {
 
   invalid: [
     {
+      code: 'assert(!foo);',
+      output: 'assert.isNotOk(foo);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert(!foo, "message");',
+      output: 'assert.isNotOk(foo, "message");',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+
+    {
       code: 'assert.ok(foo);',
       output: 'assert.isOk(foo);',
       filename: 'foo.ts',
@@ -72,6 +93,88 @@ new RuleTester().run('prefer-assert-is-ok', rule, {
       errors: [
         {
           messageId: 'useAssertIsNotOk',
+        },
+      ],
+    },
+
+    {
+      code: 'assert.ok(!foo);',
+      output: 'assert.isNotOk(foo);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.ok(!foo, "message");',
+      output: 'assert.isNotOk(foo, "message");',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.notOk(!foo);',
+      output: 'assert.isOk(foo);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.notOk(!foo, "message");',
+      output: 'assert.isOk(foo, "message");',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsOkInsteadOfNegation',
+        },
+      ],
+    },
+
+    {
+      code: 'assert.isTrue(!foo);',
+      output: 'assert.isNotOk(foo);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.isTrue(!foo, "message");',
+      output: 'assert.isNotOk(foo, "message");',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsNotOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.isFalse(!foo);',
+      output: 'assert.isOk(foo);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsOkInsteadOfNegation',
+        },
+      ],
+    },
+    {
+      code: 'assert.isFalse(!foo, "message");',
+      output: 'assert.isOk(foo, "message");',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useAssertIsOkInsteadOfNegation',
         },
       ],
     },

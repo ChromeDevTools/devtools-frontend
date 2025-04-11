@@ -24,11 +24,11 @@ describe('Dual screen mode', () => {
     await selectDualScreen();
     await clickToggleButton();
     const widthDual = await getWidthOfDevice();
-    assert(widthDual === DUO_VERTICAL_SPANNED_WIDTH);
+    assert.strictEqual(widthDual, DUO_VERTICAL_SPANNED_WIDTH);
 
     await clickToggleButton();
     const widthSingle = await getWidthOfDevice();
-    assert(widthSingle === DUO_VERTICAL_WIDTH);
+    assert.strictEqual(widthSingle, DUO_VERTICAL_WIDTH);
   });
 
   it('User may not click toggle dual screen button for a non-dual screen device', async () => {

@@ -509,8 +509,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         ['display', 'inline'],
       ]));
       stylePropertyTreeElement.updateAuthoringHint();
-      assert(
-          !stylePropertyTreeElement.listItemElement.classList.contains('inactive-property'),
+      assert.isNotOk(
+          stylePropertyTreeElement.listItemElement.classList.contains('inactive-property'),
           'CSS hint was rendered unexpectedly.');
     });
   });

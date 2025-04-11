@@ -177,7 +177,7 @@ describeWithMockConnection('LayoutPane', () => {
     assert.instanceOf(summary, HTMLElement);
     assert(details.open, 'The first details were not expanded by default');
     summary.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: 'ArrowLeft'}));
-    assert(!details.open, 'The details were not collapsed after sending ArrowLeft');
+    assert.isNotOk(details.open, 'The details were not collapsed after sending ArrowLeft');
     summary.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: 'ArrowRight'}));
     assert(details.open, 'The details were not expanded after sending ArrowRight');
   });

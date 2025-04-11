@@ -402,7 +402,7 @@ describe('TextRange', () => {
   it('can be stringified', () => {
     const textRange =
         TextUtils.TextRange.TextRange.fromObject({startLine: 1, startColumn: 2, endLine: 3, endColumn: 4});
-    assert.isTrue(typeof textRange.toString() === 'string', 'toString should return a string');
+    assert.strictEqual(typeof textRange.toString(), 'string', 'toString should return a string');
   });
 
   describe('intersection', () => {

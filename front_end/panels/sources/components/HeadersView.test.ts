@@ -502,7 +502,7 @@ describe('HeadersView', () => {
         Host.UserMetrics.Action.HeaderOverrideHeadersFileEdited));
 
     let hiddenDeleteElements = await editor.shadowRoot.querySelectorAll('.row.padded > .remove-header[hidden]');
-    assert.isTrue(hiddenDeleteElements.length === 0, 'remove-header button is visible');
+    assert.lengthOf(hiddenDeleteElements, 0, 'remove-header button is visible');
 
     await pressButton(editor.shadowRoot, 1, '.remove-header');
 
@@ -515,7 +515,7 @@ describe('HeadersView', () => {
     ]);
 
     hiddenDeleteElements = await editor.shadowRoot.querySelectorAll('.row.padded > .remove-header[hidden]');
-    assert.isTrue(hiddenDeleteElements.length === 1, 'remove-header button is hidden');
+    assert.lengthOf(hiddenDeleteElements, 1, 'remove-header button is hidden');
   });
 
   it('allows removing "ApplyTo"-blocks', async () => {

@@ -124,8 +124,8 @@ describe('Button', () => {
   it('gets the no additional classes set for the inner button if only text is provided', () => {
     const button = renderButton();
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
-    assert.isTrue(!innerButton.classList.contains('text-with-icon'));
-    assert.isTrue(!innerButton.classList.contains('only-icon'));
+    assert.isNotOk(innerButton.classList.contains('text-with-icon'));
+    assert.isNotOk(innerButton.classList.contains('only-icon'));
   });
 
   it('gets title set', () => {
@@ -149,7 +149,7 @@ describe('Button', () => {
         'text');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
     assert.isTrue(innerButton.classList.contains('text-with-icon'));
-    assert.isTrue(!innerButton.classList.contains('only-icon'));
+    assert.isNotOk(innerButton.classList.contains('only-icon'));
   });
 
   it('gets the only-icon class set for the inner button if only icon is provided', () => {
@@ -160,7 +160,7 @@ describe('Button', () => {
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
-    assert.isTrue(!innerButton.classList.contains('text-with-icon'));
+    assert.isNotOk(innerButton.classList.contains('text-with-icon'));
     assert.isTrue(innerButton.classList.contains('only-icon'));
   });
 

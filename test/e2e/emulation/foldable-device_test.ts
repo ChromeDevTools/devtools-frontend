@@ -23,15 +23,15 @@ describe('Test the Device Posture API support', () => {
   it('User can change the posture of a foldable device', async () => {
     await selectFoldableDevice();
     let widthSingle = await getWidthOfDevice();
-    assert(widthSingle === ZENBOOK_VERTICAL_WIDTH);
+    assert.strictEqual(widthSingle, ZENBOOK_VERTICAL_WIDTH);
 
     await clickDevicePosture('Folded');
     const widthDual = await getWidthOfDevice();
-    assert(widthDual === ZENBOOK_VERTICAL_SPANNED_WIDTH);
+    assert.strictEqual(widthDual, ZENBOOK_VERTICAL_SPANNED_WIDTH);
 
     await clickDevicePosture('Continuous');
     widthSingle = await getWidthOfDevice();
-    assert(widthSingle === ZENBOOK_VERTICAL_WIDTH);
+    assert.strictEqual(widthSingle, ZENBOOK_VERTICAL_WIDTH);
   });
 
   it('User may not change the posture for a non-foldable screen device', async () => {

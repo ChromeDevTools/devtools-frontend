@@ -314,7 +314,7 @@ describeWithMockConnection('AnimationTimeline', () => {
         assert.isFalse(gridHeader.classList.contains('scrubber-enabled'));
         assert.isTrue(scrubber.classList.contains('hidden'));
         assert.isTrue(controlButton.disabled);
-        assert.isTrue(currentTime.textContent === '');
+        assert.strictEqual(currentTime.textContent, '');
       });
 
       it('should mark the animation node as removed in the NodeUI', async () => {
@@ -379,7 +379,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
         const currentTime = view.element.shadowRoot!.querySelector('.animation-timeline-current-time');
         assert.exists(currentTime);
-        assert.isTrue(currentTime.textContent === '');
+        assert.strictEqual(currentTime.textContent, '');
       });
     });
   });

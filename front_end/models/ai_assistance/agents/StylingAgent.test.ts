@@ -758,7 +758,7 @@ STOP`,
         const actionSteps = result.filter(step => {
           return step.type === AiAssistance.ResponseType.ACTION;
         });
-        assert(actionSteps.length === 1, 'Found non or multiple action steps');
+        assert.lengthOf(actionSteps, 1, 'Found non or multiple action steps');
         const actionStep = actionSteps.at(0)!;
         assert(actionStep.output!.includes('Error: Output exceeded the maximum allowed length.'));
       });

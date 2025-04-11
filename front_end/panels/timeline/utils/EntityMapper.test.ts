@@ -115,7 +115,7 @@ describeWithEnvironment('EntityMapper', function() {
       const gotThirdPartyEvents = mapper.thirdPartyEvents();
       // If any failure is found in here, the event is categorized as both 1p AND 3p.
       gotThirdPartyEvents.forEach(e => {
-        assert.isTrue(!firstPartyEvents.includes(e));
+        assert.isNotOk(firstPartyEvents.includes(e));
       });
     });
   });

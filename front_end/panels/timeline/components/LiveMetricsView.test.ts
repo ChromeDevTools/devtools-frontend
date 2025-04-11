@@ -321,8 +321,8 @@ describeWithMockConnection('LiveMetricsView', () => {
 
     assert(
         interactions[0].querySelector('.log-extra-details-button'), 'First interaction should have log details button');
-    assert(
-        !interactions[1].querySelector('.log-extra-details-button'),
+    assert.isNotOk(
+        interactions[1].querySelector('.log-extra-details-button'),
         'Second interaction should not have log details button');
   });
 

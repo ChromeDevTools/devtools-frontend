@@ -47,7 +47,7 @@ describe('RecordingPlayer', () => {
 
     await recordingPlayer.play();
 
-    assert.isTrue(stepEventHandlerStub.getCalls().length === 3);
+    assert.lengthOf(stepEventHandlerStub.getCalls(), 3);
   });
 
   describe('Step by step execution', () => {

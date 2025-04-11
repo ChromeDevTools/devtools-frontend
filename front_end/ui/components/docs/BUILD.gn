@@ -42,7 +42,6 @@ group("docs") {
     "./radio_button",
     "./recorder_control_button",
     "./recorder_create_recording_view",
-    "./recorder_injected",
     "./recorder_recording_list_view",
     "./recorder_recording_view",
     "./recorder_select_button",

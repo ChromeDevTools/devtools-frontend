@@ -6,7 +6,6 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
-import '../../ui/components/tooltips/tooltips.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -211,6 +210,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #automaticFileSystem =
       Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
   #applyToDisconnectedAutomaticWorkspace = false;
+  #popoverHelper: UI.PopoverHelper.PopoverHelper|null = null;
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -388,19 +388,6 @@ export class PatchWidget extends UI.Widget.Widget {
               .variant=${Buttons.Button.Variant.ICON}
               .title=${input.applyToWorkspaceTooltipText}
             ></devtools-button>
-            <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
-              <div class="info-tooltip-container">
-                ${input.applyToWorkspaceTooltipText}
-                <button
-                  class="link tooltip-link"
-                  role="link"
-                  jslog=${VisualLogging.link('open-ai-settings').track({
-                    click: true,
-                  })}
-                  @click=${input.onLearnMoreTooltipClick}
-                >${lockedString(UIStringsNotTranslate.learnMore)}</button>
-              </div>
-            </devtools-tooltip>
           </div>
         </div>`;
       }
@@ -426,6 +413,56 @@ export class PatchWidget extends UI.Widget.Widget {
 
       render(template, target, {host: target});
     });
+    // We're using PopoverHelper as a workaround instead of using <devtools-tooltip>. See the bug for more details.
+    // TODO: Update here when b/409965560 is fixed.
+    this.#popoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
+      // There are two ways this event is received for showing a popover case:
+      // * The latest element on the composed path is `<devtools-button>`
+      // * The 2nd element on the composed path is `<devtools-button>` (the last element is the `<button>` inside it.)
+      const hoveredNode = event.composedPath()[0];
+      const maybeDevToolsButton = event.composedPath()[2];
+
+      const popoverShownNode = hoveredNode instanceof HTMLElement && hoveredNode.getAttribute('aria-details') === 'info-tooltip' ? hoveredNode
+        : maybeDevToolsButton instanceof HTMLElement && maybeDevToolsButton.getAttribute('aria-details') === 'info-tooltip' ? maybeDevToolsButton
+        : null;
+      if (!popoverShownNode) {
+        return null;
+      }
+      return {
+        box: popoverShownNode.boxInWindow(),
+        show: async (popover: UI.GlassPane.GlassPane) => {
+          // clang-format off
+          render(html`
+            <style>
+              .info-tooltip-container {
+                max-width: var(--sys-size-28);
+                padding: var(--sys-size-4) var(--sys-size-5);
+
+                .tooltip-link {
+                  display: block;
+                  margin-top: var(--sys-size-4);
+                  color: var(--sys-color-primary);
+                  padding-left: 0;
+                }
+              }
+            </style>
+            <div class="info-tooltip-container">
+              ${UIStringsNotTranslate.applyToWorkspaceTooltip}
+              <button
+                class="link tooltip-link"
+                role="link"
+                jslog=${VisualLogging.link('open-ai-settings').track({
+                  click: true,
+                })}
+                @click=${this.#onLearnMoreTooltipClick}
+              >${lockedString(UIStringsNotTranslate.learnMore)}</button>
+            </div>`, popover.contentElement, {host: this});
+          // clang-forat on
+          return true;
+        },
+      };
+    }, 'patch-widget.info-tooltip');
+    this.#popoverHelper.setTimeout(0);
     // clang-format on
     this.requestUpdate();
   }

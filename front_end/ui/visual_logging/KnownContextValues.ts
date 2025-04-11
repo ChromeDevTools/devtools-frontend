@@ -2641,6 +2641,7 @@ export const knownContextValues = new Set([
   'patch-widget.discard',
   'patch-widget.save-all',
   'patch-widget.save-to-workspace',
+  'patch-widget.info-tooltip',
   'path',
   'pattern',
   'pause',

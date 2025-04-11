@@ -13,6 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import selectWorkspaceDialogStyles from './selectWorkspaceDialog.css.js';
 
@@ -23,7 +24,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Heading of dialog box which asks user to select a workspace folder.
    */
-  selectFolder: 'Select project root folder',
+  selectFolder: 'Select folder',
   /**
    *@description Button text for canceling workspace selection.
    */
@@ -40,11 +41,7 @@ const UIStringsNotTranslate = {
    *@description Explanation for selecting the correct workspace folder.
    */
   selectProjectRoot:
-      'To save patches directly to your project, select the project root folder containing the source files of the inspected page.',
-  /*
-   *@description Explainer stating that selected folder's contents are being sent to Google.
-   */
-  sourceCodeSent: 'Relevant code snippets will be sent to Google to generate code suggestions.'
+      'To save patches directly to your project, select the project root folder containing the source files of the inspected page. Relevant code snippets will be sent to Google to generate code suggestions.',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -59,6 +56,7 @@ interface Folder {
 interface ViewInput {
   folders: Folder[];
   selectedIndex: number;
+  showAutomaticWorkspaceNudge: boolean;
   onProjectSelected: (index: number) => void;
   onSelectButtonClick: () => void;
   onCancelButtonClick: () => void;
@@ -104,7 +102,18 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
           <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
           <div class="main-content">
             <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
-            <div>${lockedString(UIStringsNotTranslate.sourceCodeSent)}</div>
+            ${input.showAutomaticWorkspaceNudge ? html`
+              <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
+              <div>
+                Tip: provide a
+                <x-link
+                  class="devtools-link"
+                  href="https://goo.gle/devtools-automatic-workspace-folders"
+                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('automatic-workspaces-documentation')}
+                >com.chrome.devtools.json</x-link>
+                file to automatically connect your project to DevTools.
+              </div>
+            ` : nothing}
           </div>
           ${hasFolders ? html`
             <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)} tabindex="0">
@@ -187,6 +196,8 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     const viewInput = {
       folders: this.#folders,
       selectedIndex: this.#selectedIndex,
+      showAutomaticWorkspaceNudge: this.#automaticFileSystemManager.automaticFileSystem === null &&
+          this.#automaticFileSystemManager.availability === 'available',
       onProjectSelected: (index: number) => {
         this.#selectedIndex = index;
         this.requestUpdate();

@@ -56,7 +56,7 @@ describeWithEnvironment('SourcesView', () => {
     });
     project.canSetFileContent = () => true;
     project.rename =
-        (uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
+        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, newName: string,
          callback: (
              arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
              arg3?: Common.ResourceType.ResourceType) => void) => {

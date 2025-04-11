@@ -1107,8 +1107,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   checkSizeProblem(
-      size: ParsedSize, type: string|undefined, image: HTMLImageElement,
-      resourceName: Platform.UIString.LocalizedString,
+      size: ParsedSize, image: HTMLImageElement, resourceName: Platform.UIString.LocalizedString,
       imageUrl: string): {error?: Platform.UIString.LocalizedString, hasSquareSize: boolean} {
     if ('any' in size) {
       return {hasSquareSize: image.naturalWidth === image.naturalHeight};
@@ -1186,8 +1185,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         imageResourceErrors.push(i18nString(UIStrings.screenshotPixelSize, {url: imageUrl}));
       }
       for (const size of sizes) {
-        const {error, hasSquareSize} =
-            this.checkSizeProblem(size, imageResource['type'], image, resourceName, imageUrl);
+        const {error, hasSquareSize} = this.checkSizeProblem(size, image, resourceName, imageUrl);
         squareSizedIconAvailable = squareSizedIconAvailable || hasSquareSize;
         if (error) {
           imageResourceErrors.push(error);

@@ -481,7 +481,7 @@ describeWithEnvironment('view', () => {
       targets: [],
       selectedTargetId: 'main',
     };
-    const viewOutput = {set editorWidget(value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
+    const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
 
     view(viewInput, viewOutput, target);
     await assertScreenshot('protocol_monitor/basic.png');
@@ -538,7 +538,7 @@ describeWithEnvironment('view', () => {
       ] as SDK.Target.Target[],
       selectedTargetId: 'prerender',
     };
-    const viewOutput = {set editorWidget(value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
+    const viewOutput = {set editorWidget(_value: ProtocolMonitor.JSONEditor.JSONEditor) {}};
 
     view(viewInput, viewOutput, target);
     await assertScreenshot('protocol_monitor/advanced.png');

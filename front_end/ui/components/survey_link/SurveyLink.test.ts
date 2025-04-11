@@ -8,16 +8,16 @@ import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 
 import * as SurveyLink from './survey_link.js';
 
-function canShowSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
+function canShowSuccessfulCallback(_trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: true});
 }
-function showSuccessfulCallback(trigger: string, callback: SurveyLink.SurveyLink.ShowSurveyCallback) {
+function showSuccessfulCallback(_trigger: string, callback: SurveyLink.SurveyLink.ShowSurveyCallback) {
   callback({surveyShown: true});
 }
-function canShowFailureCallback(trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
+function canShowFailureCallback(_trigger: string, callback: SurveyLink.SurveyLink.CanShowSurveyCallback) {
   callback({canShowSurvey: false});
 }
-function showFailureCallback(trigger: string, callback: SurveyLink.SurveyLink.ShowSurveyCallback) {
+function showFailureCallback(_trigger: string, callback: SurveyLink.SurveyLink.ShowSurveyCallback) {
   callback({surveyShown: false});
 }
 

@@ -279,14 +279,14 @@ describeWithMockConnection('ConsoleViewMessage', () => {
           stackTraceMessage, messageDetails);
       const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
 
-      linkifier.linkifyScriptLocation.callsFake((target, scriptId, sourceURL, lineNumber, options) => {
+      linkifier.linkifyScriptLocation.callsFake((_target, _scriptId, sourceURL, lineNumber, options) => {
         const link = Components.Linkifier.Linkifier.linkifyURL(sourceURL, {lineNumber, ...options});
         if (ignoreListFn(sourceURL)) {
           link.classList.add(IGNORE_LIST_LINK);
         }
         return link;
       });
-      linkifier.maybeLinkifyConsoleCallFrame.callsFake((target, callFrame, options) => {
+      linkifier.maybeLinkifyConsoleCallFrame.callsFake((_target, callFrame, options) => {
         const link = Components.Linkifier.Linkifier.linkifyURL(
             urlString`${callFrame.url}`, {lineNumber: callFrame.lineNumber, ...options});
         if (ignoreListFn(callFrame.url)) {

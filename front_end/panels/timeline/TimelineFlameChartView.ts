@@ -1869,7 +1869,7 @@ export class TimelineFlameChartMarker implements PerfUI.FlameChart.FlameChartMar
     return i18nString(UIStrings.sAtS, {PH1: this.style.title, PH2: startTime});
   }
 
-  draw(context: CanvasRenderingContext2D, x: number, height: number, pixelsPerMillisecond: number): void {
+  draw(context: CanvasRenderingContext2D, x: number, _height: number, pixelsPerMillisecond: number): void {
     const lowPriorityVisibilityThresholdInPixelsPerMs = 4;
 
     if (this.style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs) {

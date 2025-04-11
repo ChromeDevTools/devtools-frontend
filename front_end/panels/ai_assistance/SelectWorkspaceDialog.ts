@@ -95,7 +95,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     }
 
     // clang-format off
-    this.#view = view ?? ((input, output, target) => {
+    this.#view = view ?? ((input, _output, target) => {
       const hasFolders = input.folders.length > 0;
       render(
         html`

@@ -50,7 +50,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     matchedStyles = await getMatchedStylesWithBlankRule(
         new SDK.CSSModel.CSSModel(createTarget()), undefined, {startLine: 0, startColumn: 0, endLine: 0, endColumn: 1});
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
-    fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((style, name) => {
+    fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name) => {
       return {
         value: mockVariableMap[name],
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
@@ -1575,7 +1575,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   });
 
   describe('CSSWideKeywordRenderer', () => {
-    function mockResolvedKeyword(propertyName: string, keyword: SDK.CSSMetadata.CSSWideKeyword, propertyValue = ''):
+    function mockResolvedKeyword(propertyName: string, _keyword: SDK.CSSMetadata.CSSWideKeyword, propertyValue = ''):
         sinon.SinonStubbedInstance<SDK.CSSProperty.CSSProperty> {
       const originalDeclaration = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
       sinon.stub(matchedStyles, 'resolveGlobalKeyword')

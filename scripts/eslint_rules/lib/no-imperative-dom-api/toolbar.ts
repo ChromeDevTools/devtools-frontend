@@ -26,7 +26,7 @@ export const toolbar = {
                 return null;
             }
           },
-      methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, _call: Node): boolean {
+      methodCall(property: Node, firstArg: Node, _secondArg: Node, domFragment: DomFragment, _call: Node): boolean {
         if (isIdentifier(property, 'appendToolbarItem')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;

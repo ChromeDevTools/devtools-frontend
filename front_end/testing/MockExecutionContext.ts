@@ -16,7 +16,7 @@ export class MockExecutionContext extends SDK.RuntimeModel.ExecutionContext {
     super(runtimeModel, 1 as Protocol.Runtime.ExecutionContextId, 'test id', 'test name', urlString`test origin`, true);
   }
 
-  override async evaluate(options: SDK.RuntimeModel.EvaluationOptions, userGesture: boolean, _awaitPromise: boolean):
+  override async evaluate(_options: SDK.RuntimeModel.EvaluationOptions, userGesture: boolean, _awaitPromise: boolean):
       Promise<SDK.RuntimeModel.EvaluationResult> {
     assert.isTrue(userGesture);
     return {error: 'test'};

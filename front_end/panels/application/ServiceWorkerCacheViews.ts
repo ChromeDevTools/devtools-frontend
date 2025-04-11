@@ -315,9 +315,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
   }
 
-  private updateDataCallback(
-      this: ServiceWorkerCacheView, skipCount: number, entries: Protocol.CacheStorage.DataEntry[],
-      returnCount: number): void {
+  private updateDataCallback(entries: Protocol.CacheStorage.DataEntry[], returnCount: number): void {
     if (!this.dataGrid) {
       return;
     }
@@ -377,7 +375,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     });
 
     const {entries, returnCount} = await this.loadingPromise;
-    this.updateDataCallback(0, entries, returnCount);
+    this.updateDataCallback(entries, returnCount);
     this.loadingPromise = null;
     return;
   }

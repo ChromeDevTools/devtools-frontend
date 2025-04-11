@@ -1,11 +1,10 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/no-assert-strict-equal-for-arrays-and-objects.js');
+import rule from '../lib/no-assert-strict-equal-for-arrays-and-objects.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('no-assert-strict-equal-for-arrays-and-objects', rule, {
   valid: [

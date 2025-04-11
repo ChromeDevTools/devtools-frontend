@@ -1,11 +1,9 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+import rule from '../lib/no-assert-equal.ts';
 
-const rule = require('../lib/no-assert-equal.js');
-
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('no-assert-equal', rule, {
   valid: [
@@ -55,7 +53,7 @@ new RuleTester().run('no-assert-equal', rule, {
       filename: 'test/e2e/folder/file.ts',
       errors: [
         {
-          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+          messageId: 'noAssertEqual',
         },
       ],
     },
@@ -75,7 +73,7 @@ new RuleTester().run('no-assert-equal', rule, {
       filename: 'test/e2e/folder/file.ts',
       errors: [
         {
-          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+          messageId: 'noAssertEqual',
         },
       ],
     },
@@ -95,7 +93,7 @@ new RuleTester().run('no-assert-equal', rule, {
       filename: 'test/e2e/folder/file.ts',
       errors: [
         {
-          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+          messageId: 'noAssertEqual',
         },
       ],
     },

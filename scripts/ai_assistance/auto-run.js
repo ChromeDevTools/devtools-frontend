@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer-core');
 const {hideBin} = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 
-const {parseComment} = require('./auto-run-helpers');
+const {parseComment, parseFollowUps} = require('./auto-run-helpers');
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';
 
@@ -348,8 +348,13 @@ class Example {
     // Only get the first comment for now.
     const comment = comments[0];
     const queries = [comment.prompt];
-    if (userArgs.includeFollowUp) {
+
+    const followUpPromptsFromExample = parseFollowUps(comment);
+
+    if (userArgs.includeFollowUp && followUpPromptsFromExample.length === 0) {
       queries.push(DEFAULT_FOLLOW_UP_QUERY);
+    } else {
+      queries.push(...followUpPromptsFromExample);
     }
 
     return {

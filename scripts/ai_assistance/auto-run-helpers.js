@@ -70,6 +70,7 @@ function parseComment(comment) {
     }
   }
 
+  /** @type {Record<string, string>} */
   const result = {};
   Object.keys(lines).forEach(lineKey => {
     result[lineKey] = lines[lineKey].join('\n');
@@ -77,6 +78,33 @@ function parseComment(comment) {
   return result;
 }
 
+/**
+ * @param {Record<string, string>} comment
+ * @return {string[]}
+ */
+function parseFollowUps(comment) {
+  /** @type {string[]} */
+  const followUpPrompts = [];
+  const FOLLOW_UP_PREFIX = 'followup';
+  Object.entries(comment).forEach(([key, value]) => {
+    if (key.toLowerCase().startsWith(FOLLOW_UP_PREFIX)) {
+      if (value.length === 0) {
+        throw new Error(`Found empty followup value at ${key}`);
+      }
+      const indexStr = key.substring(FOLLOW_UP_PREFIX.length);
+      const index = parseInt(indexStr, 10);
+      if (Number.isNaN(index)) {
+        throw new Error(`Found invalid followup prompt: ${key}, ${value}`);
+      }
+      followUpPrompts[index - 1] = value;
+    }
+  });
+  // In case the input was "followup1" and "followup3", this removes holes
+  // from the array.
+  return followUpPrompts.filter(x => Boolean(x));
+}
+
 module.exports = {
+  parseFollowUps,
   parseComment,
 };

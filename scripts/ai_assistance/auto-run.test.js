@@ -10,7 +10,7 @@
 
 const {assert} = require('chai');
 
-const {parseComment} = require('./auto-run-helpers.js');
+const {parseComment, parseFollowUps} = require('./auto-run-helpers.js');
 
 describe('parsing comments', () => {
   it('parses out the prompt and evaluation sections using the "old" syntax', () => {
@@ -84,5 +84,86 @@ describe('parsing comments', () => {
     `;
     const result = parseComment(input);
     assert.deepEqual(result, {prompt: 'A', explanation: 'B\nC\nD'});
+  });
+});
+
+describe('parseFollowUps', () => {
+  it('should return an empty array when no followup keys exist', () => {
+    const comment = {
+      prompt: 'Test prompt',
+      explanation: 'Test explanation',
+    };
+    assert.deepEqual(parseFollowUps(comment), []);
+  });
+
+  it('should parse a single followup', () => {
+    const comment = {
+      prompt: 'Test prompt',
+      followup1: 'First follow up',
+    };
+    assert.deepEqual(parseFollowUps(comment), ['First follow up']);
+  });
+
+  it('should parse multiple sequential followups in order', () => {
+    const comment = {
+      followup2: 'Second follow up',
+      prompt: 'Test prompt',
+      followup1: 'First follow up',
+      explanation: 'Test explanation',
+      followup3: 'Third follow up',
+    };
+    assert.deepEqual(parseFollowUps(comment), [
+      'First follow up',
+      'Second follow up',
+      'Third follow up',
+    ]);
+  });
+
+  it('should parse non-sequential followups and filter empty slots', () => {
+    const comment = {
+      followup3: 'Third follow up',
+      prompt: 'Test prompt',
+      followup1: 'First follow up',
+    };
+    assert.deepEqual(parseFollowUps(comment), ['First follow up', 'Third follow up']);
+  });
+
+  it('should throw an error for invalid followup keys (non-numeric index)', () => {
+    const comment = {
+      followup1: 'First follow up',
+      followupX: 'Invalid key',
+    };
+    assert.throws(() => parseFollowUps(comment), 'Found invalid followup prompt: followupX, Invalid key');
+  });
+
+  it('should throw an error for invalid followup keys (no index)', () => {
+    const comment = {
+      followup: 'Invalid key',
+      followup1: 'First follow up',
+    };
+    assert.throws(() => parseFollowUps(comment), /^Found invalid followup prompt: followup,/);
+  });
+
+  it('should throw an error when encountering empty string values for followups', () => {
+    const comment = {
+      followup1: '',
+      followup2: 'Second follow up',
+    };
+    assert.throws(() => {
+      parseFollowUps(comment);
+    }, /Found empty followup value at followup1/);
+  });
+
+  it('should correctly parse followup keys with multiple digits', () => {
+    const comment = {
+      followup10: 'Tenth follow up',
+      followup1: 'First follow up',
+      followup2: 'Second follow up',
+    };
+    assert.deepEqual(parseFollowUps(comment), [
+      'First follow up',
+      'Second follow up',
+      'Tenth follow up',
+    ]);
   });
 });

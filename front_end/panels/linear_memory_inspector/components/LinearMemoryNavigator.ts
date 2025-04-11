@@ -10,11 +10,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryNavigatorStylesRaw from './linearMemoryNavigator.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const linearMemoryNavigatorStyles = new CSSStyleSheet();
-linearMemoryNavigatorStyles.replaceSync(linearMemoryNavigatorStylesRaw.cssText);
+import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
 
 const UIStrings = {
   /**
@@ -113,10 +109,6 @@ export class LinearMemoryNavigator extends HTMLElement {
   #canGoBackInHistory = false;
   #canGoForwardInHistory = false;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [linearMemoryNavigatorStyles];
-  }
-
   set data(data: LinearMemoryNavigatorData) {
     this.#address = data.address;
     this.#error = data.error;
@@ -139,6 +131,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const result = html`
+      <style>${linearMemoryNavigatorStyles.cssText}</style>
       <div class="navigator">
         <div class="navigator-item">
           ${this.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),

@@ -7,11 +7,11 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.js';
+import valueInterpreterDisplayStyles from './valueInterpreterDisplay.css.js';
 import {
   Endianness,
   format,
@@ -24,14 +24,6 @@ import {
   ValueType,
   ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const valueInterpreterDisplayStyles = new CSSStyleSheet();
-valueInterpreterDisplayStyles.replaceSync(valueInterpreterDisplayStylesRaw.cssText);
 
 const UIStrings = {
   /**
@@ -107,13 +99,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadow.adoptedStyleSheets = [
-      inspectorCommonStyles,
-    ];
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [inspectorCommonStyles, valueInterpreterDisplayStyles];
   }
 
   set data(data: ValueDisplayData) {
@@ -137,6 +122,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${inspectorCommonStyles.cssText}</style>
+      <style>${valueInterpreterDisplayStyles.cssText}</style>
       <div class="value-types">
         ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.#showValue(type) : '')}
       </div>

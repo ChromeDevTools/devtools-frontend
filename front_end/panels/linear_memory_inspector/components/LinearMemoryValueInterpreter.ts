@@ -11,21 +11,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.js';
+import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const linearMemoryValueInterpreterStyles = new CSSStyleSheet();
-linearMemoryValueInterpreterStyles.replaceSync(linearMemoryValueInterpreterStylesRaw.cssText);
 
 const UIStrings = {
   /**
@@ -81,10 +73,6 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   #memoryLength = 0;
   #showSettings = false;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [inspectorCommonStyles, linearMemoryValueInterpreterStyles];
-  }
-
   set data(data: LinearMemoryValueInterpreterData) {
     this.#endianness = data.endianness;
     this.#buffer = data.value;
@@ -98,6 +86,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${inspectorCommonStyles.cssText}</style>
+      <style>${linearMemoryValueInterpreterStyles.cssText}</style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
           ${this.#renderEndiannessSetting()}

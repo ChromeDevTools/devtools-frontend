@@ -12,7 +12,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
-import linearMemoryInspectorStylesRaw from './linearMemoryInspector.css.js';
+import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
   type AddressInputChangedEvent,
@@ -32,10 +32,6 @@ import {
   type ValueType,
   type ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const linearMemoryInspectorStyles = new CSSStyleSheet();
-linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssText);
 
 const UIStrings = {
   /**
@@ -143,10 +139,6 @@ export class LinearMemoryInspector extends HTMLElement {
 
   #hideValueInspector = false;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [linearMemoryInspectorStyles];
-  }
-
   set data(data: LinearMemoryInspectorData) {
     if (data.address < data.memoryOffset || data.address > data.memoryOffset + data.memory.length || data.address < 0) {
       throw new Error('Address is out of bounds.');
@@ -198,6 +190,7 @@ export class LinearMemoryInspector extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${linearMemoryInspectorStyles.cssText}</style>
       <div class="view">
         <devtools-linear-memory-inspector-navigator
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.#currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory}}

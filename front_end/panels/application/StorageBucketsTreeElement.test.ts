@@ -117,7 +117,7 @@ describeWithMockConnection('StorageBucketsTreeElement', function() {
     const appendChildSpy = sinon.spy(parentTreeElement, 'appendChild');
     parentTreeElement.initialize();
 
-    assert.strictEqual(appendChildSpy.callCount, getNonDefaultBuckets().length);
+    sinon.assert.callCount(appendChildSpy, getNonDefaultBuckets().length);
 
     panel.detach();
   });
@@ -141,7 +141,7 @@ describeWithMockConnection('StorageBucketsTreeElement', function() {
     treeElement.selectable = true;
     treeElement.select();
 
-    assert.isTrue(showViewSpy.calledOnce);
+    sinon.assert.calledOnce(showViewSpy);
 
     panel.detach();
   });

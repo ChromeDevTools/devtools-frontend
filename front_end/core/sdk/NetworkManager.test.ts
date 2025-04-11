@@ -363,7 +363,7 @@ describeWithMockConnection('NetworkManager', () => {
     new SDK.NetworkManager.NetworkManager(target);
 
     // function should not be called since there is a enterprise policy blocking third-party cookies
-    assert.isTrue(expectedCall.notCalled);
+    sinon.assert.notCalled(expectedCall);
   });
 
   it('setCookieControls gets invoked with expected values when network agent auto attach', () => {
@@ -454,7 +454,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     const expectedCall = sinon.spy(mainFrameTarget.networkAgent(), 'invoke_getCertificate');
     void SDK.NetworkManager.MultitargetNetworkManager.instance().getCertificate('https://example.com');
     for (const unexpectedCall of unexpectedCalls) {
-      assert.isTrue(unexpectedCall.notCalled);
+      sinon.assert.notCalled(unexpectedCall);
     }
     assert.isTrue(expectedCall.calledOnceWith({origin: 'https://example.com'}));
   });
@@ -816,7 +816,7 @@ describeWithMockConnection('InterceptedRequest', () => {
       return new TextUtils.ContentData.ContentData(responseBody, false, 'text/html');
     };
 
-    assert.isTrue(fulfillRequestSpy.notCalled);
+    sinon.assert.notCalled(fulfillRequestSpy);
     await multitargetNetworkManager.requestIntercepted(interceptedRequest);
     await fulfilledRequest;
     assert.isTrue(fulfillRequestSpy.calledOnceWithExactly(expectedOverriddenResponse));
@@ -1049,10 +1049,10 @@ describeWithMockConnection('InterceptedRequest', () => {
       return new TextUtils.ContentData.ContentData('interceptedRequest content', false, 'text/html');
     };
 
-    assert.isTrue(continueRequestSpy.notCalled);
+    sinon.assert.notCalled(continueRequestSpy);
     await SDK.NetworkManager.MultitargetNetworkManager.instance().requestIntercepted(interceptedRequest);
-    assert.isTrue(fulfillRequestSpy.notCalled);
-    assert.isTrue(continueRequestSpy.calledOnce);
+    sinon.assert.notCalled(fulfillRequestSpy);
+    sinon.assert.calledOnce(continueRequestSpy);
   });
 
   it('can override headers and content for a status 200 request', async () => {

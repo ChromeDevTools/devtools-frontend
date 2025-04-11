@@ -80,7 +80,7 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
       const linkSwatch = component.shadowRoot!.querySelector('devtools-link-swatch')!;
       linkSwatch.dispatchEvent(new Event('mouseenter'));
 
-      assert.isTrue(data.onMouseEnter.calledOnce);
+      sinon.assert.calledOnce(data.onMouseEnter);
     });
 
     it('should call `onMouseLeave` when mouse leaves linkSwatch', () => {
@@ -95,7 +95,7 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
       const linkSwatch = component.shadowRoot!.querySelector('devtools-link-swatch')!;
       linkSwatch.dispatchEvent(new Event('mouseleave'));
 
-      assert.isTrue(data.onMouseLeave.calledOnce);
+      sinon.assert.calledOnce(data.onMouseLeave);
     });
   });
 
@@ -137,7 +137,7 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
       const icon = component.shadowRoot!.querySelector('devtools-icon')!;
       icon?.dispatchEvent(new Event('mouseenter'));
 
-      assert.isTrue(data.onMouseEnter.calledOnce);
+      sinon.assert.calledOnce(data.onMouseEnter);
     });
 
     it('should call `onMouseLeave` when mouse leaves the icon', () => {
@@ -152,7 +152,7 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
       const icon = component.shadowRoot!.querySelector('devtools-icon')!;
       icon?.dispatchEvent(new Event('mouseleave'));
 
-      assert.isTrue(data.onMouseLeave.calledOnce);
+      sinon.assert.calledOnce(data.onMouseLeave);
     });
 
     it('should call `onLinkActivate` when clicking on the icon', () => {
@@ -167,7 +167,7 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
       const icon = component.shadowRoot!.querySelector('devtools-icon')!;
       icon?.dispatchEvent(new Event('click'));
 
-      assert.isTrue(data.onLinkActivate.calledOnce);
+      sinon.assert.calledOnce(data.onLinkActivate);
     });
   });
 });

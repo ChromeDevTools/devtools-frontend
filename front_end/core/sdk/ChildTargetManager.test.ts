@@ -210,14 +210,14 @@ describeWithMockConnection('ChildTargetManager', () => {
     SDK.ChildTargetManager.ChildTargetManager.install(attachCallback);
     await childTargetManager.attachedToTarget(
         {sessionId: createSessionId(), targetInfo: createTargetInfo(TARGET_ID), waitingForDebugger: false});
-    assert.isTrue(attachCallback.calledOnce);
+    sinon.assert.calledOnce(attachCallback);
     assert.strictEqual(attachCallback.firstCall.firstArg.target.id(), TARGET_ID);
     assert.isFalse(attachCallback.firstCall.firstArg.waitingForDebugger);
 
     const OTHER_TARGET_ID = 'OTHER_TARGET_ID' as Protocol.Target.TargetID;
     await childTargetManager.attachedToTarget(
         {sessionId: createSessionId(), targetInfo: createTargetInfo(OTHER_TARGET_ID), waitingForDebugger: true});
-    assert.isTrue(attachCallback.calledTwice);
+    sinon.assert.calledTwice(attachCallback);
     assert.strictEqual(attachCallback.secondCall.firstArg.target.id(), OTHER_TARGET_ID);
     assert.isTrue(attachCallback.secondCall.firstArg.waitingForDebugger);
   });

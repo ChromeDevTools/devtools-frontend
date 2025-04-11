@@ -271,7 +271,7 @@ describe('VersionController', () => {
       versionController.updateVersion();
 
       for (const spy of spies) {
-        assert.isFalse(spy.called);
+        sinon.assert.notCalled(spy);
       }
     });
 
@@ -286,7 +286,7 @@ describe('VersionController', () => {
       versionController.updateVersion();
 
       for (const spy of spies) {
-        assert.isFalse(spy.called);
+        sinon.assert.notCalled(spy);
       }
     });
 
@@ -303,12 +303,12 @@ describe('VersionController', () => {
 
       const expectedUncalledSpies = spies.slice(0, -3);
       for (const spy of expectedUncalledSpies) {
-        assert.isFalse(spy.called);
+        sinon.assert.notCalled(spy);
       }
 
       const expectedCalledSpies = spies.slice(-3);
       for (const spy of expectedCalledSpies) {
-        assert.isTrue(spy.called);
+        sinon.assert.called(spy);
       }
     });
 
@@ -325,12 +325,12 @@ describe('VersionController', () => {
 
       const expectedUncalledSpies = spies.slice(0, -1);
       for (const spy of expectedUncalledSpies) {
-        assert.isFalse(spy.called);
+        sinon.assert.notCalled(spy);
       }
 
       const expectedCalledSpies = spies.slice(-1);
       for (const spy of expectedCalledSpies) {
-        assert.isTrue(spy.called);
+        sinon.assert.called(spy);
       }
     });
   });
@@ -641,13 +641,13 @@ describe('access logging', () => {
 
   it('logs access on the first read', async () => {
     const setting = settings.createSetting('test-setting', false);
-    assert.isFalse(logSettingAccess.called);
+    sinon.assert.notCalled(logSettingAccess);
 
     setting.get();
     assert.isTrue(logSettingAccess.calledOnceWith('test-setting', false));
 
     setting.get();
-    assert.isTrue(logSettingAccess.calledOnce);
+    sinon.assert.calledOnce(logSettingAccess);
   });
 
   it('logs access on the every write', async () => {
@@ -657,7 +657,7 @@ describe('access logging', () => {
     assert.isTrue(logSettingAccess.calledOnceWith('test-setting', true));
 
     setting.set(false);
-    assert.isTrue(logSettingAccess.calledTwice);
+    sinon.assert.calledTwice(logSettingAccess);
     assert.deepEqual(logSettingAccess.secondCall.args, ['test-setting', false]);
   });
 });

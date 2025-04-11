@@ -31,7 +31,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
     const keymapOf = sinon.spy(CodeMirror.keymap, 'of');
     consolePrompt = new Console.ConsolePrompt.ConsolePrompt();
-    assert.isTrue(keymapOf.called);
+    sinon.assert.called(keymapOf);
     keyBinding = keymapOf.firstCall.firstArg;
     const editorContainer = consolePrompt.element.querySelector('.console-prompt-editor-container');
     editor = editorContainer!.firstElementChild as TextEditor.TextEditor.TextEditor;
@@ -78,7 +78,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    assert.isTrue(evaluateOnTarget.called);
+    sinon.assert.called(evaluateOnTarget);
   });
 
   it('allows user to enable pasting by typing \'allow pasting\'', async () => {
@@ -108,7 +108,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     enterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    assert.isFalse(evaluateOnTarget.called);
+    sinon.assert.notCalled(evaluateOnTarget);
   });
 
   it('evaluate incomplete expression if forced', async () => {
@@ -119,7 +119,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     ctrlEnterBinding!.run!({} as CodeMirror.EditorView);
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    assert.isTrue(evaluateOnTarget.called);
+    sinon.assert.called(evaluateOnTarget);
   });
 
   it('does not evaluate if the current context has changed', async () => {
@@ -136,7 +136,7 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, anotherTargetContext);
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    assert.isFalse(evaluateOnAnotherTarget.called);
-    assert.isFalse(evaluateOnTarget.called);
+    sinon.assert.notCalled(evaluateOnAnotherTarget);
+    sinon.assert.notCalled(evaluateOnTarget);
   });
 });

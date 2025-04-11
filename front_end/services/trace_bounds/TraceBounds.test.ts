@@ -45,7 +45,7 @@ describe('TraceBounds', () => {
     };
 
     manager.setMiniMapBounds(newMiniMapBounds);
-    assert.strictEqual(onStateChange.callCount, 1);
+    sinon.assert.callCount(onStateChange, 1);
     const dataFromEvent = onStateChange.firstCall.args[0] as TraceBounds.TraceBounds.StateChangedEvent;
     assert.strictEqual(dataFromEvent.updateType, 'MINIMAP_BOUNDS');
     assert.deepEqual(dataFromEvent.state.micro, {
@@ -70,7 +70,7 @@ describe('TraceBounds', () => {
     const newBoundsMilli = Trace.Helpers.Timing.traceWindowMilliSeconds(newBounds);
     manager.resetWithNewBounds(newBounds);
 
-    assert.strictEqual(onStateChange.callCount, 1);
+    sinon.assert.callCount(onStateChange, 1);
     const dataFromEvent = onStateChange.firstCall.args[0] as TraceBounds.TraceBounds.StateChangedEvent;
     assert.strictEqual(dataFromEvent.updateType, 'RESET');
     assert.deepEqual(dataFromEvent.state, {
@@ -101,7 +101,7 @@ describe('TraceBounds', () => {
 
     manager.setTimelineVisibleWindow(newVisibleWindow);
 
-    assert.strictEqual(onStateChange.callCount, 1);
+    sinon.assert.callCount(onStateChange, 1);
     const dataFromEvent = onStateChange.firstCall.args[0] as TraceBounds.TraceBounds.StateChangedEvent;
     assert.strictEqual(dataFromEvent.updateType, 'VISIBLE_WINDOW');
     assert.deepEqual(dataFromEvent.state.micro, {
@@ -124,7 +124,7 @@ describe('TraceBounds', () => {
     };
 
     manager.setTimelineVisibleWindow(newVisibleWindow);
-    assert.strictEqual(onStateChange.callCount, 0);
+    sinon.assert.callCount(onStateChange, 0);
     assert.deepEqual(manager.state()?.micro, {
       entireTraceBounds: baseTraceWindow,
       minimapTraceBounds: baseTraceWindow,
@@ -145,7 +145,7 @@ describe('TraceBounds', () => {
     };
 
     manager.setMiniMapBounds(newMiniMapBounds);
-    assert.strictEqual(onStateChange.callCount, 0);
+    sinon.assert.callCount(onStateChange, 0);
     assert.deepEqual(manager.state()?.micro, {
       entireTraceBounds: baseTraceWindow,
       minimapTraceBounds: baseTraceWindow,

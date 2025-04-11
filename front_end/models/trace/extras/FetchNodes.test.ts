@@ -78,7 +78,7 @@ describeWithMockConnection('FetchNodes', function() {
       await Trace.Extras.FetchNodes.domNodeForBackendNodeID(modelData1, nodeId(2));
       await Trace.Extras.FetchNodes.domNodeForBackendNodeID(modelData2, nodeId(2));
       // The call with the new model data did not hit the cache.
-      assert.strictEqual(pushNodesSpy.callCount, 2);
+      sinon.assert.callCount(pushNodesSpy, 2);
     });
 
     it('can look up multiple nodes at once', async () => {

@@ -190,7 +190,7 @@ describeWithEnvironment('SearchView', () => {
     searchResultCallback(searchResult2);
     await searchView.throttler.process?.();
 
-    assert.isTrue(fakeResultsPane.addSearchResult.calledTwice);
+    sinon.assert.calledTwice(fakeResultsPane.addSearchResult);
     assert.strictEqual(fakeResultsPane.addSearchResult.args[0][0], searchResult1);
     assert.strictEqual(fakeResultsPane.addSearchResult.args[1][0], searchResult2);
   });

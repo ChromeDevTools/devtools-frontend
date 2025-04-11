@@ -46,7 +46,7 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
     component.show(container);
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
     assert.strictEqual(view.input.selectedIndex, 0);
 
     return {view, component, onProjectSelected, hideDialogSpy, project};
@@ -56,36 +56,36 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const {view, onProjectSelected, hideDialogSpy, project} = createComponent();
     view.input.onProjectSelected(1);
     const input = await view.nextInput;
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     assert.strictEqual(input.selectedIndex, 1);
 
     view.input.onSelectButtonClick();
     assert.isTrue(onProjectSelected.calledOnceWith(project));
-    assert.isTrue(hideDialogSpy.calledOnce);
+    sinon.assert.calledOnce(hideDialogSpy);
   });
 
   it('can be canceled', async () => {
     const {view, onProjectSelected, hideDialogSpy} = createComponent();
     view.input.onProjectSelected(1);
     const input = await view.nextInput;
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     assert.strictEqual(input.selectedIndex, 1);
 
     view.input.onCancelButtonClick();
-    assert.isTrue(onProjectSelected.notCalled);
-    assert.isTrue(hideDialogSpy.calledOnce);
+    sinon.assert.notCalled(onProjectSelected);
+    sinon.assert.calledOnce(hideDialogSpy);
   });
 
   it('listens to ArrowUp/Down', async () => {
     const {view, component} = createComponent();
     dispatchKeyDownEvent(component.element, {key: 'ArrowDown', bubbles: true, composed: true});
     let input = await view.nextInput;
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     assert.strictEqual(input.selectedIndex, 1);
 
     dispatchKeyDownEvent(component.element, {key: 'ArrowUp', bubbles: true, composed: true});
     input = await view.nextInput;
-    assert.strictEqual(view.callCount, 3);
+    sinon.assert.callCount(view, 3);
     assert.strictEqual(input.selectedIndex, 0);
   });
 
@@ -93,16 +93,16 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const addProjectSpy =
         sinon.spy(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem');
     const {view} = createComponent();
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
     assert.lengthOf(view.input.folders, 2);
     assert.strictEqual(view.input.selectedIndex, 0);
 
     view.input.onAddFolderButtonClick();
-    assert.isTrue(addProjectSpy.calledOnce);
+    sinon.assert.calledOnce(addProjectSpy);
 
     createTestFilesystem('file://test3');
     const input = await view.nextInput;
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     assert.lengthOf(input.folders, 3);
     assert.strictEqual(input.folders[2].name, 'test3');
     assert.strictEqual(input.selectedIndex, 2);
@@ -115,12 +115,12 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
 
     view.input.onProjectSelected(1);
     let input = await view.nextInput;
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     assert.lengthOf(input.folders, 2);
     assert.strictEqual(input.selectedIndex, 1);
 
     input.onAddFolderButtonClick();
-    assert.isTrue(addProjectSpy.calledOnce);
+    sinon.assert.calledOnce(addProjectSpy);
 
     Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     input = await view.nextInput;
@@ -132,7 +132,7 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     setupAutomaticFileSystem({hasFileSystem: true});
     const {view, onProjectSelected, hideDialogSpy} = createComponent();
 
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
     assert.lengthOf(view.input.folders, 3);
     assert.strictEqual(view.input.selectedIndex, 0);
     assert.strictEqual(view.input.folders[0].name, 'my-automatic-file-system');
@@ -142,6 +142,6 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const {project: automaticFileSystemProject} = createTestFilesystem(`file://${root}`);
 
     assert.isTrue(onProjectSelected.calledOnceWith(automaticFileSystemProject));
-    assert.isTrue(hideDialogSpy.calledOnce);
+    sinon.assert.calledOnce(hideDialogSpy);
   });
 });

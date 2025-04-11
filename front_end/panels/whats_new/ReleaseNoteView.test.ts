@@ -121,7 +121,7 @@ describeWithEnvironment('Release Note View', () => {
     const openInNewTabStub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
 
     button.click();
-    assert.strictEqual(openInNewTabStub.callCount, 1);
+    sinon.assert.callCount(openInNewTabStub, 1);
     assert.isTrue(
         openInNewTabStub.firstCall.calledWith(urlString`https://google.com/`),
         'openInNewTab was not called with the expected URL.');

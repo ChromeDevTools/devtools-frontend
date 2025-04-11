@@ -242,7 +242,7 @@ Files:
       // Simulate clicking the "Apply to workspace" button
       view.input.onApplyToWorkspace();
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
+      sinon.assert.calledOnce(showSelectWorkspaceDialogStub);
 
       // Simulate selecting a workspace with the SelectWorkspaceDialog
       handler(project);
@@ -266,10 +266,10 @@ Files:
       assert.strictEqual(view.input.projectName, 'test');
 
       // Simulate clicking the "Change" button
-      assert.isTrue(showSelectWorkspaceDialogStub.notCalled);
+      sinon.assert.notCalled(showSelectWorkspaceDialogStub);
       assert.isDefined(view.input.onChangeWorkspaceClick);
       view.input.onChangeWorkspaceClick();
-      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
+      sinon.assert.calledOnce(showSelectWorkspaceDialogStub);
 
       // Simulate selecting a different workspace with the SelectWorkspaceDialog
       handler(project2);
@@ -291,13 +291,13 @@ Files:
 
       // Clicking on "Apply to workspace" does not open a SelectWorkspaceDialog
       view.input.onApplyToWorkspace();
-      assert.isTrue(showSelectWorkspaceDialogSpy.notCalled);
+      sinon.assert.notCalled(showSelectWorkspaceDialogSpy);
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(applyChangesSpy.notCalled);
+      sinon.assert.notCalled(applyChangesSpy);
 
       // This simulates the user confirming the file permissions dialog
       createTestFilesystem('file:///path/to/my-automatic-file-system');
-      assert.isTrue(applyChangesSpy.calledOnce);
+      sinon.assert.calledOnce(applyChangesSpy);
     });
   });
 
@@ -333,7 +333,7 @@ Files:
       widget.changeManager = changeManager;
       view.input.onApplyToWorkspace();
       await view.nextInput;
-      assert.isTrue(changeManager.stashChanges.notCalled);
+      sinon.assert.notCalled(changeManager.stashChanges);
     });
 
     it('on save should stash changes', async () => {
@@ -348,7 +348,7 @@ Files:
 
       assert.isTrue(nextInput.savedToDisk);
       assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
-      assert.isTrue(changeManager.stashChanges.calledOnce);
+      sinon.assert.calledOnce(changeManager.stashChanges);
     });
 
     it('discard should discard the working copy and render the view without patchSuggestion', async () => {
@@ -362,7 +362,7 @@ Files:
       const nextInput = await view.nextInput;
 
       assert.strictEqual(nextInput.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.INITIAL);
-      assert.isTrue(changeManager.popStashedChanges.calledOnce);
+      sinon.assert.calledOnce(changeManager.popStashedChanges);
     });
   });
 });

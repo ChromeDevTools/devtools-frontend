@@ -103,7 +103,7 @@ describeWithMockConnection('ConsoleView', () => {
     const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();
     contextMenu.invokeHandler(copy.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, ['message 1\nmessage 2\n']);
     copyText.resetHistory();
   });
@@ -262,16 +262,16 @@ describeWithMockConnection('ConsoleView', () => {
     const spy = sinon.spy(consoleView, 'issuesCountUpdatedForTest');
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
-    assert.isTrue(spy.calledOnce);
+    sinon.assert.calledOnce(spy);
 
     // Pauses updating the issue counter
     consoleView.onDetach();
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
-    assert.isTrue(spy.calledOnce);
+    sinon.assert.calledOnce(spy);
 
     // Continues updating the issue counter
     consoleView.show(document.body);
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
-    assert.isTrue(spy.calledTwice);
+    sinon.assert.calledTwice(spy);
   });
 });

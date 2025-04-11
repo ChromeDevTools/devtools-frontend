@@ -20,7 +20,7 @@ describeWithEnvironment('ThemeSupport', () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);
 
-    assert.isTrue(colorFetchSpy.called);
+    sinon.assert.called(colorFetchSpy);
   });
 
   describe('fetchColors', () => {

@@ -199,7 +199,7 @@ describeWithLocale('Toolbar', () => {
       const menuButton = createToolbarWithButton(contextHandler);
       menuButton.setEnabled(true);
       await dispatchMouseDownEvent(menuButton.element);
-      assert.isTrue(contextHandler.called);
+      sinon.assert.called(contextHandler);
     });
 
     it('does not create a context menu if it is not enabled', async () => {
@@ -207,7 +207,7 @@ describeWithLocale('Toolbar', () => {
       const menuButton = createToolbarWithButton(contextHandler);
       menuButton.setEnabled(false);
       await dispatchMouseDownEvent(menuButton.element);
-      assert.isFalse(contextHandler.called);
+      sinon.assert.notCalled(contextHandler);
     });
   });
 

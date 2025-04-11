@@ -357,7 +357,7 @@ describeWithMockConnection('Linkifier', () => {
       linkifier.maybeLinkifyScriptLocation(target, script.scriptId, url, lineNumber);
 
       await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
-      assert.isTrue(eventCallback.calledOnce);
+      sinon.assert.calledOnce(eventCallback);
 
       // Detach the source map and check we get the update event.
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

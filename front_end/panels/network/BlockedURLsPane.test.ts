@@ -74,7 +74,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
       Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(
           Logs.NetworkLog.Events.Reset, {clearIfPreserved: true});
 
-      assert.isTrue(updateStub.calledOnce);
+      sinon.assert.calledOnce(updateStub);
     });
   });
 });

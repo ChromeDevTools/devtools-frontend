@@ -128,7 +128,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
     treeElement.select();
     await refreshedPromise;
 
-    assert.isTrue(getMetadataSpy.calledTwice);
+    sinon.assert.calledTwice(getMetadataSpy);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
 

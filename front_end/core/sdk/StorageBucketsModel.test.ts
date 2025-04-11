@@ -144,7 +144,7 @@ describeWithMockConnection('StorageBucketsModel', () => {
           });
       storageBucketsModel.enable();
 
-      assert.isTrue(setStorageBucketTrackingSpy.notCalled);
+      sinon.assert.notCalled(setStorageBucketTrackingSpy);
       storageKeyManager.updateStorageKeys(new Set([storageKey]));
       assert.isTrue(setStorageBucketTrackingSpy.calledOnceWithExactly({storageKey, enable: true}));
     });
@@ -174,7 +174,7 @@ describeWithMockConnection('StorageBucketsModel', () => {
           });
 
       storageBucketsModel.enable();
-      assert.isTrue(setStorageBucketTrackingSpy.notCalled);
+      sinon.assert.notCalled(setStorageBucketTrackingSpy);
 
       storageKeyManager.updateStorageKeys(new Set([storageKey]));
       storageKeyManager.updateStorageKeys(new Set([]));

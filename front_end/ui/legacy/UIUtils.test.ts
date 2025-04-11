@@ -25,7 +25,7 @@ describe('UIUtils', () => {
 
       openInNewTab('https://www.google.com/');
 
-      assert.strictEqual(stub.callCount, 1);
+      sinon.assert.callCount(stub, 1);
       assert.deepEqual(stub.args[0], ['https://www.google.com/']);
     });
 
@@ -64,7 +64,7 @@ describe('UIUtils', () => {
 
         openInNewTab(url);
 
-        assert.isTrue(stub.calledOnce);
+        sinon.assert.calledOnce(stub);
         assert.strictEqual(new URL(stub.args[0][0]).searchParams.get('utm_source'), 'devtools');
         stub.restore();
       }
@@ -93,7 +93,7 @@ describe('UIUtils', () => {
 
           openInNewTab(url);
 
-          assert.isTrue(stub.calledOnce);
+          sinon.assert.calledOnce(stub);
           assert.strictEqual(new URL(stub.args[0][0]).searchParams.get('utm_campaign'), channel);
           stub.restore();
         }
@@ -106,7 +106,7 @@ describe('UIUtils', () => {
 
       openInNewTab('https://developer.chrome.com/docs/devtools/settings/ignore-list/#skip-third-party');
 
-      assert.isTrue(stub.calledOnce);
+      sinon.assert.calledOnce(stub);
       const url = new URL(stub.args[0][0]);
       assert.strictEqual(url.hash, '#skip-third-party');
       assert.strictEqual(url.searchParams.get('utm_campaign'), 'stable');
@@ -119,7 +119,7 @@ describe('UIUtils', () => {
 
       openInNewTab('http://web.dev/route?foo=bar&baz=devtools');
 
-      assert.isTrue(stub.calledOnce);
+      sinon.assert.calledOnce(stub);
       const url = new URL(stub.args[0][0]);
       assert.strictEqual(url.searchParams.get('baz'), 'devtools');
       assert.strictEqual(url.searchParams.get('foo'), 'bar');
@@ -137,12 +137,12 @@ describe('UIUtils', () => {
       const setTimeout = sinon.stub(window, 'setTimeout').callsFake(cb => cb());
 
       el.dispatchEvent(new PointerEvent('pointerdown'));
-      assert.isTrue(callback.calledOnce);
+      sinon.assert.calledOnce(callback);
 
       controller.dispose();
 
       el.dispatchEvent(new PointerEvent('pointerdown'));
-      assert.isTrue(callback.calledOnce);
+      sinon.assert.calledOnce(callback);
 
       setTimeout.restore();
     });

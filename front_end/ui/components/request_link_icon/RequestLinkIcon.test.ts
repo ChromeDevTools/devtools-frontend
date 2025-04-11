@@ -290,7 +290,7 @@ describeWithEnvironment('RequestLinkIcon', () => {
 
       button.click();
 
-      assert.isTrue(revealOverride.called);
+      sinon.assert.called(revealOverride);
       assert.isTrue(revealOverride.calledOnceWith(
           sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT})));
     });

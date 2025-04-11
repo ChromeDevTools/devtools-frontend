@@ -117,6 +117,6 @@ describeWithLocale('SharedStorageMetadataView', () => {
     assert.instanceOf(resetButtonComponent, HTMLElement);
     dispatchClickEvent(resetButtonComponent);
 
-    assert.isTrue(resetBudgetHandlerSpy.calledOnce);
+    sinon.assert.calledOnce(resetBudgetHandlerSpy);
   });
 });

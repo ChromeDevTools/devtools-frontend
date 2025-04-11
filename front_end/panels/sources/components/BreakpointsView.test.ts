@@ -1172,7 +1172,7 @@ describeWithMockConnection('BreakpointsView', () => {
     const breakpointsRemoved = sinon.stub(controller, 'breakpointsRemoved');
     removeFileBreakpointsButton.click();
     // await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isTrue(breakpointsRemoved.calledOnce);
+    sinon.assert.calledOnce(breakpointsRemoved);
     assert.deepEqual(breakpointsRemoved.firstCall.firstArg, [data.groups[0].breakpointItems[0]]);
   });
 

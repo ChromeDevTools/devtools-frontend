@@ -43,7 +43,7 @@ describeWithMockConnection('NetworkOverview', () => {
     networkOverview.show(document.body);
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
-    assert.isFalse(calculator.computePosition.called);
+    sinon.assert.notCalled(calculator.computePosition);
     resourceTreeModel.dispatchEventToListeners(
         event,
         ...[{loadTime: 42}] as Common.EventTarget.EventPayloadToRestParameters<SDK.ResourceTreeModel.EventTypes, T>);

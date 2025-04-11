@@ -198,11 +198,11 @@ describeWithMockConnection('NetworkLogView', () => {
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 5});
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 6);
       if (inScope) {
-        assert.isTrue(addEventDividers.calledTwice);
+        sinon.assert.calledTwice(addEventDividers);
         assert.isTrue(addEventDividers.getCall(0).calledWith([5], 'network-load-divider'));
         assert.isTrue(addEventDividers.getCall(1).calledWith([6], 'network-dcl-divider'));
       } else {
-        assert.isFalse(addEventDividers.called);
+        sinon.assert.notCalled(addEventDividers);
       }
     });
 
@@ -226,12 +226,12 @@ describeWithMockConnection('NetworkLogView', () => {
       if (inScope) {
         assert.isTrue(
             harWriterWrite.calledOnceWith(sinon.match.any, [FINISHED_REQUEST_1, FINISHED_REQUEST_2], sinon.match.any));
-        assert.isTrue(fileManager.save.calledOnce);
-        assert.isTrue(fileManager.close.calledOnce);
+        sinon.assert.calledOnce(fileManager.save);
+        sinon.assert.calledOnce(fileManager.close);
       } else {
-        assert.isFalse(harWriterWrite.called);
-        assert.isFalse(fileManager.save.called);
-        assert.isFalse(fileManager.close.called);
+        sinon.assert.notCalled(harWriterWrite);
+        sinon.assert.notCalled(fileManager.save);
+        sinon.assert.notCalled(fileManager.close);
       }
     });
 
@@ -760,7 +760,7 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.isDefined(copyAllURLs);
     contextMenu.invokeHandler(copyAllURLs.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`url-header-overridden
 url-header-und-content-overridden`]);
     copyText.resetHistory();
@@ -770,7 +770,7 @@ url-header-und-content-overridden`]);
     assert.isDefined(copyAllCurlComnmands);
     contextMenu.invokeHandler(copyAllCurlComnmands.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`curl 'url-header-overridden' ;
 curl 'url-header-und-content-overridden'`]);
     copyText.resetHistory();
@@ -779,7 +779,7 @@ curl 'url-header-und-content-overridden'`]);
     assert.isDefined(copyAllFetchCall);
     contextMenu.invokeHandler(copyAllFetchCall.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`fetch("url-header-overridden", {
   "body": null,
   "method": "GET",
@@ -798,7 +798,7 @@ fetch("url-header-und-content-overridden", {
     assert.isDefined(copyAllPowerShell);
     contextMenu.invokeHandler(copyAllPowerShell.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
 Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
     // Clear network filter
@@ -807,7 +807,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
 
     contextMenu.invokeHandler(copyAllURLs.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`url-not-overridden
 url-header-overridden
 url-content-overridden
@@ -816,7 +816,7 @@ url-header-und-content-overridden`]);
 
     contextMenu.invokeHandler(copyAllCurlComnmands.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`curl 'url-not-overridden' ;
 curl 'url-header-overridden' ;
 curl 'url-content-overridden' ;
@@ -825,7 +825,7 @@ curl 'url-header-und-content-overridden'`]);
 
     contextMenu.invokeHandler(copyAllFetchCall.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`fetch("url-not-overridden", {
   "body": null,
   "method": "GET",
@@ -854,7 +854,7 @@ fetch("url-header-und-content-overridden", {
 
     contextMenu.invokeHandler(copyAllPowerShell.id());
     await expectCalled(copyText);
-    assert.strictEqual(copyText.callCount, 1);
+    sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-not-overridden";\r
 Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
 Invoke-WebRequest -UseBasicParsing -Uri "url-content-overridden";\r
@@ -888,7 +888,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
     sinon.stub(event, 'target').value(header);
     dataGrid.element.dispatchEvent(event);
 
-    assert.isTrue(contextMenuShow.calledOnce);
+    sinon.assert.calledOnce(contextMenuShow);
     const responseHeadersSubMenu = contextMenuShow.thisValues[0].footerSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Response Headers');
     assert.exists(responseHeadersSubMenu);
@@ -980,9 +980,9 @@ function testPlaceholderButton(
   const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
   const spy = sinon.spy(action, 'execute');
 
-  assert.isTrue(spy.notCalled);
+  sinon.assert.notCalled(spy);
   dispatchClickEvent(button);
-  assert.isTrue(spy.calledOnce);
+  sinon.assert.calledOnce(spy);
 }
 
 function clickCheckbox(checkbox: HTMLInputElement) {

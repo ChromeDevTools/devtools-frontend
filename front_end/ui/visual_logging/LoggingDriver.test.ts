@@ -60,7 +60,7 @@ describe('LoggingDriver', () => {
   it('logs impressions on startLogging', async () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
       {id: getVeId('#element'), type: 1, context: 42, parent: getVeId('#parent'), width: 300, height: 300},
       {id: getVeId('#parent'), type: 1, width: 300, height: 300},
@@ -69,17 +69,17 @@ describe('LoggingDriver', () => {
 
   async function assertImpressionRecordedDeferred() {
     const [work] = await expectCalled(throttle);
-    assert.isFalse(recordImpression.called);
+    sinon.assert.notCalled(recordImpression);
 
     await work();
-    assert.isTrue(recordImpression.called);
+    sinon.assert.called(recordImpression);
   }
 
   it('does not log impressions when document hidden', async () => {
     addLoggableElements();
     sinon.stub(document, 'hidden').value(true);
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
-    assert.isFalse(recordImpression.called);
+    sinon.assert.notCalled(recordImpression);
   });
 
   it('does not log impressions when parent hidden', async () => {
@@ -87,7 +87,7 @@ describe('LoggingDriver', () => {
     const parent = document.getElementById('parent') as HTMLElement;
     parent.style.height = '0';
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
-    assert.isFalse(recordImpression.called);
+    sinon.assert.notCalled(recordImpression);
   });
 
   it('logs impressions when visibility changes', async () => {
@@ -174,7 +174,7 @@ describe('LoggingDriver', () => {
 
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
     await VisualLoggingTesting.LoggingDriver.addDocument(iframeDocument);
-    assert.isFalse(recordImpression.called);
+    sinon.assert.notCalled(recordImpression);
   });
 
   it('hashes a string context', async () => {
@@ -185,7 +185,7 @@ describe('LoggingDriver', () => {
     renderElementIntoDOM(element);
 
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     assert.strictEqual(recordImpression.firstCall.firstArg.impressions[0]?.context, -103332984);
   });
 
@@ -243,7 +243,7 @@ describe('LoggingDriver', () => {
     parent.click();
 
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordClick.called);
+    sinon.assert.notCalled(recordClick);
   });
 
   it('does not log click on double click', async () => {
@@ -259,11 +259,11 @@ describe('LoggingDriver', () => {
     element.dispatchEvent(new MouseEvent('click'));
     element.dispatchEvent(new MouseEvent('dblclick'));
     const [logging] = await expectCalled(throttle);
-    assert.isTrue(throttle.calledTwice);
-    assert.isFalse(recordClick.called);
+    sinon.assert.calledTwice(throttle);
+    sinon.assert.notCalled(recordClick);
 
     await logging();
-    assert.isTrue(recordClick.calledOnce);
+    sinon.assert.calledOnce(recordClick);
     assert.isTrue(recordClick.firstCall.firstArg.doubleClick);
   });
 
@@ -280,10 +280,10 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.click();
     const [logging] = await expectCalled(throttle);
-    assert.isFalse(recordClick.called);
+    sinon.assert.notCalled(recordClick);
 
     await logging();
-    assert.isTrue(recordClick.calledOnce);
+    sinon.assert.calledOnce(recordClick);
     assert.strictEqual(recordClick.firstCall.firstArg.veid, getVeId(element));
   });
 
@@ -304,7 +304,7 @@ describe('LoggingDriver', () => {
     await VisualLoggingTesting.LoggingDriver.startLogging(
         {processingThrottler: throttler, clickLogThrottler: throttler});
 
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     const impressions = recordImpression.firstCall.firstArg.impressions;
     assert.sameDeepMembers(impressions, [
       {id: getVeId(select), type: 1, width: 30, height: 20, context: 0},
@@ -316,11 +316,11 @@ describe('LoggingDriver', () => {
     select.dispatchEvent(event);
 
     await expectCalled(recordClick);
-    assert.isTrue(recordClick.calledOnce);
+    sinon.assert.calledOnce(recordClick);
     assert.strictEqual(recordClick.firstCall.firstArg.veid, getVeId(select));
 
     await expectCalled(recordImpression);
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
       {id: getVeId('option:first-child'), type: 1, parent: getVeId(select), context: 1, width: 0, height: 0},
       {id: getVeId('option:last-child'), type: 1, parent: getVeId(select), context: 2, width: 0, height: 0},
@@ -352,7 +352,7 @@ describe('LoggingDriver', () => {
     select.dispatchEvent(new Event('change'));
     await expectCalled(throttle).then(([logging]) => logging());
 
-    assert.isTrue(recordClick.calledOnce);
+    sinon.assert.calledOnce(recordClick);
     assert.deepEqual(recordClick.firstCall.firstArg, {veid: getVeId(select.selectedOptions[0]), doubleClick: false});
   });
 
@@ -368,11 +368,11 @@ describe('LoggingDriver', () => {
     element.dispatchEvent(new KeyboardEvent('keydown', {key: 'a'}));
     element.dispatchEvent(new KeyboardEvent('keydown', {key: 'b'}));
     const [logging] = await expectCalled(throttle);
-    assert.isTrue(throttle.calledTwice);
-    assert.isFalse(recordKeyDown.called);
+    sinon.assert.calledTwice(throttle);
+    sinon.assert.notCalled(recordKeyDown);
 
     await logging();
-    assert.isTrue(recordKeyDown.calledOnce);
+    sinon.assert.calledOnce(recordKeyDown);
   });
 
   it('logs keydown for specific codes', async () => {
@@ -388,21 +388,21 @@ describe('LoggingDriver', () => {
 
     element.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyC'}));
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(throttle.called);
+    sinon.assert.notCalled(throttle);
 
     element.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyA'}));
     let [logging] = await expectCalled(throttle);
-    assert.isFalse(recordKeyDown.called);
+    sinon.assert.notCalled(recordKeyDown);
     await logging();
-    assert.isTrue(recordKeyDown.calledOnce);
+    sinon.assert.calledOnce(recordKeyDown);
 
     recordKeyDown.resetHistory();
 
     element.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyB'}));
     [logging] = await expectCalled(throttle);
-    assert.isFalse(recordKeyDown.called);
+    sinon.assert.notCalled(recordKeyDown);
     await logging();
-    assert.isTrue(recordKeyDown.calledOnce);
+    sinon.assert.calledOnce(recordKeyDown);
   });
 
   it('logs change', async () => {
@@ -415,7 +415,7 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new Event('change'));
-    assert.isTrue(recordChange.calledOnce);
+    sinon.assert.calledOnce(recordChange);
   });
 
   it('logs change for each input type', async () => {
@@ -429,10 +429,10 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new InputEvent('input', {inputType: 'insertText'}));
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordChange.called);
+    sinon.assert.notCalled(recordChange);
     element.dispatchEvent(new InputEvent('input', {inputType: 'insertText'}));
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordChange.called);
+    sinon.assert.notCalled(recordChange);
 
     let logging = expectCalled(recordChange);
     element.dispatchEvent(new InputEvent('input', {inputType: 'inserFromPaste'}));
@@ -591,9 +591,9 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('mouseover'));
     const [logging] = await expectCalled(throttle);
-    assert.isFalse(recordHover.called);
+    sinon.assert.notCalled(recordHover);
     await logging();
-    assert.isTrue(recordHover.calledOnce);
+    sinon.assert.calledOnce(recordHover);
   });
 
   it('does not log hover if too short', async () => {
@@ -607,10 +607,10 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('mouseover'));
     await expectCalled(throttle);
-    assert.isFalse(recordHover.called);
+    sinon.assert.notCalled(recordHover);
     element.dispatchEvent(new MouseEvent('mouseout'));
     await expectCalled(throttle).then(([work]) => work());
-    assert.isFalse(recordHover.called);
+    sinon.assert.notCalled(recordHover);
   });
 
   it('does not log hover if in descendent', async () => {
@@ -629,7 +629,7 @@ describe('LoggingDriver', () => {
     throttle.resetHistory();
     element.dispatchEvent(new MouseEvent('mouseover'));
     await expectCalled(throttle).then(([work]) => work());
-    assert.isTrue(recordHover.called);
+    sinon.assert.called(recordHover);
     assert.deepEqual(recordHover.firstCall.firstArg, {veid: getVeId(element)});
   });
 
@@ -645,11 +645,11 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('pointerdown'));
     assert.exists(dragLogThrottler.process);
-    assert.isFalse(recordDrag.called);
+    sinon.assert.notCalled(recordDrag);
 
     await dragLogThrottler.process?.();
-    assert.isTrue(recordDrag.called);
-    assert.isTrue(recordDrag.calledOnce);
+    sinon.assert.called(recordDrag);
+    sinon.assert.calledOnce(recordDrag);
   });
 
   it('does not log drag if too short in time', async () => {
@@ -664,12 +664,12 @@ describe('LoggingDriver', () => {
     const element = document.getElementById('element') as HTMLElement;
     element.dispatchEvent(new MouseEvent('pointerdown'));
     assert.exists(dragLogThrottler.process);
-    assert.isFalse(recordDrag.called);
+    sinon.assert.notCalled(recordDrag);
 
     element.dispatchEvent(new MouseEvent('pointerup'));
 
     await dragLogThrottler.process?.();
-    assert.isFalse(recordDrag.called);
+    sinon.assert.notCalled(recordDrag);
   });
 
   it('logs drag if short in time but long in distance', async () => {
@@ -684,12 +684,12 @@ describe('LoggingDriver', () => {
     element.dispatchEvent(new MouseEvent('pointerdown', {screenX: 0, screenY: 0}));
 
     await expectCalled(throttle);
-    assert.isFalse(recordDrag.called);
+    sinon.assert.notCalled(recordDrag);
 
     element.dispatchEvent(new MouseEvent('pointerup', {screenX: 100, screenY: 100}));
 
     await throttler.process?.();
-    assert.isFalse(recordDrag.called);
+    sinon.assert.notCalled(recordDrag);
   });
 
   it('logs resize', async () => {
@@ -704,9 +704,9 @@ describe('LoggingDriver', () => {
 
     element.style.height = '400px';
     const [logging] = await expectCall(throttle, {callCount: 2});
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
     await logging();
-    assert.isTrue(recordResize.calledOnce);
+    sinon.assert.calledOnce(recordResize);
   });
 
   it('does not log resize if too small', async () => {
@@ -719,7 +719,7 @@ describe('LoggingDriver', () => {
 
     const element = document.getElementById('element') as HTMLElement;
     element.style.height = '301px';
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
   });
 
   it('logs resize on visibility change', async () => {
@@ -734,21 +734,21 @@ describe('LoggingDriver', () => {
 
     element.style.display = 'none';
     const [logging] = await expectCall(throttle, {callCount: 2});
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
 
     logging();
     await expectCalled(recordResize);
-    assert.isTrue(recordResize.calledOnce);
+    sinon.assert.calledOnce(recordResize);
     assert.deepEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
 
     recordResize.resetHistory();
 
     element.style.display = 'block';
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
     throttle.callsArg(0);
 
     await expectCall(recordResize);
-    assert.isTrue(recordResize.calledOnce);
+    sinon.assert.calledOnce(recordResize);
     assert.deepEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 300, height: 300});
   });
 
@@ -772,9 +772,9 @@ describe('LoggingDriver', () => {
     element2.style.height = '10px';
     const [work] = await expectCall(throttle, {callCount: 2});
 
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
     await work();
-    assert.isTrue(recordResize.calledTwice);
+    sinon.assert.calledTwice(recordResize);
     assert.strictEqual(recordResize.firstCall.firstArg.height, 10);
     assert.strictEqual(recordResize.lastCall.firstArg.height, 10);
     assert.notStrictEqual(recordResize.firstCall.firstArg.veid, recordResize.lastCall.firstArg.veid);
@@ -798,10 +798,10 @@ describe('LoggingDriver', () => {
     element.style.width = '400px';
     const [work] = await expectCall(throttle, {callCount: 2});
 
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
     await work();
     await expectCalled(recordResize);
-    assert.isTrue(recordResize.calledOnce);
+    sinon.assert.calledOnce(recordResize);
     assert.deepEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 400, height: 300});
   });
 
@@ -820,12 +820,12 @@ describe('LoggingDriver', () => {
 
     element.style.display = 'block';
     await expectCalled(throttle).then(([work]) => work());
-    assert.isTrue(throttle.calledOnce);
-    assert.isTrue(recordImpression.calledOnce);
-    assert.isFalse(recordResize.called);
+    sinon.assert.calledOnce(throttle);
+    sinon.assert.calledOnce(recordImpression);
+    sinon.assert.notCalled(recordResize);
 
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
   });
 
   it('properly handles the switch between visible elements', async () => {
@@ -862,7 +862,7 @@ describe('LoggingDriver', () => {
     // Throttler is called by both resize and intersection observer for each element
     await expectCalled(throttle, {callCount: 4}).then(([work]) => work());
 
-    assert.isTrue(recordResize.calledTwice);
+    sinon.assert.calledTwice(recordResize);
     assert.sameDeepMembers(recordResize.getCalls().map(c => c.firstArg), [
       {veid: VisualLoggingTesting.LoggingState.getLoggingState(element1)?.veid, width: 0, height: 0},
       {veid: VisualLoggingTesting.LoggingState.getLoggingState(element2)?.veid, width: 300, height: 300},
@@ -882,10 +882,10 @@ describe('LoggingDriver', () => {
 
     parent.removeChild(element);
     const [logging] = await expectCall(throttle, {callCount: 2});
-    assert.isFalse(recordResize.called);
+    sinon.assert.notCalled(recordResize);
 
     await logging();
-    assert.isTrue(recordResize.calledOnce);
+    sinon.assert.calledOnce(recordResize);
     assert.deepEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 0, height: 0});
   });
 
@@ -970,7 +970,7 @@ describe('LoggingDriver', () => {
     const parent = document.getElementById('parent')!;
     VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
 
     assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
       {id: getVeId(loggable), type: 1, context: 123, parent: getVeId(parent), width: 0, height: 0},
@@ -984,7 +984,7 @@ describe('LoggingDriver', () => {
     const loggable1 = {};
     const parent = document.getElementById('parent')!;
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     VisualLoggingTesting.NonDomState.registerLoggable(loggable1, {ve: 1, context: '123'}, parent);
     recordImpression.resetHistory();
     await VisualLoggingTesting.LoggingDriver.scheduleProcessing();
@@ -1010,7 +1010,7 @@ describe('LoggingDriver', () => {
     const loggable = {};
     VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, undefined);
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
 
     assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
       {id: getVeId(loggable), type: 1, context: 123, width: 0, height: 0},
@@ -1026,7 +1026,7 @@ describe('LoggingDriver', () => {
     const parent = document.createElement('div');
     VisualLoggingTesting.NonDomState.registerLoggable(loggable, {ve: 1, context: '123'}, parent);
     await VisualLoggingTesting.LoggingDriver.startLogging();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
 
     assert.sameDeepMembers(recordImpression.firstCall.firstArg.impressions, [
       {id: getVeId('#element'), type: 1, context: 42, parent: getVeId('#parent'), width: 300, height: 300},

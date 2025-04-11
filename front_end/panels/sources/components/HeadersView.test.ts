@@ -234,7 +234,7 @@ describe('HeadersView', () => {
       'Apply to:*.jpg',
       'jpg-header:is image',
     ]);
-    assert.strictEqual(commitWorkingCopySpy.callCount, 4);
+    sinon.assert.callCount(commitWorkingCopySpy, 4);
   });
 
   it('resets edited value to previous state on Escape key', async () => {
@@ -339,7 +339,7 @@ describe('HeadersView', () => {
 
     dispatchFocusOutEvent(applyTo, {bubbles: true});
     assert.strictEqual(applyTo.innerHTML, '*');
-    assert.strictEqual(commitWorkingCopySpy.callCount, 1);
+    sinon.assert.callCount(commitWorkingCopySpy, 1);
   });
 
   it('removes the entire header when the header name is deleted', async () => {
@@ -374,7 +374,7 @@ describe('HeadersView', () => {
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
     ]);
-    assert.strictEqual(commitWorkingCopySpy.callCount, 1);
+    sinon.assert.callCount(commitWorkingCopySpy, 1);
     assert.isTrue(recordedMetricsContain(
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
         Host.UserMetrics.Action.HeaderOverrideHeadersFileEdited));

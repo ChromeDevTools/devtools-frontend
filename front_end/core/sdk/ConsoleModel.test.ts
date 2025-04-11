@@ -108,11 +108,11 @@ describeWithMockConnection('ConsoleMessage', () => {
     const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     await getInitializedResourceTreeModel(subframeTarget);
     navigate(getMainFrame(subframeTarget));
-    assert.isTrue(consoleLog.notCalled);
+    sinon.assert.notCalled(consoleLog);
 
     await getInitializedResourceTreeModel(mainFrameTarget);
     navigate(getMainFrame(mainFrameTarget));
-    assert.isTrue(consoleLog.calledOnce);
+    sinon.assert.calledOnce(consoleLog);
     assert.isTrue(consoleLog.calledOnceWith(`Navigated to ${FRAME_URL}`));
   });
 
@@ -124,11 +124,11 @@ describeWithMockConnection('ConsoleMessage', () => {
     const subframeTarget = createTarget({type: SDK.Target.Type.FRAME, parentTarget: mainFrameTarget});
     await getInitializedResourceTreeModel(subframeTarget);
     navigate(getMainFrame(subframeTarget), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
-    assert.isTrue(consoleLog.notCalled);
+    sinon.assert.notCalled(consoleLog);
 
     await getInitializedResourceTreeModel(mainFrameTarget);
     navigate(getMainFrame(mainFrameTarget), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
-    assert.isTrue(consoleLog.calledOnce);
+    sinon.assert.calledOnce(consoleLog);
     assert.isTrue(consoleLog.calledOnceWith(
         `Navigation to ${FRAME_URL} was restored from back/forward cache (see https://web.dev/bfcache/)`));
   });
@@ -152,15 +152,15 @@ describeWithMockConnection('ConsoleMessage', () => {
     };
 
     runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
-    assert.isTrue(addMessage.calledOnce);
+    sinon.assert.calledOnce(addMessage);
     assert.isTrue(addMessage.calledOnceWith(sinon.match({messageText: 'log me'})));
 
     runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
-    assert.isTrue(addMessage.calledOnce);
+    sinon.assert.calledOnce(addMessage);
 
     runtimeModel.dispatchEventToListeners(
         SDK.RuntimeModel.Events.ConsoleAPICalled, {...consoleAPICall, timestamp: 123457.000});
-    assert.isTrue(addMessage.calledTwice);
+    sinon.assert.calledTwice(addMessage);
     assert.isTrue(addMessage.secondCall.calledWith(sinon.match({messageText: 'log me'})));
   });
 

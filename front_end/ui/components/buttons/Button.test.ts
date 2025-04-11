@@ -196,7 +196,7 @@ describe('Button', () => {
     dispatchKeyDownEvent(innerButton, {bubbles: true, composed: true, key: ' '});
     dispatchKeyDownEvent(innerButton, {bubbles: true, composed: true, key: 'x'});
 
-    assert.isTrue(onKeydown.calledOnce);
+    sinon.assert.calledOnce(onKeydown);
     assert.strictEqual(onKeydown.getCall(0).args[0].key, 'x');
   });
 

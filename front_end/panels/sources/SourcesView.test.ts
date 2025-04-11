@@ -127,11 +127,11 @@ describeWithEnvironment('SourcesView', () => {
 
     await contentLoadedPromise;
 
-    assert.isTrue(attachSpy.called);
-    assert.isTrue(removeSpy.notCalled);
+    sinon.assert.called(attachSpy);
+    sinon.assert.notCalled(removeSpy);
 
     uiSourceCode.commitWorkingCopy();
-    assert.isTrue(removeSpy.called);
+    sinon.assert.called(removeSpy);
   });
 
   describe('viewForFile', () => {
@@ -214,7 +214,7 @@ describeWithMockConnection('SourcesView', () => {
     new Sources.SourcesView.SourcesView();
     let addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
     assert.deepEqual(addedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
-    assert.isTrue(removeUISourceCodesSpy.notCalled);
+    sinon.assert.notCalled(removeUISourceCodesSpy);
 
     addUISourceCodeSpy.resetHistory();
     target2.targetManager().setScopeTarget(target2);
@@ -234,6 +234,6 @@ describeWithMockConnection('SourcesView', () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     const removeUISourceCodesSpy = sinon.spy(sourcesView.editorContainer, 'removeUISourceCodes');
     target2.targetManager().setScopeTarget(target2);
-    assert.isTrue(removeUISourceCodesSpy.notCalled);
+    sinon.assert.notCalled(removeUISourceCodesSpy);
   });
 });

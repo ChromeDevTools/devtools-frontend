@@ -54,12 +54,12 @@ describeWithEnvironment('ContextMenu', () => {
     dispatchMouseUpEvent(item1);
     assert.isTrue(item0.hasAttribute('checked'));
     assert.isTrue(item1.hasAttribute('checked'));
-    assert.isTrue(!contextMenuDiscardSpy.called);
+    sinon.assert.notCalled(contextMenuDiscardSpy);
 
     dispatchMouseUpEvent(item0);
     assert.isFalse(item0.hasAttribute('checked'));
     assert.isTrue(item1.hasAttribute('checked'));
-    assert.isTrue(!contextMenuDiscardSpy.called);
+    sinon.assert.notCalled(contextMenuDiscardSpy);
 
     softMenu.discard();
   });
@@ -73,7 +73,7 @@ describeWithEnvironment('ContextMenu', () => {
     const item0 = softMenuElement.querySelector('[aria-label^="item0"]');
     assert.instanceOf(item0, HTMLElement);
     dispatchMouseUpEvent(item0);
-    assert.isTrue(contextMenuDiscardSpy.called);
+    sinon.assert.called(contextMenuDiscardSpy);
 
     softMenu.discard();
   });
@@ -87,7 +87,7 @@ describeWithEnvironment('ContextMenu', () => {
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     await contextMenu.show();
-    assert.isTrue(showContextMenuAtPoint.called);
+    sinon.assert.called(showContextMenuAtPoint);
   });
 
   it('logs impressions and clicks for hosted menu', async () => {
@@ -114,7 +114,7 @@ describeWithEnvironment('ContextMenu', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.exists(throttler.process);
     await throttler.process?.();
-    assert.isTrue(recordImpression.calledOnce);
+    sinon.assert.calledOnce(recordImpression);
     const impressions =
         recordImpression.firstCall.firstArg.impressions as Host.InspectorFrontendHostAPI.VisualElementImpression[];
     const menuId = impressions.find(i => !i.parent)?.id;
@@ -129,7 +129,7 @@ describeWithEnvironment('ContextMenu', () => {
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 1);
 
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isTrue(recordClick.calledOnce);
+    sinon.assert.calledOnce(recordClick);
     await VisualLogging.stopLogging();
   });
 });

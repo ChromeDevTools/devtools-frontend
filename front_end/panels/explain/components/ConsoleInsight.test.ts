@@ -206,7 +206,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       composed: true,
     });
 
-    assert(aidaClient.registerClientEvent.calledOnce);
+    sinon.assert.calledOnce(aidaClient.registerClientEvent);
     sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
       corresponding_aida_rpc_global_id: 0,
       do_conversation_client_event: {
@@ -221,7 +221,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       composed: true,
     });
     // Can only rate once.
-    assert(aidaClient.registerClientEvent.calledOnce);
+    sinon.assert.calledOnce(aidaClient.registerClientEvent);
   };
 
   it('reports positive rating', reportsRating(true));

@@ -53,7 +53,7 @@ describeWithMockConnection('MainMenuItem', () => {
       cancelable: true,
     }));
 
-    assert.isTrue(contextMenuShow.calledOnce);
+    sinon.assert.calledOnce(contextMenuShow);
     assert.notExists(contextMenuShow.thisValues[0].defaultSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
   });

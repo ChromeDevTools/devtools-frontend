@@ -224,7 +224,7 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'Enter');
     getFocusedElement().textContent = 'New Value';
     sendKeydown(element, 'Enter');
-    assert.isTrue(editCallback.calledOnce);
+    sinon.assert.calledOnce(editCallback);
     assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 1'));
     assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 2'));
     assert.strictEqual(editCallback.firstCall.args[0].detail.columnId, 'column-1');
@@ -257,12 +257,12 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'Enter');
     getFocusedElement().textContent = 'New Value 1';
     sendKeydown(element, 'Tab');
-    assert.isFalse(editCallback.called);
-    assert.isFalse(createCallback.called);
+    sinon.assert.notCalled(editCallback);
+    sinon.assert.notCalled(createCallback);
     getFocusedElement().textContent = 'New Value 2';
     sendKeydown(element, 'Tab');
-    assert.isFalse(editCallback.called);
-    assert.isTrue(createCallback.calledOnce);
+    sinon.assert.notCalled(editCallback);
+    sinon.assert.calledOnce(createCallback);
     assert.deepEqual(createCallback.firstCall.args[0].detail,
                            {'column-1': 'New Value 1', 'column-2': 'New Value 2'});
   });

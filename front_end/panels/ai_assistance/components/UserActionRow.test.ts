@@ -28,14 +28,14 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
 
     {
       expect(view.input.isShowingFeedbackForm).equals(false);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     {
       expect(view.input.isShowingFeedbackForm).equals(true);
     }
@@ -49,14 +49,14 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
 
     {
       expect(view.input.isShowingFeedbackForm).equals(false);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
     {
       expect(view.input.isShowingFeedbackForm).equals(false);
     }
@@ -70,14 +70,14 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.strictEqual(view.callCount, 1);
+    sinon.assert.callCount(view, 1);
 
     {
       expect(view.input.isSubmitButtonDisabled).equals(true);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.strictEqual(view.callCount, 2);
+    sinon.assert.callCount(view, 2);
 
     {
       expect(view.input.isShowingFeedbackForm).equals(true);

@@ -17,6 +17,6 @@ describeWithMockConnection('CheckFormsIssuesTrigger', () => {
     assert.exists(resourceTreeModel);
     const spyCheckFormsIssues = sinon.stub(auditsAgent, 'invoke_checkFormsIssues');
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 123});
-    assert.isTrue(spyCheckFormsIssues.called);
+    sinon.assert.called(spyCheckFormsIssues);
   });
 });

@@ -179,7 +179,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
 
     await RenderCoordinator.done();
 
-    assert(mockReveal.calledOnce);
+    sinon.assert.calledOnce(mockReveal);
     assert.isFalse(addItem.selected);
   });
 });

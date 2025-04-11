@@ -431,7 +431,7 @@ describeWithMockConnection('RemoteError', () => {
     assert.isUndefined(await error.exceptionDetails());
     assert.isUndefined(await error.exceptionDetails());
 
-    assert.isTrue(exceptionDetailsStub.calledOnce);
+    sinon.assert.calledOnce(exceptionDetailsStub);
   });
 
   it('caches the cause', async () => {
@@ -444,7 +444,7 @@ describeWithMockConnection('RemoteError', () => {
     assert.isUndefined(await error.cause());
     assert.isUndefined(await error.cause());
 
-    assert.isTrue(getAllPropertiesStub.calledOnce);
+    sinon.assert.calledOnce(getAllPropertiesStub);
   });
 
   it('returns undefined if error has no "cause" property', async () => {

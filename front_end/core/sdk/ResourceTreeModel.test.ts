@@ -104,8 +104,8 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const reloadSubframePage = sinon.spy(getResourceTreeModel(subframeTarget), 'reloadPage');
     SDK.ResourceTreeModel.ResourceTreeModel.reloadAllPages();
 
-    assert.isTrue(reloadMainFramePage.calledOnce);
-    assert.isTrue(reloadSubframePage.notCalled);
+    sinon.assert.calledOnce(reloadMainFramePage);
+    sinon.assert.notCalled(reloadSubframePage);
   });
 
   it('tags reloads with the targets loaderId', async () => {
@@ -115,7 +115,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const reload = sinon.spy(target.pageAgent(), 'invoke_reload');
     assert.isNotNull(resourceTreeModel.mainFrame);
     resourceTreeModel.reloadPage();
-    assert.isTrue(reload.calledOnce);
+    sinon.assert.calledOnce(reload);
     assert.deepEqual(
         reload.args[0], [{ignoreCache: undefined, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined}]);
   });
@@ -210,9 +210,9 @@ describeWithMockConnection('ResourceTreeModel', () => {
     navigate(getMainFrame(target), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);
 
     await cachedResourcesLoaded;
-    assert.isTrue(removedFromFrameManagerSpy.calledOnce);
-    assert.isTrue(addedToFrameManagerSpy.calledOnce);
-    assert.isTrue(processPendingEventsSpy.calledTwice);
+    sinon.assert.calledOnce(removedFromFrameManagerSpy);
+    sinon.assert.calledOnce(addedToFrameManagerSpy);
+    sinon.assert.calledTwice(processPendingEventsSpy);
 
     const frameAfterNav = resourceTreeModel.frames()[0];
     assert.strictEqual(

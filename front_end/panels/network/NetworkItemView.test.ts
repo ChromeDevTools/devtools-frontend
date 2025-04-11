@@ -57,7 +57,7 @@ describeWithMockConnection('NetworkItemView', () => {
     assert.exists(headersViewComponent);
     const headersViewComponentSpy = sinon.spy(headersViewComponent, 'revealHeader');
 
-    assert.isTrue(headersViewComponentSpy.notCalled);
+    sinon.assert.notCalled(headersViewComponentSpy);
 
     networkItemView.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName');
 

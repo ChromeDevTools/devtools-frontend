@@ -32,7 +32,7 @@ describeWithMockConnection('CPUThrottlingManager', () => {
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     manager.setHardwareConcurrency(5);
 
-    assert.isTrue(cdpStub.calledOnce);
+    sinon.assert.calledOnce(cdpStub);
     assert.isTrue(cdpStub.calledWithExactly({hardwareConcurrency: 5}));
   });
 
@@ -41,9 +41,9 @@ describeWithMockConnection('CPUThrottlingManager', () => {
 
     const manager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     manager.setHardwareConcurrency(0);
-    assert.isFalse(cdpStub.called);
+    sinon.assert.notCalled(cdpStub);
 
     manager.setHardwareConcurrency(-1);
-    assert.isFalse(cdpStub.called);
+    sinon.assert.notCalled(cdpStub);
   });
 });

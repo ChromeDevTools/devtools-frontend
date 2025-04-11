@@ -164,7 +164,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       assert.isOk(emptyNode);
       assert.deepEqual(emptyNode.data, {});
       await new Promise(resolve => setTimeout(resolve, 0));
-      assert.isTrue(removeCredential.called);
+      sinon.assert.called(removeCredential);
 
       assert.strictEqual(removeCredential.firstCall.firstArg, authenticatorId);
       assert.strictEqual(removeCredential.firstCall.lastArg, credential.credentialId);

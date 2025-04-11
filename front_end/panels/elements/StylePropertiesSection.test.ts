@@ -76,7 +76,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const originNode =
         Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
     assert.strictEqual(originNode.textContent, '<style>');
-    assert.isTrue(linkifier.linkifyCSSLocation.calledOnce);
+    sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
     assert.strictEqual(linkifier.linkifyCSSLocation.args[0][0].styleSheetId, styleSheetId);
     assert.strictEqual(linkifier.linkifyCSSLocation.args[0][0].url, 'constructed.css');
   });
@@ -120,7 +120,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const originNode =
         Elements.StylePropertiesSection.StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
     assert.strictEqual(originNode.textContent, 'constructed stylesheet');
-    assert.isTrue(linkifier.linkifyCSSLocation.calledOnce);
+    sinon.assert.calledOnce(linkifier.linkifyCSSLocation);
     // Since we already asserted that a sourcemap exists for our header, it's sufficient to check that
     // linkifyCSSLocation has been called. Verifying that linkifyCSSLocation applies source mapping is out of scope
     // for this unit under test.

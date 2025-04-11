@@ -141,7 +141,7 @@ describeWithMockConnection('SecurityPanel', () => {
     // Check that the SecurityPanel listens to any PrimaryPageChanged event
     const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'clearOrigins');
     navigate(getMainFrame(target));
-    assert.isTrue(sidebarTreeClearSpy.calledOnce);
+    sinon.assert.calledOnce(sidebarTreeClearSpy);
   });
 
   it('shows \'reload page\' message when no data is available', async () => {

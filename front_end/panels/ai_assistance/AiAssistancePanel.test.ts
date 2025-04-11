@@ -295,7 +295,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           throw new Error('Context is not available');
         }
         UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
-        assert.strictEqual(view.callCount, callCount);
+        sinon.assert.callCount(view, callCount);
       });
     }
 
@@ -324,7 +324,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       // Now clear the context and check we cleared out the text
       UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
-      assert.strictEqual(chatView.clearTextInput.callCount, 1);
+      sinon.assert.callCount(chatView.clearTextInput, 1);
     });
   });
 
@@ -362,7 +362,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
       UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
-      assert.strictEqual(view.callCount, callCount);
+      sinon.assert.callCount(view, callCount);
     });
   });
 
@@ -682,7 +682,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       view.input.onDeleteClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.strictEqual(deleteHistoryEntryStub.callCount, 1);
+      sinon.assert.callCount(deleteHistoryEntryStub, 1);
       assert.isString(deleteHistoryEntryStub.lastCall.args[0]);
 
       const menuAfterDelete = openHistoryContextMenu(view.input, 'User question to Freestyler?');

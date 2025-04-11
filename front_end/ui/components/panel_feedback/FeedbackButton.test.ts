@@ -28,7 +28,7 @@ describeWithLocale('Feedback button', () => {
     const button = component.shadowRoot!.querySelector('devtools-button');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
-    assert.strictEqual(openInNewTabStub.callCount, 1);
+    sinon.assert.callCount(openInNewTabStub, 1);
     assert.isTrue(
         openInNewTabStub.firstCall.calledWith(urlString`https://feedbackurl.com`),
         'openInNewTab was not called with the expected URL.');

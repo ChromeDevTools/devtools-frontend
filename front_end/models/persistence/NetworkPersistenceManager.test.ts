@@ -972,7 +972,7 @@ describe('NetworkPersistenceManager', () => {
       fileSystemPath: 'file:///path/to/overrides',
     });
     const spy = sinon.spy(networkPersistenceManager, 'updateInterceptionPatterns');
-    assert.isTrue(spy.notCalled);
+    sinon.assert.notCalled(spy);
 
     uiSourceCode.setWorkingCopy(`[
       {
@@ -984,6 +984,6 @@ describe('NetworkPersistenceManager', () => {
       }
     ]`);
     uiSourceCode.commitWorkingCopy();
-    assert.isTrue(spy.calledOnce);
+    sinon.assert.calledOnce(spy);
   });
 });

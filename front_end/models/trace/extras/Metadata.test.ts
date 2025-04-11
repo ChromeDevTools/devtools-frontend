@@ -110,6 +110,6 @@ describeWithEnvironment('Trace Metadata', () => {
       emulatedDeviceTitle: undefined,
       hardwareConcurrency: undefined,
     });
-    assert.strictEqual(getHardwareConcurrencyStub.callCount, 0);
+    sinon.assert.callCount(getHardwareConcurrencyStub, 0);
   });
 });

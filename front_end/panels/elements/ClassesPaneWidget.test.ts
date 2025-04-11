@@ -37,10 +37,10 @@ describeWithMockConnection('ClassesPaneWidget', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
     sinon.stub(node, 'enclosingElementOrSelf').returns(node);
     sinon.stub(node, 'getAttribute').withArgs('class').returns(CLASS_NAMES.join(' '));
-    assert.isFalse(createCheckboxLabel.called);
+    sinon.assert.notCalled(createCheckboxLabel);
 
     model.dispatchEventToListeners(SDK.DOMModel.Events.DOMMutated, node);
-    assert.strictEqual(createCheckboxLabel.callCount, inScope ? CLASS_NAMES.length : 0);
+    sinon.assert.callCount(createCheckboxLabel, inScope ? CLASS_NAMES.length : 0);
   };
 
   it('updates UI on in scope update event', updatesUiOnEvent(true));

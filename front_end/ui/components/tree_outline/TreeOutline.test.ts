@@ -596,7 +596,7 @@ describe('TreeOutline', () => {
     // Expand it, then collapse it, then expand it again
     await component.expandRecursively(Number.POSITIVE_INFINITY);
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
-    assert.strictEqual(fetchChildrenSpy.callCount, 1);
+    sinon.assert.callCount(fetchChildrenSpy, 1);
     const officesNode = getVisibleTreeNodeByText(shadowRoot, 'Offices');
     await component.collapseChildrenOfNode(officesNode);
     await waitForRenderedTreeNodeCount(shadowRoot, 1);
@@ -604,7 +604,7 @@ describe('TreeOutline', () => {
     await waitForRenderedTreeNodeCount(shadowRoot, 4);
     // Make sure that we only fetched the children once despite expanding the
     // Tree twice.
-    assert.strictEqual(fetchChildrenSpy.callCount, 1);
+    sinon.assert.callCount(fetchChildrenSpy, 1);
     const visibleTree = visibleNodesToTree(shadowRoot);
     assert.deepEqual(visibleTree, [
       {

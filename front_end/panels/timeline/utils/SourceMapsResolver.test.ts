@@ -253,7 +253,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
       const sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
       sourceMapsResolver.addEventListener(Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, listener);
       await sourceMapsResolver.install();
-      assert.isTrue(listener.notCalled);
+      sinon.assert.notCalled(listener);
     });
   });
   describe('updating entity mapping', () => {

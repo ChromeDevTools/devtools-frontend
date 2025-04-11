@@ -71,7 +71,7 @@ describeWithMockConnection('TracingManager', () => {
     manager.bufferUsage(0);
     manager.eventsCollected(fakeEvents);
     manager.tracingComplete();
-    assert.isTrue(tracingCompleteSpy.calledOnce);
+    sinon.assert.calledOnce(tracingCompleteSpy);
   });
 
   it('errors if tracing is started twice', async () => {

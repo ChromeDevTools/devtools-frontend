@@ -723,7 +723,7 @@ STOP`,
           if (result.type === 'side-effect') {
             // Initial code invocation resulting in a side-effect
             // happened.
-            assert.isTrue(execJs.calledOnce);
+            sinon.assert.calledOnce(execJs);
             // Emulate abort when waiting for the side-effect confirmation.
             controller.abort();
           }

@@ -40,10 +40,10 @@ describeWithMockConnection('Target', () => {
     const inspectedURLChanged = sinon.spy(SDK.TargetManager.TargetManager.instance(), 'onInspectedURLChange');
 
     subframeTarget.setInspectedURL(urlString`https://example.com/`);
-    assert.isTrue(inspectedURLChanged.calledOnce);
+    sinon.assert.calledOnce(inspectedURLChanged);
 
     mainFrameTargetUnderTab.setInspectedURL(urlString`https://example.com/`);
-    assert.isTrue(inspectedURLChanged.calledTwice);
+    sinon.assert.calledTwice(inspectedURLChanged);
   });
 
   it('determines outermost target', () => {
@@ -66,7 +66,7 @@ describeWithMockConnection('Target', () => {
     target.setHasCrashed(true);
     const spy = sinon.spy(target, 'resume');
     target.setHasCrashed(false);
-    assert.isTrue(spy.calledOnce);
+    sinon.assert.calledOnce(spy);
   });
 
   it('does not resume itself if it was not already crashed', async () => {
@@ -76,7 +76,7 @@ describeWithMockConnection('Target', () => {
     // Call this twice, but ensure we only call the spy once.
     target.setHasCrashed(false);
     target.setHasCrashed(false);
-    assert.strictEqual(spy.callCount, 1);
+    sinon.assert.callCount(spy, 1);
   });
 
   it('marks a crashed target as suspended', async () => {

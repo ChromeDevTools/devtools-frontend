@@ -40,25 +40,25 @@ describeWithMockConnection('ExecutionContextSelector', () => {
     };
 
     sentExecutionContextCreated(subframeTarget);
-    assert.isTrue(contextSetFlavor.called);
+    sinon.assert.called(contextSetFlavor);
 
     contextSetFlavor.resetHistory();
     sentExecutionContextCreated(subframeTarget);
-    assert.isTrue(contextSetFlavor.notCalled);
+    sinon.assert.notCalled(contextSetFlavor);
 
     sentExecutionContextCreated(mainFrameTarget);
-    assert.isTrue(contextSetFlavor.called);
+    sinon.assert.called(contextSetFlavor);
 
     contextSetFlavor.resetHistory();
     sentExecutionContextCreated(prerenderTarget);
-    assert.isFalse(contextSetFlavor.called);
+    sinon.assert.notCalled(contextSetFlavor);
 
     contextSetFlavor.resetHistory();
     sentExecutionContextCreated(serviceWorkerTarget, /* includeFrameId */ false);
-    assert.isFalse(contextSetFlavor.called);
+    sinon.assert.notCalled(contextSetFlavor);
 
     contextSetFlavor.resetHistory();
     sentExecutionContextCreated(workerTarget, /* includeFrameId */ false);
-    assert.isFalse(contextSetFlavor.called);
+    sinon.assert.notCalled(contextSetFlavor);
   });
 });

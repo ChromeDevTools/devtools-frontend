@@ -64,7 +64,7 @@ describe('Persistence', () => {
           workspace,
         });
 
-        assert.isFalse(workspace.addProject.called);
+        sinon.assert.notCalled(workspace.addProject);
       });
 
       it('doesn\'t add a placeholder project when there\'s a connected automatic file system', () => {
@@ -78,7 +78,7 @@ describe('Persistence', () => {
           workspace,
         });
 
-        assert.isFalse(workspace.addProject.called);
+        sinon.assert.notCalled(workspace.addProject);
       });
 
       it('adds a placeholder project when there\'s a connecting automatic file system', () => {

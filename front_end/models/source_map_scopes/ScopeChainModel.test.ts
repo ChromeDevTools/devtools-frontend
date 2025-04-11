@@ -51,7 +51,7 @@ describeWithMockConnection('ScopeChainModel', () => {
 
     await clock.tickAsync(10);
 
-    assert.isTrue(listenerStub.calledOnce);
+    sinon.assert.calledOnce(listenerStub);
   });
 
   it('does not emit an event after it was disposed even with an update still in-flight', async () => {
@@ -74,7 +74,7 @@ describeWithMockConnection('ScopeChainModel', () => {
 
     await clock.tickAsync(10);
 
-    assert.isTrue(stubPluginManager.resolveScopeChain.calledOnce);
+    sinon.assert.calledOnce(stubPluginManager.resolveScopeChain);
     assert.isFalse(listenerStub.calledOnce);
 
     scopeChainModel.dispose();

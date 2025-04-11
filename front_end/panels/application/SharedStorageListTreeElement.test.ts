@@ -114,7 +114,7 @@ describeWithMockConnection('SharedStorageListTreeElement', function() {
     treeElement.selectable = true;
     treeElement.select();
 
-    assert.isTrue(wasShownSpy.calledOnce);
+    sinon.assert.calledOnce(wasShownSpy);
 
     panel.detach();
   });

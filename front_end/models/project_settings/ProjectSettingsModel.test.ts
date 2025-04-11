@@ -205,7 +205,7 @@ describe('ProjectSettingsModel', () => {
       targetManager,
     });
 
-    assert.isTrue(targetManager.addEventListener.notCalled);
+    sinon.assert.notCalled(targetManager.addEventListener);
   });
 
   it('reports unavailable when `devToolsWellKnown` is disabled', () => {

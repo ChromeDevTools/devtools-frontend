@@ -23,6 +23,6 @@ describe('lazy', () => {
     // Subsequent calls of the function should throw an exception without
     // re-evaluation
     assert.throws(once, Error);
-    assert.strictEqual(fake.callCount, 1);
+    sinon.assert.callCount(fake, 1);
   });
 });

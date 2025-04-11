@@ -39,10 +39,10 @@ describeWithMockConnection('ChromeLink', () => {
 
     const link = chromeLink.shadowRoot.querySelector('a');
     assert.instanceOf(link, HTMLAnchorElement);
-    assert.isTrue(spy.notCalled);
+    sinon.assert.notCalled(spy);
     link.click();
 
-    assert.isTrue(spy.calledOnce);
+    sinon.assert.calledOnce(spy);
     assert.deepEqual(spy.firstCall.firstArg, {url: 'chrome://settings'});
   });
 });

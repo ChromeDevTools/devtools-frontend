@@ -75,6 +75,6 @@ describeWithMockConnection('AdvancedApp', () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ColorThemeChanged);
 
-    assert.isTrue(fetchColorsSpy.called);
+    sinon.assert.called(fetchColorsSpy);
   });
 });

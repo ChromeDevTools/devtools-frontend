@@ -41,8 +41,8 @@ describeWithMockConnection('ElementsTreeElementHighlighter', () => {
     assert.strictEqual(throttlerSchedule.calledOnce, inScope);
     if (inScope) {
       throttlerSchedule.firstCall.firstArg();
-      assert.isTrue(treeOutlineSetHoverEffect.calledOnce);
-      assert.isTrue(treeElementReveal.called);
+      sinon.assert.calledOnce(treeOutlineSetHoverEffect);
+      sinon.assert.called(treeElementReveal);
     }
   };
 

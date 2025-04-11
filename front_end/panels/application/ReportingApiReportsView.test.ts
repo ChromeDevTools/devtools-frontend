@@ -109,9 +109,9 @@ describeWithMockConnection('ReportingApiReportsView', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[1]);
     const grid = view.getReportsGrid();
     const stub = sinon.stub(view, 'setSidebarWidget');
-    assert.isTrue(stub.notCalled);
+    sinon.assert.notCalled(stub);
     grid.dispatchEvent(new CustomEvent('select', {detail: 'some_id'}));
     await raf();
-    assert.isTrue(stub.calledOnce);
+    sinon.assert.calledOnce(stub);
   });
 });

@@ -97,8 +97,8 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     manager?.storageBucketDeleted({bucketId: testStorageBucketInfo.id});
 
-    assert.isTrue(trackCacheSpy.notCalled);
-    assert.isTrue(untrackCacheSpy.notCalled);
+    sinon.assert.notCalled(trackCacheSpy);
+    sinon.assert.notCalled(untrackCacheSpy);
   });
 
   it('calls protocol method and dispatches event on refreshCacheNames', async () => {

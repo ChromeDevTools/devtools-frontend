@@ -33,11 +33,11 @@ describe('RecorderShortcutHelper', () => {
     helper.handleShortcut(stub);
     await waitFor(time + 10);
 
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     dispatchShortcut();
 
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
   });
 
   it('should stop on click', async () => {
@@ -51,9 +51,9 @@ describe('RecorderShortcutHelper', () => {
     dispatchShortcut();
 
     await waitFor(time / 2);
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
 
     await waitFor(time);
-    assert.strictEqual(stub.callCount, 1);
+    sinon.assert.callCount(stub, 1);
   });
 });

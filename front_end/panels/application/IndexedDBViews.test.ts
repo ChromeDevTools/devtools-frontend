@@ -170,7 +170,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     assert.strictEqual(buttons[0].textContent?.trim(), 'Delete database');
     const showDialog = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);
     buttons[0].click();
-    assert.isTrue(showDialog.calledOnce);
+    sinon.assert.calledOnce(showDialog);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(model.deleteDatabase.calledOnceWithExactly(databaseId));
 

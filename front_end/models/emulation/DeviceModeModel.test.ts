@@ -92,13 +92,13 @@ describeWithMockConnection('DeviceModeModel', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
     resourceTreeModel!.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized);
-    assert.isTrue(setShowHinge.calledOnce);
+    sinon.assert.calledOnce(setShowHinge);
   });
 
   it('shows hinge on main frame navigation', () => {
     EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
     const setShowHinge = sinon.spy(target.overlayAgent(), 'invoke_setShowHinge');
     navigate(getMainFrame(target));
-    assert.isTrue(setShowHinge.calledOnce);
+    sinon.assert.calledOnce(setShowHinge);
   });
 });

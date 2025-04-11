@@ -23,7 +23,8 @@ type ViewInput<WidgetConstructorT extends WidgetConstructor> = ViewFunctionParam
 
 type ViewOutput<WidgetConstructorT extends WidgetConstructor> = ViewFunctionParameters<WidgetConstructorT>[1];
 
-interface ViewStubExtensions<WidgetConstructorT extends WidgetConstructor> {
+interface ViewStubExtensions<WidgetConstructorT extends WidgetConstructor> extends
+    sinon.SinonSpy<[ViewInput<WidgetConstructorT>, ViewOutput<WidgetConstructorT>, HTMLElement], void> {
   input: ViewInput<WidgetConstructorT>;
   nextInput: Promise<ViewInput<WidgetConstructorT>>;
   callCount: number;
@@ -42,15 +43,14 @@ export function createViewFunctionStub<WidgetConstructorT extends WidgetConstruc
     outputValues?: ViewOutput<WidgetConstructorT>,
     ): ViewFunctionStub<WidgetConstructorT> {
   const result: InternalViewStubExtensions<WidgetConstructorT> =
-      ((input: ViewInput<WidgetConstructorT>, output: ViewOutput<WidgetConstructorT>, _target: HTMLElement) => {
-        ++result.callCount;
-        result.input = input;
-        if (output && outputValues) {
-          Object.assign((output as object), outputValues);
-        }
-        result.invoked?.(input);
-      }) as ViewFunctionStub<WidgetConstructorT>;
-  result.callCount = 0;
+      sinon.fake(
+          (input: ViewInput<WidgetConstructorT>, output: ViewOutput<WidgetConstructorT>, _target: HTMLElement) => {
+            result.input = input;
+            if (output && outputValues) {
+              Object.assign(output, outputValues);
+            }
+            result.invoked?.(input);
+          }) as ViewFunctionStub<WidgetConstructorT>;
   Object.defineProperty(result, 'nextInput', {
     get() {
       return new Promise<ViewInput<WidgetConstructorT>>(resolve => {

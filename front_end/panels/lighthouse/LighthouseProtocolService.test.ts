@@ -52,19 +52,19 @@ describeWithMockConnection('LighthouseProtocolService', () => {
   it('suspends all targets', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
     await service.attach();
-    assert.isTrue(suspendAllTargets.calledOnce);
+    sinon.assert.calledOnce(suspendAllTargets);
   });
 
   it('creates a parallel connection', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
     await service.attach();
-    assert.isTrue(createParallelConnection.calledOnce);
+    sinon.assert.calledOnce(createParallelConnection);
   });
 
   it('resumes all targets', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
     await service.attach();
     await service.detach();
-    assert.isTrue(resumeAllTargets.calledOnce);
+    sinon.assert.calledOnce(resumeAllTargets);
   });
 });

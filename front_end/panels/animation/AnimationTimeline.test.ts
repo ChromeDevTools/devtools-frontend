@@ -231,7 +231,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
       const afterResizeWidth = view.element.style.getPropertyValue('--timeline-controls-width');
       assert.notStrictEqual(initialWidth, afterResizeWidth);
-      assert.isTrue(onResizeStub.calledOnce);
+      sinon.assert.calledOnce(onResizeStub);
     });
   });
 

@@ -70,13 +70,13 @@ describeWithRealConnection('TimelineController', () => {
     // Run the test for at least 0.5s to have progress events be sent.
     await new Promise(resolve => setTimeout(resolve, 1500));
     await controller.stopRecording();
-    assert.strictEqual(stubs.processingStarted.callCount, 1);
+    sinon.assert.callCount(stubs.processingStarted, 1);
     // Depending on the speed of the machine you might get more than 1 progress
     // call, hence we assert that there is at least one.
     assert.isAtLeast(stubs.recordingProgress.callCount, 1);
-    assert.strictEqual(stubs.loadingStarted.callCount, 1);
+    sinon.assert.callCount(stubs.loadingStarted, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
-    assert.strictEqual(stubs.loadingComplete.callCount, 1);
+    sinon.assert.callCount(stubs.loadingComplete, 1);
     const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [Trace.Types.Events.Event[]];
     // Ensure we collected events during tracing.
     assert.isTrue(collectedEvents.length > 0);

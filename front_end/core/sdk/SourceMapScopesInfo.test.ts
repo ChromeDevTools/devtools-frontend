@@ -589,7 +589,7 @@ describe('SourceMapScopesInfo', () => {
       assert.isUndefined(properties[1].value);
       assert.isUndefined(properties[1].getter);
 
-      assert.isTrue(callFrame.evaluate.calledOnce);
+      sinon.assert.calledOnce(callFrame.evaluate);
     });
 
     it('works when generated ranges from outer scopes overlay ranges from inner scopes', async () => {

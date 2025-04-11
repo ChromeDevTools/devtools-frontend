@@ -120,10 +120,13 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
             ` : nothing}
           </div>
           ${hasFolders ? html`
-            <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)} tabindex="0">
+            <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)} tabindex="0"
+              aria-activedescendant=${input.folders.length > 0 ? `option-${input.selectedIndex}` : ''}>
               ${input.folders.map((folder, index) => {
+                const optionId = `option-${index}`;
                 return html`
                   <li
+                    id=${optionId}
                     @click=${() => input.onProjectSelected(index)}
                     class=${index === input.selectedIndex ? 'selected' : ''}
                     aria-selected=${index === input.selectedIndex ? 'true' : 'false'}

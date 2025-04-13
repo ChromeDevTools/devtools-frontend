@@ -144,7 +144,8 @@ def run_eslint(options):
         if line.endswith(b'.js') or line.endswith(b'.ts'):
             generated_source_files.append(line)
     subprocess.check_call([
-        node_path(options),
+        node_path(options), "--experimental-strip-types",
+        "--no-warnings=ExperimentalWarning",
         os.path.join(options.devtools_dir, 'scripts', 'test',
                      'run_lint_check.mjs')
     ] + generated_source_files,

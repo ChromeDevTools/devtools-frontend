@@ -52,7 +52,11 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     // ESLint provides the filename with normalized separators.
-    const filename = context.filename;
+    const filename = context.filename.replaceAll(
+        '\\',
+        '/',
+    );
+
     const sourceCode = context.sourceCode;
     // Store the Property node itself to report errors and apply fixes
     const declaredUIStringsKeys = new Map<string, Property>();
@@ -110,11 +114,8 @@ export default createRule({
 
     return {
       VariableDeclarator(node) {
-        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename)) {
-          return;
-        }
-
-        if (TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
+        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename) ||
+            TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
           return;
         }
 

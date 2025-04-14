@@ -31,7 +31,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const filename = context.filename;
+    const filename = context.filename.replaceAll('\\', '/');
     const sourceCode = context.sourceCode;
 
     function removeExportKeywordFromUIStrings(

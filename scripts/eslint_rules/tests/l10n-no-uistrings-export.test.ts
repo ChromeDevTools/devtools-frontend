@@ -20,6 +20,11 @@ new RuleTester().run('l10n-no-uistrings-export', rule, {
       code: 'export const UIStrings = {} as const;',
       filename: 'front_end/module/ModuleUIStrings.js',
     },
+    {
+      code: 'export const UIStrings = {} as const;',
+      // Emulate Windows path
+      filename: 'front_end\\module\\ModuleUIStrings.js',
+    },
   ],
   invalid: [
     {

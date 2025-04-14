@@ -70,6 +70,11 @@ new RuleTester().run('l10n-no-unused-message', rule, {
       code: 'const UIStrings = {foo: \'bar\' } as const; let someVariable = UIStrings.foo;',
       filename: 'front_end/module/test.ts',
     },
+    {
+      code: 'const UIStrings = {foo: \'bar\' } as const;',
+      // Emulate Window path
+      filename: 'front_end\\models\\trace\\insights\\Cache.ts',
+    },
   ],
   invalid: [
     {

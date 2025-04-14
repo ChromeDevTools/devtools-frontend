@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-const rule = require('../lib/l10n-no-locked-or-placeholder-only-phrase.js');
+import rule from '../lib/l10n-no-locked-or-placeholder-only-phrase.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('l10n-no-locked-or-placeholder-only-phrase', rule, {
   valid: [
@@ -30,7 +29,7 @@ new RuleTester().run('l10n-no-locked-or-placeholder-only-phrase', rule, {
       code: 'const UIStrings = { foo: \'`whole phrase is locked`\'} as const;',
       errors: [
         {
-          message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.',
+          messageId: 'fullyLockedPhrase',
         },
       ],
     },
@@ -38,7 +37,7 @@ new RuleTester().run('l10n-no-locked-or-placeholder-only-phrase', rule, {
       code: 'const UIStrings = { foo: \'{PH}\'} as const;',
       errors: [
         {
-          message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.',
+          messageId: 'singlePlaceholderPhrase',
         },
       ],
     },

@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-const rule = require('../lib/l10n-no-unused-message.js');
+import rule from '../lib/l10n-no-unused-message.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 const exampleWithJSDoc = `
 const UIStrings = {
@@ -77,41 +76,38 @@ new RuleTester().run('l10n-no-unused-message', rule, {
       // Check that trailing comma is handled.
       code: 'const UIStrings = {\n foo: \'bar\',\n} as const;',
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'UIStrings message is not used.'}],
+      errors: [{messageId: 'unusedMessage'}],
       output: 'const UIStrings = {\n} as const;',
     },
     {
       code: 'const UIStrings = {\n  foo: \'bar\'\n} as const;',
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'UIStrings message is not used.'}],
+      errors: [{messageId: 'unusedMessage'}],
       output: 'const UIStrings = {\n} as const;',
     },
     {
       // Check that the JSDoc before the property is also removed.
       code: exampleWithJSDoc,
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'UIStrings message is not used.'}],
+      errors: [{messageId: 'unusedMessage'}],
       output: '\nconst UIStrings = {\n} as const;',
     },
     {
       code: exampleWithJSDocNoComma,
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'UIStrings message is not used.'}],
+      errors: [{messageId: 'unusedMessage'}],
       output: '\nconst UIStrings = {\n} as const;',
     },
     {
       code: exampleWithSiblings,
       filename: 'front_end/module/test.ts',
-      errors: [
-        {message: 'UIStrings message is not used.'},
-        {message: 'UIStrings message is not used.'},
-      ],
+      errors: [{messageId: 'unusedMessage'}, {messageId: 'unusedMessage'}],
       output: outputWithSiblings,
     },
     {
       code: exampleWithSiblings2,
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'UIStrings message is not used.'}],
+      errors: [{messageId: 'unusedMessage'}],
       output: outputWithSiblings2,
     },
   ],

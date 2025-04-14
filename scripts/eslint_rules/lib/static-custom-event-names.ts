@@ -149,8 +149,7 @@ export default createRule({
         return;
       }
 
-      // Now we know the static readonly eventName is defined, we check for
-      // the constructor and the super() call.
+      // Now check the constructor and super() call.
       const {constructor, superExpression, firstArgumentToSuper} =
           findConstructorAndSuperCallAndFirstArgumentToSuper(node);
 

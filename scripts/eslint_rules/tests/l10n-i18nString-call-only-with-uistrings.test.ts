@@ -2,16 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-const rule = require('../lib/l10n-i18nString-call-only-with-uistrings.js');
+import rule from '../lib/l10n-i18nString-call-only-with-uistrings.ts';
 
-const {RuleTester} = require('./utils/utils.js');
-
-const expectedErrors = [
-  {
-    message: 'Calling i18nString/i18nLazyString without using a UIStrings object is illegal.',
-  },
-];
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('l10n-i18nString-call-only-with-uistrings', rule, {
   valid: [
@@ -25,15 +18,27 @@ new RuleTester().run('l10n-i18nString-call-only-with-uistrings', rule, {
   invalid: [
     {
       code: 'i18nString("test");',
-      errors: expectedErrors,
+      errors: [
+        {
+          messageId: 'invalidArgument',
+        },
+      ],
     },
     {
       code: 'i18nLazyString("test");',
-      errors: expectedErrors,
+      errors: [
+        {
+          messageId: 'invalidArgument',
+        },
+      ],
     },
     {
       code: 'i18nString(someFoo());',
-      errors: expectedErrors,
+      errors: [
+        {
+          messageId: 'invalidArgument',
+        },
+      ],
     },
   ],
 });

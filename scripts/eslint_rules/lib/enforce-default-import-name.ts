@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {TSESTree} from '@typescript-eslint/utils';
 import path from 'path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule, isStarAsImportSpecifier} from './tsUtils.ts';
 
 // Define the structure of the options expected by the rule.
 type RuleOptions = [{
@@ -15,13 +14,6 @@ type RuleOptions = [{
 
 // Define the message IDs used by the rule.
 type MessageIds = 'invalidName';
-type SpecifierNamespaceArray = [TSESTree.ImportNamespaceSpecifier];
-/**
- * Checks if the import specifiers represent a namespace import (`import * as Name`).
- */
-function isStarAsImportSpecifier(specifiers: TSESTree.ImportClause[]): specifiers is SpecifierNamespaceArray {
-  return specifiers.length === 1 && specifiers[0].type === 'ImportNamespaceSpecifier';
-}
 
 export default createRule<RuleOptions, MessageIds>({
   name: 'enforce-default-import-name',

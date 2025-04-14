@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
-const rule = require('../lib/l10n-no-uistrings-export.js');
+import rule from '../lib/l10n-no-uistrings-export.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('l10n-no-uistrings-export', rule, {
   valid: [
@@ -28,7 +27,7 @@ new RuleTester().run('l10n-no-uistrings-export', rule, {
       filename: 'front_end/module/test.ts',
       errors: [
         {
-          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
+          messageId: 'noExport',
         },
       ],
       output: ' const UIStrings = {} as const;',
@@ -38,7 +37,7 @@ new RuleTester().run('l10n-no-uistrings-export', rule, {
       filename: 'front_end/module/test.ts',
       errors: [
         {
-          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
+          messageId: 'noExport',
         },
       ],
     },

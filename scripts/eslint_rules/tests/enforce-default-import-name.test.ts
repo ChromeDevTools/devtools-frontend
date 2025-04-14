@@ -1,18 +1,18 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const path = require('path');
+import path from 'path';
 
-const rule = require('../lib/enforce-default-import-name.js');
+import rule from '../lib/enforce-default-import-name.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 const TEST_OPTIONS = [
   {
     modulePath: path.join(
-        __dirname,
+        // @ts-expect-error
+        import.meta.dirname,
         '..',
         '..',
         '..',
@@ -23,7 +23,7 @@ const TEST_OPTIONS = [
         ),
     importName: 'Trace',
   },
-];
+] as const;
 
 new RuleTester().run('enforce-default-import-name', rule, {
   valid: [
@@ -45,7 +45,7 @@ new RuleTester().run('enforce-default-import-name', rule, {
       options: TEST_OPTIONS,
       errors: [
         {
-          message: 'When importing ../models/trace/trace.js, the name used must be Trace',
+          messageId: 'invalidName',
         },
       ],
     },

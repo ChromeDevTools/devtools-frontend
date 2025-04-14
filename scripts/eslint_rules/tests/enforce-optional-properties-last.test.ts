@@ -1,11 +1,13 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/enforce-optional-properties-last.js');
+import type {AST_NODE_TYPES} from '@typescript-eslint/utils';
 
-const {RuleTester} = require('./utils/utils.js');
+import rule from '../lib/enforce-optional-properties-last.ts';
+
+import {RuleTester} from './utils/tsUtils.ts';
+
 new RuleTester().run('optional-properties-last', rule, {
   valid: [
     {
@@ -64,8 +66,8 @@ export interface LCPPhases {
       `,
       errors: [
         {
-          message: 'Optional property \'name\' should be defined after required properties.',
-          type: 'TSPropertySignature',
+          messageId: 'optionalPropertyBeforeRequired',
+          type: 'TSPropertySignature' as AST_NODE_TYPES,
         },
       ],
       output: `
@@ -85,8 +87,8 @@ export interface LCPPhases {
       `,
       errors: [
         {
-          message: 'Optional property \'isCool\' should be defined after required properties.',
-          type: 'TSPropertySignature',
+          messageId: 'optionalPropertyBeforeRequired',
+          type: 'TSPropertySignature' as AST_NODE_TYPES,
         },
       ],
       output: `

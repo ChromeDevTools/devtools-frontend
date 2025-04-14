@@ -1,21 +1,15 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 /**
  * @fileoverview Rule to check ES import usage
  * @author Ergün Erdoğmuş
  */
-'use strict';
 
-// ------------------------------------------------------------------------------
-// Rule Definition
-// ------------------------------------------------------------------------------
+import {createRule} from './tsUtils.ts';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  name: 'enforce-ui-strings-as-const',
   meta: {
     type: 'suggestion',
     messages: {
@@ -26,9 +20,10 @@ module.exports = {
       category: 'Best Practices',
     },
     fixable: 'code',
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create: function (context) {
+  defaultOptions: [],
+  create: function(context) {
     return {
       VariableDeclaration(node) {
         if (node.kind !== 'const') {
@@ -41,28 +36,26 @@ module.exports = {
           return;
         }
 
-        const [declaration] = node.declarations;
+        const declaration = node.declarations[0];
+        const declarationId = declaration.id;
+        const declarationInit = declaration.init;
+
         // We look for `startsWith` because we want to capture other variations as well
         // such as `UIStringsNotTranslate` from the AIAssistancePanel.
-        const isIdentifierUIStrings =
-            declaration.id.type === 'Identifier' && declaration.id.name.startsWith('UIStrings');
-        const isAValidObjectExpression = declaration.init?.type === 'ObjectExpression';
-        if (!isIdentifierUIStrings || !isAValidObjectExpression) {
+        const isIdentifierUIStrings = declarationId.type === 'Identifier' && declarationId.name.startsWith('UIStrings');
+
+        const isObjectExpressionWithoutAsConst = declarationInit?.type === 'ObjectExpression';
+
+        if (!isIdentifierUIStrings || !isObjectExpressionWithoutAsConst) {
           return;
         }
 
-        // When we already have `as const`, the `declaration.init`s
-        // type will be TSAsExpression, so if we're here, we know
-        // that the declaration's init is marked as `ObjectExpression`
-        // and it is not an `as const` expression.
+        // If we reached here, it's a `const UIStrings... = {}` without `as const`.
         context.report({
-          node: declaration,
+          node: declaration,  // Report on the whole declaration for context
           messageId: 'invalidUIStringsObject',
           fix: fixer => {
-            const objectEnd = declaration.init?.range?.[1];
-            if (!objectEnd) {
-              return null;
-            }
+            const objectEnd = declarationInit.range[1];
 
             return fixer.insertTextAfterRange(
                 [objectEnd - 1, objectEnd],
@@ -73,4 +66,4 @@ module.exports = {
       },
     };
   },
-};
+});

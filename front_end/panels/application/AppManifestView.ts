@@ -772,7 +772,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     setIconMaskedCheckbox.setAttribute(
         'jslog', `${VisualLogging.toggle('show-minimal-safe-area-for-maskable-icons').track({change: true})}`);
     setIconMaskedCheckbox.addEventListener('click', () => {
-      this.iconsSection.setIconMasked(setIconMaskedCheckbox.checkboxElement.checked);
+      this.iconsSection.setIconMasked(setIconMaskedCheckbox.checked);
     });
     this.iconsSection.appendRow().appendChild(setIconMaskedCheckbox);
     const documentationLink = UI.XLink.XLink.create(
@@ -1233,8 +1233,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const wcoOsCheckbox =
         UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectWindowControlsOverlayEmulationOs), false);
 
-    wcoOsCheckbox.checkboxElement.addEventListener('click', async () => {
-      await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checkboxElement.checked);
+    wcoOsCheckbox.addEventListener('click', async () => {
+      await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
     });
 
     const osSelectElement = wcoOsCheckbox.createChild('select');
@@ -1252,7 +1252,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           osSelectElement.options[osSelectElement.selectedIndex].value as SDK.OverlayModel.EmulatedOSType;
       if (this.overlayModel) {
         this.overlayModel.setWindowControlsPlatform(selectedOS);
-        await this.overlayModel.toggleWindowControlsToolbar(wcoOsCheckbox.checkboxElement.checked);
+        await this.overlayModel.toggleWindowControlsToolbar(wcoOsCheckbox.checked);
       }
     });
 

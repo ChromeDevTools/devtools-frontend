@@ -227,7 +227,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.quotaOverrideCheckbox.setAttribute(
         'jslog', `${VisualLogging.toggle('simulate-custom-quota').track({change: true})}`);
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
-    this.quotaOverrideCheckbox.checkboxElement.addEventListener('click', this.onClickCheckbox.bind(this), false);
+    this.quotaOverrideCheckbox.addEventListener('click', this.onClickCheckbox.bind(this), false);
     this.quotaOverrideControlRow = quota.appendRow();
     this.quotaOverrideEditor = this.quotaOverrideControlRow.createChild('input', 'quota-override-notification-editor');
     this.quotaOverrideEditor.setAttribute(
@@ -343,7 +343,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (oldOrigin !== this.securityOrigin) {
       this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checkboxElement.checked = false;
+      this.quotaOverrideCheckbox.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
     }
     void this.doUpdate();
@@ -357,7 +357,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (oldStorageKey !== this.storageKey) {
       this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checkboxElement.checked = false;
+      this.quotaOverrideCheckbox.checked = false;
       this.quotaOverrideErrorMessage.textContent = '';
     }
     void this.doUpdate();
@@ -406,12 +406,12 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
   private async onClickCheckbox(): Promise<void> {
     if (this.quotaOverrideControlRow.classList.contains('hidden')) {
       this.quotaOverrideControlRow.classList.remove('hidden');
-      this.quotaOverrideCheckbox.checkboxElement.checked = true;
+      this.quotaOverrideCheckbox.checked = true;
       this.quotaOverrideEditor.value = this.previousOverrideFieldValue;
       this.quotaOverrideEditor.focus();
     } else if (this.target && this.securityOrigin) {
       this.quotaOverrideControlRow.classList.add('hidden');
-      this.quotaOverrideCheckbox.checkboxElement.checked = false;
+      this.quotaOverrideCheckbox.checked = false;
       await this.clearQuotaForOrigin(this.target, this.securityOrigin);
       this.quotaOverrideErrorMessage.textContent = '';
     }

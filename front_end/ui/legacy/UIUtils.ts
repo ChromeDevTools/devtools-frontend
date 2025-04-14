@@ -1364,6 +1364,18 @@ export class CheckboxLabel extends HTMLElement {
     return this.checkboxElement.disabled;
   }
 
+  set indeterminate(indeterminate: boolean) {
+    this.checkboxElement.indeterminate = indeterminate;
+  }
+
+  get indeterminate(): boolean {
+    return this.checkboxElement.indeterminate;
+  }
+
+  override click(): void {
+    this.checkboxElement.click();
+  }
+
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */
   static createWithStringLiteral(title?: string, checked?: boolean, jslogContext?: string, small?: boolean):
       CheckboxLabel {

@@ -63,7 +63,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/XHRBreakpoints
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const containerToBreakpointEntry = new WeakMap<Element, HTMLElement>();
 
-const breakpointEntryToCheckbox = new WeakMap<Element, HTMLInputElement>();
+const breakpointEntryToCheckbox = new WeakMap<Element, UI.UIUtils.CheckboxLabel>();
 
 let xhrBreakpointsSidebarPaneInstance: XHRBreakpointsSidebarPane;
 
@@ -193,18 +193,18 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     element.addEventListener('contextmenu', this.contextMenu.bind(this, item), true);
 
     const title = item ? i18nString(UIStrings.urlContainsS, {PH1: item}) : i18nString(UIStrings.anyXhrOrFetch);
-    const label = UI.UIUtils.CheckboxLabel.create(title, enabled, undefined, undefined, /* small */ true);
-    UI.ARIAUtils.setHidden(label, true);
+    const checkbox = UI.UIUtils.CheckboxLabel.create(title, enabled, undefined, undefined, /* small */ true);
+    UI.ARIAUtils.setHidden(checkbox, true);
     UI.ARIAUtils.setLabel(element, title);
-    element.appendChild(label);
-    label.checkboxElement.addEventListener('click', this.checkboxClicked.bind(this, item, enabled), false);
+    element.appendChild(checkbox);
+    checkbox.addEventListener('click', this.checkboxClicked.bind(this, item, enabled), false);
     element.addEventListener('click', event => {
       if (event.target === element) {
         this.checkboxClicked(item, enabled);
       }
     }, false);
-    breakpointEntryToCheckbox.set(element, label.checkboxElement);
-    label.checkboxElement.tabIndex = -1;
+    breakpointEntryToCheckbox.set(element, checkbox);
+    checkbox.tabIndex = -1;
     element.tabIndex = -1;
     if (item === this.#list.selectedItem()) {
       element.tabIndex = 0;
@@ -230,8 +230,8 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       UI.ARIAUtils.setDescription(element, i18nString(UIStrings.breakpointHit));
     }
 
-    label.classList.add('cursor-auto');
-    label.addEventListener('dblclick', this.labelClicked.bind(this, item), false);
+    checkbox.classList.add('cursor-auto');
+    checkbox.addEventListener('dblclick', this.labelClicked.bind(this, item), false);
     this.#breakpointElements.set(item, listItemElement);
     listItemElement.setAttribute('jslog', `${VisualLogging.item().track({
                                    click: true,

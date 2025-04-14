@@ -652,7 +652,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           // The "Recalculation forced" Stack trace
           title: undefined,
           value:
-              'testFuncs.changeAttributeAndDisplay @ chromedevtools.github.io/performance-stories/style-invalidations/app.js:44:47\n(anonymous) @ chromedevtools.github.io/performance-stories/style-invalidations/app.js:64:36',
+              'testFuncs.changeAttributeAndDisplay @ chromedevtools.github.io/performance-stories/style-invalidations/app.js:47:40\n(anonymous) @ chromedevtools.github.io/performance-stories/style-invalidations/app.js:64:36',
         },
         {
           title: 'Initiated by',
@@ -1152,7 +1152,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
          const expectedRowData = [
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
            // The initiator stack trace
-           {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
+           {
+             title: undefined,
+             value:
+                 'connect @ socketsbay.com/test-websockets:314:25\n(anonymous) @ socketsbay.com/test-websockets:130:129'
+           },
            // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
            {title: 'Initiator for', value: 'Send WebSocket handshake Receive WebSocket handshake'},
          ];

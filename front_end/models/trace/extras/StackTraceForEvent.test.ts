@@ -4,6 +4,13 @@
 
 import type * as Protocol from '../../../generated/protocol.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {
+  getBaseTraceParseModelData,
+  makeCompleteEvent,
+  makeInstantEvent,
+  makeMockRendererHandlerData,
+  makeProfileCall
+} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -20,6 +27,10 @@ function shapeStackTraceAsArray(stackTrace: Protocol.Runtime.StackTrace):
   }
 
   return stackTraceAsArray;
+}
+
+function parsedTraceFromEvents(events: Trace.Types.Events.Event[]): Trace.Handlers.Types.ParsedTrace {
+  return getBaseTraceParseModelData({Renderer: makeMockRendererHandlerData(events)});
 }
 describeWithEnvironment('StackTraceForTraceEvent', function() {
   let parsedTrace: Trace.Handlers.Types.ParsedTrace;
@@ -165,7 +176,7 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
     ]);
     bottomFrame.functionName = originalName;
   });
-  it('uses the stack trace of the profile call that contains an the raw trace event of the extension entry call',
+  it('uses the stack trace of the profile call that contains the raw trace event of the extension entry call',
      async function() {
        const jsCall = parsedTrace.Renderer.allTraceEntries.find(
                           e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz') as
@@ -197,7 +208,87 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
        } as Trace.Types.Extensions.SyntheticExtensionEntry;
        const stackTraceForExtensionEntry = Trace.Extras.StackTraceForEvent.get(mockExtensionEntry, parsedTrace);
        assert.exists(stackTraceForExtensionEntry);
-
-       assert.deepEqual(stackTraceForExtensionEntry, stackTraceForExtensionProfileCall);
+       assert.deepEqual(
+           shapeStackTraceAsArray(stackTraceForExtensionEntry),
+           shapeStackTraceAsArray(stackTraceForExtensionProfileCall));
      });
+  it('extracts the correct stack trace for a console timestamp extension entry', () => {
+    const pid = 0;
+    const tid = 0;
+    const profileCall = makeProfileCall('myFunction', 0, 200, pid, tid);
+    // Override the default -1 values to ensure the callframe is not
+    // discarded as a native frame (which we ignore).
+    profileCall.callFrame.columnNumber = 0;
+    profileCall.callFrame.lineNumber = 0;
+    const extensionEntryStart = 0;
+    const extensionEntryEnd = 100;
+    const entryName = 'Entry';
+    const timestamp = makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, extensionEntryEnd, '', pid, tid);
+    const extensionData = {
+      color: 'tertiary-dark',
+      frame: 'frame',
+      message: entryName,
+      name: entryName,
+      sampleTraceId: 0,
+      start: extensionEntryStart,
+      track: 'track',
+    };
+    timestamp.args = {data: extensionData};
+    const trace = parsedTraceFromEvents([profileCall, timestamp]);
+
+    const mockExtensionEntry = {
+      ts: timestamp.ts,
+      name: 'Entry',
+      cat: 'devtools.extension',
+      args: extensionData,
+      rawSourceEvent: timestamp,
+      dur: Trace.Types.Timing.Micro(extensionEntryEnd - extensionEntryStart),
+      ph: Trace.Types.Events.Phase.COMPLETE,
+      pid,
+      tid,
+    } as unknown as Trace.Types.Extensions.SyntheticExtensionTrackEntry;
+    const stackTraceForExtensionEntry = Trace.Extras.StackTraceForEvent.get(mockExtensionEntry, trace);
+    assert.exists(stackTraceForExtensionEntry);
+    assert.deepEqual(shapeStackTraceAsArray(stackTraceForExtensionEntry), [
+      {callFrames: [profileCall.callFrame], description: undefined},
+    ]);
+  });
+
+  it('returns the right stack for a trace event that contains a stack trace in its payload', () => {
+    const pid = 0;
+    const tid = 0;
+    const payloadLineNumber = 10;
+    const payloadColumnNumber = 3;
+    const profileCall1 = makeProfileCall('foo', 0, 200, pid, tid);
+    const profileCall2 = makeProfileCall('bar', 0, 200, pid, tid);
+    // Override the default -1 values to ensure the callframe is not
+    // discarded as a native frame (which we ignore).
+    profileCall1.callFrame.columnNumber = 0;
+    profileCall1.callFrame.lineNumber = 0;
+    profileCall2.callFrame.columnNumber = 0;
+    profileCall2.callFrame.lineNumber = 0;
+    const traceEvent = makeCompleteEvent(Trace.Types.Events.Name.UPDATE_LAYOUT_TREE, 100, 10, '', pid, tid) as
+        Trace.Types.Events.UpdateLayoutTree;
+    const payloadCallFrame = {
+      columnNumber: payloadColumnNumber,
+      functionName: 'bar',
+      lineNumber: payloadLineNumber,
+      scriptId: '115',
+      url: ''
+    };
+    traceEvent.args = {elementCount: 1, beginData: {frame: '', stackTrace: [payloadCallFrame]}};
+    const trace = parsedTraceFromEvents([profileCall1, profileCall2, traceEvent]);
+
+    const stackTraceForExtensionEntry = Trace.Extras.StackTraceForEvent.get(traceEvent, trace);
+    assert.exists(stackTraceForExtensionEntry);
+    assert.deepEqual(shapeStackTraceAsArray(stackTraceForExtensionEntry) as unknown[], [
+      {
+        callFrames: [
+          {...payloadCallFrame, lineNumber: payloadLineNumber - 1, columnNumber: payloadColumnNumber - 1},
+          profileCall1.callFrame
+        ],
+        description: undefined
+      },
+    ]);
+  });
 });

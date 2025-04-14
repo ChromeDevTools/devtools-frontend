@@ -4,7 +4,7 @@
 
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
-import type * as Helpers from '../helpers/helpers.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export const stackTraceForEventInTrace =
@@ -31,17 +31,21 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
     return resultFromCache;
   }
   let result: Protocol.Runtime.StackTrace|null = null;
-  if (Types.Events.isProfileCall(event)) {
-    result = getForProfileCall(event, parsedTrace);
-  } else if (Types.Extensions.isSyntheticExtensionEntry(event)) {
+  if (Types.Extensions.isSyntheticExtensionEntry(event)) {
     result = getForExtensionEntry(event, parsedTrace);
-  } else if (Types.Events.isUserTiming(event)) {
-    result = getForUserTiming(event, parsedTrace);
-  } else if (Types.Events.isLayout(event) || Types.Events.isUpdateLayoutTree(event)) {
-    const node = parsedTrace.Renderer.entryToNode.get(event);
-    const parent = node?.parent?.entry;
-    if (parent) {
-      result = get(parent, parsedTrace);
+  } else if (Types.Events.isPerformanceMeasureBegin(event)) {
+    result = getForPerformanceMeasure(event, parsedTrace);
+  } else {
+    result = getForEvent(event, parsedTrace);
+    const maybeProtocolCallFrame = getPayloadStackAsProtocolCallFrame(event);
+    if (result && maybeProtocolCallFrame && !isNativeJSFunction(maybeProtocolCallFrame)) {
+      // If the event has a payload stack trace, replace the top frame
+      // of the calculated stack with the top frame of the payload stack
+      // because trace payload call frames contain call locations, unlike
+      // profile call frames (which contain function declaration locations).
+      // This way the user knows which exact JS location triggered an
+      // event.
+      result.callFrames[0] = maybeProtocolCallFrame;
     }
   }
   if (result) {
@@ -50,15 +54,19 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
   return result;
 }
 
-function getForProfileCall(
-    event: Types.Events.SyntheticProfileCall, parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace {
+/**
+ * Fallback method to obtain a stack trace using the parsed event tree
+ * hierarchy. This shouldn't be called outside of this file, use `get`
+ * instead to ensure the correct event in the tree hierarchy is used.
+ */
+function getForEvent(event: Types.Events.Event, parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace {
   // When working with a CPU profile the renderer handler won't have
   // entries in its tree.
   const entryToNode =
       parsedTrace.Renderer.entryToNode.size > 0 ? parsedTrace.Renderer.entryToNode : parsedTrace.Samples.entryToNode;
   const topStackTrace: Protocol.Runtime.StackTrace = {callFrames: []};
   let stackTrace: Protocol.Runtime.StackTrace = topStackTrace;
-  let currentEntry = event;
+  let currentEntry: Types.Events.SyntheticProfileCall;
   let node: Helpers.TreeHelpers.TraceEntryNode|null|undefined = entryToNode.get(event);
   const traceCache =
       stackTraceForEventInTrace.get(parsedTrace) || new Map<Types.Events.Event, Protocol.Runtime.StackTrace>();
@@ -121,36 +129,35 @@ function getForProfileCall(
  */
 function getForExtensionEntry(event: Types.Extensions.SyntheticExtensionEntry, parsedTrace: Handlers.Types.ParsedTrace):
     Protocol.Runtime.StackTrace|null {
-  return getForUserTiming(event.rawSourceEvent, parsedTrace);
-}
-
-/**
- * Finds the JS call in which the user timing API was called and returns
- * its stack trace.
- */
-function getForUserTiming(
-    event: Types.Events.UserTiming|Types.Events.ConsoleTimeStamp,
-    parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace|null {
-  let rawEvent: Types.Events.Event|undefined = event;
-  if (Types.Events.isPerformanceMeasureBegin(event)) {
-    if (event.args.traceId === undefined) {
-      return null;
-    }
-    rawEvent = parsedTrace.UserTimings.measureTraceByTraceId.get(event.args.traceId);
+  const rawEvent: Types.Events.Event = event.rawSourceEvent;
+  if (Types.Events.isPerformanceMeasureBegin(rawEvent)) {
+    return getForPerformanceMeasure(rawEvent, parsedTrace);
   }
   if (!rawEvent) {
     return null;
   }
-  // Look for the nearest profile call ancestor of the event tracing
-  // the call to the API.
-  let node: Helpers.TreeHelpers.TraceEntryNode|undefined|null = parsedTrace.Renderer.entryToNode.get(rawEvent);
-  while (node && !Types.Events.isProfileCall(node.entry)) {
-    node = node.parent;
+  return get(rawEvent, parsedTrace);
+}
+
+/**
+ * Gets the raw event for a user timing and obtains its stack trace.
+ */
+function getForPerformanceMeasure(event: Types.Events.PerformanceMeasureBegin, parsedTrace: Handlers.Types.ParsedTrace):
+    Protocol.Runtime.StackTrace|null {
+  let rawEvent: Types.Events.Event|undefined = event;
+  if (event.args.traceId === undefined) {
+    return null;
   }
-  if (node && Types.Events.isProfileCall(node.entry)) {
-    return get(node.entry, parsedTrace);
+  // performance.measure calls dispatch 2 events: one for the call
+  // itself and another to represent the measured entry in the trace
+  // timeline. They are connected via a common traceId. At this
+  // point `rawEvent` corresponds to the second case, we must
+  // encounter the event for the call itself to obtain its callstack.
+  rawEvent = parsedTrace.UserTimings.measureTraceByTraceId.get(event.args.traceId);
+  if (!rawEvent) {
+    return null;
   }
-  return null;
+  return get(rawEvent, parsedTrace);
 }
 /**
  * Determines if a function is a native JS API (like setTimeout,
@@ -163,4 +170,16 @@ function getForUserTiming(
  */
 function isNativeJSFunction({columnNumber, lineNumber, url, scriptId}: Protocol.Runtime.CallFrame): boolean {
   return lineNumber === -1 && columnNumber === -1 && url === '' && scriptId === '0';
+}
+
+/**
+ * Extracts the top frame in the stack contained in a trace event's payload
+ * (if any) and casts it as a Protocol.Runtime.CallFrame.
+ */
+function getPayloadStackAsProtocolCallFrame(event: Types.Events.Event): Protocol.Runtime.CallFrame|null {
+  const maybeCallStack = Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
+  const maybeCallFrame = maybeCallStack?.at(0);
+  const maybeProtocolCallFrame =
+      maybeCallFrame && {...maybeCallFrame, scriptId: String(maybeCallFrame.scriptId) as Protocol.Runtime.ScriptId};
+  return maybeProtocolCallFrame || null;
 }

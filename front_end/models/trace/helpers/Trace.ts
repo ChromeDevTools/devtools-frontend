@@ -435,7 +435,7 @@ export function getZeroIndexedLineAndColumnForEvent(event: Types.Events.Event): 
  * stack. If you want to obtain the whole stack trace you might need to
  * use the @see Trace.Extras.StackTraceForEvent util.
  */
-export function getZeroIndexedStackTraceForEvent(event: Types.Events.Event): Types.Events.CallFrame[]|null {
+export function getZeroIndexedStackTraceInEventPayload(event: Types.Events.Event): Types.Events.CallFrame[]|null {
   const stack = stackTraceInEvent(event);
   if (!stack) {
     return null;

@@ -78,7 +78,7 @@ export class SourceMapsResolver extends EventTarget {
     if (Trace.Types.Events.isProfileCall(entry)) {
       callFrame = entry.callFrame;
     } else {
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(entry);
+      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(entry);
       if (stackTrace === null || stackTrace.length < 1) {
         return null;
       }

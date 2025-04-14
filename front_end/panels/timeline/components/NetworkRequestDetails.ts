@@ -305,7 +305,7 @@ export class NetworkRequestDetails extends HTMLElement {
     let link: HTMLElement|null = null;
     // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
     if (hasStackTrace) {
-      const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(this.#networkRequest)?.at(0) ?? null;
+      const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(this.#networkRequest)?.at(0) ?? null;
       if (topFrame) {
         link = this.#linkifier.maybeLinkifyConsoleCallFrame(
             this.#maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});

@@ -110,7 +110,7 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
   // Requests that have no initiatorRequest are typically ambiguous late-load assets.
   // Even on the off chance they were important, we don't have any parent to display for them.
   const initiatorUrl =
-      request.args.data.initiator?.url || Helpers.Trace.getZeroIndexedStackTraceForEvent(request)?.at(0)?.url;
+      request.args.data.initiator?.url || Helpers.Trace.getZeroIndexedStackTraceInEventPayload(request)?.at(0)?.url;
   if (!initiatorUrl) {
     return false;
   }

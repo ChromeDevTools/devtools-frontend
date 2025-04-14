@@ -814,7 +814,7 @@ export class TimelineUIUtils {
     return detailsText;
 
     function linkifyTopCallFrameAsText(): string|null {
-      const frame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0) ?? null;
+      const frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0) ?? null;
       if (!frame) {
         return null;
       }
@@ -885,7 +885,7 @@ export class TimelineUIUtils {
         details = document.createElement('span');
 
         // FunctionCall events have an args.data that could be a CallFrame, if all the details are present, so we check for that.
-        const callFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0);
+        const callFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.at(0);
         if (Trace.Types.Events.isFunctionCall(event) && callFrame) {
           UI.UIUtils.createTextChild(
               details,
@@ -1004,7 +1004,7 @@ export class TimelineUIUtils {
   static linkifyTopCallFrame(
       event: Trace.Types.Events.Event, target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier,
       isFreshRecording = false): Element|null {
-    let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.[0];
+    let frame = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event)?.[0];
     if (Trace.Types.Events.isProfileCall(event)) {
       frame = event.callFrame;
     }
@@ -1644,7 +1644,7 @@ export class TimelineUIUtils {
       }
     }
 
-    const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
+    const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
     if (Trace.Types.Events.isUserTiming(event) || Trace.Types.Extensions.isSyntheticExtensionEntry(event) ||
         Trace.Types.Events.isProfileCall(event) || initiator || initiatorFor || stackTrace ||
         parsedTrace?.Invalidations.invalidationsForEvent.get(event)) {
@@ -1831,7 +1831,7 @@ export class TimelineUIUtils {
       // TODO(andoli): also build stack trace component for other events
       // that have a stack trace using the StackTraceForEvent helper.
     } else {
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
+      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(event);
       if (stackTrace?.length) {
         contentHelper.addSection(stackLabel);
         contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
@@ -1864,7 +1864,7 @@ export class TimelineUIUtils {
     if (initiator) {
       // If we have an initiator for the event, we can show its stack trace, a link to reveal the initiator,
       // and the time since the initiator (Pending For).
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(initiator);
+      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
         contentHelper.addSection(initiatorStackLabel);
         contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace.map(frame => {
@@ -1992,7 +1992,7 @@ export class TimelineUIUtils {
     const generatedItems = new Set<string>();
 
     for (const invalidation of invalidations) {
-      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(invalidation);
+      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(invalidation);
       let scriptLink: HTMLElement|null = null;
       const callFrame = stackTrace?.at(0);
       if (callFrame) {

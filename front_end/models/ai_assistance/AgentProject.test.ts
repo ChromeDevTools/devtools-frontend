@@ -55,13 +55,13 @@ describeWithEnvironment('AgentProject', () => {
   it('can read files', async () => {
     const {project} = await mockProject();
 
-    assert.deepEqual(project.readFile('index.html'), 'content');
+    assert.deepEqual(await project.readFile('index.html'), 'content');
   });
 
   it('can report processed files', async () => {
     const {project} = await mockProject();
     assert.deepEqual(project.getProcessedFiles(), []);
-    project.readFile('index.html');
+    await project.readFile('index.html');
     assert.deepEqual(project.getProcessedFiles(), ['index.html']);
   });
 
@@ -69,8 +69,8 @@ describeWithEnvironment('AgentProject', () => {
     describe('full', () => {
       it('can write files files', async () => {
         const {project} = await mockProject();
-        project.writeFile('index.html', 'updated');
-        assert.deepEqual(project.readFile('index.html'), 'updated');
+        await project.writeFile('index.html', 'updated');
+        assert.deepEqual(await project.readFile('index.html'), 'updated');
       });
     });
 
@@ -86,8 +86,8 @@ diff
 +updated
 \`\`\`\`\``;
 
-        project.writeFile('index.html', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.html'), 'updated');
+        await project.writeFile('index.html', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.html'), 'updated');
       });
 
       it('can write files with multiple changes', async () => {
@@ -115,8 +115,8 @@ diff
 +LineUpdated:4
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), `LineUpdated:1
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), `LineUpdated:1
 Line:2
 Line:3
 LineUpdated:4
@@ -141,8 +141,8 @@ diff
 +Line:4
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), `Line:1
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), `Line:1
 Line:4`);
       });
 
@@ -169,8 +169,8 @@ diff
 +LineUpdated:1.5
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), `LineUpdated:1
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), `LineUpdated:1
 LineUpdated:1.5
 Line:2
 Line:3
@@ -201,8 +201,8 @@ diff
  Line:3
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), `Line:1
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), `Line:1
 Line:3
 Line:4
 Line:5`);
@@ -225,8 +225,8 @@ diff
 -Line:1
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), '');
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), '');
       });
 
       it('can write files with first line next to @@', async () => {
@@ -251,8 +251,8 @@ diff
  Line:3
 \`\`\`\`\``;
 
-        project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
-        assert.deepEqual(project.readFile('index.css'), `Line:3
+        await project.writeFile('index.css', unifiedDiff, AiAssistanceModel.ReplaceStrategy.UNIFIED_DIFF);
+        assert.deepEqual(await project.readFile('index.css'), `Line:3
 Line:4
 Line:5`);
       });
@@ -271,12 +271,15 @@ Line:5`);
             maxLinesChanged: 10,
           });
 
-      project.writeFile('index.html', 'updated');
-      expect(() => {
-        project.writeFile('example2.js', 'updated2');
-      }).throws('Too many files changed');
-      assert.deepEqual(project.readFile('index.html'), 'updated');
-      assert.deepEqual(project.readFile('example2.js'), 'content');
+      await project.writeFile('index.html', 'updated');
+      try {
+        await project.writeFile('example2.js', 'updated2');
+        expect.fail('did not throw');
+      } catch (err) {
+        expect(err.message).to.eq('Too many files changed');
+      }
+      assert.deepEqual(await project.readFile('index.html'), 'updated');
+      assert.deepEqual(await project.readFile('example2.js'), 'content');
     });
 
     it('cannot write same file multiple times', async () => {
@@ -285,9 +288,9 @@ Line:5`);
         maxLinesChanged: 10,
       });
 
-      project.writeFile('index.html', 'updated');
-      project.writeFile('index.html', 'updated2');
-      assert.deepEqual(project.readFile('index.html'), 'updated2');
+      await project.writeFile('index.html', 'updated');
+      await project.writeFile('index.html', 'updated2');
+      assert.deepEqual(await project.readFile('index.html'), 'updated2');
     });
 
     it('cannot write more lines than allowed', async () => {
@@ -301,10 +304,13 @@ Line:5`);
             maxLinesChanged: 1,
           });
 
-      expect(() => {
-        project.writeFile('example2.js', 'updated2\nupdated3');
-      }).throws('Too many lines changed');
-      assert.deepEqual(project.readFile('example2.js'), 'content');
+      try {
+        await project.writeFile('example2.js', 'updated2\nupdated3');
+        expect.fail('did not throw');
+      } catch (err) {
+        expect(err.message).to.eq('Too many lines changed');
+      }
+      assert.deepEqual(await project.readFile('example2.js'), 'content');
     });
   });
 });

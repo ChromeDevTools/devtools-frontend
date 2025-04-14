@@ -62,16 +62,18 @@ export class AgentProject {
    * Provides access to the file content in the working copy
    * of the matching UiSourceCode.
    */
-  readFile(filepath: string): string|undefined {
+  async readFile(filepath: string): Promise<string|undefined> {
     const {map} = this.#indexFiles();
     const uiSourceCode = map.get(filepath);
     if (!uiSourceCode) {
       return;
     }
+    const content =
+        uiSourceCode.isDirty() ? uiSourceCode.workingCopyContentData() : await uiSourceCode.requestContentData();
+
     this.#processedFiles.add(filepath);
-    // TODO: needs additional handling for binary files.
-    const content = uiSourceCode.workingCopyContentData();
-    if (!content.isTextContent) {
+
+    if (TextUtils.ContentData.ContentData.isError(content) || !content.isTextContent) {
       return;
     }
 
@@ -82,13 +84,13 @@ export class AgentProject {
    * This method updates the file content in the working copy of the
    * UiSourceCode identified by the filepath.
    */
-  writeFile(filepath: string, update: string, mode = ReplaceStrategy.FULL_FILE): void {
+  async writeFile(filepath: string, update: string, mode = ReplaceStrategy.FULL_FILE): Promise<void> {
     const {map} = this.#indexFiles();
     const uiSourceCode = map.get(filepath);
     if (!uiSourceCode) {
       throw new Error(`UISourceCode ${filepath} not found`);
     }
-    const currentContent = this.readFile(filepath);
+    const currentContent = await this.readFile(filepath);
     let content: string;
     switch (mode) {
       case ReplaceStrategy.FULL_FILE:
@@ -214,7 +216,6 @@ export class AgentProject {
         break;
       }
 
-      await file.requestContentData();
       debugLog('searching in', filepath, 'for', query);
       const content = file.isDirty() ? file.workingCopyContentData() : await file.requestContentData();
       const results =

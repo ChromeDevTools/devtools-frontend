@@ -61,8 +61,8 @@ describeWithMockConnection('NetworkItemView', () => {
 
     networkItemView.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName');
 
-    assert.isTrue(
-        headersViewComponentSpy.calledWith(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName'));
+    sinon.assert.calledWith(
+        headersViewComponentSpy, NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName');
     networkItemView.detach();
   });
 });

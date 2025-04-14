@@ -197,7 +197,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Breakpoint was removed and is kept in storage.
       assert.isTrue(breakpoint.getIsRemoved());
-      assert.isTrue(removedSpy.calledWith(true));
+      sinon.assert.calledWith(removedSpy, true);
     });
 
     it('are only set if the uiSourceCode is still valid (not removed)', async () => {

@@ -146,7 +146,7 @@ describeWithMockConnection('StorageBucketsModel', () => {
 
       sinon.assert.notCalled(setStorageBucketTrackingSpy);
       storageKeyManager.updateStorageKeys(new Set([storageKey]));
-      assert.isTrue(setStorageBucketTrackingSpy.calledOnceWithExactly({storageKey, enable: true}));
+      sinon.assert.calledOnceWithExactly(setStorageBucketTrackingSpy, {storageKey, enable: true});
     });
 
     it('adds buckets for storage keys that already have been added', async () => {
@@ -179,7 +179,7 @@ describeWithMockConnection('StorageBucketsModel', () => {
       storageKeyManager.updateStorageKeys(new Set([storageKey]));
       storageKeyManager.updateStorageKeys(new Set([]));
       sinon.assert.callCount(setStorageBucketTrackingSpy, 2);
-      assert.isTrue(setStorageBucketTrackingSpy.secondCall.calledWithExactly({storageKey, enable: false}));
+      sinon.assert.calledWithExactly(setStorageBucketTrackingSpy.secondCall, {storageKey, enable: false});
     });
 
     it('removes all buckets for removed storage key', async () => {
@@ -378,6 +378,6 @@ describeWithMockConnection('StorageBucketsModel', () => {
         });
 
     storageBucketsModel.deleteBucket(bucket);
-    assert.isTrue(setStorageBucketTrackingSpy.calledOnceWithExactly({bucket}));
+    sinon.assert.calledOnceWithExactly(setStorageBucketTrackingSpy, {bucket});
   });
 });

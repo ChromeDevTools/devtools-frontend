@@ -154,7 +154,7 @@ describeWithEnvironment('SourcesView', () => {
 
       await contentLoadedPromise;
 
-      assert.isTrue(sourcesPanelFileOpenedSpy.calledWithExactly('text/typescript'));
+      sinon.assert.calledWithExactly(sourcesPanelFileOpenedSpy, 'text/typescript');
     });
   });
 });

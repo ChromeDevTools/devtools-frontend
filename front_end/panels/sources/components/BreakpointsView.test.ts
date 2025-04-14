@@ -377,7 +377,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
     const breakpoint = location.breakpoint as sinon.SinonStubbedInstance<Breakpoints.BreakpointManager.Breakpoint>;
     SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance().breakpointStateChanged(
         breakpointItem, false);
-    assert.isTrue(breakpoint.setEnabled.calledWith(false));
+    sinon.assert.calledWith(breakpoint.setEnabled, false);
   });
 
   it('correctly reveals source location', async () => {

@@ -213,8 +213,9 @@ describeWithEnvironment('ConsoleInsight', () => {
         user_feedback: {sentiment: positive ? 'POSITIVE' : 'NEGATIVE'},
       },
     }));
-    assert(actionTaken.calledWith(
-        positive ? Host.UserMetrics.Action.InsightRatedPositive : Host.UserMetrics.Action.InsightRatedNegative));
+    sinon.assert.calledWith(
+        actionTaken,
+        positive ? Host.UserMetrics.Action.InsightRatedPositive : Host.UserMetrics.Action.InsightRatedNegative);
 
     dispatchClickEvent(component.shadowRoot!.querySelector(`.rating [data-rating=${positive}]`)!, {
       bubbles: true,

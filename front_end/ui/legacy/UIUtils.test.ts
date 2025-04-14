@@ -45,7 +45,7 @@ describe('UIUtils', () => {
 
         openInNewTab(url);
 
-        assert.isTrue(stub.calledOnceWithExactly(urlString`${url}`));
+        sinon.assert.calledOnceWithExactly(stub, urlString`${url}`);
         stub.restore();
       }
     });

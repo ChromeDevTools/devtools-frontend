@@ -35,7 +35,7 @@ describeWithMockConnection('TargetManager', () => {
     assert.isTrue(observer.targetAdded.calledOnceWith(target1));
     const target2 = createTarget();
     sinon.assert.calledTwice(observer.targetAdded);
-    assert.isTrue(observer.targetAdded.calledWith(target2));
+    sinon.assert.calledWith(observer.targetAdded, target2);
     target2.dispose('YOLO!');
     assert.isTrue(observer.targetRemoved.calledOnceWith(target2));
 
@@ -51,7 +51,7 @@ describeWithMockConnection('TargetManager', () => {
     assert.isTrue(observer.modelAdded.calledOnceWith(resourceTreeModel(target1)));
     const target2 = createTarget();
     sinon.assert.calledTwice(observer.modelAdded);
-    assert.isTrue(observer.modelAdded.calledWith(resourceTreeModel(target2)));
+    sinon.assert.calledWith(observer.modelAdded, resourceTreeModel(target2));
     target2.dispose('YOLO!');
     assert.isTrue(observer.modelRemoved.calledOnceWith(resourceTreeModel(target2)));
 
@@ -70,12 +70,12 @@ describeWithMockConnection('TargetManager', () => {
 
     resourceTreeModel(target1).dispatchEventToListeners(WillReloadPage);
     sinon.assert.calledOnce(listener);
-    assert.isTrue(listener.calledOn(thisObject));
+    sinon.assert.calledOn(listener, thisObject);
 
     const target2 = createTarget();
     resourceTreeModel(target2).dispatchEventToListeners(WillReloadPage);
     sinon.assert.calledTwice(listener);
-    assert.isTrue(listener.calledOn(thisObject));
+    sinon.assert.calledOn(listener, thisObject);
 
     targetManager.removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, WillReloadPage, listener, thisObject);
     resourceTreeModel(target1).dispatchEventToListeners(WillReloadPage);
@@ -96,7 +96,7 @@ describeWithMockConnection('TargetManager', () => {
 
     const subtarget1 = createTarget({parentTarget: target1});
     sinon.assert.calledTwice(observer.targetAdded);
-    assert.isTrue(observer.targetAdded.calledWith(subtarget1));
+    sinon.assert.calledWith(observer.targetAdded, subtarget1);
   });
 
   it('allows observing models in scope', () => {
@@ -113,7 +113,7 @@ describeWithMockConnection('TargetManager', () => {
 
     const subtarget1 = createTarget({parentTarget: target1});
     sinon.assert.calledTwice(observer.modelAdded);
-    assert.isTrue(observer.modelAdded.calledWith(resourceTreeModel(subtarget1)));
+    sinon.assert.calledWith(observer.modelAdded, resourceTreeModel(subtarget1));
   });
 
   it('calls second observers even if the first is changing the scope', () => {
@@ -144,7 +144,7 @@ describeWithMockConnection('TargetManager', () => {
 
     resourceTreeModel(target1).dispatchEventToListeners(WillReloadPage);
     sinon.assert.calledOnce(listener);
-    assert.isTrue(listener.calledOn(thisObject));
+    sinon.assert.calledOn(listener, thisObject);
 
     const target2 = createTarget();
     resourceTreeModel(target2).dispatchEventToListeners(WillReloadPage);

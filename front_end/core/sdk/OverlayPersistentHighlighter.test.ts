@@ -222,11 +222,11 @@ describeWithEnvironment('OverlayPersistentHighlighter', () => {
 
        await highlighter.restoreHighlightsForDocument();
 
-       assert(stubbedCallbacks.onGridOverlayStateChanged.calledWith(
-           {nodeId: PATH_TO_NODE_ID_FOR_TEST[paths[0]], enabled: true}));
+       sinon.assert.calledWith(
+           stubbedCallbacks.onGridOverlayStateChanged, {nodeId: PATH_TO_NODE_ID_FOR_TEST[paths[0]], enabled: true});
        assert(highlighter.isGridHighlighted(PATH_TO_NODE_ID_FOR_TEST[paths[0]]));
-       assert(stubbedCallbacks.onFlexOverlayStateChanged.calledWith(
-           {nodeId: PATH_TO_NODE_ID_FOR_TEST[paths[1]], enabled: true}));
+       sinon.assert.calledWith(
+           stubbedCallbacks.onFlexOverlayStateChanged, {nodeId: PATH_TO_NODE_ID_FOR_TEST[paths[1]], enabled: true});
        assert(highlighter.isFlexHighlighted(PATH_TO_NODE_ID_FOR_TEST[paths[1]]));
      });
 });

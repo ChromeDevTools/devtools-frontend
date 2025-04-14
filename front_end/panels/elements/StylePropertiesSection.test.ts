@@ -235,12 +235,12 @@ describeWithMockConnection('StylesPropertySection', () => {
     await section.setHeaderText(rule, propertyName.text);
 
     assert.isTrue(forceUpdateSpy.calledAfter(setNameSpy));
-    assert.isTrue(setNameSpy.calledOnceWithExactly(
-        styleSheetId,
+    sinon.assert.calledOnceWithExactly(
+        setNameSpy, styleSheetId,
         sinon.match(
             (r: TextUtils.TextRange.TextRange) => r.startLine === range.startLine &&
                 r.startColumn === range.startColumn && r.endLine === range.endLine && r.endColumn === range.endColumn),
-        propertyName.text));
+        propertyName.text);
   });
 
   it('renders braces correctly with a non-style-rule section', async () => {

@@ -443,7 +443,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     swatch.setColorText(newColor);
     assert.deepEqual(stylePropertyTreeElement.renderedPropertyText(), `color: ${expectedColorString}`);
 
-    assert.isTrue(applyStyleTextStub.alwaysCalledWith(`color: ${expectedColorString}`, false));
+    sinon.assert.alwaysCalledWith(applyStyleTextStub, `color: ${expectedColorString}`, false);
   });
 
   describe('Context menu', () => {
@@ -536,7 +536,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(varSwatch);
       const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
       varSwatch.linkElement?.click();
-      assert.isTrue(revealPropertySpy.calledWith(cssCustomPropertyDef));
+      sinon.assert.calledWith(revealPropertySpy, cssCustomPropertyDef);
     });
 
     it('linkifies property definition to registrations', async () => {
@@ -560,8 +560,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const jumpToSectionSpy = sinon.spy(stylesSidebarPane, 'jumpToSection');
       details.goToDefinition();
-      assert.isTrue(jumpToSectionSpy.calledOnceWithExactly(
-          '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
+      sinon.assert.calledOnceWithExactly(
+          jumpToSectionSpy, '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME);
     });
 
     it('linkifies var functions to initial-value registrations', async () => {
@@ -581,8 +581,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(varSwatch);
       const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
       varSwatch.linkElement?.click();
-      assert.isTrue(jumpToPropertySpy.calledWith(
-          'initial-value', '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
+      sinon.assert.calledWith(
+          jumpToPropertySpy, 'initial-value', '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME);
     });
   });
 
@@ -1080,7 +1080,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           showPopoverStub.args[0][0].contentElement.querySelector('.shadow-editor-button-right') as HTMLElement | null;
       button?.click();
 
-      assert.isTrue(applyStyleTextStub.calledOnceWithExactly('box-shadow: inset 10px 11px red', false));
+      sinon.assert.calledOnceWithExactly(applyStyleTextStub, 'box-shadow: inset 10px 11px red', false);
     });
 
     it('updates the style for shadow editor changes and respects ordering', () => {
@@ -1101,7 +1101,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       inputs[3].value = '13px';
       inputs[3].dispatchEvent(new InputEvent('input', {data: '13px'}));
 
-      assert.isTrue(applyStyleTextStub.calledOnceWithExactly('box-shadow: 10px 11px 13px red', false));
+      sinon.assert.calledOnceWithExactly(applyStyleTextStub, 'box-shadow: 10px 11px 13px red', false);
     });
 
     it('correctly builds and updates the shadow model', () => {
@@ -1368,7 +1368,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       anchorFunctionLinkSwatch.dataForTest().onLinkActivate();
 
       sinon.assert.calledOnce(revealStub);
-      assert.isTrue(revealStub.calledWith(fakeDOMNode));
+      sinon.assert.calledWith(revealStub, fakeDOMNode);
     });
   });
 
@@ -1439,8 +1439,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         stylePropertyTreeElement.updateTitle();
         await Promise.all(colorSchemeSpy.returnValues);
 
-        assert.isTrue(
-            resolvePropertySpy.calledOnceWithExactly('color-scheme', stylePropertyTreeElement.property.ownerStyle));
+        sinon.assert.calledOnceWithExactly(
+            resolvePropertySpy, 'color-scheme', stylePropertyTreeElement.property.ownerStyle);
 
         const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
         assert.exists(swatch);
@@ -1602,7 +1602,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(linkSwatch.innerText, keyword);
       const spy = sinon.spy(stylePropertyTreeElement.parentPane(), 'revealProperty');
       (linkSwatch.querySelector('button') as HTMLElement | undefined)?.click();
-      assert.isTrue(spy.calledOnceWithExactly(originalDeclaration));
+      sinon.assert.calledOnceWithExactly(spy, originalDeclaration);
     });
 
     it('shows non-existant referenced declarations as unlinked', () => {

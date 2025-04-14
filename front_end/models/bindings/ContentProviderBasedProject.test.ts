@@ -110,7 +110,7 @@ describe('ContentProviderBasedProject', () => {
 
       await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, progress);
 
-      assert.isTrue(progress.setTotalWork.calledOnceWithExactly(2));
+      sinon.assert.calledOnceWithExactly(progress.setTotalWork, 2);
       sinon.assert.calledTwice(progress.incrementWorked);
       sinon.assert.calledOnce(progress.done);
     });

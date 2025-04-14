@@ -78,7 +78,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     sinon.assert.notCalled(spy);
     dispatchCopyEvent(headerValue);
-    assert.isTrue(spy.calledWith(Host.UserMetrics.Action.NetworkPanelCopyValue));
+    sinon.assert.calledWith(spy, Host.UserMetrics.Action.NetworkPanelCopyValue);
   });
 
   it('renders detailed reason for blocked requests', async () => {

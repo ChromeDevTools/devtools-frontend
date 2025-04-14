@@ -371,7 +371,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
       const {view} = await createAiAssistancePanel();
       view.input.onSettingsClick();
-      assert.isTrue(stub.calledWith('chrome-ai'));
+      sinon.assert.calledWith(stub, 'chrome-ai');
     });
 
     it('should not show chat and delete history actions when ai assistance enabled setting is disabled', async () => {

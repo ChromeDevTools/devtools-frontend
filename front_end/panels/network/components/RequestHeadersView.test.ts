@@ -201,7 +201,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
     sinon.assert.notCalled(spy);
     dispatchCopyEvent(headerValue);
-    assert.isTrue(spy.calledWith(Host.UserMetrics.Action.NetworkPanelCopyValue));
+    sinon.assert.calledWith(spy, Host.UserMetrics.Action.NetworkPanelCopyValue);
   });
 
   it('can switch between source and parsed view', async () => {

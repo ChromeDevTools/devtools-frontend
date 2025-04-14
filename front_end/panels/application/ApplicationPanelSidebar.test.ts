@@ -191,7 +191,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, resourceTreeModel);
     await addedPromise;
 
-    assert.isTrue(setTrackingSpy.calledOnceWithExactly({enable: true}));
+    sinon.assert.calledOnceWithExactly(setTrackingSpy, {enable: true});
 
     assert.strictEqual(sidebar.sharedStorageListTreeElement.childCount(), 3);
     assert.deepEqual(sidebar.sharedStorageListTreeElement.children().map(e => e.title), [

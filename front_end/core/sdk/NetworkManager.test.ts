@@ -819,7 +819,7 @@ describeWithMockConnection('InterceptedRequest', () => {
     sinon.assert.notCalled(fulfillRequestSpy);
     await multitargetNetworkManager.requestIntercepted(interceptedRequest);
     await fulfilledRequest;
-    assert.isTrue(fulfillRequestSpy.calledOnceWithExactly(expectedOverriddenResponse));
+    sinon.assert.calledOnceWithExactly(fulfillRequestSpy, expectedOverriddenResponse);
     assert.deepEqual(networkRequest.setCookieHeaders, expectedSetCookieHeaders);
     fulfillRequestSpy.resetHistory();
   }

@@ -159,7 +159,7 @@ describeWithMockConnection('AutofillView', () => {
 
   it('shows content if the view is created after the event was received', async () => {
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     const view = await renderAutofillView();
     assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
@@ -170,7 +170,7 @@ describeWithMockConnection('AutofillView', () => {
     const view = await renderAutofillView();
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     showViewStub.reset();
 
     // The auto-opening checkbox is the second one.
@@ -189,7 +189,7 @@ describeWithMockConnection('AutofillView', () => {
     checkbox.dispatchEvent(event);
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     await RenderCoordinator.done();
   });
 
@@ -197,7 +197,7 @@ describeWithMockConnection('AutofillView', () => {
     const view = await renderAutofillView();
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     showViewStub.reset();
 
     // The show test addresses checkbox is the first one.
@@ -220,7 +220,7 @@ describeWithMockConnection('AutofillView', () => {
     const monospaceStyles = 'font-family:var(--monospace-font-family);font-size:var(--monospace-font-size);';
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     const view = await renderAutofillView();
     assertViewShowsEventData(view);
 
@@ -260,7 +260,7 @@ describeWithMockConnection('AutofillView', () => {
     });
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
+    sinon.assert.calledOnceWithExactly(showViewStub, 'autofill-view');
     const view = await renderAutofillView();
     assertViewShowsEventData(view);
 

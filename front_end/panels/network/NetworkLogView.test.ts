@@ -199,8 +199,8 @@ describeWithMockConnection('NetworkLogView', () => {
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 6);
       if (inScope) {
         sinon.assert.calledTwice(addEventDividers);
-        assert.isTrue(addEventDividers.getCall(0).calledWith([5], 'network-load-divider'));
-        assert.isTrue(addEventDividers.getCall(1).calledWith([6], 'network-dcl-divider'));
+        sinon.assert.calledWith(addEventDividers.getCall(0), [5], 'network-load-divider');
+        sinon.assert.calledWith(addEventDividers.getCall(1), [6], 'network-dcl-divider');
       } else {
         sinon.assert.notCalled(addEventDividers);
       }

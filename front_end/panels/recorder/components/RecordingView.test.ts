@@ -196,7 +196,7 @@ describeWithEnvironment('RecordingView', () => {
 
     await isCalled;
 
-    assert.isTrue(copyText.calledWith(JSON.stringify(step, null, 2) + '\n'));
+    sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
   });
 
   it('should copy a step to clipboard via custom event', async () => {
@@ -216,7 +216,7 @@ describeWithEnvironment('RecordingView', () => {
 
     await isCalled;
 
-    assert.isTrue(copyText.calledWith(JSON.stringify(step, null, 2) + '\n'));
+    sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
   });
 
   it('should show code and change preferred copy method', async () => {

@@ -60,6 +60,6 @@ describeWithMockConnection('CookieControlsView', () => {
         null);
     model.dispatchEventToListeners(SDK.ResourceTreeModel.Events.ResourceAdded, r);
 
-    assert.isTrue(getAffectedUrlsSpy.calledOnceWithExactly({firstPartyUrl: '', thirdPartyUrls: [resourceSite]}));
+    sinon.assert.calledOnceWithExactly(getAffectedUrlsSpy, {firstPartyUrl: '', thirdPartyUrls: [resourceSite]});
   });
 });

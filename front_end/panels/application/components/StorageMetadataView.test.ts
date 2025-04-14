@@ -203,6 +203,6 @@ describeWithLocale('SharedStorageMetadataView', () => {
     sinon.assert.calledOnce(showDialog);
 
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.isTrue(storageBucketsModel.deleteBucket.calledOnceWithExactly(storageBucket));
+    sinon.assert.calledOnceWithExactly(storageBucketsModel.deleteBucket, storageBucket);
   });
 });

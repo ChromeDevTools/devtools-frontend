@@ -95,8 +95,8 @@ describeWithMockConnection('StorageView', () => {
     Resources.StorageView.StorageView.clear(
         target, testKey, SECURITY_ORIGIN, [Protocol.Storage.StorageType.All], false);
 
-    assert.isTrue(clearByOriginSpy.calledOnceWithExactly({origin: SECURITY_ORIGIN, storageTypes: 'cookies'}));
-    assert.isTrue(cookieClearSpy.calledOnceWithExactly(undefined, SECURITY_ORIGIN));
+    sinon.assert.calledOnceWithExactly(clearByOriginSpy, {origin: SECURITY_ORIGIN, storageTypes: 'cookies'});
+    sinon.assert.calledOnceWithExactly(cookieClearSpy, undefined, SECURITY_ORIGIN);
   });
 
   it('clears cache on clear', async () => {

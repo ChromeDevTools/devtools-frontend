@@ -101,7 +101,7 @@ describe('CookieParser', () => {
               size: 83,
             },
           ]);
-      assert.isTrue(stub.calledOnceWithExactly('Failed getting cookie attribute: Discard'));
+      sinon.assert.calledOnceWithExactly(stub, 'Failed getting cookie attribute: Discard');
     });
 
     it('handles multiple cookies with an invalid attribute', () => {
@@ -121,7 +121,7 @@ describe('CookieParser', () => {
               size: 83,
             },
           ]);
-      assert.isTrue(stub.calledOnceWithExactly('Failed getting cookie attribute: Discard'));
+      sinon.assert.calledOnceWithExactly(stub, 'Failed getting cookie attribute: Discard');
     });
 
     describe('handles the SameSite attribute', () => {

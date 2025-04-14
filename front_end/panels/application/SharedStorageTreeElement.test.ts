@@ -115,7 +115,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
         await Application.SharedStorageItemsView.SharedStorageItemsView.createView(sharedStorage, viewFunction);
 
     await RenderCoordinator.done({waitForWork: true});
-    assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: SECURITY_ORIGIN}));
+    sinon.assert.calledOnceWithExactly(getMetadataSpy, {ownerOrigin: SECURITY_ORIGIN});
 
     const {view} = treeElement;
 
@@ -129,8 +129,8 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
     await refreshedPromise;
 
     sinon.assert.calledTwice(getMetadataSpy);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
-    assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
+    sinon.assert.alwaysCalledWithExactly(getMetadataSpy, {ownerOrigin: SECURITY_ORIGIN});
+    sinon.assert.alwaysCalledWithExactly(getEntriesSpy, {ownerOrigin: SECURITY_ORIGIN});
 
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 

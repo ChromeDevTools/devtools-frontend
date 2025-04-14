@@ -42,13 +42,13 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
 
       renderElementIntoDOM(component);
 
-      assert.isTrue(linkSwatchDataStub.set.calledWith({
+      sinon.assert.calledWith(linkSwatchDataStub.set, {
         text: '--identifier',
         isDefined: true,
         tooltip: undefined,
         jslogContext: 'anchor-link',
         onLinkActivate: sinon.match.func,
-      }));
+      });
     });
 
     it('should render an undefined link when `anchorNode` is not resolved correctly', () => {
@@ -59,13 +59,13 @@ describeWithEnvironment('AnchorFunctionLinkSwatch', () => {
 
       renderElementIntoDOM(component);
 
-      assert.isTrue(linkSwatchDataStub.set.calledWith({
+      sinon.assert.calledWith(linkSwatchDataStub.set, {
         text: '--identifier',
         isDefined: false,
         tooltip: {title: '--identifier is not defined'},
         jslogContext: 'anchor-link',
         onLinkActivate: sinon.match.func,
-      }));
+      });
     });
 
     it('should call `onMouseEnter` when mouse enters linkSwatch', () => {

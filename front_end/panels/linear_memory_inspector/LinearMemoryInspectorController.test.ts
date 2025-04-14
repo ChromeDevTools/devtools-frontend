@@ -118,8 +118,8 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
     const expressionName = 'myCar';
     const result = await instance.evaluateExpression(callFrame, expressionName);
     assert.isUndefined(result);
-    assert.isTrue(stub.calledOnceWithExactly(
-        `Tried to evaluate the expression '${expressionName}' but got an error: ${errorText}`));
+    sinon.assert.calledOnceWithExactly(
+        stub, `Tried to evaluate the expression '${expressionName}' but got an error: ${errorText}`);
   });
 
   it('returns undefined when exceptionDetails is set on the result of evaluateExpression', async () => {
@@ -139,8 +139,8 @@ describeWithEnvironment('LinearMemoryInspectorController', () => {
     const expressionName = 'myCar.manufacturer';
     const result = await instance.evaluateExpression(callFrame, expressionName);
     assert.isUndefined(result);
-    assert.isTrue(stub.calledOnceWithExactly(
-        `Tried to evaluate the expression '${expressionName}' but got an exception: ${exceptionText}`));
+    sinon.assert.calledOnceWithExactly(
+        stub, `Tried to evaluate the expression '${expressionName}' but got an exception: ${exceptionText}`);
   });
 
   it('returns RemoteObject when no exception happens in evaluateExpression', async () => {

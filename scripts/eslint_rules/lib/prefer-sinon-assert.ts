@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './tsUtils.ts';
 
 export default createRule({
@@ -55,7 +57,7 @@ export default createRule({
       return false;
     }
 
-    function reportError(node, methodName: string, firstArgNode, messageId) {
+    function reportError(node, methodName: string, firstArgNodes: TSESTree.Node|TSESTree.Node[], messageId) {
       context.report({
         node,
         messageId,
@@ -64,8 +66,14 @@ export default createRule({
         },
         fix(fixer) {
           const {sourceCode} = context;
+          let firstArgText = '';
+          if (Array.isArray(firstArgNodes)) {
+            firstArgText = firstArgNodes.map(node => sourceCode.getText(node)).join(', ');
+          } else {
+            firstArgText = sourceCode.getText(firstArgNodes);
+          }
           return [
-            fixer.replaceText(node.arguments[0], sourceCode.getText(firstArgNode)),
+            fixer.replaceText(node.arguments[0], firstArgText),
             fixer.replaceText(node.callee, `sinon.assert.${methodName}`),
           ];
         }
@@ -77,7 +85,26 @@ export default createRule({
         if (node.arguments.length === 1) {
           const [argumentNode] = node.arguments;
           if (isAssert(node.callee)) {
-            if (argumentNode.type === 'MemberExpression' && argumentNode.property.type === 'Identifier') {
+            if (argumentNode.type === 'CallExpression' && argumentNode.callee.type === 'MemberExpression' &&
+                argumentNode.callee.property.type === 'Identifier') {
+              const {name} = argumentNode.callee.property;
+              if ([
+                    'calledOn',
+                    'alwaysCalledOn',
+                    'calledWith',
+                    'calledWithExactly',
+                    'calledOnceWithExactly',
+                    'alwaysCalledWithExactly',
+                    'alwaysCalledWith',
+                    'neverCalledWith',
+                    'calledWithMatch',
+                    'calledOnceWithMatch',
+                    'alwaysCalledWithMatch',
+                  ].includes(name)) {
+                const argumentNodes = [argumentNode.callee.object, ...argumentNode.arguments];
+                reportError(node, name, argumentNodes, 'useSinonAssertInsteadOfAssert');
+              }
+            } else if (argumentNode.type === 'MemberExpression' && argumentNode.property.type === 'Identifier') {
               const {name} = argumentNode.property;
               if (['notCalled', 'called', 'calledOnce', 'calledTwice', 'calledThrice'].includes(name)) {
                 reportError(node, name, argumentNode.object, 'useSinonAssertInsteadOfAssert');

@@ -32,6 +32,10 @@ new RuleTester().run('prefer-sinon-assert', rule, {
       code: 'assert.isNotOk(a, "message");',
       filename: 'foo.ts',
     },
+    {
+      code: 'sinon.assert.calledWith(spy, arg1, arg2);',
+      filename: 'foo.ts',
+    }
   ],
 
   invalid: [
@@ -118,6 +122,136 @@ new RuleTester().run('prefer-sinon-assert', rule, {
     {
       code: 'assert(spy.calledThrice);',
       output: 'sinon.assert.calledThrice(spy);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledOn(obj));',
+      output: 'sinon.assert.calledOn(spy, obj);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.alwaysCalledOn(obj));',
+      output: 'sinon.assert.alwaysCalledOn(spy, obj);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledWith(x));',
+      output: 'sinon.assert.calledWith(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledWith(x, y));',
+      output: 'sinon.assert.calledWith(spy, x, y);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledWith([x, y], {a: 4, b: 2}));',
+      output: 'sinon.assert.calledWith(spy, [x, y], {a: 4, b: 2});',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledWithExactly(x));',
+      output: 'sinon.assert.calledWithExactly(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledOnceWithExactly(x));',
+      output: 'sinon.assert.calledOnceWithExactly(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.alwaysCalledWith(x));',
+      output: 'sinon.assert.alwaysCalledWith(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.alwaysCalledWithExactly(x));',
+      output: 'sinon.assert.alwaysCalledWithExactly(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.neverCalledWith(x));',
+      output: 'sinon.assert.neverCalledWith(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledWithMatch(x));',
+      output: 'sinon.assert.calledWithMatch(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.calledOnceWithMatch(x));',
+      output: 'sinon.assert.calledOnceWithMatch(spy, x);',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useSinonAssertInsteadOfAssert',
+        },
+      ],
+    },
+    {
+      code: 'assert(spy.alwaysCalledWithMatch(x));',
+      output: 'sinon.assert.alwaysCalledWithMatch(spy, x);',
       filename: 'foo.ts',
       errors: [
         {

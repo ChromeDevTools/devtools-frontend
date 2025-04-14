@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const rule = require('../lib/canvas-context-tracking.js');
+import rule from '../lib/canvas-context-tracking.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('canvas-context-tracking-test', rule, {
   valid: [

@@ -1,10 +1,9 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-const rule = require('../lib/es-modules-import.js');
+import rule from '../lib/es-modules-import.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('es-modules-import', rule, {
   valid: [
@@ -163,7 +162,7 @@ new RuleTester().run('es-modules-import', rule, {
       output: 'import {Foo} from \'./app.js\'',
       errors: [
         {
-          message: 'Missing file extension for import "./app"',
+          messageId: 'missingExtension',
         },
       ],
     },
@@ -172,8 +171,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/Importing.js',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../namespace/Exporting.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+          messageId: 'crossNamespaceImport',
         },
       ],
     },
@@ -182,8 +180,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/sdk/CSSMedia.js',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../text_utils/TextRange.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+          messageId: 'crossNamespaceImport',
         },
       ],
     },
@@ -192,8 +189,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/Importing.js',
       errors: [
         {
-          message:
-              'Incorrect same-namespace import: "../common/common.js". Use "import { Symbol } from \'./relative-file.js\';" instead.',
+          messageId: 'incorrectSameNamespaceImportStar',
         },
       ],
     },
@@ -202,8 +198,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/common.js',
       errors: [
         {
-          message:
-              'Incorrect same-namespace import: "./Exporting.js". Use "import * as File from \'./File.js\';" instead.',
+          messageId: 'incorrectSameNamespaceImportNamed',
         },
       ],
     },
@@ -212,7 +207,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/common.js',
       errors: [
         {
-          message: 'Invalid relative URL import. An import should start with either "../" or "./".',
+          messageId: 'invalidRelativeUrl',
         },
       ],
     },
@@ -221,7 +216,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsPanel.ts',
       errors: [
         {
-          message: 'Missing file extension for import "../common/common"',
+          messageId: 'missingExtension',
         },
       ],
       output: 'import * as Common from \'../common/common.js\';',
@@ -231,7 +226,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsPanel.ts',
       errors: [
         {
-          message: 'Missing file extension for import "../common/common"',
+          messageId: 'missingExtension',
         },
       ],
       output: 'import \'../common/common.js\';',
@@ -241,7 +236,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'test/unittests/front_end/common/Unit_test.ts',
       errors: [
         {
-          message: 'Missing file extension for import "../../../../front_end/common/common"',
+          messageId: 'missingExtension',
         },
       ],
       output: 'import \'../../../../front_end/common/common.js\';',
@@ -251,7 +246,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/common/common.js',
       errors: [
         {
-          message: 'Missing file extension for import "../platform/platform"',
+          messageId: 'missingExtension',
         },
       ],
       output: 'export {UIString} from \'../platform/platform.js\';',
@@ -262,8 +257,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsPanel.js',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../third_party/some-module/foo.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.',
+          messageId: 'crossNamespaceImportThirdParty',
         },
       ],
     },
@@ -273,8 +267,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'test/unittests/front_end/bindings/LiveLocation.test.ts',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../../../../front_end/bindings/LiveLocation.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+          messageId: 'crossNamespaceImport',
         },
       ],
     },
@@ -283,8 +276,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/bindings/LiveLocation.test.ts',
       errors: [
         {
-          message:
-              'Incorrect same-namespace import: "./LiveLocation.js". Use "import * as Bindings from \'./bindings.js\';" instead.',
+          messageId: 'incorrectSameNamespaceTestImport',
         },
       ],
     },
@@ -293,8 +285,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/some_folder/nested_entrypoint/nested_entrypoint.js',
       errors: [
         {
-          message:
-              'Incorrect same-namespace import: "./append-style.js". Use "import * as File from \'./File.js\';" instead.',
+          messageId: 'incorrectSameNamespaceImportNamed',
         },
       ],
     },
@@ -303,8 +294,7 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../third_party/lit/package/directives/class-map.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.',
+          messageId: 'crossNamespaceImportThirdParty',
         },
       ],
     },
@@ -313,27 +303,29 @@ new RuleTester().run('es-modules-import', rule, {
       filename: 'front_end/marked/marked.js',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../third_party/marked/package/lib/marked.esm.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.',
+          messageId: 'crossNamespaceImportThirdParty',
         },
       ],
+
     },
     {
       code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
       filename: 'front_end/ui/panels/foo/FooPanel.ts',
       errors: [
         {
-          message:
-              'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+          messageId: 'crossNamespaceImport',
         },
       ],
+
     },
     {
       // Note the double slash between the visual_logging
       // This does not break compilation but does break at runtime.
       code: 'import x from \'../ui/visual_logging//visual_logging.js\';',
       filename: 'front_end/panels/foo/FooPanel.ts',
-      errors: [{messageId: 'doubleSlashInImportPath'}],
+      errors: [
+        {messageId: 'doubleSlashInImportPath'},
+      ],
       output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
     },
   ],

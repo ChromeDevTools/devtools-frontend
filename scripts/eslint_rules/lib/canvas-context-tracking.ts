@@ -2,12 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-'use strict';
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+import {createRule} from './tsUtils.ts';
+
+type Node = TSESTree.Node;
+type MemberExpression = TSESTree.MemberExpression;
+type BlockStatement = TSESTree.BlockStatement;
+type ForStatement = TSESTree.ForStatement;
+type ForInStatement = TSESTree.ForInStatement;
+type ForOfStatement = TSESTree.ForOfStatement;
+type SwitchStatement = TSESTree.SwitchStatement;
+type CatchClause = TSESTree.CatchClause;
+type StaticBlock = TSESTree.StaticBlock;
+
+type CanvasCall = 'save'|'restore';
+
+export default createRule({
+  name: 'canvas-context-tracking',
   meta: {
     type: 'problem',
     docs: {
@@ -16,45 +28,42 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      saveNotRestored:
-        'Found a block that has more context.save() calls than context.restore() calls',
-      uselessRestore:
-        'Found a context.restore() call with no context.save() prior to it',
+      saveNotRestored: 'Found a block that has more context.save() calls than context.restore() calls',
+      uselessRestore: 'Found a context.restore() call with no context.save() prior to it',
     },
-    schema: [], // no options
+    schema: [],  // no options
   },
-  create: function (context) {
+  defaultOptions: [],
+  create: function(context) {
     // To track canvas calls across scopes we keep a stack which we push nodes on with every new scope that we find.
     // When we then leave a scope, we can check all the calls in that scope and see if they align or not.
-    /** @type {Array<import('estree').Node>} */
-    let stack = [];
+    let stack: Node[] = [];
 
     // The key is a node's range as a string. The value is a stack of
     // context.save calls. When we see a restore, we pop the stack. Therefore,
     // if we get to the end of a scope and the stack is not empty, it means the
     // user has not balanced their calls correctly.
-    /** @type {Map<string, Array<'save'|'restore'>>} */
-    const scopeToCanvasCalls = new Map();
+    const scopeToCanvasCalls = new Map<string, CanvasCall[]>();
 
-    function nodeToKeyForMap(node) {
+    function nodeToKeyForMap(node: Node): string {
       return JSON.stringify(node.range);
     }
 
-    function enterScope(node) {
+    function enterScope(node: Node): void {
       stack.push(node);
     }
 
     /**
      * Pops the last block scope and checks it for a mismatch of save and restore calls.
      */
-    function exitScope() {
+    function exitScope(): void {
       const lastScope = stack.pop();
       if (!lastScope) {
         return;
       }
 
       const stackForCurrentScope = scopeToCanvasCalls.get(
-        nodeToKeyForMap(lastScope),
+          nodeToKeyForMap(lastScope),
       );
 
       // We have no issues to report if:
@@ -75,13 +84,13 @@ module.exports = {
      * Updates the counter for the current scope.
      * @param {'save'|'restore'} methodName
      **/
-    function trackContextCall(methodName) {
+    function trackContextCall(methodName: CanvasCall): void {
       const currentScopeNode = stack.at(-1);
       if (!currentScopeNode) {
         return;
       }
-      const stackForCurrentScope =
-        scopeToCanvasCalls.get(nodeToKeyForMap(currentScopeNode)) || [];
+      const currentScopeKey = nodeToKeyForMap(currentScopeNode);
+      const stackForCurrentScope = scopeToCanvasCalls.get(currentScopeKey) || [];
 
       if (methodName === 'save') {
         stackForCurrentScope.push('save');
@@ -90,10 +99,12 @@ module.exports = {
         // we have nothing to restore as we did not save anything in this
         // scope. Either the user has forgotten a save() call, or this
         // restore() has been accidentally left behind after a refactor and
-        // shold be removed.
+        // should be removed.
         if (stackForCurrentScope.length === 0) {
           context.report({
             messageId: 'uselessRestore',
+            // Report on the specific call if possible, otherwise the scope.
+            // The original code reported on currentScopeNode.
             node: currentScopeNode,
           });
         } else {
@@ -103,42 +114,41 @@ module.exports = {
       }
 
       scopeToCanvasCalls.set(
-        nodeToKeyForMap(currentScopeNode),
-        stackForCurrentScope,
+          currentScopeKey,
+          stackForCurrentScope,
       );
     }
 
     return {
       Program(node) {
         stack = [node];
+        // Initialize map for the program scope
+        scopeToCanvasCalls.set(nodeToKeyForMap(node), []);
       },
-      MemberExpression(node) {
+      MemberExpression(node: MemberExpression) {
         const methodCallsToTrack = ['save', 'restore'];
-        if (
-          node.object.type === 'Identifier' &&
-          node.object?.name === 'context' &&
-          node.property.type === 'Identifier' &&
-          methodCallsToTrack.includes(node.property?.name)
-        ) {
-          // @ts-expect-error the methodCallsToTrack needs `as const`
-          trackContextCall(node.property.name);
+        if (node.object.type === 'Identifier' && node.object?.name === 'context' &&
+            node.property.type === 'Identifier' &&
+            // Use type assertion because .includes doesn't narrow the type
+            methodCallsToTrack.includes(node.property?.name as CanvasCall)) {
+          trackContextCall(node.property.name as CanvasCall);
         }
       },
       // All the different types of scope we have to deal with.
-      BlockStatement: enterScope,
+      BlockStatement: (node: BlockStatement) => enterScope(node),
       'BlockStatement:exit': exitScope,
-      ForStatement: enterScope,
+      ForStatement: (node: ForStatement) => enterScope(node),
       'ForStatement:exit': exitScope,
-      ForInStatement: enterScope,
+      ForInStatement: (node: ForInStatement) => enterScope(node),
       'ForInStatement:exit': exitScope,
-      ForOfStatement: enterScope,
+      ForOfStatement: (node: ForOfStatement) => enterScope(node),
       'ForOfStatement:exit': exitScope,
-      SwitchStatement: enterScope,
+      SwitchStatement: (node: SwitchStatement) => enterScope(node),
       'SwitchStatement:exit': exitScope,
-      CatchClause: enterScope,
+      CatchClause: (node: CatchClause) => enterScope(node),
       'CatchClause:exit': exitScope,
-      StaticBlock: enterScope,
+      StaticBlock: (node: StaticBlock) => enterScope(node),
       'StaticBlock:exit': exitScope,
     };
   },
-};
+});

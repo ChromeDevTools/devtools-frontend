@@ -1,11 +1,10 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
 
-const rule = require('../lib/enforce-bound-render-for-schedule-render.js');
+import rule from '../lib/enforce-bound-render-for-schedule-render.ts';
 
-const {RuleTester} = require('./utils/utils.js');
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('enforce-bound-render-for-schedule-render', rule, {
   valid: [
@@ -67,9 +66,7 @@ new RuleTester().run('enforce-bound-render-for-schedule-render', rule, {
       }`,
       filename: 'front_end/components/test.ts',
       errors: [
-        {
-          message: 'Bind `render` method of `scheduleRender` to `this` in components',
-        },
+        {messageId: 'renderNotBound'},
       ],
     },
   ],

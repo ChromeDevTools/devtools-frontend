@@ -219,12 +219,20 @@ export class ExtensionScope {
   }
 
   static getSelectorForNode(node: SDK.DOMModel.DOMNode): string {
-    return node.simpleSelector()
-        .split('.')
-        .filter(chunk => {
-          return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
-        })
-        .join('.');
+    const simpleSelector = node.simpleSelector()
+                               .split('.')
+                               .filter(chunk => {
+                                 return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
+                               })
+                               .join('.');
+    // Handle the edge case where the node is DIV and the
+    // only selector is the AI_ASSISTANCE_CSS_CLASS_NAME
+    if (simpleSelector) {
+      return simpleSelector;
+    }
+
+    // Fallback to the HTML tag
+    return node.localName() || node.nodeName().toLowerCase();
   }
 
   static getSourceLocation(styleRule: SDK.CSSRule.CSSStyleRule): string|undefined {

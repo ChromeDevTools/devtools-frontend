@@ -102,6 +102,20 @@ describe('ExtensionScope', () => {
       const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
       assert.strictEqual(selector, '.my\\.special-class.my-class-b');
     });
+
+    it('should work with only ai generated class', () => {
+      const node = createNode({
+        getAttribute: attribute => {
+          if (attribute === 'class') {
+            return `${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+          }
+
+          return undefined;
+        }
+      });
+      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      assert.strictEqual(selector, 'div');
+    });
   });
 
   describe('getSelectorFromRules', () => {

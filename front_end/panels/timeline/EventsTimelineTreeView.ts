@@ -182,7 +182,6 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
           category.title, undefined,
           categoriesFilterChanged.bind(this, categoryName as Utils.EntryStyles.EventCategory), categoryName);
       checkbox.setChecked(true);
-      checkbox.inputElement.style.backgroundColor = category.color;
       categoryFiltersUI.set(category.name, checkbox);
       toolbar.appendToolbarItem(checkbox);
     }

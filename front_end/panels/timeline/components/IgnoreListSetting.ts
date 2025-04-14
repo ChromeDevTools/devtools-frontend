@@ -136,7 +136,7 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #resetInput(): void {
-    this.#newRegexCheckbox.checkboxElement.checked = false;
+    this.#newRegexCheckbox.checked = false;
     this.#newRegexInput.value = '';
   }
 
@@ -227,7 +227,7 @@ export class IgnoreListSetting extends HTMLElement {
    * not deal with enabling/disabling the new regex.
    */
   #onExistingRegexEnableToggle(regex: Common.Settings.RegExpSettingItem, checkbox: UI.UIUtils.CheckboxLabel): void {
-    regex.disabled = !checkbox.checkboxElement.checked;
+    regex.disabled = !checkbox.checked;
     // Technically we don't need to call the set function, because the regex is a reference, so it changed the setting
     // value directly.
     // But we need to call the set function to trigger the setting change event. which is needed by view update of flame
@@ -249,8 +249,8 @@ export class IgnoreListSetting extends HTMLElement {
         regex.pattern, !regex.disabled, /* jslogContext*/ 'timeline.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
     UI.Tooltip.Tooltip.install(checkboxWithLabel, helpText);
-    checkboxWithLabel.checkboxElement.ariaLabel = helpText;
-    checkboxWithLabel.checkboxElement.addEventListener(
+    checkboxWithLabel.ariaLabel = helpText;
+    checkboxWithLabel.addEventListener(
         'change', this.#onExistingRegexEnableToggle.bind(this, regex, checkboxWithLabel), false);
     // clang-format off
     return html`

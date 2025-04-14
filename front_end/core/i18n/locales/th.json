@@ -5,6 +5,9 @@
   "core/common/ResourceType.ts | css": {
     "message": "CSS"
   },
+  "core/common/ResourceType.ts | directsocket": {
+    "message": "DirectSocket"
+  },
   "core/common/ResourceType.ts | doc": {
     "message": "เอกสาร"
   },
@@ -56,6 +59,9 @@
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
+  "core/common/ResourceType.ts | socketShort": {
+    "message": "ซ็อกเก็ต"
+  },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "สไตล์ชีต"
   },
@@ -76,9 +82,6 @@
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
-  },
-  "core/common/ResourceType.ts | ws": {
-    "message": "WS"
   },
   "core/common/Revealer.ts | animationsPanel": {
     "message": "แผงภาพเคลื่อนไหว"
@@ -118,6 +121,9 @@
   },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
+  },
+  "core/common/SettingRegistration.ts | ai": {
+    "message": "AI"
   },
   "core/common/SettingRegistration.ts | appearance": {
     "message": "ลักษณะที่ปรากฏ"
@@ -289,6 +295,18 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "บล็อก With"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
+    "message": "ล้มเลิกแล้ว"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusClosed": {
+    "message": "ปิด"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpen": {
+    "message": "เปิด"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpening": {
+    "message": "กำลังเปิด"
   },
   "core/sdk/NetworkManager.ts | fast4G": {
     "message": "4G แบบเร็ว"
@@ -1226,8 +1244,14 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() ทำงานในต้นทางที่ไม่ปลอดภัยไม่ได้อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
   },
+  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
+    "message": "พบแท็ก <h1> ภายใน <article>, <aside>, <nav> หรือ <section> ซึ่งไม่มีขนาดแบบอักษรที่ระบุ ขนาดของข้อความส่วนหัวนี้จะเปลี่ยนแปลงในเบราว์เซอร์นี้ในเร็วๆ นี้ ดูข้อมูลเพิ่มเติมได้ที่ https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1"
+  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate เลิกใช้งานแล้ว โปรดใช้ RTCPeerConnectionIceErrorEvent.address หรือ RTCPeerConnectionIceErrorEvent.port แทน"
+  },
+  "generated/Deprecation.ts | IdentityDigitalCredentials": {
+    "message": "รูปแบบนี้สำหรับคำขอ navigator.credentials.get() ของข้อมูลเข้าสู่ระบบดิจิทัลเลิกใช้งานแล้ว โปรดอัปเดตการเรียกใช้เพื่อใช้รูปแบบใหม่"
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "ต้นทางของผู้ขายและข้อมูลที่กําหนดเองจากเหตุการณ์ Service Worker canmakepayment ซึ่งได้แก่ topOrigin, paymentRequestOrigin, methodData, modifiers เลิกใช้งานแล้วและจะถูกนําออก"
@@ -1469,12 +1493,6 @@
   "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
     "message": "การเปลี่ยนแปลงในการจัดการคุกกี้ของบุคคลที่สามของ Chrome"
   },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "ที่ปลอดภัย"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "คุกกี้ของบุคคลที่สามถูกบล็อกใน Chrome เนื่องจาก Chrome Flag หรือการกำหนดค่าเบราว์เซอร์"
   },
@@ -1498,6 +1516,9 @@
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "กลไกการแชร์ทรัพยากรข้ามโดเมน (CORS)"
+  },
+  "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
+    "message": "การเข้าถึงเครือข่ายภายใน"
   },
   "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
     "message": "การเข้าถึงเครือข่ายส่วนตัว"
@@ -1564,6 +1585,12 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "การป้องกันเนื้อหาผสม"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | chromeStatusEntry": {
+    "message": "รายการสถานะ Chrome"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | partitioningBlobURL": {
+    "message": "การแบ่งพาร์ติชัน URL ของ BLOB"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "โหมดความเข้ากันได้กับเอกสาร"
@@ -1700,9 +1727,6 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "ปิดใช้การลบล้างคำขอของเครือข่าย"
   },
-  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
-    "message": "เปิดใช้โฟลเดอร์พื้นที่ทำงานอัตโนมัติ"
-  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "เปิดใช้การลบล้างในเครื่อง"
   },
@@ -1766,6 +1790,24 @@
   "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ที่แย่ที่สุด"
   },
+  "models/trace/insights/Cache.ts | cacheTTL": {
+    "message": "TTL ของแคช"
+  },
+  "models/trace/insights/Cache.ts | description": {
+    "message": "อายุการใช้งานแคชที่ยาวนานช่วยเพิ่มการเข้าชมหน้าเว็บซ้ำได้ [ดูข้อมูลเพิ่มเติม](https://web.dev/uses-long-cache-ttl/)"
+  },
+  "models/trace/insights/Cache.ts | noRequestsToCache": {
+    "message": "ไม่มีคำขอที่มีนโยบายแคชที่ไม่มีประสิทธิภาพ"
+  },
+  "models/trace/insights/Cache.ts | others": {
+    "message": "อีก {PH1} รายการ"
+  },
+  "models/trace/insights/Cache.ts | requestColumn": {
+    "message": "คำขอ"
+  },
+  "models/trace/insights/Cache.ts | title": {
+    "message": "ใช้อายุการใช้งานแคชที่มีประสิทธิภาพ"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "DOM ที่มีขนาดใหญ่จะใช้เวลานานขึ้นในการคำนวณสไตล์และการจัดเรียงเลย์เอาต์ใหม่ ซึ่งส่งผลต่อการตอบสนองของหน้าเว็บ นอกจากนี้ DOM ที่มีขนาดใหญ่จะใช้หน่วยความจำเพิ่มขึ้นด้วย [ดูวิธีหลีกเลี่ยง DOM ที่มีขนาดใหญ่เกินไป](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
   },
@@ -1823,11 +1865,17 @@
   "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
     "message": "การดาวน์โหลดที่ไม่มีการบีบอัด"
   },
-  "models/trace/insights/DuplicateJavaScript.ts | description": {
+  "models/trace/insights/DuplicatedJavaScript.ts | columnDuplicatedBytes": {
+    "message": "ไบต์ที่ซ้ำกัน"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | columnSource": {
+    "message": "แหล่งที่มา"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "นำโมดูล JavaScript ขนาดใหญ่ที่ซ้ำกันออกจากแพ็กเกจเพื่อลดจำนวนไบต์ที่ไม่จำเป็นที่กิจกรรมเครือข่ายใช้"
   },
-  "models/trace/insights/DuplicateJavaScript.ts | title": {
-    "message": "JavaScript ซ้ำ"
+  "models/trace/insights/DuplicatedJavaScript.ts | title": {
+    "message": "JavaScript ที่ซ้ำกัน"
   },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "ลองตั้งค่า [font-display](https://developer.chrome.com/blog/font-display) เป็น swap หรือ optional เพื่อให้ผู้ใช้มองเห็นข้อความได้เสมอ swap สามารถเพิ่มประสิทธิภาพเพิ่มเติมเพื่อลดการเปลี่ยนแปลงเลย์เอาต์ด้วย[การลบล้างเมตริกแบบอักษร](https://developer.chrome.com/blog/font-fallbacks)"
@@ -1855,6 +1903,9 @@
   },
   "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
     "message": "เวลาในการจัดเรียงใหม่ทั้งหมด"
+  },
+  "models/trace/insights/ForcedReflow.ts | unattributed": {
+    "message": "ไม่มีการระบุแหล่งที่มา"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "การลดเวลาดาวน์โหลดรูปภาพจะช่วยปรับปรุงเวลาที่ใช้ในการโหลดที่รับรู้ของหน้าเว็บและ LCP ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเพิ่มประสิทธิภาพขนาดรูปภาพ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1966,6 +2017,33 @@
   },
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "LCP ตามระยะ"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | columnScript": {
+    "message": "สคริปต์"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | columnWastedBytes": {
+    "message": "ไบต์ที่เสียไป"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | description": {
+    "message": "Polyfill และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย ลองแก้ไขกระบวนการบิลด์ JavaScript เพื่อไม่ให้ทำการ Transpile ฟีเจอร์ [Baseline](https://web.dev/articles/baseline-and-polyfills) เว้นแต่คุณจะรู้ว่าต้องรองรับเบราว์เซอร์เดิม [ดูสาเหตุที่เว็บไซต์ส่วนใหญ่สามารถติดตั้งใช้งานโค้ด ES6+ ได้โดยไม่ต้องทำการ Transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | title": {
+    "message": "JavaScript เดิม"
+  },
+  "models/trace/insights/ModernHTTP.ts | description": {
+    "message": "HTTP/2 และ HTTP/3 มีประโยชน์มากกว่า HTTP/1.1 หลายประการ เช่น ในด้านการมัลติเพล็กซ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการใช้ HTTP ที่ทันสมัย](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)"
+  },
+  "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
+    "message": "ไม่มีคำขอที่ใช้ HTTP/1.1"
+  },
+  "models/trace/insights/ModernHTTP.ts | protocol": {
+    "message": "โปรโตคอล"
+  },
+  "models/trace/insights/ModernHTTP.ts | request": {
+    "message": "คำขอ"
+  },
+  "models/trace/insights/ModernHTTP.ts | title": {
+    "message": "HTTP ที่ทันสมัย"
   },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[หลีกเลี่ยงการเชนคำขอที่สำคัญ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)โดยลดความยาวของเชน ลดขนาดการดาวน์โหลดของทรัพยากร หรือเลื่อนเวลาการดาวน์โหลดทรัพยากรที่ไม่จำเป็นเพื่อปรับปรุงการโหลดหน้าเว็บ"
@@ -2528,6 +2606,9 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ดูข้อมูลเกี่ยวกับ AI ในเครื่องมือสำหรับนักพัฒนาเว็บ"
   },
+  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
+    "message": "ความช่วยเหลือจาก AI ไม่พร้อมใช้งานในโหมดไม่ระบุตัวตนหรือโหมดผู้มาเยือน"
+  },
   "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
     "message": "ฟีเจอร์นี้จะใช้งานได้เมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
   },
@@ -2628,7 +2709,7 @@
     "message": "เบราว์เซอร์ใช้รหัสแอปเพื่อให้ทราบว่าไฟล์ Manifest ควรอัปเดตแอปพลิเคชันที่มีอยู่ หรือหมายถึงเว็บแอปใหม่ที่ติดตั้งได้"
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "{PH1} ไม่ได้กำหนด {PH2} ในไฟล์ Manifest ระบบจะใช้ {PH3} แทน หากต้องการกำหนดรหัสแอปที่ตรงกับข้อมูลระบุในปัจจุบัน ให้ตั้งค่าช่อง {PH4} เป็น {PH5} {PH6}"
+    "message": "หมายเหตุ: ไม่ได้กำหนด id ในไฟล์ Manifest ระบบจะใช้ start_url แทน หากต้องการกำหนดรหัสแอปที่ตรงกับข้อมูลระบุในปัจจุบัน ให้ตั้งค่าช่อง id เป็น {PH1} {PH2}"
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "ไม่แนะนำให้ประกาศไอคอนที่มี \"purpose\" เป็น \"any maskable\" เพราะอาจแสดงผลได้ไม่ถูกต้องในบางแพลตฟอร์มเนื่องจากระยะห่างจากขอบมากเกินไปหรือน้อยเกินไป"
@@ -2737,9 +2818,6 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "ไม่ได้ให้ไอคอนที่เป็นรูปสี่เหลี่ยมจัตุรัสและมีขนาดอย่างน้อย {PH1} พิกเซลในรูปแบบ PNG, SVG หรือ WebP และไม่ได้ตั้งค่าแอตทริบิวต์วัตถุประสงค์เอาไว้หรือตั้งค่าเป็น \"any\""
-  },
-  "panels/application/AppManifestView.ts | note": {
-    "message": "หมายเหตุ:"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "การวางแนว"
@@ -2871,7 +2949,7 @@
     "message": "การวางซ้อนการควบคุมหน้าต่าง"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "ไฟล์ Manifest ของแอป"
+    "message": "ไฟล์ Manifest"
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "แอปพลิเคชัน"
@@ -3316,6 +3394,12 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
+    "message": "ไม่มีรายงานหรือปลายทาง"
+  },
+  "panels/application/ReportingApiView.ts | reportingApiDescription": {
+    "message": "คุณจะตรวจสอบรายงานและปลายทาง Reporting API ได้ในหน้านี้"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "พื้นที่เก็บข้อมูลแคช"
@@ -4083,7 +4167,7 @@
     "message": "สถานะที่ไม่รู้จัก"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
-    "message": "URL:"
+    "message": "URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
     "message": "การลดการติดตามการเข้าออก"
@@ -4397,14 +4481,17 @@
   "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
     "message": "เหตุการณ์พื้นที่เก็บข้อมูลที่ใช้ร่วมกันทั้งหมดสำหรับหน้านี้"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventMethod": {
+    "message": "วิธีการเข้าถึง"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
     "message": "พารามิเตอร์เหตุการณ์ที่ไม่บังคับ"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventScope": {
+    "message": "ขอบเขตการเข้าถึง"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
     "message": "เวลาของเหตุการณ์"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
-    "message": "ประเภทการเข้าถึง"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
@@ -4414,6 +4501,9 @@
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "ต้นทางเจ้าของ"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerSite": {
+    "message": "เว็บไซต์ของเจ้าของ"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
@@ -5390,6 +5480,9 @@
   "panels/changes/ChangesView.ts | sInsertions": {
     "message": "{n,plural, =1{การแทรก # รายการ (+)}other{การแทรก # รายการ (+)}}"
   },
+  "panels/changes/CombinedDiffView.ts | copied": {
+    "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
+  },
   "panels/changes/changes-meta.ts | changes": {
     "message": "การเปลี่ยนแปลง"
   },
@@ -5401,6 +5494,21 @@
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "แสดงการเปลี่ยนแปลง"
+  },
+  "panels/common/common.ts | allow": {
+    "message": "อนุญาต"
+  },
+  "panels/common/common.ts | cancel": {
+    "message": "ยกเลิก"
+  },
+  "panels/common/common.ts | gotIt": {
+    "message": "รับทราบ"
+  },
+  "panels/common/common.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/common/common.ts | thingsToConsider": {
+    "message": "สิ่งที่ควรพิจารณา"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "ส่วนขยาย"
@@ -6266,6 +6374,9 @@
   "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
     "message": "ไม่มีป้ายกำกับที่เชื่อมโยงกับฟิลด์แบบฟอร์ม"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentAttributesSelectDescendant": {
+    "message": "องค์ประกอบที่มีแอตทริบิวต์ไม่ถูกต้องภายในองค์ประกอบ <select>"
+  },
   "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
     "message": "องค์ประกอบแบบอินเทอร์แอกทีฟภายในองค์ประกอบ <legend>"
   },
@@ -6473,6 +6584,9 @@
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "จัดเก็บเป็นตัวแปรร่วม"
   },
+  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
+    "message": "ดูปัญหา:"
+  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "ทั้งหมด"
   },
@@ -6578,6 +6692,9 @@
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
     "message": "แสดงพร็อพเพอร์ตี้ทั้งหมด (มีอีก {PH1} รายการ)"
   },
+  "panels/elements/StylePropertiesSection.ts | specificity": {
+    "message": "ลักษณะเฉพาะ: {PH1}"
+  },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "แอตทริบิวต์ style"
   },
@@ -6617,6 +6734,12 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "เปิดเครื่องมือแก้ไข grid"
   },
+  "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
+    "message": "ค่าพร็อพเพอร์ตี้ไม่ถูกต้อง"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | invalidString": {
+    "message": "{PH1}, ชื่อพร็อพเพอร์ตี้: {PH2}, ค่าพร็อพเพอร์ตี้: {PH3}"
+  },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "ข้ามไปยังแผงภาพเคลื่อนไหว"
   },
@@ -6626,11 +6749,17 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "เปิดในแผงแหล่งที่มา"
   },
+  "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
+    "message": "ไม่ได้กำหนด {PH1}"
+  },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "กด Shift และคลิกเพื่อเปลี่ยนรูปแบบสี"
   },
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "เปิด/ปิดพร็อพเพอร์ตี้และแก้ไขต่อ"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | unknownPropertyName": {
+    "message": "ชื่อพร็อพเพอร์ตี้ที่ไม่รู้จัก"
   },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "ดูค่าที่คำนวณแล้ว"
@@ -6640,12 +6769,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "คลิกเพื่อแสดงเลเยอร์ในแผนผังเลเยอร์"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "คัดลอกการเปลี่ยนแปลง CSS"
   },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "การเพิ่ม/การลดด้วยลูกกลิ้งเมาส์หรือแป้นขึ้น/ลง {PH1}: ±100, Shift: ±10, {PH2}: ±0.1"
@@ -6682,6 +6805,9 @@
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "ข้ามไปยังโหนดของแท็ก Anchor"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | sIsNotDefined": {
+    "message": "ไม่ได้กำหนด {PH1}"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
@@ -7058,6 +7184,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "คำขอของเครือข่าย"
   },
+  "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
+    "message": "ความช่วยเหลือจาก AI ไม่พร้อมใช้งานในโหมดไม่ระบุตัวตนหรือโหมดผู้มาเยือน"
+  },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "ฟีเจอร์นี้จะใช้งานได้ก็ต่อเมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
   },
@@ -7252,6 +7381,18 @@
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{เว็บไซต์ 1 แห่งได้รับอนุญาตให้เข้าถึงคุกกี้}other{เว็บไซต์ # แห่งได้รับอนุญาตให้เข้าถึงคุกกี้}}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
+    "message": "จำนวนปัญหา URL ของ BLOB: {count}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blockedCrossPartitionFetching": {
+    "message": "การเข้าถึง URL ของ BLOB {url} ถูกบล็อกเนื่องจากดำเนินการจากบริบทข้ามพาร์ติชัน"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | enforceNoopenerForNavigation": {
+    "message": "การนำทางระดับบนสุดของ URL ของ BLOB {url} มีการตั้งค่า \"noopener\" เนื่องจากต้นทาง URL ของ BLOB ข้ามเว็บไซต์ด้วยเว็บไซต์ระดับบนสุดของบริบทที่เริ่มการนำทาง"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
+    "message": "ไม่มี URL ของ BLOB ที่ใช้ได้กับปัญหานี้"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "คลิกเพื่อแสดงโหนด DOM ของเฟรมในแผงองค์ประกอบ"
@@ -7603,6 +7744,9 @@
   },
   "panels/layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
     "message": "เครื่องจัดการเหตุการณ์การหมุน"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | layerCount": {
+    "message": "{PH1} เลเยอร์"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
     "message": "แผงแผนผังเลเยอร์"
@@ -8666,6 +8810,9 @@
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, ลําดับความสําคัญเริ่มต้น: {PH2}"
   },
+  "panels/network/NetworkDataGridNode.ts | integrity": {
+    "message": "ความสมบูรณ์"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "ระดับ 1"
   },
@@ -9192,13 +9339,16 @@
     "message": "ส่งออก HAR (พร้อมข้อมูลที่ละเอียดอ่อน)..."
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "กำลังดึงข้อมูลเฟรม"
+    "message": "กำลังดึงข้อมูลเฟรม..."
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "จัดกลุ่มตามเฟรม"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "จัดกลุ่มคำขอตามเฟรมคำขอระดับบนสุด"
+  },
+  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
+    "message": "กด {PH1} เพื่อโหลดซ้ำและจับภาพแถบฟิล์ม"
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "นำเข้าไฟล์ HAR..."
@@ -9219,7 +9369,7 @@
     "message": "เก็บบันทึก"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "กำลังบันทึกเฟรม"
+    "message": "กำลังบันทึกเฟรม..."
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "ค้นหา"
@@ -9326,25 +9476,13 @@
   "panels/network/RequestPayloadView.ts | viewDecoded": {
     "message": "ดูรายการที่ถอดรหัส"
   },
-  "panels/network/RequestPayloadView.ts | viewDecodedL": {
-    "message": "ดูรายการที่ถอดรหัส"
-  },
   "panels/network/RequestPayloadView.ts | viewParsed": {
-    "message": "ดูผลการแยกวิเคราะห์"
-  },
-  "panels/network/RequestPayloadView.ts | viewParsedL": {
     "message": "ดูผลการแยกวิเคราะห์"
   },
   "panels/network/RequestPayloadView.ts | viewSource": {
     "message": "ดูแหล่งที่มา"
   },
-  "panels/network/RequestPayloadView.ts | viewSourceL": {
-    "message": "ดูแหล่งที่มา"
-  },
   "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
-    "message": "ดู URL ที่เข้ารหัส"
-  },
-  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
     "message": "ดู URL ที่เข้ารหัส"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
@@ -10598,6 +10736,9 @@
   "panels/protocol_monitor/JSONEditor.ts | resetDefaultValue": {
     "message": "รีเซ็ตเป็นค่าเริ่มต้น"
   },
+  "panels/protocol_monitor/JSONEditor.ts | selectTarget": {
+    "message": "เลือกเป้าหมาย"
+  },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCmdEnter": {
     "message": "ส่งคำสั่ง - ⌘+Enter"
   },
@@ -10676,6 +10817,9 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "แสดงเครื่องมือตรวจสอบโปรโตคอล"
   },
+  "panels/recorder/RecorderController.ts | allowImporting": {
+    "message": "อนุญาตให้นำเข้า"
+  },
   "panels/recorder/RecorderController.ts | continueReplay": {
     "message": "ต่อไป"
   },
@@ -10687,6 +10831,12 @@
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "ลบการบันทึก"
+  },
+  "panels/recorder/RecorderController.ts | doNotImport": {
+    "message": "อย่านำเข้าไฟล์บันทึกที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองมาในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ ''{PH1}'' ด้านล่างเพื่อให้นำเข้าได้"
+  },
+  "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
+    "message": "คุณเชื่อถือไฟล์บันทึกนี้ไหม"
   },
   "panels/recorder/RecorderController.ts | export": {
     "message": "ส่งออก"
@@ -10732,6 +10882,9 @@
   },
   "panels/recorder/RecorderController.ts | toggleCode": {
     "message": "เปิด/ปิดมุมมองโค้ด"
+  },
+  "panels/recorder/RecorderController.ts | typeAllowImporting": {
+    "message": "พิมพ์ ''{PH1}''"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "ยกเลิกการบันทึก"
@@ -11111,6 +11264,9 @@
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "ไม่พบข้อความที่ตรงกัน"
   },
+  "panels/search/SearchView.ts | noSearchResult": {
+    "message": "ไม่พบผลการค้นหา"
+  },
   "panels/search/SearchView.ts | nothingMatchedTheQuery": {
     "message": "ไม่มีผลลัพธ์ที่ตรงกับคำค้นหา"
   },
@@ -11125,6 +11281,9 @@
   },
   "panels/search/SearchView.ts | searching": {
     "message": "กำลังค้นหา…"
+  },
+  "panels/search/SearchView.ts | typeAndPressSToSearch": {
+    "message": "พิมพ์และกด {PH1} เพื่อค้นหา"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
     "message": "เฉพาะเมื่อเครื่องมือสำหรับนักพัฒนาเว็บเปิดอยู่"
@@ -11903,6 +12062,9 @@
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "เปิดใช้ความช่วยเหลือจาก AI"
   },
+  "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
+    "message": "เปิดใช้คำแนะนำจาก AI สำหรับคำอธิบายประกอบแผงประสิทธิภาพ"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
     "message": "เปิดใช้ Console insights"
   },
@@ -11930,6 +12092,15 @@
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
     "message": "ระบบจะส่งคำค้นหาของผู้ใช้และข้อมูลใดๆ ซึ่งหน้าเว็บที่ตรวจสอบเข้าถึงได้ผ่าน Web API, คำขอเครือข่าย, ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย ข้อมูลนี้จะไม่นำไปใช้ในการปรับปรุงโมเดล AI ของ Google"
   },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
+    "message": "ระบบจะส่งการติดตามประสิทธิภาพของคุณไปยัง Google เพื่อสร้างคำอธิบาย ข้อมูลนี้จะนำไปใช้ในการปรับปรุงโมเดล AI ของ Google"
+  },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
+    "message": "ระบบจะส่งการติดตามประสิทธิภาพของคุณไปยัง Google เพื่อสร้างคำอธิบาย ข้อมูลนี้จะไม่นำไปใช้ในการปรับปรุงโมเดล AI ของ Google"
+  },
+  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
+    "message": "รับคำแนะนำจาก AI สำหรับคำอธิบายประกอบแผงประสิทธิภาพ"
+  },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "ช่วยให้คุณเข้าใจและแก้ไขคำเตือนและข้อผิดพลาดของคอนโซล"
   },
@@ -11947,6 +12118,9 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
+  },
+  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
+    "message": "ความช่วยเหลือจาก AI ไม่พร้อมใช้งานในโหมดไม่ระบุตัวตนหรือโหมดผู้มาเยือน"
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "ฟีเจอร์นี้จะใช้งานได้ก็ต่อเมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
@@ -12098,9 +12272,6 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "การทดสอบ"
   },
-  "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
-    "message": "กรอง"
-  },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
@@ -12112,6 +12283,9 @@
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "คืนค่าเริ่มต้นและโหลดซ้ำ"
+  },
+  "panels/settings/SettingsScreen.ts | searchExperiments": {
+    "message": "การทดสอบสำหรับ Search"
   },
   "panels/settings/SettingsScreen.ts | sendFeedback": {
     "message": "ส่งความคิดเห็น"
@@ -12337,6 +12511,9 @@
   },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL การแมปแหล่งที่มา: "
+  },
+  "panels/sources/AiWarningInfobarPlugin.ts | aiContentWarning": {
+    "message": "ไฟล์นี้มีเนื้อหาที่ AI สร้างขึ้น"
   },
   "panels/sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "เบรกพอยท์"
@@ -12770,12 +12947,6 @@
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
   },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
-    "message": "เชื่อมต่อ..."
-  },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
-    "message": "ตรวจพบโฟลเดอร์พื้นที่ทำงาน {PH1}"
-  },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "ล้างการกำหนดค่า"
   },
@@ -13030,9 +13201,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "เปิดใช้งานเบรกพอยท์"
-  },
-  "panels/sources/sources-meta.ts | addFolder": {
-    "message": "เพิ่มโฟลเดอร์"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "เพิ่มโฟลเดอร์ไปยังพื้นที่ทำงาน"
@@ -13439,12 +13607,6 @@
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "เครือข่าย"
   },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
-    "message": "เวลาของเซิร์ฟเวอร์ — {PH1}"
-  },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
-    "message": "แทร็กนี้มีการจับเวลาซึ่งมาจากส่วนหัวการตอบกลับของเครือข่าย \"เวลาของเซิร์ฟเวอร์\" เวลาเริ่มต้นเป็นเพียงค่าประมาณและอาจไม่ถูกต้อง"
-  },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "บุคคลที่หนึ่ง/บุคคลที่สาม"
   },
@@ -13784,18 +13946,6 @@
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "เวลา"
   },
-  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
-    "message": "ซูมเข้า/ออกอย่างรวดเร็ว"
-  },
-  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
-    "message": "เลื่อนไปทางซ้าย/ขวา"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
-    "message": "เลื่อนขึ้น/ลง"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
-    "message": "ซูมเข้า/ออก"
-  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "คัดลอกตาราง"
   },
@@ -14035,9 +14185,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | delay": {
     "message": "หน่วงเวลา"
-  },
-  "panels/timeline/TimelineUIUtils.ts | description": {
-    "message": "คำอธิบาย"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "รายละเอียด"
@@ -14435,18 +14582,6 @@
   "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "ละเว้นสคริปต์ที่มี \"{regex}\" อยู่ในชื่อ"
   },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
-    "message": "มีกฎนี้อยู่แล้ว"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
-    "message": "มีกฎนี้อยู่แล้วแต่ปิดใช้อยู่ การบันทึกค่านี้จะเปิดใช้กฎอีกครั้ง"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
-    "message": "ต้องระบุกฎ"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
-    "message": "กฎต้องเป็นนิพจน์ทั่วไปที่ถูกต้อง"
-  },
   "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
     "message": "นำนิพจน์ทั่วไปออก: \"{regex}\""
   },
@@ -14678,6 +14813,9 @@
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "เปอร์เซ็นไทล์ที่ 75 ในฟิลด์"
   },
+  "panels/timeline/components/MetricCard.ts | fieldP75": {
+    "message": "ช่อง p75"
+  },
   "panels/timeline/components/MetricCard.ts | good": {
     "message": "ดี"
   },
@@ -14819,6 +14957,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "ถอดรหัสเนื้อความแล้ว"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | description": {
+    "message": "คำอธิบาย"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "ข้อมูลที่เข้ารหัส"
   },
@@ -14846,11 +14987,20 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "ลำดับความสำคัญ"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | protocol": {
+    "message": "โปรโตคอล"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
     "message": "การบล็อกการแสดงผล"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "เมธอดคำขอ"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | serverTiming": {
+    "message": "เวลาของเซิร์ฟเวอร์"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | time": {
+    "message": "เวลา"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "ใช่"
@@ -15020,6 +15170,9 @@
   "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
     "message": "การตรวจสอบข้อมูลเชิงลึกผ่านแล้ว: {PH1}"
   },
+  "panels/timeline/components/insights/Table.ts | others": {
+    "message": "อีก {PH1} รายการ"
+  },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} - ฟิลด์ ({PH2})"
   },
@@ -15038,8 +15191,20 @@
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "ป้ายกำกับรายการ"
   },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | freDialog": {
+    "message": "กล่องโต้ตอบรับคำแนะนำเกี่ยวกับคำอธิบายประกอบที่ทำงานด้วยระบบ AI"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | generateLabelButton": {
+    "message": "สร้างป้ายกำกับ"
+  },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
     "message": "ป้อนป้ายกำกับคำอธิบายประกอบ"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | learnMoreAriaLabel": {
+    "message": "ดูข้อมูลเพิ่มเติมเกี่ยวกับคำอธิบายประกอบอัตโนมัติในการตั้งค่า"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
+    "message": "ข้อมูลเพิ่มเติม"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "ช่วงเวลา"
@@ -15821,18 +15986,6 @@
   "ui/legacy/DockController.ts | devtoolsUndocked": {
     "message": "เลิกตรึงเครื่องมือสำหรับนักพัฒนาเว็บแล้ว"
   },
-  "ui/legacy/DockController.ts | dockToBottom": {
-    "message": "ตรึงไว้ด้านล่าง"
-  },
-  "ui/legacy/DockController.ts | dockToLeft": {
-    "message": "ตรึงไว้ด้านซ้าย"
-  },
-  "ui/legacy/DockController.ts | dockToRight": {
-    "message": "ตรึงไว้ทางขวา"
-  },
-  "ui/legacy/DockController.ts | undockIntoSeparateWindow": {
-    "message": "เลิกตรึงเป็นหน้าต่างแยก"
-  },
   "ui/legacy/EmptyWidget.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
@@ -15858,7 +16011,7 @@
     "message": "ปิดลิ้นชัก"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
-    "message": "เครื่องมือสำหรับนักพัฒนาเว็บพร้อมใช้งานแล้วใน {PH1}!"
+    "message": "เครื่องมือสำหรับนักพัฒนาเว็บพร้อมใช้งานแล้วในภาษา{PH1}"
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "ลิ้นชักเครื่องมือ"
@@ -15885,7 +16038,7 @@
     "message": "แผง"
   },
   "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
-    "message": "โหลดซ้ำ"
+    "message": "โหลดหน้าเว็บซ้ำ"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "โหลดเครื่องมือสำหรับนักพัฒนาเว็บซ้ำ"
@@ -16671,7 +16824,7 @@
     "message": "แหล่งที่มา"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "พิมพ์ข้อความ ''{PH1}''"
+    "message": "พิมพ์ ''{PH1}''"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "ค้นหา"

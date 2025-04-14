@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:12a6f48f3587a95ccfcf2c28d9f05e472b30b580',
+  'gn_version': 'git_revision:3468d4868725e310eff5f5cd9b6655110883f55b',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:8240743503f584b5beadcb0fd4fc3178da28ffa6',
+  'siso_version': 'git_revision:7462aaffc7da5c672efbac0f39e14d3a41862799',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

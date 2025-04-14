@@ -227,10 +227,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
     const title = i18nString(UIStrings.userAgent);
     const section = this.createSection(title, 'network-config-ua');
-    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(
+    const autoCheckbox = UI.UIUtils.CheckboxLabel.create(
         i18nString(UIStrings.selectAutomatically), true, undefined, customUserAgentSetting.name);
-    section.appendChild(checkboxLabel);
-    const autoCheckbox = checkboxLabel.checkboxElement;
+    section.appendChild(autoCheckbox);
 
     customUserAgentSetting.addChangeListener(() => {
       if (autoCheckbox.checked) {
@@ -309,10 +308,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
 
     const title = i18nString(UIStrings.acceptedEncoding);
     const section = this.createSection(title, 'network-config-accepted-encoding');
-    const checkboxLabel = UI.UIUtils.CheckboxLabel.create(
+    const autoCheckbox = UI.UIUtils.CheckboxLabel.create(
         i18nString(UIStrings.selectAutomatically), true, undefined, useCustomAcceptedEncodingSetting.name);
-    section.appendChild(checkboxLabel);
-    const autoCheckbox = checkboxLabel.checkboxElement;
+    section.appendChild(autoCheckbox);
 
     function onSettingChange(): void {
       if (!useCustomAcceptedEncodingSetting.get()) {
@@ -332,7 +330,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     encodingsSection.setAttribute('jslog', `${VisualLogging.section().context(customAcceptedEncodingSetting.name)}`);
     autoCheckbox.checked = !useCustomAcceptedEncodingSetting.get();
     autoCheckbox.addEventListener('change', acceptedEncodingsChanged);
-    const checkboxes = new Map<Protocol.Network.ContentEncoding, HTMLInputElement>();
+    const checkboxes = new Map<Protocol.Network.ContentEncoding, UI.UIUtils.CheckboxLabel>();
     const contentEncodings: Protocol.EnumerableEnum<typeof Protocol.Network.ContentEncoding> = {
       Deflate: Protocol.Network.ContentEncoding.Deflate,
       Gzip: Protocol.Network.ContentEncoding.Gzip,
@@ -340,9 +338,9 @@ export class NetworkConfigView extends UI.Widget.VBox {
       Zstd: Protocol.Network.ContentEncoding.Zstd,
     };
     for (const encoding of Object.values(contentEncodings)) {
-      const label = UI.UIUtils.CheckboxLabel.createWithStringLiteral(encoding, true, encoding);
-      encodingsSection.appendChild(label);
-      checkboxes.set(encoding, label.checkboxElement);
+      const checkbox = UI.UIUtils.CheckboxLabel.createWithStringLiteral(encoding, true, encoding);
+      encodingsSection.appendChild(checkbox);
+      checkboxes.set(encoding, checkbox);
     }
     for (const [encoding, checkbox] of checkboxes) {
       checkbox.checked = customAcceptedEncodingSetting.get().includes(encoding);

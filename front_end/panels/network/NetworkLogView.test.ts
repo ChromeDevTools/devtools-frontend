@@ -987,7 +987,7 @@ function testPlaceholderButton(
 
 function clickCheckbox(checkbox: HTMLInputElement) {
   checkbox.checked = true;
-  const event = new Event('change');
+  const event = new Event('change', {bubbles: true, composed: true});
   checkbox.dispatchEvent(event);
 }
 

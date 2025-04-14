@@ -1,12 +1,14 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+import type {TSESTree} from '@typescript-eslint/utils';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+import {createRule} from './tsUtils.ts';
+
+type Comment = TSESTree.Comment;
+
+export default createRule({
+  name: 'no-commented-out-import',
   meta: {
     type: 'problem',
     docs: {
@@ -15,15 +17,18 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      foundImport: 'Commented-out import statements should be deleted.'
+      foundImport: 'Commented-out import statements should be deleted.',
     },
-    schema: []  // no options
+    schema: [],  // no options
   },
+  defaultOptions: [],
   create: function(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
 
-    function checkImportAndReportError(comment) {
+    function checkImportAndReportError(comment: Comment) {
       const trimmed = comment.value.trim();
+      // Simple check if the comment line starts with 'import '
+      // More robust checking could involve parsing, but this matches the original logic.
       if (trimmed.startsWith('import ')) {
         context.report({node: comment, messageId: 'foundImport'});
       }
@@ -32,13 +37,10 @@ module.exports = {
     return {
       Program() {
         const comments = sourceCode.getAllComments();
-        if (!comments) {
-          return;
-        }
         for (const comment of comments) {
           checkImportAndReportError(comment);
         }
-      }
+      },
     };
-  }
-};
+  },
+});

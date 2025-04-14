@@ -69,8 +69,8 @@ enum SpecificPseudoStates {
 }
 
 export class ElementStatePaneWidget extends UI.Widget.Widget {
-  private readonly inputs: HTMLInputElement[];
-  private readonly inputStates: WeakMap<HTMLInputElement, string>;
+  private readonly inputs: UI.UIUtils.CheckboxLabel[];
+  private readonly inputStates: WeakMap<UI.UIUtils.CheckboxLabel, string>;
   private readonly duals: Map<SpecificPseudoStates, SpecificPseudoStates>;
   private cssModel?: SDK.CSSModel.CSSModel|null;
   private specificPseudoStateDivs: Map<SpecificPseudoStates, HTMLDivElement>;
@@ -82,7 +82,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     this.registerRequiredCSS(elementStatePaneWidgetStyles);
     this.contentElement.className = 'styles-element-state-pane';
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-states')}`);
-    const inputs: HTMLInputElement[] = [];
+    const inputs: UI.UIUtils.CheckboxLabel[] = [];
     this.inputs = inputs;
     this.inputStates = new WeakMap();
     this.duals = new Map();
@@ -95,7 +95,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     };
     const clickListener = (event: MouseEvent): void => {
       const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-      if (!node || !(event.target instanceof HTMLInputElement)) {
+      if (!node || !(event.target instanceof UI.UIUtils.CheckboxLabel)) {
         return;
       }
       const state = this.inputStates.get(event.target);
@@ -112,13 +112,11 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     const createElementStateCheckbox = (state: string): HTMLDivElement => {
       const div = document.createElement('div');
       div.id = state;
-      const label = UI.UIUtils.CheckboxLabel.createWithStringLiteral(':' + state, undefined, undefined, true);
-      const input = label.checkboxElement;
-      this.inputStates.set(input, state);
-      input.addEventListener('click', (clickListener as EventListener), false);
-      input.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(state)}`);
-      inputs.push(input);
-      div.appendChild(label);
+      const checkbox = UI.UIUtils.CheckboxLabel.createWithStringLiteral(':' + state, undefined, state, true);
+      this.inputStates.set(checkbox, state);
+      checkbox.addEventListener('click', (clickListener as EventListener), false);
+      inputs.push(checkbox);
+      div.appendChild(checkbox);
       return div;
     };
     const setDualStateCheckboxes = (first: SpecificPseudoStates, second: SpecificPseudoStates): void => {
@@ -128,14 +126,13 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     const createEmulateFocusedPageCheckbox = (): Element => {
       const div = document.createElement('div');
       div.classList.add('page-state-checkbox');
-      const label = UI.UIUtils.CheckboxLabel.create(
+      const checkbox = UI.UIUtils.CheckboxLabel.create(
           i18nString(UIStrings.emulateFocusedPage), undefined, undefined, 'emulate-page-focus', true);
-      UI.SettingsUI.bindCheckbox(
-          label.checkboxElement, Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), {
-            enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,
-            disable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOff,
-          });
-      UI.Tooltip.Tooltip.install(label, i18nString(UIStrings.emulatesAFocusedPage));
+      UI.SettingsUI.bindCheckbox(checkbox, Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), {
+        enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,
+        disable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOff,
+      });
+      UI.Tooltip.Tooltip.install(checkbox, i18nString(UIStrings.emulatesAFocusedPage));
 
       const learnMoreButton = new Buttons.Button.Button();
       learnMoreButton.data = {
@@ -150,7 +147,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
           () => UI.UIUtils.openInNewTab(
               'https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page'));
 
-      div.appendChild(label);
+      div.appendChild(checkbox);
       div.appendChild(learnMoreButton);
       return div;
     };

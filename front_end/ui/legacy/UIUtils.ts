@@ -1317,8 +1317,14 @@ export class CheckboxLabel extends HTMLElement {
     this.checkboxElement = this.#shadowRoot.createChild('input');
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
+    // Change event is not composable, so it doesn't bubble up through the shadow root.
+    this.checkboxElement.addEventListener('change', () => this.dispatchEvent(new Event('change')));
     this.#textElement = this.#shadowRoot.createChild('label', 'dt-checkbox-text');
     this.#textElement.setAttribute('for', id);
+    // Click events are composable, so both label and checkbox bubble up through the shadow root.
+    // However, clicking the label, also triggers the checkbox click, so we stop the label event
+    // propagation here to avoid duplicate events.
+    this.#textElement.addEventListener('click', e => e.stopPropagation());
     this.#shadowRoot.createChild('slot');
   }
 
@@ -1340,6 +1346,22 @@ export class CheckboxLabel extends HTMLElement {
     }
     element.checkboxElement.classList.toggle('small', small);
     return element;
+  }
+
+  get checked(): boolean {
+    return this.checkboxElement.checked;
+  }
+
+  set checked(checked: boolean) {
+    this.checkboxElement.checked = checked;
+  }
+
+  set disabled(disabled: boolean) {
+    this.checkboxElement.disabled = disabled;
+  }
+
+  get disabled(): boolean {
+    return this.checkboxElement.disabled;
   }
 
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */

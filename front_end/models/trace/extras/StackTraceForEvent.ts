@@ -71,14 +71,23 @@ function getForEvent(event: Types.Events.Event, parsedTrace: Handlers.Types.Pars
   const traceCache =
       stackTraceForEventInTrace.get(parsedTrace) || new Map<Types.Events.Event, Protocol.Runtime.StackTrace>();
   stackTraceForEventInTrace.set(parsedTrace, traceCache);
-  // Move up this node's ancestor tree appending frames to its
-  // stack trace.
+  // Move up this node's ancestor tree appending JS frames to its
+  // stack trace. If an async caller is detected, move up in the async
+  // stack instead.
   while (node) {
     if (!Types.Events.isProfileCall(node.entry)) {
-      node = node.parent;
+      const maybeAsyncParent = parsedTrace.AsyncJSCalls.runEntryPointToScheduler.get(node.entry);
+      if (!maybeAsyncParent) {
+        node = node.parent;
+        continue;
+      }
+      const maybeAsyncParentNode = maybeAsyncParent && entryToNode.get(maybeAsyncParent.scheduler);
+      if (maybeAsyncParentNode) {
+        stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParent.taskName);
+        node = maybeAsyncParentNode;
+      }
       continue;
     }
-
     currentEntry = node.entry;
     // First check if this entry was processed before.
     const stackTraceFromCache = traceCache.get(node.entry);
@@ -102,24 +111,29 @@ function getForEvent(event: Types.Events.Event, parsedTrace: Handlers.Types.Pars
     const maybeAsyncParentEvent = parsedTrace.AsyncJSCalls.asyncCallToScheduler.get(currentEntry);
     const maybeAsyncParentNode = maybeAsyncParentEvent && entryToNode.get(maybeAsyncParentEvent.scheduler);
     if (maybeAsyncParentNode) {
-      // The Protocol.Runtime.StackTrace type is recursive, so we
-      // move one level deeper in it as we walk up the ancestor tree.
-      stackTrace.parent = {callFrames: []};
-      stackTrace = stackTrace.parent;
-      // Note: this description effectively corresponds to the name
-      // of the task that scheduled the stack trace we are jumping
-      // FROM, so it would make sense that it was set to that stack
-      // trace instead of the one we are jumping TO. However, the
-      // JS presentation utils we use to present async stack traces
-      // assume the description is added to the stack trace that
-      // scheduled the async task, so we build the data that way.
-      stackTrace.description = maybeAsyncParentEvent.taskName;
+      stackTrace = addAsyncParentToStack(stackTrace, maybeAsyncParentEvent.taskName);
       node = maybeAsyncParentNode;
       continue;
     }
     node = node.parent;
   }
   return topStackTrace;
+}
+
+function addAsyncParentToStack(stackTrace: Protocol.Runtime.StackTrace, taskName: string): Protocol.Runtime.StackTrace {
+  const parent: Protocol.Runtime.StackTrace = {callFrames: []};
+  // The Protocol.Runtime.StackTrace type is recursive, so we
+  // move one level deeper in it as we walk up the ancestor tree.
+  stackTrace.parent = parent;
+  // Note: this description effectively corresponds to the name
+  // of the task that scheduled the stack trace we are jumping
+  // FROM, so it would make sense that it was set to that stack
+  // trace instead of the one we are jumping TO. However, the
+  // JS presentation utils we use to present async stack traces
+  // assume the description is added to the stack trace that
+  // scheduled the async task, so we build the data that way.
+  parent.description = taskName;
+  return parent;
 }
 
 /**

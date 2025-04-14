@@ -272,6 +272,29 @@ describe('AsyncJSCallsHandler', function() {
       assert.strictEqual(testScheduler?.scheduler, jsTaskScheduler);
       assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
     });
+    it('exports the AsyncTask events as fallbacks when no entry point is found at either end of an async task',
+       async function() {
+         const asyncTaskScheduled =
+             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid) as
+             Trace.Types.Events.DebuggerAsyncTaskScheduled;
+         asyncTaskScheduled.args.taskName = 'interval';
 
+         const asyncTaskRun =
+             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
+
+         // Create flow events in the same way perfetto does for traces (as separate pairs).
+         // schedule -> run 1, run 1 -> run 2.
+         const flowEvents = makeFlowEvents([asyncTaskScheduled, asyncTaskRun]);
+         const rendererEvents = [
+           asyncTaskScheduled,
+           asyncTaskRun,
+         ];
+         const allEvents = [...rendererEvents, ...flowEvents];
+
+         const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
+         const testScheduler = asyncCallStacksData.runEntryPointToScheduler.get(asyncTaskRun);
+         assert.strictEqual(testScheduler?.scheduler, asyncTaskScheduled);
+         assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
+       });
   });
 });

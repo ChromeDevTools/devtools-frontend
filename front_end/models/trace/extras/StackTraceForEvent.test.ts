@@ -291,4 +291,42 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
       },
     ]);
   });
+  it('obtains the stack trace for a trace event triggered by an async JS call', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-console-timestamp.json.gz');
+    const containerExtensionEntry = parsedTrace.ExtensionTraceData.extensionTrackData[0].entriesByTrack['Primary'].find(
+        e => e.name === 'Container');
+    assert.exists(containerExtensionEntry);
+    const stackTraceForExtensionEntry = Trace.Extras.StackTraceForEvent.get(containerExtensionEntry, parsedTrace);
+    assert.exists(stackTraceForExtensionEntry);
+    const prettyStack =
+        shapeStackTraceAsArray(stackTraceForExtensionEntry)
+            .map(stack => ({...stack, callFrames: stack.callFrames.map(frame => ({...frame, url: ''}))}));
+    assert.deepEqual(prettyStack as unknown[], [
+      {callFrames: [], description: undefined}, {
+        callFrames: [{columnNumber: 8, functionName: 'App', lineNumber: 45, scriptId: '31', url: ''}],
+        description: '<Container>'
+      },
+      {
+        callFrames: [
+          {columnNumber: 14, functionName: 'renderApp', lineNumber: 98, scriptId: '25', url: ''},
+          {columnNumber: 16, functionName: '<anonymous>', lineNumber: 165, scriptId: '26', url: ''}
+        ],
+        description: '<App>'
+      },
+      {
+        callFrames: [
+          {columnNumber: 27, functionName: 'ResponseInstance', lineNumber: 26161, scriptId: '11', url: ''},
+          {columnNumber: 36, functionName: 'createResponseFromOptions', lineNumber: 26879, scriptId: '11', url: ''},
+          {columnNumber: 37, functionName: 'exports.createFromFetch', lineNumber: 27107, scriptId: '11', url: ''},
+          {columnNumber: 25, functionName: 'hydrateApp', lineNumber: 31283, scriptId: '11', url: ''},
+          {columnNumber: 7, functionName: './src/index.js', lineNumber: 31213, scriptId: '11', url: ''},
+          {columnNumber: 39, functionName: 'options.factory', lineNumber: 31995, scriptId: '11', url: ''},
+          {columnNumber: 38, functionName: '__webpack_require__', lineNumber: 31365, scriptId: '11', url: ''},
+          {columnNumber: 10, functionName: '', lineNumber: 0, scriptId: '11', url: ''},
+          {columnNumber: 0, functionName: '', lineNumber: 0, scriptId: '11', url: ''}
+        ],
+        description: '"use server"'
+      }
+    ]);
+  });
 });

@@ -479,18 +479,17 @@ export class ExperimentsSettingsTab extends SettingsTab {
   }
 
   private createExperimentCheckbox(experiment: Root.Runtime.Experiment): HTMLParagraphElement {
-    const label =
+    const checkbox =
         UI.UIUtils.CheckboxLabel.createWithStringLiteral(experiment.title, experiment.isEnabled(), experiment.name);
-    label.classList.add('experiment-label');
-    const input = label.checkboxElement;
-    input.name = experiment.name;
+    checkbox.classList.add('experiment-label');
+    checkbox.name = experiment.name;
     function listener(): void {
-      experiment.setEnabled(input.checked);
+      experiment.setEnabled(checkbox.checked);
       Host.userMetrics.experimentChanged(experiment.name, experiment.isEnabled());
       UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
           i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
     }
-    input.addEventListener('click', listener, false);
+    checkbox.addEventListener('click', listener, false);
 
     const p = document.createElement('p');
     this.experimentToControl.set(experiment, p);
@@ -498,7 +497,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     if (experiment.unstable && !experiment.isEnabled()) {
       p.classList.add('settings-experiment-unstable');
     }
-    p.appendChild(label);
+    p.appendChild(checkbox);
 
     const experimentLink = experiment.docLink;
     if (experimentLink) {

@@ -221,15 +221,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         UI.UIUtils.CheckboxLabel.createWithStringLiteral(item.pattern, !item.disabled, 'settings.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern});
     UI.Tooltip.Tooltip.install(checkbox, helpText);
-    checkbox.checkboxElement.ariaLabel = helpText;
-    checkbox.checkboxElement.addEventListener('change', inputChanged, false);
+    checkbox.ariaLabel = helpText;
+    checkbox.addEventListener('change', inputChanged, false);
     element.appendChild(checkbox);
     element.classList.add('ignore-list-item');
 
     return element;
 
     function inputChanged(): void {
-      const disabled = !checkbox.checkboxElement.checked;
+      const disabled = !checkbox.checked;
       if (item.disabled !== disabled) {
         item.disabled = disabled;
         item.disabledForUrl = undefined;

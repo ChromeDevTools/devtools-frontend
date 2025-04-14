@@ -58,8 +58,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function createSettingCheckbox(
     name: Common.UIString.LocalizedString, setting: Common.Settings.Setting<boolean>, tooltip?: string): CheckboxLabel {
   const label = CheckboxLabel.create(name, undefined, undefined, setting.name);
-  label.checkboxElement.name = name;
-  bindCheckbox(label.checkboxElement, setting);
+  label.name = name;
+  bindCheckbox(label, setting);
   if (tooltip) {
     Tooltip.install(label, tooltip);
   }

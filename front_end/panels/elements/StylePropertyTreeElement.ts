@@ -1992,7 +1992,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
       };
       this.listItemElement.appendChild(tooltip);
-    } else if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover')) {
+    } else if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
       const cssProperty = this.parentPaneInternal.webCustomData?.findCssProperty(this.name);
 
       if (cssProperty) {
@@ -2004,7 +2004,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           id: tooltipId,
           jslogContext: 'elements.css-property-doc',
         });
-        tooltip.appendChild(new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty));
+        tooltip.onbeforetoggle = event => {
+          if ((event as ToggleEvent).newState !== 'open') {
+            return;
+          }
+          if (!Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+            event.consume(true);
+            return;
+          }
+
+          tooltip.removeChildren();
+          tooltip.appendChild(new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty));
+        };
         this.listItemElement.appendChild(tooltip);
       }
     }

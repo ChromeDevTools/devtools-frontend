@@ -1853,4 +1853,34 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     await openTooltipPromise2;
     assert.notStrictEqual(tooltip, tooltip2);
   });
+
+  it('shows a property docs tooltip', async () => {
+    const webCustomDataStub = sinon.createStubInstance(Elements.WebCustomData.WebCustomData);
+    webCustomDataStub.findCssProperty.returns({name: 'color', description: 'test color'});
+    sinon.stub(stylesSidebarPane, 'webCustomData').get(() => webCustomDataStub);
+    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
+    const treeElementWithoutTooltip = getTreeElement('color', 'blue');
+    treeElementWithoutTooltip.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+    treeElementWithoutTooltip.updateTitle();
+    assert.notExists(treeElementWithoutTooltip.listItemElement.querySelector(
+        'devtools-tooltip[jslogcontext="elements.css-property-doc"]'));
+
+    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(true);
+    const treeElementWithTooltip = getTreeElement('color', 'blue');
+    treeElementWithTooltip.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+    treeElementWithTooltip.updateTitle();
+    renderElementIntoDOM(treeElementWithTooltip.listItemElement);
+    const tooltip = treeElementWithTooltip.listItemElement.querySelector(
+        'devtools-tooltip[jslogcontext="elements.css-property-doc"]');
+    assert.instanceOf(tooltip, Tooltips.Tooltip.Tooltip);
+
+    tooltip.showPopover();
+    assert.isTrue(tooltip.open);
+    tooltip.hidePopover();
+    assert.isFalse(tooltip.open);
+
+    Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
+    tooltip.showPopover();
+    assert.isFalse(tooltip.open);
+  });
 });

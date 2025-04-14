@@ -11,11 +11,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import {html, render} from '../../../ui/lit/lit.js';
 
-import cssOverviewStartViewStylesRaw from './cssOverviewStartView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cssOverviewStartViewStyles = new CSSStyleSheet();
-cssOverviewStartViewStyles.replaceSync(cssOverviewStartViewStylesRaw.cssText);
+import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
 
 const UIStrings = {
   /**
@@ -61,7 +57,6 @@ export class CSSOverviewStartView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [cssOverviewStartViewStyles];
     this.#render();
   }
 
@@ -81,6 +76,7 @@ export class CSSOverviewStartView extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${cssOverviewStartViewStyles.cssText}</style>
       <div class="css-overview-start-view">
         <devtools-panel-introduction-steps>
           <span slot="title">${i18nString(UIStrings.identifyCSSImprovements)}</span>

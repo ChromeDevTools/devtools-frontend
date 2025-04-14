@@ -21,16 +21,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
-import stylesRaw from './consoleInsight.css.js';
-import listStylesRaw from './consoleInsightSourcesList.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const listStyles = new CSSStyleSheet();
-listStyles.replaceSync(listStylesRaw.cssText);
+import styles from './consoleInsight.css.js';
+import listStyles from './consoleInsightSourcesList.css.js';
 
 // Note: privacy and legal notices are not localized so far.
 const UIStrings = {
@@ -383,7 +375,6 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles, Input.checkboxStyles];
     this.classList.add('opening');
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
@@ -1131,6 +1122,8 @@ export class ConsoleInsight extends HTMLElement {
   #render(): void {
     // clang-format off
     render(html`
+      <style>${styles.cssText}</style>
+      <style>${Input.checkboxStylesRaw.cssText}</style>
       <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
         <div class="animation-wrapper">
           ${this.#renderHeader()}
@@ -1156,12 +1149,13 @@ class ConsoleInsightSourcesList extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadow.adoptedStyleSheets = [listStyles, Input.checkboxStyles];
   }
 
   #render(): void {
     // clang-format off
      render(html`
+      <style>${listStyles.cssText}</style>
+      <style>${Input.checkboxStylesRaw.cssText}</style>
       <ul>
         ${Directives.repeat(this.#sources, item => item.value, item => {
           return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>

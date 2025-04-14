@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view, rulesdir/inject-checkbox-styles */
 
 import '../../ui/components/adorners/adorners.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
@@ -17,19 +17,11 @@ import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import autofillViewStylesRaw from './autofillView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const autofillViewStyles = new CSSStyleSheet();
-autofillViewStyles.replaceSync(autofillViewStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
+import autofillViewStyles from './autofillView.css.js';
 
 const {html, render, Directives: {styleMap}} = Lit;
 const {FillingStrategy} = Protocol.Autofill;
@@ -135,7 +127,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles, inspectorCommonStyles];
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const formFilledEvent = autofillManager.getLastFilledAddressForm();
     if (formFilledEvent) {
@@ -183,6 +174,9 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
+        <style>${Input.checkboxStylesRaw}</style>
+        <style>${autofillViewStyles.cssText}</style>
+        <style>${inspectorCommonStyles.cssText}</style>
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -221,6 +215,9 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${Input.checkboxStylesRaw}</style>
+      <style>${autofillViewStyles.cssText}</style>
+      <style>${inspectorCommonStyles.cssText}</style>
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>

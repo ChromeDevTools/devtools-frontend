@@ -22,12 +22,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import breakpointsViewStylesRaw from './breakpointsView.css.js';
+import breakpointsViewStyles from './breakpointsView.css.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const breakpointsViewStyles = new CSSStyleSheet();
-breakpointsViewStyles.replaceSync(breakpointsViewStylesRaw.cssText);
 
 const {html, Directives: {ifDefined, repeat, classMap, live}} = Lit;
 
@@ -566,10 +562,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void this.render();
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, breakpointsViewStyles];
-  }
-
   override async render(): Promise<void> {
     await RenderCoordinator.write('BreakpointsView render', () => {
       const clickHandler = async(event: Event): Promise<void> => {
@@ -583,6 +575,8 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       const pauseOnCaughtExceptionIsDisabled = !this.#independentPauseToggles && !this.#pauseOnUncaughtExceptions;
       // clang-format off
       const out = html`
+        <style>${Input.checkboxStylesRaw}</style>
+        <style>${breakpointsViewStyles.cssText}</style>
         <div class='pause-on-uncaught-exceptions'
             tabindex='0'
             @click=${clickHandler}

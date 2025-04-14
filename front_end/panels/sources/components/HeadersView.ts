@@ -15,11 +15,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import HeadersViewStylesRaw from './HeadersView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const HeadersViewStyles = new CSSStyleSheet();
-HeadersViewStyles.replaceSync(HeadersViewStylesRaw.cssText);
+import headersViewStyles from './HeadersView.css.js';
 
 const {html} = Lit;
 
@@ -148,10 +144,6 @@ export class HeadersViewComponent extends HTMLElement {
     this.#shadow.addEventListener('keydown', this.#onKeyDown.bind(this));
     this.#shadow.addEventListener('paste', this.#onPaste.bind(this));
     this.addEventListener('contextmenu', this.#onContextMenu.bind(this));
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [HeadersViewStyles];
   }
 
   set data(data: HeadersViewComponentData) {
@@ -350,6 +342,7 @@ export class HeadersViewComponent extends HTMLElement {
       const fileName = this.#uiSourceCode?.name() || '.headers';
       // clang-format off
       Lit.render(html`
+        <style>${headersViewStyles.cssText}</style>
         <div class="center-wrapper">
           <div class="centered">
             <div class="error-header">${i18nString(UIStrings.errorWhenParsing, {PH1: fileName})}</div>
@@ -363,6 +356,7 @@ export class HeadersViewComponent extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
+      <style>${headersViewStyles.cssText}</style>
       ${this.#headerOverrides.map((headerOverride, blockIndex) =>
         html`
           ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}

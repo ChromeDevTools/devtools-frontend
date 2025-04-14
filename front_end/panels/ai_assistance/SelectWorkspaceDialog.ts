@@ -26,6 +26,10 @@ const UIStringsNotTranslate = {
    */
   selectFolder: 'Select folder',
   /**
+   *@description Heading of dialog box which asks user to select a workspace folder for a11y clients.
+   */
+  selectFolderAccessibleLabel: 'Select a folder to apply changes',
+  /**
    *@description Button text for canceling workspace selection.
    */
   cancel: 'Cancel',
@@ -311,6 +315,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       onProjectSelected: (project: Workspace.Workspace.Project) => void,
       currentProject?: Workspace.Workspace.Project): void {
     const dialog = new UI.Dialog.Dialog('select-workspace');
+    dialog.setAriaLabel(UIStringsNotTranslate.selectFolderAccessibleLabel);
     dialog.setMaxContentSize(new UI.Geometry.Size(384, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);

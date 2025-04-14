@@ -5,6 +5,9 @@
   "core/common/ResourceType.ts | css": {
     "message": "CSS"
   },
+  "core/common/ResourceType.ts | directsocket": {
+    "message": "DirectSocket"
+  },
   "core/common/ResourceType.ts | doc": {
     "message": "Doc"
   },
@@ -56,6 +59,9 @@
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
+  "core/common/ResourceType.ts | socketShort": {
+    "message": "Socket-i i rrjetit"
+  },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "Fletë stili"
   },
@@ -76,9 +82,6 @@
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
-  },
-  "core/common/ResourceType.ts | ws": {
-    "message": "WS"
   },
   "core/common/Revealer.ts | animationsPanel": {
     "message": "Paneli i \"Animacioneve\""
@@ -118,6 +121,9 @@
   },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Zbukurues"
+  },
+  "core/common/SettingRegistration.ts | ai": {
+    "message": "IA"
   },
   "core/common/SettingRegistration.ts | appearance": {
     "message": "Paraqitja"
@@ -289,6 +295,18 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Blloku With"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
+    "message": "Ndërprerë"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusClosed": {
+    "message": "Mbyllur"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpen": {
+    "message": "Hapur"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpening": {
+    "message": "Po hapet"
   },
   "core/sdk/NetworkManager.ts | fast4G": {
     "message": "4G e shpejtë"
@@ -1226,8 +1244,14 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() nuk funksionon më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
   },
+  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
+    "message": "U gjet një etiketë <h1> brenda një etikete <article>, <aside>, <nav> ose <section> që nuk ka një madhësi të specifikuar të fontit. Madhësia e tekstit të këtij titulli do të ndryshohet në këtë shfletues në të ardhmen e afërt. Shiko https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 për më shumë informacione."
+  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate është zhvlerësuar. Përdor RTCPeerConnectionIceErrorEvent.address ose RTCPeerConnectionIceErrorEvent.port më mirë."
+  },
+  "generated/Deprecation.ts | IdentityDigitalCredentials": {
+    "message": "Ky format për kërkesën navigator.credentials.get() për kredencialet dixhitale është i zhvlerësuar. Përditëso thirrjen për të përdorur formatin e ri."
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "Origjina e tregtarit dhe të dhënat arbitrare nga ngjarja canmakepayment e punonjësit të shërbimit janë zhvlerësuar dhe do të hiqen: topOrigin, paymentRequestOrigin, methodData, modifiers."
@@ -1469,12 +1493,6 @@
   "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
     "message": "Ndryshimet në trajtimin e kukive të palëve të treta nga ana e Chrome"
   },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "një i sigurt"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Kuki e një pale të tretë është bllokuar në Chrome për shkak të flamujve të Chrome ose për shkak të konfigurimit të shfletuesit."
   },
@@ -1498,6 +1516,9 @@
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ndarja e burimeve me origjinë të ndërthurur (CORS)"
+  },
+  "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
+    "message": "Qasja në rrjetin lokal"
   },
   "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
     "message": "Qasja në rrjetin privat"
@@ -1564,6 +1585,12 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Parandalimi i përmbajtjes së përzier"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | chromeStatusEntry": {
+    "message": "Hyrja e statusit të Chrome"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | partitioningBlobURL": {
+    "message": "URL-ja e blobit po ndahet"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modaliteti i përputhshmërisë së dokumentit"
@@ -1700,9 +1727,6 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Çaktivizo kërkesat e anulimit të rrjetit"
   },
-  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
-    "message": "Aktivizo dosjet automatike të vendit të punës"
-  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Aktivizo anulimet lokale"
   },
@@ -1766,6 +1790,24 @@
   "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Grupimi më i keq i zhvendosjeve të strukturës"
   },
+  "models/trace/insights/Cache.ts | cacheTTL": {
+    "message": "Periudha e jetëgjatësisë (TTL) e memories specifike"
+  },
+  "models/trace/insights/Cache.ts | description": {
+    "message": "Një periudhë e gjatë jetëgjatësie për memorien specifike mund t'i shpejtojë vizitat e përsëritura në faqen tënde. [Mëso më shumë](https://web.dev/uses-long-cache-ttl/)."
+  },
+  "models/trace/insights/Cache.ts | noRequestsToCache": {
+    "message": "Nuk ka asnjë kërkesë me politika të memories specifike joefikase"
+  },
+  "models/trace/insights/Cache.ts | others": {
+    "message": "{PH1} të tjerë"
+  },
+  "models/trace/insights/Cache.ts | requestColumn": {
+    "message": "Kërko"
+  },
+  "models/trace/insights/Cache.ts | title": {
+    "message": "Përdor periudha efikase të jetëgjatësisë për memorien specifike"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Një DOM i madh mund të rritë kohëzgjatjen e llogaritjeve të stilit dhe të riparaqitjeve të strukturës, duke ndikuar në reagueshmërinë e faqeve. Një DOM i madh do të rritë gjithashtu përdorimin e memories. [Mëso se si të shmangësh një madhësi të tepërt të DOM-it](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
   },
@@ -1823,11 +1865,17 @@
   "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
     "message": "Shkarkim i pangjeshur"
   },
-  "models/trace/insights/DuplicateJavaScript.ts | description": {
+  "models/trace/insights/DuplicatedJavaScript.ts | columnDuplicatedBytes": {
+    "message": "Bajtet e dublikuara"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | columnSource": {
+    "message": "Burimi"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Hiq modulet e mëdha dublikatë të JavaScript nga paketat për të reduktuar bajtet e konsumuara nga aktiviteti i rrjetit."
   },
-  "models/trace/insights/DuplicateJavaScript.ts | title": {
-    "message": "JavaScript dublikatë"
+  "models/trace/insights/DuplicatedJavaScript.ts | title": {
+    "message": "JavaScript i dublikuar"
   },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "Ki parasysh që të caktosh [font-display](https://developer.chrome.com/blog/font-display) në swap ose optional për t'u siguruar që teksti të jetë vazhdimisht i dukshëm. swap mund të optimizohet më tej për të minimizuar zhvendosjet e strukturës me [anulimet e metrikës së fonteve](https://developer.chrome.com/blog/font-fallbacks)."
@@ -1855,6 +1903,9 @@
   },
   "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
     "message": "Koha e riparaqitjes në total"
+  },
+  "models/trace/insights/ForcedReflow.ts | unattributed": {
+    "message": "Pa atribut"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Zvogëlimi i kohës së shkarkimit të imazheve mund të përmirësojë kohën e perceptuar të ngarkimit për faqen dhe LCP-në. [Mëso më shumë për optimizimin e madhësisë së imazheve](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1967,6 +2018,33 @@
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "LCP-ja sipas fazës"
   },
+  "models/trace/insights/LegacyJavaScript.ts | columnScript": {
+    "message": "Skripti"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | columnWastedBytes": {
+    "message": "Bajtet e shpërdoruara"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | description": {
+    "message": "Kodet polifil dhe transformimet bëjnë të mundur që shfletuesit e vjetër të përdorin veçoritë e reja të JavaScript. Sidoqoftë, shumë prej tyre nuk janë të nevojshëm për shfletuesit modernë. Ki parasysh ta modifikosh procesin e ndërtimit të JavaScript që të mos transformohen veçoritë [bazë](https://web.dev/articles/baseline-and-polyfills), përveçse nëse e di që duhet të mbështeten shfletuesit e vjetër. [Mëso se pse shumica e sajteve mund të përdorin kodin ES6+ pa kryer transformimin e gjuhës së programimit](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | title": {
+    "message": "Versioni i vjetër i JavaScript"
+  },
+  "models/trace/insights/ModernHTTP.ts | description": {
+    "message": "HTTP/2 dhe HTTP/3 ofrojnë shumë përfitime në HTTP/1.1, si p.sh. transmetimi i shumanshëm. [Mëso më shumë rreth përdorimit të protokollit modern HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+  },
+  "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
+    "message": "Asnjë kërkesë nuk ka përdorur HTTP/1.1"
+  },
+  "models/trace/insights/ModernHTTP.ts | protocol": {
+    "message": "Protokolli"
+  },
+  "models/trace/insights/ModernHTTP.ts | request": {
+    "message": "Kërko"
+  },
+  "models/trace/insights/ModernHTTP.ts | title": {
+    "message": "Versioni modern i HTTP-së"
+  },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Shmang kërkesat kritike në formë zinxhiri](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) duke zvogëluar gjatësinë e zinxhirëve, duke zvogëluar madhësinë e burimeve ose duke vonuar shkarkimin e burimeve të panevojshme për të përmirësuar ngarkimin e faqeve."
   },
@@ -2070,7 +2148,7 @@
     "message": "Shpërfillur"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Kërkohet ringarkim para se ndryshim të ketë efekt."
+    "message": "Kërkohet ringarkimi përpara se të zbatohet ndryshimi"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Lëviz në pamje"
@@ -2528,6 +2606,9 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Mëso rreth IA-së në DevTools"
   },
+  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
+    "message": "Ndihma e IA-së nuk ofrohet në modalitetin \"I fshehtë\" ose në modalitetin \"Vizitor\""
+  },
   "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
     "message": "Kjo veçori ofrohet vetëm kur je identifikuar në Chrome me \"Llogarinë tënde të Google\"."
   },
@@ -2628,7 +2709,7 @@
     "message": "Kjo përdoret nga shfletuesi për të ditur nëse manifesti duhet të përditësojë një aplikacion ekzistues apo nëse i referohet një aplikacioni të ri uebi që mund të instalohet."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "{PH1} {PH2} nuk specifikohet në manifest, në vend të saj përdoret {PH3}. Për të specifikuar një ID aplikacioni që përputhet me identitetin aktual, cakto fushën {PH4} te {PH5} {PH6}."
+    "message": "Shënim. id nuk specifikohet në manifest, në vend të saj përdoret start_url. Për të specifikuar një ID aplikacioni që përputhet me identitetin aktual, cakto fushën id te {PH1} {PH2}."
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Deklarimi i një ikone me \"purpose\" nga \"any maskable\" nuk rekomandohet. Ajo mund të duket gabim në disa platforma për shkak të mbushjes së tepërt ose të pakët."
@@ -2737,9 +2818,6 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Nuk ka ikonë të dhënë me të paktën {PH1} pikselë në formë katrori në formatin PNG, SVG ose WebP, me atributin e qëllimit të pacaktuar ose të caktuar në \"any\"."
-  },
-  "panels/application/AppManifestView.ts | note": {
-    "message": "Shënim."
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Orientimi"
@@ -2871,7 +2949,7 @@
     "message": "Mbivendosja e kontrolleve të dritareve"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "Manifesti i aplikacionit"
+    "message": "Manifesti"
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Aplikacioni"
@@ -3316,6 +3394,12 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API raportues"
+  },
+  "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
+    "message": "Nuk ka asnjë raport apo pikë fundore"
+  },
+  "panels/application/ReportingApiView.ts | reportingApiDescription": {
+    "message": "Në këtë faqe do të mund të inspektosh raportet dhe pikat fundore të Reporting API."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Hapësira ruajtëse e memories specifike"
@@ -4083,7 +4167,7 @@
     "message": "Status i panjohur"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
-    "message": "URL-ja:"
+    "message": "URL"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
     "message": "Masat parandaluese ndaj gjurmimit me ridrejtim"
@@ -4397,14 +4481,17 @@
   "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
     "message": "Të gjitha ngjarjet e hapësirës ruajtëse të ndarë për këtë faqe."
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventMethod": {
+    "message": "Metoda e qasjes"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
     "message": "Parametrat opsionalë të ngjarjes"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventScope": {
+    "message": "Objektivi i qasjes"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
     "message": "Koha e ngjarjes"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
-    "message": "Lloji i qasjes"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
     "message": "Mëso më shumë"
@@ -4414,6 +4501,9 @@
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "Origjina e zotëruesit"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerSite": {
+    "message": "Sajti i zotëruesit"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Hapësira ruajtëse e ndarë"
@@ -5390,6 +5480,9 @@
   "panels/changes/ChangesView.ts | sInsertions": {
     "message": "{n,plural, =1{# ndërfutje (+)}other{# ndërfutje (+)}}"
   },
+  "panels/changes/CombinedDiffView.ts | copied": {
+    "message": "U kopjua në kujtesën e fragmenteve"
+  },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ndryshimet"
   },
@@ -5401,6 +5494,21 @@
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Shfaq ndryshimet"
+  },
+  "panels/common/common.ts | allow": {
+    "message": "Lejo"
+  },
+  "panels/common/common.ts | cancel": {
+    "message": "Anulo"
+  },
+  "panels/common/common.ts | gotIt": {
+    "message": "E kuptova"
+  },
+  "panels/common/common.ts | learnMore": {
+    "message": "Mëso më shumë"
+  },
+  "panels/common/common.ts | thingsToConsider": {
+    "message": "Gjëra për t'u pasur parasysh"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "Shtesë"
@@ -6266,6 +6374,9 @@
   "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
     "message": "Nuk ka asnjë etiketë të lidhur me një fushë formulari"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentAttributesSelectDescendant": {
+    "message": "Element me atribute të pavlefshme brenda një elementi <select>"
+  },
   "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
     "message": "Element ndërveprues brenda elementit <legend>"
   },
@@ -6473,6 +6584,9 @@
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Ruaje si ndryshore të përgjithshme"
   },
+  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
+    "message": "Shiko problemin:"
+  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "Të gjitha"
   },
@@ -6578,6 +6692,9 @@
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
     "message": "Shfaq të gjitha karakteristikat ({PH1} më shumë)"
   },
+  "panels/elements/StylePropertiesSection.ts | specificity": {
+    "message": "Specifika: {PH1}"
+  },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "atributi style"
   },
@@ -6617,6 +6734,12 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Hap modifikuesin (grid)"
   },
+  "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
+    "message": "Vlerë e pavlefshme e karakteristikës"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | invalidString": {
+    "message": "{PH1}, emri i karakteristikës: {PH2}, vlera e karakteristikës: {PH3}"
+  },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Kalo te paneli i \"Animacioneve\""
   },
@@ -6626,11 +6749,17 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Hap në panelin e \"Burimeve\""
   },
+  "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
+    "message": "{PH1} nuk është përkufizuar"
+  },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Shift + kliko për të ndryshuar formatin e ngjyrës."
   },
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Aktivizo/çaktivizo atributin dhe vazhdo modifikimin"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | unknownPropertyName": {
+    "message": "Emër karakteristike i panjohur"
   },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Shiko vlerën e përllogaritur"
@@ -6640,12 +6769,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Kliko për të shfaqur shtresën në pemën e shtresave"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "U kopjua në kujtesën e fragmenteve"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopjo ndryshimet e CSS-së"
   },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Rritja/zvogëlimi me rrotën e miut ose tastet për lart/poshtë. {PH1}: ±100, Shift: ±10, {PH2}: ±0,1"
@@ -6682,6 +6805,9 @@
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "Kalo në nyjën e ankorimit"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} nuk është përkufizuar"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Mëso më shumë"
@@ -7058,6 +7184,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Kërkesa e rrjetit"
   },
+  "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
+    "message": "Ndihma e IA-së nuk ofrohet në modalitetin \"I fshehtë\" ose në modalitetin \"Vizitor\""
+  },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "Kjo veçori ofrohet vetëm kur je identifikuar në Chrome me \"Llogarinë tënde të Google\"."
   },
@@ -7252,6 +7381,18 @@
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 uebsajt lejohet të ketë qasje te kukit}other{# uebsajte lejohen të kenë qasje te kukit}}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
+    "message": "Numri i problemeve të URL-së së blobit: {count}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blockedCrossPartitionFetching": {
+    "message": "Qasja tek URL-ja e blobit {url} është bllokuar pasi është kryer nga një kontekst i ndarjes së kryqëzuar."
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | enforceNoopenerForNavigation": {
+    "message": "Navigimi i nivelit kryesor i URL-së së blobit {url} ishte caktuar si \"noopener\" pasi origjina e URL-së së blobit ishte e kryqëzuar me sajtin e nivelit të lartë të kontekstit që ka nisur navigimin."
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
+    "message": "Nuk ka asnjë URL të disponueshme blobi për këtë problem."
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Kliko për të zbuluar nyjën DOM të kuadrit në panelin \"Elementet\""
@@ -7603,6 +7744,9 @@
   },
   "panels/layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
     "message": "Manovruesi i ngjarjeve të rrotës"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | layerCount": {
+    "message": "{PH1} shtresa"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
     "message": "Paneli i pemës së shtresave"
@@ -8666,6 +8810,9 @@
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, Përparësia fillestare: {PH2}"
   },
+  "panels/network/NetworkDataGridNode.ts | integrity": {
+    "message": "integriteti"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveli 1"
   },
@@ -9192,13 +9339,16 @@
     "message": "Eksporto HAR (me të dhëna delikate)..."
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Aktualisht po merren kuadrot"
+    "message": "Po merr kuadrot..."
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Grupo sipas kuadrit"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Kërkesat e grupit nga kuadri i kërkesës së nivelit të lartë"
+  },
+  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
+    "message": "Shtyp {PH1} për të ringarkuar dhe regjistruar shiritin e filmit."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importo skedar HAR..."
@@ -9219,7 +9369,7 @@
     "message": "Ruaj evidencën"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "Aktualisht po ngarkohen kuadrot"
+    "message": "Po regjistron kuadrot..."
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Kërko"
@@ -9326,26 +9476,14 @@
   "panels/network/RequestPayloadView.ts | viewDecoded": {
     "message": "Shiko të dekoduara"
   },
-  "panels/network/RequestPayloadView.ts | viewDecodedL": {
-    "message": "shiko të dekoduara"
-  },
   "panels/network/RequestPayloadView.ts | viewParsed": {
     "message": "Shiko të analizuara"
-  },
-  "panels/network/RequestPayloadView.ts | viewParsedL": {
-    "message": "shiko të analizuara"
   },
   "panels/network/RequestPayloadView.ts | viewSource": {
     "message": "Shiko burimin"
   },
-  "panels/network/RequestPayloadView.ts | viewSourceL": {
-    "message": "shiko burimin"
-  },
   "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
     "message": "Shikoje me enkodim URL"
-  },
-  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
-    "message": "shiko me enkodim URL"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Të dhënat e përgjigjes nuk u ngarkuan"
@@ -10598,6 +10736,9 @@
   "panels/protocol_monitor/JSONEditor.ts | resetDefaultValue": {
     "message": "Rivendos te vlera e parazgjedhur"
   },
+  "panels/protocol_monitor/JSONEditor.ts | selectTarget": {
+    "message": "Zgjidh një objektiv"
+  },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCmdEnter": {
     "message": "Dërgo komandën - ⌘ + Enter"
   },
@@ -10676,6 +10817,9 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Shfaq monitorin e protokollit"
   },
+  "panels/recorder/RecorderController.ts | allowImporting": {
+    "message": "lejo importimin"
+  },
   "panels/recorder/RecorderController.ts | continueReplay": {
     "message": "Vazhdo"
   },
@@ -10687,6 +10831,12 @@
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Fshi regjistrimin"
+  },
+  "panels/recorder/RecorderController.ts | doNotImport": {
+    "message": "Mos i importo regjistrimet që nuk i kupton ose që nuk i ke rishikuar vetë në DevTools. Kjo mund t'i lejojë sulmuesit që të vjedhin identitetin tënd ose të marrin kontrollin e kompjuterit tënd. Shkruaj ''{PH1}'' më poshtë për të lejuar importimin."
+  },
+  "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
+    "message": "I beson këtij regjistrimi?"
   },
   "panels/recorder/RecorderController.ts | export": {
     "message": "Eksporto"
@@ -10732,6 +10882,9 @@
   },
   "panels/recorder/RecorderController.ts | toggleCode": {
     "message": "Aktivizo/çaktivizo pamjen e kodit"
+  },
+  "panels/recorder/RecorderController.ts | typeAllowImporting": {
+    "message": "Shkruaj ''{PH1}''"
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Anulo regjistrimin"
@@ -11111,6 +11264,9 @@
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Nuk është gjetur asnjë përputhje"
   },
+  "panels/search/SearchView.ts | noSearchResult": {
+    "message": "Asnjë rezultat kërkimi"
+  },
   "panels/search/SearchView.ts | nothingMatchedTheQuery": {
     "message": "Nuk u përputh asgjë me përmbajtjen e kërkimit tënd"
   },
@@ -11125,6 +11281,9 @@
   },
   "panels/search/SearchView.ts | searching": {
     "message": "Po kërkon…"
+  },
+  "panels/search/SearchView.ts | typeAndPressSToSearch": {
+    "message": "Shkruaj dhe shtyp {PH1} për të kërkuar"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
     "message": "Vetëm kur DevTools është hapur"
@@ -11903,6 +12062,9 @@
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Aktivizo ndihmën e IA-së"
   },
+  "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
+    "message": "Aktivizo sugjerime nga IA-ja për shënimet e panelit të performancës"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
     "message": "Aktivizo \"Console insights\""
   },
@@ -11930,6 +12092,15 @@
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
     "message": "Të gjitha dhënat dhe kërkesat e përdoruesit në të cilat mund të qaset faqja e inspektuar nëpërmjet API-ve të uebit, kërkesave të rrjetit, skedarëve dhe gjurmimeve të performancës dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna nuk do të përdoren për të përmirësuar modelet e IA-së të Google."
   },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
+    "message": "Gjurmimi i performancës sate u dërgua te Google për të gjeneruar një shpjegim. Këto të dhëna do të përdoren për të përmirësuar modelet e IA-së të Google."
+  },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
+    "message": "Gjurmimi i performancës sate u dërgua te Google për të gjeneruar një shpjegim. Këto të dhëna nuk do të përdoren për të përmirësuar modelet e IA-së të Google."
+  },
+  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
+    "message": "Merr sugjerime nga IA-ja për shënimet e panelit të performancës"
+  },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Të ndihmon të kuptosh dhe të rregullosh paralajmërimet dhe gabimet e konsolës"
   },
@@ -11947,6 +12118,9 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Mëso më shumë"
+  },
+  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
+    "message": "Ndihma e IA-së nuk ofrohet në modalitetin \"I fshehtë\" ose në modalitetin \"Vizitor\""
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "Kjo veçori ofrohet vetëm kur je identifikuar në Chrome me \"Llogarinë tënde të Google\"."
@@ -12098,9 +12272,6 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "Eksperimentet"
   },
-  "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
-    "message": "Filtri"
-  },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "Mëso më shumë"
   },
@@ -12108,10 +12279,13 @@
     "message": "Asnjë eksperiment nuk përputhet me filtrin"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar."
+    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Rivendos parazgjedhjet dhe ringarko"
+  },
+  "panels/settings/SettingsScreen.ts | searchExperiments": {
+    "message": "Kërko tek eksperimentet"
   },
   "panels/settings/SettingsScreen.ts | sendFeedback": {
     "message": "Dërgo komentet"
@@ -12337,6 +12511,9 @@
   },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "URL-ja e hartës burim: "
+  },
+  "panels/sources/AiWarningInfobarPlugin.ts | aiContentWarning": {
+    "message": "Ky skedar përfshin përmbajtje të gjeneruara nga IA-ja"
   },
   "panels/sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "Pikë ndërprerjeje"
@@ -12567,7 +12744,7 @@
     "message": "Ngarkimi i skedarit të defekteve në kod \"{PH1}\" dështoi."
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
-    "message": "Ngarkimi i informacioneve të defekteve në kod për {PH1} dështoi."
+    "message": "Ngarkimi i informacioneve të defekteve në kod për {PH1} dështoi"
   },
   "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
     "message": "DevTools nuk mund të shfaqë burimet e shkruara, por mund ta korrigjosh kodin e vendosur"
@@ -12603,13 +12780,13 @@
     "message": "Shfaq kërkesën"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
-    "message": "Ngarkimi i hartës së burimit dështoi."
+    "message": "Ngarkimi i hartës së burimit dështoi"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
-    "message": "Harta e burimit u ngarkua."
+    "message": "Harta e burimit u ngarkua"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
-    "message": "Harta e burimit u anashkalua për këtë skedar."
+    "message": "Harta e burimit u anashkalua për këtë skedar"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Korrigjuesi do ta kapërcejë kalimin përmes këtij skripti dhe nuk do të ndalojë në raste përjashtimesh."
@@ -12769,12 +12946,6 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
-  },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
-    "message": "Lidhu..."
-  },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
-    "message": "U zbuluar dosja {PH1} e vendit të punës."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Pastro konfigurimin"
@@ -13030,9 +13201,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivizo pikat e ndërprerjes"
-  },
-  "panels/sources/sources-meta.ts | addFolder": {
-    "message": "Shto dosje"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Shto dosje në hapësirën e punës"
@@ -13439,12 +13607,6 @@
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Rrjeti"
   },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
-    "message": "Kohët e serverit - {PH1}"
-  },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
-    "message": "Ky kanal përfshin kohë të marra nga kokat e përgjigjeve të rrjetit të kohëve të serverit. Kohët përkatëse të fillimit janë vetëm përllogaritje dhe mund të mos jenë të sakta."
-  },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Pala e parë / e tretë"
   },
@@ -13784,18 +13946,6 @@
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Koha"
   },
-  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
-    "message": "Zmadhimi/zvogëlimi i shpejtë"
-  },
-  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
-    "message": "Lëviz majtas/djathtas"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
-    "message": "Lëviz lart/poshtë"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
-    "message": "Zmadhimi/zvogëlimi"
-  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopjo tabelën"
   },
@@ -14035,9 +14185,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | delay": {
     "message": "Vonesa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | description": {
-    "message": "Përshkrimi"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Detaje"
@@ -14435,18 +14582,6 @@
   "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Shpërfilli skriptet me emra që përputhen me \"{regex}\""
   },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
-    "message": "Rregulli ekziston tashmë"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
-    "message": "Ky rregull ekziston tashmë, por është çaktivizuar. Ruajtja e kësaj vlere do të riaktivizojë rregullin"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
-    "message": "Rregulli nuk mund të jetë bosh"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
-    "message": "Rregulli duhet të jetë një shprehje e rregullt e vlefshme"
-  },
   "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
     "message": "Hiq shprehjen e zakonshme: ''{regex}''"
   },
@@ -14678,6 +14813,9 @@
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "Percentilja e 75-të e fushës"
   },
+  "panels/timeline/components/MetricCard.ts | fieldP75": {
+    "message": "Fusha në percentilen e 75-të"
+  },
   "panels/timeline/components/MetricCard.ts | good": {
     "message": "I mirë"
   },
@@ -14819,6 +14957,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "Trupi i dekoduar"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | description": {
+    "message": "Përshkrimi"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "Të dhënat e enkoduara"
   },
@@ -14846,11 +14987,20 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Me prioritet"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | protocol": {
+    "message": "Protokolli"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
     "message": "Bllokimi i paraqitjes"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Metoda e kërkimit"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | serverTiming": {
+    "message": "Koha e serverit"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | time": {
+    "message": "Koha"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "Po"
@@ -15020,6 +15170,9 @@
   "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
     "message": "Kontrolli i statistikave u kalua: {PH1}"
   },
+  "panels/timeline/components/insights/Table.ts | others": {
+    "message": "{PH1} të tjerë"
+  },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} - Fusha ({PH2})"
   },
@@ -15038,8 +15191,20 @@
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "Etiketa e hyrjes"
   },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | freDialog": {
+    "message": "Dialogu për marrjen e sugjerimeve për shënimet të mundësuara nga IA-ja"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | generateLabelButton": {
+    "message": "Gjenero etiketën"
+  },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
     "message": "Fut një etiketë shënimi"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | learnMoreAriaLabel": {
+    "message": "Mëso më shumë rreth shënimeve automatike te cilësimet"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
+    "message": "Informacione të tjera"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Diapazoni kohor"
@@ -15821,18 +15986,6 @@
   "ui/legacy/DockController.ts | devtoolsUndocked": {
     "message": "DevTools është hequr nga pozicioni"
   },
-  "ui/legacy/DockController.ts | dockToBottom": {
-    "message": "Poziciono në fund"
-  },
-  "ui/legacy/DockController.ts | dockToLeft": {
-    "message": "Poziciono majtas"
-  },
-  "ui/legacy/DockController.ts | dockToRight": {
-    "message": "Poziciono djathtas"
-  },
-  "ui/legacy/DockController.ts | undockIntoSeparateWindow": {
-    "message": "Shkëput nga stacioni në dritare të veçantë"
-  },
   "ui/legacy/EmptyWidget.ts | learnMore": {
     "message": "Mëso më shumë"
   },
@@ -15858,7 +16011,7 @@
     "message": "Mbyll sirtarin"
   },
   "ui/legacy/InspectorView.ts | devToolsLanguageMissmatch": {
-    "message": "DevTools tani ofrohet në {PH1}!"
+    "message": "DevTools tani ofrohet në {PH1}"
   },
   "ui/legacy/InspectorView.ts | drawer": {
     "message": "Sirtari i veglave"
@@ -15885,7 +16038,7 @@
     "message": "Panelet"
   },
   "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
-    "message": "Ringarko"
+    "message": "Ringarkoje faqen"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Ringarko DevTools"
@@ -15894,7 +16047,7 @@
     "message": "Zgjidh një dosje"
   },
   "ui/legacy/InspectorView.ts | selectOverrideFolder": {
-    "message": "Zgjidh një dosje ku të ruash skedarët e zëvendësimit."
+    "message": "Zgjidh një dosje ku të ruash skedarët e zëvendësimit"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Përputhe gjithnjë me gjuhën e Chrome"
@@ -15987,7 +16140,7 @@
     "message": "Shfaq rezultatin e mëparshëm"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar."
+    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar"
   },
   "ui/legacy/SettingsUI.ts | srequiresReload": {
     "message": "*Kërkon ringarkimin"
@@ -16560,7 +16713,7 @@
     "message": "Nuk u gjetën komanda"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar."
+    "message": "Një ose më shumë cilësime kanë ndryshuar, gjë që kërkon ringarkim për t'u zbatuar"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "Ekzekuto"

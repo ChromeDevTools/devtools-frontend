@@ -5,6 +5,9 @@
   "core/common/ResourceType.ts | css": {
     "message": "CSS"
   },
+  "core/common/ResourceType.ts | directsocket": {
+    "message": "DirectSocket"
+  },
   "core/common/ResourceType.ts | doc": {
     "message": "Dokument"
   },
@@ -56,6 +59,9 @@
   "core/common/ResourceType.ts | signedexchange": {
     "message": "SignedExchange"
   },
+  "core/common/ResourceType.ts | socketShort": {
+    "message": "Socket"
+  },
   "core/common/ResourceType.ts | stylesheet": {
     "message": "Typografiark"
   },
@@ -76,9 +82,6 @@
   },
   "core/common/ResourceType.ts | webtransport": {
     "message": "WebTransport"
-  },
-  "core/common/ResourceType.ts | ws": {
-    "message": "WS"
   },
   "core/common/Revealer.ts | animationsPanel": {
     "message": "Panelet Animationer"
@@ -118,6 +121,9 @@
   },
   "core/common/SettingRegistration.ts | adorner": {
     "message": "Adorner"
+  },
+  "core/common/SettingRegistration.ts | ai": {
+    "message": "AI"
   },
   "core/common/SettingRegistration.ts | appearance": {
     "message": "Udseende"
@@ -289,6 +295,18 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With-sektion"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
+    "message": "Annulleret"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusClosed": {
+    "message": "Lukket"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpen": {
+    "message": "Åbn"
+  },
+  "core/sdk/NetworkManager.ts | directSocketStatusOpening": {
+    "message": "Åbner"
   },
   "core/sdk/NetworkManager.ts | fast4G": {
     "message": "Hurtigt 4G"
@@ -1226,8 +1244,14 @@
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() fungerer ikke længere på usikre oprindelser. Hvis du vil bruge denne funktion, bør du overveje at skifte til en sikker oprindelse for din app, f.eks. HTTPS. Få flere oplysninger på https://goo.gle/chrome-insecure-origins."
   },
+  "generated/Deprecation.ts | H1UserAgentFontSizeInSection": {
+    "message": "Der blev fundet et <h1>-tag i en <article>, <aside>, <nav> eller <section>, som ikke har en angivet skriftstørrelse. Størrelsen på teksten af denne overskrift ændres i denne browser i nærmeste fremtid. Få flere oplysninger på https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1."
+  },
   "generated/Deprecation.ts | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate er udfaset. Brug i stedet RTCPeerConnectionIceErrorEvent.address eller RTCPeerConnectionIceErrorEvent.port."
+  },
+  "generated/Deprecation.ts | IdentityDigitalCredentials": {
+    "message": "Dette format for anmodningen om digitale loginoplysninger i navigator.credentials.get() er udfaset. Opdater kaldet for at bruge det nye format."
   },
   "generated/Deprecation.ts | IdentityInCanMakePaymentEvent": {
     "message": "Sælgerens oprindelse og de vilkårlige data fra canmakepayment-hændelsens scripttjeneste er udfaset og fjernes: topOrigin, paymentRequestOrigin, methodData og modifiers."
@@ -1469,12 +1493,6 @@
   "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
     "message": "Ændringer af Chromes håndtering af tredjepartscookies"
   },
-  "models/issues_manager/CookieIssue.ts | aSecure": {
-    "message": "sikker"
-  },
-  "models/issues_manager/CookieIssue.ts | anInsecure": {
-    "message": "an insecure"
-  },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Tredjepartscookie er blokeret i Chrome på grund af enten Chrome-flag eller browserkonfigurationen."
   },
@@ -1498,6 +1516,9 @@
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ressourcedeling på tværs af oprindelse (CORS)"
+  },
+  "models/issues_manager/CorsIssue.ts | corsLocalNetworkAccess": {
+    "message": "Lokal netværksadgang"
   },
   "models/issues_manager/CorsIssue.ts | corsPrivateNetworkAccess": {
     "message": "Private Network Access"
@@ -1564,6 +1585,12 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Forhindrer blandet indhold"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | chromeStatusEntry": {
+    "message": "Chrome-statusopdatering"
+  },
+  "models/issues_manager/PartitioningBlobURLIssue.ts | partitioningBlobURL": {
+    "message": "Partitionering af blob-webadresse"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetstilstand for dokument"
@@ -1700,9 +1727,6 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Deaktiver tilsidesættelse af netværksanmodninger"
   },
-  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
-    "message": "Aktivér automatiske mapper for arbejdsområde"
-  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Aktivér lokale tilsidesættelser"
   },
@@ -1766,6 +1790,24 @@
   "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Værste klynge med layoutændringer"
   },
+  "models/trace/insights/Cache.ts | cacheTTL": {
+    "message": "Cache-TTL"
+  },
+  "models/trace/insights/Cache.ts | description": {
+    "message": "En lang cachelevetid kan gøre indlæsningen hurtigere for tilbagevendende besøgende på din side. [Få flere oplysninger](https://web.dev/uses-long-cache-ttl/)."
+  },
+  "models/trace/insights/Cache.ts | noRequestsToCache": {
+    "message": "Ingen anmodninger med ineffektive cachepolitikker"
+  },
+  "models/trace/insights/Cache.ts | others": {
+    "message": "{PH1} andre"
+  },
+  "models/trace/insights/Cache.ts | requestColumn": {
+    "message": "Anmodning"
+  },
+  "models/trace/insights/Cache.ts | title": {
+    "message": "Brug effektive cachelevetider"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "En stor DOM kan øge varigheden af beregninger af typografi og dynamiske tilpasninger af layout, hvilket påvirker sidens svartid. En stor DOM øger også hukommelsesforbruget. [Få oplysninger om, hvordan du undgår en for stor DOM-størrelse](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
   },
@@ -1823,11 +1865,17 @@
   "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
     "message": "Ukomprimeret download"
   },
-  "models/trace/insights/DuplicateJavaScript.ts | description": {
+  "models/trace/insights/DuplicatedJavaScript.ts | columnDuplicatedBytes": {
+    "message": "Duplikerede bytes"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | columnSource": {
+    "message": "Kilde"
+  },
+  "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Fjern store, identiske JavaScript-moduler fra pakker for at reducere antallet af unødvendige bytes, der anvendes i forbindelse med netværksaktivitet."
   },
-  "models/trace/insights/DuplicateJavaScript.ts | title": {
-    "message": "Kopiér JavaScript"
+  "models/trace/insights/DuplicatedJavaScript.ts | title": {
+    "message": "Duplikeret JavaScript"
   },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "Overvej at angive [font-display](https://developer.chrome.com/blog/font-display) som swap eller optional for at sikre, at teksten er synlig hele tiden. swap kan optimeres yderligere for at mindske layoutskift med [tilsidesættelse af skriftmetrics](https://developer.chrome.com/blog/font-fallbacks)."
@@ -1855,6 +1903,9 @@
   },
   "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
     "message": "Samlet tid for reflow"
+  },
+  "models/trace/insights/ForcedReflow.ts | unattributed": {
+    "message": "Uden attributter"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Hvis du reducerer downloadtiden for billeder, kan det forbedre den oplevede indlæsningstid for siden og LCP. [Få flere oplysninger om optimering af billedstørrelse](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1967,6 +2018,33 @@
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "LCP efter fase"
   },
+  "models/trace/insights/LegacyJavaScript.ts | columnScript": {
+    "message": "Script"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | columnWastedBytes": {
+    "message": "Bortkastede bytes"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | description": {
+    "message": "Polyfill-koder og transformeringer gør det muligt for browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Du kan vælge at ændre din JavaScript-buildproces, så den ikke transpilerer [Baseline](https://web.dev/articles/baseline-and-polyfills)-funktioner, medmindre du ved, at du skal understøtte forældede browsere. [Se, hvorfor de fleste websites kan implementere ES6+-kode uden transpilering](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | title": {
+    "message": "Forældet JavaScript"
+  },
+  "models/trace/insights/ModernHTTP.ts | description": {
+    "message": "HTTP/2 og HTTP/3 har mange fordele i forhold til HTTP/1.1, f.eks. multiplexing. [Få flere oplysninger om brug af moderne HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+  },
+  "models/trace/insights/ModernHTTP.ts | noOldProtocolRequests": {
+    "message": "Der var ingen anmodninger, der brugte HTTP/1.1"
+  },
+  "models/trace/insights/ModernHTTP.ts | protocol": {
+    "message": "Protokol"
+  },
+  "models/trace/insights/ModernHTTP.ts | request": {
+    "message": "Anmodning"
+  },
+  "models/trace/insights/ModernHTTP.ts | title": {
+    "message": "Moderne HTTP"
+  },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Undgå at sammenkæde kritiske anmodninger](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) ved at reducere kædernes længde, så ressourcernes downloadstørrelse bliver mindre, eller at udskyde download af unødvendige ressourcer, så sideindlæsningen forbedres."
   },
@@ -2070,7 +2148,7 @@
     "message": "Ignoreret"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | reloadRequired": {
-    "message": "Du skal genindlæse Udviklerværktøjer, før ændringen træder i kraft."
+    "message": "Du skal genindlæse Udviklerværktøjer, før ændringen træder i kraft"
   },
   "panels/accessibility/AXBreadcrumbsPane.ts | scrollIntoView": {
     "message": "Rul indtil visning"
@@ -2528,6 +2606,9 @@
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Få flere oplysninger om AI i Udviklerværktøjer"
   },
+  "panels/ai_assistance/components/ChatView.ts | notAvailableInIncognitoMode": {
+    "message": "AI-hjælp er ikke tilgængelig i inkognitotilstand eller gæstetilstand"
+  },
   "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
     "message": "Denne funktion er kun tilgængelig, når du er logget ind i Chrome med din Google-konto"
   },
@@ -2628,7 +2709,7 @@
     "message": "Dette anvendes af browseren, så den kan se, om manifestet bør opdatere en eksisterende app, eller om det refererer til en ny webapp, der kan installeres."
   },
   "panels/application/AppManifestView.ts | appIdNote": {
-    "message": "{PH1} {PH2} er ikke angivet i manifestet. {PH3} anvendes i stedet. Du kan angive et app-id, der stemmer overens med den aktuelle identitet, ved at indstille feltet {PH4} til {PH5} {PH6}."
+    "message": "Bemærk! id er ikke angivet i manifestet. start_url anvendes i stedet. Du kan angive et app-id, der stemmer overens med den aktuelle identitet, ved at indstille feltet id til {PH1} {PH2}."
   },
   "panels/application/AppManifestView.ts | avoidPurposeAnyAndMaskable": {
     "message": "Vi fraråder at deklarere et ikon med \"purpose\" for \"any maskable\". Det vil sandsynligvis se forkert ud på nogle platforme, da den indre margen vil være for stor eller for lille."
@@ -2737,9 +2818,6 @@
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Der er ikke angivet et kvadratisk ikon med mindst {PH1} pixels i PNG-, SVG- eller WebP-format, hvor attributten for formål ikke er indstillet eller er indstillet til \"any\"."
-  },
-  "panels/application/AppManifestView.ts | note": {
-    "message": "Bemærk!"
   },
   "panels/application/AppManifestView.ts | orientation": {
     "message": "Retning"
@@ -2871,7 +2949,7 @@
     "message": "Overlejring med vinduesstyring"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
-    "message": "Appmanifest"
+    "message": "Manifest"
   },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "App"
@@ -3316,6 +3394,12 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ReportingApiView.ts | noReportOrEndpoint": {
+    "message": "Ingen rapportering og intet slutpunkt"
+  },
+  "panels/application/ReportingApiView.ts | reportingApiDescription": {
+    "message": "På denne side kan du gennemgå Reporting API-rapporter og -slutpunkter."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Cachelagring"
@@ -4083,7 +4167,7 @@
     "message": "Ukendt status"
   },
   "panels/application/components/BackForwardCacheView.ts | url": {
-    "message": "Webadresse:"
+    "message": "Webadresse"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
     "message": "Sporingsforebyggelse via omdirigering"
@@ -4397,14 +4481,17 @@
   "panels/application/components/SharedStorageAccessGrid.ts | allSharedStorageEvents": {
     "message": "Alle hændelser for den delte lagerplads for denne side."
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventMethod": {
+    "message": "Adgangsmetode"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventParams": {
     "message": "Valgfrie hændelsesparametre"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | eventScope": {
+    "message": "Adgangsomfang"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | eventTime": {
     "message": "Hændelsestid"
-  },
-  "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
-    "message": "Adgangstype"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -4414,6 +4501,9 @@
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "Ejerens oprindelse"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | ownerSite": {
+    "message": "Ejers website"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Delt hukommelse"
@@ -5390,6 +5480,9 @@
   "panels/changes/ChangesView.ts | sInsertions": {
     "message": "{n,plural, =1{# indsættelse (+)}one{# indsættelse (+)}other{# indsættelser (+)}}"
   },
+  "panels/changes/CombinedDiffView.ts | copied": {
+    "message": "Kopieret til udklipsholderen"
+  },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ændringer"
   },
@@ -5401,6 +5494,21 @@
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Vis ændringer"
+  },
+  "panels/common/common.ts | allow": {
+    "message": "Tillad"
+  },
+  "panels/common/common.ts | cancel": {
+    "message": "Annuller"
+  },
+  "panels/common/common.ts | gotIt": {
+    "message": "OK"
+  },
+  "panels/common/common.ts | learnMore": {
+    "message": "Få flere oplysninger"
+  },
+  "panels/common/common.ts | thingsToConsider": {
+    "message": "Vigtige oplysninger"
   },
   "panels/console/ConsoleContextSelector.ts | extension": {
     "message": "Udvidelse"
@@ -6266,6 +6374,9 @@
   "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
     "message": "Et formularfelt har ikke en tilknyttet etiket"
   },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentAttributesSelectDescendant": {
+    "message": "Element med ugyldige attributter i et <select>-element"
+  },
   "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
     "message": "Interaktivt element i et <legend>-element"
   },
@@ -6473,6 +6584,9 @@
   "panels/elements/ElementsTreeOutline.ts | storeAsGlobalVariable": {
     "message": "Gem som global variabel"
   },
+  "panels/elements/ElementsTreeOutline.ts | viewIssue": {
+    "message": "Se problem:"
+  },
   "panels/elements/EventListenersWidget.ts | all": {
     "message": "Alle"
   },
@@ -6578,6 +6692,9 @@
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
     "message": "Vis alle egenskaber ({PH1} mere)"
   },
+  "panels/elements/StylePropertiesSection.ts | specificity": {
+    "message": "Nøjagtighed: {PH1}"
+  },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "Attributten style"
   },
@@ -6617,6 +6734,12 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Åbn redigeringsværktøjet for grid"
   },
+  "panels/elements/StylePropertyTreeElement.ts | invalidPropertyValue": {
+    "message": "Ugyldig egenskabværdi"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | invalidString": {
+    "message": "{PH1}, egenskabsnavn: {PH2}, egenskabsværdi: {PH3}"
+  },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Gå til panelet Animationer"
   },
@@ -6626,11 +6749,17 @@
   "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Åbn i panelet Kilder"
   },
+  "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
+    "message": "{PH1} er ikke defineret"
+  },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Shift+klik for at ændre farveformatet."
   },
   "panels/elements/StylePropertyTreeElement.ts | togglePropertyAndContinueEditing": {
     "message": "Slå egenskab til/fra, og fortsæt med at redigere"
+  },
+  "panels/elements/StylePropertyTreeElement.ts | unknownPropertyName": {
+    "message": "Ukendt egenskabsnavn"
   },
   "panels/elements/StylePropertyTreeElement.ts | viewComputedValue": {
     "message": "Se beregnede værdier"
@@ -6640,12 +6769,6 @@
   },
   "panels/elements/StylesSidebarPane.ts | clickToRevealLayer": {
     "message": "Klik for at se laget i lagtræet"
-  },
-  "panels/elements/StylesSidebarPane.ts | copiedToClipboard": {
-    "message": "Kopieret til udklipsholderen"
-  },
-  "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiér CSS-ændringer"
   },
   "panels/elements/StylesSidebarPane.ts | incrementdecrementWithMousewheelHundred": {
     "message": "Forøg/reducer med musehjulet eller pil op/ned. {PH1}: ±100, Shift: ±10, {PH2}: ±0,1"
@@ -6682,6 +6805,9 @@
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "Gå til ankernode"
+  },
+  "panels/elements/components/AnchorFunctionLinkSwatch.ts | sIsNotDefined": {
+    "message": "{PH1} er ikke defineret"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Få flere oplysninger"
@@ -7058,6 +7184,9 @@
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "Netværksanmodning"
   },
+  "panels/explain/components/ConsoleInsight.ts | notAvailableInIncognitoMode": {
+    "message": "AI-hjælp er ikke tilgængelig i inkognitotilstand eller gæstetilstand"
+  },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "Denne funktion er kun tilgængelig, når du er logget ind i Chrome med din Google-konto."
   },
@@ -7252,6 +7381,18 @@
   },
   "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
     "message": "{n,plural, =1{1 website har adgang til cookies}one{# website har adgang til cookies}other{# websites har adgang til cookies}}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blobURLCount": {
+    "message": "Antal problemer med blob-webadressen: {count}"
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | blockedCrossPartitionFetching": {
+    "message": "Adgangen til blob-webadressen {url} blev blokeret, fordi den blev udført i en kontekst med flere partitioner."
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | enforceNoopenerForNavigation": {
+    "message": "Navigationen på øverste niveau for blob-webadressen {url} havde \"noopener\" indstillet, fordi blob-webadressens oprindelse kom fra flere websites med det pågældende website på øverste niveau i den kontekst, der startede navigationen."
+  },
+  "panels/issues/AffectedPartitioningBlobURLView.ts | noBlobURLAvailable": {
+    "message": "Der er ingen tilgængelig blob-webadresse for dette problem."
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Klik for at vise rammens DOM-node i panelet Elementer"
@@ -7603,6 +7744,9 @@
   },
   "panels/layer_viewer/LayerDetailsView.ts | wheelEventHandler": {
     "message": "Hændelseshandler for hjul"
+  },
+  "panels/layer_viewer/LayerTreeOutline.ts | layerCount": {
+    "message": "{PH1} lag"
   },
   "panels/layer_viewer/LayerTreeOutline.ts | layersTreePane": {
     "message": "Lagtrærude"
@@ -8666,6 +8810,9 @@
   "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
     "message": "{PH1}, indledende prioritet: {PH2}"
   },
+  "panels/network/NetworkDataGridNode.ts | integrity": {
+    "message": "integritet"
+  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveau 1"
   },
@@ -9192,13 +9339,16 @@
     "message": "Eksportér HAR (med følsomme oplysninger)…"
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Rammer hentes i øjeblikket"
+    "message": "Henter rammer..."
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Gruppér efter ramme"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Gruppér anmodninger efter anmodningsramme på øverste niveau"
+  },
+  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
+    "message": "Tryk på {PH1} for at genindlæse og optage filmstrimmel."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importér HAR-filen..."
@@ -9219,7 +9369,7 @@
     "message": "Bevar log"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "Rammer optages i øjeblikket"
+    "message": "Optager rammer..."
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Søg"
@@ -9326,26 +9476,14 @@
   "panels/network/RequestPayloadView.ts | viewDecoded": {
     "message": "Se afkodet"
   },
-  "panels/network/RequestPayloadView.ts | viewDecodedL": {
-    "message": "se afkodet"
-  },
   "panels/network/RequestPayloadView.ts | viewParsed": {
     "message": "Vis parsede"
-  },
-  "panels/network/RequestPayloadView.ts | viewParsedL": {
-    "message": "se parsede"
   },
   "panels/network/RequestPayloadView.ts | viewSource": {
     "message": "Se kilde"
   },
-  "panels/network/RequestPayloadView.ts | viewSourceL": {
-    "message": "se kilde"
-  },
   "panels/network/RequestPayloadView.ts | viewUrlEncoded": {
     "message": "Se indkodet webadresse"
-  },
-  "panels/network/RequestPayloadView.ts | viewUrlEncodedL": {
-    "message": "vis indkodet webadresse"
   },
   "panels/network/RequestPreviewView.ts | failedToLoadResponseData": {
     "message": "Svardata kunne ikke indlæses"
@@ -10598,6 +10736,9 @@
   "panels/protocol_monitor/JSONEditor.ts | resetDefaultValue": {
     "message": "Nulstil til standardværdien"
   },
+  "panels/protocol_monitor/JSONEditor.ts | selectTarget": {
+    "message": "Vælg et mål"
+  },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCmdEnter": {
     "message": "Send kommando – ⌘ + Enter"
   },
@@ -10676,6 +10817,9 @@
   "panels/protocol_monitor/protocol_monitor-meta.ts | showProtocolMonitor": {
     "message": "Vis protokolskærm"
   },
+  "panels/recorder/RecorderController.ts | allowImporting": {
+    "message": "tillad import"
+  },
   "panels/recorder/RecorderController.ts | continueReplay": {
     "message": "Fortsæt"
   },
@@ -10687,6 +10831,12 @@
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Slet optagelse"
+  },
+  "panels/recorder/RecorderController.ts | doNotImport": {
+    "message": "Undlad at importere optagelser, som du ikke forstår, eller som du ikke selv har tjekket, til Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrollen over din computer. Angiv \"{PH1}\" nedenfor for at tillade import."
+  },
+  "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
+    "message": "Har du tillid til denne optagelse?"
   },
   "panels/recorder/RecorderController.ts | export": {
     "message": "Eksportér"
@@ -10732,6 +10882,9 @@
   },
   "panels/recorder/RecorderController.ts | toggleCode": {
     "message": "Slå kodevisning til/fra"
+  },
+  "panels/recorder/RecorderController.ts | typeAllowImporting": {
+    "message": "Type \"{PH1}\""
   },
   "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
     "message": "Annuller optagelse"
@@ -11111,6 +11264,9 @@
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Der er ikke fundet nogen matches"
   },
+  "panels/search/SearchView.ts | noSearchResult": {
+    "message": "Ingen søgeresultater"
+  },
   "panels/search/SearchView.ts | nothingMatchedTheQuery": {
     "message": "Der er ingen matches for din søgeforespørgsel"
   },
@@ -11125,6 +11281,9 @@
   },
   "panels/search/SearchView.ts | searching": {
     "message": "Søger…"
+  },
+  "panels/search/SearchView.ts | typeAndPressSToSearch": {
+    "message": "Indtast, og tryk på {PH1} for at søge"
   },
   "panels/security/CookieControlsView.ts | cardDisclaimer": {
     "message": "Kun når Udviklerværktøjer er åbent"
@@ -11903,6 +12062,9 @@
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Aktivér AI-hjælp"
   },
+  "panels/settings/AISettingsTab.ts | enableAiSuggestedAnnotations": {
+    "message": "Aktivér AI-forslag til annoteringer i ydeevnepanelet"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
     "message": "Aktivér Console insights"
   },
@@ -11930,6 +12092,15 @@
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
     "message": "Alle brugerforespørgsler og data, som den undersøgte side har adgang til via web-API'er, netværksanmodninger, filer og effektivitetsspor sendes til Google for at generere forklaringer. Disse data bruges ikke til at forbedre Google AI-modeller."
   },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendData": {
+    "message": "Dine sporingsdata om ydeevne sendes til Google for at generere en forklaring. Disse data bruges til at forbedre Google AI-modeller."
+  },
+  "panels/settings/AISettingsTab.ts | generatedAiAnnotationsSendDataNoLogging": {
+    "message": "Dine sporingsdata om ydeevne sendes til Google for at generere en forklaring. Disse data bruges ikke til at forbedre Google AI-modeller."
+  },
+  "panels/settings/AISettingsTab.ts | getAIAnnotationsSuggestions": {
+    "message": "Få AI-forslag til annoteringer i ydeevnepanelet"
+  },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Hjælper dig med at forstå og løse problemer med konsoladvarsler og -fejl"
   },
@@ -11947,6 +12118,9 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Få flere oplysninger"
+  },
+  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
+    "message": "AI-hjælp er ikke tilgængelig i inkognitotilstand eller gæstetilstand"
   },
   "panels/settings/AISettingsTab.ts | notLoggedIn": {
     "message": "Denne funktion er kun tilgængelig, når du er logget ind i Chrome med din Google-konto."
@@ -12098,9 +12272,6 @@
   "panels/settings/SettingsScreen.ts | experiments": {
     "message": "Eksperimenter"
   },
-  "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
-    "message": "Filtrér"
-  },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
@@ -12108,10 +12279,13 @@
     "message": "Ingen eksperimenter matcher filteret"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning."
+    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Gendan standarder, og genindlæs"
+  },
+  "panels/settings/SettingsScreen.ts | searchExperiments": {
+    "message": "Søg efter eksperimenter"
   },
   "panels/settings/SettingsScreen.ts | sendFeedback": {
     "message": "Send feedback"
@@ -12337,6 +12511,9 @@
   },
   "panels/sources/AddSourceMapURLDialog.ts | sourceMapUrl": {
     "message": "Kildekorts webadresse: "
+  },
+  "panels/sources/AiWarningInfobarPlugin.ts | aiContentWarning": {
+    "message": "Denne fil indeholder AI-genereret indhold"
   },
   "panels/sources/BreakpointEditDialog.ts | breakpoint": {
     "message": "Stoppunkt"
@@ -12567,7 +12744,7 @@
     "message": "Fejlretningsfilen \"{PH1}\" kunne ikke indlæses."
   },
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
-    "message": "Fejlretningsoplysningerne for {PH1} kunne ikke indlæses."
+    "message": "Fejlretningsoplysningerne for {PH1} kunne ikke indlæses"
   },
   "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
     "message": "Udviklerværktøjer kan ikke vise oprindelseskilder, men du kan fejlrette den implementerede kode."
@@ -12603,13 +12780,13 @@
     "message": "Se anmodning"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
-    "message": "Kildekortet kunne ikke indlæses."
+    "message": "Kildekortet kunne ikke indlæses"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
-    "message": "Kildekortet er indlæst."
+    "message": "Kildekortet er indlæst"
   },
   "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
-    "message": "Kildekortet blev sprunget over for denne fil."
+    "message": "Kildekortet blev sprunget over for denne fil"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Debuggeren springer trin over i dette script og stopper ikke ved undtagelser."
@@ -12769,12 +12946,6 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
-  },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
-    "message": "Tilknyt…"
-  },
-  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
-    "message": "Mappen {PH1} for arbejdsområdet er registreret."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ryd konfiguration"
@@ -13030,9 +13201,6 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivér stoppunkter"
-  },
-  "panels/sources/sources-meta.ts | addFolder": {
-    "message": "Tilføj mappe"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Føj mappen til arbejdsområde"
@@ -13439,12 +13607,6 @@
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Netværk"
   },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
-    "message": "Servertider – {PH1}"
-  },
-  "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
-    "message": "Dette spor indeholder tidsangivelser, der er hentet fra Server-Timing-netværkets svarheadere. Deres respektive starttidspunkter er kun estimerede og er muligvis ikke nøjagtige."
-  },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Første-/tredjepart"
   },
@@ -13784,18 +13946,6 @@
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tidspunkt"
   },
-  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
-    "message": "Hurtig zoom ind/ud"
-  },
-  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
-    "message": "Flyt til venstre/højre"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
-    "message": "Flyt op/ned"
-  },
-  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
-    "message": "Zoom ind/ud"
-  },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopiér tabel"
   },
@@ -14035,9 +14185,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | delay": {
     "message": "Forsinkelse"
-  },
-  "panels/timeline/TimelineUIUtils.ts | description": {
-    "message": "Beskrivelse"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Info"
@@ -14435,18 +14582,6 @@
   "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Ignorer scripts, hvis navne matcher \"{regex}\""
   },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
-    "message": "Reglen findes allerede"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
-    "message": "Denne regel findes allerede, men er deaktiveret. Hvis du gemmer denne værdi, genaktiveres reglen"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
-    "message": "Reglen kan ikke være tom"
-  },
-  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
-    "message": "Reglen skal være et gyldigt regulært udtryk"
-  },
   "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
     "message": "Fjern regex: \"{regex}\""
   },
@@ -14678,6 +14813,9 @@
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "75. percentil for feltet"
   },
+  "panels/timeline/components/MetricCard.ts | fieldP75": {
+    "message": "Felt p75"
+  },
   "panels/timeline/components/MetricCard.ts | good": {
     "message": "God"
   },
@@ -14819,6 +14957,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "Afkodet brødtekst"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | description": {
+    "message": "Beskrivelse"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "Indkodede data"
   },
@@ -14846,11 +14987,20 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Prioritet"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | protocol": {
+    "message": "Protokol"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
     "message": "Blokering af gengivelse"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Anmodningsmetode"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | serverTiming": {
+    "message": "Servertiming"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | time": {
+    "message": "Tid"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "Ja"
@@ -15020,6 +15170,9 @@
   "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
     "message": "Indsigtstjekket er godkendt: {PH1}"
   },
+  "panels/timeline/components/insights/Table.ts | others": {
+    "message": "{PH1} andre"
+  },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} – felt ({PH2})"
   },
@@ -15038,8 +15191,20 @@
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "Etiket for post"
   },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | freDialog": {
+    "message": "Dialogboksen Få AI-baserede forslag til annoteringer"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | generateLabelButton": {
+    "message": "Generér etiket"
+  },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
     "message": "Angiv en annoteringsetiket"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | learnMoreAriaLabel": {
+    "message": "Få flere oplysninger om automatiske annoteringer i indstillingerne"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
+    "message": "Flere oplysninger"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Tidsinterval"
@@ -15821,18 +15986,6 @@
   "ui/legacy/DockController.ts | devtoolsUndocked": {
     "message": "Udviklerværktøjer er frigjort"
   },
-  "ui/legacy/DockController.ts | dockToBottom": {
-    "message": "Fastgør til bund"
-  },
-  "ui/legacy/DockController.ts | dockToLeft": {
-    "message": "Fastgør til venstre"
-  },
-  "ui/legacy/DockController.ts | dockToRight": {
-    "message": "Fastgør til højre"
-  },
-  "ui/legacy/DockController.ts | undockIntoSeparateWindow": {
-    "message": "Frigør til et separat vindue"
-  },
   "ui/legacy/EmptyWidget.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
@@ -15885,7 +16038,7 @@
     "message": "Paneler"
   },
   "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
-    "message": "Genindlæs"
+    "message": "Genindlæs side"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Genindlæs Udviklerværktøjer"
@@ -15894,7 +16047,7 @@
     "message": "Vælg mappe"
   },
   "ui/legacy/InspectorView.ts | selectOverrideFolder": {
-    "message": "Vælg en mappe, som tilsidesatte filer skal gemmes i."
+    "message": "Vælg en mappe, som tilsidesatte filer skal gemmes i"
   },
   "ui/legacy/InspectorView.ts | setToBrowserLanguage": {
     "message": "Anvend altid samme sprog som i Chrome"
@@ -15987,7 +16140,7 @@
     "message": "Vis forrige resultat"
   },
   "ui/legacy/SettingsUI.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning."
+    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning"
   },
   "ui/legacy/SettingsUI.ts | srequiresReload": {
     "message": "*Kræver genindlæsning"
@@ -16560,7 +16713,7 @@
     "message": "Der blev ikke fundet nogen kommandoer"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning."
+    "message": "Én eller flere indstillinger har ændret sig, hvilket betyder, at der skal foretages en genindlæsning"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "Kør"

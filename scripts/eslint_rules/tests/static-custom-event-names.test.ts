@@ -1,10 +1,10 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-const rule = require('../lib/static-custom-event-names.js');
 
-const {RuleTester} = require('./utils/utils.js');
+import rule from '../lib/static-custom-event-names.ts';
+
+import {RuleTester} from './utils/tsUtils.ts';
 
 new RuleTester().run('static-custom-event-names', rule, {
   valid: [

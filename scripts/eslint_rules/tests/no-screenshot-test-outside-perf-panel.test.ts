@@ -1,14 +1,9 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
+import rule from '../lib/no-screenshot-test-outside-perf-panel.ts';
 
-const rule = require('../lib/no-screenshot-test-outside-perf-panel.js');
-
-const {RuleTester} = require('./utils/utils.js');
-
-const EXPECTED_ERROR_MESSAGE =
-    'It is banned to write screenshot tests outside the directory of the Performance Panel interaction tests.';
+import {RuleTester} from './utils/tsUtils.ts';
 
 const enabledTestCode = `describe('Performance panel', () => {
     itScreenshot('renders the timeline correctly', async () => {
@@ -45,15 +40,15 @@ const notAScreenshotTestDisabledCode = `describe('Performance panel', () => {
   });
 });`;
 
-const perfPanelInteractionTestsPath = 'test/interactions/panels/performance/';
-const uiInteractionTestsPath = 'test/interactions/ui/components/';
+const perfPanelInteractionTestsPath = 'test/interactions/panels/performance';
+const uiInteractionTestsPath = 'test/interactions/ui/components';
 const notPerfPanelTestPath = 'test/interactions/data_grid/data_grid_test.ts';
 
 new RuleTester().run('no-screenshot-test-outside-perf-panel', rule, {
   valid: [
     {
       code: enabledTestCode,
-      filename: `${perfPanelInteractionTestsPath}timeline/timeline_test.ts`,
+      filename: `${perfPanelInteractionTestsPath}/timeline/timeline_test.ts`,
     },
     {
       code: enabledTestCode,
@@ -61,15 +56,15 @@ new RuleTester().run('no-screenshot-test-outside-perf-panel', rule, {
     },
     {
       code: disabledTestCode,
-      filename: `${perfPanelInteractionTestsPath}timeline/timeline_test.ts`,
+      filename: `${perfPanelInteractionTestsPath}/timeline/timeline_test.ts`,
     },
     {
       code: enabledTestCode,
-      filename: `${perfPanelInteractionTestsPath}user_timings/user_imings_test.ts`,
+      filename: `${perfPanelInteractionTestsPath}/user_timings/user_imings_test.ts`,
     },
     {
       code: disabledTestCode,
-      filename: `${perfPanelInteractionTestsPath}user_timings/user_imings_test.ts`,
+      filename: `${perfPanelInteractionTestsPath}/user_timings/user_imings_test.ts`,
     },
     {
       code: notAScreenshotTestCode,
@@ -81,24 +76,24 @@ new RuleTester().run('no-screenshot-test-outside-perf-panel', rule, {
     },
     {
       code: notAScreenshotTestDisabledCode,
-      filename: `${perfPanelInteractionTestsPath}timeline/timeline_test.ts`,
+      filename: `${perfPanelInteractionTestsPath}/timeline/timeline_test.ts`,
     },
   ],
   invalid: [
     {
       code: enabledTestCode,
       filename: notPerfPanelTestPath,
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'invalidScreenshotTest'}],
     },
     {
       code: disabledTestCode,
       filename: notPerfPanelTestPath,
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'invalidScreenshotTest'}],
     },
     {
       code: enabledTestCode,
       filename: 'test/unittests/front_end/panels/performance/timeline_test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+      errors: [{messageId: 'invalidScreenshotTest'}],
     },
   ],
 });

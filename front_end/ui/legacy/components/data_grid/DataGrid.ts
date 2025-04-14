@@ -1308,6 +1308,20 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return (cellElement && nodeToColumnIdMap.get(cellElement)) || null;
   }
 
+  /**
+   * Mark the data-grid as inert, meaning that it will not capture any user interactions.
+   * Useful in some panels where the empty state is actually an absolutely
+   * positioned div put over the panel, and in that case we need to ensure the
+   * hidden, empty data grid, does not capture any user interaction - in particular if they tab through the UI.
+   */
+  setInert(isInert: boolean): void {
+    if (isInert) {
+      this.element.setAttribute('inert', 'inert');
+    } else {
+      this.element.removeAttribute('inert');
+    }
+  }
+
   private clickInHeaderCell(event: Event): void {
     const cell = UI.UIUtils.enclosingNodeOrSelfWithNodeName((event.target as Node), 'th');
     if (!cell) {

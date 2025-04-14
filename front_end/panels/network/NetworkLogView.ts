@@ -1137,6 +1137,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private setHidden(value: boolean): void {
     this.columnsInternal.setHidden(value);
+    this.dataGrid.setInert(value);
     UI.ARIAUtils.setHidden(this.summaryToolbarInternal, value);
   }
 

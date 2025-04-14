@@ -31,3 +31,29 @@ template("copy_to_gen") {
     }
   }
 }
+
+#
+# Same as "copy_to_gen" but includes all output files in the release GRD
+#
+template("copy_to_gen_with_grd") {
+  assert(!defined(invoker.testonly),
+         "Test resources can't be included in the release bundle!")
+
+  _copy_target = "${target_name}_gen"
+  copy_to_gen(_copy_target) {
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "visibility",
+                             "deps",
+                           ])
+  }
+
+  group(target_name) {
+    public_deps = [ ":$_copy_target" ]
+    data_deps = public_deps
+    metadata = {
+      grd_files = get_target_outputs(":$_copy_target")
+    }
+  }
+}

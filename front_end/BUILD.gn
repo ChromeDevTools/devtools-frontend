@@ -10,6 +10,7 @@ import("../scripts/build/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [
+    ":color_tokens",
     ":devtools_json",
     ":embedder-scripts",
     ":html_entrypoints",
@@ -34,20 +35,15 @@ group("front_end") {
   ]
 }
 
-copy_to_gen("integration_test_runner-gen") {
+copy_to_gen_with_grd("color_tokens") {
   sources = [
     "application_tokens.css",
     "design_system_tokens.css",
-    "integration_test_runner.html",
   ]
 }
 
-group("integration_test_runner") {
-  public_deps = [ ":integration_test_runner-gen" ]
-  data_deps = public_deps
-  metadata = {
-    grd_files = get_target_outputs(":integration_test_runner-gen")
-  }
+copy_to_gen_with_grd("integration_test_runner") {
+  sources = [ "integration_test_runner.html" ]
 }
 
 node_action("devtools_json") {
@@ -99,19 +95,11 @@ node_action("html_entrypoints") {
   }
 }
 
-copy_to_gen("embedder-scripts-gen") {
+copy_to_gen_with_grd("embedder-scripts") {
   sources = [
     "Tests.js",
     "devtools_compatibility.js",
   ]
-}
-
-group("embedder-scripts") {
-  public_deps = [ ":embedder-scripts-gen" ]
-  data_deps = public_deps
-  metadata = {
-    grd_files = get_target_outputs(":embedder-scripts-gen")
-  }
 }
 
 group("unittests") {

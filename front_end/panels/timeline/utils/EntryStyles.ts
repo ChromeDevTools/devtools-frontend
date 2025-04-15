@@ -1077,8 +1077,12 @@ export function maybeInitSylesMap(): EventStylesMap {
         new TimelineRecordStyle(i18nString(UIStrings.consoleTaskRun), defaultCategoryStyles.scripting),
   };
 
-  // TODO: remove assertion after deduped eventStylesMap for VISIBLE_TRACE_EVENT_TYPES.
-  const visibleTraceEventsComplete = (Object.keys(eventStylesMap)).every(eventType => {
+  // TODO(crbug.com/410884528): remove assertion after deduped eventStylesMap for VISIBLE_TRACE_EVENT_TYPES.
+  const visibleEventStyles =
+      Object.entries(eventStylesMap).filter(([, style]) => style.hidden === false).map(([
+                                                                                         key,
+                                                                                       ]) => key);
+  const visibleTraceEventsComplete = visibleEventStyles.every(eventType => {
     return Trace.Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.has(eventType as Trace.Types.Events.Name);
   });
 

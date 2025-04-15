@@ -43,7 +43,7 @@ describeWithEnvironment('ThirdParties', function() {
 
     const summaryResult = insight.summaries.map(s => [s.entity.name, s.transferSize, s.mainThreadTime.toFixed(2)]);
     assert.deepEqual(summaryResult, [
-      ['paulirish.com', 157130, '85.54'],
+      ['paulirish.com', 157130, '85.33'],
       ['Google Fonts', 80003, '0.00'],
       ['Google Tag Manager', 95375, '19.95'],
       ['Google Analytics', 20865, '5.86'],

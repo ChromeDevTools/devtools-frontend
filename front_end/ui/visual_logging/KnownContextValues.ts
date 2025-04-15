@@ -1317,6 +1317,7 @@ export const knownContextValues = new Set([
   'elements.show-all-style-properties',
   'elements.show-computed',
   'elements.show-styles',
+  'elements.toggle-a11y-tree',
   'elements.toggle-element-search',
   'elements.toggle-eye-dropper',
   'elements.undo',

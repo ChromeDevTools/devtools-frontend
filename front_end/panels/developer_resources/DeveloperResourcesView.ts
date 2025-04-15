@@ -1,7 +1,6 @@
 // Copyright (c) 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/legacy.js';
 
@@ -9,11 +8,15 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 import developerResourcesViewStyles from './developerResourcesView.css.js';
+
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -44,14 +47,6 @@ const UIStrings = {
    * total. Resources are files related to the webpage.
    */
   resources: '{n, plural, =1 {# resource} other {# resources}}',
-  /**
-   * @description Nnumber of resource(s) match
-   */
-  numberOfResourceMatch: '{n, plural, =1 {# resource matches} other {# resources match}}',
-  /**
-   * @description No resource matches
-   */
-  noResourceMatches: 'No resource matches',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -68,102 +63,117 @@ export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.
   }
 }
 
+interface ViewInput {
+  onFilterChanged: (e: CustomEvent<string>) => void;
+  loadThroughTargetCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
+  items: Iterable<SDK.PageResourceLoader.PageResource>;
+  selectedItem: SDK.PageResourceLoader.PageResource|null;
+  onSelect: (resource: SDK.PageResourceLoader.PageResource|null) => void;
+  filters: TextUtils.TextUtils.ParsedFilter[];
+  numResources: number;
+  numLoading: number;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>
+      ${developerResourcesViewStyles.cssText}
+    </style>
+    <div class="vbox flex-auto" jslog=${VisualLogging.panel('developer-resources').track({resize: true})}>
+      <div class="developer-resource-view-toolbar-container" jslog=${VisualLogging.toolbar()}
+          role="toolbar">
+        <devtools-toolbar class="developer-resource-view-toolbar" role="presentation">
+          <devtools-toolbar-input type="filter" placeholder=${i18nString(UIStrings.filterByText)}
+              @change=${input.onFilterChanged} style="flex-grow:1">
+          </devtools-toolbar-input>
+          ${input.loadThroughTargetCheckbox.element}
+        </devtools-toolbar>
+      </div>
+      <div class="developer-resource-view-results">
+        <devtools-widget
+          .widgetConfig=${widgetConfig(DeveloperResourcesListView, {
+            items: input.items,
+            selectedItem: input.selectedItem,
+            onSelect: input.onSelect,
+            filters: input.filters
+          })}>
+        </devtools-widget>
+      </div>
+      <div class="developer-resource-view-toolbar-summary">
+        <div class="developer-resource-view-message">
+          ${input.numLoading > 0 ?
+              i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: input.numResources, PH2: input.numLoading}) :
+              i18nString(UIStrings.resources, {n: input.numResources})}
+         </div>
+      </div>
+    </div>`, target, {host: input});
+  // clang-format on
+};
+
 export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
-  private textFilterRegExp: RegExp|null;
-  private readonly filterInput: UI.Toolbar.ToolbarInput;
-  private readonly coverageResultsElement: HTMLElement;
-  private listView: DeveloperResourcesListView;
-  private readonly statusToolbarElement: HTMLElement;
-  private statusMessageElement: HTMLElement;
-  private readonly loader: SDK.PageResourceLoader.PageResourceLoader;
+  readonly #loader: SDK.PageResourceLoader.PageResourceLoader;
+  readonly #loadThroughTargetCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
+  readonly #view: View;
+  #selectedItem: SDK.PageResourceLoader.PageResource|null = null;
+  #filters: TextUtils.TextUtils.ParsedFilter[] = [];
 
-  constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super(true);
-    this.registerRequiredCSS(developerResourcesViewStyles);
-
-    this.element.setAttribute('jslog', `${VisualLogging.panel('developer-resources').track({resize: true})}`);
-
-    const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
-    toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    toolbarContainer.role = 'toolbar';
-    const toolbar = toolbarContainer.createChild('devtools-toolbar', 'developer-resource-view-toolbar');
-    toolbar.role = 'presentation';
-
-    this.textFilterRegExp = null;
-    this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByText), 1);
-    this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
-    toolbar.appendToolbarItem(this.filterInput);
+    this.#view = view;
 
     const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();
-    const loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
+    this.#loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
         loadThroughTarget, i18nString(UIStrings.loadHttpsDeveloperResources),
         i18nString(UIStrings.enableLoadingThroughTarget));
-    toolbar.appendToolbarItem(loadThroughTargetCheckbox);
 
-    this.coverageResultsElement = this.contentElement.createChild('div', 'developer-resource-view-results');
-    this.listView = new DeveloperResourcesListView();
-    this.listView.show(this.coverageResultsElement);
-    this.statusToolbarElement = this.contentElement.createChild('div', 'developer-resource-view-toolbar-summary');
-    this.statusMessageElement = this.statusToolbarElement.createChild('div', 'developer-resource-view-message');
-
-    this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-    this.loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.update, this);
+    this.#loader = SDK.PageResourceLoader.PageResourceLoader.instance();
+    this.#loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.update, this);
     this.update();
   }
 
   override async doUpdate(): Promise<void> {
-    const selectedItem = this.listView.selectedItem();
-    this.listView.reset();
-    this.listView.items = this.loader.getScopedResourcesLoaded().values();
-    if (selectedItem) {
-      this.listView.select(selectedItem);
-    }
-    this.updateStats();
+    const {loading, resources} = this.#loader.getScopedNumberOfResources();
+    const input = {
+      onFilterChanged: (e: CustomEvent<string>) => {
+        this.onFilterChanged(e.detail);
+      },
+      loadThroughTargetCheckbox: this.#loadThroughTargetCheckbox,
+      items: this.#loader.getResourcesLoaded().values(),
+      selectedItem: this.#selectedItem,
+      onSelect: (item: SDK.PageResourceLoader.PageResource|null) => {
+        this.#selectedItem = item;
+      },
+      filters: this.#filters,
+      numResources: resources,
+      numLoading: loading,
+    };
+    const output = {};
+    this.#view(input, output, this.contentElement);
   }
 
   async select(resource: SDK.PageResourceLoader.PageResource): Promise<void> {
     await this.lastUpdatePromise;
-    this.listView.select(resource);
+    this.#selectedItem = resource;
+    this.update();
   }
 
   async selectedItem(): Promise<SDK.PageResourceLoader.PageResource|null> {
     await this.lastUpdatePromise;
-    return this.listView.selectedItem();
+    return this.#selectedItem;
   }
 
-  private updateStats(): void {
-    const {loading, resources} = this.loader.getScopedNumberOfResources();
-    if (loading > 0) {
-      this.statusMessageElement.textContent =
-          i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});
+  private onFilterChanged(text: string): void {
+    const textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
+    if (textFilterRegExp) {
+      this.#filters = [
+        {key: 'url,error-message', regex: textFilterRegExp, negative: false},
+      ];
     } else {
-      this.statusMessageElement.textContent = i18nString(UIStrings.resources, {n: resources});
+      this.#filters = [];
     }
-  }
-
-  private onFilterChanged(): void {
-    if (!this.listView) {
-      return;
-    }
-
-    const text = this.filterInput.value();
-    this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
-    if (this.textFilterRegExp) {
-      this.listView.updateFilterAndHighlight([
-        {key: 'url,error-message', regex: this.textFilterRegExp, negative: false},
-      ]);
-    } else {
-      this.listView.updateFilterAndHighlight([]);
-    }
-    this.updateStats();
-
-    const numberOfResourceMatch = this.listView.getNumberOfVisibleItems();
-    let resourceMatch = '';
-    if (numberOfResourceMatch === 0) {
-      resourceMatch = i18nString(UIStrings.noResourceMatches);
-    } else {
-      resourceMatch = i18nString(UIStrings.numberOfResourceMatch, {n: numberOfResourceMatch});
-    }
-    UI.ARIAUtils.alert(resourceMatch);
+    this.update();
   }
 }

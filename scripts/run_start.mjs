@@ -126,6 +126,9 @@ function start() {
   const binary = findBrowserBinary();
   const args = [];
 
+  // Disable first run experience.
+  args.push('--no-first-run');
+
   // Custom flags for CfT.
   if (browser === 'cft') {
     args.push('--disable-infobars');

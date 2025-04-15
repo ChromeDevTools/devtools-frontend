@@ -12,9 +12,18 @@ export function isIdentifier(node: Node, name: string|string[]): boolean {
   return node.type === 'Identifier' && (Array.isArray(name) ? name.includes(node.name) : node.name === name);
 }
 
+export function isIdentifierChain(node: Node, names: string[]): boolean {
+  if (names.length === 1) {
+    return isIdentifier(node, names[0]);
+  }
+  return Boolean(isMemberExpression(
+      node, n => isIdentifierChain(n, names.slice(0, -1)), n => isIdentifier(n, names.at(-1) as string)));
+}
+
 export function isMemberExpression(
-    node: Node, objectPredicate: (node: Node) => boolean, propertyPredicate: (node: Node) => boolean): boolean {
-  return node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
+    node: Node, objectPredicate: (node: Node) => boolean, propertyPredicate: (node: Node) => boolean): Node|null {
+  const match = node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
+  return match ? node.property : null;
 }
 
 export function isLiteral(node: Node, value: string|number|boolean): boolean {

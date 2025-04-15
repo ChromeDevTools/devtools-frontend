@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @fileoverview A library to identify and templatize UI.UIUtils calls.
+ * @fileoverview A library to identify and templatize UI.UIUtils and related calls.
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type CallExpression = TSESTree.CallExpression;
-type MemberExpression = TSESTree.MemberExpression;
-type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 
 export const uiUtils = {
@@ -19,13 +18,12 @@ export const uiUtils = {
     const sourceCode = context.getSourceCode();
     return {
       CallExpression(node: CallExpression) {
-        if (!isMemberExpression(
-                node.callee, n => isMemberExpression(n, n => isIdentifier(n, 'UI'), n => isIdentifier(n, 'UIUtils')),
-                n => n.type === 'Identifier')) {
+        const func =
+            isMemberExpression(node.callee, n => isIdentifierChain(n, ['UI', 'UIUtils']), n => n.type === 'Identifier');
+        if (!func) {
           return;
         }
-        const functionName = ((node.callee as MemberExpression).property as Identifier).name;
-        if (functionName === 'createLabel') {
+        if (isIdentifier(func, 'createLabel')) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'label';
           const title = node.arguments[0];
@@ -41,7 +39,7 @@ export const uiUtils = {
             domFragment.appendChild(associatedControl, sourceCode);
           }
         }
-        if (functionName === 'createTextButton') {
+        if (isIdentifier(func, 'createTextButton')) {
           const opts = node.arguments[2];
           if (opts && opts.type !== 'ObjectExpression') {
             return;
@@ -96,7 +94,7 @@ export const uiUtils = {
             value: variant,
           });
         }
-        if (functionName === 'createOption') {
+        if (isIdentifier(func, 'createOption')) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'option';
           const title = node.arguments[0];

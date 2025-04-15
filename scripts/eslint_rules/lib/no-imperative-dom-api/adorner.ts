@@ -7,7 +7,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
@@ -42,10 +42,7 @@ export const adorner = {
         return false;
       },
       NewExpression(node) {
-        if (isMemberExpression(
-                node.callee,
-                n => isMemberExpression(n, n => isIdentifier(n, 'Adorners'), n => isIdentifier(n, 'Adorner')),
-                n => isIdentifier(n, 'Adorner'))) {
+        if (isIdentifierChain(node.callee, ['Adorners', 'Adorner', 'Adorner'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'devtools-adorner';
         }

@@ -26,7 +26,7 @@ input {
   }
 }
 
-input.inside-datagrid {
+:host(.inside-datagrid) input {
   height: 10px;
   width: 10px;
 }

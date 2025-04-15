@@ -606,12 +606,11 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     const column = this.visibleColumnsArray[cellIndex];
     if (column.dataType === DataType.BOOLEAN) {
-      const checkboxLabel = UI.UIUtils.CheckboxLabel.create(undefined, (node.data[column.id] as boolean));
-      UI.ARIAUtils.setLabel(checkboxLabel, column.title || '');
+      const checkboxElement = UI.UIUtils.CheckboxLabel.create(undefined, (node.data[column.id] as boolean));
+      UI.ARIAUtils.setLabel(checkboxElement, column.title || '');
 
       let hasChanged = false;
-      checkboxLabel.style.height = '100%';
-      const checkboxElement = checkboxLabel.checkboxElement;
+      checkboxElement.style.height = '100%';
       checkboxElement.classList.add('inside-datagrid');
       const initialValue = checkboxElement.checked;
 
@@ -645,7 +644,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }, false);
 
       element.innerHTML = '';
-      element.appendChild(checkboxLabel);
+      element.appendChild(checkboxElement);
       checkboxElement.focus();
     } else {
       UI.InplaceEditor.InplaceEditor.startEditing(element, this.startEditingConfig(element));

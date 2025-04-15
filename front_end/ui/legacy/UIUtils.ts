@@ -1306,7 +1306,7 @@ export function setTitle(element: HTMLElement, title: string): void {
 
 export class CheckboxLabel extends HTMLElement {
   readonly #shadowRoot!: DocumentFragment;
-  checkboxElement!: HTMLInputElement;
+  #checkboxElement!: HTMLInputElement;
   #textElement!: HTMLElement;
 
   constructor() {
@@ -1314,11 +1314,11 @@ export class CheckboxLabel extends HTMLElement {
     CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
     this.#shadowRoot = createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles, delegatesFocus: true});
-    this.checkboxElement = this.#shadowRoot.createChild('input');
-    this.checkboxElement.type = 'checkbox';
-    this.checkboxElement.setAttribute('id', id);
+    this.#checkboxElement = this.#shadowRoot.createChild('input');
+    this.#checkboxElement.type = 'checkbox';
+    this.#checkboxElement.setAttribute('id', id);
     // Change event is not composable, so it doesn't bubble up through the shadow root.
-    this.checkboxElement.addEventListener('change', () => this.dispatchEvent(new Event('change')));
+    this.#checkboxElement.addEventListener('change', () => this.dispatchEvent(new Event('change')));
     this.#textElement = this.#shadowRoot.createChild('label', 'dt-checkbox-text');
     this.#textElement.setAttribute('for', id);
     // Click events are composable, so both label and checkbox bubble up through the shadow root.
@@ -1332,56 +1332,65 @@ export class CheckboxLabel extends HTMLElement {
       title?: Platform.UIString.LocalizedString, checked?: boolean, subtitle?: Platform.UIString.LocalizedString,
       jslogContext?: string, small?: boolean): CheckboxLabel {
     const element = document.createElement('dt-checkbox');
-    element.checkboxElement.checked = Boolean(checked);
+    element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.checkboxElement.setAttribute(
+      element.#checkboxElement.setAttribute(
           'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
     }
     if (title !== undefined) {
       element.#textElement.textContent = title;
-      element.checkboxElement.title = title;
+      element.#checkboxElement.title = title;
       if (subtitle !== undefined) {
         element.#textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
       }
     }
-    element.checkboxElement.classList.toggle('small', small);
+    element.#checkboxElement.classList.toggle('small', small);
     return element;
   }
 
   get checked(): boolean {
-    return this.checkboxElement.checked;
+    return this.#checkboxElement.checked;
   }
 
   set checked(checked: boolean) {
-    this.checkboxElement.checked = checked;
+    this.#checkboxElement.checked = checked;
   }
 
   set disabled(disabled: boolean) {
-    this.checkboxElement.disabled = disabled;
+    this.#checkboxElement.disabled = disabled;
   }
 
   get disabled(): boolean {
-    return this.checkboxElement.disabled;
+    return this.#checkboxElement.disabled;
   }
 
   set indeterminate(indeterminate: boolean) {
-    this.checkboxElement.indeterminate = indeterminate;
+    this.#checkboxElement.indeterminate = indeterminate;
   }
 
   get indeterminate(): boolean {
-    return this.checkboxElement.indeterminate;
+    return this.#checkboxElement.indeterminate;
   }
 
   set name(name: string) {
-    this.checkboxElement.name = name;
+    this.#checkboxElement.name = name;
   }
 
   get name(): string {
-    return this.checkboxElement.name;
+    return this.#checkboxElement.name;
+  }
+
+  override set title(title: string) {
+    this.#textElement.title = title;
+    this.#checkboxElement.title = title;
+  }
+
+  override get title(): string {
+    return this.#checkboxElement.title;
   }
 
   override click(): void {
-    this.checkboxElement.click();
+    this.#checkboxElement.click();
   }
 
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */

@@ -1310,41 +1310,33 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 }
 
 export class ToolbarCheckbox extends ToolbarItem<void> {
-  inputElement: HTMLInputElement;
-
   constructor(
       text: Common.UIString.LocalizedString, tooltip?: Common.UIString.LocalizedString,
       listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
-    super(CheckboxLabel.create(text));
-    this.inputElement = (this.element as CheckboxLabel).checkboxElement;
+    super(CheckboxLabel.create(text, undefined, undefined, jslogContext));
     if (tooltip) {
-      // install on the checkbox
-      Tooltip.install(this.inputElement, tooltip);
       Tooltip.install(this.element, tooltip);
     }
     if (listener) {
-      this.inputElement.addEventListener('click', listener, false);
-    }
-    if (jslogContext) {
-      this.inputElement.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
+      this.element.addEventListener('click', listener, false);
     }
   }
 
   checked(): boolean {
-    return this.inputElement.checked;
+    return (this.element as CheckboxLabel).checked;
   }
 
   setChecked(value: boolean): void {
-    this.inputElement.checked = value;
+    (this.element as CheckboxLabel).checked = value;
   }
 
   override applyEnabledState(enabled: boolean): void {
     super.applyEnabledState(enabled);
-    this.inputElement.disabled = !enabled;
+    (this.element as CheckboxLabel).disabled = !enabled;
   }
 
   setIndeterminate(indeterminate: boolean): void {
-    this.inputElement.indeterminate = indeterminate;
+    (this.element as CheckboxLabel).indeterminate = indeterminate;
   }
 }
 
@@ -1353,7 +1345,7 @@ export class ToolbarSettingCheckbox extends ToolbarCheckbox {
       setting: Common.Settings.Setting<boolean>, tooltip?: Common.UIString.LocalizedString,
       alternateTitle?: Common.UIString.LocalizedString) {
     super(alternateTitle || setting.title(), tooltip, undefined, setting.name);
-    bindCheckbox(this.inputElement, setting);
+    bindCheckbox(this.element, setting);
   }
 }
 

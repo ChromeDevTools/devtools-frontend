@@ -157,7 +157,7 @@
     // - interpolable
     // The interpolable flag indicates whether a property can be animated
     // smoothly. If this flag is set, the property should also be added to the
-    // switch statements in CSSPropertyEquality and CSSInterpolationTypesMap.
+    // switch statements in CSSPropertyEquality and InterpolationTypesMap.
     interpolable: {
       default: false,
       valid_type: "bool",
@@ -1719,6 +1719,7 @@
       priority: 1,
       computable: false,
       invalidate: ["layout", "paint"],
+      valid_for_marker: true,
     },
     {
       name: "-webkit-text-orientation",
@@ -1727,6 +1728,7 @@
       type_name: "TextOrientation",
       priority: 1,
       surrogate_for: "text-orientation",
+      valid_for_marker: true,
     },
     {
       name: "writing-mode",
@@ -3073,6 +3075,7 @@
       name: "cursor",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
+      independent: true,
       field_template: "keyword",
       keywords: [
         "auto", "default", "none", "context-menu", "help", "pointer",
@@ -3648,6 +3651,7 @@
       typedom_types: ["Keyword"],
       default_value: "auto",
       invalidate: [],
+      affected_by_all: false,
       runtime_flag: "CSSInert",
     },
     {
@@ -4023,14 +4027,14 @@
     },
     {
       // TODO(crbug.com/343257585): We might need to alter the spec's grammar to accept
-      // normal | <length-percentage>. With normal, we use `1em` for slack size.
-      name: "masonry-slack",
+      // normal | <length-percentage>. With normal, we use `1em` for tolerance size.
+      name: "item-tolerance",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "external",
       default_value: "std::nullopt",
       type_name: "std::optional<Length>",
-      converter: "ConvertMasonrySlack",
+      converter: "ConvertItemTolerance",
       typedom_types: ["Length", "Percentage"],
       keywords: ["normal"],
       invalidate: ["layout", "paint"],
@@ -6682,8 +6686,8 @@
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "keyword",
-      keywords: ["nowrap", "wrap"],
-      default_value: "nowrap",
+      keywords: ["auto", "nowrap", "wrap"],
+      default_value: "auto",
       typedom_types: ["Keyword"],
       invalidate: ["layout", "paint"],
       runtime_flag: "MulticolColumnWrapping",
@@ -8644,6 +8648,12 @@
       name: "position-try",
       longhands: ["position-try-order", "position-try-fallbacks"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+    },
+    {
+      name: "rule-color",
+      longhands: ["column-rule-color", "row-rule-color"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSGapDecoration",
     },
     {
       name: "scroll-margin",

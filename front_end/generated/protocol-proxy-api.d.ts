@@ -1578,8 +1578,8 @@ declare namespace ProtocolProxyApi {
     invoke_setEmulatedVisionDeficiency(params: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
-     * unavailable.
+     * Overrides the Geolocation Position or Error. Omitting latitude, longitude or
+     * accuracy emulates position unavailable.
      */
     invoke_setGeolocationOverride(params: Protocol.Emulation.SetGeolocationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3564,11 +3564,14 @@ declare namespace ProtocolProxyApi {
     invoke_sendMessageToTarget(params: Protocol.Target.SendMessageToTargetRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Controls whether to automatically attach to new targets which are considered to be related to
-     * this one. When turned on, attaches to all existing related targets as well. When turned off,
+     * Controls whether to automatically attach to new targets which are considered
+     * to be directly related to this one (for example, iframes or workers).
+     * When turned on, attaches to all existing related targets as well. When turned off,
      * automatically detaches from all currently attached targets.
      * This also clears all targets added by `autoAttachRelated` from the list of targets to watch
      * for creation of related targets.
+     * You might want to call this recursively for auto-attached targets to attach
+     * to all available targets.
      */
     invoke_setAutoAttach(params: Protocol.Target.SetAutoAttachRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -4229,34 +4232,30 @@ declare namespace ProtocolProxyApi {
     invoke_addService(params: Protocol.BluetoothEmulation.AddServiceRequest): Promise<Protocol.BluetoothEmulation.AddServiceResponse>;
 
     /**
-     * Removes the service respresented by |serviceId| from the peripheral with
-     * |address|.
+     * Removes the service respresented by |serviceId| from the simulated central.
      */
     invoke_removeService(params: Protocol.BluetoothEmulation.RemoveServiceRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Adds a characteristic with |characteristicUuid| and |properties| to the
-     * service represented by |serviceId| in the peripheral with |address|.
+     * service represented by |serviceId|.
      */
     invoke_addCharacteristic(params: Protocol.BluetoothEmulation.AddCharacteristicRequest): Promise<Protocol.BluetoothEmulation.AddCharacteristicResponse>;
 
     /**
      * Removes the characteristic respresented by |characteristicId| from the
-     * service respresented by |serviceId| in the peripheral with |address|.
+     * simulated central.
      */
     invoke_removeCharacteristic(params: Protocol.BluetoothEmulation.RemoveCharacteristicRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Adds a descriptor with |descriptorUuid| to the characteristic respresented
-     * by |characteristicId| in the service represented by |serviceId| of the
-     * peripheral with |address|.
+     * by |characteristicId|.
      */
     invoke_addDescriptor(params: Protocol.BluetoothEmulation.AddDescriptorRequest): Promise<Protocol.BluetoothEmulation.AddDescriptorResponse>;
 
     /**
-     * Removes the descriptor with |descriptorId| from the characteristic
-     * respresented by |characteristicId| in the service represented by |serviceId|
-     * of the peripheral with |address|.
+     * Removes the descriptor with |descriptorId| from the simulated central.
      */
     invoke_removeDescriptor(params: Protocol.BluetoothEmulation.RemoveDescriptorRequest): Promise<Protocol.ProtocolResponseWithError>;
 

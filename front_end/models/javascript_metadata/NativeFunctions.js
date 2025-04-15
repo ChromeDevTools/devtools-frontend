@@ -2306,11 +2306,23 @@ export const NativeFunctions = [
   },
   {
     name: "createElement",
-    signatures: [["localName","?options"],["tagName","?options"]]
+    signatures: [["localName","?options"],["tagName","?options"]],
+    receivers: ["Document"]
+  },
+  {
+    name: "createElement",
+    signatures: [["localName","?options"]],
+    receivers: ["ShadowRoot"]
   },
   {
     name: "createElementNS",
-    signatures: [["namespaceURI","qualifiedName","?options"],["namespace","qualifiedName","?options"]]
+    signatures: [["namespaceURI","qualifiedName","?options"],["namespace","qualifiedName","?options"]],
+    receivers: ["Document"]
+  },
+  {
+    name: "createElementNS",
+    signatures: [["namespaceURI","qualifiedName","?options"]],
+    receivers: ["ShadowRoot"]
   },
   {
     name: "createEvent",
@@ -2358,7 +2370,7 @@ export const NativeFunctions = [
   },
   {
     name: "importNode",
-    signatures: [["node","?subtree"],["node","?deep"]]
+    signatures: [["node","?subtree"],["node","?deep"],["node","options"]]
   },
   {
     name: "queryCommandEnabled",
@@ -2548,7 +2560,7 @@ export const NativeFunctions = [
   },
   {
     name: "setHTMLUnsafe",
-    signatures: [["html"]],
+    signatures: [["html","?options"],["string"]],
     receivers: ["ShadowRoot"]
   },
   {
@@ -3809,7 +3821,13 @@ export const NativeFunctions = [
   },
   {
     name: "initialize",
-    signatures: [["newItem"]]
+    signatures: [["newItem"]],
+    receivers: ["SVGLengthList","SVGNumberList","SVGPointList","SVGStringList","SVGTransformList"]
+  },
+  {
+    name: "initialize",
+    signatures: [["root"]],
+    receivers: ["CustomElementRegistry"]
   },
   {
     name: "insertItemBefore",
@@ -7831,7 +7849,7 @@ export const NativeFunctions = [
   },
   {
     name: "createContext",
-    signatures: [["?options"]]
+    signatures: [["?options"],["gpuDevice"]]
   },
   {
     name: "MLGraphBuilder",

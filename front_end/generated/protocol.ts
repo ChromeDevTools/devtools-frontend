@@ -2011,6 +2011,7 @@ export namespace Browser {
   export const enum BrowserCommandId {
     OpenTabSearch = 'openTabSearch',
     CloseTabSearch = 'closeTabSearch',
+    OpenGlic = 'openGlic',
   }
 
   /**
@@ -6629,6 +6630,22 @@ export namespace Emulation {
      * Mock accuracy
      */
     accuracy?: number;
+    /**
+     * Mock altitude
+     */
+    altitude?: number;
+    /**
+     * Mock altitudeAccuracy
+     */
+    altitudeAccuracy?: number;
+    /**
+     * Mock heading
+     */
+    heading?: number;
+    /**
+     * Mock speed
+     */
+    speed?: number;
   }
 
   export interface GetOverriddenSensorInformationRequest {
@@ -8968,6 +8985,7 @@ export namespace Network {
     Cache = 'cache',
     FetchEvent = 'fetch-event',
     RaceNetworkAndFetchHandler = 'race-network-and-fetch-handler',
+    RaceNetworkAndCache = 'race-network-and-cache',
   }
 
   export interface ServiceWorkerRouterInfo {
@@ -12030,6 +12048,7 @@ export namespace Page {
     CrossOriginIsolated = 'cross-origin-isolated',
     DeferredFetch = 'deferred-fetch',
     DeferredFetchMinimal = 'deferred-fetch-minimal',
+    DeviceAttributes = 'device-attributes',
     DigitalCredentialsGet = 'digital-credentials-get',
     DirectSockets = 'direct-sockets',
     DirectSocketsPrivate = 'direct-sockets-private',
@@ -18430,12 +18449,10 @@ export namespace BluetoothEmulation {
   }
 
   export interface RemoveServiceRequest {
-    address: string;
     serviceId: string;
   }
 
   export interface AddCharacteristicRequest {
-    address: string;
     serviceId: string;
     characteristicUuid: string;
     properties: CharacteristicProperties;
@@ -18449,14 +18466,10 @@ export namespace BluetoothEmulation {
   }
 
   export interface RemoveCharacteristicRequest {
-    address: string;
-    serviceId: string;
     characteristicId: string;
   }
 
   export interface AddDescriptorRequest {
-    address: string;
-    serviceId: string;
     characteristicId: string;
     descriptorUuid: string;
   }
@@ -18469,9 +18482,6 @@ export namespace BluetoothEmulation {
   }
 
   export interface RemoveDescriptorRequest {
-    address: string;
-    serviceId: string;
-    characteristicId: string;
     descriptorId: string;
   }
 

@@ -287,7 +287,7 @@ export interface Props {
   multimodalInputEnabled?: boolean;
   imageInput?: ImageInputData;
   isTextInputDisabled: boolean;
-  emptyStateSuggestions: string[];
+  emptyStateSuggestions: AiAssistanceModel.ConversationSuggestion[];
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
   isTextInputEmpty: boolean;
@@ -1032,7 +1032,7 @@ function renderMessages({
 
 function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}: {
   isTextInputDisabled: boolean,
-  suggestions: string[],
+  suggestions: AiAssistanceModel.ConversationSuggestion[],
   onSuggestionClick: (suggestion: string) => void,
 }): Lit.TemplateResult {
   // clang-format off
@@ -1046,20 +1046,20 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
       <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
     </div>
     <div class="empty-state-content">
-      ${suggestions.map(suggestion => {
+      ${suggestions.map(({title, jslogContext}) => {
         return html`<devtools-button
           class="suggestion"
-          @click=${() => onSuggestionClick(suggestion)}
+          @click=${() => onSuggestionClick(title)}
           .data=${
             {
               variant: Buttons.Button.Variant.OUTLINED,
               size: Buttons.Button.Size.REGULAR,
-              title: suggestion,
-              jslogContext: 'suggestion',
+              title,
+              jslogContext: jslogContext ?? 'suggestion',
               disabled: isTextInputDisabled,
             } as Buttons.Button.ButtonData
           }
-        >${suggestion}</devtools-button>`;
+        >${title}</devtools-button>`;
       })}
     </div>
   </div>`;
@@ -1504,7 +1504,7 @@ function renderMainContents({
   isReadOnly: boolean,
   canShowFeedbackForm: boolean,
   isTextInputDisabled: boolean,
-  suggestions: string[],
+  suggestions: AiAssistanceModel.ConversationSuggestion[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
   conversationType?: AiAssistanceModel.ConversationType,

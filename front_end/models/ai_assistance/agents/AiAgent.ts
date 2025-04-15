@@ -132,6 +132,11 @@ export type ParsedResponse = ParsedAnswer|ParsedStep;
 
 export const MAX_STEPS = 10;
 
+export interface ConversationSuggestion {
+  title: string;
+  jslogContext?: string;
+}
+
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
@@ -157,7 +162,7 @@ export abstract class ConversationContext<T> {
     return;
   }
 
-  async getSuggestions(): Promise<[string, ...string[]]|undefined> {
+  async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {
     return;
   }
 }

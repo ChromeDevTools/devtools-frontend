@@ -207,7 +207,7 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
 
 async function getEmptyStateSuggestions(
     context: AiAssistanceModel.ConversationContext<unknown>|null,
-    conversationType?: AiAssistanceModel.ConversationType): Promise<string[]> {
+    conversationType?: AiAssistanceModel.ConversationType): Promise<AiAssistanceModel.ConversationSuggestion[]> {
   if (context) {
     const specialSuggestions = await context.getSuggestions();
 
@@ -223,30 +223,32 @@ async function getEmptyStateSuggestions(
   switch (conversationType) {
     case AiAssistanceModel.ConversationType.STYLING:
       return [
-        'What can you help me with?',
-        'Why isn’t this element visible?',
-        'How do I center this element?',
+        {title: 'What can you help me with?', jslogContext: 'styling-default'},
+        {title: 'Why isn’t this element visible?', jslogContext: 'styling-default'},
+        {title: 'How do I center this element?', jslogContext: 'styling-default'},
       ];
     case AiAssistanceModel.ConversationType.FILE:
       return [
-        'What does this script do?',
-        'Is the script optimized for performance?',
-        'Does the script handle user input safely?',
+        {title: 'What does this script do?', jslogContext: 'file-default'},
+        {title: 'Is the script optimized for performance?', jslogContext: 'file-default'},
+        {title: 'Does the script handle user input safely?', jslogContext: 'file-default'},
       ];
     case AiAssistanceModel.ConversationType.NETWORK:
       return [
-        'Why is this network request taking so long?',
-        'Are there any security headers present?',
-        'Why is the request failing?',
+        {title: 'Why is this network request taking so long?', jslogContext: 'network-default'},
+        {title: 'Are there any security headers present?', jslogContext: 'network-default'},
+        {title: 'Why is the request failing?', jslogContext: 'network-default'},
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE:
       return [
-        'Identify performance issues in this call tree',
-        'Where is most of the time being spent in this call tree?',
-        'How can I reduce the time of this call tree?',
+        {title: 'Identify performance issues in this call tree', jslogContext: 'performance-default'},
+        {title: 'Where is most of the time being spent in this call tree?', jslogContext: 'performance-default'},
+        {title: 'How can I reduce the time of this call tree?', jslogContext: 'performance-default'},
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-      return ['Help me optimize my page load performance'];
+      return [
+        {title: 'Help me optimize my page load performance', jslogContext: 'performance-insights-default'},
+      ];
   }
 }
 

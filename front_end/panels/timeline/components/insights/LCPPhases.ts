@@ -194,6 +194,15 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     // clang-format on
   }
 
+  override toggleTemporaryOverlays(
+      overlays: Overlays.Overlays.TimelineOverlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
+    super.toggleTemporaryOverlays(overlays, {...options, updateTraceWindowPercentage: 0});
+  }
+
+  override getOverlayOptionsForInitialOverlays(): Overlays.Overlays.TimelineOverlaySetOptions {
+    return {updateTraceWindow: true, updateTraceWindowPercentage: 0};
+  }
+
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;

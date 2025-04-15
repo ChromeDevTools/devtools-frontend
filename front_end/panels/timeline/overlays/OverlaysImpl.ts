@@ -324,7 +324,20 @@ export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLab
     TimestampMarker|CandyStripedTimeRange|TimingsMarker;
 
 export interface TimelineOverlaySetOptions {
-  updateTraceWindow: boolean;
+  /** Whether to update the trace window. Defaults to false. */
+  updateTraceWindow?: boolean;
+  /**
+   * If updateTraceWindow is true, this is the total amount of space added as margins to the
+   * side of the bounds represented by the overlays, represented as a percentage relative to
+   * the width of the overlay bounds. The space is split evenly on either side of the overlay
+   * bounds. The intention is to neatly center the overlays in the middle of the viewport, with
+   * some additional context on either side.
+   *
+   * If 0, no margins will be added, and the precise bounds defined by the overlays will be used.
+   *
+   * If not provided, 100 is used (25% margin, 50% overlays, 25% margin).
+   */
+  updateTraceWindowPercentage?: number;
 }
 
 /**

@@ -739,8 +739,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
         // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
+        const percentage = options.updateTraceWindowPercentage ?? 100;
         const expandedBounds =
-            Trace.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
+            Trace.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, percentage);
 
         // Set the timeline visible window and ignore the minimap bounds. This
         // allows us to pick a visible window even if the overlays are outside of

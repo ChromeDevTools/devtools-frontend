@@ -73,6 +73,7 @@ export interface BaseInsightData {
 
 export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLElement {
   abstract internalName: string;
+
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overwrite this.
   static readonly litTagName = Lit.StaticHtml.literal``;
@@ -127,8 +128,8 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   set selected(selected: boolean) {
     if (!this.#selected && selected) {
-      this.dispatchEvent(
-          new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), {updateTraceWindow: true}));
+      const options = this.getOverlayOptionsForInitialOverlays();
+      this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), options));
     }
 
     this.#selected = selected;
@@ -168,6 +169,10 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   get fieldMetrics(): Trace.Insights.Common.CrUXFieldMetricResults|null {
     return this.#fieldMetrics;
+  }
+
+  getOverlayOptionsForInitialOverlays(): Overlays.Overlays.TimelineOverlaySetOptions {
+    return {updateTraceWindow: true};
   }
 
   #dispatchInsightToggle(): void {
@@ -236,7 +241,13 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays ?? this.getInitialOverlays(), options));
+    if (!overlays) {
+      this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(
+          this.getInitialOverlays(), this.getOverlayOptionsForInitialOverlays()));
+      return;
+    }
+
+    this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays, options));
   }
 
   getInitialOverlays(): Overlays.Overlays.TimelineOverlay[] {

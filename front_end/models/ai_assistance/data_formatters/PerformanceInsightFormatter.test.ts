@@ -25,7 +25,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const expected = `## Insight Title: LCP by phase
 
 ## Insight Summary:
-This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
@@ -55,7 +55,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
       const expected = `## Insight Title: LCP by phase
 
 ## Insight Summary:
-This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
@@ -270,7 +270,8 @@ Timings:
 - Download complete at: 48.04 ms
 - Completed at: 51.55 ms
 Durations:
-- Main thread processing duration: 3.51 ms
+- Download time: 6.33 ms
+- Main thread processing time: 3.51 ms
 - Total duration: 13.93 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects

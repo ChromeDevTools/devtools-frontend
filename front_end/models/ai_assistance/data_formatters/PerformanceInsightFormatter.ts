@@ -312,7 +312,7 @@ The sum of these three phases is the total latency. It is important to optimize 
 
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.`;
       case 'LCPPhases':
-        return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
+        return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.';
       case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':
@@ -378,6 +378,8 @@ export class TraceEventFormatter {
     const mainThreadProcessingDuration =
         startTimesForLifecycle.processingComplete - startTimesForLifecycle.downloadComplete;
 
+    const downloadTime = startTimesForLifecycle.downloadComplete - startTimesForLifecycle.requestSent;
+
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
 
     const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(request);
@@ -412,7 +414,8 @@ Timings:
 - Download complete at: ${formatMicro(startTimesForLifecycle.downloadComplete)}
 - Completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
 Durations:
-- Main thread processing duration: ${formatMicro(mainThreadProcessingDuration)}
+- Download time: ${formatMicro(downloadTime)}
+- Main thread processing time: ${formatMicro(mainThreadProcessingDuration)}
 - Total duration: ${formatMicro(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
 Redirects:${redirects.length ? '\n' + redirects.join('\n') : ' no redirects'}
 Status code: ${statusCode}

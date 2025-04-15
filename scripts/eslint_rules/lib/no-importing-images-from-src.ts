@@ -10,16 +10,17 @@
  * of the build process, so we should never import from 'src'.
  */
 
+import {createRule} from './tsUtils.ts';  // Assuming tsUtils.ts exists based on File B
+
 // ------------------------------------------------------------------------------
 // Rule Definition
 // ------------------------------------------------------------------------------
 
 const SRC_DIRECTORY_PATH_TO_MATCH = 'Images/src/';
 
-/**
- * @type {import('eslint').Rule.RuleModule}
- */
-module.exports = {
+export default createRule({
+  // Add type parameters for options and messageIds
+  name: 'no-importing-images-from-src',  // Rule name should match the file name
   meta: {
     type: 'problem',
 
@@ -34,31 +35,51 @@ module.exports = {
           'Found an image import containing the `src/` directory. You should always import `Images/foo.svg`.',
     },
   },
+  defaultOptions: [],
   create: function(context) {
     return {
-      // Matches new URL(...)
-      'NewExpression[callee.name=\'URL\']'(node) {
+      NewExpression(node) {
+        if (node.callee.type !== 'Identifier' || node.callee.name !== 'URL') {
+          return;
+        }
+
         if (!node.arguments || node.arguments.length < 1) {
           // Invalid code: user is probably mid-way through typing! Just leave
           // it; TypeScript will error if it ends up being invalid.
           return;
         }
-        /** @type {String} */
-        const filePath = node.arguments[0].value;
-        if (!filePath) {
+
+        const firstArgument = node.arguments[0];
+        // Ensure the first argument is a Literal with a string value
+        if (!firstArgument || firstArgument.type !== 'Literal' || typeof firstArgument.value !== 'string') {
           return;
         }
+
+        // firstArgument.value is now guaranteed to be a string
+        const filePath: string = firstArgument.value;
+
         if (filePath.includes(SRC_DIRECTORY_PATH_TO_MATCH)) {
           context.report({
-            node: node.arguments[0],
+            node: firstArgument,  // Report on the argument node itself
             messageId: 'imageImportUsingSrc',
             fix(fixer) {
-              return fixer.replaceText(
-                  node.arguments[0], `'${filePath.replace(SRC_DIRECTORY_PATH_TO_MATCH, 'Images/')}'`);
-            }
+              // Fixer function returns RuleFix or null
+              // Ensure the node to fix is the same literal node
+              if (node.arguments[0].type === 'Literal' && typeof node.arguments[0].value === 'string') {
+                return fixer.replaceText(
+                    node.arguments[0],
+                    `'${
+                        filePath.replace(
+                            SRC_DIRECTORY_PATH_TO_MATCH,
+                            'Images/',
+                            )}'`,
+                );
+              }
+              return null;  // Cannot fix if the node structure changed unexpectedly
+            },
           });
         }
-      }
+      },
     };
-  }
-};
+  },
+});

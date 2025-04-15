@@ -117,6 +117,13 @@ export const uiUtils = {
           }
         }
       },
+      functionCall(call: CallExpression, _firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean {
+        if (isIdentifierChain(call.callee, ['UI', 'UIUtils', 'createTextChild'])) {
+          domFragment.textContent = secondArg;
+          return true;
+        }
+        return false;
+      },
     };
   }
 };

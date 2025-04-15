@@ -19,7 +19,8 @@ export const domApiDevtoolsExtensions = {
       methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: Node): boolean {
         if (isIdentifier(property, 'createChild')) {
           if (firstArg?.type === 'Literal') {
-            const childFragment = domFragment.appendChild(call, sourceCode);
+            const childFragment =
+                domFragment.appendChild(call, sourceCode, /* processed=*/ call.parent?.type !== 'CallExpression');
             childFragment.tagName = String(firstArg.value);
             if (secondArg) {
               childFragment.classList.push(secondArg);

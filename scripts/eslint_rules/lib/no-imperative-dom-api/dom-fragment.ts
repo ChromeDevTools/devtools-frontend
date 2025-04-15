@@ -166,25 +166,19 @@ export class DomFragment {
     return components;
   }
 
-  appendChild(node: Node, sourceCode: SourceCode): DomFragment {
-    const child = DomFragment.getOrCreate(node, sourceCode);
-    this.children.push(child);
-    child.parent = this;
-    for (const reference of child.references) {
-      if (reference.node === node) {
-        reference.processed = true;
-      }
-    }
-    return child;
+  appendChild(node: Node, sourceCode: SourceCode, processed = true): DomFragment {
+    return this.insertChildAt(node, this.children.length, sourceCode, processed);
   }
 
-  insertChildAt(node: Node, index: number, sourceCode: SourceCode): DomFragment {
+  insertChildAt(node: Node, index: number, sourceCode: SourceCode, processed = true): DomFragment {
     const child = DomFragment.getOrCreate(node, sourceCode);
     this.children.splice(index, 0, child);
     child.parent = this;
-    for (const reference of child.references) {
-      if (reference.node === node) {
-        reference.processed = true;
+    if (processed) {
+      for (const reference of child.references) {
+        if (reference.node === node) {
+          reference.processed = true;
+        }
       }
     }
     return child;

@@ -10,6 +10,7 @@ import type * as Workspace from '../workspace/workspace.js';
 import {debugLog} from './debug.js';
 
 const LINE_END_RE = /\r\n?|\n/;
+const MAX_RESULTS_PER_FILE = 10;
 
 export const enum ReplaceStrategy {
   FULL_FILE = 'full',
@@ -23,7 +24,7 @@ export const enum ReplaceStrategy {
  */
 export class AgentProject {
   #project: Workspace.Workspace.Project;
-  #ignoredFolderNames = new Set(['node_modules']);
+  #ignoredFileOrFolderNames = new Set(['node_modules', 'package-lock.json']);
   #filesChanged = new Set<string>();
   #totalLinesChanged = 0;
 
@@ -220,7 +221,7 @@ export class AgentProject {
       const content = file.isDirty() ? file.workingCopyContentData() : await file.requestContentData();
       const results =
           TextUtils.TextUtils.performSearchInContentData(content, query, caseSensitive ?? true, isRegex ?? false);
-      for (const result of results) {
+      for (const result of results.slice(0, MAX_RESULTS_PER_FILE)) {
         debugLog('matches in', filepath);
         matches.push({
           filepath,
@@ -235,7 +236,7 @@ export class AgentProject {
 
   #shouldSkipPath(pathParts: string[]): boolean {
     for (const part of pathParts) {
-      if (this.#ignoredFolderNames.has(part) || part.startsWith('.')) {
+      if (this.#ignoredFileOrFolderNames.has(part) || part.startsWith('.')) {
         return true;
       }
     }

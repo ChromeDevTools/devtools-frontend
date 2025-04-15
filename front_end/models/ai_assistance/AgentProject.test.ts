@@ -41,15 +41,69 @@ describeWithEnvironment('AgentProject', () => {
     assert.deepEqual(project.getFiles(), ['index.html']);
   });
 
-  it('can search files', async () => {
-    const {project} = await mockProject();
+  it('ignores package-lock.json', async () => {
+    const {project} = await mockProject([
+      {
+        path: 'node_modules/test.js',
+        content: 'content',
+      },
+      {
+        path: 'package-lock.json',
+        content: 'content',
+      },
+      {
+        path: 'test/another/node_modules/test2.js',
+        content: 'content',
+      }
+    ]);
 
-    assert.deepEqual(await project.searchFiles('content'), [{
-                       columnNumber: 0,
-                       filepath: 'index.html',
-                       lineNumber: 0,
-                       matchLength: 7,
-                     }]);
+    assert.deepEqual(project.getFiles(), ['index.html']);
+  });
+
+  describe('searchFiles', () => {
+    it('can search files', async () => {
+      const {project} = await mockProject();
+
+      assert.deepEqual(await project.searchFiles('content'), [{
+                         columnNumber: 0,
+                         filepath: 'index.html',
+                         lineNumber: 0,
+                         matchLength: 7,
+                       }]);
+    });
+
+    it('limits results per file', async () => {
+      const {project} = await mockProject([
+        {
+          path: 'many-matches.js',
+          content: Array(20).fill('find me').join('\n'),
+        },
+        {
+          path: 'one-match.js',
+          content: 'find me',
+        }
+      ]);
+
+      const results = await project.searchFiles('find me');
+      assert.lengthOf(results, 11);  // 10 from many-matches.js + 1 from one-match.js
+
+      const manyMatchesResults = results.filter(r => r.filepath === 'many-matches.js');
+      assert.lengthOf(manyMatchesResults, 10);
+      // Check line numbers to confirm they are the first 10
+      for (let i = 0; i < 10; i++) {
+        assert.strictEqual(manyMatchesResults[i].lineNumber, i);
+        assert.strictEqual(manyMatchesResults[i].columnNumber, 0);
+        assert.strictEqual(manyMatchesResults[i].matchLength, 7);
+      }
+
+      const oneMatchResult = results.find(r => r.filepath === 'one-match.js');
+      assert.deepEqual(oneMatchResult, {
+        filepath: 'one-match.js',
+        lineNumber: 0,
+        columnNumber: 0,
+        matchLength: 7,
+      });
+    });
   });
 
   it('can read files', async () => {

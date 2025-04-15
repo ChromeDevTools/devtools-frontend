@@ -65,6 +65,7 @@ interface ViewInput {
   onSelectButtonClick: () => void;
   onCancelButtonClick: () => void;
   onAddFolderButtonClick: () => void;
+  onListItemKeyDown: (event: KeyboardEvent) => void;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -74,7 +75,6 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
   #selectedIndex = 0;
   #onProjectSelected: (project: Workspace.Workspace.Project) => void;
-  #boundOnKeyDown: (event: KeyboardEvent) => void;
   #dialog: UI.Dialog.Dialog;
   #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
   #folders: Folder[] = [];
@@ -89,7 +89,6 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     super();
     this.element.classList.add('dialog-container');
     this.registerRequiredCSS(selectWorkspaceDialogStyles);
-    this.#boundOnKeyDown = this.#onKeyDown.bind(this);
     this.#onProjectSelected = options.onProjectSelected;
     this.#dialog = options.dialog;
     this.#updateProjectsAndFolders();
@@ -128,10 +127,12 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
                   <li
                     id=${optionId}
                     @click=${() => input.onProjectSelected(index)}
+                    @keydown=${input.onListItemKeyDown}
                     class=${index === input.selectedIndex ? 'selected' : ''}
                     aria-selected=${index === input.selectedIndex ? 'true' : 'false'}
                     title=${folder.path}
                     role="option"
+                    tabindex=${index === input.selectedIndex ? '0' : '-1'}
                   >
                     <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
                     <span class="ellipsis">${folder.name}</span>
@@ -169,33 +170,48 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       );
     }) as View;
     // clang-format on
-    this.performUpdate();
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.contentElement?.querySelector<HTMLUListElement>('.selected')?.focus();
+    });
   }
 
   override wasShown(): void {
-    const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
-    document.addEventListener('keydown', this.#boundOnKeyDown, true);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }
 
   override willHide(): void {
-    const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
-    document.removeEventListener('keydown', this.#boundOnKeyDown, true);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }
 
-  #onKeyDown(event: KeyboardEvent): void {
+  #onListItemKeyDown(event: KeyboardEvent): void {
     switch (event.key) {
       case 'ArrowDown':
         this.#selectedIndex = Math.min(this.#selectedIndex + 1, this.#folders.length - 1);
+        this.contentElement.querySelectorAll('li')[this.#selectedIndex]?.focus();
         this.requestUpdate();
         break;
       case 'ArrowUp':
         this.#selectedIndex = Math.max(this.#selectedIndex - 1, 0);
+        this.contentElement.querySelectorAll('li')[this.#selectedIndex]?.focus();
         this.requestUpdate();
         break;
+      case 'Enter':
+        event.preventDefault();
+        this.#onSelectButtonClick();
+        break;
+    }
+  }
+
+  #onSelectButtonClick(): void {
+    const selectedFolder = this.#folders[this.#selectedIndex];
+    if (selectedFolder.project) {
+      this.#dialog.hide();
+      this.#onProjectSelected(selectedFolder.project);
+    } else {
+      void this.#connectToAutomaticFilesystem();
     }
   }
 
@@ -209,21 +225,14 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
         this.#selectedIndex = index;
         this.requestUpdate();
       },
-      onSelectButtonClick: () => {
-        const selectedFolder = this.#folders[this.#selectedIndex];
-        if (selectedFolder.project) {
-          this.#dialog.hide();
-          this.#onProjectSelected(selectedFolder.project);
-        } else {
-          void this.#connectToAutomaticFilesystem();
-        }
-      },
+      onSelectButtonClick: this.#onSelectButtonClick.bind(this),
       onCancelButtonClick: () => {
         this.#dialog.hide();
       },
       onAddFolderButtonClick: () => {
         void Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
-      }
+      },
+      onListItemKeyDown: this.#onListItemKeyDown.bind(this),
     };
 
     this.#view(viewInput, undefined, this.contentElement);

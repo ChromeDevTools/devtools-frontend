@@ -49,11 +49,11 @@ li {
   padding-left: var(--sys-size-9);
 }
 
-li:hover {
+li:hover, li.selected {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-li.selected {
+li:focus {
   background-color: var(--app-color-navigation-drawer-background-selected);
 }
 

@@ -549,11 +549,6 @@ export class PatchWidget extends UI.Widget.Widget {
     if (isAiAssistancePatchingEnabled()) {
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
-
-      // @ts-expect-error temporary global function for local testing.
-      window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
-        return await this.#applyPatch(changeSummary);
-      };
     }
   }
 
@@ -763,3 +758,66 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
 export function isAiAssistancePatchingEnabled(): boolean {
   return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.patching);
 }
+
+interface ExpectedChange {
+  path: string;
+  matches: string[];
+  doesNotMatch?: string[];
+}
+
+// @ts-expect-error temporary global function for local testing.
+window.aiAssistanceTestPatchPrompt =
+    async (projectName: string, changeSummary: string, expectedChanges: ExpectedChange[]) => {
+  if (!isAiAssistancePatchingEnabled()) {
+    return;
+  }
+  const workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+  const project = workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem)
+                      .filter(
+                          project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
+                              project.fileSystem().type() ===
+                                  Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT)
+                      .find(project => project.displayName() === projectName);
+
+  if (!project) {
+    throw new Error('project not found');
+  }
+  const aidaClient = new Host.AidaClient.AidaClient();
+  const agent = new AiAssistanceModel.PatchAgent({
+    aidaClient,
+    serverSideLoggingEnabled: false,
+    project,
+  });
+  const results = [];
+  try {
+    const {processedFiles} = await agent.applyChanges(changeSummary);
+    for (const file of processedFiles) {
+      const change = expectedChanges.find(change => change.path === file);
+      if (!change) {
+        results.push(`Patched ${file} that was not expected`);
+        break;
+      }
+      const agentProject = agent.agentProject;
+      const content = await agentProject.readFile(file);
+      if (!content) {
+        throw new Error(`${file} has no content`);
+      }
+      for (const m of change.matches) {
+        if (!content.includes(m)) {
+          results.push(`Did not match ${m} in ${file}`);
+        }
+      }
+      for (const m of change.doesNotMatch || []) {
+        if (content.includes(m)) {
+          results.push(`Unexpectedly matched ${m} in ${file}`);
+        }
+      }
+    }
+  } finally {
+    workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
+      modifiedUISourceCode.resetWorkingCopy();
+    });
+  }
+  return results;
+};

@@ -79,6 +79,10 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
     };
   }
 
+  get agentProject(): AgentProject {
+    return this.#project;
+  }
+
   constructor(opts: BaseAgentOptions&{fileUpdateAgent?: FileUpdateAgent, project: Workspace.Workspace.Project}) {
     super(opts);
     this.#project = new AgentProject(opts.project);

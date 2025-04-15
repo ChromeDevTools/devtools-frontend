@@ -86,6 +86,8 @@ export interface ViewInput {
   onDelete: (event: CustomEvent<HTMLElement>) => void;
 }
 
+const MAX_VALUE_LENGTH = 4096;
+
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 /**
  * A helper typically used in the Application panel. Renders a split view
@@ -136,7 +138,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
                       <tr data-key=${item.key} data-value=${item.value}
                           selected=${(input.selectedKey === item.key) || nothing}>
                         <td>${item.key}</td>
-                        <td>${item.value}</td>
+                        <td>${item.value.substr(0, MAX_VALUE_LENGTH)}</td>
                       </tr>`)}
                       <tr placeholder></tr>
                   </table>

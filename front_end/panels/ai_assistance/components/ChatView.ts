@@ -957,7 +957,7 @@ function renderSelection({
       tabindex=${hasPickerBehavior ? '-1' : '0'}
       @click=${onContextClick}
       @keydown=${handleKeyDown}
-      aria-label=${i18nString(UIStrings.revealContextDescription)}
+      aria-description=${i18nString(UIStrings.revealContextDescription)}
     >
       ${icon}${selectedContext?.getTitle() ?? html`<span>${
         lockedString(UIStringsNotTranslate.noElementSelected)

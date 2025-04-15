@@ -122,6 +122,13 @@ export const uiUtils = {
           domFragment.textContent = secondArg;
           return true;
         }
+        if (isIdentifierChain(call.callee, ['UI', 'Tooltip', 'Tooltip', 'install'])) {
+          domFragment.attributes.push({
+            key: 'title',
+            value: secondArg,
+          });
+          return true;
+        }
         return false;
       },
     };

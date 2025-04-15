@@ -618,5 +618,41 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const button = new Buttons.Button.Button();
+    button.data = {
+      jslogContext: 'some-button',
+      variant: Buttons.Button.Variant.PRIMARY,
+      title: i18nString(UIStrings.someTitle),
+    };
+    UI.ARIAUtils.markAsPresentation(button);
+    UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.someTooltip));
+    this.contentElement.appendChild(button);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-button role="presentation" title=\${i18nString(UIStrings.someTooltip)}
+          .jslogContext=\${'some-button'} .variant=\${Buttons.Button.Variant.PRIMARY}
+          .title=\${i18nString(UIStrings.someTitle)}></devtools-button>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

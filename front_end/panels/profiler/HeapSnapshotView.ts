@@ -1343,7 +1343,7 @@ export class HeapSnapshotProfileType extends
 
   override setCustomContentEnabled(enable: boolean): void {
     if (this.customContentInternal) {
-      this.customContentInternal.checkboxElement.disabled = !enable;
+      this.customContentInternal.disabled = !enable;
     }
   }
 
@@ -1554,7 +1554,7 @@ export class TrackingHeapSnapshotProfileType extends
 
   override setCustomContentEnabled(enable: boolean): void {
     if (this.customContentInternal) {
-      this.customContentInternal.checkboxElement.disabled = !enable;
+      this.customContentInternal.disabled = !enable;
     }
   }
 

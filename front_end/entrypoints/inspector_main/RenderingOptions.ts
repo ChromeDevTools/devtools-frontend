@@ -296,7 +296,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
       label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
       setting: Common.Settings.Setting<boolean>, metric?: UI.SettingsUI.UserMetricOptions): UI.UIUtils.CheckboxLabel {
     const checkbox = UI.UIUtils.CheckboxLabel.create(label, false, subtitle, setting.name);
-    UI.SettingsUI.bindCheckbox(checkbox.checkboxElement, setting, metric);
+    UI.SettingsUI.bindCheckbox(checkbox, setting, metric);
     this.contentElement.appendChild(checkbox);
     return checkbox;
   }

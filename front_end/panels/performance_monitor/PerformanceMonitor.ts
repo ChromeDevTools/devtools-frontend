@@ -639,8 +639,8 @@ export class MetricIndicator {
     const chartName = info.metrics[0].name;
     this.swatchElement = UI.UIUtils.CheckboxLabel.create(info.title, active, undefined, chartName);
     this.element.appendChild(this.swatchElement);
-    this.swatchElement.checkboxElement.addEventListener('change', () => {
-      onToggle(this.swatchElement.checkboxElement.checked);
+    this.swatchElement.addEventListener('change', () => {
+      onToggle(this.swatchElement.checked);
       this.element.classList.toggle('active');
     });
     this.valueElement = this.element.createChild('div', 'perfmon-indicator-value');

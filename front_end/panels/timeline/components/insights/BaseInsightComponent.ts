@@ -440,6 +440,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
         <header @click=${this.#dispatchInsightToggle}
           @keydown=${this.#handleHeaderKeyDown}
           jslog=${VisualLogging.action(`timeline.toggle-insight.${this.internalName}`).track({click: true})}
+          data-insight-header-title=${this.#model?.title}
           tabIndex="0"
           role="button"
           aria-expanded=${this.#selected}

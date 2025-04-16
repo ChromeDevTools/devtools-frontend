@@ -456,8 +456,8 @@ class Example {
     }
 
     if (userArgs.testTarget === 'performance-insights') {
-      const insight = rawComment.insight;
-      if (!insight) {
+      const insightTitle = rawComment.insight;
+      if (!insightTitle) {
         throw new Error('Cannot execute performance-insights example without "Insight:" in example comment metadata.');
       }
 
@@ -470,10 +470,12 @@ class Example {
         await sidebarButton.click();
       }
 
-      this.log(`[Info]: expanding Insight ${insight}`);
-      // Now find the header for the right insight, and click to expand it. We JSON.parse to remove the surrounding double quotes.
-      const locator = `aria/View details for ${JSON.parse(insight)} insight.`;
-      await devtoolsPage.locator(locator).setTimeout(5000).click();
+      this.log(`[Info]: expanding Insight ${insightTitle}`);
+      // Now find the header for the right insight, and click to expand it.
+      // Note that we can't use aria here because the aria-label for insights
+      // can be extended to include estimated savings. So we use the data
+      // attribute instead. The title is JSON so it is already wrapped with double quotes.
+      await devtoolsPage.locator(`:scope >>> [data-insight-header-title=${insightTitle}]`).setTimeout(10_000).click();
     }
 
     this.log('[Info]: Locating AI assistance tab');

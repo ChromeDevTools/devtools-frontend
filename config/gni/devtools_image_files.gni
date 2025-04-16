@@ -55,6 +55,7 @@ devtools_svg_sources = [
   "arrow-up-down-circle.svg",
   "arrow-up-down.svg",
   "arrow-up.svg",
+  "attach-file.svg",
   "bell.svg",
   "bezier-curve-filled.svg",
   "bin.svg",

@@ -49,6 +49,7 @@ grd_files_release_sources = [
   "front_end/Images/arrow-up-down-circle.svg",
   "front_end/Images/arrow-up-down.svg",
   "front_end/Images/arrow-up.svg",
+  "front_end/Images/attach-file.svg",
   "front_end/Images/bell.svg",
   "front_end/Images/bezier-curve-filled.svg",
   "front_end/Images/bin.svg",

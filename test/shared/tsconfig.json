@@ -1,11 +1,7 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "baseUrl": ".",
-    "composite": true,
-
-    "checkJs": false,
-    "allowJs": false
+    "baseUrl": "."
   },
   "references": [
     {
@@ -14,6 +10,5 @@
     {
       "path": "../e2e_non_hosted"
     }
-  ],
-  "extends": "../../config/typescript/tsconfig.base.json"
+  ]
 }

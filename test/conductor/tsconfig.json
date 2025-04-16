@@ -1,11 +1,6 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "baseUrl": ".",
-    "composite": true,
-
-    "checkJs": false,
-    "allowJs": false
-  },
-  "extends": "../../config/typescript/tsconfig.base.json"
+    "baseUrl": "."
+  }
 }

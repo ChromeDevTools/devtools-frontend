@@ -5,6 +5,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 import * as path from 'path';
+import puppeteer from 'puppeteer-core';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
@@ -13,7 +14,6 @@ import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
 import {ScreenshotError} from '../conductor/screenshot-error.js';
 import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
 
-const puppeteer = require('puppeteer-core');
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 const REMOTE_DEBUGGING_PORT = 7722;
 
@@ -37,7 +37,7 @@ interface BrowserWithArgs {
 const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: BrowserWithArgs, _config: unknown) {
   require('karma-chrome-launcher')['launcher:Chrome'][1].apply(this, arguments);
   this._execCommand = async function(_cmd: string, args: string[]) {
-    const url = args.pop();
+    const url = args.pop()!;
     const browser = await puppeteer.launch({
       headless: !TestConfig.debug || TestConfig.headless,
       executablePath: TestConfig.chromeBinary,

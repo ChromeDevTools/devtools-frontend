@@ -1,15 +1,11 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "nodenext",
-    "baseUrl": ".",
-
-    "checkJs": false,
-    "allowJs": false
+    "baseUrl": "."
   },
   "references": [
     {
       "path": "../shared/tsconfig.json"
     }
-  ],
-  "extends": "../../config/typescript/tsconfig.base.json"
+  ]
 }

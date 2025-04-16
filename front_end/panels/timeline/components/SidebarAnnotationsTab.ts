@@ -15,11 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
-import sidebarAnnotationsTabStylesRaw from './sidebarAnnotationsTab.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sidebarAnnotationsTabStyles = new CSSStyleSheet();
-sidebarAnnotationsTabStyles.replaceSync(sidebarAnnotationsTabStylesRaw.cssText);
+import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
 const {html} = Lit;
 
@@ -196,7 +192,6 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [sidebarAnnotationsTabStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -340,6 +335,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
+        <style>${sidebarAnnotationsTabStyles.cssText}</style>
         <span class="annotations">
           ${this.#annotations.length === 0 ?
             this.#renderTutorialCard() :

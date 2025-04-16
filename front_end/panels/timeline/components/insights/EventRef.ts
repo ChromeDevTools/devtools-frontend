@@ -10,11 +10,7 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as Utils from '../../utils/utils.js';
 
-import baseInsightComponentStylesRaw from './baseInsightComponent.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const baseInsightComponentStyles = new CSSStyleSheet();
-baseInsightComponentStyles.replaceSync(baseInsightComponentStylesRaw.cssText);
+import baseInsightComponentStyles from './baseInsightComponent.css.js';
 
 const {html} = Lit;
 
@@ -33,10 +29,6 @@ class EventRef extends HTMLElement {
   #text: string|null = null;
   #event: Trace.Types.Events.Event|null = null;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [baseInsightComponentStyles];
-  }
-
   set text(text: string) {
     this.#text = text;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -54,6 +46,7 @@ class EventRef extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
+      <style>${baseInsightComponentStyles.cssText}</style>
       <button type="button" class="timeline-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#event) {
@@ -92,10 +85,6 @@ class ImageRef extends HTMLElement {
 
   #request?: Trace.Types.Events.SyntheticNetworkRequest;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [baseInsightComponentStyles];
-  }
-
   set request(request: Trace.Types.Events.SyntheticNetworkRequest) {
     this.#request = request;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -108,6 +97,7 @@ class ImageRef extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
+      <style>${baseInsightComponentStyles.cssText}</style>
       <div class="image-ref">
         ${this.#request.args.data.mimeType.includes('image') ? html`
           <img

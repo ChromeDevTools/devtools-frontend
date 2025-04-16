@@ -15,13 +15,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
-import layoutShiftDetailsStylesRaw from './layoutShiftDetails.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const layoutShiftDetailsStyles = new CSSStyleSheet();
-layoutShiftDetailsStyles.replaceSync(layoutShiftDetailsStylesRaw.cssText);
-const textButtonStyles = new CSSStyleSheet();
-textButtonStyles.replaceSync(Buttons.textButtonStyles.cssText);
+import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 
 const {html} = Lit;
 
@@ -96,11 +90,6 @@ export class LayoutShiftDetails extends HTMLElement {
   #isFreshRecording = false;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [
-      layoutShiftDetailsStyles,
-      // Styles for linkifier button.
-      textButtonStyles,
-    ];
     this.#render();
   }
 
@@ -404,6 +393,8 @@ export class LayoutShiftDetails extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${layoutShiftDetailsStyles.cssText}</style>
+      <style>${Buttons.textButtonStyles.cssText}</style>
       <div class="layout-shift-summary-details">
         <div
           class="event-details"

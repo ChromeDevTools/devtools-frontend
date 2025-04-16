@@ -20,13 +20,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
 import * as Utils from '../../utils/utils.js';
 
-import baseInsightComponentStylesRaw from './baseInsightComponent.css.js';
+import baseInsightComponentStyles from './baseInsightComponent.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const baseInsightComponentStyles = new CSSStyleSheet();
-baseInsightComponentStyles.replaceSync(baseInsightComponentStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -116,7 +112,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets.push(baseInsightComponentStyles);
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
@@ -436,6 +431,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
     // clang-format off
     const output = html`
+      <style>${baseInsightComponentStyles.cssText}</style>
       <div class=${containerClasses}>
         <header @click=${this.#dispatchInsightToggle}
           @keydown=${this.#handleHeaderKeyDown}

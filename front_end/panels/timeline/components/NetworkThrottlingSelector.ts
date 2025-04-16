@@ -16,11 +16,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import networkThrottlingSelectorStylesRaw from './networkThrottlingSelector.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkThrottlingSelectorStyles = new CSSStyleSheet();
-networkThrottlingSelectorStyles.replaceSync(networkThrottlingSelectorStylesRaw.cssText);
+import networkThrottlingSelectorStyles from './networkThrottlingSelector.css.js';
 
 const {html, nothing} = Lit;
 
@@ -95,7 +91,6 @@ export class NetworkThrottlingSelector extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [networkThrottlingSelectorStyles];
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.#onConditionsChanged, this);
 
@@ -187,6 +182,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${networkThrottlingSelectorStyles.cssText}</style>
       <devtools-select-menu
         @selectmenuselected=${this.#onMenuItemSelected}
         .showDivider=${true}

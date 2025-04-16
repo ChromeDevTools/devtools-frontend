@@ -15,18 +15,10 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../utils/utils.js';
 
-import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.js';
-import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.js';
+import networkRequestDetailsStyles from './networkRequestDetails.css.js';
+import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import {NetworkRequestTooltip} from './NetworkRequestTooltip.js';
 import {colorForNetworkRequest} from './Utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const NetworkRequestDetailsStyles = new CSSStyleSheet();
-NetworkRequestDetailsStyles.replaceSync(NetworkRequestDetailsStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkRequestTooltipStyles = new CSSStyleSheet();
-networkRequestTooltipStyles.replaceSync(networkRequestTooltipStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -138,10 +130,6 @@ export class NetworkRequestDetails extends HTMLElement {
   constructor(linkifier: LegacyComponents.Linkifier.Linkifier) {
     super();
     this.#linkifier = linkifier;
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [NetworkRequestDetailsStyles, networkRequestTooltipStyles];
   }
 
   async setData(
@@ -387,6 +375,8 @@ export class NetworkRequestDetails extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${networkRequestDetailsStyles.cssText}</style>
+      <style>${networkRequestTooltipStyles.cssText}</style>
       <div class="network-request-details-content">
         ${this.#renderTitle()}
         ${this.#renderURL()}

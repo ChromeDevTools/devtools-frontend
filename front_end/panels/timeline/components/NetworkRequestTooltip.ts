@@ -12,12 +12,8 @@ import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as TimelineUtils from '../utils/utils.js';
 
-import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.js';
+import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import {colorForNetworkRequest, networkResourceCategory} from './Utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkRequestTooltipStyles = new CSSStyleSheet();
-networkRequestTooltipStyles.replaceSync(networkRequestTooltipStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -67,7 +63,6 @@ export class NetworkRequestTooltip extends HTMLElement {
   #data: NetworkTooltipData = {networkRequest: null, entityMapper: null};
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [networkRequestTooltipStyles];
     this.#render();
   }
 
@@ -157,6 +152,7 @@ export class NetworkRequestTooltip extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${networkRequestTooltipStyles.cssText}</style>
       <div class="performance-card">
         <div class="url">${Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_URL_LENGTH)}</div>
         <div class="url url--host">${originWithEntity}</div>

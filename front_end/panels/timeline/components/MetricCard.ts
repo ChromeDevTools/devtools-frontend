@@ -12,9 +12,9 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import metricCardStylesRaw from './metricCard.css.js';
+import metricCardStyles from './metricCard.css.js';
 import {type CompareRating, renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
-import metricValueStylesRaw from './metricValueStyles.css.js';
+import metricValueStyles from './metricValueStyles.css.js';
 import {
   CLS_THRESHOLDS,
   determineCompareRating,
@@ -25,14 +25,6 @@ import {
   rateMetric,
   renderMetricValue,
 } from './Utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const metricCardStyles = new CSSStyleSheet();
-metricCardStyles.replaceSync(metricCardStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const metricValueStyles = new CSSStyleSheet();
-metricValueStyles.replaceSync(metricValueStylesRaw.cssText);
 
 const {html, nothing} = Lit;
 
@@ -186,8 +178,6 @@ export class MetricCard extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [metricCardStyles, metricValueStyles];
-
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -622,6 +612,8 @@ export class MetricCard extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${metricCardStyles.cssText}</style>
+      <style>${metricValueStyles.cssText}</style>
       <div class="metric-card">
         <h3 class="title">
           ${this.#getTitle()}

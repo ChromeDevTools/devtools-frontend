@@ -12,7 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
-import tableStylesRaw from './table.css.js';
+import tableStyles from './table.css.js';
 
 const UIStrings = {
   /**
@@ -24,10 +24,6 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Table.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const tableStyles = new CSSStyleSheet();
-tableStyles.replaceSync(tableStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -124,7 +120,6 @@ export class Table extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets.push(tableStyles);
     UI.UIUtils.injectCoreStyles(this.#shadow);
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -254,7 +249,8 @@ export class Table extends HTMLElement {
     this.#flattenedRows = flattenedRows;
 
     Lit.render(
-        html`<table
+        html`<style>${tableStyles.cssText}</style>
+      <table
           class=${Lit.Directives.classMap({
           interactive: this.#interactive,
         })}

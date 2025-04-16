@@ -16,7 +16,7 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import checklistStylesRaw from './checklist.css.js';
+import checklistStyles from './checklist.css.js';
 
 const UIStrings = {
   /**
@@ -33,10 +33,6 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Checklist.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const checklistStyles = new CSSStyleSheet();
-checklistStyles.replaceSync(checklistStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -63,7 +59,6 @@ export class Checklist extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets.push(checklistStyles);
     UI.UIUtils.injectCoreStyles(this.#shadow);
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -90,6 +85,7 @@ export class Checklist extends HTMLElement {
 
     Lit.render(
         html`
+          <style>${checklistStyles.cssText}</style>
           <ul>
             ${Object.values(this.#checklist).map(check => html`<li>
                 ${this.#getIcon(check)}

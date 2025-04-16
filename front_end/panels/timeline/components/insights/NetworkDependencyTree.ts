@@ -14,26 +14,17 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import networkDependencyTreeInsightRaw from './networkDependencyTreeInsight.css.js';
+import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
 
 const {html} = Lit;
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkDependencyTreeInsightComponentStyles = new CSSStyleSheet();
-networkDependencyTreeInsightComponentStyles.replaceSync(networkDependencyTreeInsightRaw.cssText);
 
 export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
   override internalName = 'long-critical-network-tree';
 
   #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
-
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.shadow.adoptedStyleSheets.push(networkDependencyTreeInsightComponentStyles);
-  }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {
@@ -114,11 +105,17 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     }
 
     if (!this.model.rootNodes.length) {
-      return html`<div class="insight-section">${i18nString(UIStrings.noNetworkDependencyTree)}</div>`;
+      // clang-format off
+      return html`
+        <style>${networkDependencyTreeInsightStyles.cssText}</style>
+        <div class="insight-section">${i18nString(UIStrings.noNetworkDependencyTree)}</div>
+      `;
+      // clang-format on
     }
 
     // clang-format off
     return html`
+      <style>${networkDependencyTreeInsightStyles.cssText}</style>
       <div class="insight-section">
         <div class="max-time">
           ${i18nString(UIStrings.maxCriticalPathLatency)}

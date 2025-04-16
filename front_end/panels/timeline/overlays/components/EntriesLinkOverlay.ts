@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import '../../../../ui/components/icon_button/icon_button.js';
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -10,7 +11,7 @@ import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support
 import {html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import stylesRaw from './entriesLinkOverlay.css.js';
+import entriesLinkOverlayStyles from './entriesLinkOverlay.css.js';
 
 const UIStrings = {
   /**
@@ -20,10 +21,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntriesLinkOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
 
 export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';
@@ -96,10 +93,6 @@ export class EntriesLinkOverlay extends HTMLElement {
 
   entryToWrapper(): HTMLElement|null {
     return this.#entryToWrapper;
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
   }
 
   /**
@@ -334,6 +327,7 @@ export class EntriesLinkOverlay extends HTMLElement {
     // clang-format off
     render(
         html`
+          <style>${entriesLinkOverlayStyles.cssText}</style>
           <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
             <defs>
               <linearGradient

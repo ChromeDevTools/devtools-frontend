@@ -11,11 +11,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {flattenBreadcrumbs} from './Breadcrumbs.js';
-import breadcrumbsUIStylesRaw from './breadcrumbsUI.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const breadcrumbsUIStyles = new CSSStyleSheet();
-breadcrumbsUIStyles.replaceSync(breadcrumbsUIStylesRaw.cssText);
+import breadcrumbsUIStyles from './breadcrumbsUI.css.js';
 
 const {render, html} = Lit;
 
@@ -59,10 +55,6 @@ export class BreadcrumbsUI extends HTMLElement {
   readonly #boundRender = this.#render.bind(this);
   #initialBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
   #activeBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [breadcrumbsUIStyles];
-  }
 
   set data(data: BreadcrumbsUIData) {
     this.#initialBreadcrumb = data.initialBreadcrumb;
@@ -141,6 +133,7 @@ export class BreadcrumbsUI extends HTMLElement {
   #render(): void {
     // clang-format off
     const output = html`
+      <style>${breadcrumbsUIStyles.cssText}</style>
       ${this.#initialBreadcrumb === null ? Lit.nothing : html`<div class="breadcrumbs" jslog=${VisualLogging.section('breadcrumbs')}>
         ${flattenBreadcrumbs(this.#initialBreadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
       </div>`}

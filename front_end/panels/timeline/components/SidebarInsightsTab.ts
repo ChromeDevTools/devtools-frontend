@@ -16,12 +16,8 @@ import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
-import stylesRaw from './sidebarInsightsTab.css.js';
+import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
 import type {SidebarSingleInsightSet, SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -57,10 +53,6 @@ export class SidebarInsightsTab extends HTMLElement {
    * You can only have one of these open at any time, and we track it via this ID.
    */
   #insightSetKey: string|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
-  }
 
   // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
 
@@ -219,6 +211,7 @@ export class SidebarInsightsTab extends HTMLElement {
     const contents =
         // clang-format off
      html`
+      <style>${sidebarInsightsTabStyles.cssText}</style>
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
           const data: SidebarSingleInsightSetData = {

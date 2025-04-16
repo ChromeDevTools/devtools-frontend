@@ -15,11 +15,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import cpuThrottlingSelectorStylesRaw from './cpuThrottlingSelector.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cpuThrottlingSelectorStyles = new CSSStyleSheet();
-cpuThrottlingSelectorStyles.replaceSync(cpuThrottlingSelectorStylesRaw.cssText);
+import cpuThrottlingSelectorStyles from './cpuThrottlingSelector.css.js';
 
 const {html} = Lit;
 
@@ -90,7 +86,6 @@ export class CPUThrottlingSelector extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [cpuThrottlingSelectorStyles];
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onOptionChange, this);
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
@@ -169,6 +164,7 @@ export class CPUThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
+      <style>${cpuThrottlingSelectorStyles.cssText}</style>
       <devtools-select-menu
             @selectmenuselected=${this.#onMenuItemSelected}
             .showDivider=${true}

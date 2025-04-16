@@ -15,11 +15,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import ignoreListSettingStylesRaw from './ignoreListSetting.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const ignoreListSettingStyles = new CSSStyleSheet();
-ignoreListSettingStyles.replaceSync(ignoreListSettingStylesRaw.cssText);
+import ignoreListSettingStyles from './ignoreListSetting.css.js';
 
 const {html} = Lit;
 
@@ -90,7 +86,6 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [ignoreListSettingStyles];
     this.#scheduleRender();
 
     // Prevent the event making its way to the TimelinePanel element which will
@@ -275,6 +270,7 @@ export class IgnoreListSetting extends HTMLElement {
     }
     // clang-format off
     const output = html`
+      <style>${ignoreListSettingStyles.cssText}</style>
       <devtools-button-dialog .data=${{
           openOnRender: false,
           jslogContext: 'timeline.ignore-list',

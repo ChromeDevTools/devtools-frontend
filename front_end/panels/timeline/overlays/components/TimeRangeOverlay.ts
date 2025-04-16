@@ -9,11 +9,7 @@ import type * as Trace from '../../../../models/trace/trace.js';
 import {html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import stylesRaw from './timeRangeOverlay.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
+import timeRangeOverlayStyles from './timeRangeOverlay.css.js';
 
 const UIStrings = {
   /**
@@ -52,10 +48,6 @@ export class TimeRangeOverlay extends HTMLElement {
 
   #rangeContainer: HTMLElement|null = null;
   #labelBox: HTMLElement|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
-  }
 
   constructor(initialLabel: string) {
     super();
@@ -261,6 +253,7 @@ export class TimeRangeOverlay extends HTMLElement {
     // clang-format off
     render(
         html`
+          <style>${timeRangeOverlayStyles.cssText}</style>
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
             <span
              class="label-text"

@@ -22,13 +22,9 @@ import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js'
 import * as PanelCommon from '../../../common/common.js';
 import type * as Utils from '../../utils/utils.js';
 
-import stylesRaw from './entryLabelOverlay.css.js';
+import entryLabelOverlayStyles from './entryLabelOverlay.css.js';
 
 const {html, Directives} = Lit;
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
 
 const UIStrings = {
   /**
@@ -258,10 +254,6 @@ export class EntryLabelOverlay extends HTMLElement {
    */
   overrideAIAgentForTest(agent: AiAssistanceModels.PerformanceAnnotationsAgent): void {
     this.#agent = agent;
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
   }
 
   entryHighlightWrapper(): HTMLElement|null {
@@ -812,6 +804,7 @@ export class EntryLabelOverlay extends HTMLElement {
     // clang-format off
     Lit.render(
         html`
+        <style>${entryLabelOverlayStyles.cssText}</style>
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}
           @focusout=${this.#handleFocusOutEvent}
         >

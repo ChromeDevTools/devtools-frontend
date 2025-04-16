@@ -56,13 +56,18 @@ finally:
 ROOT_DIRECTORY = path.join(path.dirname(path.abspath(__file__)), '..', '..')
 
 V8_DIRECTORY_PATH = path.join(ROOT_DIRECTORY, 'v8')
-PROTOCOL_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'public', 'devtools_protocol')
+PROTOCOL_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'public',
+                              'devtools_protocol')
 SCRIPTS_BUILD_PATH = path.join(ROOT_DIRECTORY, 'scripts', 'build')
 
 GENERATE_ARIA_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'generate_aria.py')
-GENERATE_SUPPORTED_CSS_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'generate_supported_css.py')
-GENERATE_PROTOCOL_DEFINITIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH, 'code_generator_frontend.py')
-CONCATENATE_PROTOCOL_SCRIPT = path.join(ROOT_DIRECTORY, 'third_party', 'inspector_protocol', 'concatenate_protocols.py')
+GENERATE_SUPPORTED_CSS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
+                                          'generate_supported_css.py')
+GENERATE_PROTOCOL_DEFINITIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
+                                                 'code_generator_frontend.py')
+CONCATENATE_PROTOCOL_SCRIPT = path.join(ROOT_DIRECTORY, 'third_party',
+                                        'inspector_protocol',
+                                        'concatenate_protocols.py')
 GENERATE_DEPRECATIONS_SCRIPT = path.join(SCRIPTS_BUILD_PATH,
                                          'generate_deprecations.py')
 
@@ -78,6 +83,7 @@ def parse_options(cli_args):
     )
     return parser.parse_args(cli_args)
 
+
 def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
     process = subprocess.Popen([sys.executable] + arguments, cwd=cwd, env=env)
 
@@ -88,10 +94,17 @@ def popen(arguments, cwd=ROOT_DIRECTORY, env=os.environ.copy()):
 
 
 def runTsc(file_to_compile, options):
-    process = subprocess.Popen(
-        [options.node_path, TSC_LOCATION, file_to_compile],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+    process = subprocess.Popen([
+        options.node_path,
+        TSC_LOCATION,
+        "--module",
+        "NodeNext",
+        "--moduleResolution",
+        "NodeNext",
+        file_to_compile,
+    ],
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     # TypeScript does not correctly write to stderr because of https://github.com/microsoft/TypeScript/issues/33849
     return process.returncode, stdout + stderr
@@ -106,15 +119,17 @@ def runNode(file_to_execute, options):
 
 
 def generate_protocol_typescript_definitions(options):
-    generator_script_to_compile = path.join(ROOT_DIRECTORY, 'scripts', 'protocol_typescript', 'protocol_dts_generator.ts')
-
+    generator_script_to_compile = path.join(ROOT_DIRECTORY, 'scripts',
+                                            'protocol_typescript',
+                                            'protocol_dts_generator.ts')
     # first run TSC to convert the script from TS to JS
     typescript_found_errors, typescript_stderr = runTsc(
         generator_script_to_compile, options)
 
     if typescript_found_errors:
         print('')
-        print('TypeScript compilation failed on %s' % generator_script_to_compile)
+        print('TypeScript compilation failed on %s' %
+              generator_script_to_compile)
         print('')
         print(typescript_stderr)
         print('')

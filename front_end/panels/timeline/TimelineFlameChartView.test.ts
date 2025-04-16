@@ -337,6 +337,11 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(parsedTrace, metadata);
       Timeline.ModificationsManager.ModificationsManager.activeManager();
+      sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
+    });
+
+    this.afterEach(() => {
+      flameChartView.detach();
     });
 
     it('Does not create customized Context Menu for network track', async function() {

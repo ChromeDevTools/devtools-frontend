@@ -35,6 +35,8 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 describeWithEnvironment('TimelineFlameChartView', function() {
   beforeEach(() => {
     setupIgnoreListManagerEnvironment();
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
   });
 
   describe('groupForLevel', () => {

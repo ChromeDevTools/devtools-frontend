@@ -126,6 +126,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
       event.stopPropagation();
       const popoverHelper = pane.swatchPopoverHelper();
       const widget = StyleEditorWidget.instance();
+      widget.element.classList.toggle('with-padding', true);
       widget.setEditor(editorClass);
       widget.bindContext(pane, section);
       widget.setTriggerKey(triggerKey);

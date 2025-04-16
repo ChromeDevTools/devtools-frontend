@@ -300,6 +300,9 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       this.#selectedIndex = projectIndex;
     }
     this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.contentElement?.querySelector('.selected')?.scrollIntoView();
+    });
   }
 
   #onProjectRemoved(): void {

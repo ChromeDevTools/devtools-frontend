@@ -35,6 +35,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Settings from '../components/settings/settings.js';
+import {Directives} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -127,15 +128,28 @@ const createSettingSelect = function(
   }
 };
 
+export const bindToSetting = (setting: string|Common.Settings.Setting<boolean>): ReturnType<typeof Directives.ref> => {
+  if (typeof setting === 'string') {
+    setting = Common.Settings.Settings.instance().moduleSetting(setting);
+  }
+  return Directives.ref(e => bindCheckbox(e, setting));
+};
+
 export const bindCheckbox = function(
-    inputElement: Element, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
-  const input = (inputElement as HTMLInputElement);
+    inputElement: Element|undefined, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
   function settingChanged(): void {
+    const input = (inputElement as HTMLInputElement);
     if (input.checked !== setting.get()) {
       input.checked = setting.get();
     }
   }
-  setting.addChangeListener(settingChanged);
+  if (inputElement) {
+    setting.addChangeListener(settingChanged);
+  } else {
+    setting.removeChangeListener(settingChanged);
+    return;
+  }
+  const input = (inputElement as HTMLInputElement);
   settingChanged();
 
   function inputChanged(): void {

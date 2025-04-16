@@ -1325,7 +1325,7 @@ export class CheckboxLabel extends HTMLElement {
     // However, clicking the label, also triggers the checkbox click, so we stop the label event
     // propagation here to avoid duplicate events.
     this.#textElement.addEventListener('click', e => e.stopPropagation());
-    this.#shadowRoot.createChild('slot');
+    this.#textElement.createChild('slot');
   }
 
   static create(

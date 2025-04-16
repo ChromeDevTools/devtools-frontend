@@ -17,6 +17,7 @@ import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 import developerResourcesViewStyles from './developerResourcesView.css.js';
 
 const {widgetConfig} = UI.Widget;
+const {bindToSetting} = UI.SettingsUI;
 
 const UIStrings = {
   /**
@@ -65,7 +66,6 @@ export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.
 
 interface ViewInput {
   onFilterChanged: (e: CustomEvent<string>) => void;
-  loadThroughTargetCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   items: Iterable<SDK.PageResourceLoader.PageResource>;
   selectedItem: SDK.PageResourceLoader.PageResource|null;
   onSelect: (resource: SDK.PageResourceLoader.PageResource|null) => void;
@@ -89,7 +89,11 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           <devtools-toolbar-input type="filter" placeholder=${i18nString(UIStrings.filterByText)}
               @change=${input.onFilterChanged} style="flex-grow:1">
           </devtools-toolbar-input>
-          ${input.loadThroughTargetCheckbox.element}
+          <devtools-checkbox
+              title=${i18nString(UIStrings.loadHttpsDeveloperResources)}
+              ${bindToSetting(SDK.PageResourceLoader.getLoadThroughTargetSetting())}>
+            ${i18nString(UIStrings.enableLoadingThroughTarget)}
+          </devtools-checkbox>
         </devtools-toolbar>
       </div>
       <div class="developer-resource-view-results">
@@ -115,7 +119,6 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   readonly #loader: SDK.PageResourceLoader.PageResourceLoader;
-  readonly #loadThroughTargetCheckbox: UI.Toolbar.ToolbarSettingCheckbox;
   readonly #view: View;
   #selectedItem: SDK.PageResourceLoader.PageResource|null = null;
   #filters: TextUtils.TextUtils.ParsedFilter[] = [];
@@ -123,11 +126,6 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   constructor(view: View = DEFAULT_VIEW) {
     super(true);
     this.#view = view;
-
-    const loadThroughTarget = SDK.PageResourceLoader.getLoadThroughTargetSetting();
-    this.#loadThroughTargetCheckbox = new UI.Toolbar.ToolbarSettingCheckbox(
-        loadThroughTarget, i18nString(UIStrings.loadHttpsDeveloperResources),
-        i18nString(UIStrings.enableLoadingThroughTarget));
 
     this.#loader = SDK.PageResourceLoader.PageResourceLoader.instance();
     this.#loader.addEventListener(SDK.PageResourceLoader.Events.UPDATE, this.update, this);
@@ -140,7 +138,6 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
       onFilterChanged: (e: CustomEvent<string>) => {
         this.onFilterChanged(e.detail);
       },
-      loadThroughTargetCheckbox: this.#loadThroughTargetCheckbox,
       items: this.#loader.getResourcesLoaded().values(),
       selectedItem: this.#selectedItem,
       onSelect: (item: SDK.PageResourceLoader.PageResource|null) => {

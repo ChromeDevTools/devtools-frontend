@@ -75,7 +75,7 @@ export class ValueInterpreterSettings extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${Input.checkboxStylesRaw.cssText}</style>
+      <style>${Input.checkboxStyles.cssText}</style>
       <style>${valueInterpreterSettingsStyles.cssText}</style>
       <div class="settings" jslog=${VisualLogging.pane('settings')}>
        ${[...GROUP_TO_TYPES.keys()].map(group => {

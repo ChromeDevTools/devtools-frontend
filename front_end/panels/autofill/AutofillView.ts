@@ -174,7 +174,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
-        <style>${Input.checkboxStylesRaw}</style>
+        <style>${Input.checkboxStyles}</style>
         <style>${autofillViewStyles.cssText}</style>
         <style>${inspectorCommonStyles.cssText}</style>
         <main>
@@ -215,7 +215,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${Input.checkboxStylesRaw}</style>
+      <style>${Input.checkboxStyles}</style>
       <style>${autofillViewStyles.cssText}</style>
       <style>${inspectorCommonStyles.cssText}</style>
       <main>

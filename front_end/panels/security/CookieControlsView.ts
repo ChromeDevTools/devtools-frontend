@@ -309,7 +309,7 @@ export class CookieControlsView extends UI.Widget.VBox {
     this.#view = view;
     this.#isGracePeriodActive = false;
     this.#thirdPartyControlsDict = Root.Runtime.hostConfig.thirdPartyCookieControls;
-    this.registerRequiredCSS(Input.checkboxStylesRaw, cookieControlsViewStyles);
+    this.registerRequiredCSS(Input.checkboxStyles, cookieControlsViewStyles);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,

@@ -174,7 +174,7 @@ export class ProtocolHandlersView extends HTMLElement {
     Lit.render(html`
       <style>${protocolHandlersViewStyles.cssText}</style>
       <style>${inspectorCommonStyles.cssText}</style>
-      <style>${Input.textInputStylesRaw.cssText}</style>
+      <style>${Input.textInputStyles.cssText}</style>
       ${this.#renderStatusMessage()}
       <div class="protocol-handlers-row">
           ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}

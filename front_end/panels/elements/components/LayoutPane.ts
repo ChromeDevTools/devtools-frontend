@@ -1,7 +1,7 @@
 // Copyright (c) 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view, rulesdir/inject-checkbox-styles */
 
 import '../../../ui/components/node_text/node_text.js';
 
@@ -14,21 +14,13 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import layoutPaneStylesRaw from './layoutPane.css.js';
+import layoutPaneStyles from './layoutPane.css.js';
 import type {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const layoutPaneStyles = new CSSStyleSheet();
-layoutPaneStyles.replaceSync(layoutPaneStylesRaw.cssText);
 
 const UIStrings = {
   /**
@@ -186,11 +178,6 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     this.#settings = this.#makeSettings();
     this.#uaShadowDOMSetting = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom');
     this.#domModels = [];
-    this.#shadow.adoptedStyleSheets = [
-      Input.checkboxStyles,
-      layoutPaneStyles,
-      inspectorCommonStyles,
-    ];
   }
 
   static instance(): LayoutPane {
@@ -347,6 +334,9 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
+        <style>${Input.checkboxStyles.cssText}</style>
+        <style>${layoutPaneStyles.cssText}</style>
+        <style>${inspectorCommonStyles.cssText}</style>
         <details open>
           <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader('grid-settings').track({click: true})}>
             ${i18nString(UIStrings.grid)}

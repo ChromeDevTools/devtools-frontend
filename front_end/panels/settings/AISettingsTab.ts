@@ -17,11 +17,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import aiSettingsTabStylesRaw from './aiSettingsTab.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const aiSettingsTabStyles = new CSSStyleSheet();
-aiSettingsTabStyles.replaceSync(aiSettingsTabStylesRaw.cssText);
+import aiSettingsTabStyles from './aiSettingsTab.css.js';
 
 const {html, Directives: {ifDefined, classMap}} = Lit;
 
@@ -266,7 +262,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, aiSettingsTabStyles];
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
     void this.#onAidaAvailabilityChange();
@@ -651,6 +646,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
+      <style>${Input.checkboxStyles.cssText}</style>
+      <style>${aiSettingsTabStyles.cssText}</style>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#settingToParams.size > 0 ? html`

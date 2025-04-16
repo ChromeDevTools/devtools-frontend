@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view, rulesdir/inject-checkbox-styles */
 
 import '../../../ui/legacy/legacy.js';
 import '../../../ui/components/icon_button/icon_button.js';
@@ -15,11 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import createRecordingViewStylesRaw from './createRecordingView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const createRecordingViewStyles = new CSSStyleSheet();
-createRecordingViewStyles.replaceSync(createRecordingViewStylesRaw.cssText);
+import createRecordingViewStyles from './createRecordingView.css.js';
 
 const {html, Directives: {ifDefined}} = Lit;
 
@@ -157,11 +153,6 @@ export class CreateRecordingView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [
-      createRecordingViewStyles,
-      Input.textInputStyles,
-      Input.checkboxStyles,
-    ];
     this.#render();
     this.#shadow.querySelector('input')?.focus();
   }
@@ -186,9 +177,7 @@ export class CreateRecordingView extends HTMLElement {
   }
 
   startRecording(): void {
-    const nameInput = this.#shadow.querySelector(
-                          '#user-flow-name',
-                          ) as HTMLInputElement;
+    const nameInput = this.#shadow.querySelector<HTMLInputElement>('#user-flow-name');
     if (!nameInput) {
       throw new Error('input#user-flow-name not found');
     }
@@ -269,6 +258,9 @@ export class CreateRecordingView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
+        <style>${createRecordingViewStyles.cssText}</style>
+        <style>${Input.textInputStyles.cssText}</style>
+        <style>${Input.checkboxStyles.cssText}</style>
         <div class="wrapper">
           <div class="header-wrapper">
             <h1>${i18nString(UIStrings.createRecording)}</h1>

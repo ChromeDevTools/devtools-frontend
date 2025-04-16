@@ -1,7 +1,7 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view, rulesdir/inject-checkbox-styles */
 
 import './SettingDeprecationWarning.js';
 
@@ -13,11 +13,7 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
-import settingCheckboxStylesRaw from './settingCheckbox.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const settingCheckboxStyles = new CSSStyleSheet();
-settingCheckboxStyles.replaceSync(settingCheckboxStylesRaw.cssText);
+import settingCheckboxStyles from './settingCheckbox.css.js';
 
 const {html, Directives: {ifDefined}} = Lit;
 
@@ -44,10 +40,6 @@ export class SettingCheckbox extends HTMLElement {
   #setting?: Common.Settings.Setting<boolean>;
   #changeListenerDescriptor?: Common.EventTarget.EventDescriptor;
   #textOverride?: string;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, settingCheckboxStyles];
-  }
 
   set data(data: SettingCheckboxData) {
     if (this.#changeListenerDescriptor && this.#setting) {
@@ -113,6 +105,8 @@ export class SettingCheckbox extends HTMLElement {
         Lit.nothing;
     Lit.render(
         html`
+      <style>${Input.checkboxStyles.cssText}</style>
+      <style>${settingCheckboxStyles.cssText}</style>
       <p>
         <label title=${title}>
           <input

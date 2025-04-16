@@ -9,4 +9,4 @@ import * as Input from '../../input/input.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-document.adoptedStyleSheets = [Input.textInputStyles];
+document.head.appendChild(document.createElement('style')).textContent = Input.textInputStyles.cssText;

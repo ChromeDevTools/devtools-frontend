@@ -575,7 +575,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       const pauseOnCaughtExceptionIsDisabled = !this.#independentPauseToggles && !this.#pauseOnUncaughtExceptions;
       // clang-format off
       const out = html`
-        <style>${Input.checkboxStylesRaw}</style>
+        <style>${Input.checkboxStyles}</style>
         <style>${breakpointsViewStyles.cssText}</style>
         <div class='pause-on-uncaught-exceptions'
             tabindex='0'

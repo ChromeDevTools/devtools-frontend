@@ -14,3 +14,8 @@
   background-color: var(--sys-color-base-container-elevated);
   border-radius: var(--sys-shape-corner-extra-small);
 }
+
+.with-padding {
+  padding: var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-small);
+}

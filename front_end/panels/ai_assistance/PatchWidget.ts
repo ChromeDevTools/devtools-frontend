@@ -605,9 +605,9 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   #selectDefaultProject(): void {
-    const automaticFileSystemProject =
-        this.#automaticFileSystem ? this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root) : null;
-    const project = automaticFileSystemProject || this.#workspace.project(this.#projectIdSetting.get());
+    const project = this.#automaticFileSystem ?
+        this.#workspace.projectForFileSystemRoot(this.#automaticFileSystem.root) :
+        this.#workspace.project(this.#projectIdSetting.get());
     if (project) {
       this.#project = project;
     } else {

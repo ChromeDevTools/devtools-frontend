@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 const fs = require('fs');
+const yaml = require('js-yaml');
 const path = require('path');
 const puppeteer = require('puppeteer-core');
 const {hideBin} = require('yargs/helpers');
@@ -44,7 +45,7 @@ const yargsInput =
         })
         .option('test-target', {
           describe: 'Which panel do you want to run the examples against?',
-          choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal'],
+          choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal', 'patching'],
           demandOption: true,
         })
         .parseSync();
@@ -211,6 +212,8 @@ class Example {
   #queries = [];
   /** @type {string} **/
   #explanation = '';
+  /** @type {import('./types').PatchTest|null} */
+  #test = null;
   /**
    * @param {string} url
    * @param {puppeteer.Browser} browser
@@ -384,6 +387,7 @@ class Example {
   async #prepare() {
     this.log('Creating a page');
     const page = await this.#browser.newPage();
+    this.#page = page;
     await page.goto(this.#url);
     this.log(`Navigated to ${this.#url}`);
 
@@ -394,112 +398,119 @@ class Example {
     acquiredDevToolsTargets.set(devtoolsTarget, true);
 
     const devtoolsPage = await devtoolsTarget.asPage();
+    this.#devtoolsPage = devtoolsPage;
     this.log('[Info]: Got devtools page');
 
-    if (userArgs.testTarget === 'performance-main-thread' || userArgs.testTarget === 'performance-insights') {
-      const fileName = await TraceDownloader.run(this, page);
-      await this.#loadPerformanceTrace(devtoolsPage, fileName);
-    }
-
-    const {idx, queries, explanation, performanceAnnotation, rawComment} =
-        await this.#generateMetadata(page, devtoolsPage);
-    this.log('[Info]: Running...');
-    // Strip comments to prevent LLM from seeing it.
-    await page.evaluate(() => {
-      // @ts-expect-error we don't type globalThis.__commentElements
-      for (const {commentElement} of globalThis.__commentElements ?? []) {
-        commentElement.remove();
-      }
-    });
-
-    await devtoolsPage.keyboard.press('Escape');
-    await devtoolsPage.keyboard.press('Escape');
-
-    if (userArgs.testTarget === 'elements' || userArgs.testTarget === 'elements-multimodal') {
-      await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
-      this.log('[Info]: Opened Elements panel');
-
-      await devtoolsPage.locator('aria/<body>').click();
-
-      this.log('[Info]: Expanding all elements');
-      let expand = await devtoolsPage.$$('pierce/.expand-button');
-      while (expand.length) {
-        for (const btn of expand) {
-          await btn.click();
-        }
-        await new Promise(resolve => setTimeout(resolve, 100));
-        expand = await devtoolsPage.$$('pierce/.expand-button');
-      }
-
-      // If we are inspecting a DOM node, we inspect it via the console by using the global `inspect` method.
-      this.log('[Info]: Locating console');
-      await devtoolsPage.locator(':scope >>> #tab-console').click();
-      await devtoolsPage.locator('aria/Console prompt').click();
-      await devtoolsPage.keyboard.type(
-          `inspect(globalThis.__commentElements[${idx}].targetElement)`,
-      );
-      await devtoolsPage.keyboard.press('Enter');
-
-      // Once we are done with the console, go back to the elements tab.
-      await devtoolsPage.locator(':scope >>> #tab-elements').click();
-    }
-
-    if (userArgs.testTarget === 'performance-main-thread' && performanceAnnotation) {
-      this.log('[Info]: selecting event in the performance timeline');
-      await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
-      // Clicking on the annotation will also have the side-effect of selecting the event
-      await performanceAnnotation.click();
-      // Wait until the event is selected (confirming via the HTML in the details drawer)
-      await devtoolsPage.waitForSelector(
-          ':scope >>> .timeline-details-chip-title',
-      );
-    }
-
-    if (userArgs.testTarget === 'performance-insights') {
-      const insightTitle = rawComment.insight;
-      if (!insightTitle) {
-        throw new Error('Cannot execute performance-insights example without "Insight:" in example comment metadata.');
-      }
-
-      this.log('[Info]: selecting insight in the performance panel');
-      await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
-
-      // Ensure the sidebar is open. If this selector is not found then we assume the sidebar is already open.
-      const sidebarButton = await devtoolsPage.$('aria/Show sidebar');
-      if (sidebarButton) {
-        await sidebarButton.click();
-      }
-
-      this.log(`[Info]: expanding Insight ${insightTitle}`);
-      // Now find the header for the right insight, and click to expand it.
-      // Note that we can't use aria here because the aria-label for insights
-      // can be extended to include estimated savings. So we use the data
-      // attribute instead. The title is JSON so it is already wrapped with double quotes.
-      await devtoolsPage.locator(`:scope >>> [data-insight-header-title=${insightTitle}]`).setTimeout(10_000).click();
-    }
-
-    this.log('[Info]: Locating AI assistance tab');
-    // Because there are two Performance AI flows, to ensure we activate the
-    // right one for Insights, we go via the "Ask AI" button in the Insights
-    // sidebar directly to select the right insight.
-    // For the other flows, we select the right context item in the right
-    // panel, and then open the AI Assistance panel.
-    if (userArgs.testTarget === 'performance-insights') {
-      // Now click the "Ask AI" button to open up the AI assistance panel
-      await devtoolsPage.locator(':scope >>> devtools-button[data-insights-ask-ai]').setTimeout(5000).click();
-      this.log('[Info]: Opened AI assistance tab');
+    if (userArgs.testTarget === 'patching') {
+      const text = await page.evaluate(() => {
+        return document.querySelector('code')?.innerText;
+      });
+      this.#test = yaml.load(text);
     } else {
-      await devtoolsPage.locator('aria/Customize and control DevTools').click();
-      await devtoolsPage.locator('aria/More tools').click();
-      await devtoolsPage.locator('aria/AI assistance').click();
+      if (userArgs.testTarget === 'performance-main-thread' || userArgs.testTarget === 'performance-insights') {
+        const fileName = await TraceDownloader.run(this, page);
+        await this.#loadPerformanceTrace(devtoolsPage, fileName);
+      }
+
+      const {idx, queries, explanation, performanceAnnotation, rawComment} =
+          await this.#generateMetadata(page, devtoolsPage);
+      this.log('[Info]: Running...');
+      // Strip comments to prevent LLM from seeing it.
+      await page.evaluate(() => {
+        // @ts-expect-error we don't type globalThis.__commentElements
+        for (const {commentElement} of globalThis.__commentElements ?? []) {
+          commentElement.remove();
+        }
+      });
+
+      await devtoolsPage.keyboard.press('Escape');
+      await devtoolsPage.keyboard.press('Escape');
+
+      if (userArgs.testTarget === 'elements' || userArgs.testTarget === 'elements-multimodal') {
+        await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
+        this.log('[Info]: Opened Elements panel');
+
+        await devtoolsPage.locator('aria/<body>').click();
+
+        this.log('[Info]: Expanding all elements');
+        let expand = await devtoolsPage.$$('pierce/.expand-button');
+        while (expand.length) {
+          for (const btn of expand) {
+            await btn.click();
+          }
+          await new Promise(resolve => setTimeout(resolve, 100));
+          expand = await devtoolsPage.$$('pierce/.expand-button');
+        }
+
+        // If we are inspecting a DOM node, we inspect it via the console by using the global `inspect` method.
+        this.log('[Info]: Locating console');
+        await devtoolsPage.locator(':scope >>> #tab-console').click();
+        await devtoolsPage.locator('aria/Console prompt').click();
+        await devtoolsPage.keyboard.type(
+            `inspect(globalThis.__commentElements[${idx}].targetElement)`,
+        );
+        await devtoolsPage.keyboard.press('Enter');
+
+        // Once we are done with the console, go back to the elements tab.
+        await devtoolsPage.locator(':scope >>> #tab-elements').click();
+      }
+
+      if (userArgs.testTarget === 'performance-main-thread' && performanceAnnotation) {
+        this.log('[Info]: selecting event in the performance timeline');
+        await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
+        // Clicking on the annotation will also have the side-effect of selecting the event
+        await performanceAnnotation.click();
+        // Wait until the event is selected (confirming via the HTML in the details drawer)
+        await devtoolsPage.waitForSelector(
+            ':scope >>> .timeline-details-chip-title',
+        );
+      }
+
+      if (userArgs.testTarget === 'performance-insights') {
+        const insightTitle = rawComment.insight;
+        if (!insightTitle) {
+          throw new Error(
+              'Cannot execute performance-insights example without "Insight:" in example comment metadata.');
+        }
+
+        this.log('[Info]: selecting insight in the performance panel');
+        await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
+
+        // Ensure the sidebar is open. If this selector is not found then we assume the sidebar is already open.
+        const sidebarButton = await devtoolsPage.$('aria/Show sidebar');
+        if (sidebarButton) {
+          await sidebarButton.click();
+        }
+
+        this.log(`[Info]: expanding Insight ${insightTitle}`);
+        // Now find the header for the right insight, and click to expand it.
+        // Note that we can't use aria here because the aria-label for insights
+        // can be extended to include estimated savings. So we use the data
+        // attribute instead. The title is JSON so it is already wrapped with double quotes.
+        await devtoolsPage.locator(`:scope >>> [data-insight-header-title=${insightTitle}]`).setTimeout(10_000).click();
+      }
+
+      this.log('[Info]: Locating AI assistance tab');
+      // Because there are two Performance AI flows, to ensure we activate the
+      // right one for Insights, we go via the "Ask AI" button in the Insights
+      // sidebar directly to select the right insight.
+      // For the other flows, we select the right context item in the right
+      // panel, and then open the AI Assistance panel.
+      if (userArgs.testTarget === 'performance-insights') {
+        // Now click the "Ask AI" button to open up the AI assistance panel
+        await devtoolsPage.locator(':scope >>> devtools-button[data-insights-ask-ai]').setTimeout(5000).click();
+        this.log('[Info]: Opened AI assistance tab');
+      } else {
+        await devtoolsPage.locator('aria/Customize and control DevTools').click();
+        await devtoolsPage.locator('aria/More tools').click();
+        await devtoolsPage.locator('aria/AI assistance').click();
+      }
+
+      this.log('[Info]: Opened AI assistance tab');
+
+      this.#queries = queries;
+      this.#explanation = explanation;
     }
-
-    this.log('[Info]: Opened AI assistance tab');
-
-    this.#page = page;
-    this.#devtoolsPage = devtoolsPage;
-    this.#queries = queries;
-    this.#explanation = explanation;
   }
 
   async prepare() {
@@ -528,6 +539,8 @@ class Example {
         return 'aria/Ask a question about the selected item and its call tree';
       case 'performance-insights':
         return 'aria/Ask a question about the selected performance insight';
+      case 'patching':
+        throw new Error('Not supported');
     }
   }
 
@@ -539,103 +552,129 @@ class Example {
       throw new Error('Cannot execute without target page');
     }
     const executionStartTime = performance.now();
-    await this.#devtoolsPage.waitForFunction(() => {
-      return 'setDebugAiAssistanceEnabled' in window;
-    });
 
-    await this.#devtoolsPage.evaluate(() => {
-      // @ts-expect-error this is run in the DevTools page context where this function does exist.
-      setDebugAiAssistanceEnabled(true);
-    });
-
-    /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
-    const results = [];
-
-    /**
-     * @param {string} query
-     * @returns {Promise<import('./types').IndividualPromptRequestResponse[]>}
-     */
-    const prompt = async query => {
-      if (!this.#devtoolsPage) {
-        throw new Error('Cannot prompt without DevTools page.');
-      }
-      const devtoolsPage = this.#devtoolsPage;
-
-      if (userArgs.testTarget === 'elements-multimodal') {
-        await devtoolsPage.locator('aria/Take screenshot').click();
-      }
-
-      const inputSelector = this.#getLocator();
-      await devtoolsPage.locator(inputSelector).click();
-      await devtoolsPage.locator(inputSelector).fill(query);
-
-      const abort = new AbortController();
-      /**
-       * @param {AbortSignal} signal AbortSignal to stop the operation.
-       */
-      const autoAcceptEvals = async signal => {
-        while (!signal.aborted) {
-          await devtoolsPage.locator('aria/Continue').click({signal});
+    try {
+      if (userArgs.testTarget === 'patching') {
+        if (!this.#test) {
+          throw new Error('Cannot execute without a test');
         }
+        await this.#devtoolsPage.waitForFunction(() => {
+          return 'aiAssistanceTestPatchPrompt' in window;
+        });
+        const results = await this.#devtoolsPage.evaluate(async (folderName, query, changedFiles) => {
+          // @ts-expect-error this is run in the DevTools page context where this function does exist.
+          return await aiAssistanceTestPatchPrompt(folderName, query, changedFiles);
+        }, this.#test.folderName, this.#test.query, this.#test.changedFiles);
+        /** @type {import('./types').ExecutedExample} */
+        return {
+          results: [{
+            request: '',
+            response: results,
+            exampleId: this.id(),
+          }],
+          metadata: {exampleId: this.id(), explanation: JSON.stringify(this.#test.changedFiles)},
+        };
+      }
+      await this.#devtoolsPage.waitForFunction(() => {
+        return 'setDebugAiAssistanceEnabled' in window;
+      });
+
+      await this.#devtoolsPage.evaluate(() => {
+        // @ts-expect-error this is run in the DevTools page context where this function does exist.
+        setDebugAiAssistanceEnabled(true);
+      });
+
+      /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
+      const results = [];
+
+      /**
+       * @param {string} query
+       * @returns {Promise<import('./types').IndividualPromptRequestResponse[]>}
+       */
+      const prompt = async query => {
+        if (!this.#devtoolsPage) {
+          throw new Error('Cannot prompt without DevTools page.');
+        }
+        const devtoolsPage = this.#devtoolsPage;
+
+        if (userArgs.testTarget === 'elements-multimodal') {
+          await devtoolsPage.locator('aria/Take screenshot').click();
+        }
+
+        const inputSelector = this.#getLocator();
+        await devtoolsPage.locator(inputSelector).click();
+        await devtoolsPage.locator(inputSelector).fill(query);
+
+        const abort = new AbortController();
+        /**
+         * @param {AbortSignal} signal AbortSignal to stop the operation.
+         */
+        const autoAcceptEvals = async signal => {
+          while (!signal.aborted) {
+            await devtoolsPage.locator('aria/Continue').click({signal});
+          }
+        };
+
+        autoAcceptEvals(abort.signal).catch(err => {
+          if (err.message === 'This operation was aborted') {
+            return;
+          }
+          console.error('autoAcceptEvals', err);
+        });
+
+        const done = this.#devtoolsPage.evaluate(() => {
+          return /** @type {Promise<void>} */ (new Promise(resolve => {
+            window.addEventListener(
+                'aiassistancedone',
+                () => {
+                  resolve();
+                },
+                {
+                  once: true,
+                },
+            );
+          }));
+        });
+
+        await devtoolsPage.keyboard.press('Enter');
+        await done;
+        abort.abort();
+
+        const logs = await devtoolsPage.evaluate(() => {
+          return localStorage.getItem('aiAssistanceStructuredLog');
+        });
+        if (!logs) {
+          throw new Error('No aiAssistanceStructuredLog entries were found.');
+        }
+        /** @type {import('./types').IndividualPromptRequestResponse[]} */
+        const results = JSON.parse(logs);
+
+        return results.map(r => ({...r, exampleId: this.id()}));
       };
 
-      autoAcceptEvals(abort.signal).catch(err => {
-        if (err.message === 'This operation was aborted') {
-          return;
-        }
-        console.error('autoAcceptEvals', err);
-      });
-
-      const done = this.#devtoolsPage.evaluate(() => {
-        return /** @type {Promise<void>} */ (new Promise(resolve => {
-          window.addEventListener(
-              'aiassistancedone',
-              () => {
-                resolve();
-              },
-              {
-                once: true,
-              },
-          );
-        }));
-      });
-
-      await devtoolsPage.keyboard.press('Enter');
-      await done;
-      abort.abort();
-
-      const logs = await devtoolsPage.evaluate(() => {
-        return localStorage.getItem('aiAssistanceStructuredLog');
-      });
-      if (!logs) {
-        throw new Error('No aiAssistanceStructuredLog entries were found.');
+      for (const query of this.#queries) {
+        this.log(
+            `[Info]: Running the user prompt "${query}" (This step might take long time)`,
+        );
+        // The randomness needed for evading query caching on the AIDA side.
+        const result = await prompt(`${query} ${`${(Math.random() * 1000)}`.split('.')[0]}`);
+        results.push(...result);
       }
-      /** @type {import('./types').IndividualPromptRequestResponse[]} */
-      const results = JSON.parse(logs);
 
-      return results.map(r => ({...r, exampleId: this.id()}));
-    };
+      await this.#page.close();
 
-    for (const query of this.#queries) {
-      this.log(
-          `[Info]: Running the user prompt "${query}" (This step might take long time)`,
+      /** @type {import('./types').ExecutedExample} */
+      return {
+        results,
+        metadata: {exampleId: this.id(), explanation: this.#explanation},
+      };
+
+    } finally {
+      const elapsedTime = numberFormatter.format(
+          (performance.now() - executionStartTime) / 1000,
       );
-      // The randomness needed for evading query caching on the AIDA side.
-      const result = await prompt(`${query} ${`${(Math.random() * 1000)}`.split('.')[0]}`);
-      results.push(...result);
+      this.log(`Finished (${elapsedTime}s)`);
     }
-
-    await this.#page.close();
-    const elapsedTime = numberFormatter.format(
-        (performance.now() - executionStartTime) / 1000,
-    );
-    this.log(`Finished (${elapsedTime}s)`);
-
-    /** @type {import('./types').ExecutedExample} */
-    return {
-      results,
-      metadata: {exampleId: this.id(), explanation: this.#explanation},
-    };
   }
 
   /**

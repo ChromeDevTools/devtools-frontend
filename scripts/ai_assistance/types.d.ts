@@ -50,7 +50,7 @@ export interface YargsInput {
   times: number;
   testTarget: TestTarget;
 }
-export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights'|'elements-multimodal';
+export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights'|'elements-multimodal'|'patching';
 
 // Clang cannot handle the Record<> syntax over multiple lines, it seems.
 /* clang-format off */
@@ -59,3 +59,10 @@ export type Logs = Record<string, {
   text: string,
 }> ;
 /* clang-format on */
+
+export interface PatchTest {
+  repository: string;
+  folderName: string;
+  query: string;
+  changedFiles: Array<{path: string, matches: string[], doesNotMatch?: string[]}>;
+}

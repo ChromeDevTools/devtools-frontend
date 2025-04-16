@@ -5,10 +5,10 @@
 
 import '../../../ui/legacy/legacy.js'; // for x-link
 
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
+import * as CopyToClipboard from '../../../ui/components/copy_to_clipboard/copy_to_clipboard.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
@@ -110,7 +110,7 @@ export class CodeBlock extends HTMLElement {
   }
 
   #onCopy(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#code);
+    CopyToClipboard.copyTextToClipboard(this.#code, i18nString(UIStrings.copied));
     this.#copied = true;
     this.#render();
     clearTimeout(this.#timer);

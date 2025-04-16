@@ -641,8 +641,12 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <devtools-button role="presentation" title=\${i18nString(UIStrings.someTooltip)}
-          .jslogContext=\${'some-button'} .variant=\${Buttons.Button.Variant.PRIMARY}
-          .title=\${i18nString(UIStrings.someTitle)}></devtools-button>
+          .data=\${{
+      jslogContext: 'some-button',
+      variant: Buttons.Button.Variant.PRIMARY,
+      title: i18nString(UIStrings.someTitle),
+    }}
+      ></devtools-button>
     </div>\`,
     target, {host: input});
 };

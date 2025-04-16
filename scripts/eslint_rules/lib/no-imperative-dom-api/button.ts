@@ -22,24 +22,12 @@ export const button = {
         }
         if (isIdentifier(property, [
               'iconName', 'toggledIconName', 'toggleType', 'variant', 'size', 'reducedFocusRing', 'type',
-              'toggleOnClick', 'toggled', 'active', 'spinner', 'jslogContext', 'longClickable'
+              'toggleOnClick', 'toggled', 'active', 'spinner', 'jslogContext', 'longClickable', 'data'
             ])) {
           domFragment.bindings.push({
             key: property.name,
             value: propertyValue,
           });
-          return true;
-        }
-        if (isIdentifier(property, 'data') && propertyValue.type === 'ObjectExpression') {
-          for (const property of propertyValue.properties) {
-            if (property.type !== 'Property' || property.key.type !== 'Identifier') {
-              continue;
-            }
-            domFragment.bindings.push({
-              key: property.key.name,
-              value: property.value,
-            });
-          }
           return true;
         }
         return false;

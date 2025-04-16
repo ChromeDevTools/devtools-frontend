@@ -51,6 +51,7 @@
     "@types/sinon": "17.0.3",
     "@types/webidl2": "24.4.3",
     "@types/yargs": "17.0.33",
+    "@types/yargs-unparser": "2.0.3",
     "@typescript-eslint/eslint-plugin": "8.26.0",
     "@typescript-eslint/parser": "8.26.0",
     "@typescript-eslint/utils": "8.26.0",
@@ -96,7 +97,7 @@
     "js-yaml": "4.1.0"
   },
   "overrides": {
-    "@types/estree": "1.0.6",
+    "hookified": "1.8.1",
     "nanoid": "3.3.8",
     "ws": "8.18.0"
   }

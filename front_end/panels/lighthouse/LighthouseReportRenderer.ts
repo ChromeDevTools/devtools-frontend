@@ -29,9 +29,8 @@ export class LighthouseReportRenderer {
     let onViewTrace: (() => Promise<void>)|undefined = undefined;
     if (artifacts) {
       onViewTrace = async () => {
-        const defaultPassTrace = artifacts.traces.defaultPass;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseViewTrace);
-        const trace = new SDK.TraceObject.TraceObject(defaultPassTrace.traceEvents);
+        const trace = new SDK.TraceObject.TraceObject(artifacts.Trace.traceEvents);
         void Common.Revealer.reveal(trace);
       };
     }

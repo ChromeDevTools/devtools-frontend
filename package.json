@@ -92,7 +92,8 @@
     "typescript": "5.8.2",
     "uuid": "11.1.0",
     "webidl2": "24.4.1",
-    "yargs": "17.7.2"
+    "yargs": "17.7.2",
+    "js-yaml": "4.1.0"
   },
   "overrides": {
     "@types/estree": "1.0.6",

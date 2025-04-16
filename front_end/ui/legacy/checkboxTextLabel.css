@@ -31,7 +31,7 @@ input {
   width: 10px;
 }
 
-.dt-checkbox-text {
+.devtools-checkbox-text {
   overflow: hidden;
   text-overflow: ellipsis;
 
@@ -40,48 +40,48 @@ input {
   }
 }
 
-.dt-checkbox-subtitle {
+.devtools-checkbox-subtitle {
   color: var(--sys-color-token-subtle);
   white-space: break-spaces;
 }
 
 @media (forced-colors: active) {
-  input.dt-checkbox-theme-preserve {
+  input.devtools-checkbox-theme-preserve {
     forced-color-adjust: none;
   }
 
-  input.dt-checkbox-theme-preserve:active {
+  input.devtools-checkbox-theme-preserve:active {
     background: HighlightText;
   }
 
-  input.dt-checkbox-theme-preserve:checked,
-  input.dt-checkbox-theme-preserve:active:checked {
+  input.devtools-checkbox-theme-preserve:checked,
+  input.devtools-checkbox-theme-preserve:active:checked {
     background: Highlight;
     border-color: Highlight;
   }
 
-  input.dt-checkbox-theme-preserve:hover:enabled {
+  input.devtools-checkbox-theme-preserve:hover:enabled {
     border-color: Highlight;
   }
 
-  input.dt-checkbox-theme-preserve:active::before,
-  input.dt-checkbox-theme-preserve:active::after {
+  input.devtools-checkbox-theme-preserve:active::before,
+  input.devtools-checkbox-theme-preserve:active::after {
     background-color: Highlight;
   }
 
-  input.dt-checkbox-theme-preserve:checked::before,
-  input.dt-checkbox-theme-preserve:checked::after,
-  input.dt-checkbox-theme-preserve:active:checked::before,
-  input.dt-checkbox-theme-preserve:active:checked::after {
+  input.devtools-checkbox-theme-preserve:checked::before,
+  input.devtools-checkbox-theme-preserve:checked::after,
+  input.devtools-checkbox-theme-preserve:active:checked::before,
+  input.devtools-checkbox-theme-preserve:active:checked::after {
     background-color: HighlightText;
   }
 
-  input.dt-checkbox-theme-preserve:hover:checked::before,
-  input.dt-checkbox-theme-preserve:hover:checked::after {
+  input.devtools-checkbox-theme-preserve:hover:checked::before,
+  input.devtools-checkbox-theme-preserve:hover:checked::after {
     background-color: Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
-  input.dt-checkbox-theme-preserve:hover:checked {
+  input.devtools-checkbox-theme-preserve:hover:checked {
     background: HighlightText;
   }
 }

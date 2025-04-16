@@ -34,13 +34,13 @@ describeWithMockConnection('ConsoleView', () => {
 
   it('adds a title to every checkbox label in the settings view', async () => {
     const consoleSettingsCheckboxes =
-        consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('dt-checkbox');
+        consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('devtools-checkbox');
     if (!consoleSettingsCheckboxes) {
       assert.fail('No checkbox found in console settings');
       return;
     }
     for (const checkbox of consoleSettingsCheckboxes) {
-      assert.isTrue(checkbox.shadowRoot?.querySelector('.dt-checkbox-text')?.hasAttribute('title'));
+      assert.isTrue(checkbox.shadowRoot?.querySelector('.devtools-checkbox-text')?.hasAttribute('title'));
     }
     // This test transitively schedules a task which may cause errors if the task
     // is run without the environments set in this test. Thus wait for its completion

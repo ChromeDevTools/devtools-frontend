@@ -64,7 +64,7 @@ import type {XWidget} from './XWidget.js';
 
 declare global {
   interface HTMLElementTagNameMap {
-    'dt-checkbox': CheckboxLabel;
+    'devtools-checkbox': CheckboxLabel;
     'dt-close-button': DevToolsCloseButton;
     'dt-icon-label': DevToolsIconLabel;
     'dt-small-bubble': DevToolsSmallBubble;
@@ -1319,7 +1319,7 @@ export class CheckboxLabel extends HTMLElement {
     this.#checkboxElement.setAttribute('id', id);
     // Change event is not composable, so it doesn't bubble up through the shadow root.
     this.#checkboxElement.addEventListener('change', () => this.dispatchEvent(new Event('change')));
-    this.#textElement = this.#shadowRoot.createChild('label', 'dt-checkbox-text');
+    this.#textElement = this.#shadowRoot.createChild('label', 'devtools-checkbox-text');
     this.#textElement.setAttribute('for', id);
     // Click events are composable, so both label and checkbox bubble up through the shadow root.
     // However, clicking the label, also triggers the checkbox click, so we stop the label event
@@ -1331,7 +1331,7 @@ export class CheckboxLabel extends HTMLElement {
   static create(
       title?: Platform.UIString.LocalizedString, checked?: boolean, subtitle?: Platform.UIString.LocalizedString,
       jslogContext?: string, small?: boolean): CheckboxLabel {
-    const element = document.createElement('dt-checkbox');
+    const element = document.createElement('devtools-checkbox');
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
       element.#checkboxElement.setAttribute(
@@ -1341,7 +1341,7 @@ export class CheckboxLabel extends HTMLElement {
       element.#textElement.textContent = title;
       element.#checkboxElement.title = title;
       if (subtitle !== undefined) {
-        element.#textElement.createChild('div', 'dt-checkbox-subtitle').textContent = subtitle;
+        element.#textElement.createChild('div', 'devtools-checkbox-subtitle').textContent = subtitle;
       }
     }
     element.#checkboxElement.classList.toggle('small', small);
@@ -1403,7 +1403,7 @@ export class CheckboxLabel extends HTMLElement {
   private static lastId = 0;
 }
 
-customElements.define('dt-checkbox', CheckboxLabel);
+customElements.define('devtools-checkbox', CheckboxLabel);
 
 export class DevToolsIconLabel extends HTMLElement {
   readonly #icon: IconButton.Icon.Icon;

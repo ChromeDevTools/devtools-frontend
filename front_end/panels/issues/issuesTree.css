@@ -178,7 +178,7 @@ p {
   border-left: 2px solid var(--issue-color-blue);
 }
 
-.tree-outline .issue-body li:hover:not(:has(dt-checkbox)) .selection {
+.tree-outline .issue-body li:hover:not(:has(devtools-checkbox)) .selection {
   background-color: unset;
 }
 

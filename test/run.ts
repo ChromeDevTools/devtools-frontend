@@ -7,6 +7,8 @@ import * as fs from 'fs';
 import * as glob from 'glob';
 import * as os from 'os';
 import * as path from 'path';
+import yargs from 'yargs';
+import unparse from 'yargs-unparser';
 
 import {commandLineArgs} from './conductor/commandline.js';
 import {
@@ -18,8 +20,6 @@ import {
   SOURCE_ROOT,
 } from './conductor/paths.js';
 
-const yargs = require('yargs');
-const unparse = require('yargs-unparser');
 const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('skip-ninja', {type: 'boolean', desc: 'Skip rebuilding'})
                     .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
@@ -52,6 +52,8 @@ function forwardOptions() {
   for (const consume of CONSUMED_OPTIONS) {
     forwardedOptions[consume] = undefined;
   }
+
+  // @ts-expect-error yargs and unparse have slightly different types
   return unparse(forwardedOptions);
 }
 

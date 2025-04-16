@@ -1,8 +1,6 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-'use strict';
-
 import type {TSESTree} from '@typescript-eslint/utils';
 
 import {createRule} from './tsUtils.ts';  // Assuming tsUtils.js exists based on File B

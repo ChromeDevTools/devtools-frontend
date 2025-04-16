@@ -1013,7 +1013,7 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.networkRequestBlocking),
   settingName: 'request-blocking-enabled',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
+  storageType: Common.Settings.SettingStorageType.LOCAL,
   defaultValue: false,
   options: [
     {

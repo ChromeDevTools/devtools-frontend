@@ -79,12 +79,12 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
 
   it('listens to ArrowUp/Down', async () => {
     const {view} = await createComponent();
-    view.input.onListItemKeyDown({key: 'ArrowDown', bubbles: true, composed: true} as KeyboardEvent);
+    view.input.onListItemKeyDown(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
     let input = await view.nextInput;
     sinon.assert.callCount(view, 2);
     assert.strictEqual(input.selectedIndex, 1);
 
-    view.input.onListItemKeyDown({key: 'ArrowUp', bubbles: true, composed: true} as KeyboardEvent);
+    view.input.onListItemKeyDown(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
     input = await view.nextInput;
     sinon.assert.callCount(view, 3);
     assert.strictEqual(input.selectedIndex, 0);

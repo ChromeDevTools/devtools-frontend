@@ -188,16 +188,24 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
 
   #onListItemKeyDown(event: KeyboardEvent): void {
     switch (event.key) {
-      case 'ArrowDown':
+      case 'ArrowDown': {
+        event.preventDefault();
         this.#selectedIndex = Math.min(this.#selectedIndex + 1, this.#folders.length - 1);
-        this.contentElement.querySelectorAll('li')[this.#selectedIndex]?.focus();
+        const targetItem = this.contentElement.querySelectorAll('li')[this.#selectedIndex];
+        targetItem?.scrollIntoView({block: 'nearest', inline: 'nearest'});
+        targetItem?.focus({preventScroll: true});
         this.requestUpdate();
         break;
-      case 'ArrowUp':
+      }
+      case 'ArrowUp': {
+        event.preventDefault();
         this.#selectedIndex = Math.max(this.#selectedIndex - 1, 0);
-        this.contentElement.querySelectorAll('li')[this.#selectedIndex]?.focus();
+        const targetItem = this.contentElement.querySelectorAll('li')[this.#selectedIndex];
+        targetItem?.scrollIntoView({block: 'nearest', inline: 'nearest'});
+        targetItem?.focus({preventScroll: true});
         this.requestUpdate();
         break;
+      }
       case 'Enter':
         event.preventDefault();
         this.#onSelectButtonClick();

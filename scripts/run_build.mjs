@@ -7,7 +7,7 @@ import path from 'node:path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { build, prepareBuild } from './devtools_build.mjs';
+import { build, prepareBuild, logBuildError } from './devtools_build.mjs';
 
 const argv = yargs(hideBin(process.argv))
   .option('target', {
@@ -45,7 +45,7 @@ const timeFormatter = new Intl.NumberFormat('en-US', {
 try {
   await prepareBuild(target);
 } catch (error) {
-  console.log(error.toString());
+  logBuildError(error);
   process.exit(1);
 }
 
@@ -56,7 +56,7 @@ if (!skipInitialBuild) {
     const { time } = await build(target);
     console.log(`Build ready (${timeFormatter.format(time)})`);
   } catch (error) {
-    console.log(error.toString());
+    logBuildError(error);
     process.exit(1);
   }
 }

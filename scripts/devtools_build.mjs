@@ -195,7 +195,7 @@ export async function build(target, signal) {
   // want to build all of Chromium first.
   try {
     const autoninjaExe = autoninjaExecutablePath();
-    const autoninjaArgs = ['-C', outDir, '--quiet', 'devtools_all_files'];
+    const autoninjaArgs = ['-C', outDir, 'devtools_all_files'];
     await execFile(autoninjaExe, autoninjaArgs, { signal });
   } catch (cause) {
     if (cause.name === 'AbortError') {
@@ -207,4 +207,17 @@ export async function build(target, signal) {
   // Report the build result.
   const time = (performance.now() - startTime) / 1000;
   return { time };
+}
+
+/**
+ * Logs an error from `prepareBuild()` or `build()` functions.
+ *
+ * @param {Error} error the `Error` object to log.
+ */
+export function logBuildError(error) {
+  const {message, cause} = error;
+  console.error(message);
+  if (cause instanceof Error) {
+    console.error(cause.message);
+  }
 }

@@ -6,71 +6,48 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 
+const NBSP = '\u00A0';
+
 describeWithEnvironment('ARIAUtils', () => {
   beforeEach(() => {
     UI.Dialog.Dialog.getInstance()?.hide();
-    UI.ARIAUtils.alert('');
-    UI.ARIAUtils.alert('');
+    UI.ARIAUtils.getOrCreateAlertElement(document.body, {force: true});
   });
 
   afterEach(() => {
-    UI.ARIAUtils.alert('');
-    UI.ARIAUtils.alert('');
     UI.Dialog.Dialog.getInstance()?.hide();
-  });
-
-  describe('ARIAUtils.alertElementInstance', () => {
-    it('switches elements to announce alerts', () => {
-      const container = document.createElement('div');
-      const element1 = UI.ARIAUtils.alertElementInstance(container);
-      const element2 = UI.ARIAUtils.alertElementInstance(container);
-      const element3 = UI.ARIAUtils.alertElementInstance(container);
-      const element4 = UI.ARIAUtils.alertElementInstance(container);
-      assert.strictEqual(element1, element3);
-      assert.strictEqual(element2, element4);
-      assert.strictEqual(element1.textContent, '');
-      assert.strictEqual(element2.textContent, '');
-    });
   });
 
   describe('ARIAUtils.alert', () => {
     it('shows alerts in the dialog if it is shown', () => {
-      UI.ARIAUtils.getOrCreateAlertElements(document.body);
+      UI.ARIAUtils.getOrCreateAlertElement(document.body);
       const dialog = new UI.Dialog.Dialog();
-      UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement);
+      UI.ARIAUtils.getOrCreateAlertElement(dialog.contentElement);
       dialog.show();
 
       UI.ARIAUtils.alert('test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).two.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).one.textContent, 'test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).two.textContent, '');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(document.body).textContent, '');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(dialog.contentElement).textContent, 'test');
+    });
+
+    it('repeated alerts include a non breaking space to trigger announcement for the same text multiple times', () => {
+      UI.ARIAUtils.alert('test');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(document.body).textContent, 'test');
 
       UI.ARIAUtils.alert('test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).two.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).two.textContent, 'test');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(document.body).textContent, `test${NBSP}`);
     });
 
     // Flaky test.
     it.skip('[crbug.com/338872707] shows alerts in the body if the dialog is not shown', () => {
-      UI.ARIAUtils.getOrCreateAlertElements(document.body);
+      UI.ARIAUtils.getOrCreateAlertElement(document.body);
       const dialog = new UI.Dialog.Dialog();
-      UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement);
+      UI.ARIAUtils.getOrCreateAlertElement(dialog.contentElement);
       dialog.hide();
 
       UI.ARIAUtils.alert('test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).one.textContent, 'test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).two.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).two.textContent, '');
-
-      UI.ARIAUtils.alert('test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(document.body).two.textContent, 'test');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).one.textContent, '');
-      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElements(dialog.contentElement).two.textContent, '');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(document.body).textContent, 'test');
+      assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(dialog.contentElement).textContent, '');
     });
   });
 });

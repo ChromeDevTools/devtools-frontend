@@ -1308,6 +1308,15 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
 
+  directTCPSocketChunkSent(_event: Protocol.Network.DirectTCPSocketChunkSentEvent): void {
+  }
+
+  directTCPSocketChunkReceived(_event: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void {
+  }
+
+  directTCPSocketChunkError(_event: Protocol.Network.DirectTCPSocketChunkErrorEvent): void {
+  }
+
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {
     const request = this.#requestsById.get(event.requestId);
     if (!request) {

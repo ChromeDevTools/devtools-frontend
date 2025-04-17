@@ -1477,7 +1477,7 @@ export const NativeFunctions = [
   {
     name: "item",
     signatures: [["index"]],
-    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","HTMLCollection","SpeechGrammarList","SpeechRecognitionPhraseList","SQLResultSetRowList"]
+    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","HTMLCollection","SpeechGrammarList","SpeechRecognitionPhraseList"]
   },
   {
     name: "item",
@@ -2991,13 +2991,7 @@ export const NativeFunctions = [
   },
   {
     name: "transaction",
-    signatures: [["storeNames","?mode","?options"]],
-    receivers: ["IDBDatabase"]
-  },
-  {
-    name: "transaction",
-    signatures: [["callback","?errorCallback","?successCallback"]],
-    receivers: ["Database"]
+    signatures: [["storeNames","?mode","?options"]]
   },
   {
     name: "cmp",
@@ -8722,22 +8716,6 @@ export const NativeFunctions = [
   {
     name: "VideoEncoder",
     signatures: [["init"]]
-  },
-  {
-    name: "changeVersion",
-    signatures: [["oldVersion","newVersion","?callback","?errorCallback","?successCallback"]]
-  },
-  {
-    name: "readTransaction",
-    signatures: [["callback","?errorCallback","?successCallback"]]
-  },
-  {
-    name: "executeSql",
-    signatures: [["sqlStatement","?arguments","?callback","?errorCallback"]]
-  },
-  {
-    name: "openDatabase",
-    signatures: [["name","version","displayName","estimatedSize","?creationCallback"]]
   },
   {
     name: "clipControlEXT",

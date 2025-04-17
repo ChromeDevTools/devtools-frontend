@@ -16331,6 +16331,63 @@
                     ]
                 },
                 {
+                    "name": "directTCPSocketChunkSent",
+                    "description": "Fired when data is sent to tcp direct socket stream.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketChunkReceived",
+                    "description": "Fired when data is received from tcp direct socket stream.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketChunkError",
+                    "description": "Fired when there is an error\nwhen writing to tcp direct socket stream.\nFor example, if user writes illegal type like string\ninstead of ArrayBuffer or ArrayBufferView.\nThere's no reporting for reading, because\nwe cannot know errors on the other side.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "errorMessage",
+                            "type": "string"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
                     "name": "requestWillBeSentExtraInfo",
                     "description": "Fired when additional information about a requestWillBeSent event is available from the\nnetwork stack. Not every requestWillBeSent event will have an additional\nrequestWillBeSentExtraInfo fired for it, and there is no guarantee whether requestWillBeSent\nor requestWillBeSentExtraInfo will be fired first for the same request.",
                     "experimental": true,
@@ -23703,6 +23760,26 @@
                             "type": "array",
                             "items": {
                                 "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "setProtectedAudienceKAnonymity",
+                    "parameters": [
+                        {
+                            "name": "owner",
+                            "type": "string"
+                        },
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "hashes",
+                            "type": "array",
+                            "items": {
+                                "type": "binary"
                             }
                         }
                     ]

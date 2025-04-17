@@ -1305,6 +1305,8 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLElement {
+  static readonly observedAttributes = ['checked', 'disabled', 'indeterminate', 'name', 'title'];
+
   readonly #shadowRoot!: DocumentFragment;
   #checkboxElement!: HTMLInputElement;
   #textElement!: HTMLElement;
@@ -1348,16 +1350,31 @@ export class CheckboxLabel extends HTMLElement {
     return element;
   }
 
+  attributeChangedCallback(name: string, _oldValue: string|null, newValue: string|null): void {
+    if (name === 'checked') {
+      this.#checkboxElement.checked = newValue !== null;
+    } else if (name === 'disabled') {
+      this.#checkboxElement.disabled = newValue !== null;
+    } else if (name === 'indeterminate') {
+      this.#checkboxElement.indeterminate = newValue !== null;
+    } else if (name === 'name') {
+      this.#checkboxElement.name = newValue ?? '';
+    } else if (name === 'title') {
+      this.#checkboxElement.title = newValue ?? '';
+      this.#textElement.title = newValue ?? '';
+    }
+  }
+
   get checked(): boolean {
     return this.#checkboxElement.checked;
   }
 
   set checked(checked: boolean) {
-    this.#checkboxElement.checked = checked;
+    this.toggleAttribute('checked', checked);
   }
 
   set disabled(disabled: boolean) {
-    this.#checkboxElement.disabled = disabled;
+    this.toggleAttribute('disabled', disabled);
   }
 
   get disabled(): boolean {
@@ -1365,7 +1382,7 @@ export class CheckboxLabel extends HTMLElement {
   }
 
   set indeterminate(indeterminate: boolean) {
-    this.#checkboxElement.indeterminate = indeterminate;
+    this.toggleAttribute('indeterminate', indeterminate);
   }
 
   get indeterminate(): boolean {
@@ -1373,29 +1390,15 @@ export class CheckboxLabel extends HTMLElement {
   }
 
   set name(name: string) {
-    this.#checkboxElement.name = name;
+    this.setAttribute('name', name);
   }
 
   get name(): string {
     return this.#checkboxElement.name;
   }
 
-  override set title(title: string) {
-    this.#textElement.title = title;
-    this.#checkboxElement.title = title;
-  }
-
-  override get title(): string {
-    return this.#checkboxElement.title;
-  }
-
   override click(): void {
     this.#checkboxElement.click();
-  }
-
-  set jslogContext(jslogContext: string) {
-    this.#checkboxElement.setAttribute(
-        'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
   }
 
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */

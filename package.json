@@ -54,8 +54,8 @@
     "@types/yargs-unparser": "2.0.3",
     "@typescript-eslint/eslint-plugin": "8.26.0",
     "@typescript-eslint/parser": "8.26.0",
-    "@typescript-eslint/utils": "8.26.0",
     "@typescript-eslint/rule-tester": "8.26.0",
+    "@typescript-eslint/utils": "8.26.0",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",
     "chai": "4.3.4",
     "cssnano": "7.0.6",
@@ -68,6 +68,7 @@
     "eslint-plugin-mocha": "10.5.0",
     "glob": "7.1.7",
     "globals": "16.0.0",
+    "js-yaml": "4.1.0",
     "karma": "6.4.0",
     "karma-chai": "0.1.0",
     "karma-chrome-launcher": "3.1.0",
@@ -80,6 +81,7 @@
     "license-checker": "25.0.1",
     "lit-analyzer": "2.0.3",
     "mocha": "9.2.2",
+    "ora": "8.2.0",
     "postcss": "8.5.1",
     "puppeteer-core": "24.1.1",
     "rollup-plugin-sourcemaps2": "0.4.2",
@@ -93,8 +95,7 @@
     "typescript": "5.8.2",
     "uuid": "11.1.0",
     "webidl2": "24.4.1",
-    "yargs": "17.7.2",
-    "js-yaml": "4.1.0"
+    "yargs": "17.7.2"
   },
   "overrides": {
     "hookified": "1.8.1",

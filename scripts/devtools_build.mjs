@@ -5,7 +5,7 @@
 import childProcess from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { performance } from 'node:perf_hooks';
+import {performance} from 'node:perf_hooks';
 import util from 'node:util';
 
 import {
@@ -78,7 +78,7 @@ export class FeatureSet {
    * Yields the command line parameters to pass to the invocation of
    * a Chrome binary for achieving the state of the feature set.
    */
-  *[Symbol.iterator]() {
+  * [Symbol.iterator]() {
     const disabledFeatures = [...this.#disabled];
     if (disabledFeatures.length) {
       yield `--disable-features=${disabledFeatures.sort().join(',')}`;
@@ -109,7 +109,7 @@ export class FeatureSet {
         const args = parts[1].split('/');
         if (args.length % 2 !== 0) {
           throw new Error(
-            `Invalid parameters '${parts[1]}' for feature ${feature}`,
+              `Invalid parameters '${parts[1]}' for feature ${feature}`,
           );
         }
         for (let i = 0; i < args.length; i += 2) {
@@ -118,7 +118,7 @@ export class FeatureSet {
           parameters[key] = value;
         }
       }
-      features.push({ feature, parameters });
+      features.push({feature, parameters});
     }
     return features;
   }
@@ -140,8 +140,8 @@ export class BuildError extends Error {
    * @param {string} options.target the target relative to `//out`.
    */
   constructor(step, options) {
-    const { cause, outDir, target } = options;
-    super(`Failed to build target ${target} in ${outDir}`, { cause });
+    const {cause, outDir, target} = options;
+    super(`Failed to build target ${target} in ${outDir}`, {cause});
     this.name = 'BuildError';
     this.step = step;
     this.target = target;
@@ -149,8 +149,13 @@ export class BuildError extends Error {
   }
 
   toString() {
-    const { stdout } = this.cause;
-    return stdout;
+    const {cause} = this;
+    const {stdout} = cause;
+    if (stdout) {
+      return stdout;
+    }
+    const {message} = this;
+    return `${message}\n${cause.message}`;
   }
 }
 
@@ -176,7 +181,7 @@ export async function prepareBuild(target) {
       const gnArgs = ['-q', 'gen', outDir];
       await execFile(gnExe, gnArgs);
     } catch (cause) {
-      throw new BuildError(BuildStep.GN, { cause, outDir, target });
+      throw new BuildError(BuildStep.GN, {cause, outDir, target});
     }
   }
 }
@@ -196,28 +201,15 @@ export async function build(target, signal) {
   try {
     const autoninjaExe = autoninjaExecutablePath();
     const autoninjaArgs = ['-C', outDir, 'devtools_all_files'];
-    await execFile(autoninjaExe, autoninjaArgs, { signal });
+    await execFile(autoninjaExe, autoninjaArgs, {signal});
   } catch (cause) {
     if (cause.name === 'AbortError') {
       throw cause;
     }
-    throw new BuildError(BuildStep.AUTONINJA, { cause, outDir, target });
+    throw new BuildError(BuildStep.AUTONINJA, {cause, outDir, target});
   }
 
   // Report the build result.
   const time = (performance.now() - startTime) / 1000;
-  return { time };
-}
-
-/**
- * Logs an error from `prepareBuild()` or `build()` functions.
- *
- * @param {Error} error the `Error` object to log.
- */
-export function logBuildError(error) {
-  const {message, cause} = error;
-  console.error(message);
-  if (cause instanceof Error) {
-    console.error(cause.message);
-  }
+  return {time};
 }

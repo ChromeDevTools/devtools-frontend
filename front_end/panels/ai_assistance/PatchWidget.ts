@@ -645,6 +645,11 @@ export class PatchWidget extends UI.Widget.Widget {
         void this.#applyPatchAndUpdateUI();
       } else {
         this.requestUpdate();
+        void this.updateComplete.then(() => {
+          this.contentElement?.querySelector('.apply-to-workspace-container devtools-button')
+              ?.shadowRoot?.querySelector('button')
+              ?.focus();
+        });
       }
     };
 

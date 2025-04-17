@@ -97,6 +97,9 @@ export class FeatureSet {
   }
 
   static parse(text) {
+    if (!text) {
+      return [];
+    }
     const features = [];
     for (const str of text.split(',')) {
       const parts = str.split(':');

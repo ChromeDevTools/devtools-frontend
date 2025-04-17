@@ -24,19 +24,17 @@ export class EventReferenceClick extends Event {
 
 class EventRef extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
-
   #text: string|null = null;
   #event: Trace.Types.Events.Event|null = null;
 
   set text(text: string) {
     this.#text = text;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set event(event: Trace.Types.Events.Event) {
     this.#event = event;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {
@@ -81,13 +79,12 @@ export function eventRef(
 
 class ImageRef extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   #request?: Trace.Types.Events.SyntheticNetworkRequest;
 
   set request(request: Trace.Types.Events.SyntheticNetworkRequest) {
     this.#request = request;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {

@@ -607,7 +607,6 @@ export default [
       'rulesdir/no-imperative-dom-api': 'error',
       'rulesdir/no-lit-render-outside-of-view': 'error',
       'rulesdir/no-importing-images-from-src': 'error',
-      'rulesdir/enforce-bound-render-for-schedule-render': 'error',
       'rulesdir/enforce-custom-event-names': 'error',
       'rulesdir/set-data-type-reference': 'error',
       'rulesdir/no-bound-component-methods': 'error',

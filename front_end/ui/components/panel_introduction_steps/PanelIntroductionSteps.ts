@@ -14,11 +14,10 @@ panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw.cssText
 
 export class PanelIntroductionSteps extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [panelIntroductionStepsStyles];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {

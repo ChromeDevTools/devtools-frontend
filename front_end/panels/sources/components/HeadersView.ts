@@ -128,7 +128,6 @@ export interface HeadersViewComponentData {
 
 export class HeadersViewComponent extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #headerOverrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #parsingError = false;
@@ -150,7 +149,7 @@ export class HeadersViewComponent extends HTMLElement {
     this.#headerOverrides = data.headerOverrides;
     this.#uiSourceCode = data.uiSourceCode;
     this.#parsingError = data.parsingError;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   // 'Enter' key should not create a new line in the contenteditable. Focus

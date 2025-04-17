@@ -133,7 +133,6 @@ const REPLAY_EXTENSION_PREFIX = 'extension';
 
 export class ReplaySection extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   readonly #props: ReplaySectionProps = {disabled: false};
   #settings?: Models.RecorderSettings.RecorderSettings;
   #replayExtensions: Extensions.ExtensionManager.Extension[] = [];
@@ -151,14 +150,14 @@ export class ReplaySection extends HTMLElement {
     this.#props.disabled = disabled;
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
-        this.#boundRender,
+        this.#render,
     );
   }
 
   connectedCallback(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
-        this.#boundRender,
+        this.#render,
     );
   }
 
@@ -172,7 +171,7 @@ export class ReplaySection extends HTMLElement {
     Host.userMetrics.recordingReplaySpeed(replaySpeedToMetricSpeedMap[speed]);
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
-        this.#boundRender,
+        this.#render,
     );
   }
 
@@ -194,7 +193,7 @@ export class ReplaySection extends HTMLElement {
       );
       void ComponentHelpers.ScheduledRender.scheduleRender(
           this,
-          this.#boundRender,
+          this.#render,
       );
       return;
     }
@@ -202,7 +201,7 @@ export class ReplaySection extends HTMLElement {
     this.dispatchEvent(new StartReplayEvent(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL));
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
-        this.#boundRender,
+        this.#render,
     );
   }
 

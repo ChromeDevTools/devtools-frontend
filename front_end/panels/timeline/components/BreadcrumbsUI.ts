@@ -52,14 +52,13 @@ export class BreadcrumbActivatedEvent extends Event {
 
 export class BreadcrumbsUI extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #initialBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
   #activeBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
 
   set data(data: BreadcrumbsUIData) {
     this.#initialBreadcrumb = data.initialBreadcrumb;
     this.#activeBreadcrumb = data.activeBreadcrumb;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #activateBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb): void {

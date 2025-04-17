@@ -59,7 +59,6 @@ export interface ElementsBreadcrumbsData {
 export class ElementsBreadcrumbs extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #resizeObserver = new ResizeObserver(() => this.#checkForOverflowOnResize());
-  readonly #renderBound = this.#render.bind(this);
 
   #crumbsData: readonly DOMNode[] = [];
   #selectedDOMNode: Readonly<DOMNode>|null = null;
@@ -76,7 +75,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     this.#selectedDOMNode = data.selectedNode;
     this.#crumbsData = data.crumbs;
     this.#userHasManuallyScrolled = false;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   disconnectedCallback(): void {

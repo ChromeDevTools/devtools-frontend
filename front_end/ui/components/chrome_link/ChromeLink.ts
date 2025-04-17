@@ -23,11 +23,10 @@ declare global {
 // (for which regular <x-link>s do not work).
 export class ChromeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #href = '';
 
   connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set href(href: Platform.DevToolsPath.UrlString) {
@@ -35,7 +34,7 @@ export class ChromeLink extends HTMLElement {
       throw new Error('ChromeLink href needs to start with \'chrome://\'');
     }
     this.#href = href;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   // Navigating to a chrome:// link via a normal anchor doesn't work, so we "navigate"

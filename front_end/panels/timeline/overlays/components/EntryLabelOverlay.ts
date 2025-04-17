@@ -166,7 +166,6 @@ export class EntryLabelOverlay extends HTMLElement {
   static readonly MAX_LABEL_LENGTH = 100;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   // Once a label is bound for deletion, we remove it from the DOM via events
   // that are dispatched. But in the meantime the blur event of the input box
@@ -348,7 +347,7 @@ export class EntryLabelOverlay extends HTMLElement {
     }
 
     this.#entryLabelVisibleHeight = entryLabelVisibleHeight;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     // If the label is editable, focus cursor on it.
     // This method needs to be called after rendering the wrapper because it is the last label overlay element to render.
     // By doing this, the cursor focuses when the label is created.
@@ -530,7 +529,7 @@ export class EntryLabelOverlay extends HTMLElement {
         // editing state is reset because the component loses focus.
         this.#render();
         this.#focusInputBox();
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
 
         this.#label = await this.#agent.generateAIEntryLabel(this.#callTree);
         this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
@@ -542,7 +541,7 @@ export class EntryLabelOverlay extends HTMLElement {
         this.#render();
       } catch {
         this.#currAIButtonState = AIButtonState.GENERATION_FAILED;
-        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+        void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
       }
     } else {
       this.#inAIConsentDialogFlow = true;

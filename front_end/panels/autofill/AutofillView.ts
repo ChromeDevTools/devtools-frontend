@@ -110,7 +110,6 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #renderBound = this.#render.bind(this);
   #autoOpenViewSetting: Common.Settings.Setting<boolean>;
   #showTestAddressesInAutofillMenuSetting: Common.Settings.Setting<boolean>;
   #address = '';
@@ -143,7 +142,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
 
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onPrimaryPageChanged(): void {
@@ -151,7 +150,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     this.#filledFields = [];
     this.#matches = [];
     this.#highlightedMatches = [];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onAddressFormFilled(
@@ -162,7 +161,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       matches: this.#matches,
     } = data);
     this.#highlightedMatches = [];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   async #render(): Promise<void> {
@@ -323,12 +322,12 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   #onSpanMouseEnter(startIndex: number): void {
     this.#highlightedMatches =
         this.#matches.filter(match => match.startIndex <= startIndex && match.endIndex > startIndex);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onSpanMouseLeave(): void {
     this.#highlightedMatches = [];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #renderFilledFields(): Lit.LitTemplate {
@@ -385,7 +384,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
   #onGridRowMouseEnter(rowIndex: number): void {
     this.#highlightedMatches = this.#matches.filter(match => match.filledFieldIndex === rowIndex);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
 
     const backendNodeId = this.#filledFields[rowIndex].fieldId;
     const target = SDK.FrameManager.FrameManager.instance()
@@ -403,7 +402,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
   #onGridRowMouseLeave(): void {
     this.#highlightedMatches = [];
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
 }

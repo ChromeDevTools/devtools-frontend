@@ -19,7 +19,6 @@ export interface EditableSpanData {
 
 export class EditableSpan extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #value = '';
 
   connectedCallback(): void {
@@ -31,7 +30,7 @@ export class EditableSpan extends HTMLElement {
 
   set data(data: EditableSpanData) {
     this.#value = data.value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   get value(): string {

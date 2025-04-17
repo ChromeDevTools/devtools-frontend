@@ -60,7 +60,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class IgnoreListSetting extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #renderBound = this.#render.bind(this);
   readonly #ignoreListEnabled: Common.Settings.Setting<boolean> =
       Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
   readonly #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
@@ -97,7 +96,7 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #scheduleRender(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {

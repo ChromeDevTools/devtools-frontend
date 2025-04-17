@@ -31,7 +31,6 @@ export interface NodeLinkData {
 
 export class NodeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #frame?: string;
   #options?: Common.Linkifier.Options;
@@ -44,7 +43,7 @@ export class NodeLink extends HTMLElement {
     this.#options = data.options;
     this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
     this.#fallbackText = data.fallbackText;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   async #linkify(): Promise<Node|undefined> {

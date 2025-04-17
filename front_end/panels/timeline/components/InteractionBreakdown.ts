@@ -31,7 +31,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionBreakdown extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #entry: Trace.Types.Events.SyntheticInteractionPair|null = null;
 
   set entry(entry: Trace.Types.Events.SyntheticInteractionPair) {
@@ -39,7 +38,7 @@ export class InteractionBreakdown extends HTMLElement {
       return;
     }
     this.#entry = entry;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {

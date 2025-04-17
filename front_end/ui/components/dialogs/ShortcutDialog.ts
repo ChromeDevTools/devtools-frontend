@@ -56,7 +56,6 @@ export interface ShortcutDialogData {
 
 export class ShortcutDialog extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #renderBound = this.#render.bind(this);
 
   #shortcuts: Shortcut[] = [];
   #openOnRender = false;
@@ -84,7 +83,7 @@ export class ShortcutDialog extends HTMLElement {
       this.#customTitle = data.customTitle;
     }
 
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   prependElement(element: HTMLElement): void {

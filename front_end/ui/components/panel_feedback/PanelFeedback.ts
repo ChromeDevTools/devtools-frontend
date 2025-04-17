@@ -49,7 +49,6 @@ export interface PanelFeedbackData {
 }
 export class PanelFeedback extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   #props: PanelFeedbackData = {
     feedbackUrl: Platform.DevToolsPath.EmptyUrlString,
@@ -63,7 +62,7 @@ export class PanelFeedback extends HTMLElement {
 
   set data(data: PanelFeedbackData) {
     this.#props = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {

@@ -39,9 +39,6 @@ export interface Data {
 }
 export class RelatedInsightChips extends HTMLElement {
   #shadow = this.attachShadow({mode: 'open'});
-
-  #boundRender = this.#render.bind(this);
-
   #data: Data = {eventToRelatedInsightsMap: new Map(), activeEvent: null};
 
   connectedCallback(): void {
@@ -53,12 +50,12 @@ export class RelatedInsightChips extends HTMLElement {
       return;
     }
     this.#data.activeEvent = event;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set eventToRelatedInsightsMap(map: Data['eventToRelatedInsightsMap']) {
     this.#data.eventToRelatedInsightsMap = map;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #insightClick(insight: RelatedInsight): (e: Event) => void {

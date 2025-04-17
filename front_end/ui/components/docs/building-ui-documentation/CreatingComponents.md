@@ -83,19 +83,10 @@ LitHtml.render(...)
 
 To have your component render, you could manually call `this.#render()`. However, if you were to have multiple updates to a component (perhaps some values it's passed get changed), we want to avoid having multiple renders where possible and instead batch them.
 
-We can use the `ScheduledRender` helper (`front_end/ui/components/helpers/scheduled-render.ts`) to achieve this. First, bind the `#render` method of your component, to ensure it's always bound to the component instance's scope:
+We can use the `ScheduledRender` helper (`front_end/ui/components/helpers/scheduled-render.ts`) to achieve this. Rather than call `this.#render()` directly, you instead call the scheduler:
 
 ```ts
-export class ElementsBreadcrumbs extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
-}
-```
-
-Then, rather than call `this.#render()` directly, you instead call the scheduler:
-
-```ts
-void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
 ```
 
 > `scheduleRender` returns a promise; we use the `void` keyword to instruct TypeScript that we are purposefully not using `await` to wait for the promise to resolve. When scheduling a render it's most common to "fire and forget".
@@ -105,7 +96,6 @@ To summarise, most components start off life looking like:
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   #render(): void {
     LitHtml.render(html``, this.#shadow, {host:this});
@@ -122,10 +112,9 @@ To ensure we trigger a render once the component is added to the DOM, we can def
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {
@@ -154,7 +143,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   set data(data: ElementsBreadcrumbsData) {
     this.#crumbs = data.crumbs;
     this.#selectedNode = data.selectedNode;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 }
 ```
@@ -227,12 +216,12 @@ class ElementsBreadcrumbs extends HTMLElement {
 
   set crumbs(crumbs: ElementsBreadcrumbsData['crumbs']) {
     this.#crumbs = crumbs;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set selectedNode(selectedNode: ElementsBreadcrumbsData['selectedNode']) {
     this.#selectedNode = selectedNode;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 }
 ```

@@ -92,7 +92,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     insightSetKey: null,
   };
 
-  readonly #boundRender = this.#render.bind(this);
   readonly sharedTableState: TableState = {
     selectedRowEl: null,
     selectionIsSticky: false,
@@ -100,7 +99,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   #initialOverlays: Overlays.Overlays.TimelineOverlay[]|null = null;
 
   protected scheduleRender(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   // Insights that do support the AI feature can override this to return true.
@@ -128,7 +127,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     }
 
     this.#selected = selected;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   get selected(): boolean {
@@ -137,12 +136,12 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   set model(model: T) {
     this.#model = model;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set insightSetKey(insightSetKey: string|null) {
     this.data.insightSetKey = insightSetKey;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   get bounds(): Trace.Types.Timing.TraceWindowMicro|null {
@@ -151,7 +150,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   set bounds(bounds: Trace.Types.Timing.TraceWindowMicro|null) {
     this.data.bounds = bounds;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace) {

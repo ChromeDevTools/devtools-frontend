@@ -120,7 +120,6 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
 
 export class SidebarSingleInsightSet extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #renderBound = this.#render.bind(this);
 
   #activeInsightElement: BaseInsightComponent<Trace.Insights.Types.InsightModel>|null = null;
 
@@ -138,7 +137,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   set data(data: SidebarSingleInsightSetData) {
     this.#data = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback(): void {
     this.#render();

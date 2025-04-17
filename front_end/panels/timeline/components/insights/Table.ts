@@ -98,7 +98,6 @@ export function createLimitedRows<T>(arr: T[], aggregator: RowLimitAggregator<T>
 
 export class Table extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #insight?: BaseInsightComponent;
   #state?: TableState;
   #headers?: string[];
@@ -116,13 +115,13 @@ export class Table extends HTMLElement {
     this.#rows = data.rows;
     // If this table isn't interactive, don't attach mouse listeners or use CSS :hover.
     this.#interactive = this.#rows.some(row => row.overlays);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   connectedCallback(): void {
     UI.UIUtils.injectCoreStyles(this.#shadow);
 
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onHoverRow(e: MouseEvent): void {

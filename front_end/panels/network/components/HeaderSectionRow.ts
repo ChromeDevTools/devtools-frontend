@@ -121,7 +121,6 @@ export interface HeaderSectionRowData {
 export class HeaderSectionRow extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #header: HeaderDescriptor|null = null;
-  readonly #boundRender = this.#render.bind(this);
   #isHeaderValueEdited = false;
   #isValidHeaderName = true;
 
@@ -134,7 +133,7 @@ export class HeaderSectionRow extends HTMLElement {
     this.#isHeaderValueEdited =
         this.#header.originalValue !== undefined && this.#header.value !== this.#header.originalValue;
     this.#isValidHeaderName = isValidHeaderName(this.#header.name);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {
@@ -396,7 +395,7 @@ export class HeaderSectionRow extends HTMLElement {
     if (!compareHeaders(headerValue, this.#header.value?.trim())) {
       this.#header.value = headerValue;
       this.dispatchEvent(new HeaderEditedEvent(this.#header.name, headerValue));
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
 
     // Clear selection (needed when pressing 'enter' in editable span).
@@ -419,7 +418,7 @@ export class HeaderSectionRow extends HTMLElement {
     } else if (!compareHeaders(headerName, this.#header.name.trim())) {
       this.#header.name = headerName;
       this.dispatchEvent(new HeaderEditedEvent(headerName, this.#header.value || ''));
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
 
     // Clear selection (needed when pressing 'enter' in editable span).
@@ -468,7 +467,7 @@ export class HeaderSectionRow extends HTMLElement {
     const isValidName = isValidHeaderName(editable.value);
     if (this.#isValidHeaderName !== isValidName) {
       this.#isValidHeaderName = isValidName;
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
   }
 
@@ -481,7 +480,7 @@ export class HeaderSectionRow extends HTMLElement {
       if (this.#header) {
         this.#header.highlight = false;
       }
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
     }
   }
 

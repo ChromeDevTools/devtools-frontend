@@ -25,7 +25,6 @@ export interface FeedbackButtonData {
 }
 export class FeedbackButton extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
 
   #props: FeedbackButtonData = {
     feedbackUrl: Platform.DevToolsPath.EmptyUrlString,
@@ -33,7 +32,7 @@ export class FeedbackButton extends HTMLElement {
 
   set data(data: FeedbackButtonData) {
     this.#props = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onFeedbackClick(): void {

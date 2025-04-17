@@ -38,7 +38,6 @@ export interface ButtonDialogData {
 
 export class ButtonDialog extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #renderBound = this.#render.bind(this);
 
   #dialog: DialogElement|null = null;
   #showButton: Buttons.Button.Button|null = null;
@@ -50,7 +49,7 @@ export class ButtonDialog extends HTMLElement {
 
   set data(data: ButtonDialogData) {
     this.#data = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #showDialog(): void {
@@ -58,7 +57,7 @@ export class ButtonDialog extends HTMLElement {
       throw new Error('Dialog not found');
     }
     void this.#dialog.setDialogVisible(true);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #closeDialog(evt?: ClickOutsideDialogEvent): void {
@@ -69,7 +68,7 @@ export class ButtonDialog extends HTMLElement {
     if (evt) {
       evt.stopImmediatePropagation();
     }
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #render(): void {

@@ -94,7 +94,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarAnnotationsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #annotations: Trace.Types.File.Annotation[] = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
@@ -113,7 +112,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
 
   set annotations(annotations: Trace.Types.File.Annotation[]) {
     this.#annotations = this.#processAnnotationsList(annotations);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   set annotationEntryToColorMap(annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>) {
@@ -192,7 +191,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   connectedCallback(): void {
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #renderEntryToIdentifier(annotation: Trace.Types.File.EntriesLinkAnnotation): Lit.LitTemplate {

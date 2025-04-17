@@ -50,18 +50,17 @@ export interface TableDataRow {
 
 export class Checklist extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #checklist?: GenericChecklist;
 
   set checklist(checklist: GenericChecklist) {
     this.#checklist = checklist;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   connectedCallback(): void {
     UI.UIUtils.injectCoreStyles(this.#shadow);
 
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #getIcon(check: GenericChecklist['']): Lit.TemplateResult {

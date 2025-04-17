@@ -238,12 +238,17 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
         this.#dialog.hide();
       },
       onAddFolderButtonClick: () => {
-        void Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+        void this.#addFileSystem();
       },
       onListItemKeyDown: this.#onListItemKeyDown.bind(this),
     };
 
     this.#view(viewInput, undefined, this.contentElement);
+  }
+
+  async #addFileSystem(): Promise<void> {
+    await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+    this.contentElement?.querySelector('[aria-label="Select"]')?.shadowRoot?.querySelector('button')?.focus();
   }
 
   async #connectToAutomaticFilesystem(): Promise<void> {

@@ -52,7 +52,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     this.isStriped = striped;
     let startsWithOdd = true;
     if (this.visibleNodes.length) {
-      const allChildren = (this.rootNode() as ViewportDataGridNode<T>).flatChildren();
+      const allChildren = this.filteredNodes();
       startsWithOdd = Boolean(allChildren.indexOf(this.visibleNodes[0]));
     }
     this.updateStripesClass(startsWithOdd);
@@ -168,8 +168,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     visibleNodes: Array<ViewportDataGridNode<T>>,
     offset: number,
   } {
-    const nodes =
-        (this.rootNode() as ViewportDataGridNode<T>).flatChildren().filter(this.testNodeWithFilters.bind(this));
+    const nodes = this.filteredNodes();
 
     if (this.inline) {
       return {topPadding: 0, bottomPadding: 0, contentHeight: 0, visibleNodes: nodes, offset: 0};
@@ -210,14 +209,11 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   override getNumberOfRows(): number {
-    return (this.rootNode() as ViewportDataGridNode<T>)
-        .flatChildren()
-        .filter(this.testNodeWithFilters.bind(this))
-        .length;
+    return this.filteredNodes().length;
   }
 
   private contentHeight(): number {
-    const nodes = (this.rootNode() as ViewportDataGridNode<T>).flatChildren();
+    const nodes = this.filteredNodes();
     let result = 0;
     for (let i = 0, size = nodes.length; i < size; ++i) {
       result += nodes[i].nodeSelfHeight();
@@ -260,7 +256,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     let offset = viewportState.offset;
 
     if (visibleNodes.length) {
-      const nodes = (this.rootNode() as ViewportDataGridNode<T>).flatChildren();
+      const nodes = this.filteredNodes();
       const index = nodes.indexOf(visibleNodes[0]);
       this.updateStripesClass(Boolean(index % 2));
       if (this.keepScrollingToBottom && index !== -1 && Boolean(index % 2) !== this.firstVisibleIsStriped) {
@@ -297,7 +293,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   revealViewportNode(node: ViewportDataGridNode<T>): void {
-    const nodes = (this.rootNode() as ViewportDataGridNode<T>).flatChildren();
+    const nodes = this.filteredNodes();
     const index = nodes.indexOf(node);
     if (index === -1) {
       return;
@@ -316,6 +312,10 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
       scrollTop = toY - visibleHeight;
     }
     this.scrollContainer.scrollTop = scrollTop;
+  }
+
+  private filteredNodes(): Array<ViewportDataGridNode<T>> {
+    return (this.rootNode() as ViewportDataGridNode<T>).flatChildren().filter(this.testNodeWithFilters.bind(this));
   }
 }
 

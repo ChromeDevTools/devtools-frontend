@@ -40,7 +40,8 @@ import {
   selectionFromRangeMilliSeconds,
   selectionIsEvent,
   selectionIsRange,
-  type TimelineSelection,
+  selectionsEqual,
+  type TimelineSelection
 } from './TimelineSelection.js';
 import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
@@ -1398,6 +1399,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   setSelectionAndReveal(selection: TimelineSelection|null): void {
+    if (selection && this.#currentSelection && selectionsEqual(selection, this.#currentSelection)) {
+      return;
+    }
+
     this.#currentSelection = selection;
 
     // Clear any existing entry selection.

@@ -804,13 +804,21 @@ window.aiAssistanceTestPatchPrompt =
         throw new Error(`${file} has no content`);
       }
       for (const m of change.matches) {
-        if (!content.includes(m)) {
-          results.push(`Did not match ${m} in ${file}`);
+        if (!content.match(new RegExp(m, 'gm'))) {
+          results.push({
+            message: `Did not match ${m} in ${file}`,
+            file,
+            content,
+          });
         }
       }
       for (const m of change.doesNotMatch || []) {
-        if (content.includes(m)) {
-          results.push(`Unexpectedly matched ${m} in ${file}`);
+        if (content.match(new RegExp(m, 'gm'))) {
+          results.push({
+            message: `Unexpectedly matched ${m} in ${file}`,
+            file,
+            content,
+          });
         }
       }
     }

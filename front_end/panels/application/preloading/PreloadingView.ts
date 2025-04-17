@@ -12,7 +12,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
@@ -21,6 +20,7 @@ import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
+import {ruleSetTagOrLocationShort} from './components/PreloadingString.js';
 import type * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
@@ -181,16 +181,6 @@ class PreloadingUIUtils {
     // RuleSetId is form of '<processId>.<processLocalId>'
     const index = id.indexOf('.');
     return index === -1 ? id : id.slice(index + 1);
-  }
-
-  // TODO(https://crbug.com/1410709): Move
-  // front_end/panels/application/preloading/components/PreloadingString.ts
-  // to
-  // front_end/panels/application/preloading/helper/PreloadingString.ts
-  // and use PreloadingString.ruleSetLocationShort.
-  static ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string {
-    const url = ruleSet.url === undefined ? pageURL : ruleSet.url as Platform.DevToolsPath.UrlString;
-    return Bindings.ResourceUtils.displayNameForURL(url);
   }
 }
 
@@ -676,12 +666,7 @@ class PreloadingRuleSetSelector implements
       return i18n.i18n.lockedString('Internal error');
     }
 
-    // TODO(https://crbug.com/393408589): Use `PreloadingString.ruleSetTagOrLocationShort` to reduce code redundancy.
-    const sourceJson = JSON.parse(ruleSet['sourceText']);
-    if ('tag' in sourceJson) {
-      return '"' + sourceJson['tag'] + '"';
-    }
-    return PreloadingUIUtils.ruleSetLocationShort(ruleSet, pageURL());
+    return ruleSetTagOrLocationShort(ruleSet, pageURL());
   }
 
   subtitleFor(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): string {

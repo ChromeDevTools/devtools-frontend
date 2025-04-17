@@ -127,8 +127,56 @@ export class FeatureSet {
   }
 }
 
+/**
+ * Constructs a human readable error message for the given build `error`.
+ *
+ * @param {Error} error the `Error` from the failed `autoninja` invocation.
+ * @param {string} outDir the absolute path to the `target` out directory.
+ * @param {string} target the targe relative to `//out`.
+ * @return {string} the human readable error message.
+ */
+function buildErrorMessageForNinja(error, outDir, target) {
+  const {message, stderr, stdout} = error;
+  if (stderr) {
+    // Anything that went to stderr has precedence.
+    return `Failed to build \`${target}' in \`${outDir}'
+
+${stderr}
+`;
+  }
+  if (stdout) {
+    // Check for `tsc` or `esbuild` errors in the stdout.
+    const tscErrors = [...stdout.matchAll(/^[^\s].*\(\d+,\d+\): error TS\d+:\s+.*$/gm)].map(([tscError]) => tscError);
+    if (!tscErrors.length) {
+      // We didn't find any `tsc` errors, but maybe there are `esbuild` errors.
+      // Transform these into the `tsc` format (with a made up error code), so
+      // we can report all TypeScript errors consistently in `tsc` format (which
+      // is well-known and understood by tools).
+      const esbuildErrors = stdout.matchAll(/^✘ \[ERROR\] ([^\n]+)\n\n\s+\.\.\/\.\.\/(.+):(\d+):(\d+):/gm);
+      for (const [, message, filename, line, column] of esbuildErrors) {
+        tscErrors.push(`${filename}(${line},${column}): error TS0000: ${message}`);
+      }
+    }
+    if (tscErrors.length) {
+      return `TypeScript compilation failed for \`${target}'
+
+${tscErrors.join('\n')}
+`;
+    }
+
+    // At the very least we strip `ninja: Something, something` lines from the
+    // standard output, since that's not particularly helpful.
+    const output = stdout.replaceAll(/^ninja: [^\n]+\n+/mg, '').trim();
+    return `Failed to build \`${target}' in \`${outDir}'
+
+${output}
+`;
+  }
+  return `Failed to build \`${target}' in \`${outDir}' (${message.substring(0, message.indexOf('\n'))})`;
+}
+
 export const BuildStep = {
-  GN: 'gn-gen',
+  GN: 'gn',
   AUTONINJA: 'autoninja',
 };
 
@@ -144,21 +192,13 @@ export class BuildError extends Error {
    */
   constructor(step, options) {
     const {cause, outDir, target} = options;
-    super(`Failed to build target ${target} in ${outDir}`, {cause});
-    this.name = 'BuildError';
+    const message = step === BuildStep.GN ? `\`gn' failed to initialize out directory ${outDir}` :
+                                            buildErrorMessageForNinja(cause, outDir, target);
+    super(message, {cause});
     this.step = step;
+    this.name = 'BuildError';
     this.target = target;
     this.outDir = outDir;
-  }
-
-  toString() {
-    const {cause} = this;
-    const {stdout} = cause;
-    if (stdout) {
-      return stdout;
-    }
-    const {message} = this;
-    return `${message}\n${cause.message}`;
   }
 }
 

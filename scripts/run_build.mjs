@@ -48,7 +48,7 @@ try {
   await prepareBuild(target);
   spinner.clear();
 } catch (error) {
-  spinner.fail(error.toString());
+  spinner.fail(error.message);
   process.exit(1);
 }
 
@@ -59,7 +59,7 @@ if (!skipInitialBuild) {
     const {time} = await build(target);
     spinner.succeed(`Build ready (${timeFormatter.format(time)})`);
   } catch (error) {
-    spinner.fail(error.toString());
+    spinner.fail(error.message);
     process.exit(1);
   }
 }
@@ -93,7 +93,7 @@ if (watch) {
         spinner.succeed(`Rebuild successfully (${timeFormatter.format(time)})`);
       } catch (error) {
         if (error.name !== 'AbortError') {
-          spinner.fail(error.toString());
+          spinner.fail(error.message);
         }
       }
     });

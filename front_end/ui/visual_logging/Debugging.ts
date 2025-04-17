@@ -649,9 +649,15 @@ function compareVeEvents(actual: TestLogEntry, expected: TestLogEntry): boolean 
   return false;
 }
 
-let pendingEventExpectation:
-    {expectedEvents: TestLogEntry[], missingEvents?: TestLogEntry[], success: () => void, fail: (arg0: Error) => void}|
-    null = null;
+interface PendingEventExpectation {
+  expectedEvents: TestLogEntry[];
+  missingEvents?: TestLogEntry[];
+  unmatchingEvents: TestLogEntry[];
+  success: () => void;
+  fail: (arg0: Error) => void;
+}
+
+let pendingEventExpectation: PendingEventExpectation|null = null;
 
 function formatImpressions(impressions: string[]): string {
   const result: string[] = [];
@@ -671,6 +677,10 @@ function formatImpressions(impressions: string[]): string {
 
 const EVENT_EXPECTATION_TIMEOUT = 5000;
 
+function formatVeEvents(events: TestLogEntry[]): string {
+  return events.map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions)).join('\n');
+}
+
 // Verifies that VE events contains all the expected events in given order.
 // Unexpected VE events are ignored.
 export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<void> {
@@ -678,16 +688,14 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
     throw new Error('VE events expectation already set. Cannot set another one until the previous is resolved');
   }
   const {promise, resolve: success, reject: fail} = Promise.withResolvers<void>();
-  pendingEventExpectation = {expectedEvents, success, fail};
+  pendingEventExpectation = {expectedEvents, success, fail, unmatchingEvents: []};
   checkPendingEventExpectation();
 
   const timeout = setTimeout(() => {
     if (pendingEventExpectation?.missingEvents) {
       pendingEventExpectation.fail(new Error(
-          'Missing VE Events: ' +
-          pendingEventExpectation.missingEvents
-              .map(e => 'interaction' in e ? e.interaction : formatImpressions(e.impressions))
-              .join('\n')));
+          '\nMissing VE Events:\n' + formatVeEvents(pendingEventExpectation.missingEvents) +
+          '\nUnmatched VE Events:\n' + formatVeEvents(pendingEventExpectation.unmatchingEvents)));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
 
@@ -703,16 +711,38 @@ function checkPendingEventExpectation(): void {
     return;
   }
   const actualEvents = [...veDebugEventsLog] as TestLogEntry[];
+  let partialMatch = false;
+  const matchedImpressions = new Set<string>();
+  pendingEventExpectation.unmatchingEvents = [];
   for (let i = 0; i < pendingEventExpectation.expectedEvents.length; ++i) {
     const expectedEvent = pendingEventExpectation.expectedEvents[i];
     while (true) {
       if (actualEvents.length <= i) {
         pendingEventExpectation.missingEvents = pendingEventExpectation.expectedEvents.slice(i);
+        for (const event of pendingEventExpectation.missingEvents) {
+          if ('impressions' in event) {
+            event.impressions = event.impressions.filter(impression => !matchedImpressions.has(impression));
+          }
+        }
         return;
       }
       if (!compareVeEvents(actualEvents[i], expectedEvent)) {
+        if (partialMatch) {
+          const unmatching = {...actualEvents[i]};
+          if ('impressions' in unmatching && 'impressions' in expectedEvent) {
+            unmatching.impressions = unmatching.impressions.filter(impression => {
+              const matched = expectedEvent.impressions.includes(impression);
+              if (matched) {
+                matchedImpressions.add(impression);
+              }
+              return !matched;
+            });
+          }
+          pendingEventExpectation.unmatchingEvents.push(unmatching);
+        }
         actualEvents.splice(i, 1);
       } else {
+        partialMatch = true;
         break;
       }
     }

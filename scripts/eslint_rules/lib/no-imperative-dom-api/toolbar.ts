@@ -142,6 +142,50 @@ export const toolbar = {
             });
           }
         }
+        if (isIdentifier(toolbarItem, ['ToolbarCheckbox', 'ToolbarSettingCheckbox'])) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'devtools-checkbox';
+          const title = node.arguments[0];
+          if (title && !isIdentifier(title, 'undefined')) {
+            let text: Node|string = title;
+            if (isIdentifier(toolbarItem, 'ToolbarSettingCheckbox')) {
+              domFragment.directives.push({
+                name: 'bindToSetting',
+                arguments: [title],
+              });
+              const alternateTitle = node.arguments[2];
+              if (alternateTitle && !isIdentifier(alternateTitle, 'undefined')) {
+                text = alternateTitle;
+              } else {
+                text = '${' + sourceCode.getText(title) + '.title()}';
+              }
+            }
+            domFragment.textContent = text;
+          }
+          const tooltip = node.arguments[1];
+          if (tooltip && !isIdentifier(tooltip, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'title',
+              value: tooltip,
+            });
+          }
+          if (isIdentifier(toolbarItem, 'ToolbarCheckbox')) {
+            const listener = node.arguments[2];
+            if (listener && !isIdentifier(listener, 'undefined')) {
+              domFragment.eventListeners.push({
+                key: 'click',
+                value: listener,
+              });
+            }
+            const jslogContext = node.arguments[3];
+            if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
+              domFragment.bindings.push({
+                key: 'jslogContext',
+                value: jslogContext,
+              });
+            }
+          }
+        }
       }
     };
   }

@@ -18,7 +18,40 @@ export const uiUtils = {
     const sourceCode = context.getSourceCode();
     return {
       CallExpression(node: CallExpression) {
-        const func =
+        let func = isMemberExpression(
+            node.callee, n => isIdentifierChain(n, ['UI', 'UIUtils', 'CheckboxLabel']),
+            n => isIdentifier(n, ['create', 'createWithStringLiteral']));
+        if (func) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'devtools-checkbox';
+          const args = node.arguments;
+          const title = args.shift();
+          if (title && !isIdentifier(title, 'undefined')) {
+            domFragment.textContent = title;
+          }
+          const checked = args.shift();
+          if (checked && !isIdentifier(checked, 'undefined')) {
+            domFragment.booleanAttributes.push({
+              key: 'checked',
+              value: checked,
+            });
+          }
+          if (isIdentifier(func, 'create')) {
+            args.shift();  // TODO(b/348173254): Support subtitle
+          }
+          const jslogContext = args.shift();
+          if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
+            domFragment.bindings.push({
+              key: 'jslogContext',
+              value: jslogContext,
+            });
+          }
+          const small = args.shift();
+          if (small && !isIdentifier(small, 'undefined')) {
+            domFragment.classList.push('small');
+          }
+        }
+        func =
             isMemberExpression(node.callee, n => isIdentifierChain(n, ['UI', 'UIUtils']), n => n.type === 'Identifier');
         if (!func) {
           return;
@@ -118,6 +151,22 @@ export const uiUtils = {
         }
       },
       functionCall(call: CallExpression, _firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean {
+        if (isIdentifierChain(call.callee, ['UI', 'SettingsUI', 'bindCheckbox'])) {
+          let setting = secondArg;
+          if (setting.type === 'CallExpression' &&
+              isMemberExpression(
+                  setting.callee,
+                  n => n.type === 'CallExpression' &&
+                      isIdentifierChain(n.callee, ['Common', 'Settings', 'Settings', 'instance']),
+                  n => isIdentifier(n, 'moduleSetting'))) {
+            setting = setting.arguments[0];
+          }
+          domFragment.directives.push({
+            name: 'bindToSetting',
+            arguments: [setting],
+          });
+          return true;
+        }
         if (isIdentifierChain(call.callee, ['UI', 'UIUtils', 'createTextChild'])) {
           domFragment.textContent = secondArg;
           return true;

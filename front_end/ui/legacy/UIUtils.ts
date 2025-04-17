@@ -1393,6 +1393,11 @@ export class CheckboxLabel extends HTMLElement {
     this.#checkboxElement.click();
   }
 
+  set jslogContext(jslogContext: string) {
+    this.#checkboxElement.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
+  }
+
   /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */
   static createWithStringLiteral(title?: string, checked?: boolean, jslogContext?: string, small?: boolean):
       CheckboxLabel {

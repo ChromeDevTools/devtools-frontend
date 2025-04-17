@@ -20,12 +20,14 @@ const domFragments = new Map<Node|ClassMember|Variable, DomFragment>();
 
 export class DomFragment {
   tagName?: string;
-  classList: Node[] = [];
+  classList: Array<Node|string> = [];
   attributes: Array<{key: string, value: Node|string}> = [];
+  booleanAttributes: Array<{key: string, value: Node|string}> = [];
   style: Array<{key: string, value: Node}> = [];
   eventListeners: Array<{key: string, value: Node}> = [];
   bindings: Array<{key: string, value: Node|string}> = [];
-  textContent?: Node;
+  directives: Array<{name: string, arguments: Node[]}> = [];
+  textContent?: Node|string;
   children: DomFragment[] = [];
   parent?: DomFragment;
   expression?: string;
@@ -126,6 +128,11 @@ export class DomFragment {
           `${attribute.key}=${attributeValue(toOutputString(attribute.value))}`,
       );
     }
+    for (const attribute of this.booleanAttributes || []) {
+      appendExpression(
+          `?${attribute.key}=${attributeValue(toOutputString(attribute.value, /* quoteLiterals=*/ true))}`,
+      );
+    }
     for (const eventListener of this.eventListeners || []) {
       appendExpression(
           `@${eventListener.key}=${
@@ -142,6 +149,9 @@ export class DomFragment {
                   /* quoteLiterals=*/ true,
                   )}`,
       );
+    }
+    for (const directive of this.directives || []) {
+      appendExpression(`\${${directive.name}(${directive.arguments.map(a => sourceCode.getText(a)).join(', ')})}`);
     }
     if (this.style.length) {
       const style = this.style.map(s => `${s.key}:${toOutputString(s.value)}`).join('; ');

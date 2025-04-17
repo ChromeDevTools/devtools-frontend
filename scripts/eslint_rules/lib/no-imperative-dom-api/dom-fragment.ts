@@ -177,7 +177,7 @@ export class DomFragment {
       }
       components.push(`\n${' '.repeat(indent)}`);
     }
-    if (this.tagName) {
+    if (this.tagName && this.tagName !== 'input') {
       components.push('</', this.tagName, '>');
     }
     return components;

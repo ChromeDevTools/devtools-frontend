@@ -127,6 +127,34 @@ export const uiUtils = {
             value: variant,
           });
         }
+        if (isIdentifier(func, 'createInput')) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'input';
+          domFragment.attributes.push({
+            key: 'spellcheck',
+            value: 'false',
+          });
+          domFragment.classList.push('harmony-input');
+          const className = node.arguments[0];
+          if (className && !isIdentifier(className, 'undefined')) {
+            domFragment.classList.push(className);
+          }
+          const type = node.arguments[1];
+          if (type && !isIdentifier(type, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'type',
+              value: type,
+            });
+          }
+          const jslogContext = node.arguments[2];
+          if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'jslog',
+              value: '${VisualLogging.textField(' + sourceCode.getText(jslogContext) +
+                  ').track({keydown: \'Enter\', change: true})}'
+            });
+          }
+        }
         if (isIdentifier(func, 'createOption')) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'option';

@@ -504,7 +504,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
           scope="some-scope"></img>
       <input type="text" placeholder="some-placeholder" value="some-value"
-          ?disabled=\${!this.enabled} ?checked=\${true}></input>
+          ?disabled=\${!this.enabled} ?checked=\${true}>
     </div>\`,
     target, {host: input});
 };
@@ -721,6 +721,33 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <iframe sandbox tabindex="-1"></iframe>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.appendChild(UI.UIUtils.createInput('add-source-map', 'text', 'url'));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <input class="harmony-input add-source-map" spellcheck="false" type="text"
+          jslog=\${VisualLogging.textField('url').track({keydown: 'Enter', change: true})}>
     </div>\`,
     target, {host: input});
 };

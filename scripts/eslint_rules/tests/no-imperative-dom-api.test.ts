@@ -703,5 +703,34 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', '');
+    iframe.tabIndex = -1;
+    this.contentElement.appendChild(iframe);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <iframe sandbox tabindex="-1"></iframe>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

@@ -91,6 +91,9 @@ export class DomFragment {
       if (node.type === 'Literal' && !quoteLiterals) {
         return node.value?.toString() ?? '';
       }
+      if (node.type === 'UnaryExpression' && node.operator === '-' && node.argument.type === 'Literal') {
+        return '-' + node.argument.value;
+      }
       const text = sourceCode.getText(node);
       if (node.type === 'TemplateLiteral') {
         return text.substr(1, text.length - 2);
@@ -124,9 +127,13 @@ export class DomFragment {
       );
     }
     for (const attribute of this.attributes || []) {
-      appendExpression(
-          `${attribute.key}=${attributeValue(toOutputString(attribute.value))}`,
-      );
+      const value = attribute.value;
+      const valueEmpty = typeof value === 'string' ? value === '' : value.type === 'Literal' && value.value === '';
+      if (valueEmpty) {
+        appendExpression(attribute.key);
+      } else {
+        appendExpression(`${attribute.key}=${attributeValue(toOutputString(value))}`);
+      }
     }
     for (const attribute of this.booleanAttributes || []) {
       appendExpression(

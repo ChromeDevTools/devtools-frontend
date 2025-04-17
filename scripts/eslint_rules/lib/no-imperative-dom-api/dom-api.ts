@@ -28,7 +28,7 @@ export const domApi = {
         }
         if (isIdentifier(property, [
               'alt', 'draggable', 'height', 'hidden', 'href', 'id', 'name', 'placeholder', 'rel', 'role', 'scope',
-              'slot', 'spellcheck', 'src', 'tabindex', 'title', 'type', 'value', 'width'
+              'slot', 'spellcheck', 'src', 'tabIndex', 'title', 'type', 'value', 'width'
             ])) {
           domFragment.attributes.push({key: property.name.toLowerCase(), value: propertyValue});
           return true;

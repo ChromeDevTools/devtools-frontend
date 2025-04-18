@@ -349,6 +349,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   responseReceivedPromise?: Promise<void>;
   responseReceivedPromiseResolve?: () => void;
   directSocketInfo?: DirectSocketInfo;
+  readonly #directSocketChunksInternal: DirectSocketChunk[];
 
   constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
@@ -434,6 +435,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#wasIntercepted = false;
     this.#hasOverriddenContent = false;
     this.#hasThirdPartyCookiePhaseoutIssue = false;
+    this.#directSocketChunksInternal = [];
   }
 
   static create(
@@ -1541,6 +1543,15 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.dispatchEventToListeners(Events.WEBSOCKET_FRAME_ADDED, frame);
   }
 
+  directSocketChunks(): DirectSocketChunk[] {
+    return this.#directSocketChunksInternal;
+  }
+
+  addDirectSocketChunk(chunk: DirectSocketChunk): void {
+    this.#directSocketChunksInternal.push(chunk);
+    this.dispatchEventToListeners(Events.DIRECTSOCKET_CHUNK_ADDED, chunk);
+  }
+
   eventSourceMessages(): readonly EventSourceMessage[] {
     return this.#serverSentEvents?.eventSourceMessages ?? [];
   }
@@ -1809,6 +1820,7 @@ export enum Events {
   REQUEST_HEADERS_CHANGED = 'RequestHeadersChanged',
   RESPONSE_HEADERS_CHANGED = 'ResponseHeadersChanged',
   WEBSOCKET_FRAME_ADDED = 'WebsocketFrameAdded',
+  DIRECTSOCKET_CHUNK_ADDED = 'DirectsocketChunkAdded',
   EVENT_SOURCE_MESSAGE_ADDED = 'EventSourceMessageAdded',
   TRUST_TOKEN_RESULT_ADDED = 'TrustTokenResultAdded',
 }
@@ -1820,6 +1832,7 @@ export interface EventTypes {
   [Events.REQUEST_HEADERS_CHANGED]: void;
   [Events.RESPONSE_HEADERS_CHANGED]: void;
   [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame;
+  [Events.DIRECTSOCKET_CHUNK_ADDED]: DirectSocketChunk;
   [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage;
   [Events.TRUST_TOKEN_RESULT_ADDED]: void;
 }
@@ -2136,4 +2149,19 @@ export interface DirectSocketInfo {
   errorMessage?: string;
   createOptions: DirectSocketCreateOptions;
   openInfo?: DirectSocketOpenInfo;
+}
+
+export interface DirectSocketChunk {
+  // error is here in case of type Error
+  data: string;
+  type: DirectSocketChunkType;
+  timestamp: number;
+  // only for p2p udp sockets
+  remoteUrl?: string;
+}
+
+export enum DirectSocketChunkType {
+  SEND = 'send',
+  RECEIVE = 'receive',
+  ERROR = 'error'
 }

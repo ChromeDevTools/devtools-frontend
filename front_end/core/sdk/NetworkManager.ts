@@ -45,6 +45,7 @@ import * as Root from '../root/root.js';
 import {Cookie} from './Cookie.js';
 import {
   type BlockedCookieWithReason,
+  DirectSocketChunkType,
   DirectSocketStatus,
   DirectSocketType,
   Events as NetworkRequestEvents,
@@ -1308,13 +1309,52 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
 
-  directTCPSocketChunkSent(_event: Protocol.Network.DirectTCPSocketChunkSentEvent): void {
+  directTCPSocketChunkSent(event: Protocol.Network.DirectTCPSocketChunkSentEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.addDirectSocketChunk({
+      data: event.data,
+      type: DirectSocketChunkType.SEND,
+      timestamp: event.timestamp,
+    });
+    networkRequest.responseReceivedTime = event.timestamp;
+
+    this.updateNetworkRequest(networkRequest);
   }
 
-  directTCPSocketChunkReceived(_event: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void {
+  directTCPSocketChunkReceived(event: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.addDirectSocketChunk({
+      data: event.data,
+      type: DirectSocketChunkType.RECEIVE,
+      timestamp: event.timestamp,
+    });
+    networkRequest.responseReceivedTime = event.timestamp;
+
+    this.updateNetworkRequest(networkRequest);
   }
 
-  directTCPSocketChunkError(_event: Protocol.Network.DirectTCPSocketChunkErrorEvent): void {
+  directTCPSocketChunkError(event: Protocol.Network.DirectTCPSocketChunkErrorEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.addDirectSocketChunk({
+      data: event.errorMessage,
+      type: DirectSocketChunkType.ERROR,
+      timestamp: event.timestamp,
+    });
+    networkRequest.responseReceivedTime = event.timestamp;
+
+    this.updateNetworkRequest(networkRequest);
   }
 
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {

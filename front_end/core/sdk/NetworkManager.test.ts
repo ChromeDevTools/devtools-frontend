@@ -254,89 +254,200 @@ describeWithMockConnection('NetworkManager', () => {
           },
         });
       });
+    });
 
-      describe('on CDP event closed', () => {
-        it('does nothing if no request exists', () => {
-          const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
-          const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
-          const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
-          networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
-            finishedRequests.push(event.data);
-          });
-
-          networkDispatcher.directTCPSocketClosed({
-            identifier: 'mockId' as Protocol.Network.RequestId,
-            timestamp: 1000,
-          });
-
-          assert.lengthOf(finishedRequests, 0);
+    describe('on CDP event closed', () => {
+      it('does nothing if no request exists', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
         });
 
-        it('does nothing if the request has no direct socket info', () => {
-          const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
-          const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
-          const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
-          networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
-            finishedRequests.push(event.data);
-          });
-          networkDispatcher.webTransportCreated(
-              {transportId: 'mockId' as Protocol.Network.RequestId, url: 'example.com', timestamp: 1000});
-
-          networkDispatcher.directTCPSocketClosed({
-            identifier: 'mockId' as Protocol.Network.RequestId,
-            timestamp: 1000,
-          });
-
-          assert.lengthOf(finishedRequests, 0);
+        networkDispatcher.directTCPSocketClosed({
+          identifier: 'mockId' as Protocol.Network.RequestId,
+          timestamp: 1000,
         });
 
-        it('updates request successfully', () => {
-          const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
-          const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
-          const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
-          networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
-            finishedRequests.push(event.data);
-          });
+        assert.lengthOf(finishedRequests, 0);
+      });
 
-          networkDispatcher.directTCPSocketCreated({
-            identifier: 'mockId' as Protocol.Network.RequestId,
+      it('does nothing if the request has no direct socket info', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+        networkDispatcher.webTransportCreated(
+            {transportId: 'mockId' as Protocol.Network.RequestId, url: 'example.com', timestamp: 1000});
+
+        networkDispatcher.directTCPSocketClosed({
+          identifier: 'mockId' as Protocol.Network.RequestId,
+          timestamp: 1000,
+        });
+
+        assert.lengthOf(finishedRequests, 0);
+      });
+
+      it('updates request successfully', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+
+        networkDispatcher.directTCPSocketCreated({
+          identifier: 'mockId' as Protocol.Network.RequestId,
+          remoteAddr: 'example.com',
+          remotePort: 1001,
+          options: {
+            noDelay: true,
+            keepAliveDelay: 1002,
+            sendBufferSize: 1003,
+            receiveBufferSize: 1004,
+            dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv4,
+          },
+          timestamp: 1000,
+        });
+        assert.lengthOf(finishedRequests, 0);
+
+        // update the request and check all fields are filled as necessary
+        networkDispatcher.directTCPSocketClosed({
+          identifier: 'mockId' as Protocol.Network.RequestId,
+          timestamp: 1000,
+        });
+        assert.lengthOf(finishedRequests, 1);
+
+        const req: SDK.NetworkRequest.NetworkRequest = finishedRequests[0];
+        assert.strictEqual(req.statusText, 'Closed');
+        assert.notExists(req.failed);
+        assert.isTrue(req.finished);
+        assert.deepEqual(req.directSocketInfo, {
+          type: SDK.NetworkRequest.DirectSocketType.TCP,
+          status: SDK.NetworkRequest.DirectSocketStatus.CLOSED,
+          createOptions: {
             remoteAddr: 'example.com',
             remotePort: 1001,
-            options: {
-              noDelay: true,
-              keepAliveDelay: 1002,
-              sendBufferSize: 1003,
-              receiveBufferSize: 1004,
-              dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv4,
-            },
-            timestamp: 1000,
-          });
-          assert.lengthOf(finishedRequests, 0);
+            noDelay: true,
+            keepAliveDelay: 1002,
+            sendBufferSize: 1003,
+            receiveBufferSize: 1004,
+            dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv4,
+          },
+        });
+      });
+    });
 
-          // update the request and check all fields are filled as necessary
-          networkDispatcher.directTCPSocketClosed({
-            identifier: 'mockId' as Protocol.Network.RequestId,
-            timestamp: 1000,
-          });
-          assert.lengthOf(finishedRequests, 1);
+    describe('on CDP chunk event', () => {
+      let networkManager: SDK.NetworkManager.NetworkManager;
+      let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+      let updatedRequests: SDK.NetworkRequest.NetworkRequest[];
+      let targetRequest: SDK.NetworkRequest.NetworkRequest|null;
+      const mockIdentifier = 'mockParamChunkId' as Protocol.Network.RequestId;
+      const baseTimestamp = 1000;
 
-          const req: SDK.NetworkRequest.NetworkRequest = finishedRequests[0];
-          assert.strictEqual(req.statusText, 'Closed');
-          assert.notExists(req.failed);
-          assert.isTrue(req.finished);
-          assert.deepEqual(req.directSocketInfo, {
-            type: SDK.NetworkRequest.DirectSocketType.TCP,
-            status: SDK.NetworkRequest.DirectSocketStatus.CLOSED,
-            createOptions: {
-              remoteAddr: 'example.com',
-              remotePort: 1001,
-              noDelay: true,
-              keepAliveDelay: 1002,
-              sendBufferSize: 1003,
-              receiveBufferSize: 1004,
-              dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv4,
-            },
-          });
+      beforeEach(() => {
+        networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        updatedRequests = [];
+        targetRequest = null;
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          if (event.data.request.requestId() === mockIdentifier) {
+            targetRequest = event.data.request;
+          }
+        });
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directTCPSocketCreated({
+          identifier: mockIdentifier,
+          remoteAddr: 'example-param.com',
+          remotePort: 1005,
+          options: {
+            noDelay: true,
+            keepAliveDelay: 1002,
+            sendBufferSize: 1003,
+            receiveBufferSize: 1004,
+            dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv4,
+          },
+          timestamp: baseTimestamp,
+        });
+      });
+      const testCases = [
+        {
+          description: 'adds SENT chunk to request successfully',
+          eventPayload: {data: 'c2VudCBkYXRh', timestamp: 3000},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.SEND,
+            data: 'c2VudCBkYXRh',
+            timestamp: 3000,
+          }
+        },
+        {
+          description: 'adds RECEIVED chunk to request successfully',
+          eventPayload: {data: 'cmVjZWl2ZWQgZGF0YQ==', timestamp: 4000},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.RECEIVE,
+            data: 'cmVjZWl2ZWQgZGF0YQ==',
+            timestamp: 4000,
+          }
+        },
+        {
+          description: 'adds ERROR chunk to request successfully',
+          eventPayload: {errorMessage: 'Something went wrong', timestamp: 5000},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.ERROR,
+            data: 'Something went wrong',
+            timestamp: 5000,
+          }
+        },
+      ];
+
+      testCases.forEach(testCase => {
+        it(testCase.description, () => {
+          assert.exists(targetRequest, 'Target request should be created in beforeEach');
+          assert.lengthOf(updatedRequests, 0, 'No updates should occur during initial setup');
+
+          switch (testCase.expectedChunk.type) {
+            case SDK.NetworkRequest.DirectSocketChunkType.SEND:
+              networkDispatcher.directTCPSocketChunkSent({
+                identifier: mockIdentifier,
+                data: testCase.eventPayload.data!,
+                timestamp: testCase.eventPayload.timestamp,
+              });
+              break;
+            case SDK.NetworkRequest.DirectSocketChunkType.RECEIVE:
+              networkDispatcher.directTCPSocketChunkReceived({
+                identifier: mockIdentifier,
+                data: testCase.eventPayload.data!,
+                timestamp: testCase.eventPayload.timestamp,
+              });
+              break;
+            case SDK.NetworkRequest.DirectSocketChunkType.ERROR:
+              networkDispatcher.directTCPSocketChunkError({
+                identifier: mockIdentifier,
+                errorMessage: testCase.eventPayload.errorMessage!,
+                timestamp: testCase.eventPayload.timestamp,
+              });
+              break;
+          }
+
+          assert.lengthOf(updatedRequests, 1, 'Should trigger exactly one update');
+          const req = updatedRequests[0];
+
+          assert.strictEqual(req.requestId(), mockIdentifier);
+          assert.strictEqual(
+              req.responseReceivedTime, testCase.eventPayload.timestamp, 'responseReceivedTime should be updated');
+
+          const chunks = req.directSocketChunks();
+          assert.lengthOf(chunks, 1, 'Should have exactly one chunk added');
+          assert.deepEqual(chunks[0], testCase.expectedChunk, 'Chunk details should match expected');
         });
       });
     });

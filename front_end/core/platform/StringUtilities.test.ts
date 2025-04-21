@@ -494,6 +494,9 @@ describe('StringUtilities', () => {
       assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses('a(b)'), 0);
       assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses(')a(b)'), 0);
       assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses(')a(()bc(d(f)('), 3);
+      assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses('"(\')"'), 0);
+      assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses('("(\')"'), 1);
+      assert.strictEqual(Platform.StringUtilities.countUnmatchedLeftParentheses('abc(def"g(h)"i)jkl'), 0);
     });
   });
 

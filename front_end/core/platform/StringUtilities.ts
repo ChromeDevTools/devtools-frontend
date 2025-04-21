@@ -465,8 +465,12 @@ export const findUnclosedCssQuote = function(str: string): string {
 };
 
 export const countUnmatchedLeftParentheses = (str: string): number => {
+  const stringLiteralRegex = /'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"/g;
+  // Remove all matched string literals from the original string.
+  const strWithoutStrings = str.replace(stringLiteralRegex, '');
+
   let unmatchedCount = 0;
-  for (const c of str) {
+  for (const c of strWithoutStrings) {
     if (c === '(') {
       unmatchedCount++;
     } else if (c === ')' && unmatchedCount > 0) {

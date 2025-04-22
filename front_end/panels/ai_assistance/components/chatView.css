@@ -849,6 +849,11 @@ main {
     }
   }
 
+  /* TODO(b/412621009): Remove this once the bug is fixed on the VE logging side */
+  &:not(&[open]) > *:not(summary) {
+    display: none;
+  }
+
   &:not(.saved-to-disk, &[open]):hover::after {
     content: '';
     height: 100%;

@@ -15,6 +15,7 @@ import * as CopyToClipboard from '../../ui/components/copy_to_clipboard/copy_to_
 import type * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelUtils from '../utils/utils.js';
 
 import combinedDiffViewStyles from './combinedDiffView.css.js';
@@ -65,7 +66,7 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
         <div class="summary-left">
           <devtools-icon class="drop-down-icon" .name=${'arrow-drop-down'}></devtools-icon>
           ${icon}
-          <button class="file-name-link" @click=${() => onFileNameClick(fileUrl)}>${fileName}</button>
+          <button class="file-name-link" jslog=${VisualLogging.action('jump-to-file')} @click=${() => onFileNameClick(fileUrl)}>${fileName}</button>
         </div>
         <div class="summary-right">
           <devtools-button

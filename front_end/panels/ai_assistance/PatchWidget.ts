@@ -347,7 +347,7 @@ export class PatchWidget extends UI.Widget.Widget {
         return html`
         <div class="footer">
           ${input.projectName ? html`
-            <div class="change-workspace">
+            <div class="change-workspace" jslog=${VisualLogging.section('patch-widget.workspace')}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
               ${input.onChangeWorkspaceClick ? html`
@@ -364,7 +364,7 @@ export class PatchWidget extends UI.Widget.Widget {
           ` : nothing}
           <div class="apply-to-workspace-container" aria-live="polite">
             ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html`
-              <div class="loading-text-container">
+              <div class="loading-text-container" jslog=${VisualLogging.section('patch-widget.apply-to-workspace-loading')}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
@@ -373,7 +373,7 @@ export class PatchWidget extends UI.Widget.Widget {
             ` : html`
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
-                .jslogContext=${'stage-to-workspace'}
+                .jslogContext=${'patch-widget.apply-to-workspace'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
                 ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
               </devtools-button>
@@ -386,6 +386,7 @@ export class PatchWidget extends UI.Widget.Widget {
             </devtools-button>` : nothing}
             <devtools-button
               aria-details="info-tooltip"
+              .jslogContext=${'patch-widget.info-tooltip-trigger'}
               .iconName=${'info'}
               .variant=${Buttons.Button.Variant.ICON}
               .title=${input.applyToWorkspaceTooltipText}
@@ -404,7 +405,7 @@ export class PatchWidget extends UI.Widget.Widget {
              </div>
           </div>`
         : html`
-          <details class="change-summary">
+          <details class="change-summary" jslog=${VisualLogging.section('patch-widget')}>
             <summary class="header-container" ${Directives.ref(output.summaryRef)}>
               ${renderHeader()}
             </summary>

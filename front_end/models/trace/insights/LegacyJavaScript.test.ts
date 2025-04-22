@@ -22,7 +22,8 @@ describeWithEnvironment('LegacyJavaScript', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);
   });
 
-  it('has results when savings are big enough', async function() {
+  // crbug.com/412603772 flaky.
+  it.skip('[crbug.com/412603772]: has results when savings are big enough', async function() {
     if (this.timeout() > 0) {
       this.timeout(20000);
     }

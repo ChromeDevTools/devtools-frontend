@@ -32,6 +32,8 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
   'uniqueContextId not found',
   'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}',
+  // Some left-over a11y calls show up in the logs.
+  'Request Accessibility.getChildAXNodes failed. {"code":-32602,"message":"Invalid ID"}',
   'Unable to create texture',
   'Not allowed to load local resource: devtools://theme/colors.css',
   // neterror.js started serving sourcemaps and we're requesting it unnecessarily.

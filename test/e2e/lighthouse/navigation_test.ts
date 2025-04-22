@@ -67,7 +67,8 @@ describe('Navigation', function() {
     }
   });
 
-  it('successfully returns a Lighthouse report', async () => {
+  // crbug.com/412544161 fails after a roll.
+  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 
@@ -180,7 +181,8 @@ describe('Navigation', function() {
     assert.strictEqual(await getServiceWorkerCount(), 0);
   });
 
-  it('successfully returns a Lighthouse report with DevTools throttling', async () => {
+  // crbug.com/412544161 fails after a roll.
+  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report with DevTools throttling', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
 
     await setThrottlingMethod('devtools');
@@ -213,7 +215,8 @@ describe('Navigation', function() {
     assert.isOk(viewTraceButton);
   });
 
-  it('successfully returns a Lighthouse report when settings changed', async () => {
+  // crbug.com/412544161 fails after a roll.
+  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report when settings changed', async () => {
     await setDevToolsSettings({language: 'es'});
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();

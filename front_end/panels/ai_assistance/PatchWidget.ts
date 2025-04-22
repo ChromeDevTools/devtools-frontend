@@ -211,6 +211,8 @@ export class PatchWidget extends UI.Widget.Widget {
       Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance().automaticFileSystem;
   #applyToDisconnectedAutomaticWorkspace = false;
   #popoverHelper: UI.PopoverHelper.PopoverHelper|null = null;
+  // `rpcId` from the `applyPatch` request
+  #rpcId: Host.AidaClient.RpcGlobalId|null = null;
 
   constructor(element?: HTMLElement, view?: View, opts?: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -686,8 +688,12 @@ export class PatchWidget extends UI.Widget.Widget {
     }
 
     this.#patchSuggestionState = PatchSuggestionState.LOADING;
+    this.#rpcId = null;
     this.requestUpdate();
     const {response, processedFiles} = await this.#applyPatch(changeSummary);
+    if (response && 'rpcId' in response && response.rpcId) {
+      this.#rpcId = response.rpcId;
+    }
     if (response?.type === AiAssistanceModel.ResponseType.ANSWER) {
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
     } else if (
@@ -718,6 +724,7 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     this.#patchSources = undefined;
     void this.changeManager?.popStashedChanges();
+    this.#submitRating(Host.AidaClient.Rating.NEGATIVE);
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.#viewOutput.changeRef?.value?.focus();
@@ -735,7 +742,24 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     });
 
     this.#savedToDisk = true;
+    this.#submitRating(Host.AidaClient.Rating.POSITIVE);
     this.requestUpdate();
+  }
+
+  #submitRating(rating: Host.AidaClient.Rating): void {
+    if (!this.#rpcId) {
+      return;
+    }
+
+    void this.#aidaClient.registerClientEvent({
+      corresponding_aida_rpc_global_id: this.#rpcId,
+      disable_user_content_logging: true,
+      do_conversation_client_event: {
+        user_feedback: {
+          sentiment: rating,
+        },
+      },
+    });
   }
 
   async #applyPatch(changeSummary: string): Promise<{

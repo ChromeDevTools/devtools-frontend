@@ -264,9 +264,11 @@ export async function createPatchWidget(options?: {
   };
 }
 
-export async function createPatchWidgetWithDiffView() {
-  const {view, widget, aidaClient} =
-      await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
+export async function createPatchWidgetWithDiffView(options?: {
+  aidaClient?: Host.AidaClient.AidaClient,
+}) {
+  const aidaClient = options?.aidaClient ?? mockAidaClient([[{explanation: 'patch applied'}]]);
+  const {view, widget} = await createPatchWidget({aidaClient});
   widget.changeSummary = 'body { background-color: red; }';
   view.input.onApplyToWorkspace();
   assert.strictEqual(

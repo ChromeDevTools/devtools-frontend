@@ -6,7 +6,7 @@ import path from 'path';
 
 import rule from '../lib/l10n-filename-matches.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const optionsFrontEndDir = [
   {

@@ -9,7 +9,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {createRule} from './tsUtils.ts';  // Assuming tsUtils.ts is in the same directory
+import {createRule} from './utils/ruleCreator.ts';
 
 type MessageIds = 'unexpectedAssertStrictEqual'|'unexpectedAssertNotStrictEqual';
 

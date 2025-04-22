@@ -4,7 +4,7 @@
 
 import rule from '../lib/l10n-no-uistrings-export.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('l10n-no-uistrings-export', rule, {
   valid: [

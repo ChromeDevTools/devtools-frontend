@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-customized-builtin-elements.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-customized-builtin-elements', rule, {
   valid: [

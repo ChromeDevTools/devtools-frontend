@@ -6,7 +6,7 @@ import type {AST_NODE_TYPES} from '@typescript-eslint/utils';
 
 import rule from '../lib/enforce-optional-properties-last.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('optional-properties-last', rule, {
   valid: [

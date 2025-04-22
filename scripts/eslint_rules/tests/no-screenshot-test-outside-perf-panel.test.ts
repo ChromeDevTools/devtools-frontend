@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/no-screenshot-test-outside-perf-panel.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const enabledTestCode = `describe('Performance panel', () => {
     itScreenshot('renders the timeline correctly', async () => {

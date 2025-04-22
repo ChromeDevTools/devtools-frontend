@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-it-screenshot-only-or-repeat.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-it-screenshot-only-or-repeat', rule, {
   valid: [

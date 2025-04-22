@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-new-lit-element-components.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-new-lit-element-components', rule, {
   valid: [

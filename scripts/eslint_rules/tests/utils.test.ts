@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const parser = require('@typescript-eslint/parser');
-const {assert} = require('chai');
+import parser from '@typescript-eslint/parser';
+import {assert} from 'chai';
 
-const utils = require('../lib/utils.js');
+import {isLitHtmlRenderCall, isLitHtmlTemplateCall} from '../lib/utils/lit.ts';
 
 function getParsedExpression(code) {
   const parsed = parser.parse(code).body[0];
@@ -21,28 +21,28 @@ describe('eslint utils', () => {
     it('returns true if the code is Lit.html``', () => {
       const code = 'Lit.html`<span>foo</span>`';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlTemplateCall(expression);
+      const result = isLitHtmlTemplateCall(expression);
       assert.strictEqual(result, true);
     });
 
     it('returns true if the code is html``', () => {
       const code = 'html`<span>foo</span>`';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlTemplateCall(expression);
+      const result = isLitHtmlTemplateCall(expression);
       assert.strictEqual(result, true);
     });
 
     it('returns false if the code is Lit.somethingElse``', () => {
       const code = 'Lit.somethingElse`<span>foo</span>`';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlTemplateCall(expression);
+      const result = isLitHtmlTemplateCall(expression);
       assert.strictEqual(result, false);
     });
 
     it('returns false if the code is another tagged template function``', () => {
       const code = 'notLitHtml`<span>foo</span>`';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlTemplateCall(expression);
+      const result = isLitHtmlTemplateCall(expression);
       assert.strictEqual(result, false);
     });
   });
@@ -51,28 +51,28 @@ describe('eslint utils', () => {
     it('returns true if the code is Lit.render()', () => {
       const code = 'Lit.render(Lit.html``, this.#shadow)';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlRenderCall(expression);
+      const result = isLitHtmlRenderCall(expression);
       assert.strictEqual(result, true);
     });
 
     it('returns true if the code is render()', () => {
       const code = 'render(html``, this.#shadow)';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlRenderCall(expression);
+      const result = isLitHtmlRenderCall(expression);
       assert.strictEqual(result, true);
     });
 
     it('returns false if the code is not render()', () => {
       const code = 'notRender(html``, this.#shadow)';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlRenderCall(expression);
+      const result = isLitHtmlRenderCall(expression);
       assert.strictEqual(result, false);
     });
 
     it('returns false if the code is Lit.notRender()', () => {
       const code = 'Lit.notRender(html``, this.#shadow)';
       const expression = getParsedExpression(code);
-      const result = utils.isLitHtmlRenderCall(expression);
+      const result = isLitHtmlRenderCall(expression);
       assert.strictEqual(result, false);
     });
   });

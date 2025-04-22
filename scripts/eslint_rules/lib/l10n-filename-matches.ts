@@ -5,8 +5,8 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 import * as path from 'path';
 
-import {isModuleScope} from './l10n-helper.ts';
-import {createRule} from './tsUtils.ts';
+import {isModuleScope} from './utils/l10n-helper.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 type CallExpression = TSESTree.CallExpression;
 // True iff the callExpression is `i18n.i18n.registerUIStrings`.

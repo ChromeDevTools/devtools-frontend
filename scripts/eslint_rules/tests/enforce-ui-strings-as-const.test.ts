@@ -4,7 +4,7 @@
 
 import rule from '../lib/enforce-ui-strings-as-const.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('enforce-ui-strings-as-const', rule, {
   valid: [

@@ -4,7 +4,7 @@
 
 import rule from '../lib/screenshot-assertion-in-it-screenshot.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('screenshot-assertion-in-it-screenshot', rule, {
   valid: [

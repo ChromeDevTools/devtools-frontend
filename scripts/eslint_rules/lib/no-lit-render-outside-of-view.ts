@@ -8,8 +8,9 @@
 import type {Rule} from 'eslint';
 import type {ArrowFunctionExpression, FunctionDeclaration, FunctionExpression} from 'estree';
 
-import {createRule} from './tsUtils.ts';
-import {isLitHtmlRenderCall} from './utils.js';
+import {isLitHtmlRenderCall} from './utils/lit.ts';
+import {createRule} from './utils/ruleCreator.ts';
+
 type Node = Rule.Node;
 
 export default createRule({

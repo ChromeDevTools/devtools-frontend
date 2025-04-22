@@ -4,7 +4,7 @@
 
 import rule from '../lib/l10n-no-i18nString-calls-module-instantiation.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('l10n-no-i18nString-calls-module-instantiation', rule, {
   valid: [

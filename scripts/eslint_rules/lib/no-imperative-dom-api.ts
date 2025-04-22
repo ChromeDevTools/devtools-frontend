@@ -18,7 +18,7 @@ import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 type CallExpression = TSESTree.CallExpression;
 type Identifier = TSESTree.Identifier;
 type MemberExpression = TSESTree.MemberExpression;

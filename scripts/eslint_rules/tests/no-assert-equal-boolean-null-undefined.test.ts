@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-assert-equal-boolean-null-undefined.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-assert-equal-boolean-null-undefined', rule, {
   valid: [

@@ -4,7 +4,7 @@
 
 import rule from '../lib/check-was-shown-methods.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('check-was-shown-methods', rule, {
   valid: [

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/inline-type-imports.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('inline-type-imports', rule, {
   valid: [

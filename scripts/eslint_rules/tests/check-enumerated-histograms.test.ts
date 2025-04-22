@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/check-enumerated-histograms.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('check-enumerated-histograms', rule, {
   valid: [

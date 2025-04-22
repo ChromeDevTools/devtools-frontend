@@ -4,7 +4,7 @@
 
 import rule from '../lib/prefer-url-string.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('prefer-url-string', rule, {
   valid: [

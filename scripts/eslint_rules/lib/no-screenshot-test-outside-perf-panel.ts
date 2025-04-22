@@ -4,7 +4,7 @@
 
 import * as path from 'path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 const PERFORMANCE_PANEL_INTERACTION_TESTS_PATH = path.join(
     // @ts-expect-error

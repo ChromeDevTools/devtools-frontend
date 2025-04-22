@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {isUIStringsVariableDeclarator} from './l10n-helper.ts';
-import {createRule} from './tsUtils.ts';
+import {isUIStringsVariableDeclarator} from './utils/l10n-helper.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 const FULLY_LOCKED_PHRASE_REGEX = /^`[^`]*`$/;
 const SINGLE_PLACEHOLDER_REGEX = /^\{\w+\}$/;  // Matches the PH regex in `collect-strings.js`.

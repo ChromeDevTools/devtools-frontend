@@ -4,7 +4,7 @@
 
 import rule from '../lib/check-license-header.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const CURRENT_YEAR = new Date().getFullYear();
 

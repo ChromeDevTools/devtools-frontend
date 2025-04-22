@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-self-closing-custom-element-tagnames.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-self-closing-custom-element-tagnames', rule, {
   valid: [

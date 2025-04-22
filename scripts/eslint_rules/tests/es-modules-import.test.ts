@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/es-modules-import.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('es-modules-import', rule, {
   valid: [

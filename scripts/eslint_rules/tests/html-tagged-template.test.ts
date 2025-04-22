@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/html-tagged-template.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const error = {
   messageId: 'useUnqualifiedHtmlTaggedTemplate',

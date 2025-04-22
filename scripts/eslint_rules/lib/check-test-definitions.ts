@@ -4,7 +4,7 @@
 
 import type {TSESTree} from '@typescript-eslint/types';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 const TEST_NAME_REGEX = /^\[crbug.com\/\d+\]/;
 

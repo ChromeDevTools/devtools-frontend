@@ -10,7 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
   name: 'check-css-import',

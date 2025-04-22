@@ -4,7 +4,7 @@
 
 import path from 'path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 // Define the structure of the options object
 interface Options {

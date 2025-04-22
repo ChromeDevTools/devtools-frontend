@@ -5,7 +5,7 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 import * as path from 'path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 const FRONT_END_FOLDER = path.join(
     // If we want to fix this we need to change to .mts or use a package.json

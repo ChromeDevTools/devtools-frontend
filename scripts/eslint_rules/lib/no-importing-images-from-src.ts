@@ -8,7 +8,7 @@
  * of the build process, so we should never import from 'src'.
  */
 
-import {createRule} from './tsUtils.ts';  // Assuming tsUtils.ts exists based on File B
+import {createRule} from './utils/ruleCreator.ts';
 
 // ------------------------------------------------------------------------------
 // Rule Definition

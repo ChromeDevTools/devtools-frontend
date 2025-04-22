@@ -4,7 +4,7 @@
 
 import rule from '../lib/l10n-no-unused-message.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const exampleWithJSDoc = `
 const UIStrings = {

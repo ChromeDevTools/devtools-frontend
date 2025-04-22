@@ -10,7 +10,8 @@
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 import path from 'path';
 
-import {createRule, isStarAsImportSpecifier} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
+import {isStarAsImportSpecifier} from './utils/treeHelpers.ts';
 // Define types based on TSESTree
 type ImportDeclaration = TSESTree.ImportDeclaration;
 type ExportNamedDeclaration = TSESTree.ExportNamedDeclaration;

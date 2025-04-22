@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-underscored-properties.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-underscored-properties', rule, {
   valid: [

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/set-data-type-reference.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('set-data-type-reference', rule, {
   valid: [

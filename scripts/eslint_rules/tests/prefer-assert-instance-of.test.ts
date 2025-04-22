@@ -4,7 +4,7 @@
 
 import rule from '../lib/prefer-assert-instance-of.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('prefer-assert-instance-of', rule, {
   valid: [

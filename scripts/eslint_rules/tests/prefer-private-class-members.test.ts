@@ -4,7 +4,7 @@
 
 import rule from '../lib/prefer-private-class-members.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('prefer-private-class-members', rule, {
   valid: [

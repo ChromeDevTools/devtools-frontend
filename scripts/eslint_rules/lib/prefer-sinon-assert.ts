@@ -4,7 +4,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
   name: 'prefer-sinon-assert',

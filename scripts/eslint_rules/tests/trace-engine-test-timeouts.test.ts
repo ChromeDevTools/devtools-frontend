@@ -4,7 +4,7 @@
 
 import rule from '../lib/trace-engine-test-timeouts.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('trace-engine-test-timeouts', rule, {
   valid: [

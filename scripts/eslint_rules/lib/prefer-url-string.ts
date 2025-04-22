@@ -9,7 +9,7 @@
 
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 // Define specific node types for clarity
 type ImportDeclaration = TSESTree.ImportDeclaration;

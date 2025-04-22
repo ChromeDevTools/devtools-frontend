@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import path from 'node:path';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongFolder'>({
   name: 'enforce-custom-element-definitions-location',

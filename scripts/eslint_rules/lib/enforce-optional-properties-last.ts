@@ -10,7 +10,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 // Define the message IDs used by the rule.
 type MessageIds = 'optionalPropertyBeforeRequired';

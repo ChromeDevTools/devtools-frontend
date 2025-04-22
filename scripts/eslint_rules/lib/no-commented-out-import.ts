@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 type Comment = TSESTree.Comment;
 

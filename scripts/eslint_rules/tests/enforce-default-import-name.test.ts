@@ -6,7 +6,7 @@ import path from 'path';
 
 import rule from '../lib/enforce-default-import-name.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const TEST_OPTIONS = [
   {

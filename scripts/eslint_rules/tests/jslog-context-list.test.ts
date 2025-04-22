@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/jslog-context-list.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 'true';
 new RuleTester().run('jslog-context-list', rule, {
   invalid: [

@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createRule} from './tsUtils.ts';
-import {isLitHtmlTemplateCall} from './utils.js';
+import {isLitHtmlTemplateCall} from './utils/lit.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
   name: 'no-self-closing-custom-element-tagnames',

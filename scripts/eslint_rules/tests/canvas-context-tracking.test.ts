@@ -4,7 +4,7 @@
 
 import rule from '../lib/canvas-context-tracking.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('canvas-context-tracking-test', rule, {
   valid: [

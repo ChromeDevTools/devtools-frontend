@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/no-commented-out-import.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-commented-out-import', rule, {
   valid: [

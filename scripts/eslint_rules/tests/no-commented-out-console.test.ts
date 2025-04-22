@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-commented-out-console.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-commented-out-console', rule, {
   valid: [

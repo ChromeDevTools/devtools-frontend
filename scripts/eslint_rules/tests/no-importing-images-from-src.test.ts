@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/no-importing-images-from-src.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-importing-images-from-src', rule, {
   valid: [

@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 import rule from '../lib/enforce-custom-element-definitions-location.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 // @ts-expect-error
 const rootFrontendDirectory = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', 'front_end');

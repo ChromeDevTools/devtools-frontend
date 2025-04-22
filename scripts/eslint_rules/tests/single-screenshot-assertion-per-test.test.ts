@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/single-screenshot-assertion-per-test.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('single-screenshot-assertion-per-test', rule, {
   valid: [

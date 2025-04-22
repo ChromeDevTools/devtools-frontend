@@ -4,7 +4,7 @@
 
 import rule from '../lib/prefer-assert-strict-equal.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('prefer-assert-strict-equal', rule, {
   valid: [

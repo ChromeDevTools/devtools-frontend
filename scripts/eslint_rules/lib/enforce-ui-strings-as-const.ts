@@ -6,7 +6,7 @@
  * @author Ergün Erdoğmuş
  */
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
   name: 'enforce-ui-strings-as-const',

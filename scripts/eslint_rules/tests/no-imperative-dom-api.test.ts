@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/no-imperative-dom-api.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-imperative-dom-api', rule, {
   valid: [

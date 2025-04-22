@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-assert-strict-equal-for-arrays-and-objects.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-assert-strict-equal-for-arrays-and-objects', rule, {
   valid: [

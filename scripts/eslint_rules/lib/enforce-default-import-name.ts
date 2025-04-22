@@ -4,7 +4,8 @@
 
 import path from 'path';
 
-import {createRule, isStarAsImportSpecifier} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
+import {isStarAsImportSpecifier} from './utils/treeHelpers.ts';
 
 // Define the structure of the options expected by the rule.
 type RuleOptions = [{

@@ -4,7 +4,7 @@
 
 import rule from '../lib/check-css-import.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('check-css-import', rule, {
   valid: [

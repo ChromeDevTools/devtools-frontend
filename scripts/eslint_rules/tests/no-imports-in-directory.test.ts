@@ -6,7 +6,7 @@ import path from 'path';
 
 import rule from '../lib/no-imports-in-directory.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 const NOT_SDK_PATH = path.join(
     // @ts-expect-error

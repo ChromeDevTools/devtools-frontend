@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/inject-checkbox-styles.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('inject-checkbox-styles', rule, {
   valid: [

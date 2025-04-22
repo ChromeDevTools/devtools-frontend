@@ -4,8 +4,8 @@
 import type {TSESTree} from '@typescript-eslint/utils';
 import path from 'path';
 
-import {createRule} from './tsUtils.ts';
-import {isLitHtmlTemplateCall} from './utils.js';
+import {isLitHtmlTemplateCall} from './utils/lit.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 type AssignmentExpression = TSESTree.AssignmentExpression;
 type TemplateElement = TSESTree.TemplateElement;

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {createRule} from './tsUtils.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 const EQUALITY_ASSERTIONS = new Set(['deepEqual', 'deepStrictEqual', 'equal', 'strictEqual']);
 

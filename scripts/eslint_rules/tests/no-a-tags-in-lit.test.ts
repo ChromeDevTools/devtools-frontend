@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-a-tags-in-lit.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-a-tags-in-lit', rule, {
   valid: [

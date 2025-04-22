@@ -158,47 +158,6 @@ def _CheckFormat(input_api, output_api):
                               ['git', 'cl', 'format', '--js'], [], results)
 
 
-def _CheckDevToolsRunESLintTests(input_api, output_api):
-    # Check for changes in the eslint_rules directory, and run the eslint rules
-    # tests if so.
-    # We don't do this on every CL as most do not touch the rules, but if we do
-    # change them we need to make sure all the tests are passing.
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [
-            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
-        ]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-    eslint_rules_dir_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'eslint_rules')
-    eslint_rules_checked_paths = [
-        # Check if EsLint is updated
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'eslint'),
-        # Check for rules changes
-        eslint_rules_dir_path,
-    ]
-    eslint_rules_affected_files = _getAffectedFiles(
-        input_api, eslint_rules_checked_paths, [], [])
-
-    if (len(eslint_rules_affected_files) == 0):
-        return []
-
-    mocha_path = devtools_paths.mocha_path()
-    eslint_tests_path = input_api.os_path.join(eslint_rules_dir_path, 'tests',
-                                               '*.test.js')
-
-    results = [output_api.PresubmitNotifyResult('ESLint rules unit tests')]
-    results.extend(
-        # The dot reporter is more concise which is useful to not get LOADS of
-        # output when just one test fails.
-        _checkWithNodeScript(input_api, output_api, mocha_path,
-                             ['--reporter', 'dot', eslint_tests_path]))
-    return results
-
-
 def _CheckDevToolsRunStylelintTests(input_api, output_api):
     # Check for changes in the stylelint_rules directory, and run the stylelint rules
     # tests if so.
@@ -590,7 +549,6 @@ def _CommonChecks(canned_checks):
         _CheckExperimentTelemetry,
         _CheckGeneratedFiles,
         _CheckDevToolsLint,
-        _CheckDevToolsRunESLintTests,
         _CheckDevToolsRunStylelintTests,
         _CheckDevToolsRunBuildTests,
         _CheckDevToolsNonJSFileLicenseHeaders,

@@ -4,8 +4,8 @@
 
 import type {TSESLint, TSESTree} from '@typescript-eslint/utils';
 
-import {isUIStringsVariableDeclarator} from './l10n-helper.ts';
-import {createRule} from './tsUtils.ts';
+import {isUIStringsVariableDeclarator} from './utils/l10n-helper.ts';
+import {createRule} from './utils/ruleCreator.ts';
 
 type MemberExpression = TSESTree.MemberExpression;
 type Property = TSESTree.Property;

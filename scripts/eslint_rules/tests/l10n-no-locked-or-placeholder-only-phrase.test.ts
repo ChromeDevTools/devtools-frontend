@@ -4,7 +4,7 @@
 
 import rule from '../lib/l10n-no-locked-or-placeholder-only-phrase.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('l10n-no-locked-or-placeholder-only-phrase', rule, {
   valid: [

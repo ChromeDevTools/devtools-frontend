@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import rule from '../lib/lit-no-attribute-quotes.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('lit-no-attribute-quotes', rule, {
   valid: [

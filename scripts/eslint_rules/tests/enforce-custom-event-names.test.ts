@@ -4,7 +4,7 @@
 
 import rule from '../lib/enforce-custom-event-names.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('enforce-custom-event-names', rule, {
   valid: [

@@ -4,7 +4,7 @@
 
 import rule from '../lib/no-assert-deep-strict-equal.ts';
 
-import {RuleTester} from './utils/tsUtils.ts';
+import {RuleTester} from './utils/RuleTester.ts';
 
 new RuleTester().run('no-assert-deep-strict-equal', rule, {
   valid: [

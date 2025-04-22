@@ -2463,6 +2463,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Allows overriding the difference between the small and large viewport sizes, which determine the
+     * value of the `svh` and `lvh` unit, respectively. Only supported for top-level frames.
+     */
+    'Emulation.setSmallViewportHeightDifferenceOverride': {
+      paramsType: [Protocol.Emulation.SetSmallViewportHeightDifferenceOverrideRequest];
+      returnType: void;
+    };
+    /**
      * Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
      * screenshot from the resulting frame. Requires that the target was created with enabled
      * BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also

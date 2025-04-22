@@ -3646,6 +3646,20 @@ export const generatedProperties = [
   "name": "rule-color"
  },
  {
+  "longhands": [
+   "column-rule-style",
+   "row-rule-style"
+  ],
+  "name": "rule-style"
+ },
+ {
+  "longhands": [
+   "column-rule-width",
+   "row-rule-width"
+  ],
+  "name": "rule-width"
+ },
+ {
   "keywords": [
    "auto"
   ],

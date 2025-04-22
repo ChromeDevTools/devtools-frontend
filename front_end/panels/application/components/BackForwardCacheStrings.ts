@@ -704,5 +704,8 @@ export const NotRestoredReasonDescription = {
   WebViewSafeBrowsingAllowlistChanged: {name: i18n.i18n.lockedLazyString('WebViewSafeBrowsingAllowlistChanged')},
   WebViewDocumentStartJavascriptChanged: {name: i18n.i18n.lockedLazyString('WebViewDocumentStartJavascriptChanged')},
   CacheControlNoStoreDeviceBoundSessionTerminated: {name: i18nLazyString(UIStrings.cacheControlNoStore)},
-  CacheLimitPruned: {name: i18n.i18n.lockedLazyString('CacheLimitPruned')},
+  CacheLimitPrunedOnModerateMemoryPressure:
+      {name: i18n.i18n.lockedLazyString('CacheLimitPrunedOnModerateMemoryPressure')},
+  CacheLimitPrunedOnCriticalMemoryPressure:
+      {name: i18n.i18n.lockedLazyString('CacheLimitPrunedOnCriticalMemoryPressure')},
 };

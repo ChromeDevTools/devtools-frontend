@@ -1683,6 +1683,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_setAutomationOverride(params: Protocol.Emulation.SetAutomationOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Allows overriding the difference between the small and large viewport sizes, which determine the
+     * value of the `svh` and `lvh` unit, respectively. Only supported for top-level frames.
+     */
+    invoke_setSmallViewportHeightDifferenceOverride(params: Protocol.Emulation.SetSmallViewportHeightDifferenceOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface EmulationDispatcher {
     /**

@@ -6813,6 +6813,14 @@ export namespace Emulation {
      */
     enabled: boolean;
   }
+
+  export interface SetSmallViewportHeightDifferenceOverrideRequest {
+    /**
+     * This will cause an element of size 100svh to be `difference` pixels smaller than an element
+     * of size 100lvh.
+     */
+    difference: integer;
+  }
 }
 
 /**
@@ -13010,7 +13018,8 @@ export namespace Page {
     RequestedByWebViewClient = 'RequestedByWebViewClient',
     PostMessageByWebViewClient = 'PostMessageByWebViewClient',
     CacheControlNoStoreDeviceBoundSessionTerminated = 'CacheControlNoStoreDeviceBoundSessionTerminated',
-    CacheLimitPruned = 'CacheLimitPruned',
+    CacheLimitPrunedOnModerateMemoryPressure = 'CacheLimitPrunedOnModerateMemoryPressure',
+    CacheLimitPrunedOnCriticalMemoryPressure = 'CacheLimitPrunedOnCriticalMemoryPressure',
   }
 
   /**
@@ -15199,6 +15208,11 @@ export namespace Storage {
     maxEventStates: number;
   }
 
+  export interface AttributionReportingNamedBudgetDef {
+    name: string;
+    budget: integer;
+  }
+
   export interface AttributionReportingSourceRegistration {
     time: Network.TimeSinceEpoch;
     /**
@@ -15224,6 +15238,7 @@ export namespace Storage {
     aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig;
     scopesData?: AttributionScopesData;
     maxEventLevelReports: integer;
+    namedBudgets: AttributionReportingNamedBudgetDef[];
   }
 
   export const enum AttributionReportingSourceRegistrationResult {
@@ -15283,6 +15298,11 @@ export namespace Storage {
     filters: AttributionReportingFilterPair;
   }
 
+  export interface AttributionReportingNamedBudgetCandidate {
+    name?: string;
+    filters: AttributionReportingFilterPair;
+  }
+
   export interface AttributionReportingTriggerRegistration {
     filters: AttributionReportingFilterPair;
     debugKey?: UnsignedInt64AsBase10;
@@ -15297,6 +15317,7 @@ export namespace Storage {
     triggerContextId?: string;
     aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig;
     scopes: string[];
+    namedBudgets: AttributionReportingNamedBudgetCandidate[];
   }
 
   export const enum AttributionReportingEventLevelResult {

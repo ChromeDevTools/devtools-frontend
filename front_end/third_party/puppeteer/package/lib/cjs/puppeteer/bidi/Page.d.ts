@@ -8,13 +8,14 @@ import type Protocol from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
-import type { Credentials, GeolocationOptions, MediaFeature, PageEvents } from '../api/Page.js';
+import type { Credentials, GeolocationOptions, MediaFeature, PageEvents, WaitTimeoutOptions } from '../api/Page.js';
 import { Page, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Coverage } from '../cdp/Coverage.js';
 import type { NetworkConditions } from '../cdp/NetworkManager.js';
 import { Tracing } from '../cdp/Tracing.js';
 import type { CookiePartitionKey, Cookie, CookieParam, CookieSameSite, DeleteCookiesRequest } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Awaitable } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -93,7 +94,7 @@ export declare class BidiPage extends Page {
     cookies(...urls: string[]): Promise<Cookie[]>;
     isServiceWorkerBypassed(): never;
     target(): never;
-    waitForFileChooser(): never;
+    waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
     workers(): BidiWebWorker[];
     setRequestInterception(enable: boolean): Promise<void>;
     /**

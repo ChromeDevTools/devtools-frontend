@@ -33,9 +33,9 @@ export class FileChooser {
     /**
      * @internal
      */
-    constructor(element, event) {
+    constructor(element, multiple) {
         this.#element = element;
-        this.#multiple = event.mode !== 'selectSingle';
+        this.#multiple = multiple;
     }
     /**
      * Whether file chooser allow for

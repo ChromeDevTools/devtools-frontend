@@ -107,6 +107,10 @@ export interface Commands {
         params: Bidi.Input.SetFilesParameters;
         returnType: Bidi.EmptyResult;
     };
+    'emulation.setGeolocationOverride': {
+        params: Bidi.Emulation.SetGeolocationOverrideParameters;
+        returnType: Bidi.EmptyResult;
+    };
     'permissions.setPermission': {
         params: Bidi.Permissions.SetPermissionParameters;
         returnType: Bidi.EmptyResult;

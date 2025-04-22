@@ -337,6 +337,7 @@ export class CdpPage extends Page {
         session.target().type(),
         this.#addConsoleMessage.bind(this),
         this.#handleException.bind(this),
+        this.#frameManager.networkManager,
       );
       this.#workers.set(session.id(), worker);
       this.emit(PageEvent.WorkerCreated, worker);
@@ -375,7 +376,10 @@ export class CdpPage extends Page {
       event.backendNodeId,
     )) as ElementHandle<HTMLInputElement>;
 
-    const fileChooser = new FileChooser(handle.move(), event);
+    const fileChooser = new FileChooser(
+      handle.move(),
+      event.mode !== 'selectSingle',
+    );
     for (const promise of this.#fileChooserDeferreds) {
       promise.resolve(fileChooser);
     }

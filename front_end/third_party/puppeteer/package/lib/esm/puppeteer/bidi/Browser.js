@@ -70,6 +70,7 @@ let BidiBrowser = (() => {
             'network',
             'log',
             'script',
+            'input',
         ];
         static subscribeCdpEvents = [
             // Coverage

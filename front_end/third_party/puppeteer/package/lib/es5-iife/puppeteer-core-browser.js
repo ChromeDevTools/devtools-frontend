@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.6.1';
+  const packageVersion = '24.7.0';
 
   /**
    * @license
@@ -13054,12 +13054,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     /**
      * @internal
      */
-    constructor(element, event) {
+    constructor(element, multiple) {
       _classPrivateFieldInitSpec(this, _element, void 0);
       _classPrivateFieldInitSpec(this, _multiple, void 0);
       _classPrivateFieldInitSpec(this, _handled, false);
       _classPrivateFieldSet(_element, this, element);
-      _classPrivateFieldSet(_multiple, this, event.mode !== 'selectSingle');
+      _classPrivateFieldSet(_multiple, this, multiple);
     }
     /**
      * Whether file chooser allow for
@@ -17758,7 +17758,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (!request) {
       return;
     }
-    _assertClassBrand(_NetworkManager_brand, this, _maybeReassignOOPIFRequestClient).call(this, client, request);
+    _assertClassBrand(_NetworkManager_brand, this, _adoptCdpSessionIfNeeded).call(this, client, request);
     // Under certain conditions we never get the Network.responseReceived
     // event from protocol. @see https://crbug.com/883475
     if (request.response()) {
@@ -17784,7 +17784,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (!request) {
       return;
     }
-    _assertClassBrand(_NetworkManager_brand, this, _maybeReassignOOPIFRequestClient).call(this, client, request);
+    _assertClassBrand(_NetworkManager_brand, this, _adoptCdpSessionIfNeeded).call(this, client, request);
     request._failureText = event.errorText;
     const response = request.response();
     if (response) {
@@ -17793,13 +17793,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _assertClassBrand(_NetworkManager_brand, this, _forgetRequest).call(this, request, true);
     this.emit(exports.NetworkManagerEvent.RequestFailed, request);
   }
-  function _maybeReassignOOPIFRequestClient(client, request) {
-    // Document requests for OOPIFs start in the parent frame but are adopted by their
-    // child frame, meaning their loadingFinished and loadingFailed events are fired on
-    // the child session. In this case we reassign the request CDPSession to ensure all
-    // subsequent actions use the correct session (e.g. retrieving response body in
-    // HTTPResponse).
-    if (client !== request.client && request.isNavigationRequest()) {
+  function _adoptCdpSessionIfNeeded(client, request) {
+    // Document requests for OOPIFs start in the parent frame but are
+    // adopted by their child frame, meaning their loadingFinished and
+    // loadingFailed events are fired on the child session. In this case
+    // we reassign the request CDPSession to ensure all subsequent
+    // actions use the correct session (e.g. retrieving response body in
+    // HTTPResponse). The same applies to main worker script requests.
+    if (client !== request.client) {
       request.client = client;
     }
   }
@@ -20289,7 +20290,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _id6 = /*#__PURE__*/new WeakMap();
   var _targetType2 = /*#__PURE__*/new WeakMap();
   class CdpWebWorker extends WebWorker {
-    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown) {
+    constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown, networkManager) {
       super(url);
       _classPrivateFieldInitSpec(this, _world4, void 0);
       _classPrivateFieldInitSpec(this, _client17, void 0);
@@ -20316,6 +20317,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldGet(_world4, this).dispose();
       });
       // This might fail if the target is closed before we receive all execution contexts.
+      networkManager?.addClient(_classPrivateFieldGet(_client17, this)).catch(debugError);
       _classPrivateFieldGet(_client17, this).send('Runtime.enable').catch(debugError);
     }
     mainRealm() {
@@ -20506,7 +20508,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         assert(session instanceof CdpCDPSession);
         _classPrivateFieldGet(_frameManager2, this).onAttachedToTarget(session.target());
         if (session.target()._getTargetInfo().type === 'worker') {
-          const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), _assertClassBrand(_CdpPage_brand, this, _addConsoleMessage).bind(this), _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this));
+          const worker = new CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), _assertClassBrand(_CdpPage_brand, this, _addConsoleMessage).bind(this), _assertClassBrand(_CdpPage_brand, this, _handleException).bind(this), _classPrivateFieldGet(_frameManager2, this).networkManager);
           _classPrivateFieldGet(_workers, this).set(session.id(), worker);
           this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }
@@ -21147,7 +21149,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       assert(frame, 'This should never happen.');
       // This is guaranteed to be an HTMLInputElement handle by the event.
       const handle = __addDisposableResource$1(env_1, await frame.worlds[MAIN_WORLD].adoptBackendNode(event.backendNodeId), false);
-      const fileChooser = new FileChooser(handle.move(), event);
+      const fileChooser = new FileChooser(handle.move(), event.mode !== 'selectSingle');
       for (const promise of _classPrivateFieldGet(_fileChooserDeferreds, this)) {
         promise.resolve(fileChooser);
       }
@@ -21720,7 +21722,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         const session = this._session();
         // TODO(einbinder): Make workers send their console logs.
         _classPrivateFieldSet(_workerPromise, this, (session ? Promise.resolve(session) : this._sessionFactory()(/* isAutoAttachEmulated=*/false)).then(client => {
-          return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => {} /* consoleAPICalled */, () => {} /* exceptionThrown */);
+          return new CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => {} /* consoleAPICalled */, () => {} /* exceptionThrown */, undefined /* networkManager */);
         }));
       }
       return await _classPrivateFieldGet(_workerPromise, this);
@@ -24399,9 +24401,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '135.0.7049.84',
-    'chrome-headless-shell': '135.0.7049.84',
-    firefox: 'stable_137.0.1'
+    chrome: '135.0.7049.95',
+    'chrome-headless-shell': '135.0.7049.95',
+    firefox: 'stable_137.0.2'
   });
 
   /**

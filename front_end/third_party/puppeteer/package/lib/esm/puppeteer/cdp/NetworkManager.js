@@ -462,7 +462,7 @@ export class NetworkManager extends EventEmitter {
         if (!request) {
             return;
         }
-        this.#maybeReassignOOPIFRequestClient(client, request);
+        this.#adoptCdpSessionIfNeeded(client, request);
         // Under certain conditions we never get the Network.responseReceived
         // event from protocol. @see https://crbug.com/883475
         if (request.response()) {
@@ -489,7 +489,7 @@ export class NetworkManager extends EventEmitter {
         if (!request) {
             return;
         }
-        this.#maybeReassignOOPIFRequestClient(client, request);
+        this.#adoptCdpSessionIfNeeded(client, request);
         request._failureText = event.errorText;
         const response = request.response();
         if (response) {
@@ -498,13 +498,14 @@ export class NetworkManager extends EventEmitter {
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvent.RequestFailed, request);
     }
-    #maybeReassignOOPIFRequestClient(client, request) {
-        // Document requests for OOPIFs start in the parent frame but are adopted by their
-        // child frame, meaning their loadingFinished and loadingFailed events are fired on
-        // the child session. In this case we reassign the request CDPSession to ensure all
-        // subsequent actions use the correct session (e.g. retrieving response body in
-        // HTTPResponse).
-        if (client !== request.client && request.isNavigationRequest()) {
+    #adoptCdpSessionIfNeeded(client, request) {
+        // Document requests for OOPIFs start in the parent frame but are
+        // adopted by their child frame, meaning their loadingFinished and
+        // loadingFailed events are fired on the child session. In this case
+        // we reassign the request CDPSession to ensure all subsequent
+        // actions use the correct session (e.g. retrieving response body in
+        // HTTPResponse). The same applies to main worker script requests.
+        if (client !== request.client) {
             request.client = client;
         }
     }

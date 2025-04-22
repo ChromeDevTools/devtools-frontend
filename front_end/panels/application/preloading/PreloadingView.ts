@@ -621,12 +621,10 @@ class PreloadingRuleSetSelector implements
     const ids = this.model.getAllRuleSets().map(({id}) => id);
     const items = [AllRuleSetRootId, ...ids] as [typeof AllRuleSetRootId, ...Protocol.Preload.RuleSetId[]];
     const selected = this.dropDown.getSelectedItem();
+    // Use `AllRuleSetRootId` by default. For example, `selected` is null or has gone.
+    const newSelected = (selected === null || !items.includes(selected)) ? AllRuleSetRootId : selected;
     this.listModel.replaceAll(items);
-    if (selected === null) {
-      this.dropDown.selectItem(AllRuleSetRootId);
-    } else {
-      this.dropDown.selectItem(selected);
-    }
+    this.dropDown.selectItem(newSelected);
     this.updateWidth(items);
   }
 

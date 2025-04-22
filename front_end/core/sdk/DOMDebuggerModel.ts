@@ -100,8 +100,8 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     }
     const breakpoint = new DOMBreakpoint(this, node, type, true);
     this.#domBreakpointsInternal.push(breakpoint);
-    this.saveDOMBreakpoints();
     this.enableDOMBreakpoint(breakpoint);
+    this.saveDOMBreakpoints();
     this.dispatchEventToListeners(Events.DOM_BREAKPOINT_ADDED, breakpoint);
     return breakpoint;
   }
@@ -124,6 +124,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
     } else {
       this.disableDOMBreakpoint(breakpoint);
     }
+    this.saveDOMBreakpoints();
     this.dispatchEventToListeners(Events.DOM_BREAKPOINT_TOGGLED, breakpoint);
   }
 
@@ -211,6 +212,16 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
       if (!node) {
         return;
       }
+
+      // Before creating a new DOMBreakpoint, we need to ensure there's no
+      // existing breakpoint with the same node and breakpoint type, else we would create
+      // multiple DOMBreakpoints of the same type and for the same node.
+      for (const existingBreakpoint of this.#domBreakpointsInternal) {
+        if (existingBreakpoint.node === node && existingBreakpoint.type === breakpoint.type) {
+          return;
+        }
+      }
+
       const domBreakpoint = new DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
       this.#domBreakpointsInternal.push(domBreakpoint);
       if (breakpoint.enabled) {

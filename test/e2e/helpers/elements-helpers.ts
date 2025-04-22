@@ -69,6 +69,8 @@ const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
 export const SEARCH_BOX_SELECTOR = '.search-bar';
 const SEARCH_RESULTS_MATCHES = '.search-results-matches';
 export const EMULATE_FOCUSED_PAGE = 'Emulate a focused page';
+const DOM_BREAKPOINTS_SECTION_SELECTOR = '[aria-label="DOM Breakpoints"]';
+const DOM_BREAKPOINTS_LIST_SELECTOR = '[aria-label="DOM Breakpoints list"]';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
@@ -313,6 +315,42 @@ export const waitForElementsStyleSection =
   if (expectedNodeText) {
     await waitForPartialContentOfSelectedElementsNode(expectedNodeText, devToolsPage);
   }
+};
+
+export const waitForElementsDOMBreakpointsSection = async () => {
+  let domBreakpointsPane = await $('DOM Breakpoints', undefined, 'aria');
+  if (!domBreakpointsPane) {
+    const elementsPanel = await waitForAria('Elements panel');
+    await clickMoreTabsButton(elementsPanel);
+    domBreakpointsPane = await waitForAria('DOM Breakpoints');
+  }
+  await click(DOM_BREAKPOINTS_SECTION_SELECTOR);
+  await waitFor(DOM_BREAKPOINTS_LIST_SELECTOR);
+};
+
+export async function getDOMBreakpoints() {
+  return await $$('.breakpoint-entry');
+}
+
+export const isDOMBreakpointEnabled = async (breakpoint: puppeteer.ElementHandle<Element>) => {
+  const checkbox = await waitFor('input[type="checkbox"]', breakpoint);
+  return await checkbox!.evaluate(node => node.checked);
+};
+
+export const setDOMBreakpointOnSelectedNode = async (type: string) => {
+  await openSubMenu(SELECTED_TREE_ELEMENT_SELECTOR, 'Break on');
+  const breakpointToggle = await waitFor(`[aria-label="${type}, unchecked"]`);
+  await breakpointToggle.click();
+};
+
+export const toggleDOMBreakpointCheckbox =
+    async (breakpoint: puppeteer.ElementHandle<Element>, wantChecked: boolean) => {
+  const checkbox = await waitFor('input[type="checkbox"]', breakpoint);
+  const checked = await checkbox!.evaluate(box => (box as HTMLInputElement).checked);
+  if (checked !== wantChecked) {
+    await checkbox!.click();
+  }
+  assert.strictEqual(await checkbox!.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
 };
 
 export const waitForElementsComputedSection = async () => {

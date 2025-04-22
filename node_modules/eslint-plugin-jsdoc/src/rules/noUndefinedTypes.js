@@ -222,6 +222,21 @@ export default iterateJsdoc(({
   //  Program scope inside
   const cjsOrESMScope = globalScope.childScopes[0]?.block?.type === 'Program';
 
+  /**
+   * @param {import("eslint").Scope.Scope | null} scope
+   * @returns {Set<string>}
+   */
+  const getValidRuntimeIdentifiers = (scope) => {
+    const result = new Set()
+    while (scope) {
+      for (const {name} of scope.variables) {
+        result.add(name)
+      }
+      scope = scope.upper
+    }
+    return result
+  };
+
   const allDefinedTypes = new Set(globalScope.variables.map(({
     name,
   }) => {
@@ -247,6 +262,7 @@ export default iterateJsdoc(({
     .concat(importTags)
     .concat(definedTypes)
     .concat(/** @type {string[]} */ (definedPreferredTypes))
+    .concat(...getValidRuntimeIdentifiers(node && sourceCode.getScope(node)))
     .concat(
       settings.mode === 'jsdoc' ?
         [] :

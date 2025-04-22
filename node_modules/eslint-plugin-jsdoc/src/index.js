@@ -59,7 +59,7 @@ import validTypes from './rules/validTypes.js';
 import { getJsdocProcessorPlugin } from './getJsdocProcessorPlugin.js';
 
 /**
- * @typedef {"recommended" | "stylistic" | "contents" | "logical"} ConfigGroups
+ * @typedef {"recommended" | "stylistic" | "contents" | "logical" | "requirements"} ConfigGroups
  * @typedef {"" | "-typescript" | "-typescript-flavor"} ConfigVariants
  * @typedef {"" | "-error"} ErrorLevelVariants
  * @type {import('eslint').ESLint.Plugin & {

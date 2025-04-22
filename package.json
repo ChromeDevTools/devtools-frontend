@@ -52,19 +52,19 @@
     "@types/webidl2": "24.4.3",
     "@types/yargs": "17.0.33",
     "@types/yargs-unparser": "2.0.3",
-    "@typescript-eslint/eslint-plugin": "8.26.0",
-    "@typescript-eslint/parser": "8.26.0",
-    "@typescript-eslint/rule-tester": "8.26.0",
-    "@typescript-eslint/utils": "8.26.0",
+    "@typescript-eslint/eslint-plugin": "8.30.0",
+    "@typescript-eslint/parser": "8.30.0",
+    "@typescript-eslint/rule-tester": "8.30.0",
+    "@typescript-eslint/utils": "8.30.0",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",
     "chai": "4.3.4",
     "cssnano": "7.0.6",
     "cssnano-preset-lite": "4.0.3",
     "esbuild": "0.25.1",
-    "eslint": "9.21.0",
+    "eslint": "9.24.0",
     "eslint-plugin-eslint-plugin": "6.4.0",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-jsdoc": "50.6.1",
+    "eslint-plugin-jsdoc": "50.6.9",
     "eslint-plugin-mocha": "10.5.0",
     "glob": "7.1.7",
     "globals": "16.0.0",
@@ -92,13 +92,15 @@
     "svgo": "3.3.2",
     "terser": "5.37.0",
     "ts-lit-plugin": "2.0.2",
-    "typescript": "5.8.2",
+    "typescript": "5.8.3",
     "uuid": "11.1.0",
     "webidl2": "24.4.1",
     "yargs": "17.7.2"
   },
   "overrides": {
-    "hookified": "1.8.1",
+    "cacheable": {
+      "keyv": "5.3.2"
+    },
     "nanoid": "3.3.8",
     "ws": "8.18.0"
   }

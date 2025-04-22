@@ -42,9 +42,12 @@ export default iterateJsdoc(({
       settings.mode !== 'closure' && emptyIfNotClosure.has(tagName);
   });
 
-  for (const tag of emptyTags) {
+  for (const [key, tag] of emptyTags.entries()) {
     const content = tag.name || tag.description || tag.type;
-    if (content.trim()) {
+    if (content.trim() && (
+      // Allow for JSDoc-block final asterisks
+      key !== emptyTags.length - 1 || !(/^\s*\*+$/u).test(content)
+    )) {
       const fix = () => {
         // By time of call in fixer, `tag` will have `line` added
         utils.setTag(

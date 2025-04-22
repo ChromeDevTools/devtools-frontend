@@ -37,7 +37,7 @@ export default iterateJsdoc(({
         type,
         value,
       } = /** @type {import('jsdoc-type-pratt-parser').NameResult} */ (nde);
-      if (type === 'JsdocTypeName' && (/^[A-Z]$/).test(value)) {
+      if (type === 'JsdocTypeName') {
         usedNames.add(value);
       }
     });

@@ -2091,6 +2091,7 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
             title: i18nString(UIStrings.connectFolderToWorkspace),
             jslogContext: 'automatic-workspace-folders.connect',
           };
+          button.style.paddingLeft = 'var(--sys-size-4)';
           button.textContent = i18nString(UIStrings.connect);
           button.addEventListener('click', async event => {
             event.consume();

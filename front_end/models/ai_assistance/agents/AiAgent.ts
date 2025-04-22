@@ -140,8 +140,8 @@ export interface ConversationSuggestion {
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
-  abstract getIcon(): HTMLElement;
-  abstract getTitle(): string|ReturnType<typeof Lit.Directives.until>;
+  abstract getIcon(): HTMLElement|undefined;
+  abstract getTitle(opts?: {disabled: boolean}): string|ReturnType<typeof Lit.Directives.until>;
 
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {

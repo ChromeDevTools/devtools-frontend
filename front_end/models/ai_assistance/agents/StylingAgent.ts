@@ -249,15 +249,14 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     return this.#node;
   }
 
-  override getIcon(): HTMLElement {
-    return document.createElement('span');
+  override getIcon(): undefined {
   }
 
-  override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
+  override getTitle(opts: {disabled: boolean}): string|ReturnType<typeof Lit.Directives.until> {
     const hiddenClassList =
         this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
     return Lit.Directives.until(
-        ElementsPanel.DOMLinkifier.linkifyNodeReference(this.#node, {hiddenClassList}),
+        ElementsPanel.DOMLinkifier.linkifyNodeReference(this.#node, {hiddenClassList, disabled: opts.disabled}),
     );
   }
 

@@ -24,6 +24,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface Options extends Common.Linkifier.Options {
   hiddenClassList?: string[];
+  disabled?: boolean;
 }
 
 export const decorateNodeLabel = function(
@@ -103,6 +104,7 @@ export const linkifyNodeReference = function(node: SDK.DOMModel.DOMNode|null, op
   preventKeyboardFocus: undefined,
   textContent: undefined,
   isDynamicLink: false,
+  disabled: false,
 }): Node {
   if (!node) {
     return document.createTextNode(i18nString(UIStrings.node));
@@ -113,6 +115,7 @@ export const linkifyNodeReference = function(node: SDK.DOMModel.DOMNode|null, op
   const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: domLinkifierStyles});
   const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.classList.toggle('dynamic-link', options.isDynamicLink);
+  link.classList.toggle('disabled', options.disabled);
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
 
   decorateNodeLabel(node, link, options);

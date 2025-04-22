@@ -25,18 +25,21 @@
   max-height: 100%;
   display: flex;
   flex-direction: column;
+  container-type: size;
+  container-name: --chat-ui-container;
 }
 
 .input-form {
   display: flex;
   flex-direction: column;
-  padding: var(--sys-size-5) var(--sys-size-5) 0 var(--sys-size-5);
+  padding: 0 var(--sys-size-5) 0 var(--sys-size-5);
   max-width: var(--sys-size-36);
   background-color: var(--sys-color-cdt-base-container);
   width: 100%;
   position: sticky;
   z-index: 9999;
   bottom: 0;
+  padding-bottom: var(--sys-size-5);
   /*
   The `box-shadow` is a workaround to hide the content appearing between the `.input-form`
   and the footer in some resolutions even though the `.input-form` has `bottom: 0`.
@@ -56,26 +59,19 @@
   do not overlay the input form on top of the messages */
   /* height < var(--sys-size-27) */
   @container (height < 224px) {
+    margin-top: var(--sys-size-4);
+    margin-bottom: var(--sys-size-4);
     position: static;
   }
 
-  & .input-form-shadow-container {
-    position: absolute;
-    top: 0;
-    left: -2px; /* Needed for aligning with other divider lines */
-    width: calc(
-      100% + 4px
-    ); /* Needed for extending the divider line to the edges */
-
-    height: var(--sys-size-4);
-
-    & .input-form-shadow {
-      height: 100%;
-      box-shadow: 0 -3px 2px -2px var(--app-color-ai-assistance-input-divider);
-      animation: reveal;
-      opacity: 0%;
-      animation-timeline: --scroll-timeline;
-    }
+  @container --chat-ui-container (width < 400px) {
+    /*
+      The footer has `--sys-size-3` padding from bottom, so when it's shown
+      we update the padding of `.input-form` to be `--sys-size-3` so that
+      the padding from input form to footer to match the padding from footer
+      to the bottom of the page.
+    */
+    padding-bottom: var(--sys-size-3);
   }
 }
 
@@ -94,7 +90,6 @@
 }
 
 .chat-input-container {
-  margin: var(--sys-size-4) 0;
   width: 100%;
   display: flex;
   position: relative;
@@ -110,10 +105,31 @@
   &.disabled {
     background-color: var(--sys-color-state-disabled-container);
     border-color: transparent;
+
+    & .chat-input-disclaimer {
+      border-color: var(--sys-color-state-disabled);
+    }
   }
 
-  .image-input-container {
-    margin: var(--sys-size-3) var(--sys-size-5);
+  &.single-line-layout {
+    flex-direction: row;
+    justify-content: space-between;
+
+    .chat-input {
+      flex-shrink: 1;
+      padding: var(--sys-size-4);
+    }
+
+    .chat-input-actions {
+      flex-shrink: 0;
+      padding-block: 0;
+      align-items: flex-end;
+      padding-bottom: var(--sys-size-1);
+    }
+  }
+
+  & .image-input-container {
+    margin: var(--sys-size-3) var(--sys-size-4) 0;
     max-width: 100%;
     width: fit-content;
     position: relative;
@@ -128,7 +144,6 @@
     }
 
     img {
-      margin: var(--sys-size-4) 0;
       max-height: var(--sys-size-18);
       max-width: 100%;
       border: 1px solid var(--sys-color-neutral-outline);
@@ -151,13 +166,40 @@
       }
     }
   }
+
+  & .chat-input-disclaimer-container {
+    display: flex;
+    align-items: center;
+    padding-right: var(--sys-size-3);
+    flex-shrink: 0;
+  }
+
+  & .chat-input-disclaimer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: var(--sys-typescale-body5-regular);
+    border-right: 1px solid var(--sys-color-divider);
+    padding-right: 8px;
+
+
+    &.hide-divider {
+      border-right: none;
+    }
+  }
+
+  /*
+    Hide the inline disclaimer on narrow widths (< 400px) because space is limited
+    and the disclaimer is shown in the footer instead for this case.
+  */
+  @container --chat-ui-container (width < 400px) {
+    & .chat-input-disclaimer-container {
+      display: none;
+    }
+  }
 }
 
 .chat-input {
-  --right-padding: calc(
-    var(--sys-size-3) + 26px
-  ); /* Gap between the button and the edge + icon's width */
-
   scrollbar-width: none;
   field-sizing: content;
   resize: none;
@@ -168,10 +210,9 @@
   font: var(--sys-typescale-body4-regular);
   line-height: 18px;
   min-height: var(--sys-size-11);
-  padding: var(--sys-size-4) var(--right-padding) var(--sys-size-4)
-    var(--sys-size-4);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
+  padding: var(--sys-size-4) var(--sys-size-4) var(--sys-size-3) var(--sys-size-4);
 
   &::placeholder {
     opacity: 60%;
@@ -191,30 +232,32 @@
       opacity: 100%;
     }
   }
-
-  &.two-big-buttons {
-    /* cancel + start new chat button */
-    --right-padding: 172px;
-  }
-
-  &.screenshot-button {
-    --right-padding: calc(
-      2 * var(--sys-size-3) + 2 * 26px
-    ); /* Gaps because of right paddings + width of two icons */
-  }
 }
 
-.chat-input-buttons {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+.chat-input-actions {
   display: flex;
   flex-direction: row;
-}
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-2);
+  gap: var(--sys-size-6);
+  padding-bottom: var(--sys-size-2);
 
-.chat-input-button {
-  padding-bottom: 2px;
-  padding-right: var(--sys-size-3);
+  & .chat-input-actions-left {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  & .chat-input-actions-right {
+    flex-shrink: 0;
+    display: flex;
+
+    & .start-new-chat-button {
+      padding-bottom: var(--sys-size-2);
+      padding-right: var(--sys-size-3);
+    }
+  }
 }
 
 .chat-inline-button {
@@ -226,17 +269,22 @@
   padding-right: var(--sys-size-3);
 }
 
-.disclaimer {
+footer.chat-view-footer {
   display: flex;
   justify-content: center;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding-bottom: var(--sys-size-3);
+  font: var(--sys-typescale-body5-regular);
 
-  .disclaimer-text {
-    max-width: var(--sys-size-38);
-    color: var(--sys-color-on-surface-subtle);
-    font: var(--sys-typescale-body5-regular);
-    text-wrap: pretty;
-    padding: var(--sys-size-2) var(--sys-size-5);
+  /*
+    The footer (for active conversations) is hidden by default on wider screens
+    because the disclaimer is shown inline within the chat input actions. Show it only on narrow widths (< 400px).
+  */
+  &.has-conversation {
+    display: none;
+
+    @container --chat-ui-container (width < 400px) {
+      display: flex;
+    }
   }
 }
 
@@ -339,21 +387,30 @@
   display: flex;
   gap: var(--sys-size-3);
   align-items: center;
-  width: 100%;
 
   .resource-link,
   .resource-task {
     cursor: pointer;
-    padding: var(--sys-size-2) 3px;
-    font: var(--sys-typescale-body4-size);
+    padding: var(--sys-size-2) var(--sys-size-3);
+    font: var(--sys-typescale-body5-regular);
     border: var(--sys-size-1) solid var(--sys-color-divider);
     border-radius: var(--sys-shape-corner-extra-small);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: var(--sys-size-32);
+    /*
+      Allow the link/task item to shrink below its intrinsic minimum width in the flex container,
+      enabling text-overflow ellipsis to work correctly.
+    */
+    min-width: 0;
+    line-height: 1;
 
-    &.allow-overflow {
+    & .title {
+      vertical-align: middle;
+      font: var(--sys-typescale-body5-regular);
+    }
+
+    &.has-picker-behavior {
       overflow: visible;
     }
 
@@ -364,10 +421,9 @@
     .icon,
     devtools-file-source-icon {
       display: inline-flex;
-      vertical-align: top;
-      margin-right: var(--sys-size-3);
-      width: var(--sys-size-9);
-      height: var(--sys-size-9);
+      vertical-align: middle;
+      width: var(--sys-size-7);
+      height: var(--sys-size-7);
     }
 
     /*
@@ -401,16 +457,23 @@
       margin-right: var(--sys-size-3);
 
       img {
-        max-width: var(--sys-size-8);
-        max-height: var(--sys-size-8);
+        max-width: var(--sys-size-7);
+        max-height: var(--sys-size-7);
       }
     }
   }
 
+  .resource-link.disabled,
+  .resource-task.disabled,
   .resource-link.not-selected,
   .resource-task.not-selected {
     color: var(--sys-color-state-disabled);
     border-color: var(--sys-color-neutral-outline);
+  }
+
+  .resource-link.disabled,
+  .resource-task.disabled {
+    pointer-events: none;
   }
 }
 
@@ -548,33 +611,6 @@
   }
 }
 
-.input-header {
-  display: inline-flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 2px;
-  line-height: 20px;
-  gap: var(--sys-size-8);
-  position: relative;
-
-  & .feedback-icon {
-    width: var(--sys-size-8);
-    height: var(--sys-size-8);
-  }
-
-  & .header-link-container {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sys-size-2);
-    flex-shrink: 0;
-  }
-
-  & .header-link-container:first-of-type {
-    flex-shrink: 1;
-    min-width: 0;
-  }
-}
-
 .link {
   color: var(--text-link);
   text-decoration: underline;
@@ -585,6 +621,12 @@ button.link {
   border: none;
   background: none;
   font: inherit;
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: 0;
+    border-radius: var(--sys-shape-corner-extra-small)
+  }
 }
 
 .select-an-element-text {
@@ -756,7 +798,7 @@ main {
   background-color: var(--sys-color-surface3);
   border-radius: var(--sys-shape-corner-medium-small);
   position: relative;
-  margin: 0 var(--sys-size-5);
+  margin: 0 var(--sys-size-5) var(--sys-size-7) var(--sys-size-5);
   padding: 0 var(--sys-size-5);
 
   &.saved-to-disk {

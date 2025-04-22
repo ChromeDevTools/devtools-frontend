@@ -70,6 +70,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private warningText: Nullable<string>;
   private unauditableExplanation: Nullable<string>;
   private readonly cachedRenderedReports: Map<ReportJSON, HTMLElement>;
+  // @ts-expect-error keep local reference
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly auditResultsElement: HTMLElement;
   private clearButton!: UI.Toolbar.ToolbarButton;

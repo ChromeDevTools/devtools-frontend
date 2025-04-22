@@ -258,7 +258,8 @@ export class IDBDataView extends UI.View.SimpleView {
   private clearingObjectStore: boolean;
   private pageSize: number;
   private skipCount: number;
-  private entries: Entry[];
+  // Used in Web Tests
+  protected entries: Entry[];
   private objectStore!: ObjectStore;
   private index!: Index|null;
   private keyInput!: UI.Toolbar.ToolbarInput;

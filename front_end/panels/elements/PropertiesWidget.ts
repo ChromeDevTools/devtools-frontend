@@ -75,6 +75,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private filterRegex: RegExp|null = null;
   private readonly noMatchesElement: HTMLElement;
   private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
+  // @ts-expect-error keep local reference
   private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
   private lastRequestedNode?: SDK.DOMModel.DOMNode;
   constructor(throttlingTimeout?: number) {
@@ -174,8 +175,9 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.filterList();
   }
 
-  private onNodeChange(event: Common.EventTarget
-                           .EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>): void {
+  private onNodeChange(
+      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}|SDK.DOMModel.DOMNode>,
+      ): void {
     if (!this.node) {
       return;
     }

@@ -103,7 +103,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {
   private url: Platform.DevToolsPath.UrlString;
   private parsedURL: Common.ParsedURL.ParsedURL;
-  private readonly mimeType: string;
+
   private readonly contentProvider: TextUtils.ContentProvider.ContentProvider;
   private uiSourceCode: Workspace.UISourceCode.UISourceCode|null;
   private readonly sizeLabel: UI.Toolbar.ToolbarText;
@@ -121,7 +121,6 @@ export class ImageView extends UI.View.SimpleView {
     this.element.setAttribute('jslog', `${VisualLogging.pane('image-view')}`);
     this.url = contentProvider.contentURL();
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
-    this.mimeType = mimeType;
     this.contentProvider = contentProvider;
     this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.uiSourceCode) {

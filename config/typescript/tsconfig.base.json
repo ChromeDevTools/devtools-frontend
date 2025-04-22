@@ -12,7 +12,7 @@
     "strict": true,
     "useUnknownInCatchVariables": false,
     "noUnusedParameters": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,

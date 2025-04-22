@@ -85,7 +85,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheV
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
   private model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
-  private entriesForTest: Protocol.CacheStorage.DataEntry[]|null;
+  protected entriesForTest: Protocol.CacheStorage.DataEntry[]|null;
   private readonly splitWidget: UI.SplitWidget.SplitWidget;
   private readonly previewPanel: UI.Widget.VBox;
   private preview: UI.Widget.Widget|null;

@@ -33,6 +33,7 @@ import * as Root from '../../core/root/root.js';
 import * as Acorn from '../../third_party/acorn/acorn.js';
 // This file is required to bring some types into scope, even though it
 // is not used.
+// @ts-expect-error import for types
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js';
 

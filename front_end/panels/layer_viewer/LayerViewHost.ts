@@ -101,7 +101,6 @@ export class LayerViewHost {
   private hoveredObject: Selection|null;
   private showInternalLayersSettingInternal: Common.Settings.Setting<boolean>;
   private snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
-  private target?: SDK.Target.Target|null;
   constructor() {
     this.views = [];
     this.selectedObject = null;
@@ -127,7 +126,6 @@ export class LayerViewHost {
     if (!layerTree) {
       return;
     }
-    this.target = layerTree.target();
     const selectedLayer = this.selectedObject?.layer();
     if (selectedLayer && (!layerTree?.layerById(selectedLayer.id()))) {
       this.selectObject(null);

@@ -291,7 +291,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     if (!this.frameFilter(frame)) {
       return;
     }
-    this.dataGrid.insertChild(new ResourceWebSocketFrameNode(this.request.url(), frame));
+    this.dataGrid.insertChild(new ResourceWebSocketFrameNode(frame));
   }
 
   private frameFilter(frame: SDK.NetworkRequest.WebSocketFrame): boolean {
@@ -359,12 +359,11 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   refresh(): void {
     this.dataGrid.rootNode().removeChildren();
 
-    const url = this.request.url();
     let frames = this.request.frames();
     const offset = clearFrameOffsets.get(this.request) || 0;
     frames = frames.slice(offset);
     frames = frames.filter(this.frameFilter.bind(this));
-    frames.forEach(frame => this.dataGrid.insertChild(new ResourceWebSocketFrameNode(url, frame)));
+    frames.forEach(frame => this.dataGrid.insertChild(new ResourceWebSocketFrameNode(frame)));
   }
 
   private sortItems(): void {
@@ -399,13 +398,12 @@ const FILTER_TYPES: UI.FilterBar.Item[] = [
 ];
 
 export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unknown> {
-  private readonly url: Platform.DevToolsPath.UrlString;
   readonly frame: SDK.NetworkRequest.WebSocketFrame;
   private readonly isTextFrame: boolean;
   private dataTextInternal: string;
   private binaryViewInternal: BinaryResourceView|null;
 
-  constructor(url: Platform.DevToolsPath.UrlString, frame: SDK.NetworkRequest.WebSocketFrame) {
+  constructor(frame: SDK.NetworkRequest.WebSocketFrame) {
     let length = String(frame.text.length);
     const time = new Date(frame.time * 1000);
     const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
@@ -435,7 +433,6 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
 
     super({data: description, length, time: timeNode});
 
-    this.url = url;
     this.frame = frame;
     this.isTextFrame = isTextFrame;
     this.dataTextInternal = dataText;

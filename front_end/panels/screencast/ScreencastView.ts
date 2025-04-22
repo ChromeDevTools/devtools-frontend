@@ -127,6 +127,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private inspectModeConfig?: Protocol.Overlay.HighlightConfig|null;
   private navigationBar?: HTMLElement;
   private navigationReload?: HTMLElement;
+  // @ts-expect-error keep local reference
   private navigationProgressBar?: ProgressTracker;
   private touchInputToggle?: HTMLButtonElement;
   private mouseInputToggle?: HTMLButtonElement;

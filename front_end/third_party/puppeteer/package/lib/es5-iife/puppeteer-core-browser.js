@@ -11,7 +11,7 @@ function _checkPrivateRedeclaration(e, t) { if (t.has(e)) throw new TypeError("C
 function _classPrivateFieldSet(s, a, r) { return s.set(_assertClassBrand(s, a), r), r; }
 function _classPrivateFieldGet(s, a) { return s.get(_assertClassBrand(s, a)); }
 function _assertClassBrand(e, t, n) { if ("function" == typeof e ? e === t : e.has(t)) return arguments.length < 3 ? t : n; throw new TypeError("Private element is not present on this object"); }
-var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _mutex2, _onRelease) {
+var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _mutex2, _onRelease) {
   'use strict';
 
   /**
@@ -2467,46 +2467,40 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     constructor() {
       _classPrivateFieldInitSpec(this, _disposed, false);
       _classPrivateFieldInitSpec(this, _stack, []);
-      _defineProperty(this, disposeSymbol, this.dispose);
       _defineProperty(this, Symbol.toStringTag, 'DisposableStack');
     }
     /**
-     * Returns a value indicating whether this stack has been disposed.
+     * Returns a value indicating whether the stack has been disposed.
      */
     get disposed() {
       return _classPrivateFieldGet(_disposed, this);
     }
     /**
-     * Disposes each resource in the stack in the reverse order that they were added.
+     * Alias for `[Symbol.dispose]()`.
      */
     dispose() {
-      if (_classPrivateFieldGet(_disposed, this)) {
-        return;
-      }
-      _classPrivateFieldSet(_disposed, this, true);
-      for (const resource of _classPrivateFieldGet(_stack, this).reverse()) {
-        resource[disposeSymbol]();
-      }
+      this[disposeSymbol]();
     }
     /**
-     * Adds a disposable resource to the stack, returning the resource.
+     * Adds a disposable resource to the top of stack, returning the resource.
+     * Has no effect if provided `null` or `undefined`.
      *
-     * @param value - The resource to add. `null` and `undefined` will not be added,
-     * but will be returned.
+     * @param value - A `Disposable` object, `null`, or `undefined`.
+     * `null` and `undefined` will not be added, but will be returned.
      * @returns The provided `value`.
      */
     use(value) {
-      if (value) {
+      if (value && typeof value[disposeSymbol] === 'function') {
         _classPrivateFieldGet(_stack, this).push(value);
       }
       return value;
     }
     /**
-     * Adds a value and associated disposal callback as a resource to the stack.
+     * Adds a non-disposable resource and a disposal callback to the top of the stack.
      *
-     * @param value - The value to add.
-     * @param onDispose - The callback to use in place of a `[disposeSymbol]()`
-     * method. Will be invoked with `value` as the first parameter.
+     * @param value - A resource to be disposed.
+     * @param onDispose - A callback invoked to dispose the provided value.
+     * Will be invoked with `value` as the first parameter.
      * @returns The provided `value`.
      */
     adopt(value, onDispose) {
@@ -2518,7 +2512,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return value;
     }
     /**
-     * Adds a callback to be invoked when the stack is disposed.
+     * Add a disposal callback to the top of the stack to be invoked when stack is disposed.
+     * @param onDispose - A callback to invoke when this object is disposed.
      */
     defer(onDispose) {
       _classPrivateFieldGet(_stack, this).push({
@@ -2530,6 +2525,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     /**
      * Move all resources out of this stack and into a new `DisposableStack`, and
      * marks this stack as disposed.
+     * @returns The new `DisposableStack`.
      *
      * @example
      *
@@ -2561,12 +2557,43 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     move() {
       if (_classPrivateFieldGet(_disposed, this)) {
-        throw new ReferenceError('a disposed stack can not use anything new'); // step 3
+        throw new ReferenceError('A disposed stack can not use anything new');
       }
-      const stack = new DisposableStack(); // step 4-5
+      const stack = new DisposableStack();
       _classPrivateFieldSet(_stack, stack, _classPrivateFieldGet(_stack, this));
+      _classPrivateFieldSet(_stack, this, []);
       _classPrivateFieldSet(_disposed, this, true);
       return stack;
+    }
+    /**
+     * Disposes each resource in the stack in last-in-first-out (LIFO) manner.
+     */
+    [disposeSymbol]() {
+      if (_classPrivateFieldGet(_disposed, this)) {
+        return;
+      }
+      _classPrivateFieldSet(_disposed, this, true);
+      const errors = [];
+      for (const resource of _classPrivateFieldGet(_stack, this).reverse()) {
+        try {
+          resource[disposeSymbol]();
+        } catch (e) {
+          errors.push(e);
+        }
+      }
+      if (errors.length === 1) {
+        throw errors[0];
+      } else if (errors.length > 1) {
+        let suppressed = null;
+        for (const error of errors.reverse()) {
+          if (suppressed === null) {
+            suppressed = error;
+          } else {
+            suppressed = new SuppressedError$1(error, suppressed);
+          }
+        }
+        throw suppressed;
+      }
     }
   }
   /**
@@ -2578,46 +2605,50 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     constructor() {
       _classPrivateFieldInitSpec(this, _disposed2, false);
       _classPrivateFieldInitSpec(this, _stack2, []);
-      _defineProperty(this, asyncDisposeSymbol, this.dispose);
       _defineProperty(this, Symbol.toStringTag, 'AsyncDisposableStack');
     }
     /**
-     * Returns a value indicating whether this stack has been disposed.
+     * Returns a value indicating whether the stack has been disposed.
      */
     get disposed() {
       return _classPrivateFieldGet(_disposed2, this);
     }
     /**
-     * Disposes each resource in the stack in the reverse order that they were added.
+     * Alias for `[Symbol.asyncDispose]()`.
      */
     async dispose() {
-      if (_classPrivateFieldGet(_disposed2, this)) {
-        return;
-      }
-      _classPrivateFieldSet(_disposed2, this, true);
-      for (const resource of _classPrivateFieldGet(_stack2, this).reverse()) {
-        await resource[asyncDisposeSymbol]();
-      }
+      await this[asyncDisposeSymbol]();
     }
     /**
-     * Adds a disposable resource to the stack, returning the resource.
+     * Adds a AsyncDisposable resource to the top of stack, returning the resource.
+     * Has no effect if provided `null` or `undefined`.
      *
-     * @param value - The resource to add. `null` and `undefined` will not be added,
-     * but will be returned.
+     * @param value - A `AsyncDisposable` object, `null`, or `undefined`.
+     * `null` and `undefined` will not be added, but will be returned.
      * @returns The provided `value`.
      */
     use(value) {
       if (value) {
-        _classPrivateFieldGet(_stack2, this).push(value);
+        const asyncDispose = value[asyncDisposeSymbol];
+        const dispose = value[disposeSymbol];
+        if (typeof asyncDispose === 'function') {
+          _classPrivateFieldGet(_stack2, this).push(value);
+        } else if (typeof dispose === 'function') {
+          _classPrivateFieldGet(_stack2, this).push({
+            [asyncDisposeSymbol]: async () => {
+              value[disposeSymbol]();
+            }
+          });
+        }
       }
       return value;
     }
     /**
-     * Adds a value and associated disposal callback as a resource to the stack.
+     * Adds a non-disposable resource and a disposal callback to the top of the stack.
      *
-     * @param value - The value to add.
-     * @param onDispose - The callback to use in place of a `[disposeSymbol]()`
-     * method. Will be invoked with `value` as the first parameter.
+     * @param value - A resource to be disposed.
+     * @param onDispose - A callback invoked to dispose the provided value.
+     * Will be invoked with `value` as the first parameter.
      * @returns The provided `value`.
      */
     adopt(value, onDispose) {
@@ -2629,7 +2660,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return value;
     }
     /**
-     * Adds a callback to be invoked when the stack is disposed.
+     * Add a disposal callback to the top of the stack to be invoked when stack is disposed.
+     * @param onDispose - A callback to invoke when this object is disposed.
      */
     defer(onDispose) {
       _classPrivateFieldGet(_stack2, this).push({
@@ -2641,6 +2673,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     /**
      * Move all resources out of this stack and into a new `DisposableStack`, and
      * marks this stack as disposed.
+     * @returns The new `AsyncDisposableStack`.
      *
      * @example
      *
@@ -2672,14 +2705,74 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     move() {
       if (_classPrivateFieldGet(_disposed2, this)) {
-        throw new ReferenceError('a disposed stack can not use anything new'); // step 3
+        throw new ReferenceError('A disposed stack can not use anything new');
       }
-      const stack = new AsyncDisposableStack(); // step 4-5
+      const stack = new AsyncDisposableStack();
       _classPrivateFieldSet(_stack2, stack, _classPrivateFieldGet(_stack2, this));
+      _classPrivateFieldSet(_stack2, this, []);
       _classPrivateFieldSet(_disposed2, this, true);
       return stack;
     }
+    /**
+     * Disposes each resource in the stack in last-in-first-out (LIFO) manner.
+     */
+    async [asyncDisposeSymbol]() {
+      if (_classPrivateFieldGet(_disposed2, this)) {
+        return;
+      }
+      _classPrivateFieldSet(_disposed2, this, true);
+      const errors = [];
+      for (const resource of _classPrivateFieldGet(_stack2, this).reverse()) {
+        try {
+          await resource[asyncDisposeSymbol]();
+        } catch (e) {
+          errors.push(e);
+        }
+      }
+      if (errors.length === 1) {
+        throw errors[0];
+      } else if (errors.length > 1) {
+        let suppressed = null;
+        for (const error of errors.reverse()) {
+          if (suppressed === null) {
+            suppressed = error;
+          } else {
+            suppressed = new SuppressedError$1(error, suppressed);
+          }
+        }
+        throw suppressed;
+      }
+    }
   }
+  /**
+   * @internal
+   * Represents an error that occurs when multiple errors are thrown during
+   * the disposal of resources. This class encapsulates the primary error and
+   * any suppressed errors that occurred subsequently.
+   */
+  let SuppressedError$1 = (_error = /*#__PURE__*/new WeakMap(), _suppressed = /*#__PURE__*/new WeakMap(), class SuppressedError extends Error {
+    constructor(error, suppressed, message = 'An error was suppressed during disposal') {
+      super(message);
+      _classPrivateFieldInitSpec(this, _error, void 0);
+      _classPrivateFieldInitSpec(this, _suppressed, void 0);
+      this.name = 'SuppressedError';
+      _classPrivateFieldSet(_error, this, error);
+      _classPrivateFieldSet(_suppressed, this, suppressed);
+    }
+    /**
+     * The primary error that occurred during disposal.
+     */
+    get error() {
+      return _classPrivateFieldGet(_error, this);
+    }
+    /**
+     * The suppressed error i.e. the error that was suppressed
+     * because it occurred later in the flow after the original error.
+     */
+    get suppressed() {
+      return _classPrivateFieldGet(_suppressed, this);
+    }
+  });
 
   /**
    * @license
@@ -2835,7 +2928,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.7.0';
+  const packageVersion = '24.7.1';
 
   /**
    * @license
@@ -13212,14 +13305,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   var _id2 = /*#__PURE__*/new WeakMap();
-  var _error = /*#__PURE__*/new WeakMap();
+  var _error2 = /*#__PURE__*/new WeakMap();
   var _deferred = /*#__PURE__*/new WeakMap();
   var _timer = /*#__PURE__*/new WeakMap();
   var _label = /*#__PURE__*/new WeakMap();
   class Callback {
     constructor(id, label, timeout) {
       _classPrivateFieldInitSpec(this, _id2, void 0);
-      _classPrivateFieldInitSpec(this, _error, new ProtocolError());
+      _classPrivateFieldInitSpec(this, _error2, new ProtocolError());
       _classPrivateFieldInitSpec(this, _deferred, Deferred.create());
       _classPrivateFieldInitSpec(this, _timer, void 0);
       _classPrivateFieldInitSpec(this, _label, void 0);
@@ -13227,7 +13320,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_label, this, label);
       if (timeout) {
         _classPrivateFieldSet(_timer, this, setTimeout(() => {
-          _classPrivateFieldGet(_deferred, this).reject(rewriteError$1(_classPrivateFieldGet(_error, this), `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
+          _classPrivateFieldGet(_deferred, this).reject(rewriteError$1(_classPrivateFieldGet(_error2, this), `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
         }, timeout));
       }
     }
@@ -13246,7 +13339,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return _classPrivateFieldGet(_deferred, this).valueOrThrow();
     }
     get error() {
-      return _classPrivateFieldGet(_error, this);
+      return _classPrivateFieldGet(_error2, this);
     }
     get label() {
       return _classPrivateFieldGet(_label, this);
@@ -24517,6 +24610,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.STATUS_TEXTS = STATUS_TEXTS;
   exports.ScriptInjector = ScriptInjector;
   exports.SecurityDetails = SecurityDetails;
+  exports.SuppressedError = SuppressedError$1;
   exports.Target = Target;
   exports.TargetCloseError = TargetCloseError;
   exports.TargetManager = TargetManager;

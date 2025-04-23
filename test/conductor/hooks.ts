@@ -86,8 +86,6 @@ function launchChrome() {
     '--disable-lcd-text',
     '--force-device-scale-factor=1',
     '--hide-scrollbars',
-    '--enable-blink-features=CSSContainerQueries,HighlightInheritance',  // TODO(crbug.com/1218390) Remove globally enabled flags and conditionally enable them
-    '--disable-blink-features=WebAssemblyJSPromiseIntegration',  // TODO(crbug.com/325123665) Remove once heap snapshots work again with JSPI
     `--disable-features=${disabledFeatures.join(',')}`,
   ];
   const executablePath = TestConfig.chromeBinary;

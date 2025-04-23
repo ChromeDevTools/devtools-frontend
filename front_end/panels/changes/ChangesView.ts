@@ -139,11 +139,32 @@ export class ChangesView extends UI.Widget.VBox {
     this.selectedUISourceCodeChanged();
   }
 
+  private renderDiffOrEmptyState(): void {
+    if (!this.combinedDiffView) {
+      return;
+    }
+
+    // There are modified UI source codes, we should render the combined diff view.
+    if (this.workspaceDiff.modifiedUISourceCodes().length > 0) {
+      this.showDiffContainer();
+    } else {
+      this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
+    }
+  }
+
   private selectedUISourceCodeChanged(): void {
-    this.revealUISourceCode(this.changesSidebar.selectedUISourceCode());
+    const selectedUISourceCode = this.changesSidebar.selectedUISourceCode();
+    if (!selectedUISourceCode) {
+      return;
+    }
+
+    this.revealUISourceCode(selectedUISourceCode);
     UI.ActionRegistry.ActionRegistry.instance()
         .getAction('changes.copy')
-        .setEnabled(this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet);
+        .setEnabled(selectedUISourceCode.contentType() === Common.ResourceType.resourceTypes.Stylesheet);
+    if (this.combinedDiffView) {
+      this.combinedDiffView.selectedFileUrl = selectedUISourceCode.url();
+    }
   }
 
   revert(): void {
@@ -219,11 +240,16 @@ export class ChangesView extends UI.Widget.VBox {
     UI.Context.Context.instance().setFlavor(ChangesView, this);
     super.wasShown();
     void this.refreshDiff();
+    this.renderDiffOrEmptyState();
+    this.workspaceDiff.addEventListener(
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.renderDiffOrEmptyState, this);
   }
 
   override willHide(): void {
     super.willHide();
     UI.Context.Context.instance().setFlavor(ChangesView, null);
+    this.workspaceDiff.removeEventListener(
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.renderDiffOrEmptyState, this);
   }
 
   private async refreshDiff(): Promise<void> {
@@ -267,18 +293,26 @@ export class ChangesView extends UI.Widget.VBox {
     this.emptyWidget.showWidget();
   }
 
+  private showDiffContainer(): void {
+    this.emptyWidget.hideWidget();
+    this.diffContainer.style.display = 'block';
+  }
+
+  private showEmptyState(): void {
+    this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
+  }
+
   private renderDiffRows(diff?: Diff.Diff.DiffArray): void {
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
-      this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
+      this.showEmptyState();
     } else {
       this.diffStats?.setText(diffStats(diff));
       this.toolbar.setEnabled(true);
-      this.emptyWidget.hideWidget();
-      const mimeType = (this.selectedUISourceCode as Workspace.UISourceCode.UISourceCode).mimeType();
-      this.diffContainer.style.display = 'block';
       if (this.diffView) {
+        const mimeType = (this.selectedUISourceCode as Workspace.UISourceCode.UISourceCode).mimeType();
         this.diffView.data = {diff, mimeType};
       }
+      this.showDiffContainer();
     }
   }
 }

@@ -22,7 +22,7 @@ import combinedDiffViewStyles from './combinedDiffView.css.js';
 
 const COPIED_TO_CLIPBOARD_TEXT_TIMEOUT_MS = 1000;
 
-const {html} = Lit;
+const {html, Directives: {classMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -46,22 +46,31 @@ interface SingleDiffViewInput {
   icon: HTMLElement;
   diff: Diff.Diff.DiffArray;
   copied: boolean;
+  selectedFileUrl?: string;
   onCopy: (fileUrl: string) => void;
   onFileNameClick: (fileUrl: string) => void;
+}
+
+export interface ViewOutput {
+  scrollToSelectedDiff?: () => void;
 }
 
 export interface ViewInput {
   singleDiffViewInputs: SingleDiffViewInput[];
 }
 
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.TemplateResult {
-  const {fileName, fileUrl, mimeType, icon, diff, copied, onCopy, onFileNameClick} = singleDiffViewInput;
+  const {fileName, fileUrl, mimeType, icon, diff, copied, selectedFileUrl, onCopy, onFileNameClick} =
+      singleDiffViewInput;
+  const classes = classMap({
+    selected: selectedFileUrl === fileUrl,
+  });
 
   // clang-format off
   return html`
-    <details open>
+    <details open class=${classes}>
       <summary>
         <div class="summary-left">
           <devtools-icon class="drop-down-icon" .name=${'arrow-drop-down'}></devtools-icon>
@@ -97,12 +106,18 @@ export class CombinedDiffView extends UI.Widget.Widget {
    * Ignores urls that start with any in the list
    */
   ignoredUrls: string[] = [];
+  #selectedFileUrl?: string;
 
   #workspaceDiff?: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   #modifiedUISourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
   #copiedFiles: Record<string, boolean> = {};
   #view: View;
-  constructor(element?: HTMLElement, view: View = (input, _output, target) => {
+  #viewOutput: ViewOutput = {};
+  constructor(element?: HTMLElement, view: View = (input, output, target) => {
+    output.scrollToSelectedDiff = () => {
+      target.querySelector('details.selected')?.scrollIntoView();
+    };
+
     Lit.render(
         html`
       <div class="combined-diff-view">
@@ -131,6 +146,14 @@ export class CombinedDiffView extends UI.Widget.Widget {
   set workspaceDiff(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
     this.#workspaceDiff = workspaceDiff;
     void this.#initializeModifiedUISourceCodes();
+  }
+
+  set selectedFileUrl(fileUrl: string) {
+    this.#selectedFileUrl = fileUrl;
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#viewOutput.scrollToSelectedDiff?.();
+    });
   }
 
   async #onCopyFileContent(fileUrl: string): Promise<void> {
@@ -235,12 +258,13 @@ export class CombinedDiffView extends UI.Widget.Widget {
                 mimeType: uiSourceCode.mimeType(),
                 icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),
                 copied: this.#copiedFiles[uiSourceCode.url()],
+                selectedFileUrl: this.#selectedFileUrl,
                 onCopy: this.#onCopyFileContent.bind(this),
                 onFileNameClick: this.#onFileNameClick.bind(this),
               };
             })
             .sort((a, b) => Platform.StringUtilities.compare(a.fileName, b.fileName));
 
-    this.#view({singleDiffViewInputs}, undefined, this.contentElement);
+    this.#view({singleDiffViewInputs}, this.#viewOutput, this.contentElement);
   }
 }

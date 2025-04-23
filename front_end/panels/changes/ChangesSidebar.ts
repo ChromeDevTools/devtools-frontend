@@ -94,9 +94,6 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.treeElements.set(uiSourceCode, treeElement);
     this.treeoutline.setFocusable(true);
     this.treeoutline.appendChild(treeElement);
-    if (!this.treeoutline.selectedTreeElement) {
-      treeElement.select(true);
-    }
   }
 }
 

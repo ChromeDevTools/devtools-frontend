@@ -539,6 +539,7 @@ export class ChatView extends HTMLElement {
       const classes = Lit.Directives.classMap({
         'chat-view-footer': true,
         'has-conversation': !!this.#props.conversationType,
+        'is-read-only': this.#props.isReadOnly,
       });
 
       const footerContents = this.#props.conversationType ?

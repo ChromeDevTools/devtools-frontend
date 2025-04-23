@@ -66,12 +66,12 @@
 
   @container --chat-ui-container (width < 400px) {
     /*
-      The footer has `--sys-size-3` padding from bottom, so when it's shown
-      we update the padding of `.input-form` to be `--sys-size-3` so that
-      the padding from input form to footer to match the padding from footer
-      to the bottom of the page.
+      The footer already adds necessary paddings for this state.
+      However, without the `padding-bottom` here, the outline in the bottom
+      is rendered behind the footer. So, we add 1px space here to make sure
+      that the outline is rendered fully.
     */
-    padding-bottom: var(--sys-size-3);
+    padding-bottom: var(--sys-size-1);
   }
 }
 
@@ -272,15 +272,19 @@
 footer.chat-view-footer {
   display: flex;
   justify-content: center;
-  padding-bottom: var(--sys-size-3);
+  padding-block: var(--sys-size-3);
   font: var(--sys-typescale-body5-regular);
+  border-top: 1px solid var(--sys-color-divider);
+  text-wrap: balance;
+  text-align: center;
 
   /*
     The footer (for active conversations) is hidden by default on wider screens
     because the disclaimer is shown inline within the chat input actions. Show it only on narrow widths (< 400px).
   */
-  &.has-conversation {
+  &.has-conversation:not(.is-read-only) {
     display: none;
+    border: none;
 
     @container --chat-ui-container (width < 400px) {
       display: flex;

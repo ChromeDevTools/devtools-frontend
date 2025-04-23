@@ -406,6 +406,8 @@ class Example {
         return document.querySelector('code')?.innerText;
       });
       this.#test = yaml.load(text);
+      // Workspaces are slow to appear.
+      await new Promise(resolve => setTimeout(resolve, 2000));
     } else {
       if (userArgs.testTarget === 'performance-main-thread' || userArgs.testTarget === 'performance-insights') {
         const fileName = await TraceDownloader.run(this, page);
@@ -561,16 +563,20 @@ class Example {
         await this.#devtoolsPage.waitForFunction(() => {
           return 'aiAssistanceTestPatchPrompt' in window;
         });
-        const results = await this.#devtoolsPage.evaluate(async (folderName, query, changedFiles) => {
-          // @ts-expect-error this is run in the DevTools page context where this function does exist.
-          return await aiAssistanceTestPatchPrompt(folderName, query, changedFiles);
-        }, this.#test.folderName, this.#test.query, this.#test.changedFiles);
+        const {assertionFailures, debugInfo, error} =
+            await this.#devtoolsPage.evaluate(async (folderName, query, changedFiles) => {
+              // @ts-expect-error this is run in the DevTools page context where this function does exist.
+              return await aiAssistanceTestPatchPrompt(folderName, query, changedFiles);
+            }, this.#test.folderName, this.#test.query, this.#test.changedFiles);
         /** @type {import('./types').ExecutedExample} */
         return {
           results: [{
-            request: '',
-            response: results,
+            request: this.#test.query,
+            response: JSON.stringify(debugInfo),
             exampleId: this.id(),
+            // Estimate a score based on the number of assertion
+            // failures and if the flow succeeded.
+            score: error ? 0.25 : Math.max((1 - (assertionFailures.length * 0.25)), 0.25),
           }],
           metadata: {exampleId: this.id(), explanation: JSON.stringify(this.#test.changedFiles)},
         };

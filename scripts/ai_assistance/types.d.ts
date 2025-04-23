@@ -29,9 +29,11 @@ export interface ExecutedExample {
  * The result of making a single request to Aida.
  */
 export interface IndividualPromptRequestResponse {
-  request: AidaRequest;
+  request: AidaRequest|string;
   response: string;
   exampleId: string;
+  /** Automatically computed score [0-1]. */
+  score?: number;
 }
 
 export interface ExampleMetadata {

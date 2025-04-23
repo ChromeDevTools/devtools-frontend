@@ -819,13 +819,22 @@ window.aiAssistanceTestPatchPrompt =
     serverSideLoggingEnabled: false,
     project,
   });
-  const results = [];
   try {
-    const {processedFiles} = await agent.applyChanges(changeSummary);
+    const assertionFailures = [];
+    const {processedFiles, responses} = await agent.applyChanges(changeSummary);
+    if (responses.at(-1)?.type !== AiAssistanceModel.ResponseType.ANSWER) {
+      return {
+        error: 'failed to patch',
+        debugInfo: {
+          responses,
+          processedFiles,
+        },
+      };
+    }
     for (const file of processedFiles) {
       const change = expectedChanges.find(change => change.path === file);
       if (!change) {
-        results.push(`Patched ${file} that was not expected`);
+        assertionFailures.push(`Patched ${file} that was not expected`);
         break;
       }
       const agentProject = agent.agentProject;
@@ -835,7 +844,7 @@ window.aiAssistanceTestPatchPrompt =
       }
       for (const m of change.matches) {
         if (!content.match(new RegExp(m, 'gm'))) {
-          results.push({
+          assertionFailures.push({
             message: `Did not match ${m} in ${file}`,
             file,
             content,
@@ -844,7 +853,7 @@ window.aiAssistanceTestPatchPrompt =
       }
       for (const m of change.doesNotMatch || []) {
         if (content.match(new RegExp(m, 'gm'))) {
-          results.push({
+          assertionFailures.push({
             message: `Unexpectedly matched ${m} in ${file}`,
             file,
             content,
@@ -852,10 +861,16 @@ window.aiAssistanceTestPatchPrompt =
         }
       }
     }
+    return {
+      assertionFailures,
+      debugInfo: {
+        responses,
+        processedFiles,
+      },
+    };
   } finally {
     workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
       modifiedUISourceCode.resetWorkingCopy();
     });
   }
-  return results;
 };

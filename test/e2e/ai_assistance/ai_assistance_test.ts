@@ -572,4 +572,26 @@ STOP`,
       return window.getComputedStyle(document.querySelector('h1')).color === 'rgb(102, 51, 153)';
     });
   });
+
+  it('fails when non CSS property is used', async () => {
+    const result = await runAiAssistance({
+      query: 'Change the non/css/prop for this element to blue',
+      messages: [
+        `THOUGHT: I can change the non/css/prop color of an element by setting the non/css/prop CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'non/css/prop': 'blue' });
+STOP`,
+        'ANSWER: Unable to make the change',
+      ],
+    });
+
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 1,
+      parts: [{
+        text:
+            'OBSERVATION: Error: None of the suggested CSS properties or their values for selector were considered valid by the browser\'s CSS engine. Please ensure property names are correct and values match the expected format for those properties.'
+      }],
+    });
+  });
 });

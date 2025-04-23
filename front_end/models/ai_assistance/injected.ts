@@ -26,12 +26,13 @@ interface FreestyleCallbackData {
   args: string;
   element: Node;
   resolve(value: string): void;
+  reject(err?: Error): void;
 }
 interface FreestylerBinding {
   (args: FreestyleCallbackArgs): Promise<string>;
   id: number;
   callbacks: Map<number, FreestyleCallbackData>;
-  respond(id: number, styleChanges: string): void;
+  respond(id: number, styleChangesOrError: string|Error): void;
   getElement(id: number): Node|undefined;
   getArgs(id: number): string|undefined;
 }
@@ -47,11 +48,12 @@ function freestylerBindingFunc(bindingName: string): void {
 
   if (!global.freestyler) {
     const freestyler = (args: FreestyleCallbackArgs): Promise<string> => {
-      const {resolve, promise} = Promise.withResolvers<string>();
+      const {resolve, reject, promise} = Promise.withResolvers<string>();
       freestyler.callbacks.set(freestyler.id, {
         args: JSON.stringify(args),
         element: args.element,
         resolve,
+        reject,
       });
       // @ts-expect-error this is binding added though CDP
       globalThis[bindingName](String(freestyler.id));
@@ -66,8 +68,13 @@ function freestylerBindingFunc(bindingName: string): void {
     freestyler.getArgs = (callbackId: number) => {
       return freestyler.callbacks.get(callbackId)?.args;
     };
-    freestyler.respond = (callbackId: number, styleChanges: string) => {
-      freestyler.callbacks.get(callbackId)?.resolve(styleChanges);
+    freestyler.respond = (callbackId: number, styleChangesOrError: string) => {
+      if (typeof styleChangesOrError === 'string') {
+        freestyler.callbacks.get(callbackId)?.resolve(styleChangesOrError);
+      } else {
+        freestyler.callbacks.get(callbackId)?.reject(styleChangesOrError);
+      }
+
       freestyler.callbacks.delete(callbackId);
     };
     global.freestyler = freestyler;

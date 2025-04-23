@@ -71,6 +71,10 @@ it('can highlight JavaScript with `new.target` syntax', testHighlight(`
   [property x]: [type boolean]
 }`, 'text/typescript'));
 
+it('can highlight TypeScript with the new `satisfies` keyword', testHighlight(`
+[keyword const] [definition bar] = {} [keyword satisfies] [type X];
+`, 'text/typescript'));
+
 it('can highlight TypeScript with the new `using` keyword', testHighlight(`
 [keyword using] [definition resource] = [variable getResource]()
 `, 'text/typescript'));

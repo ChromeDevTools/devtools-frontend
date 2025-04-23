@@ -254,7 +254,7 @@ async function getEmptyStateSuggestions(
 
 interface ToolbarViewInput {
   onNewChatClick: () => void;
-  onHistoryClick: (event: MouseEvent) => void;
+  populateHistoryMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
   onDeleteClick: () => void;
   onHelpClick: () => void;
   onSettingsClick: () => void;
@@ -283,13 +283,12 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${input.onNewChatClick}></devtools-button>
         <div class="toolbar-divider"></div>
-        <devtools-button
+        <devtools-menu-button
           title=${i18nString(UIStrings.history)}
           aria-label=${i18nString(UIStrings.history)}
           .iconName=${'history'}
           .jslogContext=${'freestyler.history'}
-          .variant=${Buttons.Button.Variant.TOOLBAR}
-          @click=${input.onHistoryClick}></devtools-button>`
+          .populateMenuCall=${input.populateHistoryMenu}></devtools-menu-button>`
           : Lit.nothing}
         ${input.showDeleteHistoryAction
           ? html`<devtools-button
@@ -853,7 +852,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           isTextInputEmpty: this.#isTextInputEmpty,
           changeManager: this.#changeManager,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
-          onHistoryClick: this.#onHistoryClicked.bind(this),
+          populateHistoryMenu: this.#populateHistoryMenu.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
           onHelpClick: () => {
             UI.UIUtils.openInNewTab(AI_ASSISTANCE_HELP);
@@ -1096,15 +1095,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#viewOutput.chatView?.focusTextInput();
   }
 
-  #onHistoryClicked(event: Event): void {
-    const target = event.target as Element | undefined;
-    const clientRect = target?.getBoundingClientRect();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event, {
-      useSoftMenu: true,
-      x: clientRect?.left,
-      y: clientRect?.bottom,
-    });
-
+  #populateHistoryMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     for (const conversation of [...this.#historicalConversations].reverse()) {
       if (conversation.isEmpty) {
         continue;
@@ -1135,8 +1126,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           disabled: historyEmpty,
         },
     );
-
-    void contextMenu.show();
   }
 
   #clearHistory(): void {

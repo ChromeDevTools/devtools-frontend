@@ -15,7 +15,7 @@ import {
   mockAidaClient,
   openHistoryContextMenu
 } from '../../testing/AiAssistanceHelpers.js';
-import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
+import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -603,12 +603,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
 
-      const contextMenu = getMenu(() => {
-        view.input.onHistoryClick(new MouseEvent('click'));
-      });
-      const freestylerEntry = findMenuItemWithLabel(contextMenu.defaultSection(), 'User question to Freestyler?')!;
-      assert.isDefined(freestylerEntry);
-      contextMenu.invokeHandler(freestylerEntry.id());
+      const {contextMenu, id} = openHistoryContextMenu(view.input, 'User question to Freestyler?');
+      assert.isDefined(id);
+      contextMenu.invokeHandler(id);
       assert.isTrue((await view.nextInput).isReadOnly);
       assert.deepEqual(view.input.messages, [
         {
@@ -786,9 +783,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
 
-      let contextMenu = getMenu(() => {
-        view.input.onHistoryClick(new MouseEvent('click'));
-      });
+      let {contextMenu} = openHistoryContextMenu(view.input, 'User question to Freestyler?');
       const clearAll = findMenuItemWithLabel(contextMenu.footerSection(), 'Clear local chats')!;
       assert.isDefined(clearAll);
       contextMenu.invokeHandler(clearAll.id());
@@ -796,9 +791,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isUndefined(view.input.conversationType);
       contextMenu.discard();
 
-      contextMenu = getMenu(() => {
-        view.input.onHistoryClick(new MouseEvent('click'));
-      });
+      contextMenu = openHistoryContextMenu(view.input, 'User question to Freestyler?').contextMenu;
       const menuItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'No past conversations');
       assert(menuItem);
     });

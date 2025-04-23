@@ -771,7 +771,7 @@ export class MenuButton extends HTMLElement {
    * Reflects the `jslogContext` attribute. Sets the visual logging context for the button.
    */
   set jslogContext(jslogContext: string) {
-    this.setAttribute('jslog', `VisualLogging.action(${jslogContext}).track({click: true})`);
+    this.setAttribute('jslog', VisualLogging.action(jslogContext).track({click: true}).toString());
   }
 
   get jslogContext(): string|null {

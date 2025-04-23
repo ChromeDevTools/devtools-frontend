@@ -22480,6 +22480,36 @@
                     ]
                 },
                 {
+                    "id": "SharedStoragePrivateAggregationConfig",
+                    "description": "Represents a dictionary object passed in as privateAggregationConfig to\nrun or selectURL.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "aggregationCoordinatorOrigin",
+                            "description": "The chosen aggregation service deployment.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "contextId",
+                            "description": "The context ID provided.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "filteringIdMaxBytes",
+                            "description": "Configures the maximum size allowed for filtering IDs.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "maxContributions",
+                            "description": "The limit on the number of contributions in the final report.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "id": "SharedStorageReportingMetadata",
                     "description": "Pair of reporting metadata details for a candidate URL for `selectURL()`.",
                     "type": "object",
@@ -22521,25 +22551,43 @@
                     "properties": [
                         {
                             "name": "scriptSourceUrl",
-                            "description": "Spec of the module script URL.\nPresent only for SharedStorageAccessType.documentAddModule.",
+                            "description": "Spec of the module script URL.\nPresent only for SharedStorageAccessMethods: addModule and\ncreateWorklet.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "dataOrigin",
+                            "description": "String denoting \"context-origin\", \"script-origin\", or a custom\norigin to be used as the worklet's data origin.\nPresent only for SharedStorageAccessMethod: createWorklet.",
                             "optional": true,
                             "type": "string"
                         },
                         {
                             "name": "operationName",
-                            "description": "Name of the registered operation to be run.\nPresent only for SharedStorageAccessType.documentRun and\nSharedStorageAccessType.documentSelectURL.",
+                            "description": "Name of the registered operation to be run.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
                             "optional": true,
                             "type": "string"
                         },
                         {
+                            "name": "keepAlive",
+                            "description": "Whether or not to keep the worket alive for future run or selectURL\ncalls.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
+                            "optional": true,
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "privateAggregationConfig",
+                            "description": "Configures the private aggregation options.\nPresent only for SharedStorageAccessMethods: run and selectURL.",
+                            "optional": true,
+                            "$ref": "SharedStoragePrivateAggregationConfig"
+                        },
+                        {
                             "name": "serializedData",
-                            "description": "The operation's serialized data in bytes (converted to a string).\nPresent only for SharedStorageAccessType.documentRun and\nSharedStorageAccessType.documentSelectURL.",
+                            "description": "The operation's serialized data in bytes (converted to a string).\nPresent only for SharedStorageAccessMethods: run and selectURL.\nTODO(crbug.com/401011862): Consider updating this parameter to binary.",
                             "optional": true,
                             "type": "string"
                         },
                         {
                             "name": "urlsWithMetadata",
-                            "description": "Array of candidate URLs' specs, along with any associated metadata.\nPresent only for SharedStorageAccessType.documentSelectURL.",
+                            "description": "Array of candidate URLs' specs, along with any associated metadata.\nPresent only for SharedStorageAccessMethod: selectURL.",
                             "optional": true,
                             "type": "array",
                             "items": {
@@ -22547,22 +22595,52 @@
                             }
                         },
                         {
+                            "name": "urnUuid",
+                            "description": "Spec of the URN:UUID generated for a selectURL call.\nPresent only for SharedStorageAccessMethod: selectURL.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
                             "name": "key",
-                            "description": "Key for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessType.documentSet,\nSharedStorageAccessType.documentAppend,\nSharedStorageAccessType.documentDelete,\nSharedStorageAccessType.workletSet,\nSharedStorageAccessType.workletAppend,\nSharedStorageAccessType.workletDelete,\nSharedStorageAccessType.workletGet,\nSharedStorageAccessType.headerSet,\nSharedStorageAccessType.headerAppend, and\nSharedStorageAccessType.headerDelete.",
+                            "description": "Key for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessMethods: set, append, delete, and\nget.",
                             "optional": true,
                             "type": "string"
                         },
                         {
                             "name": "value",
-                            "description": "Value for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessType.documentSet,\nSharedStorageAccessType.documentAppend,\nSharedStorageAccessType.workletSet,\nSharedStorageAccessType.workletAppend,\nSharedStorageAccessType.headerSet, and\nSharedStorageAccessType.headerAppend.",
+                            "description": "Value for a specific entry in an origin's shared storage.\nPresent only for SharedStorageAccessMethods: set and append.",
                             "optional": true,
                             "type": "string"
                         },
                         {
                             "name": "ignoreIfPresent",
-                            "description": "Whether or not to set an entry for a key if that key is already present.\nPresent only for SharedStorageAccessType.documentSet,\nSharedStorageAccessType.workletSet, and\nSharedStorageAccessType.headerSet.",
+                            "description": "Whether or not to set an entry for a key if that key is already present.\nPresent only for SharedStorageAccessMethod: set.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "workletId",
+                            "description": "If the method is called on a worklet, or as part of\na worklet script, it will have an ID for the associated worklet.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet,\nrun, selectURL, and any other SharedStorageAccessMethod when the\nSharedStorageAccessScope is worklet.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "withLock",
+                            "description": "Name of the lock to be acquired, if present.\nOptionally present only for SharedStorageAccessMethods: batchUpdate,\nset, append, delete, and clear.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "batchUpdateId",
+                            "description": "If the method has been called as part of a batchUpdate, then this\nnumber identifies the batch to which it belongs.\nOptionally present only for SharedStorageAccessMethods:\nbatchUpdate (required), set, append, delete, and clear.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "batchSize",
+                            "description": "Number of modifier methods sent in batch.\nPresent only for SharedStorageAccessMethod: batchUpdate.",
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 },
@@ -22956,6 +23034,14 @@
                             "items": {
                                 "$ref": "AttributionReportingNamedBudgetDef"
                             }
+                        },
+                        {
+                            "name": "debugReporting",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "eventLevelEpsilon",
+                            "type": "number"
                         }
                     ]
                 },

@@ -4,11 +4,14 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {dispatchMouseUpEvent} from '../../testing/DOMHelpers.js';
+import {dispatchMouseUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import * as Lit from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as UI from './legacy.js';
+
+const {html, render} = Lit;
 
 function getContextMenuElement(): HTMLElement {
   const container = document.querySelector('div[data-devtools-glass-pane]');
@@ -131,5 +134,69 @@ describeWithEnvironment('ContextMenu', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     sinon.assert.calledOnce(recordClick);
     await VisualLogging.stopLogging();
+  });
+});
+
+describeWithEnvironment('MenuButton', function() {
+  it('renders a button and opens a menu on click', async () => {
+    const container = document.createElement('div');
+    let resolveMenuPopulated = () => {};
+    const populatedPromise = new Promise<void>(resolve => {
+      resolveMenuPopulated = resolve;
+    });
+
+    const populateMenuCall = (menu: UI.ContextMenu.ContextMenu): void => {
+      menu.defaultSection().appendItem('item 1', () => {});
+    };
+
+    // clang-format off
+    render(html`
+      <devtools-menu-button
+       .populateMenuCall=${populateMenuCall}
+        soft-menu
+        icon-name="dots-vertical"
+      ></devtools-menu-button>
+    `, container);
+    // clang-format on
+
+    const showStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').callsFake(async () => {
+      resolveMenuPopulated();
+    });
+
+    renderElementIntoDOM(container);
+    const menuButton = container.querySelector<UI.ContextMenu.MenuButton>('devtools-menu-button');
+    assert.exists(menuButton, 'MenuButton element should exist');
+    const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');
+    assert.exists(devtoolsButton);
+
+    devtoolsButton.click();
+
+    await populatedPromise;
+
+    assert.strictEqual(devtoolsButton.getAttribute('aria-expanded'), 'true');
+    sinon.assert.calledOnce(showStub);
+  });
+
+  it('can be disabled', async () => {
+    const container = document.createElement('div');
+
+    // clang-format off
+    render(html`
+      <devtools-menu-button
+        .populateMenuCall=${() => {}}
+        disabled
+        icon-name="dots-vertical"
+      ></devtools-menu-button>
+    `, container);
+    // clang-format on
+
+    renderElementIntoDOM(container);
+    const menuButton = container.querySelector<UI.ContextMenu.MenuButton>('devtools-menu-button');
+    assert.exists(menuButton, 'MenuButton element should exist');
+
+    const devtoolsButton = menuButton.shadowRoot?.querySelector('devtools-button');
+    assert.exists(devtoolsButton);
+
+    assert.isTrue(devtoolsButton.disabled);
   });
 });

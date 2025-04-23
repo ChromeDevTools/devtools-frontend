@@ -59,9 +59,12 @@
 
       .summary-right {
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--sys-size-2);
+        padding-right: var(--sys-size-4);
 
         .copied {
-          padding-right: var(--sys-size-4);
           font: var(--sys-typescale-body5-regular);
         }
       }

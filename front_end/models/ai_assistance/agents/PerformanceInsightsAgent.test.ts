@@ -160,7 +160,7 @@ code
       const finalQuery = await agent.enhanceQuery('What is this?', context);
       const expected = `${extraContext}
 
-# User request:
+# User question for you to answer:
 What is this?`;
 
       assert.strictEqual(finalQuery, expected);
@@ -176,7 +176,7 @@ What is this?`;
 
       await agent.enhanceQuery('What is this?', context);
       const finalQuery = await agent.enhanceQuery('Help me understand?', context);
-      const expected = `# User request:
+      const expected = `# User question for you to answer:
 Help me understand?`;
 
       assert.strictEqual(finalQuery, expected);

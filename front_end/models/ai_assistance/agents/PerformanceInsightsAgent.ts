@@ -67,9 +67,9 @@ Additionally, you may also be asked basic questions such as "What is LCP?". Ensu
 - Prioritize recommendations based on their potential impact on performance. Focus on the most significant bottlenecks.
 - Structure your response using markdown headings and bullet points for improved readability.
 - Your answer should contain the following sections:
-    1. **Insight Analysis:** Clearly explain the observed performance issues, their impact on user experience, and the key metrics used to identify them. Include relevant timestamps and durations from the provided data. Avoid large paragraphs and use bullet points to keep this section digestable for the user. Include references to relevant main thread or network activity that is useful to help the user understand the analysis and provide them with additional context. Be specific: for example, rather than saying "optimize main thread activity", you can say "optimize main thread activity in the \`sleepFor\` function of \`render-blocking-script.js\`."
-    2. **Optimization Recommendations:** Provide 2-3 specific, actionable steps to address the identified performance issues. Prioritize the most impactful optimizations, focusing on those that will yield the greatest performance improvements. Provide a brief justification for each recommendation, explaining its potential impact. Keep each optimization recommendation concise, ideally within 1-2 sentences. Avoid lengthy explanations or detailed technical jargon unless absolutely necessary.
-- Your response should immediately start with the "Insight Analysis" section.
+    1. **Analysis:** Based on the user's question, explain the observed performance issues, their impact on user experience, and the key metrics used to identify them. Include relevant timestamps and durations from the provided data. Avoid large paragraphs and use bullet points to keep this section digestable for the user. Include references to relevant main thread or network activity that is useful to help the user understand the analysis and provide them with additional context. Be specific: for example, rather than saying "optimize main thread activity", you can say "optimize main thread activity in the \`sleepFor\` function of \`render-blocking-script.js\`."
+    2. **Optimization Recommendations:** Provide 2-3 specific, actionable steps to address the identified performance issues. Prioritize the most impactful optimizations, focusing on those that will yield the greatest performance improvements. Provide a brief justification for each recommendation, explaining its potential impact. Keep each optimization recommendation concise, ideally within 1-2 sentences. Avoid lengthy explanations or detailed technical jargon unless absolutely necessary. Do not repeat optimizations that you have already suggested in previous responses.
+- Your response should immediately start with the "Analysis" section.
 - Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
 
 ## Strict Constraints
@@ -78,6 +78,7 @@ Additionally, you may also be asked basic questions such as "What is LCP?". Ensu
     - Execute \`getMainThreadActivity\` only once *per Insight context*. If the Insight changes, you may call this function again.
     - Execute \`getNetworkActivitySummary\` only once *per Insight context*. If the Insight changes, you may call this function again.
     - Ensure comprehensive data retrieval through function calls to provide accurate and complete recommendations.
+    - Before suggesting changing the format of an image, consider what format it is already in. For example, if the mime type is image/webp, do not suggest to the user that the image is converted to WebP, as the image is already in that format.
     - Do not mention function names (e.g., \`getMainThreadActivity\`, \`getNetworkActivitySummary\`) in your output. These are internal implementation details.
     - Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
     - If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
@@ -86,7 +87,8 @@ Additionally, you may also be asked basic questions such as "What is LCP?". Ensu
 ## Additional guidance for specific insights
 - If you are being asked any questions that relate to LCP, it is CRITICAL that you use \`getNetworkActivitySummary\` to get a summary of network requests.
 - If the LCP resource was fetched over the network, you MUST use the \`getNetworkRequestDetail\` function to find out more information before providing your analysis.
-- If you are asked about "LCP by Phase" and there was a large render delay phase, that indicates that there was main thread activity that blocked the browser painting. In this case, inspect the main thread activity and include information on what functions caused the main thread to be busy. Thoroughly inspect the main thread activity so you can be accurate in your responses.
+- If the LCP resource was fetched over the network, pay attention to the network request's priority. Important resources for LCP should have a high priority. If the LCP resource's priority is not "high", suggest optimizations to the user to change this.
+- If you are asked about "LCP by Phase" and the "element render delay" phase makes up a large percentage of the time, that indicates that there was main thread activity that blocked the browser painting. In this case, inspect the main thread activity and include information on what functions caused the main thread to be busy. Thoroughly inspect the main thread activity so you can be accurate in your responses.
 - Only suggest image size and format optimizations as a solution if you are confident that the download time of the image was a major contribution to the performance problems you have investigated, or if the user specifically asks about image optimization techniques.
 `;
 /* clang-format on */
@@ -439,7 +441,8 @@ The fields are:
     // User clicks Insight B. We now need to send info on Insight B with the prompt.
     // User clicks Insight A. We should resend the Insight info with the prompt.
     const includeInsightInfo = selectedInsight !== this.#lastContextForEnhancedQuery;
-    const extraQuery = `${includeInsightInfo ? formatter.formatInsight() + '\n\n' : ''}# User request:\n`;
+    const extraQuery =
+        `${includeInsightInfo ? formatter.formatInsight() + '\n\n' : ''}# User question for you to answer:\n`;
 
     const finalQuery = `${extraQuery}${query}`;
     this.#lastContextForEnhancedQuery = selectedInsight;

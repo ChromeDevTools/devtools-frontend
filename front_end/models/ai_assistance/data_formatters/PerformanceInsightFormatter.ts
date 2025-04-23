@@ -117,25 +117,31 @@ ${this.#links()}`;
       // Note that we expect every trace + LCP to have TTFB + Render delay, but
       // very old traces are missing the data, so we have to code defensively
       // in case the phases are not present.
-      const phaseBulletPoints: Array<{name: string, value: string}> = [];
+      const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
       if (phases?.ttfb) {
-        phaseBulletPoints.push({name: 'Time to first byte', value: formatMilli(phases.ttfb)});
+        const percentage = (phases.ttfb / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: 'Time to first byte', value: formatMilli(phases.ttfb), percentage});
       }
       if (phases?.loadDelay) {
-        phaseBulletPoints.push({name: 'Load delay', value: formatMilli(phases.loadDelay)});
+        const percentage = (phases.loadDelay / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: 'Resource load delay', value: formatMilli(phases.loadDelay), percentage});
       }
       if (phases?.loadTime) {
-        phaseBulletPoints.push({name: 'Load time', value: formatMilli(phases.loadTime)});
+        const percentage = (phases.loadTime / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: 'Resource load duration', value: formatMilli(phases.loadTime), percentage});
       }
       if (phases?.renderDelay) {
-        phaseBulletPoints.push({name: 'Render delay', value: formatMilli(phases.renderDelay)});
+        const percentage = (phases.renderDelay / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: 'Element render delay', value: formatMilli(phases.renderDelay), percentage});
       }
 
       return `${this.#lcpMetricSharedContext()}
 
-We can break this time down into the ${phaseBulletPoints.length} phases that combine to make up the LCP time:
+We can break this time down into the ${phaseBulletPoints.length} phases that combine to make the LCP time:
 
-${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`;
+${
+          phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value} (${phase.percentage}% of total LCP time)`)
+              .join('\n')}`;
     }
 
     if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(this.#insight)) {
@@ -365,23 +371,20 @@ export class TraceEventFormatter {
     const baseTime = navigationForEvent?.ts ?? parsedTrace.Meta.traceBounds.min;
 
     // Gets all the timings for this request, relative to the base time.
-    // Note that this is the start time, not total time. E.g. "queueing: X"
+    // Note that this is the start time, not total time. E.g. "queuedAt: X"
     // means that the request was queued at Xms, not that it queued for Xms.
     const startTimesForLifecycle = {
-      start: request.ts - baseTime,
-      queueing: syntheticData.downloadStart - baseTime,
-      requestSent: syntheticData.sendStartTime - baseTime,
-      downloadComplete: syntheticData.finishTime - baseTime,
-      processingComplete: request.ts + request.dur - baseTime,
+      queuedAt: request.ts - baseTime,
+      requestSentAt: syntheticData.sendStartTime - baseTime,
+      downloadCompletedAt: syntheticData.finishTime - baseTime,
+      processingCompletedAt: request.ts + request.dur - baseTime,
     } as const;
 
     const mainThreadProcessingDuration =
-        startTimesForLifecycle.processingComplete - startTimesForLifecycle.downloadComplete;
-
-    const downloadTime = startTimesForLifecycle.downloadComplete - startTimesForLifecycle.requestSent;
+        startTimesForLifecycle.processingCompletedAt - startTimesForLifecycle.downloadCompletedAt;
+    const downloadTime = syntheticData.finishTime - syntheticData.downloadStart;
 
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
-
     const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(request);
 
     const priorityLines = [];
@@ -401,18 +404,17 @@ export class TraceEventFormatter {
 
     if (!options.verbose) {
       return `${titlePrefix}: ${url}
-- Start time: ${formatMicro(startTimesForLifecycle.start)}
+- Start time: ${formatMicro(startTimesForLifecycle.queuedAt)}
 - Duration: ${formatMicro(request.dur)}
 - MIME type: ${mimeType}${renderBlocking ? '\n- This request was render blocking' : ''}`;
     }
 
     return `${titlePrefix}: ${url}
 Timings:
-- Start time: ${formatMicro(startTimesForLifecycle.start)}
-- Queued at: ${formatMicro(startTimesForLifecycle.queueing)}
-- Request sent at: ${formatMicro(startTimesForLifecycle.requestSent)}
-- Download complete at: ${formatMicro(startTimesForLifecycle.downloadComplete)}
-- Completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
+- Queued at: ${formatMicro(startTimesForLifecycle.queuedAt)}
+- Request sent at: ${formatMicro(startTimesForLifecycle.requestSentAt)}
+- Download complete at: ${formatMicro(startTimesForLifecycle.downloadCompletedAt)}
+- Main thread processing completed at: ${formatMicro(startTimesForLifecycle.processingCompletedAt)}
 Durations:
 - Download time: ${formatMicro(downloadTime)}
 - Main thread processing time: ${formatMicro(mainThreadProcessingDuration)}

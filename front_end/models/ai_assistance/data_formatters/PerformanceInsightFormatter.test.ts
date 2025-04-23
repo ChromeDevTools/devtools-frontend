@@ -31,12 +31,12 @@ This insight is used to analyze the time spent that contributed to the final LCP
 The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
 The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
 
-We can break this time down into the 4 phases that combine to make up the LCP time:
+We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 7.94 ms
-- Load delay: 33.16 ms
-- Load time: 14.70 ms
-- Render delay: 73.41 ms
+- Time to first byte: 7.94 ms (6.1% of total LCP time)
+- Resource load delay: 33.16 ms (25.7% of total LCP time)
+- Resource load duration: 14.70 ms (11.4% of total LCP time)
+- Element render delay: 73.41 ms (56.8% of total LCP time)
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -61,10 +61,10 @@ This insight is used to analyze the time spent that contributed to the final LCP
 The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
 The LCP is text based and was not fetched from the network.
 
-We can break this time down into the 2 phases that combine to make up the LCP time:
+We can break this time down into the 2 phases that combine to make the LCP time:
 
-- Time to first byte: 6.12 ms
-- Render delay: 100.37 ms
+- Time to first byte: 6.12 ms (5.7% of total LCP time)
+- Element render delay: 100.37 ms (94.3% of total LCP time)
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -264,13 +264,12 @@ The longest interaction on the page was a \`click\` which had a total duration o
       const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       const expected = `## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Start time: 37.62 ms
-- Queued at: 43.24 ms
+- Queued at: 37.62 ms
 - Request sent at: 41.71 ms
 - Download complete at: 48.04 ms
-- Completed at: 51.55 ms
+- Main thread processing completed at: 51.55 ms
 Durations:
-- Download time: 6.33 ms
+- Download time: 4.79 ms
 - Main thread processing time: 3.51 ms
 - Total duration: 13.93 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html

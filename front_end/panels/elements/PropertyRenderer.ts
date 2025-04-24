@@ -171,6 +171,7 @@ export class TracingContext {
     computedStyles: Map<string, string>,
     parsedValue: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
   }>();
+  #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
 
   constructor(highlighting: Highlighting, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
     this.#highlighting = highlighting;
@@ -196,6 +197,7 @@ export class TracingContext {
     }
     this.#substitutionDepth++;
     this.#hasMoreSubstitutions = false;
+    this.#asyncEvalCallbacks = [];
     return true;
   }
 
@@ -209,6 +211,7 @@ export class TracingContext {
     this.#appliedEvaluations = 0;
     this.#hasMoreEvaluations = false;
     this.#evaluationCount++;
+    this.#asyncEvalCallbacks = [];
     return true;
   }
 
@@ -246,16 +249,24 @@ export class TracingContext {
     this.#appliedEvaluations = Math.max(this.#appliedEvaluations, value);
   }
 
-  // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need
-  // to be passed here to determine whether the "current" function call should be evaluated or not.
-  applyEvaluation(children: TracingContext[]): boolean {
+  // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need to
+  // be passed here to determine whether the "current" function call should be evaluated or not. If so, the
+  // evaluation callback is run. The callback should return synchronously an array of Nodes as placeholder to be
+  // rendered immediately and optionally a callback for asynchronous updates of the placeholder nodes. The callback
+  // returns a boolean indicating whether the update was successful or not.
+  applyEvaluation(
+      children: TracingContext[],
+      evaluation: () => ({placeholder: Node[], asyncEvalCallback?: () => Promise<boolean>})): Node[]|null {
     if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
       this.#setHasMoreEvaluations(true);
-      return false;
+      children.forEach(child => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
+      return null;
     }
     this.#setAppliedEvaluations(
         children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1);
-    return true;
+    const {placeholder, asyncEvalCallback} = evaluation();
+    this.#asyncEvalCallbacks.push(asyncEvalCallback);
+    return placeholder;
   }
 
   #setHasMoreSubstitutions(): void {
@@ -279,6 +290,10 @@ export class TracingContext {
     child.#evaluationCount = this.#evaluationCount;
     child.#hasMoreSubstitutions = false;
     child.#parsedValueCache = this.#parsedValueCache;
+    // Async evaluation callbacks need to be gathered across substitution contexts so that they bubble to the root. That
+    // is not the case for evaluation contexts since `applyEvaluation` conditionally collects callbacks for its subtree
+    // already.
+    child.#asyncEvalCallbacks = this.#asyncEvalCallbacks;
     return child;
   }
 
@@ -293,6 +308,12 @@ export class TracingContext {
     const parsedValue = declaration.parseValue(matchedStyles, computedStyles);
     this.#parsedValueCache.set(declaration, {matchedStyles, computedStyles, parsedValue});
     return parsedValue;
+  }
+
+  // If this returns `false`, all evaluations for this trace line have failed.
+  async runAsyncEvaluations(): Promise<boolean> {
+    const results = await Promise.all(this.#asyncEvalCallbacks.map(callback => callback?.()));
+    return results.some(result => result !== false);
   }
 }
 

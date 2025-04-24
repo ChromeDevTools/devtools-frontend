@@ -158,6 +158,7 @@ describe('TracingContext', () => {
     const context =
         new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
 
+    const evaluation = () => ({placeholder: []});
     // Evaluations are applied bottom up
     assert.isTrue(context.nextEvaluation());
     {
@@ -173,13 +174,13 @@ describe('TracingContext', () => {
       // Bottom-up pass: actually apply evaluations "from the inside out".
       // Grand children don't have any inner expressions to be evaluated, no need to request evaluation and no inner
       // tracing contexts to be passed here.
-      assert.isTrue(firstGrandChild.applyEvaluation([]));
-      assert.isTrue(secondGrandChild.applyEvaluation([]));
-      assert.isTrue(thirdGrandChild.applyEvaluation([]));
-      assert.isTrue(secondChild.applyEvaluation([]));
+      assert.isOk(firstGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(thirdGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondChild.applyEvaluation([], evaluation));
       // firstChild has inner expressions (the grand children), so pass the inner tracing contexts here.
-      assert.isFalse(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild]));
-      assert.isFalse(context.applyEvaluation([firstChild, secondChild]));
+      assert.isNotOk(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild], evaluation));
+      assert.isNotOk(context.applyEvaluation([firstChild, secondChild], evaluation));
     }
 
     assert.isTrue(context.nextEvaluation());
@@ -191,12 +192,12 @@ describe('TracingContext', () => {
       assert.exists(firstGrandChild);
       assert.exists(secondGrandChild);
       assert.exists(thirdGrandChild);
-      assert.isTrue(firstGrandChild.applyEvaluation([]));
-      assert.isTrue(secondGrandChild.applyEvaluation([]));
-      assert.isTrue(thirdGrandChild.applyEvaluation([]));
-      assert.isTrue(secondChild.applyEvaluation([]));
-      assert.isTrue(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild]));
-      assert.isFalse(context.applyEvaluation([firstChild, secondChild]));
+      assert.isOk(firstGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(thirdGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondChild.applyEvaluation([], evaluation));
+      assert.isOk(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild], evaluation));
+      assert.isNotOk(context.applyEvaluation([firstChild, secondChild], evaluation));
     }
 
     assert.isTrue(context.nextEvaluation());
@@ -208,12 +209,12 @@ describe('TracingContext', () => {
       assert.exists(firstGrandChild);
       assert.exists(secondGrandChild);
       assert.exists(thirdGrandChild);
-      assert.isTrue(firstGrandChild.applyEvaluation([]));
-      assert.isTrue(secondGrandChild.applyEvaluation([]));
-      assert.isTrue(thirdGrandChild.applyEvaluation([]));
-      assert.isTrue(secondChild.applyEvaluation([]));
-      assert.isTrue(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild]));
-      assert.isTrue(context.applyEvaluation([firstChild, secondChild]));
+      assert.isOk(firstGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(thirdGrandChild.applyEvaluation([], evaluation));
+      assert.isOk(secondChild.applyEvaluation([], evaluation));
+      assert.isOk(firstChild.applyEvaluation([firstGrandChild, secondGrandChild, thirdGrandChild], evaluation));
+      assert.isOk(context.applyEvaluation([firstChild, secondChild], evaluation));
     }
 
     assert.isFalse(context.nextEvaluation());

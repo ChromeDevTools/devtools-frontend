@@ -70,7 +70,7 @@ async function showTrace(
   const viewFunction = createViewFunctionStub(Elements.CSSValueTraceView.CSSValueTraceView);
   const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, viewFunction);
   await viewFunction.nextInput;
-  view.showTrace(
+  void view.showTrace(
       property, null, matchedStyles, new Map(),
       Elements.StylePropertyTreeElement.getPropertyRenderers(
           property.ownerStyle, treeElement.parentPane(), matchedStyles, treeElement,
@@ -116,6 +116,8 @@ describeWithMockConnection('CSSValueTraceView', () => {
             return '24px';
           case 'calc(1vw + 1em)':
             return '24.53px';
+          case 'calc(1px + 1px)':
+            return '2px';
         }
         return v;
       });
@@ -132,10 +134,8 @@ describeWithMockConnection('CSSValueTraceView', () => {
 
       const substitutions = getLineText(input.substitutions);
       const evaluations = getLineText(input.evaluations);
-      const result = getLineText([input.finalResult ?? []])[0];
       assert.deepEqual(substitutions, []);
-      assert.deepEqual(evaluations, []);
-      assert.deepEqual(result, value);
+      assert.deepEqual(evaluations, [value]);
     }
   });
 
@@ -146,10 +146,8 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
-    const result = getLineText([input.finalResult ?? []])[0];
-    assert.deepEqual(substitutions, []);
+    assert.deepEqual(substitutions, ['40px']);
     assert.deepEqual(evaluations, []);
-    assert.deepEqual(result, '40px');
   });
 
   it('substitutes the variable declaration if the variable is found (with fallback)', async () => {
@@ -159,10 +157,8 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
-    const result = getLineText([input.finalResult ?? []])[0];
-    assert.deepEqual(substitutions, []);
+    assert.deepEqual(substitutions, ['40px']);
     assert.deepEqual(evaluations, []);
-    assert.deepEqual(result, '40px');
   });
 
   it('substitutes the fallback if the variable is found', async () => {
@@ -171,10 +167,8 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
-    const result = getLineText([input.finalResult ?? []])[0];
-    assert.deepEqual(substitutions, []);
+    assert.deepEqual(substitutions, ['10px']);
     assert.deepEqual(evaluations, []);
-    assert.deepEqual(result, '10px');
   });
 
   it('shows chains of substitutions', async () => {
@@ -184,28 +178,36 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
-    const result = getLineText([input.finalResult ?? []])[0];
-    assert.deepEqual(substitutions, ['var(--w)']);
+    assert.deepEqual(substitutions, ['var(--w)', '40px']);
     assert.deepEqual(evaluations, []);
-    assert.deepEqual(result, '40px');
   });
 
   it('shows intermediate evaluation steps', async () => {
     const {matchedStyles, stylesPane} = await setUpStyles();
     const {property, treeElement} = await getTreeElement(
-        matchedStyles, stylesPane, 'fond-size', 'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)');
+        matchedStyles, stylesPane, 'font-size', 'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)');
     const resolveValuesSpy = sinon.spy(treeElement.parentPane().cssModel()!.resolveValues);
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = getLineText(input.substitutions);
     const evaluations = getLineText(input.evaluations);
-    const result = getLineText([input.finalResult ?? []])[0];
     await Promise.all(resolveValuesSpy.returnValues);
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, [
       'calc(clamp(16px, calc(9.8px + 16px), 24px) + 3.2px)',
       'calc(clamp(16px, 24.53px, 24px) + 3.2px)',
       'calc(24px + 3.2px)',
+      '27.7px',
     ]);
-    assert.deepEqual(result, '27.7px');
+  });
+
+  it('hides trace lines that contained no successful evaluations', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles();
+    const {property, treeElement} =
+        await getTreeElement(matchedStyles, stylesPane, '--a', 'calc(100% - calc(50% + calc(1px + 1px)))');
+    const input = await showTrace(property, matchedStyles, treeElement);
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    assert.deepEqual(substitutions, []);
+    assert.deepEqual(evaluations, ['calc(100% - calc(50% + 2px))']);
   });
 });

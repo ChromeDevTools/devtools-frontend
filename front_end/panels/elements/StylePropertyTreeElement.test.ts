@@ -291,9 +291,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         const colorSwatch = valueElement.querySelector('devtools-color-swatch');
         assert.exists(colorSwatch);
-        const setColorTextCall = await spyCall(colorSwatch, 'setColorText');
+        const setColorTextCall = spyCall(colorSwatch, 'setColorText');
 
-        assert.strictEqual(setColorTextCall.args[0].asString(), '#808080');
+        assert.isTrue(await context.runAsyncEvaluations());
+        assert.strictEqual((await setColorTextCall).args[0].asString(), '#808080');
         assert.strictEqual(valueElement.innerText, '#808080');
       });
 
@@ -1725,7 +1726,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const property = addProperty('width', 'calc(1 + 1)');
 
       const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, () => {});
-      view.showTrace(
+      await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));

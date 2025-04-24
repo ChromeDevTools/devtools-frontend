@@ -655,21 +655,27 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
     const colorMixText = `color-mix(${space}, ${color1Text}, ${color2Text})`;
 
-    if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
-      const initialColor = Common.Color.parse('#000') as Common.Color.Color;
-      const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor);
-      context.addControl('color', swatch);
-      const nodeId = this.#pane.node()?.id;
-      if (nodeId !== undefined) {
-        void this.#pane.cssModel()?.resolveValues(nodeId, colorMixText).then(results => {
+    const nodeId = this.#pane.node()?.id;
+    if (nodeId !== undefined && childTracingContexts) {
+      const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
+        const initialColor = Common.Color.parse('#000') as Common.Color.Color;
+        const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor);
+        context.addControl('color', swatch);
+        const asyncEvalCallback = async(): Promise<boolean> => {
+          const results = await this.#pane.cssModel()?.resolveValues(nodeId, colorMixText);
           if (results) {
             const color = Common.Color.parse(results[0]);
             if (color) {
               swatch.setColorText(color.as(Common.Color.Format.HEXA));
+              return true;
             }
           }
-        });
-        return [swatch];
+          return false;
+        };
+        return {placeholder: [swatch], asyncEvalCallback};
+      });
+      if (evaluation) {
+        return evaluation;
       }
     }
 
@@ -1272,26 +1278,30 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
     const valueElement = container.createChild('span');
     valueElement.textContent = match.text;
 
-    if (context.tracing?.applyEvaluation([])) {
-      void this.#applyEvaluation(valueElement, match.text);
-    } else if (!context.tracing) {
+    if (!context.tracing) {
       void this.#attachPopover(valueElement, match.text);
     }
+    const evaluation = context.tracing?.applyEvaluation([], () => {
+      return {placeholder: [valueElement], asyncEvalCallback: () => this.#applyEvaluation(valueElement, match.text)};
+    });
 
-    return [valueElement];
+    return evaluation ?? [valueElement];
   }
 
-  async #applyEvaluation(valueElement: HTMLElement, value: string): Promise<void> {
+  async #applyEvaluation(valueElement: HTMLElement, value: string): Promise<boolean> {
     const nodeId = this.#stylesPane.node()?.id;
     if (nodeId === undefined) {
-      return;
+      return false;
     }
 
     const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
 
-    if (pixelValue) {
+    if (pixelValue?.[0] && pixelValue?.[0] !== value) {
       valueElement.textContent = pixelValue[0];
+      return true;
     }
+
+    return false;
   }
 
   async #attachPopover(valueElement: HTMLElement, value: string): Promise<void> {
@@ -1354,8 +1364,16 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
             match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html`, `, arg]).flat()})`,
         span);
 
-    if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
-      void this.applyEvaluation(span, context.matchedResult.getComputedText(match.node));
+    if (childTracingContexts) {
+      const evaluation = context.tracing?.applyEvaluation(
+          childTracingContexts,
+          () => ({
+            placeholder: [span],
+            asyncEvalCallback: () => this.applyEvaluation(span, context.matchedResult.getComputedText(match.node))
+          }));
+      if (evaluation) {
+        return evaluation;
+      }
     } else if (match.func !== 'calc') {
       const resolvedArgs =
           match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
@@ -1365,16 +1383,17 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     return [span];
   }
 
-  async applyEvaluation(span: HTMLSpanElement, value: string): Promise<void> {
+  async applyEvaluation(span: HTMLSpanElement, value: string): Promise<boolean> {
     const nodeId = this.#stylesPane.node()?.id;
     if (nodeId === undefined) {
-      return;
+      return false;
     }
     const evaled = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
     if (!evaled?.[0] || evaled[0] === value) {
-      return;
+      return false;
     }
     span.textContent = evaled[0];
+    return true;
   }
 
   async applyMathFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
@@ -2128,7 +2147,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         jslogContext=elements.css-value-trace
         @beforetoggle=${function(this: Tooltips.Tooltip.Tooltip, e: ToggleEvent) {
           if (e.newState === 'open') {
-            (this.querySelector('devtools-widget') as UI.Widget.WidgetElement<CSSValueTraceView>| null)
+            void (this.querySelector('devtools-widget') as UI.Widget.WidgetElement<CSSValueTraceView>| null)
               ?.getWidget()
               ?.showTrace(
                 property, text, matchedStyles, computedStyles,

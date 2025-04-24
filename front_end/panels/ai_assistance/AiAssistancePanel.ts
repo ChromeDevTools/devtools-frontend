@@ -863,11 +863,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onSettingsClick: () => {
             void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
           },
-          onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
+          onTextSubmit: async (
+              text: string, imageInput?: Host.AidaClient.Part,
+              multimodalInputType?: AiAssistanceModel.MultimodalInputType) => {
             this.#imageInput = undefined;
             this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-            await this.#startConversation(text, imageInput);
+            await this.#startConversation(text, imageInput, multimodalInputType);
           },
           onInspectElementClick: this.#handleSelectElementClick.bind(this),
           onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
@@ -1184,7 +1186,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     clearTimeout(showLoadingTimeout);
     if (bytes) {
-      this.#imageInput = {isLoading: false, data: bytes, mimeType: JPEG_MIME_TYPE};
+      this.#imageInput = {
+        isLoading: false,
+        data: bytes,
+        mimeType: JPEG_MIME_TYPE,
+        inputType: AiAssistanceModel.MultimodalInputType.SCREENSHOT
+      };
       this.requestUpdate();
       void this.updateComplete.then(() => {
         this.#viewOutput.chatView?.focusTextInput();
@@ -1228,7 +1235,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       });
     } catch {
       clearTimeout(showLoadingTimeout);
-      this.#imageInput = {isLoading: false, data: '', mimeType: ''};
+      this.#imageInput =
+          {isLoading: false, data: '', mimeType: '', inputType: AiAssistanceModel.MultimodalInputType.UPLOADED_IMAGE};
       this.requestUpdate();
       void this.updateComplete.then(() => {
         this.#viewOutput.chatView?.focusTextInput();
@@ -1242,7 +1250,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     const commaIndex = dataUrl.indexOf(',');
     const bytes = dataUrl.substring(commaIndex + 1);
-    this.#imageInput = {isLoading: false, data: bytes, mimeType: file.type};
+    this.#imageInput = {
+      isLoading: false,
+      data: bytes,
+      mimeType: file.type,
+      inputType: AiAssistanceModel.MultimodalInputType.UPLOADED_IMAGE
+    };
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.#viewOutput.chatView?.focusTextInput();
@@ -1297,7 +1310,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return context;
   }
 
-  async #startConversation(text: string, imageInput?: Host.AidaClient.Part): Promise<void> {
+  async #startConversation(
+      text: string, imageInput?: Host.AidaClient.Part,
+      multimodalInputType?: AiAssistanceModel.MultimodalInputType): Promise<void> {
     if (!this.#conversationAgent) {
       return;
     }
@@ -1314,12 +1329,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
     const imageId = image ? crypto.randomUUID() : undefined;
+    const multimodalInput = image && imageId && multimodalInputType ? {
+      input: image,
+      id: imageId,
+      type: multimodalInputType,
+    } :
+                                                                      undefined;
     const runner = this.#conversationAgent.run(
         text, {
           signal,
           selected: context,
         },
-        image, imageId);
+        multimodalInput);
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));

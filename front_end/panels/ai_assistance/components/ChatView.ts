@@ -250,6 +250,7 @@ export type ImageInputData = {
   isLoading: false,
   data: string,
   mimeType: string,
+  inputType: AiAssistanceModel.MultimodalInputType,
 };
 
 export interface UserChatMessage {
@@ -274,7 +275,9 @@ export const enum State {
 }
 
 export interface Props {
-  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => void;
+  onTextSubmit:
+      (text: string, imageInput?: Host.AidaClient.Part,
+       multimodalInputType?: AiAssistanceModel.MultimodalInputType) => void;
   onInspectElementClick: () => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
@@ -503,7 +506,7 @@ export class ChatView extends HTMLElement {
     const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
         {inlineData: {data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType}} :
         undefined;
-    void this.#props.onTextSubmit(textArea.value, imageInput);
+    void this.#props.onTextSubmit(textArea.value, imageInput, this.#props.imageInput?.inputType);
     textArea.value = '';
   };
 
@@ -521,7 +524,7 @@ export class ChatView extends HTMLElement {
       const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
           {inlineData: {data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType}} :
           undefined;
-      void this.#props.onTextSubmit(ev.target.value, imageInput);
+      void this.#props.onTextSubmit(ev.target.value, imageInput, this.#props.imageInput?.inputType);
       ev.target.value = '';
     }
   };

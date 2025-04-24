@@ -570,7 +570,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
           {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
       panel.handleAction('freestyler.elements-floating-button');
       const imageInput = {inlineData: {data: 'imageinputbytes', mimeType: 'image/jpeg'}};
-      (await view.nextInput).onTextSubmit('User question to Freestyler?', imageInput);
+      (await view.nextInput)
+          .onTextSubmit('User question to Freestyler?', imageInput, AiAssistanceModel.MultimodalInputType.SCREENSHOT);
       assert.deepEqual((await view.nextInput).messages, [
         {
           entity: AiAssistancePanel.ChatMessageEntity.USER,
@@ -1289,8 +1290,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       view.input.onTakeScreenshot?.();
 
-      assert.deepEqual(
-          (await view.nextInput).imageInput, {isLoading: false, data: 'imageInput', mimeType: 'image/jpeg'});
+      assert.deepEqual((await view.nextInput).imageInput, {
+        isLoading: false,
+        data: 'imageInput',
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.MultimodalInputType.SCREENSHOT
+      });
       expect(captureScreenshotStub.calledOnce);
 
       view.input.onRemoveImageInput?.();
@@ -1315,8 +1320,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       await view.input.onLoadImage?.(new File([blob], 'image.jpeg', {type: 'image/jpeg'}));
 
-      assert.deepEqual(
-          (await view.nextInput).imageInput, {isLoading: false, data: btoa('imageInput'), mimeType: 'image/jpeg'});
+      assert.deepEqual((await view.nextInput).imageInput, {
+        isLoading: false,
+        data: btoa('imageInput'),
+        mimeType: 'image/jpeg',
+        inputType: AiAssistanceModel.MultimodalInputType.UPLOADED_IMAGE
+      });
 
       view.input.onRemoveImageInput?.();
       assert.notExists((await view.nextInput).imageInput);
@@ -1335,7 +1344,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert.isTrue(view.input.multimodalInputEnabled);
 
-      view.input.onTextSubmit('test', {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}});
+      view.input.onTextSubmit(
+          'test', {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}},
+          AiAssistanceModel.MultimodalInputType.SCREENSHOT);
 
       assert.deepEqual((await view.nextInput).messages, [
         {

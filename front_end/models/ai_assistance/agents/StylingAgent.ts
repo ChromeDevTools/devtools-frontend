@@ -23,6 +23,7 @@ import {
   ConversationContext,
   type ConversationSuggestion,
   type FunctionCallHandlerResult,
+  MultimodalInputType,
   type ParsedAnswer,
   type ParsedResponse,
   type RequestOptions,
@@ -152,22 +153,32 @@ ANSWER: Even though the popup itself has a z-index of 3, its parent container ha
 SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking order?"]
 `;
 
-const promptForMultimodalInputEvaluation = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+const promptForScreenshot = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
-# Considerations for evaluating image:
-* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
 * Try to connect the screenshot to actual DOM elements in the page.
+`;
+
+const promptForUploadedImage = `The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
+`;
+
+const considerationsForMultimodalInputEvaluation = `# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
 * Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
 * Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
 * If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
 * Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
-* **CRITICAL** When the user provides a screenshot, interpret and use content and information from the screenshot STRICTLY for web site debugging purposes.
+* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
 
 * As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
 In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
 
 `;
 /* clang-format on */
+
+const MULTIMODAL_ENHANCEMENT_PROMPTS: Record<MultimodalInputType, string> = {
+  [MultimodalInputType.SCREENSHOT]: promptForScreenshot + considerationsForMultimodalInputEvaluation,
+  [MultimodalInputType.UPLOADED_IMAGE]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
+};
 
 async function executeJsCode(
     functionDeclaration: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
@@ -808,13 +819,13 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
 
   override async enhanceQuery(
       query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null,
-      hasImageInput?: boolean): Promise<string> {
+      multimodalInputType?: MultimodalInputType): Promise<string> {
     const elementEnchancementQuery = selectedElement ?
         `# Inspected element\n\n${
             await StylingAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :
         '';
     const multimodalInputEnhancementQuery =
-        this.multimodalInputEnabled && hasImageInput ? promptForMultimodalInputEvaluation : '';
+        this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : '';
     return `${multimodalInputEnhancementQuery}${elementEnchancementQuery}QUERY: ${query}`;
   }
 

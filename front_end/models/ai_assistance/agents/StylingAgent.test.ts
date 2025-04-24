@@ -1248,7 +1248,8 @@ STOP
 
     it('does not add multimodal input evaluation prompt when multimodal is disabled', async () => {
       mockHostConfig('test model');
-      const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), true);
+      const enhancedQuery = await agent.enhanceQuery(
+          'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.SCREENSHOT);
 
       assert.strictEqual(
           enhancedQuery,
@@ -1256,10 +1257,10 @@ STOP
       );
     });
 
-    it('does not add multimodal input evaluation prompt when multimodal is enabled but hasImageInput is false',
+    it('does not add multimodal input evaluation prompt when multimodal is enabled but multimodalInputType is missing',
        async () => {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
-         const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), false);
+         const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element));
 
          assert.strictEqual(
              enhancedQuery,
@@ -1267,22 +1268,24 @@ STOP
          );
        });
 
-    it('adds multimodal input evaluation prompt when multimodal is enabled and hasImageInput is true', async () => {
-      mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
-      const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), true);
+    it('adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is screenshot',
+       async () => {
+         mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
+         const enhancedQuery = await agent.enhanceQuery(
+             'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.SCREENSHOT);
 
-      assert.strictEqual(
-          enhancedQuery,
-          `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+         assert.strictEqual(
+             enhancedQuery,
+             `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
 
+* Try to connect the screenshot to actual DOM elements in the page.
 # Considerations for evaluating image:
 * Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
-* Try to connect the screenshot to actual DOM elements in the page.
 * Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
 * Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
 * If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
 * Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
-* **CRITICAL** When the user provides a screenshot, interpret and use content and information from the screenshot STRICTLY for web site debugging purposes.
+* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
 
 * As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
 In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
@@ -1294,8 +1297,38 @@ In case query is related to the image, ALWAYS first use image evaluation to get 
 # User request
 
 QUERY: test query`,
-      );
-    });
+         );
+       });
+
+    it('adds multimodal input evaluation prompt when multimodal is enabled and multimodalInputType is uploaded image',
+       async () => {
+         mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
+         const enhancedQuery = await agent.enhanceQuery(
+             'test query', new AiAssistance.NodeContext(element), AiAssistance.MultimodalInputType.UPLOADED_IMAGE);
+
+         assert.strictEqual(
+             enhancedQuery,
+             `The user has uploaded an image in base64-encoded format. You SHOULD use it while answering user's queries.
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+* **CRITICAL** When the user provides image input, interpret and use content and information from the image STRICTLY for web site debugging purposes.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+# Inspected element
+
+* Its selector is \`div#myElement\`
+
+# User request
+
+QUERY: test query`,
+         );
+       });
   });
 
   describe('HostConfigFreestylerExecutionMode', () => {

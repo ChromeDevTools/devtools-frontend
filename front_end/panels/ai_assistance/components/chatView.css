@@ -136,8 +136,8 @@
 
     devtools-button {
       position: absolute;
-      top: var(--sys-size-1);
-      right: -4px;
+      top: calc(-1 * var(--sys-size-2));
+      right: calc(-1 * var(--sys-size-3));
       border-radius: var(--sys-shape-corner-full);
       border: 1px solid var(--sys-color-neutral-outline);
       background-color: var(--sys-color-cdt-base-container);

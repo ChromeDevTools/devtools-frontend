@@ -143,7 +143,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
     switch (this.#insight.insight.insightKey) {
       case 'CLSCulprits':
         return [
-          {title: 'How can I improve my CLS score'},
+          {title: 'Help me optimize my CLS score'},
           {title: 'How can I prevent layout shifts on this page?'},
         ];
       case 'DocumentLatency':
@@ -171,7 +171,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
       case 'InteractionToNextPaint':
         return [
           {title: 'Help me optimize my INP score'}, {title: 'Help me understand why a large INP score is problematic'},
-          {title: 'What was the biggest contributor to my longest interaction duration time?'}
+          {title: 'What was the biggest contributor to my INP score?'}
         ];
       case 'LCPDiscovery':
         return [
@@ -187,7 +187,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
         return [{title: 'How do I optimize my network dependency tree?'}];
       case 'RenderBlocking':
         return [
-          {title: 'Show me the render blocking requests, listed by impact'},
+          {title: 'Show me the most impactful render blocking requests that I should focus on'},
           {title: 'How can I reduce the number of render blocking requests?'}
         ];
       case 'SlowCSSSelector':

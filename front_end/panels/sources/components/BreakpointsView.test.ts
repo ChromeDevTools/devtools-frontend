@@ -591,21 +591,21 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for enable state', async () => {
       const {groups} =
           await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: true});
       const breakpointItem = groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.ENABLED);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for disable state', async () => {
       const {groups} =
           await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false});
       const breakpointItem = groups[0].breakpointItems[0];
       assert.strictEqual(breakpointItem.status, SourcesComponents.BreakpointsView.BreakpointStatus.DISABLED);
     });
 
-    it('correctly extracts the enabled state', async () => {
+    it('correctly extracts the enabled state for indeterminate state', async () => {
       const testData = [
         createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
         createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
@@ -747,7 +747,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
   });
 });
 
-describeWithMockConnection('BreakpointsSidebarController', () => {
+describeWithMockConnection('BreakpointsSidebarController with mock connection', () => {
   beforeEach(() => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();

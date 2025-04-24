@@ -62,7 +62,7 @@ describeWithMockConnection('NetworkPanel', () => {
   describe('out of scpe', tracingTests(false));
 });
 
-describeWithMockConnection('NetworkPanel', () => {
+describeWithMockConnection('NetworkPanel with action', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {

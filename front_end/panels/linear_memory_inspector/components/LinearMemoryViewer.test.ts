@@ -285,7 +285,7 @@ describe('LinearMemoryViewer', () => {
     assertSelectedCellIsHighlighted(component, VIEWER_ADDRESS_SELECTOR, 0);
   });
 
-  it('triggers an event on arrow down', async () => {
+  it('triggers an event on arrow left', async () => {
     const {component, data} = await setUpComponent();
     const addressBefore = data.address;
     const expectedAddress = addressBefore - 1;
@@ -329,7 +329,7 @@ describe('LinearMemoryViewer', () => {
     await assertEventTriggeredOnArrowNavigation(component, 'PageDown', expectedAddress);
   });
 
-  it('triggers an event on page down', async () => {
+  it('triggers an event on page up', async () => {
     const {component, data} = await setUpComponent();
     const addressBefore = data.address;
 

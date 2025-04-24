@@ -155,7 +155,7 @@ describe('The Network Tab', function() {
     expect(nodes.length).to.equal(11);
   });
 
-  it('require operator to filter by scheme', async () => {
+  it('require operator to filter by scheme localhost', async () => {
     await typeText('localhost');
     await waitForNone('.data-grid-data-grid-node > .name-column');
 
@@ -283,7 +283,7 @@ describe('The Network Tab', function() {
   });
 });
 
-describe('The Network Tab', function() {
+describe('The Network Tab no filter bar redesign', function() {
   beforeEach(async () => {
     await disableExperiment('network-panel-filter-bar-redesign');
 
@@ -301,7 +301,7 @@ describe('The Network Tab', function() {
   });
 });
 
-describe('The Network Tab', function() {
+describe('The Network Tab with filter bar redesign', function() {
   beforeEach(async () => {
     await reloadDevTools({enableExperiments: ['network-panel-filter-bar-redesign']});
 

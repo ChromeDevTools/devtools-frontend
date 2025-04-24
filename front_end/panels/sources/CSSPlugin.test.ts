@@ -33,7 +33,7 @@ describe('CSSPlugin', () => {
   });
 });
 
-describeWithMockConnection('CSSPlugin', () => {
+describeWithMockConnection('CSSPlugin with mock connection', () => {
   beforeEach(() => {
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => {},

@@ -143,7 +143,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describeWithDevtoolsExtension('Extensions - Recorder', {}, context => {
   expectConsoleLogs({
     warn: ['evaluate: the main frame is not yet available'],
     error: ['Extension server error: Object not found: <top>'],
@@ -782,8 +782,8 @@ describe('ExtensionServer', () => {
   });
 });
 
-function assertIsStatus<T>(value: T|
-                           Extensions.ExtensionServer.Record): asserts value is Extensions.ExtensionServer.Record {
+function assertIsStatus<T>(value: T|Extensions.ExtensionServer.Record):
+    asserts value is Extensions.ExtensionServer.Record {
   if (value && typeof value === 'object' && 'code' in value) {
     assert.isTrue(value.code === 'OK' || Boolean(value.isError), `Value ${value} is not a status code`);
   } else {

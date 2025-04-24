@@ -292,7 +292,7 @@ describeWithEnvironment('Timing helpers', () => {
     });
   });
 
-  describe('timestampIsInBounds', () => {
+  describe('eventIsInBounds', () => {
     const {eventIsInBounds} = Trace.Helpers.Timing;
     const {Micro: MicroSeconds} = Trace.Types.Timing;
 

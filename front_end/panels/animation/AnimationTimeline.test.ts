@@ -679,7 +679,7 @@ describeWithMockConnection('AnimationTimeline', () => {
   });
 });
 
-describeWithMockConnection('AnimationTimeline', () => {
+describeWithMockConnection('AnimationTimeline placeholder', () => {
   it('shows placeholder showing that the panel is waiting for animations', () => {
     const view = Animation.AnimationTimeline.AnimationTimeline.instance();
     const placeholder = view.contentElement.querySelector('.animation-timeline-buffer-hint');

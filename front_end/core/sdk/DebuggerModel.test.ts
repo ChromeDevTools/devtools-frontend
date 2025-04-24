@@ -21,7 +21,7 @@ const {urlString} = Platform.DevToolsPath;
 const SCRIPT_ID_ONE = '1' as Protocol.Runtime.ScriptId;
 const SCRIPT_ID_TWO = '2' as Protocol.Runtime.ScriptId;
 
-describeWithMockConnection('DebuggerModel', () => {
+describeWithMockConnection('DebuggerModel with mock connection', () => {
   describe('breakpoint activation', () => {
     beforeEach(() => {
       // Dummy handlers for unblocking target suspension.

@@ -44,7 +44,7 @@ describe('WorkspaceImpl', () => {
     assert.isTrue(projectStub.uiSourceCodeForURL.calledOnceWith(exampleUrl));
   });
 
-  it('can return the UI source code from project type', async () => {
+  it('can return the UI source code from project type debugger', async () => {
     const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);

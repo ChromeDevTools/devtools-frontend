@@ -665,6 +665,8 @@ export default defineConfig([
       'mocha/no-global-tests': 'error',
       'mocha/no-nested-tests': 'error',
 
+      'mocha/no-identical-title': 'error',
+
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
 

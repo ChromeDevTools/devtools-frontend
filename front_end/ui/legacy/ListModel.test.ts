@@ -33,7 +33,7 @@ describe('ListModel', () => {
     assert.deepEqual([...model], [5, 6, 7, 1, 2, 10]);
   });
 
-  it('supports removing list elements', () => {
+  it('supports removing last list elements', () => {
     const model = new UI.ListModel.ListModel([5, 6, 7, 1, 2, 10]);
     model.remove(model.length - 1);
     assert.deepEqual([...model], [5, 6, 7, 1, 2]);
@@ -51,7 +51,7 @@ describe('ListModel', () => {
     assert.deepEqual([...model], [5, 8, 6, 7, 1]);
   });
 
-  it('supports replacing list elements in place', () => {
+  it('supports replacing list elements in place range', () => {
     const model = new UI.ListModel.ListModel([
       0, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 4, 5, 6, 27, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 28, 29,
     ]);

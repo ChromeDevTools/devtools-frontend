@@ -244,7 +244,7 @@ describe('NetworkRequest', () => {
   });
 });
 
-describeWithMockConnection('NetworkRequest', () => {
+describeWithMockConnection('NetworkRequest with mock connection', () => {
   let networkManagerForRequestStub: sinon.SinonStub;
   let cookie: SDK.Cookie.Cookie;
   let addBlockedCookieSpy: sinon.SinonSpy;

@@ -47,7 +47,7 @@ describe('ConsoleViewMessage', () => {
   });
 });
 
-describeWithMockConnection('ConsoleViewMessage', () => {
+describeWithMockConnection('ConsoleViewMessage with mock connection', () => {
   describe('anchor rendering', () => {
     it('links to the top frame for normal console message', () => {
       const target = createTarget();

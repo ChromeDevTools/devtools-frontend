@@ -109,7 +109,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
 
   describe('estimated savings output', () => {
     let testComponentIndex = 0;  // used for defining the custom element and making it unique
-    function makeTestComponent(opts: {byteSavings?: number, timeSavings?: number}) {
+    function makeTestComponent(opts: {wastedBytes?: number, timeSavings?: number}) {
       class TestInsight extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
         override internalName = 'test-insight';
         override createOverlays(): TimelineOverlay[] {
@@ -121,7 +121,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         }
 
         override getEstimatedSavingsBytes(): number|null {
-          return opts.byteSavings ?? null;
+          return opts.wastedBytes ?? null;
         }
 
         override renderContent(): Lit.LitTemplate {
@@ -133,7 +133,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     }
 
     it('outputs the correct estimated savings for both bytes and time', async () => {
-      const component = makeTestComponent({byteSavings: 5_000, timeSavings: 50});
+      const component = makeTestComponent({wastedBytes: 5_000, timeSavings: 50});
       component.model = {
         insightKey: 'LCPPhases',
         strings: {},
@@ -152,7 +152,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('outputs the correct estimated savings for bytes only', async () => {
-      const component = makeTestComponent({byteSavings: 5_000});
+      const component = makeTestComponent({wastedBytes: 5_000});
       component.model = {
         insightKey: 'LCPPhases',
         strings: {},
@@ -190,7 +190,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('includes the output in the insight aria label', async () => {
-      const component = makeTestComponent({byteSavings: 5_000, timeSavings: 50});
+      const component = makeTestComponent({wastedBytes: 5_000, timeSavings: 50});
       component.model = {
         insightKey: 'LCPPhases',
         strings: {},
@@ -207,7 +207,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       assert.isOk(label);
 
       assert.strictEqual(
-          label, 'View details for LCP by Phase insight. Estimated savings for this insight: 50 ms and 5.0 kB');
+          label,
+          'View details for LCP by Phase insight. Estimated savings for this insight: 50 ms and 5.0 kB transfer size');
     });
   });
 

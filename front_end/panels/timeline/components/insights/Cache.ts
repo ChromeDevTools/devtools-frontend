@@ -45,10 +45,6 @@ export class Cache extends BaseInsightComponent<CacheInsightModel> {
     return this.model.requests.map(req => this.#createOverlayForRequest(req.request));
   }
 
-  override getEstimatedSavingsBytes(): number|null {
-    return this.model?.totalWastedBytes ?? null;
-  }
-
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;

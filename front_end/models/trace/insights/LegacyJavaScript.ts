@@ -102,11 +102,14 @@ export function generateInsight(
       continue;
     }
 
+    // Translate from resource size to transfer size.
+    const compressionRatio = estimateCompressionRatioForScript(script);
+    const transferSize = Math.round(result.estimatedByteSavings * compressionRatio);
+    result.estimatedByteSavings = transferSize;
+
     legacyJavaScriptResults.set(script, result);
 
     if (script.request) {
-      const compressionRatio = estimateCompressionRatioForScript(script);
-      const transferSize = Math.round(result.estimatedByteSavings * compressionRatio);
       const requestId = script.request.args.data.requestId;
       wastedBytesByRequestId.set(requestId, transferSize);
     }
@@ -118,5 +121,6 @@ export function generateInsight(
   return finalize({
     legacyJavaScriptResults: sorted,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
+    wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
   });
 }

@@ -40,17 +40,23 @@ const UIStrings = {
    */
   estimatedSavingsTimingAndBytes: 'Est savings: {PH1} & {PH2}',
   /**
-   * @description Text to tell the user the estimated time or size savings for this insight that is used for screen readers.
+   * @description Text to tell the user the estimated time savings for this insight that is used for screen readers.
    * @example {401 ms} PH1
    * @example {112 kB} PH1
    */
-  estimatedSavingsAria: 'Estimated savings for this insight: {PH1}',
+  estimatedSavingsAriaTiming: 'Estimated savings for this insight: {PH1}',
+  /**
+   * @description Text to tell the user the estimated size savings for this insight that is used for screen readers. Value is in terms of "transfer size", aka encoded/compressed data length.
+   * @example {401 ms} PH1
+   * @example {112 kB} PH1
+   */
+  estimatedSavingsAriaBytes: 'Estimated savings for this insight: {PH1} transfer size',
   /**
    * @description Text to tell the user the estimated time and size savings for this insight that is used for screen readers.
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */
-  estimatedSavingsTimingAndBytesAria: 'Estimated savings for this insight: {PH1} and {PH2}',
+  estimatedSavingsTimingAndBytesAria: 'Estimated savings for this insight: {PH1} and {PH2} transfer size',
   /**
    * @description Used for screen-readers as a label on the button to expand an insight to view details
    * @example {LCP by phase} PH1
@@ -270,7 +276,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   getEstimatedSavingsBytes(): number|null {
-    return null;
+    return this.model?.wastedBytes ?? null;
   }
 
   #getEstimatedSavingsTextParts(): {bytesString?: string, timeString?: string} {
@@ -300,12 +306,12 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       });
     }
     if (timeString) {
-      return i18nString(UIStrings.estimatedSavingsAria, {
+      return i18nString(UIStrings.estimatedSavingsAriaTiming, {
         PH1: timeString,
       });
     }
     if (bytesString) {
-      return i18nString(UIStrings.estimatedSavingsAria, {
+      return i18nString(UIStrings.estimatedSavingsAriaBytes, {
         PH1: bytesString,
       });
     }
@@ -446,7 +452,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
           ${estimatedSavingsString ?
             html`
             <slot name="insight-savings" class="insight-savings">
-              ${estimatedSavingsString}
+              <span title=${estimatedSavingsAriaLabel ?? ''}>${estimatedSavingsString}</span>
             </slot>
           </div>`
           : Lit.nothing}

@@ -55,7 +55,6 @@ export type CacheInsightModel = InsightModel<typeof UIStrings, {
     ttl: number,
     wastedBytes: number,
   }>,
-  totalWastedBytes: number,
 }>;
 
 // Threshold for cache hits.
@@ -247,6 +246,6 @@ export function generateInsight(
     relatedEvents: results.map(r => r.request),
     requests: results,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
-    totalWastedBytes,
+    wastedBytes: totalWastedBytes,
   });
 }

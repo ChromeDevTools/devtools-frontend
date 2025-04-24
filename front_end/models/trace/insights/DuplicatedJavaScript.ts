@@ -77,7 +77,15 @@ export function generateInsight(
     return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts);
   });
 
-  const {duplication, duplicationGroupedByNodeModules} = Extras.ScriptDuplication.computeScriptDuplication({scripts});
+  const compressionRatios = new Map<string, number>();
+  for (const script of scripts) {
+    if (script.request) {
+      compressionRatios.set(script.request.args.data.requestId, estimateCompressionRatioForScript(script));
+    }
+  }
+
+  const {duplication, duplicationGroupedByNodeModules} =
+      Extras.ScriptDuplication.computeScriptDuplication({scripts}, compressionRatios);
   const scriptsWithDuplication = [...duplication.values().flatMap(data => data.duplicates.map(d => d.script))];
 
   const wastedBytesByRequestId = new Map<string, number>();
@@ -88,8 +96,7 @@ export function generateInsight(
         continue;
       }
 
-      const compressionRatio = estimateCompressionRatioForScript(sourceData.script);
-      const transferSize = Math.round(sourceData.attributedSize * compressionRatio);
+      const transferSize = sourceData.attributedSize;
       const requestId = sourceData.script.request.args.data.requestId;
       wastedBytesByRequestId.set(requestId, (wastedBytesByRequestId.get(requestId) || 0) + transferSize);
     }
@@ -102,5 +109,6 @@ export function generateInsight(
     scripts,
     mainDocumentUrl: context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
+    wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
   });
 }

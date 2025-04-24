@@ -181,7 +181,7 @@ describeWithEnvironment('Cache', function() {
       assert.strictEqual(insight.state, 'pass');
       assert.deepEqual(insight.strings, Cache.UIStrings);
       assert.strictEqual(insight.requests?.length, 0);
-      assert.deepEqual(insight.totalWastedBytes, 0);
+      assert.deepEqual(insight.wastedBytes, 0);
       assert.strictEqual(relatedEvents?.length, 0);
     });
 
@@ -215,7 +215,7 @@ describeWithEnvironment('Cache', function() {
       assert.deepEqual(gotCacheable[0].wastedBytes, 0);
 
       assert.deepEqual(relatedEvents?.length, 1);
-      assert.deepEqual(insight.totalWastedBytes, 0);
+      assert.deepEqual(insight.wastedBytes, 0);
     });
   });
 });

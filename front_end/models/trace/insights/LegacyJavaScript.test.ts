@@ -46,7 +46,7 @@ describeWithEnvironment('LegacyJavaScript', function() {
           {name: 'String.prototype.includes', line: 111, column: 2473},
           {name: 'String.prototype.startsWith', line: 111, column: 2627}
         ],
-        estimatedByteSavings: 42001
+        estimatedByteSavings: 12850
       },
       'https://s.yimg.com/aaq/benji/benji-2.2.99.js':
           {matches: [{name: 'Promise.allSettled', line: 0, column: 133}], estimatedByteSavings: 37204},
@@ -62,23 +62,23 @@ describeWithEnvironment('LegacyJavaScript', function() {
           {name: 'Array.prototype.map', line: 0, column: 108005},
           {name: 'String.prototype.includes', line: 0, column: 108358}
         ],
-        estimatedByteSavings: 36070
+        estimatedByteSavings: 7141
       },
       'https://static.criteo.net/js/ld/publishertag.prebid.144.js': {
         matches: [
           {name: 'Array.isArray', line: 1, column: 74871}, {name: 'Array.prototype.filter', line: 1, column: 75344},
           {name: 'Array.prototype.indexOf', line: 1, column: 75013}
         ],
-        estimatedByteSavings: 33233
+        estimatedByteSavings: 10751
       },
       'https://s.yimg.com/oa/consent.js':
-          {matches: [{name: 'Array.prototype.includes', line: 1, column: 132267}], estimatedByteSavings: 29997},
+          {matches: [{name: 'Array.prototype.includes', line: 1, column: 132267}], estimatedByteSavings: 8157},
       'https://cdn.taboola.com/libtrc/yahooweb-network/loader.js': {
         matches: [{name: 'Object.entries', line: 0, column: 390544}, {name: 'Object.values', line: 0, column: 390688}],
-        estimatedByteSavings: 28643
+        estimatedByteSavings: 7061
       },
       'https://pm-widget.taboola.com/yahooweb-network/pmk-20220605.1.js':
-          {matches: [{name: 'Object.keys', line: 181, column: 26}], estimatedByteSavings: 26653}
+          {matches: [{name: 'Object.keys', line: 181, column: 26}], estimatedByteSavings: 7625}
     });
 
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);

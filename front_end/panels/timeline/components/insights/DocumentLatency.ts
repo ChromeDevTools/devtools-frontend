@@ -84,10 +84,6 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     return this.model?.metricSavings?.FCP ?? null;
   }
 
-  override getEstimatedSavingsBytes(): number|null {
-    return this.model?.data?.uncompressedResponseBytes ?? null;
-  }
-
   override renderContent(): Lit.LitTemplate {
     if (!this.model?.data) {
       return Lit.nothing;

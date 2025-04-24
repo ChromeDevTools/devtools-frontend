@@ -67,7 +67,7 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 
   if (Types.Events.isV8SourceRundownEvent(event)) {
-    const {isolate, scriptId, url, sourceUrl, sourceMapUrl, startLine, startColumn} = event.args.data;
+    const {isolate, scriptId, url, sourceUrl, sourceMapUrl} = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.url = url;
     if (sourceUrl) {
@@ -76,7 +76,6 @@ export function handleEvent(event: Types.Events.Event): void {
     if (sourceMapUrl) {
       script.sourceMapUrl = sourceMapUrl;
     }
-    script.inline = Boolean(startLine || startColumn);
     return;
   }
 
@@ -220,16 +219,24 @@ function findCachedRawSourceMap(
 }
 
 export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
+  const meta = metaHandlerData();
   const networkRequests = [...networkRequestsHandlerData().byId.values()];
+
+  const documentUrls = new Set<string>();
+  for (const frames of meta.frameByProcessId.values()) {
+    for (const frame of frames.values()) {
+      documentUrls.add(frame.url);
+    }
+  }
+
   for (const script of scriptById.values()) {
     script.request = findNetworkRequest(networkRequests, script) ?? undefined;
+    script.inline = !!script.url && documentUrls.has(script.url);
   }
 
   if (!options.resolveSourceMap) {
     return;
   }
-
-  const meta = metaHandlerData();
 
   const promises = [];
   for (const script of scriptById.values()) {

@@ -238,5 +238,6 @@ export function generateInsight(
       },
     },
     metricSavings,
+    wastedBytes: uncompressedResponseBytes,
   });
 }

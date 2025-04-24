@@ -70,7 +70,10 @@ export type ScriptDuplication = Map<string, {
   estimatedDuplicateBytes: number,
   duplicates: Array<{
     script: Handlers.ModelHandlers.Scripts.Script,
-    /** The number of bytes in the script bundle that map back to this module. */
+    /**
+     * The number of bytes in the script bundle that map back to this module,
+     * in terms of estimated impact on transfer size.
+     */
     attributedSize: number,
   }>,
 }>;
@@ -166,7 +169,8 @@ function sorted(duplication: ScriptDuplication): ScriptDuplication {
  * 2. `duplication` keys correspond to authored files, except all files within the same
  *    node_module package are aggregated under the same entry.
  */
-export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scripts.ScriptsData):
+export function computeScriptDuplication(
+    scriptsData: Handlers.ModelHandlers.Scripts.ScriptsData, compressionRatios: Map<string, number>):
     {duplication: ScriptDuplication, duplicationGroupedByNodeModules: ScriptDuplication} {
   const sourceDatasMap = new Map<Handlers.ModelHandlers.Scripts.Script, SourceData[]>();
 
@@ -211,9 +215,11 @@ export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scr
         data = {estimatedDuplicateBytes: 0, duplicates: []};
         duplication.set(sourceData.source, data);
       }
+      const compressionRatio = script.request ? compressionRatios.get(script.request?.args.data.requestId) ?? 1 : 1;
+      const transferSize = Math.round(sourceData.resourceSize * compressionRatio);
       data.duplicates.push({
         script,
-        attributedSize: sourceData.resourceSize,
+        attributedSize: transferSize,
       });
     }
   }

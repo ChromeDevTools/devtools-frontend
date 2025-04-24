@@ -54,7 +54,7 @@ try {
 
 // Perform an initial build (unless we should skip).
 if (!skipInitialBuild) {
-  spinner.text = 'Building…';
+  spinner.start('Building…');
   try {
     const {time} = await build(target);
     spinner.succeed(`Build ready (${timeFormatter.format(time)})`);
@@ -63,6 +63,8 @@ if (!skipInitialBuild) {
     process.exit(1);
   }
 }
+
+spinner.stop();
 
 if (watch) {
   let timeoutId = -1;

@@ -115,11 +115,14 @@ function findBrowserBinary() {
 }
 
 // Perform the initial build.
-childProcess.spawnSync(process.argv[0], [runBuildPath, `--target=${target}`], {
+const {status} = childProcess.spawnSync(process.argv[0], [runBuildPath, `--target=${target}`], {
   cwd,
   env,
   stdio: 'inherit',
 });
+if (status !== 0) {
+  process.exit(1);
+}
 
 // Launch Chrome with our custom DevTools front-end.
 function start() {

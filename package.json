@@ -17,21 +17,21 @@
     "url": "git+https://github.com/ChromeDevTools/devtools-frontend.git"
   },
   "scripts": {
-    "bake-strings": "npm run collect-strings && vpython3 third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
-    "build": "vpython3 third_party/node/node.py --output scripts/run_build.mjs",
-    "check-external-links": "vpython3 third_party/node/node.py --output scripts/check_external_links.js",
-    "collect-strings": "vpython3 third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
-    "components-server": "vpython3 third_party/node/node.py --output scripts/component_server/server.js",
-    "debug-webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
+    "bake-strings": "npm run collect-strings && third_party/depot_tools/vpython3 third_party/node/node.py --output third_party/i18n/bake-strings.js front_end/core/i18n/locales",
+    "build": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/run_build.mjs",
+    "check-external-links": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/check_external_links.js",
+    "collect-strings": "third_party/depot_tools/vpython3 third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
+    "components-server": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/component_server/server.js",
+    "debug-webtest": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",
     "install-deps": "scripts/deps/manage_node_deps.py",
-    "lint": "vpython3 third_party/node/node.py --output --experimental-strip-types --no-warnings=ExperimentalWarning scripts/test/run_lint_check.mjs",
+    "lint": "third_party/depot_tools/vpython3 third_party/node/node.py --output --experimental-strip-types --no-warnings=ExperimentalWarning scripts/test/run_lint_check.mjs",
     "prebuild": "gn gen out/Default",
     "rdb": "rdb stream -new -realm chromium:public --",
-    "start": "vpython3 third_party/node/node.py --output scripts/run_start.mjs",
-    "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",
-    "watch": "vpython3 third_party/node/node.py --output scripts/watch_build.js",
-    "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"
+    "start": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/run_start.mjs",
+    "webtest": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/npm_test.js",
+    "watch": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/watch_build.js",
+    "test": "third_party/depot_tools/vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "15.3.0",

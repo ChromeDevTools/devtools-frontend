@@ -9,9 +9,10 @@ import {performance} from 'node:perf_hooks';
 import util from 'node:util';
 
 import {
-  autoninjaExecutablePath,
-  gnExecutablePath,
+  autoninjaPyPath,
+  gnPyPath,
   rootPath,
+  vpython3ExecutablePath,
 } from './devtools_paths.js';
 
 const execFile = util.promisify(childProcess.execFile);
@@ -220,8 +221,8 @@ export async function prepareBuild(target) {
   if (!outDirStat?.isDirectory()) {
     // Use GN to (optionally create and) initialize the |outDir|.
     try {
-      const gnExe = gnExecutablePath();
-      const gnArgs = ['-q', 'gen', outDir];
+      const gnExe = vpython3ExecutablePath();
+      const gnArgs = [gnPyPath(), '-q', 'gen', outDir];
       await execFile(gnExe, gnArgs);
     } catch (cause) {
       throw new BuildError(BuildStep.GN, {cause, outDir, target});
@@ -242,8 +243,8 @@ export async function build(target, signal) {
   // since we might be running in a full Chromium checkout and certainly don't
   // want to build all of Chromium first.
   try {
-    const autoninjaExe = autoninjaExecutablePath();
-    const autoninjaArgs = ['-C', outDir, 'devtools_all_files'];
+    const autoninjaExe = vpython3ExecutablePath();
+    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, 'devtools_all_files'];
     await execFile(autoninjaExe, autoninjaArgs, {signal});
   } catch (cause) {
     if (cause.name === 'AbortError') {

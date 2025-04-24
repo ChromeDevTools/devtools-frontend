@@ -40,6 +40,11 @@ node --experimental-strip-types scripts/ai_assistance/auto-run.ts --label title-
 * `elements-multimodal`: tests the multimodal support for Elements entrypoint by providing screenshot input with the prompt.
 * `performance-main-thread`: tests the entrypoint via right clicking on an event in the Performance panel main thread.
 * `performance-insights`: tests the entrypoint via the "Ask AI" button shown on an individual Insight in the Performance panel sidebar.
+* `patching`: tests the file patching flow. This mode is different
+because it automatically rates the results using assertions defined in
+tests. You need to manually add all workspace folders to your Chrome
+instance before running the tests. The resulting JSON files are not
+compatible with the eval UI.
 
 ## Evaluating the results
 

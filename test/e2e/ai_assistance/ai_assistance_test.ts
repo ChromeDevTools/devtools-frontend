@@ -594,4 +594,23 @@ STOP`,
       }],
     });
   });
+
+  it('work when CSS property with upper case is used', async () => {
+    const result = await runAiAssistance({
+      query: 'Change the fontSize for this element to blue',
+      messages: [
+        `THOUGHT: I can change the fontSize of an element by setting the fontSize CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { fontSize: '100px' });
+STOP`,
+        'ANSWER: Unable to make the change',
+      ],
+    });
+
+    assert.deepEqual(result.at(-1)!.request.current_message, {
+      role: 1,
+      parts: [{text: 'OBSERVATION: undefined'}],
+    });
+  });
 });

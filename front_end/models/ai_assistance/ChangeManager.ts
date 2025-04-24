@@ -17,8 +17,7 @@ export interface Change {
 }
 
 function formatStyles(styles: Record<string, string>, indent = 2): string {
-  const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
-  const lines = Object.entries(kebabStyles).map(([key, value]) => `${' '.repeat(indent)}${key}: ${value};`);
+  const lines = Object.entries(styles).map(([key, value]) => `${' '.repeat(indent)}${key}: ${value};`);
   return lines.join('\n');
 }
 
@@ -80,8 +79,10 @@ export class ChangeManager {
     const stylesheetId = await this.#getStylesheet(cssModel, frameId);
     const changes = this.#stylesheetChanges.get(stylesheetId) || [];
     const existingChange = changes.find(c => c.className === change.className);
+    // Make sure teh styles are real CSS values.
+    const stylesKebab = Platform.StringUtilities.toKebabCaseKeys(change.styles);
     if (existingChange) {
-      Object.assign(existingChange.styles, change.styles);
+      Object.assign(existingChange.styles, stylesKebab);
       // This combines all style changes for a given element,
       // regardless of the conversation they originated from, into a single rule.
       // While separating these changes by conversation would be ideal,
@@ -89,7 +90,10 @@ export class ChangeManager {
       // This workaround avoids that crash.
       existingChange.groupId = change.groupId;
     } else {
-      changes.push(change);
+      changes.push({
+        ...change,
+        styles: stylesKebab,
+      });
     }
     const content = this.#formatChangesForInspectorStylesheet(changes);
     await cssModel.setStyleSheetText(stylesheetId, content, true);

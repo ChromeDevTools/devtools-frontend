@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -369,7 +370,8 @@ export class ExtensionScope {
     const cssStyleValue: string[] = [];
     const changedStyles: string[] = [];
     const styleSheet = new CSSStyleSheet({disabled: true});
-    for (const [style, value] of Object.entries(styles)) {
+    const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
+    for (const [style, value] of Object.entries(kebabStyles)) {
       // Build up the CSS style
       cssStyleValue.push(`${style}: ${value};`);
       // Keep track of what style changed to query later.

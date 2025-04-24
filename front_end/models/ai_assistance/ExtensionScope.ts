@@ -186,6 +186,8 @@ export class ExtensionScope {
                           .filter((_, index) => selectorIndexes.includes(index))
                           // Ignore selector that include AI selector name
                           .filter(value => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))
+                          // Exclude selector that matches every element
+                          .filter(value => value.text !== '*')
                           .sort((a, b) => {
                             if (!a.specificity) {
                               return -1;

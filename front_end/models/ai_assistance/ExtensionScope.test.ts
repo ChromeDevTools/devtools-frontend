@@ -295,6 +295,14 @@ describe('ExtensionScope', () => {
       const selector = await getSelector({matchedPayload});
       assert.strictEqual(selector, 'div');
     });
+
+    it('should ignore * selectors', async () => {
+      const matchedPayload = [
+        ruleMatch('*', MOCK_STYLE),
+      ];
+      const selector = await getSelector({matchedPayload});
+      assert.strictEqual(selector, '');
+    });
   });
 
   describeWithMockConnection('getSourceLocation', () => {

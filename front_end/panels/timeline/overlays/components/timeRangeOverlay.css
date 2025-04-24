@@ -70,11 +70,20 @@
   margin-bottom: 3px;
   display: -webkit-box;
   white-space: break-spaces;
+  background: var(--sys-color-cdt-base-container);
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.duration {
+  background: var(--sys-color-cdt-base-container) ;
 }
 
 .label-text[contenteditable='true'] {
   outline: none;
   box-shadow: 0 0 0 1px var(--ref-palette-pink55);
+}
+
+.label-text[contenteditable='false'] {
+  width: auto;
 }

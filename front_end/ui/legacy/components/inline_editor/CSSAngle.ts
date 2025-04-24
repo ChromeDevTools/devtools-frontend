@@ -20,7 +20,9 @@ import {
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const cssAngleStyles = new CSSStyleSheet();
 cssAngleStyles.replaceSync(cssAngleStylesRaw.cssText);
 

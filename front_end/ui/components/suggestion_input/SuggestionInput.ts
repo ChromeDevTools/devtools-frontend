@@ -9,11 +9,9 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import contentEditableStylesRaw from './suggestionInput.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+// TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
 const codeHighlighterStyles = new CSSStyleSheet();
 codeHighlighterStyles.replaceSync(codeHighlighterStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const contentEditableStyles = new CSSStyleSheet();
 contentEditableStyles.replaceSync(contentEditableStylesRaw.cssText);
 

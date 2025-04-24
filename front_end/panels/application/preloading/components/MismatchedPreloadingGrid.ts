@@ -105,7 +105,6 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
   #data: MismatchedPreloadingGridData|null = null;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [];
     this.#render();
   }
 

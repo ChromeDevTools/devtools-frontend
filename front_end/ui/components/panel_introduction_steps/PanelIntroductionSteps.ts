@@ -8,7 +8,9 @@ import {html, render} from '../../lit/lit.js';
 
 import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const panelIntroductionStepsStyles = new CSSStyleSheet();
 panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw.cssText);
 

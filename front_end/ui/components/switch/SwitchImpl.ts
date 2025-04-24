@@ -8,7 +8,9 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import switchStylesRaw from './switch.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const switchStyles = new CSSStyleSheet();
 switchStyles.replaceSync(switchStylesRaw.cssText);
 

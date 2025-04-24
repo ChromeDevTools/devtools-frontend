@@ -18,11 +18,11 @@ import {
 import selectMenuStylesRaw from './selectMenu.css.js';
 import selectMenuButtonStylesRaw from './selectMenuButton.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const selectMenuStyles = new CSSStyleSheet();
 selectMenuStyles.replaceSync(selectMenuStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const selectMenuButtonStyles = new CSSStyleSheet();
 selectMenuButtonStyles.replaceSync(selectMenuButtonStylesRaw.cssText);
 

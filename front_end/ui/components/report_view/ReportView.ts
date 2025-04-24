@@ -12,27 +12,19 @@ import reportSectionDividerStylesRaw from './reportSectionDivider.css.js';
 import reportSectionHeaderStylesRaw from './reportSectionHeader.css.js';
 import reportValueStylesRaw from './reportValue.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const reportStyles = new CSSStyleSheet();
 reportStyles.replaceSync(reportStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportKeyStyles = new CSSStyleSheet();
 reportKeyStyles.replaceSync(reportKeyStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportSectionStyles = new CSSStyleSheet();
 reportSectionStyles.replaceSync(reportSectionStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportSectionDividerStyles = new CSSStyleSheet();
 reportSectionDividerStyles.replaceSync(reportSectionDividerStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportSectionHeaderStyles = new CSSStyleSheet();
 reportSectionHeaderStyles.replaceSync(reportSectionHeaderStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportValueStyles = new CSSStyleSheet();
 reportValueStyles.replaceSync(reportValueStylesRaw.cssText);
 

@@ -11,7 +11,9 @@ import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const accessibilityTreeNodeStyles = new CSSStyleSheet();
 accessibilityTreeNodeStyles.replaceSync(accessibilityTreeNodeStylesRaw.cssText);
 

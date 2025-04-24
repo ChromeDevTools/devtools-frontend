@@ -7,7 +7,9 @@ import {html, render} from '../../lit/lit.js';
 
 import spinnerStylesRaw from './spinner.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const spinnerStyles = new CSSStyleSheet();
 spinnerStyles.replaceSync(spinnerStylesRaw.cssText);
 

@@ -12,7 +12,9 @@ import * as Lit from '../../../ui/lit/lit.js';
 import sharedStorageMetadataViewStylesRaw from './sharedStorageMetadataView.css.js';
 import {StorageMetadataView} from './StorageMetadataView.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const sharedStorageMetadataViewStyles = new CSSStyleSheet();
 sharedStorageMetadataViewStyles.replaceSync(sharedStorageMetadataViewStylesRaw.cssText);
 

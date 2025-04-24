@@ -9,6 +9,10 @@
  * They need remain isolated for importing other function so
  * bundling them for production does not create issues.
  */
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * The scripts in this file aren't executed as part of DevTools front-end,
+ * but are injected into the page.
+ **/
 
 export const AI_ASSISTANCE_CSS_CLASS_NAME = 'ai-style-change';
 export const FREESTYLER_WORLD_NAME = 'DevTools AI Assistance';

@@ -9,7 +9,9 @@ import * as Lit from '../../../ui/lit/lit.js';
 
 import cssVariableValueViewStylesRaw from './cssVariableValueView.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const cssVariableValueViewStyles = new CSSStyleSheet();
 cssVariableValueViewStyles.replaceSync(cssVariableValueViewStylesRaw.cssText);
 

@@ -11,7 +11,9 @@ import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
 import diffViewStylesRaw from './diffView.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const diffViewStyles = new CSSStyleSheet();
 diffViewStyles.replaceSync(diffViewStylesRaw.cssText);
 const CodeHighlighterStyles = new CSSStyleSheet();

@@ -14,7 +14,9 @@ import * as Buttons from '../buttons/buttons.js';
 
 import dialogStylesRaw from './dialog.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const dialogStyles = new CSSStyleSheet();
 dialogStyles.replaceSync(dialogStylesRaw.cssText);
 

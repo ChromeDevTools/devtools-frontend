@@ -11,7 +11,9 @@ import * as Lit from '../../lit/lit.js';
 import markdownImageStylesRaw from './markdownImage.css.js';
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const markdownImageStyles = new CSSStyleSheet();
 markdownImageStyles.replaceSync(markdownImageStylesRaw.cssText);
 

@@ -14,15 +14,13 @@ import menuStylesRaw from './menu.css.js';
 import menuGroupStylesRaw from './menuGroup.css.js';
 import menuItemStylesRaw from './menuItem.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const menuStyles = new CSSStyleSheet();
 menuStyles.replaceSync(menuStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const menuGroupStyles = new CSSStyleSheet();
 menuGroupStyles.replaceSync(menuGroupStylesRaw.cssText);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const menuItemStyles = new CSSStyleSheet();
 menuItemStyles.replaceSync(menuItemStylesRaw.cssText);
 

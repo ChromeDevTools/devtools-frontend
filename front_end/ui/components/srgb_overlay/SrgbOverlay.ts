@@ -9,7 +9,9 @@ import {html, render} from '../../../ui/lit/lit.js';
 
 import srgbOverlayStylesRaw from './srgbOverlay.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const srgbOverlayStyles = new CSSStyleSheet();
 srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw.cssText);
 

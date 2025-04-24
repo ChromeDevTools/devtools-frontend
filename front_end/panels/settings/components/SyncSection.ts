@@ -15,7 +15,9 @@ import * as Lit from '../../../ui/lit/lit.js';
 
 import syncSectionStylesRaw from './syncSection.css.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+/* eslint-disable rulesdir/no-adopted-style-sheets --
+ * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
+ **/
 const syncSectionStyles = new CSSStyleSheet();
 syncSectionStyles.replaceSync(syncSectionStylesRaw.cssText);
 

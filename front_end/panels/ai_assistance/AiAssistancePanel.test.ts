@@ -1247,12 +1247,33 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {view} = await createAiAssistancePanel();
 
       assert.isFalse(view.input.multimodalInputEnabled);
+      assert.isFalse(view.input.uploadImageInputEnabled);
       assert.notExists(view.input.onTakeScreenshot);
       assert.notExists(view.input.onRemoveImageInput);
+      assert.notExists(view.input.onLoadImage);
       assert.notExists(view.input.imageInput);
     });
 
-    it('adds an image input and then removes it', async () => {
+    it('upload input function unavailable when multimodalUploadInput is disabled', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+          multimodalUploadInput: false,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
+      const {view} = await createAiAssistancePanel();
+
+      assert.isTrue(view.input.multimodalInputEnabled);
+      assert.isFalse(view.input.uploadImageInputEnabled);
+      assert.exists(view.input.onTakeScreenshot);
+      assert.exists(view.input.onRemoveImageInput);
+      assert.notExists(view.input.onLoadImage);
+    });
+
+    it('adds screenshot as an image input and then removes it', async () => {
       const {captureScreenshotStub} = mockScreenshotModel();
       updateHostConfig({
         devToolsFreestyler: {
@@ -1270,6 +1291,30 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert.deepEqual((await view.nextInput).imageInput, {isLoading: false, data: 'imageInput'});
       expect(captureScreenshotStub.calledOnce);
+
+      view.input.onRemoveImageInput?.();
+      assert.notExists((await view.nextInput).imageInput);
+    });
+
+    it('uploads an image as an input and then removes it', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+          multimodalUploadInput: true,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
+      const {view} = await createAiAssistancePanel();
+      const blob = new Blob(['imageInput'], {type: 'image/jpeg'});
+
+      assert.isTrue(view.input.multimodalInputEnabled);
+      assert.isTrue(view.input.uploadImageInputEnabled);
+
+      await view.input.onLoadImage?.(new File([blob], 'image.jpeg'));
+
+      assert.deepEqual((await view.nextInput).imageInput, {isLoading: false, data: btoa('imageInput')});
 
       view.input.onRemoveImageInput?.();
       assert.notExists((await view.nextInput).imageInput);

@@ -851,6 +851,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           disclaimerText: this.#getDisclaimerText(),
           isTextInputEmpty: this.#isTextInputEmpty,
           changeManager: this.#changeManager,
+          uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
+              this.#conversation?.type === AiAssistanceModel.ConversationType.STYLING,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           populateHistoryMenu: this.#populateHistoryMenu.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
@@ -875,6 +877,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        undefined,
           onTextInputChange: this.#handleTextInputChange.bind(this),
+          onLoadImage: isAiAssistanceMultimodalUploadInputEnabled() ? this.#handleLoadImage.bind(this) : undefined,
         },
         this.#viewOutput, this.contentElement);
   }
@@ -1204,6 +1207,47 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
+  async #handleLoadImage(file: File): Promise<void> {
+    const showLoadingTimeout = setTimeout(() => {
+      this.#imageInput = {isLoading: true};
+      this.requestUpdate();
+    }, SHOW_LOADING_STATE_TIMEOUT);
+    const reader = new FileReader();
+    let dataUrl: string|undefined;
+    try {
+      dataUrl = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          if (typeof reader.result === 'string') {
+            resolve(reader.result);
+          } else {
+            reject(new Error('FileReader result was not a string.'));
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } catch {
+      clearTimeout(showLoadingTimeout);
+      this.#imageInput = {isLoading: false, data: ''};
+      this.requestUpdate();
+      void this.updateComplete.then(() => {
+        this.#viewOutput.chatView?.focusTextInput();
+      });
+      return;
+    }
+
+    clearTimeout(showLoadingTimeout);
+    if (!dataUrl) {
+      return;
+    }
+    const commaIndex = dataUrl.indexOf(',');
+    const bytes = dataUrl.substring(commaIndex + 1);
+    this.#imageInput = {isLoading: false, data: bytes};
+    this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#viewOutput.chatView?.focusTextInput();
+    });
+  }
+
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
@@ -1468,6 +1512,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return false;
   }
+}
+
+function isAiAssistanceMultimodalUploadInputEnabled(): boolean {
+  return isAiAssistanceMultimodalInputEnabled() &&
+      Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodalUploadInput);
 }
 
 function isAiAssistanceMultimodalInputEnabled(): boolean {

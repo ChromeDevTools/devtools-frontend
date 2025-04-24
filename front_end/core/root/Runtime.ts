@@ -362,6 +362,7 @@ export interface HostConfigFreestyler {
   executionMode?: HostConfigFreestylerExecutionMode;
   patching?: boolean;
   multimodal?: boolean;
+  multimodalUploadInput?: boolean;
   functionCalling?: boolean;
 }
 

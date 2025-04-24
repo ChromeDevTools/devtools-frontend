@@ -205,6 +205,10 @@ const UIStringsNotTranslate = {
    */
   imageUnavailable: 'Image unavailable',
   /**
+   *@description Title for the add image button.
+   */
+  addImageButtonTitle: 'Add image',
+  /**
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
@@ -277,6 +281,7 @@ export interface Props {
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   onTextInputChange: (input: string) => void;
+  onLoadImage?: (file: File) => Promise<void>;
   changeManager: AiAssistanceModel.ChangeManager;
   inspectElementToggled: boolean;
   state: State;
@@ -297,6 +302,7 @@ export interface Props {
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
   isTextInputEmpty: boolean;
+  uploadImageInputEnabled?: boolean;
 }
 
 export class ChatView extends HTMLElement {
@@ -528,6 +534,14 @@ export class ChatView extends HTMLElement {
     this.#props.onCancelClick();
   };
 
+  #handleImageUpload = (ev: Event): void => {
+    ev.stopPropagation();
+    if (this.#props.onLoadImage) {
+      const fileSelector = UI.UIUtils.createFileSelectorElement(this.#props.onLoadImage.bind(this), '.jpeg,.jpg');
+      fileSelector.click();
+    }
+  };
+
   #handleSuggestionClick = (suggestion: string): void => {
     this.#setInputText(suggestion);
     this.focusTextInput();
@@ -593,6 +607,7 @@ export class ChatView extends HTMLElement {
                 imageInput: this.#props.imageInput,
                 isTextInputEmpty: this.#props.isTextInputEmpty,
                 aidaAvailability: this.#props.aidaAvailability,
+                uploadImageInputEnabled: this.#props.uploadImageInputEnabled,
                 onContextClick: this.#props.onContextClick,
                 onInspectElementClick: this.#props.onInspectElementClick,
                 onSubmit: this.#handleSubmit,
@@ -602,6 +617,7 @@ export class ChatView extends HTMLElement {
                 onTakeScreenshot: this.#props.onTakeScreenshot,
                 onRemoveImageInput: this.#props.onRemoveImageInput,
                 onTextInputChange: this.#props.onTextInputChange,
+                onImageUpload: this.#handleImageUpload,
               })
           }
         </main>
@@ -1227,38 +1243,60 @@ function renderChatInputButtons(
   ></devtools-button>`;
 }
 
-function renderTakeScreenshotButton({
+function renderMultimodalInputButtons({
   multimodalInputEnabled,
   blockedByCrossOrigin,
   isTextInputDisabled,
   imageInput,
+  uploadImageInputEnabled,
   onTakeScreenshot,
+  onImageUpload,
 }: {
+  multimodalInputEnabled?: boolean,
   isTextInputDisabled: boolean,
   blockedByCrossOrigin: boolean,
-  multimodalInputEnabled?: boolean,
   imageInput?: ImageInputData,
+  uploadImageInputEnabled?: boolean,
   onTakeScreenshot?: () => void,
+  onImageUpload?: (ev: Event) => void,
 }): Lit.LitTemplate {
-    if (!multimodalInputEnabled || blockedByCrossOrigin) {
-      return Lit.nothing;
-    }
-    return html`<devtools-button
-      class="chat-input-button"
-      aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
-      @click=${onTakeScreenshot}
-      .data=${
-        {
-          variant: Buttons.Button.Variant.ICON,
-          size: Buttons.Button.Size.REGULAR,
-          disabled: isTextInputDisabled || imageInput?.isLoading,
-          iconName: 'photo-camera',
-          title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
-          jslogContext: 'take-screenshot',
-        } as Buttons.Button.ButtonData
-      }
-    ></devtools-button>`;
+  if (!multimodalInputEnabled || blockedByCrossOrigin) {
+    return Lit.nothing;
   }
+  // clang-format off
+  const addImageButton = uploadImageInputEnabled ? html`<devtools-button
+    class="chat-input-button"
+    aria-label=${lockedString(UIStringsNotTranslate.addImageButtonTitle)}
+    @click=${onImageUpload}
+    .data=${
+      {
+        variant: Buttons.Button.Variant.ICON,
+        size: Buttons.Button.Size.REGULAR,
+        disabled: isTextInputDisabled || imageInput?.isLoading,
+        iconName: 'attach-file',
+        title: lockedString(UIStringsNotTranslate.addImageButtonTitle),
+        jslogContext: 'upload-image',
+      } as Buttons.Button.ButtonData
+    }
+  ></devtools-button>` : Lit.nothing;
+
+  return html`${addImageButton}<devtools-button
+    class="chat-input-button"
+    aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
+    @click=${onTakeScreenshot}
+    .data=${
+      {
+        variant: Buttons.Button.Variant.ICON,
+        size: Buttons.Button.Size.REGULAR,
+        disabled: isTextInputDisabled || imageInput?.isLoading,
+        iconName: 'photo-camera',
+        title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
+        jslogContext: 'take-screenshot',
+      } as Buttons.Button.ButtonData
+    }
+  ></devtools-button>`;
+  // clang-format on
+}
 
 function renderImageInput({
   multimodalInputEnabled,
@@ -1272,7 +1310,7 @@ function renderImageInput({
     if (!multimodalInputEnabled || !imageInput) {
       return Lit.nothing;
     }
-
+    // clang-format off
     const crossButton = html`<devtools-button
       aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
       @click=${onRemoveImageInput}
@@ -1285,20 +1323,25 @@ function renderImageInput({
         } as Buttons.Button.ButtonData
       }
     ></devtools-button>`;
+    // clang-format on
 
     if (imageInput.isLoading) {
+      // clang-format off
       return html`<div class="image-input-container">
         ${crossButton}
         <div class="loading">
           <devtools-spinner></devtools-spinner>
         </div>
       </div>`;
+      // clang-format on
     }
+    // clang-format off
     return  html`
     <div class="image-input-container">
       ${crossButton}
       <img src="data:image/jpeg;base64, ${imageInput.data}" alt="Screenshot input" />
     </div>`;
+    // clang-format on
   }
 
 function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin}: {isLoading: boolean, blockedByCrossOrigin: boolean}): Lit.LitTemplate {
@@ -1306,6 +1349,7 @@ function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin}: {isLoad
     'chat-input-disclaimer': true,
     'hide-divider': !isLoading && blockedByCrossOrigin
   });
+  // clang-format off
   return html`
     <p class=${classes}>
       <button
@@ -1321,6 +1365,7 @@ function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin}: {isLoad
       >${lockedString('Relevant data')}</button>&nbsp;${lockedString('is sent to Google')}
     </p>
   `;
+  // clang-format on
 }
 
 function renderChatInput({
@@ -1335,6 +1380,7 @@ function renderChatInput({
   conversationType,
   imageInput,
   isTextInputEmpty,
+  uploadImageInputEnabled,
   aidaAvailability,
   onContextClick,
   onInspectElementClick,
@@ -1345,28 +1391,29 @@ function renderChatInput({
   onTakeScreenshot,
   onRemoveImageInput,
   onTextInputChange,
+  onImageUpload,
 }: {
   isLoading: boolean,
   blockedByCrossOrigin: boolean,
   isTextInputDisabled: boolean,
   inputPlaceholder: Platform.UIString.LocalizedString,
   state: State,
-  selectedContext: AiAssistanceModel.ConversationContext<unknown> | null,
+  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
   multimodalInputEnabled?: boolean,
   conversationType?: AiAssistanceModel.ConversationType,
-  imageInput?: ImageInputData,
-  isTextInputEmpty: boolean,
-  aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
-  onContextClick: () => void ,
-  onInspectElementClick: () => void,
-  onSubmit: (ev: SubmitEvent) => void,
-  onTextAreaKeyDown: (ev: KeyboardEvent) => void,
-  onCancel: (ev: SubmitEvent) => void,
-  onNewConversation: () => void,
+  imageInput?: ImageInputData, isTextInputEmpty: boolean,
+  uploadImageInputEnabled?: boolean,
+                         aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
+                         onContextClick: () => void,
+                         onInspectElementClick: () => void,
+                         onSubmit: (ev: SubmitEvent) => void,
+                         onTextAreaKeyDown: (ev: KeyboardEvent) => void,
+                         onCancel: (ev: SubmitEvent) => void,
+                         onNewConversation: () => void,
   onTakeScreenshot?: () => void,
-  onRemoveImageInput?: () => void,
-  onTextInputChange: (input: string) => void,
+  onRemoveImageInput?: () => void, onTextInputChange: (input: string) => void,
+  onImageUpload?: (ev: Event) => void,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
@@ -1411,8 +1458,8 @@ function renderChatInput({
           <div class="chat-input-disclaimer-container">
             ${renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin})}
           </div>
-          ${renderTakeScreenshotButton({
-            multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, onTakeScreenshot
+          ${renderMultimodalInputButtons({
+            multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, uploadImageInputEnabled, onTakeScreenshot, onImageUpload
           })}
           ${renderChatInputButtons({
             isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation
@@ -1421,8 +1468,8 @@ function renderChatInput({
       </div>
     </div>
   </form>`;
-    // clang-format on
-  }
+  // clang-format on
+}
 
 function renderAidaUnavailableContents(
     aidaAvailability:

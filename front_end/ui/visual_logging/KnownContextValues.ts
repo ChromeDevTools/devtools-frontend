@@ -3794,6 +3794,7 @@ export const knownContextValues = new Set([
   'update-timeline',
   'update-timing-table',
   'upload',
+  'upload-image',
   'ur',
   'url',
   'usage',

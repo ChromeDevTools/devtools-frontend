@@ -127,9 +127,8 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
     const results = flameChartView.getSearchResults();
     assert.isOk(results);
-    assert.lengthOf(results, 6);
-    // We should have 5 results from the main provider, and 1 from the network
-    assert.lengthOf(results.filter(r => r.provider === 'main'), 5);
+    assert.lengthOf(results, 9);
+    assert.lengthOf(results.filter(r => r.provider === 'main'), 8);
     assert.lengthOf(results.filter(r => r.provider === 'network'), 1);
     flameChartView.detach();
   });

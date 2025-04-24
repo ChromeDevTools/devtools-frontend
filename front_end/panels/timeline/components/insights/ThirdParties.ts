@@ -27,7 +27,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     }
 
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    const summaries = this.model.summaries ?? [];
+    const summaries = this.model.entitySummaries ?? [];
     for (const summary of summaries) {
       if (summary.entity === this.model.firstPartyEntity) {
         continue;
@@ -39,10 +39,9 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  #createOverlaysForSummary(summary: Trace.Extras.ThirdParties.Summary): Overlays.Overlays.TimelineOverlay[] {
+  #createOverlaysForSummary(summary: Trace.Extras.ThirdParties.EntitySummary): Overlays.Overlays.TimelineOverlay[] {
     const overlays = [];
-    const events = summary.relatedEvents ?? [];
-    for (const event of events) {
+    for (const event of summary.relatedEvents) {
       // The events found for a third party can be vast, as they gather every
       // single main thread task along with everything else on the page. If the
       // main thread is busy with large icicles, we can easily create tens of
@@ -61,7 +60,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.Summary> = {
+  #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {
     mapToRow: summary => ({
       values: [summary.entity.name, i18n.TimeUtilities.millisToString(summary.mainThreadTime)],
       overlays: this.#createOverlaysForSummary(summary),
@@ -77,7 +76,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
         },
   };
 
-  #transferSizeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.Summary> = {
+  #transferSizeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {
     mapToRow: summary => ({
       values: [summary.entity.name, i18n.ByteUtilities.formatBytesToKb(summary.transferSize)],
       overlays: this.#createOverlaysForSummary(summary),
@@ -97,7 +96,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
       return Lit.nothing;
     }
 
-    let result = this.model.summaries ?? [];
+    let result = this.model.entitySummaries ?? [];
 
     if (this.model.firstPartyEntity) {
       result = result.filter(s => s.entity !== this.model?.firstPartyEntity || null);

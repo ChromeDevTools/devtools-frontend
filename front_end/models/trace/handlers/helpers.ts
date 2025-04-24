@@ -73,6 +73,16 @@ export function getNonResolvedURL(
     return entry.args.data.url as Platform.DevToolsPath.UrlString;
   }
 
+  // Many events don't have a url, but are associated with a request. Use the
+  // request's url.
+  const requestId = (entry.args?.data as {requestId?: string})?.requestId;
+  if (parsedTrace && requestId) {
+    const url = parsedTrace.NetworkRequests.byId.get(requestId)?.args.data.url;
+    if (url) {
+      return url as Platform.DevToolsPath.UrlString;
+    }
+  }
+
   return null;
 }
 

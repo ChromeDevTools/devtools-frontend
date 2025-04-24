@@ -6,10 +6,10 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.Summary[]): Array<[string, string[]]> {
+function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.EntitySummary[]): Array<[string, string[]]> {
   return summaries.map(s => {
     const uniqueUrls = new Set<string>();
-    s.relatedEvents?.forEach(e => {
+    s.relatedEvents.forEach(e => {
       const url = e.args?.data?.url;
       if (url) {
         uniqueUrls.add(url);
@@ -20,10 +20,10 @@ function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.Summary[]
 }
 
 describeWithEnvironment('ThirdParties', function() {
-  describe('byTraceBounds', function() {
+  describe('summarizeByThirdParty', function() {
     it('full trace bounds', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, parsedTrace.Meta.traceBounds);
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, parsedTrace.Meta.traceBounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
@@ -59,7 +59,7 @@ describeWithEnvironment('ThirdParties', function() {
       const max = Trace.Types.Timing.Micro(1634222320000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
 
-      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds);
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, bounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
@@ -74,10 +74,41 @@ describeWithEnvironment('ThirdParties', function() {
       const min = Trace.Types.Timing.Micro(1634230000000);
       const max = Trace.Types.Timing.Micro(1634231000000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
-      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds);
+      const summaries = Trace.Extras.ThirdParties.summarizeByThirdParty(parsedTrace, bounds);
 
       const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, []);
+    });
+  });
+
+  describe('summarizeByURL', function() {
+    it('full trace bounds', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const summaries = Trace.Extras.ThirdParties.summarizeByURL(parsedTrace, parsedTrace.Meta.traceBounds);
+
+      const results = summaries.map(
+          s => [s.url, s.request?.args.data.url === s.url, s.entity.name, s.mainThreadTime, s.transferSize]);
+      assert.deepEqual(results, [
+        ['http://localhost:8080/', true, 'localhost', 21.22599959373474, 751],
+        ['https://fonts.googleapis.com/css2?family=Orelega+One&display=swap', true, 'Google Fonts', 0, 1373],
+        ['http://localhost:8080/styles.css', true, 'localhost', 0, 346],
+        ['http://localhost:8080/blocking.js', true, 'localhost', 2.451000213623047, 338],
+        ['https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2', true, 'Google Fonts', 0, 23952],
+        ['http://localhost:8080/module.js', true, 'localhost', 1.2710001468658447, 68],
+      ]);
+
+      // Assert that these totals match the totals as aggregated by
+      // summarizeByThirdParty (see above).
+      assert.strictEqual(
+          summaries.filter(s => s.entity.name === 'localhost').reduce((acc, cur) => acc + cur.transferSize, 0), 1503);
+      assert.strictEqual(
+          summaries.filter(s => s.entity.name === 'localhost').reduce((acc, cur) => acc + cur.mainThreadTime, 0),
+          24.947999954223633);
+      assert.strictEqual(
+          summaries.filter(s => s.entity.name === 'Google Fonts').reduce((acc, cur) => acc + cur.transferSize, 0),
+          25325);
+      assert.strictEqual(
+          summaries.filter(s => s.entity.name === 'Google Fonts').reduce((acc, cur) => acc + cur.mainThreadTime, 0), 0);
     });
   });
 });

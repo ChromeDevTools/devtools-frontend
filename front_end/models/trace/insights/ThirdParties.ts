@@ -42,17 +42,16 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   /** The entity for this navigation's URL. Any other entity is from a third party. */
-  firstPartyEntity?: Extras.ThirdParties.Entity, summaries: Extras.ThirdParties.Summary[],
+  firstPartyEntity?: Extras.ThirdParties.Entity, entitySummaries: Extras.ThirdParties.EntitySummary[],
 }>;
 
 function getRelatedEvents(
-    summaries: Extras.ThirdParties.Summary[],
+    summaries: Extras.ThirdParties.EntitySummary[],
     firstPartyEntity: Extras.ThirdParties.Entity|undefined): Types.Events.Event[] {
   const relatedEvents = [];
   for (const summary of summaries) {
     if (summary.entity !== firstPartyEntity) {
-      const events = summary.relatedEvents ?? [];
-      relatedEvents.push(...events);
+      relatedEvents.push(...summary.relatedEvents);
     }
   }
 
@@ -66,24 +65,25 @@ function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): 
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
-    state: partialModel.summaries.find(summary => summary.entity !== partialModel.firstPartyEntity) ? 'informative' :
-                                                                                                      'pass',
+    state: partialModel.entitySummaries.find(summary => summary.entity !== partialModel.firstPartyEntity) ?
+        'informative' :
+        'pass',
     ...partialModel,
   };
 }
 
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ThirdPartiesInsightModel {
-  const summaries =
-      Extras.ThirdParties.summarizeThirdParties(parsedTrace as Handlers.Types.ParsedTrace, context.bounds);
+  const entitySummaries =
+      Extras.ThirdParties.summarizeByThirdParty(parsedTrace as Handlers.Types.ParsedTrace, context.bounds);
 
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
       Handlers.Helpers.makeUpEntity(parsedTrace.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
 
   return finalize({
-    relatedEvents: getRelatedEvents(summaries, firstPartyEntity),
+    relatedEvents: getRelatedEvents(entitySummaries, firstPartyEntity),
     firstPartyEntity,
-    summaries,
+    entitySummaries,
   });
 }

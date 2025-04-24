@@ -18,7 +18,7 @@ vars = {
   'buildtools_revision': '11c62a17dffa403f45399521af76aeadc05a06e9',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'e5cd6f84f00d87af1a69e58d97ecccf66d48e284',
+  'depot_tools_revision': 'cb4b983398e819aa6f7342bcfa84ff3ea265c8f8',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '6d1ae0f13aae6ad381ca31b17b88a0f5af29ca94',
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:3236848f55721ee59d3cf7c5d3d33c75aaeec4f2',
+  'siso_version': 'git_revision:9c851ca205f34cd18a79d06619bc464d0adbd8ce',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

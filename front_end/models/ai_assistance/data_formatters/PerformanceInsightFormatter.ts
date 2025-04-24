@@ -174,6 +174,10 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       const requestSummary = this.#insight.renderBlockingRequests.map(
           r => TraceEventFormatter.networkRequest(r, this.#parsedTrace, {verbose: false}));
 
+      if (requestSummary.length === 0) {
+        return 'There are no network requests that are render blocking.';
+      }
+
       return `Here is a list of the network requests that were render blocking on this page and their duration:
 
 ${requestSummary.join('\n\n')}`;

@@ -74,6 +74,28 @@ We can break this time down into the 2 phases that combine to make the LCP time:
   });
 
   describe('Render blocking requests', () => {
+    it('tells the LLM if there are no render blocking requests', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('RenderBlocking', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+      const output = formatter.formatInsight();
+
+      const expected = `## Insight Title: Render blocking requests
+
+## Insight Summary:
+This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.
+
+## Detailed analysis:
+There are no network requests that are render blocking.
+
+## External resources:
+- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp`;
+      assert.strictEqual(output, expected);
+    });
+
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
       assert.isOk(insights);

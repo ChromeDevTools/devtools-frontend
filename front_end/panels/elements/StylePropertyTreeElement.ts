@@ -262,7 +262,8 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const {nodes, cssControls} = Renderer.renderValueNodes(
             {name: declaration.name, value: declaration.value ?? ''},
             substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
-            getPropertyRenderers(declaration.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
+            getPropertyRenderers(
+                declaration.name, declaration.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
             substitution);
         cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
         return nodes;
@@ -662,7 +663,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor);
         context.addControl('color', swatch);
         const asyncEvalCallback = async(): Promise<boolean> => {
-          const results = await this.#pane.cssModel()?.resolveValues(nodeId, colorMixText);
+          const results = await this.#pane.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
           if (results) {
             const color = Common.Color.parse(results[0]);
             if (color) {
@@ -1267,10 +1268,12 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
   // clang-format on
   readonly #stylesPane: StylesSidebarPane;
   readonly #treeElement: StylePropertyTreeElement|null;
-  constructor(stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null) {
+  readonly #propertyName: string;
+  constructor(stylesPane: StylesSidebarPane, propertyName: string, treeElement: StylePropertyTreeElement|null) {
     super();
     this.#stylesPane = stylesPane;
     this.#treeElement = treeElement;
+    this.#propertyName = propertyName;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[] {
@@ -1294,7 +1297,7 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
       return false;
     }
 
-    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
+    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
 
     if (pixelValue?.[0] && pixelValue?.[0] !== value) {
       valueElement.textContent = pixelValue[0];
@@ -1310,7 +1313,7 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
       return;
     }
 
-    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
+    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
     if (!pixelValue) {
       return;
     }
@@ -1337,14 +1340,16 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   readonly #computedStyles: Map<string, string>;
   readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #propertyName: string;
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      computedStyles: Map<string, string>, treeElement: StylePropertyTreeElement|null) {
+      computedStyles: Map<string, string>, propertyName: string, treeElement: StylePropertyTreeElement|null) {
     super();
     this.#matchedStyles = matchedStyles;
     this.#computedStyles = computedStyles;
     this.#stylesPane = stylesPane;
     this.#treeElement = treeElement;
+    this.#propertyName = propertyName;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.MathFunctionMatch, context: RenderingContext): Node[] {
@@ -1388,7 +1393,7 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     if (nodeId === undefined) {
       return false;
     }
-    const evaled = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
+    const evaled = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
     if (!evaled?.[0] || evaled[0] === value) {
       return false;
     }
@@ -1405,7 +1410,7 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
     // function calls and normalizes all units to px.
     values.unshift(functionText);
-    const evaledArgs = await this.#stylesPane.cssModel()?.resolveValues(nodeId, ...values);
+    const evaledArgs = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, ...values);
     if (!evaledArgs) {
       return;
     }
@@ -1547,7 +1552,7 @@ export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatch
 }
 
 export function getPropertyRenderers(
-    style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesPane: StylesSidebarPane,
+    propertyName: string, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, stylesPane: StylesSidebarPane,
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null,
     computedStyles: Map<string, string>): Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
   return [
@@ -1568,8 +1573,8 @@ export function getPropertyRenderers(
     new PositionAnchorRenderer(stylesPane),
     new FlexGridRenderer(stylesPane, treeElement),
     new PositionTryRenderer(matchedStyles),
-    new LengthRenderer(stylesPane, treeElement),
-    new MathFunctionRenderer(stylesPane, matchedStyles, computedStyles, treeElement),
+    new LengthRenderer(stylesPane, propertyName, treeElement),
+    new MathFunctionRenderer(stylesPane, matchedStyles, computedStyles, propertyName, treeElement),
     new AutoBaseRenderer(computedStyles),
     new BinOpRenderer(),
   ];
@@ -1973,10 +1978,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 
-    const renderers = this.property.parsedOk ? getPropertyRenderers(
-                                                   this.style, this.parentPaneInternal, this.matchedStylesInternal,
-                                                   this, this.getComputedStyles() ?? new Map()) :
-                                               [];
+    const renderers = this.property.parsedOk ?
+        getPropertyRenderers(
+            this.name, this.style, this.parentPaneInternal, this.matchedStylesInternal, this,
+            this.getComputedStyles() ?? new Map()) :
+        [];
 
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.property.parsedOk) {
       renderers.push(new FontRenderer(this));
@@ -2151,7 +2157,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               ?.getWidget()
               ?.showTrace(
                 property, text, matchedStyles, computedStyles,
-                getPropertyRenderers(
+                getPropertyRenderers(property.name,
                   property.ownerStyle, stylesPane, matchedStyles, null, computedStyles));
           }
         }}

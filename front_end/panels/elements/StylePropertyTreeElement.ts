@@ -2146,7 +2146,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const stylesPane = this.parentPane();
     const tooltipId = this.getTooltipId(`${functionName}-trace`);
     // clang-format off
-    return html`<span tabIndex=-1 aria-details=${tooltipId}>${functionName}</span><devtools-tooltip
+    return html`<span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName}</span><devtools-tooltip
         id=${tooltipId}
         use-hotkey
         variant=rich

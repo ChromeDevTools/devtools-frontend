@@ -286,3 +286,7 @@ devtools-icon.open-in-animations-panel {
   margin-left: -38px;  /* should match .webkit-css-property margin-left */
   color: var(--app-color-element-sidebar-subtitle);
 }
+
+.tracing-anchor {
+  text-decoration: underline dotted var(--sys-color-token-meta);
+}

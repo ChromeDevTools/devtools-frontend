@@ -30,7 +30,7 @@ export interface ExecutedExample {
  */
 export interface IndividualPromptRequestResponse {
   request: AidaRequest|string;
-  response: string;
+  response: string|object;
   exampleId: string;
   /** Automatically computed score [0-1]. */
   score?: number;

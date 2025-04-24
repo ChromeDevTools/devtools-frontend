@@ -33,8 +33,10 @@ The user asks you to apply changes to a source code folder.
 `;
 /* clang-format on */
 
-// 6144 Tokens * ~4 char per token
+// 6144 Tokens * ~4 char per token.
 const MAX_FULL_FILE_REPLACE = 6144 * 4;
+// 16k Tokens * ~4 char per token.
+const MAX_FILE_LIST_SIZE = 16384 * 4;
 
 const strategyToPromptMap = {
   [ReplaceStrategy.FULL_FILE]:
@@ -96,9 +98,20 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
         properties: {},
       },
       handler: async () => {
+        const files = this.#project.getFiles();
+        let length = 0;
+        for (const file of files) {
+          length += file.length;
+        }
+        if (length >= MAX_FILE_LIST_SIZE) {
+          return {
+            error:
+                'There are too many files in this project to list them all. Try using the searchInFiles function instead.',
+          };
+        }
         return {
           result: {
-            files: this.#project.getFiles(),
+            files,
           }
         };
       },

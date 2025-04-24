@@ -571,12 +571,14 @@ class Example {
         /** @type {import('./types').ExecutedExample} */
         return {
           results: [{
-            request: this.#test.query,
-            response: JSON.stringify(debugInfo),
-            exampleId: this.id(),
             // Estimate a score based on the number of assertion
             // failures and if the flow succeeded.
             score: error ? 0.25 : Math.max((1 - (assertionFailures.length * 0.25)), 0.25),
+            request: this.#test.query,
+            response: debugInfo,
+            exampleId: this.id(),
+            error,
+            assertionFailures,
           }],
           metadata: {exampleId: this.id(), explanation: JSON.stringify(this.#test.changedFiles)},
         };
@@ -820,6 +822,19 @@ async function main() {
 
   await browser.disconnect();
 
+  let score = 0;
+  {
+    let scoreSum = 0;
+    let N = 0;
+    for (const example of allExampleResults) {
+      if (example.score !== undefined) {
+        scoreSum += example.score;
+        N++;
+      }
+    }
+    score = scoreSum / N;
+  }
+
   /**
    * When multiple examples are run, the structure of this object is that
    * the metadata is an array with one item per example that defines the
@@ -829,6 +844,7 @@ async function main() {
    * an individual example.
    */
   const output = {
+    score,
     metadata,
     examples: allExampleResults,
   };

@@ -822,7 +822,7 @@ window.aiAssistanceTestPatchPrompt =
   try {
     const assertionFailures = [];
     const {processedFiles, responses} = await agent.applyChanges(changeSummary);
-    if (responses.at(-1)?.type !== AiAssistanceModel.ResponseType.ANSWER) {
+    if (responses.at(-1)?.type === AiAssistanceModel.ResponseType.ERROR) {
       return {
         error: 'failed to patch',
         debugInfo: {

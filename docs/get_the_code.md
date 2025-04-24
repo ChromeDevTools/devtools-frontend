@@ -167,7 +167,14 @@ to run in Chrome Canary instead of Chrome for Testing; this requires you to inst
 npm start -- http://www.example.com
 ```
 
-to automatically open `http://www.example.com` in the newly spawned Chrome tab.
+to automatically open `http://www.example.com` in the newly spawned Chrome tab. Use
+
+```bash
+npm start -- --verbose
+```
+
+to enable verbose logging, which among other things, also prints all output from Chrome to the terminal, which is
+otherwise suppressed.
 
 
 ##### Controlling the feature set

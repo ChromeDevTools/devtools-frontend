@@ -173,7 +173,7 @@ function start() {
   if (verbose) {
     console.debug('Launch Chrome: %s %s', binary, args.join(' '));
   }
-  childProcess.spawnSync(binary, args, {cwd, env, stdio: 'inherit'});
+  childProcess.spawnSync(binary, args, {cwd, env, stdio: verbose ? 'inherit' : 'ignore'});
 }
 
 // Run build watcher in the background to automatically rebuild

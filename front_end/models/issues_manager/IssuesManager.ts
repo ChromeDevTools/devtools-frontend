@@ -200,6 +200,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #filteredIssues = new Map<string, Issue>();
   #issueCounts = new Map<IssueKind, number>();
   #hiddenIssueCount = new Map<IssueKind, number>();
+  #thirdPartyCookiePhaseoutIssueCount = new Map<IssueKind, number>();
   #issuesById = new Map<string, Issue>();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
   #thirdPartyCookiePhaseoutIssueMessageSent = false;
@@ -356,9 +357,14 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
       const values = this.hideIssueSetting?.get();
       this.#updateIssueHiddenStatus(issue, values);
-      if (issue.isHidden()) {
+
+      if (CookieIssue.isThirdPartyCookiePhaseoutRelatedIssue(issue)) {
+        this.#thirdPartyCookiePhaseoutIssueCount.set(
+            issue.getKind(), 1 + (this.#thirdPartyCookiePhaseoutIssueCount.get(issue.getKind()) || 0));
+      } else if (issue.isHidden()) {
         this.#hiddenIssueCount.set(issue.getKind(), 1 + (this.#hiddenIssueCount.get(issue.getKind()) || 0));
       }
+
       this.dispatchEventToListeners(Events.ISSUE_ADDED, {issuesModel, issue});
     }
     // Always fire the "count" event even if the issue was filtered out.
@@ -372,9 +378,10 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   numberOfIssues(kind?: IssueKind): number {
     if (kind) {
-      return (this.#issueCounts.get(kind) ?? 0) - this.numberOfHiddenIssues(kind);
+      return (this.#issueCounts.get(kind) ?? 0) - this.numberOfHiddenIssues(kind) -
+          this.numberOfThirdPartyCookiePhaseoutIssues(kind);
     }
-    return this.#filteredIssues.size - this.numberOfHiddenIssues();
+    return this.#filteredIssues.size - this.numberOfHiddenIssues() - this.numberOfThirdPartyCookiePhaseoutIssues();
   }
 
   numberOfHiddenIssues(kind?: IssueKind): number {
@@ -383,6 +390,17 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
     let count = 0;
     for (const num of this.#hiddenIssueCount.values()) {
+      count += num;
+    }
+    return count;
+  }
+
+  numberOfThirdPartyCookiePhaseoutIssues(kind?: IssueKind): number {
+    if (kind) {
+      return this.#thirdPartyCookiePhaseoutIssueCount.get(kind) ?? 0;
+    }
+    let count = 0;
+    for (const num of this.#thirdPartyCookiePhaseoutIssueCount.values()) {
       count += num;
     }
     return count;
@@ -426,6 +444,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#issueCounts.clear();
     this.#issuesById.clear();
     this.#hiddenIssueCount.clear();
+    this.#thirdPartyCookiePhaseoutIssueCount.clear();
     this.#thirdPartyCookiePhaseoutIssueMessageSent = false;
     const values = this.hideIssueSetting?.get();
     for (const [key, issue] of this.#allIssues) {

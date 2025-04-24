@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 interface AggregationKeyTag {
@@ -304,12 +304,7 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   #aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue|undefined {
-    const excludeFromAggregate = [
-      Protocol.Audits.CookieWarningReason.WarnThirdPartyCookieHeuristic,
-      Protocol.Audits.CookieWarningReason.WarnDeprecationTrialMetadata,
-    ];
-
-    if (excludeFromAggregate.some(exclude => issue.code().includes(exclude))) {
+    if (IssuesManager.CookieIssue.CookieIssue.isThirdPartyCookiePhaseoutRelatedIssue(issue)) {
       return;
     }
 

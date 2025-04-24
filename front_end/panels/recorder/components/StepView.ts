@@ -14,7 +14,6 @@ import './TimelineSection.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -312,7 +311,7 @@ export interface ViewInput extends StepViewData {
   handleStepAction: (event: Menus.Menu.MenuItemSelectedEvent) => void;
   toggleShowDetails: () => void;
   onToggleShowDetailsKeydown: (event: Event) => void;
-  onStepContextMenu: (event: MouseEvent) => void;
+  populateStepContextMenu: (contextMenu: UI.ContextMenu.ContextMenu) => void;
 }
 
 export type ViewOutput = unknown;
@@ -399,23 +398,18 @@ function getSectionPreview(section?: Models.Section.Section): string {
 function renderStepActions(input: ViewInput): Lit.TemplateResult|null {
   // clang-format off
   return html`
-    <devtools-button
+    <devtools-menu-button
       class="step-actions"
       title=${i18nString(UIStrings.openStepActions)}
       aria-label=${i18nString(UIStrings.openStepActions)}
-      @click=${input.onStepContextMenu}
+      .populateMenuCall=${input.populateStepContextMenu}
       @keydown=${(event: Event) => {
         event.stopPropagation();
       }}
       jslog=${VisualLogging.dropDown('step-actions').track({click: true})}
-      .data=${
-        {
-          variant: Buttons.Button.Variant.ICON,
-          iconName: 'dots-vertical',
-          title: i18nString(UIStrings.openStepActions),
-        } as Buttons.Button.ButtonData
+      .iconName=${'dots-vertical'}
       }
-    ></devtools-button>
+    ></devtools-menu-button>
   `;
   // clang-format on
 }
@@ -455,7 +449,13 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
         isEndOfGroup: input.isEndOfGroup,
         isSelected: input.isSelected,
       } as TimelineSectionData
-    } @contextmenu=${input.onStepContextMenu} data-step-index=${
+    } @contextmenu=${
+        (e: Event) => {
+        const menu = new UI.ContextMenu.ContextMenu(e as MouseEvent);
+        input.populateStepContextMenu(menu);
+        void menu.show();}
+      }
+      data-step-index=${
       input.stepIndex
     } data-section-index=${
       input.sectionIndex
@@ -562,7 +562,7 @@ export class StepView extends HTMLElement {
     handleStepAction: this.#handleStepAction.bind(this),
     toggleShowDetails: this.#toggleShowDetails.bind(this),
     onToggleShowDetailsKeydown: this.#onToggleShowDetailsKeydown.bind(this),
-    onStepContextMenu: this.#onStepContextMenu.bind(this),
+    populateStepContextMenu: this.#populateStepContextMenu.bind(this),
   };
   #view = viewFunction;
 
@@ -786,13 +786,7 @@ export class StepView extends HTMLElement {
     return actions;
   };
 
-  #onStepContextMenu(event: MouseEvent): void {
-    const buttonElement = event.target instanceof Buttons.Button.Button ? event.target : undefined;
-    const menu = new UI.ContextMenu.ContextMenu(event, {
-      x: buttonElement?.getBoundingClientRect().left,
-      y: buttonElement?.getBoundingClientRect().bottom,
-    });
-
+  #populateStepContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     const actions = this.#getActions();
     const copyActions = actions.filter(
         item => item.id.startsWith(COPY_ACTION_PREFIX),
@@ -801,7 +795,7 @@ export class StepView extends HTMLElement {
         item => !item.id.startsWith(COPY_ACTION_PREFIX),
     );
     for (const item of otherActions) {
-      const section = menu.section(item.group);
+      const section = contextMenu.section(item.group);
       section.appendItem(item.label, () => {
         this.#handleStepAction(
             new Menus.Menu.MenuItemSelectedEvent(item.id),
@@ -814,7 +808,7 @@ export class StepView extends HTMLElement {
     );
 
     if (preferredCopyAction) {
-      menu.section('copy').appendItem(preferredCopyAction.label, () => {
+      contextMenu.section('copy').appendItem(preferredCopyAction.label, () => {
         this.#handleStepAction(
             new Menus.Menu.MenuItemSelectedEvent(preferredCopyAction.id),
         );
@@ -822,7 +816,7 @@ export class StepView extends HTMLElement {
     }
 
     if (copyActions.length) {
-      const copyAs = menu.section('copy').appendSubMenuItem(i18nString(UIStrings.copyAs), false, 'copy');
+      const copyAs = contextMenu.section('copy').appendSubMenuItem(i18nString(UIStrings.copyAs), false, 'copy');
       for (const item of copyActions) {
         if (item === preferredCopyAction) {
           continue;
@@ -834,8 +828,6 @@ export class StepView extends HTMLElement {
         }, {jslogContext: item.id});
       }
     }
-
-    void menu.show();
   }
 
   #render(): void {

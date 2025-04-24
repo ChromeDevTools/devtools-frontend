@@ -24,7 +24,9 @@
   z-index: 2;
 
   /* if an overlay is being edited, keep it above the rest so the user is not obstructed */
-  &:has([data-user-editing-label]) {
+  /* also bump the z-index if the label is being hovered, to ensure it appears above any other labels that might obstruct it */
+  &:has([data-user-editing-label]),
+  &:hover {
     z-index: 3;
   }
 }

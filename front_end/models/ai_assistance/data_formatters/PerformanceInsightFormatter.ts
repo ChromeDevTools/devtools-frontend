@@ -393,14 +393,12 @@ export class TraceEventFormatter {
       rootCauses.nonCompositedAnimations.forEach(_ => {
         potentialRootCauses.push('A non composited animation.');
       });
-      rootCauses.unsizedImages.forEach(backendNodeID => {
+      rootCauses.unsizedImages.forEach(img => {
         // TODO(b/413284569): if we store a nice human readable name for this
         // image in the trace metadata, we can do something much nicer here.
-        // TODO(b/413284609): if we relate the PaintImage event to the root
-        // cause for the shift, we can access the URL of the image, which we
-        // can use here to give the LLM (and ultimately the user) more
-        // information.
-        potentialRootCauses.push(`An unsized image (id: ${backendNodeID}).`);
+        const url = img.paintImageEvent.args.data.url;
+        const extraText = url ? `url: ${url}` : `id: ${img.backendNodeId}`;
+        potentialRootCauses.push(`An unsized image (${extraText}).`);
       });
     }
 

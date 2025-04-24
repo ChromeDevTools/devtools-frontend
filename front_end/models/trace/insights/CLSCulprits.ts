@@ -213,11 +213,16 @@ const ACTIONABLE_FAILURE_REASONS: Array<{
 // Use this window to consider events and requests that may have caused a layout shift.
 const ROOT_CAUSE_WINDOW = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
 
+export interface UnsizedImage {
+  backendNodeId: Protocol.DOM.BackendNodeId;
+  paintImageEvent: Types.Events.PaintImage;
+}
+
 export interface LayoutShiftRootCausesData {
   iframeIds: string[];
   fontRequests: Types.Events.SyntheticNetworkRequest[];
   nonCompositedAnimations: NoncompositedAnimationFailure[];
-  unsizedImages: Protocol.DOM.BackendNodeId[];
+  unsizedImages: UnsizedImage[];
 }
 
 /**
@@ -411,9 +416,12 @@ function getUnsizedImageRootCauses(
     Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData> {
   shiftsByPrePaint.forEach((shifts, prePaint) => {
     const paintImage = getNextEvent(paintImageEvents, prePaint) as Types.Events.PaintImage | null;
+    if (!paintImage) {
+      return;
+    }
     // The unsized image corresponds to this PaintImage.
     const matchingNode =
-        unsizedImageEvents.find(unsizedImage => unsizedImage.args.data.nodeId === paintImage?.args.data.nodeId);
+        unsizedImageEvents.find(unsizedImage => unsizedImage.args.data.nodeId === paintImage.args.data.nodeId);
     if (!matchingNode) {
       return;
     }
@@ -423,7 +431,10 @@ function getUnsizedImageRootCauses(
       if (!rootCausesForShift) {
         throw new Error('Unaccounted shift');
       }
-      rootCausesForShift.unsizedImages.push(matchingNode.args.data.nodeId);
+      rootCausesForShift.unsizedImages.push({
+        backendNodeId: matchingNode.args.data.nodeId,
+        paintImageEvent: paintImage,
+      });
     }
   });
   return rootCausesByShift;

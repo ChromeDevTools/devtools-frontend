@@ -107,8 +107,8 @@ export class LayoutShiftDetails extends HTMLElement {
     this.#render();
   }
 
-  #renderTitle(event: Trace.Types.Events.SyntheticLayoutShift|
-               Trace.Types.Events.SyntheticLayoutShiftCluster): Lit.TemplateResult {
+  #renderTitle(event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster):
+      Lit.TemplateResult {
     const title = Utils.EntryName.nameForEntry(event);
     return html`
       <div class="layout-shift-details-title">
@@ -215,7 +215,7 @@ export class LayoutShiftDetails extends HTMLElement {
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
       ${rootCauses?.iframeIds.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
-      ${rootCauses?.unsizedImages.map(backendNodeId => this.#renderUnsizedImage(frame, backendNodeId))}
+      ${rootCauses?.unsizedImages.map(unsizedImage => this.#renderUnsizedImage(frame, unsizedImage.backendNodeId))}
     `;
   }
 

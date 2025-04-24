@@ -195,11 +195,13 @@ describeWithEnvironment('CLSCulprits', function() {
         const shift1 = layoutShiftEvents.at(0);
         assert.isOk(shift1);
         // Root cause should match the nodeId of the unsized images events.
-        assert.strictEqual(shift1[1].unsizedImages[0], unsizedImages[0].args.data.nodeId);
+        assert.strictEqual(shift1[1].unsizedImages[0].backendNodeId, unsizedImages[0].args.data.nodeId);
+        assert.isDefined(shift1[1].unsizedImages[0].paintImageEvent);
 
         const shift2 = layoutShiftEvents.at(1);
         assert.isOk(shift2);
-        assert.strictEqual(shift2[1].unsizedImages[0], unsizedImages[1].args.data.nodeId);
+        assert.strictEqual(shift2[1].unsizedImages[0].backendNodeId, unsizedImages[1].args.data.nodeId);
+        assert.isDefined(shift2[1].unsizedImages[0].paintImageEvent);
       });
     });
   });

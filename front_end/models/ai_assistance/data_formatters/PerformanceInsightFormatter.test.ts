@@ -230,12 +230,12 @@ Layout shifts in this cluster:
 - Start time: 3,696.59 ms
 - Score: 0.0060
 - Potential root causes:
-  - An unsized image (id: 41).
+  - An unsized image (url: http://localhost:8001/unsized-image.png).
 ### Layout shift 4:
 - Start time: 4,277.70 ms
 - Score: 0.3238
 - Potential root causes:
-  - An unsized image (id: 41).
+  - An unsized image (url: http://localhost:8001/unsized-image.png).
 
 ## External resources:
 - https://wdeb.dev/articles/cls

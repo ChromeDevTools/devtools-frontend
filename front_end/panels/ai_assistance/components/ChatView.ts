@@ -222,7 +222,6 @@ const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
 const TOOLTIP_POPOVER_OFFSET = 4;
-const JPEG_MIME_TYPE = 'image/jpeg';
 const RELEVANT_DATA_LINK_ID = 'relevant-data-link';
 
 export interface Step {
@@ -250,6 +249,7 @@ export type ImageInputData = {
 }|{
   isLoading: false,
   data: string,
+  mimeType: string,
 };
 
 export interface UserChatMessage {
@@ -501,7 +501,7 @@ export class ChatView extends HTMLElement {
       return;
     }
     const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
-        {inlineData: {data: this.#props.imageInput.data, mimeType: JPEG_MIME_TYPE}} :
+        {inlineData: {data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType}} :
         undefined;
     void this.#props.onTextSubmit(textArea.value, imageInput);
     textArea.value = '';
@@ -519,7 +519,7 @@ export class ChatView extends HTMLElement {
         return;
       }
       const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
-          {inlineData: {data: this.#props.imageInput.data, mimeType: JPEG_MIME_TYPE}} :
+          {inlineData: {data: this.#props.imageInput.data, mimeType: this.#props.imageInput.mimeType}} :
           undefined;
       void this.#props.onTextSubmit(ev.target.value, imageInput);
       ev.target.value = '';
@@ -539,7 +539,7 @@ export class ChatView extends HTMLElement {
   #handleImageUpload = (ev: Event): void => {
     ev.stopPropagation();
     if (this.#props.onLoadImage) {
-      const fileSelector = UI.UIUtils.createFileSelectorElement(this.#props.onLoadImage.bind(this), '.jpeg,.jpg');
+      const fileSelector = UI.UIUtils.createFileSelectorElement(this.#props.onLoadImage.bind(this), '.jpeg,.jpg,.png');
       fileSelector.click();
     }
   };
@@ -970,7 +970,7 @@ function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitT
     </div>`;
     // clang-format on
   }
-  const imageUrl = `data:image/jpeg;base64,${inlineData.data}`;
+  const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
   // clang-format off
     return html`<x-link
       class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
@@ -1341,7 +1341,7 @@ function renderImageInput({
     return  html`
     <div class="image-input-container">
       ${crossButton}
-      <img src="data:image/jpeg;base64, ${imageInput.data}" alt="Screenshot input" />
+      <img src="data:${imageInput.mimeType};base64, ${imageInput.data}" alt="Image input" />
     </div>`;
     // clang-format on
   }

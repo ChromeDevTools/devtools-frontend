@@ -1289,7 +1289,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       view.input.onTakeScreenshot?.();
 
-      assert.deepEqual((await view.nextInput).imageInput, {isLoading: false, data: 'imageInput'});
+      assert.deepEqual(
+          (await view.nextInput).imageInput, {isLoading: false, data: 'imageInput', mimeType: 'image/jpeg'});
       expect(captureScreenshotStub.calledOnce);
 
       view.input.onRemoveImageInput?.();
@@ -1312,9 +1313,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isTrue(view.input.multimodalInputEnabled);
       assert.isTrue(view.input.uploadImageInputEnabled);
 
-      await view.input.onLoadImage?.(new File([blob], 'image.jpeg'));
+      await view.input.onLoadImage?.(new File([blob], 'image.jpeg', {type: 'image/jpeg'}));
 
-      assert.deepEqual((await view.nextInput).imageInput, {isLoading: false, data: btoa('imageInput')});
+      assert.deepEqual(
+          (await view.nextInput).imageInput, {isLoading: false, data: btoa('imageInput'), mimeType: 'image/jpeg'});
 
       view.input.onRemoveImageInput?.();
       assert.notExists((await view.nextInput).imageInput);

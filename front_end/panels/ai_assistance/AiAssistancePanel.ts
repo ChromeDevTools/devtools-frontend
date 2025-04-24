@@ -43,6 +43,7 @@ const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.De
 const AI_ASSISTANCE_HELP = 'https://developer.chrome.com/docs/devtools/ai-assistance';
 const SCREENSHOT_QUALITY = 100;
 const SHOW_LOADING_STATE_TIMEOUT = 100;
+const JPEG_MIME_TYPE = 'image/jpeg';
 
 const UIStrings = {
   /**
@@ -1183,7 +1184,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     clearTimeout(showLoadingTimeout);
     if (bytes) {
-      this.#imageInput = {isLoading: false, data: bytes};
+      this.#imageInput = {isLoading: false, data: bytes, mimeType: JPEG_MIME_TYPE};
       this.requestUpdate();
       void this.updateComplete.then(() => {
         this.#viewOutput.chatView?.focusTextInput();
@@ -1227,7 +1228,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       });
     } catch {
       clearTimeout(showLoadingTimeout);
-      this.#imageInput = {isLoading: false, data: ''};
+      this.#imageInput = {isLoading: false, data: '', mimeType: ''};
       this.requestUpdate();
       void this.updateComplete.then(() => {
         this.#viewOutput.chatView?.focusTextInput();
@@ -1241,7 +1242,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     const commaIndex = dataUrl.indexOf(',');
     const bytes = dataUrl.substring(commaIndex + 1);
-    this.#imageInput = {isLoading: false, data: bytes};
+    this.#imageInput = {isLoading: false, data: bytes, mimeType: file.type};
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.#viewOutput.chatView?.focusTextInput();

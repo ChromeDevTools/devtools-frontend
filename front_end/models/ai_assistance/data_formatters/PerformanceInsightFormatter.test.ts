@@ -195,6 +195,56 @@ The result of the checks for this insight are:
     });
   });
 
+  describe('CLS', () => {
+    it('serializes the correct details', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'layout-shifts-root-causes.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('CLSCulprits', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+      const output = formatter.formatInsight();
+      const expected = `## Insight Title: Layout shift culprits
+
+## Insight Summary:
+Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25
+
+## Detailed analysis:
+The worst layout shift cluster was the cluster that started at 1,863.35 ms and ended at 5,277.70 ms, with a duration of 3,414.35 ms.
+The score for this cluster is 0.4066.
+
+Layout shifts in this cluster:
+### Layout shift 1:
+- Start time: 1,863.35 ms
+- Score: 0.0003
+- Potential root causes:
+  - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v1/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_CBYFvA.woff2).
+### Layout shift 2:
+- Start time: 2,697.14 ms
+- Score: 0.0766
+- Potential root causes:
+  - An iframe (id: 3AB46B1FCAF67B49367E8C127D0D9665 was injected into the page)
+### Layout shift 3:
+- Start time: 3,696.59 ms
+- Score: 0.0060
+- Potential root causes:
+  - An unsized image (id: 41).
+### Layout shift 4:
+- Start time: 4,277.70 ms
+- Score: 0.3238
+- Potential root causes:
+  - An unsized image (id: 41).
+
+## External resources:
+- https://wdeb.dev/articles/cls
+- https://web.dev/articles/optimize-cls`;
+
+      assert.strictEqual(output, expected);
+    });
+  });
+
   describe('INP by phase', () => {
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');

@@ -429,6 +429,10 @@ function getUnsizedImageRootCauses(
   return rootCausesByShift;
 }
 
+export function isCLSCulprits(insight: InsightModel): insight is CLSCulpritsInsightModel {
+  return insight.insightKey === InsightKeys.CLS_CULPRITS;
+}
+
 /**
  * A font request is considered a root cause if the request occurs before a prePaint event
  * and within this prePaint event a layout shift(s) occurs. Additionally, this font request should

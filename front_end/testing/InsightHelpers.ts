@@ -53,10 +53,10 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
   } else {
     key = Trace.Types.Events.NO_NAVIGATION;
   }
-
   const insightSets = insights.get(key);
   if (!insightSets) {
-    throw new Error('missing navInsights');
+    throw new Error(`Could not find Insights for navigation ${
+        key}. If you are trying to load an Insight for a particular navigation, you must supply it as an argument to \`getInsightOrError\``);
   }
 
   const insight = insightSets.model[insightName];
@@ -64,7 +64,6 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
     throw insight;
   }
 
-  // For some reason typescript won't narrow the type by removing Error, so do it manually.
   return insight;
 }
 

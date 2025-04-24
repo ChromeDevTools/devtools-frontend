@@ -19,6 +19,10 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cls-culprits`;
   override internalName = 'cls-culprits';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const clustersByScore =
         this.model?.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];

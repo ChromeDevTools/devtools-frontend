@@ -229,13 +229,40 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       return inpInfoForEvent;
     }
 
+    if (Trace.Insights.Models.CLSCulprits.isCLSCulprits(this.#insight)) {
+      const {worstCluster, shifts} = this.#insight;
+      if (!worstCluster) {
+        return '';
+      }
+
+      const baseTime = this.#parsedTrace.Meta.traceBounds.min;
+
+      const clusterTimes = {
+        start: worstCluster.ts - baseTime,
+        end: worstCluster.ts + worstCluster.dur - baseTime,
+      } as const;
+
+      const shiftsFormatted = worstCluster.events.map((layoutShift, index) => {
+        return TraceEventFormatter.layoutShift(layoutShift, index, this.#parsedTrace, shifts.get(layoutShift));
+      });
+
+      return `The worst layout shift cluster was the cluster that started at ${
+          formatMicro(clusterTimes.start)} and ended at ${formatMicro(clusterTimes.end)}, with a duration of ${
+          formatMicro(worstCluster.dur)}.
+The score for this cluster is ${worstCluster.clusterCumulativeScore.toFixed(4)}.
+
+Layout shifts in this cluster:
+${shiftsFormatted.join('\n')}`;
+    }
+
     return '';
   }
 
   #links(): string {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
-        return '';
+        return `- https://wdeb.dev/articles/cls
+- https://web.dev/articles/optimize-cls`;
       case 'DocumentLatency':
         return '- https://web.dev/articles/optimize-ttfb';
       case 'DOMSize':
@@ -282,7 +309,10 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
   #description(): string {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
-        return '';
+        return `Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shifts for every unexpected layout shift that occurs during the lifecycle of a page. This is a Core Web Vital and the thresholds for categorizing a score are:
+- Good: 0.1 or less
+- Needs improvement: more than 0.1 and less than or equal to 0.25
+- Bad: over 0.25`;
       case 'DocumentLatency':
         return `This insight checks that the first request is responded to promptly. We use the following criteria to check this:
 1. Was the initial request redirected?
@@ -345,6 +375,40 @@ export interface NetworkRequestFormatOptions {
 }
 
 export class TraceEventFormatter {
+  static layoutShift(
+      shift: Trace.Types.Events.SyntheticLayoutShift, index: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      rootCauses?: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData): string {
+    const baseTime = parsedTrace.Meta.traceBounds.min;
+
+    const potentialRootCauses: string[] = [];
+    if (rootCauses) {
+      rootCauses.iframeIds.forEach(id => potentialRootCauses.push(`An iframe (id: ${id} was injected into the page)`));
+      rootCauses.fontRequests.forEach(req => {
+        potentialRootCauses.push(`A font that was loaded over the network (${req.args.data.url}).`);
+      });
+      // TODO(b/413285103): use the nice strings for non-composited animations.
+      // The code for this lives in TimelineUIUtils but that cannot be used
+      // within models. We should move it and then expose the animations info
+      // more nicely.
+      rootCauses.nonCompositedAnimations.forEach(_ => {
+        potentialRootCauses.push('A non composited animation.');
+      });
+      rootCauses.unsizedImages.forEach(backendNodeID => {
+        // TODO(b/413284569): if we store a nice human readable name for this
+        // image in the trace metadata, we can do something much nicer here.
+        // TODO(b/413284609): if we relate the PaintImage event to the root
+        // cause for the shift, we can access the URL of the image, which we
+        // can use here to give the LLM (and ultimately the user) more
+        // information.
+        potentialRootCauses.push(`An unsized image (id: ${backendNodeID}).`);
+      });
+    }
+
+    return `### Layout shift ${index + 1}:
+- Start time: ${formatMicro(shift.ts - baseTime)}
+- Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
+- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}`;
+  }
   /**
    * This is the data passed to a network request when the Performance Insights
    * agent is asking for information. It is a slimmed down version of the

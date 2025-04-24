@@ -72,10 +72,10 @@ for (const exampleUrl of userArgs.exampleUrls) {
  * trigger a trace recording.
  */
 class TraceDownloader {
-  static LOCATION = path.join(__dirname, 'performance-trace-downloads');
+  static location = path.join(__dirname, 'performance-trace-downloads');
   static ensureLocationExists() {
     try {
-      fs.mkdirSync(TraceDownloader.LOCATION);
+      fs.mkdirSync(TraceDownloader.location);
     } catch {
     }
   }
@@ -89,11 +89,11 @@ class TraceDownloader {
       return false;
     }
 
-    if (fs.existsSync(path.join(TraceDownloader.LOCATION, filename))) {
+    if (fs.existsSync(path.join(TraceDownloader.location, filename))) {
       return true;
     }
 
-    return new Promise(r => {
+    return await new Promise(r => {
       setTimeout(() => {
         return r(TraceDownloader.ensureDownloadExists(filename, attempts + 1));
       }, 200);
@@ -111,7 +111,7 @@ class TraceDownloader {
     const cdp = await page.createCDPSession();
     await cdp.send('Browser.setDownloadBehavior', {
       behavior: 'allow',
-      downloadPath: TraceDownloader.LOCATION,
+      downloadPath: TraceDownloader.location,
     });
     const fileName = `${idForUrl}.json.gz`;
     const traceUrl = example.url().replace('index.html', fileName);
@@ -124,7 +124,7 @@ class TraceDownloader {
     const foundFile = await TraceDownloader.ensureDownloadExists(fileName);
     if (!foundFile) {
       console.error(
-          `Could not find '${fileName}' in download location (${TraceDownloader.LOCATION}). Aborting.`,
+          `Could not find '${fileName}' in download location (${TraceDownloader.location}). Aborting.`,
       );
     }
     example.log(`Downloaded performance trace: ${fileName}`);
@@ -233,7 +233,7 @@ class Example {
     await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
     this.log('[Info]: loaded performance panel');
     const fileUploader = await devtoolsPage.locator('input[type=file]').waitHandle();
-    const tracePath = path.join(TraceDownloader.LOCATION, fileName);
+    const tracePath = path.join(TraceDownloader.location, fileName);
     await fileUploader.uploadFile(tracePath);
     this.log(`[Info]: imported ${fileName} to performance panel`);
     const canvas = await devtoolsPage.waitForSelector(
@@ -258,7 +258,7 @@ class Example {
     if (tries > 10) {
       return false;
     }
-    return new Promise(r => {
+    return await new Promise(r => {
       setTimeout(() => r(this.#waitForElementToHaveHeight(elem, height)), 100);
     });
   }
@@ -825,14 +825,14 @@ async function main() {
   let score = 0;
   {
     let scoreSum = 0;
-    let N = 0;
+    let count = 0;
     for (const example of allExampleResults) {
       if (example.score !== undefined) {
         scoreSum += example.score;
-        N++;
+        count++;
       }
     }
-    score = scoreSum / N;
+    score = scoreSum / count;
   }
 
   /**
@@ -864,4 +864,4 @@ async function main() {
   logger.destroy();
 }
 
-main();
+void main();

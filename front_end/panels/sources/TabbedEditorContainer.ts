@@ -37,6 +37,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -56,9 +57,22 @@ const UIStrings = {
    */
   unableToLoadThisContent: 'Unable to load this content.',
   /**
-   *@description Icon title in Tabbed Editor Container of the Sources panel
+   * @description Tooltip shown for the warning icon on an editor tab in the Sources panel
+   *              when the developer saved changes via Ctrl+S/Cmd+S, while there was an
+   *              automatic workspace detected, but not connected.
+   * @example {FolderName} PH1
    */
-  changesToThisFileWereNotSavedTo: 'Changes to this file were not saved to file system.',
+  changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace:
+      'Changes weren\'t saved to file system. To save, add {PH1} to your Workspace.',
+  /**
+   * @description Tooltip shown for the warning icon on an editor tab in the Sources panel
+   *              when the developer saved changes via Ctrl+S/Cmd+S, but didn't have a Workspace
+   *              set up, or the Workspace didn't have a match for this file, and therefore the
+   *              changes couldn't be persisted.
+   * @example {Workspace} PH1
+   */
+  changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace:
+      'Changes weren\'t saved to file system. To save, set up your {PH1}.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -617,19 +631,47 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       const title = this.titleForFile(uiSourceCode);
       const tooltip = this.tooltipForFile(uiSourceCode);
       this.tabbedPane.changeTabTitle(tabId, title, tooltip);
-      let icon: IconButton.Icon.Icon|null = null;
       if (uiSourceCode.loadError()) {
-        icon = new IconButton.Icon.Icon();
+        const icon = new IconButton.Icon.Icon();
         icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.unableToLoadThisContent));
+        this.tabbedPane.setTrailingTabIcon(tabId, icon);
       } else if (Persistence.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
-        icon = new IconButton.Icon.Icon();
+        /* eslint-disable rulesdir/no-imperative-dom-api --
+         * This is a temporary solution using the <devtools-tooltip>
+         * and we will use a toast instead once available.
+         **/
+        const suffixElement = document.createElement('div');
+        const icon = new IconButton.Icon.Icon();
         icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.changesToThisFileWereNotSavedTo));
+        const id = `tab-tooltip-${nextTooltipId++}`;
+        icon.setAttribute('aria-describedby', id);
+        const tooltip = new Tooltips.Tooltip.Tooltip({id, anchor: icon, variant: 'rich'});
+        const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+        const {automaticFileSystem} = automaticFileSystemManager;
+        if (automaticFileSystem?.state === 'disconnected') {
+          const link = document.createElement('a');
+          link.className = 'devtools-link';
+          link.textContent = Common.ParsedURL.ParsedURL.extractName(automaticFileSystem.root);
+          link.addEventListener('click', async event => {
+            event.consume();
+            await UI.ViewManager.ViewManager.instance().showView('navigator-files');
+            await automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true);
+          });
+          tooltip.append(i18n.i18n.getFormatLocalizedString(
+              str_, UIStrings.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, {PH1: link}));
+        } else {
+          const link = UI.XLink.XLink.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Workspace');
+          tooltip.append(i18n.i18n.getFormatLocalizedString(
+              str_, UIStrings.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, {PH1: link}));
+        }
+        suffixElement.append(icon, tooltip);
+        /* eslint-enable rulesdir/no-imperative-dom-api */
+        this.tabbedPane.setSuffixElement(tabId, suffixElement);
       } else {
-        icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
+        const icon = Persistence.PersistenceUtils.PersistenceUtils.iconForUISourceCode(uiSourceCode);
+        this.tabbedPane.setTrailingTabIcon(tabId, icon);
       }
-      this.tabbedPane.setTrailingTabIcon(tabId, icon);
     }
   }
 
@@ -675,6 +717,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.currentFileInternal || null;
   }
 }
+
+let nextTooltipId = 1;
 
 export const enum Events {
   EDITOR_SELECTED = 'EditorSelected',

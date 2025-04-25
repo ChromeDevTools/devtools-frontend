@@ -234,30 +234,34 @@ Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shift
 - Bad: over 0.25
 
 ## Detailed analysis:
-The worst layout shift cluster was the cluster that started at 1,863.35 ms and ended at 5,277.70 ms, with a duration of 3,414.35 ms.
-The score for this cluster is 0.4066.
+The worst layout shift cluster was the cluster that started at 471.76 ms and ended at 3,342.83 ms, with a duration of 2,871.07 ms.
+The score for this cluster is 0.7656.
 
 Layout shifts in this cluster:
 ### Layout shift 1:
-- Start time: 1,863.35 ms
+- Start time: 471.76 ms
 - Score: 0.0003
 - Potential root causes:
-  - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v1/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_CBYFvA.woff2).
+  - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2).
 ### Layout shift 2:
-- Start time: 2,697.14 ms
-- Score: 0.0766
+- Start time: 857.25 ms
+- Score: 0.0844
 - Potential root causes:
-  - An iframe (id: 3AB46B1FCAF67B49367E8C127D0D9665 was injected into the page)
+  - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104 was injected into the page)
 ### Layout shift 3:
-- Start time: 3,696.59 ms
-- Score: 0.0060
+- Start time: 1,352.45 ms
+- Score: 0.0068
 - Potential root causes:
-  - An unsized image (url: http://localhost:8001/unsized-image.png).
+  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 4:
-- Start time: 4,277.70 ms
-- Score: 0.3238
+- Start time: 1,537.46 ms
+- Score: 0.3344
 - Potential root causes:
-  - An unsized image (url: http://localhost:8001/unsized-image.png).
+  - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
+### Layout shift 5:
+- Start time: 2,342.83 ms
+- Score: 0.3396
+- No potential root causes identified
 
 ## External resources:
 - https://wdeb.dev/articles/cls

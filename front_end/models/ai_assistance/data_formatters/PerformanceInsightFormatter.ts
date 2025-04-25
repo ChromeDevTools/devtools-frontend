@@ -401,15 +401,19 @@ export class TraceEventFormatter {
         // TODO(b/413284569): if we store a nice human readable name for this
         // image in the trace metadata, we can do something much nicer here.
         const url = img.paintImageEvent.args.data.url;
+        const nodeName = img.paintImageEvent.args.data.nodeName;
         const extraText = url ? `url: ${url}` : `id: ${img.backendNodeId}`;
-        potentialRootCauses.push(`An unsized image (${extraText}).`);
+        potentialRootCauses.push(`An unsized image (${nodeName}) (${extraText}).`);
       });
     }
+    const rootCauseText = potentialRootCauses.length ?
+        `- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}` :
+        '- No potential root causes identified';
 
     return `### Layout shift ${index + 1}:
 - Start time: ${formatMicro(shift.ts - baseTime)}
 - Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
-- Potential root causes:\n  - ${potentialRootCauses.join('\n  - ')}`;
+${rootCauseText}`;
   }
   /**
    * This is the data passed to a network request when the Performance Insights

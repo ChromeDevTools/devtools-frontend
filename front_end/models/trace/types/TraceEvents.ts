@@ -2332,6 +2332,8 @@ export interface Paint extends Complete {
       // With CompositeAfterPaint enabled, paint events are no longer
       // associated with a Node, and nodeId will not be present.
       nodeId?: Protocol.DOM.BackendNodeId,
+      // Optional as it was added in M137: crrev.com/c/6491448
+      nodeName?: string,
     },
   };
 }
@@ -2354,6 +2356,8 @@ export interface PaintImage extends Complete {
       srcsetAttribute?: string,
       url?: string, srcHeight: number, srcWidth: number,
       nodeId?: Protocol.DOM.BackendNodeId,
+      // Optional as it was added in M137: crrev.com/c/6491448
+      nodeName?: string,
       frame?: string,
     },
   };

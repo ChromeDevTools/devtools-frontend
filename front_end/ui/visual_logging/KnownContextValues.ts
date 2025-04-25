@@ -2005,6 +2005,7 @@ export const knownContextValues = new Set([
   'learn-more',
   'learn-more.ai-annotations',
   'learn-more.ai-assistance',
+  'learn-more.auto-annotations',
   'learn-more.console-insights',
   'learn-more.coop-coep',
   'learn-more.csp-report-only',

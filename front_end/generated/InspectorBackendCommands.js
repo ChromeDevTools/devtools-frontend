@@ -905,8 +905,8 @@ inspectorBackend.registerEnum("Page.DownloadProgressEventState", {InProgress: "i
 inspectorBackend.registerEvent("Page.downloadProgress", ["guid", "totalBytes", "receivedBytes", "state"]);
 inspectorBackend.registerEvent("Page.interstitialHidden", []);
 inspectorBackend.registerEvent("Page.interstitialShown", []);
-inspectorBackend.registerEvent("Page.javascriptDialogClosed", ["result", "userInput"]);
-inspectorBackend.registerEvent("Page.javascriptDialogOpening", ["url", "message", "type", "hasBrowserHandler", "defaultPrompt"]);
+inspectorBackend.registerEvent("Page.javascriptDialogClosed", ["frameId", "result", "userInput"]);
+inspectorBackend.registerEvent("Page.javascriptDialogOpening", ["url", "frameId", "message", "type", "hasBrowserHandler", "defaultPrompt"]);
 inspectorBackend.registerEvent("Page.lifecycleEvent", ["frameId", "loaderId", "name", "timestamp"]);
 inspectorBackend.registerEvent("Page.backForwardCacheNotUsed", ["loaderId", "frameId", "notRestoredExplanations", "notRestoredExplanationsTree"]);
 inspectorBackend.registerEvent("Page.loadEventFired", ["timestamp"]);
@@ -934,7 +934,7 @@ inspectorBackend.registerCommand("Page.getAppManifest", [{"name": "manifestId", 
 inspectorBackend.registerCommand("Page.getInstallabilityErrors", [], ["installabilityErrors"], "");
 inspectorBackend.registerCommand("Page.getManifestIcons", [], ["primaryIcon"], "Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation.");
 inspectorBackend.registerCommand("Page.getAppId", [], ["appId", "recommendedId"], "Returns the unique (PWA) app id. Only returns values if the feature flag 'WebAppEnableManifestId' is enabled");
-inspectorBackend.registerCommand("Page.getAdScriptId", [{"name": "frameId", "type": "string", "optional": false, "description": "", "typeRef": "Page.FrameId"}], ["adScriptId"], "");
+inspectorBackend.registerCommand("Page.getAdScriptAncestryIds", [{"name": "frameId", "type": "string", "optional": false, "description": "", "typeRef": "Page.FrameId"}], ["adScriptAncestryIds"], "");
 inspectorBackend.registerCommand("Page.getFrameTree", [], ["frameTree"], "Returns present frame tree structure.");
 inspectorBackend.registerCommand("Page.getLayoutMetrics", [], ["layoutViewport", "visualViewport", "contentSize", "cssLayoutViewport", "cssVisualViewport", "cssContentSize"], "Returns metrics relating to the layouting of the page, such as viewport bounds/scale.");
 inspectorBackend.registerCommand("Page.getNavigationHistory", [], ["currentIndex", "entries"], "Returns navigation history for the current page.");

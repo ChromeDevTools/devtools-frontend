@@ -159,7 +159,7 @@ describeWithEnvironment('SourcesView', () => {
   });
 });
 
-describeWithMockConnection('SourcesView with mock connection', () => {
+describeWithMockConnection('SourcesView', () => {
   let target1: SDK.Target.Target;
   let target2: SDK.Target.Target;
 

@@ -1259,7 +1259,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
-  describe('AnchorFunctionRenderer with parent node', () => {
+  describe('AnchorFunctionRenderer', () => {
     let anchorDecoratedForTestStub: sinon.SinonStub;
     let getAnchorBySpecifierStub: sinon.SinonStub;
     let revealStub: sinon.SinonStub;
@@ -1727,7 +1727,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       }
     });
 
-    it('shows the original text during tracing when evaluation fails with tracing enable', async () => {
+    it('shows the original text during tracing when evaluation fails', async () => {
       updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       setMockConnectionResponseHandler(
           'CSS.resolveValues',

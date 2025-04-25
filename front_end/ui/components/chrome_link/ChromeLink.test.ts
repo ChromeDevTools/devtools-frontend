@@ -13,7 +13,7 @@ import * as ChromeLink from './chrome_link.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ChromeLink with mock connection', () => {
+describeWithMockConnection('ChromeLink', () => {
   it('renders a link when given a \'chrome://\' URL', async () => {
     const target = createTarget();
     const spy = sinon.spy(target.targetAgent(), 'invoke_createTarget');

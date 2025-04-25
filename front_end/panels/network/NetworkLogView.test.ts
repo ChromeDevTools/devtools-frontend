@@ -943,7 +943,7 @@ describeWithMockConnection('NetworkLogView placeholder', () => {
   });
 });
 
-describeWithEnvironment('NetworkLogView with actions', () => {
+describeWithEnvironment('NetworkLogView', () => {
   it('renders when actions aren\'t registered', async () => {
     stubNoopSettings();
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({

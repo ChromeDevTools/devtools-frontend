@@ -52,7 +52,7 @@ describeWithMockConnection('ResourceUtils', () => {
     assert.strictEqual(Bindings.ResourceUtils.displayNameForURL(RESOURCE_URL), RESOURCE.displayName);
   });
 
-  it('returns a resource name if available via method', async () => {
+  it('returns a resource name if available', async () => {
     assert.strictEqual(Bindings.ResourceUtils.displayNameForURL(UI_SOURCE_CODE_URL), UI_SOURCE_CODE.displayName());
   });
 

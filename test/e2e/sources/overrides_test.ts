@@ -434,7 +434,7 @@ describe('Overrides panel', function() {
       });
 });
 
-describe('Overrides panel with disabled overrides', () => {
+describe('Overrides panel', () => {
   it('appends correct overrides context menu for Sources > Page file', async () => {
     await goToResource('elements/elements-panel-styles.html');
     await openNetworkTab();

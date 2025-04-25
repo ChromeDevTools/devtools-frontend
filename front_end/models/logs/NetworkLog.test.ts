@@ -297,7 +297,7 @@ describe('NetworkLog', () => {
   });
 });
 
-describeWithMockConnection('NetworkLog with mock connection', () => {
+describeWithMockConnection('NetworkLog', () => {
   it('clears on main frame navigation', () => {
     const networkLog = Logs.NetworkLog.NetworkLog.instance();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

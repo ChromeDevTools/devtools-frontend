@@ -143,7 +143,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions - Recorder', {}, context => {
+describeWithDevtoolsExtension('Extensions', {}, context => {
   expectConsoleLogs({
     warn: ['evaluate: the main frame is not yet available'],
     error: ['Extension server error: Object not found: <top>'],

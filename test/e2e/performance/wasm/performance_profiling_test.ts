@@ -103,7 +103,7 @@ async function searchForWasmCall() {
   });
 }
 
-describe('The Performance panel wasm', function() {
+describe('The Performance panel', function() {
   // These tests have lots of waiting which might take more time to execute
   if (this.timeout() !== 0) {
     this.timeout(20000);

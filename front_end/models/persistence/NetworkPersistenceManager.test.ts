@@ -37,7 +37,7 @@ const setUpEnvironmentWithUISourceCode =
       return {workspace, project, uiSourceCode, networkPersistenceManager};
     };
 
-describeWithMockConnection('NetworkPersistenceManager Local Overrides', () => {
+describeWithMockConnection('NetworkPersistenceManager', () => {
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
@@ -121,7 +121,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithMockConnection('NetworkPersistenceManager with overrides', () => {
+describeWithMockConnection('NetworkPersistenceManager', () => {
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
 
   beforeEach(async () => {
@@ -702,7 +702,7 @@ describeWithMockConnection('NetworkPersistenceManager with overrides', () => {
   });
 });
 
-describeWithMockConnection('NetworkPersistenceManager target changed', () => {
+describeWithMockConnection('NetworkPersistenceManager', () => {
   beforeEach(() => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
   });
@@ -725,7 +725,7 @@ describeWithMockConnection('NetworkPersistenceManager target changed', () => {
   });
 });
 
-describe('NetworkPersistenceManager helpers', () => {
+describe('NetworkPersistenceManager', () => {
   before(async () => {
     await initializeGlobalVars();
   });

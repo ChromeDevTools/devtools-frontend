@@ -31,7 +31,7 @@ async function processTrace(events: readonly Trace.Types.Events.Event[]): Promis
   }
 }
 
-describeWithMockConnection('FramesHandler with mock connection', () => {
+describeWithMockConnection('FramesHandler', () => {
   it('can parse out a trace and return the frames', async function() {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     await processTrace(rawEvents);

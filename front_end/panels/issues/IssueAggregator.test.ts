@@ -162,7 +162,9 @@ describeWithMockConnection('IssueAggregator', () => {
       assert.strictEqual(aggregatedIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
     });
   });
+});
 
+describeWithMockConnection('IssueAggregator', () => {
   it('aggregates heavy ad issues correctly', () => {
     const model = createModel();
     const details1 = {
@@ -235,7 +237,7 @@ describeWithMockConnection('IssueAggregator', () => {
   });
 });
 
-describeWithMockConnection('IssueAggregator with fake setting', () => {
+describeWithMockConnection('IssueAggregator', () => {
   let hideIssueByCodeSetting: Common.Settings.Setting<IssuesManager.IssuesManager.HideIssueMenuSetting>;
   let showThirdPartyIssuesSetting: Common.Settings.Setting<boolean>;
   let issuesManager: IssuesManager.IssuesManager.IssuesManager;
@@ -360,7 +362,7 @@ describeWithMockConnection('IssueAggregator with fake setting', () => {
   });
 });
 
-describeWithMockConnection('IssueAggregator with mitigation cookie issues', () => {
+describeWithMockConnection('IssueAggregator', () => {
   function getTestCookieIssue(
       warningReason?: Protocol.Audits.CookieWarningReason,
       exclusionReason?: Protocol.Audits.CookieExclusionReason): IssuesManager.Issue.Issue {

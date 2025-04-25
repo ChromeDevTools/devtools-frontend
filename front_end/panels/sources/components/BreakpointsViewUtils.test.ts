@@ -75,7 +75,7 @@ describe('getDifferentiatingPathMap', () => {
     assert.strictEqual(differentiatingPathMap.get(titleInfos[3].url), urlString`src2/b/`);
   });
 
-  it('can extract the differentiating segment if paths have overlapping prefixes and suffixes long', () => {
+  it('can extract the differentiating segment if paths have overlapping prefixes and suffixes', () => {
     const titleInfos: SourcesComponents.BreakpointsViewUtils.TitleInfo[] = createTitleInfos({
       ambiguous: [
         'http://www.google.com/src/a/d',

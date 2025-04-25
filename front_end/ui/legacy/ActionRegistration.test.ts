@@ -50,7 +50,7 @@ describeWithEnvironment('ActionRegistration', () => {
   });
 });
 
-describeWithEnvironment('ActionRegistration action extension', () => {
+describeWithEnvironment('ActionRegistration', () => {
   let actionExecuted = false;
   const actionTitle = 'Mock action';
   const actionId = 'mock.action';

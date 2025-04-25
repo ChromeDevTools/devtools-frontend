@@ -1011,7 +1011,9 @@ const sub = (x, y) => x - y;
       assert.isEmpty(Sources.OutlineQuickOpen.outline(state));
     }
   });
+});
 
+describe('OutlineQuickOpen', () => {
   const {OutlineQuickOpen} = Sources.OutlineQuickOpen;
 
   it('reports no items before attached', () => {

@@ -20,7 +20,7 @@ const content = JSON.stringify({
   ],
 });
 
-describeWithMockConnection('SourceMapManager with mock connection', () => {
+describeWithMockConnection('SourceMapManager', () => {
   it('uses url for a worker\'s source maps from frame', async () => {
     setupPageResourceLoaderForSourceMap(content);
     const frameUrl = urlString`https://frame-host/index.html`;

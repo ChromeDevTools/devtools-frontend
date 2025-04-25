@@ -42,7 +42,7 @@ function getOverrideIndicator(tabs: UI.TabbedPane.TabbedPaneTab[], tabId: string
   return statusDot ? statusDot as HTMLElement : null;
 }
 
-describeWithMockConnection('NetworkItemView with mock connection', () => {
+describeWithMockConnection('NetworkItemView', () => {
   beforeEach(() => {
     setUpEnvironment();
   });

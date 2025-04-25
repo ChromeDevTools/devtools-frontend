@@ -155,7 +155,7 @@ describeWithLocale('PageResourceLoader', () => {
 });
 
 // Loading via host bindings requires the settings infra to be booted.
-describeWithEnvironment('PageResourceLoader with host bindings', () => {
+describeWithEnvironment('PageResourceLoader', () => {
   it('blocks UNC file paths with the default setting', async () => {
     if (!Host.Platform.isWin()) {
       return;
@@ -229,7 +229,7 @@ describeWithEnvironment('PageResourceLoader with host bindings', () => {
   });
 });
 
-describeWithMockConnection('PageResourceLoader with mock connection', () => {
+describeWithMockConnection('PageResourceLoader', () => {
   describe('loadResource', () => {
     const stream = 'STREAM_ID' as Protocol.IO.StreamHandle;
     const initiatorUrl = urlString`htp://example.com`;
@@ -270,7 +270,7 @@ describeWithMockConnection('PageResourceLoader with mock connection', () => {
   });
 });
 
-describeWithMockConnection('PageResourceLoader with mock connection second', () => {
+describeWithMockConnection('PageResourceLoader', () => {
   const initiatorUrl = urlString`htp://example.com`;
   const foo1Url = urlString`foo1`;
   const foo2Url = urlString`foo2`;

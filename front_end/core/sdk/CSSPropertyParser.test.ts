@@ -487,6 +487,17 @@ describe('CSSPropertyParser', () => {
       assert.strictEqual(matching.getComputedText(ast.tree), '--property: dark gray');
     });
 
+    it('computes longhand positions', () => {
+      const matchedResult = SDK.CSSPropertyParser.matchDeclaration(
+          '--prop', 'a b /* c */ var(--d) e',
+          [new SDK.CSSPropertyParserMatchers.BaseVariableMatcher(match => match.name === '--d' ? 'ddd' : null)]);
+      assert.exists(matchedResult);
+      const topLevelValues =
+          SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matchedResult.ast.tree));
+      assert.lengthOf(topLevelValues, 5);
+      assert.deepEqual(topLevelValues.map(node => matchedResult.getComputedLonghandName(node)), [0, 1, 2, 2, 3]);
+    });
+
     it('parses vars correctly', () => {
       for (const succeed
                of ['var(--a)', 'var(--a, 123)', 'var(--a, calc(1+1))', 'var(--a, var(--b))', 'var(--a, var(--b, 123))',

@@ -152,7 +152,7 @@ export class Highlighting {
 // MatchRenderer.
 //
 // Callers don't need to keep track of the tracing depth (i.e., the number of substitution/evaluation steps).
-// TracingContext is stateful and keeps track of the deps, so callers can progressively produce steps by calling
+// TracingContext is stateful and keeps track of the depth, so callers can progressively produce steps by calling
 // TracingContext#nextSubstitution or TracingContext#nextEvaluation. Calling Renderer with the tracing context will then
 // produce the next step of tracing. The tracing depth is passed to the individual MatchRenderers by way of
 // TracingContext#substitution or TracingContext#applyEvaluation/TracingContext#evaluation (see function-level comments
@@ -165,12 +165,14 @@ export class TracingContext {
   #evaluationCount = 0;
   #appliedEvaluations = 0;
   #hasMoreEvaluations = true;
+  #longhandOffset = 0;
   readonly #highlighting: Highlighting;
   #parsedValueCache = new Map<SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty, {
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
     computedStyles: Map<string, string>,
     parsedValue: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
   }>();
+  #propertyName: string|null;
   #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
 
   constructor(highlighting: Highlighting, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
@@ -179,10 +181,19 @@ export class TracingContext {
         matchedResult?.hasMatches(
             SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch) ??
         false;
+    this.#propertyName = matchedResult?.ast.propertyName ?? null;
   }
 
   get highlighting(): Highlighting {
     return this.#highlighting;
+  }
+
+  get propertyName(): string|null {
+    return this.#propertyName;
+  }
+
+  get longhandOffset(): number {
+    return this.#longhandOffset;
   }
 
   renderingContext(context: RenderingContext): RenderingContext {
@@ -237,6 +248,7 @@ export class TracingContext {
       child.#evaluationCount = this.#evaluationCount;
       child.#hasMoreSubstitutions = this.#hasMoreSubstitutions;
       child.#parsedValueCache = this.#parsedValueCache;
+      child.#propertyName = this.propertyName;
       return child;
     });
     return childContexts;
@@ -279,7 +291,8 @@ export class TracingContext {
   // Request a tracing context for the next level of substitutions. If this returns null, no further substitution should
   // be applied on this branch of the AST. Otherwise, the TracingContext should be passed to the Renderer call for the
   // substitution subtree.
-  substitution(): TracingContext|null {
+  substitution(match?: {match: SDK.CSSPropertyParser.Match, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching}):
+      TracingContext|null {
     if (this.#substitutionDepth <= 0) {
       this.#setHasMoreSubstitutions();
       return null;
@@ -294,6 +307,9 @@ export class TracingContext {
     // is not the case for evaluation contexts since `applyEvaluation` conditionally collects callbacks for its subtree
     // already.
     child.#asyncEvalCallbacks = this.#asyncEvalCallbacks;
+    child.#longhandOffset =
+        this.#longhandOffset + (match?.matchedResult.getComputedLonghandName(match?.match.node) ?? 0);
+    child.#propertyName = this.propertyName;
     return child;
   }
 
@@ -337,6 +353,19 @@ export class RenderingContext {
         controls.push(control);
       }
     }
+  }
+
+  getComputedLonghandName(node: CodeMirror.SyntaxNode): string|null {
+    if (!this.matchedResult.ast.propertyName) {
+      return null;
+    }
+    const longhands =
+        SDK.CSSMetadata.cssMetadata().getLonghands(this.tracing?.propertyName ?? this.matchedResult.ast.propertyName);
+    if (!longhands) {
+      return null;
+    }
+    const index = this.matchedResult.getComputedLonghandName(node);
+    return longhands[index + (this.tracing?.longhandOffset ?? 0)] ?? null;
   }
 }
 

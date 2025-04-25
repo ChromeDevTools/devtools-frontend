@@ -256,7 +256,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const onLinkActivate = (name: string): void => this.#handleVarDefinitionActivate(declaration ?? name);
     const varSwatch = document.createElement('span');
 
-    const substitution = context.tracing?.substitution();
+    const substitution = context.tracing?.substitution({match, ...context});
     if (substitution) {
       if (declaration?.declaration) {
         const {nodes, cssControls} = Renderer.renderValueNodes(
@@ -1263,6 +1263,41 @@ export class GridTemplateRenderer extends rendererBase(SDK.CSSPropertyParserMatc
   }
 }
 
+export const SHORTHANDS_FOR_PERCENTAGES = new Set([
+  'inset',
+  'inset-block',
+  'inset-inline',
+  'margin',
+  'margin-block',
+  'margin-inline',
+  'padding',
+  'padding-block',
+  'padding-inline',
+]);
+
+async function resolveValues(
+    stylesPane: StylesSidebarPane, propertyName: string, match: SDK.CSSPropertyParser.Match, context: RenderingContext,
+    ...values: string[]): Promise<string[]|null|undefined> {
+  // We want to resolve values against the original property we're tracing and not the property we're substituting,
+  // so try to look up the original name.
+  propertyName = context.tracing?.propertyName ?? context.matchedResult.ast.propertyName ?? propertyName;
+
+  if (
+      SHORTHANDS_FOR_PERCENTAGES.has(propertyName) &&
+      context.matchedResult.getLonghandValuesCount() >
+          1  // If the shorthand only has a single value we can't tell width and height apart
+  ) {
+    propertyName = context.getComputedLonghandName(match.node) ?? propertyName;
+  }
+  const nodeId = stylesPane.node()?.id;
+  if (nodeId === undefined) {
+    return null;
+  }
+
+  return (await stylesPane.cssModel()?.resolveValues(propertyName, nodeId, ...values)) ??
+      (await stylesPane.cssModel()?.resolveValues(undefined, nodeId, ...values));
+}
+
 // clang-format off
 export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LengthMatch) {
   // clang-format on
@@ -1282,24 +1317,23 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
     valueElement.textContent = match.text;
 
     if (!context.tracing) {
-      void this.#attachPopover(valueElement, match.text);
+      void this.#attachPopover(valueElement, match, context);
     }
     const evaluation = context.tracing?.applyEvaluation([], () => {
-      return {placeholder: [valueElement], asyncEvalCallback: () => this.#applyEvaluation(valueElement, match.text)};
+      return {
+        placeholder: [valueElement],
+        asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context)
+      };
     });
 
     return evaluation ?? [valueElement];
   }
 
-  async #applyEvaluation(valueElement: HTMLElement, value: string): Promise<boolean> {
-    const nodeId = this.#stylesPane.node()?.id;
-    if (nodeId === undefined) {
-      return false;
-    }
+  async #applyEvaluation(
+      valueElement: HTMLElement, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<boolean> {
+    const pixelValue = await resolveValues(this.#stylesPane, this.#propertyName, match, context, match.text);
 
-    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
-
-    if (pixelValue?.[0] && pixelValue?.[0] !== value) {
+    if (pixelValue?.[0] && pixelValue?.[0] !== match.text) {
       valueElement.textContent = pixelValue[0];
       return true;
     }
@@ -1307,13 +1341,9 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
     return false;
   }
 
-  async #attachPopover(valueElement: HTMLElement, value: string): Promise<void> {
-    const nodeId = this.#stylesPane.node()?.id;
-    if (nodeId === undefined) {
-      return;
-    }
-
-    const pixelValue = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
+  async #attachPopover(
+      valueElement: HTMLElement, match: SDK.CSSPropertyParser.Match, context: RenderingContext): Promise<void> {
+    const pixelValue = await resolveValues(this.#stylesPane, this.#propertyName, match, context, match.text);
     if (!pixelValue) {
       return;
     }
@@ -1372,28 +1402,22 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     if (childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(
           childTracingContexts,
-          () => ({
-            placeholder: [span],
-            asyncEvalCallback: () => this.applyEvaluation(span, context.matchedResult.getComputedText(match.node))
-          }));
+          () => ({placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context)}));
       if (evaluation) {
         return evaluation;
       }
     } else if (match.func !== 'calc') {
-      const resolvedArgs =
-          match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
-      void this.applyMathFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
+      void this.applyMathFunction(renderedArgs, match, context);
     }
 
     return [span];
   }
 
-  async applyEvaluation(span: HTMLSpanElement, value: string): Promise<boolean> {
-    const nodeId = this.#stylesPane.node()?.id;
-    if (nodeId === undefined) {
-      return false;
-    }
-    const evaled = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, value);
+  async applyEvaluation(
+      span: HTMLSpanElement, match: SDK.CSSPropertyParserMatchers.MathFunctionMatch,
+      context: RenderingContext): Promise<boolean> {
+    const value = context.matchedResult.getComputedText(match.node);
+    const evaled = await resolveValues(this.#stylesPane, this.#propertyName, match, context, value);
     if (!evaled?.[0] || evaled[0] === value) {
       return false;
     }
@@ -1401,16 +1425,15 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     return true;
   }
 
-  async applyMathFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
-    const nodeId = this.#stylesPane.node()?.id;
-    if (nodeId === undefined) {
-      return;
-    }
+  async applyMathFunction(
+      renderedArgs: HTMLElement[], match: SDK.CSSPropertyParserMatchers.MathFunctionMatch,
+      context: RenderingContext): Promise<void> {
     // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
     // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
     // function calls and normalizes all units to px.
-    values.unshift(functionText);
-    const evaledArgs = await this.#stylesPane.cssModel()?.resolveValues(this.#propertyName, nodeId, ...values);
+    const values = match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
+    values.unshift(context.matchedResult.getComputedText(match.node));
+    const evaledArgs = await resolveValues(this.#stylesPane, this.#propertyName, match, context, ...values);
     if (!evaledArgs) {
       return;
     }

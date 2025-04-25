@@ -1688,6 +1688,23 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       sinon.assert.calledOnce(resolveValuesStub);
       assert.strictEqual(resolveValuesStub.args[0][0], 'left');
     });
+
+    it('uses the right longhand name in length shorthands', () => {
+      const cssModel = stylesSidebarPane.cssModel();
+      assert.exists(cssModel);
+      const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').resolves([]);
+
+      for (const shorthand of Elements.StylePropertyTreeElement.SHORTHANDS_FOR_PERCENTAGES) {
+        const longhands = SDK.CSSMetadata.cssMetadata().getLonghands(shorthand);
+        assert.exists(longhands);
+        const stylePropertyTreeElement = getTreeElement(shorthand, longhands.map((_, i) => `${i * 2}%`).join(' '));
+        stylePropertyTreeElement.updateTitle();
+
+        const args = resolveValuesStub.args.map(args => args[0]);
+        assert.deepEqual(args, longhands);
+        resolveValuesStub.resetHistory();
+      }
+    });
   });
 
   describe('MathFunctionRenderer', () => {

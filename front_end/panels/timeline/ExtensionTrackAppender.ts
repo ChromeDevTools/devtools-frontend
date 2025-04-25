@@ -60,8 +60,10 @@ export class ExtensionTrackAppender implements TrackAppender {
   #appendTopLevelHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: true});
     const headerTitle = i18nString(UIStrings.customTrackName, {PH1: this.#extensionTopLevelTrack.name});
+    const jsLogContext = this.#extensionTopLevelTrack.name === '🅰️ Angular' ? VisualLoggingTrackName.ANGULAR_TRACK :
+                                                                             VisualLoggingTrackName.EXTENSION;
     const group = buildTrackHeader(
-        VisualLoggingTrackName.EXTENSION, currentLevel, headerTitle, style,
+        jsLogContext, currentLevel, headerTitle, style,
         /* selectable= */ true, expanded);
     group.description = i18nString(UIStrings.customTrackDescription);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);

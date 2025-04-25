@@ -178,6 +178,7 @@ export const enum VisualLoggingTrackName {
   THREAD_POOL = 'thread.pool',
   THREAD_OTHER = 'thread.other',
   EXTENSION = 'extension',
+  ANGULAR_TRACK = 'angular-track',
   NETWORK = 'network',
 }
 

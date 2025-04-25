@@ -1,18 +1,18 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
-import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
+
+const {bindToSetting} = UI.SettingsUI;
 
 const UIStrings = {
   /**
@@ -68,160 +68,117 @@ enum SpecificPseudoStates {
   OPEN = 'open',
 }
 
+interface ElementState {
+  state: string;
+  checked?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+  type: 'persistent'|'specific';
+}
+
+interface ViewInput {
+  states: ElementState[];
+  onStateCheckboxClicked: (event: MouseEvent) => void;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const createElementStateCheckbox = (state: ElementState): TemplateResult => {
+    // clang-format off
+    return html`
+        <div id=${state.state}>
+          <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
+              jslog=${VisualLogging.toggle(state.state).track({change: true})} ?checked=${state.checked} ?disabled=${state.disabled}
+              title=${':' + state.state}>
+          <span class="source-code">${':' + state.state}</span>
+        </devtools-checkbox>
+        </div>`;
+    // clang-format on
+  };
+
+  // clang-format off
+  render(html`
+    <style>${elementStatePaneWidgetStyles.cssText}</style>
+    <div class="styles-element-state-pane"
+        jslog=${VisualLogging.pane('element-states')}>
+      <div class="page-state-checkbox">
+        <devtools-checkbox class="small" title=${i18nString(UIStrings.emulatesAFocusedPage)}
+            jslog=${VisualLogging.toggle('emulate-page-focus').track({change: true})} ${bindToSetting('emulate-page-focus')}>${
+          i18nString(UIStrings.emulateFocusedPage)}</devtools-checkbox>
+        <devtools-button
+            @click=${() => UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page')}
+           .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              iconName: 'help',
+              size: Buttons.Button.Size.SMALL,
+              jslogContext: 'learn-more',
+              title: i18nString(UIStrings.learnMore),
+            } as Buttons.Button.ButtonData}></devtools-button>
+      </div>
+      <div class="section-header">
+        <span>${i18nString(UIStrings.forceElementState)}</span>
+      </div>
+      <div class="pseudo-states-container" role="presentation">
+        ${input.states.filter(({type}) => type === 'persistent').map(state => createElementStateCheckbox(state))}
+      </div>
+      <details class="specific-details" ?hidden=${input.states.filter(({type}) => type === 'specific') .every(state => state.hidden)}>
+        <summary class="force-specific-element-header section-header">
+          <span>${i18nString(UIStrings.forceElementSpecificStates)}</span>
+        </summary>
+        <div class="pseudo-states-container specific-pseudo-states" role="presentation">
+          ${input.states
+              .filter(({type, hidden}) => type === 'specific' && !hidden)
+              .map(state => createElementStateCheckbox(state))}
+        </div>
+      </details>
+    </div>`, target, {host: input});
+  // clang-format on
+};
+
 export class ElementStatePaneWidget extends UI.Widget.Widget {
-  private readonly inputs: UI.UIUtils.CheckboxLabel[];
-  private readonly inputStates: WeakMap<UI.UIUtils.CheckboxLabel, string>;
-  private readonly duals: Map<SpecificPseudoStates, SpecificPseudoStates>;
-  private cssModel?: SDK.CSSModel.CSSModel|null;
-  private specificPseudoStateDivs: Map<SpecificPseudoStates, HTMLDivElement>;
-  private specificHeader: HTMLDetailsElement;
-  private readonly throttler: Common.Throttler.Throttler;
+  readonly #duals: Map<SpecificPseudoStates, SpecificPseudoStates>;
+  #cssModel?: SDK.CSSModel.CSSModel|null;
+  readonly #states = new Map<string, ElementState>();
+  readonly #view: View;
 
-  constructor() {
+  constructor(view: View = DEFAULT_VIEW) {
     super(true);
-    this.registerRequiredCSS(elementStatePaneWidgetStyles);
-    this.contentElement.className = 'styles-element-state-pane';
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-states')}`);
-    const inputs: UI.UIUtils.CheckboxLabel[] = [];
-    this.inputs = inputs;
-    this.inputStates = new WeakMap();
-    this.duals = new Map();
-    const createSectionHeader = (title: string): HTMLDivElement => {
-      const sectionHeaderContainer = document.createElement('div');
-      sectionHeaderContainer.classList.add('section-header');
-      UI.UIUtils.createTextChild(sectionHeaderContainer.createChild('span'), title);
-
-      return sectionHeaderContainer;
-    };
-    const clickListener = (event: MouseEvent): void => {
-      const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-      if (!node || !(event.target instanceof UI.UIUtils.CheckboxLabel)) {
-        return;
-      }
-      const state = this.inputStates.get(event.target);
-      if (!state) {
-        return;
-      }
-      const checked = event.target.checked;
-      const dual = this.duals.get(state as SpecificPseudoStates);
-      if (checked && dual) {
-        node.domModel().cssModel().forcePseudoState(node, dual, false);
-      }
-      node.domModel().cssModel().forcePseudoState(node, state, checked);
-    };
-    const createElementStateCheckbox = (state: string): HTMLDivElement => {
-      const div = document.createElement('div');
-      div.id = state;
-      const checkbox = UI.UIUtils.CheckboxLabel.createWithStringLiteral(':' + state, undefined, state, true);
-      this.inputStates.set(checkbox, state);
-      checkbox.addEventListener('click', (clickListener as EventListener), false);
-      inputs.push(checkbox);
-      div.appendChild(checkbox);
-      return div;
-    };
+    this.#view = view;
+    this.#duals = new Map();
     const setDualStateCheckboxes = (first: SpecificPseudoStates, second: SpecificPseudoStates): void => {
-      this.duals.set(first, second);
-      this.duals.set(second, first);
+      this.#duals.set(first, second);
+      this.#duals.set(second, first);
     };
-    const createEmulateFocusedPageCheckbox = (): Element => {
-      const div = document.createElement('div');
-      div.classList.add('page-state-checkbox');
-      const checkbox = UI.UIUtils.CheckboxLabel.create(
-          i18nString(UIStrings.emulateFocusedPage), undefined, undefined, 'emulate-page-focus', true);
-      UI.SettingsUI.bindCheckbox(checkbox, Common.Settings.Settings.instance().moduleSetting('emulate-page-focus'), {
-        enable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOn,
-        disable: Host.UserMetrics.Action.ToggleEmulateFocusedPageFromStylesPaneOff,
-      });
-      UI.Tooltip.Tooltip.install(checkbox, i18nString(UIStrings.emulatesAFocusedPage));
-
-      const learnMoreButton = new Buttons.Button.Button();
-      learnMoreButton.data = {
-        variant: Buttons.Button.Variant.ICON,
-        iconName: 'help',
-        size: Buttons.Button.Size.SMALL,
-        jslogContext: 'learn-more',
-        title: i18nString(UIStrings.learnMore),
-      };
-      learnMoreButton.addEventListener(
-          'click',
-          () => UI.UIUtils.openInNewTab(
-              'https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page'));
-
-      div.appendChild(checkbox);
-      div.appendChild(learnMoreButton);
-      return div;
-    };
-
-    this.contentElement.className = 'styles-element-state-pane';
-
-    // Populate page states
-    const keepPageFocusedCheckbox = createEmulateFocusedPageCheckbox();
-
-    this.contentElement.appendChild(keepPageFocusedCheckbox);
 
     // Populate element states
-    this.contentElement.appendChild(createSectionHeader(i18nString(UIStrings.forceElementState)));
+    this.#states.set('active', {state: 'active', type: 'persistent'});
+    this.#states.set('hover', {state: 'hover', type: 'persistent'});
+    this.#states.set('focus', {state: 'focus', type: 'persistent'});
+    this.#states.set('focus-within', {state: 'focus-within', type: 'persistent'});
+    this.#states.set('focus-visible', {state: 'focus-visible', type: 'persistent'});
+    this.#states.set('target', {state: 'target', type: 'persistent'});
 
-    const persistentContainer = document.createElement('div');
-    persistentContainer.classList.add('source-code');
-    persistentContainer.classList.add('pseudo-states-container');
-    UI.ARIAUtils.markAsPresentation(persistentContainer);
-
-    persistentContainer.appendChild(createElementStateCheckbox('active'));
-    persistentContainer.appendChild(createElementStateCheckbox('hover'));
-    persistentContainer.appendChild(createElementStateCheckbox('focus'));
-    persistentContainer.appendChild(createElementStateCheckbox('focus-within'));
-    persistentContainer.appendChild(createElementStateCheckbox('focus-visible'));
-    persistentContainer.appendChild(createElementStateCheckbox('target'));
-    this.contentElement.appendChild(persistentContainer);
-
-    const elementSpecificContainer = document.createElement('div');
-    elementSpecificContainer.classList.add('source-code');
-    elementSpecificContainer.classList.add('pseudo-states-container');
-    elementSpecificContainer.classList.add('specific-pseudo-states');
-    UI.ARIAUtils.markAsPresentation(elementSpecificContainer);
-
-    this.specificPseudoStateDivs = new Map<SpecificPseudoStates, HTMLDivElement>();
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.ENABLED, createElementStateCheckbox(SpecificPseudoStates.ENABLED));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.DISABLED, createElementStateCheckbox(SpecificPseudoStates.DISABLED));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.VALID, createElementStateCheckbox(SpecificPseudoStates.VALID));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.INVALID, createElementStateCheckbox(SpecificPseudoStates.INVALID));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.USER_VALID, createElementStateCheckbox(SpecificPseudoStates.USER_VALID));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.USER_INVALID, createElementStateCheckbox(SpecificPseudoStates.USER_INVALID));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.REQUIRED, createElementStateCheckbox(SpecificPseudoStates.REQUIRED));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.OPTIONAL, createElementStateCheckbox(SpecificPseudoStates.OPTIONAL));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.READ_ONLY, createElementStateCheckbox(SpecificPseudoStates.READ_ONLY));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.READ_WRITE, createElementStateCheckbox(SpecificPseudoStates.READ_WRITE));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.IN_RANGE, createElementStateCheckbox(SpecificPseudoStates.IN_RANGE));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.OUT_OF_RANGE, createElementStateCheckbox(SpecificPseudoStates.OUT_OF_RANGE));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.VISITED, createElementStateCheckbox(SpecificPseudoStates.VISITED));
-    this.specificPseudoStateDivs.set(SpecificPseudoStates.LINK, createElementStateCheckbox(SpecificPseudoStates.LINK));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.CHECKED, createElementStateCheckbox(SpecificPseudoStates.CHECKED));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.INDETERMINATE, createElementStateCheckbox(SpecificPseudoStates.INDETERMINATE));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.PLACEHOLDER_SHOWN, createElementStateCheckbox(SpecificPseudoStates.PLACEHOLDER_SHOWN));
-    this.specificPseudoStateDivs.set(
-        SpecificPseudoStates.AUTOFILL, createElementStateCheckbox(SpecificPseudoStates.AUTOFILL));
-    this.specificPseudoStateDivs.set(SpecificPseudoStates.OPEN, createElementStateCheckbox(SpecificPseudoStates.OPEN));
-
-    this.specificPseudoStateDivs.forEach(div => {
-      elementSpecificContainer.appendChild(div);
-    });
+    this.#states.set(SpecificPseudoStates.ENABLED, {state: SpecificPseudoStates.ENABLED, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.DISABLED, {state: SpecificPseudoStates.DISABLED, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.VALID, {state: SpecificPseudoStates.VALID, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.INVALID, {state: SpecificPseudoStates.INVALID, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.USER_VALID, {state: SpecificPseudoStates.USER_VALID, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.USER_INVALID, {state: SpecificPseudoStates.USER_INVALID, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.REQUIRED, {state: SpecificPseudoStates.REQUIRED, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.OPTIONAL, {state: SpecificPseudoStates.OPTIONAL, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.READ_ONLY, {state: SpecificPseudoStates.READ_ONLY, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.READ_WRITE, {state: SpecificPseudoStates.READ_WRITE, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.IN_RANGE, {state: SpecificPseudoStates.IN_RANGE, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.OUT_OF_RANGE, {state: SpecificPseudoStates.OUT_OF_RANGE, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.VISITED, {state: SpecificPseudoStates.VISITED, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.LINK, {state: SpecificPseudoStates.LINK, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.CHECKED, {state: SpecificPseudoStates.CHECKED, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.INDETERMINATE, {state: SpecificPseudoStates.INDETERMINATE, type: 'specific'});
+    this.#states.set(
+        SpecificPseudoStates.PLACEHOLDER_SHOWN, {state: SpecificPseudoStates.PLACEHOLDER_SHOWN, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.AUTOFILL, {state: SpecificPseudoStates.AUTOFILL, type: 'specific'});
+    this.#states.set(SpecificPseudoStates.OPEN, {state: SpecificPseudoStates.OPEN, type: 'specific'});
 
     setDualStateCheckboxes(SpecificPseudoStates.VALID, SpecificPseudoStates.INVALID);
     setDualStateCheckboxes(SpecificPseudoStates.USER_VALID, SpecificPseudoStates.USER_INVALID);
@@ -230,39 +187,45 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
     setDualStateCheckboxes(SpecificPseudoStates.VISITED, SpecificPseudoStates.LINK);
 
-    this.specificHeader = document.createElement('details');
-    this.specificHeader.classList.add('specific-details');
-
-    const sectionHeaderContainer = document.createElement('summary');
-    sectionHeaderContainer.classList.add('force-specific-element-header');
-    sectionHeaderContainer.classList.add('section-header');
-    UI.UIUtils.createTextChild(
-        sectionHeaderContainer.createChild('span'), i18nString(UIStrings.forceElementSpecificStates));
-
-    this.specificHeader.appendChild(sectionHeaderContainer);
-    this.specificHeader.appendChild(elementSpecificContainer);
-    this.contentElement.appendChild(this.specificHeader);
-
-    this.throttler = new Common.Throttler.Throttler(100);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate, this);
   }
-  private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
-    if (this.cssModel === cssModel) {
+
+  private onStateCheckboxClicked(event: MouseEvent): void {
+    const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    if (!node || !(event.target instanceof UI.UIUtils.CheckboxLabel)) {
       return;
     }
-    if (this.cssModel) {
-      this.cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this.update, this);
+    const state = event.target.title.slice(1);
+    if (!state) {
+      return;
     }
-    this.cssModel = cssModel;
-    if (this.cssModel) {
-      this.cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this.update, this);
+    const checked = event.target.checked;
+    const dual = this.#duals.get(state as SpecificPseudoStates);
+    if (checked && dual) {
+      node.domModel().cssModel().forcePseudoState(node, dual, false);
+    }
+    node.domModel().cssModel().forcePseudoState(node, state, checked);
+  }
+
+  private updateModel(cssModel: SDK.CSSModel.CSSModel|null): void {
+    if (this.#cssModel === cssModel) {
+      return;
+    }
+    if (this.#cssModel) {
+      this.#cssModel.removeEventListener(SDK.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
+    }
+    this.#cssModel = cssModel;
+    if (this.#cssModel) {
+      this.#cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
     }
   }
+
   override wasShown(): void {
     super.wasShown();
-    this.update();
+    this.requestUpdate();
   }
-  update(): void {
+
+  override async performUpdate(): Promise<void> {
     let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
@@ -270,34 +233,37 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     this.updateModel(node ? node.domModel().cssModel() : null);
     if (node) {
       const nodePseudoState = node.domModel().cssModel().pseudoState(node);
-      for (const input of this.inputs) {
-        input.disabled = Boolean(node.pseudoType());
-        const state = this.inputStates.get(input);
-        input.checked = nodePseudoState && state !== undefined ? nodePseudoState.indexOf(state) >= 0 : false;
+      for (const state of this.#states.values()) {
+        state.disabled = Boolean(node.pseudoType());
+        state.checked = Boolean(nodePseudoState && nodePseudoState.indexOf(state.state) >= 0);
       }
     } else {
-      for (const input of this.inputs) {
-        input.disabled = true;
-        input.checked = false;
+      for (const state of this.#states.values()) {
+        state.disabled = true;
+        state.checked = false;
       }
     }
-    void this.throttler.schedule(this.updateElementSpecificStatesTable.bind(this, node));
-    ButtonProvider.instance().item().setToggled(this.inputs.some(input => input.checked));
+    await this.#updateElementSpecificStatesTable(node);
+    ButtonProvider.instance().item().setToggled([...this.#states.values()].some(input => input.checked));
+    const viewInput = {
+      states: [...this.#states.values()],
+      onStateCheckboxClicked: this.onStateCheckboxClicked.bind(this),
+    };
+    this.#view(viewInput, {}, this.contentElement);
   }
 
-  private async updateElementSpecificStatesTable(node: SDK.DOMModel.DOMNode|null = null): Promise<void> {
+  async #updateElementSpecificStatesTable(node: SDK.DOMModel.DOMNode|null = null): Promise<void> {
     if (!node || node.nodeType() !== Node.ELEMENT_NODE) {
-      this.specificHeader.hidden = true;
-      this.updateElementSpecificStatesTableForTest();
+      [...this.#states.values()].filter(({type}) => type === 'specific').forEach(state => {
+        state.hidden = true;
+      });
       return;
     }
-    let showedACheckbox = false;
     const hideSpecificCheckbox = (pseudoClass: SpecificPseudoStates, hide: boolean): void => {
-      const checkbox = this.specificPseudoStateDivs.get(pseudoClass);
-      if (checkbox) {
-        checkbox.hidden = hide;
+      const state = this.#states.get(pseudoClass);
+      if (state) {
+        state.hidden = hide;
       }
-      showedACheckbox = showedACheckbox || !hide;
     };
     const isElementOfTypes = (node: SDK.DOMModel.DOMNode, types: string[]): boolean => {
       return types.includes(node.nodeName()?.toLowerCase());
@@ -419,12 +385,6 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.OPEN, true);
     }
-
-    this.specificHeader.hidden = showedACheckbox ? false : true;
-    this.updateElementSpecificStatesTableForTest();
-  }
-
-  updateElementSpecificStatesTableForTest(): void {
   }
 }
 

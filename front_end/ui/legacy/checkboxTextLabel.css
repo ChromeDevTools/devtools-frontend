@@ -20,10 +20,10 @@ input {
   flex-shrink: 0;
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
+}
 
-  &:not(.small) {
-    margin: 6px;
-  }
+:host(:not(.small)) input:not(.small) {
+  margin: 6px;
 }
 
 :host(.inside-datagrid) input {

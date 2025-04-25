@@ -30,9 +30,6 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
   const assertExpectedPseudoClasses = async (
       nodeName: string, expectedPseudoClasses: string[], formAssociated = false, attribute?: [string, string]) => {
     view = new Elements.ElementStatePaneWidget.ElementStatePaneWidget();
-    const tableUpdatedPromise = new Promise<void>(
-        resolve => sinon.stub(view, 'updateElementSpecificStatesTableForTest').callsFake(resolve),
-    );
 
     const model = target.model(SDK.DOMModel.DOMModel);
     assert.exists(model);
@@ -46,21 +43,17 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     if (attribute) {
       sinon.stub(node, 'getAttribute').withArgs(attribute[0]).returns(attribute[1]);
     }
-
-    const header = view.contentElement.querySelector('.force-specific-element-header');
-    assert.instanceOf(header, HTMLElement);
-    header.click();
-
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-    await tableUpdatedPromise;
+    await view.updateComplete;
+    const header = view.contentElement.querySelector('.force-specific-element-header');
+    assert.instanceOf(header, HTMLElement);
 
     for (const pseudoClass of pseudoClasses) {
       const div = view.contentElement.querySelector(`#${pseudoClass}`);
-      assert.instanceOf(div, HTMLDivElement);
       const shouldShow = expectedPseudoClasses.includes(pseudoClass);
       assert.strictEqual(
-          !div.hidden, shouldShow, `Checkbox for ${pseudoClass} should be ${shouldShow ? 'shown' : 'hidden'}`);
+          Boolean(div), shouldShow, `Checkbox for ${pseudoClass} should be ${shouldShow ? 'shown' : 'hidden'}`);
     }
   };
 
@@ -75,18 +68,19 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeName').returns('input');
     sinon.stub(node, 'enclosingElementOrSelf').returns(node);
+    sinon.stub(node, 'callFunction').resolves({value: false});
     const checkboxes = sinon.spy(node.domModel().cssModel(), 'forcePseudoState');
 
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    await view.updateComplete;
 
     for (const pseudoClass of pseudoClasses) {
       const div = view.contentElement.querySelector(`#${pseudoClass}`);
-      assert.exists(div);
-      const span = div.children[0];
-      const shadowRoot = span.shadowRoot;
-      const input = shadowRoot?.querySelector('input');
-      assert.exists(input, 'The span element doesn\'t have an input element');
-      input.click();
+      if (!div) {
+        continue;
+      }
+      const checkbox = div.children[0] as UI.UIUtils.CheckboxLabel;
+      checkbox.click();
 
       const args = checkboxes.lastCall.args;
       assert.strictEqual(args[0], node, 'Called forcePseudoState with wrong node');
@@ -97,9 +91,6 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
 
   it('Hidden state for not ELEMENT_NODE type', async () => {
     view = new Elements.ElementStatePaneWidget.ElementStatePaneWidget();
-    const tableUpdatedPromise = new Promise<void>(
-        resolve => sinon.stub(view, 'updateElementSpecificStatesTableForTest').callsFake(resolve),
-    );
 
     const model = target.model(SDK.DOMModel.DOMModel);
     assert.exists(model);
@@ -107,7 +98,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     sinon.stub(node, 'nodeType').returns(Node.TEXT_NODE);
 
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    await tableUpdatedPromise;
+    await view.updateComplete;
 
     const details = view.contentElement.querySelector('.specific-details');
     assert.exists(details, 'The details element doesn\'t exist');
@@ -117,9 +108,6 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
 
   it('Hidden state for not supported element type', async () => {
     view = new Elements.ElementStatePaneWidget.ElementStatePaneWidget();
-    const tableUpdatedPromise = new Promise<void>(
-        resolve => sinon.stub(view, 'updateElementSpecificStatesTableForTest').callsFake(resolve),
-    );
 
     const model = target.model(SDK.DOMModel.DOMModel);
     assert.exists(model);
@@ -129,7 +117,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
     sinon.stub(node, 'callFunction').resolves({value: false});
 
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    await tableUpdatedPromise;
+    await view.updateComplete;
 
     const details = view.contentElement.querySelector('.specific-details');
     assert.exists(details, 'The details element doesn\'t exist');

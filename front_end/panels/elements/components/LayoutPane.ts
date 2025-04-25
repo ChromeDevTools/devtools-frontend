@@ -13,8 +13,6 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -336,7 +334,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       render(html`
         <style>${Input.checkboxStyles.cssText}</style>
         <style>${layoutPaneStyles.cssText}</style>
-        <style>${inspectorCommonStyles.cssText}</style>
+        <style>${UI.inspectorCommonStyles.cssText}</style>
         <details open>
           <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader('grid-settings').track({click: true})}>
             ${i18nString(UIStrings.grid)}

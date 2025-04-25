@@ -15,9 +15,7 @@ import * as AutofillManager from '../../models/autofill_manager/autofill_manager
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
-// inspectorCommonStyles is imported for the empty state styling that is used for the start view
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -175,7 +173,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       render(html`
         <style>${Input.checkboxStyles}</style>
         <style>${autofillViewStyles.cssText}</style>
-        <style>${inspectorCommonStyles.cssText}</style>
+        <style>${UI.inspectorCommonStyles.cssText}</style>
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -216,7 +214,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     render(html`
       <style>${Input.checkboxStyles}</style>
       <style>${autofillViewStyles.cssText}</style>
-      <style>${inspectorCommonStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles.cssText}</style>
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>

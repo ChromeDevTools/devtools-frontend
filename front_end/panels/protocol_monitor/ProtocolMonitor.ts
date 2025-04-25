@@ -14,8 +14,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -200,7 +198,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
     render(html`
-        <style>${inspectorCommonStyles.cssText}</style>
+        <style>${UI.inspectorCommonStyles.cssText}</style>
         <style>${protocolMonitorStyles.cssText}</style>
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"

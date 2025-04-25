@@ -20,6 +20,7 @@ import * as Geometry from './Geometry.js';
 import * as GlassPane from './GlassPane.js';
 import * as Infobar from './Infobar.js';
 import * as InplaceEditor from './InplaceEditor.js';
+import inspectorCommonStyles from './inspectorCommon.css.js';
 import * as InspectorView from './InspectorView.js';
 import * as KeyboardShortcut from './KeyboardShortcut.js';
 import * as ListControl from './ListControl.js';
@@ -74,6 +75,7 @@ export {
   GlassPane,
   Infobar,
   InplaceEditor,
+  inspectorCommonStyles,
   InspectorView,
   KeyboardShortcut,
   ListControl,

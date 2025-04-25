@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -52,7 +51,7 @@ export class CSSQuery extends HTMLElement {
 
     render(html`
       <style>${cssQueryStyles.cssText}</style>
-      <style>${inspectorCommonStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles.cssText}</style>
       <div class=${queryClasses} jslog=${VisualLogging.cssRuleHeader(this.#jslogContext).track({click:true, change: true})}>
         <slot name="indent"></slot>${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : Lit.nothing}${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : Lit.nothing}${queryText} {
       </div>

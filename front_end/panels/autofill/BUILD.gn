@@ -21,6 +21,7 @@ devtools_module("autofill") {
     "../../core/sdk:bundle",
     "../../models/autofill_manager:bundle",
     "../../ui/components/legacy_wrapper:bundle",
+    "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
   ]
 }

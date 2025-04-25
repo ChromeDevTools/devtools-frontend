@@ -21,8 +21,7 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as Input from '../../../ui/components/input/input.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Converters from '../converters/converters.js';
@@ -1285,7 +1284,7 @@ export class RecordingView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
-      <style>${inspectorCommonStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles.cssText}</style>
       <style>${recordingViewStyles.cssText}</style>
       <style>${Input.textInputStyles.cssText}</style>
       <div @click=${this.#onWrapperClick} class=${Lit.Directives.classMap(

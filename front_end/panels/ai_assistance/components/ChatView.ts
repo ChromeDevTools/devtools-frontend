@@ -561,10 +561,26 @@ export class ChatView extends HTMLElement {
         'is-read-only': this.#props.isReadOnly,
       });
 
-      const footerContents = this.#props.conversationType ?
-          renderRelevantDataDisclaimer(
-              {isLoading: this.#props.isLoading, blockedByCrossOrigin: this.#props.blockedByCrossOrigin}) :
-          lockedString(UIStringsNotTranslate.inputDisclaimerForEmptyState);
+      const footerContents = this.#props.conversationType
+        ? renderRelevantDataDisclaimer({
+            isLoading: this.#props.isLoading,
+            blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+          })
+        : html`<p>
+            ${lockedString(UIStringsNotTranslate.inputDisclaimerForEmptyState)}
+            <button
+              class="link"
+              role="link"
+              jslog=${VisualLogging.link('open-ai-settings').track({
+                click: true,
+              })}
+              @click=${() => {
+                void UI.ViewManager.ViewManager.instance().showView(
+                  'chrome-ai',
+                );
+              }}
+            >${i18nString(UIStrings.learnAbout)}</button>
+          </p>`;
 
       return html`
         <footer class=${classes} jslog=${VisualLogging.section('footer')}>
@@ -1312,10 +1328,10 @@ function renderImageInput({
   imageInput?: ImageInputData,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
-    if (!multimodalInputEnabled || !imageInput) {
-      return Lit.nothing;
-    }
-    // clang-format off
+  if (!multimodalInputEnabled || !imageInput) {
+    return Lit.nothing;
+  }
+  // clang-format off
     const crossButton = html`<devtools-button
       aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
       @click=${onRemoveImageInput}
@@ -1328,32 +1344,31 @@ function renderImageInput({
         } as Buttons.Button.ButtonData
       }
     ></devtools-button>`;
-    // clang-format on
+  // clang-format on
 
-    if (imageInput.isLoading) {
-      // clang-format off
+  if (imageInput.isLoading) {
+    // clang-format off
       return html`<div class="image-input-container">
         ${crossButton}
         <div class="loading">
           <devtools-spinner></devtools-spinner>
         </div>
       </div>`;
-      // clang-format on
-    }
-    // clang-format off
+    // clang-format on
+  }
+  // clang-format off
     return  html`
     <div class="image-input-container">
       ${crossButton}
       <img src="data:${imageInput.mimeType};base64, ${imageInput.data}" alt="Image input" />
     </div>`;
-    // clang-format on
-  }
+  // clang-format on
+}
 
-function renderRelevantDataDisclaimer({isLoading, blockedByCrossOrigin}: {isLoading: boolean, blockedByCrossOrigin: boolean}): Lit.LitTemplate {
-  const classes = Lit.Directives.classMap({
-    'chat-input-disclaimer': true,
-    'hide-divider': !isLoading && blockedByCrossOrigin
-  });
+function renderRelevantDataDisclaimer(
+    {isLoading, blockedByCrossOrigin}: {isLoading: boolean, blockedByCrossOrigin: boolean}): Lit.LitTemplate {
+  const classes =
+      Lit.Directives.classMap({'chat-input-disclaimer': true, 'hide-divider': !isLoading && blockedByCrossOrigin});
   // clang-format off
   return html`
     <p class=${classes}>
@@ -1424,7 +1439,8 @@ function renderChatInput({
     return Lit.nothing;
   }
 
-  const shouldShowMultiLine = state !== State.CONSENT_VIEW && aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE && selectedContext;
+  const shouldShowMultiLine = state !== State.CONSENT_VIEW &&
+      aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE && selectedContext;
   const chatInputContainerCls = Lit.Directives.classMap({
     'chat-input-container': true,
     'single-line-layout': !shouldShowMultiLine,

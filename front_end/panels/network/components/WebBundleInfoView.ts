@@ -15,13 +15,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import webBundleInfoViewStylesRaw from './WebBundleInfoView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const webBundleInfoViewStyles = new CSSStyleSheet();
-webBundleInfoViewStyles.replaceSync(webBundleInfoViewStylesRaw.cssText);
+import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
 const {mimeFromURL, fromMimeTypeOverride, fromMimeType} = Common.ResourceType.ResourceType;
 const {iconDataForResourceType} = PanelUtils;
@@ -53,13 +47,10 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
     this.setAttribute('jslog', `${VisualLogging.pane('webbundle').track({resize: true})}`);
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [webBundleInfoViewStyles];
-  }
-
   override async render(): Promise<void> {
     // clang-format off
     render(html`
+      <style>${webBundleInfoViewStyles.cssText}</style>
       <div class="header">
         <devtools-icon class="icon"
           .data=${{color: 'var(--icon-default)', iconName: 'bundle', width: '20px'} as IconData}>

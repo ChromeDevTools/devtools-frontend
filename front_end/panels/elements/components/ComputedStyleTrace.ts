@@ -6,13 +6,7 @@
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, render} from '../../../ui/lit/lit.js';
 
-import computedStyleTraceStylesRaw from './computedStyleTrace.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const computedStyleTraceStyles = new CSSStyleSheet();
-computedStyleTraceStyles.replaceSync(computedStyleTraceStylesRaw.cssText);
+import computedStyleTraceStyles from './computedStyleTrace.css.js';
 
 export interface ComputedStyleTraceData {
   selector: string;
@@ -31,7 +25,6 @@ export class ComputedStyleTrace extends HTMLElement {
 
   connectedCallback(): void {
     UI.UIUtils.injectCoreStyles(this.#shadow);
-    this.#shadow.adoptedStyleSheets.push(computedStyleTraceStyles);
   }
 
   set data(data: ComputedStyleTraceData) {
@@ -46,6 +39,7 @@ export class ComputedStyleTrace extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${computedStyleTraceStyles.cssText}</style>
       <div class="computed-style-trace ${this.#active ? 'active' : 'inactive'}">
         <span class="goto" @click=${this.#onNavigateToSource}></span>
         <slot name="trace-value" @click=${this.#onNavigateToSource}></slot>

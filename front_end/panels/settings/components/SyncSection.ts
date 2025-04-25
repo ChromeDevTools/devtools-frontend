@@ -13,13 +13,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import syncSectionStylesRaw from './syncSection.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const syncSectionStyles = new CSSStyleSheet();
-syncSectionStyles.replaceSync(syncSectionStylesRaw.cssText);
+import syncSectionStyles from './syncSection.css.js';
 
 const {html} = Lit;
 
@@ -59,10 +53,6 @@ export class SyncSection extends HTMLElement {
   #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};
   #syncSetting?: Common.Settings.Setting<boolean>;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [syncSectionStyles];
-  }
-
   set data(data: SyncSectionData) {
     this.#syncInfo = data.syncInfo;
     this.#syncSetting = data.syncSetting;
@@ -81,6 +71,7 @@ export class SyncSection extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
+      <style>${syncSectionStyles.cssText}</style>
       <fieldset>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <setting-checkbox .data=${

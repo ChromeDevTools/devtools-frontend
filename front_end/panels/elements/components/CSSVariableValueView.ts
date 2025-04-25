@@ -7,13 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import cssVariableValueViewStylesRaw from './cssVariableValueView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const cssVariableValueViewStyles = new CSSStyleSheet();
-cssVariableValueViewStyles.replaceSync(cssVariableValueViewStylesRaw.cssText);
+import cssVariableValueViewStyles from './cssVariableValueView.css.js';
 
 const UIStrings = {
   /**
@@ -57,7 +51,6 @@ export class CSSVariableParserError extends HTMLElement {
 
   constructor(details: RegisteredPropertyDetails) {
     super();
-    this.#shadow.adoptedStyleSheets = [cssVariableValueViewStyles];
     this.#render(details);
   }
 
@@ -65,6 +58,7 @@ export class CSSVariableParserError extends HTMLElement {
     const type = html`<span class="monospace css-property">${details.registration.syntax()}</span>`;
     render(
         html`
+      <style>${cssVariableValueViewStyles.cssText}</style>
       <div class="variable-value-popup-wrapper">
         ${i18nTemplate(UIStrings.invalidPropertyValue, {type})}
         ${getLinkSection(details)}
@@ -91,7 +85,6 @@ export class CSSVariableValueView extends HTMLElement {
     details?: RegisteredPropertyDetails,
   }) {
     super();
-    this.#shadow.adoptedStyleSheets = [cssVariableValueViewStyles];
     this.variableName = variableName;
     this.details = details;
     this.value = value;
@@ -122,7 +115,8 @@ export class CSSVariableValueView extends HTMLElement {
 
     const valueText = this.value ?? i18nString(UIStrings.sIsNotDefined, {PH1: this.variableName});
     render(
-        html`<div class="variable-value-popup-wrapper">
+        html`<style>${cssVariableValueViewStyles.cssText}</style>
+             <div class="variable-value-popup-wrapper">
                ${valueText}
              </div>
              ${registrationView}

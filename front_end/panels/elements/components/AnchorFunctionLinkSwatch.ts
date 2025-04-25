@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/legacy/components/inline_editor/inline_editor.js';
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -11,13 +12,7 @@ import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const anchorFunctionLinkSwatchStyles = new CSSStyleSheet();
-anchorFunctionLinkSwatchStyles.replaceSync(anchorFunctionLinkSwatchStylesRaw.cssText);
+import anchorFunctionLinkSwatchStyles from './anchorFunctionLinkSwatch.css.js';
 
 const UIStrings = {
   /**
@@ -71,7 +66,6 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [anchorFunctionLinkSwatchStyles];
     this.render();
   }
 
@@ -93,7 +87,8 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
     if (this.#data.identifier) {
       render(
           // clang-format off
-          html`<devtools-link-swatch
+          html`<style>${anchorFunctionLinkSwatchStyles.cssText}</style>
+               <devtools-link-swatch
                 @mouseenter=${this.#data.onMouseEnter}
                 @mouseleave=${this.#data.onMouseLeave}
                 .data=${{
@@ -109,7 +104,8 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
           this.#shadow, {host: this});
     } else {
       // clang-format off
-      render(html`<devtools-icon
+      render(html`<style>${anchorFunctionLinkSwatchStyles.cssText}</style>
+                  <devtools-icon
                    role='button'
                    title=${i18nString(UIStrings.jumpToAnchorNode)}
                    class='icon-link'

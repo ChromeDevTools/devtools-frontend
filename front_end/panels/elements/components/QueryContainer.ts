@@ -11,13 +11,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {DOMNode} from './Helper.js';
-import queryContainerStylesRaw from './queryContainer.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const queryContainerStyles = new CSSStyleSheet();
-queryContainerStyles.replaceSync(queryContainerStylesRaw.cssText);
+import queryContainerStyles from './queryContainer.css.js';
 
 const {render, html} = Lit;
 const {PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;
@@ -48,10 +42,6 @@ export class QueryContainer extends HTMLElement {
     this.#container = data.container;
     this.#onContainerLinkClick = data.onContainerLinkClick;
     this.#render();
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [queryContainerStyles];
   }
 
   updateContainerQueriedSizeDetails(details: SDK.CSSContainerQuery.ContainerQueriedSizeDetails): void {
@@ -88,6 +78,7 @@ export class QueryContainer extends HTMLElement {
     // clang-format off
     // eslint-disable-next-line rulesdir/no-a-tags-in-lit
     render(html`
+      <style>${queryContainerStyles.cssText}</style>
       →
       <a href="#"
         draggable=false

@@ -20,15 +20,9 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {PatchWidget} from '../PatchWidget.js';
 
-import stylesRaw from './chatView.css.js';
+import chatViewStyles from './chatView.css.js';
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
 import {UserActionRow} from './UserActionRow.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- */
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
 
 const {html, Directives: {ifDefined, ref}} = Lit;
 
@@ -342,7 +336,6 @@ export class ChatView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
     this.#render();
 
     if (this.#messagesContainerElement) {
@@ -590,6 +583,7 @@ export class ChatView extends HTMLElement {
     };
     // clang-format off
     Lit.render(html`
+      <style>${chatViewStyles.cssText}</style>
       <div class="chat-ui" ${Lit.Directives.ref(this.#handleChatUiRef)}>
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
           ${renderMainContents({

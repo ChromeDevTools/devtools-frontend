@@ -10,13 +10,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSSPropertyIconResolver.js';
-import stylePropertyEditorStylesRaw from './stylePropertyEditor.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const stylePropertyEditorStyles = new CSSStyleSheet();
-stylePropertyEditorStyles.replaceSync(stylePropertyEditorStylesRaw.cssText);
+import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
 
 const UIStrings = {
   /**
@@ -80,14 +74,6 @@ export class StylePropertyEditor extends HTMLElement {
   #computedProperties = new Map<string, string>();
   protected readonly editableProperties: EditableProperty[] = [];
 
-  constructor() {
-    super();
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [stylePropertyEditorStyles];
-  }
-
   getEditableProperties(): EditableProperty[] {
     return this.editableProperties;
   }
@@ -102,6 +88,7 @@ export class StylePropertyEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${stylePropertyEditorStyles.cssText}</style>
       <div class="container">
         ${this.editableProperties.map(prop => this.#renderProperty(prop))}
       </div>

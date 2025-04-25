@@ -9,13 +9,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import elementsTreeExpandButtonStylesRaw from './elementsTreeExpandButton.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const elementsTreeExpandButtonStyles = new CSSStyleSheet();
-elementsTreeExpandButtonStyles.replaceSync(elementsTreeExpandButtonStylesRaw.cssText);
+import elementsTreeExpandButtonStyles from './elementsTreeExpandButton.css.js';
 
 const UIStrings = {
   /**
@@ -43,15 +37,13 @@ export class ElementsTreeExpandButton extends HTMLElement {
     this.#render();
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [elementsTreeExpandButtonStyles];
-  }
-
   #render(): void {
     // clang-format off
     // This button's innerText will be tested by e2e test and blink layout tests.
     // It can't have any other characters like '\n' or space, otherwise it will break tests.
-    render(html`<button
+    render(html`
+      <style>${elementsTreeExpandButtonStyles.cssText}</style>
+      <button
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString(UIStrings.expand)}

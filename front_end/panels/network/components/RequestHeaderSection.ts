@@ -13,13 +13,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 
 import {EditingAllowedStatus, type HeaderDescriptor} from './HeaderSectionRow.js';
-import requestHeaderSectionStylesRaw from './RequestHeaderSection.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const requestHeaderSectionStyles = new CSSStyleSheet();
-requestHeaderSectionStyles.replaceSync(requestHeaderSectionStylesRaw.cssText);
+import requestHeaderSectionStyles from './RequestHeaderSection.css.js';
 
 const {render, html} = Lit;
 
@@ -56,10 +50,6 @@ export class RequestHeaderSection extends HTMLElement {
   #request?: Readonly<SDK.NetworkRequest.NetworkRequest>;
   #headers: HeaderDescriptor[] = [];
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [requestHeaderSectionStyles];
-  }
-
   set data(data: RequestHeaderSectionData) {
     this.#request = data.request;
 
@@ -87,6 +77,7 @@ export class RequestHeaderSection extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${requestHeaderSectionStyles.cssText}</style>
       ${this.#maybeRenderProvisionalHeadersWarning()}
       ${this.#headers.map(header => html`
         <devtools-header-section-row

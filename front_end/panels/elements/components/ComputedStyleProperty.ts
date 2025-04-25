@@ -6,13 +6,7 @@
 import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import computedStylePropertyStylesRaw from './computedStyleProperty.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const computedStylePropertyStyles = new CSSStyleSheet();
-computedStylePropertyStyles.replaceSync(computedStylePropertyStylesRaw.cssText);
+import computedStylePropertyStyles from './computedStyleProperty.css.js';
 
 export class NavigateToSourceEvent extends Event {
   static readonly eventName = 'onnavigatetosource';
@@ -27,7 +21,6 @@ export class ComputedStyleProperty extends HTMLElement {
   #traceable = false;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [computedStylePropertyStyles];
     this.#render();
   }
 
@@ -55,6 +48,7 @@ export class ComputedStyleProperty extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${computedStylePropertyStyles.cssText}</style>
       <div class="computed-style-property ${this.#inherited ? 'inherited' : ''}">
         <div class="property-name">
           <slot name="name"></slot>

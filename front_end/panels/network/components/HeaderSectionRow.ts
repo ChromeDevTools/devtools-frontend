@@ -17,13 +17,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {EditableSpan} from './EditableSpan.js';
-import headerSectionRowStylesRaw from './HeaderSectionRow.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const headerSectionRowStyles = new CSSStyleSheet();
-headerSectionRowStyles.replaceSync(headerSectionRowStylesRaw.cssText);
+import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
 const {render, html} = Lit;
 
@@ -126,10 +120,6 @@ export class HeaderSectionRow extends HTMLElement {
   #isHeaderValueEdited = false;
   #isValidHeaderName = true;
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [headerSectionRowStyles];
-  }
-
   set data(data: HeaderSectionRowData) {
     this.#header = data.header;
     this.#isHeaderValueEdited =
@@ -182,6 +172,7 @@ export class HeaderSectionRow extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${headerSectionRowStyles.cssText}</style>
       <div class=${rowClasses}>
         <div class=${headerNameClasses}>
           ${this.#header.headerNotSet ?

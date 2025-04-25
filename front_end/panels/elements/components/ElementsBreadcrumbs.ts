@@ -13,15 +13,9 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.js';
+import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import type {DOMNode} from './Helper.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const elementsBreadcrumbsStyles = new CSSStyleSheet();
-elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssText);
 
 const {html} = Lit;
 
@@ -68,10 +62,6 @@ export class ElementsBreadcrumbs extends HTMLElement {
   #userScrollPosition: UserScrollPosition = 'start';
   #isObservingResize = false;
   #userHasManuallyScrolled = false;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [elementsBreadcrumbsStyles];
-  }
 
   set data(data: ElementsBreadcrumbsData) {
     this.#selectedDOMNode = data.selectedNode;
@@ -300,6 +290,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
+      <style>${elementsBreadcrumbsStyles.cssText}</style>
       <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
         ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 

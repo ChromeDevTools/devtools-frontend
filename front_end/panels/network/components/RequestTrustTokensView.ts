@@ -14,13 +14,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import requestTrustTokensViewStylesRaw from './RequestTrustTokensView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const requestTrustTokensViewStyles = new CSSStyleSheet();
-requestTrustTokensViewStyles.replaceSync(requestTrustTokensViewStylesRaw.cssText);
+import requestTrustTokensViewStyles from './RequestTrustTokensView.css.js';
 
 const {html} = Lit;
 
@@ -126,10 +120,6 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
     this.#request.removeEventListener(SDK.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.render, this);
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [requestTrustTokensViewStyles];
-  }
-
   override async render(): Promise<void> {
     if (!this.#request) {
       throw new Error('Trying to render a Trust Token report without providing data');
@@ -137,7 +127,9 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    Lit.render(html`<devtools-report>
+    Lit.render(html`
+      <style>${requestTrustTokensViewStyles.cssText}</style>
+      <devtools-report>
         ${this.#renderParameterSection()}
         ${this.#renderResultSection()}
       </devtools-report>

@@ -105,7 +105,7 @@ describe('ConsoleInsight', function() {
     await waitForNone('.hover-button', undefined, undefined, 'pierce');
   });
 
-  it('shows the hover button even if it is restriced by geography', async () => {
+  it('does not show the hover button if it is restriced by geography', async () => {
     const {target} = getBrowserAndPages();
     await setupMocks({blockedByGeo: true, enabled: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
@@ -113,7 +113,7 @@ describe('ConsoleInsight', function() {
       console.error(new Error('Unexpected error'));
     });
     await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitFor('.hover-button', undefined, undefined, 'pierce');
+    await waitForNone('.hover-button', undefined, undefined, 'pierce');
   });
 
   it('gets console message texts', async () => {

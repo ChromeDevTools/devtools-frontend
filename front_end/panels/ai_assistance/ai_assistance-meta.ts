@@ -155,7 +155,8 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isStylingAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config =>
+      isStylingAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -169,7 +170,8 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isStylingAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config =>
+      isStylingAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -183,7 +185,8 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isNetworkAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config =>
+      isNetworkAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -197,7 +200,8 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isNetworkAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config =>
+      isNetworkAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -211,7 +215,8 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isPerformanceAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config =>
+      isPerformanceAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -226,7 +231,8 @@ UI.ActionRegistration.registerActionExtension({
     return new AiAssistance.ActionDelegate();
   },
   condition: config => {
-    return isPerformanceInsightsAgentFeatureAvailable(config) && !isPolicyRestricted(config);
+    return isPerformanceInsightsAgentFeatureAvailable(config) && !isPolicyRestricted(config) &&
+        !isGeoRestricted(config);
   }
 });
 
@@ -241,7 +247,7 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isFileAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config => isFileAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({
@@ -255,5 +261,5 @@ UI.ActionRegistration.registerActionExtension({
     const AiAssistance = await loadAiAssistanceModule();
     return new AiAssistance.ActionDelegate();
   },
-  condition: config => isFileAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config => isFileAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });

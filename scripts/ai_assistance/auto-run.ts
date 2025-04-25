@@ -2,14 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs');
-const yaml = require('js-yaml');
-const path = require('path');
-const puppeteer = require('puppeteer-core');
-const {hideBin} = require('yargs/helpers');
-const yargs = require('yargs/yargs');
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+import * as url from 'node:url';
+import * as path from 'path';
+import type {Browser, ElementHandle, Page} from 'puppeteer-core';
+import puppeteer from 'puppeteer-core';
+import {hideBin} from 'yargs/helpers';
+import yargs from 'yargs/yargs';
 
-const {parseComment, parseFollowUps} = require('./auto-run-helpers');
+import {parseComment, parseFollowUps} from './auto-run-helpers.js';
+import type {
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, PatchTest, RunResult} from './types.js';
+
+// eslint-disable-next-line  @typescript-eslint/naming-convention
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+
+// Define types for browser-scope functions/variables if not globally available
+declare global {
+  interface Window {
+    aiAssistanceTestPatchPrompt?(folderName: string, query: string, changedFiles: Array<{
+                                   path: string,
+                                   matches: string[],
+                                   doesNotMatch?: string[],
+                                 }>): Promise<{assertionFailures: string[], debugInfo: string, error?: string}>;
+    setDebugAiAssistanceEnabled?(enabled: boolean): void;
+    // Define the structure expected for __commentElements if possible
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __commentElements?: Array<{comment: string, commentElement: Comment, targetElement: Element|null}>;
+  }
+  // Define the custom event if needed
+  interface WindowEventMap {
+    aiassistancedone: CustomEvent;
+  }
+}
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';
 
@@ -22,7 +48,7 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-const yargsInput =
+const userArgs =
     yargs(hideBin(process.argv))
         .option('example-urls', {
           string: true,
@@ -50,11 +76,7 @@ const yargsInput =
         })
         .parseSync();
 
-// Map the args to a more accurate interface for better type safety.
-const userArgs = /** @type {import('./types.d.ts').YargsInput} **/ (yargsInput);
-
-/** @type {string[]} */
-const exampleUrls = [];
+const exampleUrls: string[] = [];
 const OUTPUT_DIR = path.resolve(__dirname, 'data');
 
 for (const exampleUrl of userArgs.exampleUrls) {
@@ -84,7 +106,7 @@ class TraceDownloader {
    * @param {string} filename - the filename to look for
    * @param {number} attempts - the number of attempts we have had to find the file
    */
-  static async ensureDownloadExists(filename, attempts = 0) {
+  static async ensureDownloadExists(filename: string, attempts = 0) {
     if (attempts === 5) {
       return false;
     }
@@ -105,7 +127,7 @@ class TraceDownloader {
    * @param {puppeteer.Page} page - the page instance associated with this example
    * @returns {Promise<string>} - the file name that was downloaded.
    */
-  static async run(example, page) {
+  static async run(example: Example, page: Page) {
     const url = new URL(example.url());
     const idForUrl = path.basename(path.dirname(url.pathname));
     const cdp = await page.createCDPSession();
@@ -133,10 +155,8 @@ class TraceDownloader {
 }
 
 class Logger {
-  /** @type {import('./types').Logs} */
-  #logs = {};
-  /** @type {NodeJS.Timeout|null} */
-  #updateElapsedTimeInterval = null;
+  #logs: Logs = {};
+  #updateElapsedTimeInterval: NodeJS.Timeout|null = null;
 
   constructor() {
     this.#updateElapsedTimeInterval = setInterval(() => {
@@ -166,7 +186,7 @@ class Logger {
    * @param {Error} err The error object to format.
    * @return {string} The formatted error string.
    */
-  formatError(err) {
+  formatError(err: Error) {
     const stack = typeof err.cause === 'object' && err.cause && 'stack' in err.cause ? err.cause.stack : '';
     return `${err.stack}${err.cause ? `\n${stack}` : ''}`;
   }
@@ -175,7 +195,7 @@ class Logger {
    * Logs a header message to the console.
    * @param {string} text The header text to log.
    */
-  head(text) {
+  head(text: string) {
     this.log('head', -1, `${text}\n`);
   }
 
@@ -184,7 +204,7 @@ class Logger {
    * @param {number} index
    * @param {string} text
    */
-  log(id, index, text) {
+  log(id: string, index: number, text: string) {
     this.#updateElapsedTime();
     this.#logs[id] = {index, text};
     this.#flushLogs();
@@ -198,27 +218,19 @@ class Logger {
 }
 
 class Example {
-  /** @type {string} */
-  #url;
-  /** @type {puppeteer.Browser} */
-  #browser;
-  /** @type {boolean} */
+  #url: string;
+  #browser: Browser;
   #ready = false;
-  /** @type {puppeteer.Page|null} **/
-  #page = null;
-  /** @type {puppeteer.Page|null} **/
-  #devtoolsPage = null;
-  /** @type {Array<string>} **/
-  #queries = [];
-  /** @type {string} **/
+  #page: Page|null = null;
+  #devtoolsPage: Page|null = null;
+  #queries: string[] = [];
   #explanation = '';
-  /** @type {import('./types').PatchTest|null} */
-  #test = null;
+  #test: PatchTest|null = null;
   /**
    * @param {string} url
    * @param {puppeteer.Browser} browser
    */
-  constructor(url, browser) {
+  constructor(url: string, browser: Browser) {
     this.#url = url;
     this.#browser = browser;
   }
@@ -227,7 +239,7 @@ class Example {
    * @param {puppeteer.Page} devtoolsPage
    * @param {string} fileName - the trace file to import.
    */
-  async #loadPerformanceTrace(devtoolsPage, fileName) {
+  async #loadPerformanceTrace(devtoolsPage: Page, fileName: string) {
     await devtoolsPage.keyboard.press('Escape');
     await devtoolsPage.keyboard.press('Escape');
     await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
@@ -250,7 +262,7 @@ class Example {
    * @param {number} height
    * @param {number} tries
    */
-  async #waitForElementToHaveHeight(elem, height, tries = 0) {
+  async #waitForElementToHaveHeight(elem: ElementHandle<HTMLElement>, height: number, tries = 0) {
     const h = await elem.evaluate(e => e.clientHeight);
     if (h > height) {
       return true;
@@ -268,14 +280,14 @@ class Example {
    * @param {puppeteer.Page} page
    * @returns {Promise<string[]>} - the comments on the page.
    */
-  async #getCommentStringsFromPage(page) {
+  async #getCommentStringsFromPage(page: Page) {
     /** @type {Array<string>} */
     const commentStringsFromPage = await page.evaluate(() => {
       /**
        * @param {Node|ShadowRoot} root
        * @return {Array<{comment: string, commentElement: Comment, targetElement: Element|null}>}
        */
-      function collectComments(root) {
+      function collectComments(root: Node|ShadowRoot) {
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_COMMENT);
         const results = [];
         while (walker.nextNode()) {
@@ -314,7 +326,7 @@ class Example {
    * @param {puppeteer.Page} devtoolsPage
    * @returns {Promise<puppeteer.ElementHandle<HTMLElement>>} - the prompt from the annotation, if it exists, or undefined if one was not found.
    */
-  async #lookForAnnotatedPerformanceEvent(devtoolsPage) {
+  async #lookForAnnotatedPerformanceEvent(devtoolsPage: Page) {
     const elem = await devtoolsPage.$(
         'devtools-entry-label-overlay >>> [aria-label="Entry label"]',
     );
@@ -337,7 +349,7 @@ class Example {
    * @param {puppeteer.Page} devtoolsPage - the DevTools page
    * @returns {Promise<{idx: number, queries: string[], explanation: string, performanceAnnotation?: puppeteer.ElementHandle<HTMLElement>, rawComment: Record<string, string>}>}
    */
-  async #generateMetadata(page, devtoolsPage) {
+  async #generateMetadata(page: Page, devtoolsPage: Page) {
     /** @type {puppeteer.ElementHandle<HTMLElement>|undefined} */
     let annotation = undefined;
     if (userArgs.testTarget === 'performance-main-thread') {
@@ -532,7 +544,7 @@ class Example {
    * Returns the locator string based on the user-provided test target.
    * @returns {string} The locator string.
    */
-  #getLocator() {
+  #getLocator(): string {
     switch (userArgs.testTarget) {
       case 'elements':
       case 'elements-multimodal':
@@ -542,11 +554,12 @@ class Example {
       case 'performance-insights':
         return 'aria/Ask a question about the selected performance insight';
       case 'patching':
+      default:
         throw new Error('Not supported');
     }
   }
 
-  async execute() {
+  async execute(): Promise<ExecutedExample> {
     if (!this.#devtoolsPage) {
       throw new Error('Cannot execute without DevTools page.');
     }
@@ -568,7 +581,6 @@ class Example {
               // @ts-expect-error this is run in the DevTools page context where this function does exist.
               return await aiAssistanceTestPatchPrompt(folderName, query, changedFiles);
             }, this.#test.folderName, this.#test.query, this.#test.changedFiles);
-        /** @type {import('./types').ExecutedExample} */
         return {
           results: [{
             // Estimate a score based on the number of assertion
@@ -592,14 +604,9 @@ class Example {
         setDebugAiAssistanceEnabled(true);
       });
 
-      /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
-      const results = [];
+      const results: IndividualPromptRequestResponse[] = [];
 
-      /**
-       * @param {string} query
-       * @returns {Promise<import('./types').IndividualPromptRequestResponse[]>}
-       */
-      const prompt = async query => {
+      const prompt = async(query: string): Promise<IndividualPromptRequestResponse[]> => {
         if (!this.#devtoolsPage) {
           throw new Error('Cannot prompt without DevTools page.');
         }
@@ -617,7 +624,7 @@ class Example {
         /**
          * @param {AbortSignal} signal AbortSignal to stop the operation.
          */
-        const autoAcceptEvals = async signal => {
+        const autoAcceptEvals = async (signal: AbortSignal) => {
           while (!signal.aborted) {
             await devtoolsPage.locator('aria/Continue').click({signal});
           }
@@ -631,7 +638,7 @@ class Example {
         });
 
         const done = this.#devtoolsPage.evaluate(() => {
-          return /** @type {Promise<void>} */ (new Promise(resolve => {
+          return new Promise<void>(resolve => {
             window.addEventListener(
                 'aiassistancedone',
                 () => {
@@ -641,7 +648,7 @@ class Example {
                   once: true,
                 },
             );
-          }));
+          });
         });
 
         await devtoolsPage.keyboard.press('Enter');
@@ -654,8 +661,7 @@ class Example {
         if (!logs) {
           throw new Error('No aiAssistanceStructuredLog entries were found.');
         }
-        /** @type {import('./types').IndividualPromptRequestResponse[]} */
-        const results = JSON.parse(logs);
+        const results = JSON.parse(logs) as IndividualPromptRequestResponse[];
 
         return results.map(r => ({...r, exampleId: this.id()}));
       };
@@ -671,7 +677,6 @@ class Example {
 
       await this.#page.close();
 
-      /** @type {import('./types').ExecutedExample} */
       return {
         results,
         metadata: {exampleId: this.id(), explanation: this.#explanation},
@@ -685,10 +690,7 @@ class Example {
     }
   }
 
-  /**
-   * @param {string} text
-   */
-  log(text) {
+  log(text: string) {
     const indexOfExample = exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url,
@@ -697,10 +699,7 @@ class Example {
     );
   }
 
-  /**
-   * @param {string} text
-   */
-  error(text) {
+  error(text: string) {
     const indexOfExample = exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url,
@@ -712,21 +711,15 @@ class Example {
 
 const logger = new Logger();
 
-/**
- * @param {Example[]} examples
- * @return {Promise<import('./types').RunResult>}
- */
-async function runInParallel(examples) {
+async function runInParallel(examples: Example[]): Promise<RunResult> {
   logger.head('Preparing examples...');
   for (const example of examples) {
     await example.prepare();
   }
 
   logger.head('Running examples...');
-  /** @type {Array<import('./types').IndividualPromptRequestResponse>} **/
-  const allExampleResults = [];
-  /** @type {Array<import('./types').ExampleMetadata>} **/
-  const metadata = [];
+  const allExampleResults: IndividualPromptRequestResponse[] = [];
+  const metadata: ExampleMetadata[] = [];
   await Promise.all(
       examples.filter(example => example.isReady()).map(async example => {
         try {
@@ -744,16 +737,9 @@ async function runInParallel(examples) {
   return {allExampleResults, metadata};
 }
 
-/**
- * @param {Example[]} examples
- * @return {Promise<import('./types').RunResult>}
- */
-async function runSequentially(examples) {
-  /** @type {import('./types').IndividualPromptRequestResponse[]} */
-  const allExampleResults = [];
-
-  /** @type {import('./types').ExampleMetadata[]} */
-  const metadata = [];
+async function runSequentially(examples: Example[]): Promise<RunResult> {
+  const allExampleResults: IndividualPromptRequestResponse[] = [];
+  const metadata: ExampleMetadata[] = [];
   logger.head('Running examples sequentially...');
   for (const example of examples) {
     await example.prepare();

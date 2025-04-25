@@ -24,7 +24,7 @@
  * @param {string} comment The comment string to split.
  * @return {Record<string, string>} An object containing the found keys and their values.
  */
-function parseComment(comment) {
+export function parseComment(comment) {
   // Tracks which section of the comment we are in so we know where to
   // associate lines with.
   /** @type {string|null} */
@@ -82,7 +82,7 @@ function parseComment(comment) {
  * @param {Record<string, string>} comment
  * @return {string[]}
  */
-function parseFollowUps(comment) {
+export function parseFollowUps(comment) {
   /** @type {string[]} */
   const followUpPrompts = [];
   const FOLLOW_UP_PREFIX = 'followup';
@@ -103,8 +103,3 @@ function parseFollowUps(comment) {
   // from the array.
   return followUpPrompts.filter(x => Boolean(x));
 }
-
-module.exports = {
-  parseFollowUps,
-  parseComment,
-};

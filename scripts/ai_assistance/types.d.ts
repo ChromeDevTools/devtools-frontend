@@ -34,6 +34,8 @@ export interface IndividualPromptRequestResponse {
   exampleId: string;
   /** Automatically computed score [0-1]. */
   score?: number;
+  error?: string;
+  assertionFailures?: string[];
 }
 
 export interface ExampleMetadata {
@@ -41,17 +43,6 @@ export interface ExampleMetadata {
   explanation: string;
 }
 
-/**
- * The CLI arguments people can use to configure the run.
- */
-export interface YargsInput {
-  exampleUrls: string[];
-  label: string;
-  parallel: boolean;
-  includeFollowUp: boolean;
-  times: number;
-  testTarget: TestTarget;
-}
 export type TestTarget = 'elements'|'performance-main-thread'|'performance-insights'|'elements-multimodal'|'patching';
 
 // Clang cannot handle the Record<> syntax over multiple lines, it seems.

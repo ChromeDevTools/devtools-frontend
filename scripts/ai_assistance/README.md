@@ -8,7 +8,7 @@ takes these results and presents them in a UI for evaluation.
 ## Running
 
 **Prerequisites**
-* You need to have at least Node v20 to run Auto AI Assistance.
+* You need to have at least Node v22 to run Auto AI Assistance.
 * You need to have a version of Chrome that contains the AI Assistance feature. (i.e. you also need to be logged in & have sync enabled)
 
 **Steps**
@@ -24,14 +24,14 @@ takes these results and presents them in a UI for evaluation.
 
 4. Run the following command. See below for the list of values `--test-target` supports. This flag is used to determine which AI experience is evaluated.
 ```
-node --experimental-strip-types scripts/ai_assistance/auto-run.ts --test-target elements --example-urls <example-url-1> <example-url-2>
+node --no-warnings --experimental-strip-types scripts/ai_assistance/auto-run.ts --test-target elements --example-urls <example-url-1> <example-url-2>
 ```
 
 At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the results must be saved to the `data/` folder.
 
 Tip: You can add a `--label <label>` argument to the run to label the dataset. For example:
 ```
-node --experimental-strip-types scripts/ai_assistance/auto-run.ts --label title-change --example-urls <example-url-1> <example-url-2>
+node --no-warnings --experimental-strip-types scripts/ai_assistance/auto-run.ts --label title-change --example-urls <example-url-1> <example-url-2>
 ```
 
 ## `--test-target` values

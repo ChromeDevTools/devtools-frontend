@@ -230,7 +230,7 @@ describe('Source Panel grouping', function() {
   const folderMenuText = 'Group by folder';
 
   async function enableGroupByAuthored(noAuthored?: boolean) {
-    await click('[aria-label="More options"]');
+    await click('[title="More options"]');
     await click(`[aria-label="${authoredMenuText}, unchecked"]`);
     await waitForNone('.soft-context-menu');
     await waitFor('.navigator-deployed-tree-item');
@@ -244,7 +244,7 @@ describe('Source Panel grouping', function() {
   }
 
   async function disableGroupByAuthored() {
-    await click('[aria-label="More options"]');
+    await click('[title="More options"]');
     await click(`[aria-label="${authoredMenuText}, checked"]`);
     await waitForNone('.soft-context-menu');
     await waitForNone('.navigator-deployed-tree-item');
@@ -253,7 +253,7 @@ describe('Source Panel grouping', function() {
   }
 
   async function enableGroupByFolder() {
-    await click('[aria-label="More options"]');
+    await click('[title="More options"]');
     await click(`[aria-label="${folderMenuText}, unchecked"]`);
     await waitForNone('.soft-context-menu');
     await waitFor('[aria-label="test/e2e/resources/sources, nw-folder"]');
@@ -261,7 +261,7 @@ describe('Source Panel grouping', function() {
   }
 
   async function disableGroupByFolder() {
-    await click('[aria-label="More options"]');
+    await click('[title="More options"]');
     await click(`[aria-label="${folderMenuText}, checked"]`);
     await waitForNone('.soft-context-menu');
     await waitForNone('[aria-label="test/e2e/resources/sources, nw-folder"]:not(.is-from-source-map)');

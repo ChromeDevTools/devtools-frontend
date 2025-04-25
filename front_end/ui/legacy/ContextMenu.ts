@@ -145,6 +145,7 @@ export class Item {
           id: this.idInternal,
           label: this.label,
           checked: Boolean(this.checked),
+          isExperimentalFeature: this.previewFeature,
           enabled: !this.disabled,
           subItems: undefined,
           tooltip: this.#tooltip,
@@ -252,12 +253,13 @@ export class Section {
   appendCheckboxItem(label: string, handler: () => void, options?: {
     checked?: boolean,
     disabled?: boolean,
+    experimental?: boolean,
     additionalElement?: Element,
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
   }): Item {
     const item = new Item(
-        this.contextMenu, 'checkbox', label, undefined, options?.disabled, options?.checked, undefined,
+        this.contextMenu, 'checkbox', label, options?.experimental, options?.disabled, options?.checked, undefined,
         options?.tooltip, options?.jslogContext);
     this.items.push(item);
     if (this.contextMenu) {
@@ -771,7 +773,7 @@ export class MenuButton extends HTMLElement {
    * Reflects the `jslogContext` attribute. Sets the visual logging context for the button.
    */
   set jslogContext(jslogContext: string) {
-    this.setAttribute('jslog', VisualLogging.action(jslogContext).track({click: true}).toString());
+    this.setAttribute('jslog', VisualLogging.dropDown(jslogContext).track({click: true}).toString());
   }
 
   get jslogContext(): string|null {
@@ -850,6 +852,7 @@ export class MenuButton extends HTMLElement {
                 .disabled=${this.disabled}
                 .iconName=${this.iconName}
                 .variant=${Buttons.Button.Variant.ICON}
+                .title=${this.title}
                 aria-haspopup='menu'
                 @click=${this.#triggerContextMenu}></devtools-button>`,
       this.#shadow, { host: this });

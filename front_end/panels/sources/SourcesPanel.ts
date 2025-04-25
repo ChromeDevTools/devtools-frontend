@@ -42,7 +42,6 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -253,11 +252,12 @@ export class SourcesPanel extends UI.Panel.Panel implements
     tabbedPane.headerElement().setAttribute(
         'jslog',
         `${VisualLogging.toolbar('navigator').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
-    const navigatorMenuButton = new UI.Toolbar.ToolbarMenuButton(
-        this.populateNavigatorMenu.bind(this), /* isIconDropdown */ true, /* useSoftMenu */ true, 'more-options',
-        'dots-vertical');
-    navigatorMenuButton.setTitle(i18nString(UIStrings.moreOptions));
-    tabbedPane.rightToolbar().appendToolbarItem(navigatorMenuButton);
+    const navigatorMenuButton = new UI.ContextMenu.MenuButton();
+    navigatorMenuButton.populateMenuCall = this.populateNavigatorMenu.bind(this);
+    navigatorMenuButton.jslogContext = 'more-options';
+    navigatorMenuButton.iconName = 'dots-vertical';
+    navigatorMenuButton.title = i18nString(UIStrings.moreOptions);
+    tabbedPane.rightToolbar().appendToolbarItem(new UI.Toolbar.ToolbarItem(navigatorMenuButton));
 
     if (UI.ViewManager.ViewManager.instance().hasViewsForLocation('run-view-sidebar')) {
       const navigatorSplitWidget =
@@ -628,7 +628,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     menuSection.appendCheckboxItem(menuItem, toggleExperiment, {
       checked: Root.Runtime.experiments.isEnabled(experiment),
-      additionalElement: IconButton.Icon.create('experiment'),
+      experimental: true,
       jslogContext: Platform.StringUtilities.toKebabCase(experiment),
     });
   }

@@ -6,12 +6,15 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers';
 
 import {asArray, commandLineArgs, DiffBehaviors} from './commandline.js';
 import {defaultChromePath, SOURCE_ROOT} from './paths.js';
 
-const yargs = require('yargs');
-const options = commandLineArgs(yargs(yargs.argv['_'])).parseSync();
+const argv = yargs(hideBin(process.argv)).parseSync()['_'] as string[];
+
+const options = commandLineArgs(yargs(argv)).parseSync();
 
 export const enum ServerType {
   HOSTED_MODE = 'hosted-mode',

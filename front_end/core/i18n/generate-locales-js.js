@@ -4,10 +4,11 @@
 
 const path = require('path');
 const yargs = require('yargs');
+const {hideBin} = require('yargs/helpers');
 
 const {writeIfChanged} = require('../../../scripts/build/ninja/write-if-changed.js');
 
-const yargsObject = yargs
+const yargsObject = yargs(hideBin(process.argv))
                         .option('target-gen-dir', {
                           type: 'string',
                           demandOption: true,

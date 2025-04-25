@@ -4,23 +4,27 @@
 
 const fs = require('fs');
 const path = require('path');
-const {argv} = require('yargs');
+const yargs = require('yargs');
+const {hideBin} = require('yargs/helpers');
 
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
 
-const {template} = argv;
+const {template, outDirectory, entrypoints} = yargs(
+                                                  hideBin(process.argv),
+                                                  )
+                                                  .argv;
 
 if (!template) {
-  throw new Error('Must specify --template location with the location of the HTML entrypoint template.');
+  throw new Error(
+      'Must specify --template location with the location of the HTML entrypoint template.',
+  );
 }
-
-const {outDirectory} = argv;
 
 if (!outDirectory) {
-  throw new Error('Must specify --out-directory location where the outputs must live.');
+  throw new Error(
+      'Must specify --out-directory location where the outputs must live.',
+  );
 }
-
-const {entrypoints} = argv;
 
 if (!entrypoints) {
   throw new Error('Must specify at least one entrypoint name.');
@@ -33,6 +37,12 @@ if (!Array.isArray(entrypoints)) {
 const templateContent = fs.readFileSync(template, 'utf-8');
 
 for (const entrypoint of entrypoints) {
-  const rewrittenTemplateContent = templateContent.replace(new RegExp('%ENTRYPOINT_NAME%', 'g'), entrypoint);
-  writeIfChanged(path.join(outDirectory, `${entrypoint}.html`), rewrittenTemplateContent);
+  const rewrittenTemplateContent = templateContent.replace(
+      new RegExp('%ENTRYPOINT_NAME%', 'g'),
+      entrypoint,
+  );
+  writeIfChanged(
+      path.join(outDirectory, `${entrypoint}.html`),
+      rewrittenTemplateContent,
+  );
 }

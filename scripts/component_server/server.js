@@ -6,8 +6,10 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const parseURL = require('url').parse;
-const {argv} = require('yargs');
+const yargs = require('yargs');
+const {hideBin} = require('yargs/helpers');
 
+const argv = yargs(hideBin(process.argv)).argv;
 const tracesMode = argv.traces || false;
 const serverPort = parseInt(process.env.PORT, 10) || (tracesMode ? 11010 : 8090);
 

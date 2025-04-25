@@ -8,9 +8,10 @@ const glob = require('glob');
 const path = require('path');
 const util = require('util');
 const yargs = require('yargs');
+const {hideBin} = require('yargs/helpers');
 const exec = util.promisify(childProcess.exec);
 
-const yargsObject = yargs
+const yargsObject = yargs(hideBin(process.argv))
                         .option('remove-files', {
                           type: 'boolean',
                           desc: 'Set to true to have obsolete goldens removed.',
@@ -64,10 +65,7 @@ function checkGoldensForPlatform(platform) {
 
   for (const golden of goldens) {
     const relativeGoldenPath = path.relative(platformRoot, golden).replace(/\\/g, '/');
-    const interactions = checkFolder(
-        relativeGoldenPath,
-        interactionTestFiles,
-    );
+    const interactions = checkFolder(relativeGoldenPath, interactionTestFiles);
     const units = checkFolder(relativeGoldenPath, unitTestFiles);
 
     if (!interactions && !units) {

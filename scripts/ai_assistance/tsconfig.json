@@ -5,12 +5,8 @@
     "checkJs": true,
     "allowJs": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "target": "ESNext"
   },
-  "include": [
-    "./auto-run-helpers.js",
-    "auto-run.ts",
-    "./auto-run.test.js",
-  ]
+  "include": ["./auto-run-helpers.js", "auto-run.ts", "./auto-run.test.js"]
 }

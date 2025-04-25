@@ -3,18 +3,10 @@
 // found in the LICENSE file.
 'use strict';
 
+const espree = require('@typescript-eslint/parser');
 const fs = require('fs');
 const path = require('path');
 
-const SRC_PATH = path.resolve(__dirname, '..');
-const NODE_MODULES_PATH = path.resolve(SRC_PATH, 'node_modules');
-const espree = require(path.resolve(
-    NODE_MODULES_PATH,
-    '@typescript-eslint',
-    'parser',
-    'dist',
-    'index.js',
-    ));
 const parseOptions = {
   ecmaVersion: 'latest',
   sourceType: 'module',
@@ -185,10 +177,7 @@ function getUserMetricExperimentList(userMetricsFile) {
   const userMetricsAST = espree.parse(userMetricsFile, parseOptions);
   for (const node of userMetricsAST.body) {
     if (isExperimentEnumDeclaration(node)) {
-      return node.declaration.members
-          .filter(
-              member => member.id.name !== 'MAX_VALUE',
-              )
+      return node.declaration.members.filter(member => member.id.name !== 'MAX_VALUE')
           .filter(
               member => member.id.type === 'Literal' || member.id.type === 'Identifier',
               )

@@ -16,6 +16,8 @@
 const fs = require('fs');
 const path = require('path');
 const ts = require('typescript');
+const yargs = require('yargs');
+const {hideBin} = require('yargs/helpers');
 
 /**
  * Parses the inputs listed when they are all on one line, for example:
@@ -392,16 +394,16 @@ module.exports = {
 
 // If invoked as CLI
 if (require.main === module) {
-  const yargs = require('yargs')
-                    .option('directory', {
-                      type: 'string',
-                      desc: 'The directory to validate',
-                      demandOption: true,
-                    })
-                    .strict()
-                    .parseSync();
+  const argv = yargs(hideBin(process.argv))
+                   .option('directory', {
+                     type: 'string',
+                     desc: 'The directory to validate',
+                     demandOption: true,
+                   })
+                   .strict()
+                   .parseSync();
 
-  const directory = path.join(process.cwd(), yargs.directory);
+  const directory = path.join(process.cwd(), argv.directory);
   const result = validateDirectory(directory);
   const success = result.missingBuildGNDeps.length === 0 && result.unusedBuildGNDeps.size === 0;
   if (success) {

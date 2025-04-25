@@ -225,6 +225,25 @@ div {
   background-color: green;
 }`);
     });
+
+    it('formats a simpleSelector', async () => {
+      const changeManager = new AiAssistanceModel.ChangeManager();
+      const cssModel = createModel();
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        selector: '.bg-color-blue',
+        simpleSelector: 'div#test',
+        className: 'ai-style-change-1',
+        styles: {color: 'blue', 'background-color': 'green'},
+      });
+
+      assert.strictEqual(
+          changeManager.formatChangesForPatching(agentId, /* includeSourceLocation=*/ true),
+          `.bg-color-blue { /* the element was div#test */
+  color: blue;
+  background-color: green;
+}`);
+    });
   });
 
   describe('stashes', () => {

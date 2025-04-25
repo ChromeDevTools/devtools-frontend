@@ -21,6 +21,7 @@ import {
 
 interface ElementContext {
   selector: string;
+  simpleSelector?: string;
   sourceLocation?: string;
 }
 
@@ -299,6 +300,7 @@ export class ExtensionScope {
 
       return {
         selector,
+        simpleSelector: ExtensionScope.getSelectorForNode(node),
         sourceLocation: ExtensionScope.getSourceLocation(styleRule),
       };
     } catch {
@@ -356,6 +358,7 @@ export class ExtensionScope {
           groupId: this.#agentId,
           sourceLocation: context.sourceLocation,
           selector: context.selector,
+          simpleSelector: context.simpleSelector,
           className: arg.className,
           styles: sanitizedStyles,
         });

@@ -11,7 +11,10 @@ export interface Change {
   groupId: string;
   // Optional about where in the source the selector was defined.
   sourceLocation?: string;
+  // Selector used by the page or a simple selector as the fallback.
   selector: string;
+  // Selector computed based on the element attributes.
+  simpleSelector?: string;
   className: string;
   styles: Record<string, string>;
 }
@@ -125,7 +128,11 @@ ${formatStyles(change.styles, 4)}
   #formatChange(change: Change, includeSourceLocation = false): string {
     const sourceLocation =
         includeSourceLocation && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */\n` : '';
-    return `${sourceLocation}${change.selector} {
+    // TODO: includeSourceLocation indicates whether we are using Patch
+    // agent. If needed we can have an separate knob.
+    const simpleSelector =
+        includeSourceLocation && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : '';
+    return `${sourceLocation}${change.selector} {${simpleSelector}
 ${formatStyles(change.styles)}
 }`;
   }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {html, render} from '../../../ui/lit/lit.js';
 
@@ -23,10 +24,6 @@ export class ComputedStyleTrace extends HTMLElement {
   #onNavigateToSource: ((event?: Event) => void) = () => {};
   #ruleOriginNode?: Node;
 
-  connectedCallback(): void {
-    UI.UIUtils.injectCoreStyles(this.#shadow);
-  }
-
   set data(data: ComputedStyleTraceData) {
     this.#selector = data.selector;
     this.#active = data.active;
@@ -39,6 +36,8 @@ export class ComputedStyleTrace extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${Buttons.textButtonStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles.cssText}</style>
       <style>${computedStyleTraceStyles.cssText}</style>
       <div class="computed-style-trace ${this.#active ? 'active' : 'inactive'}">
         <span class="goto" @click=${this.#onNavigateToSource}></span>

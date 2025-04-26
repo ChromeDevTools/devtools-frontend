@@ -12,7 +12,6 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -58,8 +57,6 @@ export class Checklist extends HTMLElement {
   }
 
   connectedCallback(): void {
-    UI.UIUtils.injectCoreStyles(this.#shadow);
-
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

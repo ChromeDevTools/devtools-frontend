@@ -19475,7 +19475,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * For Wasm modules, the content of the `build_id` custom section.
+     * For Wasm modules, the content of the `build_id` custom section. For JavaScript the `debugId` magic comment.
      */
     buildId: string;
     /**
@@ -19554,7 +19554,7 @@ export namespace Debugger {
      */
     hash: string;
     /**
-     * For Wasm modules, the content of the `build_id` custom section.
+     * For Wasm modules, the content of the `build_id` custom section. For JavaScript the `debugId` magic comment.
      */
     buildId: string;
     /**

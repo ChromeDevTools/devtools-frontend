@@ -376,7 +376,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         case 'f64':
           return {type, value: Number(value)};
         case 'i64':
-          return {type, value: BigInt(value)};
+          return {type, value: BigInt(value.replace(/n$/, ''))};
         case 'v128':
           return {type, value};
         default:

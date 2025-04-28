@@ -4,11 +4,13 @@
   (export "memory" (memory $mem))
   (export "global" (global $global))
   (func $i (import "imports" "imported_func") (param i32))
-  (func (export "exported_func") (param i32)
+  (func (export "exported_func") (param i64)
     (local $local i32)
     (local.set $local
+      (i32.wrap_i64
 ;;@ BREAK(can_access_wasm_data):1:1
-      (local.get $0)
+        (local.get $0)
+      )
     )
 ;;@ BREAK(can_access_wasm_data):2:1
     (call $i

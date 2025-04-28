@@ -1,11 +1,13 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import dialogStyles from './dialog.css.js';
 
@@ -25,26 +27,55 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/AddSourceMapURLDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {ref} = Directives;
+
+interface ViewInput {
+  label: Platform.UIString.LocalizedString;
+  onKeyDown: (event: KeyboardEvent) => void;
+  apply: () => void;
+}
+
+interface ViewOutput {
+  input: HTMLInputElement;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <style>${dialogStyles.cssText}</style>
+    <label>${input.label}</label>
+    <input class="harmony-input add-source-map" spellcheck="false" type="text"
+        jslog=${VisualLogging.textField('url').track({keydown: 'Enter', change: true})}
+        @keydown=${input.onKeyDown} ${ref(e => { output.input = e as HTMLInputElement; })}>
+    <devtools-button @click=${input.apply} .jslogContext=${'add'}
+        .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.add)}</devtools-button>`,
+    target, {host: input});
+  // clang-format on
+};
+
 export class AddDebugInfoURLDialog extends UI.Widget.HBox {
-  private readonly input: HTMLInputElement;
+  private input!: HTMLInputElement;
   private readonly dialog: UI.Dialog.Dialog;
   private readonly callback: (arg0: Platform.DevToolsPath.UrlString) => void;
   private constructor(
       label: Platform.UIString.LocalizedString, jslogContext: string,
-      callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
+      callback: (arg0: Platform.DevToolsPath.UrlString) => void, view = DEFAULT_VIEW) {
     super(/* useShadowDom */ true);
-    this.registerRequiredCSS(dialogStyles);
 
-    this.contentElement.createChild('label').textContent = label;
-
-    this.input = UI.UIUtils.createInput('add-source-map', 'text', 'url');
-    this.input.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    this.contentElement.appendChild(this.input);
-
-    const addButton = UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.apply.bind(this), {
-      jslogContext: 'add',
-    });
-    this.contentElement.appendChild(addButton);
+    const viewInput = {
+      label,
+      onKeyDown: this.onKeyDown.bind(this),
+      apply: this.apply.bind(this),
+    };
+    const that = this;
+    const viewOutput = {
+      set input(input: HTMLInputElement) {
+        that.input = input;
+      },
+    };
+    view(viewInput, viewOutput, this.contentElement);
 
     this.dialog = new UI.Dialog.Dialog(jslogContext);
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);

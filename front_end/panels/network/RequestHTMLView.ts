@@ -28,21 +28,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no-imperative-dom-api */
-
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 
 import requestHTMLViewStyles from './requestHTMLView.css.js';
 
-export class RequestHTMLView extends UI.Widget.VBox {
-  private readonly dataURL: string;
-  private constructor(dataURL: string) {
-    super(true);
-    this.registerRequiredCSS(requestHTMLViewStyles);
+interface ViewInput {
+  dataURL: string|null;
+}
 
-    this.dataURL = dataURL;
-    this.contentElement.classList.add('html', 'request-view');
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // Forbid to run JavaScript and set unique origin.
+  // clang-format off
+  render(html`
+    <style>${requestHTMLViewStyles.cssText}</style>
+    <div class="html request-view">
+      ${input.dataURL ? html`
+        <!-- @ts-ignore -->
+        <iframe class="html-preview-frame" sandbox
+          csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
+          tabindex="-1" role="presentation"></iframe>` : nothing}
+    </div>`,
+    target, {host: input});
+  // clang-format on
+};
+
+export class RequestHTMLView extends UI.Widget.VBox {
+  readonly #dataURL: string;
+  readonly #view: View;
+  private constructor(dataURL: string, view = DEFAULT_VIEW) {
+    super(true);
+
+    this.#dataURL = dataURL;
+    this.#view = view;
   }
 
   static create(contentData: TextUtils.ContentData.ContentData): RequestHTMLView|null {
@@ -52,24 +73,14 @@ export class RequestHTMLView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    this.createIFrame();
+    this.requestUpdate();
   }
 
   override willHide(): void {
-    this.contentElement.removeChildren();
+    this.requestUpdate();
   }
 
-  private createIFrame(): void {
-    // We need to create iframe again each time because contentDocument
-    // is deleted when iframe is removed from its parent.
-    this.contentElement.removeChildren();
-    const iframe = document.createElement('iframe');
-    iframe.className = 'html-preview-frame';
-    iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
-    iframe.setAttribute('csp', 'default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
-    iframe.setAttribute('src', this.dataURL);
-    iframe.tabIndex = -1;
-    UI.ARIAUtils.markAsPresentation(iframe);
-    this.contentElement.appendChild(iframe);
+  override performUpdate(): void {
+    this.#view({dataURL: this.#dataURL}, {}, this.contentElement);
   }
 }

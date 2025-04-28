@@ -64,6 +64,7 @@ export class RequestPreviewView extends RequestResponseView {
 
   override async showPreview(): Promise<UI.Widget.Widget> {
     const view = await super.showPreview();
+    await view.updateComplete;
     if (!(view instanceof UI.View.SimpleView)) {
       return view;
     }

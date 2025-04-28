@@ -32,7 +32,7 @@
   height: var(--size);
   margin: -1px 0 0 calc(-1 * var(--size));
   mask: var(--image-file-goto-filled) center / contain no-repeat;
-  background-color: var(--sys-color-surface-variant);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .computed-style-trace:hover .goto {

@@ -1063,7 +1063,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.saveButton = new UI.Toolbar.ToolbarMenuButton(
-        this.#populateDownloadMenu.bind(this), true, true, 'timeline.save-to-file-more-options', 'download');
+        this.#populateDownloadMenu.bind(this), true, false, 'timeline.save-to-file-more-options', 'download');
     this.saveButton.setTitle(i18nString(UIStrings.saveProfile));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {

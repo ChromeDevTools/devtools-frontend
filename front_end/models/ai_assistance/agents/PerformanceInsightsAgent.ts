@@ -5,6 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
 import type * as Lit from '../../../ui/lit/lit.js';
@@ -254,14 +255,21 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_INSIGHTS_AGENT;
 
+  // Note: for both userTier and options we purposefully reuse the flags from
+  // the Performance Agent, rather than define new ones as we didn't think that
+  // was necessary.
+
   get userTier(): string|undefined {
-    return 'TESTERS';
+    return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
 
   get options(): RequestOptions {
+    const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+
     return {
-      temperature: undefined,
-      modelId: undefined,
+      temperature,
+      modelId,
     };
   }
 

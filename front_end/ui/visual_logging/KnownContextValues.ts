@@ -988,6 +988,7 @@ export const knownContextValues = new Set([
   'create-new-snippet',
   'create-recording',
   'create-recording-view',
+  'creator-ad-script-ancestry',
   'credential-id',
   'credentialId',
   'critical',

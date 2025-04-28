@@ -249,9 +249,9 @@ const UIStrings = {
   createdByAdScriptExplanation:
       'There was an ad script in the `(async) stack` when this frame was created. Examining the creation `stack trace` of this frame might provide more insight.',
   /**
-   *@description Label for a link to an ad script, which created the current iframe.
+   *@description Label for the link(s) to the ad script(s) that led to this frame's creation.
    */
-  creatorAdScript: 'Creator Ad Script',
+  creatorAdScriptAncestry: 'Creator Ad Script Ancestry',
   /**
    *@description Text describing the absence of a value.
    */
@@ -269,19 +269,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target?: SDK.Target.Target;
-  adScriptId: Protocol.Page.AdScriptId|null;
+  adScriptAncestryIds: Protocol.Page.AdScriptId[]|null;
 }
 
 export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #frame?: SDK.ResourceTreeModel.ResourceTreeFrame;
-  #target?: SDK.Target.Target;
+  #target: SDK.Target.Target|null = null;
   #protocolMonitorExperimentEnabled = false;
   #permissionsPolicies: Promise<Protocol.Page.PermissionsPolicyFeatureState[]|null>|null = null;
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
   #originTrialTreeView: OriginTrialTreeView = new OriginTrialTreeView();
   #linkifier = new Components.Linkifier.Linkifier();
-  #adScriptId: Protocol.Page.AdScriptId|null = null;
+  #adScriptAncestryIds: Protocol.Page.AdScriptId[]|null = null;
 
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
@@ -295,11 +295,21 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 
   override async render(): Promise<void> {
-    this.#adScriptId = (await this.#frame?.parentFrame()?.getAdScriptId(this.#frame?.id)) || null;
-    const debuggerModel = this.#adScriptId?.debuggerId ?
-        await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(this.#adScriptId?.debuggerId) :
-        null;
-    this.#target = debuggerModel?.target();
+    const results = await this.#frame?.parentFrame()?.getAdScriptAncestryIds(this.#frame?.id);
+    if (Array.isArray(results) && results.length > 0) {
+      this.#adScriptAncestryIds = results;
+
+      // Obtain the Target associated with the first ad script, because in most scenarios all
+      // scripts share the same debuggerId. However, discrepancies might arise when content scripts
+      // from browser extensions are involved. We will monitor the debugging experiences and revisit
+      // this approach if it proves problematic.
+      const firstScript = this.#adScriptAncestryIds[0];
+      const debuggerModel = firstScript?.debuggerId ?
+          await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(firstScript.debuggerId) :
+          null;
+      this.#target = debuggerModel?.target() ?? null;
+    }
+
     if (!this.#permissionsPolicies && this.#frame) {
       this.#permissionsPolicies = this.#frame.getPermissionsPolicyState();
     }
@@ -378,6 +388,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       ${Lit.Directives.until(this.#renderOwnerElement(), Lit.nothing)}
       ${this.#maybeRenderCreationStacktrace()}
       ${this.#maybeRenderAdStatus()}
+      ${this.#maybeRenderCreatorAdScriptAncestry()}
       <devtools-report-divider></devtools-report-divider>
     `;
   }
@@ -562,13 +573,6 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       rows.push(html`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
     }
 
-    const adScriptLinkElement = this.#target ? this.#linkifier.linkifyScriptLocation(
-                                                   this.#target, this.#adScriptId?.scriptId || null,
-                                                   Platform.DevToolsPath.EmptyUrlString, undefined, undefined) :
-                                               null;
-
-    adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({click: true})}`);
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -576,10 +580,46 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-value class="ad-status-list" jslog=${VisualLogging.section('ad-status')}>
         <devtools-expandable-list .data=${
           {rows, title: i18nString(UIStrings.adStatus)} as ExpandableList.ExpandableList.ExpandableListData}></devtools-expandable-list></devtools-report-value>
-      ${this.#target ? html`
-        <devtools-report-key>${i18nString(UIStrings.creatorAdScript)}</devtools-report-key>
-        <devtools-report-value class="ad-script-link">${adScriptLinkElement}</devtools-report-value>
-      ` : Lit.nothing}
+    `;
+    // clang-format on
+  }
+
+  #maybeRenderCreatorAdScriptAncestry(): Lit.LitTemplate {
+    if (!this.#frame) {
+      return Lit.nothing;
+    }
+    const adFrameType = this.#frame.adFrameType();
+    if (adFrameType === Protocol.Page.AdFrameType.None) {
+      return Lit.nothing;
+    }
+
+    if (!this.#target || !this.#adScriptAncestryIds || this.#adScriptAncestryIds.length === 0) {
+      return Lit.nothing;
+    }
+
+    const rows = this.#adScriptAncestryIds.map(adScriptId => {
+      const adScriptLinkElement = this.#linkifier.linkifyScriptLocation(
+          this.#target,
+          adScriptId.scriptId || null,
+          Platform.DevToolsPath.EmptyUrlString,
+          undefined,
+          undefined,
+      );
+
+      adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({click: true})}`);
+
+      return html`<div>${adScriptLinkElement}</div>`;
+    });
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <devtools-report-key>${i18nString(UIStrings.creatorAdScriptAncestry)}</devtools-report-key>
+      <devtools-report-value class="creator-ad-script-ancestry-list" jslog=${VisualLogging.section('creator-ad-script-ancestry')}>
+        <devtools-expandable-list .data=${
+          {rows, title: i18nString(UIStrings.creatorAdScriptAncestry)} as ExpandableList.ExpandableList.ExpandableListData}>
+        </devtools-expandable-list>
+      </devtools-report-value>
     `;
     // clang-format on
   }

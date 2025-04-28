@@ -1288,7 +1288,7 @@ function renderMultimodalInputButtons({
         variant: Buttons.Button.Variant.ICON,
         size: Buttons.Button.Size.REGULAR,
         disabled: isTextInputDisabled || imageInput?.isLoading,
-        iconName: 'attach-file',
+        iconName: 'add-photo',
         title: lockedString(UIStringsNotTranslate.addImageButtonTitle),
         jslogContext: 'upload-image',
       } as Buttons.Button.ButtonData

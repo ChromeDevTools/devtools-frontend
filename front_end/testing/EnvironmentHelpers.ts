@@ -156,6 +156,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.DEBUGGER, 'skip-stack-frames-pattern',
         '/node_modules/|^node:', Common.Settings.SettingType.REGEX),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-folder', true),
+    createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'dom-word-wrap', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-ua-shadow-dom', false),
@@ -203,6 +204,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'auto-pretty-print-minified', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'js-source-maps-enabled', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'show-whitespaces-in-editor', 'none'),
+    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'sources.word-wrap', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-autocompletion', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-auto-detect-indent', false),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-bracket-closing', true),
@@ -210,7 +212,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-code-folding', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-indent', '    '),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'text-editor-tab-moves-focus', false),
-    createSettingValue(Common.Settings.SettingCategory.SOURCES, 'dom-word-wrap', true),
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.touch', '', Common.Settings.SettingType.ENUM),
     createSettingValue(

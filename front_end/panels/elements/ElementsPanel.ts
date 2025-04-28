@@ -1429,6 +1429,11 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
       case 'elements.toggle-a11y-tree':
         ElementsPanel.instance().toggleAccessibilityTree();
         return true;
+      case 'elements.toggle-word-wrap': {
+        const setting = Common.Settings.Settings.instance().moduleSetting<boolean>('dom-word-wrap');
+        setting.set(!setting.get());
+        return true;
+      }
       case 'elements.show-styles':
         ElementsPanel.instance().selectAndShowSidebarTab(SidebarPaneTabId.STYLES);
         return true;

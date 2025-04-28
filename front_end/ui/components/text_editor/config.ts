@@ -304,6 +304,8 @@ export const indentUnit = new DynamicSetting<string>('text-editor-indent', getIn
 
 export const domWordWrap = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
 
+export const sourcesWordWrap = DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
+
 function detectLineSeparator(text: string): CM.Extension {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {
     return CM.EditorState.lineSeparator.of('\r\n');

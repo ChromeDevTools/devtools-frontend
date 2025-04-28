@@ -128,7 +128,7 @@ const UIStrings = {
    *@example {Start recording events} PH1
    *@example {Ctrl + E} PH2
    */
-  startRecordingToDebug: 'Start to debug background services by using the "{PH1}" button or by hitting {PH2}.',
+  startRecordingToDebug: 'Start to debug background services by using the "{PH1}" button or by pressing {PH2}.',
   /**
    *@description Text to show an item is empty
    */

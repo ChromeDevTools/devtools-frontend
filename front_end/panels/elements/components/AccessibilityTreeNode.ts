@@ -7,15 +7,10 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import {html, nothing, render} from '../../../ui/lit/lit.js';
 
-import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const accessibilityTreeNodeStyles = new CSSStyleSheet();
-accessibilityTreeNodeStyles.replaceSync(accessibilityTreeNodeStylesRaw.cssText);
+import accessibilityTreeNodeStyles from './accessibilityTreeNode.css.js';
 
 const UIStrings = {
   /**
@@ -58,7 +53,7 @@ export interface AccessibilityTreeNodeData {
 }
 
 export class AccessibilityTreeNode extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: accessibilityTreeNodeStyles});
 
   #ignored = true;
   #name = '';
@@ -73,10 +68,6 @@ export class AccessibilityTreeNode extends HTMLElement {
     this.#properties = data.properties;
     this.#id = data.id;
     void this.#render();
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [accessibilityTreeNodeStyles];
   }
 
   async #render(): Promise<void> {

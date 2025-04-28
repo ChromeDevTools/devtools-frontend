@@ -27,6 +27,7 @@ devtools_svg_sources = [
   "accelerometer-back.svg",
   "accelerometer-front.svg",
   "account-tree.svg",
+  "add-photo.svg",
   "align-content-center.svg",
   "align-content-end.svg",
   "align-content-space-around.svg",

@@ -180,7 +180,7 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    this.contentElement.createChild('span', 'some-class');
+    this.contentElement.createChild('span', 'some-class').textContent = 'some-text';
   }
 }`,
       output: `
@@ -188,7 +188,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <span class="some-class"></span>
+      <span class="some-class">some-text</span>
     </div>\`,
     target, {host: input});
 };

@@ -53,7 +53,7 @@ async function addScript(
   const parsedScriptSourceDonePromise = expectCall(scriptParsedSpy);
   const script = debuggerModel.parsedScriptSource(
       'scriptId' as Protocol.Runtime.ScriptId, url, 0, 0, 3, 3, executionContext.id, '', undefined, false, undefined,
-      false, false, 0, false, null, null, null, null, null);
+      false, false, 0, false, null, null, null, null, null, null);
 
   await parsedScriptSourceDonePromise;
   scriptParsedSpy.restore();

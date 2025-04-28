@@ -926,8 +926,18 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return harLog;
   }
 
-  private makeResource(contentProvider: TextUtils.ContentProvider.ContentProvider): {url: string, type: string} {
-    return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
+  private makeResource(contentProvider: TextUtils.ContentProvider.ContentProvider):
+      {url: string, type: string, buildId?: string} {
+    let buildId: string|undefined = undefined;
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      // We use the first buildId we find searching in all Script objects that correspond to this UISourceCode.
+      buildId = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+                    .scriptsForUISourceCode(contentProvider)
+                    .find(script => Boolean(script.buildId))
+                    ?.buildId ??
+          undefined;
+    }
+    return {url: contentProvider.contentURL(), type: contentProvider.contentType().name(), buildId};
   }
 
   private onGetPageResources(_message: unknown, port: MessagePort): Array<{url: string, type: string}> {

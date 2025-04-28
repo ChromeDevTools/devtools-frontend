@@ -233,7 +233,7 @@ describeWithMockConnection('DebuggerModel', () => {
       const scriptUrl = urlString`https://script-host/script.js`;
       const script = new SDK.Script.Script(
           debuggerModel, SCRIPT_ID_ONE, scriptUrl, 0, 0, 0, 0, 0, '', false, false, undefined, false, 0, null, null,
-          null, null, null, null);
+          null, null, null, null, null);
       const scopeTypes: Protocol.Debugger.ScopeType[] = [
         Protocol.Debugger.ScopeType.Global,
         Protocol.Debugger.ScopeType.Local,

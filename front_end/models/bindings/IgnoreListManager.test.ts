@@ -165,7 +165,7 @@ describeWithMockConnection('IgnoreListManager', () => {
       return debuggerModel.parsedScriptSource(
           scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
           executionContextAuxData, false, sourceMapURL, hasSourceURLComment, false, length, false, null, null, null,
-          null, embedderName);
+          null, embedderName, null);
     });
     assert.lengthOf(debuggerModel.scripts(), SCRIPTS.length);
     webpackUiSourceCode = notNull(workspace.uiSourceCodeForURL(webpackUrl));

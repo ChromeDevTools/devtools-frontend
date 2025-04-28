@@ -88,7 +88,7 @@ describeWithMockConnection('ResourceMapping', () => {
     SCRIPTS.forEach(({scriptId, startLine, startColumn, endLine, endColumn, sourceURL, hasSourceURLComment}) => {
       debuggerModel.parsedScriptSource(
           scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, undefined, false,
-          undefined, hasSourceURLComment, false, length, false, null, null, null, null, embedderName);
+          undefined, hasSourceURLComment, false, length, false, null, null, null, null, embedderName, null);
     });
     assert.lengthOf(debuggerModel.scripts(), SCRIPTS.length);
   });

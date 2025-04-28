@@ -233,7 +233,7 @@ describeWithMockConnection('TextEditor autocompletion', () => {
         {forceNew: true, targetManager, resourceMapping});
     const testScript = debuggerModel.parsedScriptSource(
         '1' as Protocol.Runtime.ScriptId, urlString`script://1`, 0, 0, 0, 0, executionContext.id, '', undefined, false,
-        undefined, false, false, 0, null, null, null, null, null, null);
+        undefined, false, false, 0, null, null, null, null, null, null, null);
     const payload: Protocol.Debugger.CallFrame = {
       callFrameId: '0' as Protocol.Debugger.CallFrameId,
       functionName: 'test',

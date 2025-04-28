@@ -13,6 +13,12 @@ export namespace Chrome {
       readonly url: string;
       readonly type: string;
 
+      /**
+       * For WASM resources the content of the `build_id` custom section. For JavaScript resources the
+       * `debugId` magic comment.
+       */
+      readonly buildId?: string;
+
       getContent(callback: (content: string, encoding: string) => unknown): void;
       setContent(content: string, commit: boolean, callback?: (error?: Object) => unknown): void;
       /**

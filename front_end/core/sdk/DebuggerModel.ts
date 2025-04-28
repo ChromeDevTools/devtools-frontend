@@ -729,7 +729,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number,
       isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
       scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
-      embedderName: Platform.DevToolsPath.UrlString|null): Script {
+      embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null): Script {
     const knownScript = this.#scriptsInternal.get(scriptId);
     if (knownScript) {
       return knownScript;
@@ -743,7 +743,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const script = new Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
         isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset,
-        scriptLanguage, selectedDebugSymbol, embedderName);
+        scriptLanguage, selectedDebugSymbol, embedderName, buildId);
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 
@@ -1065,6 +1065,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     scriptLanguage,
     debugSymbols,
     embedderName,
+    buildId,
   }: Protocol.Debugger.ScriptParsedEvent): void {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
@@ -1073,7 +1074,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
         scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
         executionContextId, hash, executionContextAuxData, Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL),
         false, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null,
-        debugSymbols || null, embedderName as Platform.DevToolsPath.UrlString || null);
+        debugSymbols || null, embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
   }
 
   scriptFailedToParse({
@@ -1094,6 +1095,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
     codeOffset,
     scriptLanguage,
     embedderName,
+    buildId,
   }: Protocol.Debugger.ScriptFailedToParseEvent): void {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
@@ -1102,7 +1104,7 @@ class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
         scriptId, url as Platform.DevToolsPath.UrlString, startLine, startColumn, endLine, endColumn,
         executionContextId, hash, executionContextAuxData, false, sourceMapURL, Boolean(hasSourceURL), true,
         length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, null,
-        embedderName as Platform.DevToolsPath.UrlString || null);
+        embedderName as Platform.DevToolsPath.UrlString || null, buildId || null);
   }
 
   breakpointResolved({breakpointId, location}: Protocol.Debugger.BreakpointResolvedEvent): void {

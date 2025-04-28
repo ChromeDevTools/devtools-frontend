@@ -87,13 +87,14 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   #contentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   readonly #embedderNameInternal: Platform.DevToolsPath.UrlString|null;
   readonly isModule: boolean|null;
+  readonly buildId: string|null;
   constructor(
       debuggerModel: DebuggerModel, scriptId: Protocol.Runtime.ScriptId, sourceURL: Platform.DevToolsPath.UrlString,
       startLine: number, startColumn: number, endLine: number, endColumn: number, executionContextId: number,
       hash: string, isContentScript: boolean, isLiveEdit: boolean, sourceMapURL: string|undefined,
       hasSourceURL: boolean, length: number, isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null,
       codeOffset: number|null, scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
-      embedderName: Platform.DevToolsPath.UrlString|null) {
+      embedderName: Platform.DevToolsPath.UrlString|null, buildId: string|null) {
     this.debuggerModel = debuggerModel;
     this.scriptId = scriptId;
     this.sourceURL = sourceURL;
@@ -102,6 +103,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     this.endLine = endLine;
     this.endColumn = endColumn;
     this.isModule = isModule;
+    this.buildId = buildId;
 
     this.executionContextId = executionContextId;
     this.hash = hash;

@@ -513,10 +513,12 @@ namespace APIImpl {
   export interface ResourceData {
     url: string;
     type: string;
+    buildId?: string;
   }
   export interface Resource extends PublicAPI.Chrome.DevTools.Resource {
     _type: string;
     _url: string;
+    _buildId?: string;
 
     get type(): string;
   }
@@ -1308,16 +1310,22 @@ self.injectedExtensionAPI = function(
   function ResourceImpl(this: APIImpl.Resource, resourceData: APIImpl.ResourceData): void {
     this._url = resourceData.url;
     this._type = resourceData.type;
+    this._buildId = resourceData.buildId;
   }
 
-  (ResourceImpl.prototype as
-   Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'|'setFunctionRangesForScript'|'attachSourceMapURL'>) = {
+  (ResourceImpl.prototype as Pick<
+       APIImpl.Resource,
+       'url'|'type'|'buildId'|'getContent'|'setContent'|'setFunctionRangesForScript'|'attachSourceMapURL'>) = {
     get url(): string {
       return (this as APIImpl.Resource)._url;
     },
 
     get type(): string {
       return (this as APIImpl.Resource)._type;
+    },
+
+    get buildId(): (string | undefined) {
+      return (this as APIImpl.Resource)._buildId;
     },
 
     getContent: function(this: APIImpl.Resource, callback?: (content: string, encoding: string) => unknown): void {

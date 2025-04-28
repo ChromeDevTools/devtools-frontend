@@ -45,7 +45,7 @@ describeWithMockConnection('SourceMapManager', () => {
 
     const script = new SDK.Script.Script(
         debuggerModel, '1' as Protocol.Runtime.ScriptId, scriptUrl, 0, 0, 0, 0, 0, '', false, false, sourceMapUrl,
-        false, 0, null, null, null, null, null, null);
+        false, 0, null, null, null, null, null, null, null);
 
     sourceMapManager.attachSourceMap(script, sourceUrl, sourceMapUrl);
 
@@ -74,7 +74,7 @@ describeWithMockConnection('SourceMapManager', () => {
 
     const script = new SDK.Script.Script(
         debuggerModel, '1' as Protocol.Runtime.ScriptId, scriptUrl, 0, 0, 0, 0, 0, '', false, false, sourceMapUrl,
-        false, 0, null, null, null, null, null, null);
+        false, 0, null, null, null, null, null, null, null);
 
     sourceMapManager.attachSourceMap(script, sourceUrl, sourceMapUrl);
 

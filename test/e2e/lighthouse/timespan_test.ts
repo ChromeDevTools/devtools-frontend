@@ -41,8 +41,7 @@ describe('Timespan', function() {
     expectError(/Protocol Error: the message with wrong session id/);
   });
 
-  // crbug.com/412544161 fails after a roll.
-  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report for user interactions', async () => {
+  it('successfully returns a Lighthouse report for user interactions', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 
@@ -91,9 +90,9 @@ describe('Timespan', function() {
     assert.strictEqual(devicePixelRatio, 1);
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-    assert.lengthOf(auditResults, 60);
+    assert.lengthOf(auditResults, 61);
     assert.deepEqual(erroredAudits, []);
-    assert.deepEqual(failedAudits.map(audit => audit.id), []);
+    assert.deepEqual(failedAudits.map(audit => audit), []);
 
     // Ensure the timespan captured the user interaction.
     const interactionAudit = lhr.audits['interaction-to-next-paint'];

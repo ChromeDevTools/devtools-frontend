@@ -1676,9 +1676,6 @@
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "[Fîŕšţ Þåîñţ Îmþŕövéméñţš one two three]"
   },
-  "core/config/default-config.js | insightGroupTitle": {
-    "message": "[Îñšîĝĥţš one]"
-  },
   "core/config/default-config.js | metricGroupTitle": {
     "message": "[Méţŕîçš one]"
   },
@@ -2653,9 +2650,6 @@
   },
   "report/renderer/report-utils.js | dropdownDarkTheme": {
     "message": "[Ţöĝĝļé Ðåŕķ Ţĥémé one two three]"
-  },
-  "report/renderer/report-utils.js | dropdownInsightsToggle": {
-    "message": "[Ţöĝĝļé éxþéŕîméñţåļ îñšîĝĥţš one two three]"
   },
   "report/renderer/report-utils.js | dropdownPrintExpanded": {
     "message": "[Þŕîñţ Éxþåñðéð one two]"

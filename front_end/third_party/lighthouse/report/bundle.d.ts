@@ -1,4 +1,4 @@
-declare var Y: {
+declare var Q: {
     new (e: any, t: any): {
         _document: any;
         _lighthouseChannel: string;
@@ -29,7 +29,7 @@ declare var Y: {
         swapSectionIfPossible(e: any): void;
     };
 };
-declare var ne: {
+declare var te: {
     new (e: any): {
         _dom: any;
         _opts: {};
@@ -43,7 +43,7 @@ declare var ne: {
         _renderReport(e: any): any;
     };
 };
-declare var re: {
+declare var ne: {
     new (e: any, t?: {}): {
         _dom: any;
         _opts: {};
@@ -103,15 +103,15 @@ declare var re: {
         _saveFile(e: any): void;
     };
 };
-declare namespace Lt {
-    export { Ct as registerLocaleData };
-    export { At as hasLocale };
+declare namespace zt {
+    export { At as registerLocaleData };
+    export { Lt as hasLocale };
 }
-declare function Et(r: any, e?: {}): HTMLElement;
-declare function St(r: any, e: any): {
+declare function St(o: any, e?: {}): HTMLElement;
+declare function Ct(o: any, e: any): {
     lhr: any;
     missingIcuMessageIds: any[];
 };
-declare function Ct(r: any, e: any): void;
-declare function At(r: any): boolean;
-export { Y as DOM, ne as ReportRenderer, re as ReportUIFeatures, Lt as format, Et as renderReport, St as swapLocale };
+declare function At(o: any, e: any): void;
+declare function Lt(o: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, zt as format, St as renderReport, Ct as swapLocale };

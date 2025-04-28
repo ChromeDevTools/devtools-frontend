@@ -1440,7 +1440,7 @@
     "message": "Initial server response time was short"
   },
   "core/audits/third-party-cookies.js | description": {
-    "message": "Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies. [Learn more about third-party cookies](https://developers.google.com/privacy-sandbox/cookies)."
+    "message": "Third-party cookies may be blocked in some contexts. [Learn more about preparing for third-party cookie restrictions](https://privacysandbox.google.com/cookies/prepare/overview)."
   },
   "core/audits/third-party-cookies.js | displayValue": {
     "message": "{itemCount, plural,\n    =1 {1 cookie found}\n    other {# cookies found}\n    }"
@@ -1676,7 +1676,10 @@
   "core/config/default-config.js | firstPaintImprovementsGroupTitle": {
     "message": "First Paint Improvements"
   },
-  "core/config/default-config.js | insightGroupTitle": {
+  "core/config/default-config.js | insightsGroupDescription": {
+    "message": "These insights are also available in the Chrome DevTools Performance Panel - [record a trace](https://developer.chrome.com/docs/devtools/performance/reference) to view more detailed information."
+  },
+  "core/config/default-config.js | insightsGroupTitle": {
     "message": "Insights"
   },
   "core/config/default-config.js | metricGroupTitle": {
@@ -1860,22 +1863,22 @@
     "message": "URL"
   },
   "core/lib/i18n/i18n.js | columnWastedBytes": {
-    "message": "Potential Savings"
+    "message": "Est Savings"
   },
   "core/lib/i18n/i18n.js | columnWastedMs": {
-    "message": "Potential Savings"
+    "message": "Est Savings"
   },
   "core/lib/i18n/i18n.js | cumulativeLayoutShiftMetric": {
     "message": "Cumulative Layout Shift"
   },
   "core/lib/i18n/i18n.js | displayValueByteSavings": {
-    "message": "Potential savings of {wastedBytes, number, bytes} KiB"
+    "message": "Est savings of {wastedBytes, number, bytes} KiB"
   },
   "core/lib/i18n/i18n.js | displayValueElementsFound": {
     "message": "{nodeCount, plural, =1 {1 element found} other {# elements found}}"
   },
   "core/lib/i18n/i18n.js | displayValueMsSavings": {
-    "message": "Potential savings of {wastedMs, number, milliseconds} ms"
+    "message": "Est savings of {wastedMs, number, milliseconds} ms"
   },
   "core/lib/i18n/i18n.js | documentResourceType": {
     "message": "Document"
@@ -2174,6 +2177,9 @@
   "node_modules/@paulirish/trace_engine/generated/Deprecation.js | CanRequestURLHTTPContainingNewline": {
     "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
   },
+  "node_modules/@paulirish/trace_engine/generated/Deprecation.js | CharsetAutoDetectionISO2022JP": {
+    "message": "Auto-detection of ISO-2022-JP character set is deprecated and it will be disabled in the near future. Please specify character set in the Content Type header or by using a meta tag (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "node_modules/@paulirish/trace_engine/generated/Deprecation.js | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
   },
@@ -2211,10 +2217,13 @@
     "message": "getUserMedia() no longer works on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
   },
   "node_modules/@paulirish/trace_engine/generated/Deprecation.js | H1UserAgentFontSizeInSection": {
-    "message": "The website has an <h1> tag within an <article>, <aside>, <nav>, or <section>, and relies on deprecated UA stylesheet rules for the resulting font size. See the second block of 'x h1' styles in https://html.spec.whatwg.org/multipage/rendering.html#sections-and-headings. These special rules are deprecated and will be removed. See https://github.com/whatwg/html/issues/7867."
+    "message": "Found an <h1> tag within an <article>, <aside>, <nav>, or <section> which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information."
   },
   "node_modules/@paulirish/trace_engine/generated/Deprecation.js | HostCandidateAttributeGetter": {
     "message": "RTCPeerConnectionIceErrorEvent.hostCandidate is deprecated. Please use RTCPeerConnectionIceErrorEvent.address or RTCPeerConnectionIceErrorEvent.port instead."
+  },
+  "node_modules/@paulirish/trace_engine/generated/Deprecation.js | IdentityDigitalCredentials": {
+    "message": "This format for the navigator.credentials.get() request for digital credentials is deprecated, please update your call to use the new format."
   },
   "node_modules/@paulirish/trace_engine/generated/Deprecation.js | IdentityInCanMakePaymentEvent": {
     "message": "The merchant origin and arbitrary data from the canmakepayment service worker event are deprecated and will be removed: topOrigin, paymentRequestOrigin, methodData, modifiers."
@@ -2366,6 +2375,24 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | worstLayoutShiftCluster": {
     "message": "Worst layout shift cluster"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | cacheTTL": {
+    "message": "Cache TTL"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | description": {
+    "message": "A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | noRequestsToCache": {
+    "message": "No requests with inefficient cache policies"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | others": {
+    "message": "{PH1} others"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | requestColumn": {
+    "message": "Request"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Cache.js | title": {
+    "message": "Use efficient cache lifetimes"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
     "message": "A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
   },
@@ -2423,8 +2450,8 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | uncompressedDownload": {
     "message": "Uncompressed download"
   },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/DuplicatedJavaScript.js | columnResourceSize": {
-    "message": "Resource size"
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DuplicatedJavaScript.js | columnDuplicatedBytes": {
+    "message": "Duplicated bytes"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DuplicatedJavaScript.js | columnSource": {
     "message": "Source"
@@ -2447,6 +2474,9 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | wastedTimeColumn": {
     "message": "Wasted time"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ForcedReflow.js | anonymous": {
+    "message": "(anonymous)"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/ForcedReflow.js | description": {
     "message": "Many APIs, typically reading layout geometry, force the rendering engine to pause script execution in order to calculate the style and layout. Learn more about [forced reflow](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and its mitigations."
   },
@@ -2463,7 +2493,7 @@
     "message": "Total reflow time"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/ForcedReflow.js | unattributed": {
-    "message": "Unattributed"
+    "message": "[unattributed]"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
     "message": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2576,6 +2606,33 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/LCPPhases.js | title": {
     "message": "LCP by phase"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LegacyJavaScript.js | columnScript": {
+    "message": "Script"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LegacyJavaScript.js | columnWastedBytes": {
+    "message": "Wasted bytes"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LegacyJavaScript.js | description": {
+    "message": "Polyfills and transforms enable legacy browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support legacy browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LegacyJavaScript.js | title": {
+    "message": "Legacy JavaScript"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ModernHTTP.js | description": {
+    "message": "HTTP/2 and HTTP/3 offer many benefits over HTTP/1.1, such as multiplexing. [Learn more about using modern HTTP](https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ModernHTTP.js | noOldProtocolRequests": {
+    "message": "No requests used HTTP/1.1"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ModernHTTP.js | protocol": {
+    "message": "Protocol"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ModernHTTP.js | request": {
+    "message": "Request"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ModernHTTP.js | title": {
+    "message": "Modern HTTP"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/NetworkDependencyTree.js | description": {
     "message": "[Avoid chaining critical requests](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load."
   },
@@ -2647,24 +2704,6 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/ThirdParties.js | title": {
     "message": "3rd parties"
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | cacheTTL": {
-    "message": "Cache TTL"
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | description": {
-    "message": "A long cache lifetime can speed up repeat visits to your page. [Learn more](https://web.dev/uses-long-cache-ttl/)."
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | noRequestsToCache": {
-    "message": "No requests with inefficient cache policies"
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | others": {
-    "message": "{PH1} others"
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | requestColumn": {
-    "message": "Request"
-  },
-  "node_modules/@paulirish/trace_engine/models/trace/insights/UseCache.js | title": {
-    "message": "Use efficient cache lifetimes"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
     "message": "Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile."
@@ -3524,9 +3563,6 @@
   "report/renderer/report-utils.js | dropdownDarkTheme": {
     "message": "Toggle Dark Theme"
   },
-  "report/renderer/report-utils.js | dropdownInsightsToggle": {
-    "message": "Toggle experimental insights"
-  },
   "report/renderer/report-utils.js | dropdownPrintExpanded": {
     "message": "Print Expanded"
   },
@@ -3563,8 +3599,14 @@
   "report/renderer/report-utils.js | footerIssue": {
     "message": "File an issue"
   },
+  "report/renderer/report-utils.js | goBackToAudits": {
+    "message": "Go back to audits"
+  },
   "report/renderer/report-utils.js | hide": {
     "message": "Hide"
+  },
+  "report/renderer/report-utils.js | insightsNotice": {
+    "message": "Later this year, insights will replace performance audits. [Learn more and provide feedback here](https://github.com/GoogleChrome/lighthouse/discussions/16462)."
   },
   "report/renderer/report-utils.js | labDataTitle": {
     "message": "Lab Data"
@@ -3665,6 +3707,9 @@
   "report/renderer/report-utils.js | toplevelWarningsMessage": {
     "message": "There were issues affecting this run of Lighthouse:"
   },
+  "report/renderer/report-utils.js | tryInsights": {
+    "message": "Try insights"
+  },
   "report/renderer/report-utils.js | unattributable": {
     "message": "Unattributable"
   },
@@ -3687,24 +3732,30 @@
     "message": "All"
   },
   "treemap/app/src/util.js | allScriptsDropdownLabel": {
-    "message": "All Scripts"
+    "message": "All scripts"
   },
   "treemap/app/src/util.js | coverageColumnName": {
     "message": "Coverage"
   },
   "treemap/app/src/util.js | duplicateModulesLabel": {
-    "message": "Duplicate Modules"
+    "message": "Duplicate modules"
+  },
+  "treemap/app/src/util.js | duplicatedBytesLabel": {
+    "message": "Duplicated bytes"
   },
   "treemap/app/src/util.js | resourceBytesLabel": {
-    "message": "Resource Bytes"
+    "message": "Resource bytes"
   },
   "treemap/app/src/util.js | tableColumnName": {
     "message": "Name"
   },
   "treemap/app/src/util.js | toggleTableButtonLabel": {
-    "message": "Toggle Table"
+    "message": "Toggle table"
+  },
+  "treemap/app/src/util.js | transferBytesLabel": {
+    "message": "Transfer bytes"
   },
   "treemap/app/src/util.js | unusedBytesLabel": {
-    "message": "Unused Bytes"
+    "message": "Unused bytes"
   }
 }

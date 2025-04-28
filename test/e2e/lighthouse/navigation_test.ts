@@ -67,8 +67,7 @@ describe('Navigation', function() {
     }
   });
 
-  // crbug.com/412544161 fails after a roll.
-  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report', async () => {
+  it('successfully returns a Lighthouse report', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 
@@ -95,7 +94,7 @@ describe('Navigation', function() {
     // 1 refresh after auditing to reset state
     assert.strictEqual(numNavigations, 5);
 
-    assert.strictEqual(lhr.lighthouseVersion, '12.5.1');
+    assert.strictEqual(lhr.lighthouseVersion, '12.6.0');
     assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
     assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
@@ -121,13 +120,14 @@ describe('Navigation', function() {
     });
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, ['max-potential-fid']);
-    assert.lengthOf(auditResults, 174);
+    assert.lengthOf(auditResults, 175);
     assert.deepEqual(erroredAudits, []);
     assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
       'html-has-lang',
       'render-blocking-resources',
       'meta-description',
+      'network-dependency-tree-insight',
       'render-blocking-insight',
     ]);
 
@@ -181,8 +181,7 @@ describe('Navigation', function() {
     assert.strictEqual(await getServiceWorkerCount(), 0);
   });
 
-  // crbug.com/412544161 fails after a roll.
-  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report with DevTools throttling', async () => {
+  it('successfully returns a Lighthouse report with DevTools throttling', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
 
     await setThrottlingMethod('devtools');
@@ -196,27 +195,27 @@ describe('Navigation', function() {
     // [crbug.com/1347220] DevTools throttling can force resources to load slow enough for these audits to fail sometimes.
     const flakyAudits = [
       'server-response-time',
-      'document-latency-insight',
       'render-blocking-resources',
       'render-blocking-insight',
+      'document-latency-insight',
       'max-potential-fid',
     ];
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, flakyAudits);
-    assert.lengthOf(auditResults, 174);
+    assert.lengthOf(auditResults, 175);
     assert.deepEqual(erroredAudits, []);
     assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
       'html-has-lang',
       'meta-description',
+      'network-dependency-tree-insight',
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);
     assert.isOk(viewTraceButton);
   });
 
-  // crbug.com/412544161 fails after a roll.
-  it.skip('[crbug.com/412544161]: successfully returns a Lighthouse report when settings changed', async () => {
+  it('successfully returns a Lighthouse report when settings changed', async () => {
     await setDevToolsSettings({language: 'es'});
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();

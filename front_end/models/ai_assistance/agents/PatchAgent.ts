@@ -76,8 +76,8 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
 
   get options(): RequestOptions {
     return {
-      temperature: undefined,
-      modelId: undefined,
+      temperature: Root.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root.Runtime.hostConfig.devToolsFreestyler?.modelId,
     };
   }
 
@@ -282,8 +282,8 @@ export class FileUpdateAgent extends AiAgent<Workspace.Workspace.Project> {
 
   get options(): RequestOptions {
     return {
-      temperature: undefined,
-      modelId: undefined,
+      temperature: Root.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root.Runtime.hostConfig.devToolsFreestyler?.modelId,
     };
   }
 }

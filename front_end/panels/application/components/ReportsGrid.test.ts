@@ -35,7 +35,8 @@ const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.Report
 
 const getHeaderText = (cell: HTMLTableCellElement) => {
   const ret = cell.textContent?.trim() ||
-      cell.querySelector('devtools-resources-reports-grid-status-header')!.shadowRoot!.textContent!.trim();
+      cell.querySelector('devtools-resources-reports-grid-status-header')!.shadowRoot!.querySelector('.status-header')!
+          .textContent!.trim();
   return ret;
 };
 

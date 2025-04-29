@@ -12,20 +12,12 @@ import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import reportingApiGridStylesRaw from './reportingApiGrid.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const reportingApiGridStyles = new CSSStyleSheet();
-reportingApiGridStyles.replaceSync(reportingApiGridStylesRaw.cssText);
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
+import reportingApiGridStyles from './reportingApiGrid.css.js';
 
 const UIStrings = {
   /**
@@ -69,7 +61,6 @@ export class ReportsGridStatusHeader extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles];
     this.#render();
   }
 
@@ -77,7 +68,8 @@ export class ReportsGridStatusHeader extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      ${i18nString(UIStrings.status)}
+      <style>${reportingApiGridStyles.cssText}</style>
+      <span class="status-header">${i18nString(UIStrings.status)}</span>
       <x-link href="https://web.dev/reporting-api/#report-status"
       jslog=${VisualLogging.link('report-status').track({click: true})}>
         <devtools-icon class="inline-icon" .data=${{
@@ -102,7 +94,6 @@ export class ReportsGrid extends HTMLElement {
   #protocolMonitorExperimentEnabled = false;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles, inspectorCommonStyles];
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
     this.#render();
   }
@@ -116,6 +107,8 @@ export class ReportsGrid extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportingApiGridStyles.cssText}</style>
+      <style>${inspectorCommonStyles.cssText}</style>
       <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
         ${this.#reports.length > 0 ? html`

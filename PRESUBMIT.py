@@ -33,6 +33,8 @@ run presubmit checks in DevTools.
 
 See http://dev.chromium.org/developers/how-tos/depottools/presubmit-scripts
 for more details about the presubmit API built into gcl.
+
+`git cl presubmit -v -v` to debug presubmit checks.
 """
 
 import sys
@@ -41,32 +43,35 @@ import time
 
 from pathlib import Path
 
-# Depot tools imports
-import rdb_wrapper
-
 AUTOROLL_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 USE_PYTHON3 = True
+PRESUBMIT_VERSION = '2.0.0'
 
 
-def _ExecuteSubProcess(input_api, output_api, script_path, args, results):
+def _ExecuteSubProcess(input_api,
+                       output_api,
+                       script_path,
+                       script_arguments=[],
+                       results=[],
+                       message=None):
     if isinstance(script_path, six.string_types):
         script_path = [input_api.python3_executable, script_path]
 
     start_time = time.time()
-    process = input_api.subprocess.Popen(script_path + args,
+    process = input_api.subprocess.Popen(script_path + script_arguments,
                                          stdout=input_api.subprocess.PIPE,
                                          stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     end_time = time.time()
-
     time_difference = end_time - start_time
-    time_info = "Script execution time was %.1fs seconds\n" % (time_difference)
     if process.returncode != 0:
-        results.append(
-            output_api.PresubmitError(time_info + out.decode('utf-8')))
-    else:
-        results.append(
-            output_api.PresubmitNotifyResult(time_info + out.decode('utf-8')))
+        results.extend([
+            output_api.PresubmitError(
+                "%s (%.1fs): %s" %
+                (message if message is not None else script_path,
+                 time_difference, out.decode('utf-8').strip()))
+        ])
+
     return results
 
 
@@ -85,8 +90,103 @@ def _IsEnvCog(input_api):
     return False
 
 
-def _CheckBugAssociation(input_api, output_api, is_committing):
-    results = [output_api.PresubmitNotifyResult('Bug Association Check:')]
+def _GetAffectedFiles(input_api, parent_directories, excluded_actions,
+                      accepted_endings):
+    """Return absolute file paths of affected files (not due to an excluded action)
+       under a parent directory with an accepted file ending.
+    """
+    local_paths = [
+        f.AbsoluteLocalPath() for f in input_api.AffectedFiles()
+        if all(f.Action() != action for action in excluded_actions)
+    ]
+    affected_files = [
+        file_name for file_name in local_paths
+        if any(parent_directory in file_name
+               for parent_directory in parent_directories) and (
+                   len(accepted_endings) == 0 or any(
+                       file_name.endswith(accepted_ending)
+                       for accepted_ending in accepted_endings))
+    ]
+    return affected_files
+
+
+def _CheckWithNodeScript(input_api,
+                         output_api,
+                         script_path,
+                         script_arguments=[],
+                         allow_typescript=False,
+                         message=None):
+    original_sys_path = sys.path
+    try:
+        sys.path = sys.path + [
+            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
+        ]
+        import devtools_paths
+    finally:
+        sys.path = original_sys_path
+
+    process = [devtools_paths.node_path(), script_path]
+
+    if allow_typescript:
+        process.insert(1, '--no-warnings=ExperimentalWarning')
+        process.insert(1, '--experimental-strip-types')
+
+    return _ExecuteSubProcess(input_api,
+                              output_api,
+                              process,
+                              script_arguments=script_arguments,
+                              message=message)
+
+
+def _GetFilesToLint(input_api, lint_config_files, default_linted_directories,
+                    accepted_endings):
+    run_full_check = False
+    files_to_lint = []
+
+    # We are changing the lint configuration; run the full check.
+    if len(lint_config_files) != 0:
+        run_full_check = True
+    else:
+        # Only run the linter on files that are relevant, to save PRESUBMIT time.
+        files_to_lint = _GetAffectedFiles(input_api,
+                                          default_linted_directories, ['D'],
+                                          accepted_endings)
+
+        # Exclude front_end/third_party and front_end/generated files.
+        files_to_lint = [
+            file for file in files_to_lint
+            if "front_end/third_party" not in file
+            and "front_end/generated" not in file
+        ]
+
+    should_bail_out = len(files_to_lint) == 0 and not run_full_check
+    return should_bail_out, files_to_lint
+
+
+def _CheckFormat(input_api, output_api):
+    if _IsEnvCog(input_api):
+        return [
+            output_api.PresubmitPromptWarning(
+                'Non-git environment detected, skipping _CheckFormat.')
+        ]
+
+    results = []
+
+    _ExecuteSubProcess(input_api,
+                       output_api, ['git', 'cl', 'format', '--js'],
+                       results=results,
+                       message='Format JS')
+
+    _ExecuteSubProcess(input_api,
+                       output_api, ['git', 'cl', 'format'],
+                       results=results,
+                       message='Format')
+
+    return results
+
+
+def CheckBugAssociationOnCommit(input_api, output_api):
+    results = []
     bugs = input_api.change.BugsFromDescription()
     message = (
         "Each CL should be associated with a bug, use \'Bug:\' or \'Fixed:\' lines in\n"
@@ -98,150 +198,43 @@ def _CheckBugAssociation(input_api, output_api, is_committing):
         "line are not detected by this presubmit check.")
 
     if not bugs:
-        if is_committing:
-            results.append(output_api.PresubmitError(message))
-        else:
-            results.append(output_api.PresubmitNotifyResult(message))
-
-    for bug in bugs:
-        results.append(output_api.PresubmitNotifyResult(('%s') % bug))
+        results.append(output_api.PresubmitError(message))
 
     return results
 
 
-def _CheckExperimentTelemetry(input_api, output_api):
+def CheckExperimentTelemetry(input_api, output_api):
     experiment_telemetry_files = [
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'entrypoints', 'main', 'MainImpl.ts'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'core', 'host', 'UserMetrics.ts')
     ]
-    affected_main_files = _getAffectedFiles(input_api,
+    affected_main_files = _GetAffectedFiles(input_api,
                                             experiment_telemetry_files, [],
                                             ['.ts'])
     if len(affected_main_files) == 0:
-        return [
-            output_api.PresubmitNotifyResult(
-                'No affected files for telemetry check')
-        ]
+        return []
 
-    results = [
-        output_api.PresubmitNotifyResult('Running Experiment Telemetry check:')
-    ]
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                          'scripts', 'check_experiments.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
-    return results
+    return _CheckWithNodeScript(input_api,
+                                output_api,
+                                script_path,
+                                message='Experiment telemetry')
 
 
-def _CheckESBuildVersion(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult('Running ESBuild version check:')
-    ]
+def CheckESBuildVersion(input_api, output_api):
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                          'scripts',
                                          'check_esbuild_versions.js')
-    results.extend(_checkWithNodeScript(input_api, output_api, script_path))
-    return results
+    return _CheckWithNodeScript(input_api,
+                                output_api,
+                                script_path,
+                                message='ESBuild version')
 
 
-def _CheckFormat(input_api, output_api):
-    if _IsEnvCog(input_api):
-        return [
-            output_api.PresubmitPromptWarning(
-                'Non-git environment detected, skipping _CheckFormat.')
-        ]
-
-    results = [output_api.PresubmitNotifyResult('Running Format Checks:')]
-
-    return _ExecuteSubProcess(input_api, output_api,
-                              ['git', 'cl', 'format', '--js'], [], results)
-
-
-def _CheckDevToolsRunStylelintTests(input_api, output_api):
-    # Check for changes in the stylelint_rules directory, and run the stylelint rules
-    # tests if so.
-    # We don't do this on every CL as most do not touch the rules, but if we do
-    # change them we need to make sure all the tests are passing.
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [
-            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
-        ]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-
-    stylelint_tests_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'stylelint_rules')
-    stylelint_rules_check_paths = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
-                               'stylelint'),
-        # Rule is added/updated
-        stylelint_tests_path,
-        # Variable declaration used in test are changed
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'application_tokens.css'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'design_system_tokens.css'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
-                               'inspectorCommon.css'),
-    ]
-    stylelint_rules_affected_files = _getAffectedFiles(
-        input_api, stylelint_rules_check_paths, [], [])
-
-    if (len(stylelint_rules_affected_files) == 0):
-        return []
-
-    mocha_path = devtools_paths.mocha_path()
-    stylelint_tests_path = input_api.os_path.join(stylelint_tests_path,
-                                                  'tests', '*.test.js')
-
-    results = [output_api.PresubmitNotifyResult('Stylelint rules unit tests')]
-    results.extend(
-        # The dot reporter is more concise which is useful to not get LOADS of
-        # output when just one test fails.
-        _checkWithNodeScript(input_api, output_api, mocha_path,
-                             ['--reporter', 'dot', stylelint_tests_path]))
-    return results
-
-
-def _CheckDevToolsRunBuildTests(input_api, output_api):
-    # Check for changes in the build/tests directory, and run the tests if so.
-    # We don't do this on every CL as most do not touch the rules, but if we do
-    # change them we need to make sure all the tests are passing.
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [
-            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
-        ]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-    scripts_build_dir_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'scripts', 'build')
-    scripts_build_affected_files = _getAffectedFiles(input_api,
-                                                     [scripts_build_dir_path],
-                                                     [], [])
-
-    if len(scripts_build_affected_files) == 0:
-        return []
-
-    mocha_path = devtools_paths.mocha_path()
-    build_tests_path = input_api.os_path.join(scripts_build_dir_path, 'tests',
-                                              '*_test.js')
-
-    results = [output_api.PresubmitNotifyResult('Build plugins unit tests')]
-    results.extend(
-        # The dot reporter is more concise which is useful to not get LOADS of
-        # output when just one test fails.
-        _checkWithNodeScript(input_api, output_api, mocha_path,
-                             ['--reporter', 'dot', build_tests_path]))
-    return results
-
-
-def _CheckDevToolsLint(input_api, output_api):
-    results = [output_api.PresubmitNotifyResult('Lint Check:')]
+def CheckDevToolsLint(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test', 'run_lint_check.mjs')
 
@@ -286,36 +279,36 @@ def _CheckDevToolsLint(input_api, output_api):
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
     ]
 
-    lint_config_files = _getAffectedFiles(
+    lint_config_files = _GetAffectedFiles(
         input_api, lint_related_directories,
-        [], [".js", ".mjs", ".ts"]) + _getAffectedFiles(
+        [], [".js", ".mjs", ".ts"]) + _GetAffectedFiles(
             input_api, lint_related_files, [], [])
 
-    should_bail_out, files_to_lint = _getFilesToLint(
-        input_api, output_api, lint_config_files, default_linted_directories,
-        ['.css', '.mjs', '.js', '.ts'], results)
+    should_bail_out, files_to_lint = _GetFilesToLint(
+        input_api, lint_config_files, default_linted_directories,
+        ['.css', '.mjs', '.js', '.ts'])
     if should_bail_out:
-        return results
+        return []
 
     # If there are more than 50 files to check, don't bother and check
     # everything, so as to not run into command line length limits on Windows.
     if len(files_to_lint) > 50:
         files_to_lint = []
 
+    results = []
     results.extend(
-        _checkWithNodeScript(input_api,
+        _CheckWithNodeScript(input_api,
                              output_api,
                              lint_path,
-                             files_to_lint,
-                             allow_typescript=True))
+                             script_arguments=files_to_lint,
+                             allow_typescript=True,
+                             message="Lint"))
+
+    results.extend(_CheckFormat(input_api, output_api))
     return results
 
 
-def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult(
-            'Python-like file license header check:')
-    ]
+def CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                        'scripts', 'test',
                                        'run_header_check_non_js_files.js')
@@ -338,32 +331,32 @@ def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
 
     check_related_files = [lint_path]
 
-    lint_config_files = _getAffectedFiles(input_api, check_related_files, [],
+    lint_config_files = _GetAffectedFiles(input_api, check_related_files, [],
                                           ['.js'])
 
-    should_bail_out, files_to_lint = _getFilesToLint(
-        input_api, output_api, lint_config_files, default_linted_directories,
-        ['BUILD.gn', '.gni', '.css'], results)
+    should_bail_out, files_to_lint = _GetFilesToLint(
+        input_api, lint_config_files, default_linted_directories,
+        ['BUILD.gn', '.gni', '.css'])
     if should_bail_out:
-        return results
+        return []
 
     # If there are more than 50 files to check, don't bother and check
     # everything, so as to not run into command line length limits on Windows.
     if len(files_to_lint) > 50:
         files_to_lint = []
 
-    results.extend(
-        _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
-    return results
+    return _CheckWithNodeScript(input_api,
+                                output_api,
+                                lint_path,
+                                files_to_lint,
+                                message='License headers')
 
 
-def _CheckGeneratedFiles(input_api, output_api):
+def CheckGeneratedFiles(input_api, output_api):
     v8_directory_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                'v8')
     blink_directory_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'third_party', 'blink')
-    protocol_location = input_api.os_path.join(blink_directory_path, 'public',
-                                               'devtools_protocol')
     scripts_build_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                                 'scripts', 'build')
     scripts_generated_output_path = input_api.os_path.join(
@@ -383,7 +376,7 @@ def _CheckGeneratedFiles(input_api, output_api):
         input_api.PresubmitLocalPath(), 'third_party', 'inspector_protocol',
         'concatenate_protocols.py')
 
-    affected_files = _getAffectedFiles(input_api, [
+    affected_files = _GetAffectedFiles(input_api, [
         v8_directory_path,
         blink_directory_path,
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'third_party',
@@ -398,72 +391,34 @@ def _CheckGeneratedFiles(input_api, output_api):
     ], [], ['.pdl', '.json5', '.py', '.js', '.ts'])
 
     if len(affected_files) == 0:
-        return [
-            output_api.PresubmitNotifyResult(
-                'No affected files for generated files check')
-        ]
+        return []
 
-    results = [
-        output_api.PresubmitNotifyResult('Running Generated Files Check:')
-    ]
     generate_protocol_resources_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'scripts', 'deps',
         'generate_protocol_resources.py')
 
-    return _ExecuteSubProcess(input_api, output_api,
-                              generate_protocol_resources_path, [], results)
+    return _ExecuteSubProcess(input_api,
+                              output_api,
+                              generate_protocol_resources_path,
+                              message='Generated files')
 
 
-def _CheckL10nStrings(input_api, output_api):
+def CheckL10nStrings(input_api, output_api):
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, 'front_end')
     script_path = input_api.os_path.join(devtools_root, 'third_party', 'i18n',
                                          'check-strings.js')
-    affected_front_end_files = _getAffectedFiles(
+    affected_front_end_files = _GetAffectedFiles(
         input_api, [devtools_front_end, script_path], [], ['.js', '.ts'])
     if len(affected_front_end_files) == 0:
-        return [
-            output_api.PresubmitNotifyResult(
-                'No affected files to run check-strings')
-        ]
-
-    results = [
-        output_api.PresubmitNotifyResult('Checking UI strings from front_end:')
-    ]
-    results.extend(
-        _checkWithNodeScript(input_api, output_api, script_path,
-                             [devtools_front_end]))
-    return results
+        return []
+    return _CheckWithNodeScript(input_api,
+                                output_api,
+                                script_path, [devtools_front_end],
+                                message='l10n strings')
 
 
-def _CheckNoUncheckedFiles(input_api, output_api):
-    if _IsEnvCog(input_api):
-        return [
-            output_api.PresubmitPromptWarning(
-                'Non-git environment detected, skipping '
-                '_CheckNoUncheckedFiles.')
-        ]
-
-    process = input_api.subprocess.Popen(['git', 'diff', '--exit-code'],
-                                         stdout=input_api.subprocess.PIPE,
-                                         stderr=input_api.subprocess.STDOUT)
-    out, _ = process.communicate()
-    if process.returncode != 0:
-        files_changed_process = input_api.subprocess.Popen(
-            ['git', 'diff'],
-            stdout=input_api.subprocess.PIPE,
-            stderr=input_api.subprocess.STDOUT)
-        files_changed, _ = files_changed_process.communicate()
-
-        return [
-            output_api.PresubmitError(
-                'You have changed files that need to be committed:'),
-            output_api.PresubmitError(files_changed.decode('utf-8'))
-        ]
-    return []
-
-
-def _CheckForTooLargeFiles(input_api, output_api):
+def CheckForTooLargeFiles(input_api, output_api):
     """Avoid large files, especially binary files, in the repository since
   git doesn't scale well for those. They will be in everyone's repo
   clones forever, forever making Chromium slower to clone and work
@@ -490,225 +445,31 @@ def _CheckForTooLargeFiles(input_api, output_api):
             output_api.PresubmitError('Too large files found in commit',
                                       long_text=message + '\n')
         ]
-    else:
-        return []
+    return []
 
 
-def _CheckObsoleteScreenshotGoldens(input_api, output_api):
-    results = [
-        output_api.PresubmitNotifyResult('Obsolete screenshot images check')
-    ]
+def CheckObsoleteScreenshotGoldens(input_api, output_api):
     interaction_test_root_path = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'test', 'interactions')
     interaction_test_files = [interaction_test_root_path]
 
-    interaction_test_files_changed = _getAffectedFiles(input_api,
+    interaction_test_files_changed = _GetAffectedFiles(input_api,
                                                        interaction_test_files,
                                                        [], [])
-
-    if len(interaction_test_files_changed) > 0:
-        script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                             'scripts', 'test',
-                                             'check_obsolete_goldens.js')
-
-        script_args = []
-        errors_from_script = _checkWithNodeScript(input_api, output_api,
-                                                  script_path, script_args)
-        results.extend(errors_from_script)
-
-    return results
+    if len(interaction_test_files_changed) == 0:
+        return []
+    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
+                                         'scripts', 'test',
+                                         'check_obsolete_goldens.js')
+    return _CheckWithNodeScript(input_api,
+                                output_api,
+                                script_path,
+                                script_arguments=[],
+                                message='Obsolete screenshot images')
 
 
-def _WithArgs(checkType, **kwargs):
-
-    def _WithArgsWrapper(input_api, output_api):
-        return checkType(input_api, output_api, **kwargs)
-
-    _WithArgsWrapper.__name__ = checkType.__name__
-    return _WithArgsWrapper
-
-
-def _CannedChecks(canned_checks):
-    return [
-        canned_checks.CheckForCommitObjects,
-        canned_checks.CheckOwnersFormat,
-        canned_checks.CheckOwners,
-        canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol,
-        _WithArgs(canned_checks.CheckChangeHasNoStrayWhitespace,
-                  source_file_filter=lambda file: not file.LocalPath().
-                  startswith('node_modules')),
-        canned_checks.CheckGenderNeutral,
-        canned_checks.CheckDoNotSubmitInFiles,
-    ]
-
-
-def _CommonChecks(canned_checks):
-    local_checks = [
-        _WithArgs(canned_checks.CheckAuthorizedAuthor,
-                  bot_allowlist=[AUTOROLL_ACCOUNT]),
-        _CheckExperimentTelemetry,
-        _CheckGeneratedFiles,
-        _CheckDevToolsLint,
-        _CheckDevToolsRunStylelintTests,
-        _CheckDevToolsRunBuildTests,
-        _CheckDevToolsNonJSFileLicenseHeaders,
-        _CheckFormat,
-        _CheckESBuildVersion,
-        _CheckObsoleteScreenshotGoldens,
-        _CheckNodeModules,
-    ]
-    # Run the canned checks from `depot_tools` after the custom DevTools checks.
-    # The canned checks for example check that lines have line endings. The
-    # DevTools presubmit checks automatically fix these issues. If we would run
-    # the canned checks before the DevTools checks, they would erroneously conclude
-    # that there are issues in the code. Since the canned checks are allowed to be
-    # ignored, a confusing message is shown that asks if the failed presubmit can
-    # be continued regardless. By fixing the issues before we reach the canned checks,
-    # we don't show the message to suppress these errors, which would otherwise be
-    # causing CQ to fail.
-    return local_checks + _CannedChecks(canned_checks)
-
-
-def _SideEffectChecks(input_api, output_api):
-    """Check side effects caused by other checks"""
-    results = []
-    results.extend(_CheckNoUncheckedFiles(input_api, output_api))
-    results.extend(_CheckForTooLargeFiles(input_api, output_api))
-    return results
-
-
-def _RunAllChecks(checks, input_api, output_api):
-    with rdb_wrapper.client("presubmit:") as sink:
-        results = []
-        for check in checks:
-            start_time = time.time()
-
-            result = check(input_api, output_api)
-
-            elapsed_time = time.time() - start_time
-            results.extend(result)
-
-            if not sink:
-                continue
-            failure_reason = None
-            status = rdb_wrapper.STATUS_PASS
-            if any(r.fatal for r in result):
-                status = rdb_wrapper.STATUS_FAIL
-                failure_reasons = []
-                for r in result:
-                    fields = r.json_format()
-                    message = fields['message']
-                    items = '\n'.join('  %s' % item
-                                      for item in fields['items'])
-                    failure_reasons.append('\n'.join([message, items]))
-                if failure_reasons:
-                    failure_reason = '\n'.join(failure_reasons)
-            sink.report(check.__name__, status, elapsed_time, failure_reason)
-
-        return results
-
-
-def CheckChangeOnUpload(input_api, output_api):
-    checks = _CommonChecks(input_api.canned_checks) + [
-        _CheckL10nStrings,
-        # Run checks that rely on output from other DevTool checks
-        _SideEffectChecks,
-        _WithArgs(_CheckBugAssociation, is_committing=False),
-    ]
-    return _RunAllChecks(checks, input_api, output_api)
-
-
-def CheckChangeOnCommit(input_api, output_api):
-    checks = _CommonChecks(input_api.canned_checks) + [
-        _CheckL10nStrings,
-        # Run checks that rely on output from other DevTool checks
-        _SideEffectChecks,
-        input_api.canned_checks.CheckChangeHasDescription,
-        _WithArgs(_CheckBugAssociation, is_committing=True),
-    ]
-    return _RunAllChecks(checks, input_api, output_api)
-
-
-def _getAffectedFiles(input_api, parent_directories, excluded_actions,
-                      accepted_endings):  # pylint: disable=invalid-name
-    """Return absolute file paths of affected files (not due to an excluded action)
-       under a parent directory with an accepted file ending.
-    """
-    local_paths = [
-        f.AbsoluteLocalPath() for f in input_api.AffectedFiles()
-        if all(f.Action() != action for action in excluded_actions)
-    ]
-    affected_files = [
-        file_name for file_name in local_paths
-        if any(parent_directory in file_name
-               for parent_directory in parent_directories) and (
-                   len(accepted_endings) == 0 or any(
-                       file_name.endswith(accepted_ending)
-                       for accepted_ending in accepted_endings))
-    ]
-    return affected_files
-
-
-def _checkWithNodeScript(input_api,
-                         output_api,
-                         script_path,
-                         script_arguments=[],
-                         allow_typescript=False):
-    original_sys_path = sys.path
-    try:
-        sys.path = sys.path + [
-            input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts')
-        ]
-        import devtools_paths
-    finally:
-        sys.path = original_sys_path
-
-    process = [devtools_paths.node_path(), script_path]
-
-    if allow_typescript:
-        process.insert(1, '--no-warnings=ExperimentalWarning')
-        process.insert(1, '--experimental-strip-types')
-
-    return _ExecuteSubProcess(input_api, output_api, process, script_arguments,
-                              [])
-
-
-def _getFilesToLint(input_api, output_api, lint_config_files,
-                    default_linted_directories, accepted_endings, results):
-    run_full_check = False
-    files_to_lint = []
-
-    # We are changing the lint configuration; run the full check.
-    if len(lint_config_files) != 0:
-        results.append(
-            output_api.PresubmitNotifyResult('Running full lint check'))
-        run_full_check = True
-    else:
-        # Only run the linter on files that are relevant, to save PRESUBMIT time.
-        files_to_lint = _getAffectedFiles(input_api,
-                                          default_linted_directories, ['D'],
-                                          accepted_endings)
-
-        # Exclude front_end/third_party and front_end/generated files.
-        files_to_lint = [
-            file for file in files_to_lint
-            if "front_end/third_party" not in file
-            and "front_end/generated" not in file
-        ]
-
-        if len(files_to_lint) == 0:
-            results.append(
-                output_api.PresubmitNotifyResult(
-                    'No affected files for lint check'))
-
-    should_bail_out = len(files_to_lint) == 0 and not run_full_check
-    return should_bail_out, files_to_lint
-
-
-def _CheckNodeModules(input_api, output_api):
-
+def CheckNodeModules(input_api, output_api):
     files = ['.clang-format', 'OWNERS', 'README.chromium']
-
     results = []
     for file in files:
         file_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -719,5 +480,75 @@ def _CheckNodeModules(input_api, output_api):
                     "node_modules/%s is missing. Use npm run install-deps to re-create it."
                     % file)
             ])
-
     return results
+
+
+def CheckNoUncheckedFiles(input_api, output_api):
+    if _IsEnvCog(input_api):
+        return []
+
+    process = input_api.subprocess.Popen(['git', 'diff', '--exit-code'],
+                                         stdout=input_api.subprocess.PIPE,
+                                         stderr=input_api.subprocess.STDOUT)
+    out, _ = process.communicate()
+    if process.returncode != 0:
+        files_changed_process = input_api.subprocess.Popen(
+            ['git', 'diff', '--name-only'],
+            stdout=input_api.subprocess.PIPE,
+            stderr=input_api.subprocess.STDOUT)
+        files_changed, _ = files_changed_process.communicate()
+
+        return [
+            output_api.PresubmitError(
+                'You have changed files that need to be committed:\n%s' %
+                (files_changed.decode('utf-8').strip()))
+        ]
+
+    return []
+
+
+# Canned check wrappers below.
+
+source_file_filter = lambda file: not file.LocalPath().startswith(
+    'node_modules')
+
+
+def CheckForCommitObjects(input_api, output_api):
+    return input_api.canned_checks.CheckForCommitObjects(input_api, output_api)
+
+
+def CheckOwnersFormat(input_api, output_api):
+    return input_api.canned_checks.CheckOwnersFormat(input_api, output_api)
+
+
+def CheckOwners(input_api, output_api):
+    return input_api.canned_checks.CheckOwners(input_api, output_api)
+
+
+def CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api):
+    return input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
+        input_api, output_api, source_file_filter=source_file_filter)
+
+
+def CheckGenderNeutral(input_api, output_api):
+    return input_api.canned_checks.CheckGenderNeutral(input_api, output_api)
+
+
+def CheckDoNotSubmitInFiles(input_api, output_api):
+    return input_api.canned_checks.CheckDoNotSubmitInFiles(
+        input_api, output_api)
+
+
+def CheckChangeHasDescriptionCommit(input_api, output_api):
+    return input_api.canned_checks.CheckChangeHasDescription(
+        input_api, output_api)
+
+
+def CheckAuthorizedAuthor(input_api, output_api):
+    return input_api.canned_checks.CheckAuthorizedAuthor(
+        input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT])
+
+
+def CheckChangeHasNoStrayWhitespace(input_api, output_api):
+    return input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
+        input_api, output_api, source_file_filter=source_file_filter)

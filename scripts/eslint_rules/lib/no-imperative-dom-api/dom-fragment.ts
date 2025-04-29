@@ -136,9 +136,17 @@ export class DomFragment {
       }
     }
     for (const attribute of this.booleanAttributes || []) {
-      appendExpression(
-          `?${attribute.key}=${attributeValue(toOutputString(attribute.value, /* quoteLiterals=*/ true))}`,
-      );
+      const value = attribute.value;
+      const isFalse = typeof value === 'string' ? value === 'false' : value.type === 'Literal' && value.value === false;
+      if (isFalse) {
+        continue;
+      }
+      const isTrue = typeof value === 'string' ? value === 'true' : value.type === 'Literal' && value.value === true;
+      if (isTrue) {
+        appendExpression(attribute.key);
+      } else {
+        appendExpression(`?${attribute.key}=${attributeValue(toOutputString(value))}`);
+      }
     }
     for (const eventListener of this.eventListeners || []) {
       appendExpression(

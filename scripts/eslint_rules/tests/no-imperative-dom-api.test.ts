@@ -506,7 +506,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           hidden="hidden" href="https://www.google.com" id="some-id" name="some-name" rel="some-rel"
           scope="some-scope"></img>
       <input type="text" placeholder="some-placeholder" value="some-value"
-          ?disabled=\${!this.enabled} ?checked=\${true}>
+          ?disabled=\${!this.enabled} checked>
     </div>\`,
     target, {host: input});
 };
@@ -687,7 +687,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <devtools-checkbox class="small" ?checked=\${true}>\${i18nString(UIStrings.someTitle)}</devtools-checkbox>
+      <devtools-checkbox class="small" checked>\${i18nString(UIStrings.someTitle)}</devtools-checkbox>
       <devtools-checkbox></devtools-checkbox>
       <devtools-checkbox class="small">:hover</devtools-checkbox>
       <devtools-toolbar>

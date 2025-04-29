@@ -34,10 +34,7 @@ export const domApi = {
           return true;
         }
         if (isIdentifier(property, ['checked', 'disabled'])) {
-          domFragment.attributes.push({
-            key: '?' + property.name.toLowerCase(),
-            value: isLiteral(propertyValue, true) ? '${true}' : propertyValue
-          });
+          domFragment.booleanAttributes.push({key: property.name.toLowerCase(), value: propertyValue});
           return true;
         }
         return false;

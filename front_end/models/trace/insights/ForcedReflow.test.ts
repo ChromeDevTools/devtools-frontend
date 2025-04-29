@@ -6,8 +6,8 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
-export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
+export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string) {
+  const {parsedTrace, insights} = await TraceLoader.traceEngine(context, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }

@@ -292,8 +292,7 @@ describe('Treemap', () => {
       ]);
     });
 
-    // Flaky timeout.
-    it.skip('[crbug.com/413615013] works (no source maps; inline scripts)', async function() {
+    it('works (no source maps; inline scripts)', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'yahoo-news.json.gz');
       const data = Utils.Treemap.createTreemapData(parsedTrace.Scripts, new Map())
                        .filter(d => d.children?.[0].name.includes('inline'))

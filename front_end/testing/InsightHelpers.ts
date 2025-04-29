@@ -6,8 +6,8 @@ import * as Trace from '../models/trace/trace.js';
 
 import {TraceLoader} from './TraceLoader.js';
 
-export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(testContext, traceFile);
+export async function processTrace(context: Mocha.Suite|Mocha.Context, traceFile: string) {
+  const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(context, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }

@@ -52,13 +52,14 @@ export class TraceLoader {
    * which is 2seconds. So for most tests that include parsing a trace, we have to
    * increase the timeout. We use this function to ensure we set a consistent
    * timeout across all trace model tests.
-   * The context might be null when we only render a component example.
    **/
-  static setTestTimeout(context: Mocha.Context|Mocha.Suite|null): void {
-    if (!context || context.timeout() >= 10_000) {
-      return;
+  static setTestTimeout(context: Mocha.Context|Mocha.Suite): void {
+    // Some traces take a long time to process, especially on our CQ machines.
+    // The trace that takes the longest on my Mac M1 Pro is ~3s (yahoo-news.json.gz).
+    // In CQ, that same trace takes ~10s (linux), ~7.5s (mac), ~11.5s (windows).
+    if (context.timeout() > 0) {
+      context.timeout(Math.max(context.timeout(), 30000));
     }
-    context.timeout(15_000);
   }
 
   /**
@@ -68,7 +69,9 @@ export class TraceLoader {
    **/
   static async fixtureContents(context: Mocha.Context|Mocha.Suite|null, name: string):
       Promise<Trace.Types.File.Contents> {
-    TraceLoader.setTestTimeout(context);
+    if (context) {
+      TraceLoader.setTestTimeout(context);
+    }
     const cached = fileContentsCache.get(name);
     if (cached) {
       return cached;
@@ -120,10 +123,10 @@ export class TraceLoader {
   /**
    * Executes only the new trace engine on the fixture and returns the resulting parsed data.
    *
-   * @param context The Mocha test context. |allModelsFromFile| function easily
-   * takes up more than our default Mocha timeout, which is 2s. So we have to
+   * @param context The Mocha test context. Processing a trace can easily
+   * takes up longer than the default Mocha timeout, which is 2s. So we have to
    * increase this test's timeout. It might be null when we only render a
-   * component example.
+   * component example. See TraceLoader.setTestTimeout.
    *
    * @param file The name of the trace file to be loaded.
    * The trace file should be in ../panels/timeline/fixtures/traces folder.

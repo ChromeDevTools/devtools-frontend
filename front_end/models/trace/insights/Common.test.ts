@@ -14,7 +14,7 @@ const {calculateMetricWeightsForSorting, estimateCompressedContentSize} = Insigh
 
 describeWithEnvironment('Common', function() {
   describe('calculateMetricWeightsForSorting', () => {
-    async function process(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
+    async function process(testContext: Mocha.Suite|Mocha.Context, traceFile: string) {
       const {data, insights, metadata} = await processTrace(testContext, traceFile);
       if (!metadata) {
         throw new Error('missing metadata');

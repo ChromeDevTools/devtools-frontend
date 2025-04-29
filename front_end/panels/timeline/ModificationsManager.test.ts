@@ -10,7 +10,7 @@ import * as Timeline from './timeline.js';
 
 describeWithEnvironment('ModificationsManager', () => {
   it('applies modifications when present in a trace file', async function() {
-    await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
+    await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
@@ -35,7 +35,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('generates a serializable modifications json ', async function() {
-    await TraceLoader.traceEngine(null, 'web-dev-modifications.json.gz');
+    await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
       throw new Error('Modifications manager does not exist.');
@@ -61,7 +61,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('creates annotations and generates correct json for annotations', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entres to create a label and a link with.
     const entry = parsedTrace.Renderer.allTraceEntries[0];
     const entry2 = parsedTrace.Renderer.allTraceEntries[1];
@@ -115,7 +115,7 @@ describeWithEnvironment('ModificationsManager', () => {
 
   it('does not add the annotation link between entries into the json saved into metadata if `entryTo` does not exist',
      async function() {
-       const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+       const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
        // Get any entry to create links with.
        const entry = parsedTrace.Renderer.allTraceEntries[0];
        const entry2 = parsedTrace.Renderer.allTraceEntries[1];
@@ -149,7 +149,7 @@ describeWithEnvironment('ModificationsManager', () => {
      });
 
   it('correctly identifies if a connection between entries already exists', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entry to create links with.
     const entry1 = parsedTrace.Renderer.allTraceEntries[0];
     const entry2 = parsedTrace.Renderer.allTraceEntries[1];
@@ -183,7 +183,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('deletes time ranges with an empty label from the annotations list', async function() {
-    await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz');
+    await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
@@ -234,7 +234,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('correctly gets all annotations associated with an entry', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 
@@ -290,7 +290,7 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('deletes all annotations associated with an entry', async function() {
-    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const parsedTrace = (await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz')).parsedTrace;
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
 

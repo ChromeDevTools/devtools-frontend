@@ -8,13 +8,7 @@ import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import {Directives, html, render} from '../../../ui/lit/lit.js';
 
-import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const cssHintDetailsViewStyles = new CSSStyleSheet();
-cssHintDetailsViewStyles.replaceSync(cssHintDetailsViewStylesRaw.cssText);
+import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
 
 const UIStrings = {
   /**
@@ -38,7 +32,6 @@ export class CSSHintDetailsView extends HTMLElement {
     constructor(authoringHint: Hint) {
         super();
         this.#authoringHint = authoringHint;
-        this.#shadow.adoptedStyleSheets = [cssHintDetailsViewStyles];
         this.#render();
     }
 
@@ -46,6 +39,7 @@ export class CSSHintDetailsView extends HTMLElement {
       const link = this.#authoringHint.getLearnMoreLink();
       // clang-format off
       render(html`
+        <style>${cssHintDetailsViewStyles.cssText}</style>
         <div class="hint-popup-wrapper">
           <div class="hint-popup-reason">
             ${Directives.unsafeHTML(this.#authoringHint.getMessage())}

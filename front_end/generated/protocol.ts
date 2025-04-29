@@ -12046,6 +12046,7 @@ export namespace Page {
   /**
    * All Permissions Policy features. This enum should match the one defined
    * in services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
+   * LINT.IfChange(PermissionsPolicyFeature)
    */
   export const enum PermissionsPolicyFeature {
     Accelerometer = 'accelerometer',
@@ -12112,6 +12113,7 @@ export namespace Page {
     KeyboardMap = 'keyboard-map',
     LanguageDetector = 'language-detector',
     LocalFonts = 'local-fonts',
+    LocalNetworkAccess = 'local-network-access',
     Magnetometer = 'magnetometer',
     MediaPlaybackWhileNotVisible = 'media-playback-while-not-visible',
     Microphone = 'microphone',
@@ -12125,6 +12127,7 @@ export namespace Page {
     PrivateStateTokenRedemption = 'private-state-token-redemption',
     PublickeyCredentialsCreate = 'publickey-credentials-create',
     PublickeyCredentialsGet = 'publickey-credentials-get',
+    RecordAdAuctionEvents = 'record-ad-auction-events',
     Rewriter = 'rewriter',
     RunAdAuction = 'run-ad-auction',
     ScreenWakeLock = 'screen-wake-lock',
@@ -18468,6 +18471,25 @@ export namespace BluetoothEmulation {
   }
 
   /**
+   * Indicates the various types of characteristic write.
+   */
+  export const enum CharacteristicWriteType {
+    WriteDefaultDeprecated = 'write-default-deprecated',
+    WriteWithResponse = 'write-with-response',
+    WriteWithoutResponse = 'write-without-response',
+  }
+
+  /**
+   * Indicates the various types of characteristic operation.
+   */
+  export const enum CharacteristicOperationType {
+    Read = 'read',
+    Write = 'write',
+    SubscribeToNotifications = 'subscribe-to-notifications',
+    UnsubscribeFromNotifications = 'unsubscribe-from-notifications',
+  }
+
+  /**
    * Stores the manufacturer data
    */
   export interface ManufacturerData {
@@ -18563,6 +18585,13 @@ export namespace BluetoothEmulation {
     code: integer;
   }
 
+  export interface SimulateCharacteristicOperationResponseRequest {
+    characteristicId: string;
+    type: CharacteristicOperationType;
+    code: integer;
+    data?: binary;
+  }
+
   export interface AddServiceRequest {
     address: string;
     serviceUuid: string;
@@ -18619,6 +18648,18 @@ export namespace BluetoothEmulation {
   export interface GattOperationReceivedEvent {
     address: string;
     type: GATTOperationType;
+  }
+
+  /**
+   * Event for when a characteristic operation of |type| to the characteristic
+   * respresented by |characteristicId| happened. |data| and |writeType| is
+   * expected to exist when |type| is write.
+   */
+  export interface CharacteristicOperationReceivedEvent {
+    characteristicId: string;
+    type: CharacteristicOperationType;
+    data?: binary;
+    writeType?: CharacteristicWriteType;
   }
 }
 

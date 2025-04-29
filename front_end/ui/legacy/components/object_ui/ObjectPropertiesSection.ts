@@ -1376,7 +1376,6 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       if (consecutiveRange) {
         count = toIndex - fromIndex + 1;
       } else {
-        // @ts-expect-error we need the for to loop over the generator
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for (const ignored of arrayIndexes(this)) {
           ++count;

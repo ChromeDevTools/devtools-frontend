@@ -116,7 +116,6 @@ class AffectedRequestsView extends AffectedResourcesView {
 
   update(): void {
     this.clear();
-    // @ts-expect-error
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     for (const unused of this.issue.getBlockedByResponseDetails()) {
       // If the issue has blockedByResponseDetails, the corresponding AffectedBlockedByResponseView

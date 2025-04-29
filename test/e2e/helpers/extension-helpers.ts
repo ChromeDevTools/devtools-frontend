@@ -9,7 +9,6 @@ import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 // But if we make this a side-effect import, it will persist at compile type.
 // So we import a type that we don't use to make TS realise it's just an import
 // to declare some type, and it gets stripped at runtime.
-// @ts-expect-error import types
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';

@@ -68,7 +68,11 @@ def script_main(args):
     url = DOWNLOAD_URL % (os_name, options.tag, arch_suffix, file_extension)
 
     build_revision_same = check_stamp_file(options, url)
-    if build_revision_same:
+
+    binary_path = os.path.join(options.dest, 'install', 'bin')
+    binary_exists = os.path.exists(binary_path)
+
+    if build_revision_same and binary_exists:
         return 0
     elif build_revision_same is False:
         try:

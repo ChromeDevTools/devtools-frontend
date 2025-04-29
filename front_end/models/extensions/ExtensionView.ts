@@ -27,56 +27,90 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import type {ExtensionServer} from './ExtensionServer.js';
 
+const {render, html, Directives: {ref}} = Lit;
+
+interface ViewInput {
+  src: string;
+  className: string;
+  onLoad: () => void;
+}
+
+interface ViewOutput {
+  iframe?: HTMLIFrameElement;
+}
+
+const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+  // clang-format off
+  render(html`<iframe
+    ${ref(element => {output.iframe = element as HTMLIFrameElement; })}
+    src=${input.src}
+    className=${input.className}
+    @load=${input.onLoad}></iframe>`, target, {host: input});
+  // clang-format on
+};
+
 export class ExtensionView extends UI.Widget.Widget {
-  private readonly server: ExtensionServer;
-  private readonly id: string;
-  private iframe: HTMLIFrameElement;
-  private frameIndex?: number;
-  constructor(server: ExtensionServer, id: string, src: string, className: string) {
+  #server: ExtensionServer;
+  #id: string;
+  #src: string;
+  #className: string;
+
+  #iframe?: HTMLIFrameElement;
+  #frameIndex?: number;
+
+  #view: typeof DEFAULT_VIEW;
+  constructor(server: ExtensionServer, id: string, src: string, className: string, view = DEFAULT_VIEW) {
     super();
-    this.setHideOnDetach();
-    this.element.className = 'vbox flex-auto';  // Override
+    this.#view = view;
+    this.#server = server;
+    this.#src = src;
+    this.#className = className;
+    this.#id = id;
+    this.setHideOnDetach();  // Override
+    void this.performUpdate();
+  }
 
-    // TODO(crbug.com/872438): remove once we can use this.iframe instead
-    this.element.tabIndex = -1;
-
-    this.server = server;
-    this.id = id;
-    this.iframe = document.createElement('iframe');
-    this.iframe.addEventListener('load', this.onLoad.bind(this), false);
-    this.iframe.src = src;
-    this.iframe.className = className;
-
-    // TODO(crbug.com/872438): make this.iframe the default focused element
-    this.setDefaultFocusedElement(this.element);
-
-    this.element.appendChild(this.iframe);
+  override performUpdate(): Promise<void>|void {
+    const output: ViewOutput = {};
+    this.#view(
+        {
+          src: this.#src,
+          className: this.#className,
+          onLoad: this.onLoad.bind(this),
+        },
+        output, this.element);
+    if (output.iframe) {
+      this.#iframe = output.iframe;
+    }
   }
 
   override wasShown(): void {
     super.wasShown();
-    if (typeof this.frameIndex === 'number') {
-      this.server.notifyViewShown(this.id, this.frameIndex);
+    if (typeof this.#frameIndex === 'number') {
+      this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
 
   override willHide(): void {
-    if (typeof this.frameIndex === 'number') {
-      this.server.notifyViewHidden(this.id);
+    if (typeof this.#frameIndex === 'number') {
+      this.#server.notifyViewHidden(this.#id);
     }
   }
 
   private onLoad(): void {
+    if (!this.#iframe) {
+      return;
+    }
     const frames = window.frames;
-    this.frameIndex = Array.prototype.indexOf.call(frames, this.iframe.contentWindow);
+    this.#frameIndex = Array.prototype.indexOf.call(frames, this.#iframe.contentWindow);
     if (this.isShowing()) {
-      this.server.notifyViewShown(this.id, this.frameIndex);
+      this.#server.notifyViewShown(this.#id, this.#frameIndex);
     }
   }
 }

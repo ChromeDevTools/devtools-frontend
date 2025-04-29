@@ -99,6 +99,9 @@ export default createRule({
           isPropertyAccess && grandParent?.type === 'AssignmentExpression' && grandParent.left === parent;
       const propertyValue = isPropertyAssignment ? grandParent.right : null;
       const isMethodCall = isPropertyAccess && grandParent?.type === 'CallExpression' && grandParent.callee === parent;
+      if (isPropertyAccess && !isMethodCall && property && isIdentifier(property, 'element')) {
+        return processReference(parent, domFragment);
+      }
       const grandGrandParent = grandParent?.parent;
       const isPropertyMethodCall = isPropertyAccess && grandParent?.type === 'MemberExpression' &&
           grandParent.object === parent && grandGrandParent?.type === 'CallExpression' &&

@@ -209,6 +209,8 @@ class SomeWidget extends UI.Widget.Widget {
     const toolbar = this.contentElement.createChild('devtools-toolbar');
     const filterInput = new UI.Toolbar.ToolbarFilter('some-placeholder', 0.5, 1, undefined, this.complete.bind(this), false, 'some-filter');
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged.bind(this));
+    filterInput.element.classList.add('completions');
+    filterInput.element.setAttribute('aria-hidden', 'true');
     toolbar.appendToolbarItem(filterInput);
   }
 }`,
@@ -218,9 +220,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <devtools-toolbar>
-        <devtools-toolbar-input type="filter" placeholder="some-placeholder" list="completions"
-            id="some-filter" @change=\${this.onFilterChanged.bind(this)}
-            style="flex-grow:0.5; flex-shrink:1">
+        <devtools-toolbar-input class="completions" type="filter" placeholder="some-placeholder"
+            list="completions" id="some-filter" aria-hidden="true"
+            @change=\${this.onFilterChanged.bind(this)} style="flex-grow:0.5; flex-shrink:1">
           <datalist id="completions">\${this.complete.bind(this)}</datalist>
         </devtools-toolbar-input>
       </devtools-toolbar>

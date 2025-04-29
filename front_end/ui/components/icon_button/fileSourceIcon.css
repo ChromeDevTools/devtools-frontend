@@ -5,6 +5,14 @@
  */
 
 :host {
+  height: var(--sys-size-9);
+  width: var(--sys-size-9);
+
+  devtools-icon {
+    height: 100%;
+    width: 100%;
+  }
+
   devtools-icon.document {
     color: var(--override-file-source-icon-color, var(--icon-default));
   }

@@ -92,9 +92,7 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
   }
 
   override getIcon(): HTMLElement {
-    // TODO(b/412597172): Remove programmatically setting `width` and `height` here
-    // and make it controllable via CSS `width` and `height`.
-    return PanelUtils.PanelUtils.getIconForSourceFile(this.#file, {width: 14, height: 14});
+    return PanelUtils.PanelUtils.getIconForSourceFile(this.#file);
   }
 
   override getTitle(): string {

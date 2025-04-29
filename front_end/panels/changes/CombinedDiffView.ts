@@ -256,7 +256,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
                 fileName: `${uiSourceCode.isDirty() ? '*' : ''}${displayText}`,
                 fileUrl: uiSourceCode.url(),
                 mimeType: uiSourceCode.mimeType(),
-                icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),
+                icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode),
                 copied: this.#copiedFiles[uiSourceCode.url()],
                 selectedFileUrl: this.#selectedFileUrl,
                 onCopy: this.#onCopyFileContent.bind(this),

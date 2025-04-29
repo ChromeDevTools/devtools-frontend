@@ -35,6 +35,7 @@ LICENSES = [
     "MPL-2.0",
     "Python-2.0",
     "W3C",
+    "BlueOak-1.0.0",
 ]
 
 

@@ -31,7 +31,7 @@ export class DomFragment {
   children: DomFragment[] = [];
   parent?: DomFragment;
   expression?: string;
-  replacementLocation?: Node;
+  replacer?: (fixer: TSESLint.RuleFixer, template: string) => TSESLint.RuleFix;
   initializer?: Node;
   references: Array<{node: Node, processed?: boolean}> = [];
 
@@ -46,24 +46,35 @@ export class DomFragment {
         result.expression = sourceCode.getText(node);
         result.references.push({node});
       } else if (key instanceof ClassMember) {
-        result.replacementLocation = key.classDeclaration;
         result.expression = sourceCode.getText(node);
+        const references: Array<{node: Node, processed?: boolean}> = [];
+        Object.defineProperty(result, 'references', {
+          get: () => {
+            if (key.references.size === references.length) {
+              return references;
+            }
+            for (const reference of key.references) {
+              if (!references.some(r => r.node === reference)) {
+                references.push({node: reference});
+              }
+            }
+            return references;
+          },
+          set: () => {},
+        });
+        Object.defineProperty(result, 'initializer', {
+          get: () => key.initializer,
+          set: () => {},
+        });
       } else if ('references' in key) {
         result.references = key.references.filter(r => !key.identifiers.includes(r.identifier as Identifier))
                                 .map(r => ({node: r.identifier}));
         const initializer = key.identifiers[0];
         if (initializer?.parent?.type === 'VariableDeclarator') {
-          result.initializer = initializer;
+          result.initializer = initializer.parent?.init ?? undefined;
         }
-        result.replacementLocation = result.initializer?.parent;
         result.expression = key.name;
       }
-    }
-    if (key instanceof ClassMember) {
-      result.references = [...key.references].map(r => ({
-                                                    node: r,
-                                                  }));
-      result.initializer = key.initializer;
     }
     return result;
   }
@@ -78,9 +89,9 @@ export class DomFragment {
 
   toTemplateLiteral(sourceCode: Readonly<SourceCode>, indent = 4): string[] {
     if (this.expression && !this.tagName) {
-      const value = this.initializer?.parent?.type === 'VariableDeclarator' ? this.initializer?.parent?.init : null;
-      const expression =
-          (this.references.every(r => r.processed) && value) ? sourceCode.getText(value) : this.expression;
+      const expression = (this.references.every(r => r.processed) && this.initializer) ?
+          sourceCode.getText(this.initializer) :
+          this.expression;
       return [`\n${' '.repeat(indent)}`, '${', expression, '}'];
     }
 

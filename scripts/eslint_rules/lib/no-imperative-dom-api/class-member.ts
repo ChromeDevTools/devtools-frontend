@@ -42,7 +42,7 @@ export class ClassMember {
       classMembers.set(memberName, classMember);
     }
     if (node.parent?.type === 'AssignmentExpression') {
-      classMember.initializer = node;
+      classMember.initializer = node.parent.right;
     } else {
       classMember.references.add(node);
     }

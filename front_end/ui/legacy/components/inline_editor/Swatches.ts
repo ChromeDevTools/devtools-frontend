@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
+/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import {html, render} from '../../../lit/lit.js';

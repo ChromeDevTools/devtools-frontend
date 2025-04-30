@@ -437,6 +437,8 @@ class SomeWidget extends UI.Widget.Widget {
     details.createChild('span');
     const banner = createBanner();
     this.contentElement.appendChild(banner);
+    this.footer = createFooter();
+    this.contentElement.appendChild(this.footer);
   }
 }`,
       output: `
@@ -447,6 +449,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       \${label}
       \${details}
       \${createBanner()}
+      \${createFooter()}
     </div>\`,
     target, {host: input});
 };
@@ -626,36 +629,28 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const button = new Buttons.Button.Button();
-    button.data = {
+    this.button = new Buttons.Button.Button();
+    this.button.data = {
       jslogContext: 'some-button',
       variant: Buttons.Button.Variant.PRIMARY,
       title: i18nString(UIStrings.someTitle),
     };
-    UI.ARIAUtils.markAsPresentation(button);
-    UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.someTooltip));
-    this.contentElement.appendChild(button);
+    UI.ARIAUtils.markAsPresentation(this.button);
+    UI.Tooltip.Tooltip.install(this.button, i18nString(UIStrings.someTooltip));
   }
 }`,
       output: `
-
-export const DEFAULT_VIEW = (input, _output, target) => {
-  render(html\`
-    <div>
-      <devtools-button role="presentation" title=\${i18nString(UIStrings.someTooltip)}
-          .data=\${{
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.button = html\`
+    <devtools-button role="presentation" title=\${i18nString(UIStrings.someTooltip)}
+        .data=\${{
       jslogContext: 'some-button',
       variant: Buttons.Button.Variant.PRIMARY,
       title: i18nString(UIStrings.someTitle),
     }}
-      ></devtools-button>
-    </div>\`,
-    target, {host: input});
-};
-
-class SomeWidget extends UI.Widget.Widget {
-  constructor() {
-    super();
+    ></devtools-button>\`;
   }
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],

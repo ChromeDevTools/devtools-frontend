@@ -155,8 +155,14 @@ export default createRule({
       return false;
     }
 
-    function getRangesToRemove(domFragment: DomFragment): Range[] {
+    function getRangesToRemove(domFragment: DomFragment, keepInitializer = false): Range[] {
       const ranges: Range[] = [];
+      const initializerRange = domFragment.initializer ? getEnclosingExpression(domFragment.initializer)?.range : null;
+
+      if (initializerRange && domFragment.references.every(r => r.processed) && !keepInitializer) {
+        ranges.push(initializerRange);
+      }
+
       for (const reference of domFragment.references) {
         if (!reference.processed) {
           continue;
@@ -170,16 +176,19 @@ export default createRule({
           ranges.push(...getRangesToRemove(child));
         }
       }
-
-      if (domFragment.initializer && domFragment.references.every(r => r.processed)) {
-        const range = getEnclosingExpression(domFragment.initializer)?.range;
-        if (range) {
-          ranges.push(range);
-        }
-      }
       for (const range of ranges) {
         while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {
           range[0]--;
+        }
+      }
+      if (keepInitializer && initializerRange) {
+        for (const range of ranges) {
+          if (range[0] < initializerRange[1] && range[1] > initializerRange[0]) {
+            range[0] = initializerRange[1];
+          }
+          if (range[1] > initializerRange[0] && range[0] < initializerRange[1]) {
+            range[1] = initializerRange[0];
+          }
         }
       }
       ranges.sort((a, b) => a[0] - b[0]);
@@ -193,38 +202,28 @@ export default createRule({
     }
 
     function maybeReportDomFragment(domFragment: DomFragment): void {
-      const replacementLocation = domFragment.replacementLocation?.parent?.type === 'ExportNamedDeclaration' ?
-          domFragment.replacementLocation.parent :
-          domFragment.replacementLocation;
-      if (!replacementLocation || domFragment.parent || !domFragment.tagName ||
+      if ((!domFragment.initializer && !domFragment.replacer) || domFragment.parent || !domFragment.tagName ||
           domFragment.references.every(r => !r.processed)) {
         return;
       }
       context.report({
-        node: replacementLocation,
+        node: domFragment.initializer ?? domFragment.references[0].node as Node,
         messageId: 'preferTemplateLiterals',
         fix(fixer) {
           const template = 'html`' + domFragment.toTemplateLiteral(sourceCode).join('') + '`';
 
-          if (replacementLocation.type === 'VariableDeclarator' && replacementLocation.init) {
-            domFragment.initializer = undefined;
-            return [
-              fixer.replaceText(replacementLocation.init, template),
+          if (domFragment.replacer) {
+            const result = [
+              domFragment.replacer(fixer, template),
               ...getRangesToRemove(domFragment).map(range => fixer.removeRange(range)),
             ];
+            return result;
           }
-
-          const text = `
-export const DEFAULT_VIEW = (input, _output, target) => {
-  render(${template},
-    target, {host: input});
-};
-
-`;
-          return [
-            fixer.insertTextBefore(replacementLocation, text),
-            ...getRangesToRemove(domFragment).map(range => fixer.removeRange(range)),
+          const result = [
+            fixer.replaceText(domFragment.initializer as Node, template),
+            ...getRangesToRemove(domFragment, true).map(range => fixer.removeRange(range)),
           ];
+          return result;
         }
       });
     }

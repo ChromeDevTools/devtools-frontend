@@ -6,6 +6,7 @@
  */
 
 import {isIdentifier} from './ast.ts';
+import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 export const widget = {
@@ -16,6 +17,22 @@ export const widget = {
         if (node.object.type === 'ThisExpression' && isIdentifier(node.property, ['element', 'contentElement'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'div';
+          let replacementLocation = ClassMember.getOrCreate(node, sourceCode)?.classDeclaration;
+          if (replacementLocation?.parent?.type === 'ExportNamedDeclaration') {
+            replacementLocation = replacementLocation.parent;
+          }
+          if (replacementLocation) {
+            domFragment.replacer = (fixer, template) => {
+              const text = `
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(${template},
+    target, {host: input});
+};
+
+`;
+              return fixer.insertTextBefore(replacementLocation, text);
+            };
+          }
         }
       }
     };

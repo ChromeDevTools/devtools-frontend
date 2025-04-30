@@ -189,10 +189,10 @@ describeWithEnvironment('ConsoleInsight', () => {
         'Generating a response took too long. Please try again.');
   });
 
-  const reportsRating = (positive: boolean) => async () => {
+  const reportsRating = (positive: boolean, disallowLogging: boolean) => async () => {
     updateHostConfig({
       aidaAvailability: {
-        disallowLogging: false,
+        disallowLogging,
       },
     });
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
@@ -209,6 +209,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     sinon.assert.calledOnce(aidaClient.registerClientEvent);
     sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
       corresponding_aida_rpc_global_id: 0,
+      disable_user_content_logging: disallowLogging,
       do_conversation_client_event: {
         user_feedback: {sentiment: positive ? 'POSITIVE' : 'NEGATIVE'},
       },
@@ -225,10 +226,17 @@ describeWithEnvironment('ConsoleInsight', () => {
     sinon.assert.calledOnce(aidaClient.registerClientEvent);
   };
 
-  it('reports positive rating', reportsRating(true));
-  it('reports negative rating', reportsRating(false));
+  describe('without logging', () => {
+    it('reports positive rating', reportsRating(true, true));
+    it('reports negative rating', reportsRating(false, true));
+  });
 
-  it('has no thumbs up/down buttons if logging is disabled', async () => {
+  describe('with logging', () => {
+    it('reports positive rating', reportsRating(true, false));
+    it('reports negative rating', reportsRating(false, false));
+  });
+
+  it('has thumbs up/down buttons if logging is disabled', async () => {
     updateHostConfig({
       aidaAvailability: {
         disallowLogging: true,
@@ -242,9 +250,9 @@ describeWithEnvironment('ConsoleInsight', () => {
     renderElementIntoDOM(component);
     await drainMicroTasks();
     const thumbsUpButton = component.shadowRoot!.querySelector('.rating [data-rating="true"]');
-    assert.isNull(thumbsUpButton);
+    assert.isNotNull(thumbsUpButton);
     const thumbsDownButton = component.shadowRoot!.querySelector('.rating [data-rating="false"]');
-    assert.isNull(thumbsDownButton);
+    assert.isNotNull(thumbsDownButton);
   });
 
   it('report if the user is not logged in', async () => {

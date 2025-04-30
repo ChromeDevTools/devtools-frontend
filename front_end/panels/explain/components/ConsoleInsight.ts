@@ -914,7 +914,6 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderFooter(): Lit.LitTemplate {
-    const showThumbsUpDownButtons = !(Root.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true);
     const disclaimer = this.#renderDisclaimer();
     // clang-format off
     switch (this.#state.type) {
@@ -990,44 +989,42 @@ export class ConsoleInsight extends HTMLElement {
         </div>
         <div class="filler"></div>
         <div class="rating">
-          ${showThumbsUpDownButtons ? html`
-            <devtools-button
-              data-rating=${'true'}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ICON_TOGGLE,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'thumb-up',
-                  toggledIconName: 'thumb-up',
-                  toggleOnClick: false,
-                  toggleType: Buttons.Button.ToggleType.PRIMARY,
-                  disabled: this.#selectedRating !== undefined,
-                  toggled: this.#selectedRating === true,
-                  title: i18nString(UIStrings.goodResponse),
-                  jslogContext: 'thumbs-up',
-                } as Buttons.Button.ButtonData
-              }
-              @click=${this.#onRating}
-            ></devtools-button>
-            <devtools-button
-              data-rating=${'false'}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ICON_TOGGLE,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'thumb-down',
-                  toggledIconName: 'thumb-down',
-                  toggleOnClick: false,
-                  toggleType: Buttons.Button.ToggleType.PRIMARY,
-                  disabled: this.#selectedRating !== undefined,
-                  toggled: this.#selectedRating === false,
-                  title: i18nString(UIStrings.badResponse),
-                  jslogContext: 'thumbs-down',
-                } as Buttons.Button.ButtonData
-              }
-              @click=${this.#onRating}
-            ></devtools-button>
-          ` : Lit.nothing}
+          <devtools-button
+            data-rating=${'true'}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ICON_TOGGLE,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'thumb-up',
+                toggledIconName: 'thumb-up',
+                toggleOnClick: false,
+                toggleType: Buttons.Button.ToggleType.PRIMARY,
+                disabled: this.#selectedRating !== undefined,
+                toggled: this.#selectedRating === true,
+                title: i18nString(UIStrings.goodResponse),
+                jslogContext: 'thumbs-up',
+              } as Buttons.Button.ButtonData
+            }
+            @click=${this.#onRating}
+          ></devtools-button>
+          <devtools-button
+            data-rating=${'false'}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ICON_TOGGLE,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'thumb-down',
+                toggledIconName: 'thumb-down',
+                toggleOnClick: false,
+                toggleType: Buttons.Button.ToggleType.PRIMARY,
+                disabled: this.#selectedRating !== undefined,
+                toggled: this.#selectedRating === false,
+                title: i18nString(UIStrings.badResponse),
+                jslogContext: 'thumbs-down',
+              } as Buttons.Button.ButtonData
+            }
+            @click=${this.#onRating}
+          ></devtools-button>
           <devtools-button
             .data=${
               {

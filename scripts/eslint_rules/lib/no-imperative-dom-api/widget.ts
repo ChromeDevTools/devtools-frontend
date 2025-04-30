@@ -4,15 +4,32 @@
 /**
  * @fileoverview Library to identify and templatize manually construction of widgets.
  */
+import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier} from './ast.ts';
+import {isIdentifier, isMemberExpression} from './ast.ts';
 import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
+
+type Node = TSESTree.Node;
+type CallExpression = TSESTree.CallExpression;
+type MemberExpression = TSESTree.MemberExpression;
 
 export const widget = {
   create: function(context) {
     const sourceCode = context.getSourceCode();
     return {
+      functionCall(call: CallExpression, _firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment) {
+        if (isMemberExpression(call.callee, _ => true, n => isIdentifier(n, 'show'))) {
+          let widget = (call.callee as MemberExpression).object;
+          if (widget.type === 'CallExpression' &&
+              isMemberExpression(widget.callee, _ => true, n => isIdentifier(n, 'asWidget'))) {
+            widget = (widget.callee as MemberExpression).object;
+          }
+          domFragment.appendChild(widget, sourceCode);
+          return true;
+        }
+        return false;
+      },
       MemberExpression(node) {
         if (node.object.type === 'ThisExpression' && isIdentifier(node.property, ['element', 'contentElement'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);

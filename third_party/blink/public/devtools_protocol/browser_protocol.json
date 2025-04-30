@@ -2060,6 +2060,31 @@
                     ]
                 },
                 {
+                    "id": "UserReidentificationIssueType",
+                    "type": "string",
+                    "enum": [
+                        "BlockedFrameNavigation",
+                        "BlockedSubresource"
+                    ]
+                },
+                {
+                    "id": "UserReidentificationIssueDetails",
+                    "description": "This issue warns about uses of APIs that may be considered misuse to\nre-identify users.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "$ref": "UserReidentificationIssueType"
+                        },
+                        {
+                            "name": "request",
+                            "description": "Applies to BlockedFrameNavigation and BlockedSubresource issue types.",
+                            "optional": true,
+                            "$ref": "AffectedRequest"
+                        }
+                    ]
+                },
+                {
                     "id": "InspectorIssueCode",
                     "description": "A unique identifier for the type of issue. Each type may use one of the\noptional fields in InspectorIssueDetails to convey more specific\ninformation about the kind of issue.",
                     "type": "string",
@@ -2087,7 +2112,8 @@
                         "PropertyRuleIssue",
                         "SharedDictionaryIssue",
                         "SelectElementAccessibilityIssue",
-                        "SRIMessageSignatureIssue"
+                        "SRIMessageSignatureIssue",
+                        "UserReidentificationIssue"
                     ]
                 },
                 {
@@ -2215,6 +2241,11 @@
                             "name": "sriMessageSignatureIssueDetails",
                             "optional": true,
                             "$ref": "SRIMessageSignatureIssueDetails"
+                        },
+                        {
+                            "name": "userReidentificationIssueDetails",
+                            "optional": true,
+                            "$ref": "UserReidentificationIssueDetails"
                         }
                     ]
                 },

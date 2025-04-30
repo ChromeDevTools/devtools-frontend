@@ -1402,6 +1402,23 @@ export namespace Audits {
     propertyValue?: string;
   }
 
+  export const enum UserReidentificationIssueType {
+    BlockedFrameNavigation = 'BlockedFrameNavigation',
+    BlockedSubresource = 'BlockedSubresource',
+  }
+
+  /**
+   * This issue warns about uses of APIs that may be considered misuse to
+   * re-identify users.
+   */
+  export interface UserReidentificationIssueDetails {
+    type: UserReidentificationIssueType;
+    /**
+     * Applies to BlockedFrameNavigation and BlockedSubresource issue types.
+     */
+    request?: AffectedRequest;
+  }
+
   /**
    * A unique identifier for the type of issue. Each type may use one of the
    * optional fields in InspectorIssueDetails to convey more specific
@@ -1432,6 +1449,7 @@ export namespace Audits {
     SharedDictionaryIssue = 'SharedDictionaryIssue',
     SelectElementAccessibilityIssue = 'SelectElementAccessibilityIssue',
     SRIMessageSignatureIssue = 'SRIMessageSignatureIssue',
+    UserReidentificationIssue = 'UserReidentificationIssue',
   }
 
   /**
@@ -1464,6 +1482,7 @@ export namespace Audits {
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
     selectElementAccessibilityIssueDetails?: SelectElementAccessibilityIssueDetails;
     sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
+    userReidentificationIssueDetails?: UserReidentificationIssueDetails;
   }
 
   /**

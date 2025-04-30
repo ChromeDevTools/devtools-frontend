@@ -646,7 +646,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
   ['border-width', new Set(['medium', 'thick', 'thin'])],
   ['border-style', new Set(['hidden', 'inset', 'groove', 'ridge', 'outset', 'dotted', 'dashed', 'solid', 'double'])],
   ['size', new Set(['a3', 'a4', 'a5', 'b4', 'b5', 'landscape', 'ledger', 'legal', 'letter', 'portrait'])],
-  ['overflow', new Set(['hidden', 'visible', 'overlay', 'scroll'])],
+  ['overflow', new Set(['hidden', 'visible', 'overlay', 'scroll', 'clip'])],
   ['overscroll-behavior', new Set(['contain'])],
   ['text-rendering', new Set(['optimizeSpeed', 'optimizeLegibility', 'geometricPrecision'])],
   ['text-align', new Set(['-webkit-auto', '-webkit-match-parent'])],

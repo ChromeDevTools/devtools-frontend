@@ -31,6 +31,7 @@ export class DomFragment {
   children: DomFragment[] = [];
   parent?: DomFragment;
   expression?: string;
+  widgetClass?: Node;
   replacer?: (fixer: TSESLint.RuleFixer, template: string) => TSESLint.RuleFix;
   initializer?: Node;
   references: Array<{node: Node, processed?: boolean}> = [];
@@ -122,8 +123,11 @@ export class DomFragment {
         components.push(`\n${' '.repeat(indent + 4)}`);
         lineLength = expression.length + indent + 4;
       } else {
-        components.push(' ');
-        lineLength += expression.length + 1;
+        if (expression.match(/^[a-zA-Z0-9?.$@]/)) {
+          components.push(' ');
+          ++lineLength;
+        }
+        lineLength += expression.length;
       }
       components.push(expression);
     }
@@ -167,14 +171,32 @@ export class DomFragment {
                   )}`,
       );
     }
-    for (const binding of this.bindings || []) {
-      appendExpression(
-          `.${binding.key}=${
-              toOutputString(
-                  binding.value,
-                  /* quoteLiterals=*/ true,
-                  )}`,
-      );
+    if (this.widgetClass) {
+      appendExpression(`.widgetConfig=\${widgetConfig(${sourceCode.getText(this.widgetClass)}`);
+      if (this.bindings.length) {
+        appendExpression(',');
+        if (this.bindings.length === 1) {
+          appendExpression(
+              `{${this.bindings[0].key}: ${toOutputString(this.bindings[0].value, /* quoteLiterals=*/ true)}}`);
+        } else {
+          appendExpression('{');
+          for (const binding of this.bindings) {
+            appendExpression(`${binding.key}: ${toOutputString(binding.value, /* quoteLiterals=*/ true)},`);
+          }
+          appendExpression('}');
+        }
+      }
+      appendExpression(')}');
+    } else {
+      for (const binding of this.bindings || []) {
+        appendExpression(
+            `.${binding.key}=${
+                toOutputString(
+                    binding.value,
+                    /* quoteLiterals=*/ true,
+                    )}`,
+        );
+      }
     }
     for (const directive of this.directives || []) {
       appendExpression(`\${${directive.name}(${directive.arguments.map(a => sourceCode.getText(a)).join(', ')})}`);

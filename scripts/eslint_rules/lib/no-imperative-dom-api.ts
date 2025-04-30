@@ -16,6 +16,7 @@ import {dataGrid} from './no-imperative-dom-api/data-grid.ts';
 import {domApiDevtoolsExtensions} from './no-imperative-dom-api/dom-api-devtools-extensions.ts';
 import {domApi} from './no-imperative-dom-api/dom-api.ts';
 import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
+import {splitWidget} from './no-imperative-dom-api/split-widget.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
@@ -70,6 +71,7 @@ export default createRule({
       dataGrid.create(context),
       domApi.create(context),
       domApiDevtoolsExtensions.create(context),
+      splitWidget.create(context),
       toolbar.create(context),
       uiUtils.create(context),
       widget.create(context),

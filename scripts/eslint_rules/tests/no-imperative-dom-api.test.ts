@@ -954,5 +954,55 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.#splitWidget = new UI.SplitWidget.SplitWidget(this.vertical, false, undefined, 200);
+    this.#splitWidget.show(this.element);
+
+    this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
+    this.#resultsContainer = new UI.Widget.EmptyWidget();
+    this.#elementContainer = new DetailsView();
+
+    this.#mainContainer.setMainWidget(this.#resultsContainer);
+    this.#mainContainer.setSidebarWidget(this.#elementContainer);
+    this.#mainContainer.setVertical(false);
+    this.#mainContainer.setSecondIsSidebar(this.dockedLeft);
+
+    this.#sideBar = new SidebarPanel();
+    this.#sideBar.setMinimumSize(100, 25);
+    this.#splitWidget.setSidebarWidget(this.#sideBar);
+    this.#splitWidget.setMainWidget(this.#mainContainer);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-split-view direction=\${this.vertical ? 'column' : 'row'} sidebar-position="first"
+          sidebar-initial-size="200">
+        <devtools-widget slot="sidebar" .widgetConfig=\${widgetConfig(SidebarPanel,
+            {minimumSize: {width: 100, height: 25}})}></devtools-widget>
+        <devtools-split-view direction="column" sidebar-position="second" slot="main"
+            direction="row" sidebar-position="$this.dockedLeft ? 'second' : 'first'}">
+          <devtools-widget slot="main" .widgetConfig=\${widgetConfig(UI.Widget.EmptyWidget)}></devtools-widget>
+          <devtools-widget slot="sidebar" .widgetConfig=\${widgetConfig(DetailsView)}></devtools-widget>
+        </devtools-split-view>
+      </devtools-split-view>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

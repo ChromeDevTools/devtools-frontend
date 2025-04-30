@@ -10,6 +10,7 @@ import {isIdentifier, isMemberExpression} from './ast.ts';
 import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
 
+type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 type CallExpression = TSESTree.CallExpression;
 type MemberExpression = TSESTree.MemberExpression;
@@ -18,6 +19,18 @@ export const widget = {
   create: function(context) {
     const sourceCode = context.getSourceCode();
     return {
+      methodCall(
+          property: Identifier, firstArg: Node, secondArg: Node|undefined, domFragment: DomFragment,
+          _call: CallExpression) {
+        if (isIdentifier(property, 'setMinimumSize')) {
+          domFragment.bindings.push({
+            key: 'minimumSize',
+            value: `{width: ${sourceCode.getText(firstArg)}, height: ${sourceCode.getText(secondArg)}}`
+          });
+          return true;
+        }
+        return false;
+      },
       functionCall(call: CallExpression, _firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment) {
         if (isMemberExpression(call.callee, _ => true, n => isIdentifier(n, 'show'))) {
           let widget = (call.callee as MemberExpression).object;

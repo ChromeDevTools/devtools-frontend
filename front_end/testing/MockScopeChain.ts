@@ -47,6 +47,7 @@ export class MockProtocolBackend {
     setMockConnectionResponseHandler('Debugger.removeBreakpoint', this.#removeBreakpointHandler.bind(this));
     setMockConnectionResponseHandler('Debugger.resume', () => ({}));
     setMockConnectionResponseHandler('Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID'}));
+    setMockConnectionResponseHandler('Debugger.setInstrumentationBreakpoint', () => ({}));
 
     SDK.PageResourceLoader.PageResourceLoader.instance({
       forceNew: true,

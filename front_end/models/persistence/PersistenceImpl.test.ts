@@ -49,6 +49,7 @@ describeWithMockConnection('PersistenceImpl', () => {
   };
 
   beforeEach(() => {
+    backend = new MockProtocolBackend();
     target = createTarget();
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -63,7 +64,6 @@ describeWithMockConnection('PersistenceImpl', () => {
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
         {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
 
-    backend = new MockProtocolBackend();
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
   });
 

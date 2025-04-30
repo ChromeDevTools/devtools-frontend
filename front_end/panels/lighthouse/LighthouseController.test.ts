@@ -5,6 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
@@ -13,7 +14,8 @@ describeWithMockConnection('LighthouseController', () => {
   let Lighthouse: typeof LighthouseModule;
   let target: SDK.Target.Target;
 
-  beforeEach(async () => {
+  beforeEach(async function() {
+    TraceLoader.setTestTimeout(this);
     stubNoopSettings();
     Lighthouse = await import('./lighthouse.js');
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

@@ -218,7 +218,14 @@ export class Table extends HTMLElement {
     function traverse(row: TableDataRow, depth = 0): void {
       const thStyles = Lit.Directives.styleMap({
         paddingLeft: `calc(${depth} * var(--sys-size-5))`,
-        borderLeft: depth ? 'var(--sys-size-1) solid var(--sys-color-divider)' : '',
+        backgroundImage: `repeating-linear-gradient(
+              to right,
+              var(--sys-color-tonal-outline) 0 var(--sys-size-1),
+              transparent var(--sys-size-1) var(--sys-size-5)
+            )`,
+        backgroundPosition: '0 0',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: `calc(${depth} * var(--sys-size-5))`,
       });
       const trStyles = Lit.Directives.styleMap({
         color: depth ? 'var(--sys-color-on-surface-subtle)' : '',

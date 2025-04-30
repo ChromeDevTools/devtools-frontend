@@ -73,7 +73,7 @@ async function renderContent(expanded: boolean) {
     if (Timeline.CompatibilityTracksAppender.TrackNames.includes(track)) {
       const trackAppenderName = track as Timeline.CompatibilityTracksAppender.TrackAppenderName;
       flameChartData = await FrontendHelpers.getMainFlameChartWithTracks(
-          file, new Set([trackAppenderName]), expanded, additionalTrackFilter);
+          null, file, new Set([trackAppenderName]), expanded, additionalTrackFilter);
     } else if (track === 'Network') {
       flameChartData = await FrontendHelpers.getNetworkFlameChart(file, expanded);
     } else {

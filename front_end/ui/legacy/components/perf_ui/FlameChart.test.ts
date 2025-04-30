@@ -4,13 +4,18 @@
 
 import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import * as Workspace from '../../../../models/workspace/workspace.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
   FakeFlameChartProvider,
+  getMainFlameChartWithTracks,
   MockFlameChartDelegate,
 } from '../../../../testing/TraceHelpers.js';
+import * as UI from '../../../legacy/legacy.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -1000,6 +1005,40 @@ describeWithEnvironment('FlameChart', () => {
       groupNode1.endLevel = 3;
       groupNode2.startLevel = 3;
       assert.deepEqual(root, expectedGroupNodeRoot);
+    });
+  });
+
+  describe('rendering tracks', () => {
+    it('renders the main thread correctly', async function() {
+      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+      });
+      Bindings.IgnoreListManager.IgnoreListManager.instance({
+        forceNew: true,
+        debuggerWorkspaceBinding,
+      });
+      const chart =
+          await getMainFlameChartWithTracks(this, 'one-second-interaction.json.gz', new Set(['Thread']), true, 'Main');
+
+      const target = document.createElement('div');
+      target.innerHTML = `<style>${UI.inspectorCommonStyles.cssText}</style>`;
+      const timingsTrackOffset = chart.flameChart.levelToOffset(chart.dataProvider.maxStackDepth());
+      // Allow an extra 10px so no scrollbar is shown.
+      target.style.height = `${timingsTrackOffset + 10}px`;
+      target.style.display = 'flex';
+      target.style.width = '800px';
+
+      renderElementIntoDOM(target);
+      chart.flameChart.show(target);
+      chart.flameChart.update();
+
+      await raf();
+      await assertScreenshot('timeline/render_main_thread.png');
     });
   });
 });

@@ -342,6 +342,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     super(true);
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChartStyles);
+    this.registerRequiredCSS(UI.inspectorCommonStyles);
+
     this.contentElement.classList.add('flame-chart-main-pane');
     if (typeof optionalConfig.selectedElementOutline === 'boolean') {
       this.#selectedElementOutlineEnabled = optionalConfig.selectedElementOutline;

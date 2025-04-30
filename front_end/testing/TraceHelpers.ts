@@ -31,6 +31,7 @@ export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDeleg
  * corresponding track appender registered in the
  * CompatibilityTracksAppender.
  *
+ * @param context The unit test context.
  * @param traceFileName The name of the trace file to be loaded into the
  * flame chart.
  * @param trackAppenderNames A Set with the names of the tracks to be
@@ -40,15 +41,16 @@ export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDeleg
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getMainFlameChartWithTracks(
-    traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>,
-    expanded: boolean, trackName?: string): Promise<{
+    context: Mocha.Context|null, traceFileName: string,
+    trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>, expanded: boolean,
+    trackName?: string): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 }> {
   await initializeGlobalVars();
 
   // This function is used to load a component example.
-  const {parsedTrace} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const {parsedTrace} = await TraceLoader.traceEngine(context, traceFileName);
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();

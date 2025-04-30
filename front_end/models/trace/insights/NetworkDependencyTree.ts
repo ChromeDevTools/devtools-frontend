@@ -42,7 +42,11 @@ export const UIStrings = {
    * @description Text for the maximum critical path latency. This refers to the longest chain of network requests that
    * the browser must download before it can render the page.
    */
-  maxCriticalPathLatency: 'Max critical path latency:'
+  maxCriticalPathLatency: 'Max critical path latency:',
+  /** Label for a column in a data table; entries will be the network request */
+  columnRequest: 'Request',
+  /** Label for a column in a data table; entries will be the time from main document till current network request. */
+  columnTime: 'Time',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/NetworkDependencyTree.ts', UIStrings);

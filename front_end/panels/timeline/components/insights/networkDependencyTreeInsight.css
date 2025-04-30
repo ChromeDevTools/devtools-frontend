@@ -15,45 +15,4 @@
       color: var(--sys-color-error);
     }
   }
-
-  .tree-view {
-    border-top: var(--sys-size-1) solid var(--sys-color-divider);
-    padding-top: var(--sys-size-5);
-    margin-top: var(--sys-size-5);
-
-    ul:first-child{
-      padding-left: 0;
-    }
-
-    ul:not(:first-child){
-      border-left: var(--sys-size-1) solid var(--sys-color-tonal-outline);
-      list-style: none;
-      padding-left: var(--sys-size-5)
-    }
-
-    li {
-      border-left: var(--sys-size-1) solid var(--sys-color-tonal-outline);
-      list-style: none;
-      min-height: var(--sys-size-8);
-      padding: var(--sys-size-2) 0 var(--sys-size-2) var(--sys-size-5);
-
-      .request {
-        display: flex;
-
-        &.longest {
-          --override-timeline-link-text-color: var(--sys-color-error);
-
-          color: var(--sys-color-error);
-        }
-
-        &.highlighted {
-          background-color: var(--sys-color-state-hover-on-subtle);
-        }
-
-        .url {
-          flex: auto;
-        }
-      }
-    }
-  }
 }

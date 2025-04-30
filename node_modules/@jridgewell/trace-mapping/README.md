@@ -22,6 +22,7 @@ import {
   originalPositionFor,
   generatedPositionFor,
   sourceContentFor,
+  isIgnored,
 } from '@jridgewell/trace-mapping';
 
 const tracer = new TraceMap({
@@ -30,6 +31,7 @@ const tracer = new TraceMap({
   sourcesContent: ['content of input.js'],
   names: ['foo'],
   mappings: 'KAyCIA',
+  ignoreList: [],
 });
 
 // Lines start at line 1, columns at column 0.
@@ -53,6 +55,9 @@ assert.deepEqual(generated, {
   line: 1,
   column: 5,
 });
+
+const ignored = isIgnored(tracer, 'input.js');
+assert.equal(ignored, false);
 ```
 
 We also provide a lower level API to get the actual segment that matches our line and column. Unlike

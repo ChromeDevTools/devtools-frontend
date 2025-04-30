@@ -9,25 +9,24 @@ const disposable_js_1 = require("../util/disposable.js");
  * @internal
  */
 exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([
+    ['accelerometer', 'sensors'],
+    ['ambient-light-sensor', 'sensors'],
+    ['background-sync', 'backgroundSync'],
+    ['camera', 'videoCapture'],
+    ['clipboard-read', 'clipboardReadWrite'],
+    ['clipboard-sanitized-write', 'clipboardSanitizedWrite'],
+    ['clipboard-write', 'clipboardReadWrite'],
     ['geolocation', 'geolocation'],
+    ['gyroscope', 'sensors'],
+    ['idle-detection', 'idleDetection'],
+    ['keyboard-lock', 'keyboardLock'],
+    ['magnetometer', 'sensors'],
+    ['microphone', 'audioCapture'],
     ['midi', 'midi'],
     ['notifications', 'notifications'],
-    // TODO: push isn't a valid type?
-    // ['push', 'push'],
-    ['camera', 'videoCapture'],
-    ['microphone', 'audioCapture'],
-    ['background-sync', 'backgroundSync'],
-    ['ambient-light-sensor', 'sensors'],
-    ['accelerometer', 'sensors'],
-    ['gyroscope', 'sensors'],
-    ['magnetometer', 'sensors'],
-    ['accessibility-events', 'accessibilityEvents'],
-    ['clipboard-read', 'clipboardReadWrite'],
-    ['clipboard-write', 'clipboardReadWrite'],
-    ['clipboard-sanitized-write', 'clipboardSanitizedWrite'],
     ['payment-handler', 'paymentHandler'],
     ['persistent-storage', 'durableStorage'],
-    ['idle-detection', 'idleDetection'],
+    ['pointer-lock', 'pointerLock'],
     // chrome-specific permissions we have.
     ['midi-sysex', 'midiSysex'],
 ]);

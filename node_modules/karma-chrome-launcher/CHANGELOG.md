@@ -1,3 +1,17 @@
+# [3.2.0](https://github.com/karma-runner/karma-chrome-launcher/compare/v3.1.1...v3.2.0) (2023-04-20)
+
+
+### Features
+
+* add process.env.ProgramW6432 as root location for binaries ([12a73db](https://github.com/karma-runner/karma-chrome-launcher/commit/12a73dba261c78fdba4aff4dbb741ac87adfed01))
+
+## [3.1.1](https://github.com/karma-runner/karma-chrome-launcher/compare/v3.1.0...v3.1.1) (2022-03-09)
+
+
+### Bug Fixes
+
+* artificially trigger a release ([83fdc3c](https://github.com/karma-runner/karma-chrome-launcher/commit/83fdc3ca5666374c677408ed0589e66b1124bec4))
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/karma-runner/karma-chrome-launcher/compare/v3.0.0...v3.1.0) (2019-08-13)
 
@@ -201,4 +215,3 @@
 #### Features
 
 * allow passing custom flags ([4ebc7694](https://github.com/karma-runner/karma-chrome-launcher/commit/4ebc7694))
-

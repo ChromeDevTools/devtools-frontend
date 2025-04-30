@@ -1,4 +1,10 @@
+/**
+ * @license
+ * Copyright (c) 2016, Contributors
+ * SPDX-License-Identifier: ISC
+ */
 import { tokenizeArgString } from './tokenize-arg-string.js';
+import { DefaultValuesForTypeKey } from './yargs-parser-types.js';
 import { camelCase, decamelize, looksLikeNumber } from './string-utils.js';
 let mixin;
 export class YargsParser {
@@ -161,6 +167,7 @@ export class YargsParser {
         const argvReturn = {};
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
+            const truncatedArg = arg.replace(/^-{3,}/, '---');
             let broken;
             let key;
             let letters;
@@ -170,6 +177,12 @@ export class YargsParser {
             // any unknown option (except for end-of-options, "--")
             if (arg !== '--' && isUnknownOptionAsArg(arg)) {
                 pushPositional(arg);
+                // ---, ---=, ----, etc,
+            }
+            else if (truncatedArg.match(/---+(=|$)/)) {
+                // options without key name are invalid.
+                pushPositional(arg);
+                continue;
                 // -- separated by =
             }
             else if (arg.match(/^--.+=/) || (!configuration['short-option-groups'] && arg.match(/^-.+=/))) {
@@ -882,6 +895,7 @@ export class YargsParser {
             return configuration['unknown-options-as-args'] && isUnknownOption(arg);
         }
         function isUnknownOption(arg) {
+            arg = arg.replace(/^-{3,}/, '--');
             // ignore negative numbers
             if (arg.match(negative)) {
                 return false;
@@ -918,24 +932,24 @@ export class YargsParser {
         // return a default value, given the type of a flag.,
         function defaultForType(type) {
             const def = {
-                boolean: true,
-                string: '',
-                number: undefined,
-                array: []
+                [DefaultValuesForTypeKey.BOOLEAN]: true,
+                [DefaultValuesForTypeKey.STRING]: '',
+                [DefaultValuesForTypeKey.NUMBER]: undefined,
+                [DefaultValuesForTypeKey.ARRAY]: []
             };
             return def[type];
         }
         // given a flag, enforce a default type.
         function guessType(key) {
-            let type = 'boolean';
+            let type = DefaultValuesForTypeKey.BOOLEAN;
             if (checkAllAliases(key, flags.strings))
-                type = 'string';
+                type = DefaultValuesForTypeKey.STRING;
             else if (checkAllAliases(key, flags.numbers))
-                type = 'number';
+                type = DefaultValuesForTypeKey.NUMBER;
             else if (checkAllAliases(key, flags.bools))
-                type = 'boolean';
+                type = DefaultValuesForTypeKey.BOOLEAN;
             else if (checkAllAliases(key, flags.arrays))
-                type = 'array';
+                type = DefaultValuesForTypeKey.ARRAY;
             return type;
         }
         function isUndefined(num) {

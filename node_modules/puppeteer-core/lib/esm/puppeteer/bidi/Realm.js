@@ -59,7 +59,7 @@ import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiElementHandle } from './ElementHandle.js';
-import { ExposeableFunction } from './ExposedFunction.js';
+import { ExposableFunction } from './ExposedFunction.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
 import { createEvaluationError } from './util.js';
@@ -153,9 +153,10 @@ export class BidiRealm extends Realm {
         if ('type' in result && result.type === 'exception') {
             throw createEvaluationError(result.exceptionDetails);
         }
-        return returnByValue
-            ? BidiDeserializer.deserialize(result.result)
-            : this.createHandle(result.result);
+        if (returnByValue) {
+            return BidiDeserializer.deserialize(result.result);
+        }
+        return this.createHandle(result.result);
     }
     createHandle(result) {
         if ((result.type === 'node' || result.type === 'window') &&
@@ -249,8 +250,8 @@ export class BidiFrameRealm extends BidiRealm {
         let promise = Promise.resolve();
         if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                ExposeableFunction.from(this.environment, '__ariaQuerySelector', ARIAQueryHandler.queryOne, !!this.sandbox),
-                ExposeableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
+                ExposableFunction.from(this.environment, '__ariaQuerySelector', ARIAQueryHandler.queryOne, !!this.sandbox),
+                ExposableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
                     const results = ARIAQueryHandler.queryAll(element, selector);
                     return await element.realm.evaluateHandle((...elements) => {
                         return elements;

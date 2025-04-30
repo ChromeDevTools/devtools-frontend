@@ -15,7 +15,6 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const CdpPreloadScript_js_1 = require("./CdpPreloadScript.js");
-const CDPSession_js_2 = require("./CDPSession.js");
 const Connection_js_1 = require("./Connection.js");
 const DeviceRequestPrompt_js_1 = require("./DeviceRequestPrompt.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
@@ -77,6 +76,12 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         if (!mainFrame) {
             return;
         }
+        if (!this.#page.browser().connected) {
+            // If the browser is not connected we know
+            // that activation will not happen
+            this.#removeFramesRecursively(mainFrame);
+            return;
+        }
         for (const child of mainFrame.childFrames()) {
             this.#removeFramesRecursively(child);
         }
@@ -101,12 +106,11 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
      */
     async swapFrameTree(client) {
         this.#client = client;
-        (0, assert_js_1.assert)(this.#client instanceof CDPSession_js_2.CdpCDPSession, 'CDPSession is not an instance of CDPSessionImpl.');
         const frame = this._frameTree.getMainFrame();
         if (frame) {
-            this.#frameNavigatedReceived.add(this.#client._target()._targetId);
+            this.#frameNavigatedReceived.add(this.#client.target()._targetId);
             this._frameTree.removeFrame(frame);
-            frame.updateId(this.#client._target()._targetId);
+            frame.updateId(this.#client.target()._targetId);
             this._frameTree.addFrame(frame);
             frame.updateClient(client);
         }
@@ -163,7 +167,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             this.#frameTreeHandled?.resolve();
             this.#frameTreeHandled = Deferred_js_1.Deferred.create();
             // We need to schedule all these commands while the target is paused,
-            // therefore, it needs to happen synchroniously. At the same time we
+            // therefore, it needs to happen synchronously. At the same time we
             // should not start processing execution context and frame events before
             // we received the initial information about the frame tree.
             await Promise.all([

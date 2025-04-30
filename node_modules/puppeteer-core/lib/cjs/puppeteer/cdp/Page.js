@@ -73,7 +73,7 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Binding_js_1 = require("./Binding.js");
-const CDPSession_js_2 = require("./CDPSession.js");
+const CdpSession_js_1 = require("./CdpSession.js");
 const Connection_js_1 = require("./Connection.js");
 const Coverage_js_1 = require("./Coverage.js");
 const Dialog_js_1 = require("./Dialog.js");
@@ -142,7 +142,7 @@ class CdpPage extends Page_js_1.Page {
         this.#primaryTargetClient = client;
         this.#tabTargetClient = client.parentSession();
         (0, assert_js_1.assert)(this.#tabTargetClient, 'Tab target session is not defined.');
-        this.#tabTarget = this.#tabTargetClient._target();
+        this.#tabTarget = this.#tabTargetClient.target();
         (0, assert_js_1.assert)(this.#tabTarget, 'Tab target is not defined.');
         this.#primaryTarget = target;
         this.#targetManager = target._targetManager();
@@ -219,9 +219,10 @@ class CdpPage extends Page_js_1.Page {
         }
     }
     async #onActivation(newSession) {
+        // TODO: Remove assert once we have separate Event type for CdpCDPSession.
+        (0, assert_js_1.assert)(newSession instanceof CdpSession_js_1.CdpCDPSession, 'CDPSession is not instance of CdpCDPSession');
         this.#primaryTargetClient = newSession;
-        (0, assert_js_1.assert)(this.#primaryTargetClient instanceof CDPSession_js_2.CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
-        this.#primaryTarget = this.#primaryTargetClient._target();
+        this.#primaryTarget = newSession.target();
         (0, assert_js_1.assert)(this.#primaryTarget, 'Missing target on swap');
         this.#keyboard.updateClient(newSession);
         this.#mouse.updateClient(newSession);
@@ -233,8 +234,8 @@ class CdpPage extends Page_js_1.Page {
         this.#setupPrimaryTargetListeners();
     }
     async #onSecondaryTarget(session) {
-        (0, assert_js_1.assert)(session instanceof CDPSession_js_2.CdpCDPSession);
-        if (session._target()._subtype() !== 'prerender') {
+        (0, assert_js_1.assert)(session instanceof CdpSession_js_1.CdpCDPSession);
+        if (session.target()._subtype() !== 'prerender') {
             return;
         }
         this.#frameManager.registerSpeculativeSession(session).catch(util_js_1.debugError);
@@ -275,10 +276,10 @@ class CdpPage extends Page_js_1.Page {
         this.emit("workerdestroyed" /* PageEvent.WorkerDestroyed */, worker);
     };
     #onAttachedToTarget = (session) => {
-        (0, assert_js_1.assert)(session instanceof CDPSession_js_2.CdpCDPSession);
-        this.#frameManager.onAttachedToTarget(session._target());
-        if (session._target()._getTargetInfo().type === 'worker') {
-            const worker = new WebWorker_js_1.CdpWebWorker(session, session._target().url(), session._target()._targetId, session._target().type(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this));
+        (0, assert_js_1.assert)(session instanceof CdpSession_js_1.CdpCDPSession);
+        this.#frameManager.onAttachedToTarget(session.target());
+        if (session.target()._getTargetInfo().type === 'worker') {
+            const worker = new WebWorker_js_1.CdpWebWorker(session, session.target().url(), session.target()._targetId, session.target().type(), this.#addConsoleMessage.bind(this), this.#handleException.bind(this));
             this.#workers.set(session.id(), worker);
             this.emit("workercreated" /* PageEvent.WorkerCreated */, worker);
         }

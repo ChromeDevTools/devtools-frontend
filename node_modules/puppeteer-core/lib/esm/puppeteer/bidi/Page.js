@@ -194,6 +194,7 @@ let BidiPage = (() => {
             const changeUserAgent = (userAgent) => {
                 Object.defineProperty(navigator, 'userAgent', {
                     value: userAgent,
+                    configurable: true,
                 });
             };
             const frames = [this.#frame];
@@ -209,7 +210,7 @@ let BidiPage = (() => {
                     : undefined,
                 // When we disable the UserAgent we want to
                 // evaluate the original value in all Browsing Contexts
-                frames.map(frame => {
+                ...frames.map(frame => {
                     return frame.evaluate(changeUserAgent, userAgent);
                 }),
             ]);

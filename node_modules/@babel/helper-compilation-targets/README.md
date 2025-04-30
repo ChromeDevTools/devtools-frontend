@@ -2,14 +2,14 @@
 
 > Helper functions on Babel compilation targets
 
-See our website [@babel/helper-compilation-targets](https://babeljs.io/docs/en/babel-helper-compilation-targets) for more information.
+See our website [@babel/helper-compilation-targets](https://babeljs.io/docs/babel-helper-compilation-targets) for more information.
 
 ## Install
 
 Using npm:
 
 ```sh
-npm install @babel/helper-compilation-targets
+npm install --save @babel/helper-compilation-targets
 ```
 
 or using yarn:

@@ -1,4 +1,4 @@
-# jsesc [![Build status](https://travis-ci.org/mathiasbynens/jsesc.svg?branch=master)](https://travis-ci.org/mathiasbynens/jsesc) [![Code coverage status](https://coveralls.io/repos/mathiasbynens/jsesc/badge.svg)](https://coveralls.io/r/mathiasbynens/jsesc) [![Dependency status](https://gemnasium.com/mathiasbynens/jsesc.svg)](https://gemnasium.com/mathiasbynens/jsesc)
+# jsesc
 
 Given some data, _jsesc_ returns a stringified representation of that data. jsesc is similar to `JSON.stringify()` except:
 
@@ -202,6 +202,7 @@ The `minimal` option takes a boolean value (`true` or `false`), and defaults to 
 * U+2028 `\u2028`
 * U+2029 `\u2029`
 * whatever symbol is being used for wrapping string literals (based on [the `quotes` option](#quotes))
+* [lone surrogates](https://esdiscuss.org/topic/code-points-vs-unicode-scalar-values#content-14)
 
 Note: with this option enabled, jsesc output is no longer guaranteed to be ASCII-safe.
 
@@ -248,7 +249,7 @@ This setting has no effect on the output for strings.
 
 #### `indent`
 
-The `indent` option takes a string value, and defaults to `'\t'`. When the `compact` setting is enabled (`true`), the value of the `indent` option is used to format the output for arrays and objects.
+The `indent` option takes a string value, and defaults to `'\t'`. When the `compact` setting is disabled (`false`), the value of the `indent` option is used to format the output for arrays and objects.
 
 ```js
 jsesc({ 'Ich ♥ Bücher': 'foo 𝌆 bar' }, {
@@ -406,7 +407,7 @@ See `jsesc --help` for the full list of options.
 
 ## Support
 
-As of v2.0.0, jsesc supports Node.js v4+ only.
+As of v3.0.0, jsesc supports Node.js v6+ only.
 
 Older versions (up to jsesc v1.3.0) support Chrome 27, Firefox 3, Safari 4, Opera 10, IE 6, Node.js v6.0.0, Narwhal 0.3.2, RingoJS 0.8-0.11, PhantomJS 1.9.0, and Rhino 1.7RC4. **Note:** Using the `json` option on objects or arrays that contain non-string values relies on `JSON.parse()`. For legacy environments like IE ≤ 7, use [a `JSON` polyfill](https://bestiejs.github.io/json3/).
 

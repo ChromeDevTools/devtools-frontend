@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [20.2.9](https://www.github.com/yargs/yargs-parser/compare/yargs-parser-v20.2.8...yargs-parser-v20.2.9) (2021-06-20)
+
+
+### Bug Fixes
+
+* **build:** fixed automated release pipeline ([1fe9135](https://www.github.com/yargs/yargs-parser/commit/1fe9135884790a083615419b2861683e2597dac3))
+
+### [20.2.8](https://www.github.com/yargs/yargs-parser/compare/yargs-parser-v20.2.7...yargs-parser-v20.2.8) (2021-06-20)
+
+
+### Bug Fixes
+
+* **locale:** Turkish camelize and decamelize issues with toLocaleLowerCase/toLocaleUpperCase ([2617303](https://www.github.com/yargs/yargs-parser/commit/261730383e02448562f737b94bbd1f164aed5143))
+* **perf:** address slow parse when using unknown-options-as-args ([#394](https://www.github.com/yargs/yargs-parser/issues/394)) ([441f059](https://www.github.com/yargs/yargs-parser/commit/441f059d585d446551068ad213db79ac91daf83a))
+* **string-utils:** detect [0,1] ranged values as numbers ([#388](https://www.github.com/yargs/yargs-parser/issues/388)) ([efcc32c](https://www.github.com/yargs/yargs-parser/commit/efcc32c2d6b09aba31abfa2db9bd947befe5586b))
+
+### [20.2.7](https://www.github.com/yargs/yargs-parser/compare/v20.2.6...v20.2.7) (2021-03-10)
+
+
+### Bug Fixes
+
+* **deno:** force release for Deno ([6687c97](https://www.github.com/yargs/yargs-parser/commit/6687c972d0f3ca7865a97908dde3080b05f8b026))
+
+### [20.2.6](https://www.github.com/yargs/yargs-parser/compare/v20.2.5...v20.2.6) (2021-02-22)
+
+
+### Bug Fixes
+
+* **populate--:** -- should always be array ([#354](https://www.github.com/yargs/yargs-parser/issues/354)) ([585ae8f](https://www.github.com/yargs/yargs-parser/commit/585ae8ffad74cc02974f92d788e750137fd65146))
+
+### [20.2.5](https://www.github.com/yargs/yargs-parser/compare/v20.2.4...v20.2.5) (2021-02-13)
+
+
+### Bug Fixes
+
+* do not lowercase camel cased string ([#348](https://www.github.com/yargs/yargs-parser/issues/348)) ([5f4da1f](https://www.github.com/yargs/yargs-parser/commit/5f4da1f17d9d50542d2aaa206c9806ce3e320335))
+
 ### [20.2.4](https://www.github.com/yargs/yargs-parser/compare/v20.2.3...v20.2.4) (2020-11-09)
 
 

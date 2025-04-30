@@ -2,6 +2,7 @@
  * worker must be started as a child process or a web worker.
  * It listens for RPC messages from the parent process.
  */
+var Transfer = require('./transfer');
 
 // source of inspiration: https://github.com/sindresorhus/require-fool-webpack
 var requireFoolWebpack = eval(
@@ -54,9 +55,13 @@ else if (typeof process !== 'undefined') {
     var parentPort  = WorkerThreads.parentPort;
     worker.send = parentPort.postMessage.bind(parentPort);
     worker.on = parentPort.on.bind(parentPort);
+    worker.exit = process.exit.bind(process);
   } else {
     worker.on = process.on.bind(process);
-    worker.send = process.send.bind(process);
+    // ignore transfer argument since it is not supported by process
+    worker.send = function (message) {
+      process.send(message);
+    };
     // register disconnect handler only for subprocess worker to exit when parent is killed unexpectedly
     worker.on('disconnect', function () {
       process.exit(1);
@@ -109,11 +114,38 @@ worker.methods.methods = function methods() {
   return Object.keys(worker.methods);
 };
 
+/**
+ * Custom handler for when the worker is terminated.
+ */
+worker.terminationHandler = undefined;
+
+/**
+ * Cleanup and exit the worker.
+ * @param {Number} code 
+ * @returns 
+ */
+worker.cleanupAndExit = function(code) {
+  var _exit = function() {
+    worker.exit(code);
+  }
+
+  if(!worker.terminationHandler) {
+    return _exit();
+  }
+
+  var result = worker.terminationHandler(code);
+  if (isPromise(result)) {
+    result.then(_exit, _exit);
+  } else {
+    _exit();
+  }
+}
+
 var currentRequestId = null;
 
 worker.on('message', function (request) {
   if (request === TERMINATE_METHOD_ID) {
-    return worker.exit(0);
+    return worker.cleanupAndExit(0);
   }
   try {
     var method = worker.methods[request.method];
@@ -128,11 +160,19 @@ worker.on('message', function (request) {
         // promise returned, resolve this and then return
         result
             .then(function (result) {
-              worker.send({
-                id: request.id,
-                result: result,
-                error: null
-              });
+              if (result instanceof Transfer) {
+                worker.send({
+                  id: request.id,
+                  result: result.message,
+                  error: null
+                }, result.transfer);
+              } else {
+                worker.send({
+                  id: request.id,
+                  result: result,
+                  error: null
+                });
+              }
               currentRequestId = null;
             })
             .catch(function (err) {
@@ -146,11 +186,19 @@ worker.on('message', function (request) {
       }
       else {
         // immediate result
-        worker.send({
-          id: request.id,
-          result: result,
-          error: null
-        });
+        if (result instanceof Transfer) {
+          worker.send({
+            id: request.id,
+            result: result.message,
+            error: null
+          }, result.transfer);
+        } else {
+          worker.send({
+            id: request.id,
+            result: result,
+            error: null
+          });
+        }
 
         currentRequestId = null;
       }
@@ -170,9 +218,10 @@ worker.on('message', function (request) {
 
 /**
  * Register methods to the worker
- * @param {Object} methods
+ * @param {Object} [methods]
+ * @param {WorkerRegisterOptions} [options]
  */
-worker.register = function (methods) {
+worker.register = function (methods, options) {
 
   if (methods) {
     for (var name in methods) {
@@ -182,12 +231,24 @@ worker.register = function (methods) {
     }
   }
 
-  worker.send('ready');
+  if (options) {
+    worker.terminationHandler = options.onTerminate;
+  }
 
+  worker.send('ready');
 };
 
 worker.emit = function (payload) {
   if (currentRequestId) {
+    if (payload instanceof Transfer) {
+      worker.send({
+        id: currentRequestId,
+        isEvent: true,
+        payload: payload.message
+      }, payload.transfer);
+      return;
+    }
+
     worker.send({
       id: currentRequestId,
       isEvent: true,

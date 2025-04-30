@@ -28,9 +28,21 @@ const forEach = (array, callback) => {
 	}
 };
 
+const fourHexEscape = (hex) => {
+	return '\\u' + ('0000' + hex).slice(-4);
+}
+
+const hexadecimal = (code, lowercase) => {
+	let hexadecimal = code.toString(16);
+	if (lowercase) return hexadecimal;
+	return hexadecimal.toUpperCase();
+};
+
 const toString = object.toString;
 const isArray = Array.isArray;
-const isBuffer = Buffer.isBuffer;
+const isBuffer = (value) => {
+	return typeof Buffer === 'function' && Buffer.isBuffer(value);
+};
 const isObject = (value) => {
 	// This is a very simple check, but it’s good enough for what we need.
 	return toString.call(value) == '[object Object]';
@@ -42,6 +54,9 @@ const isString = (value) => {
 const isNumber = (value) => {
 	return typeof value == 'number' ||
 		toString.call(value) == '[object Number]';
+};
+const isBigInt = (value) => {
+  return typeof value == 'bigint';
 };
 const isFunction = (value) => {
 	return typeof value == 'function';
@@ -57,8 +72,6 @@ const isSet = (value) => {
 
 // https://mathiasbynens.be/notes/javascript-escapes#single
 const singleEscapes = {
-	'"': '\\"',
-	'\'': '\\\'',
 	'\\': '\\\\',
 	'\b': '\\b',
 	'\f': '\\f',
@@ -68,10 +81,13 @@ const singleEscapes = {
 	// `\v` is omitted intentionally, because in IE < 9, '\v' == 'v'.
 	// '\v': '\\x0B'
 };
-const regexSingleEscape = /["'\\\b\f\n\r\t]/;
+const regexSingleEscape = /[\\\b\f\n\r\t]/;
 
 const regexDigit = /[0-9]/;
-const regexWhitelist = /[ !#-&\(-\[\]-_a-~]/;
+const regexWhitespace = /[\xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000]/;
+
+const escapeEverythingRegex = /([\uD800-\uDBFF][\uDC00-\uDFFF])|([\uD800-\uDFFF])|(['"`])|[^]/g;
+const escapeNonAsciiRegex = /([\uD800-\uDBFF][\uDC00-\uDFFF])|([\uD800-\uDFFF])|(['"`])|[^ !#-&\(-\[\]-_a-~]/g;
 
 const jsesc = (argument, options) => {
 	const increaseIndentation = () => {
@@ -184,28 +200,44 @@ const jsesc = (argument, options) => {
 			}
 			return '[' + newLine + result.join(',' + newLine) + newLine +
 				(compact ? '' : oldIndent) + ']';
-		} else if (isNumber(argument)) {
+		} else if (isNumber(argument) || isBigInt(argument)) {
 			if (json) {
 				// Some number values (e.g. `Infinity`) cannot be represented in JSON.
-				return JSON.stringify(argument);
+				// `BigInt` values less than `-Number.MAX_VALUE` or greater than
+        // `Number.MAX_VALUE` cannot be represented in JSON so they will become
+        // `-Infinity` or `Infinity`, respectively, and then become `null` when
+        // stringified.
+				return JSON.stringify(Number(argument));
 			}
+
+      let result;
 			if (useDecNumbers) {
-				return String(argument);
-			}
-			if (useHexNumbers) {
+				result = String(argument);
+			} else if (useHexNumbers) {
 				let hexadecimal = argument.toString(16);
 				if (!lowercaseHex) {
 					hexadecimal = hexadecimal.toUpperCase();
 				}
-				return '0x' + hexadecimal;
+				result = '0x' + hexadecimal;
+			} else if (useBinNumbers) {
+				result = '0b' + argument.toString(2);
+			} else if (useOctNumbers) {
+				result = '0o' + argument.toString(8);
 			}
-			if (useBinNumbers) {
-				return '0b' + argument.toString(2);
+
+      if (isBigInt(argument)) {
+        return result + 'n';
+      }
+      return result;
+		} else if (isBigInt(argument)) {
+			if (json) {
+				// `BigInt` values less than `-Number.MAX_VALUE` or greater than
+        // `Number.MAX_VALUE` will become `-Infinity` or `Infinity`,
+        // respectively, and cannot be represented in JSON.
+				return JSON.stringify(Number(argument));
 			}
-			if (useOctNumbers) {
-				return '0o' + argument.toString(8);
-			}
-		} else if (!isObject(argument)) {
+      return argument + 'n';
+    } else if (!isObject(argument)) {
 			if (json) {
 				// For some values (e.g. `undefined`, `function` objects),
 				// `JSON.stringify(value)` returns `undefined` (which isn’t valid
@@ -234,96 +266,72 @@ const jsesc = (argument, options) => {
 		}
 	}
 
-	const string = argument;
-	// Loop over each code unit in the string and escape it
-	let index = -1;
-	const length = string.length;
-	result = '';
-	while (++index < length) {
-		const character = string.charAt(index);
-		if (options.es6) {
-			const first = string.charCodeAt(index);
-			if ( // check if it’s the start of a surrogate pair
-				first >= 0xD800 && first <= 0xDBFF && // high surrogate
-				length > index + 1 // there is a next code unit
-			) {
-				const second = string.charCodeAt(index + 1);
-				if (second >= 0xDC00 && second <= 0xDFFF) { // low surrogate
-					// https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-					const codePoint = (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
-					let hexadecimal = codePoint.toString(16);
-					if (!lowercaseHex) {
-						hexadecimal = hexadecimal.toUpperCase();
-					}
-					result += '\\u{' + hexadecimal + '}';
-					++index;
-					continue;
-				}
+	const regex = options.escapeEverything ? escapeEverythingRegex : escapeNonAsciiRegex;
+	result = argument.replace(regex, (char, pair, lone, quoteChar, index, string) => {
+		if (pair) {
+			if (options.minimal) return pair;
+			const first = pair.charCodeAt(0);
+			const second = pair.charCodeAt(1);
+			if (options.es6) {
+				// https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+				const codePoint = (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
+				const hex = hexadecimal(codePoint, lowercaseHex);
+				return '\\u{' + hex + '}';
 			}
+			return fourHexEscape(hexadecimal(first, lowercaseHex)) + fourHexEscape(hexadecimal(second, lowercaseHex));
 		}
-		if (!options.escapeEverything) {
-			if (regexWhitelist.test(character)) {
-				// It’s a printable ASCII character that is not `"`, `'` or `\`,
-				// so don’t escape it.
-				result += character;
-				continue;
-			}
-			if (character == '"') {
-				result += quote == character ? '\\"' : character;
-				continue;
-			}
-			if (character == '`') {
-				result += quote == character ? '\\`' : character;
-				continue;
-			}
-			if (character == '\'') {
-				result += quote == character ? '\\\'' : character;
-				continue;
-			}
+
+		if (lone) {
+			return fourHexEscape(hexadecimal(lone.charCodeAt(0), lowercaseHex));
 		}
+
 		if (
-			character == '\0' &&
+			char == '\0' &&
 			!json &&
 			!regexDigit.test(string.charAt(index + 1))
 		) {
-			result += '\\0';
-			continue;
+			return '\\0';
 		}
-		if (regexSingleEscape.test(character)) {
+
+		if (quoteChar) {
+			if (quoteChar == quote || options.escapeEverything) {
+				return '\\' + quoteChar;
+			}
+			return quoteChar;
+		}
+
+		if (regexSingleEscape.test(char)) {
 			// no need for a `hasOwnProperty` check here
-			result += singleEscapes[character];
-			continue;
+			return singleEscapes[char];
 		}
-		const charCode = character.charCodeAt(0);
-		if (options.minimal && charCode != 0x2028 && charCode != 0x2029) {
-			result += character;
-			continue;
+
+		if (options.minimal && !regexWhitespace.test(char)) {
+			return char;
 		}
-		let hexadecimal = charCode.toString(16);
-		if (!lowercaseHex) {
-			hexadecimal = hexadecimal.toUpperCase();
+
+		const hex = hexadecimal(char.charCodeAt(0), lowercaseHex);
+		if (json || hex.length > 2) {
+			return fourHexEscape(hex);
 		}
-		const longhand = hexadecimal.length > 2 || json;
-		const escaped = '\\' + (longhand ? 'u' : 'x') +
-			('0000' + hexadecimal).slice(longhand ? -4 : -2);
-		result += escaped;
-		continue;
+
+		return '\\x' + ('00' + hex).slice(-2);
+	});
+
+	if (quote == '`') {
+		result = result.replace(/\$\{/g, '\\${');
+	}
+	if (options.isScriptContext) {
+		// https://mathiasbynens.be/notes/etago
+		result = result
+			.replace(/<\/(script|style)/gi, '<\\/$1')
+			.replace(/<!--/g, json ? '\\u003C!--' : '\\x3C!--');
 	}
 	if (options.wrap) {
 		result = quote + result + quote;
 	}
-	if (quote == '`') {
-		result = result.replace(/\$\{/g, '\\\$\{');
-	}
-	if (options.isScriptContext) {
-		// https://mathiasbynens.be/notes/etago
-		return result
-			.replace(/<\/(script|style)/gi, '<\\/$1')
-			.replace(/<!--/g, json ? '\\u003C!--' : '\\x3C!--');
-	}
 	return result;
 };
 
-jsesc.version = '2.5.2';
+jsesc.version = '3.0.2';
 
 module.exports = jsesc;

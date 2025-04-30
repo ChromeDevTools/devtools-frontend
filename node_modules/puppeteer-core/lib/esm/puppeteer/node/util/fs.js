@@ -3,7 +3,7 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import fs from 'fs';
+import fs from 'node:fs';
 const rmOptions = {
     force: true,
     recursive: true,

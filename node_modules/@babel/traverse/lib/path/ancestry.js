@@ -130,9 +130,7 @@ function isDescendant(maybeAncestor) {
 function inType(...candidateTypes) {
   let path = this;
   while (path) {
-    for (const type of candidateTypes) {
-      if (path.node.type === type) return true;
-    }
+    if (candidateTypes.includes(path.node.type)) return true;
     path = path.parentPath;
   }
   return false;

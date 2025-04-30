@@ -6,11 +6,11 @@
 import type { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
-import type { CDPSession } from '../api/CDPSession.js';
 import { type Page } from '../api/Page.js';
 import { Target, TargetType } from '../api/Target.js';
 import type { Viewport } from '../common/Viewport.js';
 import { Deferred } from '../util/Deferred.js';
+import type { CdpCDPSession } from './CdpSession.js';
 import type { TargetManager } from './TargetManager.js';
 import { CdpWebWorker } from './WebWorker.js';
 /**
@@ -33,15 +33,15 @@ export declare class CdpTarget extends Target {
      *
      * @internal
      */
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext | undefined, targetManager: TargetManager | undefined, sessionFactory: ((isAutoAttachEmulated: boolean) => Promise<CDPSession>) | undefined);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext | undefined, targetManager: TargetManager | undefined, sessionFactory: ((isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>) | undefined);
     asPage(): Promise<Page>;
     _subtype(): string | undefined;
-    _session(): CDPSession | undefined;
+    _session(): CdpCDPSession | undefined;
     _addChildTarget(target: CdpTarget): void;
     _removeChildTarget(target: CdpTarget): void;
     _childTargets(): ReadonlySet<CdpTarget>;
-    protected _sessionFactory(): (isAutoAttachEmulated: boolean) => Promise<CDPSession>;
-    createCDPSession(): Promise<CDPSession>;
+    protected _sessionFactory(): (isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>;
+    createCDPSession(): Promise<CdpCDPSession>;
     url(): string;
     type(): TargetType;
     _targetManager(): TargetManager;
@@ -60,7 +60,7 @@ export declare class CdpTarget extends Target {
 export declare class PageTarget extends CdpTarget {
     #private;
     protected pagePromise?: Promise<Page>;
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, defaultViewport: Viewport | null);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CdpCDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CdpCDPSession>, defaultViewport: Viewport | null);
     _initialize(): void;
     page(): Promise<Page | null>;
     _checkIfInitialized(): void;

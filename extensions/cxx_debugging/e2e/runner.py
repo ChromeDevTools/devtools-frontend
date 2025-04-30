@@ -14,6 +14,7 @@ import threading
 
 import yaml
 
+
 def repo_path(*paths):
     RootDirectory = os.path.dirname(
         os.path.dirname(
@@ -183,7 +184,7 @@ class Test(object):
 
             flags += ' -c'
             # Build the object file from the source file
-            yield f'rule build_{object_rule_name}\n  command = cd {test_directory} && {compiler} {flags} {source_file_name} -o {object_rule_name}\n  description = Linking test {self.name} to binary with flags: "{flags}"\n'  #.format(
+            yield f'rule build_{object_rule_name}\n  command = cd {test_directory} && {compiler} {flags} {source_file_name} -o {object_rule_name}\n  description = Linking test {self.name} to binary with flags: "{flags}"\n'  # .format(
 
             if '-gsplit-dwarf' in flags:
                 # Generate the dwarf package file if necessary
@@ -265,7 +266,8 @@ class Compile(RunnerCommand):
             rules = set()
             for test in tests:
                 for rule in test.compile():
-                    if rule in rules: continue
+                    if rule in rules:
+                        continue
                     ninja_file.write('{}\n'.format(rule))
                     rules.add(rule)
 
@@ -513,7 +515,7 @@ class Run(Init):
         run_process(sys.executable,
                     NODE,
                     '--output',
-                    repo_path('//node_modules/mocha/bin/mocha'),
+                    repo_path('//node_modules/mocha/bin/mocha.js'),
                     '--config',
                     repo_path(options.build_root,
                               get_artifact_dir('test_suite'), '.mocharc.js'),

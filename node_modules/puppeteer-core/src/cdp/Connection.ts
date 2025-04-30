@@ -20,7 +20,7 @@ import {TargetCloseError} from '../common/Errors.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {createProtocolErrorMessage} from '../util/ErrorLike.js';
 
-import {CdpCDPSession} from './CDPSession.js';
+import {CdpCDPSession} from './CdpSession.js';
 
 const debugProtocolSend = debug('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = debug('puppeteer:protocol:RECV ◀');
@@ -83,8 +83,15 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
   /**
    * @internal
    */
-  get _sessions(): Map<string, CDPSession> {
+  get _sessions(): Map<string, CdpCDPSession> {
     return this.#sessions;
+  }
+
+  /**
+   * @internal
+   */
+  _session(sessionId: string): CdpCDPSession | null {
+    return this.#sessions.get(sessionId) || null;
   }
 
   /**
@@ -92,7 +99,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
    * @returns The current CDP session if it exists
    */
   session(sessionId: string): CDPSession | null {
-    return this.#sessions.get(sessionId) || null;
+    return this._session(sessionId);
   }
 
   url(): string {
@@ -174,7 +181,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
     } else if (object.method === 'Target.detachedFromTarget') {
       const session = this.#sessions.get(object.params.sessionId);
       if (session) {
-        session._onClosed();
+        session.onClosed();
         this.#sessions.delete(object.params.sessionId);
         this.emit(CDPSessionEvent.SessionDetached, session);
         const parentSession = this.#sessions.get(object.sessionId);
@@ -186,7 +193,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
     if (object.sessionId) {
       const session = this.#sessions.get(object.sessionId);
       if (session) {
-        session._onMessage(object);
+        session.onMessage(object);
       }
     } else if (object.id) {
       if (object.error) {
@@ -216,7 +223,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
     this.#transport.onclose = undefined;
     this.#callbacks.clear();
     for (const session of this.#sessions.values()) {
-      session._onClosed();
+      session.onClosed();
     }
     this.#sessions.clear();
     this.emit(CDPSessionEvent.Disconnected, undefined);
@@ -240,7 +247,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
   async _createSession(
     targetInfo: {targetId: string},
     isAutoAttachEmulated = true,
-  ): Promise<CDPSession> {
+  ): Promise<CdpCDPSession> {
     if (!isAutoAttachEmulated) {
       this.#manuallyAttached.add(targetInfo.targetId);
     }

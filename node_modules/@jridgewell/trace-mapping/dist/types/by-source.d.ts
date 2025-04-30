@@ -1,6 +1,6 @@
 import type { ReverseSegment, SourceMapSegment } from './sourcemap-segment';
 import type { MemoState } from './binary-search';
-export declare type Source = {
+export type Source = {
     __proto__: null;
     [line: number]: Exclude<ReverseSegment, [number]>[];
 };

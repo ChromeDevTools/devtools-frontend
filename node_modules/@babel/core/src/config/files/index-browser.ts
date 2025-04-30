@@ -5,9 +5,9 @@ import type {
   IgnoreFile,
   RelativeConfig,
   FilePackageData,
-} from "./types";
+} from "./types.ts";
 
-import type { CallerMetadata } from "../validation/options";
+import type { CallerMetadata } from "../validation/options.ts";
 
 export type { ConfigFile, IgnoreFile, RelativeConfig, FilePackageData };
 
@@ -35,7 +35,7 @@ export function* findRelativeConfig(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   envName: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  caller: CallerMetadata | void,
+  caller: CallerMetadata | undefined,
 ): Handler<RelativeConfig> {
   return { config: null, ignore: null };
 }
@@ -47,7 +47,7 @@ export function* findRootConfig(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   envName: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  caller: CallerMetadata | void,
+  caller: CallerMetadata | undefined,
 ): Handler<ConfigFile | null> {
   return null;
 }
@@ -59,7 +59,7 @@ export function* loadConfig(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   envName: string,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  caller: CallerMetadata | void,
+  caller: CallerMetadata | undefined,
 ): Handler<ConfigFile> {
   throw new Error(`Cannot load ${name} relative to ${dirname} in a browser`);
 }
@@ -72,15 +72,19 @@ export function* resolveShowConfigPath(
   return null;
 }
 
-export const ROOT_CONFIG_FILENAMES = [];
+export const ROOT_CONFIG_FILENAMES: string[] = [];
+
+type Resolved =
+  | { loader: "require"; filepath: string }
+  | { loader: "import"; filepath: string };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function resolvePlugin(name: string, dirname: string): string | null {
+export function resolvePlugin(name: string, dirname: string): Resolved | null {
   return null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function resolvePreset(name: string, dirname: string): string | null {
+export function resolvePreset(name: string, dirname: string): Resolved | null {
   return null;
 }
 

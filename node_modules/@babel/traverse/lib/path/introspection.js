@@ -7,17 +7,13 @@ exports._guessExecutionStatusRelativeTo = _guessExecutionStatusRelativeTo;
 exports._resolve = _resolve;
 exports.canHaveVariableDeclarationOrExpression = canHaveVariableDeclarationOrExpression;
 exports.canSwapBetweenExpressionAndStatement = canSwapBetweenExpressionAndStatement;
-exports.equals = equals;
 exports.getSource = getSource;
-exports.has = has;
-exports.is = void 0;
 exports.isCompletionRecord = isCompletionRecord;
 exports.isConstantExpression = isConstantExpression;
 exports.isInStrictMode = isInStrictMode;
 exports.isNodeType = isNodeType;
 exports.isStatementOrBlock = isStatementOrBlock;
 exports.isStatic = isStatic;
-exports.isnt = isnt;
 exports.matchesPattern = matchesPattern;
 exports.referencesImport = referencesImport;
 exports.resolve = resolve;
@@ -37,24 +33,28 @@ const {
 function matchesPattern(pattern, allowPartial) {
   return _matchesPattern(this.node, pattern, allowPartial);
 }
-function has(key) {
-  const val = this.node && this.node[key];
-  if (val && Array.isArray(val)) {
-    return !!val.length;
-  } else {
-    return !!val;
-  }
+{
+  exports.has = function has(key) {
+    var _this$node;
+    const val = (_this$node = this.node) == null ? void 0 : _this$node[key];
+    if (val && Array.isArray(val)) {
+      return !!val.length;
+    } else {
+      return !!val;
+    }
+  };
 }
 function isStatic() {
   return this.scope.isStatic(this.node);
 }
-const is = has;
-exports.is = is;
-function isnt(key) {
-  return !this.has(key);
-}
-function equals(key, value) {
-  return this.node[key] === value;
+{
+  exports.is = exports.has;
+  exports.isnt = function isnt(key) {
+    return !this.has(key);
+  };
+  exports.equals = function equals(key, value) {
+    return this.node[key] === value;
+  };
 }
 function isNodeType(type) {
   return isType(this.type, type);
@@ -198,8 +198,8 @@ function _guessExecutionStatusRelativeToCached(base, target, cache) {
     target: target.getAncestry(),
     this: base.getAncestry()
   };
-  if (paths.target.indexOf(base) >= 0) return "after";
-  if (paths.this.indexOf(target) >= 0) return "before";
+  if (paths.target.includes(base)) return "after";
+  if (paths.this.includes(target)) return "before";
   let commonPath;
   const commonIndex = {
     target: 0,
@@ -279,10 +279,11 @@ function _guessExecutionStatusRelativeToDifferentFunctionsCached(base, target, c
   return result;
 }
 function resolve(dangerous, resolved) {
-  return this._resolve(dangerous, resolved) || this;
+  return _resolve.call(this, dangerous, resolved) || this;
 }
 function _resolve(dangerous, resolved) {
-  if (resolved && resolved.indexOf(this) >= 0) return;
+  var _resolved;
+  if ((_resolved = resolved) != null && _resolved.includes(this)) return;
   resolved = resolved || [];
   resolved.push(this);
   if (this.isVariableDeclarator()) {
@@ -352,6 +353,18 @@ function isConstantExpression() {
       operator
     } = this.node;
     return operator !== "in" && operator !== "instanceof" && this.get("left").isConstantExpression() && this.get("right").isConstantExpression();
+  }
+  if (this.isMemberExpression()) {
+    return !this.node.computed && this.get("object").isIdentifier({
+      name: "Symbol"
+    }) && !this.scope.hasBinding("Symbol", {
+      noGlobals: true
+    });
+  }
+  if (this.isCallExpression()) {
+    return this.node.arguments.length === 1 && this.get("callee").matchesPattern("Symbol.for") && !this.scope.hasBinding("Symbol", {
+      noGlobals: true
+    }) && this.get("arguments")[0].isStringLiteral();
   }
   return false;
 }

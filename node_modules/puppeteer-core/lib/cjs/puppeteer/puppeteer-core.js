@@ -46,14 +46,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.launch = exports.executablePath = exports.defaultArgs = exports.connect = void 0;
 __exportStar(require("./index.js"), exports);
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
+const node_fs_1 = __importDefault(require("node:fs"));
+const node_path_1 = __importDefault(require("node:path"));
 const environment_js_1 = require("./environment.js");
 const Puppeteer = __importStar(require("./index.js"));
 // Set up Node-specific environment dependencies.
 environment_js_1.environment.value = {
-    fs: fs_1.default,
-    path: path_1.default,
+    fs: node_fs_1.default,
+    path: node_path_1.default,
     ScreenRecorder: Puppeteer.ScreenRecorder,
 };
 /**

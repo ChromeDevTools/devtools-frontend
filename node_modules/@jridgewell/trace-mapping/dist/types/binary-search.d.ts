@@ -1,5 +1,5 @@
 import type { SourceMapSegment, ReverseSegment } from './sourcemap-segment';
-export declare type MemoState = {
+export type MemoState = {
     lastKey: number;
     lastNeedle: number;
     lastIndex: number;

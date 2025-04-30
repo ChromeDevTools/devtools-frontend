@@ -15,10 +15,11 @@ exports.pool = function pool(script, options) {
 /**
  * Create a worker and optionally register a set of methods to the worker.
  * @param {Object} [methods]
+ * @param {WorkerRegisterOptions} [options]
  */
-exports.worker = function worker(methods) {
+exports.worker = function worker(methods, options) {
   var worker = require('./worker');
-  worker.add(methods);
+  worker.add(methods, options);
 };
 
 /**
@@ -35,6 +36,12 @@ exports.workerEmit = function workerEmit(payload) {
  * @type {Promise} promise
  */
 exports.Promise = require('./Promise');
+
+/**
+ * Create a transfer object.
+ * @type {Transfer} transfer
+ */
+exports.Transfer = require('./transfer');
 
 exports.platform = environment.platform;
 exports.isMainThread = environment.isMainThread;

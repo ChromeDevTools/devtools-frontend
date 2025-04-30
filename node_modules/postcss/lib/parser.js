@@ -347,6 +347,8 @@ class Parser {
       if (prev && prev.type === 'rule' && !prev.raws.ownSemicolon) {
         prev.raws.ownSemicolon = this.spaces
         this.spaces = ''
+        prev.source.end = this.getPosition(token[2])
+        prev.source.end.offset += prev.raws.ownSemicolon.length
       }
     }
   }
@@ -591,7 +593,7 @@ class Parser {
 
   unknownWord(tokens) {
     throw this.input.error(
-      'Unknown word',
+      'Unknown word ' + tokens[0][1],
       { offset: tokens[0][2] },
       { offset: tokens[0][2] + tokens[0][1].length }
     )

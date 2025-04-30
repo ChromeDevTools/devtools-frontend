@@ -381,9 +381,7 @@ let BidiFrame = (() => {
                             return (0, rxjs_js_1.of)(undefined);
                         }
                         return (0, rxjs_js_1.combineLatest)(frames);
-                    }), (0, rxjs_js_1.raceWith)((0, util_js_1.fromEmitterEvent)(navigation, 'fragment'), (0, util_js_1.fromEmitterEvent)(navigation, 'failed'), (0, util_js_1.fromEmitterEvent)(navigation, 'aborted').pipe((0, rxjs_js_1.map)(({ url }) => {
-                        throw new Error(`Navigation aborted: ${url}`);
-                    }))), (0, rxjs_js_1.switchMap)(() => {
+                    }), (0, rxjs_js_1.raceWith)((0, util_js_1.fromEmitterEvent)(navigation, 'fragment'), (0, util_js_1.fromEmitterEvent)(navigation, 'failed'), (0, util_js_1.fromEmitterEvent)(navigation, 'aborted')), (0, rxjs_js_1.switchMap)(() => {
                         if (navigation.request) {
                             function requestFinished$(request) {
                                 if (navigation === null) {
@@ -436,8 +434,8 @@ let BidiFrame = (() => {
             if (this.#exposedFunctions.has(name)) {
                 throw new Error(`Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`);
             }
-            const exposeable = await ExposedFunction_js_1.ExposeableFunction.from(this, name, apply);
-            this.#exposedFunctions.set(name, exposeable);
+            const exposable = await ExposedFunction_js_1.ExposableFunction.from(this, name, apply);
+            this.#exposedFunctions.set(name, exposable);
         }
         async removeExposedFunction(name) {
             const exposedFunction = this.#exposedFunctions.get(name);

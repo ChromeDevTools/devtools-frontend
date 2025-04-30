@@ -17,6 +17,7 @@ export declare class BidiCdpSession extends CDPSession {
     readonly frame: BidiFrame;
     constructor(frame: BidiFrame, sessionId?: string);
     connection(): CdpConnection | undefined;
+    get detached(): boolean;
     send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     detach(): Promise<void>;
     /**

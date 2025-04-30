@@ -100,6 +100,13 @@ export interface RollupNodeResolveOptions {
   rootDir?: string;
 
   /**
+   * If you use the `sideEffects` property in the package.json, by default this is respected for files in the root package. Set to `true` to ignore the `sideEffects` configuration for the root package.
+   *
+   * @default false
+   */
+  ignoreSideEffectsForRoot?: boolean;
+
+  /**
    * Allow folder mappings in package exports (trailing /)
    * This was deprecated in Node 14 and removed with Node 17, see DEP0148.
    * So this option might be changed to default to `false` in a future release.

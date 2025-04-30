@@ -10,7 +10,7 @@
  *
  * The script is non recursive.
  *
- * You can also execute the tests: `./node_modules/.bin/mocha scripts/deps/tests
+ * You can also execute the tests: `./node_modules/.bin/mocha.js scripts/deps/tests
  **/
 
 const fs = require('fs');

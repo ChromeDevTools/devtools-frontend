@@ -346,7 +346,7 @@ udpSocket.on('message', (message, rinfo) => {
   */
 });
 
-let client = new SocksClient(associateOptions);
+let client = new SocksClient(options);
 
 // When the UDP relay is established, this event is fired and includes the UDP relay port to send data to on the proxy server.
 client.on('established', info => {
@@ -361,7 +361,7 @@ client.on('established', info => {
   // Send 'hello' to 165.227.108.231:4444
   const packet = SocksClient.createUDPFrame({
     remoteHost: { host: '165.227.108.231', port: 4444 },
-    data: Buffer.from(line)
+    data: Buffer.from('hello')
   });
   udpSocket.send(packet, info.remoteHost.port, info.remoteHost.host);
 });

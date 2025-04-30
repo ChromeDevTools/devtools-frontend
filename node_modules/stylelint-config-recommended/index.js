@@ -48,5 +48,6 @@ module.exports = {
 			},
 		],
 		'string-no-newline': [true, { ignore: ['at-rule-preludes', 'declaration-values'] }],
+		'syntax-string-no-invalid': true,
 	},
 };

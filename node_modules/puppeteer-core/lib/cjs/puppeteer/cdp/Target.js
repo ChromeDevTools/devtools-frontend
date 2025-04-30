@@ -9,7 +9,6 @@ exports.OtherTarget = exports.WorkerTarget = exports.DevToolsTarget = exports.Pa
 const Target_js_1 = require("../api/Target.js");
 const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
-const CDPSession_js_1 = require("./CDPSession.js");
 const Page_js_1 = require("./Page.js");
 const WebWorker_js_1 = require("./WebWorker.js");
 /**
@@ -46,8 +45,8 @@ class CdpTarget extends Target_js_1.Target {
         this.#browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this.#sessionFactory = sessionFactory;
-        if (this.#session && this.#session instanceof CDPSession_js_1.CdpCDPSession) {
-            this.#session._setTarget(this);
+        if (this.#session) {
+            this.#session.setTarget(this);
         }
     }
     async asPage() {
@@ -85,7 +84,7 @@ class CdpTarget extends Target_js_1.Target {
             throw new Error('sessionFactory is not initialized');
         }
         return this.#sessionFactory(false).then(session => {
-            session._setTarget(this);
+            session.setTarget(this);
             return session;
         });
     }

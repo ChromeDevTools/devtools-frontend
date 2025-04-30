@@ -1,7 +1,7 @@
 # karma-spec-reporter
 
-[![Join the chat at https://gitter.im/mlex/karma-spec-reporter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlex/karma-spec-reporter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/mlex/karma-spec-reporter.svg)](https://travis-ci.org/mlex/karma-spec-reporter)
-[![Coverage Status](https://coveralls.io/repos/mlex/karma-spec-reporter/badge.svg?branch=master&service=github)](https://coveralls.io/github/mlex/karma-spec-reporter?branch=master)
+[![Join the chat at https://gitter.im/mlex/karma-spec-reporter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlex/karma-spec-reporter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![CircleCI](https://circleci.com/gh/tmcgee123/karma-spec-reporter/tree/master.svg?style=svg)](https://circleci.com/gh/tmcgee123/karma-spec-reporter/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/tmcgee123/karma-spec-reporter/badge.svg?branch=master)](https://coveralls.io/github/tmcgee123/karma-spec-reporter?branch=master)
 
 Test reporter, that prints detailed results to console (similar to mocha's spec reporter).
 
@@ -33,12 +33,19 @@ karma.conf.js file
       reporters: ["spec"],
       specReporter: {
         maxLogLines: 5,             // limit number of lines logged per test
+        suppressSummary: true,      // do not print summary
         suppressErrorSummary: true, // do not print error summary
         suppressFailed: false,      // do not print information about failed tests
         suppressPassed: false,      // do not print information about passed tests
         suppressSkipped: true,      // do not print information about skipped tests
+        showBrowser: false,         // print the browser for each spec
         showSpecTiming: false,      // print the time elapsed for each spec
-        failFast: true              // test would finish with error when a first fail occurs. 
+        failFast: true,             // test would finish with error when a first fail occurs
+        prefixes: {
+          success: '    OK: ',      // override prefix for passed tests, default is '✓ '
+          failure: 'FAILED: ',      // override prefix for failed tests, default is '✗ '
+          skipped: 'SKIPPED: '      // override prefix for skipped tests, default is '- '
+        }
       },
       plugins: ["karma-spec-reporter"],
     ...

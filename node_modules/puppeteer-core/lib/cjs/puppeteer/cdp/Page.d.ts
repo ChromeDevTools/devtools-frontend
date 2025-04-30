@@ -16,6 +16,7 @@ import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey } fr
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/Viewport.js';
+import { CdpCDPSession } from './CdpSession.js';
 import { Coverage } from './Coverage.js';
 import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { CdpFrame } from './Frame.js';
@@ -29,8 +30,8 @@ import { CdpWebWorker } from './WebWorker.js';
  */
 export declare class CdpPage extends Page {
     #private;
-    static _create(client: CDPSession, target: CdpTarget, defaultViewport: Viewport | null): Promise<CdpPage>;
-    constructor(client: CDPSession, target: CdpTarget);
+    static _create(client: CdpCDPSession, target: CdpTarget, defaultViewport: Viewport | null): Promise<CdpPage>;
+    constructor(client: CdpCDPSession, target: CdpTarget);
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;

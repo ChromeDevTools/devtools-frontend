@@ -7,6 +7,7 @@ export interface SourceMapV3 {
     sources: (string | null)[];
     sourcesContent?: (string | null)[];
     version: 3;
+    ignoreList?: number[];
 }
 export interface EncodedSourceMap extends SourceMapV3 {
     mappings: string;
@@ -26,41 +27,52 @@ export interface SectionedSourceMap {
     sections: Section[];
     version: 3;
 }
-export declare type OriginalMapping = {
+export type OriginalMapping = {
     source: string | null;
     line: number;
     column: number;
     name: string | null;
 };
-export declare type InvalidOriginalMapping = {
+export type InvalidOriginalMapping = {
     source: null;
     line: null;
     column: null;
     name: null;
 };
-export declare type GeneratedMapping = {
+export type GeneratedMapping = {
     line: number;
     column: number;
 };
-export declare type InvalidGeneratedMapping = {
+export type InvalidGeneratedMapping = {
     line: null;
     column: null;
 };
-export declare type Bias = typeof GREATEST_LOWER_BOUND | typeof LEAST_UPPER_BOUND;
-export declare type SourceMapInput = string | Ro<EncodedSourceMap> | Ro<DecodedSourceMap> | TraceMap;
-export declare type SectionedSourceMapInput = SourceMapInput | Ro<SectionedSourceMap>;
-export declare type Needle = {
+export type Bias = typeof GREATEST_LOWER_BOUND | typeof LEAST_UPPER_BOUND;
+export type XInput = {
+    x_google_ignoreList?: SourceMapV3['ignoreList'];
+};
+export type EncodedSourceMapXInput = EncodedSourceMap & XInput;
+export type DecodedSourceMapXInput = DecodedSourceMap & XInput;
+export type SectionedSourceMapXInput = Omit<SectionedSourceMap, 'sections'> & {
+    sections: SectionXInput[];
+};
+export type SectionXInput = Omit<Section, 'map'> & {
+    map: SectionedSourceMapInput;
+};
+export type SourceMapInput = string | EncodedSourceMapXInput | DecodedSourceMapXInput | TraceMap;
+export type SectionedSourceMapInput = SourceMapInput | SectionedSourceMapXInput;
+export type Needle = {
     line: number;
     column: number;
     bias?: Bias;
 };
-export declare type SourceNeedle = {
+export type SourceNeedle = {
     source: string;
     line: number;
     column: number;
     bias?: Bias;
 };
-export declare type EachMapping = {
+export type EachMapping = {
     generatedLine: number;
     generatedColumn: number;
     source: null;
@@ -83,10 +95,5 @@ export declare abstract class SourceMap {
     sources: SourceMapV3['sources'];
     sourcesContent: SourceMapV3['sourcesContent'];
     resolvedSources: SourceMapV3['sources'];
+    ignoreList: SourceMapV3['ignoreList'];
 }
-export declare type Ro<T> = T extends Array<infer V> ? V[] | Readonly<V[]> | RoArray<V> | Readonly<RoArray<V>> : T extends object ? T | Readonly<T> | RoObject<T> | Readonly<RoObject<T>> : T;
-declare type RoArray<T> = Ro<T>[];
-declare type RoObject<T> = {
-    [K in keyof T]: T[K] | Ro<T[K]>;
-};
-export {};

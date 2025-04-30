@@ -23,6 +23,7 @@ module.exports = {
 			},
 		],
 		'at-rule-no-vendor-prefix': true,
+		'color-function-alias-notation': 'without-alpha',
 		'color-function-notation': 'modern',
 		'color-hex-length': 'short',
 		'comment-empty-line-before': [
@@ -33,6 +34,12 @@ module.exports = {
 			},
 		],
 		'comment-whitespace-inside': 'always',
+		'container-name-pattern': [
+			'^(--)?([a-z][a-z0-9]*)(-[a-z0-9]+)*$',
+			{
+				message: (name) => `Expected container name "${name}" to be kebab-case`,
+			},
+		],
 		'custom-property-empty-line-before': [
 			'always',
 			{
@@ -71,6 +78,12 @@ module.exports = {
 			'^([a-z][a-z0-9]*)(-[a-z0-9]+)*$',
 			{
 				message: (name) => `Expected keyframe name "${name}" to be kebab-case`,
+			},
+		],
+		'layer-name-pattern': [
+			'^([a-z][a-z0-9]*)(-[a-z0-9]+)*$',
+			{
+				message: (name) => `Expected layer name "${name}" to be kebab-case`,
 			},
 		],
 		'length-zero-no-unit': [

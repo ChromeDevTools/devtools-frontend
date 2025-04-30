@@ -5,15 +5,15 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { TargetFilterCallback } from '../api/Browser.js';
-import { CDPSession } from '../api/CDPSession.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import { CdpCDPSession } from './CdpSession.js';
 import type { Connection } from './Connection.js';
 import { CdpTarget } from './Target.js';
 import type { TargetManagerEvents } from './TargetManageEvents.js';
 /**
  * @internal
  */
-export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession, parentSession?: CDPSession) => CdpTarget;
+export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CdpCDPSession, parentSession?: CdpCDPSession) => CdpTarget;
 /**
  * TargetManager encapsulates all interactions with CDP targets and is
  * responsible for coordinating the configuration of targets with the rest of

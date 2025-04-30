@@ -6,6 +6,7 @@ export interface SourceMapV3 {
     sources: readonly (string | null)[];
     sourcesContent?: readonly (string | null)[];
     version: 3;
+    ignoreList?: readonly number[];
 }
 export interface EncodedSourceMap extends SourceMapV3 {
     mappings: string;

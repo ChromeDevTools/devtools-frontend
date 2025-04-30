@@ -19,7 +19,7 @@ import {isErrorLike} from '../util/ErrorLike.js';
 
 import type {Binding} from './Binding.js';
 import {CdpPreloadScript} from './CdpPreloadScript.js';
-import {CdpCDPSession} from './CDPSession.js';
+import type {CdpCDPSession} from './CdpSession.js';
 import {isTargetClosedError} from './Connection.js';
 import {DeviceRequestPromptManager} from './DeviceRequestPrompt.js';
 import {ExecutionContext} from './ExecutionContext.js';
@@ -45,7 +45,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
   #networkManager: NetworkManager;
   #timeoutSettings: TimeoutSettings;
   #isolatedWorlds = new Set<string>();
-  #client: CDPSession;
+  #client: CdpCDPSession;
   #scriptsToEvaluateOnNewDocument = new Map<string, CdpPreloadScript>();
   #bindings = new Set<Binding>();
 
@@ -73,12 +73,12 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     return this.#networkManager;
   }
 
-  get client(): CDPSession {
+  get client(): CdpCDPSession {
     return this.#client;
   }
 
   constructor(
-    client: CDPSession,
+    client: CdpCDPSession,
     page: CdpPage,
     timeoutSettings: TimeoutSettings,
   ) {
@@ -103,6 +103,14 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     if (!mainFrame) {
       return;
     }
+
+    if (!this.#page.browser().connected) {
+      // If the browser is not connected we know
+      // that activation will not happen
+      this.#removeFramesRecursively(mainFrame);
+      return;
+    }
+
     for (const child of mainFrame.childFrames()) {
       this.#removeFramesRecursively(child);
     }
@@ -125,17 +133,13 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
    * we maintain the main frame object identity while updating
    * its frame tree and ID.
    */
-  async swapFrameTree(client: CDPSession): Promise<void> {
+  async swapFrameTree(client: CdpCDPSession): Promise<void> {
     this.#client = client;
-    assert(
-      this.#client instanceof CdpCDPSession,
-      'CDPSession is not an instance of CDPSessionImpl.',
-    );
     const frame = this._frameTree.getMainFrame();
     if (frame) {
-      this.#frameNavigatedReceived.add(this.#client._target()._targetId);
+      this.#frameNavigatedReceived.add(this.#client.target()._targetId);
       this._frameTree.removeFrame(frame);
-      frame.updateId(this.#client._target()._targetId);
+      frame.updateId(this.#client.target()._targetId);
       this._frameTree.addFrame(frame);
       frame.updateClient(client);
     }
@@ -201,7 +205,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
       this.#frameTreeHandled?.resolve();
       this.#frameTreeHandled = Deferred.create();
       // We need to schedule all these commands while the target is paused,
-      // therefore, it needs to happen synchroniously. At the same time we
+      // therefore, it needs to happen synchronously. At the same time we
       // should not start processing execution context and frame events before
       // we received the initial information about the frame tree.
       await Promise.all([

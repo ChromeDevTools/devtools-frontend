@@ -6,7 +6,6 @@
 import { Target, TargetType } from '../api/Target.js';
 import { debugError } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
-import { CdpCDPSession } from './CDPSession.js';
 import { CdpPage } from './Page.js';
 import { CdpWebWorker } from './WebWorker.js';
 /**
@@ -43,8 +42,8 @@ export class CdpTarget extends Target {
         this.#browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this.#sessionFactory = sessionFactory;
-        if (this.#session && this.#session instanceof CdpCDPSession) {
-            this.#session._setTarget(this);
+        if (this.#session) {
+            this.#session.setTarget(this);
         }
     }
     async asPage() {
@@ -82,7 +81,7 @@ export class CdpTarget extends Target {
             throw new Error('sessionFactory is not initialized');
         }
         return this.#sessionFactory(false).then(session => {
-            session._setTarget(this);
+            session.setTarget(this);
             return session;
         });
     }

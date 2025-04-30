@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { ChildProcess } from 'child_process';
+import type { ChildProcess } from 'node:child_process';
 import type { DebugInfo } from '../api/Browser.js';
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback } from '../api/Browser.js';
 import type { Page } from '../api/Page.js';

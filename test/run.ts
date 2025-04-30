@@ -47,14 +47,29 @@ if (options['verbose'] === 1) {
   logLevel = 'debug';
 }
 
-function forwardOptions() {
+function forwardOptions(): string[] {
   const forwardedOptions = {...options};
   for (const consume of CONSUMED_OPTIONS) {
     forwardedOptions[consume] = undefined;
   }
 
+  // Mocha errors on --repeat 1 as it expects --repeat=1
   // @ts-expect-error yargs and unparse have slightly different types
-  return unparse(forwardedOptions);
+  const unparsed = unparse(forwardedOptions)
+                       .reduce(
+                           (acc, option) => {
+                             if (!Number.isNaN(Number(option))) {
+                               acc += `=${option}`;
+                             } else {
+                               acc += ` ${option}`;
+                             }
+
+                             return acc;
+                           },
+                           '')
+                       .trim()
+                       .split(' ');
+  return unparsed;
 }
 
 function runProcess(exe: string, args: string[], options: childProcess.SpawnSyncOptionsWithStringEncoding) {
@@ -84,6 +99,8 @@ function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
   const {status, output: [, output]} = result;
   return {status, output};
 }
+
+const MOCHA_BIN_PATH = path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha.js');
 
 class Tests {
   readonly suite: PathPair;
@@ -136,7 +153,7 @@ class MochaTests extends Tests {
     return super.run(
         tests,
         [
-          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+          MOCHA_BIN_PATH,
           '--config',
           path.join(this.suite.buildPath, 'mocharc.js'),
           '-u',
@@ -151,7 +168,7 @@ class MochaTests extends Tests {
 class NonHostedMochaTests extends Tests {
   override run(tests: PathPair[]) {
     const args = [
-      path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+      MOCHA_BIN_PATH,
       '--config',
       path.join(this.suite.buildPath, 'mocharc.js'),
       '-u',
@@ -185,10 +202,7 @@ class ScriptsMochaTests extends Tests {
   override run(tests: PathPair[]) {
     return super.run(
         tests.map(test => ScriptPathPair.getFromPair(test)),
-        [
-          '--experimental-strip-types', '--no-warnings=ExperimentalWarning',
-          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'), '--extension=ts,js'
-        ],
+        ['--experimental-strip-types', '--no-warnings=ExperimentalWarning', MOCHA_BIN_PATH, '--extension=ts,js'],
     );
   }
 

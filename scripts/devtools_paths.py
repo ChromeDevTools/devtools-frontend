@@ -60,7 +60,7 @@ def eslint_path():
 
 
 def mocha_path():
-    return path.join(node_modules_path(), 'mocha', 'bin', 'mocha')
+    return path.join(node_modules_path(), 'mocha', 'bin', 'mocha.js')
 
 
 def karma_path():

@@ -156,9 +156,10 @@ class BidiRealm extends Realm_js_1.Realm {
         if ('type' in result && result.type === 'exception') {
             throw (0, util_js_2.createEvaluationError)(result.exceptionDetails);
         }
-        return returnByValue
-            ? Deserializer_js_1.BidiDeserializer.deserialize(result.result)
-            : this.createHandle(result.result);
+        if (returnByValue) {
+            return Deserializer_js_1.BidiDeserializer.deserialize(result.result);
+        }
+        return this.createHandle(result.result);
     }
     createHandle(result) {
         if ((result.type === 'node' || result.type === 'window') &&
@@ -253,8 +254,8 @@ class BidiFrameRealm extends BidiRealm {
         let promise = Promise.resolve();
         if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, !!this.sandbox),
-                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
+                ExposedFunction_js_1.ExposableFunction.from(this.environment, '__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, !!this.sandbox),
+                ExposedFunction_js_1.ExposableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
                     const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
                     return await element.realm.evaluateHandle((...elements) => {
                         return elements;

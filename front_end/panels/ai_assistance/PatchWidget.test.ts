@@ -8,6 +8,7 @@ import * as Root from '../../core/root/root.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import type * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import {
   cleanup,
@@ -166,6 +167,18 @@ Files:
 
     it('should show error state when applyToWorkspace fails', async () => {
       const {view, widget} = await createPatchWidget({aidaClient: mockAidaClient([[MockAidaFetchError]])});
+      widget.changeSummary = 'body { background-color: red; }';
+
+      view.input.onApplyToWorkspace();
+
+      const input = await view.nextInput;
+      assert.strictEqual(input.patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.ERROR);
+    });
+
+    it('should show error state when there are no changes after applying to workspace', async () => {
+      const {view, widget} =
+          await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'no patch applied'}]])});
+      sinon.stub(WorkspaceDiff.WorkspaceDiff.workspaceDiff(), 'modifiedUISourceCodes').returns([]);
       widget.changeSummary = 'body { background-color: red; }';
 
       view.input.onApplyToWorkspace();

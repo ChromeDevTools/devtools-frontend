@@ -113,7 +113,7 @@ export class Table extends HTMLElement {
     this.#headers = data.headers;
     this.#rows = data.rows;
     // If this table isn't interactive, don't attach mouse listeners or use CSS :hover.
-    this.#interactive = this.#rows.some(row => row.overlays);
+    this.#interactive = this.#rows.some(row => row.overlays || row.subRows);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

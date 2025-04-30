@@ -509,8 +509,35 @@ def CheckNoUncheckedFiles(input_api, output_api):
 
 # Canned check wrappers below.
 
-source_file_filter = lambda file: not file.LocalPath().startswith(
-    'node_modules')
+
+def _TextFilesOnlyFilter(file):
+    """Filters files based on prefixes and extensions that should not be treated as text files for the canned checks below."""
+    excluded_prefixes = [
+        'node_modules',
+        'third_party',
+        'front_end/third_party',
+        'extensions/cxx_debugging/third_party',
+    ]
+    excluded_extensions = [
+        '.png', '.webm', '.svg', '.avif', '.rawresponse', '.gz'
+    ]
+
+    if any(file.LocalPath().startswith(prefix)
+           for prefix in excluded_prefixes):
+        return False
+    if any(file.LocalPath().endswith(ext) for ext in excluded_extensions):
+        return False
+    return True
+
+
+def CheckChangeHasNoStrayWhitespace(input_api, output_api):
+    return input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
+        input_api, output_api, source_file_filter=_TextFilesOnlyFilter)
+
+
+def CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api):
+    return input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
+        input_api, output_api, source_file_filter=_TextFilesOnlyFilter)
 
 
 def CheckForCommitObjects(input_api, output_api):
@@ -523,11 +550,6 @@ def CheckOwnersFormat(input_api, output_api):
 
 def CheckOwners(input_api, output_api):
     return input_api.canned_checks.CheckOwners(input_api, output_api)
-
-
-def CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api):
-    return input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
-        input_api, output_api, source_file_filter=source_file_filter)
 
 
 def CheckGenderNeutral(input_api, output_api):
@@ -547,8 +569,3 @@ def CheckChangeHasDescriptionCommit(input_api, output_api):
 def CheckAuthorizedAuthor(input_api, output_api):
     return input_api.canned_checks.CheckAuthorizedAuthor(
         input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT])
-
-
-def CheckChangeHasNoStrayWhitespace(input_api, output_api):
-    return input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
-        input_api, output_api, source_file_filter=source_file_filter)

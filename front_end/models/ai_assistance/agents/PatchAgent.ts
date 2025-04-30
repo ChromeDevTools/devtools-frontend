@@ -255,10 +255,15 @@ CRITICAL: never call updateFiles with files that do not need updates.
 `;
 
     const responses = await Array.fromAsync(this.run(prompt, {selected: null, signal}));
-    return {
+
+    const result = {
       responses,
       processedFiles: this.#project.getProcessedFiles(),
     };
+
+    debugLog('applyChanges result', result);
+
+    return result;
   }
 }
 

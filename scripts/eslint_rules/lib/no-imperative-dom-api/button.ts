@@ -17,17 +17,36 @@ export const button = {
     const sourceCode = context.getSourceCode();
     return {
       propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
-        if (domFragment.tagName !== 'devtools-button') {
-          return false;
-        }
-        if (isIdentifier(property, [
-              'iconName', 'toggledIconName', 'toggleType', 'variant', 'size', 'reducedFocusRing', 'type',
-              'toggleOnClick', 'toggled', 'active', 'spinner', 'jslogContext', 'longClickable', 'data'
-            ])) {
-          domFragment.bindings.push({
-            key: property.name,
-            value: propertyValue,
-          });
+        if (domFragment.tagName === 'devtools-button') {
+          if (isIdentifier(property, [
+                'iconName', 'toggledIconName', 'toggleType', 'variant', 'size', 'reducedFocusRing', 'type',
+                'toggleOnClick', 'toggled', 'active', 'spinner', 'jslogContext', 'longClickable', 'data'
+              ])) {
+            domFragment.bindings.push({
+              key: property.name,
+              value: propertyValue,
+            });
+            return true;
+          }
+        } else if (
+            domFragment.tagName === 'devtools-icon' && isIdentifier(property, 'data') &&
+            propertyValue.type === 'ObjectExpression') {
+          for (const property of propertyValue.properties) {
+            if (property.type !== 'Property' || property.key.type !== 'Identifier') {
+              continue;
+            }
+            if (isIdentifier(property.key, 'iconName')) {
+              domFragment.attributes.push({
+                key: 'name',
+                value: property.value,
+              });
+            } else {
+              domFragment.style.push({
+                key: property.key.name,
+                value: property.value,
+              });
+            }
+          }
           return true;
         }
         return false;
@@ -36,6 +55,10 @@ export const button = {
         if (isIdentifierChain(node.callee, ['Buttons', 'Button', 'Button'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'devtools-button';
+        }
+        if (isIdentifierChain(node.callee, ['IconButton', 'Icon', 'Icon'])) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'devtools-icon';
         }
       },
     };

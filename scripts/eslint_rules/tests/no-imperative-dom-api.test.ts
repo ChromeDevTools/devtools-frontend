@@ -662,6 +662,35 @@ class SomeWidget extends UI.Widget.Widget {
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
+    this.contentElement.appendChild(icon);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-icon name="checkmark"
+          style="color:var(--icon-checkmark-green); width:14px; height:14px"></devtools-icon>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
     this.contentElement.appendChild(UI.UIUtils.CheckboxLabel.create(
           i18nString(UIStrings.someTitle), true, i18nString(UIStrings.someTooltip),
           undefined, 'some-checkbox', true));

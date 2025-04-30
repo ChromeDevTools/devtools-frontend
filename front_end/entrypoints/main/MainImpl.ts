@@ -369,14 +369,8 @@ export class MainImpl {
         'Performance panel: enable dimming unrelated events in performance insights and search results',
     );
 
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,
-        'Performance panel: enable a switch to an alternative timeline navigation option',
-    );
-
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
-      Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,
       Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS,
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,

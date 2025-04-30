@@ -2120,8 +2120,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // When the timeline is loaded for the first time, setup the shortcuts dialog and log what navigation setting is selected.
     // Logging the setting on the first timeline load will allow us to get an estimate number of people using each option.
-    if (this.#traceEngineModel.size() === 1 &&
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
+    if (this.#traceEngineModel.size() === 1) {
       this.#setupNavigationSetting();
       if (Common.Settings.moduleSetting('flamechart-selected-navigation').get() === 'classic') {
         Host.userMetrics.navigationSettingAtFirstTimelineLoad(

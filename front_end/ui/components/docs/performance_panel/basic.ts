@@ -94,6 +94,7 @@ UI.ActionRegistration.registerActionExtension({
 const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
 UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
 Common.Settings.settingForTest('flamechart-selected-navigation').set('classic');
+Common.Settings.settingForTest('timeline.user-had-shortcuts-dialog-opened-once').set(true);
 const params = new URLSearchParams(window.location.search);
 const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');

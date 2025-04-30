@@ -127,7 +127,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
   Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
   Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS,
-  Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -302,6 +301,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.APPEARANCE, 'chrome-theme-colors', true, Common.Settings.SettingType.BOOLEAN),
+    createSettingValue(
+        Common.Settings.SettingCategory.PERFORMANCE, 'timeline.user-had-shortcuts-dialog-opened-once', false,
+        Common.Settings.SettingType.BOOLEAN),
   ];
 
   Common.Settings.registerSettingsForTest(settings, reset);

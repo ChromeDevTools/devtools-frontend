@@ -733,7 +733,9 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
 
   #onDiscard(): void {
     this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      modifiedUISourceCode.resetWorkingCopy();
+      if (!modifiedUISourceCode.url().startsWith('inspector://')) {
+        modifiedUISourceCode.resetWorkingCopy();
+      }
     });
 
     this.#patchSuggestionState = PatchSuggestionState.INITIAL;

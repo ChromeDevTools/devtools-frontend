@@ -313,8 +313,9 @@ class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
     const toolbar = this.contentElement.createChild('devtools-toolbar');
-    const filterInput = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
-    toolbar.appendToolbarItem(filterInput);
+    const editButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
+    editButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.onClick.bind(this));
+    toolbar.appendToolbarItem(editButton);
   }
 }`,
       output: `
@@ -323,7 +324,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
       <devtools-toolbar>
-        <devtools-button title=\${i18nString(UIStrings.editName)}
+        <devtools-button title=\${i18nString(UIStrings.editName)} @click=\${this.onClick.bind(this)}
             .variant=\${Buttons.Button.Variant.TOOLBAR} .iconName=\${'edit'}
             .jslogContext=\${'edit-name'}></devtools-button>
       </devtools-toolbar>

@@ -23,6 +23,8 @@ export const toolbar = {
                 return 'change';
               case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
                 return 'submit';
+              case 'UI.Toolbar.ToolbarButton.Events.CLICK':
+                return 'click';
               default:
                 return null;
             }

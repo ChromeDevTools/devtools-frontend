@@ -9,7 +9,9 @@ import * as Trace from '../models/trace/trace.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as Timeline from '../panels/timeline/timeline.js';
 import * as PerfUI from '../ui/legacy/components/perf_ui/perf_ui.js';
+import * as UI from '../ui/legacy/legacy.js';
 
+import {raf, renderElementIntoDOM} from './DOMHelpers.js';
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
 import {TraceLoader} from './TraceLoader.js';
 
@@ -26,6 +28,8 @@ export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDeleg
 }
 
 /**
+ * @deprecated this will be removed once we have migrated from interaction tests for screenshots. Please use `renderFlameChartIntoDOM`.
+ *
  * Draws a set of tracks track in the flame chart using the new system.
  * For this to work, every track that will be rendered must have a
  * corresponding track appender registered in the
@@ -54,13 +58,12 @@ export async function getMainFlameChartWithTracks(
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-  // The data provider still needs a reference to the legacy model to
-  // work properly.
   dataProvider.setModel(parsedTrace, entityMapper);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildFromTrackAppendersForTest(
-      {filterThreadsByName: trackName, expandedTracks: expanded ? trackAppenderNames : undefined});
+  dataProvider.buildWithCustomTracksForTest(
+      {filterTracks: name => trackName ? name.includes(trackName) : true, expandTracks: _ => expanded});
+
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -69,6 +72,79 @@ export async function getMainFlameChartWithTracks(
   flameChart.markAsRoot();
   flameChart.update();
   return {flameChart, dataProvider};
+}
+
+export interface RenderFlameChartOptions {
+  /**
+   * The trace file to import. You must include `.json.gz` at the end of the file name.
+   */
+  traceFile: string;
+  /**
+   * Filter the tracks that will be rendered by their name. The name here is
+   * the user visible name that is drawn onto the flame chart.
+   */
+  filterTracks?: (trackName: string) => boolean;
+  /**
+   * Choose which track(s) that have been drawn should be expanded. The name
+   * here is the user visible name that is drawn onto the flame chart.
+   */
+  expandTracks?: (trackName: string) => boolean;
+}
+
+/**
+ * Renders a flame chart into the unit test DOM.
+ * It will take care of all the setup and configuration for you.
+ */
+export async function renderFlameChartIntoDOM(context: Mocha.Context|null, options: RenderFlameChartOptions): Promise<{
+  flameChart: PerfUI.FlameChart.FlameChart,
+  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
+  target: HTMLElement,
+}> {
+  const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+  const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    forceNew: true,
+    resourceMapping,
+    targetManager,
+  });
+  Bindings.IgnoreListManager.IgnoreListManager.instance({
+    forceNew: true,
+    debuggerWorkspaceBinding,
+  });
+
+  const {parsedTrace} = await TraceLoader.traceEngine(context, options.traceFile);
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+  dataProvider.setModel(parsedTrace, entityMapper);
+  dataProvider.buildWithCustomTracksForTest({
+    filterTracks: options.filterTracks,
+    expandTracks: options.expandTracks,
+  });
+  const delegate = new MockFlameChartDelegate();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+  flameChart.setWindowTimes(minTime, maxTime);
+  flameChart.markAsRoot();
+
+  const target = document.createElement('div');
+  target.innerHTML = `<style>${UI.inspectorCommonStyles.cssText}</style>`;
+  const timingsTrackOffset = flameChart.levelToOffset(dataProvider.maxStackDepth());
+  // Allow an extra 10px so no scrollbar is shown.
+  target.style.height = `${timingsTrackOffset + 10}px`;
+  target.style.display = 'flex';
+  target.style.width = '800px';
+  renderElementIntoDOM(target);
+  flameChart.show(target);
+  flameChart.update();
+  await raf();
+
+  return {
+    flameChart,
+    dataProvider,
+    target,
+  };
 }
 
 /**

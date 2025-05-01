@@ -449,22 +449,32 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   /**
-   * Builds the flame chart data using the track appenders
+   * Builds the flame chart data whilst allowing for a custom filtering of track appenders.
+   * This is ONLY to be used in test environments.
    */
-  buildFromTrackAppendersForTest(options?: {filterThreadsByName?: string, expandedTracks?: Set<TrackAppenderName>}):
-      void {
-    if (!this.compatibilityTracksAppender) {
-      return;
-    }
-    const appenders = this.compatibilityTracksAppender.allVisibleTrackAppenders();
+  buildWithCustomTracksForTest(options?: {
+    /**
+     * Filters the track by the given name. Only tracks that match this filter will be drawn.
+     */
+    filterTracks?: (name: string) => boolean,
+    /**
+     * Choose if a given track is expanded based on the name
+     */
+    expandTracks?: (name: string) => boolean,
+  }): void {
+    const compatAppender = this.compatibilityTracksAppenderInstance();  // Make sure the instance exists in tests
+    const appenders = compatAppender.allVisibleTrackAppenders();
     for (const appender of appenders) {
-      const skipThreadAppenderByName =
-          appender instanceof ThreadAppender && !appender.trackName().includes(options?.filterThreadsByName || '');
-      if (skipThreadAppenderByName) {
+      const trackName = appender instanceof ThreadAppender ? appender.trackName() : appender.appenderName;
+
+      const shouldIncludeTrack = options?.filterTracks?.call(null, trackName) ?? true;
+      if (!shouldIncludeTrack) {
         continue;
       }
-      const expanded = Boolean(options?.expandedTracks?.has(appender.appenderName));
-      this.currentLevel = appender.appendTrackAtLevel(this.currentLevel, expanded);
+
+      const shouldExpandTrack = options?.expandTracks?.call(null, trackName) ?? true;
+
+      this.currentLevel = appender.appendTrackAtLevel(this.currentLevel, shouldExpandTrack);
     }
   }
 

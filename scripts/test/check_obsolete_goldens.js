@@ -87,7 +87,7 @@ async function run() {
     );
     if (!shouldRemoveFiles) {
       console.log(
-          'Alternatively, run this script with --remove-files to have the script remove these files.',
+          'Alternatively, run this script (scripts/test/check_obsolete_goldens.js) with --remove-files to have the script remove these files.',
       );
     }
 

@@ -6,7 +6,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
@@ -400,10 +399,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     });
 
     this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, e => {
-      if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-        return;
-      }
-
       if (e.data.events) {
         this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, e.data.events);
         return;
@@ -725,17 +720,15 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
     }
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      // The insight's `relatedEvents` property likely already includes the events associated with
-      // an overlay, but just in case not, include both arrays. Duplicates are fine.
-      let relatedEventsList = this.#activeInsight?.model.relatedEvents;
-      if (!relatedEventsList) {
-        relatedEventsList = [];
-      } else if (relatedEventsList instanceof Map) {
-        relatedEventsList = Array.from(relatedEventsList.keys());
-      }
-      this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
+    // The insight's `relatedEvents` property likely already includes the events associated with
+    // an overlay, but just in case not, include both arrays. Duplicates are fine.
+    let relatedEventsList = this.#activeInsight?.model.relatedEvents;
+    if (!relatedEventsList) {
+      relatedEventsList = [];
+    } else if (relatedEventsList instanceof Map) {
+      relatedEventsList = Array.from(relatedEventsList.keys());
     }
+    this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
 
     if (options.updateTraceWindow) {
       // We should only expand the entry track when we are updating the trace window
@@ -1775,10 +1768,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      this.#updateFlameChartDimmerWithIndices(
-          this.#searchDimmer, mainMatches.map(m => m.index), networkMatches.map(m => m.index));
-    }
+    this.#updateFlameChartDimmerWithIndices(
+        this.#searchDimmer, mainMatches.map(m => m.index), networkMatches.map(m => m.index));
 
     if (!shouldJump || !this.searchResults.length) {
       return;

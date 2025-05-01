@@ -729,10 +729,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * 2) gives the checkbox UI an indeterminate state
    */
   set3PCheckboxDisabled(disabled: boolean): void {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
-      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
-    }
+    this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+    this.#thirdPartyCheckbox?.setIndeterminate(disabled);
   }
 
   static instance(opts: {

@@ -968,7 +968,6 @@ export enum DevtoolsExperiments {
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
   'timeline-experimental-insights' = 102,
-  'timeline-dim-unrelated-events' = 103,
   // 106 was historically used [https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/6230097]
   // next experiment should be 107
   /* eslint-enable @typescript-eslint/naming-convention */

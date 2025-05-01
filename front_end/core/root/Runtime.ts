@@ -320,8 +320,10 @@ export const enum ExperimentName {
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_COMPILED_SOURCES = 'timeline-compiled-sources',
   TIMELINE_EXPERIMENTAL_INSIGHTS = 'timeline-experimental-insights',
-  TIMELINE_DIM_UNRELATED_EVENTS = 'timeline-dim-unrelated-events',
-  // when adding to this enum, you'll need to also add to REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts
+  // Adding or removing an entry from this enum?
+  // You will need to update:
+  // 1. REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts (to create this experiment in the test env)
+  // 2. DevToolsExperiments enum in host/UserMetrics.ts
 }
 
 export enum GenAiEnterprisePolicyValue {

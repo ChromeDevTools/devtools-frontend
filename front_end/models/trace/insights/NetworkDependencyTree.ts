@@ -49,6 +49,27 @@ export const UIStrings = {
   columnRequest: 'Request',
   /** Label for a column in a data table; entries will be the time from main document till current network request. */
   columnTime: 'Time',
+  /**
+   * @description Text status indicating that there isn't preconnect candidates.
+   */
+  noPreconnectCandidates: 'No origins are good candidates for preconnecting',
+  /**
+   * @description Title of the table that shows the origins that the page should have preconnected to.
+   */
+  estSavingTableTitle: 'Preconnect candidates',
+  /**
+   * @description Description of the table that recommends preconnecting to the origins to save time.
+   */
+  estSavingTableDescription:
+      'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/?utm_source=lighthouse&utm_medium=devtools) hints to your most important origins, but try to use fewer than 4.',
+  /**
+   * @description Label for a column in a data table; entries will be the origin of a web resource
+   */
+  columnOrigin: 'Origin',
+  /**
+   * @description Label for a column in a data table; entries will be the number of milliseconds the user could reduce page load by if they implemented the suggestions.
+   */
+  columnWastedMs: 'Est LCP savings',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/NetworkDependencyTree.ts', UIStrings);

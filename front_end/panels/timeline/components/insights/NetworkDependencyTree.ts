@@ -12,6 +12,7 @@ import type {
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
+import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
@@ -135,9 +136,53 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format on
   }
 
+  #renderEstSavingTable(): Lit.LitTemplate {
+    if (!this.model) {
+      return Lit.nothing;
+    }
+
+    const estSavingTableTitle = html`
+      <style>${networkDependencyTreeInsightStyles.cssText}</style>
+      <div class='section-title'>${i18nString(UIStrings.estSavingTableTitle)}</div>
+      <div class="insight-description">${md(i18nString(UIStrings.estSavingTableDescription))}</div>
+    `;
+
+    if (!this.model.preconnectCandidates.length) {
+      // clang-format off
+      return html`
+        <div class="insight-section">
+          ${estSavingTableTitle}
+          ${i18nString(UIStrings.noPreconnectCandidates)}
+        </div>
+      `;
+      // clang-format on
+    }
+
+    const rows: TableDataRow[] = this.model.preconnectCandidates.map(
+        candidate => ({
+          values: [candidate.origin, i18n.TimeUtilities.millisToString(candidate.wastedMs)],
+        }));
+
+    // clang-format off
+    return html`
+      <div class="insight-section">
+        ${estSavingTableTitle}
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnWastedMs)],
+            rows,
+          } as TableData}>
+        </devtools-performance-table>
+      </div>
+    `;
+    // clang-format on
+  }
+
   override renderContent(): Lit.LitTemplate {
     return html`
       ${this.#renderNetworkTreeSection()}
+      ${this.#renderEstSavingTable()}
     `;
   }
 }

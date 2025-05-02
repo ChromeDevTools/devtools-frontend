@@ -15,4 +15,9 @@
       color: var(--sys-color-error);
     }
   }
+
+  .section-title{
+    font: var(--sys-typescale-body4-bold);
+    padding-bottom: var(--sys-size-2);
+  }
 }

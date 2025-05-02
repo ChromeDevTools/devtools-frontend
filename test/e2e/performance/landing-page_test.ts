@@ -162,8 +162,8 @@ describe('The Performance panel landing page', () => {
       await targetSession.detach();
     }
   });
-
-  it('treats bfcache restoration like a regular navigation', async () => {
+  // Flaky, skipped while we deflake it
+  it.skip('[crbug.com/415271011] treats bfcache restoration like a regular navigation', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();

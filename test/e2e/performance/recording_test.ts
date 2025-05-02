@@ -16,7 +16,8 @@ import {
 } from '../helpers/performance-helpers.js';
 
 describe('The Performance panel', () => {
-  it('supports the user manually starting and stopping a recording', async () => {
+  // Flaky
+  it.skip('[crbug.com/415305960] supports the user manually starting and stopping a recording', async () => {
     await navigateToPerformanceTab('empty');
 
     await startRecording();

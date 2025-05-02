@@ -21,7 +21,7 @@ new RuleTester().run('no-lit-render-outside-of-view', rule, {
     },
     {
       code: `class SomeWidget extends UI.Widget.Widget {
-          construtor(view = (input, _output, target) => {
+          constructor(view = (input, _output, target) => {
             render(html\`<div>Hello world</div>\`, target, {host: input});
           }) {
           super(view);

@@ -12,6 +12,7 @@ import {ariaUtils} from './no-imperative-dom-api/aria-utils.ts';
 import {getEnclosingExpression, isIdentifier} from './no-imperative-dom-api/ast.ts';
 import {button} from './no-imperative-dom-api/button.ts';
 import {ClassMember} from './no-imperative-dom-api/class-member.ts';
+import {dataGrid} from './no-imperative-dom-api/data-grid.ts';
 import {domApiDevtoolsExtensions} from './no-imperative-dom-api/dom-api-devtools-extensions.ts';
 import {domApi} from './no-imperative-dom-api/dom-api.ts';
 import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
@@ -66,6 +67,7 @@ export default createRule({
       adorner.create(context),
       ariaUtils.create(context),
       button.create(context),
+      dataGrid.create(context),
       domApi.create(context),
       domApiDevtoolsExtensions.create(context),
       toolbar.create(context),
@@ -172,9 +174,9 @@ export default createRule({
           continue;
         }
         ranges.push(range);
-        for (const child of domFragment.children) {
-          ranges.push(...getRangesToRemove(child));
-        }
+      }
+      for (const child of domFragment.children) {
+        ranges.push(...getRangesToRemove(child));
       }
       for (const range of ranges) {
         while ([' ', '\n'].includes(sourceCode.text[range[0] - 1])) {

@@ -760,5 +760,198 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.#columns = [
+      {
+        id: 'node-id',
+        title: i18nString(UIStrings.element),
+        sortable: true,
+        weight: 50,
+        align: undefined,
+      },
+      {
+        id: 'declaration',
+        title: i18nString(UIStrings.declaration),
+      },
+      {
+        id: 'source-url',
+        title: i18nString(UIStrings.source),
+        sortable: false,
+        weight: 100,
+        align: DataGrid.DataGrid.Align.RIGHT,
+      },
+    ];
+
+    this.#dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+      displayName: i18nString(UIStrings.someTitle),
+      columns: this.#columns,
+      deleteCallback: undefined,
+      refreshCallback: undefined,
+    });
+    this.#dataGrid.setStriped(true);
+    this.#dataGrid.addEventListener(
+        DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
+
+    this.#dataGrid.asWidget().show(this.element);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-data-grid name=\${i18nString(UIStrings.someTitle)} striped
+          @sort=\${this.#sortMediaQueryDataGrid.bind(this)}>
+        <table>
+          <tr>
+            <th id="node-id" weight="50" sortable>\${i18nString(UIStrings.element)}</th>
+            <th id="declaration">\${i18nString(UIStrings.declaration)}</th>
+            <th id="source-url" weight="100" align="right">\${i18nString(UIStrings.source)}</th>
+          </tr>
+        </table>
+      </devtools-data-grid>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const columns = [
+      {
+        id: 'node-id',
+        title: i18nString(UIStrings.element),
+        weight: 50,
+        align: undefined,
+      },
+      {
+        id: 'declaration',
+        title: i18nString(UIStrings.declaration),
+      },
+      {
+        id: 'source-url',
+        title: i18nString(UIStrings.source),
+        weight: 100,
+        align: this.editable ? DataGrid.DataGrid.Align.RIGHT : DataGrid.DataGrid.Align.LEFT,
+      },
+    ];
+
+    this.#dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
+      displayName: i18nString(UIStrings.someTitle),
+      columns,
+      deleteCallback: this.#deleteCallback.bind(this),
+      refreshCallback: undefined,
+    });
+    this.#dataGrid.addEventListener(
+        DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
+
+    this.#dataGrid.asWidget().show(this.element);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-data-grid name=\${i18nString(UIStrings.someTitle)}
+          @delete=\${this.#deleteCallback.bind(this)}
+          @sort=\${this.#sortMediaQueryDataGrid.bind(this)}>
+        <table>
+          <tr>
+            <th id="node-id" weight="50">\${i18nString(UIStrings.element)}</th>
+            <th id="declaration">\${i18nString(UIStrings.declaration)}</th>
+            <th id="source-url" weight="100"
+                align=\${this.editable ? DataGrid.DataGrid.Align.RIGHT : DataGrid.DataGrid.Align.LEFT}
+            >\${i18nString(UIStrings.source)}</th>
+          </tr>
+        </table>
+      </devtools-data-grid>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.#dataGrid = new DataGrid.DataGrid.DataGridImpl({
+      displayName: i18nString(UIStrings.someTitle),
+      columns: [
+        {
+          id: 'node-id',
+          title: i18nString(UIStrings.element),
+          weight: 50,
+          fixedWidth: this.fixedWidth,
+          align: undefined,
+          dataType: this.dataType,
+        },
+        {
+          id: 'active',
+          title: i18nString(UIStrings.active),
+          dataType: DataGrid.DataGrid.DataType.BOOLEAN,
+        },
+        {
+          id: 'source-url',
+          title: i18nString(UIStrings.source),
+          weight: 100,
+          dataType: DataGrid.DataGrid.DataType.STRING,
+        },
+      ],
+      refreshCallback: this.#refreshCallback.bind(this),
+    });
+
+    this.#dataGrid.asWidget().show(this.element);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-data-grid name=\${i18nString(UIStrings.someTitle)}
+          @refresh=\${this.#refreshCallback.bind(this)}>
+        <table>
+          <tr>
+            <th id="node-id" weight="50" dataType=\${this.dataType} ?fixed=\${this.fixedWidth}>\${i18nString(UIStrings.element)}</th>
+            <th id="active" dataType="boolean">\${i18nString(UIStrings.active)}</th>
+            <th id="source-url" weight="100" dataType="string">\${i18nString(UIStrings.source)}</th>
+          </tr>
+        </table>
+      </devtools-data-grid>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
   ],
 });

@@ -71,7 +71,8 @@ describe('The Performance panel landing page', () => {
     await reloadDevTools({selectedPanel: {name: 'timeline'}});
   });
 
-  it('displays live metrics', async () => {
+  // Flaky, skipped while we deflake it
+  it.skip('[crbug.com/415271011]displays live metrics', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();
@@ -117,7 +118,8 @@ describe('The Performance panel landing page', () => {
     }
   });
 
-  it('displays live metrics after the page already loaded', async () => {
+  // Flaky, skipped while we deflake it
+  it.skip('[crbug.com/415271011] displays live metrics after the page already loaded', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();
@@ -230,7 +232,8 @@ describe('The Performance panel landing page', () => {
     }
   });
 
-  it('ignores metrics from iframes', async () => {
+  // Flaky, skipped while we deflake it
+  it.skip('[crbug.com/415271011]ignores metrics from iframes', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();

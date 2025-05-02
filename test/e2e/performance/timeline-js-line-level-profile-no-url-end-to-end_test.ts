@@ -8,7 +8,8 @@ import {navigateToPerformanceTab, startRecording, stopRecording} from '../helper
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 
 describe('The Performance panel', () => {
-  it('can collect a line-level CPU profile and show it in the text editor', async () => {
+  // Flaky
+  it.skip('[crbug.com/415306436] can collect a line-level CPU profile and show it in the text editor', async () => {
     const {target} = getBrowserAndPages();
     await navigateToPerformanceTab();
     await startRecording();

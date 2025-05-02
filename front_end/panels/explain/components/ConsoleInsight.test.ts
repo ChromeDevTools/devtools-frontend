@@ -378,6 +378,79 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.isTrue(directCitations[0].classList.contains('highlighted'));
   });
 
+  it('displays direct citations in code blocks', async () => {
+    function getAidaClientWithMetadata() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: `before
+
+\`\`\`\`\`
+const foo = document.querySelector('.some-class');
+\`\`\`\`\`
+
+after
+`,
+                metadata: {
+                  rpcGlobalId: 0,
+                  attributionMetadata: {
+                    attributionAction: Host.AidaClient.RecitationAction.CITE,
+                    citations: [
+                      {
+                        startIndex: 20,
+                        endIndex: 25,
+                        uri: 'https://www.wiki.test/directSource',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                      {
+                        startIndex: 30,
+                        endIndex: 38,
+                        uri: 'https://www.world-fact.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                    ],
+                  },
+                  factualityMetadata: {
+                    facts: [
+                      {sourceUri: 'https://www.firstSource.test/someInfo'},
+                    ],
+                  },
+                },
+                completed: true,
+              };
+            },
+        registerClientEvent: sinon.spy(),
+      };
+    }
+
+    component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    renderElementIntoDOM(component);
+    await drainMicroTasks();
+
+    const markdownView = component.shadowRoot!.querySelector('devtools-markdown-view');
+    const codeBlock = markdownView!.shadowRoot!.querySelector('devtools-code-block');
+    const citations = codeBlock!.shadowRoot!.querySelectorAll('button.citation');
+    assert.lengthOf(citations, 2);
+    assert.strictEqual(citations[0].textContent, '[1]');
+    assert.strictEqual(citations[1].textContent, '[2]');
+
+    const details = component.shadowRoot!.querySelector('details');
+    const directCitations = details!.querySelectorAll('ol x-link');
+    assert.lengthOf(directCitations, 2);
+    assert.strictEqual(directCitations[0].textContent?.trim(), 'https://www.wiki.test/directSource');
+    assert.strictEqual(directCitations[0].getAttribute('href'), 'https://www.wiki.test/directSource');
+    assert.strictEqual(directCitations[1].textContent?.trim(), 'https://www.world-fact.test/');
+    assert.strictEqual(directCitations[1].getAttribute('href'), 'https://www.world-fact.test/');
+
+    assert.isFalse(details?.hasAttribute('open'));
+    assert.isFalse(directCitations[0].classList.contains('highlighted'));
+    (citations[0] as HTMLElement).click();
+    assert.isTrue(details?.hasAttribute('open'));
+    assert.isTrue(directCitations[0].classList.contains('highlighted'));
+  });
+
   it('displays training data citations', async () => {
     function getAidaClientWithMetadata() {
       return {

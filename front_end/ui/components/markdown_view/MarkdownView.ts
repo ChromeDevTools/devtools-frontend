@@ -11,6 +11,7 @@ import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
+import type * as Codeblock from './CodeBlock.js';
 import markdownViewStylesRaw from './markdownView.css.js';
 
 /* eslint-disable rulesdir/no-adopted-style-sheets --
@@ -27,6 +28,10 @@ export interface MarkdownViewData {
   renderer?: MarkdownLitRenderer;
   animationEnabled?: boolean;
 }
+
+export type CodeTokenWithCitation = Marked.Marked.Tokens.Generic&{
+  citations: Codeblock.Citation[],
+};
 
 export class MarkdownView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -345,6 +350,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
           class=${this.customClassMapForToken('code')}
           .code=${this.unescape(token.text)}
           .codeLang=${this.detectCodeLanguage(token as Marked.Marked.Tokens.Code)}
+          .citations=${(token as CodeTokenWithCitation).citations || []}
           .displayNotice=${true}>
         </devtools-code-block>`;
       case 'citation':

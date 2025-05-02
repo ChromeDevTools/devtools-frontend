@@ -58,6 +58,22 @@
   height: var(--sys-size-11);
 }
 
+.heading-text-wrapper {
+  display: flex;
+
+  .citation {
+    text-decoration: underline;
+    color: var(--sys-color-primary);
+    background-color: transparent;
+    cursor: pointer;
+    outline-offset: var(--sys-size-2);
+    border: none;
+    padding-bottom: 2px;
+    font-size: 11px;
+    font-family: var(--default-font-family);
+  }
+}
+
 .heading-text {
   font: var(--sys-typescale-body5-bold);
   padding-left: var(--sys-size-4);

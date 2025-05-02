@@ -44,6 +44,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/CodeBlock.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface Citation {
+  index: Number;
+  clickHandler: () => void;
+}
+
 export async function languageFromToken(lang: string): Promise<CodeMirror.LanguageSupport> {
   switch (lang) {
     case 'javascript':
@@ -138,6 +143,7 @@ export class CodeBlock extends HTMLElement {
   #displayNotice = false;
   #header?: string;
   #showCopyButton = true;
+  #citations: Citation[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
@@ -187,6 +193,10 @@ export class CodeBlock extends HTMLElement {
     void this.#render();
   }
 
+  set citations(citations: Citation[]) {
+    this.#citations = citations;
+  }
+
   #onCopy(): void {
     CopyToClipboard.copyTextToClipboard(this.#code, i18nString(UIStrings.copied));
     this.#copied = true;
@@ -232,6 +242,23 @@ export class CodeBlock extends HTMLElement {
     // clang-format on
   }
 
+  #maybeRenderCitations(): Lit.LitTemplate {
+    if (!this.#citations.length) {
+      return Lit.nothing;
+    }
+    // clang-format off
+    return html`
+      ${this.#citations.map(citation => html`
+        <button
+          class="citation"
+          jslog=${VisualLogging.link('inline-citation').track({click: true})}
+          @click=${citation.clickHandler}
+        >[${citation.index}]</button>
+      `)}
+    `;
+    // clang-format on
+  }
+
   async #render(): Promise<void> {
     const header = (this.#header ?? this.#codeLang) || i18nString(UIStrings.code);
 
@@ -244,7 +271,10 @@ export class CodeBlock extends HTMLElement {
       html`<div class='codeblock' jslog=${VisualLogging.section('code')}>
       <div class="editor-wrapper">
         <div class="heading">
-          <h4 class="heading-text">${header}</h4>
+          <div class="heading-text-wrapper">
+            <h4 class="heading-text">${header}</h4>
+            ${this.#maybeRenderCitations()}
+          </div>
           ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
         </div>
         <div class="code">

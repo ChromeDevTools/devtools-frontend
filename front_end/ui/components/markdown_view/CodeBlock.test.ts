@@ -63,4 +63,30 @@ describeWithEnvironment('CodeBlock', () => {
     assert.exists(notice);
     assert.strictEqual(notice.innerText, 'Use code snippets with caution');
   });
+
+  it('renders citations', () => {
+    const handler1 = sinon.spy();
+    const handler2 = sinon.spy();
+    const component = new MarkdownView.CodeBlock.CodeBlock();
+    component.code = 'test';
+    component.citations = [
+      {
+        index: 1,
+        clickHandler: handler1,
+      },
+      {
+        index: 2,
+        clickHandler: handler2,
+      },
+    ];
+    renderElementIntoDOM(component);
+    const citations = component.shadowRoot!.querySelectorAll('button.citation');
+    assert.lengthOf(citations, 2);
+    assert.strictEqual(citations[0].textContent, '[1]');
+    assert.strictEqual(citations[1].textContent, '[2]');
+    (citations[0] as HTMLElement).click();
+    sinon.assert.calledOnce(handler1);
+    (citations[1] as HTMLElement).click();
+    sinon.assert.calledOnce(handler2);
+  });
 });

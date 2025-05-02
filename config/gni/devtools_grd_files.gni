@@ -1277,7 +1277,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/SharedStorageModel.js",
   "front_end/panels/application/SharedStorageTreeElement.js",
   "front_end/panels/application/StorageBucketsTreeElement.js",
-  "front_end/panels/application/StorageItemsView.js",
+  "front_end/panels/application/StorageItemsToolbar.js",
   "front_end/panels/application/StorageView.js",
   "front_end/panels/application/TrustTokensTreeElement.js",
   "front_end/panels/application/appManifestView.css.js",

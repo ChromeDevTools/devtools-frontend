@@ -135,7 +135,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 
   override insertBefore<T extends Node>(child: T, referenceChild: Node): T {
     if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-      Widget.getOrCreateWidget(child).show(this, referenceChild);
+      Widget.getOrCreateWidget(child).show(this, referenceChild, true);
       return child;
     }
     return super.insertBefore(child, referenceChild);

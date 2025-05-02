@@ -19,7 +19,7 @@ import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
 import type {ExtensionStorage} from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
 import resourcesPanelStyles from './resourcesPanel.css.js';
-import {StorageItemsView} from './StorageItemsView.js';
+import {StorageItemsToolbar} from './StorageItemsToolbar.js';
 
 let resourcesPanelInstance: ResourcesPanel;
 
@@ -79,7 +79,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
       SourceFrame.ResourceSourceFrame.ResourceSourceFrame,
       SourceFrame.ImageView.ImageView,
       SourceFrame.FontView.FontView,
-      StorageItemsView,
+      StorageItemsToolbar,
     ];
     return viewClassesToClose.some(type => view instanceof type);
   }

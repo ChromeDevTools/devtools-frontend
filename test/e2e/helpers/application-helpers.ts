@@ -262,7 +262,7 @@ export async function selectStorageItemAtIndex(index: number) {
 }
 
 export async function deleteSelectedStorageItem() {
-  await click('[aria-label="Delete Selected"]');
+  await click('[title="Delete Selected"]');
   await expectVeEvents([veClick(
       'Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')]);
 }

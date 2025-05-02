@@ -850,7 +850,7 @@ export class ToolbarFilter extends ToolbarInput {
   }
 }
 
-class ToolbarInputElement extends HTMLElement {
+export class ToolbarInputElement extends HTMLElement {
   static observedAttributes = ['value'];
 
   item!: ToolbarInput;

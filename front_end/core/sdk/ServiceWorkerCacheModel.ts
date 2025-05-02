@@ -299,6 +299,9 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
   }
+
+  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
+  }
 }
 
 export const enum Events {

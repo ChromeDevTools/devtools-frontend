@@ -471,6 +471,8 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 
   attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
   }
+  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});

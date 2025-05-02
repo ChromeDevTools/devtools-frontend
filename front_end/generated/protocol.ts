@@ -15450,6 +15450,13 @@ export namespace Storage {
     ExcessiveReports = 'excessiveReports',
   }
 
+  export const enum AttributionReportingReportResult {
+    Sent = 'sent',
+    Prohibited = 'prohibited',
+    FailedToAssemble = 'failedToAssemble',
+    Expired = 'expired',
+  }
+
   /**
    * A single Related Website Set object.
    */
@@ -15968,6 +15975,18 @@ export namespace Storage {
     registration: AttributionReportingTriggerRegistration;
     eventLevel: AttributionReportingEventLevelResult;
     aggregatable: AttributionReportingAggregatableResult;
+  }
+
+  export interface AttributionReportingReportSentEvent {
+    url: string;
+    body: any;
+    result: AttributionReportingReportResult;
+    /**
+     * If result is `sent`, populated with net/HTTP status.
+     */
+    netError?: integer;
+    netErrorName?: string;
+    httpStatusCode?: integer;
   }
 }
 
@@ -18509,6 +18528,14 @@ export namespace BluetoothEmulation {
   }
 
   /**
+   * Indicates the various types of descriptor operation.
+   */
+  export const enum DescriptorOperationType {
+    Read = 'read',
+    Write = 'write',
+  }
+
+  /**
    * Stores the manufacturer data
    */
   export interface ManufacturerData {
@@ -18611,6 +18638,13 @@ export namespace BluetoothEmulation {
     data?: binary;
   }
 
+  export interface SimulateDescriptorOperationResponseRequest {
+    descriptorId: string;
+    type: DescriptorOperationType;
+    code: integer;
+    data?: binary;
+  }
+
   export interface AddServiceRequest {
     address: string;
     serviceUuid: string;
@@ -18660,6 +18694,10 @@ export namespace BluetoothEmulation {
     descriptorId: string;
   }
 
+  export interface SimulateGATTDisconnectionRequest {
+    address: string;
+  }
+
   /**
    * Event for when a GATT operation of |type| to the peripheral with |address|
    * happened.
@@ -18679,6 +18717,17 @@ export namespace BluetoothEmulation {
     type: CharacteristicOperationType;
     data?: binary;
     writeType?: CharacteristicWriteType;
+  }
+
+  /**
+   * Event for when a descriptor operation of |type| to the descriptor
+   * respresented by |descriptorId| happened. |data| is expected to exist when
+   * |type| is write.
+   */
+  export interface DescriptorOperationReceivedEvent {
+    descriptorId: string;
+    type: CharacteristicOperationType;
+    data?: binary;
   }
 }
 

@@ -564,6 +564,7 @@ export namespace ProtocolMapping {
     'Storage.storageBucketDeleted': [Protocol.Storage.StorageBucketDeletedEvent];
     'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
     'Storage.attributionReportingTriggerRegistered': [Protocol.Storage.AttributionReportingTriggerRegisteredEvent];
+    'Storage.attributionReportingReportSent': [Protocol.Storage.AttributionReportingReportSentEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -766,6 +767,12 @@ export namespace ProtocolMapping {
      * expected to exist when |type| is write.
      */
     'BluetoothEmulation.characteristicOperationReceived': [Protocol.BluetoothEmulation.CharacteristicOperationReceivedEvent];
+    /**
+     * Event for when a descriptor operation of |type| to the descriptor
+     * respresented by |descriptorId| happened. |data| is expected to exist when
+     * |type| is write.
+     */
+    'BluetoothEmulation.descriptorOperationReceived': [Protocol.BluetoothEmulation.DescriptorOperationReceivedEvent];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
      * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
@@ -4798,6 +4805,17 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Simulates the response from the descriptor with |descriptorId| for a
+     * descriptor operation of |type|. The |code| value follows the Error
+     * Codes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.
+     * The |data| is expected to exist when simulating a successful read operation
+     * response.
+     */
+    'BluetoothEmulation.simulateDescriptorOperationResponse': {
+      paramsType: [Protocol.BluetoothEmulation.SimulateDescriptorOperationResponseRequest];
+      returnType: void;
+    };
+    /**
      * Adds a service with |serviceUuid| to the peripheral with |address|.
      */
     'BluetoothEmulation.addService': {
@@ -4840,6 +4858,13 @@ export namespace ProtocolMapping {
      */
     'BluetoothEmulation.removeDescriptor': {
       paramsType: [Protocol.BluetoothEmulation.RemoveDescriptorRequest];
+      returnType: void;
+    };
+    /**
+     * Simulates a GATT disconnection from the peripheral with |address|.
+     */
+    'BluetoothEmulation.simulateGATTDisconnection': {
+      paramsType: [Protocol.BluetoothEmulation.SimulateGATTDisconnectionRequest];
       returnType: void;
     };
     /**

@@ -23373,6 +23373,17 @@
                     ]
                 },
                 {
+                    "id": "AttributionReportingReportResult",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "sent",
+                        "prohibited",
+                        "failedToAssemble",
+                        "expired"
+                    ]
+                },
+                {
                     "id": "RelatedWebsiteSet",
                     "description": "A single Related Website Set object.",
                     "experimental": true,
@@ -24261,6 +24272,40 @@
                         {
                             "name": "aggregatable",
                             "$ref": "AttributionReportingAggregatableResult"
+                        }
+                    ]
+                },
+                {
+                    "name": "attributionReportingReportSent",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "type": "string"
+                        },
+                        {
+                            "name": "body",
+                            "type": "object"
+                        },
+                        {
+                            "name": "result",
+                            "$ref": "AttributionReportingReportResult"
+                        },
+                        {
+                            "name": "netError",
+                            "description": "If result is `sent`, populated with net/HTTP status.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "netErrorName",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "httpStatusCode",
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 }
@@ -28170,6 +28215,15 @@
                     ]
                 },
                 {
+                    "id": "DescriptorOperationType",
+                    "description": "Indicates the various types of descriptor operation.",
+                    "type": "string",
+                    "enum": [
+                        "read",
+                        "write"
+                    ]
+                },
+                {
                     "id": "ManufacturerData",
                     "description": "Stores the manufacturer data",
                     "type": "object",
@@ -28406,6 +28460,29 @@
                     ]
                 },
                 {
+                    "name": "simulateDescriptorOperationResponse",
+                    "description": "Simulates the response from the descriptor with |descriptorId| for a\ndescriptor operation of |type|. The |code| value follows the Error\nCodes from Bluetooth Core Specification Vol 3 Part F 3.4.1.1 Error Response.\nThe |data| is expected to exist when simulating a successful read operation\nresponse.",
+                    "parameters": [
+                        {
+                            "name": "descriptorId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "$ref": "DescriptorOperationType"
+                        },
+                        {
+                            "name": "code",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "data",
+                            "optional": true,
+                            "type": "binary"
+                        }
+                    ]
+                },
+                {
                     "name": "addService",
                     "description": "Adds a service with |serviceUuid| to the peripheral with |address|.",
                     "parameters": [
@@ -28501,6 +28578,16 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "name": "simulateGATTDisconnection",
+                    "description": "Simulates a GATT disconnection from the peripheral with |address|.",
+                    "parameters": [
+                        {
+                            "name": "address",
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -28539,6 +28626,25 @@
                             "name": "writeType",
                             "optional": true,
                             "$ref": "CharacteristicWriteType"
+                        }
+                    ]
+                },
+                {
+                    "name": "descriptorOperationReceived",
+                    "description": "Event for when a descriptor operation of |type| to the descriptor\nrespresented by |descriptorId| happened. |data| is expected to exist when\n|type| is write.",
+                    "parameters": [
+                        {
+                            "name": "descriptorId",
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "$ref": "CharacteristicOperationType"
+                        },
+                        {
+                            "name": "data",
+                            "optional": true,
+                            "type": "binary"
                         }
                     ]
                 }

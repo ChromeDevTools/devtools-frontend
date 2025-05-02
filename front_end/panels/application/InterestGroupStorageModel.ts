@@ -95,6 +95,8 @@ export class InterestGroupStorageModel extends SDK.SDKModel.SDKModel<EventTypes>
 
   attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
   }
+  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(

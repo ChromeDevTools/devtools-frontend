@@ -198,6 +198,8 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
 
   attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
   }
+  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
+  }
 }
 
 SDKModel.register(StorageBucketsModel, {capabilities: Capability.STORAGE, autostart: false});

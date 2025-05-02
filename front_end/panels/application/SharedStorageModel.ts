@@ -244,6 +244,8 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
 
   attributionReportingSourceRegistered(_event: Protocol.Storage.AttributionReportingSourceRegisteredEvent): void {
   }
+  attributionReportingReportSent(_event: Protocol.Storage.AttributionReportingReportSentEvent): void {
+  }
 }
 
 SDK.SDKModel.SDKModel.register(SharedStorageModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});

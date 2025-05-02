@@ -26,7 +26,7 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
-  let mockVariableMap: Record<string, string>;
+  let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   let fakeComputeCSSVariable: SinonStub<
       [style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string],
@@ -51,10 +51,17 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         new SDK.CSSModel.CSSModel(createTarget()), undefined, {startLine: 0, startColumn: 0, endLine: 0, endColumn: 1});
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
     fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name) => {
-      return {
-        value: mockVariableMap[name],
-        declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
-      };
+      const value = mockVariableMap[name];
+      if (!value) {
+        return null;
+      }
+      if (typeof value === 'string') {
+        return {
+          value,
+          declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
+        };
+      }
+      return {value: value.value, declaration: new SDK.CSSMatchedStyles.CSSValueSource(value)};
     });
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
@@ -281,7 +288,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                 ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
         const matchedResult = property.parseValue(matchedStyles, new Map());
 
-        const context = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting());
+        const context =
+            new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), false);
         assert.isTrue(context.nextEvaluation());
         const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
@@ -1705,6 +1713,35 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         resolveValuesStub.resetHistory();
       }
     });
+
+    it('uses the right longhand name in length shorthands inside of substitutions during tracing', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      const cssModel = stylesSidebarPane.cssModel();
+      assert.exists(cssModel);
+      const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').callsFake((name, nodeId, ...values) => {
+        return Promise.resolve(values.map(v => v === '20%' ? '100px' : v));
+      });
+
+      const customPropertyDef = addProperty('--left', '20%');
+      mockVariableMap['--left'] = customPropertyDef;
+      const stylePropertyTreeElement = getTreeElement('padding', '10px var(--left)');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+
+      const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+      const performUpdateStub = sinon.stub(Elements.CSSValueTraceView.CSSValueTraceView.prototype, 'performUpdate');
+      const performUpdatePromise = new Promise<void>(resolve => performUpdateStub.callsFake(() => {
+        performUpdateStub.callThrough();
+        resolve();
+      }));
+      tooltip?.showPopover();
+      await performUpdatePromise;
+      const args = resolveValuesStub.args.map(args => args[0]);
+      assert.deepEqual(args, ['padding-right']);
+      resolveValuesStub.resetHistory();
+    });
   });
 
   describe('MathFunctionRenderer', () => {
@@ -1757,7 +1794,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
-              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+          false, 0);
 
       sinon.assert.calledOnce(evaluationSpy);
       const originalText = evaluationSpy.args[0][0].textContent;
@@ -1775,7 +1813,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
-              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+          false, 0);
 
       sinon.assert.calledOnce(resolveValuesStub);
       assert.strictEqual(resolveValuesStub.args[0][0], 'width');

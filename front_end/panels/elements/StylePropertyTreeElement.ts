@@ -276,7 +276,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
     const varCall =
-        this.#treeElement?.getTracingTooltip('var', match.text, this.#matchedStyles, this.#computedStyles, context);
+        this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, context);
     const tooltipContents =
         this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
@@ -638,7 +638,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     render(
         html`${
             this.#treeElement?.getTracingTooltip(
-                'color-mix', match.text, this.#matchedStyles, this.#computedStyles, context) ??
+                'color-mix', match.node, this.#matchedStyles, this.#computedStyles, context) ??
             'color-mix'}(${Renderer.render(match.space, childRenderingContexts[0]).nodes}, ${color1.nodes}, ${
             color2.nodes})`,
         contentChild);
@@ -1282,11 +1282,8 @@ async function resolveValues(
   // so try to look up the original name.
   propertyName = context.tracing?.propertyName ?? context.matchedResult.ast.propertyName ?? propertyName;
 
-  if (
-      SHORTHANDS_FOR_PERCENTAGES.has(propertyName) &&
-      context.matchedResult.getLonghandValuesCount() >
-          1  // If the shorthand only has a single value we can't tell width and height apart
-  ) {
+  if (SHORTHANDS_FOR_PERCENTAGES.has(propertyName) &&
+      (context.tracing?.expandPercentagesInShorthands ?? context.matchedResult.getLonghandValuesCount() > 1)) {
     propertyName = context.getComputedLonghandName(match.node) ?? propertyName;
   }
   const nodeId = stylesPane.node()?.id;
@@ -1395,7 +1392,7 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     render(
         html`${
             this.#treeElement?.getTracingTooltip(
-                match.func, match.text, this.#matchedStyles, this.#computedStyles, context) ??
+                match.func, match.node, this.#matchedStyles, this.#computedStyles, context) ??
             match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html`, `, arg]).flat()})`,
         span);
 
@@ -2160,11 +2157,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   getTracingTooltip(
-      functionName: string, text: string, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>, context: RenderingContext): Lit.TemplateResult {
     if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled || context.tracing || !context.property) {
       return html`${functionName}`;
     }
+    const text = context.ast.text(node);
+    const expandPercentagesInShorthands = context.matchedResult.getLonghandValuesCount() > 1;
+    const shorthandPositionOffset = context.matchedResult.getComputedLonghandName(node);
     const {property} = context;
     const stylesPane = this.parentPane();
     const tooltipId = this.getTooltipId(`${functionName}-trace`);
@@ -2181,7 +2181,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               ?.showTrace(
                 property, text, matchedStyles, computedStyles,
                 getPropertyRenderers(property.name,
-                  property.ownerStyle, stylesPane, matchedStyles, null, computedStyles));
+                  property.ownerStyle, stylesPane, matchedStyles, null, computedStyles),
+                expandPercentagesInShorthands, shorthandPositionOffset);
           }
         }}
         ><devtools-widget

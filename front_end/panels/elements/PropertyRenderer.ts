@@ -165,7 +165,7 @@ export class TracingContext {
   #evaluationCount = 0;
   #appliedEvaluations = 0;
   #hasMoreEvaluations = true;
-  #longhandOffset = 0;
+  #longhandOffset: number;
   readonly #highlighting: Highlighting;
   #parsedValueCache = new Map<SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty, {
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
@@ -174,14 +174,19 @@ export class TracingContext {
   }>();
   #propertyName: string|null;
   #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
+  readonly expandPercentagesInShorthands: boolean;
 
-  constructor(highlighting: Highlighting, matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
+  constructor(
+      highlighting: Highlighting, expandPercentagesInShorthands: boolean, initialLonghandOffset = 0,
+      matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
     this.#highlighting = highlighting;
     this.#hasMoreSubstitutions =
         matchedResult?.hasMatches(
             SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch) ??
         false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
+    this.#longhandOffset = initialLonghandOffset;
+    this.expandPercentagesInShorthands = expandPercentagesInShorthands;
   }
 
   get highlighting(): Highlighting {
@@ -242,7 +247,7 @@ export class TracingContext {
   // be passed to the Renderer calls for the respective subtrees.
   evaluation(args: unknown[]): TracingContext[]|null {
     const childContexts = args.map(() => {
-      const child = new TracingContext(this.#highlighting);
+      const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
       child.#parent = this;
       child.#substitutionDepth = this.#substitutionDepth;
       child.#evaluationCount = this.#evaluationCount;
@@ -297,7 +302,7 @@ export class TracingContext {
       this.#setHasMoreSubstitutions();
       return null;
     }
-    const child = new TracingContext(this.#highlighting);
+    const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
     child.#parent = this;
     child.#substitutionDepth = this.#substitutionDepth - 1;
     child.#evaluationCount = this.#evaluationCount;

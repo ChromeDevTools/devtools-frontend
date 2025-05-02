@@ -146,6 +146,8 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>|null,
       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
+      expandPercentagesInShorthands: boolean,
+      shorthandPositionOffset: number,
       ): Promise<void> {
     const matchedResult = subexpression === null ?
         property.parseValue(matchedStyles, computedStyles) :
@@ -153,13 +155,16 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     if (!matchedResult) {
       return undefined;
     }
-    return await this.#showTrace(property, matchedResult, renderers);
+    return await this.#showTrace(
+        property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset);
   }
 
   async #showTrace(
       property: SDK.CSSProperty.CSSProperty,
       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
+      expandPercentagesInShorthands: boolean,
+      shorthandPositionOffset: number,
       ): Promise<void> {
     this.#highlighting = new Highlighting();
     const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
@@ -168,7 +173,8 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     // 1st: Apply substitutions for var() functions
     const substitutions = [];
     const evaluations = [];
-    const tracing = new TracingContext(this.#highlighting, matchedResult);
+    const tracing =
+        new TracingContext(this.#highlighting, expandPercentagesInShorthands, shorthandPositionOffset, matchedResult);
     while (tracing.nextSubstitution()) {
       const context = new RenderingContext(
           matchedResult.ast,

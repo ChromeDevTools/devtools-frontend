@@ -343,7 +343,7 @@ export class TraceProcessor extends EventTarget {
       totalBlockingTime: tbtResult,
     };
 
-    return {graph, simulator, metrics};
+    return {requests, graph, simulator, metrics};
   }
 
   /**

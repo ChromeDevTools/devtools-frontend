@@ -133,7 +133,7 @@ export interface NetworkRequest<T = AnyNetworkObject> {
   frameId: string|undefined;
   fromWorker: boolean;
   /**
-   * Optional value for how long the server took to respond to this request.
+   * Optional value for how long the server took to respond to this request, in ms.
    * When not provided, the server response time is derived from the timing object.
    */
   serverResponseTime?: number;

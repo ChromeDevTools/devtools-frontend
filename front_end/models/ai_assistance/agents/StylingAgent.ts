@@ -415,8 +415,14 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           if (isInstructionStart(lines[i])) {
             break;
           }
+
+          // If the LLM responds with a language omit it
+          // as we always expect JS here
+          if (lines[i].trim().startsWith('`````')) {
+            actionLines.push('`````');
+          }
           // Sometimes the code block is in the form of "`````\njs\n{code}`````"
-          if (lines[i].trim() !== 'js') {
+          else if (lines[i].trim() !== 'js') {
             actionLines.push(lines[i]);
           }
           i++;

@@ -470,6 +470,31 @@ describeWithEnvironment('AidaClient', () => {
     ]);
   });
 
+  it('handles subsequent code chunks with attached language', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation')
+        .callsFake(async (_, streamId, callback) => {
+          const response = [
+            {textChunk: {text: 'hello '}},
+            {codeChunk: {code: 'brave ', inferenceLanguage: 'JAVASCRIPT'}},
+            {codeChunk: {code: 'new World()'}},
+          ];
+          for (const chunk of response) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+            Host.ResourceLoader.streamWrite(streamId, JSON.stringify(chunk));
+          }
+          callback({statusCode: 200});
+        });
+
+    const provider = new Host.AidaClient.AidaClient();
+    const results = (await getAllResults(provider)).map(r => r.explanation);
+    assert.deepEqual(results, [
+      'hello ',
+      'hello \n`````js\nbrave \n`````\n',
+      'hello \n`````js\nbrave new World()\n`````\n',
+      'hello \n`````js\nbrave new World()\n`````\n',
+    ]);
+  });
+
   it('throws a readable error on 403', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
       statusCode: 403,

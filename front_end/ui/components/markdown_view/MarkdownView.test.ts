@@ -275,6 +275,15 @@ describeWithEnvironment('MarkdownView', () => {
       result = renderer.detectCodeLanguage({text: '.foo::[name="bar"] {}', lang: ''} as Marked.Marked.Tokens.Code);
       assert.strictEqual(result, 'css');
     });
+
+    it('doesn`t detects JSON as CSS language', () => {
+      let result = renderer.detectCodeLanguage({text: '{ "test": "test" }', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+      result = renderer.detectCodeLanguage({text: '{}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+      result = renderer.detectCodeLanguage({text: '{\n"test": "test"\n}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+    });
   });
 
   const paragraphText =

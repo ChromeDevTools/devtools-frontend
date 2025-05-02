@@ -152,7 +152,9 @@ export interface RequestFactMetadata {
    */
   source: string;
   /**
-   * Optional: a score to give this fact. Used because if there are more facts than space in the context window, higher scoring facts will be prioritised.
+   * Optional: a score to give this fact. Used because
+   * if there are more facts than space in the context window,
+   * higher scoring facts will be prioritized.
    */
   score?: number;
 }
@@ -166,54 +168,43 @@ export interface RequestFact {
 
 export type RpcGlobalId = string|number;
 
+/* eslint-disable @typescript-eslint/naming-convention */
 export interface AidaRequest {
   client: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   current_message: Content;
   preamble?: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   historical_contexts?: Content[];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   function_declarations?: FunctionDeclaration[];
   facts?: RequestFact[];
   options?: {
     temperature?: number,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     model_id?: string,
   };
   metadata: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     disable_user_content_logging: boolean,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_version: string,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     string_session_id?: string,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     user_tier?: UserTier,
   };
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   functionality_type?: FunctionalityType;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   client_feature?: ClientFeature;
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
+/* eslint-disable @typescript-eslint/naming-convention  */
 export interface AidaDoConversationClientEvent {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   corresponding_aida_rpc_global_id: RpcGlobalId;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   disable_user_content_logging: boolean;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   do_conversation_client_event: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     user_feedback: {
       sentiment?: Rating,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       user_input?: {
         comment?: string,
       },
     },
   };
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 export enum RecitationAction {
   ACTION_UNSPECIFIED = 'ACTION_UNSPECIFIED',
@@ -279,9 +270,45 @@ export const enum AidaAccessPreconditions {
   SYNC_IS_PAUSED = 'sync-is-paused',
 }
 
+const enum AidaInferenceLanguage {
+  CPP = 'CPP',
+  PYTHON = 'PYTHON',
+  KOTLIN = 'KOTLIN',
+  JAVA = 'JAVA',
+  JAVASCRIPT = 'JAVASCRIPT',
+  GO = 'GO',
+  TYPESCRIPT = 'TYPESCRIPT',
+  HTML = 'HTML',
+  BASH = 'BASH',
+  CSS = 'CSS',
+  DART = 'DART',
+  JSON = 'JSON',
+  MARKDOWN = 'MARKDOWN',
+  VUE = 'VUE',
+  XML = 'XML',
+}
+
+const AidaLanguageToMarkdown: Record<AidaInferenceLanguage, string> = {
+  CPP: 'cpp',
+  PYTHON: 'py',
+  KOTLIN: 'kt',
+  JAVA: 'java',
+  JAVASCRIPT: 'js',
+  GO: 'go',
+  TYPESCRIPT: 'ts',
+  HTML: 'html',
+  BASH: 'sh',
+  CSS: 'css',
+  DART: 'dart',
+  JSON: 'json',
+  MARKDOWN: 'md',
+  VUE: 'vue',
+  XML: 'xml',
+};
+
 export const CLIENT_NAME = 'CHROME_DEVTOOLS';
 
-const CODE_CHUNK_SEPARATOR = '\n`````\n';
+const CODE_CHUNK_SEPARATOR = (lang = ''): string => ('\n`````' + lang + '\n');
 
 export class AidaAbortError extends Error {}
 export class AidaBlockError extends Error {}
@@ -416,16 +443,19 @@ export class AidaClient {
         }
         if ('textChunk' in result) {
           if (inCodeChunk) {
-            text.push(CODE_CHUNK_SEPARATOR);
+            text.push(CODE_CHUNK_SEPARATOR());
             inCodeChunk = false;
           }
+
           text.push(result.textChunk.text);
           textUpdated = true;
         } else if ('codeChunk' in result) {
           if (!inCodeChunk) {
-            text.push(CODE_CHUNK_SEPARATOR);
+            const language = AidaLanguageToMarkdown[result.codeChunk.inferenceLanguage as AidaInferenceLanguage] ?? '';
+            text.push(CODE_CHUNK_SEPARATOR(language));
             inCodeChunk = true;
           }
+
           text.push(result.codeChunk.code);
           textUpdated = true;
         } else if ('functionCallChunk' in result) {
@@ -441,14 +471,14 @@ export class AidaClient {
       }
       if (textUpdated) {
         yield {
-          explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
+          explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ''),
           metadata,
           completed: false,
         };
       }
     }
     yield {
-      explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
+      explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ''),
       metadata,
       functionCalls: functionCalls.length ? functionCalls as [AidaFunctionCallResponse, ...AidaFunctionCallResponse[]] :
                                             undefined,

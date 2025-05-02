@@ -237,6 +237,22 @@ c`;
       );
     });
 
+    it('parses an action with 5 backticks in the code language tag', async () => {
+      const payload = `const data = {
+  someKey: "value",
+}`;
+      assert.deepEqual(
+          getParsedTextResponse(
+              `ACTION\n\`\`\`\`\`js\n${payload}\n\`\`\`\`\`\nSTOP`,
+              ),
+          {
+            action: payload,
+            title: undefined,
+            thought: undefined,
+          },
+      );
+    });
+
     it('parses an action with 5 backticks in the code and `js` text in the prelude', async () => {
       const payload = `const data = {
   someKey: "value",

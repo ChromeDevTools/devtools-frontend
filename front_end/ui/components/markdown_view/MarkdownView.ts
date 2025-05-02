@@ -317,7 +317,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
       return token.lang;
     }
 
-    if (/^(\.|#)?[\w:\[\]="'-\.]* ?{/m.test(token.text) || /^@import/.test(token.text)) {
+    if (/^(\.|#)?[\w:\[\]="'-\.]+ ?{/m.test(token.text) || /^@import/.test(token.text)) {
       return 'css';
     }
     if (/^(var|const|let|function|async|import)\s/.test(token.text)) {

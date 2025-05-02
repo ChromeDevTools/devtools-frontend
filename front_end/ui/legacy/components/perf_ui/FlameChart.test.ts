@@ -1077,4 +1077,34 @@ describeWithEnvironment('FlameChart', () => {
       await assertScreenshot('timeline/threadpool_tracks.png');
     });
   });
+
+  it('renders the interactions track correctly', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'slow-interaction-button-click.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Interactions');
+      },
+      expandTracks() {
+        return true;
+      },
+      customStartTime: 337944700 as Trace.Types.Timing.Milli,
+      customEndTime: 337945100 as Trace.Types.Timing.Milli,
+    });
+    await assertScreenshot('timeline/interactions_track.png');
+  });
+
+  it('candy stripes long interactions', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'one-second-interaction.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Interactions');
+      },
+      expandTracks() {
+        return true;
+      },
+      customStartTime: 141251500 as Trace.Types.Timing.Milli,
+      customEndTime: 141253000 as Trace.Types.Timing.Milli,
+    });
+    await assertScreenshot('timeline/interactions_track_candystripe.png');
+  });
 });

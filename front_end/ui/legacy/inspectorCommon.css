@@ -40,12 +40,17 @@ body {
 
 .monospace {
   font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size) !important; /* stylelint-disable-line declaration-no-important */
+  font-size: var(
+    --monospace-font-size
+  ) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .source-code {
   font-family: var(--source-code-font-family);
-  font-size: var(--source-code-font-size) !important; /* stylelint-disable-line declaration-no-important */
+  font-size: var(
+    --source-code-font-size
+  ) !important; /* stylelint-disable-line declaration-no-important */
+
   white-space: pre-wrap;
 
   &:not(input)::selection {
@@ -143,7 +148,7 @@ iframe.widget {
 .link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--sys-color-primary);
+  color: var(--text-link);
   outline-offset: 2px;
 }
 
@@ -164,7 +169,7 @@ input {
 input {
   color: inherit;
 
-  &[type="checkbox"] {
+  &[type='checkbox'] {
     position: relative;
     outline: none;
     display: flex;
@@ -173,7 +178,7 @@ input {
 
     &:hover::after,
     &:active::before {
-      content: "";
+      content: '';
       height: 24px;
       width: 24px;
       border-radius: var(--sys-shape-corner-full);
@@ -194,7 +199,7 @@ input {
     }
 
     &:not(:disabled):focus-visible::before {
-      content: "";
+      content: '';
       height: 15px;
       width: 15px;
       border-radius: 5px;
@@ -223,8 +228,8 @@ input::placeholder {
 }
 
 .harmony-input:not([type]),
-.harmony-input[type="number"],
-.harmony-input[type="text"] {
+.harmony-input[type='number'],
+.harmony-input[type='text'] {
   padding: 3px 6px;
   height: 24px;
   border: 1px solid var(--sys-color-neutral-outline);
@@ -245,7 +250,7 @@ input::placeholder {
 }
 
 /* Radio inputs */
-input[type="radio"] {
+input[type='radio'] {
   height: 17px;
   width: 17px;
   min-width: 17px;
@@ -261,7 +266,7 @@ input[type="radio"] {
 }
 
 @media (forced-colors: active) {
-  input[type="radio"] {
+  input[type='radio'] {
     --gradient-start: ButtonFace;
     --gradient-end: ButtonFace;
 
@@ -273,7 +278,7 @@ input[type="radio"] {
 }
 
 /* Range inputs */
-input[type="range"] {
+input[type='range'] {
   appearance: none;
   margin: 0;
   padding: 0;
@@ -283,7 +288,7 @@ input[type="range"] {
   background: none;
 }
 
-input[type="range"]::-webkit-slider-thumb,
+input[type='range']::-webkit-slider-thumb,
 .-theme-preserve {
   appearance: none;
   margin: 0;
@@ -296,7 +301,7 @@ input[type="range"]::-webkit-slider-thumb,
   background-color: var(--sys-color-primary);
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
   appearance: none;
   margin: 0;
   padding: 0;
@@ -305,16 +310,16 @@ input[type="range"]::-webkit-slider-runnable-track {
   background-color: var(--sys-color-surface-variant);
 }
 
-input[type="range"]:focus::-webkit-slider-thumb {
+input[type='range']:focus::-webkit-slider-thumb {
   box-shadow: 0 0 0 2px var(--sys-color-inverse-primary);
 }
 
-input[type="range"]:disabled::-webkit-slider-thumb {
+input[type='range']:disabled::-webkit-slider-thumb {
   background-color: var(--sys-color-state-disabled);
 }
 
 @media (forced-colors: active) {
-  input[type="range"] {
+  input[type='range'] {
     forced-color-adjust: none;
   }
 }
@@ -348,7 +353,10 @@ input[type="range"]:disabled::-webkit-slider-thumb {
 
 .editing,
 .editing * {
-  color: var(--sys-color-on-surface) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(
+    --sys-color-on-surface
+  ) !important; /* stylelint-disable-line declaration-no-important */
+
   text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -375,7 +383,7 @@ select {
     border-color: transparent;
     color: var(--sys-color-state-disabled);
     background-color: var(--sys-color-state-disabled-container);
-    pointer-events: none;;
+    pointer-events: none;
   }
 
   &:enabled {
@@ -388,10 +396,15 @@ select {
     }
 
     &:hover:active {
-      background:
-        var(--combobox-dropdown-arrow),
-        linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
-        linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+      background: var(--combobox-dropdown-arrow),
+        linear-gradient(
+          var(--sys-color-state-hover-on-subtle),
+          var(--sys-color-state-hover-on-subtle)
+        ),
+        linear-gradient(
+          var(--sys-color-state-ripple-neutral-on-subtle),
+          var(--sys-color-state-ripple-neutral-on-subtle)
+        );
       background-position: right center;
       background-repeat: no-repeat;
     }
@@ -599,14 +612,14 @@ button.link:focus-visible {
   }
 
   .harmony-input:not([type]),
-  .harmony-input[type="number"],
-  .harmony-input[type="text"] {
+  .harmony-input[type='number'],
+  .harmony-input[type='text'] {
     border: 1px solid ButtonText;
   }
 
   .harmony-input:not([type]):focus,
-  .harmony-input[type="number"]:focus,
-  .harmony-input[type="text"]:focus {
+  .harmony-input[type='number']:focus,
+  .harmony-input[type='text']:focus {
     border: 1px solid Highlight;
   }
 }
@@ -632,18 +645,24 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
   display: block;
   width: var(--dimension, 24px);
   height: var(--dimension, 24px);
-  border: var(--override-spinner-size, 3px) solid var(--override-spinner-color, var(--sys-color-token-subtle));
+  border: var(--override-spinner-size, 3px) solid
+    var(--override-spinner-color, var(--sys-color-token-subtle));
   border-radius: 12px;
   clip: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
-  content: "";
+  content: '';
   position: absolute;
   animation: spinner-animation 1s linear infinite;
   box-sizing: border-box;
 }
 
 @keyframes spinner-animation {
-  from { transform: rotate(0); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 /** Adorner */
 .adorner-container {
@@ -661,7 +680,9 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
 
 :host-context(.theme-with-dark-background) devtools-adorner {
   --override-adorner-border-color: var(--sys-color-tonal-outline);
-  --override-adorner-active-background-color: var(--sys-color-state-riple-neutral-on-subtle);
+  --override-adorner-active-background-color: var(
+    --sys-color-state-riple-neutral-on-subtle
+  );
 }
 
 /* General panel styles */
@@ -770,7 +791,7 @@ devtools-toolbar {
     background: transparent;
     border-radius: 0;
 
-    &[aria-haspopup="true"][aria-expanded="true"] {
+    &[aria-haspopup='true'][aria-expanded='true'] {
       pointer-events: none;
     }
   }
@@ -803,7 +824,7 @@ devtools-toolbar {
 
     &:hover::after,
     &:active::before {
-      content: "";
+      content: '';
       height: 100%;
       width: 100%;
       border-radius: inherit;
@@ -848,7 +869,7 @@ devtools-toolbar {
     inset: 2px;
     background-color: var(--sys-color-state-focus-highlight);
     border-radius: 2px;
-    content: "";
+    content: '';
     /* This ::before rule serves as a background for an element.
     Setting z-index to make sure it's always below the content. */
     z-index: -1;
@@ -881,28 +902,39 @@ devtools-toolbar {
   }
 
   .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: 2px;
     background-color: var(--sys-color-primary-bright);
     width: 4.5px;
     height: 4.5px;
-    border: 2px solid var(--override-toolbar-background-color, --sys-color-cdt-base-container);
+    border: 2px solid
+      var(--override-toolbar-background-color, --sys-color-cdt-base-container);
     border-radius: 50%;
     right: 0;
   }
 
   .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,
-  .toolbar-button.toolbar-state-off.toolbar-default-with-red-color .toolbar-glyph {
-    color: var(--icon-error) !important; /* stylelint-disable-line declaration-no-important */
+  .toolbar-button.toolbar-state-off.toolbar-default-with-red-color
+    .toolbar-glyph {
+    color: var(
+      --icon-error
+    ) !important; /* stylelint-disable-line declaration-no-important */
   }
 
-  .toolbar-button:not(.toolbar-has-glyph, .toolbar-has-dropdown, .largeicon-menu, .toolbar-button-secondary) {
+  .toolbar-button:not(
+      .toolbar-has-glyph,
+      .toolbar-has-dropdown,
+      .largeicon-menu,
+      .toolbar-button-secondary
+    ) {
     font-weight: bold;
   }
 
   .toolbar-button.dark-text .toolbar-text {
-    color: var(--sys-color-on-surface) !important;  /* stylelint-disable-line declaration-no-important */
+    color: var(
+      --sys-color-on-surface
+    ) !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .toolbar-button.toolbar-state-on .toolbar-text {
@@ -965,7 +997,7 @@ devtools-toolbar {
     }
 
     &::before {
-      content: "";
+      content: '';
       box-sizing: inherit;
       height: 100%;
       width: 100%;
@@ -1034,7 +1066,7 @@ devtools-toolbar {
   }
 
   & > .highlight::before {
-    content: "";
+    content: '';
     position: absolute;
     inset: 2px;
     border-radius: 2px;
@@ -1151,7 +1183,12 @@ devtools-toolbar {
 
 /* Syntax highlighting */
 .webkit-css-property {
-  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+  /* See: crbug.com/1152736 for color variable migration. */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  color: var(
+    --webkit-css-property-color,
+    var(--sys-color-token-property-special)
+  );
 }
 
 .webkit-html-comment {
@@ -1186,8 +1223,9 @@ devtools-toolbar {
 
 .webkit-html-entity-value {
   /* This one is non-standard. */
-  background-color: rgb(0 0 0 / 15%); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
+  background-color: rgb(0 0 0 / 15%);
   unicode-bidi: -webkit-isolate;
 }
 

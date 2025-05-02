@@ -53,8 +53,9 @@ export const widget = {
           }
           if (replacementLocation) {
             domFragment.replacer = (fixer, template) => {
+              const output = template.includes('output') ? 'output' : '_output';
               const text = `
-export const DEFAULT_VIEW = (input, _output, target) => {
+export const DEFAULT_VIEW = (input, ${output}, target) => {
   render(${template},
     target, {host: input});
 };

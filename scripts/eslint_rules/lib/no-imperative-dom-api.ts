@@ -18,6 +18,7 @@ import {domApi} from './no-imperative-dom-api/dom-api.ts';
 import {DomFragment} from './no-imperative-dom-api/dom-fragment.ts';
 import {splitWidget} from './no-imperative-dom-api/split-widget.ts';
 import {toolbar} from './no-imperative-dom-api/toolbar.ts';
+import {uiFragment} from './no-imperative-dom-api/ui-fragment.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
 import {createRule} from './utils/ruleCreator.ts';
@@ -73,6 +74,7 @@ export default createRule({
       domApiDevtoolsExtensions.create(context),
       splitWidget.create(context),
       toolbar.create(context),
+      uiFragment.create(context),
       uiUtils.create(context),
       widget.create(context),
     ];

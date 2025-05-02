@@ -36,6 +36,10 @@ export class DomFragment {
   initializer?: Node;
   references: Array<{node: Node, processed?: boolean}> = [];
 
+  static get(node: Node, sourceCode: SourceCode): DomFragment|undefined {
+    return domFragments.get(getKey(node, sourceCode));
+  }
+
   static getOrCreate(node: Node, sourceCode: SourceCode): DomFragment {
     const key = getKey(node, sourceCode);
 
@@ -80,6 +84,11 @@ export class DomFragment {
     return result;
   }
 
+  static set(node: Node, sourceCode: SourceCode, domFragment: DomFragment) {
+    const key = getKey(node, sourceCode);
+    domFragments.set(key, domFragment);
+  }
+
   static clear() {
     domFragments.clear();
   }
@@ -89,11 +98,21 @@ export class DomFragment {
   }
 
   toTemplateLiteral(sourceCode: Readonly<SourceCode>, indent = 4): string[] {
+    const components: string[] = [];
+    const MAX_LINE_LENGTH = 100;
+    components.push(`\n${' '.repeat(indent)}`);
+    let lineLength = indent;
     if (this.expression && !this.tagName) {
-      const expression = (this.references.every(r => r.processed) && this.initializer) ?
-          sourceCode.getText(this.initializer) :
-          this.expression;
-      return [`\n${' '.repeat(indent)}`, '${', expression, '}'];
+      if (this.expression.startsWith('`') && this.expression.endsWith('`')) {
+        components.push(this.expression.slice(1, -1).trim());
+      } else {
+        const expression = (this.references.every(r => r.processed) && this.initializer) ?
+            sourceCode.getText(this.initializer) :
+            this.expression;
+        components.push('${', expression, '}');
+      }
+
+      return components;
     }
 
     function toOutputString(node: Node|string, quoteLiterals = false): string {
@@ -112,11 +131,6 @@ export class DomFragment {
       }
       return '${' + text + '}';
     }
-
-    const components: string[] = [];
-    const MAX_LINE_LENGTH = 100;
-    components.push(`\n${' '.repeat(indent)}`);
-    let lineLength = indent;
 
     function appendExpression(expression) {
       if (lineLength + expression.length + 1 > MAX_LINE_LENGTH) {

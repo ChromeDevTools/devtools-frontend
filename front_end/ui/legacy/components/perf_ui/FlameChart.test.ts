@@ -1017,5 +1017,64 @@ describeWithEnvironment('FlameChart', () => {
       });
       await assertScreenshot('timeline/render_main_thread.png');
     });
+
+    it('renders iframe main threads correctly', async function() {
+      await renderFlameChartIntoDOM(this, {
+        traceFile: 'multiple-navigations-with-iframes.json.gz',
+        filterTracks(trackName) {
+          return trackName.startsWith('Frame');
+        },
+        expandTracks() {
+          return true;
+        },
+      });
+      await assertScreenshot('timeline/render_iframe_main_thread.png');
+    });
+
+    it('renders the rasterizer tracks, nested correctly', async function() {
+      await renderFlameChartIntoDOM(this, {
+        traceFile: 'web-dev.json.gz',
+        filterTracks(trackName) {
+          return trackName.startsWith('Raster');
+        },
+        expandTracks() {
+          return true;
+        },
+      });
+      await assertScreenshot('timeline/render_rasterizer_track.png');
+    });
+
+    it('renders tracks for workers', async function() {
+      await renderFlameChartIntoDOM(this, {
+        traceFile: 'two-workers.json.gz',
+        filterTracks(trackName) {
+          return trackName.startsWith('Worker');
+        },
+        expandTracks(_trackName, trackIndex) {
+          // We render two worker tracks: leave the first closed and expand the second.
+          return trackIndex === 1;
+        },
+        // Zoom in on the part of the trace with activity to make the screenshot better.
+        customStartTime: 107351290.697 as Trace.Types.Timing.Milli,
+        customEndTime: 107351401.004 as Trace.Types.Timing.Milli,
+      });
+      await assertScreenshot('timeline/worker_tracks.png');
+    });
+
+    it('renders threadpool groups correctly', async function() {
+      await renderFlameChartIntoDOM(this, {
+        traceFile: 'web-dev.json.gz',
+        filterTracks(trackName) {
+          return trackName.startsWith('Thread');
+        },
+        expandTracks() {
+          return true;
+        },
+        // Zoom in on the part of the trace with activity to make the screenshot better.
+        customStartTime: 1020034891.352 as Trace.Types.Timing.Milli,
+        customEndTime: 1020035181.509 as Trace.Types.Timing.Milli,
+      });
+      await assertScreenshot('timeline/threadpool_tracks.png');
+    });
   });
 });

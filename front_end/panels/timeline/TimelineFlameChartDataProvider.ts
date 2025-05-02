@@ -456,25 +456,26 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     /**
      * Filters the track by the given name. Only tracks that match this filter will be drawn.
      */
-    filterTracks?: (name: string) => boolean,
+    filterTracks?: (name: string, trackIndex: number) => boolean,
     /**
      * Choose if a given track is expanded based on the name
      */
-    expandTracks?: (name: string) => boolean,
+    expandTracks?: (name: string, trackIndex: number) => boolean,
   }): void {
     const compatAppender = this.compatibilityTracksAppenderInstance();  // Make sure the instance exists in tests
     const appenders = compatAppender.allVisibleTrackAppenders();
+    let visibleTrackIndexCounter = 0;
     for (const appender of appenders) {
       const trackName = appender instanceof ThreadAppender ? appender.trackName() : appender.appenderName;
 
-      const shouldIncludeTrack = options?.filterTracks?.call(null, trackName) ?? true;
+      const shouldIncludeTrack = options?.filterTracks?.call(null, trackName, visibleTrackIndexCounter) ?? true;
       if (!shouldIncludeTrack) {
         continue;
       }
 
-      const shouldExpandTrack = options?.expandTracks?.call(null, trackName) ?? true;
-
+      const shouldExpandTrack = options?.expandTracks?.call(null, trackName, visibleTrackIndexCounter) ?? true;
       this.currentLevel = appender.appendTrackAtLevel(this.currentLevel, shouldExpandTrack);
+      visibleTrackIndexCounter++;
     }
   }
 

@@ -83,12 +83,14 @@ export interface RenderFlameChartOptions {
    * Filter the tracks that will be rendered by their name. The name here is
    * the user visible name that is drawn onto the flame chart.
    */
-  filterTracks?: (trackName: string) => boolean;
+  filterTracks?: (trackName: string, trackIndex: number) => boolean;
   /**
    * Choose which track(s) that have been drawn should be expanded. The name
    * here is the user visible name that is drawn onto the flame chart.
    */
-  expandTracks?: (trackName: string) => boolean;
+  expandTracks?: (trackName: string, trackIndex: number) => boolean;
+  customStartTime?: Trace.Types.Timing.Milli;
+  customEndTime?: Trace.Types.Timing.Milli;
 }
 
 /**
@@ -123,8 +125,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   });
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
-  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
-  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+  const minTime = options.customStartTime ?? Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const maxTime = options.customEndTime ?? Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+
   flameChart.setWindowTimes(minTime, maxTime);
   flameChart.markAsRoot();
 

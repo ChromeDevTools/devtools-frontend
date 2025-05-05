@@ -239,7 +239,7 @@ export class PatchWidget extends UI.Widget.Widget {
         return html`<x-link
           class="link"
           title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
-          href="data:text/plain,${encodeURIComponent(input.sources)}"
+          href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
           jslog=${VisualLogging.link('files-used-in-patching').track({click: true})}>
           ${UIStringsNotTranslate.viewUploadedFiles}
         </x-link>`;

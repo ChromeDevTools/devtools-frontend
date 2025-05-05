@@ -330,13 +330,13 @@ describe('The Network Request view', () => {
         root: networkView,
       });
       await waitFor('[aria-label=Messages][role=tab][aria-selected=true]', networkView);
-      return await waitFor('.websocket-frame-view');
+      return await waitFor('.resource-chunk-view');
     };
 
     let messagesView = await navigateToWebsocketMessages();
     const waitForMessages = async (count: number) => {
       return await waitForFunction(async () => {
-        const messages = await $$('.data-column.websocket-frame-view-td', messagesView);
+        const messages = await $$('.data-column.resource-chunk-view-td', messagesView);
         if (messages.length !== count) {
           return undefined;
         }

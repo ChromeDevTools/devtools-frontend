@@ -26,9 +26,9 @@ generate_css("css_files") {
     "requestInitiatorViewTree.css",
     "requestPayloadTree.css",
     "requestPayloadView.css",
+    "resourceChunkView.css",
     "signedExchangeInfoTree.css",
     "signedExchangeInfoView.css",
-    "webSocketFrameView.css",
   ]
 }
 
@@ -56,6 +56,7 @@ devtools_module("network") {
     "RequestPreviewView.ts",
     "RequestResponseView.ts",
     "RequestTimingView.ts",
+    "ResourceChunkView.ts",
     "ResourceWebSocketFrameView.ts",
     "SignedExchangeInfoView.ts",
   ]

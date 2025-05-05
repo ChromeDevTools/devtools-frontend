@@ -6,7 +6,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../../models/har/har.js';
@@ -360,25 +359,7 @@ describeWithMockConnection('NetworkLogView', () => {
         [request1, request2, request3]);
   });
 
-  it('hide Chrome extension requests from checkbox', async () => {
-    createNetworkRequest('chrome-extension://url1', {target});
-    createNetworkRequest('url2', {target});
-    let rootNode;
-    let filterBar;
-    ({rootNode, filterBar, networkLogView} = createEnvironment());
-    const hideExtCheckbox = getCheckbox(filterBar, 'Hide \'chrome-extension://\' URLs');
-
-    assert.deepEqual(
-        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        [urlString`chrome-extension://url1`, urlString`url2`]);
-
-    clickCheckbox(hideExtCheckbox);
-    assert.deepEqual(
-        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [urlString`url2`]);
-  });
-
-  it('can hide Chrome extension requests from dropdown', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+  it('can hide Chrome extension requests', async () => {
     createNetworkRequest('chrome-extension://url1', {target});
     createNetworkRequest('url2', {target});
     let rootNode;
@@ -410,7 +391,6 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('displays correct count for more filters', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
     const dropdown = await getMoreTypesDropdown(filterBar);
@@ -430,27 +410,7 @@ describeWithMockConnection('NetworkLogView', () => {
     softMenu.discard();
   });
 
-  it('can filter requests with blocked response cookies from checkbox', async () => {
-    const request1 = createNetworkRequest('url1', {target});
-    request1.blockedResponseCookies = () => [{
-      blockedReasons: [Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure],
-      cookie: null,
-      cookieLine: 'foo=bar; SameSite=None',
-    }];
-    createNetworkRequest('url2', {target});
-    let rootNode;
-    let filterBar;
-    ({rootNode, filterBar, networkLogView} = createEnvironment());
-    const blockedCookiesCheckbox = getCheckbox(filterBar, 'Show only requests with blocked response cookies');
-    clickCheckbox(blockedCookiesCheckbox);
-    assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
-      urlString`url1`,
-    ]);
-  });
-
-  it('can filter requests with blocked response cookies from dropdown', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
-
+  it('can filter requests with blocked response cookies', async () => {
     const request1 = createNetworkRequest('url1', {target});
     request1.blockedResponseCookies = () => [{
       blockedReasons: [Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure],
@@ -488,7 +448,6 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('lists selected options in more filters tooltip', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
 
@@ -507,7 +466,6 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('updates tooltip to default when more filters option deselected', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
 
@@ -983,20 +941,6 @@ function testPlaceholderButton(
   sinon.assert.notCalled(spy);
   dispatchClickEvent(button);
   sinon.assert.calledOnce(spy);
-}
-
-function clickCheckbox(checkbox: HTMLInputElement) {
-  checkbox.checked = true;
-  const event = new Event('change', {bubbles: true, composed: true});
-  checkbox.dispatchEvent(event);
-}
-
-function getCheckbox(filterBar: UI.FilterBar.FilterBar, title: string) {
-  const checkbox =
-      filterBar.element.querySelector(`[title="${title}"] devtools-checkbox`)?.shadowRoot?.querySelector('input') ||
-      null;
-  assert.instanceOf(checkbox, HTMLInputElement);
-  return checkbox;
 }
 
 async function getMoreTypesDropdown(filterBar: UI.FilterBar.FilterBar): Promise<HTMLElement> {

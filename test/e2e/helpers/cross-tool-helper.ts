@@ -86,13 +86,12 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
   const selectedPanel = options?.selectedPanel?.name || options?.queryParams?.panel || 'elements';
   await waitFor(`.panel.${selectedPanel}`);
   const expectClosedPanels = options?.expectClosedPanels;
-  const newFilterBar = enableExperiments.includes('network-panel-filter-bar-redesign');
   const dockable = options?.canDock;
   const panelImpression = selectedPanel === 'elements' ? veImpressionForElementsPanel({dockable}) :
       selectedPanel === 'animations'                   ? veImpressionForAnimationsPanel() :
       selectedPanel === 'security'                     ? veImpressionForSecurityPanel() :
       selectedPanel === 'layers'                       ? veImpressionForLayersPanel() :
-      selectedPanel === 'network'                      ? veImpressionForNetworkPanel({newFilterBar}) :
+      selectedPanel === 'network'                      ? veImpressionForNetworkPanel() :
       selectedPanel === 'console'                      ? veImpressionForConsolePanel() :
       selectedPanel === 'timeline'                     ? veImpressionForPerformancePanel() :
       selectedPanel === 'sources'                      ? veImpressionForSourcesPanel() :

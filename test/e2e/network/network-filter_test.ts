@@ -8,9 +8,7 @@ import type {ElementHandle} from 'puppeteer-core';
 import {
   $textContent,
   clickElement,
-  disableExperiment,
   getTestServerPort,
-  setCheckBox,
   step,
   typeText,
   waitFor,
@@ -285,32 +283,12 @@ describe('The Network Tab', function() {
 
 describe('The Network Tab', function() {
   beforeEach(async () => {
-    await disableExperiment('network-panel-filter-bar-redesign');
-
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
     await setPersistLog(false);
   });
 
-  it('can show only third-party requests from checkbox', async () => {
-    await setCheckBox('[title="3rd-party requests"]', true);
-    await navigateToNetworkTab('third-party-resources.html');
-    await waitForSomeRequestsToAppear(1);
-
-    assert.deepEqual(await getAllRequestNames(), ['image.svg']);
-  });
-});
-
-describe('The Network Tab', function() {
-  beforeEach(async () => {
-    await reloadDevTools({enableExperiments: ['network-panel-filter-bar-redesign']});
-
-    await navigateToNetworkTab('empty.html');
-    await setCacheDisabled(true);
-    await setPersistLog(false);
-  });
-
-  it('can show only third-party requests from dropdown', async () => {
+  it('can show only third-party requests', async () => {
     await navigateToNetworkTab('third-party-resources.html');
     await waitForSomeRequestsToAppear(3);
 

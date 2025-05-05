@@ -131,9 +131,7 @@ describe('CSSStyleSheetHeader', () => {
         endLine: 1,
         endColumn: 8,
       });
-      const {protocol, hash} = new URL(cssStyleSheetHeader.resourceURL());
-      assert.strictEqual(protocol, 'inspector:');
-      assert.strictEqual(hash, `#${styleSheetId}`);
+      assert.strictEqual(cssStyleSheetHeader.resourceURL(), 'inspector://inspector-stylesheet#456');
     });
   });
 });

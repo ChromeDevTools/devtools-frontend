@@ -12,6 +12,7 @@ import type {CSSModel} from './CSSModel.js';
 import {DeferredDOMNode} from './DOMModel.js';
 import type {FrameAssociated} from './FrameAssociated.js';
 import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
+import {ResourceTreeModel} from './ResourceTreeModel.js';
 
 const UIStrings = {
   /**
@@ -108,8 +109,31 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return this.isViaInspector() ? this.viaInspectorResourceURL() : this.sourceURL;
   }
 
+  private getFrameURLPath(): string {
+    const model = this.#cssModelInternal.target().model(ResourceTreeModel);
+    console.assert(Boolean(model));
+    if (!model) {
+      return '';
+    }
+    const frame = model.frameForId(this.frameId);
+    if (!frame) {
+      return '';
+    }
+    console.assert(Boolean(frame));
+    const parsedURL = new Common.ParsedURL.ParsedURL(frame.url);
+    let urlPath = parsedURL.host;
+    if (parsedURL.port) {
+      urlPath += ':' + parsedURL.port;
+    }
+    urlPath += parsedURL.folderPathComponents;
+    if (!urlPath.endsWith('/')) {
+      urlPath += '/';
+    }
+    return urlPath;
+  }
+
   private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
-    return `inspector:///inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
+    return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
   }
 
   lineNumberInSource(lineNumberInStyleSheet: number): number {

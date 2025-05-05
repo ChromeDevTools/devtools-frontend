@@ -292,6 +292,7 @@ export class CSSMatchedStyles {
   #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
   #functionRules: CSSFunctionRule[];
+  #functionRuleMap = new Map<string, CSSFunctionRule>();
   readonly #fontPaletteValuesRule: CSSFontPaletteValuesRule|undefined;
 
   static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
@@ -362,6 +363,10 @@ export class CSSMatchedStyles {
 
     for (const prop of this.#registeredProperties) {
       this.#registeredPropertyMap.set(prop.propertyName(), prop);
+    }
+
+    for (const rule of this.#functionRules) {
+      this.#functionRuleMap.set(rule.functionName().text, rule);
     }
   }
 
@@ -762,6 +767,11 @@ export class CSSMatchedStyles {
 
   getRegisteredProperty(name: string): CSSRegisteredProperty|undefined {
     return this.#registeredPropertyMap.get(name);
+  }
+
+  getRegisteredFunction(name: string): string|undefined {
+    const functionRule = this.#functionRuleMap.get(name);
+    return functionRule ? functionRule.nameWithParameters() : undefined;
   }
 
   functionRules(): CSSFunctionRule[] {

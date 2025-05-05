@@ -440,6 +440,7 @@ export const enum LinkableNameProperties {
   FONT_PALETTE = 'font-palette',
   POSITION_TRY_FALLBACKS = 'position-try-fallbacks',
   POSITION_TRY = 'position-try',
+  FUNCTION = 'function',  // Not a property; we use it to mark user defined functions.
 }
 
 const enum AnimationLonghandPart {
@@ -541,15 +542,19 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
     return null;
   }
 
-  override accepts(propertyName: string): boolean {
-    return LinkableNameMatcher.isLinkableNameProperty(propertyName);
-  }
-
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LinkableNameMatch|null {
     const {propertyName} = matching.ast;
     const text = matching.ast.text(node);
     const parentNode = node.parent;
     if (!parentNode) {
+      return null;
+    }
+
+    if (parentNode.name === 'CallExpression' && node.name === 'Callee' && text.startsWith('--')) {
+      return new LinkableNameMatch(text, node, LinkableNameProperties.FUNCTION);
+    }
+
+    if (!(propertyName && LinkableNameMatcher.isLinkableNameProperty(propertyName))) {
       return null;
     }
 

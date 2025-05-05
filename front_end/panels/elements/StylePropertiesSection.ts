@@ -152,6 +152,7 @@ export class StylePropertiesSection {
   protected readonly selectorRefElement: HTMLElement;
   private hoverableSelectorsMode: boolean;
   private isHiddenInternal: boolean;
+  protected customPopulateCallback: () => void;
 
   nestingLevel = 0;
   #ancestorRuleListElement: HTMLElement;
@@ -180,6 +181,7 @@ export class StylePropertiesSection {
     this.parentsComputedStyles = parentsComputedStyles;
     this.editable = Boolean(style.styleSheetId && style.range);
     this.originalPropertiesCount = style.leadingProperties().length;
+    this.customPopulateCallback = () => this.populateStyle(this.styleInternal, this.propertiesTreeOutline);
 
     const rule = style.parentRule;
     const headerText = this.headerText();
@@ -1076,7 +1078,7 @@ export class StylePropertiesSection {
     this.parentPane.setActiveProperty(null);
     this.nextEditorTriggerButtonIdx = 1;
     this.propertiesTreeOutline.removeChildren();
-    this.populateStyle(this.styleInternal, this.propertiesTreeOutline);
+    this.customPopulateCallback();
   }
 
   populateStyle(style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, parent: TreeElementParent): void {
@@ -1761,13 +1763,14 @@ export class FunctionRuleSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, children: SDK.CSSRule.CSSNestedStyle[], sectionIdx: number,
-      functionName: string, parameters: string[], expandedByDefault: boolean) {
-    super(stylesPane, matchedStyles, style, sectionIdx, null, null, `${functionName}(${parameters.join(', ')})`);
+      functionName: string, expandedByDefault: boolean) {
+    super(stylesPane, matchedStyles, style, sectionIdx, null, null, functionName);
     if (!expandedByDefault) {
       this.element.classList.add('hidden');
     }
     this.selectorElement.className = 'function-key';
-    this.addChildren(children, this.propertiesTreeOutline);
+    this.customPopulateCallback = () => this.addChildren(children, this.propertiesTreeOutline);
+    this.onpopulate();
   }
 
   createConditionElement(condition: SDK.CSSRule.CSSNestedStyleCondition): HTMLElement|undefined {

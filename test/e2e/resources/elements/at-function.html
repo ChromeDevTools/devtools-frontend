@@ -1,0 +1,101 @@
+<style>
+  @function --f(--x) {
+    --y: var(--x);
+    @supports (color: green) {
+      @media (width > 300px) {
+        --y: green;
+        @container (width > 300px) {
+          @supports (color: red) {
+            --myVar: red;
+          }
+        }
+      }
+    }
+    result: var(--y);
+  }
+  #test1 {
+    color: --f(blue);
+    margin: 0 0 0 0;
+  }
+  @function --inner(--x) {
+    result: --inner1(--x);
+  }
+  @function --inner1(--x) {
+    result: --inner2(--x);
+  }
+  @function --inner2(--x) {
+    result: --inner3(--x);
+  }
+  @function --inner3(--x) {
+    result: --inner4(--x);
+  }
+  @function --inner4(--x) {
+    result: --inner5(--x);
+  }
+  @function --inner5(--x) {
+    result: var(--x);
+  }
+  @function --outer(--x) {
+    result: orange;
+    @container (width > 300px) {
+      result: --inner(var(--x));
+    }
+  }
+  #test3 {
+    color: --outer(yellow);
+  }
+  @supports (color: green) {
+    #test1 {
+      --unusedVar: green;
+    }
+  }
+  @property --prop {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: green;
+  }
+  @function --get-prop() {
+    result: var(--prop);
+  }
+  #test5,
+  #test6 {
+    color: --get-prop();
+  }
+  .override-prop {
+    --prop: blue;
+  }
+  #test7 {
+    color: var(--prop);
+  }
+</style>
+<body>
+  <div id="test1">test1</div>
+  <div>
+    <style>
+      @function --f2(--ignored, --used) {
+        result: var(--used);
+      }
+      #test2 {
+        color: --f2(blue, turquoise);
+      }
+    </style>
+    <div id="test2">test2</div>
+  </div>
+  <div id="test3">test3</div>
+  <div>
+    <template shadowrootmode="open">
+      <style>
+        @function --f(--x) {
+          result: red;
+        }
+        #test4 {
+          color: --f(blue);
+        }
+      </style>
+      <div id="test4">test4</div>
+    </template>
+  </div>
+  <div id="test5">test5</div>
+  <div class="override-prop"><div id="test6">test6</div></div>
+  <div class="override-prop" id="test7">test7</div>
+</body>

@@ -817,6 +817,13 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
           ruleBlock: '@position-try',
           isDefined: Boolean(this.#matchedStyles.positionTryRules().find(pt => pt.name().text === match.text)),
         };
+      case SDK.CSSPropertyParserMatchers.LinkableNameProperties.FUNCTION:
+        return {
+          jslogContext: 'css-function',
+          metric: null,
+          ruleBlock: '@function',
+          isDefined: Boolean(this.#matchedStyles.getRegisteredFunction(match.text)),
+        };
     }
   }
 
@@ -829,7 +836,15 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
       isDefined,
       onLinkActivate: (): void => {
         metric && Host.userMetrics.swatchActivated(metric);
-        this.#stylesPane.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
+        if (match.propertyName === SDK.CSSPropertyParserMatchers.LinkableNameProperties.FUNCTION) {
+          const functionName = this.#matchedStyles.getRegisteredFunction(match.text);
+          if (!functionName) {
+            return;
+          }
+          this.#stylesPane.jumpToFunctionDefinition(functionName);
+        } else {
+          this.#stylesPane.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
+        }
       },
       jslogContext,
     };

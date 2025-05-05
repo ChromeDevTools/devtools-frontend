@@ -996,6 +996,7 @@ export const knownContextValues = new Set([
   'css-angle',
   'css-animation-name',
   'css-font-palette',
+  'css-function',
   'css-layers',
   'css-location',
   'css-overview',

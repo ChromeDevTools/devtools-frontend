@@ -53,23 +53,20 @@ function forwardOptions(): string[] {
     forwardedOptions[consume] = undefined;
   }
 
-  // Mocha errors on --repeat 1 as it expects --repeat=1
   // @ts-expect-error yargs and unparse have slightly different types
-  const unparsed = unparse(forwardedOptions)
-                       .reduce(
-                           (acc, option) => {
-                             if (!Number.isNaN(Number(option))) {
-                               acc += `=${option}`;
-                             } else {
-                               acc += ` ${option}`;
-                             }
-
-                             return acc;
-                           },
-                           '')
-                       .trim()
-                       .split(' ');
-  return unparsed;
+  const unparsed = unparse(forwardedOptions);
+  const args = [];
+  for (let i = 0; i < unparsed.length - 1; i++) {
+    if (unparsed[i].startsWith('--') && !Number.isNaN(Number(unparsed[i + 1]))) {
+      // Mocha errors on --repeat 1 as it expects --repeat=1. We assume
+      // that this is the same for all args followed by a number.
+      args.push(`${unparsed[i]}=${unparsed[i + 1]}`);
+      i++;
+    } else {
+      args.push(unparsed[i]);
+    }
+  }
+  return args;
 }
 
 function runProcess(exe: string, args: string[], options: childProcess.SpawnSyncOptionsWithStringEncoding) {

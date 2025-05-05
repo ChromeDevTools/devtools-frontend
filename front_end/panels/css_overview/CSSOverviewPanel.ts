@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
-import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -55,7 +54,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     }, this);
     this.#controller.addEventListener(Events.OVERVIEW_COMPLETED, this.#overviewCompleted, this);
     this.#controller.addEventListener(Events.RESET, this.#reset, this);
-    this.#controller.addEventListener(Events.REQUEST_NODE_HIGHLIGHT, this.#requestNodeHighlight, this);
 
     this.#reset();
   }
@@ -106,10 +104,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     };
     this.#textColorContrastIssues = new Map();
     this.#renderInitialView();
-  }
-
-  #requestNodeHighlight(evt: Common.EventTarget.EventTargetEvent<number>): void {
-    this.#getModel().highlightNode((evt.data as Protocol.DOM.BackendNodeId));
   }
 
   #renderInitialView(): void {

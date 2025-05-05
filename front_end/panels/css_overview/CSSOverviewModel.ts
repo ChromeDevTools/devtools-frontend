@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 
 import type {ContrastIssue} from './CSSOverviewCompletedView.js';
@@ -44,7 +44,6 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
   readonly #runtimeAgent: ProtocolProxyApi.RuntimeApi;
   readonly #cssAgent: ProtocolProxyApi.CSSApi;
   readonly #domSnapshotAgent: ProtocolProxyApi.DOMSnapshotApi;
-  readonly #overlayAgent: ProtocolProxyApi.OverlayApi;
 
   constructor(target: SDK.Target.Target) {
     super(target);
@@ -52,19 +51,6 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
     this.#runtimeAgent = target.runtimeAgent();
     this.#cssAgent = target.cssAgent();
     this.#domSnapshotAgent = target.domsnapshotAgent();
-    this.#overlayAgent = target.overlayAgent();
-  }
-
-  highlightNode(node: Protocol.DOM.BackendNodeId): void {
-    const highlightConfig = {
-      contentColor: Common.Color.PageHighlight.Content.toProtocolRGBA(),
-      showInfo: true,
-      contrastAlgorithm: Root.Runtime.experiments.isEnabled('apca') ? Protocol.Overlay.ContrastAlgorithm.Apca :
-                                                                      Protocol.Overlay.ContrastAlgorithm.Aa,
-    };
-
-    void this.#overlayAgent.invoke_hideHighlight();
-    void this.#overlayAgent.invoke_highlightNode({backendNodeId: node, highlightConfig});
   }
 
   async getNodeStyleStats(): Promise<NodeStyleStats> {

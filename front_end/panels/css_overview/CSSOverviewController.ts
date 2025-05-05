@@ -58,7 +58,6 @@ export type PopulateNodesEventNodeTypes = PopulateNodesEventNodes[0];
 
 export const enum Events {
   REQUEST_OVERVIEW_START = 'RequestOverviewStart',
-  REQUEST_NODE_HIGHLIGHT = 'RequestNodeHighlight',
   POPULATE_NODES = 'PopulateNodes',
   REQUEST_OVERVIEW_CANCEL = 'RequestOverviewCancel',
   OVERVIEW_COMPLETED = 'OverviewCompleted',
@@ -67,7 +66,6 @@ export const enum Events {
 
 export interface EventTypes {
   [Events.REQUEST_OVERVIEW_START]: void;
-  [Events.REQUEST_NODE_HIGHLIGHT]: number;
   [Events.POPULATE_NODES]: {payload: PopulateNodesEvent};
   [Events.REQUEST_OVERVIEW_CANCEL]: void;
   [Events.OVERVIEW_COMPLETED]: void;

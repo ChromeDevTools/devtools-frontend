@@ -171,8 +171,8 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
         Lit.render(html`
-          <style>${preloadingDetailsReportViewStyles.cssText}</style>
-          <style>${UI.inspectorCommonStyles.cssText}</style>
+          <style>${preloadingDetailsReportViewStyles}</style>
+          <style>${UI.inspectorCommonStyles}</style>
           <div class="empty-state">
             <span class="empty-state-header">${i18nString(UIStrings.noElementSelected)}</span>
             <span class="empty-state-description">${i18nString(UIStrings.selectAnElementForMoreDetails)}</span>
@@ -191,8 +191,8 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
-        <style>${preloadingDetailsReportViewStyles.cssText}</style>
-        <style>${UI.inspectorCommonStyles.cssText}</style>
+        <style>${preloadingDetailsReportViewStyles}</style>
+        <style>${UI.inspectorCommonStyles}</style>
         <devtools-report
           .data=${{reportTitle: 'Speculative Loading Attempt'}}
           jslog=${VisualLogging.section('preloading-details')}>

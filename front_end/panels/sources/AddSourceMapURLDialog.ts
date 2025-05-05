@@ -44,7 +44,7 @@ type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
-    <style>${dialogStyles.cssText}</style>
+    <style>${dialogStyles}</style>
     <label>${input.label}</label>
     <input class="harmony-input add-source-map" spellcheck="false" type="text"
         jslog=${VisualLogging.textField('url').track({keydown: 'Enter', change: true})}

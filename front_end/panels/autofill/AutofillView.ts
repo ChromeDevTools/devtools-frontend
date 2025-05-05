@@ -172,8 +172,8 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // clang-format off
       render(html`
         <style>${Input.checkboxStyles}</style>
-        <style>${autofillViewStyles.cssText}</style>
-        <style>${UI.inspectorCommonStyles.cssText}</style>
+        <style>${autofillViewStyles}</style>
+        <style>${UI.inspectorCommonStyles}</style>
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -213,8 +213,8 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // clang-format off
     render(html`
       <style>${Input.checkboxStyles}</style>
-      <style>${autofillViewStyles.cssText}</style>
-      <style>${UI.inspectorCommonStyles.cssText}</style>
+      <style>${autofillViewStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>

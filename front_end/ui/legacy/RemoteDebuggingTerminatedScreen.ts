@@ -51,7 +51,7 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${remoteDebuggingTerminatedScreenStyles.cssText}</style>
+    <style>${remoteDebuggingTerminatedScreenStyles}</style>
     <div class="header">${i18nString(UIStrings.debuggingConnectionWasClosed)}</div>
     <div class="content">
       <div class="reason">${i18nString(UIStrings.connectionClosedReason, {PH1: input.reason})}</div>

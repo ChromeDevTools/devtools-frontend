@@ -59,8 +59,8 @@ export class CSSPropertyDocsView extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${Input.checkboxStyles.cssText}</style>
-      <style>${CSSPropertyDocsViewStyles.cssText}</style>
+      <style>${Input.checkboxStyles}</style>
+      <style>${CSSPropertyDocsViewStyles}</style>
       <div class="docs-popup-wrapper">
         ${description ? html`
           <div id="description">

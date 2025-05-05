@@ -454,7 +454,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
-      <style>${sidebarSingleInsightSetStyles.cssText}</style>
+      <style>${sidebarSingleInsightSetStyles}</style>
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(insights, insightSetKey)}

@@ -16,17 +16,17 @@ import reportValueStylesRaw from './reportValue.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const reportStyles = new CSSStyleSheet();
-reportStyles.replaceSync(reportStylesRaw.cssText);
+reportStyles.replaceSync(reportStylesRaw);
 const reportKeyStyles = new CSSStyleSheet();
-reportKeyStyles.replaceSync(reportKeyStylesRaw.cssText);
+reportKeyStyles.replaceSync(reportKeyStylesRaw);
 const reportSectionStyles = new CSSStyleSheet();
-reportSectionStyles.replaceSync(reportSectionStylesRaw.cssText);
+reportSectionStyles.replaceSync(reportSectionStylesRaw);
 const reportSectionDividerStyles = new CSSStyleSheet();
-reportSectionDividerStyles.replaceSync(reportSectionDividerStylesRaw.cssText);
+reportSectionDividerStyles.replaceSync(reportSectionDividerStylesRaw);
 const reportSectionHeaderStyles = new CSSStyleSheet();
-reportSectionHeaderStyles.replaceSync(reportSectionHeaderStylesRaw.cssText);
+reportSectionHeaderStyles.replaceSync(reportSectionHeaderStylesRaw);
 const reportValueStyles = new CSSStyleSheet();
-reportValueStyles.replaceSync(reportValueStylesRaw.cssText);
+reportValueStyles.replaceSync(reportValueStylesRaw);
 
 /**
  * The `Report` component can be used to display static information. A report

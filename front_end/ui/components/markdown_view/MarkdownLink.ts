@@ -15,7 +15,7 @@ import {getMarkdownLink} from './MarkdownLinksMap.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const markdownLinkStyles = new CSSStyleSheet();
-markdownLinkStyles.replaceSync(markdownLinkStylesRaw.cssText);
+markdownLinkStyles.replaceSync(markdownLinkStylesRaw);
 
 export interface MarkdownLinkData {
   key: string;

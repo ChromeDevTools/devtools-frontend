@@ -803,7 +803,7 @@ export class EntryLabelOverlay extends HTMLElement {
     // clang-format off
     Lit.render(
         html`
-        <style>${entryLabelOverlayStyles.cssText}</style>
+        <style>${entryLabelOverlayStyles}</style>
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}
           @focusout=${this.#handleFocusOutEvent}
         >

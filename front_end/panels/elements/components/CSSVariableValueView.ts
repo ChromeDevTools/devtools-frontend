@@ -58,7 +58,7 @@ export class CSSVariableParserError extends HTMLElement {
     const type = html`<span class="monospace css-property">${details.registration.syntax()}</span>`;
     render(
         html`
-      <style>${cssVariableValueViewStyles.cssText}</style>
+      <style>${cssVariableValueViewStyles}</style>
       <div class="variable-value-popup-wrapper">
         ${i18nTemplate(UIStrings.invalidPropertyValue, {type})}
         ${getLinkSection(details)}
@@ -115,7 +115,7 @@ export class CSSVariableValueView extends HTMLElement {
 
     const valueText = this.value ?? i18nString(UIStrings.sIsNotDefined, {PH1: this.variableName});
     render(
-        html`<style>${cssVariableValueViewStyles.cssText}</style>
+        html`<style>${cssVariableValueViewStyles}</style>
              <div class="variable-value-popup-wrapper">
                ${valueText}
              </div>

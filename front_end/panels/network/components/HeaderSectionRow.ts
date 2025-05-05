@@ -172,7 +172,7 @@ export class HeaderSectionRow extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${headerSectionRowStyles.cssText}</style>
+      <style>${headerSectionRowStyles}</style>
       <div class=${rowClasses}>
         <div class=${headerNameClasses}>
           ${this.#header.headerNotSet ?

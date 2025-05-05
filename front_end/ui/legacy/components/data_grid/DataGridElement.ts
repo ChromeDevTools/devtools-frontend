@@ -62,8 +62,8 @@ class DataGridElement extends HTMLElement {
     this.#dataGrid.element.style.flex = 'auto';
 
     this.#shadowRoot = this.attachShadow({mode: 'open', delegatesFocus: true});
-    this.#shadowRoot.createChild('style').textContent = dataGridStyles.cssText;
-    this.#shadowRoot.createChild('style').textContent = inspectorCommonStyles.cssText;
+    this.#shadowRoot.createChild('style').textContent = dataGridStyles;
+    this.#shadowRoot.createChild('style').textContent = inspectorCommonStyles;
     this.#shadowRoot.appendChild(this.#dataGrid.element);
 
     this.#dataGrid.addEventListener(

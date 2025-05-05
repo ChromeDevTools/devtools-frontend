@@ -115,8 +115,8 @@ export interface UserActionRowWidgetParams {
 export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement): void => {
   // clang-format off
   Lit.render(html`
-    <style>${Input.textInputStyles.cssText}</style>
-    <style>${userActionRowStyles.cssText}</style>
+    <style>${Input.textInputStyles}</style>
+    <style>${userActionRowStyles}</style>
     <div class="ai-assistance-feedback-row">
       <div class="rate-buttons">
         ${input.showRateButtons ? html`

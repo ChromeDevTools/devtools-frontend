@@ -15,7 +15,7 @@ import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const markdownImageStyles = new CSSStyleSheet();
-markdownImageStyles.replaceSync(markdownImageStylesRaw.cssText);
+markdownImageStyles.replaceSync(markdownImageStylesRaw);
 
 const {html, Directives: {ifDefined}} = Lit;
 

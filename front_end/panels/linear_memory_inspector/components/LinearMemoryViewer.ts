@@ -181,7 +181,7 @@ export class LinearMemoryViewer extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${linearMemoryViewerStyles.cssText}</style>
+      <style>${linearMemoryViewerStyles}</style>
       <div class="view" tabindex="0" @keydown=${this.#onKeyDown} jslog=${jslog}>
         ${this.#renderView()}
       </div>

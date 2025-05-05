@@ -22,9 +22,9 @@ import selectMenuButtonStylesRaw from './selectMenuButton.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const selectMenuStyles = new CSSStyleSheet();
-selectMenuStyles.replaceSync(selectMenuStylesRaw.cssText);
+selectMenuStyles.replaceSync(selectMenuStylesRaw);
 const selectMenuButtonStyles = new CSSStyleSheet();
-selectMenuButtonStyles.replaceSync(selectMenuButtonStylesRaw.cssText);
+selectMenuButtonStyles.replaceSync(selectMenuButtonStylesRaw);
 
 const {html} = Lit;
 

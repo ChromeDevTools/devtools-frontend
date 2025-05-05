@@ -132,7 +132,7 @@ export class EarlyHintsHeaderSection extends ResponseHeaderSectionBase {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${responseHeaderSectionStyles.cssText}</style>
+      <style>${responseHeaderSectionStyles}</style>
       ${this.headerDetails.map(header => html`
         <devtools-header-section-row .data=${{
         header,
@@ -531,7 +531,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${responseHeaderSectionStyles.cssText}</style>
+      <style>${responseHeaderSectionStyles}</style>
       ${headerDescriptors.map((header, index) => html`
         <devtools-header-section-row
             .data=${{header} as HeaderSectionRowData}

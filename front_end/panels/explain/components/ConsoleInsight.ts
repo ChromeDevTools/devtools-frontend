@@ -1119,8 +1119,8 @@ export class ConsoleInsight extends HTMLElement {
   #render(): void {
     // clang-format off
     render(html`
-      <style>${styles.cssText}</style>
-      <style>${Input.checkboxStyles.cssText}</style>
+      <style>${styles}</style>
+      <style>${Input.checkboxStyles}</style>
       <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
         <div class="animation-wrapper">
           ${this.#renderHeader()}
@@ -1151,8 +1151,8 @@ class ConsoleInsightSourcesList extends HTMLElement {
   #render(): void {
     // clang-format off
      render(html`
-      <style>${listStyles.cssText}</style>
-      <style>${Input.checkboxStyles.cssText}</style>
+      <style>${listStyles}</style>
+      <style>${Input.checkboxStyles}</style>
       <ul>
         ${Directives.repeat(this.#sources, item => item.value, item => {
           return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain;charset=utf-8,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>

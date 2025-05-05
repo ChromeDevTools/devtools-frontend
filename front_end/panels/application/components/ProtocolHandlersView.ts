@@ -170,9 +170,9 @@ export class ProtocolHandlersView extends HTMLElement {
     // inspectorCommonStyles is used for the <select> styling that is used for the dropdown
     // clang-format off
     Lit.render(html`
-      <style>${protocolHandlersViewStyles.cssText}</style>
-      <style>${UI.inspectorCommonStyles.cssText}</style>
-      <style>${Input.textInputStyles.cssText}</style>
+      <style>${protocolHandlersViewStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${Input.textInputStyles}</style>
       ${this.#renderStatusMessage()}
       <div class="protocol-handlers-row">
           ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}

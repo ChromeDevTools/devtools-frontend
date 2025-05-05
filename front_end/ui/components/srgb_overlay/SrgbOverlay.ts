@@ -13,7 +13,7 @@ import srgbOverlayStylesRaw from './srgbOverlay.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const srgbOverlayStyles = new CSSStyleSheet();
-srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw.cssText);
+srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw);
 
 interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue

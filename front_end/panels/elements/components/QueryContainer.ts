@@ -78,7 +78,7 @@ export class QueryContainer extends HTMLElement {
     // clang-format off
     // eslint-disable-next-line rulesdir/no-a-tags-in-lit
     render(html`
-      <style>${queryContainerStyles.cssText}</style>
+      <style>${queryContainerStyles}</style>
       →
       <a href="#"
         draggable=false

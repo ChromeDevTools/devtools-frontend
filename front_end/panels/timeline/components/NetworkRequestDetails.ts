@@ -375,8 +375,8 @@ export class NetworkRequestDetails extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${networkRequestDetailsStyles.cssText}</style>
-      <style>${networkRequestTooltipStyles.cssText}</style>
+      <style>${networkRequestDetailsStyles}</style>
+      <style>${networkRequestTooltipStyles}</style>
       <div class="network-request-details-content">
         ${this.#renderTitle()}
         ${this.#renderURL()}

@@ -60,7 +60,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       render(html`
-        <style>${preloadingGridStyles.cssText}</style>
+        <style>${preloadingGridStyles}</style>
         <div class="preloading-container">
           <devtools-data-grid striped inline>
             <table>

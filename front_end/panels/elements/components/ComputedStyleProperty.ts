@@ -48,7 +48,7 @@ export class ComputedStyleProperty extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${computedStylePropertyStyles.cssText}</style>
+      <style>${computedStylePropertyStyles}</style>
       <div class="computed-style-property ${this.#inherited ? 'inherited' : ''}">
         <div class="property-name">
           <slot name="name"></slot>

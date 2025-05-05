@@ -76,7 +76,7 @@ export class Icon extends HTMLElement {
     super();
     this.role = 'presentation';
     const style = document.createElement('style');
-    style.textContent = iconStyles.cssText;
+    style.textContent = iconStyles;
     this.#icon = document.createElement('span');
     this.#shadowRoot = this.attachShadow({mode: 'open'});
     this.#shadowRoot.append(style, this.#icon);

@@ -646,8 +646,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
-      <style>${Input.checkboxStyles.cssText}</style>
-      <style>${aiSettingsTabStyles.cssText}</style>
+      <style>${Input.checkboxStyles}</style>
+      <style>${aiSettingsTabStyles}</style>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#settingToParams.size > 0 ? html`

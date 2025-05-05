@@ -526,8 +526,8 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
-      <style>${treeOutlineStyles.cssText}</style>
-      <style>${CodeHighlighter.codeHighlighterStyles.cssText}</style>
+      <style>${treeOutlineStyles}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <div class="wrapping-container">
         <ul role="tree" @keydown=${this.#onTreeKeyDown}>
           ${this.#treeData.map((topLevelNode, index) => {

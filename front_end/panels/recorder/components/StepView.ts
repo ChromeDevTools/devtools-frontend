@@ -29,7 +29,7 @@ import type {TimelineSectionData} from './TimelineSection.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const stepViewStyles = new CSSStyleSheet();
-stepViewStyles.replaceSync(stepViewStylesRaw.cssText);
+stepViewStyles.replaceSync(stepViewStylesRaw);
 
 const {html} = Lit;
 

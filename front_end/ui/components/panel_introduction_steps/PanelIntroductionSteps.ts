@@ -12,7 +12,7 @@ import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const panelIntroductionStepsStyles = new CSSStyleSheet();
-panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw.cssText);
+panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw);
 
 export class PanelIntroductionSteps extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});

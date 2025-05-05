@@ -199,7 +199,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
-        <style>${requestHeadersViewStyles.cssText}</style>
+        <style>${requestHeadersViewStyles}</style>
         ${this.#renderGeneralSection()}
         ${this.#renderEarlyHintsHeaders()}
         ${this.#renderResponseHeaders()}
@@ -561,8 +561,8 @@ export class Category extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${requestHeadersViewStyles.cssText}</style>
-      <style>${Input.checkboxStyles.cssText}</style>
+      <style>${requestHeadersViewStyles}</style>
+      <style>${Input.checkboxStyles}</style>
       <details ?open=${isOpen} @toggle=${this.#onToggle}>
         <summary
           class="header"

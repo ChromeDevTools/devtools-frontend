@@ -35,7 +35,7 @@ import * as Events from './RecorderEvents.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
 const recorderControllerStyles = new CSSStyleSheet();
-recorderControllerStyles.replaceSync(recorderControllerStylesRaw.cssText);
+recorderControllerStyles.replaceSync(recorderControllerStylesRaw);
 
 const {html, Decorators, LitElement} = Lit;
 const {customElement, state} = Decorators;

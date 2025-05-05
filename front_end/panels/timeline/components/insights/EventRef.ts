@@ -44,7 +44,7 @@ class EventRef extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
-      <style>${baseInsightComponentStyles.cssText}</style>
+      <style>${baseInsightComponentStyles}</style>
       <button type="button" class="timeline-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#event) {
@@ -94,7 +94,7 @@ class ImageRef extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
-      <style>${baseInsightComponentStyles.cssText}</style>
+      <style>${baseInsightComponentStyles}</style>
       <div class="image-ref">
         ${this.#request.args.data.mimeType.includes('image') ? html`
           <img

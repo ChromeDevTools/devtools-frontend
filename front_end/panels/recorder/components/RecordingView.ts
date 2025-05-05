@@ -1284,9 +1284,9 @@ export class RecordingView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
-      <style>${UI.inspectorCommonStyles.cssText}</style>
-      <style>${recordingViewStyles.cssText}</style>
-      <style>${Input.textInputStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${recordingViewStyles}</style>
+      <style>${Input.textInputStyles}</style>
       <div @click=${this.#onWrapperClick} class=${Lit.Directives.classMap(
         classNames,
       )}>

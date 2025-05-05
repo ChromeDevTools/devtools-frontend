@@ -576,7 +576,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       // clang-format off
       const out = html`
         <style>${Input.checkboxStyles}</style>
-        <style>${breakpointsViewStyles.cssText}</style>
+        <style>${breakpointsViewStyles}</style>
         <div class='pause-on-uncaught-exceptions'
             tabindex='0'
             @click=${clickHandler}

@@ -365,7 +365,7 @@ export class Button extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
-        <style>${buttonStyles.cssText}</style>
+        <style>${buttonStyles}</style>
         <button title=${ifDefined(this.#props.title)}
                 .disabled=${this.#props.disabled}
                 class=${classMap(classes)}

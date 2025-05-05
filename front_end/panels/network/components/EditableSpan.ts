@@ -68,7 +68,7 @@ export class EditableSpan extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${editableSpanStyles.cssText}</style>
+      <style>${editableSpanStyles}</style>
       <span
         contenteditable="plaintext-only"
         class="editable"

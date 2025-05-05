@@ -182,7 +182,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${networkThrottlingSelectorStyles.cssText}</style>
+      <style>${networkThrottlingSelectorStyles}</style>
       <devtools-select-menu
         @selectmenuselected=${this.#onMenuItemSelected}
         .showDivider=${true}

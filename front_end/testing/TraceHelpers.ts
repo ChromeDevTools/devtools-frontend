@@ -129,7 +129,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   flameChart.markAsRoot();
 
   const target = document.createElement('div');
-  target.innerHTML = `<style>${UI.inspectorCommonStyles.cssText}</style>`;
+  target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
   const timingsTrackOffset = flameChart.levelToOffset(dataProvider.maxStackDepth());
   // Allow an extra 10px so no scrollbar is shown.
   target.style.height = `${timingsTrackOffset + 10}px`;

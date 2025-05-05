@@ -65,8 +65,8 @@ export class PreviewToggle extends HTMLElement {
     // clang-format off
     render(
       html`
-      <style>${Input.checkboxStyles.cssText}</style>
-      <style>${previewToggleStyles.cssText}</style>
+      <style>${Input.checkboxStyles}</style>
+      <style>${previewToggleStyles}</style>
       <div class="container">
         <label class="experiment-preview">
           <input type="checkbox" ?checked=${checked} @change=${this.#checkboxChanged} aria-label=${this.#name} />

@@ -113,7 +113,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     if (!this.model.rootNodes.length) {
       // clang-format off
       return html`
-        <style>${networkDependencyTreeInsightStyles.cssText}</style>
+        <style>${networkDependencyTreeInsightStyles}</style>
         <div class="insight-section">${i18nString(UIStrings.noNetworkDependencyTree)}</div>
       `;
       // clang-format on
@@ -121,7 +121,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
 
     // clang-format off
     return html`
-      <style>${networkDependencyTreeInsightStyles.cssText}</style>
+      <style>${networkDependencyTreeInsightStyles}</style>
       <div class="insight-section">
         <div class="max-time">
           ${i18nString(UIStrings.maxCriticalPathLatency)}
@@ -142,7 +142,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     }
 
     const estSavingTableTitle = html`
-      <style>${networkDependencyTreeInsightStyles.cssText}</style>
+      <style>${networkDependencyTreeInsightStyles}</style>
       <div class='section-title'>${i18nString(UIStrings.estSavingTableTitle)}</div>
       <div class="insight-description">${md(i18nString(UIStrings.estSavingTableDescription))}</div>
     `;

@@ -1921,7 +1921,8 @@ function focusChanged(event: Event): void {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element, options: {cssFile?: Array<{cssText: string}>|{cssText: string}, delegatesFocus?: boolean} = {
+    element: Element,
+    options: {cssFile?: Array<string&{_tag: 'CSS-in-JS'}>|string&{_tag: 'CSS-in-JS'}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {

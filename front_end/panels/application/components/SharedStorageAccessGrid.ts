@@ -100,8 +100,8 @@ export class SharedStorageAccessGrid extends HTMLElement {
   #render(): void {
     // clang-format off
     render(html`
-      <style>${sharedStorageAccessGridStyles.cssText}</style>
-      <style>${UI.inspectorCommonStyles.cssText}</style>
+      <style>${sharedStorageAccessGridStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
       ${this.#renderGridOrNoDataMessage()}`, this.#shadow, {host: this});
     // clang-format on
   }

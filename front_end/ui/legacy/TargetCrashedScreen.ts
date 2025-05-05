@@ -26,7 +26,7 @@ type View = (input: object, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${targetCrashedScreenStyles.cssText}</style>
+    <style>${targetCrashedScreenStyles}</style>
     <div class="message">${i18nString(UIStrings.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString(UIStrings.oncePageIsReloadedDevtoolsWill)}</div>`,
     target, {host: input});

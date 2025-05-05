@@ -10,7 +10,7 @@ import highlightingStylesRaw from './highlighting.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const highlightingStyles = new CSSStyleSheet();
-highlightingStyles.replaceSync(highlightingStylesRaw.cssText);
+highlightingStyles.replaceSync(highlightingStylesRaw);
 
 export class RangeWalker {
   #offset = 0;

@@ -25,7 +25,7 @@ export class ServiceWorkerRouterView extends LegacyWrapper.LegacyWrapper.Wrappab
   #render(): void {
     // clang-format off
     render(html`
-      <style>${serviceWorkerRouterViewStyles.cssText}</style>
+      <style>${serviceWorkerRouterViewStyles}</style>
       <ul class="router-rules">
         ${this.#rules.map(this.#renderRouterRule)}
       </ul>

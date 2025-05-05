@@ -85,8 +85,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${UI.inspectorCommonStyles.cssText}</style>
-      <style>${linearMemoryValueInterpreterStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${linearMemoryValueInterpreterStyles}</style>
       <div class="value-interpreter">
         <div class="settings-toolbar">
           ${this.#renderEndiannessSetting()}

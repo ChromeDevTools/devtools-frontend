@@ -52,8 +52,8 @@ export class EndpointsGrid extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${reportingApiGridStyles.cssText}</style>
-      <style>${UI.inspectorCommonStyles.cssText}</style>
+      <style>${reportingApiGridStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`

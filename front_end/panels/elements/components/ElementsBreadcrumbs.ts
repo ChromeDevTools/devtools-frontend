@@ -290,7 +290,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
-      <style>${elementsBreadcrumbsStyles.cssText}</style>
+      <style>${elementsBreadcrumbsStyles}</style>
       <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
         ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 

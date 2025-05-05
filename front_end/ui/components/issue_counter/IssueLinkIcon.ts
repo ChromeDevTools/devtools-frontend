@@ -21,7 +21,7 @@ import IssueLinkIconStylesRaw from './issueLinkIcon.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const IssueLinkIconStyles = new CSSStyleSheet();
-IssueLinkIconStyles.replaceSync(IssueLinkIconStylesRaw.cssText);
+IssueLinkIconStyles.replaceSync(IssueLinkIconStylesRaw);
 
 const {html} = Lit;
 

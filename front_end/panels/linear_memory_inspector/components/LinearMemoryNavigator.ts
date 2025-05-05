@@ -131,7 +131,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     const result = html`
-      <style>${linearMemoryNavigatorStyles.cssText}</style>
+      <style>${linearMemoryNavigatorStyles}</style>
       <div class="navigator">
         <div class="navigator-item">
           ${this.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),

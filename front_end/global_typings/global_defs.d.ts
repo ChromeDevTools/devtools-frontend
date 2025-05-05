@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 declare module '*.css.js' {
-  const styles: {cssText: string};
+  const styles: string&{_tag: 'CSS-in-JS'};
   export default styles;
 }
 

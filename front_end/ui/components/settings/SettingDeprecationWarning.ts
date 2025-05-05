@@ -14,7 +14,7 @@ import settingDeprecationWarningRaw from './settingDeprecationWarning.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const settingDeprecationWarning = new CSSStyleSheet();
-settingDeprecationWarning.replaceSync(settingDeprecationWarningRaw.cssText);
+settingDeprecationWarning.replaceSync(settingDeprecationWarningRaw);
 
 const {html} = Lit;
 

@@ -190,7 +190,7 @@ export class LinearMemoryInspector extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${linearMemoryInspectorStyles.cssText}</style>
+      <style>${linearMemoryInspectorStyles}</style>
       <div class="view">
         <devtools-linear-memory-inspector-navigator
           .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.#currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory}}

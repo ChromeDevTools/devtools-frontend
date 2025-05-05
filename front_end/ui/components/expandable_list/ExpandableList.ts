@@ -12,7 +12,7 @@ import expandableListStylesRaw from './expandableList.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const expandableListStyles = new CSSStyleSheet();
-expandableListStyles.replaceSync(expandableListStylesRaw.cssText);
+expandableListStyles.replaceSync(expandableListStylesRaw);
 
 const {html, Directives: {ifDefined}} = Lit;
 

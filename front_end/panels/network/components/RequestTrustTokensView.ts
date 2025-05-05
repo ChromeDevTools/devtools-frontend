@@ -128,7 +128,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
-      <style>${requestTrustTokensViewStyles.cssText}</style>
+      <style>${requestTrustTokensViewStyles}</style>
       <devtools-report>
         ${this.#renderParameterSection()}
         ${this.#renderResultSection()}

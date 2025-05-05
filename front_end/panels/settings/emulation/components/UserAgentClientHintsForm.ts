@@ -768,8 +768,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${Input.checkboxStyles.cssText}</style>
-      <style>${userAgentClientHintsFormStyles.cssText}</style>
+      <style>${Input.checkboxStyles}</style>
+      <style>${userAgentClientHintsFormStyles}</style>
       <section class="root">
         <div
           class="tree-title"

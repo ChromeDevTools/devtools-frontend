@@ -152,7 +152,7 @@ export class NetworkRequestTooltip extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${networkRequestTooltipStyles.cssText}</style>
+      <style>${networkRequestTooltipStyles}</style>
       <div class="performance-card">
         <div class="url">${Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_URL_LENGTH)}</div>
         <div class="url url--host">${originWithEntity}</div>

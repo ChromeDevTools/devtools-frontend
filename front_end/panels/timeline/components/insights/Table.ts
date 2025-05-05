@@ -252,7 +252,7 @@ export class Table extends HTMLElement {
     this.#flattenedRows = flattenedRows;
 
     Lit.render(
-        html`<style>${tableStyles.cssText}</style>
+        html`<style>${tableStyles}</style>
       <table
           class=${Lit.Directives.classMap({
           interactive: this.#interactive,

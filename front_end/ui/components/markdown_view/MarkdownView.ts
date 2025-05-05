@@ -17,7 +17,7 @@ import markdownViewStylesRaw from './markdownView.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const markdownViewStyles = new CSSStyleSheet();
-markdownViewStyles.replaceSync(markdownViewStylesRaw.cssText);
+markdownViewStyles.replaceSync(markdownViewStylesRaw);
 
 const html = Lit.html;
 const render = Lit.render;

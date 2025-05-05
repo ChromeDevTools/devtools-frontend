@@ -199,8 +199,8 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
     render(html`
-        <style>${UI.inspectorCommonStyles.cssText}</style>
-        <style>${protocolMonitorStyles.cssText}</style>
+        <style>${UI.inspectorCommonStyles}</style>
+        <style>${protocolMonitorStyles}</style>
         <devtools-split-view name="protocol-monitor-split-container"
                              direction="column"
                              sidebar-initial-size="400"

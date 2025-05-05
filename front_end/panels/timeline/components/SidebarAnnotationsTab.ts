@@ -334,7 +334,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
-        <style>${sidebarAnnotationsTabStyles.cssText}</style>
+        <style>${sidebarAnnotationsTabStyles}</style>
         <span class="annotations">
           ${this.#annotations.length === 0 ?
             this.#renderTutorialCard() :

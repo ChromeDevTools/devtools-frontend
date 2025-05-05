@@ -66,7 +66,7 @@ export class PieChart extends HTMLElement {
     this.lastAngle = -Math.PI / 2;
     // clang-format off
     const output = html`
-      <style>${pieChartStyles.cssText}</style>
+      <style>${pieChartStyles}</style>
       <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}
           jslog=${VisualLogging.pieChart().track({keydown: 'ArrowUp|ArrowDown'})}>
         <div class="chart-root" style="width: ${this.size}px; height: ${this.size}px;">

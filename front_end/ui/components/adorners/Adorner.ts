@@ -120,7 +120,7 @@ export class Adorner extends HTMLElement {
   }
 
   #render(): void {
-    render(html`<style>${adornerStyles.cssText}</style><slot></slot>`, this.#shadow, {host: this});
+    render(html`<style>${adornerStyles}</style><slot></slot>`, this.#shadow, {host: this});
   }
 }
 

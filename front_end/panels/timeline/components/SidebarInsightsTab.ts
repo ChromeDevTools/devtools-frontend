@@ -209,7 +209,7 @@ export class SidebarInsightsTab extends HTMLElement {
     const contents =
         // clang-format off
      html`
-      <style>${sidebarInsightsTabStyles.cssText}</style>
+      <style>${sidebarInsightsTabStyles}</style>
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
           const data: SidebarSingleInsightSetData = {

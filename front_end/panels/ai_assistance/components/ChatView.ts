@@ -583,7 +583,7 @@ export class ChatView extends HTMLElement {
     };
     // clang-format off
     Lit.render(html`
-      <style>${chatViewStyles.cssText}</style>
+      <style>${chatViewStyles}</style>
       <div class="chat-ui" ${Lit.Directives.ref(this.#handleChatUiRef)}>
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
           ${renderMainContents({

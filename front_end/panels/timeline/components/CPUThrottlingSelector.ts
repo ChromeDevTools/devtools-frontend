@@ -164,7 +164,7 @@ export class CPUThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${cpuThrottlingSelectorStyles.cssText}</style>
+      <style>${cpuThrottlingSelectorStyles}</style>
       <devtools-select-menu
             @selectmenuselected=${this.#onMenuItemSelected}
             .showDivider=${true}

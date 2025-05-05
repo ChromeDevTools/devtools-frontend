@@ -64,7 +64,7 @@ export class FreDialog {
     Lit.render(html`
       <div class="fre-disclaimer">
         <style>
-          ${commonStyles.cssText}
+          ${commonStyles}
         </style>
         <header>
           <div class="header-icon-container">

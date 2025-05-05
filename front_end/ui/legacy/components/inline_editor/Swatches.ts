@@ -17,7 +17,7 @@ import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const cssShadowSwatchStyles = new CSSStyleSheet();
-cssShadowSwatchStyles.replaceSync(cssShadowSwatchStylesRaw.cssText);
+cssShadowSwatchStyles.replaceSync(cssShadowSwatchStylesRaw);
 
 export class BezierSwatch extends HTMLElement {
   readonly #icon: IconButton.Icon.Icon;

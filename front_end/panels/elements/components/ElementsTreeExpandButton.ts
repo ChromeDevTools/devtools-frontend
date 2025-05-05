@@ -42,7 +42,7 @@ export class ElementsTreeExpandButton extends HTMLElement {
     // This button's innerText will be tested by e2e test and blink layout tests.
     // It can't have any other characters like '\n' or space, otherwise it will break tests.
     render(html`
-      <style>${elementsTreeExpandButtonStyles.cssText}</style>
+      <style>${elementsTreeExpandButtonStyles}</style>
       <button
         class="expand-button"
         tabindex="-1"

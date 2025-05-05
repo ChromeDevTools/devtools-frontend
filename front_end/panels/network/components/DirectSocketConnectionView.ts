@@ -198,8 +198,8 @@ export const DEFAULT_VIEW: View = (input, target) => {
 
   // clang-format off
   render(html`
-    <style>${UI.inspectorCommonStyles.cssText}</style>
-    <style>${requestHeadersViewStyles.cssText}</style>
+    <style>${UI.inspectorCommonStyles}</style>
+    <style>${requestHeadersViewStyles}</style>
     ${renderCategory(CATEGORY_NAME_GENERAL, i18nString(UIStrings.general), generalContent)}
     ${renderCategory(CATEGORY_NAME_OPTIONS, i18nString(UIStrings.options), optionsContent)}
     ${socketInfo.openInfo ? renderCategory(CATEGORY_NAME_OPEN_INFO, i18nString(UIStrings.openInfo), openInfoContent) : Lit.nothing}

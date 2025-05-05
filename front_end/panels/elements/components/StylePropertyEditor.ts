@@ -88,7 +88,7 @@ export class StylePropertyEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${stylePropertyEditorStyles.cssText}</style>
+      <style>${stylePropertyEditorStyles}</style>
       <div class="container">
         ${this.editableProperties.map(prop => this.#renderProperty(prop))}
       </div>

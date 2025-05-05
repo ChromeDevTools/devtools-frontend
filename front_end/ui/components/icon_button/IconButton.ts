@@ -77,7 +77,7 @@ export class IconButton extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
-      <style>${iconButtonStyles.cssText}</style>
+      <style>${iconButtonStyles}</style>
       <button class=${buttonClasses} @click=${this.#onClickHandler} aria-label=${Lit.Directives.ifDefined(this.#accessibleName)}>
       ${(!this.#compact && this.#leadingText) ? html`<span class="icon-button-title">${this.#leadingText}</span>` : Lit.nothing}
       ${filteredGroups.map(counter =>

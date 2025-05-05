@@ -321,7 +321,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
-        <style>${frameDetailsReportViewStyles.cssText}</style>
+        <style>${frameDetailsReportViewStyles}</style>
         <devtools-report .data=${{reportTitle: this.#frame.displayName()} as ReportView.ReportView.ReportData}
         jslog=${VisualLogging.pane('frames')}>
           ${this.#renderDocumentSection()}

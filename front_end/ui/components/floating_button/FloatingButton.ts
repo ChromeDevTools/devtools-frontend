@@ -13,7 +13,7 @@ import floatingButtonStylesRaw from './floatingButton.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const floatingButtonStyles = new CSSStyleSheet();
-floatingButtonStyles.replaceSync(floatingButtonStylesRaw.cssText);
+floatingButtonStyles.replaceSync(floatingButtonStylesRaw);
 
 const {html, Directives: {ifDefined}} = Lit;
 

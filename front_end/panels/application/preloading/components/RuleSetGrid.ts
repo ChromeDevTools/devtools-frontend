@@ -126,7 +126,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       Lit.render(html`
-        <style>${ruleSetGridStyles.cssText}</style>
+        <style>${ruleSetGridStyles}</style>
         <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
           <devtools-data-grid striped @select=${this.#onRowSelected}>
             <table>

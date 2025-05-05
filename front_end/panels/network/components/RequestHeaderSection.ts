@@ -77,7 +77,7 @@ export class RequestHeaderSection extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${requestHeaderSectionStyles.cssText}</style>
+      <style>${requestHeaderSectionStyles}</style>
       ${this.#maybeRenderProvisionalHeadersWarning()}
       ${this.#headers.map(header => html`
         <devtools-header-section-row

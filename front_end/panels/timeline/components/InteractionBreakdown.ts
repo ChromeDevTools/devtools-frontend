@@ -49,7 +49,7 @@ export class InteractionBreakdown extends HTMLElement {
     const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.mainThreadHandling);
     const presentationDelay = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.presentationDelay);
     Lit.render(
-        html`<style>${interactionBreakdownStyles.cssText}</style>
+        html`<style>${interactionBreakdownStyles}</style>
              <ul class="breakdown">
                      <li data-entry="input-delay">${i18nString(UIStrings.inputDelay)}<span class="value">${
             inputDelay}</span></li>

@@ -341,7 +341,7 @@ export class HeadersViewComponent extends HTMLElement {
       const fileName = this.#uiSourceCode?.name() || '.headers';
       // clang-format off
       Lit.render(html`
-        <style>${headersViewStyles.cssText}</style>
+        <style>${headersViewStyles}</style>
         <div class="center-wrapper">
           <div class="centered">
             <div class="error-header">${i18nString(UIStrings.errorWhenParsing, {PH1: fileName})}</div>
@@ -355,7 +355,7 @@ export class HeadersViewComponent extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
-      <style>${headersViewStyles.cssText}</style>
+      <style>${headersViewStyles}</style>
       ${this.#headerOverrides.map((headerOverride, blockIndex) =>
         html`
           ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}

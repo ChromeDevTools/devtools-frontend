@@ -2114,7 +2114,7 @@ export class TimelineUIUtils {
     }
     const stylesContainer = document.createElement('div');
     const shadowRoot = stylesContainer.attachShadow({mode: 'open'});
-    shadowRoot.createChild('style').textContent = imagePreviewStyles.cssText;
+    shadowRoot.createChild('style').textContent = imagePreviewStyles;
     const container = shadowRoot.createChild('div');
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = container.createChild('img');

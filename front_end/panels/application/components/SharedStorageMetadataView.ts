@@ -89,7 +89,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <style>${sharedStorageMetadataViewStyles.cssText}</style>
+      <style>${sharedStorageMetadataViewStyles}</style>
       ${await super.renderReportContent()}
       ${this.key(i18nString(UIStrings.creation))}
       ${this.value(this.#renderDateForCreationTime())}

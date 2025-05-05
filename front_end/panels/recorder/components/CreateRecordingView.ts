@@ -258,9 +258,9 @@ export class CreateRecordingView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
-        <style>${createRecordingViewStyles.cssText}</style>
-        <style>${Input.textInputStyles.cssText}</style>
-        <style>${Input.checkboxStyles.cssText}</style>
+        <style>${createRecordingViewStyles}</style>
+        <style>${Input.textInputStyles}</style>
+        <style>${Input.checkboxStyles}</style>
         <div class="wrapper">
           <div class="header-wrapper">
             <h1>${i18nString(UIStrings.createRecording)}</h1>

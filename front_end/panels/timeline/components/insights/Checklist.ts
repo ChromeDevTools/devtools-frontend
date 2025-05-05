@@ -81,7 +81,7 @@ export class Checklist extends HTMLElement {
 
     Lit.render(
         html`
-          <style>${checklistStyles.cssText}</style>
+          <style>${checklistStyles}</style>
           <ul>
             ${Object.values(this.#checklist).map(check => html`<li>
                 ${this.#getIcon(check)}

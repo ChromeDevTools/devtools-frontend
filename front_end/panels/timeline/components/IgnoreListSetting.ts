@@ -270,7 +270,7 @@ export class IgnoreListSetting extends HTMLElement {
     }
     // clang-format off
     const output = html`
-      <style>${ignoreListSettingStyles.cssText}</style>
+      <style>${ignoreListSettingStyles}</style>
       <devtools-button-dialog .data=${{
           openOnRender: false,
           jslogContext: 'timeline.ignore-list',

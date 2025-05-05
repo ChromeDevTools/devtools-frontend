@@ -15,7 +15,7 @@ import colorSwatchStylesRaw from './colorSwatch.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const colorSwatchStyles = new CSSStyleSheet();
-colorSwatchStyles.replaceSync(colorSwatchStylesRaw.cssText);
+colorSwatchStyles.replaceSync(colorSwatchStylesRaw);
 
 const {html} = Lit;
 

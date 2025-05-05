@@ -28,7 +28,7 @@ type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <style>${nodeStackTraceWidgetStyles.cssText}</style>
+    <style>${nodeStackTraceWidgetStyles}</style>
     ${input.stackTracePreview ?
          html`<div class="stack-trace">${input.stackTracePreview}</div>` :
          html`<div class="gray-info-message">${i18nString(UIStrings.noStackTraceAvailable)}</div>`}`,

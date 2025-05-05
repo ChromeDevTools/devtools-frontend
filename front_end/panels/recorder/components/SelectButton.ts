@@ -22,9 +22,9 @@ import selectButtonStylesRaw from './selectButton.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw);
 const selectButtonStyles = new CSSStyleSheet();
-selectButtonStyles.replaceSync(selectButtonStylesRaw.cssText);
+selectButtonStyles.replaceSync(selectButtonStylesRaw);
 
 const {html, Directives: {ifDefined, classMap}} = Lit;
 

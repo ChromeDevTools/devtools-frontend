@@ -71,7 +71,7 @@ export class SyncSection extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     Lit.render(html`
-      <style>${syncSectionStyles.cssText}</style>
+      <style>${syncSectionStyles}</style>
       <fieldset>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <setting-checkbox .data=${

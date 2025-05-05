@@ -332,9 +332,9 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
-        <style>${Input.checkboxStyles.cssText}</style>
-        <style>${layoutPaneStyles.cssText}</style>
-        <style>${UI.inspectorCommonStyles.cssText}</style>
+        <style>${Input.checkboxStyles}</style>
+        <style>${layoutPaneStyles}</style>
+        <style>${UI.inspectorCommonStyles}</style>
         <details open>
           <summary class="header" @keydown=${this.#onSummaryKeyDown} jslog=${VisualLogging.sectionHeader('grid-settings').track({click: true})}>
             ${i18nString(UIStrings.grid)}

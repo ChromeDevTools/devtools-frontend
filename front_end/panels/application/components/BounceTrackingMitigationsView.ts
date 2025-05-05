@@ -90,7 +90,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   async #render(): Promise<void> {
     // clang-format off
     Lit.render(html`
-      <style>${bounceTrackingMitigationsViewStyles.cssText}</style>
+      <style>${bounceTrackingMitigationsViewStyles}</style>
       <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
                        jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
         ${await this.#renderMainFrameInformation()}

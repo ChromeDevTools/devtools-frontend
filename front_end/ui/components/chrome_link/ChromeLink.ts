@@ -62,7 +62,7 @@ export class ChromeLink extends HTMLElement {
       /* x-link doesn't work with custom click/keydown handlers */
       /* eslint-disable rulesdir/no-a-tags-in-lit */
       html`
-        <style>${chromeLinkStyles.cssText}</style>
+        <style>${chromeLinkStyles}</style>
         <a href=${this.#href} class="link" target="_blank"
           jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}
           @click=${this.#handleClick}><slot></slot></a>

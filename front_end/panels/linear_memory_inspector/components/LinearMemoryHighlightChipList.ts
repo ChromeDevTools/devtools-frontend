@@ -74,7 +74,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
       chips.push(this.#createChip(highlightInfo));
     }
     const result = html`
-            <style>${linearMemoryHighlightChipListStyles.cssText}</style>
+            <style>${linearMemoryHighlightChipListStyles}</style>
             <div class="highlight-chip-list">
               ${chips}
             </div>

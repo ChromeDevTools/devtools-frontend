@@ -39,7 +39,7 @@ export class CSSHintDetailsView extends HTMLElement {
       const link = this.#authoringHint.getLearnMoreLink();
       // clang-format off
       render(html`
-        <style>${cssHintDetailsViewStyles.cssText}</style>
+        <style>${cssHintDetailsViewStyles}</style>
         <div class="hint-popup-wrapper">
           <div class="hint-popup-reason">
             ${Directives.unsafeHTML(this.#authoringHint.getMessage())}

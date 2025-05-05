@@ -36,9 +36,9 @@ export class ComputedStyleTrace extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${Buttons.textButtonStyles.cssText}</style>
-      <style>${UI.inspectorCommonStyles.cssText}</style>
-      <style>${computedStyleTraceStyles.cssText}</style>
+      <style>${Buttons.textButtonStyles}</style>
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${computedStyleTraceStyles}</style>
       <div class="computed-style-trace ${this.#active ? 'active' : 'inactive'}">
         <span class="goto" @click=${this.#onNavigateToSource}></span>
         <slot name="trace-value" @click=${this.#onNavigateToSource}></slot>

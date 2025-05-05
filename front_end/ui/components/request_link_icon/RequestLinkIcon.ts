@@ -22,7 +22,7 @@ import requestLinkIconStylesRaw from './requestLinkIcon.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const requestLinkIconStyles = new CSSStyleSheet();
-requestLinkIconStyles.replaceSync(requestLinkIconStylesRaw.cssText);
+requestLinkIconStyles.replaceSync(requestLinkIconStylesRaw);
 
 const {html} = Lit;
 

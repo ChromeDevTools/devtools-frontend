@@ -18,11 +18,11 @@ import menuItemStylesRaw from './menuItem.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const menuStyles = new CSSStyleSheet();
-menuStyles.replaceSync(menuStylesRaw.cssText);
+menuStyles.replaceSync(menuStylesRaw);
 const menuGroupStyles = new CSSStyleSheet();
-menuGroupStyles.replaceSync(menuGroupStylesRaw.cssText);
+menuGroupStyles.replaceSync(menuGroupStylesRaw);
 const menuItemStyles = new CSSStyleSheet();
-menuItemStyles.replaceSync(menuItemStylesRaw.cssText);
+menuItemStyles.replaceSync(menuItemStylesRaw);
 
 const {html} = Lit;
 

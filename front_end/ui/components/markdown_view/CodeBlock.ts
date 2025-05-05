@@ -19,7 +19,7 @@ import stylesRaw from './codeBlock.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssText);
+styles.replaceSync(stylesRaw);
 
 const {html} = Lit;
 

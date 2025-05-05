@@ -17,7 +17,7 @@ export class Spinner extends HTMLElement {
     // Changing the value of the radius will cause errors in animation.
     // clang-format off
     render(html`
-      <style>${spinnerStyles.cssText}</style>
+      <style>${spinnerStyles}</style>
       <div class="indeterminate-spinner">
         <div class="left-circle">
           <svg viewBox="0 0 100 100">

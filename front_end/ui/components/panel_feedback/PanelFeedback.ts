@@ -17,7 +17,7 @@ import panelFeedbackStylesRaw from './panelFeedback.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const panelFeedbackStyles = new CSSStyleSheet();
-panelFeedbackStyles.replaceSync(panelFeedbackStylesRaw.cssText);
+panelFeedbackStyles.replaceSync(panelFeedbackStylesRaw);
 
 const UIStrings = {
   /**

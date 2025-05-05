@@ -393,8 +393,8 @@ export class LayoutShiftDetails extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <style>${layoutShiftDetailsStyles.cssText}</style>
-      <style>${Buttons.textButtonStyles.cssText}</style>
+      <style>${layoutShiftDetailsStyles}</style>
+      <style>${Buttons.textButtonStyles}</style>
       <div class="layout-shift-summary-details">
         <div
           class="event-details"

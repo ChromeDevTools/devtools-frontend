@@ -415,7 +415,7 @@ export class TreeOutlineInShadow extends TreeOutline {
     }
   }
 
-  registerRequiredCSS(...cssFiles: Array<{cssText: string}>): void {
+  registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
     for (const cssFile of cssFiles) {
       ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
     }

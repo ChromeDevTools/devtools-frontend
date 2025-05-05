@@ -436,7 +436,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
     // clang-format off
     const output = html`
-      <style>${baseInsightComponentStyles.cssText}</style>
+      <style>${baseInsightComponentStyles}</style>
       <div class=${containerClasses}>
         <header @click=${this.#dispatchInsightToggle}
           @keydown=${this.#handleHeaderKeyDown}

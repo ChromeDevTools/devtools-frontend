@@ -121,8 +121,8 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${UI.inspectorCommonStyles.cssText}</style>
-      <style>${valueInterpreterDisplayStyles.cssText}</style>
+      <style>${UI.inspectorCommonStyles}</style>
+      <style>${valueInterpreterDisplayStyles}</style>
       <div class="value-types">
         ${SORTED_VALUE_TYPES.map(type => this.#valueTypes.has(type) ? this.#showValue(type) : '')}
       </div>

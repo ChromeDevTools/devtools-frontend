@@ -15,9 +15,9 @@ import diffViewStylesRaw from './diffView.css.js';
  * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
  **/
 const diffViewStyles = new CSSStyleSheet();
-diffViewStyles.replaceSync(diffViewStylesRaw.cssText);
+diffViewStyles.replaceSync(diffViewStylesRaw);
 const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.codeHighlighterStyles.cssText);
+CodeHighlighterStyles.replaceSync(CodeHighlighter.codeHighlighterStyles);
 
 const {html} = Lit;
 

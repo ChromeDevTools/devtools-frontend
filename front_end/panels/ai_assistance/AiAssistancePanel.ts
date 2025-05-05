@@ -1520,13 +1520,23 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
               AiAssistancePanel.panelName,
           );
 
-          if (view) {
-            await UI.ViewManager.ViewManager.instance().showView(
-                AiAssistancePanel.panelName,
-            );
-            const widget = (await view.widget()) as AiAssistancePanel;
-            widget.handleAction(actionId);
+          if (!view) {
+            return;
           }
+
+          await UI.ViewManager.ViewManager.instance().showView(
+              AiAssistancePanel.panelName,
+          );
+
+          const minDrawerSize = UI.InspectorView.InspectorView.instance().totalSize() / 4;
+          if (UI.InspectorView.InspectorView.instance().drawerSize() < minDrawerSize) {
+            // If the drawer is too small, resize it to the quarter of the total size.
+            // This ensures the AI Assistance panel has enough space to be usable when opened via an action.
+            UI.InspectorView.InspectorView.instance().setDrawerSize(minDrawerSize);
+          }
+
+          const widget = (await view.widget()) as AiAssistancePanel;
+          widget.handleAction(actionId);
         })();
         return true;
       }

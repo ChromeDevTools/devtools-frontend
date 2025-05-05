@@ -407,6 +407,18 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.drawerSplitWidget.setResizable(!minimized);
   }
 
+  drawerSize(): number {
+    return this.drawerSplitWidget.sidebarSize();
+  }
+
+  setDrawerSize(size: number): void {
+    this.drawerSplitWidget.setSidebarSize(size);
+  }
+
+  totalSize(): number {
+    return this.drawerSplitWidget.totalSize();
+  }
+
   isDrawerMinimized(): boolean {
     return this.drawerSplitWidget.isSidebarMinimized();
   }

@@ -16,7 +16,12 @@ import {
   openHistoryContextMenu
 } from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
-import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+  registerNoopActions,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
@@ -1387,5 +1392,27 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
       assert.isUndefined((await view.nextInput).imageInput);
     });
+  });
+});
+
+describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
+  beforeEach(() => {
+    UI.ViewManager.ViewManager.instance({forceNew: true});
+    UI.InspectorView.InspectorView.instance({forceNew: true});
+  });
+
+  it('should set drawer size to 25% of total size if it\'s less than that size', async () => {
+    const totalSizeStub = 400;
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'view').returns(sinon.createStubInstance(UI.View.SimpleView));
+    sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
+    sinon.stub(UI.InspectorView.InspectorView.instance(), 'totalSize').returns(totalSizeStub);
+    sinon.stub(UI.InspectorView.InspectorView.instance(), 'drawerSize').returns(10);
+    const setDrawerSizeCall = expectCall(sinon.stub(UI.InspectorView.InspectorView.instance(), 'setDrawerSize'));
+
+    const actionDelegate = new AiAssistancePanel.ActionDelegate();
+    actionDelegate.handleAction(UI.Context.Context.instance(), 'freestyler.elements-floating-button');
+
+    const [size] = await setDrawerSizeCall;
+    assert.strictEqual(size, totalSizeStub / 4);
   });
 });

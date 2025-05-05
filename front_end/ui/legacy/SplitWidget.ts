@@ -454,6 +454,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     return ZoomManager.instance().dipToCSS(sizeDIP);
   }
 
+  totalSize(): number {
+    const sizeDIP = Math.max(0, this.totalSizeDIP());
+    return ZoomManager.instance().dipToCSS(sizeDIP);
+  }
+
   /**
    * Returns total size in DIP.
    */

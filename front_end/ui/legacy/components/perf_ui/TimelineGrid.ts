@@ -139,7 +139,7 @@ export class TimelineGrid {
     const width = Math.ceil(context.canvas.width / window.devicePixelRatio);
 
     context.beginPath();
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-50');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-80');
     context.fillRect(0, 0, width, headerHeight);
 
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');

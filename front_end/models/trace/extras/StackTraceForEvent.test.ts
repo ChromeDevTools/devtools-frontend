@@ -25,7 +25,6 @@ function shapeStackTraceAsArray(stackTrace: Protocol.Runtime.StackTrace):
     stackTraceAsArray.push({callFrames: currentStackTrace.callFrames, description: currentStackTrace.description});
     currentStackTrace = currentStackTrace.parent;
   }
-
   return stackTraceAsArray;
 }
 
@@ -269,14 +268,11 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
     profileCall2.callFrame.lineNumber = 0;
     const traceEvent = makeCompleteEvent(Trace.Types.Events.Name.UPDATE_LAYOUT_TREE, 100, 10, '', pid, tid) as
         Trace.Types.Events.UpdateLayoutTree;
-    const payloadCallFrame = {
-      columnNumber: payloadColumnNumber,
-      functionName: 'bar',
-      lineNumber: payloadLineNumber,
-      scriptId: '115',
-      url: ''
-    };
-    traceEvent.args = {elementCount: 1, beginData: {frame: '', stackTrace: [payloadCallFrame]}};
+    const payloadCallStack = [
+      {columnNumber: payloadColumnNumber, functionName: 'bar', lineNumber: payloadLineNumber, scriptId: '115', url: ''},
+      {columnNumber: payloadColumnNumber, functionName: 'foo', lineNumber: payloadLineNumber, scriptId: '115', url: ''},
+    ];
+    traceEvent.args = {elementCount: 1, beginData: {frame: '', stackTrace: payloadCallStack}};
     const trace = parsedTraceFromEvents([profileCall1, profileCall2, traceEvent]);
 
     const stackTraceForExtensionEntry = Trace.Extras.StackTraceForEvent.get(traceEvent, trace);
@@ -284,8 +280,8 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
     assert.deepEqual(shapeStackTraceAsArray(stackTraceForExtensionEntry) as unknown[], [
       {
         callFrames: [
-          {...payloadCallFrame, lineNumber: payloadLineNumber - 1, columnNumber: payloadColumnNumber - 1},
-          profileCall1.callFrame
+          {...payloadCallStack[0], lineNumber: payloadLineNumber - 1, columnNumber: payloadColumnNumber - 1},
+          {...payloadCallStack[1], lineNumber: payloadLineNumber - 1, columnNumber: payloadColumnNumber - 1},
         ],
         description: undefined
       },

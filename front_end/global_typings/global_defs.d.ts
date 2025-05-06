@@ -2,8 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/**
+ * Branded type used for CSS text bundled with our `*.css.js` files.
+ */
+type CSSInJS = string&{_tag: 'CSS-in-JS'};
+
 declare module '*.css.js' {
-  const styles: string&{_tag: 'CSS-in-JS'};
+  const styles: CSSInJS;
   export default styles;
 }
 

@@ -145,12 +145,6 @@ export class ThemeSupport extends EventTarget {
     return this.themeNameInternal;
   }
 
-  appendStyle(node: Node, cssText: string&{_tag: 'CSS-in-JS'}): void {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = cssText;
-    node.appendChild(styleElement);
-  }
-
   #applyTheme(): void {
     for (const document of this.#documentsToTheme) {
       this.#applyThemeToDocument(document);

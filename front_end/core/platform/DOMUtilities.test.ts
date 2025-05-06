@@ -6,6 +6,9 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 import * as Platform from './platform.js';
 
+const cssInJS = (strings: ArrayLike<string>, ...values: any[]): CSSInJS =>
+    String.raw({raw: strings}, ...values) as CSSInJS;
+
 describe('DOMUtilities', () => {
   describe('deepActiveElement', () => {
     it('returns the active element if there is no shadow root', () => {
@@ -60,6 +63,33 @@ describe('DOMUtilities', () => {
       const component = new TestComponent();
       renderElementIntoDOM(component);
       assert.strictEqual(Platform.DOMUtilities.getEnclosingShadowRootForNode(div), component.shadowRoot);
+    });
+  });
+
+  describe('appendStyle', () => {
+    const {appendStyle} = Platform.DOMUtilities;
+
+    it('correctly appends <style> elements', () => {
+      const parent = renderElementIntoDOM(document.createElement('main'));
+
+      appendStyle(parent, cssInJS`h1 { color: red; }`);
+      appendStyle(parent, cssInJS`h2 { color: green; } h1 { font-size: 1px; }`);
+
+      assert.lengthOf(parent.children, 2);
+      assert.instanceOf(parent.children[0], HTMLStyleElement);
+      assert.strictEqual(parent.children[0].textContent, 'h1 { color: red; }');
+      assert.instanceOf(parent.children[1], HTMLStyleElement);
+      assert.strictEqual(parent.children[1].textContent, 'h2 { color: green; } h1 { font-size: 1px; }');
+    });
+
+    it('correctly inserts <style> elements into disconnected nodes', () => {
+      const parent = document.createElement('div');
+
+      appendStyle(parent, cssInJS`div { color: red; }`);
+
+      assert.lengthOf(parent.children, 1);
+      assert.instanceOf(parent.children[0], HTMLStyleElement);
+      assert.strictEqual(parent.children[0].textContent, 'div { color: red; }');
     });
   });
 });

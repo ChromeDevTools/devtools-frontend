@@ -55,7 +55,6 @@ import inlineButtonStyles from './inlineButton.css.js';
 import inspectorCommonStyles from './inspectorCommon.css.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import type {TreeOutline} from './Treeoutline.js';
@@ -641,8 +640,8 @@ export function addPlatformClass(element: HTMLElement): void {
 }
 
 export function installComponentRootStyles(element: HTMLElement): void {
-  ThemeSupport.ThemeSupport.instance().appendStyle(element, inspectorCommonStyles);
-  ThemeSupport.ThemeSupport.instance().appendStyle(element, Buttons.textButtonStyles);
+  Platform.DOMUtilities.appendStyle(element, inspectorCommonStyles);
+  Platform.DOMUtilities.appendStyle(element, Buttons.textButtonStyles);
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
   if (!Host.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
@@ -1920,26 +1919,21 @@ function focusChanged(event: Event): void {
  * @returns the newly created `ShadowRoot`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
-export function createShadowRootWithCoreStyles(
-    element: Element,
-    options: {cssFile?: Array<string&{_tag: 'CSS-in-JS'}>|string&{_tag: 'CSS-in-JS'}, delegatesFocus?: boolean} = {
-      delegatesFocus: undefined,
-      cssFile: undefined,
-    }): ShadowRoot {
-  const {
-    cssFile,
-    delegatesFocus,
-  } = options;
+export function createShadowRootWithCoreStyles(element: Element, options: {
+  cssFile?: CSSInJS[]|CSSInJS,
+  delegatesFocus?: boolean,
+} = {
+  delegatesFocus: undefined,
+  cssFile: undefined,
+}): ShadowRoot {
+  const {cssFile, delegatesFocus} = options;
 
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
-  ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, inspectorCommonStyles);
-  ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, Buttons.textButtonStyles);
+  Platform.DOMUtilities.appendStyle(shadowRoot, inspectorCommonStyles, Buttons.textButtonStyles);
   if (Array.isArray(cssFile)) {
-    for (const cf of cssFile) {
-      ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cf);
-    }
+    Platform.DOMUtilities.appendStyle(shadowRoot, ...cssFile);
   } else if (cssFile) {
-    ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
+    Platform.DOMUtilities.appendStyle(shadowRoot, cssFile);
   }
   shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;

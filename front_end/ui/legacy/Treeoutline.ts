@@ -43,7 +43,6 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {type Config, InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import {Tooltip} from './Tooltip.js';
 import treeoutlineStyles from './treeoutline.css.js';
 import {
@@ -417,7 +416,7 @@ export class TreeOutlineInShadow extends TreeOutline {
 
   registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
     for (const cssFile of cssFiles) {
-      ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
+      Platform.DOMUtilities.appendStyle(this.shadowRoot, cssFile);
     }
   }
 

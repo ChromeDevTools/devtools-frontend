@@ -35,7 +35,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Lit from '../../ui/lit/lit.js';
 
 import {Constraints, Size} from './Geometry.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import {XWidget} from './XWidget.js';
 
@@ -604,7 +603,7 @@ export class Widget {
 
   registerRequiredCSS(...cssFiles: Array<string&{_tag: 'CSS-in-JS'}>): void {
     for (const cssFile of cssFiles) {
-      ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadowRoot ?? this.element, cssFile);
+      Platform.DOMUtilities.appendStyle(this.#shadowRoot ?? this.element, cssFile);
     }
   }
 

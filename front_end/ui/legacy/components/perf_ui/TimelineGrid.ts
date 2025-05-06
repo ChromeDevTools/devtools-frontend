@@ -33,6 +33,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Platform from '../../../../core/platform/platform.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
@@ -49,7 +50,7 @@ export class TimelineGrid {
 
   constructor() {
     this.element = document.createElement('div');
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.element, timelineGridStyles);
+    Platform.DOMUtilities.appendStyle(this.element, timelineGridStyles);
 
     this.dividersElementInternal = this.element.createChild('div', 'resources-dividers');
 

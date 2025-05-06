@@ -3299,6 +3299,8 @@ export const knownContextValues = new Set([
   'sm-stylesheet',
   'small',
   'smaller',
+  'snackbar.action',
+  'snackbar.dismiss',
   'snippet',
   'socket',
   'some_id',

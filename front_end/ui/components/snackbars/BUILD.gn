@@ -1,0 +1,45 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "snackbar.css" ]
+}
+
+devtools_module("snackbar") {
+  sources = [ "Snackbar.ts" ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../lit:bundle",
+    "../buttons:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "snackbars.ts"
+
+  deps = [
+    ":css_files",
+    ":snackbar",
+  ]
+
+  visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Snackbar.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../testing",
+  ]
+}

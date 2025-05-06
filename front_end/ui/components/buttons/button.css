@@ -62,6 +62,11 @@ button {
     --toggle-color: var(--sys-color-error-bright);
   }
 
+  &.inverse {
+    --hover-layer-color: var(--sys-color-state-hover-on-prominent);
+    --active-layer-color: var(--sys-color-state-ripple-neutral-on-prominent);
+  }
+
   devtools-icon {
     width: var(--icon-size);
     height: var(--icon-size);
@@ -90,6 +95,10 @@ button {
       --icon-size: var(--sys-size-8);
 
       border-radius: var(--sys-shape-corner-extra-small);
+    }
+
+    &.inverse devtools-icon {
+      color:  var(--sys-color-inverse-on-surface);
     }
 
     &.toggled devtools-icon {
@@ -154,6 +163,10 @@ button {
   &.text {
     border: none;
     color: var(--sys-color-primary);
+
+    &.inverse {
+      color:  var(--sys-color-inverse-primary);
+    }
 
     devtools-icon {
       color: var(--icon-primary);

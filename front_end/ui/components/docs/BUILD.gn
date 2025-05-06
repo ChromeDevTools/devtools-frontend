@@ -49,6 +49,7 @@ group("docs") {
     "./request_link_icon",
     "./select_menu",
     "./slider",
+    "./snackbars",
     "./style_property_editor",
     "./survey_link",
     "./switch",

@@ -62,6 +62,7 @@ interface ButtonState {
   toggleType?: ToggleType;
   jslogContext?: string;
   longClickable?: boolean;
+  inverseColorTheme?: boolean;
 }
 
 interface CommonButtonData {
@@ -82,6 +83,7 @@ interface CommonButtonData {
   title?: string;
   jslogContext?: string;
   longClickable?: boolean;
+  inverseColorTheme?: boolean;
 }
 
 export type ButtonData = CommonButtonData&(|{
@@ -156,6 +158,7 @@ export class Button extends HTMLElement {
     this.#props.title = data.title;
     this.#props.jslogContext = data.jslogContext;
     this.#props.longClickable = data.longClickable;
+    this.#props.inverseColorTheme = data.inverseColorTheme;
     this.#render();
   }
 
@@ -252,6 +255,11 @@ export class Button extends HTMLElement {
 
   set longClickable(longClickable: boolean) {
     this.#props.longClickable = longClickable;
+    this.#render();
+  }
+
+  set inverseColorTheme(inverseColorTheme: boolean) {
+    this.#props.inverseColorTheme = inverseColorTheme;
     this.#render();
   }
 
@@ -353,6 +361,7 @@ export class Button extends HTMLElement {
       small: this.#props.size === Size.SMALL,
       'reduced-focus-ring': Boolean(this.#props.reducedFocusRing),
       active: this.#props.active,
+      inverse: Boolean(this.#props.inverseColorTheme),
     };
     const spinnerClasses = {
       primary: this.#props.variant === Variant.PRIMARY,

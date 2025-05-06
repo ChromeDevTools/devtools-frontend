@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import './Table.js';
+import './NodeLink.js';
 import '../../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -17,6 +18,7 @@ import {md} from '../../utils/Helpers.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import networkDependencyTreeInsightStyles from './networkDependencyTreeInsight.css.js';
+import type {NodeLinkData} from './NodeLink.js';
 import type {TableData, TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
@@ -136,6 +138,59 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format on
   }
 
+  #renderPreconnectOriginsTable(): Lit.LitTemplate {
+    if (!this.model) {
+      return Lit.nothing;
+    }
+
+    const preconnectOriginsTableTitle = html`
+      <style>${networkDependencyTreeInsightStyles}</style>
+      <div class='section-title'>${i18nString(UIStrings.preconnectOriginsTableTitle)}</div>
+      <div class="insight-description">${md(i18nString(UIStrings.preconnectOriginsTableDescription))}</div>
+    `;
+
+    if (!this.model.preconnectOrigins.length) {
+      // clang-format off
+      return html`
+        <div class="insight-section">
+          ${preconnectOriginsTableTitle}
+          ${i18nString(UIStrings.noPreconnectOrigins)}
+        </div>
+      `;
+      // clang-format on
+    }
+
+    const rows: TableDataRow[] = this.model.preconnectOrigins.map(preconnectOrigin => {
+      const nodeEl = html`
+            <devtools-performance-node-link
+              .data=${{
+        backendNodeId: preconnectOrigin.node_id,
+        frame: preconnectOrigin.frame,
+        fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
+      } as NodeLinkData}>
+            </devtools-performance-node-link>`;
+
+      return {
+        values: [preconnectOrigin.url, nodeEl],
+      };
+    });
+
+    // clang-format off
+    return html`
+      <div class="insight-section">
+        ${preconnectOriginsTableTitle}
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.columnOrigin), i18nString(UIStrings.columnSource)],
+            rows,
+          } as TableData}>
+        </devtools-performance-table>
+      </div>
+    `;
+    // clang-format on
+  }
+
   #renderEstSavingTable(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;
@@ -182,6 +237,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
   override renderContent(): Lit.LitTemplate {
     return html`
       ${this.#renderNetworkTreeSection()}
+      ${this.#renderPreconnectOriginsTable()}
       ${this.#renderEstSavingTable()}
     `;
   }

@@ -50,9 +50,26 @@ export const UIStrings = {
   /** Label for a column in a data table; entries will be the time from main document till current network request. */
   columnTime: 'Time',
   /**
+   * @description Title of the table of the detected preconnect origins.
+   */
+  preconnectOriginsTableTitle: 'Preconnect origins',
+  /**
+   * @description Description of the table of the detected preconnect origins.
+   */
+  preconnectOriginsTableDescription:
+      '[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/?utm_source=lighthouse&utm_medium=devtools) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.',
+  /**
+   * @description Text status indicating that there isn't any preconnected origins.
+   */
+  noPreconnectOrigins: 'no origins were preconnected',
+  /**
+   * @description Label for a column in a data table; entries will be the source of the origin.
+   */
+  columnSource: 'Source',
+  /**
    * @description Text status indicating that there isn't preconnect candidates.
    */
-  noPreconnectCandidates: 'No origins are good candidates for preconnecting',
+  noPreconnectCandidates: 'No additional origins are good candidates for preconnecting',
   /**
    * @description Title of the table that shows the origins that the page should have preconnected to.
    */
@@ -102,6 +119,12 @@ export interface CriticalRequestNode {
   relatedRequests: Set<Types.Events.SyntheticNetworkRequest>;
 }
 
+export interface PreconnectOrigin {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  node_id: Protocol.DOM.BackendNodeId;
+  frame?: string;
+  url: string;
+}
 export interface PreconnectCandidate {
   origin: Platform.DevToolsPath.UrlString;
   wastedMs: Types.Timing.Milli;
@@ -111,6 +134,7 @@ export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
   rootNodes: CriticalRequestNode[],
   maxTime: Types.Timing.Micro,
   fail: boolean,
+  preconnectOrigins: PreconnectOrigin[],
   preconnectCandidates: PreconnectCandidate[],
 }>;
 
@@ -450,6 +474,12 @@ export function generateInsight(
     relatedEvents,
   } = generateNetworkDependencyTree(context);
 
+  const preconnectOrigins = parsedTrace.NetworkRequests.linkPreconnectEvents.map(event => ({
+                                                                                   node_id: event.args.data.node_id,
+                                                                                   frame: event.args.data.frame,
+                                                                                   url: event.args.data.url,
+                                                                                 }));
+
   const preconnectCandidates = generatePreconnectCandidates(parsedTrace, context);
 
   return finalize({
@@ -457,6 +487,7 @@ export function generateInsight(
     maxTime,
     fail,
     relatedEvents,
+    preconnectOrigins,
     preconnectCandidates,
   });
 }

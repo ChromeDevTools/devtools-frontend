@@ -495,7 +495,7 @@
     "message": "Det gick inte att hämta skriptets källa."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Utfasad syntax hittades. Använd: <namn>;dur=<längd>;desc=<beskrivning>"
+    "message": "Utfasad syntax hittades för mätvärdet {PH1}. Använd: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Den dubbla parametern {PH1} har ignorerats."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Resursförfrågningar vars webbadresser innehöll både de borttagna blankstegstecknen \\(n|r|t) och mindre än-tecknen (<) blockeras. Ta bort radbrytningstecken och koda mindre än-tecken från t.ex. värden för elementattribut om du vill läsa in dessa resurser."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "Automatisk identifiering av teckenuppsättningen ISO-2022-JP har fasats ut och inaktiveras inom kort. Ange teckenuppsättningen i rubriken för innehållstyp eller med en metatagg (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() är utfasad. Använd det standardiserade API:et Navigation Timing 2 i stället."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Tredjepartscookien blockeras i Chrome antingen på grund av Chrome-flaggor eller webbläsarkonfigurationen."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome går mot en ny upplevelse som gör det möjligt för användare att välja att surfa utan tredjepartscookies."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Skicka en felrapport"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Beskrivning av SameSite-cookies"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Ändringar i Chromes behandling av tredjepartscookies"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Delning av resurser med korsursprung (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Bortslösad tid"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(anonym)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Många API:er, vanligtvis när de läser layoutgeometri, tvingar renderingsmotorn att pausa skriptkörningen för att beräkna format och layout. Läs mer om [framtvingad flödesomformning](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) och hur det kan begränsas."
   },
@@ -1905,7 +1905,7 @@
     "message": "Total tid för flödesomformning"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Utan attribut"
+    "message": "[utan attribut]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Om du minskar nedladdningstiden för bilder kan du förbättra den upplevda hämtningstiden för sidan och LCP. [Läs mer om att optimera bildstorlek](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Om du vill använda den här funktionen uppdaterar du språkinställningen till engelska i inställningarna för Verktyg för programmerare."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Du kan även starta konversationen med en av de föreslagna promptarna ovan"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Läs mer om AI i Verktyg för programmerare"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Kontrollera internetanslutningen och försök igen"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Visa det valda kontextobjektet i Verktyg för programmerare"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "AI-assistans i Inställningar"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Den här ramen har skapats med programmering. stack trace visar var det skedde."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Annonsskript som skapade denna iframe"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Korsursprung har isolerats"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Information"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Inget element har valts"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(saknas)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "Förhämtningen togs bort eftersom webbinformation togs bort."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "Förhämtningen avvisades eftersom ingen spekulationsregel på den inledande sidan utlöser en förhämtning av den här webbadressen längre."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Viss resursbelastning blockerades."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "Den förrenderade sidan togs bort eftersom webbinformation togs bort."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Navigeringen vid förrenderingen krävde ett HTTP-klientcertifikat."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopierades till urklipp"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Kopiera filen {PH1} till urklipp"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ändringar"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Initierare"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Inga matchande resurser"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# resursmatchningar}other{# resursmatchning}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "väntar"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Läs in HTTP(S)-resurser för utvecklare via webbplatsen du inspekterar, inte via Verktyg för programmerare"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Inga matchande resurser"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# resursmatchningar}other{# resursmatchning}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# resurs}other{# resurser}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiera format"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Inaktivera radbrytning för DOM"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Dubblerat element"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Element"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Aktivera radbrytning för DOM"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Händelselyssnare"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Stackspårning"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Aktivera eller inaktivera tillgänglighetsträd"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Aktivera/inaktivera släppfunktionen"
@@ -7071,7 +7083,7 @@
     "message": "Bredd"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "Zooma in"
+    "message": "Zoom"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Dubbelklicka för full höjd"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Visas från cacheminne, resursstorlek: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} överfördes via nätverket, resursstorlek: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "{PH1} överfördes via nätverket, resursstorlek: {PH2}, inga matchande ServiceWorker-rutter"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Visas från förhämtningscache, resursstorlek: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Skickades från ett Web Bundle"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Anslutningsinformation"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Det här svaret innehåller rubriker som har åsidosatts av Verktyg för programmerare"
@@ -9348,7 +9369,7 @@
     "message": "Gruppera förfrågningar efter ram för begäran på översta nivån"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Tryck på {PH1} för att läsa in och spela in filmremsa."
+    "message": "Tryck på {PH1} för att läsa in igen och spela in filmremsa."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importera HAR-fil …"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Vattenfall"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Alla"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Binärt meddelande"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Ta bort alla"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Rensa alla"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Meddelandet Anslutning stängd"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Kontinuerlig inramning"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Kopiera meddelande"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Kopiera meddelande …"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Data"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Filtrera"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Filtrera med reguljärt uttryck (exempel: (webb)?uttag)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Längd"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Inte tillämpligt"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Inget meddelande har valts"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping-meddelande"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Pong-meddelande"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Ta emot"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (OP-kod {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (OP-kod {PH2}, mask)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Välj ett meddelande för att bläddra bland innehållet."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Skicka"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Textmeddelande"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Tid"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket-ram"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Visa certifikat"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Avbruten"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Stängd"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Öppna"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Öppnar"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (bunden)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (ansluten)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Felmeddelande"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Allmänt"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Öppen information"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Alternativ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "Status"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "Typ av DirectSocket"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktiva client experiment variation IDs."
@@ -10842,7 +10863,7 @@
     "message": "Exportera"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Exportera"
+    "message": "Exportera inspelning"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Exportera via tillägg"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Innehåller ursprungliga källor"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Anslut"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Anslut till arbetsytan"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Radera"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Retur"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Använd {PH1} för att automatiskt ansluta till projektmappen"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Rensa konfiguration"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Vill du stänga filen som inte har sparats: {PH1}?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Ändringar av den här filen sparades inte i filsystemet."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Ändringarna sparades inte i filsystemet. Lägg till {PH1} på arbetsytan för att spara."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Ändringarna sparades inte i filsystemet. Konfigurera {PH1} för att spara."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Det gick inte att läsa in innehållet."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivera brytpunkter"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Lägg till en mapp manuellt"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Lägg till mapp i arbetsytan"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Markeringen har tagits bort"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Kortkommandon för flame chart"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Visa anpassade spår"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tid"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Scrolla och panorera"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Zooma"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopiera tabell"
@@ -15087,7 +15132,7 @@
     "message": "En {PH1}-händelse som har kommenterats med texten {PH2}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Dubbelklicka på ett objekt och skriv för att skapa en etikett för det."
+    "message": "Dubbelklicka eller tryck på Retur på ett objekt och skriv för att skapa en etikett för det."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Sätt etikett på ett objekt"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Beräknade besparingar: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Uppskattad besparing för denna insikt: överföringsstorlek på {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Uppskattad besparing för denna insikt: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Beräknade besparingar: {PH1} och {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Uppskattad besparing för denna insikt: {PH1} och överföringsstorlek på {PH2}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Visa information om {PH1}"
+    "message": "Visa information om insikten {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Det gick inte att kontrollera underlag: {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "Läs mer om automatiska kommentarer i inställningarna"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "Mer information"
+    "message": "Mer information om den här funktionen"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Tidsintervall"

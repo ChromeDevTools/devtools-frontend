@@ -495,7 +495,7 @@
     "message": "സ്‌ക്രിപ്‌റ്റ് ഉറവിടം ലഭ്യമാക്കാനായില്ല."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "അവസാനിപ്പിച്ച വാക്യഘടന കണ്ടെത്തി. ഇത് ഉപയോഗിക്കുക: <name>;dur=<duration>;desc=<description>"
+    "message": "\"{PH1}\" എന്ന മെട്രിക്കിനായി, അവസാനിപ്പിച്ച വാക്യഘടന കണ്ടെത്തി. ഇത് ഉപയോഗിക്കൂ: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "ഡ്യൂപ്ലിക്കേറ്റ് പാരാമീറ്റർ \"{PH1}\" അവഗണിച്ചു."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "നീക്കം ചെയ്ത വൈറ്റ്‌സ്പെയ്‌സ് \\(n|r|t) പ്രതീകങ്ങളും ലെസ് ദാൻ പ്രതീകങ്ങളും (<) ഉള്ള URL-കൾ അടങ്ങിയ ഉറവിട അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യുന്നു. ഈ ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ, എലമന്റ് ആട്രിബ്യൂട്ട് മൂല്യങ്ങൾ പോലുള്ള സ്ഥലങ്ങളിൽ നിന്ന് ന്യൂലൈനുകൾ നീക്കം ചെയ്ത്, ലെസ് ദാൻ പ്രതീകങ്ങൾ എൻകോഡ് ചെയ്യുക."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "ISO-2022-JP പ്രതീക ഗണത്തിന്റെ സ്വയമേവയുള്ള കണ്ടെത്തൽ ഒഴിവാക്കിയിരിക്കുന്നു, സമീപഭാവിയിൽ ഇത് പ്രവർത്തനരഹിതമാക്കും. ഉള്ളടക്ക തര തലക്കെട്ടിലോ മെറ്റാ ടാഗ് ഉപയോഗിച്ചോ (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding) പ്രതീക സെറ്റ് വ്യക്തമാക്കുക."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() അവസാനിപ്പിച്ചു, പകരം ഏകീകൃത API ഉപയോഗിക്കുക: നാവിഗേഷൻ ടൈമിംഗ് 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Chrome ഫ്ലാഗുകൾ അല്ലെങ്കിൽ ബ്രൗസർ കോൺഫിഗറേഷൻ കാരണം Chrome-ൽ മൂന്നാം കക്ഷി കുക്കി ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "മൂന്നാം കക്ഷി കുക്കികൾ ഇല്ലാതെ ബ്രൗസ് ചെയ്യാൻ ഉപയോക്താക്കളെ അനുവദിക്കുന്ന ഒരു പുതിയ അനുഭവത്തിലേക്ക് Chrome മാറുകയാണ്."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "ഒരു ബഗ് ഫയൽ ചെയ്യുക"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite കുക്കികൾ വിവരിച്ചിരിക്കുന്നു"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "മൂന്നാം കക്ഷി കുക്കികളെ കൈകാര്യം ചെയ്യുന്ന രീതിയിൽ Chrome വരുത്തുന്ന മാറ്റങ്ങൾ"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ക്രോസ്-ഒറിജിൻ ഉറവിട പങ്കിടൽ (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "പാഴാക്കിയ സമയം"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(അജ്ഞാതം)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "സാധാരണഗതിയിൽ ലേഔട്ട് ജ്യാമിതി വായിക്കുന്ന പല API-കളും, സ്റ്റൈലുകളും ലേഔട്ടും കണക്കാക്കാൻ സ്ക്രിപ്റ്റ് എക്സിക്യൂഷൻ താൽക്കാലികമായി നിർത്താൻ റെൻഡറിംഗ് എഞ്ചിനെ നിർബന്ധിക്കും. [നിർബന്ധിത റീഫ്ലോ](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts), അതിന്റെ മിറ്റിഗേഷനുകൾ എന്നിവയെ കുറിച്ച് കൂടുതലറിയുക."
   },
@@ -1905,7 +1905,7 @@
     "message": "മൊത്തം റീഫ്ലോ സമയം"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "ആട്രിബ്യൂട്ട് ഇല്ല"
+    "message": "[ആട്രിബ്യൂട്ട് ഇല്ല]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "ചിത്രങ്ങളുടെ ഡൗൺലോഡ് സമയം കുറയ്ക്കുന്നത് പേജിന്റെയും LCP-യുടെയും കണക്കാക്കുന്ന ലോഡ് സമയം മെച്ചപ്പെടുത്താൻ സഹായിക്കും. [ചിത്രത്തിന്റെ വലുപ്പം ഒപ്റ്റിമൈസ് ചെയ്യുന്നതിനെക്കുറിച്ച് കൂടുതലറിയുക](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ഈ ഫീച്ചർ ഉപയോഗിക്കുന്നതിന്, DevTools ക്രമീകരണത്തിൽ നിങ്ങളുടെ ഭാഷാ മുൻഗണന ഇംഗ്ലീഷ് ആയി സജ്ജീകരിക്കുക."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "നിങ്ങളുടെ സംഭാഷണം ആരംഭിക്കുന്നതിന്, മുകളിൽ നിർദ്ദേശിച്ചിരിക്കുന്ന പ്രോംപ്റ്റുകളിൽ ഒന്ന് ഉപയോഗിക്കാനും കഴിയും."
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools-ൽ AI-യെ കുറിച്ച് അറിയുക"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "DevTools-ൽ തിരഞ്ഞെടുത്ത സന്ദർഭ ഇനം വെളിപ്പെടുത്തുക"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "ക്രമീകരണത്തിലെ AI സഹായം"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "ഈ ഫ്രെയിം പ്രോഗ്രമാറ്റിക് ആയി സൃഷ്ടിച്ചതാണ്. ഇത് സൃഷ്ടിച്ചത് എവിടെയാണെന്ന് stack trace കാണിക്കുന്നു."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "സ്രഷ്‌ടാവിന്റെ പരസ്യ സ്ക്രിപ്റ്റ്"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "ക്രോസ് ഒറിജിൻ ഐസൊലേറ്റഡ്"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "നില"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "ടാർഗറ്റ് ഹിന്റ്"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "എലമെന്റ് ഒന്നും തിരഞ്ഞെടുത്തിട്ടില്ല"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(സമർപ്പിക്കാത്തവ)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "ബ്രൗസിംഗ് ഡാറ്റ നീക്കം ചെയ്തതിനാൽ പ്രീഫെച്ച് ഉപേക്ഷിച്ചു."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "ആരംഭിക്കുന്ന പേജിലെ സ്പെക്യുലേഷൻ നിയമങ്ങളൊന്നും ഇനി ഈ URL-നായി ഒരു പ്രീഫെച്ച് ട്രിഗർ ചെയ്യാത്തതിനാൽ പ്രീഫെച്ച് നിരസിച്ചു."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "ചില ഉറവിട ലോഡ് ബ്ലോക്ക് ചെയ്തു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "ബ്രൗസിംഗ് ഡാറ്റ നീക്കം ചെയ്തതിനാൽ പ്രീറെൻഡർ ചെയ്ത പേജ് അൺലോഡ് ചെയ്തു."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷന് HTTP ക്ലയന്റ് സർട്ടിഫിക്കറ്റ് ആവശ്യമാണ്."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "ക്ലിപ്പ്‌ബോർഡിലേക്ക് {PH1} എന്ന ഫയൽ പകർത്തുക"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "മാറ്റങ്ങൾ"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "ഇനീഷിയേറ്റർ"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "പൊരുത്തപ്പെടുന്ന ഉറവിടങ്ങളൊന്നുമില്ല"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# ഉറവിട പൊരുത്തങ്ങൾ}other{# ഉറവിട പൊരുത്തം}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "തീർച്ചപ്പെടുത്താത്തവ"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "നിങ്ങൾ പരിശോധിക്കുന്ന വെബ്‌സൈറ്റ് വഴി HTTP(S) ഡെവലപ്പർ ഉറവിടങ്ങൾ ലോഡ് ചെയ്യുക, DevTools വഴിയല്ല"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "പൊരുത്തപ്പെടുന്ന ഉറവിടങ്ങളൊന്നുമില്ല"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# ഉറവിട പൊരുത്തങ്ങൾ}other{# ഉറവിട പൊരുത്തം}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ഉറവിടം}other{# ഉറവിടങ്ങൾ}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "സ്റ്റൈലുകൾ പകർത്തുക"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "DOM വേഡ് റാപ്പ് പ്രവർത്തനരഹിതമാക്കുക"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "ഡ്യൂപ്ലിക്കേറ്റ് എലമെന്റ്"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "എലമെന്റുകൾ"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "DOM വേഡ് റാപ്പ് പ്രവർത്തനക്ഷമമാക്കുക"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "ഇവന്റ് ലിസണറുകൾ"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "സ്റ്റാക്ക് ട്രെയ്സ്"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "ആക്‌സസിബിലിറ്റി ട്രീ ടോഗിൾ ചെയ്യുക"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "ഐ ഡ്രോപ്പർ ടോഗിൾ ചെയ്യുക"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "മെമ്മറി കാഷെയിൽ നിന്ന് നൽകിയത്, ഉറവിട വലുപ്പം: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} നെറ്റ്‌വർക്കിലൂടെ കൈമാറി, റിസോഴ്‌സ് വലുപ്പം: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "നെറ്റ്‌വർക്ക് മുഖേന {PH1} കൈമാറി, ഉറവിടത്തിന്റെ വലുപ്പം: {PH2}, പൊരുത്തപ്പെടുന്ന ServiceWorker റൂട്ടുകളൊന്നുമില്ല"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "പ്രീഫെച്ച് കാഷെ, ഉറവിട വലുപ്പം എന്നിവയിൽ നിന്ന് നൽകിയത്: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "വെബ് ബണ്ടിലിൽ നിന്ന് നൽകിയത്"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "കണക്ഷൻ വിവരം"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "ഈ പ്രതികരണത്തിൽ DevTools അസാധുവാക്കിയ ഹെഡ്ഡറുകൾ അടങ്ങിയിരിക്കുന്നു"
@@ -9348,7 +9369,7 @@
     "message": "ടോപ് ലെവൽ അഭ്യർത്ഥനാ ഫ്രെയിമിന്റെ ഗ്രൂപ്പ് അഭ്യർത്ഥനകൾ"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "ഫിലിംസ്ട്രിപ്പ് വീണ്ടും ലോഡ് ചെയ്യാനും ക്യാപ്ചർ ചെയ്യാനും {PH1} അമർത്തുക."
+    "message": "ഫിലിംസ്ട്രിപ്പ് വീണ്ടും ലോഡ് ചെയ്‌ത് പകർത്താൻ {PH1} അമർത്തുക."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "HAR ഫയൽ ഇമ്പോർട്ട് ചെയ്യുക..."
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "വാട്ടർഫാൾ"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "എല്ലാം"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "ബൈനറി സന്ദേശം"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "എല്ലാം മായ്‌ക്കുക"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "എല്ലാം മായ്‌ക്കുക"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "കണക്ഷൻ അവസാനിപ്പിക്കൽ സന്ദേശം"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "തുടർച്ചയായ ഫ്രെയിം"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "സന്ദേശം പകർത്തൂ"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "സന്ദേശം പകർത്തുക..."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "ഡാറ്റ"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "ഫിൽട്ടർ ചെയ്യുക"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "റെഗുലർ എക്‌സ്‌പ്രഷനുകൾ ഉപയോഗിച്ച് ഫിൽട്ടർ ചെയ്യുക (ഉദാഹരണത്തിന്: (വെബ്)?സോക്കറ്റ്)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "ദൈർഘ്യം"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "N/A"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "സന്ദേശമൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "പിംഗ് സന്ദേശം"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "പോങ്ങ് സന്ദേശം"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "സ്വീകരിക്കുക"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (ഓപ്‌കോഡ് {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (ഓപ്‌കോഡ് {PH2}, മാസ്‌ക്)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "ഉള്ളടക്കം ബ്രൗസ് ചെയ്യാൻ സന്ദേശം തിരഞ്ഞെടുക്കുക."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "അയയ്ക്കുക"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "ടെക്സ്റ്റ് മെസേജ്"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "സമയം"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "വെബ് സോക്കറ്റ് ഫ്രെയിം"
@@ -9773,6 +9755,45 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "സർട്ടിഫിക്കറ്റ് കാണുക"
   },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "റദ്ദാക്കി"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "അടച്ചു"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "തുറക്കുക"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "തുറക്കുന്നു"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (ബൗണ്ട്)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (കണക്‌റ്റ് ചെയ്‌തു)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "പിശക് സന്ദേശം"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "പൊതുവായവ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "വിവരം തുറക്കുക"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "ഓപ്‌ഷനുകൾ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "നില"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "DirectSocket തരം"
+  },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "സജീവമായ client experiment variation IDs."
   },
@@ -9837,7 +9858,7 @@
     "message": "(വെബ് ബണ്ടിലിൽ നിന്നുള്ളത്)"
   },
   "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "പൊതുവായവ"
+    "message": "പൊതുവായത്"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "റോ ഡാറ്റ ഫയൽ"
@@ -10842,7 +10863,7 @@
     "message": "എക്‌സ്‌പോർട്ട് ചെയ്യൽ"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "എക്‌സ്പോർട്ട് ചെയ്യുക"
+    "message": "റെക്കോർഡിംഗ് എക്സ്പോർട്ട് ചെയ്യുക"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "വിപുലീകരണങ്ങൾ വഴിയുള്ള എക്‌സ്‌പോർട്ടുകൾ"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "ഒറിജിനൽ ഉറവിടങ്ങൾ അടങ്ങിയിരിക്കുന്നു"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "കണക്റ്റ് ചെയ്യുക"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "വർക്ക്‌സ്‌പെയ്‌സുമായി ബന്ധിപ്പിക്കുക"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ഇല്ലാതാക്കുക"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "നിങ്ങളുടെ പ്രോജക്റ്റ് ഫോൾഡർ സ്വയമേവ ബന്ധിപ്പിക്കാൻ {PH1} ഉപയോഗിക്കുക"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "കോൺഫിഗറേഷൻ മായ്ക്കുക"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "സംരക്ഷിക്കാത്ത ഫയൽ അടയ്‌ക്കണമെന്ന് തീർച്ചയാണോ: {PH1}?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "ഈ ഫയലിലെ മാറ്റങ്ങൾ ഫയൽ സിസ്റ്റത്തിൽ സംരക്ഷിച്ചിട്ടില്ല."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "മാറ്റങ്ങൾ ഫയൽ സിസ്റ്റത്തിൽ സംരക്ഷിച്ചിട്ടില്ല. സംരക്ഷിക്കാൻ, നിങ്ങളുടെ Workspace-ലേക്ക് {PH1} ചേർക്കുക."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "മാറ്റങ്ങൾ ഫയൽ സിസ്റ്റത്തിൽ സംരക്ഷിച്ചിട്ടില്ല. ലാഭിക്കാൻ നിങ്ങളുടെ {PH1} സജ്ജീകരിക്കുക."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "ഈ ഉള്ളടക്കം ലോഡ് ചെയ്യാനാകുന്നില്ല."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ബ്രേക്ക്‌പോയിന്റുകൾ സജീവമാക്കുക"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "ഫോൾഡർ മാനുവലായി ചേർക്കുക"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "വർക്ക്‌സ്‌പെയ്‌സിലേക്ക് ഫോൾഡർ ചേർക്കുക"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "തിരഞ്ഞെടുത്തത് മായ്ച്ചു"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "ഫ്ലേംചാർട്ടിനുള്ള കീബോഡ് കുറുക്കുവഴികൾ"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "ഇഷ്ടാനുസൃത ട്രാക്കുകൾ കാണിക്കുക"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "സമയം"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "സ്‌ക്രോൾ ചെയ്യൂ, പാൻ ചെയ്യൂ"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "സൂം ചെയ്യുക"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "പട്ടിക പകർത്തുക"
@@ -15087,7 +15132,7 @@
     "message": "ഒരു \"{PH1}\" ഇവന്റിന് \"{PH2}\" എന്ന ടെക്‌സ്‌റ്റ് ഉപയോഗിച്ച് കുറിപ്പ് നൽകി"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "ഇനത്തിന്റെ ലേബൽ സൃഷ്ടിക്കാൻ ഒരു ഇനത്തിൽ ഡബിൾ ക്ലിക്ക് ചെയ്ത ശേഷം ടൈപ്പ് ചെയ്യുക."
+    "message": "ഒരു ഇനത്തിൽ ഡബിൾ ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ Enter അമർത്തുക, തുടർന്ന് ഒരു ഇന ലേബൽ സൃഷ്ടിക്കാൻ ടൈപ്പ് ചെയ്യുക."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "ഒരു ഇനം ലേബൽ ചെയ്യുക"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "കണക്കാക്കിയ ലാഭം: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "ഈ ഉൾക്കാഴ്ച മുഖേന ലാഭിക്കുന്ന ഏകദേശ വലുപ്പം: {PH1} ട്രാൻസ്‌ഫർ വലുപ്പം"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "ഈ ഉൾക്കാഴ്ച മുഖേന ലാഭിക്കുന്ന ഏകദേശ സമയം: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "കണക്കാക്കിയ ലാഭം: {PH1} & {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "ഈ ഉൾക്കാഴ്ച മുഖേന ലാഭിക്കുന്ന ഏകദേശ സമയവും വലുപ്പവും: {PH1} സമയം, {PH2} എന്ന കൈമാറൽ വലുപ്പം"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} എന്നതിനുള്ള വിശദാംശങ്ങൾ കാണുക"
+    "message": "{PH1} എന്ന ഉൾ‍ക്കാഴ്‌ചയ്‌ക്കായുള്ള വിശദാംശങ്ങൾ കാണുക."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "ഉൾക്കാഴ്‌ചയുടെ പരിശോധന പരാജയപ്പെട്ടു: {PH1}"
@@ -15186,7 +15240,7 @@
     "message": "URL"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
-    "message": "എൻട്രികൾ തമ്മിലുള്ള ലിങ്ക്"
+    "message": "എൻട്രികൾ തമ്മിലുള്ള ലിങ്കുകൾ"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "എൻട്രി ലേബൽ"
@@ -15204,7 +15258,7 @@
     "message": "ക്രമീകരണത്തിലെ സ്വയമേവയുള്ള കുറിപ്പുകളെ കുറിച്ച് കൂടുതലറിയുക"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "കൂടുതൽ വിവരങ്ങൾ"
+    "message": "ഈ ഫീച്ചറിനെക്കുറിച്ചുള്ള കൂടുതൽ വിവരങ്ങൾ"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "സമയ പരിധി"

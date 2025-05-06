@@ -297,16 +297,16 @@
     "message": "With ブロック"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusAborted": {
-    "message": "中止"
+    "message": "中断"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusClosed": {
-    "message": "切断"
+    "message": "終了"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusOpen": {
     "message": "解放"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusOpening": {
-    "message": "解放しています"
+    "message": "開いています"
   },
   "core/sdk/NetworkManager.ts | fast4G": {
     "message": "高速 4G"
@@ -495,7 +495,7 @@
     "message": "スクリプト ソースをフェッチできません。"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "サポート終了の構文が見つかりました。<name>;dur=<duration>;desc=<description> を使用してください。"
+    "message": "指標「{PH1}」で非推奨の構文が見つかりました。<name>;dur=<duration>;desc=<description> を使用してください。"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "重複パラメータ「{PH1}」は無視されました。"
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "URL に削除された空白文字（\\(n|r|t)）と未満文字（<）が含まれるリソース リクエストはブロックされます。これらのリソースを読み込むには、要素の属性値などの場所にある改行を削除し、未満文字をエンコードしてください。"
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "ISO-2022-JP 文字セットの自動検出機能は非推奨となり、まもなく無効になります。Content-Type ヘッダーで文字セットを指定するか、メタタグ（https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding）を使用して文字セットを指定してください。"
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() は非推奨となっています。代わりに標準化 API の Navigation Timing 2 を使用してください。"
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Chrome フラグまたはブラウザの設定により、サードパーティ Cookie が Chrome でブロックされました。"
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome は、サードパーティ Cookie を使用しない新しいブラウジング環境に移行しています。"
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "バグを報告"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite Cookie の説明"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Chrome のサードパーティ Cookie の処理に関する変更"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "クロスオリジン リソース シェアリング（CORS）"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "無駄になった時間"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "（匿名）"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "一般的に、レイアウト ジオメトリの読み取りを行う多くの API は、レンダリング エンジンによるスクリプトの実行を強制的に一時停止して、スタイルとレイアウトを計算します。詳しくは、[強制リフロー](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)とその緩和策をご覧ください。"
   },
@@ -1905,7 +1905,7 @@
     "message": "合計リフロー時間"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "ソース不明"
+    "message": "[ソース不明]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "画像のダウンロード時間を短縮すると、ページ読み込みの体感時間と LCP を改善できます。[画像サイズの最適化に関する詳細](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "この機能を使用するには、DevTools の設定で言語を英語に設定してください。"
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "上記の提案されたプロンプトのいずれかを使用して会話を始めることもできます"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools の AI の詳細"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "インターネット接続を確認してもう一度お試しください"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "DevTools で選択したコンテキスト アイテムを表示します"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "[設定] の AI アシスタンス"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "このフレームはプログラムで作成されました。stack trace でその発生場所を確認できます。"
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "クリエイター広告スクリプト"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "クロスオリジン分離"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ステータス"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "ターゲットのヒント"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "要素が選択されていません"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "（該当なし）"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "閲覧データが削除されたため、プリフェッチは破棄されました。"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "開始ページの投機ルールでこの URL のプリフェッチがトリガーされなくなったため、プリフェッチは破棄されました。"
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "一部のリソースの読み込みがブロックされました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "閲覧データが削除されたため、事前レンダリングされたページはアンロードされました。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "事前レンダリング ナビゲーションには HTTP クライアント証明書が必要です。"
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "クリップボードにコピーしました"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "ファイル {PH1} をクリップボードにコピー"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "変更"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "イニシエータ"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "一致するリソースはありません"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# 件のリソースが一致}other{# 件のリソースが一致}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "保留中"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "DevTools ではなく、検査するウェブサイトを介して HTTP(S) デベロッパー リソースを読み込みます"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "一致するリソースはありません"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# 件のリソースが一致}other{# 件のリソースが一致}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# 件のリソース}other{# 件のリソース}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "スタイルをコピー"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "DOM ワードラップを無効にする"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "要素を複製"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "要素"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "DOM ワードラップを有効にする"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "イベント リスナー"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "スタック トレース"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "アクセシビリティ ツリーを切り替え"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "スポイトの切り替え"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "メモリ キャッシュから配信、リソースサイズ: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} をネットワーク経由で転送、リソースサイズ: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "{PH1} をネットワーク経由で転送、リソースサイズ: {PH2}、一致する ServiceWorker ルートなし"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "プリフェッチ キャッシュから配信されました。リソースサイズ: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "ウェブバンドルから配信"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "接続情報"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "このレスポンスには、DevTools によってオーバーライドされたヘッダーが含まれています。"
@@ -9150,7 +9171,7 @@
     "message": "[{PH1}] ボタンを使用するか、{PH2} を押して、リクエストを実行するか、ページを再読み込みしてください。"
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "[{PH1}] ボタンを使用するか、{PH2} を押して、ネットワーク ログを記録し、ネットワーク アクティビティを表示します。"
+    "message": "ネットワーク アクティビティを表示するには、[{PH1}] ボタンを使用するか、{PH2} を押して、ネットワーク ログを記録します。"
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "現在、ネットワーク アクティビティを記録しています"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "ウォーターフォール"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "すべて"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "バイナリ メッセージ"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "すべて消去"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "すべてクリア"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "接続終了メッセージ"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "継続フレーム"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "メッセージをコピー"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "メッセージをコピー..."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "データ"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "フィルタ"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "正規表現を使用してフィルタ（例:(web)?socket）"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "長さ"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "なし"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "メッセージが選択されていません"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping メッセージ"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Pong メッセージ"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "受信"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1}（オペコード {PH2}）"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1}（オペコード {PH2}、マスク）"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "メッセージを選択してコンテンツを表示"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "送信"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "テキスト メッセージ"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "時間"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket フレーム"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "証明書を表示"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "中断"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "終了"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "開く"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "開いています"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP（バインド）"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP（接続）"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "エラー メッセージ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "全般"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "情報を表示"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "オプション"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "ステータス"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "DirectSocket タイプ"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "有効なclient experiment variation IDs です。"
@@ -10842,7 +10863,7 @@
     "message": "エクスポート"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "エクスポート"
+    "message": "記録をエクスポート"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "拡張機能によるエクスポート"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "元のソースを含む"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "接続"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "ワークスペースに接続"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "削除"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "{PH1} を使用して、プロジェクト フォルダを自動的に接続します"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "設定をクリアします"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "保存されていないファイル（{PH1}）を閉じてもよろしいですか？"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "このファイルの変更はファイル システムに保存されませんでした。"
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "変更内容はファイル システムに保存されませんでした。保存するには、Workspace に {PH1} を追加してください。"
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "変更内容はファイル システムに保存されませんでした。保存するには、{PH1} を設定してください。"
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "このコンテンツを読み込めませんでした。"
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "ブレークポイントを有効化"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "フォルダを手動で追加"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "ワークスペースにフォルダを追加"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "選択を解除しました"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "フレームチャートのキーボード ショートカット"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "カスタム トラックを表示する"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "時間"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "スクロールとパン"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "ズーム"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "テーブルをコピー"
@@ -15087,7 +15132,7 @@
     "message": "テキスト「{PH2}」のアノテーションが付けられた「{PH1}」イベント"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "項目をダブルクリックして、項目のラベルを入力し作成します。"
+    "message": "エントリをダブルクリックするか Enter キーを押して、エントリのラベルを入力し作成します。"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "項目のラベル"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "推定される短縮時間: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "この分析情報の推定削減サイズ: {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "この分析情報の推定削減時間: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "推定される短縮時間とサイズ: {PH1} & {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "この分析情報の推定削減時間: {PH1}、推定削減サイズ: {PH2}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} の詳細を表示"
+    "message": "{PH1} の分析情報の詳細を表示します。"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "分析情報の確認に失敗しました: {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "設定で自動アノテーションの詳細を確認"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "詳細"
+    "message": "この機能の詳細"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "期間"

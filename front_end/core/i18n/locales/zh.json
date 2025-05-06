@@ -495,7 +495,7 @@
     "message": "无法获取脚本源代码。"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "发现已弃用的语法。请使用：<name>;dur=<duration>;desc=<description>"
+    "message": "发现指标“{PH1}”使用了已弃用的语法。请使用：<name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "已忽略重复参数“{PH1}”。"
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "如果对应的网址同时包含已移除的空白字符 \\(n|r|t) 和小于字符 (<)，资源请求会被屏蔽。请从元素属性值等位置移除换行符并编码小于字符，以便加载这些资源。"
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "ISO-2022-JP 字符集的自动检测功能已被弃用，并将在不久的将来停用。请在“内容类型”标头中或通过使用元标记 (https://developer.mozilla.org/zh-CN/docs/Glossary/Character_encoding) 指定字符集。"
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() 已被弃用，请改用标准化 API：Navigation Timing 2。"
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "第三方 Cookie 因 Chrome flag 或浏览器配置而在 Chrome 中被屏蔽。"
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome 即将推出新的用户体验，允许用户选择不使用第三方 Cookie 来浏览网页。"
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "提交错误"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite Cookie 说明"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Chrome 对第三方 Cookie 处理方式的变动"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "跨域资源共享 (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "浪费的时间"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "（匿名）"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "许多 API（通常用于读取布局几何图形信息）会强制渲染引擎暂停脚本执行，以便计算样式和布局。详细了解[强制自动重排](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)及其缓解措施。"
   },
@@ -1905,7 +1905,7 @@
     "message": "总自动重排时间"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "无法归因"
+    "message": "[未归因]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "缩短图片下载时间可优化网页的感知加载时间和 LCP。[详细了解图片大小优化](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "如需使用此功能，请在开发者工具设置中将语言偏好设置为英语。"
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "您也可以使用上面建议的提示之一来开始对话"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "了解开发者工具中的 AI 功能"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "请检查网络连接，然后重试"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "在开发者工具中显示所选上下文项"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "“设置”中的 AI 助理"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "此框架是以编程方式创建的。stack trace会显示相应的创建位置。"
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "创作者广告脚本"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "已跨源隔离"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "状态"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "目标提示"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "未选择任何元素"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "（缺失）"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "由于浏览数据已被移除，因此预提取操作已被舍弃。"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "预提取操作已被舍弃，因为发起页中不再有推测规则可以触发针对此网址的预提取操作。"
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "已阻止加载部分资源。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "由于浏览数据已被移除，因此预渲染的网页已被卸载。"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "预渲染导航要求提供 HTTP 客户端证书。"
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "已复制到剪贴板"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "将文件“{PH1}”复制到剪贴板"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "变更"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "启动器"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "没有匹配的资源"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# 项资源匹配}other{# 项资源匹配}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "待处理"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "通过您检查的网站（而不是通过开发者工具）加载 HTTP(S) 开发者资源"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "没有匹配的资源"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# 项资源匹配}other{# 项资源匹配}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# 项资源}other{# 项资源}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "复制样式"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "停用 DOM 自动换行"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "复制粘贴元素"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "元素"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "启用 DOM 自动换行"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "事件监听器"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "堆栈轨迹"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "切换无障碍功能树视图"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "显示/隐藏颜色提取器"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "由内存缓存提供，资源大小：{PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "已通过网络传输 {PH1}，资源大小：{PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "已通过网络传输 {PH1}，资源大小：{PH2}，没有匹配的 ServiceWorker 路由"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "由预提取缓存提供，资源大小：{PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "由 Web Bundle 传回"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "连接信息"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "此响应中包含被开发者工具替换的标头"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "瀑布"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "全部"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "二进制消息"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "全部清除"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "全部清除"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "连接关闭消息"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "延续框架"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "复制消息"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "复制消息…"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "数据"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "过滤"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "使用正则表达式进行过滤，例如：(web)?socket"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "长度"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "不适用"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "未选择任何消息"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping 消息"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Pong 消息"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "接收"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1}（操作码 {PH2}）"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1}（操作码 {PH2}、掩码）"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "选择消息以浏览其内容。"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "发送"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "文本消息"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "时间"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket 框架"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "查看证书"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "已取消"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "已关闭"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "打开"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "正在打开"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP（已绑定）"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP（已连接）"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "错误消息"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "常规"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "打开信息"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "选项"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "状态"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "DirectSocket 类型"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "活跃的client experiment variation IDs。"
@@ -10842,7 +10863,7 @@
     "message": "导出"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "导出"
+    "message": "导出录制内容"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "通过扩展程序导出"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "包含原始来源"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "连接"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "连接到工作区"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "删除"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "使用 {PH1} 可自动连接项目文件夹"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "清除配置"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "确定要关闭未保存的文件 ({PH1}) 吗？"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "对此文件做出的更改未保存到文件系统。"
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "更改未保存到文件系统。如需保存，请将“{PH1}”添加到工作区。"
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "更改未保存到文件系统。如需保存，请设置{PH1}。"
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "无法加载此内容。"
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "启用断点"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "手动添加文件夹"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "向工作区添加文件夹"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "已取消选择"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "火焰图的键盘快捷键"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "显示自定义跟踪记录"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "时间"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "滚动和平移"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "缩放"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "复制表格"
@@ -15087,7 +15132,7 @@
     "message": "一个使用文本“{PH2}”注释的“{PH1}”事件"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "双击某项内容并输入内容即可创建该项的标签。"
+    "message": "双击某项内容或选中某项内容后按 Enter 键，然后输入内容，即可创建项目标签。"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "为某项内容添加标签"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "预计节省：{PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "此数据分析预计节省 {PH1} 传输大小"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "此数据分析预计节省 {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "预计节省：{PH1}和 {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "此数据分析预计缩短 {PH1}并节省 {PH2} 传输大小"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "查看“{PH1}”的详细信息"
+    "message": "查看“{PH1}”数据分析的详情。"
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "数据分析检查失败：{PH1}"
@@ -15204,7 +15258,7 @@
     "message": "在设置中详细了解自动注释"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "更多信息"
+    "message": "详细了解此功能"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "时间范围"

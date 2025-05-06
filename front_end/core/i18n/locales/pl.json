@@ -300,7 +300,7 @@
     "message": "Przerwano"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusClosed": {
-    "message": "Zamknięte"
+    "message": "Zamknięty"
   },
   "core/sdk/NetworkManager.ts | directSocketStatusOpen": {
     "message": "Otwórz"
@@ -495,7 +495,7 @@
     "message": "Nie udało się pobrać źródła skryptu."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Znaleziono wycofaną składnię. Użyj tej składni: <nazwa>;dur=<czas trwania>;desc=<opis>"
+    "message": "Znaleziono wycofaną składnię dla danych „{PH1}”. Użyj tej składni: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Zduplikowany parametr „{PH1}” został zignorowany."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Żądania zasobów, których adresy URL zawierają znaki \\(n|r|t) z usuniętymi odstępami i znaki mniejszości (<), są blokowane. Usuń nowe wiersze i zakoduj znaki mniejszości z miejsc takich jak wartości atrybutów elementów, aby umożliwić wczytywanie tych zasobów."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "Automatyczne wykrywanie zestawu znaków ISO-2022-JP zostało wycofane i w najbliższej przyszłości zostanie wyłączone. Określ zestaw znaków w nagłówku Content Type lub za pomocą metatagu (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Wycofano interfejs chrome.loadTimes(). Użyj standaryzowanego interfejsu API: Navigation Timing 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Pliki cookie innych firm są blokowane w Chrome z powodu flag Chrome lub konfiguracji przeglądarki."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "W Chrome wprowadzamy nowe rozwiązanie, które pozwala użytkownikom przeglądać internet bez korzystania z plików cookie innych firm."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Zgłoś błąd"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Objaśnienie plików cookie SameSite"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Zmiany w sposobie obsługi plików cookie innych firm w Chrome"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Współdzielenie zasobów pomiędzy serwerami z różnych domen (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Stracony czas"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(anonimowa)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "W celu obliczenia stylu i układu wiele interfejsów API zwykle odczytujących geometrię układu wymusza na mechanizmie renderowania wstrzymanie wykonywania skryptu. Dowiedz się więcej o [wymuszonym przeformatowaniu](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) i sposobach jego ograniczenia."
   },
@@ -1905,7 +1905,7 @@
     "message": "Łączny czas przeformatowania"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Nieprzypisane"
+    "message": "[nieprzypisane]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Skrócenie czasu pobierania obrazów może poprawić postrzegany czas wczytywania strony i LCP. [Dowiedz się więcej o optymalizowaniu rozmiaru obrazu](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Aby korzystać z tej funkcji, ustaw język angielski w ustawieniach Narzędzi deweloperskich."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Możesz też użyć jednego z powyższych sugerowanych promptów, aby rozpocząć rozmowę"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Dowiedz się więcej o AI w Narzędziach deweloperskich"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Sprawdź połączenie z internetem i spróbuj ponownie"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Pokaż wybrany element kontekstu w Narzędziach deweloperskich"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "Pomoc AI w Ustawieniach"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Ta ramka została utworzona automatycznie. stack trace pokazuje, gdzie to miało miejsce."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Skrypt reklamy twórcy"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Izolowana od zasobów z innych domen"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Stan"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Wskazówka dotycząca celu"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Nie wybrano elementu"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(brak)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "Pobieranie z wyprzedzeniem zostało odrzucone, ponieważ dane przeglądania zostały usunięte."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "Pobieranie z wyprzedzeniem zostało odrzucone, ponieważ żadna reguła spekulacyjna na stronie inicjującej nie uruchamia już pobierania z wyprzedzeniem dla tego adresu URL."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Wczytywanie niektórych zasobów zostało zablokowane."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "Wstępnie renderowana strona została wyładowana z pamięci, ponieważ dane przeglądania zostały usunięte."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Nawigacja związana z renderowaniem wstępnym wymagała certyfikatu klienta HTTP."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Skopiowano do schowka"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Skopiuj plik {PH1} do schowka"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Zmiany"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Inicjator"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Brak pasujących zasobów"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# pasujący zasób}few{# pasujące zasoby}many{# pasujących zasobów}other{# pasującego zasobu}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "oczekuje"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Wczytuj zasoby HTTP(S) dla dewelopera za pomocą sprawdzanej witryny, a nie Narzędzi deweloperskich"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Brak pasujących zasobów"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# pasujący zasób}few{# pasujące zasoby}many{# pasujących zasobów}other{# pasującego zasobu}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# zasób}few{# zasoby}many{# zasobów}other{# zasobu}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiuj style"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Wyłącz zawijanie wierszy (DOM)"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Zduplikuj element"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Elementy"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Włącz zawijanie wyrazów: DOM"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Detektory zdarzeń"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Zrzut stosu"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Przełącz drzewo ułatwień dostępu"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Przełącz zakraplacz"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Udostępniane z pamięci podręcznej, rozmiar zasobu: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "Przez sieć przesłano {PH1}, rozmiar zasobu: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "Przez sieć przesłano {PH1}, rozmiar zasobu: {PH2}, brak pasujących tras ServiceWorker"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Udostępniane z pamięci podręcznej pobierania z wyprzedzeniem, rozmiar zasobu: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Wyświetlana z pliku Web Bundle"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Informacje o połączeniu"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Ta odpowiedź zawiera nagłówki, które zostały zastąpione przez Narzędzia deweloperskie"
@@ -9348,7 +9369,7 @@
     "message": "Grupuj żądania według ramki żądania najwyższego poziomu"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Wybierz {PH1}, aby załadować ponownie i przechwycić pasek zdjęć."
+    "message": "Naciśnij {PH1}, aby załadować ponownie i przechwycić pasek zdjęć."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importuj plik HAR…"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Wodospad"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Wszystkie"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Komunikat binarny"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Wyczyść wszystko"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Wyczyść wszystko"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Komunikat o zamknięciu połączenia"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Ramka kontynuacji"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Skopiuj wiadomość"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Skopiuj komunikat..."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Dane"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Filtr"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Filtruj z użyciem wyrażenia regularnego, np. (web)?socket"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Długość"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Nie dotyczy"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Nie wybrano wiadomości"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Komunikat ping"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Komunikat pong"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Odbierz"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (kod operacji: {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (kod operacji: {PH2}, maska)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Wybierz wiadomość, aby zobaczyć jej treść."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Wyślij"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Komunikat tekstowy"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Czas"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Ramka WebSocket"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Wyświetl certyfikat"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Przerwano"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Zamknięty"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Otwórz"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Otwieram"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (połączony)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (połączono)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Komunikat o błędzie"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Ogólne"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Informacje o otwarciu"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Opcje"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "Stan"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "Typ DirectSocket"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktywny nagłówek client experiment variation IDs."
@@ -10842,7 +10863,7 @@
     "message": "Eksportuj"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Eksportuj"
+    "message": "Eksportuj nagranie"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Eksportuj za pośrednictwem rozszerzeń"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Zawiera oryginalne źródła"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Połącz"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Połącz z obszarem roboczym"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Usuń"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Użyj {PH1}, aby automatycznie połączyć folder projektu"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Wyczyść konfigurację"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Czy na pewno chcesz zamknąć niezapisany plik {PH1}?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Zmiany w tym pliku nie zostały zapisane w systemie plików."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Zmiany nie zostały zapisane w systemie plików. Aby zapisać, dodaj {PH1} do swojej usługi Workspace."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Zmiany nie zostały zapisane w systemie plików. Aby zapisać, skonfiguruj {PH1}."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Nie udało się wczytać tej zawartości."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktywuj punkty przerwania"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Dodaj folder ręcznie"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Dodaj folder do obszaru roboczego"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Usunięto zaznaczenie"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Skróty klawiszowe do wykresu płomieniowego"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Pokaż ścieżki niestandardowe"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Czas"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Przewijanie i przesuwanie"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Powiększenie"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Skopiuj tabelę"
@@ -15087,7 +15132,7 @@
     "message": "Zdarzenie „{PH1}” z adnotacją „{PH2}”"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Kliknij dwukrotnie element i wpisz tekst, aby utworzyć etykietę elementu."
+    "message": "Kliknij dwukrotnie element lub najedź na niego i naciśnij Enter, a następnie wpisz tekst, aby utworzyć etykietę elementu."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Oznacz element etykietą"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Szacunkowe oszczędności: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Szacowane oszczędności dzięki tym informacjom: {PH1} rozmiaru transferu"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Szacowane oszczędności dzięki tym informacjom: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Szacunkowe oszczędności: {PH1} i {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Szacowane oszczędności dzięki tym informacjom: {PH1} i {PH2} rozmiaru transferu"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} – wyświetl szczegóły"
+    "message": "Wyświetl szczegóły danych {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Sprawdzanie statystyk niezaliczone: {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "Więcej informacji o automatycznych adnotacjach znajdziesz w ustawieniach"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "Więcej informacji"
+    "message": "Więcej informacji o tej funkcji"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Zakres czasowy"

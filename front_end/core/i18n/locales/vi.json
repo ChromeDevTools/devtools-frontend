@@ -495,7 +495,7 @@
     "message": "Không thể tìm nạp nguồn tập lệnh."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Tìm thấy cú pháp không còn dùng nữa. Vui lòng sử dụng: <name>;dur=<duration>;desc=<description>"
+    "message": "Đã phát hiện thấy cú pháp không còn dùng nữa cho chỉ số \"{PH1}\". Vui lòng sử dụng: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Đã bỏ qua tham số trùng lặp \"{PH1}\"."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Các yêu cầu tài nguyên có URL chứa cả ký tự \\(n|r|t) khoảng trắng đã bị xoá và ký tự nhỏ hơn (<) sẽ bị chặn. Vui lòng xoá các dòng mới và mã hoá ký tự nhỏ hơn khỏi các vị trí như giá trị thuộc tính phần tử để tải những tài nguyên như vậy."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "Tính năng tự động phát hiện bộ ký tự ISO-2022-JP không được dùng nữa và sẽ bị tắt trong tương lai gần. Vui lòng chỉ định bộ ký tự trong tiêu đề Loại nội dung hoặc bằng cách sử dụng thẻ meta (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Navigation Timing 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Cookie của bên thứ ba bị chặn trong Chrome do các cờ Chrome hoặc do cấu hình trình duyệt."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome đang hướng đến một trải nghiệm mới cho phép người dùng chọn duyệt web mà không dùng cookie của bên thứ ba."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Báo cáo lỗi"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Cookie SameSite đã được giải thích"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Thay đổi đối với cách Chrome xử lý cookie của bên thứ ba"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Chia sẻ tài nguyên trên nhiều nguồn gốc (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Thời gian bị lãng phí"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(ẩn danh)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Nhiều API, thường đọc hình học bố cục, buộc công cụ kết xuất phải tạm dừng thực thi tập lệnh để tính toán kiểu và bố cục. Tìm hiểu thêm về [chế độ buộc chỉnh lại luồng](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) và cách giảm thiểu tác động của chế độ này."
   },
@@ -1905,7 +1905,7 @@
     "message": "Tổng thời gian chỉnh lại luồng"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Chưa được phân bổ"
+    "message": "[chưa được phân bổ]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Việc giảm thời gian tải hình ảnh xuống có thể cải thiện thời gian tải trang và LCP được cảm nhận. [Tìm hiểu thêm về cách tối ưu hoá kích thước hình ảnh](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Để sử dụng tính năng này, hãy đặt tuỳ chọn ngôn ngữ là tiếng Anh trong phần cài đặt của Công cụ cho nhà phát triển."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Bạn cũng có thể sử dụng một trong những câu lệnh được đề xuất ở trên để bắt đầu cuộc trò chuyện"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Tìm hiểu về AI trong Công cụ cho nhà phát triển"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Hãy kiểm tra kết nối Internet rồi thử lại"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Hiện mục ngữ cảnh đã chọn trong Công cụ cho nhà phát triển"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "Trợ lý AI trong phần Cài đặt"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Khung này được tạo bằng cách lập trình. stack trace cho thấy nơi diễn ra hoạt động này."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Tập lệnh quảng cáo của người tạo"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Tách biệt giữa các nguồn gốc"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Trạng thái"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Gợi ý về mục tiêu"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Chưa chọn phần tử nào"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(bị thiếu)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "Nội dung tìm nạp trước đã bị loại bỏ vì dữ liệu duyệt web đã bị xoá."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "Đã loại bỏ quá trình tìm nạp trước vì không còn quy tắc suy đoán nào trong trang khởi tạo kích hoạt quá trình tìm nạp trước cho URL này."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Một số lượt tải tài nguyên đã bị chặn."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "Trang được kết xuất trước đã bị huỷ tải vì dữ liệu duyệt web đã bị xoá."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Quá trình điều hướng kết xuất trước yêu cầu chứng chỉ máy khách HTTP."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Đã sao chép vào bảng nhớ tạm"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Sao chép tệp {PH1} vào bảng nhớ tạm"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Thay đổi"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Bộ khởi đầu"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Không có tài nguyên nào khớp"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# tài nguyên khớp}other{# tài nguyên khớp}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "đang chờ xử lý"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Tải tài nguyên HTTP(S) cho nhà phát triển thông qua trang web bạn kiểm tra, chứ không thông qua Công cụ cho nhà phát triển"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Không có tài nguyên nào khớp"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# tài nguyên khớp}other{# tài nguyên khớp}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# tài nguyên}other{# tài nguyên}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Sao chép kiểu"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Tắt tùy chọn xuống dòng tự động đối với DOM"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Phần tử trùng lặp"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Phần tử"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Bật tùy chọn ngắt dòng tự động đối với DOM"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Trình xử lý sự kiện"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Dấu vết ngăn xếp"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Bật/tắt cây hỗ trợ tiếp cận"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Bật/tắt công cụ chọn màu"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Được cung cấp từ bộ nhớ đệm của bộ nhớ, kích thước tài nguyên: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} được truyền qua mạng, kích thước tài nguyên: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "{PH1} được truyền qua mạng, kích thước tài nguyên: {PH2}, không có tuyến ServiceWorker nào khớp"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Được cung cấp từ bộ nhớ đệm tìm nạp trước, kích thước tài nguyên: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Được phân phát qua Web Bundle"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Thông tin kết nối"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Phản hồi này chứa tiêu đề bị Công cụ cho nhà phát triển ghi đè"
@@ -9348,7 +9369,7 @@
     "message": "Nhóm các yêu cầu theo khung yêu cầu ở cấp cao nhất"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Nhấn {PH1} để tải lại và thu thập cuộn phim."
+    "message": "Nhấn {PH1} để tải lại và chụp cuộn phim."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Nhập tệp HAR..."
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Thác nước"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Tất cả"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Thông báo nhị phân"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Xóa tất cả"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Xóa tất cả"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Thông báo đóng kết nối"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Khung liên tục"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Sao chép thông báo"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Sao chép thông báo..."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Dữ liệu"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Lọc"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Lọc bằng biểu thức chính quy (ví dụ: (web)?socket)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Chiều dài"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Không có"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Chưa chọn thông báo nào"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Thông báo Ping"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Thông báo Pong"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Nhận"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (Mã vận hành {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (Mã vận hành {PH2}, mặt nạ)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Chọn thông báo để duyệt qua nội dung."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Gửi"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Tin nhắn văn bản"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Thời gian"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Khung WebSocket"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Xem chứng chỉ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Đã huỷ"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Đã đóng"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Mở"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Đang mở"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (đã kết nối)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (đã kết nối)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Thông báo lỗi"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Chung"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Thông tin mở"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Lựa chọn"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "Trạng thái"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "Loại DirectSocket"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs đang hoạt động."
@@ -10842,7 +10863,7 @@
     "message": "Xuất"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Xuất"
+    "message": "Xuất bản ghi"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Xuất qua tiện ích"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Chứa các nguồn ban đầu"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Kết nối"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Kết nối với không gian làm việc"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Xoá"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Sử dụng {PH1} để tự động kết nối thư mục dự án"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Xóa cấu hình"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Bạn có chắc chắn muốn đóng tệp chưa lưu: {PH1} không?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Các thay đổi đối với tệp này không được lưu vào hệ thống tệp."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Các thay đổi chưa được lưu vào hệ thống tệp. Hãy thêm {PH1} vào Workspace của bạn để lưu."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Các thay đổi chưa được lưu vào hệ thống tệp. Hãy thiết lập {PH1} để lưu."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Không thể tải nội dung này."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Kích hoạt điểm ngắt"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Thêm thư mục theo cách thủ công"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Thêm thư mục vào không gian làm việc"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Đã xoá lựa chọn"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Phím tắt cho biểu đồ hình ngọn lửa"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Hiện các kênh tuỳ chỉnh"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Thời gian"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Cuộn và di chuyển"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Thu phóng"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Sao chép bảng"
@@ -15087,7 +15132,7 @@
     "message": "Sự kiện \"{PH1}\" được chú thích bằng văn bản \"{PH2}\""
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Nhấp đúp vào một mục và nhập để tạo nhãn mục."
+    "message": "Nhấp đúp hoặc nhấn Enter vào một mục rồi nhập để tạo nhãn cho mục."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Gắn nhãn cho một mục"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Khoản tiết kiệm ước tính: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Mức tiết kiệm ước tính cho thông tin chi tiết này: {PH1} kích thước cần chuyển"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Mức tiết kiệm ước tính cho thông tin chi tiết này: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Mức tiết kiệm ước tính: {PH1} và {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Mức tiết kiệm ước tính cho thông tin chi tiết này: {PH1} và {PH2} kích thước cần chuyển"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Xem chi tiết về {PH1}"
+    "message": "Xem cụ thể về thông tin chi tiết {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Không kiểm tra được thông tin chi tiết: {PH1}"
@@ -15186,7 +15240,7 @@
     "message": "URL"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
-    "message": "Mối liên kết giữa các mục"
+    "message": "Mối liên kết giữa các mục nhập"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "Nhãn mục"
@@ -15204,7 +15258,7 @@
     "message": "Tìm hiểu thêm về chú thích tự động trong phần cài đặt"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "Thông tin khác"
+    "message": "Thông tin khác về tính năng này"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Phạm vi thời gian"

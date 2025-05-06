@@ -495,7 +495,7 @@
     "message": "Scriptkilde kunne ikke hentes."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Udfaset syntaks blev fundet. Brug: <name>;dur=<duration>;desc=<description>"
+    "message": "Der blev fundet udfaset syntaks for metric'en \"{PH1}\". Brug: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Den identiske parameter \"{PH1}\" ignoreres."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Anmodninger om ressourcer, hvis webadresser både indeholder tegnene \\(n|r|t) uden blanktegn og mindre end-tegn (<), blokeres. Hvis du vil indlæse disse ressourcer, skal du fjerne linjeskift og indkode mindre end-tegn fra f.eks. attributværdier for elementer."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "Automatisk registrering af ISO-2022-JP-tegnsættet er udfaset og deaktiveres snart. Angiv tegnsættet i headeren Content Type, eller brug et metatag (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Navigation Timing 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Tredjepartscookie er blokeret i Chrome på grund af enten Chrome-flag eller browserkonfigurationen."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome arbejder på en ny type brugeroplevelse, der skal give brugerne mulighed for at browse uden tredjepartscookies."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Rapportér en fejl"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Beskrivelse af SameSite-cookies"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Ændringer af Chromes håndtering af tredjepartscookies"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Ressourcedeling på tværs af oprindelse (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Tidstab"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(anonym)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Mange API'er, som typisk læser layoutgeometri, tvinger gengivelsesmotoren til at sætte scriptudførelsen på pause for at beregne typografien og layoutet. Få flere oplysninger om [tvungen reflow](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) og forebyggelsen af den."
   },
@@ -1905,7 +1905,7 @@
     "message": "Samlet tid for reflow"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Uden attributter"
+    "message": "[uden attributter]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Hvis du reducerer downloadtiden for billeder, kan det forbedre den oplevede indlæsningstid for siden og LCP. [Få flere oplysninger om optimering af billedstørrelse](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Hvis du vil bruge denne funktion, skal du angive engelsk som sprogpræference i indstillingerne for Udviklerværktøjer."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Du kan også bruge et af promptforslagene ovenfor til at starte din samtale"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Få flere oplysninger om AI i Udviklerværktøjer"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Tjek din internetforbindelse, og prøv igen"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Vis det valgte kontekstelement i Udviklerværktøjer"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "AI-hjælp i Indstillinger"
@@ -3162,7 +3168,7 @@
     "message": "Begynd at registrere hændelser"
   },
   "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
-    "message": "Brug knappen \"{PH1}\", eller tryk på {PH2}, for at begynde at fejlrette baggrundstjenester."
+    "message": "Brug knappen \"{PH1}\", eller tryk på {PH2} for at begynde at fejlrette baggrundstjenester."
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Stop med at registrere hændelser"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Denne ramme blev oprettet programmatisk. stack trace viser, hvor dette skete."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Opretterens annoncescript"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Krydsoprindelse er isoleret"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Målhint"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Der er ikke valgt noget element"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(mangler)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "Forhåndshentningen blev kasseret, fordi browserdataene blev fjernet."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "Forudhentningen er blevet kasseret, fordi ingen spekulationsregel på den første side længere aktiverer en forudhentning for denne webadresse."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Indlæsningen af en ressource blev blokeret."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "Den forhåndsgengivne side blev frigivet, fordi browserdataene blev fjernet."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Navigationen for forhåndsgengivelse kræver et HTTP-klientcertifikat."
@@ -5483,6 +5495,9 @@
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopieret til udklipsholderen"
   },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Kopiér filen {PH1} til udklipsholderen"
+  },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ændringer"
   },
@@ -5550,7 +5565,7 @@
     "message": "Konsolprompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Advarsel! Undlad at indsætte kode, som du ikke forstår, eller som du ikke selv har tjekket, i konsollen Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrol over din computer. Skriv \"{PH1}\" nedenfor, og tryk på Enter for at tillade indsættelse."
+    "message": "Advarsel! Undlad at indsætte kode, som du ikke forstår, eller som du ikke selv har tjekket, i konsollen Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrollen over din computer. Skriv \"{PH1}\" nedenfor, og tryk på Enter for at tillade indsættelse."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ingen fejl}=1{# fejl}one{# fejl}other{# fejl}}"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Iværksætter"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Der er ingen matchende ressourcer"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# ressourcematch}one{# ressourcematch}other{# ressourcematch}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "afventer"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Indlæs udviklerressourcer for HTTP(S) via det website, du undersøger, og ikke via Udviklerværktøjer"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Der er ingen matchende ressourcer"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# ressourcematch}one{# ressourcematch}other{# ressourcematch}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ressource}one{# ressource}other{# ressourcer}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiér typografier"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Deaktiver DOM-tekstombrydning"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Elementet findes allerede"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Elementer"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Aktivér DOM-tekstombrydning"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Hændelsesfunktioner"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Staksporing"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Slå tilgængelighedstræ til/fra"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Slå pipette til/fra"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Vist via hukommelsescache, ressourcestørrelse: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} er overført via netværk, ressourcestørrelse: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "{PH1} overført via netværk, ressourcestørrelse: {PH2}, ingen matchende routing til ServiceWorkers"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Vist fra cache til hentning på forhånd, ressourcestørrelse: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Vises via Web Bundle"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Oplysninger om forbindelse"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Dette svar indeholder headere, som tilsidesættes af Udviklerværktøjer"
@@ -9147,10 +9168,10 @@
     "message": "Tilsidesæt headers"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Brug knappen \"{PH1}\", eller tryk på {PH2}, for at udføre en anmodning eller genindlæse siden."
+    "message": "Brug knappen \"{PH1}\", eller tryk på {PH2} for at udføre en anmodning eller genindlæse siden."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Brug knappen \"{PH1}\", eller ved tryk på {PH2}, for at registrere netværkslog med henblik på at vise netværksaktivitet."
+    "message": "Brug knappen \"{PH1}\", eller tryk på {PH2} for at registrere netværkslog med henblik på at vise netværksaktivitet."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Netværksaktivitet registreres i øjeblikket"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Vandfald"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Alle"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Binær meddelelse"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Ryd alt"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Ryd alle"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Meddelelsen Lukning af forbindelse"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Følgevisning"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Kopiér besked"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Kopiér meddelelse..."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Data"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Filtrér"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Filtrér ved hjælp af regex (eksempel: (web)?socket)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Længde"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Ikke tilgængelig"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Der er ikke valgt nogen besked"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping-meddelelse"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Pong-meddelelse"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Modtag"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (opkodning {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (Opkodning {PH2}, maske)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Vælg meddelelse for at gennemse dens indhold."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Send"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Tekstmeddelelse"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Tidspunkt"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "WebSocket-ramme"
@@ -9773,6 +9755,45 @@
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Se certifikat"
   },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Annulleret"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Lukket"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Åben"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Åbner"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (bundet)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (forbundet)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Fejlmeddelelse"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Generelt"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Åbn oplysninger"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Valgmuligheder"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "Status"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "DirectSocket-type"
+  },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Aktive client experiment variation IDs."
   },
@@ -9837,7 +9858,7 @@
     "message": "(via Web Bundle)"
   },
   "panels/network/components/RequestHeadersView.ts | general": {
-    "message": "Generel"
+    "message": "Generelt"
   },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Rå"
@@ -10842,7 +10863,7 @@
     "message": "Eksportér"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Eksportér"
+    "message": "Eksportér optagelse"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Eksportér via udvidelser"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Indeholder oprindelige kilder"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Opret forbindelse"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Knyt til arbejdsområde"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Slet"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Brug {PH1} til automatisk at tilknytte din projektmappe"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Ryd konfiguration"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Er du sikker på, at du vil lukke den ikke-gemte fil: {PH1}?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Ændringer af denne fil blev ikke gemt i filsystemet."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Ændringerne blev ikke gemt i filsystemet. Føj {PH1} til dit arbejdsområde for at gemme."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Ændringerne blev ikke gemt i filsystemet. Konfigurer dit {PH1} for at gemme."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Dette indhold kan ikke indlæses."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Aktivér stoppunkter"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Tilføj mappe manuelt"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Føj mappen til arbejdsområde"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Valget er ryddet"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Tastaturgenveje til flammediagram"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Vis tilpassede spor"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tidspunkt"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Rul og panorer"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Zoom"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopiér tabel"
@@ -15087,7 +15132,7 @@
     "message": "En \"{PH1}\"-hændelse, der er annoteret med teksten \"{PH2}\""
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Dobbeltklik på et element, og skriv for at oprette en etiket til elementet."
+    "message": "Dobbeltklik på et element, eller tryk på Enter, og skriv for at oprette en etiket til elementet."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Føj en etiket til et element"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Estimeret besparelse: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Estimeret besparelse for denne indsigt: {PH1} mindre overførsel"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Anslået besparelse for denne indsigt: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Estimeret besparelse: {PH1} og {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Anslået besparelse for denne indsigt: {PH1} og {PH2} mindre overførsel"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Se oplysninger om {PH1}"
+    "message": "Se flere oplysninger om indsigten {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Indsigtstjekket mislykkedes: {PH1}"
@@ -15186,7 +15240,7 @@
     "message": "Webadresse"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
-    "message": "Tilknytninger mellem poster"
+    "message": "Tilknytning mellem poster"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
     "message": "Etiket for post"
@@ -15204,7 +15258,7 @@
     "message": "Få flere oplysninger om automatiske annoteringer i indstillingerne"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "Flere oplysninger"
+    "message": "Flere oplysninger om denne funktion"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Tidsinterval"

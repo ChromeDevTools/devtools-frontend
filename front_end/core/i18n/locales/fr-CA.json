@@ -495,7 +495,7 @@
     "message": "Impossible de récupérer la source du script."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Syntaxe obsolète trouvée. Veuillez utiliser : <name>;dur=<duration>;desc=<description>"
+    "message": "Syntaxe obsolète trouvée pour la mesure « {PH1} ». Veuillez utiliser : <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Paramètre « {PH1} » en double ignoré."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Les demandes de ressources dont les URL contiennent à la fois des caractères blancs retirés \\(n|r|t) et des caractères inférieurs (<) sont bloquées. Veuillez retirer les nouvelles lignes et coder les caractères inférieurs à partir d'endroits tels que les valeurs d'attributs d'éléments afin de charger ces ressources."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "La détection automatique du jeu de caractères ISO-2022-JP est obsolète et sera bientôt désactivée. Veuillez indiquer le jeu de caractères dans l'en-tête Type de contenu ou en utilisant une métabalise (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() est obsolète, utilisez plutôt l'API standardisée : Navigation Timing 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Les témoins tiers sont bloqués dans Chrome soit en raison des indicateurs Chrome, soit en raison de la configuration du navigateur."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome évolue vers une nouvelle expérience qui permet aux utilisateurs de choisir de naviguer sans témoins tiers."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Signaler un bogue"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Explication des témoins SameSite"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Modifications apportées au traitement des témoins tiers par Chrome"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Partage des ressources entre origines multiples (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Temps perdu"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(anonyme)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "De nombreuses API, lisant généralement la géométrie de la mise en page, obligent le moteur de rendu à suspendre l'exécution du script afin de calculer le style et la mise en page. Apprenez-en plus sur l'[ajustement forcé de la mise en page](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) et ses mesures d'atténuation."
   },
@@ -1905,7 +1905,7 @@
     "message": "Temps total d'ajustement de la mise en page"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Non attribué"
+    "message": "[non attribuées]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Réduire le temps de téléchargement des images peut améliorer le temps de chargement de la page et du LCP. [En savoir plus sur l'optimisation de la taille des images](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Pour utiliser cette fonctionnalité, définissez votre préférence de langue à l'anglais dans les paramètres des outils pour les développeurs."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Vous pouvez aussi utiliser l'une des requêtes suggérées ci-dessus pour commencer votre conversation"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "En savoir plus sur l'IA dans les outils pour les développeurs"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Vérifiez votre connexion Internet et réessayez"
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Révéler l'élément de contexte sélectionné dans les outils pour les développeurs"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "assistant IA dans les paramètres"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Ce cadre a été créé par programmation. Le stack trace indique où cela s'est produit."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Script d'annonce du créateur"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Isolé multiorigine"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "État"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Indice de cible"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Aucun élément sélectionné"
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(manquante)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "La prélecture a été abandonnée parce que les données de navigation ont été retirées."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "La prélecture a été supprimée, car la règle de spéculation dans la page d'origine ne déclenche plus de prélecture pour cette URL."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "La charge de certaines ressources a été bloquée."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "La page prérendue a été déchargée parce que les données de navigation ont été retirées."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "La navigation de prérendu nécessitait un certificat client HTTP."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Copié dans le presse-papiers"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Copier le fichier {PH1} dans le presse-papiers"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Modifications"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Initiateur"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Aucune correspondance de ressources"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# correspondance de ressources}one{# correspondance de ressources}other{# correspondances de ressources}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "en attente"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Chargez HTTP(S) ressources pour développeurs via le site Web que vous inspectez, et non via DevToolS"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Aucune correspondance de ressources"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# correspondance de ressources}one{# correspondance de ressources}other{# correspondances de ressources}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ressource}one{# ressource}other{# ressources}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copier les styles"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Désactiver le retour automatique à la ligne DOM"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Élément en double"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Éléments"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Activer le retour à la ligne DOM"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Écouteurs d'événements"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Suivi de la pile"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Basculer l'arborescence d'accessibilité"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Activer la pipette"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Diffusé à partir du cache en mémoire, taille de la ressource : {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "{PH1} transféré sur le réseau, taille de la ressource : {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "{PH1} transféré sur le réseau, taille de la ressource : {PH2}, aucune route ServiceWorker correspondante"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Diffusé à partir du cache de préchargement, taille de la ressource : {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Envoyée à partir d'un ensemble Web"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Renseignements de connexion"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Cette réponse contient des en-têtes qui sont remplacés par les outils pour les développeurs"
@@ -9150,7 +9171,7 @@
     "message": "Faites une requête ou actualisez la page en utilisant le bouton « {PH1} » ou en appuyant sur {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Enregistrez le journal réseau pour afficher l'activité réseau en utilisant le bouton « {PH1} » ou en appuyant sur {PH2}."
+    "message": "Enregistrez le journal réseau pour afficher l'activité du réseau en utilisant le bouton « {PH1} » ou en appuyant sur {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Enregistrement de l'activité du réseau en cours…"
@@ -9348,7 +9369,7 @@
     "message": "Grouper les requêtes par cadre de requête de niveau supérieur"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Appuyez sur {PH1} pour actualiser et capturer la pellicule."
+    "message": "Appuyez sur {PH1} pour actualiser la page et capturer la pellicule."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importer un fichier HAR…"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Cascade"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Tous"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Message binaire"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Tout effacer"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Tout effacer"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Message de fermeture de connexion"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Cadre de continuation"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Copier le message"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Copier le message…"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Données"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Filtre"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Filtrer à l'aide de l'expression rationnelle (exemple : (web)?socket)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Durée"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "s. o."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Aucun message sélectionné"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Message ping"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Message pong"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Recevoir"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (code opération {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (code opération {PH2}, masque)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Sélectionnez le message pour parcourir son contenu."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Envoyer"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Message texte"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Heure"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Cadre WebSocket"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Afficher le certificat"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Annulé"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Fermé"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Ouvrir"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Ouverture en cours…"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (connecté)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (connecté)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Message d'erreur"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Généralités"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Ouvrir les renseignements"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Options"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "État"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "Type DirectSocket"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "Actif : client experiment variation IDs."
@@ -10842,7 +10863,7 @@
     "message": "Exporter"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Exporter"
+    "message": "Exporter l'enregistrement"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Exporter par le biais des extensions"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Contient des sources originales"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Se connecter"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Se connecter à l'espace de travail"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Supprimer"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Entrée"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Utilisez {PH1} pour connecter automatiquement votre dossier de projet"
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Effacer la configuration"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Voulez-vous vraiment fermer le fichier {PH1} non enregistré?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Les modifications apportées à ce fichier n'ont pas été enregistrées dans le système de fichiers."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Les changements n'ont pas été enregistrés dans le système de fichiers. Pour les enregistrer, ajoutez {PH1} à votre espace de travail."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Les changements n'ont pas été enregistrés dans le système de fichiers. Pour les enregistrer, configurez votre {PH1}."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Impossible de charger ce contenu."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Activer les points d'arrêt"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Ajouter manuellement un dossier"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Ajouter un dossier à l'espace de travail"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Sélection annulée"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Raccourcis-clavier du graphique de type flamme"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Afficher les sous-ensembles personnalisés"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Heure"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Faites défiler l'écran et effectuer un panoramique"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Zoom"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Copier le tableau"
@@ -15087,7 +15132,7 @@
     "message": "Un événement « {PH1} » annoté avec le texte « {PH2} »"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Double-cliquez sur un élément et tapez du texte pour créer une étiquette d'élément."
+    "message": "Double-cliquez ou appuyez sur Entrée sur un élément et tapez du texte pour créer une étiquette d'élément."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Étiqueter un élément"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Économies estimées : {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Économies estimées pour cette analyse : taille de transfert de {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Économies estimées pour cette analyse : {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Économies estimées : {PH1} et {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Économies estimées pour cette analyse : {PH1} et taille de transfert de {PH2}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Afficher les détails pour {PH1}"
+    "message": "Afficher les détails de l'analyse {PH1}."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Échec de la vérification des statistiques : {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "En savoir plus sur les annotations automatiques dans les paramètres"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "En savoir plus"
+    "message": "Plus de renseignements sur cette fonctionnalité"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Période"

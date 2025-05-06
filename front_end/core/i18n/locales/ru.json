@@ -495,7 +495,7 @@
     "message": "Не удалось извлечь источник скрипта."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Обнаружен устаревший синтаксис. Используйте <name>;dur=<duration>;desc=<description>."
+    "message": "В показателе \"{PH1}\" обнаружен неподдерживаемый синтаксис. Рекомендуем использовать следующую запись: <название>;dur=<продолжительность>;desc=<описание>."
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Повторяющийся параметр {PH1} проигнорирован."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Запросы ресурсов, в URL которых содержатся и удаленные пробельные символы (\\(n|r|t)), и знаки \"меньше\" (<), блокируются. Чтобы загружать такие ресурсы, удалите символы новой строки и используйте коды для знаков \"меньше\" в таких местах URL, где, например, указываются значения атрибутов элементов."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "Автоматическое обнаружение набора символов ISO-2022-JP больше не поддерживается и вскоре будет отключено. Указать набор символов можно в заголовке \"Тип контента\" или с помощью метатега (https://developer.mozilla.org/ru-ru/docs/Glossary/Character_encoding)."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Метод chrome.loadTimes() больше не поддерживается. Вместо него используйте стандартный API Navigation Timing 2."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Сторонние файлы cookie блокируются в Chrome из-за экспериментальных параметров Chrome или настроек браузера."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "В будущем у пользователей Chrome будет возможность отказаться от сторонних файлов cookie."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "Сообщить об ошибке"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "О файлах cookie SameSite"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Изменения в работе Chrome со сторонними файлами cookie"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Совместное использование ресурсов между разными источниками (CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Потери времени"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(анонимная)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Многие API, прежде всего считывающие геометрию макета, принуждают движок отрисовки приостановить выполнение скриптов, чтобы рассчитать стиль и макет страницы. Подробнее [о принудительной компоновке и способах ее избежать](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)…"
   },
@@ -1905,7 +1905,7 @@
     "message": "Общее время компоновки"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "Нет атрибуции"
+    "message": "[без атрибуции]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Если изображения будут быстрее скачиваться, то время загрузки страницы и значение LCP могут стать меньше. Узнайте, [как оптимизировать размер изображений](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Чтобы пользоваться этой функцией, в настройках инструментов разработчика выберите английский язык."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "Также диалог можно начать с одной из подсказок, предложенных выше"
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Узнайте больше об ИИ в инструментах разработчика"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "Проверьте подключение к интернету и повторите попытку."
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "Показать выбранный контекстный объект в инструментах разработчика"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "помощь от ИИ в настройках"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Фрейм создан с помощью программных средств. stack trace показывает, где это произошло."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "Скрипт объявления для авторов"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Изолирован от разных источников"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Статус"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "Заданная подсказка"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "Элемент не выбран."
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(отсутствует)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "Предварительно загруженная информация не сохранена, поскольку данные о работе в браузере удалены."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "Предзагрузка не выполнена, поскольку на исходной странице нет правила, запускающего ее для этого URL."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "Загрузка некоторых ресурсов заблокирована."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "Предварительно отрисованная страница выгружена, поскольку данные о работе в браузере удалены."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Для перехода с предварительной отрисовкой требовался сертификат HTTP-клиента."
@@ -5483,6 +5495,9 @@
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Скопировано в буфер обмена"
   },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "Копировать файл \"{PH1}\" в буфер обмена"
+  },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Изменения"
   },
@@ -5550,7 +5565,7 @@
     "message": "Командная строка консоли"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Важно! Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Злоумышленники могут воспользоваться этим, чтобы украсть ваши личные данные или получить контроль над вашим компьютером. Чтобы разрешить вставку кода, введите \"{PH1}\" ниже и нажмите Ввод."
+    "message": "Важно! Не вставляйте в консоль инструментов разработчика непонятный или непроверенный код. С его помощью злоумышленники могут украсть у вас данные или получить контроль над вашим компьютером. Чтобы разрешить вставку кода, введите ниже \"{PH1}\" и нажмите Ввод."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Нет ошибок}=1{# ошибка}one{# ошибка}few{# ошибки}many{# ошибок}other{# ошибки}}"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Инициатор"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "Нет подходящих ресурсов"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# ресурс подходит}one{# ресурс подходит}few{# ресурса подходят}many{# ресурсов подходят}other{# ресурса подходят}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "ожидание"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Загружать ресурсы HTTP(S) для разработчиков через просматриваемый сайт, а не через инструменты разработчика"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "Нет подходящих ресурсов"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{# ресурс подходит}one{# ресурс подходит}few{# ресурса подходят}many{# ресурсов подходят}other{# ресурса подходят}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# ресурс}one{# ресурс}few{# ресурса}many{# ресурсов}other{# ресурса}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копировать стили"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "Отключить перенос по словам DOM"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "Повторяющийся элемент"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "Элементы"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "Включить перенос по словам DOM"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Прослушиватели событий"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "Трассировка стека"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "Показать или скрыть дерево доступности"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "Показать пипетку"
@@ -7071,7 +7083,7 @@
     "message": "Ширина"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "Увеличить"
+    "message": "Масштаб"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Двойной клик для разворота на весь экран"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "Источник: кеш памяти, размер ресурса: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "По сети передано информации: {PH1}. Размер ресурса: {PH2}."
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "По сети передано информации: {PH1}. Размер ресурса: {PH2}, не сопоставлен с маршрутами ServiceWorker."
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "Взято из предзагруженного кеша, размер ресурса: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "Показано с Web Bundle"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "Информация о подключении"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "Этот ответ содержит заголовки, которые переопределены с помощью инструментов разработчика"
@@ -9150,7 +9171,7 @@
     "message": "Выполните запрос или обновите страницу, нажав кнопку \"{PH1}\" или {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Чтобы посмотреть сетевую активность, начните записывать сетевой журнал, нажав кнопку \"{PH1}\" или {PH2}."
+    "message": "Чтобы отследить сетевую активность, начните записывать сетевой журнал, нажав кнопку \"{PH1}\" или {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
     "message": "Запись сетевой активности…"
@@ -9348,7 +9369,7 @@
     "message": "Сгруппировать запросы по фрейму с запросом высшего уровня"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Нажмите {PH1}, чтобы перезагрузить ленту и сделать ее снимок."
+    "message": "Чтобы обновить ленту и сделать ее снимок, нажмите {PH1}."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Импортировать файл HAR"
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Каскад загрузки"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "Все"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Двоичное сообщение"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "Очистить все"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "Очистить все"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "Сообщение, закрывающее соединение"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "Фрейм продолжения"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "Копировать сообщение"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "Копировать сообщение…"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "Wi-Fi и мобильный интернет"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "Фильтр"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "Фильтр на основе регулярного выражения, пример: \"(web)?socket\""
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "Длина"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "Н/Д"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "Сообщение не выбрано"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Сообщение Ping"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "Сообщение Pong"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "Принять"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1} (Опкод {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1} (Опкод {PH2}, маска)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "Чтобы посмотреть содержимое сообщения, выберите его."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "Отправить"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "Текстовое сообщение"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "Время"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "Фрейм WebSocket"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "Показать сертификат"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "Прервано"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "Закрыто"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "Открыто"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "Открывается"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP (связано)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP (подключено)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "Сообщение об ошибке"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "Общие"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "Дополнительные сведения"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "Параметры"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "Статус"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "Тип DirectSocket"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "client experiment variation IDs: активно"
@@ -10842,7 +10863,7 @@
     "message": "Экспортировать"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "Экспортировать"
+    "message": "Экспортировать запись"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "Экспорт с помощью расширений"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "Содержит оригинальные источники"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "Подключиться"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Подключить к Workspace"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Удалить"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Ввод"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "Автоматически подключить папку проекта можно с помощью {PH1}."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Очистить настройки"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Закрыть несохраненный файл {PH1}?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "Изменения этого файла не сохранены в файловой системе."
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "Изменения не сохранены в файловой системе. Чтобы сохранить их, добавьте в Workspace папку \"{PH1}\"."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "Изменения не сохранены в файловой системе. Чтобы сохранить их, настройте {PH1}."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "Не удалось загрузить этот контент"
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активировать точки останова"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "Добавить папку вручную"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Добавить папку в рабочую область"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Выбор отменен"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Сочетания клавиш для флейм-графа"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "Показывать пользовательские дорожки"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Время"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "Прокрутка и панорамирование"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "Масштаб"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Скопировать таблицу"
@@ -15087,7 +15132,7 @@
     "message": "К событию \"{PH1}\" добавлена аннотация \"{PH2}\""
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Чтобы создать ярлык, дважды нажмите на объект и введите текст."
+    "message": "Чтобы ввести текст ярлыка, дважды нажмите на объект или выберите его и нажмите Ввод."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Указать ярлык для объекта"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "Ожидаемая экономия: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "Благодаря этой подсказке сэкономлено приблизительно {PH1} переданной информации"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "Благодаря этой подсказке сэкономлено приблизительно: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "Ожидаемая экономия: {PH1}, {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "Благодаря этой подсказке сэкономлено приблизительно {PH1} и {PH2} переданной информации."
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "Показать подробные сведения для объекта \"{PH1}\""
+    "message": "Дополнительная информация о подсказке \"{PH1}\""
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "Не удалось проверить статистику: {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "Узнайте больше об автоматических аннотациях в настройках"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "Подробнее"
+    "message": "Дополнительная информация о функции"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "Период времени"

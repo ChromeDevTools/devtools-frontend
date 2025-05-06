@@ -495,7 +495,7 @@
     "message": "스크립트 소스를 가져올 수 없습니다."
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "지원 중단된 구문이 발견되었습니다. 다음을 사용하세요. <name>;dur=<duration>;desc=<description>"
+    "message": "\"{PH1}\" 측정항목에서 지원 중단된 문법이 발견되었습니다. <name>;dur=<duration>;desc=<description>을 사용하세요."
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "중복된 매개변수 \"{PH1}\"가 무시되었습니다."
@@ -1208,6 +1208,9 @@
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "삭제된 공백 \\(n|r|t)자 및 글자수 제한(<)이 URL에 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 엘리먼트 속성 값과 같은 위치에서 줄바꿈을 삭제하고 글자수 제한을 인코딩하세요."
   },
+  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
+    "message": "ISO-2022-JP 문자 집합의 자동 감지는 지원 중단되었으며 조만간 사용 중지됩니다. 콘텐츠 유형 헤더에서 문자 집합을 지정하거나 메타 태그(https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)를 사용하세요."
+  },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
   },
@@ -1496,9 +1499,6 @@
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
     "message": "Chrome 플래그 또는 브라우저 구성으로 인해 Chrome에서 서드 파티 쿠키가 차단되었습니다."
   },
-  "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "Chrome은 사용자가 서드 파티 쿠키 없이 탐색할 수 있는 새로운 환경으로 전환하고 있습니다."
-  },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "버그 신고"
   },
@@ -1510,9 +1510,6 @@
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite 쿠키 설명됨"
-  },
-  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Chrome의 서드 파티 쿠키 처리 관련 변경사항"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "교차 출처 리소스 공유(CORS)"
@@ -1889,6 +1886,9 @@
   "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "낭비된 시간"
   },
+  "models/trace/insights/ForcedReflow.ts | anonymous": {
+    "message": "(익명)"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "많은 API가 일반적으로 레이아웃 도형을 읽으며, 스타일과 레이아웃을 계산하기 위해 렌더링 엔진이 스크립트 실행을 일시중지하도록 강제합니다. [강제 리플로우](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) 및 완화에 관해 자세히 알아보세요."
   },
@@ -1905,7 +1905,7 @@
     "message": "총 리플로우 시간"
   },
   "models/trace/insights/ForcedReflow.ts | unattributed": {
-    "message": "기여원이 드러나지 않음"
+    "message": "[출처 불명]"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "이미지의 다운로드 시간을 줄이면 페이지의 체감 로드 시간과 LCP를 개선할 수 있습니다. [이미지 크기 최적화에 대해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -2603,6 +2603,9 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "이 기능을 사용하려면 DevTools 설정에서 언어 환경설정을 영어로 설정하세요."
   },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
+    "message": "위의 제안된 프롬프트 중 하나를 사용하여 대화를 시작할 수도 있습니다."
+  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools의 AI에 관해 알아보기"
   },
@@ -2614,6 +2617,9 @@
   },
   "panels/ai_assistance/components/ChatView.ts | offline": {
     "message": "인터넷 연결 상태를 확인하고 다시 시도해 주세요."
+  },
+  "panels/ai_assistance/components/ChatView.ts | revealContextDescription": {
+    "message": "DevTools에서 선택한 컨텍스트 항목 표시"
   },
   "panels/ai_assistance/components/ChatView.ts | settingsLink": {
     "message": "설정의 AI 지원"
@@ -4256,9 +4262,6 @@
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "이 프레임은 프로그래매틱 방식으로 생성되었습니다. stack trace은(는) 프레임 생성 위치를 표시합니다."
   },
-  "panels/application/components/FrameDetailsView.ts | creatorAdScript": {
-    "message": "크리에이터 광고 스크립트"
-  },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "교차 출처 분리됨"
   },
@@ -4766,6 +4769,9 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "상태"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsTargetHint": {
+    "message": "대상 힌트"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
     "message": "선택된 요소가 없습니다."
   },
@@ -4843,6 +4849,9 @@
   },
   "panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts | missing": {
     "message": "(누락됨)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
+    "message": "인터넷 사용 기록이 삭제되어 미리 가져오기가 삭제되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterCandidateRemoved": {
     "message": "시작 페이지에 더 이상 이 URL에 대한 미리 가져오기를 실행하는 추측 규칙이 없으므로 미리 가져오기가 삭제되었습니다."
@@ -4942,6 +4951,9 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
     "message": "일부 리소스 로드가 차단되었습니다."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBrowsingDataRemoved": {
+    "message": "인터넷 사용 기록이 삭제되었으므로 사전 렌더링된 페이지의 로드가 취소되었습니다."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "사전 렌더링 탐색에는 HTTP 클라이언트 인증서가 필요했습니다."
@@ -5482,6 +5494,9 @@
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "클립보드에 복사됨"
+  },
+  "panels/changes/CombinedDiffView.ts | copyFile": {
+    "message": "클립보드에 {PH1} 파일 복사"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "변경사항"
@@ -6230,6 +6245,12 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "시작점"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | noResourceMatches": {
+    "message": "일치하는 리소스 없음"
+  },
+  "panels/developer_resources/DeveloperResourcesListView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{일치하는 리소스 #개}other{일치하는 리소스 #개}}"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
     "message": "대기 중"
   },
@@ -6256,12 +6277,6 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "DevTools가 아닌 검사한 웹사이트를 통해 HTTP(S) 개발자 리소스를 로드합니다."
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
-    "message": "일치하는 리소스 없음"
-  },
-  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
-    "message": "{n,plural, =1{일치하는 리소스 #개}other{일치하는 리소스 #개}}"
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{리소스 #개}other{리소스 #개}}"
@@ -6884,9 +6899,6 @@
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "스타일 복사"
   },
-  "panels/elements/elements-meta.ts | disableDomWordWrap": {
-    "message": "DOM 줄바꿈 사용 중지"
-  },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "중복된 요소"
   },
@@ -6895,9 +6907,6 @@
   },
   "panels/elements/elements-meta.ts | elements": {
     "message": "요소"
-  },
-  "panels/elements/elements-meta.ts | enableDomWordWrap": {
-    "message": "DOM 줄바꿈 사용 설정"
   },
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "이벤트 리스너"
@@ -6964,6 +6973,9 @@
   },
   "panels/elements/elements-meta.ts | stackTrace": {
     "message": "스택 트레이스"
+  },
+  "panels/elements/elements-meta.ts | toggleA11yTree": {
+    "message": "접근성 트리 전환"
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "스포이트 전환"
@@ -7071,7 +7083,7 @@
     "message": "너비"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "확대"
+    "message": "확대/축소"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "더블클릭하여 전체 높이로 전환"
@@ -8882,6 +8894,12 @@
   "panels/network/NetworkDataGridNode.ts | servedFromMemoryCacheResource": {
     "message": "메모리 캐시에서 게재됨, 리소스 크기: {PH1}"
   },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetwork": {
+    "message": "네트워크를 통해 {PH1} 전송됨, 리소스 크기: {PH2}"
+  },
+  "panels/network/NetworkDataGridNode.ts | servedFromNetworkMissingServiceWorkerRoute": {
+    "message": "네트워크를 통해 {PH1} 전송됨, 리소스 크기: {PH2}, 일치하는 ServiceWorker 경로 없음"
+  },
   "panels/network/NetworkDataGridNode.ts | servedFromPrefetchCacheResource": {
     "message": "미리 가져오기 캐시에서 게재됨, 리소스 크기: {PH1}"
   },
@@ -8917,6 +8935,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | webBundleInnerRequest": {
     "message": "웹 번들에서 제공됨"
+  },
+  "panels/network/NetworkItemView.ts | connectionInfo": {
+    "message": "연결 정보"
   },
   "panels/network/NetworkItemView.ts | containsOverriddenHeaders": {
     "message": "이 응답에는 DevTools에 의해 재정의된 헤더가 포함되어 있습니다."
@@ -9348,7 +9369,7 @@
     "message": "최상위 요청 프레임별 요청 그룹화"
   },
   "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "{PH1}을 눌러 슬라이드를 새로고침하고 캡처합니다."
+    "message": "{PH1} 키를 눌러 슬라이드를 새로고침하고 캡처합니다."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "HAR 파일 가져오기..."
@@ -9638,17 +9659,8 @@
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "폭포"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | all": {
-    "message": "전체"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "바이너리 메시지"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAll": {
-    "message": "모두 지우기"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | clearAllL": {
-    "message": "모두 지우기"
   },
   "panels/network/ResourceWebSocketFrameView.ts | connectionCloseMessage": {
     "message": "연결 닫기 메시지"
@@ -9656,29 +9668,11 @@
   "panels/network/ResourceWebSocketFrameView.ts | continuationFrame": {
     "message": "자동 프레임"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessage": {
-    "message": "메시지 복사"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | copyMessageD": {
-    "message": "메시지 복사…"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | data": {
-    "message": "데이터"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | filter": {
-    "message": "필터"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | filterUsingRegex": {
     "message": "정규식을 사용하여 필터링(예: (web)?socket)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | length": {
-    "message": "길이"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "해당 사항 없음"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
-    "message": "선택한 메시지 없음"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "핑 메시지"
@@ -9686,26 +9680,14 @@
   "panels/network/ResourceWebSocketFrameView.ts | pongMessage": {
     "message": "퐁 메시지"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | receive": {
-    "message": "받기"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeS": {
     "message": "{PH1}(명령 코드 {PH2})"
   },
   "panels/network/ResourceWebSocketFrameView.ts | sOpcodeSMask": {
     "message": "{PH1}(명령 코드 {PH2}, 마스크)"
   },
-  "panels/network/ResourceWebSocketFrameView.ts | selectMessageToBrowseItsContent": {
-    "message": "메시지를 선택하여 콘텐츠를 둘러보세요."
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | send": {
-    "message": "보내기"
-  },
   "panels/network/ResourceWebSocketFrameView.ts | textMessage": {
     "message": "문자 메시지"
-  },
-  "panels/network/ResourceWebSocketFrameView.ts | time": {
-    "message": "시간"
   },
   "panels/network/ResourceWebSocketFrameView.ts | webSocketFrame": {
     "message": "웹 소켓 프레임"
@@ -9772,6 +9754,45 @@
   },
   "panels/network/SignedExchangeInfoView.ts | viewCertificate": {
     "message": "인증서 보기"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusAborted": {
+    "message": "취소됨"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusClosed": {
+    "message": "닫힘"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpen": {
+    "message": "열기"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketStatusOpening": {
+    "message": "여는 중"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeTcp": {
+    "message": "TCP"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpBound": {
+    "message": "UDP(바운드)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | directSocketTypeUdpConnected": {
+    "message": "UDP(연결됨)"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | errorMessage": {
+    "message": "오류 메시지"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | general": {
+    "message": "일반"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | openInfo": {
+    "message": "정보 열기"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | options": {
+    "message": "옵션"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | status": {
+    "message": "상태"
+  },
+  "panels/network/components/DirectSocketConnectionView.ts | type": {
+    "message": "DirectSocket 유형"
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariation": {
     "message": "활성 client experiment variation IDs입니다."
@@ -10842,7 +10863,7 @@
     "message": "내보내기"
   },
   "panels/recorder/RecorderController.ts | exportRecording": {
-    "message": "내보내기"
+    "message": "녹음 파일 내보내기"
   },
   "panels/recorder/RecorderController.ts | exportViaExtensions": {
     "message": "확장 프로그램을 통해 내보내기"
@@ -12842,6 +12863,12 @@
   "panels/sources/NavigatorView.ts | authoredTooltip": {
     "message": "원본 소스 포함"
   },
+  "panels/sources/NavigatorView.ts | connect": {
+    "message": "연결"
+  },
+  "panels/sources/NavigatorView.ts | connectFolderToWorkspace": {
+    "message": "Workspace에 연결"
+  },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "삭제"
   },
@@ -12946,6 +12973,9 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceNudge": {
+    "message": "프로젝트 폴더를 자동으로 연결하려면 {PH1}을 사용하세요."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "구성 지우기"
@@ -13088,8 +13118,11 @@
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "저장되지 않은 파일({PH1})을 닫으시겠습니까?"
   },
-  "panels/sources/TabbedEditorContainer.ts | changesToThisFileWereNotSavedTo": {
-    "message": "이 파일의 변경사항이 파일 시스템에 저장되지 않았습니다"
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace": {
+    "message": "변경사항이 파일 시스템에 저장되지 않았습니다. 저장하려면 Workspace에 {PH1}을(를) 추가하세요."
+  },
+  "panels/sources/TabbedEditorContainer.ts | changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace": {
+    "message": "변경사항이 파일 시스템에 저장되지 않았습니다. 저장하려면 {PH1}을 설정하세요."
   },
   "panels/sources/TabbedEditorContainer.ts | unableToLoadThisContent": {
     "message": "이 콘텐츠를 로드할 수 없습니다."
@@ -13201,6 +13234,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "중단점 활성화"
+  },
+  "panels/sources/sources-meta.ts | addFolderManually": {
+    "message": "수동으로 폴더 추가"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "작업공간에 폴더 추가"
@@ -13913,6 +13949,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "선택 해제됨"
   },
+  "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
+    "message": "Flame Chart 단축키"
+  },
   "panels/timeline/TimelinePanel.ts | showCustomtracks": {
     "message": "맞춤 트랙 표시"
   },
@@ -13945,6 +13984,12 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "시간"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
+    "message": "스크롤 및 화면 이동"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoom": {
+    "message": "확대/축소"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "표 복사"
@@ -15087,7 +15132,7 @@
     "message": "'{PH2}' 텍스트가 주석으로 달린 '{PH1}' 이벤트"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "항목을 더블클릭하고 입력하여 항목 라벨을 만드세요."
+    "message": "항목을 더블클릭하거나 Enter 키를 누르고 입력하여 항목 라벨을 만드세요."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "항목 라벨 지정"
@@ -15158,11 +15203,20 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
     "message": "예상 절감액: {PH1}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaBytes": {
+    "message": "이 통계로 예상되는 절감: {PH1} 전송 크기"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsAriaTiming": {
+    "message": "이 통계로 예상되는 절감 시간: {PH1}"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
     "message": "예상 절감액: {PH1} 및 {PH2}"
   },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytesAria": {
+    "message": "이 통계로 예상되는 절감: {PH1} 및 {PH2} 전송 크기"
+  },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
-    "message": "{PH1} 세부정보 보기"
+    "message": "{PH1} 통계에 대한 세부정보를 확인하세요."
   },
   "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
     "message": "통계 확인 실패: {PH1}"
@@ -15204,7 +15258,7 @@
     "message": "설정에서 자동 주석에 대해 자세히 알아보기"
   },
   "panels/timeline/overlays/components/EntryLabelOverlay.ts | moreInfoAriaLabel": {
-    "message": "추가 정보"
+    "message": "이 기능에 대한 추가 정보"
   },
   "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
     "message": "기간"

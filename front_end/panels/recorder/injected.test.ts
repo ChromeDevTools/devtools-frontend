@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+
 import type {DevToolsRecorder} from './injected/injected.js';
 import type {Schema} from './models/models.js';
 
@@ -110,12 +112,14 @@ describe('Injected', () => {
    */
   async function createSandbox(): Promise<Window> {
     const url = new URL('./injected/injected.generated.js', import.meta.url);
+    // Some tests run this method twice, so ensure we tidy up any previous iframe.
+    iframe?.remove();
 
     iframe = document.createElement('iframe');
     const {promise, resolve} = Promise.withResolvers();
     iframe.srcdoc = testPage;
     iframe.onload = resolve;
-    document.body.append(iframe);
+    renderElementIntoDOM(iframe);
     await promise;
     const iframeDocument = iframe.contentDocument!;
     {
@@ -337,6 +341,7 @@ describe('Injected', () => {
       const selectors = await getSelectorOfButtonWithLength(MAXIMUM_LENGTH + 1);
       assert.isUndefined(selectors);
     });
+
     it('should return a text selector correctly with same prefix elements', async () => {
       let selectors = await getSelectorOfButtonWithLength(
           SAME_PREFIX_TEXT_LENGTH,

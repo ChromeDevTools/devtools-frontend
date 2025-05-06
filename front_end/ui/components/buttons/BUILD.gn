@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "button.css",
+    "floatingButton.css",
     "textButton.css",
   ]
 }
@@ -20,7 +21,10 @@ copy_to_gen("copy_stylesheets_for_server") {
 }
 
 devtools_module("button") {
-  sources = [ "Button.ts" ]
+  sources = [
+    "Button.ts",
+    "FloatingButton.ts",
+  ]
 
   deps = [
     "../../../ui/lit:bundle",

@@ -959,7 +959,7 @@ function renderChatMessage({
         ? Lit.nothing
         : html`<devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
             showRateButtons: message.rpcId !== undefined,
-            onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback: string) => {
+            onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback?: string) => {
               if (!message.rpcId) {
                 return;
               }
@@ -1102,7 +1102,7 @@ function renderMessages({
     // clang-format off
     return html`<devtools-widget
       .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
-        changeSummary,
+        changeSummary: changeSummary ?? '',
         changeManager,
       })}
     ></devtools-widget>`;

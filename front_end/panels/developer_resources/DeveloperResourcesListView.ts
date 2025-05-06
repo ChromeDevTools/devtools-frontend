@@ -190,7 +190,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.registerRequiredCSS(developerResourcesListViewStyles);
   }
 
-  set selectedItem(item: SDK.PageResourceLoader.PageResource) {
+  set selectedItem(item: SDK.PageResourceLoader.PageResource|null) {
     this.#selectedItem = item;
     this.requestUpdate();
   }

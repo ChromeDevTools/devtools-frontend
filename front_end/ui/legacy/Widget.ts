@@ -51,32 +51,29 @@ function assert(condition: unknown, message: string): void {
   }
 }
 
-interface WidgetConstructor<WidgetT extends Widget&WidgetParams, WidgetParams> {
-  new(element: WidgetElement<WidgetT, WidgetParams>): WidgetT;
-}
+type WidgetConstructor<WidgetT extends Widget> = new (element: WidgetElement<WidgetT>) => WidgetT;
+type WidgetProducer<WidgetT extends Widget> = (element: WidgetElement<WidgetT>) => WidgetT;
+type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT>|WidgetProducer<WidgetT>;
 
-export class WidgetConfig<WidgetT extends Widget&WidgetParams, WidgetParams> {
-  constructor(readonly widgetClass: WidgetConstructor<WidgetT, WidgetParams>, readonly widgetParams?: WidgetParams) {
+export class WidgetConfig<WidgetT extends Widget> {
+  constructor(readonly widgetClass: WidgetFactory<WidgetT>, readonly widgetParams?: Partial<WidgetT>) {
   }
 }
 
-export function widgetConfig<WidgetT extends Widget&WidgetParams, WidgetParams>(
-    widgetClass: WidgetConstructor<WidgetT, WidgetParams>, widgetParams?: WidgetParams):
+export function widgetConfig<WidgetT extends Widget, ParamKeys extends keyof WidgetT>(
+    widgetClass: WidgetFactory<WidgetT>, widgetParams?: Pick<WidgetT, ParamKeys>&Partial<WidgetT>):
     // This is a workaround for https://github.com/runem/lit-analyzer/issues/163
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    WidgetConfig<any, any> {
+    WidgetConfig<any> {
   return new WidgetConfig(widgetClass, widgetParams);
 }
 
-export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = object> extends HTMLElement {
-  #widgetClass?: WidgetConstructor<WidgetT, WidgetParams>;
-  #widgetParams?: WidgetParams;
-  createWidget(): WidgetT {
-    if (!this.#widgetClass) {
-      throw new Error('No widgetClass defined');
-    }
+export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+  #widgetClass?: WidgetFactory<WidgetT>;
+  #widgetParams?: Partial<WidgetT>;
 
-    const widget = new this.#widgetClass(this);
+  createWidget(): WidgetT {
+    const widget = this.#instantiateWidget();
     if (this.#widgetParams) {
       Object.assign(widget, this.#widgetParams);
     }
@@ -84,7 +81,21 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = o
     return widget;
   }
 
-  set widgetConfig(config: WidgetConfig<WidgetT, WidgetParams>) {
+  #instantiateWidget(): WidgetT {
+    if (!this.#widgetClass) {
+      throw new Error('No widgetClass defined');
+    }
+
+    if (Widget.isPrototypeOf(this.#widgetClass)) {
+      const ctor = this.#widgetClass as WidgetConstructor<WidgetT>;
+      return new ctor(this);
+    }
+
+    const factory = this.#widgetClass as WidgetProducer<WidgetT>;
+    return factory(this);
+  }
+
+  set widgetConfig(config: WidgetConfig<WidgetT>) {
     const widget = Widget.get(this);
     if (widget) {
       let needsUpdate = false;

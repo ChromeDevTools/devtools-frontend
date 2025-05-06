@@ -143,9 +143,9 @@ const enumsByName = ProtocolClient.InspectorBackend.inspectorBackend.enumMap as 
 export interface Message {
   id?: number;
   method: string;
-  error?: Object;
-  result?: Object;
-  params?: Object;
+  error?: {[x: string]: unknown};
+  result?: {[x: string]: unknown};
+  params?: {[x: string]: unknown};
   requestTime: number;
   elapsedTime?: number;
   sessionId?: string;
@@ -535,6 +535,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
   private setRecording(recording: boolean): void {
     const test = ProtocolClient.InspectorBackend.test;
     if (recording) {
+      // @ts-expect-error
       test.onMessageSent = this.messageSent.bind(this);
       // @ts-expect-error
       test.onMessageReceived = this.messageReceived.bind(this);
@@ -565,14 +566,14 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
       sessionId: message.sessionId,
       target: (target ?? undefined) as SDK.Target.Target | undefined,
       requestTime: Date.now() - this.startTime,
-      result: message.params as Object,
+      result: message.params,
     });
 
     this.requestUpdate();
   }
 
   private messageSent(
-      message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
+      message: {domain: string, method: string, params: {[x: string]: unknown}, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     const messageRecord = {
       method: message.method,

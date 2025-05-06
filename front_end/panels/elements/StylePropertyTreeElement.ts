@@ -2197,7 +2197,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
               e.consume(true);
             }
           }}
-          .widgetConfig=${UI.Widget.widgetConfig(CSSValueTraceView, {})}
+          .widgetConfig=${UI.Widget.widgetConfig(CSSValueTraceView)}
           ></devtools-widget></devtools-tooltip>`;
     // clang-format on
   }

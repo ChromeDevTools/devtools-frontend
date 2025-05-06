@@ -81,7 +81,6 @@ export async function openCaptureSettings(
             [
               veImpression('Toggle', 'timeline-capture-layers-and-pictures'),
               veImpression('Toggle', 'timeline-capture-selector-stats'),
-              veImpression('Toggle', 'timeline-disable-js-sampling'),
               veImpression('DropDown', 'cpu-throttling'),
               veImpression('DropDown', 'preferred-network-condition'),
               veImpression('Toggle', 'timeline-show-extension-data'),

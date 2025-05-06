@@ -94,10 +94,6 @@ const UIStrings = {
    */
   dropTimelineFileOrUrlHere: 'Drop timeline file or URL here',
   /**
-   *@description Title of disable capture jsprofile setting in timeline panel of the performance panel
-   */
-  disableJavascriptSamples: 'Disable JavaScript samples',
-  /**
    *@description Title of capture layers and pictures setting in timeline panel of the performance panel
    */
   enableAdvancedPaint: 'Enable advanced paint instrumentation (slow)',
@@ -152,10 +148,6 @@ const UIStrings = {
   /**
    *@description Text in Timeline Panel of the Performance panel
    */
-  disablesJavascriptSampling: 'Disables JavaScript sampling, reduces overhead when running against mobile devices',
-  /**
-   *@description Text in Timeline Panel of the Performance panel
-   */
   capturesAdvancedPaint: 'Captures advanced paint instrumentation, introduces significant performance overhead',
   /**
    *@description Text in Timeline Panel of the Performance panel
@@ -195,10 +187,6 @@ const UIStrings = {
    *@description Text in Timeline Panel of the Performance panel
    */
   SelectorStatsEnabled: '- Selector stats is enabled',
-  /**
-   *@description Text in Timeline Panel of the Performance panel
-   */
-  JavascriptSamplingIsDisabled: '- JavaScript sampling is disabled',
   /**
    *@description Text in Timeline Panel of the Performance panel
    */
@@ -370,7 +358,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly toggleRecordAction: UI.ActionRegistration.Action;
   private readonly recordReloadAction: UI.ActionRegistration.Action;
   readonly #historyManager: TimelineHistoryManager;
-  private disableCaptureJSProfileSetting: Common.Settings.Setting<boolean>;
   private readonly captureLayersAndPicturesSetting: Common.Settings.Setting<boolean>;
   private readonly captureSelectorStatsSetting: Common.Settings.Setting<boolean>;
   readonly #thirdPartyTracksSetting: Common.Settings.Setting<boolean>;
@@ -515,9 +502,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.traceLoadStart = null;
 
-    this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().createSetting(
-        'timeline-disable-js-sampling', false, Common.Settings.SettingStorageType.SESSION);
-    this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
     this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting(
         'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.SESSION);
     this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
@@ -1265,16 +1249,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this);
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.updateShowSettingsToolbarButton, this);
-    this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
 
     this.settingsPane = this.element.createChild('div', 'timeline-settings-pane');
     this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
-
-    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
-        this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting,
-        i18nString(UIStrings.disablesJavascriptSampling)));
 
     const cpuThrottlingPane = this.settingsPane.createChild('div');
     cpuThrottlingPane.append(i18nString(UIStrings.cpu));
@@ -1596,9 +1575,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.captureSelectorStatsSetting.get()) {
       messages.push(i18nString(UIStrings.SelectorStatsEnabled));
     }
-    if (this.disableCaptureJSProfileSetting.get()) {
-      messages.push(i18nString(UIStrings.JavascriptSamplingIsDisabled));
-    }
 
     this.showSettingsPaneButton.setChecked(messages.length > 0);
     this.showSettingsPaneButton.element.style.setProperty('--dot-toggle-top', '16px');
@@ -1741,7 +1717,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         await this.#navigateToAboutBlank();
       }
       const recordingOptions = {
-        enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
+        enableJSSampling: true,
         capturePictures: this.captureLayersAndPicturesSetting.get(),
         captureFilmStrip: this.showScreenshotsSetting.get(),
         captureSelectorStats: this.captureSelectorStatsSetting.get(),

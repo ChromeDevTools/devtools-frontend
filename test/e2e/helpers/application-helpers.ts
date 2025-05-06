@@ -482,7 +482,6 @@ function veImpressionForStorageOverview() {
           veImpression('Toggle', 'clear-storage-cookies'),
           veImpression('Toggle', 'clear-storage-indexeddb'),
           veImpression('Toggle', 'clear-storage-local-storage'),
-          veImpression('Toggle', 'clear-storage-websql'),
         ]),
     veImpression(
         'Section', 'usage',

@@ -731,7 +731,6 @@ export const knownContextValues = new Set([
   'clear-storage-indexeddb',
   'clear-storage-local-storage',
   'clear-storage-service-workers',
-  'clear-storage-websql',
   'clear-timeout',
   'click',
   'client-focus',

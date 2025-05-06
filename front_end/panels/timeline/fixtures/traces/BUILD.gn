@@ -62,6 +62,7 @@ copy_to_gen("traces") {
     "lcp-late-paint-event.json.gz",
     "lcp-multiple-frames.json.gz",
     "lcp-web-font.json.gz",
+    "link-preconnect.json.gz",
     "load-simple.json.gz",
     "mainWasm_profile.json.gz",
     "many-redirects.json.gz",

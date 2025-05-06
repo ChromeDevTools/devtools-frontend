@@ -47,6 +47,8 @@ export interface WebSocketTraceDataForWorker {
 export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataForWorker;
 
 const webSocketData = new Map<number, WebSocketTraceData>();
+const linkPreconnectEvents: Types.Events.LinkPreconnect[] = [];
+
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
   byOrigin: Map<string, {
@@ -58,6 +60,7 @@ interface NetworkRequestData {
   eventToInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
   webSocket: WebSocketTraceData[];
   entityMappings: HandlerHelpers.EntityMappings;
+  linkPreconnectEvents: Types.Events.LinkPreconnect[];
 }
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
@@ -127,6 +130,7 @@ export function reset(): void {
   entityMappings.eventsByEntity.clear();
   entityMappings.entityByEvent.clear();
   entityMappings.createdEntityCache.clear();
+  linkPreconnectEvents.length = 0;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -187,6 +191,11 @@ export function handleEvent(event: Types.Events.Event): void {
     }
 
     webSocketData.get(identifier)?.events.push(event);
+  }
+
+  if (Types.Events.isLinkPreconnect(event)) {
+    linkPreconnectEvents.push(event);
+    return;
   }
 }
 
@@ -522,6 +531,7 @@ export function data(): NetworkRequestData {
       eventsByEntity: new Map(entityMappings.eventsByEntity),
       createdEntityCache: new Map(entityMappings.createdEntityCache),
     },
+    linkPreconnectEvents,
   };
 }
 

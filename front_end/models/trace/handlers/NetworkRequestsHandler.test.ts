@@ -448,6 +448,29 @@ describe('NetworkRequestsHandler', function() {
       });
     });
   });
+
+  describe('preconnect links', () => {
+    it('Correctly captures preconnect links', async function() {
+      const traceEvents = await TraceLoader.rawEvents(this, 'link-preconnect.json.gz');
+      for (const event of traceEvents) {
+        Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+        Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);
+      }
+      await Trace.Handlers.ModelHandlers.Meta.finalize();
+      await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
+
+      const linkPreconnectEvents = Trace.Handlers.ModelHandlers.NetworkRequests.data().linkPreconnectEvents;
+      const actualLinks = linkPreconnectEvents.map(linkPreconnectEvent => linkPreconnectEvent.args.data.url);
+
+      const expectedLinks = [
+        'https://www.youtube.com/',
+        'https://www.google.com/',
+        'http://example.com/',
+      ];
+
+      assert.deepEqual(actualLinks, expectedLinks);
+    });
+  });
 });
 
 function assertDataArgsStats<D extends keyof DataArgs>(

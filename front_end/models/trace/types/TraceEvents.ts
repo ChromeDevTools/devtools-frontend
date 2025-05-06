@@ -1253,6 +1253,20 @@ export function isParseMetaViewport(event: Event): event is ParseMetaViewport {
   return event.name === Name.PARSE_META_VIEWPORT;
 }
 
+export interface LinkPreconnect extends Instant {
+  name: Name.LINK_PRECONNECT;
+  args: Args&{
+    data: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      node_id: Protocol.DOM.BackendNodeId,
+      frame?: string, url: string,
+    },
+  };
+}
+export function isLinkPreconnect(event: Event): event is LinkPreconnect {
+  return event.name === Name.LINK_PRECONNECT;
+}
+
 export interface ScheduleStyleRecalculation extends Instant {
   name: Name.SCHEDULE_STYLE_RECALCULATION;
   args: Args&{
@@ -3023,6 +3037,8 @@ export const enum Name {
 
   SYNTHETIC_NETWORK_REQUEST = 'SyntheticNetworkRequest',
   USER_TIMING_MEASURE = 'UserTiming::Measure',
+
+  LINK_PRECONNECT = 'LinkPreconnect',
 }
 
 // NOT AN EXHAUSTIVE LIST: just some categories we use and refer

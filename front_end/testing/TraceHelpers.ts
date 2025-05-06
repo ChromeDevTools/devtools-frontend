@@ -761,6 +761,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
         eventsByEntity: new Map(),
         createdEntityCache: new Map(),
       },
+      linkPreconnectEvents: [],
     },
     GPU: {
       mainGPUThreadTasks: [],

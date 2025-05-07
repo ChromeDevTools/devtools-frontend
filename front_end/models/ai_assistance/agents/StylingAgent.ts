@@ -9,7 +9,7 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as ElementsPanel from '../../../panels/elements/elements.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
@@ -264,12 +264,14 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   override getIcon(): undefined {
   }
 
-  override getTitle(opts: {disabled: boolean}): string|ReturnType<typeof Lit.Directives.until> {
+  override getTitle(opts: {disabled: boolean}): string|TemplateResult {
     const hiddenClassList =
         this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
-    return Lit.Directives.until(
-        ElementsPanel.DOMLinkifier.linkifyNodeReference(this.#node, {hiddenClassList, disabled: opts.disabled}),
-    );
+    const {DOMNodeLink} = ElementsPanel.DOMLinkifier;
+    const {widgetConfig} = UI.Widget;
+    return html`<devtools-widget .widgetConfig=${
+        widgetConfig(
+            e => new DOMNodeLink(e, this.#node, {hiddenClassList, disabled: opts.disabled}))}></devtools-widget>`;
   }
 
   override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {

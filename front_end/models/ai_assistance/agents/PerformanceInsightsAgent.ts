@@ -8,7 +8,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
-import type * as Lit from '../../../ui/lit/lit.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 import {debugLog} from '../debug.js';
 
@@ -132,7 +131,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
     return icon;
   }
 
-  override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
+  override getTitle(): string {
     return `Insight: ${this.#insight.title()}`;
   }
 

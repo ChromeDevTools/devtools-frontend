@@ -7,7 +7,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
-import * as PanelUtils from '../../../panels/utils/utils.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Trace from '../../trace/trace.js';
 
 import {
@@ -174,12 +174,9 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
   }
 
   override getIcon(): HTMLElement {
-    const iconData = {
-      iconName: 'performance',
-      color: 'var(--sys-color-on-surface-subtle)',
-    };
-    const icon = PanelUtils.PanelUtils.createIconElement(iconData, 'Performance');
-    icon.classList.add('icon');
+    const icon = IconButton.Icon.create('performance', 'icon');
+    icon.style.color = 'var(--sys-color-on-surface-subtle)';
+    icon.title = 'Performance';
     return icon;
   }
 

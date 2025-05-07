@@ -109,14 +109,10 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('cross-circle-filled', iconImage);
 
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('cross-circle-filled.svg")', iconImage);
-
-    const backgroundColorOfIcon = iconStyle.backgroundColor.toString();
+    const backgroundColorOfIcon = iconElement.style.color.toString();
     assert.strictEqual(backgroundColorOfIcon, 'var(--icon-error)');
   });
 
@@ -132,14 +128,10 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-document', iconImage);
 
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-document.svg")', iconImage);
-
-    const backgroundColorOfIcon = iconStyle.backgroundColor.toString();
+    const backgroundColorOfIcon = iconElement.style.color.toString();
     assert.strictEqual(backgroundColorOfIcon, 'var(--icon-file-document)');
     // TODO(barrypollard): Would be good to test the value of --icon-file-document
     // is correctly set to --sys-color-blue-bright. See https://crbug.com/346714111
@@ -158,12 +150,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-media.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-media', iconImage);
   });
 
   it('show wasm icon', async () => {
@@ -179,12 +167,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-wasm.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-wasm', iconImage);
   });
 
   it('show websocket icon', async () => {
@@ -200,12 +184,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-websocket.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-websocket', iconImage);
   });
 
   it('shows fetch icon', async () => {
@@ -221,12 +201,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-fetch-xhr.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-fetch-xhr', iconImage);
   });
 
   it('shows xhr icon', async () => {
@@ -242,12 +218,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-fetch-xhr.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-fetch-xhr', iconImage);
   });
 
   it('mime win: show image preview icon for xhr-image', async () => {
@@ -282,12 +254,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-document.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-document', iconImage);
   });
 
   it('mime win: show generic icon for preflight-text', async () => {
@@ -303,12 +271,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-generic.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-generic', iconImage);
   });
 
   it('mime win: show script icon for other-javascript)', async () => {
@@ -324,12 +288,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-script.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-script', iconImage);
   });
 
   it('mime win: shows json icon for fetch-json', async () => {
@@ -345,12 +305,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
     networkRequestNode.renderCell(el, 'name');
     const iconElement = el.querySelector('.icon') as HTMLElement;
-
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.webkitMaskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.webkitMaskImage.substring(indexOfIconImage);
-
-    assert.strictEqual('file-json.svg")', iconImage);
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('file-json', iconImage);
   });
 
   it('shows the corresponding status text of a status code', async () => {
@@ -499,11 +455,9 @@ describeWithEnvironment('NetworkLogView', () => {
 
     // The icon should be the warning icon.
     const iconElement = el.querySelector('.icon') as HTMLElement;
-    const iconStyle = iconElement.style;
-    const indexOfIconImage = iconStyle.maskImage.indexOf('Images/') + 7;
-    const iconImage = iconStyle.maskImage.substring(indexOfIconImage);
-    assert.strictEqual('warning-filled.svg")', iconImage);
-    const backgroundColorOfIcon = iconStyle.backgroundColor.toString();
+    const iconImage = iconElement.getAttribute('name');
+    assert.strictEqual('warning-filled', iconImage);
+    const backgroundColorOfIcon = iconElement.style.color.toString();
     assert.strictEqual(backgroundColorOfIcon, 'var(--icon-warning)');
   });
 });

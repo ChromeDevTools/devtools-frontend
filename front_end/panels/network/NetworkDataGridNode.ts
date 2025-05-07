@@ -1119,12 +1119,9 @@ export class NetworkRequestNode extends NetworkNode {
     if (columnId === 'name') {
       const webBundleInnerRequestInfo = this.requestInternal.webBundleInnerRequestInfo();
       if (webBundleInnerRequestInfo) {
-        const iconData = {
-          iconName: 'bundle',
-          color: 'var(--icon-info)',
-        };
-        const secondIconElement = PanelUtils.createIconElement(iconData, i18nString(UIStrings.webBundleInnerRequest));
-        secondIconElement.classList.add('icon');
+        const secondIconElement = IconButton.Icon.create('bundle', 'icon');
+        secondIconElement.style.color = 'var(--icon-info)';
+        secondIconElement.title = i18nString(UIStrings.webBundleInnerRequest);
 
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
         if (webBundleInnerRequestInfo.bundleRequestId && networkManager) {

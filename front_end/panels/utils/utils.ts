@@ -63,47 +63,33 @@ export class PanelUtils {
     return false;
   }
 
-  static createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
-    const iconElement = document.createElement('div');
-    iconElement.title = title;
-    const url = new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString();
-    iconElement.style.setProperty('mask', `url('${url}')  no-repeat center /99%`);
-    iconElement.style.setProperty('background-color', iconData.color);
-    return iconElement;
-  }
-
   static getIconForNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
     let type = request.resourceType();
     let iconElement: HTMLElement;
 
     if (PanelUtils.isFailedNetworkRequest(request)) {
-      let iconData = undefined;
+      let iconName: string;
+      let color: string;
       // Failed prefetch network requests are displayed as warnings instead of errors.
       if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
-        iconData = {
-          iconName: 'warning-filled',
-          color: 'var(--icon-warning)',
-        };
+        iconName = 'warning-filled';
+        color = 'var(--icon-warning)';
       } else {
-        iconData = {
-          iconName: 'cross-circle-filled',
-          color: 'var(--icon-error)',
-        };
+        iconName = 'cross-circle-filled';
+        color = 'var(--icon-error)';
       }
 
-      iconElement = PanelUtils.createIconElement(iconData, type.title());
-      iconElement.classList.add('icon');
+      iconElement = IconButton.Icon.create(iconName, 'icon');
+      iconElement.style.color = color;
+      iconElement.title = type.title();
 
       return iconElement;
     }
 
     if (request.hasThirdPartyCookiePhaseoutIssue()) {
-      const iconData = {
-        iconName: 'warning-filled',
-        color: 'var(--icon-warning)',
-      };
-      iconElement = this.createIconElement(iconData, i18nString(UIStrings.thirdPartyPhaseout));
-      iconElement.classList.add('icon');
+      iconElement = IconButton.Icon.create('warning-filled', 'icon');
+      iconElement.style.color = 'var(--icon-warning)';
+      iconElement.title = i18nString(UIStrings.thirdPartyPhaseout);
 
       return iconElement;
     }
@@ -111,11 +97,6 @@ export class PanelUtils {
     const isHeaderOverridden = request.hasOverriddenHeaders();
     const isContentOverridden = request.hasOverriddenContent;
     if (isHeaderOverridden || isContentOverridden) {
-      const iconData = {
-        iconName: 'document',
-        color: 'var(--icon-default)',
-      };
-
       let title: Common.UIString.LocalizedString;
       if (isHeaderOverridden && isContentOverridden) {
         title = i18nString(UIStrings.requestContentHeadersOverridden);
@@ -125,8 +106,8 @@ export class PanelUtils {
         title = i18nString(UIStrings.requestHeadersOverridden);
       }
 
-      const iconChildElement = this.createIconElement(iconData, title);
-      iconChildElement.classList.add('icon');
+      const iconChildElement = IconButton.Icon.create('document', 'icon');
+      iconChildElement.title = title;
 
       iconElement = document.createElement('div');
       iconElement.classList.add('network-override-marker');
@@ -169,20 +150,18 @@ export class PanelUtils {
     // Exclude Manifest here because it has mimeType:application/json but it has its own icon
     if (type !== Common.ResourceType.resourceTypes.Manifest &&
         Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
-      const iconData = {
-        iconName: 'file-json',
-        color: 'var(--icon-file-script)',
-      };
-      iconElement = this.createIconElement(iconData, request.resourceType().title());
-      iconElement.classList.add('icon');
+      iconElement = IconButton.Icon.create('file-json', 'icon');
+      iconElement.style.color = 'var(--icon-file-script)';
+      iconElement.title = request.resourceType().title();
 
       return iconElement;
     }
 
     // Others
     const iconData = PanelUtils.iconDataForResourceType(type);
-    iconElement = this.createIconElement(iconData, request.resourceType().title());
-    iconElement.classList.add('icon');
+    iconElement = IconButton.Icon.create(iconData.iconName, 'icon');
+    iconElement.style.color = iconData.color;
+    iconElement.title = request.resourceType().title();
     return iconElement;
   }
 

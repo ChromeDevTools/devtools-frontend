@@ -27,8 +27,12 @@ export interface Script {
   url?: string;
   sourceUrl?: string;
   content?: string;
-  /** Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url. */
+  /** Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url.
+   * Since M138, data urls are never set here.
+   */
   sourceMapUrl?: string;
+  /** If true, the source map url was a data URL, so it got removed from the trace event. */
+  sourceMapUrlElided?: boolean;
   sourceMap?: SDK.SourceMap.SourceMap;
   request?: Types.Events.SyntheticNetworkRequest;
   /** Lazily generated - use getScriptGeneratedSizes to access. */
@@ -67,13 +71,21 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 
   if (Types.Events.isV8SourceRundownEvent(event)) {
-    const {isolate, scriptId, url, sourceUrl, sourceMapUrl} = event.args.data;
+    const {isolate, scriptId, url, sourceUrl, sourceMapUrl, sourceMapUrlElided} = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.url = url;
     if (sourceUrl) {
       script.sourceUrl = sourceUrl;
     }
-    if (sourceMapUrl) {
+
+    // Older traces may have data source map urls. Those can be very large, so a change
+    // was made to elide them from the trace.
+    // If elided, a fresh trace will fetch the source map from the Script model
+    // (see TimelinePanel getExistingSourceMap). If not fresh, the source map is resolved
+    // instead in this handler via `findCachedRawSourceMap`.
+    if (sourceMapUrlElided) {
+      script.sourceMapUrlElided = true;
+    } else if (sourceMapUrl) {
       script.sourceMapUrl = sourceMapUrl;
     }
     return;
@@ -199,17 +211,37 @@ export function getScriptGeneratedSizes(script: Script): GeneratedFileSizes|null
   return script.sizes ?? null;
 }
 
-function findCachedRawSourceMap(
-    sourceMapUrl: string, options: Types.Configuration.ParseOptions): SDK.SourceMap.SourceMapV3|undefined {
-  if (!sourceMapUrl) {
+function findCachedRawSourceMap(script: Script, options: Types.Configuration.ParseOptions): SDK.SourceMap.SourceMapV3|
+    undefined {
+  if (options.isFreshRecording || !options.metadata?.sourceMaps) {
+    // Exit if this is not a loaded trace w/ source maps in the metadata.
     return;
   }
 
-  // If loading from disk, check the metadata for source maps.
-  // The metadata doesn't store data url source maps.
-  const isDataUrl = sourceMapUrl.startsWith('data:');
-  if (!options.isFreshRecording && options.metadata?.sourceMaps && !isDataUrl) {
-    const cachedSourceMap = options.metadata.sourceMaps.find(m => m.sourceMapUrl === sourceMapUrl);
+  // For elided data url source maps, search the metadata source maps by script url.
+  if (script.sourceMapUrlElided) {
+    if (!script.url) {
+      return;
+    }
+
+    const cachedSourceMap = options.metadata.sourceMaps.find(m => m.url === script.url);
+    if (cachedSourceMap) {
+      return cachedSourceMap.sourceMap;
+    }
+
+    return;
+  }
+
+  if (!script.sourceMapUrl) {
+    return;
+  }
+
+  // Otherwise, search by source map url.
+  // Note: early enhanced traces may have this field set for data urls. Ignore those,
+  // as they were never stored in metadata sourcemap.
+  const isDataUrl = script.sourceMapUrl.startsWith('data:');
+  if (!isDataUrl) {
+    const cachedSourceMap = options.metadata.sourceMaps.find(m => m.sourceMapUrl === script.sourceMapUrl);
     if (cachedSourceMap) {
       return cachedSourceMap.sourceMap;
     }
@@ -243,7 +275,7 @@ export async function finalize(options: Types.Configuration.ParseOptions): Promi
     // No frame or url means the script came from somewhere we don't care about.
     // Note: scripts from inline <SCRIPT> elements use the url of the HTML document,
     // so aren't ignored.
-    if (!script.frame || !script.url || !script.sourceMapUrl) {
+    if (!script.frame || !script.url || (!script.sourceMapUrl && !script.sourceMapUrlElided)) {
       continue;
     }
 
@@ -259,22 +291,26 @@ export async function finalize(options: Types.Configuration.ParseOptions): Promi
       sourceUrl = Common.ParsedURL.ParsedURL.completeURL(frameUrl, script.sourceUrl) ?? script.sourceUrl;
     }
 
-    // Resolve the source map url. The value given by v8 may be relative, so resolve it here.
-    // This process should match the one in `SourceMapManager.attachSourceMap`.
-    const sourceMapUrl =
-        Common.ParsedURL.ParsedURL.completeURL(sourceUrl as Platform.DevToolsPath.UrlString, script.sourceMapUrl);
-    if (!sourceMapUrl) {
-      continue;
-    }
+    let sourceMapUrl;
+    if (script.sourceMapUrl) {
+      // Resolve the source map url. The value given by v8 may be relative, so resolve it here.
+      // This process should match the one in `SourceMapManager.attachSourceMap`.
+      sourceMapUrl =
+          Common.ParsedURL.ParsedURL.completeURL(sourceUrl as Platform.DevToolsPath.UrlString, script.sourceMapUrl);
+      if (!sourceMapUrl) {
+        continue;
+      }
 
-    script.sourceMapUrl = sourceMapUrl;
+      script.sourceMapUrl = sourceMapUrl;
+    }
 
     const params: Types.Configuration.ResolveSourceMapParams = {
       scriptId: script.scriptId,
-      scriptUrl: sourceUrl as Platform.DevToolsPath.UrlString,
-      sourceMapUrl: sourceMapUrl as Platform.DevToolsPath.UrlString,
+      scriptUrl: script.url as Platform.DevToolsPath.UrlString,
+      sourceUrl: sourceUrl as Platform.DevToolsPath.UrlString,
+      sourceMapUrl: sourceMapUrl ?? '' as Platform.DevToolsPath.UrlString,
       frame: script.frame as Protocol.Page.FrameId,
-      cachedRawSourceMap: findCachedRawSourceMap(sourceMapUrl, options),
+      cachedRawSourceMap: findCachedRawSourceMap(script, options),
     };
     const promise = options.resolveSourceMap(params).then(sourceMap => {
       if (sourceMap) {

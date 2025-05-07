@@ -2422,6 +2422,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async #retainSourceMapsForEnhancedTrace(
       parsedTrace: Trace.Handlers.Types.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
     const handleScript = async(script: Trace.Handlers.ModelHandlers.Scripts.Script): Promise<void> => {
+      if (script.sourceMapUrlElided) {
+        if (metadata.sourceMaps?.find(m => m.url === script.url)) {
+          return;
+        }
+
+        const rawSourceMap = script.sourceMap?.json();
+        if (rawSourceMap && script.url) {
+          metadata.sourceMaps?.push({url: script.url, sourceMap: rawSourceMap});
+        }
+        return;
+      }
+
       if (!script.sourceMapUrl || script.sourceMapUrl.startsWith('data:')) {
         return;
       }
@@ -2435,7 +2447,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       let rawSourceMap = script.sourceMap?.json();
 
       // If the raw map is not present for some reason, fetch it again.
-      if (!rawSourceMap) {
+      if (!rawSourceMap && !script.sourceMapUrlElided) {
         const initiator = {
           target: null,
           frameId: script.frame as Protocol.Page.FrameId,
@@ -2491,10 +2503,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     return async function resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams) {
-      const {scriptId, scriptUrl, sourceMapUrl, frame, cachedRawSourceMap} = params;
+      const {scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap} = params;
 
       if (cachedRawSourceMap) {
-        return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, cachedRawSourceMap);
+        return new SDK.SourceMap.SourceMap(
+            sourceUrl, sourceMapUrl ?? '' as Platform.DevToolsPath.UrlString, cachedRawSourceMap);
       }
 
       // For still-active frames, the source map is likely already fetched or at least in-flight.
@@ -2505,13 +2518,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         }
       }
 
+      if (!sourceMapUrl) {
+        return null;
+      }
+
       // If loading from disk, check the metadata for source maps.
       // The metadata doesn't store data url source maps.
       const isDataUrl = sourceMapUrl.startsWith('data:');
       if (!isFreshRecording && metadata?.sourceMaps && !isDataUrl) {
         const cachedSourceMap = metadata.sourceMaps.find(m => m.sourceMapUrl === sourceMapUrl);
         if (cachedSourceMap) {
-          return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, cachedSourceMap.sourceMap);
+          return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap);
         }
       }
 
@@ -2521,7 +2538,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         return null;
       }
 
-      if (!scriptUrl) {
+      if (!sourceUrl) {
         return null;
       }
 
@@ -2534,9 +2551,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // non-final navigations during the trace will never have their source maps
       // fetched by the debugger model. That's only ever done here.
 
-      const initiator = {target: null, frameId: frame, initiatorUrl: scriptUrl};
+      const initiator = {target: null, frameId: frame, initiatorUrl: sourceUrl};
       const payload = await SDK.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
-      return payload ? new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, payload) : null;
+      return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
     };
   }
 

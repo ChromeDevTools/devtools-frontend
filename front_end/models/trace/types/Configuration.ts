@@ -80,6 +80,8 @@ export interface ParseOptions {
 export interface ResolveSourceMapParams {
   scriptId: string;
   scriptUrl: Platform.DevToolsPath.UrlString;
+  /** The url as resolved by any sourceUrl comment. */
+  sourceUrl: Platform.DevToolsPath.UrlString;
   sourceMapUrl: Platform.DevToolsPath.UrlString;
   frame: Protocol.Page.FrameId;
   /** Set only if the raw source map was found on the provided metadata. Never set for source maps from data urls. */

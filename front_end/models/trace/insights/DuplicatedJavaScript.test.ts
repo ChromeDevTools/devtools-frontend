@@ -4,7 +4,8 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
-import type * as Trace from '../trace.js';
+import {fetchFixture, TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Trace from '../trace.js';
 
 describeWithEnvironment('DuplicatedJavaScript', function() {
   it('works (external source maps)', async () => {
@@ -47,12 +48,8 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 100, LCP: 100} as Trace.Insights.Types.MetricSavings);
   });
 
-  it('works (inline source maps)', async () => {
-    const {data, insights} = await processTrace(this, 'dupe-js-inline-maps.json.gz');
-    assert.strictEqual(insights.size, 1);
-    const insight = getInsightOrError(
-        'DuplicatedJavaScript', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
-
+  function assertInlineMapsTestCase(
+      insight: Trace.Insights.Models.DuplicatedJavaScript.DuplicatedJavaScriptInsightModel): void {
     const duplication = insight.duplicationGroupedByNodeModules;
     const results = Object.fromEntries(
         [...duplication.entries()].filter(v => v[1].estimatedDuplicateBytes > 1000 * 25).map(([key, data]) => {
@@ -85,5 +82,48 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
     });
 
     assert.deepEqual(insight.metricSavings, {FCP: 50, LCP: 50} as Trace.Insights.Types.MetricSavings);
+  }
+
+  it('works (inline source maps in trace events)', async function() {
+    const {data, insights} = await processTrace(this, 'dupe-js-inline-maps.json.gz');
+    assert.strictEqual(insights.size, 1);
+    const insight = getInsightOrError(
+        'DuplicatedJavaScript', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+
+    assertInlineMapsTestCase(insight);
+  });
+
+  it('works (inline source maps in metadata)', async function() {
+    // Load this trace in a way that mutating it is safe.
+    const traceText = await fetchFixture(
+        new URL('../../../panels/timeline/fixtures/traces/dupe-js-inline-maps.json.gz', import.meta.url));
+    const fileContents = JSON.parse(traceText) as Trace.Types.File.TraceFile;
+
+    // Remove the source map data urls from the trace, and move to metadata.
+    // This reflects how Chromium will elide data source map urls.
+    // The original trace here was recorded at a time where sourceMapUrl could be a
+    // large data url.
+    for (const event of fileContents.traceEvents) {
+      if (Trace.Types.Events.isV8SourceRundownEvent(event)) {
+        const {sourceMapUrl, url} = event.args.data;
+        if (sourceMapUrl?.startsWith('data:') && url) {
+          const sourceMap = await (await fetch(sourceMapUrl)).json();
+          fileContents.metadata.sourceMaps?.push({url, sourceMap});
+          event.args.data.sourceMapUrl = undefined;
+          event.args.data.sourceMapUrlElided = true;
+        }
+      }
+    }
+
+    const parsedTraceData = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
+    const {parsedTrace: data, insights} = parsedTraceData;
+    if (!insights) {
+      throw new Error('invalid insights');
+    }
+
+    assert.strictEqual(insights.size, 1);
+    const insight = getInsightOrError(
+        'DuplicatedJavaScript', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assertInlineMapsTestCase(insight);
   });
 });

@@ -3167,6 +3167,7 @@ export interface V8SourceRundownEvent extends Event {
       url?: string,
       sourceUrl?: string,
       sourceMapUrl?: string,
+      sourceMapUrlElided?: boolean,
     },
   };
 }

@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as fs from 'fs';
+// We don't have types for `js-yaml` in the codebase.
+// @ts-expect-error
 import * as yaml from 'js-yaml';
 import * as url from 'node:url';
 import * as path from 'path';
@@ -11,9 +13,10 @@ import puppeteer from 'puppeteer-core';
 import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
-import {parseComment, parseFollowUps} from './auto-run-helpers.js';
 import type {
-  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, PatchTest, RunResult} from './types.js';
+  ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, PatchTest, RunResult} from '../types';
+
+import {parseComment, parseFollowUps} from './auto-run-helpers.ts';
 
 // eslint-disable-next-line  @typescript-eslint/naming-convention
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));

@@ -24,14 +24,12 @@
  * @param {string} comment The comment string to split.
  * @return {Record<string, string>} An object containing the found keys and their values.
  */
-export function parseComment(comment) {
+export function parseComment(comment: string): Record<string, string> {
   // Tracks which section of the comment we are in so we know where to
   // associate lines with.
-  /** @type {string|null} */
-  let activeKey = null;
+  let activeKey: string|null = null;
 
-  /** @type {Record<string, string[]>} */
-  const lines = {
+  const lines: Record<string, string[]> = {
     // We may get other keys, but these two are required.
     explanation: [],
     prompt: [],
@@ -70,21 +68,15 @@ export function parseComment(comment) {
     }
   }
 
-  /** @type {Record<string, string>} */
-  const result = {};
+  const result: Record<string, string> = {};
   Object.keys(lines).forEach(lineKey => {
     result[lineKey] = lines[lineKey].join('\n');
   });
   return result;
 }
 
-/**
- * @param {Record<string, string>} comment
- * @return {string[]}
- */
-export function parseFollowUps(comment) {
-  /** @type {string[]} */
-  const followUpPrompts = [];
+export function parseFollowUps(comment: Record<string, string>): string[] {
+  const followUpPrompts: string[] = [];
   const FOLLOW_UP_PREFIX = 'followup';
   Object.entries(comment).forEach(([key, value]) => {
     if (key.toLowerCase().startsWith(FOLLOW_UP_PREFIX)) {

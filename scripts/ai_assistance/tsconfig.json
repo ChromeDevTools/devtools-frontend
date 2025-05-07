@@ -6,7 +6,9 @@
     "allowJs": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "target": "ESNext"
+    "target": "ESNext",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
   },
-  "include": ["./auto-run-helpers.js", "auto-run.ts", "./auto-run.test.js"]
+  "include": ["auto-run/*"]
 }

@@ -5,12 +5,11 @@
 /**
  * Tests for parts of the AI Assistance auto-run script.
  * NOTE: these are not run on CQ but exist to help you locally.
- * Run these with `npx mocha scripts/ai_assistance/auto-run.test.js`
+ * Run these with `npm run auto-run:test` from `scripts/ai_assistance` folder.
  */
+import {assert} from 'chai';
 
-const {assert} = require('chai');
-
-const {parseComment, parseFollowUps} = require('./auto-run-helpers.js');
+import {parseComment, parseFollowUps} from './auto-run-helpers.ts';
 
 describe('parsing comments', () => {
   it('parses out the prompt and evaluation sections using the "old" syntax', () => {

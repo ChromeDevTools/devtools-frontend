@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const FREESTYLER_SERVER_URL = 'http://localhost:8000';
+const DATA_URL = 'http://localhost:8000/auto-run/data';
 const Utils = {
   jsonToAsciiTable(data) {
     const exampleIdEvaluations = {};
@@ -138,7 +138,7 @@ const Utils = {
 const examplesMapCache = {};
 const API = {
   fetchDatasets: async () => {
-    const datasetNamesHtml = await (await fetch(`${FREESTYLER_SERVER_URL}/data`)).text();
+    const datasetNamesHtml = await (await fetch(DATA_URL)).text();
     const parser = new DOMParser();
     const document = parser.parseFromString(datasetNamesHtml, 'text/html');
     const links = document.querySelectorAll('a');
@@ -150,7 +150,7 @@ const API = {
       return examplesMapCache[title];
     }
 
-    const {examples, metadata} = await (await fetch(`${FREESTYLER_SERVER_URL}/data/${title}`)).json();
+    const {examples, metadata} = await (await fetch(`${DATA_URL}/${title}`)).json();
     examples.sort((ex1, ex2) => ex1.exampleId > ex2.exampleId ? 1 : ex1.exampleId < ex2.exampleId ? -1 : 0);
     const examplesMap = {};
     for (const example of examples) {

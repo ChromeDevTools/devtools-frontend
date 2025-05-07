@@ -249,7 +249,10 @@ export interface ParseHTML extends Complete {
   name: 'ParseHTML';
   args: Args&{
     beginData: {
-      sampleTraceId?: number, frame: string, startLine: number, url: string,
+      frame: string,
+      startLine: number,
+      url: string,
+      sampleTraceId?: number,
     },
     endData?: {
       endLine: number,
@@ -453,36 +456,35 @@ export interface SyntheticAuctionWorklet extends Instant, SyntheticBased<Phase.I
   target: string;
   type: AuctionWorkletType;
   args: Args&{
-    data:
-        ArgsData & {
-          // There are two threads for a worklet that we care about, so we gather
-          // the thread_name events so we can know the PID and TID for them (and
-          // hence display the right events in the track for each thread)
-          utilityThread: ThreadName,
-          v8HelperThread: ThreadName,
-        } &
+    data: ArgsData & {
+      // There are two threads for a worklet that we care about, so we gather
+      // the thread_name events so we can know the PID and TID for them (and
+      // hence display the right events in the track for each thread)
+      utilityThread: ThreadName,
+      v8HelperThread: ThreadName,
+    } &
         (
-            // This type looks odd, but this is because these events could either have:
-            // 1. Just the DoneWithProcess event
-            // 2. Just the RunningInProcess event
-            // 3. Both events
-            // But crucially it cannot have both events missing, hence listing all the
-            // allowed cases.
-            // Clang is disabled as the combination of nested types and optional
-            // properties cause it to weirdly indent some of the properties and make it
-            // very unreadable.
-            // clang-format off
+              // This type looks odd, but this is because these events could either have:
+              // 1. Just the DoneWithProcess event
+              // 2. Just the RunningInProcess event
+              // 3. Both events
+              // But crucially it cannot have both events missing, hence listing all the
+              // allowed cases.
+              // Clang is disabled as the combination of nested types and optional
+              // properties cause it to weirdly indent some of the properties and make it
+              // very unreadable.
+              // clang-format off
               {
                 runningInProcessEvent: AuctionWorkletRunningInProcess,
                 doneWithProcessEvent: AuctionWorkletDoneWithProcess,
               } |
               {
+                doneWithProcessEvent: AuctionWorkletDoneWithProcess,
                 runningInProcessEvent?: AuctionWorkletRunningInProcess,
-                doneWithProcessEvent: AuctionWorkletDoneWithProcess,
               } |
               {
-                doneWithProcessEvent?: AuctionWorkletDoneWithProcess,
                 runningInProcessEvent: AuctionWorkletRunningInProcess,
+                doneWithProcessEvent?: AuctionWorkletDoneWithProcess,
 
               }),
     // clang-format on
@@ -819,7 +821,8 @@ export interface TracingStartedInBrowser extends Instant {
     data?: ArgsData & {
       frameTreeNodeId: number,
       // Frames can only missing in "fake" traces
-      frames?: TraceFrame[], persistentIds: boolean,
+      persistentIds: boolean,
+      frames?: TraceFrame[],
     },
   };
 }
@@ -879,7 +882,8 @@ export interface MarkDOMContent extends Instant {
     data?: ArgsData & {
       frame: string,
       isMainFrame: boolean,
-      isOutermostMainFrame?: boolean, page: string,
+      page: string,
+      isOutermostMainFrame?: boolean,
     },
   };
 }
@@ -1128,7 +1132,9 @@ export interface ResourceReceiveResponse extends Instant {
       responseTime: Milli,
       statusCode: number,
       // Some cached events don't have this field
-      timing?: ResourceReceiveResponseTimingData, connectionId: number, connectionReused: boolean,
+      connectionId: number,
+      connectionReused: boolean,
+      timing?: ResourceReceiveResponseTimingData,
       headers?: Array<{name: string, value: string}>,
     },
   };
@@ -1215,7 +1221,7 @@ export interface StyleInvalidatorInvalidationTracking extends Instant {
       frame: string,
       nodeId: Protocol.DOM.BackendNodeId,
       reason: string,
-      invalidationList: Array<{classes?: string[], id: string}>,
+      invalidationList: Array<{id: string, classes?: string[]}>,
       subtree: boolean,
       nodeName?: string,
       extraData?: string,
@@ -1259,7 +1265,8 @@ export interface LinkPreconnect extends Instant {
     data: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       node_id: Protocol.DOM.BackendNodeId,
-      frame?: string, url: string,
+      url: string,
+      frame?: string,
     },
   };
 }
@@ -1674,7 +1681,8 @@ export interface SyntheticJSSample extends Event {
   args: Args&{
     data: ArgsData & {
       // Used to associate a stack sample with a trace event.
-      traceId?: number, stackTrace: Protocol.Runtime.CallFrame[],
+      stackTrace: Protocol.Runtime.CallFrame[],
+      traceId?: number,
     },
   };
   ph: Phase.INSTANT;
@@ -1897,7 +1905,8 @@ export interface UpdateLayoutTree extends Complete {
   args: Args&{
     elementCount: number,
     beginData?: {
-      sampleTraceId?: number, frame: string,
+      frame: string,
+      sampleTraceId?: number,
       stackTrace?: CallFrame[],
     },
   };
@@ -1910,7 +1919,11 @@ export interface Layout extends Complete {
   name: Name.LAYOUT;
   args: Args&{
     beginData: {
-      sampleTraceId?: number, frame: string, dirtyObjects: number, partialLayout: boolean, totalObjects: number,
+      frame: string,
+      dirtyObjects: number,
+      partialLayout: boolean,
+      totalObjects: number,
+      sampleTraceId?: number,
       stackTrace?: CallFrame[],
     },
     // endData is not reliably populated.
@@ -2365,10 +2378,12 @@ export interface PaintImage extends Complete {
       x: number,
       y: number,
       isCSS: boolean,
+      srcHeight: number,
+      srcWidth: number,
       isPicture?: boolean,
       loadingAttribute?: string,
       srcsetAttribute?: string,
-      url?: string, srcHeight: number, srcWidth: number,
+      url?: string,
       nodeId?: Protocol.DOM.BackendNodeId,
       // Optional as it was added in M137: crrev.com/c/6491448
       nodeName?: string,
@@ -2526,7 +2541,9 @@ export interface TimerInstall extends Instant {
     data: {
       frame: string,
       singleShot: boolean,
-      stackTrace?: CallFrame, timeout: number, timerId: number,
+      timeout: number,
+      timerId: number,
+      stackTrace?: CallFrame,
     },
   };
 }
@@ -2597,8 +2614,9 @@ export interface WebSocketTransfer extends Instant {
     data: ArgsData & {
       identifier: number,
       url: string,
+      dataLength: number,
       frame?: string,
-      workerId?: string, dataLength: number,
+      workerId?: string,
     },
   };
 }
@@ -2617,8 +2635,9 @@ export interface WebSocketSend extends Instant {
     data: ArgsData & {
       identifier: number,
       url: string,
+      dataLength: number,
       frame?: string,
-      workerId?: string, dataLength: number,
+      workerId?: string,
     },
   };
 }
@@ -2633,8 +2652,9 @@ export interface WebSocketReceive extends Instant {
     data: ArgsData & {
       identifier: number,
       url: string,
+      dataLength: number,
       frame?: string,
-      workerId?: string, dataLength: number,
+      workerId?: string,
     },
   };
 }

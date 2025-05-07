@@ -177,7 +177,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCompa
 export type CompareRating = 'better'|'worse'|'similar';
 
 export function renderCompareText(
-    options: {metric: string, rating: MetricRating, compare?: CompareRating, localValue: Element}): Element {
+    options: {metric: string, rating: MetricRating, localValue: Element, compare?: CompareRating}): Element {
   const {rating, compare} = options;
   const values = {
     PH1: options.metric,
@@ -227,7 +227,10 @@ export function renderCompareText(
 export function renderDetailedCompareText(options: {
   metric: string,
   localRating: MetricRating,
-  fieldRating?: MetricRating, localValue: Element, fieldValue: Element, percent: string,
+  localValue: Element,
+  percent: string,
+  fieldValue: Element,
+  fieldRating?: MetricRating,
 }): Element {
   const {localRating, fieldRating} = options;
   const values = {

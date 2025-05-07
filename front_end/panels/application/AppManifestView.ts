@@ -1108,7 +1108,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   checkSizeProblem(
       size: ParsedSize, image: HTMLImageElement, resourceName: Platform.UIString.LocalizedString,
-      imageUrl: string): {error?: Platform.UIString.LocalizedString, hasSquareSize: boolean} {
+      imageUrl: string): {hasSquareSize: boolean, error?: Platform.UIString.LocalizedString} {
     if ('any' in size) {
       return {hasSquareSize: image.naturalWidth === image.naturalHeight};
     }

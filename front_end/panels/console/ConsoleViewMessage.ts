@@ -1892,7 +1892,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private static tokenizeMessageText(string: string): Array<{
-    type?: string, text: string,
+    text: string,
+    type?: string,
   }> {
     const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
     if (string.length > getMaxTokenizableStringLength()) {

@@ -1004,10 +1004,10 @@ function renderSelection({
 }: {
   selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
+  isTextInputDisabled: boolean,
+  onContextClick: () => void | Promise<void>,
+  onInspectElementClick: () => void,
   conversationType?: AiAssistanceModel.ConversationType,
-                  isTextInputDisabled: boolean,
-                  onContextClick: () => void | Promise<void>,
-                  onInspectElementClick: () => void,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
@@ -1087,12 +1087,11 @@ function renderMessages({
   canShowFeedbackForm: boolean,
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
+  onSuggestionClick: (suggestion: string) => void,
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onMessageContainerRef: (el: Element|undefined) => void,
   changeSummary?: string,
   changeManager?: AiAssistanceModel.ChangeManager,
-               onSuggestionClick: (suggestion: string) => void,
-               onFeedbackSubmit:
-                   (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-               onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   function renderPatchWidget(): Lit.LitTemplate {
     if (isLoading) {
@@ -1201,7 +1200,9 @@ function renderChatInputButtons(
       blockedByCrossOrigin: boolean,
       isTextInputDisabled: boolean,
       isTextInputEmpty: boolean,
-      imageInput?: ImageInputData, onCancel: (ev: SubmitEvent) => void, onNewConversation: () => void,
+      onCancel: (ev: SubmitEvent) => void,
+      onNewConversation: () => void,
+      imageInput?: ImageInputData,
     }): Lit.TemplateResult {
   if (isLoading) {
     // clang-format off
@@ -1267,9 +1268,9 @@ function renderMultimodalInputButtons({
   onTakeScreenshot,
   onImageUpload,
 }: {
-  multimodalInputEnabled?: boolean,
   isTextInputDisabled: boolean,
   blockedByCrossOrigin: boolean,
+  multimodalInputEnabled?: boolean,
   imageInput?: ImageInputData,
   uploadImageInputEnabled?: boolean,
   onTakeScreenshot?: () => void,
@@ -1414,19 +1415,21 @@ function renderChatInput({
   state: State,
   selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
+  isTextInputEmpty: boolean,
+  aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
+  onContextClick: () => void,
+  onInspectElementClick: () => void,
+  onSubmit: (ev: SubmitEvent) => void,
+  onTextAreaKeyDown: (ev: KeyboardEvent) => void,
+  onCancel: (ev: SubmitEvent) => void,
+  onNewConversation: () => void,
+  onTextInputChange: (input: string) => void,
   multimodalInputEnabled?: boolean,
   conversationType?: AiAssistanceModel.ConversationType,
-  imageInput?: ImageInputData, isTextInputEmpty: boolean,
+  imageInput?: ImageInputData,
   uploadImageInputEnabled?: boolean,
-                         aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
-                         onContextClick: () => void,
-                         onInspectElementClick: () => void,
-                         onSubmit: (ev: SubmitEvent) => void,
-                         onTextAreaKeyDown: (ev: KeyboardEvent) => void,
-                         onCancel: (ev: SubmitEvent) => void,
-                         onNewConversation: () => void,
   onTakeScreenshot?: () => void,
-  onRemoveImageInput?: () => void, onTextInputChange: (input: string) => void,
+  onRemoveImageInput?: () => void,
   onImageUpload?: (ev: Event) => void,
 }): Lit.LitTemplate {
   if (!conversationType) {
@@ -1658,13 +1661,12 @@ function renderMainContents({
   suggestions: AiAssistanceModel.ConversationSuggestion[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
+  changeManager: AiAssistanceModel.ChangeManager,
+  onSuggestionClick: (suggestion: string) => void,
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onMessageContainerRef: (el: Element|undefined) => void,
   conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
-               changeManager: AiAssistanceModel.ChangeManager,
-               onSuggestionClick: (suggestion: string) => void,
-               onFeedbackSubmit:
-                   (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-               onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(renderConsentViewContents());

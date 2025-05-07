@@ -166,7 +166,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   private searchableView: UI.SearchableView.SearchableView|null;
   private editable: boolean;
   private positionToReveal: {
-    from?: {lineNumber: number, columnNumber: number}, to: {lineNumber: number, columnNumber: number},
+    to: {lineNumber: number, columnNumber: number},
+    from?: {lineNumber: number, columnNumber: number},
     shouldHighlight?: boolean,
   }|null;
   private lineToScrollTo: number|null;

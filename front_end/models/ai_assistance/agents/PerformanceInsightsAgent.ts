@@ -458,7 +458,8 @@ The fields are:
   }
 
   override async * run(initialQuery: string, options: {
-    signal?: AbortSignal, selected: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null,
+    selected: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null,
+    signal?: AbortSignal,
   }): AsyncGenerator<ResponseData, void, void> {
     this.#insight = options.selected ?? undefined;
 

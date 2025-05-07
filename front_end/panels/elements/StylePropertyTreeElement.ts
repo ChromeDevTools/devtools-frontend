@@ -1447,7 +1447,8 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
 }
 
 async function decorateAnchorForAnchorLink(container: HTMLElement, stylesSidebarPane: StylesSidebarPane, options: {
-  identifier?: string, needsSpace: boolean,
+  needsSpace: boolean,
+  identifier?: string,
 }): Promise<void> {
   const anchorNode = await stylesSidebarPane.node()?.getAnchorBySpecifier(options.identifier) ?? undefined;
   const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({

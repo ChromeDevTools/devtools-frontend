@@ -36,54 +36,52 @@ export default createRule<RuleOptions, MessageIds>({
   create: function(context) {
     const sourceCode = context.sourceCode;
 
+    function handleTypeElements(typeElements: TSESTree.TypeElement[]) {
+      let misplacedOptionalProp: TSESTree.TSPropertySignature|null = null;
+
+      for (const member of typeElements) {
+        // We only care about TSPropertySignature members (key: type)
+        if (member.type !== 'TSPropertySignature') {
+          continue;
+        }
+
+        // Ensure the key is an Identifier for safe name access
+        if (member.key.type !== 'Identifier') {
+          continue;
+        }
+
+        if (member.optional) {
+          misplacedOptionalProp = member;
+        } else if (misplacedOptionalProp) {
+          // Required property found after an optional one
+          const requiredProp = member;
+          const misplacedNode = misplacedOptionalProp;
+
+          context.report({
+            node: misplacedNode,
+            messageId: 'optionalPropertyBeforeRequired',
+            data: {
+              name: 'name' in misplacedNode.key ? misplacedNode.key.name : 'unknown',
+            },
+            fix(fixer) {
+              const optionalPropertyText = sourceCode.getText(misplacedNode);
+              const requiredPropertyText = sourceCode.getText(requiredProp);
+
+              // Swap the positions of the two properties
+              return [
+                fixer.replaceText(misplacedNode, requiredPropertyText),
+                fixer.replaceText(requiredProp, optionalPropertyText),
+              ];
+            },
+          });
+        }
+      }
+    }
+
     return {
-      TSTypeAliasDeclaration(node) {
-        const typeAnnotation = node.typeAnnotation;
-
-        if (typeAnnotation.type !== 'TSTypeLiteral') {
-          return;
-        }
-        let misplacedOptionalProp: TSESTree.TSPropertySignature|null = null;
-
-        for (const member of typeAnnotation.members) {
-          // We only care about TSPropertySignature members (key: type)
-          if (member.type !== 'TSPropertySignature') {
-            continue;
-          }
-
-          // Ensure the key is an Identifier for safe name access
-          if (member.key.type !== 'Identifier') {
-            continue;
-          }
-
-          if (member.optional) {
-            misplacedOptionalProp = member;
-          } else if (misplacedOptionalProp) {
-            // Required property found after an optional one
-            const requiredProp = member;
-            const misplacedNode = misplacedOptionalProp;
-
-            context.report({
-              node: misplacedNode,
-              messageId: 'optionalPropertyBeforeRequired',
-              data: {
-                name: 'name' in misplacedNode.key ? misplacedNode.key.name : 'unknown',
-              },
-              fix(fixer) {
-                const optionalPropertyText = sourceCode.getText(misplacedNode);
-                const requiredPropertyText = sourceCode.getText(requiredProp);
-
-                // Swap the positions of the two properties
-                return [
-                  fixer.replaceText(misplacedNode, requiredPropertyText),
-                  fixer.replaceText(requiredProp, optionalPropertyText),
-                ];
-              },
-            });
-          }
-        }
+      TSTypeLiteral(node) {
+        handleTypeElements(node.members);
       },
-
     };
   },
 });

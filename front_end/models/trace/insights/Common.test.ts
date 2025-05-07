@@ -61,8 +61,9 @@ describeWithEnvironment('Common', function() {
     const estimate = estimateCompressedContentSize;
     const encoding = [{name: 'Content-Encoding', value: 'gzip'}];
     const makeRequest = (partial: {
+                          resourceType: Protocol.Network.ResourceType,
                           transferSize?: number,
-                          resourceSize?: number, resourceType: Protocol.Network.ResourceType,
+                          resourceSize?: number,
                           responseHeaders?: Array<{name: string, value: string}>,
                         }): Types.Events.SyntheticNetworkRequest => {
       const request: RecursivePartial<Types.Events.SyntheticNetworkRequest> = {

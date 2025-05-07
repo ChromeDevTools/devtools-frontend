@@ -1277,8 +1277,9 @@ self.injectedExtensionAPI = function(
           const callback = extractCallbackArgument(arguments);
           function callbackWrapper(result: unknown): void {
             const {isError, isException, value} = result as {
+              value: unknown,
               isError?: boolean,
-              isException?: boolean, value: unknown,
+              isException?: boolean,
             };
             if (isError || isException) {
               callback?.(undefined, result);

@@ -16,7 +16,8 @@ const {urlString} = Platform.DevToolsPath;
 export function createContentProviderUISourceCodes(options: {
   items: Array<{
     url: Platform.DevToolsPath.UrlString,
-    content?: string, mimeType: string,
+    mimeType: string,
+    content?: string,
     resourceType?: Common.ResourceType.ResourceType,
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
   }>,
@@ -52,7 +53,8 @@ export function createContentProviderUISourceCodes(options: {
 
 export function createContentProviderUISourceCode(options: {
   url: Platform.DevToolsPath.UrlString,
-  content?: string, mimeType: string,
+  mimeType: string,
+  content?: string,
   projectType?: Workspace.Workspace.projectTypes,
   projectId?: string,
   metadata?: Workspace.UISourceCode.UISourceCodeMetadata,

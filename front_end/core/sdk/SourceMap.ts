@@ -82,7 +82,6 @@ export interface SourceMapV3Object {
 export type SourceMapV3 = SourceMapV3Object|{
   // clang-format off
   version: number,
-  file?: string,
   sections: Array<{
     offset: {line: number, column: number},
     map: SourceMapV3Object,
@@ -90,6 +89,7 @@ export type SourceMapV3 = SourceMapV3Object|{
     offset: {line: number, column: number},
     url: string,
   }>,
+  file?: string,
   // clang-format on
 };
 

@@ -42,7 +42,8 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   /** The entity for this navigation's URL. Any other entity is from a third party. */
-  firstPartyEntity?: Extras.ThirdParties.Entity, entitySummaries: Extras.ThirdParties.EntitySummary[],
+  entitySummaries: Extras.ThirdParties.EntitySummary[],
+  firstPartyEntity?: Extras.ThirdParties.Entity,
 }>;
 
 function getRelatedEvents(

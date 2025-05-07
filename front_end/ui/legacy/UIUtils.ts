@@ -1224,7 +1224,7 @@ export function createLabel(title: string, className?: string, associatedControl
 }
 
 export function createIconLabel(
-    options: {title?: string, iconName: string, color?: string, width?: '14px'|'20px', height?: '14px'|'20px'}):
+    options: {iconName: string, title?: string, color?: string, width?: '14px'|'20px', height?: '14px'|'20px'}):
     DevToolsIconLabel {
   const element = document.createElement('dt-icon-label');
   if (options.title) {

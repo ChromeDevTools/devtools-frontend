@@ -28,7 +28,7 @@ new RuleTester().run('optional-properties-last', rule, {
       `,
     },
     {
-      // As a TSInterfaceDeclaration this isn't targetted by the rule.
+      // As a TSInterfaceDeclaration it's top-level properties are not linted.
       // But that's fine as clang-format doesn't touch it.
       code: `
 export interface LCPPhases {
@@ -96,6 +96,40 @@ export interface LCPPhases {
           isAwesome: boolean;
           isCool?: boolean;
           job?: string;
+        };
+      `,
+    },
+
+    // Type literals inside an interface are linted.
+    {
+      code: `
+        interface AnotherInvalidType {
+          isCool?: boolean;
+          isAwesome: boolean;
+          job?: string;
+          obj: {
+            isCool?: boolean;
+            isAwesome: boolean;
+            job?: string;
+          };
+        };
+      `,
+      errors: [
+        {
+          messageId: 'optionalPropertyBeforeRequired',
+          type: 'TSPropertySignature' as AST_NODE_TYPES,
+        },
+      ],
+      output: `
+        interface AnotherInvalidType {
+          isCool?: boolean;
+          isAwesome: boolean;
+          job?: string;
+          obj: {
+            isAwesome: boolean;
+            isCool?: boolean;
+            job?: string;
+          };
         };
       `,
     },

@@ -91,7 +91,8 @@ interface TraceEventFunctionCall extends RehydratingTraceBase {
   args: {
     data: {
       frame: Protocol.Page.FrameId,
-      isolate?: string, scriptId: Protocol.Runtime.ScriptId,
+      scriptId: Protocol.Runtime.ScriptId,
+      isolate?: string,
     },
   };
 }

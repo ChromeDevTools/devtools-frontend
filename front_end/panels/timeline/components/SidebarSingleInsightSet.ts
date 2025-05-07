@@ -400,6 +400,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
+      if (model instanceof Error) {
+        continue;
+      }
+
       const fieldMetrics = this.#getFieldMetrics(insightSetKey);
 
       // clang-format off

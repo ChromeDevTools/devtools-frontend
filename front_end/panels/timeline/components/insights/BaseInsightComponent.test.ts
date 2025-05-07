@@ -99,7 +99,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const descElement = component.shadowRoot.querySelector<HTMLElement>('.insight-description');
       assert.isNotNull(descElement);
       // It's in the markdown component.
-      assert.strictEqual(descElement.children[0].shadowRoot?.textContent?.trim(), 'some description');
+      assert.include(descElement.children[0].shadowRoot?.textContent?.trim(), 'some description');
 
       const contentElement = component.shadowRoot.querySelector<HTMLElement>('.insight-content');
       assert.isNotNull(contentElement);

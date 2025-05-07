@@ -9,15 +9,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Lit from '../../lit/lit.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
-import diffViewStylesRaw from './diffView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const diffViewStyles = new CSSStyleSheet();
-diffViewStyles.replaceSync(diffViewStylesRaw);
-const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.codeHighlighterStyles);
+import diffViewStyles from './diffView.css.js';
 
 const {html} = Lit;
 
@@ -202,6 +194,8 @@ class DiffRenderer {
 
   #render(rows: readonly Row[]): Lit.TemplateResult {
     return html`
+      <style>${diffViewStyles}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)}>
         ${rows.map(row => this.#renderRow(row))}
       </div>`;
@@ -282,7 +276,6 @@ export class DiffView extends HTMLElement {
 
   constructor(data?: DiffViewData) {
     super();
-    this.#shadow.adoptedStyleSheets = [diffViewStyles, CodeHighlighterStyles];
     if (data) {
       this.loaded = DiffRenderer.render(data.diff, data.mimeType, this.#shadow);
     } else {

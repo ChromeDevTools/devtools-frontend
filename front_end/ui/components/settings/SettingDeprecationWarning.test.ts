@@ -17,7 +17,7 @@ function createWarningElement(deprecationNotice: Common.SettingRegistration.Sett
   };
   const component = new SettingComponents.SettingDeprecationWarning.SettingDeprecationWarning();
   component.data = new Common.Settings.Deprecation(registration);
-  const element = component.shadowRoot?.firstElementChild as HTMLElement | undefined;
+  const element = component.shadowRoot!.querySelector('devtools-icon');
   return {component, element};
 }
 

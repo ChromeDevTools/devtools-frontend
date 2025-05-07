@@ -11,13 +11,7 @@ import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import {html, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import panelFeedbackStylesRaw from './panelFeedback.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const panelFeedbackStyles = new CSSStyleSheet();
-panelFeedbackStyles.replaceSync(panelFeedbackStylesRaw);
+import panelFeedbackStyles from './panelFeedback.css.js';
 
 const UIStrings = {
   /**
@@ -58,10 +52,6 @@ export class PanelFeedback extends HTMLElement {
     quickStartLinkText: '',
   };
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [panelFeedbackStyles];
-  }
-
   set data(data: PanelFeedbackData) {
     this.#props = data;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -74,6 +64,7 @@ export class PanelFeedback extends HTMLElement {
 
     // clang-format off
     render(html`
+      <style>${panelFeedbackStyles}</style>
       <div class="preview">
         <h2 class="flex">
           <devtools-icon .data=${{

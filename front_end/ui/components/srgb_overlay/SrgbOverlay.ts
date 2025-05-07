@@ -7,13 +7,7 @@ import * as Common from '../../../core/common/common.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import {html, render} from '../../../ui/lit/lit.js';
 
-import srgbOverlayStylesRaw from './srgbOverlay.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const srgbOverlayStyles = new CSSStyleSheet();
-srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw);
+import srgbOverlayStyles from './srgbOverlay.css.js';
 
 interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
@@ -40,9 +34,6 @@ export class SrgbOverlay extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadow.adoptedStyleSheets = [
-      srgbOverlayStyles,
-    ];
   }
 
   #getLinePoints({hue, width, height}: SrgbOverlayProps): Array<{x: number, y: number}>|null {
@@ -107,6 +98,7 @@ export class SrgbOverlay extends HTMLElement {
 
       render(
           html`
+          <style>${srgbOverlayStyles}</style>
           <span class="label" style="right: ${width - closestPoint.x}px">sRGB</span>
           <svg>
             <polyline points=${

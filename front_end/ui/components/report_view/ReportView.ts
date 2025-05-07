@@ -5,28 +5,12 @@
 
 import {html, nothing, render} from '../../lit/lit.js';
 
-import reportStylesRaw from './report.css.js';
-import reportKeyStylesRaw from './reportKey.css.js';
-import reportSectionStylesRaw from './reportSection.css.js';
-import reportSectionDividerStylesRaw from './reportSectionDivider.css.js';
-import reportSectionHeaderStylesRaw from './reportSectionHeader.css.js';
-import reportValueStylesRaw from './reportValue.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const reportStyles = new CSSStyleSheet();
-reportStyles.replaceSync(reportStylesRaw);
-const reportKeyStyles = new CSSStyleSheet();
-reportKeyStyles.replaceSync(reportKeyStylesRaw);
-const reportSectionStyles = new CSSStyleSheet();
-reportSectionStyles.replaceSync(reportSectionStylesRaw);
-const reportSectionDividerStyles = new CSSStyleSheet();
-reportSectionDividerStyles.replaceSync(reportSectionDividerStylesRaw);
-const reportSectionHeaderStyles = new CSSStyleSheet();
-reportSectionHeaderStyles.replaceSync(reportSectionHeaderStylesRaw);
-const reportValueStyles = new CSSStyleSheet();
-reportValueStyles.replaceSync(reportValueStylesRaw);
+import reportStyles from './report.css.js';
+import reportKeyStyles from './reportKey.css.js';
+import reportSectionStyles from './reportSection.css.js';
+import reportSectionDividerStyles from './reportSectionDivider.css.js';
+import reportSectionHeaderStyles from './reportSectionHeader.css.js';
+import reportValueStyles from './reportValue.css.js';
 
 /**
  * The `Report` component can be used to display static information. A report
@@ -60,7 +44,6 @@ export class Report extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportStyles];
     this.#render();
   }
 
@@ -68,6 +51,7 @@ export class Report extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportStyles}</style>
       ${this.#reportTitle ? html`<div class="report-title">${this.#reportTitle}</div>` : nothing}
       <div class="content">
         <slot></slot>
@@ -84,13 +68,13 @@ export interface ReportSectionData {
 export class ReportSection extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportSectionStyles];
     this.#render();
   }
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportSectionStyles}</style>
       <div class="section">
         <slot></slot>
       </div>
@@ -102,7 +86,6 @@ export class ReportSection extends HTMLElement {
 export class ReportSectionHeader extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportSectionHeaderStyles];
     this.#render();
   }
 
@@ -110,6 +93,7 @@ export class ReportSectionHeader extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportSectionHeaderStyles}</style>
       <div class="section-header">
         <slot></slot>
       </div>
@@ -121,7 +105,6 @@ export class ReportSectionHeader extends HTMLElement {
 export class ReportSectionDivider extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportSectionDividerStyles];
     this.#render();
   }
 
@@ -129,6 +112,7 @@ export class ReportSectionDivider extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportSectionDividerStyles}</style>
       <div class="section-divider">
       </div>
     `, this.#shadow, {host: this});
@@ -139,7 +123,6 @@ export class ReportSectionDivider extends HTMLElement {
 export class ReportKey extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportKeyStyles];
     this.#render();
   }
 
@@ -147,6 +130,7 @@ export class ReportKey extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportKeyStyles}</style>
       <div class="key"><slot></slot></div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -156,7 +140,6 @@ export class ReportKey extends HTMLElement {
 export class ReportValue extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportValueStyles];
     this.#render();
   }
 
@@ -164,6 +147,7 @@ export class ReportValue extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportValueStyles}</style>
       <div class="value"><slot></slot></div>
     `, this.#shadow, {host: this});
     // clang-format on

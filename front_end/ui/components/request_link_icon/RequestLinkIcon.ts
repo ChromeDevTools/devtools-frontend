@@ -16,13 +16,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import requestLinkIconStylesRaw from './requestLinkIcon.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const requestLinkIconStyles = new CSSStyleSheet();
-requestLinkIconStyles.replaceSync(requestLinkIconStylesRaw);
+import requestLinkIconStyles from './requestLinkIcon.css.js';
 
 const {html} = Lit;
 
@@ -111,10 +105,6 @@ export class RequestLinkIcon extends HTMLElement {
     void this.#render();
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [requestLinkIconStyles];
-  }
-
   get data(): RequestLinkIconData {
     return {
       linkToPreflight: this.#linkToPreflight,
@@ -200,7 +190,7 @@ export class RequestLinkIcon extends HTMLElement {
           </button>`;
         // clang-format on
       }
-      Lit.render(template, this.#shadow, {host: this});
+      Lit.render(html`<style>${requestLinkIconStyles}</style>${template}`, this.#shadow, {host: this});
     });
   }
 }

@@ -6,19 +6,12 @@
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import {html, render} from '../../lit/lit.js';
 
-import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const panelIntroductionStepsStyles = new CSSStyleSheet();
-panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw);
+import panelIntroductionStepsStyles from './panelIntroductionSteps.css.js';
 
 export class PanelIntroductionSteps extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [panelIntroductionStepsStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -29,6 +22,7 @@ export class PanelIntroductionSteps extends HTMLElement {
 
     // clang-format off
     render(html`
+      <style>${panelIntroductionStepsStyles}</style>
       <h1><slot name="title">slot: title</slot></h1>
 
       <ol class="intro-steps">

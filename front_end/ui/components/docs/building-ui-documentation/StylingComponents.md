@@ -10,14 +10,10 @@ Components are styled by a CSS file that is co-located next to the TypeScript so
 To import this file you use a regular `import` statement, and import the filename with `.js` appended:
 
 ```ts
-import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const elementsBreadcrumbsStyles = new CSSStyleSheet();
-elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssText);
+import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 ```
 
-As part of the build tool step, each CSS file is converted into a JS file that exports a `CSSStyleSheet` instance. This is done by Rollup in [`generate_css_js_files`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/scripts/build/generate_css_js_files.js;l=1;drc=28af9fbe783d82aa64bfa5f9b9509572dc2b3efe).
+As part of the build tool step, each CSS file is converted into a JS file that exports a `CSSInJS` string.
 
 ## `BUILD.gn` changes
 
@@ -39,13 +35,17 @@ devtools_entrypoint("bundle") {
 }
 ```
 
-## Adopting the stylesheet
+## Using the stylesheet
 
-Importing the stylesheet is not enough to have it apply to the component's ShadowDOM, it must be adopted. The `connectedCallback` method is the best place for this:
+Importing the stylesheet is not enough to have it apply to the component's ShadowDOM, it must be inserted into
+a `<style>` tag in the template. The `#render` method is the best place for this:
 
 ```ts
-connectedCallback() {
-  this.#shadow.adoptedStyleSheets = [elementsBreadcrumbs];
+#render() {
+  render(html`
+    <style>${elementsBreadcrumbsStyles}</style>
+    ...
+    `, this.#shadow, {host: this});
 }
 ```
 
@@ -64,5 +64,3 @@ If you want your component to have its colors configurable by users, consider de
 ```
 
 This allows someone to define that `--override-custom-color` variable, but also ensures if it isn't defined that the default `color-text-primary` will be used. **Be careful with this!** We try to ensure consistent colors across DevTools; so most of the time you shouldn't allow configurable colors and should use the correct theme variables.
-
-

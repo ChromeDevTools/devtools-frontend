@@ -7,19 +7,13 @@ import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import {html, render} from '../../../ui/lit/lit.js';
 
-import buttonDialogStylesRaw from './buttonDialog.css.js';
+import buttonDialogStyles from './buttonDialog.css.js';
 import {
   type ClickOutsideDialogEvent,
   type Dialog as DialogElement,
   DialogHorizontalAlignment,
   DialogVerticalPosition,
 } from './Dialog.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const buttonDialogStyles = new CSSStyleSheet();
-buttonDialogStyles.replaceSync(buttonDialogStylesRaw);
 
 export interface ButtonDialogData {
   openOnRender?: boolean;
@@ -44,10 +38,6 @@ export class ButtonDialog extends HTMLElement {
   #dialog: DialogElement|null = null;
   #showButton: Buttons.Button.Button|null = null;
   #data: ButtonDialogData|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [buttonDialogStyles];
-  }
 
   set data(data: ButtonDialogData) {
     this.#data = data;
@@ -84,6 +74,7 @@ export class ButtonDialog extends HTMLElement {
     // clang-format off
     render(
       html`
+      <style>${buttonDialogStyles}</style>
       <devtools-button
         @click=${this.#showDialog}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {

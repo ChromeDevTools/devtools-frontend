@@ -399,11 +399,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    values[0] = report.querySelector('devtools-report-value:nth-of-type(1) devtools-request-link-icon')
-                    ?.shadowRoot?.textContent?.trim() ||
-        values[0];
     assert.deepEqual(zip2(keys, values), [
-      ['URL', url],
+      ['URL', ''],
       ['Action', 'Prefetch'],
       ['Status', 'Speculative load failed.'],
       ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
@@ -461,11 +458,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    values[0] = report.querySelector('devtools-report-value:nth-of-type(1) devtools-request-link-icon')
-                    ?.shadowRoot?.textContent?.trim() ||
-        values[0];
     assert.deepEqual(zip2(keys, values), [
-      ['URL', url],
+      ['URL', ''],
       ['Action', 'Prefetch'],
       ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
       ['Rule set', 'example.com/speculation-rules.json'],

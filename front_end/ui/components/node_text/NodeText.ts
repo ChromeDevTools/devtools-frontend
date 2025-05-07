@@ -5,13 +5,7 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import nodeTextStylesRaw from './nodeText.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const nodeTextStyles = new CSSStyleSheet();
-nodeTextStyles.replaceSync(nodeTextStylesRaw);
+import nodeTextStyles from './nodeText.css.js';
 
 const {render, html} = Lit;
 
@@ -27,10 +21,6 @@ export class NodeText extends HTMLElement {
   #nodeTitle = '';
   #nodeId?: string = '';
   #nodeClasses?: string[] = [];
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [nodeTextStyles];
-  }
 
   set data(data: NodeTextData) {
     this.#nodeTitle = data.nodeTitle;
@@ -67,6 +57,7 @@ export class NodeText extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${nodeTextStyles}</style>
       ${parts}
     `, this.#shadow, {
       host: this,

@@ -13,13 +13,7 @@ import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import stylesRaw from './codeBlock.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw);
+import styles from './codeBlock.css.js';
 
 const {html} = Lit;
 
@@ -146,7 +140,6 @@ export class CodeBlock extends HTMLElement {
   #citations: Citation[] = [];
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
     void this.#render();
   }
 
@@ -269,7 +262,8 @@ export class CodeBlock extends HTMLElement {
     // clang-format off
     Lit.render(
       html`<div class='codeblock' jslog=${VisualLogging.section('code')}>
-      <div class="editor-wrapper">
+      <style>${styles}</style>
+        <div class="editor-wrapper">
         <div class="heading">
           <div class="heading-text-wrapper">
             <h4 class="heading-text">${header}</h4>

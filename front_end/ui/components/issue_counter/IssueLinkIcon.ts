@@ -15,13 +15,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {getIssueKindIconData} from './IssueCounter.js';
-import IssueLinkIconStylesRaw from './issueLinkIcon.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const IssueLinkIconStyles = new CSSStyleSheet();
-IssueLinkIconStyles.replaceSync(IssueLinkIconStylesRaw);
+import IssueLinkIconStyles from './issueLinkIcon.css.js';
 
 const {html} = Lit;
 
@@ -105,10 +99,6 @@ export class IssueLinkIcon extends HTMLElement {
     await this.#render();
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [IssueLinkIconStyles];
-  }
-
   get data(): IssueLinkIconData {
     return {
       issue: this.#issue,
@@ -152,6 +142,7 @@ export class IssueLinkIcon extends HTMLElement {
     return RenderCoordinator.write(() => {
       // clang-format off
       Lit.render(html`
+      <style>${IssueLinkIconStyles}</style>
       <button class=${Lit.Directives.classMap({link: Boolean(this.#issue)})}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('issue').track({click: true})}

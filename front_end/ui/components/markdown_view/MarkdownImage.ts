@@ -8,14 +8,8 @@ import '../../components/icon_button/icon_button.js';
 import type * as IconButton from '../../components/icon_button/icon_button.js';
 import * as Lit from '../../lit/lit.js';
 
-import markdownImageStylesRaw from './markdownImage.css.js';
+import markdownImageStyles from './markdownImage.css.js';
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const markdownImageStyles = new CSSStyleSheet();
-markdownImageStyles.replaceSync(markdownImageStylesRaw);
 
 const {html, Directives: {ifDefined}} = Lit;
 
@@ -34,10 +28,6 @@ export class MarkdownImage extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #imageData?: ImageData;
   #imageTitle?: string;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [markdownImageStyles];
-  }
 
   set data(data: MarkdownImageData) {
     const {key, title} = data;
@@ -73,7 +63,12 @@ export class MarkdownImage extends HTMLElement {
     }
     const {isIcon} = this.#imageData;
     const imageComponent = isIcon ? this.#getIconComponent() : this.#getImageComponent();
-    Lit.render(imageComponent, this.#shadow, {host: this});
+    Lit.render(
+        html`
+      <style>${markdownImageStyles}</style>
+      ${imageComponent}
+    `,
+        this.#shadow, {host: this});
   }
 }
 

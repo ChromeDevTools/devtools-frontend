@@ -12,13 +12,7 @@ import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import type * as Codeblock from './CodeBlock.js';
-import markdownViewStylesRaw from './markdownView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const markdownViewStyles = new CSSStyleSheet();
-markdownViewStyles.replaceSync(markdownViewStylesRaw);
+import markdownViewStyles from './markdownView.css.js';
 
 const html = Lit.html;
 const render = Lit.render;
@@ -40,10 +34,6 @@ export class MarkdownView extends HTMLElement {
   #renderer = new MarkdownLitRenderer();
   #animationEnabled = false;
   #isAnimating = false;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [markdownViewStyles];
-  }
 
   set data(data: MarkdownViewData) {
     this.#tokenData = data.tokens;
@@ -123,6 +113,7 @@ export class MarkdownView extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${markdownViewStyles}</style>
       <div class='message'>
         ${this.#tokenData.map(token => this.#renderer.renderToken(token))}
       </div>

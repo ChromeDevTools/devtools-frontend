@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './ButtonDialog.js';
+
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -11,13 +12,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import {html, nothing, render, type TemplateResult} from '../../../ui/lit/lit.js';
 
 import type {ButtonDialogData} from './ButtonDialog.js';
-import shortcutDialogStylesRaw from './shortcutDialog.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const shortcutDialogStyles = new CSSStyleSheet();
-shortcutDialogStyles.replaceSync(shortcutDialogStylesRaw);
+import shortcutDialogStyles from './shortcutDialog.css.js';
 
 const UIStrings = {
 
@@ -63,10 +58,6 @@ export class ShortcutDialog extends HTMLElement {
   #openOnRender = false;
   #customTitle?: Platform.UIString.LocalizedString;
   #prependedElement: HTMLElement|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [shortcutDialogStyles];
-  }
 
   get data(): ShortcutDialogData {
     return {
@@ -116,6 +107,7 @@ export class ShortcutDialog extends HTMLElement {
     // clang-format off
     render(
       html`
+      <style>${shortcutDialogStyles}</style>
       <devtools-button-dialog .data=${{
           openOnRender: this.#openOnRender,
           closeButton: true,

@@ -2,14 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type {ContentDataOrError} from '../text_utils/ContentData.js';
 import type {SearchMatch} from '../text_utils/ContentProvider.js';
 import * as Workspace from '../workspace/workspace.js';
 
-import {type AutomaticFileSystem, type AutomaticFileSystemManager, Events} from './AutomaticFileSystemManager.js';
+import {
+  type AutomaticFileSystem,
+  type AutomaticFileSystemManager,
+  Events as AutomaticFileSystemManagerEvents
+} from './AutomaticFileSystemManager.js';
+import {
+  Events as IsolatedFileSystemManagerEvents,
+  type IsolatedFileSystemManager
+} from './IsolatedFileSystemManager.js';
 
 /**
  * Placeholder project that acts as an empty file system within the workspace,
@@ -163,18 +171,27 @@ let automaticFileSystemWorkspaceBindingInstance: AutomaticFileSystemWorkspaceBin
 export class AutomaticFileSystemWorkspaceBinding {
   readonly #automaticFileSystemManager: AutomaticFileSystemManager;
   #fileSystem: FileSystem|null = null;
+  readonly #isolatedFileSystemManager: IsolatedFileSystemManager;
   readonly #workspace: Workspace.Workspace.WorkspaceImpl;
 
   /**
    * @internal
    */
   private constructor(
-      automaticFileSystemManager: AutomaticFileSystemManager, workspace: Workspace.Workspace.WorkspaceImpl) {
+      automaticFileSystemManager: AutomaticFileSystemManager,
+      isolatedFileSystemManager: IsolatedFileSystemManager,
+      workspace: Workspace.Workspace.WorkspaceImpl,
+  ) {
     this.#automaticFileSystemManager = automaticFileSystemManager;
+    this.#isolatedFileSystemManager = isolatedFileSystemManager;
     this.#workspace = workspace;
     this.#automaticFileSystemManager.addEventListener(
-        Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystemChanged, this);
-    this.#automaticFileSystemChanged({data: this.#automaticFileSystemManager.automaticFileSystem});
+        AutomaticFileSystemManagerEvents.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#update, this);
+    this.#isolatedFileSystemManager.addEventListener(
+        IsolatedFileSystemManagerEvents.FileSystemAdded, this.#update, this);
+    this.#isolatedFileSystemManager.addEventListener(
+        IsolatedFileSystemManagerEvents.FileSystemRemoved, this.#update, this);
+    this.#update();
   }
 
   /**
@@ -182,19 +199,27 @@ export class AutomaticFileSystemWorkspaceBinding {
    *
    * @returns the singleton.
    */
-  static instance({forceNew, automaticFileSystemManager, workspace}: {
+  static instance({forceNew, automaticFileSystemManager, isolatedFileSystemManager, workspace}: {
     forceNew: boolean|null,
     automaticFileSystemManager: AutomaticFileSystemManager|null,
+    isolatedFileSystemManager: IsolatedFileSystemManager|null,
     workspace: Workspace.Workspace.WorkspaceImpl|null,
-  } = {forceNew: false, automaticFileSystemManager: null, workspace: null}): AutomaticFileSystemWorkspaceBinding {
+  } = {
+    forceNew: false,
+    automaticFileSystemManager: null,
+    isolatedFileSystemManager: null,
+    workspace: null,
+  }): AutomaticFileSystemWorkspaceBinding {
     if (!automaticFileSystemWorkspaceBindingInstance || forceNew) {
-      if (!automaticFileSystemManager || !workspace) {
+      if (!automaticFileSystemManager || !isolatedFileSystemManager || !workspace) {
         throw new Error(
             'Unable to create AutomaticFileSystemWorkspaceBinding: ' +
-            'automaticFileSystemManager and workspace must be provided');
+            'automaticFileSystemManager, isolatedFileSystemManager, ' +
+            'and workspace must be provided');
       }
       automaticFileSystemWorkspaceBindingInstance = new AutomaticFileSystemWorkspaceBinding(
           automaticFileSystemManager,
+          isolatedFileSystemManager,
           workspace,
       );
     }
@@ -216,11 +241,15 @@ export class AutomaticFileSystemWorkspaceBinding {
       this.#workspace.removeProject(this.#fileSystem);
     }
     this.#automaticFileSystemManager.removeEventListener(
-        Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystemChanged, this);
+        AutomaticFileSystemManagerEvents.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#update, this);
+    this.#isolatedFileSystemManager.removeEventListener(
+        IsolatedFileSystemManagerEvents.FileSystemAdded, this.#update, this);
+    this.#isolatedFileSystemManager.removeEventListener(
+        IsolatedFileSystemManagerEvents.FileSystemRemoved, this.#update, this);
   }
 
-  #automaticFileSystemChanged(event: Common.EventTarget.EventTargetEvent<AutomaticFileSystem|null>): void {
-    const automaticFileSystem = event.data;
+  #update(): void {
+    const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
     if (this.#fileSystem !== null) {
       if (this.#fileSystem.automaticFileSystem === automaticFileSystem) {
         return;
@@ -229,12 +258,17 @@ export class AutomaticFileSystemWorkspaceBinding {
       this.#fileSystem = null;
     }
     if (automaticFileSystem !== null && automaticFileSystem.state !== 'connected') {
-      this.#fileSystem = new FileSystem(
-          automaticFileSystem,
-          this.#automaticFileSystemManager,
-          this.#workspace,
-      );
-      this.#workspace.addProject(this.#fileSystem);
+      // Check if we already have a (manually added) file system, and if so, don't
+      // offer the option to connect the automatic file system.
+      const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(automaticFileSystem.root);
+      if (this.#isolatedFileSystemManager.fileSystem(fileSystemURL) === null) {
+        this.#fileSystem = new FileSystem(
+            automaticFileSystem,
+            this.#automaticFileSystemManager,
+            this.#workspace,
+        );
+        this.#workspace.addProject(this.#fileSystem);
+      }
     }
   }
 }

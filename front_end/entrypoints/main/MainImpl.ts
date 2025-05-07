@@ -397,7 +397,7 @@ export class MainImpl {
     MainImpl.time('Main._createAppUI');
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
-    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
+    const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
 
     const defaultThemeSetting = 'systemPreferred';
     const themeSetting = Common.Settings.Settings.instance().createSetting('ui-theme', defaultThemeSetting);
@@ -472,9 +472,8 @@ export class MainImpl {
     self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
-        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(),
-        Workspace.Workspace.WorkspaceImpl.instance());
-    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
+        isolatedFileSystemManager, Workspace.Workspace.WorkspaceImpl.instance());
+    isolatedFileSystemManager.addPlatformFileSystem(
         'snippet://' as Platform.DevToolsPath.UrlString, new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
 
     Persistence.Persistence.PersistenceImpl.instance({
@@ -507,6 +506,7 @@ export class MainImpl {
     Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding.instance({
       forceNew: true,
       automaticFileSystemManager,
+      isolatedFileSystemManager,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
 

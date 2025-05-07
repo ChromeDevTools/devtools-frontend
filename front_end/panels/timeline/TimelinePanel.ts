@@ -2453,11 +2453,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #createSourceMapResolver(isFreshRecording: boolean, metadata: Trace.Types.File.MetaData|null):
       Trace.TraceModel.ParseConfig['resolveSourceMap'] {
-    // Currently, only experimental insights need source maps.
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS)) {
-      return;
-    }
-
     const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

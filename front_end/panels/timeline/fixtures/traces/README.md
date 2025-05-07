@@ -71,6 +71,10 @@ Trace containing a cross-origin navigation where DOM size events from the pre-na
 
 A bunch of bundles with the exact same content: https://dupe-modules-lh-2.surge.sh/
 
+### dupe-js-inline-maps.json.gz
+
+Like above, but the source maps are inline data urls. https://dupe-modules-lh-inline-data.surge.sh/smaller.html
+
 ### enhanced-traces.json.gz
 
 a) Contains traces with metadata needed to power a rehydrated session for enhanced tracing.

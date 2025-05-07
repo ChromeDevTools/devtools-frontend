@@ -7,7 +7,7 @@ import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing
 import type * as Trace from '../trace.js';
 
 describeWithEnvironment('DuplicatedJavaScript', function() {
-  it('works', async () => {
+  it('works (external source maps)', async () => {
     const {data, insights} = await processTrace(this, 'dupe-js.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight = getInsightOrError(
@@ -45,5 +45,45 @@ describeWithEnvironment('DuplicatedJavaScript', function() {
     });
 
     assert.deepEqual(insight.metricSavings, {FCP: 100, LCP: 100} as Trace.Insights.Types.MetricSavings);
+  });
+
+  it('works (inline source maps)', async () => {
+    const {data, insights} = await processTrace(this, 'dupe-js-inline-maps.json.gz');
+    assert.strictEqual(insights.size, 1);
+    const insight = getInsightOrError(
+        'DuplicatedJavaScript', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+
+    const duplication = insight.duplicationGroupedByNodeModules;
+    const results = Object.fromEntries(
+        [...duplication.entries()].filter(v => v[1].estimatedDuplicateBytes > 1000 * 25).map(([key, data]) => {
+          return [key, data.duplicates.map(v => ({url: v.script.url, transferSize: v.attributedSize}))];
+        }));
+    const url1 = 'https://dupe-modules-lh-inline-data.surge.sh/bundle-smaller.js?v1';
+    const url2 = 'https://dupe-modules-lh-inline-data.surge.sh/bundle-smaller.js?v2';
+    const url3 = 'https://dupe-modules-lh-inline-data.surge.sh/bundle-smaller.js?v3';
+    const url4 = 'https://dupe-modules-lh-inline-data.surge.sh/bundle-smaller.js?v4';
+
+    assert.deepEqual(results, {
+      'node_modules/filestack-js': [
+        {url: url1, transferSize: 104143},
+        {url: url2, transferSize: 104143},
+        {url: url3, transferSize: 104143},
+        {url: url4, transferSize: 104143},
+      ],
+      'node_modules/@headlessui/react': [
+        {url: url1, transferSize: 13863},
+        {url: url2, transferSize: 13863},
+        {url: url3, transferSize: 13863},
+        {url: url4, transferSize: 13863},
+      ],
+      'node_modules/react-query': [
+        {url: url1, transferSize: 9933},
+        {url: url2, transferSize: 9933},
+        {url: url3, transferSize: 9933},
+        {url: url4, transferSize: 9933},
+      ],
+    });
+
+    assert.deepEqual(insight.metricSavings, {FCP: 50, LCP: 50} as Trace.Insights.Types.MetricSavings);
   });
 });

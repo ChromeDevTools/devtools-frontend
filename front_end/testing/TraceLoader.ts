@@ -251,6 +251,11 @@ export class TraceLoader {
                 return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, cachedRawSourceMap);
               }
 
+              if (sourceMapUrl.startsWith('data:')) {
+                const rawSourceMap = await (await fetch(sourceMapUrl)).json();
+                return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, rawSourceMap);
+              }
+
               return null;
             },
           })

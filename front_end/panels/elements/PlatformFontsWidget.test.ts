@@ -35,12 +35,12 @@ describeWithMockConnection('PlatformFontsWidget', () => {
     await platformFontsWidget.doUpdate();
     const fontStatsItems = platformFontsWidget.contentElement.querySelectorAll('.font-stats-item');
     const firstFontContent = fontStatsItems[0].textContent;
-    const secontFontContent = fontStatsItems[1].textContent;
+    const secondFontContent = fontStatsItems[1].textContent;
     assert.include(firstFontContent, 'Family name: Merriweather Black');
     assert.include(firstFontContent, 'PostScript name: Merriweather-Black');
     assert.include(firstFontContent, 'Font origin: Local file(18 glyphs)');
-    assert.include(secontFontContent, 'Family name: Arial');
-    assert.include(secontFontContent, 'PostScript name: ArialMT');
-    assert.include(secontFontContent, 'Font origin: Local file(5 glyphs)');
+    assert.include(secondFontContent, 'Family name: Arial');
+    assert.include(secondFontContent, 'PostScript name: ArialMT');
+    assert.include(secondFontContent, 'Font origin: Local file(5 glyphs)');
   });
 });

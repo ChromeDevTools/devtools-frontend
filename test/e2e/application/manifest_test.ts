@@ -19,7 +19,7 @@ const FIELD_VALUES_SELECTOR = '.report-field-value';
 // The tests are provided for local debugging only. They require debug
 // mode and setting a chrome feature flag:
 // npm run debug-e2etest -- -- --chrome-features=WebAppEnableManifestId
-describe.skip('[crbug.com/1222571]: The Manifest Page', () => {
+describe.skip('[crbug.com/40774149]: The Manifest Page', () => {
   it('shows app id', async () => {
     await navigateToApplicationTab('app-manifest-id');
     await click(MANIFEST_SELECTOR);

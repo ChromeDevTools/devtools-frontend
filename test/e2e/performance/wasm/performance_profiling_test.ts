@@ -135,7 +135,7 @@ describe('The Performance panel', function() {
 
   // Flaky test
   it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up',
+      ['mac'], '[crbug.com/41483477]: is able to inspect the call stack for a wasm function from the bottom up',
       async () => {
         await setupPerformancePanel();
 
@@ -159,32 +159,34 @@ describe('The Performance panel', function() {
       });
 
   // Flaky test
-  it.skip('[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the call tree', async () => {
-    await setupPerformancePanel();
+  it.skip(
+      '[crbug.com/41483477]: is able to inspect the call stack for a wasm function from the call tree', async () => {
+        await setupPerformancePanel();
 
-    const {frontend} = getBrowserAndPages();
-    const expectedActivities = [
-      'Run microtasks',
-      '(anonymous)',
-      'js-to-wasm::i',
-      'mainWasm',
-      'wasm-to-js::l-imports.getTime',
-      'getTime',
-    ];
+        const {frontend} = getBrowserAndPages();
+        const expectedActivities = [
+          'Run microtasks',
+          '(anonymous)',
+          'js-to-wasm::i',
+          'mainWasm',
+          'wasm-to-js::l-imports.getTime',
+          'getTime',
+        ];
 
-    await step('navigate to the Call Tree tab', async () => {
-      await navigateToCallTreeTab();
-    });
-
-    await step(
-        'expand the tree for the "Run microtasks" activity and check that it displays the correct values', async () => {
-          const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
-          const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
-          if (!rootActivity) {
-            assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
-          }
-          await rootActivity.click();
-          await expandAndCheckActivityTree(frontend, expectedActivities);
+        await step('navigate to the Call Tree tab', async () => {
+          await navigateToCallTreeTab();
         });
-  });
+
+        await step(
+            'expand the tree for the "Run microtasks" activity and check that it displays the correct values',
+            async () => {
+              const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
+              const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
+              if (!rootActivity) {
+                assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
+              }
+              await rootActivity.click();
+              await expandAndCheckActivityTree(frontend, expectedActivities);
+            });
+      });
 });

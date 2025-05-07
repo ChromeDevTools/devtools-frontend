@@ -124,7 +124,7 @@ describe('The Network Tab', function() {
   });
 
   // Mac doesn't consistently respect force-cache
-  it.skipOnPlatforms(['mac'], '[crbug.com/1297070] can filter by cache status in the log view', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40822085] can filter by cache status in the log view', async () => {
     await navigateToNetworkTab(`requests.html?num=5&cache=no-store&nocache=${Math.random()}`);
     await setPersistLog(true);
     await navigateToNetworkTab(`requests.html?num=3&cache=force-cache&nocache=${Math.random()}`);

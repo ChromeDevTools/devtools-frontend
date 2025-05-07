@@ -34,7 +34,7 @@ describe('The Application Tab', () => {
 
   // Flaky test
   it.skip(
-      '[crbug.com/1443434]: shows cookies even when navigating to an unreachable page (crbug.com/1047348)',
+      '[crbug.com/40911169]: shows cookies even when navigating to an unreachable page (crbug.com/1047348)',
       async () => {
         // This sets a new cookie foo=bar
         await navigateToApplicationTab('cookies');

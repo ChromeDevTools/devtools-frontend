@@ -72,7 +72,7 @@ const getFieldValuesTextContent = async () => {
 
 describe('The Application Tab', () => {
   // Update and reactivate when the whole FrameDetailsView is a custom component
-  it.skip('[crbug.com/1519420]: shows details for a frame when clicked on in the frame tree', async () => {
+  it.skip('[crbug.com/41492400]: shows details for a frame when clicked on in the frame tree', async () => {
     await navigateToApplicationTab('frame-tree');
     await click('#tab-resources');
     await navigateToFrame('top');
@@ -275,7 +275,7 @@ describe('The Application Tab', () => {
   });
 
   // Update and reactivate when the whole FrameDetailsView is a custom component
-  it.skip('[crbug.com/1519420]: can handle when JS writes to frame', async () => {
+  it.skip('[crbug.com/41492400]: can handle when JS writes to frame', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
     await goToResource('application/main-frame.html');

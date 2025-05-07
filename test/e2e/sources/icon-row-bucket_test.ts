@@ -106,7 +106,7 @@ describe('The row\'s icon bucket', function() {
   });
 
   // Flakily fails with finding an empty icon.
-  it.skip('[crbug.com/1508270] should use the correct error icon', async () => {
+  it.skip('[crbug.com/40948985] should use the correct error icon', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only.rawresponse');
     const bucketIconComponents = await getIconComponents('cm-messageIcon-error');
     for (const bucketIconComponent of bucketIconComponents) {

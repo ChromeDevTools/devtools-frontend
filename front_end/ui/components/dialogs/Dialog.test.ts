@@ -199,9 +199,9 @@ describe('Dialog', () => {
       // Test the capped dimensions
       assert.strictEqual(dialog.bestVerticalPosition, Dialogs.Dialog.DialogVerticalPosition.BOTTOM);
     });
-    // Fails on bots https://crbug.com/1441801.
+    // Fails on bots https://crbug.com/40266659.
     it.skip(
-        '[crbug.com/1441801]: sets the max width and height correctly when the dialog\'s content dimensions exceed the viewport and the dialog is displayed as a modal',
+        '[crbug.com/40266659]: sets the max width and height correctly when the dialog\'s content dimensions exceed the viewport and the dialog is displayed as a modal',
         async () => {
           const devtoolsDialog = new Dialogs.Dialog.Dialog();
           const WINDOW_WIDTH = 500;

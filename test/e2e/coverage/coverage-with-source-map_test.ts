@@ -42,7 +42,7 @@ describe('Coverage Panel', function() {
   });
 
   // Flakily has navigation errors in the "beforeEach".
-  it.skip('[crbug.com/1508272] Shows coverage data for sources if a script has source map', async () => {
+  it.skip('[crbug.com/40948987] Shows coverage data for sources if a script has source map', async () => {
     const URL_PREFIX = `https://localhost:${getTestServerPort()}/test/e2e/resources/coverage`;
     const expected = [
       {

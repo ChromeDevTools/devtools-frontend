@@ -116,7 +116,7 @@ describe('The Overrides Panel', function() {
   });
 
   // Skip until flake is fixed
-  it.skip('[crbug.com/1432925]: can override headers via network panel', async () => {
+  it.skip('[crbug.com/40264188]: can override headers via network panel', async () => {
     await navigateToNetworkTab('hello.html');
     await waitForSomeRequestsToAppear(1);
     await selectRequestByName('hello.html');

@@ -76,7 +76,7 @@ describeWithMockConnection('InterestGroupStorageView', () => {
 
   // Disabled due to flakiness
   it.skip(
-      '[crbug.com/1473557]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds',
+      '[crbug.com/40279047]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds',
       async function() {
         if (this.timeout() > 0) {
           this.timeout(10000);
@@ -122,7 +122,7 @@ describeWithMockConnection('InterestGroupStorageView', () => {
 
   // Disabled due to flakiness
   it.skip(
-      '[crbug.com/1473557]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter failsupdates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails',
+      '[crbug.com/40279047]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter failsupdates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails',
       async function() {
         if (this.timeout() > 0) {
           this.timeout(10000);
@@ -143,7 +143,7 @@ describeWithMockConnection('InterestGroupStorageView', () => {
       });
 
   // Disabled due to flakiness
-  it.skip('[crbug.com/1473557]: clears sidebarWidget upon clearEvents', async function() {
+  it.skip('[crbug.com/40279047]: clears sidebarWidget upon clearEvents', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
     }

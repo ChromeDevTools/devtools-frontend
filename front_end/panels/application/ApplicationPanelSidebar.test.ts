@@ -134,7 +134,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   });
 
   // Flaking on multiple bots on CQ.
-  it.skip('[crbug.com/1472237] shows cookies for all frames', async () => {
+  it.skip('[crbug.com/40278557] shows cookies for all frames', async () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -165,7 +165,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   });
 
   // Flaking on windows + subsequence test failing
-  it.skip('[crbug.com/1472651] shows shared storages and events for origins using shared storage', async () => {
+  it.skip('[crbug.com/40278680] shows shared storages and events for origins using shared storage', async () => {
     const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     assert.exists(securityOriginManager);
     sinon.stub(securityOriginManager, 'securityOrigins').returns([

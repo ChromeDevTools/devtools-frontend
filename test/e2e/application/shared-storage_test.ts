@@ -41,7 +41,7 @@ describe('The Application Tab', () => {
   });
 
   // Failing test.
-  it.skip('[crbug.com/1485830]: shows Shared Storage events', async () => {
+  it.skip('[crbug.com/40282697]: shows Shared Storage events', async () => {
     await step('navigate to shared-storage resource and open Application tab', async () => {
       // Events are not recorded because tracking is not yet enabled.
       await navigateToApplicationTab('shared-storage');
@@ -91,7 +91,7 @@ describe('The Application Tab', () => {
   });
 
   // Failing test.
-  it.skip('[crbug.com/1485830]: shows Shared Storage metadata', async () => {
+  it.skip('[crbug.com/40282697]: shows Shared Storage metadata', async () => {
     await step('navigate to shared-storage resource and open Application tab', async () => {
       await navigateToApplicationTab('shared-storage');
     });
@@ -108,7 +108,7 @@ describe('The Application Tab', () => {
   });
 
   // Failing test.
-  it.skip('[crbug.com/1485830]: shows Shared Storage keys and values', async () => {
+  it.skip('[crbug.com/40282697]: shows Shared Storage keys and values', async () => {
     await step('navigate to shared-storage resource and open Application tab', async () => {
       await navigateToApplicationTab('shared-storage');
     });

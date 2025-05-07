@@ -21,7 +21,7 @@ describe('The Reporting API Page', () => {
   });
 
   // Flaky on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40281850] shows reports', async () => {
     await navigateToApplicationTab('reporting-api');
     await click(REPORTING_API_SELECTOR);
     const dataGrid = await getDataGrid();

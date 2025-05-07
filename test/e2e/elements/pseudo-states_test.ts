@@ -25,7 +25,7 @@ const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
 describe('The Elements tab', () => {
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :hover state for selected DOM node', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40811680]: can force :hover state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/hover.html');
@@ -46,7 +46,7 @@ describe('The Elements tab', () => {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :target state for selected DOM node', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40811680]: can force :target state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/target.html');
@@ -68,7 +68,7 @@ describe('The Elements tab', () => {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :focus state for selected DOM node', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40811680]: can force :focus state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');
@@ -92,7 +92,7 @@ describe('The Elements tab', () => {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can remove :focus state', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40811680]: can remove :focus state', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');
@@ -124,7 +124,7 @@ describe('The Elements tab', () => {
   });
 
   // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can toggle emulate a focused page', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/40811680]: can toggle emulate a focused page', async () => {
     const {frontend, target} = getBrowserAndPages();
 
     await goToResource('elements/dissapearing-popup.html');
@@ -163,7 +163,7 @@ describe('The Elements tab', () => {
   ];
   for (const {start, dual, elementCount} of dualCasesOneCheckbox) {
     // Flaky test
-    it.skipOnPlatforms(['mac'], `[crbug.com/1280763]: can force ${start} elements to be :${dual}`, async () => {
+    it.skipOnPlatforms(['mac'], `[crbug.com/40811680]: can force ${start} elements to be :${dual}`, async () => {
       const {target} = getBrowserAndPages();
 
       await goToResource('elements/specific-pseudo-states.html');
@@ -210,7 +210,7 @@ describe('The Elements tab', () => {
   for (const {start, dual, elementCount} of dualCasesTwoCheckboxes) {
     // Flaky test
     it.skipOnPlatforms(
-        ['mac'], `[crbug.com/1280763]: can force ${start} elements to be :${dual} but not both`, async () => {
+        ['mac'], `[crbug.com/40811680]: can force ${start} elements to be :${dual} but not both`, async () => {
           const {target} = getBrowserAndPages();
 
           await goToResource('elements/specific-pseudo-states.html');

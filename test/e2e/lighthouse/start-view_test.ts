@@ -69,7 +69,7 @@ describe('The Lighthouse start view', () => {
   });
 
   // Broken on non-debug runs
-  it.skip('[crbug.com/1057948] shows generate report button even when navigating to an unreachable page', async () => {
+  it.skip('[crbug.com/40677712] shows generate report button even when navigating to an unreachable page', async () => {
     await navigateToLighthouseTab('empty.html');
 
     await goToResource('network/unreachable.rawresponse');

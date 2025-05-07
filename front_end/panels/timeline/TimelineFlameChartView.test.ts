@@ -135,7 +135,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
   // This test is still failing after bumping up the timeout to 20 seconds. So
   // skip it while we work on a fix for the trace load speed.
-  it.skip('[crbug.com/1492405] Shows the network track correctly', async function() {
+  it.skip('[crbug.com/40285510] Shows the network track correctly', async function() {
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.

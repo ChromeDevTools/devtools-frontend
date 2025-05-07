@@ -54,7 +54,7 @@ const FG_RED = 'color:var(--sys-color-error);';
 
 describeWithEnvironment('MismatchedPreloadingGrid', () => {
   // Disabled due to flakiness
-  it.skip('[crbug.com/1473557]: renderes no diff in URL', async function() {
+  it.skip('[crbug.com/40279047]: renderes no diff in URL', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
     }

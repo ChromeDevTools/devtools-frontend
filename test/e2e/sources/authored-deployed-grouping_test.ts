@@ -304,8 +304,8 @@ describe('Source Panel grouping', function() {
   });
 
   // The localhost domain is getting renamed, which breaks this test.
-  // TODO(crbug.com/1327683): Enable this once the domain displays correctly.
-  it.skip('[crbug.com/1327683] can load new page with group by authored/deployed', async () => {
+  // TODO(crbug.com/40841343): Enable this once the domain displays correctly.
+  it.skip('[crbug.com/40841343] can load new page with group by authored/deployed', async () => {
     // Have the target load the non-sourcemapped page.
     await goToResource('sources/multi-workers.html');
     await openSourcesPanel();
@@ -325,7 +325,7 @@ describe('Source Panel grouping', function() {
 
   // Flaky on Mac
   it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1481690] can mix group by authored/deployed and group by folder', async () => {
+      ['mac'], '[crbug.com/40281692] can mix group by authored/deployed and group by folder', async () => {
         // Have the target load the page.
         await goToResource(targetPage);
         await openSourcesPanel();

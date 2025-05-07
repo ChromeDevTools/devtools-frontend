@@ -176,7 +176,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
       this.cookieControlFlagsSettingChanged();
     }
 
-    void this.#networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
+    void this.#networkAgent.invoke_enable(
+        {maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH, reportDirectSocketTraffic: true});
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
 
     this.#bypassServiceWorkerSetting =
@@ -892,7 +893,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
 
   webSocketCreated({requestId, url: requestURL, initiator}: Protocol.Network.WebSocketCreatedEvent): void {
     const networkRequest =
-        NetworkRequest.createForWebSocket(requestId, requestURL as Platform.DevToolsPath.UrlString, initiator);
+        NetworkRequest.createForSocket(requestId, requestURL as Platform.DevToolsPath.UrlString, initiator);
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
     this.startNetworkRequest(networkRequest, null);
@@ -1203,7 +1204,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   webTransportCreated({transportId, url: requestURL, timestamp: time, initiator}:
                           Protocol.Network.WebTransportCreatedEvent): void {
     const networkRequest =
-        NetworkRequest.createForWebSocket(transportId, requestURL as Platform.DevToolsPath.UrlString, initiator);
+        NetworkRequest.createForSocket(transportId, requestURL as Platform.DevToolsPath.UrlString, initiator);
     networkRequest.hasNetworkData = true;
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebTransport);
@@ -1239,8 +1240,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   directTCPSocketCreated(event: Protocol.Network.DirectTCPSocketCreatedEvent): void {
-    const requestURL = event.remotePort === 0 ? event.remoteAddr : `${event.remoteAddr}:${event.remotePort}`;
-    const networkRequest = NetworkRequest.createForWebSocket(
+    const requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
+    const networkRequest = NetworkRequest.createForSocket(
         event.identifier, requestURL as Platform.DevToolsPath.UrlString, event.initiator);
     networkRequest.hasNetworkData = true;
     networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
@@ -1282,7 +1283,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       localPort: event.localPort,
     };
     networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
-    const requestURL = event.remotePort === 0 ? event.remoteAddr : `${event.remoteAddr}:${event.remotePort}`;
+    const requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
     networkRequest.setUrl(requestURL as Platform.DevToolsPath.UrlString);
     this.updateNetworkRequest(networkRequest);
   }
@@ -1341,22 +1342,136 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.updateNetworkRequest(networkRequest);
   }
 
-  directUDPSocketCreated(_event: Protocol.Network.DirectUDPSocketCreatedEvent): void {
+  directUDPSocketCreated(event: Protocol.Network.DirectUDPSocketCreatedEvent): void {
+    let requestURL = '';
+    let type: DirectSocketType;
+    if (event.options.remoteAddr && event.options.remotePort) {
+      requestURL = this.concatHostPort(event.options.remoteAddr, event.options.remotePort);
+      type = DirectSocketType.UDP_CONNECTED;
+    } else if (event.options.localAddr) {
+      requestURL = this.concatHostPort(event.options.localAddr, event.options.localPort);
+      type = DirectSocketType.UDP_BOUND;
+    } else {
+      // Must be present in a valid command if remoteAddr
+      // is not specified.
+      return;
+    }
+    const networkRequest = NetworkRequest.createForSocket(
+        event.identifier, requestURL as Platform.DevToolsPath.UrlString, event.initiator);
+    networkRequest.hasNetworkData = true;
+    if (event.options.remoteAddr && event.options.remotePort) {
+      networkRequest.setRemoteAddress(event.options.remoteAddr, event.options.remotePort);
+    }
+    networkRequest.protocol = i18n.i18n.lockedString('udp');
+
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusOpening);
+    networkRequest.directSocketInfo = {
+      type,
+      status: DirectSocketStatus.OPENING,
+      createOptions: {
+        remoteAddr: event.options.remoteAddr,
+        remotePort: event.options.remotePort,
+        localAddr: event.options.localAddr,
+        localPort: event.options.localPort,
+        sendBufferSize: event.options.sendBufferSize,
+        receiveBufferSize: event.options.receiveBufferSize,
+        dnsQueryType: event.options.dnsQueryType,
+      }
+    };
+    networkRequest.setResourceType(Common.ResourceType.resourceTypes.DirectSocket);
+    networkRequest.setIssueTime(event.timestamp, event.timestamp);
+
+    requestToManagerMap.set(networkRequest, this.#manager);
+    this.startNetworkRequest(networkRequest, null);
   }
 
-  directUDPSocketOpened(_event: Protocol.Network.DirectUDPSocketOpenedEvent): void {
+  directUDPSocketOpened(event: Protocol.Network.DirectUDPSocketOpenedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    let requestURL: string;
+    if (networkRequest.directSocketInfo.type === DirectSocketType.UDP_CONNECTED) {
+      if (!event.remoteAddr || !event.remotePort) {
+        // Connected socket must have remoteAdd and remotePort.
+        return;
+      }
+      networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
+      requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
+    } else {
+      requestURL = this.concatHostPort(event.localAddr, event.localPort);
+    }
+
+    networkRequest.setUrl(requestURL as Platform.DevToolsPath.UrlString);
+    networkRequest.responseReceivedTime = event.timestamp;
+    networkRequest.directSocketInfo.status = DirectSocketStatus.OPEN;
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusOpen);
+    networkRequest.directSocketInfo.openInfo = {
+      remoteAddr: event.remoteAddr,
+      remotePort: event.remotePort,
+      localAddr: event.localAddr,
+      localPort: event.localPort,
+    };
+
+    this.updateNetworkRequest(networkRequest);
   }
 
-  directUDPSocketAborted(_event: Protocol.Network.DirectUDPSocketAbortedEvent): void {
+  directUDPSocketAborted(event: Protocol.Network.DirectUDPSocketAbortedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    networkRequest.failed = true;
+    networkRequest.directSocketInfo.status = DirectSocketStatus.ABORTED;
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusAborted);
+    networkRequest.directSocketInfo.errorMessage = event.errorMessage;
+    this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
 
-  directUDPSocketClosed(_event: Protocol.Network.DirectUDPSocketClosedEvent): void {
+  directUDPSocketClosed(event: Protocol.Network.DirectUDPSocketClosedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest?.directSocketInfo) {
+      return;
+    }
+    networkRequest.statusText = i18nString(UIStrings.directSocketStatusClosed);
+    networkRequest.directSocketInfo.status = DirectSocketStatus.CLOSED;
+    this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
 
-  directUDPSocketChunkSent(_event: Protocol.Network.DirectUDPSocketChunkSentEvent): void {
+  directUDPSocketChunkSent(event: Protocol.Network.DirectUDPSocketChunkSentEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.addDirectSocketChunk({
+      data: event.message.data,
+      type: DirectSocketChunkType.SEND,
+      timestamp: event.timestamp,
+      remoteAddress: event.message.remoteAddr,
+      remotePort: event.message.remotePort
+    });
+    networkRequest.responseReceivedTime = event.timestamp;
+
+    this.updateNetworkRequest(networkRequest);
   }
 
-  directUDPSocketChunkReceived(_event: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void {
+  directUDPSocketChunkReceived(event: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void {
+    const networkRequest = this.#requestsById.get(event.identifier);
+    if (!networkRequest) {
+      return;
+    }
+
+    networkRequest.addDirectSocketChunk({
+      data: event.message.data,
+      type: DirectSocketChunkType.RECEIVE,
+      timestamp: event.timestamp,
+      remoteAddress: event.message.remoteAddr,
+      remotePort: event.message.remotePort
+    });
+    networkRequest.responseReceivedTime = event.timestamp;
+
+    this.updateNetworkRequest(networkRequest);
   }
 
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {
@@ -1435,6 +1550,13 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
         loaderId, initiator);
     requestToManagerMap.set(request, this.#manager);
     return request;
+  }
+
+  private concatHostPort(host: string, port?: number): string {
+    if (!port || port === 0) {
+      return host;
+    }
+    return `${host}:${port}`;
   }
 }
 

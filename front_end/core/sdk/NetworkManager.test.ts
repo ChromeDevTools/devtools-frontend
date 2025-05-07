@@ -314,7 +314,6 @@ describeWithMockConnection('NetworkManager', () => {
         });
         assert.lengthOf(finishedRequests, 0);
 
-        // update the request and check all fields are filled as necessary
         networkDispatcher.directTCPSocketClosed({
           identifier: 'mockId' as Protocol.Network.RequestId,
           timestamp: 1000,
@@ -379,6 +378,7 @@ describeWithMockConnection('NetworkManager', () => {
           timestamp: baseTimestamp,
         });
       });
+
       const testCases = [
         {
           description: 'adds SENT chunk to request successfully',
@@ -417,6 +417,523 @@ describeWithMockConnection('NetworkManager', () => {
               networkDispatcher.directTCPSocketChunkReceived({
                 identifier: mockIdentifier,
                 data: testCase.eventPayload.data!,
+                timestamp: testCase.eventPayload.timestamp,
+              });
+              break;
+          }
+
+          assert.lengthOf(updatedRequests, 1, 'Should trigger exactly one update');
+          const req = updatedRequests[0];
+
+          assert.strictEqual(req.requestId(), mockIdentifier);
+          assert.strictEqual(
+              req.responseReceivedTime, testCase.eventPayload.timestamp, 'responseReceivedTime should be updated');
+
+          const chunks = req.directSocketChunks();
+          assert.lengthOf(chunks, 1, 'Should have exactly one chunk added');
+          assert.deepEqual(chunks[0], testCase.expectedChunk, 'Chunk details should match expected');
+        });
+      });
+    });
+  });
+
+  describe('Direct UDP socket handling', () => {
+    describe('on CDP created event', () => {
+      it('creates request for connected UDP', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const startedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          startedRequests.push(event.data.request);
+        });
+
+        // remoteAddress/remotePort and localAddress/localPort
+        // pairs cannot be specified together.
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId1' as Protocol.Network.RequestId,
+          options: {
+            remoteAddr: 'example.com',
+            remotePort: 2001,
+            sendBufferSize: 2003,
+            receiveBufferSize: 2004,
+            dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv6,
+          },
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(startedRequests, 1);
+        const req: SDK.NetworkRequest.NetworkRequest = startedRequests[0];
+
+        assert.strictEqual(req.requestId(), 'mockUdpId1' as Protocol.Network.RequestId);
+        assert.strictEqual(req.remoteAddress(), 'example.com:2001');
+        assert.strictEqual(req.url(), urlString`example.com:2001`);
+        assert.isTrue(req.hasNetworkData);
+        assert.strictEqual(req.protocol, 'udp');
+        assert.strictEqual(req.statusText, 'Opening');
+        assert.deepEqual(req.directSocketInfo, {
+          type: SDK.NetworkRequest.DirectSocketType.UDP_CONNECTED,
+          status: SDK.NetworkRequest.DirectSocketStatus.OPENING,
+          createOptions: {
+            remoteAddr: 'example.com',
+            remotePort: 2001,
+            localAddr: undefined,
+            localPort: undefined,
+            sendBufferSize: 2003,
+            receiveBufferSize: 2004,
+            dnsQueryType: Protocol.Network.DirectSocketDnsQueryType.Ipv6,
+          }
+        });
+        assert.strictEqual(req.resourceType(), Common.ResourceType.resourceTypes.DirectSocket);
+        assert.strictEqual(req.issueTime(), 2000);
+        assert.strictEqual(req.startTime, 2000);
+      });
+
+      it('creates request for bound UDP', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const startedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          startedRequests.push(event.data.request);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId2' as Protocol.Network.RequestId,
+          options: {
+            localAddr: '192.168.0.1',
+            localPort: 2005,
+            sendBufferSize: 2006,
+            receiveBufferSize: 2007,
+          },
+          timestamp: 2100,
+        });
+
+        assert.lengthOf(startedRequests, 1);
+        const req: SDK.NetworkRequest.NetworkRequest = startedRequests[0];
+
+        assert.strictEqual(req.requestId(), 'mockUdpId2' as Protocol.Network.RequestId);
+        // No remote address for bound UDP initially
+        assert.strictEqual(req.remoteAddress(), '');
+        // URL uses localAddr if remoteAddr is not present
+        assert.strictEqual(req.url(), urlString`192.168.0.1:2005`);
+        assert.isTrue(req.hasNetworkData);
+        assert.strictEqual(req.protocol, 'udp');
+        assert.strictEqual(req.statusText, 'Opening');
+        assert.deepEqual(req.directSocketInfo, {
+          type: SDK.NetworkRequest.DirectSocketType.UDP_BOUND,
+          status: SDK.NetworkRequest.DirectSocketStatus.OPENING,
+          createOptions: {
+            remoteAddr: undefined,
+            remotePort: undefined,
+            localAddr: '192.168.0.1',
+            localPort: 2005,
+            sendBufferSize: 2006,
+            receiveBufferSize: 2007,
+            dnsQueryType: undefined,
+          }
+        });
+        assert.strictEqual(req.resourceType(), Common.ResourceType.resourceTypes.DirectSocket);
+        assert.strictEqual(req.issueTime(), 2100);
+        assert.strictEqual(req.startTime, 2100);
+      });
+
+      it('does nothing if no localAddr for bound UDP', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const startedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          startedRequests.push(event.data.request);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId3' as Protocol.Network.RequestId,
+          options: {
+              // Skip request if remoteAddr and localAddr are both absent.
+          },
+          timestamp: 2200,
+        });
+
+        assert.lengthOf(startedRequests, 0);
+      });
+    });
+
+    describe('on CDP opened event', () => {
+      it('does nothing if no request exists', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const updatedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketOpened({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          localAddr: '127.0.0.1',
+          localPort: 2002,
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(updatedRequests, 0);
+      });
+
+      it('does nothing if the request has no direct socket info', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const updatedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+        networkDispatcher.webTransportCreated(
+            {transportId: 'mockUdpId' as Protocol.Network.RequestId, url: 'example.com', timestamp: 2000});
+
+        networkDispatcher.directUDPSocketOpened({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          localAddr: '127.0.0.1',
+          localPort: 2002,
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(updatedRequests, 0);
+      });
+
+      it('updates request successfully for connected UDP', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const updatedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          options: {
+            remoteAddr: 'example.com',
+            remotePort: 2001,
+          },
+          timestamp: 2000,
+        });
+        assert.lengthOf(updatedRequests, 0);
+
+        networkDispatcher.directUDPSocketOpened({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          localAddr: '127.0.0.1',
+          localPort: 8001,
+          remoteAddr: '192.168.1.1',
+          remotePort: 2010,
+          timestamp: 2050,
+        });
+        assert.lengthOf(updatedRequests, 1);
+
+        const req: SDK.NetworkRequest.NetworkRequest = updatedRequests[0];
+        assert.strictEqual(req.remoteAddress(), '192.168.1.1:2010');
+        assert.strictEqual(req.url(), urlString`192.168.1.1:2010`);
+        assert.strictEqual(req.statusText, 'Open');
+        assert.deepEqual(req.directSocketInfo?.status, SDK.NetworkRequest.DirectSocketStatus.OPEN);
+        assert.deepEqual(req.directSocketInfo?.openInfo, {
+          remoteAddr: '192.168.1.1',
+          remotePort: 2010,
+          localAddr: '127.0.0.1',
+          localPort: 8001,
+        });
+        assert.strictEqual(req.responseReceivedTime, 2050);
+      });
+
+      it('updates request successfully for bound UDP', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const updatedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpBoundId' as Protocol.Network.RequestId,
+          options: {
+            localAddr: '0.0.0.0',
+            localPort: 7000,
+          },
+          timestamp: 2100,
+        });
+        assert.lengthOf(updatedRequests, 0);
+
+        networkDispatcher.directUDPSocketOpened({
+          identifier: 'mockUdpBoundId' as Protocol.Network.RequestId,
+          localAddr: '192.168.0.5',
+          localPort: 7000,
+          // No remoteAddr/remotePort for bound socket open event
+          timestamp: 2150,
+        });
+        assert.lengthOf(updatedRequests, 1);
+
+        const req: SDK.NetworkRequest.NetworkRequest = updatedRequests[0];
+        assert.strictEqual(req.remoteAddress(), '');                 // Still no remote address
+        assert.strictEqual(req.url(), urlString`192.168.0.5:7000`);  // URL updated with resolved local address
+        assert.strictEqual(req.statusText, 'Open');
+        assert.deepEqual(req.directSocketInfo?.status, SDK.NetworkRequest.DirectSocketStatus.OPEN);
+        assert.deepEqual(req.directSocketInfo?.openInfo, {
+          remoteAddr: undefined,
+          remotePort: undefined,
+          localAddr: '192.168.0.5',
+          localPort: 7000,
+        });
+        assert.strictEqual(req.responseReceivedTime, 2150);
+      });
+    });
+
+    describe('on CDP event aborted', () => {
+      it('does nothing if no request exists', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketAborted({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          errorMessage: 'mock udp error',
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(finishedRequests, 0);
+      });
+
+      it('does nothing if the request has no direct socket info', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+        networkDispatcher.webTransportCreated(
+            {transportId: 'mockUdpId' as Protocol.Network.RequestId, url: 'example.com', timestamp: 2000});
+
+        networkDispatcher.directUDPSocketAborted({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          errorMessage: 'mock udp error',
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(finishedRequests, 0);
+      });
+
+      it('updates request successfully', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          options: {
+            remoteAddr: 'example.com',
+            remotePort: 2001,
+          },
+          timestamp: 2000,
+        });
+        assert.lengthOf(finishedRequests, 0);
+
+        networkDispatcher.directUDPSocketAborted({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          errorMessage: 'UDP aborted by peer',
+          timestamp: 2050,
+        });
+        assert.lengthOf(finishedRequests, 1);
+
+        const req: SDK.NetworkRequest.NetworkRequest = finishedRequests[0];
+        assert.strictEqual(req.statusText, 'Aborted');
+        assert.isTrue(req.failed);
+        assert.isTrue(req.finished);
+        assert.strictEqual(req.endTime, 2050);
+        assert.deepEqual(req.directSocketInfo?.status, SDK.NetworkRequest.DirectSocketStatus.ABORTED);
+        assert.strictEqual(req.directSocketInfo?.errorMessage, 'UDP aborted by peer');
+      });
+    });
+
+    describe('on CDP event closed', () => {
+      it('does nothing if no request exists', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketClosed({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(finishedRequests, 0);
+      });
+
+      it('does nothing if the request has no direct socket info', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+        networkDispatcher.webTransportCreated(
+            {transportId: 'mockUdpId' as Protocol.Network.RequestId, url: 'example.com', timestamp: 2000});
+
+        networkDispatcher.directUDPSocketClosed({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          timestamp: 2000,
+        });
+
+        assert.lengthOf(finishedRequests, 0);
+      });
+
+      it('updates request successfully', () => {
+        const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        const finishedRequests: SDK.NetworkRequest.NetworkRequest[] = [];
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestFinished, event => {
+          finishedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          options: {
+            remoteAddr: 'example.com',
+            remotePort: 2001,
+          },
+          timestamp: 2000,
+        });
+        assert.lengthOf(finishedRequests, 0);
+
+        networkDispatcher.directUDPSocketClosed({
+          identifier: 'mockUdpId' as Protocol.Network.RequestId,
+          timestamp: 2050,
+        });
+        assert.lengthOf(finishedRequests, 1);
+
+        const req: SDK.NetworkRequest.NetworkRequest = finishedRequests[0];
+        assert.strictEqual(req.statusText, 'Closed');
+        assert.notExists(req.failed);
+        assert.isTrue(req.finished);
+        assert.strictEqual(req.endTime, 2050);
+        assert.deepEqual(req.directSocketInfo?.status, SDK.NetworkRequest.DirectSocketStatus.CLOSED);
+      });
+    });
+
+    describe('on CDP chunk event', () => {
+      let networkManager: SDK.NetworkManager.NetworkManager;
+      let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;
+      let updatedRequests: SDK.NetworkRequest.NetworkRequest[];
+      let targetRequest: SDK.NetworkRequest.NetworkRequest|null;
+      const mockIdentifier = 'mockUdpChunkId' as Protocol.Network.RequestId;
+      const baseTimestamp = 3000;
+
+      beforeEach(() => {
+        networkManager = new SDK.NetworkManager.NetworkManager(createTarget());
+        networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+        updatedRequests = [];
+        targetRequest = null;
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, event => {
+          if (event.data.request.requestId() === mockIdentifier) {
+            targetRequest = event.data.request;
+          }
+        });
+
+        networkManager.addEventListener(SDK.NetworkManager.Events.RequestUpdated, event => {
+          updatedRequests.push(event.data);
+        });
+
+        networkDispatcher.directUDPSocketCreated({
+          identifier: mockIdentifier,
+          options: {
+            remoteAddr: 'udp-example.com',
+            remotePort: 3005,
+          },
+          timestamp: baseTimestamp,
+        });
+      });
+
+      const testCases = [
+        {
+          description: 'adds SENT chunk to request successfully (connected)',
+          eventPayload: {
+            // No remoteAddr/Port for connected.
+            message: {data: 'c2VudCBkYXRh=='},
+            timestamp: 3100
+          },
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.SEND,
+            data: 'c2VudCBkYXRh==',
+            timestamp: 3100,
+            remoteAddress: undefined,
+            remotePort: undefined
+          }
+        },
+        {
+          description: 'adds SENT chunk to request successfully (bound with address)',
+          eventPayload:
+              {message: {data: 'Ym91bmQgc2VudA==', remoteAddr: '10.0.0.1', remotePort: 4000}, timestamp: 3150},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.SEND,
+            data: 'Ym91bmQgc2VudA==',
+            timestamp: 3150,
+            remoteAddress: '10.0.0.1',
+            remotePort: 4000
+          }
+        },
+        {
+          description: 'adds SENT chunk to request successfully (bound with address, no port)',
+          eventPayload: {message: {data: 'Ym91bmQgc2VudCBwbA==', remoteAddr: '10.0.0.2'}, timestamp: 3160},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.SEND,
+            data: 'Ym91bmQgc2VudCBwbA==',
+            timestamp: 3160,
+            remoteAddress: '10.0.0.2',
+            remotePort: undefined
+          }
+        },
+        {
+          description: 'adds RECEIVED chunk to request successfully (connected)',
+          eventPayload: {message: {data: 'cmVjZWl2ZWQgZGF0YQ=='}, timestamp: 3200},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.RECEIVE,
+            data: 'cmVjZWl2ZWQgZGF0YQ==',
+            timestamp: 3200,
+            remoteAddress: undefined,
+            remotePort: undefined
+          }
+        },
+        {
+          description: 'adds RECEIVED chunk to request successfully (bound with address)',
+          eventPayload:
+              {message: {data: 'Ym91bmQgcmVjZWl2ZWQ=', remoteAddr: '10.0.0.3', remotePort: 4001}, timestamp: 3250},
+          expectedChunk: {
+            type: SDK.NetworkRequest.DirectSocketChunkType.RECEIVE,
+            data: 'Ym91bmQgcmVjZWl2ZWQ=',
+            timestamp: 3250,
+            remoteAddress: '10.0.0.3',
+            remotePort: 4001
+          }
+        },
+      ];
+
+      testCases.forEach(testCase => {
+        it(testCase.description, () => {
+          assert.exists(targetRequest, 'Target request should be created in beforeEach');
+          updatedRequests.length = 0;
+
+          switch (testCase.expectedChunk.type) {
+            case SDK.NetworkRequest.DirectSocketChunkType.SEND:
+              networkDispatcher.directUDPSocketChunkSent({
+                identifier: mockIdentifier,
+                message: (testCase.eventPayload as Protocol.Network.DirectUDPSocketChunkSentEvent).message,
+                timestamp: testCase.eventPayload.timestamp,
+              });
+              break;
+            case SDK.NetworkRequest.DirectSocketChunkType.RECEIVE:
+              networkDispatcher.directUDPSocketChunkReceived({
+                identifier: mockIdentifier,
+                message: (testCase.eventPayload as Protocol.Network.DirectUDPSocketChunkReceivedEvent).message,
                 timestamp: testCase.eventPayload.timestamp,
               });
               break;

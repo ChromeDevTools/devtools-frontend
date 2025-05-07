@@ -21,7 +21,7 @@ import * as NetworkComponents from './components.js';
 const {urlString} = Platform.DevToolsPath;
 
 function createNetworkRequest() {
-  const networkRequest = SDK.NetworkRequest.NetworkRequest.createForWebSocket(
+  const networkRequest = SDK.NetworkRequest.NetworkRequest.createForSocket(
       'requestId' as Protocol.Network.RequestId, urlString`www.example.com/some/path:3000`);
   networkRequest.hasNetworkData = true;
   networkRequest.setRemoteAddress('www.example.com', 3000);

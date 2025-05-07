@@ -447,7 +447,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture);
   }
 
-  static createForWebSocket(
+  static createForSocket(
       backendRequestId: Protocol.Network.RequestId, requestURL: Platform.DevToolsPath.UrlString,
       initiator?: Protocol.Network.Initiator): NetworkRequest {
     return new NetworkRequest(
@@ -1833,6 +1833,7 @@ export interface EventTypes {
   [Events.RESPONSE_HEADERS_CHANGED]: void;
   [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame;
   [Events.DIRECTSOCKET_CHUNK_ADDED]: DirectSocketChunk;
+  [Events.DIRECTSOCKET_CHUNK_ADDED]: DirectSocketChunk;
   [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage;
   [Events.TRUST_TOKEN_RESULT_ADDED]: void;
 }
@@ -2152,16 +2153,15 @@ export interface DirectSocketInfo {
 }
 
 export interface DirectSocketChunk {
-  // error is here in case of type Error
   data: string;
   type: DirectSocketChunkType;
   timestamp: number;
-  // only for p2p udp sockets
-  remoteUrl?: string;
+  // Only for bound udp socket.
+  remoteAddress?: string;
+  remotePort?: number;
 }
 
 export enum DirectSocketChunkType {
   SEND = 'send',
-  RECEIVE = 'receive',
-  ERROR = 'error'
+  RECEIVE = 'receive'
 }

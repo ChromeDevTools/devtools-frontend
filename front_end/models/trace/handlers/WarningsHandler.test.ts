@@ -12,15 +12,23 @@ describeWithEnvironment('WarningsHandler', function() {
   });
 
   it('identifies long tasks', async function() {
-    const events = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
-    for (const event of events) {
-      Trace.Handlers.ModelHandlers.Warnings.handleEvent(event);
-    }
-    const data = Trace.Handlers.ModelHandlers.Warnings.data();
+    // We run the entire model here as the WarningsHandler actually depends on the WorkersHandler.
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+    const {perWarning} = parsedTrace.Warnings;
+    const events = perWarning.get('LONG_TASK');
     // We expect one long task.
-    assert.strictEqual(data.perEvent.size, 1);
-    const event = Array.from(data.perEvent.keys()).at(0);
+    assert.strictEqual(events?.length, 1);
+    const event = events?.at(0);
     assert.strictEqual(event?.name, Trace.Types.Events.Name.RUN_TASK);
+  });
+
+  it('does not identify worker long tasks', async function() {
+    // We run the entire model here as the WarningsHandler actually depends on the WorkersHandler.
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'long-task-from-worker-thread.json.gz');
+    const {perWarning} = parsedTrace.Warnings;
+    const events = perWarning.get('LONG_TASK');
+    // We expect no long task warnings (because worker tasks don't count).
+    assert.isUndefined(events?.length);
   });
 
   it('identifies idle callbacks that ran over the allotted time', async function() {

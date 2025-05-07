@@ -8,6 +8,7 @@ import * as Types from '../types/types.js';
 
 import type {HandlerName} from './types.js';
 import {data as userInteractionsHandlerData} from './UserInteractionsHandler.js';
+import {data as workersData} from './WorkersHandler.js';
 
 export interface WarningsData {
   // Tracks warnings keyed by the event.
@@ -36,6 +37,10 @@ const jsInvokeStack: Types.Events.Event[] = [];
  * Tracks reflow events in a task.
  */
 const taskReflowEvents: Types.Events.Event[] = [];
+/**
+ * Tracks events containing long running tasks. These are compared later against the worker thread pool to filter out long tasks from worker threads.
+ */
+const longTaskEvents: Types.Events.Event[] = [];
 
 export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(30));
 
@@ -47,6 +52,7 @@ export function reset(): void {
   allEventsStack.length = 0;
   jsInvokeStack.length = 0;
   taskReflowEvents.length = 0;
+  longTaskEvents.length = 0;
 }
 
 function storeWarning(event: Types.Events.Event, warning: Warning): void {
@@ -64,7 +70,7 @@ export function handleEvent(event: Types.Events.Event): void {
   if (event.name === Types.Events.Name.RUN_TASK) {
     const {duration} = Helpers.Timing.eventTimingsMicroSeconds(event);
     if (duration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
-      storeWarning(event, 'LONG_TASK');
+      longTaskEvents.push(event);
     }
     return;
   }
@@ -126,7 +132,7 @@ function accomodateEventInStack(event: Types.Events.Event, stack: Types.Events.E
 }
 
 export function deps(): HandlerName[] {
-  return ['UserInteractions'];
+  return ['UserInteractions', 'Workers'];
 }
 
 export async function finalize(): Promise<void> {
@@ -139,6 +145,13 @@ export async function finalize(): Promise<void> {
   for (const interaction of longInteractions) {
     storeWarning(interaction, 'LONG_INTERACTION');
   }
+
+  for (const event of longTaskEvents) {
+    if (!(event.tid, workersData().workerIdByThread.has(event.tid))) {
+      storeWarning(event, 'LONG_TASK');
+    }
+  }
+  longTaskEvents.length = 0;
 }
 
 export function data(): WarningsData {

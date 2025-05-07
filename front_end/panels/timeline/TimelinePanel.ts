@@ -793,6 +793,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.loader = TimelineLoader.loadFromEvents(events, this);
   }
 
+  loadFromTraceFile(traceFile: Trace.Types.File.TraceFile): void {
+    if (this.state !== State.IDLE) {
+      return;
+    }
+    this.prepareToLoadTimeline();
+    this.loader = TimelineLoader.loadFromTraceFile(traceFile, this);
+  }
+
   getFlameChart(): TimelineFlameChartView {
     return this.flameChart;
   }
@@ -2979,10 +2987,8 @@ export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamH
 
 export class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.TraceObject> {
   async reveal(trace: SDK.TraceObject.TraceObject): Promise<void> {
-    // TODO(cjamcl): This needs to be given a TraceFile, so that metadata is loaded too. Important
-    // for source maps (which otherwise won't be saved on export).
     await UI.ViewManager.ViewManager.instance().showView('timeline');
-    TimelinePanel.instance().loadFromEvents(trace.traceEvents);
+    TimelinePanel.instance().loadFromTraceFile(trace);
   }
 }
 

@@ -597,6 +597,7 @@ export class RecorderController extends LitElement {
       await UI.InspectorView.InspectorView.instance().showPanel(event.data?.targetPanel as string);
       switch (event.data?.targetPanel) {
         case Components.RecordingView.TargetPanel.PERFORMANCE_PANEL:
+          // Note: this is not passing any metadata to the Performance panel.
           Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(events as Trace.Types.Events.Event[]);
           break;
       }

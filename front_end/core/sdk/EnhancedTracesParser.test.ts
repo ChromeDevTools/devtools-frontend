@@ -162,7 +162,7 @@ describe('EnhancedTracesParser', () => {
     url: 'http://localhost:8080/index.html',
     hasSourceURL: false,
     sourceURL: undefined,
-    sourceMapURL: undefined,
+    sourceMapURL: 'http://localhost:8080/source.map.json',
     pid: 8050,
     auxData: {
       frameId: '21D58E83A5C17916277166140F6A464B' as Protocol.Page.FrameId,
@@ -184,7 +184,7 @@ describe('EnhancedTracesParser', () => {
     url: 'http://localhost:8080/index.html',
     hasSourceURL: false,
     sourceURL: undefined,
-    sourceMapURL: undefined,
+    sourceMapURL: 'http://localhost:8080/source.map.json',
     pid: 8050,
     auxData: {
       frameId: '21D58E83A5C17916277166140F6A464B' as Protocol.Page.FrameId,
@@ -206,7 +206,7 @@ describe('EnhancedTracesParser', () => {
     url: 'http://localhost:8080/index.html',
     hasSourceURL: false,
     sourceURL: undefined,
-    sourceMapURL: undefined,
+    sourceMapURL: 'http://localhost:8080/source.map.json',
     pid: 8052,
   };
 
@@ -259,7 +259,7 @@ describe('EnhancedTracesParser', () => {
     assert.lengthOf(scripts, 6);
     for (const script of scripts) {
       if (script.scriptId === '1' && script.isolate === '12345') {
-        assert.deepEqual(script, {...script1, sourceMapURL: undefined});
+        assert.deepEqual(script, script1);
       } else if (script.scriptId === '2' && script.isolate === '12345') {
         assert.deepEqual(script, script2);
       } else if (script.scriptId === '1' && script.isolate === '6789') {
@@ -288,7 +288,7 @@ describe('EnhancedTracesParser', () => {
         assert.lengthOf(scripts, 4);
         for (const script of scripts) {
           if (script.scriptId === '1') {
-            assert.deepEqual(script, {...script1, sourceMapURL: undefined});
+            assert.deepEqual(script, script1);
           } else if (script.scriptId === '2') {
             assert.deepEqual(script, script2);
           } else if (script.scriptId === '3') {

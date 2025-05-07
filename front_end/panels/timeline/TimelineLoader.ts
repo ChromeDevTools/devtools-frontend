@@ -78,7 +78,15 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   static loadFromEvents(events: Trace.Types.Events.Event[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
-      void loader.addEvents(events);
+      void loader.addEvents(events, null);
+    });
+    return loader;
+  }
+
+  static loadFromTraceFile(traceFile: Trace.Types.File.TraceFile, client: Client): TimelineLoader {
+    const loader = new TimelineLoader(client);
+    window.setTimeout(async () => {
+      void loader.addEvents(traceFile.traceEvents, traceFile.metadata);
     });
     return loader;
   }
@@ -92,7 +100,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
-        void loader.addEvents(contents.traceEvents);
+        void loader.addEvents(contents.traceEvents, null);
       });
     } catch (e) {
       console.error(e.stack);
@@ -166,7 +174,9 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
   }
 
-  async addEvents(events: readonly Trace.Types.Events.Event[]): Promise<void> {
+  async addEvents(events: readonly Trace.Types.Events.Event[], metadata: Trace.Types.File.MetaData|null):
+      Promise<void> {
+    this.#metadata = metadata;
     this.client?.loadingStarted();
     /**
      * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.

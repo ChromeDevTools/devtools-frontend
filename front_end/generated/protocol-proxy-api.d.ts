@@ -2394,14 +2394,34 @@ declare namespace ProtocolProxyApi {
     directTCPSocketChunkReceived(params: Protocol.Network.DirectTCPSocketChunkReceivedEvent): void;
 
     /**
-     * Fired when there is an error
-     * when writing to tcp direct socket stream.
-     * For example, if user writes illegal type like string
-     * instead of ArrayBuffer or ArrayBufferView.
-     * There's no reporting for reading, because
-     * we cannot know errors on the other side.
+     * Fired upon direct_socket.UDPSocket creation.
      */
-    directTCPSocketChunkError(params: Protocol.Network.DirectTCPSocketChunkErrorEvent): void;
+    directUDPSocketCreated(params: Protocol.Network.DirectUDPSocketCreatedEvent): void;
+
+    /**
+     * Fired when direct_socket.UDPSocket connection is opened.
+     */
+    directUDPSocketOpened(params: Protocol.Network.DirectUDPSocketOpenedEvent): void;
+
+    /**
+     * Fired when direct_socket.UDPSocket is aborted.
+     */
+    directUDPSocketAborted(params: Protocol.Network.DirectUDPSocketAbortedEvent): void;
+
+    /**
+     * Fired when direct_socket.UDPSocket is closed.
+     */
+    directUDPSocketClosed(params: Protocol.Network.DirectUDPSocketClosedEvent): void;
+
+    /**
+     * Fired when message is sent to udp direct socket stream.
+     */
+    directUDPSocketChunkSent(params: Protocol.Network.DirectUDPSocketChunkSentEvent): void;
+
+    /**
+     * Fired when message is received from udp direct socket stream.
+     */
+    directUDPSocketChunkReceived(params: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void;
 
     /**
      * Fired when additional information about a requestWillBeSent event is available from the

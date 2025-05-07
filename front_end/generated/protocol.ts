@@ -8892,6 +8892,7 @@ export namespace Network {
     MixedContent = 'mixed-content',
     Origin = 'origin',
     Inspector = 'inspector',
+    Integrity = 'integrity',
     SubresourceFilter = 'subresource-filter',
     ContentType = 'content-type',
     CoepFrameResourceNeedsCoepHeader = 'coep-frame-resource-needs-coep-header',
@@ -9796,6 +9797,41 @@ export namespace Network {
     dnsQueryType?: DirectSocketDnsQueryType;
   }
 
+  export interface DirectUDPSocketOptions {
+    remoteAddr?: string;
+    /**
+     * Unsigned int 16.
+     */
+    remotePort?: integer;
+    localAddr?: string;
+    /**
+     * Unsigned int 16.
+     */
+    localPort?: integer;
+    dnsQueryType?: DirectSocketDnsQueryType;
+    /**
+     * Expected to be unsigned integer.
+     */
+    sendBufferSize?: number;
+    /**
+     * Expected to be unsigned integer.
+     */
+    receiveBufferSize?: number;
+  }
+
+  export interface DirectUDPMessage {
+    data: binary;
+    /**
+     * Null for connected mode.
+     */
+    remoteAddr?: string;
+    /**
+     * Null for connected mode.
+     * Expected to be unsigned integer.
+     */
+    remotePort?: integer;
+  }
+
   export const enum PrivateNetworkRequestPolicy {
     Allow = 'Allow',
     BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
@@ -10100,6 +10136,10 @@ export namespace Network {
      * Longest post body size (in bytes) that would be included in requestWillBeSent notification
      */
     maxPostDataSize?: integer;
+    /**
+     * Whether DirectSocket chunk send/receive events should be reported.
+     */
+    reportDirectSocketTraffic?: boolean;
   }
 
   export interface GetAllCookiesResponse extends ProtocolResponseWithError {
@@ -10975,16 +11015,65 @@ export namespace Network {
   }
 
   /**
-   * Fired when there is an error
-   * when writing to tcp direct socket stream.
-   * For example, if user writes illegal type like string
-   * instead of ArrayBuffer or ArrayBufferView.
-   * There's no reporting for reading, because
-   * we cannot know errors on the other side.
+   * Fired upon direct_socket.UDPSocket creation.
    */
-  export interface DirectTCPSocketChunkErrorEvent {
+  export interface DirectUDPSocketCreatedEvent {
+    identifier: RequestId;
+    options: DirectUDPSocketOptions;
+    timestamp: MonotonicTime;
+    initiator?: Initiator;
+  }
+
+  /**
+   * Fired when direct_socket.UDPSocket connection is opened.
+   */
+  export interface DirectUDPSocketOpenedEvent {
+    identifier: RequestId;
+    localAddr: string;
+    /**
+     * Expected to be unsigned integer.
+     */
+    localPort: integer;
+    timestamp: MonotonicTime;
+    remoteAddr?: string;
+    /**
+     * Expected to be unsigned integer.
+     */
+    remotePort?: integer;
+  }
+
+  /**
+   * Fired when direct_socket.UDPSocket is aborted.
+   */
+  export interface DirectUDPSocketAbortedEvent {
     identifier: RequestId;
     errorMessage: string;
+    timestamp: MonotonicTime;
+  }
+
+  /**
+   * Fired when direct_socket.UDPSocket is closed.
+   */
+  export interface DirectUDPSocketClosedEvent {
+    identifier: RequestId;
+    timestamp: MonotonicTime;
+  }
+
+  /**
+   * Fired when message is sent to udp direct socket stream.
+   */
+  export interface DirectUDPSocketChunkSentEvent {
+    identifier: RequestId;
+    message: DirectUDPMessage;
+    timestamp: MonotonicTime;
+  }
+
+  /**
+   * Fired when message is received from udp direct socket stream.
+   */
+  export interface DirectUDPSocketChunkReceivedEvent {
+    identifier: RequestId;
+    message: DirectUDPMessage;
     timestamp: MonotonicTime;
   }
 

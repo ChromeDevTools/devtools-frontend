@@ -13444,6 +13444,7 @@
                         "mixed-content",
                         "origin",
                         "inspector",
+                        "integrity",
                         "subresource-filter",
                         "content-type",
                         "coep-frame-resource-needs-coep-header",
@@ -14617,6 +14618,75 @@
                     ]
                 },
                 {
+                    "id": "DirectUDPSocketOptions",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "remoteAddr",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "remotePort",
+                            "description": "Unsigned int 16.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "localAddr",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "localPort",
+                            "description": "Unsigned int 16.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "dnsQueryType",
+                            "optional": true,
+                            "$ref": "DirectSocketDnsQueryType"
+                        },
+                        {
+                            "name": "sendBufferSize",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "receiveBufferSize",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "number"
+                        }
+                    ]
+                },
+                {
+                    "id": "DirectUDPMessage",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "data",
+                            "type": "binary"
+                        },
+                        {
+                            "name": "remoteAddr",
+                            "description": "Null for connected mode.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "remotePort",
+                            "description": "Null for connected mode.\nExpected to be unsigned integer.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "id": "PrivateNetworkRequestPolicy",
                     "experimental": true,
                     "type": "string",
@@ -15175,6 +15245,13 @@
                             "description": "Longest post body size (in bytes) that would be included in requestWillBeSent notification",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "reportDirectSocketTraffic",
+                            "description": "Whether DirectSocket chunk send/receive events should be reported.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -16412,8 +16489,67 @@
                     ]
                 },
                 {
-                    "name": "directTCPSocketChunkError",
-                    "description": "Fired when there is an error\nwhen writing to tcp direct socket stream.\nFor example, if user writes illegal type like string\ninstead of ArrayBuffer or ArrayBufferView.\nThere's no reporting for reading, because\nwe cannot know errors on the other side.",
+                    "name": "directUDPSocketCreated",
+                    "description": "Fired upon direct_socket.UDPSocket creation.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "options",
+                            "$ref": "DirectUDPSocketOptions"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        },
+                        {
+                            "name": "initiator",
+                            "optional": true,
+                            "$ref": "Initiator"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketOpened",
+                    "description": "Fired when direct_socket.UDPSocket connection is opened.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "localAddr",
+                            "type": "string"
+                        },
+                        {
+                            "name": "localPort",
+                            "description": "Expected to be unsigned integer.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        },
+                        {
+                            "name": "remoteAddr",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "remotePort",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketAborted",
+                    "description": "Fired when direct_socket.UDPSocket is aborted.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -16423,6 +16559,59 @@
                         {
                             "name": "errorMessage",
                             "type": "string"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketClosed",
+                    "description": "Fired when direct_socket.UDPSocket is closed.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketChunkSent",
+                    "description": "Fired when message is sent to udp direct socket stream.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "message",
+                            "$ref": "DirectUDPMessage"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directUDPSocketChunkReceived",
+                    "description": "Fired when message is received from udp direct socket stream.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "message",
+                            "$ref": "DirectUDPMessage"
                         },
                         {
                             "name": "timestamp",

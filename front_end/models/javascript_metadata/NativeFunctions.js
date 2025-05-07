@@ -7486,6 +7486,10 @@ export const NativeFunctions = [
     signatures: [["element","x","y"]]
   },
   {
+    name: "drawElement",
+    signatures: [["element","x","y","?dwidth","?dheight"]]
+  },
+  {
     name: "Path2D",
     signatures: [["?path"]]
   },

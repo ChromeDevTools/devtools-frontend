@@ -295,14 +295,29 @@ export namespace ProtocolMapping {
      */
     'Network.directTCPSocketChunkReceived': [Protocol.Network.DirectTCPSocketChunkReceivedEvent];
     /**
-     * Fired when there is an error
-     * when writing to tcp direct socket stream.
-     * For example, if user writes illegal type like string
-     * instead of ArrayBuffer or ArrayBufferView.
-     * There's no reporting for reading, because
-     * we cannot know errors on the other side.
+     * Fired upon direct_socket.UDPSocket creation.
      */
-    'Network.directTCPSocketChunkError': [Protocol.Network.DirectTCPSocketChunkErrorEvent];
+    'Network.directUDPSocketCreated': [Protocol.Network.DirectUDPSocketCreatedEvent];
+    /**
+     * Fired when direct_socket.UDPSocket connection is opened.
+     */
+    'Network.directUDPSocketOpened': [Protocol.Network.DirectUDPSocketOpenedEvent];
+    /**
+     * Fired when direct_socket.UDPSocket is aborted.
+     */
+    'Network.directUDPSocketAborted': [Protocol.Network.DirectUDPSocketAbortedEvent];
+    /**
+     * Fired when direct_socket.UDPSocket is closed.
+     */
+    'Network.directUDPSocketClosed': [Protocol.Network.DirectUDPSocketClosedEvent];
+    /**
+     * Fired when message is sent to udp direct socket stream.
+     */
+    'Network.directUDPSocketChunkSent': [Protocol.Network.DirectUDPSocketChunkSentEvent];
+    /**
+     * Fired when message is received from udp direct socket stream.
+     */
+    'Network.directUDPSocketChunkReceived': [Protocol.Network.DirectUDPSocketChunkReceivedEvent];
     /**
      * Fired when additional information about a requestWillBeSent event is available from the
      * network stack. Not every requestWillBeSent event will have an additional

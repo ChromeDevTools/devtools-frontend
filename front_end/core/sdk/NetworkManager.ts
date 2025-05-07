@@ -1341,20 +1341,22 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.updateNetworkRequest(networkRequest);
   }
 
-  directTCPSocketChunkError(event: Protocol.Network.DirectTCPSocketChunkErrorEvent): void {
-    const networkRequest = this.#requestsById.get(event.identifier);
-    if (!networkRequest) {
-      return;
-    }
+  directUDPSocketCreated(_event: Protocol.Network.DirectUDPSocketCreatedEvent): void {
+  }
 
-    networkRequest.addDirectSocketChunk({
-      data: event.errorMessage,
-      type: DirectSocketChunkType.ERROR,
-      timestamp: event.timestamp,
-    });
-    networkRequest.responseReceivedTime = event.timestamp;
+  directUDPSocketOpened(_event: Protocol.Network.DirectUDPSocketOpenedEvent): void {
+  }
 
-    this.updateNetworkRequest(networkRequest);
+  directUDPSocketAborted(_event: Protocol.Network.DirectUDPSocketAbortedEvent): void {
+  }
+
+  directUDPSocketClosed(_event: Protocol.Network.DirectUDPSocketClosedEvent): void {
+  }
+
+  directUDPSocketChunkSent(_event: Protocol.Network.DirectUDPSocketChunkSentEvent): void {
+  }
+
+  directUDPSocketChunkReceived(_event: Protocol.Network.DirectUDPSocketChunkReceivedEvent): void {
   }
 
   trustTokenOperationDone(event: Protocol.Network.TrustTokenOperationDoneEvent): void {

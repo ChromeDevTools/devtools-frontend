@@ -398,15 +398,6 @@ describeWithMockConnection('NetworkManager', () => {
             timestamp: 4000,
           }
         },
-        {
-          description: 'adds ERROR chunk to request successfully',
-          eventPayload: {errorMessage: 'Something went wrong', timestamp: 5000},
-          expectedChunk: {
-            type: SDK.NetworkRequest.DirectSocketChunkType.ERROR,
-            data: 'Something went wrong',
-            timestamp: 5000,
-          }
-        },
       ];
 
       testCases.forEach(testCase => {
@@ -426,13 +417,6 @@ describeWithMockConnection('NetworkManager', () => {
               networkDispatcher.directTCPSocketChunkReceived({
                 identifier: mockIdentifier,
                 data: testCase.eventPayload.data!,
-                timestamp: testCase.eventPayload.timestamp,
-              });
-              break;
-            case SDK.NetworkRequest.DirectSocketChunkType.ERROR:
-              networkDispatcher.directTCPSocketChunkError({
-                identifier: mockIdentifier,
-                errorMessage: testCase.eventPayload.errorMessage!,
                 timestamp: testCase.eventPayload.timestamp,
               });
               break;

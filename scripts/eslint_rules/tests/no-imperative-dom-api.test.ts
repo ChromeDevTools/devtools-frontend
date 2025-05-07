@@ -859,6 +859,59 @@ class SomeWidget extends UI.Widget.Widget {
     {
       filename: 'front_end/ui/components/component/file.ts',
       code: `
+class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
+  override createCell(columnId: string): HTMLElement {
+    if (columnId === 'node-id') {
+      const cell = this.createTD(columnId);
+      cell.classList.add('node-id');
+      cell.createChild('span', 'node-id-text').textContent = this.data.id;
+      return cell;
+    }
+    if (columnId === 'source-url') {
+      const cell = this.createTD(columnId);
+      if (this.data.range) {
+        if (!this.#link) {
+          cell.textContent = i18nString(UIStrings.unableToLink);
+        } else {
+          cell.appendChild(this.#link);
+        }
+      } else {
+        cell.textContent = i18nString(UIStrings.unableToLinkToInlineStyle);
+      }
+      return cell;
+    }
+  }
+}`,
+      output: `
+class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
+  override createCell(columnId: string): HTMLElement {
+    if (columnId === 'node-id') {
+      const cell = html\`
+    <td class="node-id">
+      <span class="node-id-text">\${this.data.id}</span>
+    </td>\`;
+      return cell;
+    }
+    if (columnId === 'source-url') {
+      const cell = html\`
+    <td>\${i18nString(UIStrings.unableToLinkToInlineStyle)}
+      \${this.#link}
+    </td>\`;
+      if (this.data.range) {
+        if (!this.#link) {
+        } else {
+        }
+      } else {
+      }
+      return cell;
+    }
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();

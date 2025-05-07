@@ -145,6 +145,13 @@ export const dataGrid = {
           }
         }
       },
+      CallExpression(node: CallExpression) {
+        if (node.callee.type !== 'MemberExpression' || !isIdentifier(node.callee.property, 'createTD')) {
+          return;
+        }
+        const domFragment = DomFragment.getOrCreate(node, sourceCode);
+        domFragment.tagName = 'td';
+      },
     };
   }
 };

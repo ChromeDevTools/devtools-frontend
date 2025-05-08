@@ -25,6 +25,14 @@ describeWithEnvironment('getNonResolvedURL', () => {
     assert.strictEqual(url, profileCall.callFrame.url);
   });
 
+  it('parses out the URL For a ParseAuthorStyleSheet', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parseStyle = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isParseAuthorStyleSheetEvent);
+    assert.isOk(parseStyle);
+    const url = Trace.Handlers.Helpers.getNonResolvedURL(parseStyle, parsedTrace);
+    assert.strictEqual(url, parseStyle.args?.data.url);
+  });
+
   it('uses the request URL for a network request', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.NetworkRequests.byTime[0];

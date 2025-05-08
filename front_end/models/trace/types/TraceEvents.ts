@@ -2840,6 +2840,19 @@ export function isFlowPhaseEvent(event: Event): event is FlowEvent {
   return event.ph === Phase.FLOW_START || event.ph === Phase.FLOW_STEP || event.ph === Phase.FLOW_END;
 }
 
+export interface ParseAuthorStyleSheet extends Complete {
+  name: Name.PARSE_AUTHOR_STYLE_SHEET;
+  args?: Args&{
+    data: {
+      stylesheetUrl: string,
+    },
+  };
+}
+
+export function isParseAuthorStyleSheetEvent(event: Event): event is ParseAuthorStyleSheet {
+  return event.name === Name.PARSE_AUTHOR_STYLE_SHEET;
+}
+
 /**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame

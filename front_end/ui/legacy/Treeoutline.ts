@@ -37,7 +37,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Buttons from '../components/buttons/buttons.js';
-import type * as IconButton from '../components/icon_button/icon_button.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
+import {render, type TemplateResult} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -797,7 +798,7 @@ export class TreeElement {
     }
   }
 
-  setLeadingIcons(icons: IconButton.Icon.Icon[]|IconButton.FileSourceIcon.FileSourceIcon[]): void {
+  setLeadingIcons(icons: IconButton.Icon.Icon[]|TemplateResult[]): void {
     if (!this.leadingIconsElement && !icons.length) {
       return;
     }
@@ -810,7 +811,12 @@ export class TreeElement {
     }
     this.leadingIconsElement.removeChildren();
     for (const icon of icons) {
-      this.leadingIconsElement.appendChild(icon);
+      if (icon instanceof IconButton.Icon.Icon) {
+        this.leadingIconsElement.appendChild(icon);
+      } else {
+        // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+        render(icon, this.leadingIconsElement);
+      }
     }
   }
 

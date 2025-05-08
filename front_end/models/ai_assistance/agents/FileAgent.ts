@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as PanelUtils from '../../../panels/utils/utils.js';
+import type {TemplateResult} from '../../../ui/lit/lit.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
@@ -91,7 +92,7 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
     return this.#file;
   }
 
-  override getIcon(): HTMLElement {
+  override getIcon(): TemplateResult {
     return PanelUtils.PanelUtils.getIconForSourceFile(this.#file);
   }
 

@@ -61,6 +61,20 @@ export const button = {
           domFragment.tagName = 'devtools-icon';
         }
       },
+      CallExpression(node) {
+        if (isIdentifierChain(node.callee, ['IconButton', 'Icon', 'create'])) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'devtools-icon';
+          domFragment.attributes.push({
+            key: 'name',
+            value: node.arguments[0],
+          });
+          const className = node.arguments[1];
+          if (className) {
+            domFragment.classList.push(className);
+          }
+        }
+      },
     };
   }
 };

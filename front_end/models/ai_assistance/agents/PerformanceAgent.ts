@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import * as Trace from '../../trace/trace.js';
 
 import {
@@ -173,11 +175,9 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
     return this.#callTree;
   }
 
-  override getIcon(): HTMLElement {
-    const icon = IconButton.Icon.create('performance', 'icon');
-    icon.style.color = 'var(--sys-color-on-surface-subtle)';
-    icon.title = 'Performance';
-    return icon;
+  override getIcon(): TemplateResult {
+    return html`<devtools-icon name="performance" title="Performance"
+        style="color: var(--sys-color-on-surface-subtle);"></devtools-icon>`;
   }
 
   override getTitle(): string {

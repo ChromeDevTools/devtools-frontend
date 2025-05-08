@@ -7,7 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import {html, type TemplateResult} from '../../../ui/lit/lit.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 import {debugLog} from '../debug.js';
 
@@ -121,11 +121,9 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
     return this.#insight;
   }
 
-  override getIcon(): HTMLElement {
-    const icon = IconButton.Icon.create('performance', 'icon');
-    icon.style.color = 'var(--sys-color-on-surface-subtle)';
-    icon.title = 'Performance';
-    return icon;
+  override getIcon(): TemplateResult {
+    return html`<devtools-icon name="performance" title="Performance"
+        style="color: var(--sys-color-on-surface-subtle);"></devtools-icon>`;
   }
 
   override getTitle(): string {

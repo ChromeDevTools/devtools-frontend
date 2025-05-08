@@ -53,6 +53,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 import {PanelUtils} from '../utils/utils.js';
 
 import type {NetworkTimeCalculator} from './NetworkTimeCalculator.js';
@@ -1107,7 +1108,8 @@ export class NetworkRequestNode extends NetworkNode {
 
       // render icons
       const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
-      cell.appendChild(iconElement);
+      // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+      render(iconElement, cell);
 
       // render Ask AI button
       const aiButtonContainer = this.createAiButtonIfAvailable();

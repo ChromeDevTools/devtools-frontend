@@ -42,7 +42,7 @@ interface SingleDiffViewInput {
   fileName: string;
   fileUrl: string;
   mimeType: string;
-  icon: HTMLElement;
+  icon: Lit.TemplateResult;
   diff: Diff.Diff.DiffArray;
   copied: boolean;
   selectedFileUrl?: string;

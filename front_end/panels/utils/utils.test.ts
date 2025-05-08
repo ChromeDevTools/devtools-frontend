@@ -6,8 +6,10 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Diff from '../../third_party/diff/diff.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as PanelUtils from './utils.js';
 
@@ -75,12 +77,20 @@ describeWithEnvironment('panels/utils', () => {
   });
 
   describe('getIconForNetworkRequest', () => {
+    function renderIcon(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      render(PanelUtils.PanelUtils.getIconForNetworkRequest(request), container);
+      assert.instanceOf(container.firstElementChild, HTMLElement);
+      return container.firstElementChild;
+    }
+
     it('creates an error red icon for request with status code 404', async () => {
       const request = SDK.NetworkRequest.NetworkRequest.create(
           'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
       request.statusCode = 404;
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('cross-circle-filled', iconImage);
 
@@ -95,7 +105,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Document);
       request.mimeType = 'text/html';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-document', iconImage);
 
@@ -110,7 +120,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Media);
       request.mimeType = 'audio/mpeg';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-media', iconImage);
     });
@@ -122,7 +132,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Wasm);
       request.mimeType = 'application/wasm';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-wasm', iconImage);
     });
@@ -134,7 +144,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
       request.mimeType = '';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-websocket', iconImage);
     });
@@ -146,7 +156,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
       request.mimeType = '';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-fetch-xhr', iconImage);
     });
@@ -158,7 +168,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.XHR);
       request.mimeType = 'application/octet-stream';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-fetch-xhr', iconImage);
     });
@@ -170,7 +180,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.XHR);
       request.mimeType = 'image/svg+xml';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const imagePreview = iconElement.querySelector('.image-network-icon-preview') as HTMLImageElement;
 
       assert.instanceOf(iconElement, HTMLDivElement);
@@ -184,7 +194,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
       request.mimeType = 'text/html';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-document', iconImage);
     });
@@ -196,7 +206,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Preflight);
       request.mimeType = 'text/plain';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-generic', iconImage);
     });
@@ -208,7 +218,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Other);
       request.mimeType = 'application/javascript';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-script', iconImage);
     });
@@ -220,7 +230,7 @@ describeWithEnvironment('panels/utils', () => {
       request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
       request.mimeType = 'application/json';
 
-      const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
+      const iconElement = renderIcon(request);
       const iconImage = iconElement.getAttribute('name');
       assert.strictEqual('file-json', iconImage);
     });

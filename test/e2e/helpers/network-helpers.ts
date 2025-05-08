@@ -53,7 +53,7 @@ export async function waitForSomeRequestsToAppear(numberOfRequests: number) {
 
 export async function getAllRequestNames() {
   const requests = await $$(REQUEST_LIST_SELECTOR + ' .name-column');
-  return await Promise.all(requests.map(request => request.evaluate(r => r.childNodes[1].textContent)));
+  return await Promise.all(requests.map(request => request.evaluate(r => r.childNodes[2].textContent)));
 }
 
 export async function getNumberOfRequests() {
@@ -66,7 +66,7 @@ export async function getSelectedRequestName() {
     return null;
   }
   return await request.evaluate(node => {
-    return node?.childNodes[1].textContent;
+    return node?.childNodes[2].textContent;
   });
 }
 
@@ -82,7 +82,7 @@ export async function selectRequestByName(name: string, clickOptions?: puppeteer
   const rect = await frontend.evaluate((name, selector) => {
     const elements = document.querySelectorAll(selector);
     for (const element of elements) {
-      if (element.childNodes[1].textContent === name) {
+      if (element.childNodes[2].textContent === name) {
         const {left, top, width, height} = element.getBoundingClientRect();
         return {left, top, width, height};
       }

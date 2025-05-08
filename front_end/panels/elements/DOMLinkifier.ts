@@ -1,15 +1,17 @@
 // Copyright 2018 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import domLinkifierStyles from './domLinkifier.css.js';
+
+const {classMap} = Directives;
 
 const UIStrings = {
   /**
@@ -27,92 +29,67 @@ export interface Options extends Common.Linkifier.Options {
   disabled?: boolean;
 }
 
-export const decorateNodeLabel = function(
-    node: SDK.DOMModel.DOMNode, parentElement: HTMLElement, options: Options): void {
-  const originalNode = node;
-  const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
-  if (isPseudo && node.parentNode) {
-    node = node.parentNode;
-  }
+interface ViewInput {
+  dynamic?: boolean;
+  disabled?: boolean;
+  preventKeyboardFocus?: boolean;
+  tagName?: string;
+  id?: string;
+  classes: string[];
+  pseudo?: string;
+  onClick: () => void;
+  onMouseOver: () => void;
+  onMouseLeave: () => void;
+}
 
-  // Special case rendering the node links for view transition pseudo elements.
-  // We don't include the ancestor name in the node link because
-  // they always have the same ancestor. See crbug.com/340633630.
-  if (node.isViewTransitionPseudoNode()) {
-    const pseudoElement = parentElement.createChild('span', 'extra node-label-pseudo');
-    const viewTransitionPseudoText = `::${originalNode.pseudoType()}(${originalNode.pseudoIdentifier()})`;
-    UI.UIUtils.createTextChild(pseudoElement, viewTransitionPseudoText);
-    UI.Tooltip.Tooltip.install(parentElement, options.tooltip || viewTransitionPseudoText);
-    return;
-  }
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
-  const nameElement = parentElement.createChild('span', 'node-label-name');
-  if (options.textContent) {
-    nameElement.textContent = options.textContent;
-    UI.Tooltip.Tooltip.install(parentElement, options.tooltip || options.textContent);
-    return;
-  }
-
-  let title = node.nodeNameInCorrectCase();
-  nameElement.textContent = title;
-
-  const idAttribute = node.getAttribute('id');
-  if (idAttribute) {
-    const idElement = parentElement.createChild('span', 'node-label-id');
-    const part = '#' + idAttribute;
-    title += part;
-    UI.UIUtils.createTextChild(idElement, part);
-
-    // Mark the name as extra, since the ID is more important.
-    nameElement.classList.add('extra');
-  }
-
-  const classAttribute = node.getAttribute('class');
-  if (classAttribute) {
-    const classes = classAttribute.split(/\s+/);
-    if (classes.length) {
-      const foundClasses = new Set<string>();
-      const classesElement = parentElement.createChild('span', 'extra node-label-class');
-      for (let i = 0; i < classes.length; ++i) {
-        const className = classes[i];
-        if (className && !options.hiddenClassList?.includes(className) && !foundClasses.has(className)) {
-          const part = '.' + className;
-          title += part;
-          UI.UIUtils.createTextChild(classesElement, part);
-          foundClasses.add(className);
-        }
-      }
-    }
-  }
-
-  if (isPseudo) {
-    const pseudoIdentifier = originalNode.pseudoIdentifier();
-    const pseudoElement = parentElement.createChild('span', 'extra node-label-pseudo');
-    let pseudoText = '::' + originalNode.pseudoType();
-    if (pseudoIdentifier) {
-      pseudoText += `(${pseudoIdentifier})`;
-    }
-
-    UI.UIUtils.createTextChild(pseudoElement, pseudoText);
-    title += pseudoText;
-  }
-  UI.Tooltip.Tooltip.install(parentElement, options.tooltip || title);
+const DEFAULT_VIEW: View = (input, _output, target: HTMLElement) => {
+  // clang-format off
+  render(html`${(input.tagName || input.pseudo) ?
+    html`<style>${domLinkifierStyles}</style
+    ><span class="monospace"
+     ><button class="node-link text-button link-style ${classMap({
+            'dynamic-link': Boolean(input.dynamic),
+            disabled: Boolean(input.disabled)
+          })}"
+          jslog=${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}
+          tabindex=${input.preventKeyboardFocus ? -1 : 0}
+          @click=${input.onClick}
+          @mouseover=${input.onMouseOver}
+          @mouseleave=${input.onMouseLeave}
+          title=${[
+            input.tagName ?? '',
+            input.id ? `#${input.id}` : '',
+            ...input.classes.map(c => `.${c}`),
+            input.pseudo ? `::${input.pseudo}` : '',
+          ].join(' ')}>${
+         [
+          input.tagName ? html`<span class="node-label-name">${input.tagName}</span>` : nothing,
+          input.id ? html`<span class="node-label-id">#${input.id}</span>` : nothing,
+          ...input.classes.map(className => html`<span class="extra node-label-class">.${className}</span>`),
+          input.pseudo ? html`<span class="extra node-label-pseudo">${input.pseudo}</span>` : nothing,
+        ]
+      }</button
+    ></span>` : i18nString(UIStrings.node)}`, target, {host: input});
+  // clang-format on
 };
 
 export class DOMNodeLink extends UI.Widget.Widget {
   #node: SDK.DOMModel.DOMNode|undefined = undefined;
   #options: Options|undefined = undefined;
+  #view: View;
 
-  constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options) {
+  constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options, view = DEFAULT_VIEW) {
     super(true, undefined, element);
     this.element.classList.remove('vbox');
     this.#node = node;
     this.#options = options;
+    this.#view = view;
     this.performUpdate();
   }
 
   override performUpdate(): void {
-    const node = this.#node;
     const options = this.#options ?? {
       tooltip: undefined,
       preventKeyboardFocus: undefined,
@@ -120,70 +97,128 @@ export class DOMNodeLink extends UI.Widget.Widget {
       isDynamicLink: false,
       disabled: false,
     };
-    this.contentElement.removeChildren();
-    if (!node) {
-      this.contentElement.appendChild(document.createTextNode(i18nString(UIStrings.node)));
+    const viewInput: ViewInput = {
+      dynamic: options.isDynamicLink,
+      disabled: options.disabled,
+      preventKeyboardFocus: options.preventKeyboardFocus,
+      classes: [],
+      onClick: () => {
+        void Common.Revealer.reveal(this.#node);
+        return false;
+      },
+      onMouseOver: () => {
+        this.#node?.highlight?.();
+      },
+      onMouseLeave: () => {
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      },
+    };
+    if (!this.#node) {
+      this.#view(viewInput, {}, this.contentElement);
       return;
     }
 
-    const root = this.contentElement.createChild('span', 'monospace');
-    this.registerRequiredCSS(domLinkifierStyles);
-    const link = root.createChild('button', 'node-link text-button link-style');
-    link.classList.toggle('dynamic-link', options.isDynamicLink);
-    link.classList.toggle('disabled', options.disabled);
-    link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
-
-    decorateNodeLabel(node, link, options);
-
-    link.addEventListener('click', () => {
-      void Common.Revealer.reveal(node, false);
-      return false;
-    }, false);
-    link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
-    link.addEventListener('mouseleave', () => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(), false);
-
-    if (options.preventKeyboardFocus) {
-      link.tabIndex = -1;
+    let node = this.#node;
+    const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
+    if (isPseudo && node.parentNode) {
+      node = node.parentNode;
     }
+
+    // Special case rendering the node links for view transition pseudo elements.
+    // We don't include the ancestor name in the node link because
+    // they always have the same ancestor. See crbug.com/340633630.
+    if (node.isViewTransitionPseudoNode()) {
+      viewInput.pseudo = `::${this.#node.pseudoType()}(${this.#node.pseudoIdentifier()})`;
+      this.#view(viewInput, {}, this.contentElement);
+      return;
+    }
+
+    if (options.textContent) {
+      viewInput.tagName = options.textContent;
+      this.#view(viewInput, {}, this.contentElement);
+      return;
+    }
+
+    viewInput.tagName = node.nodeNameInCorrectCase();
+
+    const idAttribute = node.getAttribute('id');
+    if (idAttribute) {
+      viewInput.id = idAttribute;
+    }
+
+    const classAttribute = node.getAttribute('class');
+    if (classAttribute) {
+      const classes = classAttribute.split(/\s+/);
+      if (classes.length) {
+        const foundClasses = new Set<string>();
+        for (let i = 0; i < classes.length; ++i) {
+          const className = classes[i];
+          if (className && !options.hiddenClassList?.includes(className) && !foundClasses.has(className)) {
+            foundClasses.add(className);
+          }
+        }
+        viewInput.classes = [...foundClasses];
+      }
+    }
+    if (isPseudo) {
+      const pseudoIdentifier = this.#node.pseudoIdentifier();
+      let pseudoText = '::' + this.#node.pseudoType();
+      if (pseudoIdentifier) {
+        pseudoText += `(${pseudoIdentifier})`;
+      }
+      viewInput.pseudo = pseudoText;
+    }
+    this.#view(viewInput, {}, this.contentElement);
   }
 }
+
+interface DeferredViewInput {
+  preventKeyboardFocus?: boolean;
+  onClick: () => void;
+}
+
+type DeferredView = (input: DeferredViewInput, output: object, target: HTMLElement) => void;
+
+const DEFERRED_DEFAULT_VIEW: DeferredView = (input, _output, target: HTMLElement) => {
+  // clang-format off
+  render(html`
+      <style>${domLinkifierStyles}</style>
+      <button class="node-link text-button link-style"
+          jslog=${VisualLogging.link('node').track({click: true})}
+          tabindex=${input.preventKeyboardFocus ? -1 : 0}
+          @click=${input.onClick}
+          @mousedown=${(e: Event) => e.consume()}>
+        <slot></slot>
+      </button>`, target, {host: input});
+  // clang-format on
+};
 
 export class DeferredDOMNodeLink extends UI.Widget.Widget {
   #deferredNode: SDK.DOMModel.DeferredDOMNode|undefined = undefined;
   #options: Options|undefined = undefined;
+  #view: DeferredView;
 
-  constructor(element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options) {
+  constructor(
+      element?: HTMLElement, deferredNode?: SDK.DOMModel.DeferredDOMNode, options?: Options,
+      view: DeferredView = DEFERRED_DEFAULT_VIEW) {
     super(true, undefined, element);
     this.element.classList.remove('vbox');
     this.#deferredNode = deferredNode;
     this.#options = options;
+    this.#view = view;
     this.performUpdate();
   }
 
   override performUpdate(): void {
-    this.contentElement.removeChildren();
-    const deferredNode = this.#deferredNode;
-    if (!deferredNode) {
-      return;
-    }
-    const options = this.#options ?? {
-      tooltip: undefined,
-      preventKeyboardFocus: undefined,
+    const viewInput = {
+      preventKeyboardFocus: this.#options?.preventKeyboardFocus,
+      onClick: () => {
+        this.#deferredNode?.resolve?.(node => {
+          void Common.Revealer.reveal(node);
+        });
+      },
     };
-    this.registerRequiredCSS(domLinkifierStyles);
-    const link = this.contentElement.createChild('button', 'node-link text-button link-style');
-    link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true})}`);
-    link.createChild('slot');
-    link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
-    link.addEventListener('mousedown', e => e.consume(), false);
-
-    if (options.preventKeyboardFocus) {
-      link.tabIndex = -1;
-    }
-
-    function onDeferredNodeResolved(node: SDK.DOMModel.DOMNode|null): void {
-      void Common.Revealer.reveal(node);
-    }
+    this.#view(viewInput, {}, this.contentElement);
   }
 }
 

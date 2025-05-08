@@ -281,7 +281,9 @@ export async function finalize(options: Types.Configuration.ParseOptions): Promi
         script.sourceMap = sourceMap;
       }
     });
-    promises.push(promise);
+    promises.push(promise.catch(e => {
+      console.error('Uncaught error when resolving source map', params, e);
+    }));
   }
   await Promise.all(promises);
 }

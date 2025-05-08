@@ -17,6 +17,7 @@ import type {
   ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, PatchTest, RunResult} from '../types';
 
 import {parseComment, parseFollowUps} from './auto-run-helpers.ts';
+import {TraceDownloader} from './trace-downloader.ts';
 
 // eslint-disable-next-line  @typescript-eslint/naming-convention
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -92,71 +93,6 @@ for (const exampleUrl of userArgs.exampleUrls) {
   }
 }
 
-/**
- * Performance examples have a trace file so that this script does not have to
- * trigger a trace recording.
- */
-class TraceDownloader {
-  static location = path.join(__dirname, 'performance-trace-downloads');
-  static ensureLocationExists() {
-    try {
-      fs.mkdirSync(TraceDownloader.location);
-    } catch {
-    }
-  }
-
-  /**
-   * @param {string} filename - the filename to look for
-   * @param {number} attempts - the number of attempts we have had to find the file
-   */
-  static async ensureDownloadExists(filename: string, attempts = 0) {
-    if (attempts === 5) {
-      return false;
-    }
-
-    if (fs.existsSync(path.join(TraceDownloader.location, filename))) {
-      return true;
-    }
-
-    return await new Promise(r => {
-      setTimeout(() => {
-        return r(TraceDownloader.ensureDownloadExists(filename, attempts + 1));
-      }, 200);
-    });
-  }
-  /**
-   * Downloads a trace file for a given example.
-   * @param {Example} example - the example that is being run
-   * @param {puppeteer.Page} page - the page instance associated with this example
-   * @returns {Promise<string>} - the file name that was downloaded.
-   */
-  static async run(example: Example, page: Page) {
-    const url = new URL(example.url());
-    const idForUrl = path.basename(path.dirname(url.pathname));
-    const cdp = await page.createCDPSession();
-    await cdp.send('Browser.setDownloadBehavior', {
-      behavior: 'allow',
-      downloadPath: TraceDownloader.location,
-    });
-    const fileName = `${idForUrl}.json.gz`;
-    const traceUrl = example.url().replace('index.html', fileName);
-    // Using page.goto(traceUrl) does download the file, but it also causes a
-    // net::ERR_ABORTED error to be thrown. Doing it this way does not. See
-    // https://github.com/puppeteer/puppeteer/issues/6728#issuecomment-986082241.
-    await page.evaluate(traceUrl => {
-      location.href = traceUrl;
-    }, traceUrl);
-    const foundFile = await TraceDownloader.ensureDownloadExists(fileName);
-    if (!foundFile) {
-      console.error(
-          `Could not find '${fileName}' in download location (${TraceDownloader.location}). Aborting.`,
-      );
-    }
-    example.log(`Downloaded performance trace: ${fileName}`);
-    return fileName;
-  }
-}
-
 class Logger {
   #logs: Logs = {};
   #updateElapsedTimeInterval: NodeJS.Timeout|null = null;
@@ -184,12 +120,7 @@ class Logger {
     }
   }
 
-  /**
-   * Formats an error object for display.
-   * @param {Error} err The error object to format.
-   * @return {string} The formatted error string.
-   */
-  formatError(err: Error) {
+  formatError(err: Error): string {
     const stack = typeof err.cause === 'object' && err.cause && 'stack' in err.cause ? err.cause.stack : '';
     return `${err.stack}${err.cause ? `\n${stack}` : ''}`;
   }
@@ -220,7 +151,7 @@ class Logger {
   }
 }
 
-class Example {
+export class Example {
   #url: string;
   #browser: Browser;
   #ready = false;
@@ -260,12 +191,7 @@ class Example {
     await this.#waitForElementToHaveHeight(canvas, 200);
   }
 
-  /**
-   * @param {puppeteer.ElementHandle<HTMLElement>} elem
-   * @param {number} height
-   * @param {number} tries
-   */
-  async #waitForElementToHaveHeight(elem: ElementHandle<HTMLElement>, height: number, tries = 0) {
+  async #waitForElementToHaveHeight(elem: ElementHandle<HTMLElement>, height: number, tries = 0): Promise<boolean> {
     const h = await elem.evaluate(e => e.clientHeight);
     if (h > height) {
       return true;
@@ -278,19 +204,10 @@ class Example {
     });
   }
 
-  /**
-   * Parses out comments from the page.
-   * @param {puppeteer.Page} page
-   * @returns {Promise<string[]>} - the comments on the page.
-   */
-  async #getCommentStringsFromPage(page: Page) {
-    /** @type {Array<string>} */
+  async #getCommentStringsFromPage(page: Page): Promise<string[]> {
     const commentStringsFromPage = await page.evaluate(() => {
-      /**
-       * @param {Node|ShadowRoot} root
-       * @return {Array<{comment: string, commentElement: Comment, targetElement: Element|null}>}
-       */
-      function collectComments(root: Node|ShadowRoot) {
+      function collectComments(root: Node|ShadowRoot):
+          Array<{comment: string, commentElement: Comment, targetElement: Element | null}> {
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_COMMENT);
         const results = [];
         while (walker.nextNode()) {
@@ -325,11 +242,7 @@ class Example {
     return commentStringsFromPage;
   }
 
-  /**
-   * @param {puppeteer.Page} devtoolsPage
-   * @returns {Promise<puppeteer.ElementHandle<HTMLElement>>} - the prompt from the annotation, if it exists, or undefined if one was not found.
-   */
-  async #lookForAnnotatedPerformanceEvent(devtoolsPage: Page) {
+  async #lookForAnnotatedPerformanceEvent(devtoolsPage: Page): Promise<ElementHandle<HTMLElement>> {
     const elem = await devtoolsPage.$(
         'devtools-entry-label-overlay >>> [aria-label="Entry label"]',
     );
@@ -339,8 +252,7 @@ class Example {
       );
     }
 
-    const overlay = /** @type{puppeteer.ElementHandle<HTMLElement>} */ (elem);
-    return overlay;
+    return elem as ElementHandle<HTMLElement>;
   }
 
   /**
@@ -348,13 +260,14 @@ class Example {
    * If we are testing performance, we look for an annotation to give us our target event that we need to select.
    * We then also parse the HTML to find the comments which give us our prompt
    * and explanation.
-   * @param {puppeteer.Page} page - the target page
-   * @param {puppeteer.Page} devtoolsPage - the DevTools page
-   * @returns {Promise<{idx: number, queries: string[], explanation: string, performanceAnnotation?: puppeteer.ElementHandle<HTMLElement>, rawComment: Record<string, string>}>}
    */
-  async #generateMetadata(page: Page, devtoolsPage: Page) {
-    /** @type {puppeteer.ElementHandle<HTMLElement>|undefined} */
-    let annotation = undefined;
+  async #generateMetadata(page: Page, devtoolsPage: Page): Promise<{
+    idx: number,
+    queries: string[],
+    explanation: string,
+    performanceAnnotation?: ElementHandle<HTMLElement>, rawComment: Record<string, string>,
+  }> {
+    let annotation: ElementHandle<HTMLElement>|undefined = undefined;
     if (userArgs.testTarget === 'performance-main-thread') {
       annotation = await this.#lookForAnnotatedPerformanceEvent(devtoolsPage);
     }
@@ -384,14 +297,11 @@ class Example {
     };
   }
 
-  /**
-   * @return {string} the URL of the example
-   */
-  url() {
+  url(): string {
     return this.#url;
   }
 
-  id() {
+  id(): string {
     return this.#url.split('/').pop()?.replace('.html', '') ?? 'unknown-id';
   }
 
@@ -425,7 +335,7 @@ class Example {
       await new Promise(resolve => setTimeout(resolve, 2000));
     } else {
       if (userArgs.testTarget === 'performance-main-thread' || userArgs.testTarget === 'performance-insights') {
-        const fileName = await TraceDownloader.run(this, page);
+        const fileName = await TraceDownloader.download(this, page);
         await this.#loadPerformanceTrace(devtoolsPage, fileName);
       }
 
@@ -798,10 +708,8 @@ async function main() {
 
   logger.head('Preparing examples...');
   const examples = exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
-  /** @type {import('./types').IndividualPromptRequestResponse[]} */
-  let allExampleResults = [];
-  /** @type {import('./types').ExampleMetadata[]} */
-  let metadata = [];
+  let allExampleResults: IndividualPromptRequestResponse[] = [];
+  let metadata: ExampleMetadata[] = [];
 
   if (userArgs.parallel) {
     ({allExampleResults, metadata} = await runInParallel(examples));

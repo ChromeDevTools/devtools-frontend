@@ -1310,6 +1310,43 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return context;
   }
 
+  // Called by MCP server via Puppeteer
+  // TODO(http://b/416460908) Make this generic and select the agent based on an input parameter
+  async debugProblem(prompt: string): Promise<string> {
+    const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
+    const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    const isAidaAvailable = this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
+    if (!aiAssistanceSetting || isBlockedByAge || !isAidaAvailable) {
+      throw new Error(
+          'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings');
+    }
+
+    const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
+    // Cancel any previous in-flight conversation.
+    this.#cancel();
+    const runner = stylingAgent.run(
+        prompt,
+        {
+          signal: this.#runAbortController.signal,
+          // TODO(crbug.com/416134018) provide context via MCP instead of using the currently selected element
+          selected: this.#getConversationContext(),
+        },
+    );
+    for await (const data of runner) {
+      if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
+        data.confirm(true);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
+        await this.#changeManager.stashChanges();
+        this.#changeManager.dropStashedChanges();
+        return data.text;
+      }
+    }
+    await this.#changeManager.stashChanges();
+    this.#changeManager.dropStashedChanges();
+    throw new Error('Something went wrong. No answer was generated.');
+  }
+
   async #startConversation(
       text: string, imageInput?: Host.AidaClient.Part,
       multimodalInputType?: AiAssistanceModel.MultimodalInputType): Promise<void> {

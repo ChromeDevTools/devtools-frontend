@@ -1393,6 +1393,93 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isUndefined((await view.nextInput).imageInput);
     });
   });
+
+  describe('debugProblem', () => {
+    const explanation = 'I need more information';
+    const notAvailable =
+        'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings';
+
+    beforeEach(() => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+    });
+
+    it('can be blocked by a setting', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.debugProblem('Please help me debug this problem');
+        assert.fail('Expected `debugProblem` to throw');
+      } catch (err) {
+        assert.strictEqual(err.message, notAvailable);
+      }
+    });
+
+    it('can be blocked by feature availability', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
+      });
+      try {
+        await panel.debugProblem('Please help me debug this problem');
+        assert.fail('Expected `debugProblem` to throw');
+      } catch (err) {
+        assert.strictEqual(err.message, notAvailable);
+      }
+    });
+
+    it('can be blocked by user age', async () => {
+      updateHostConfig({
+        aidaAvailability: {
+          blockedByAge: true,
+        },
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.debugProblem('Please help me debug this problem');
+        assert.fail('Expected `debugProblem` to throw');
+      } catch (err) {
+        assert.strictEqual(err.message, notAvailable);
+      }
+    });
+
+    it('returns an explanation', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      const response = await panel.debugProblem('Please help me debug this problem');
+      assert.strictEqual(response, explanation);
+    });
+
+    it('throws an error if no answer could be generated', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: `ACTION
+$0.style.backgroundColor = 'red'
+STOP`,
+          }],
+        ])
+      });
+      try {
+        await panel.debugProblem('Please help me debug this problem');
+        assert.fail('Expected `debugProblem` to throw');
+      } catch (err) {
+        assert.strictEqual(err.message, 'Something went wrong. No answer was generated.');
+      }
+    });
+  });
 });
 
 describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {

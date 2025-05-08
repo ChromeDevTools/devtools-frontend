@@ -2585,6 +2585,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         () => this.stopRecording());
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.initializingProfiler));
+    this.statusPane.updateProgressBar(i18nString(UIStrings.bufferUsage), 0);
   }
 
   private cancelLoading(): void {
@@ -2816,8 +2817,8 @@ export interface TimelineModeViewDelegate {
 export class StatusPane extends UI.Widget.VBox {
   private status: HTMLElement;
   private time: Element|undefined;
-  private progressLabel!: Element;
-  private progressBar!: Element;
+  private progressLabel?: HTMLElement;
+  private progressBar?: HTMLElement;
   private readonly description: HTMLElement|undefined;
   private button: Buttons.Button.Button;
   private downloadTraceButton: Buttons.Button.Button;
@@ -2851,9 +2852,9 @@ export class StatusPane extends UI.Widget.VBox {
     }
 
     if (options.showProgress) {
-      const progressLine = this.contentElement.createChild('div', 'status-dialog-line progress');
-      this.progressLabel = progressLine.createChild('div', 'label');
-      this.progressBar = progressLine.createChild('div', 'indicator-container').createChild('div', 'indicator');
+      const progressBarContainer = this.contentElement.createChild('div', 'status-dialog-line progress');
+      this.progressLabel = progressBarContainer.createChild('div', 'label');
+      this.progressBar = progressBarContainer.createChild('div', 'indicator-container').createChild('div', 'indicator');
       UI.ARIAUtils.markAsProgressBar(this.progressBar);
     }
 
@@ -2928,9 +2929,13 @@ export class StatusPane extends UI.Widget.VBox {
   }
 
   updateProgressBar(activity: string, percent: number): void {
-    this.progressLabel.textContent = activity;
-    (this.progressBar as HTMLElement).style.width = percent.toFixed(1) + '%';
-    UI.ARIAUtils.setValueNow(this.progressBar, percent);
+    if (this.progressLabel) {
+      this.progressLabel.textContent = activity;
+    }
+    if (this.progressBar) {
+      this.progressBar.style.width = percent.toFixed(1) + '%';
+      UI.ARIAUtils.setValueNow(this.progressBar, percent);
+    }
     this.updateTimer();
   }
 

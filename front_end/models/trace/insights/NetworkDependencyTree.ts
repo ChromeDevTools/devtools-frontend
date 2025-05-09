@@ -57,7 +57,7 @@ export const UIStrings = {
    * @description Description of the table of the detected preconnect origins.
    */
   preconnectOriginsTableDescription:
-      '[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/?utm_source=devtools&utm_medium=referral) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.',
+      '[preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.',
   /**
    * @description Text status indicating that there isn't any preconnected origins.
    */
@@ -78,7 +78,7 @@ export const UIStrings = {
    * @description Description of the table that recommends preconnecting to the origins to save time.
    */
   estSavingTableDescription:
-      'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/?utm_source=devtools&utm_medium=referral) hints to your most important origins, but try to use fewer than 4.',
+      'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use fewer than 4.',
   /**
    * @description Label for a column in a data table; entries will be the origin of a web resource
    */

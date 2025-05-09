@@ -90,7 +90,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
 
     const rows: TableDataRow[] = [{
       // Add one empty row so the main document request can also has a left border
-      values: [Lit.nothing],
+      values: [],
       subRows: nodes.map(node => this.#mapNetworkDependencyToRow(node))
     }];
 

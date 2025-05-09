@@ -104,6 +104,7 @@ export class Table extends HTMLElement {
   #rows?: TableDataRow[];
   /** All rows/subRows, in the order that they appear visually. This is the result of traversing `#rows` and any subRows found. */
   #flattenedRows?: TableDataRow[];
+  #rowToParentRow = new Map<TableDataRow, TableDataRow>();
   #interactive = false;
   #currentHoverIndex: number|null = null;
 
@@ -122,6 +123,10 @@ export class Table extends HTMLElement {
   }
 
   #onHoverRow(e: MouseEvent): void {
+    if (!this.#flattenedRows) {
+      return;
+    }
+
     if (!(e.target instanceof HTMLElement)) {
       return;
     }
@@ -131,9 +136,23 @@ export class Table extends HTMLElement {
       return;
     }
 
-    const index = [...rowEl.parentElement.children].indexOf(rowEl);
-    if (index === -1 || index === this.#currentHoverIndex) {
+    const rowEls = [...rowEl.parentElement.children];
+    const index = rowEl.sectionRowIndex;
+    if (index === this.#currentHoverIndex) {
       return;
+    }
+
+    for (const el of rowEl.parentElement.querySelectorAll('.hover')) {
+      el.classList.remove('hover');
+    }
+
+    // Add 'hover' class to all parent rows.
+    let row: TableDataRow|undefined = this.#rowToParentRow.get(this.#flattenedRows[index]);
+    while (row) {
+      const index = this.#flattenedRows.indexOf(row);
+      const rowEl = rowEls[index];
+      rowEl.classList.add('hover');
+      row = this.#rowToParentRow.get(row);
     }
 
     this.#currentHoverIndex = index;
@@ -169,6 +188,10 @@ export class Table extends HTMLElement {
   }
 
   #onMouseLeave(): void {
+    for (const el of this.shadowRoot?.querySelectorAll('.hover') ?? []) {
+      el.classList.remove('hover');
+    }
+
     this.#currentHoverIndex = null;
     // Unselect the row, unless it's sticky.
     this.#onSelectedRowChanged(null, null);
@@ -212,10 +235,17 @@ export class Table extends HTMLElement {
       return;
     }
 
+    const rowToParentRow = this.#rowToParentRow;
+    rowToParentRow.clear();
+
     const numColumns = this.#headers.length;
     const flattenedRows: TableDataRow[] = [];
     const rowEls: Lit.TemplateResult[] = [];
-    function traverse(row: TableDataRow, depth = 0): void {
+    function traverse(parent: TableDataRow|null, row: TableDataRow, depth = 0): void {
+      if (parent) {
+        rowToParentRow.set(row, parent);
+      }
+
       const thStyles = Lit.Directives.styleMap({
         paddingLeft: `calc(${depth} * var(--sys-size-5))`,
         backgroundImage: `repeating-linear-gradient(
@@ -242,11 +272,12 @@ export class Table extends HTMLElement {
       flattenedRows.push(row);
 
       for (const subRow of row.subRows ?? []) {
-        traverse(subRow, depth + 1);
+        traverse(row, subRow, depth + 1);
       }
     }
+
     for (const row of this.#rows) {
-      traverse(row);
+      traverse(null, row);
     }
 
     this.#flattenedRows = flattenedRows;

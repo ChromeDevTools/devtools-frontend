@@ -1,90 +1,244 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationUI} from './AnimationUI.js';
 
-export class AnimationGroupPreviewUI {
-  #model: SDK.AnimationModel.AnimationGroup;
-  element: HTMLButtonElement;
-  readonly #removeButtonInternal: HTMLElement;
-  readonly #replayOverlayElement: HTMLElement;
-  readonly #svg: Element;
-  readonly #viewBoxHeight: number;
+const {render, html, svg, Directives: {classMap, ref}} = Lit;
 
-  constructor(model: SDK.AnimationModel.AnimationGroup) {
-    this.#model = model;
-    this.element = document.createElement('button');
-    this.element.setAttribute(
-        'jslog', `${VisualLogging.item(`animations.buffer-preview${model.isScrollDriven() ? '-sda' : ''}`).track({
-          click: true,
-        })}`);
-    this.element.classList.add('animation-buffer-preview');
-    this.element.addEventListener('animationend', () => {
-      this.element.classList.add('no-animation');
+const VIEW_BOX_HEIGHT = 32;
+const MAX_ANIMATION_LINES_TO_SHOW = 10;
+const MIN_ANIMATION_GROUP_DURATION = 750;
+
+interface ViewInput {
+  isScrollDrivenAnimationGroup: boolean;
+  isPreviewAnimationDisabled: boolean;
+  isSelected: boolean;
+  isPaused: boolean;
+  isFocusable: boolean;
+  label: string;
+  animationGroupDuration: number;
+  animations: SDK.AnimationModel.AnimationImpl[];
+  onPreviewAnimationEnd: () => void;
+  onRemoveAnimationGroup: () => void;
+  onSelectAnimationGroup: () => void;
+  onCreateScreenshotPopover: () => void;
+  onFocusNextGroup: () => void;
+  onFocusPreviousGroup: () => void;
+}
+
+interface ViewOutput {
+  replay?: () => void;
+  focus?: () => void;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, output, target) => {
+  const classes = classMap({
+    'animation-buffer-preview': true,
+    selected: input.isSelected,
+    paused: input.isPaused,
+    'no-animation': input.isPreviewAnimationDisabled,
+  });
+
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    switch (event.key) {
+      case 'Backspace':
+      case 'Delete':
+        input.onRemoveAnimationGroup();
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        input.onFocusPreviousGroup();
+        break;
+      case 'ArrowRight':
+      case 'ArrowDown':
+        input.onFocusNextGroup();
+    }
+  };
+
+  const renderAnimationLines = (): Lit.LitTemplate => {
+    const timeToPixelRatio = 100 / Math.max(input.animationGroupDuration, MIN_ANIMATION_GROUP_DURATION);
+    const viewBox = `0 0 100 ${VIEW_BOX_HEIGHT}`;
+    const lines = input.animations.map((animation, index) => {
+      const xStartPoint = animation.delayOrStartTime();
+      const xEndPoint = xStartPoint + animation.iterationDuration();
+      const yPoint = Math.floor(VIEW_BOX_HEIGHT / Math.max(6, input.animations.length) * index + 1);
+      const colorForAnimation = AnimationUI.colorForAnimation(animation);
+      // clang-format off
+      return svg`<line
+        x1="${xStartPoint * timeToPixelRatio}"
+        x2="${xEndPoint * timeToPixelRatio}"
+        y1="${yPoint}"
+        y2="${yPoint}"
+        style="stroke: ${colorForAnimation}"></line>`;
+      // clang-format on
     });
 
-    this.element.createChild('div', 'animation-paused fill');
+    // clang-format off
+    return html`
+      <svg
+        width="100%"
+        height="100%"
+        viewBox=${viewBox}
+        preserveAspectRatio="none"
+        shape-rendering="crispEdges">
+        ${lines}
+      </svg>
+    `;
+    // clang-format on
+  };
 
-    if (model.isScrollDriven()) {
-      this.element.appendChild(IconButton.Icon.create('mouse', 'preview-icon'));
-    } else {
-      this.element.appendChild(IconButton.Icon.create('watch', 'preview-icon'));
-    }
+  // clang-format off
+  render(html`
+    <div class="animation-group-preview-ui">
+      <button
+        jslog=${VisualLogging.item(`animations.buffer-preview${input.isScrollDrivenAnimationGroup ? '-sda' : ''}`).track({click: true})}
+        class=${classes}
+        role="option"
+        aria-label=${input.label}
+        tabindex=${input.isFocusable ? 0 : -1}
+        @mouseover=${{
+          handleEvent: input.onCreateScreenshotPopover,
+          once: true,
+        }}
+        @keydown=${handleKeyDown}
+        @click=${input.onSelectAnimationGroup}
+        @animationend=${input.onPreviewAnimationEnd}
+        ${ref(el => {
+          if (el instanceof HTMLElement) {
+            output.focus = () => {
+              el.focus();
+            };
+          }
+        })}>
+          <div class="animation-paused fill"></div>
+          <devtools-icon name=${input.isScrollDrivenAnimationGroup ? 'mouse' : 'watch'} class="preview-icon"></devtools-icon>
+          <div class="animation-buffer-preview-animation" ${ref(el => {
+            if (el instanceof HTMLElement) {
+              output.replay = () => {
+                el.animate(
+                  [
+                    {offset: 0, width: '0%', opacity: 1},
+                    {offset: 0.9, width: '100%', opacity: 1},
+                    {offset: 1, width: '100%', opacity: 0},
+                  ],
+                  {duration: 200, easing: 'cubic-bezier(0, 0, 0.2, 1)'}
+                );
+              };
+            }
+          })}></div>
+          ${renderAnimationLines()}
+        </button>
+        <button
+          class="animation-remove-button"
+          jslog=${VisualLogging.action('animations.remove-preview').track({click: true})}
+          @click=${input.onRemoveAnimationGroup}>
+            <devtools-icon name="cross"></devtools-icon>
+        </button>
+    </div>
+  `, target, {host: input});
+  // clang-format on
+};
 
-    this.#removeButtonInternal = this.element.createChild('button', 'animation-remove-button');
-    this.#removeButtonInternal.setAttribute(
-        'jslog', `${VisualLogging.action('animations.remove-preview').track({click: true})}`);
-    this.#removeButtonInternal.appendChild(IconButton.Icon.create('cross'));
-    this.#replayOverlayElement = this.element.createChild('div', 'animation-buffer-preview-animation');
-    this.#svg = UI.UIUtils.createSVGChild(this.element, 'svg');
-    this.#svg.setAttribute('width', '100%');
-    this.#svg.setAttribute('preserveAspectRatio', 'none');
-    this.#svg.setAttribute('height', '100%');
-    this.#viewBoxHeight = 32;
-    this.#svg.setAttribute('viewBox', '0 0 100 ' + this.#viewBoxHeight);
-    this.#svg.setAttribute('shape-rendering', 'crispEdges');
-    this.render();
+interface AnimationGroupPreviewConfig {
+  animationGroup: SDK.AnimationModel.AnimationGroup;
+  label: string;
+  onRemoveAnimationGroup: () => void;
+  onSelectAnimationGroup: () => void;
+  onCreateScreenshotPopover: () => void;
+  onFocusNextGroup: () => void;
+  onFocusPreviousGroup: () => void;
+}
+
+export class AnimationGroupPreviewUI extends UI.Widget.Widget {
+  #view: View;
+  #viewOutput: ViewOutput = {};
+  #config: AnimationGroupPreviewConfig;
+  #previewAnimationDisabled = false;
+  #selected = false;
+  #paused = false;
+  #focusable = false;
+
+  constructor(config: AnimationGroupPreviewConfig, view = DEFAULT_VIEW) {
+    super();
+    this.#view = view;
+    this.#config = config;
+    this.requestUpdate();
   }
 
-  removeButton(): Element {
-    return this.#removeButtonInternal;
+  setSelected(selected: boolean): void {
+    if (this.#selected === selected) {
+      return;
+    }
+
+    this.#selected = selected;
+    this.requestUpdate();
+  }
+
+  setPaused(paused: boolean): void {
+    if (this.#paused === paused) {
+      return;
+    }
+
+    this.#paused = paused;
+    this.requestUpdate();
+  }
+
+  setFocusable(focusable: boolean): void {
+    if (this.#focusable === focusable) {
+      return;
+    }
+
+    this.#focusable = focusable;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view(
+        {
+          isScrollDrivenAnimationGroup: this.#config.animationGroup.isScrollDriven(),
+          isPreviewAnimationDisabled: this.#previewAnimationDisabled,
+          isSelected: this.#selected,
+          isPaused: this.#paused,
+          isFocusable: this.#focusable,
+          label: this.#config.label,
+          animationGroupDuration: this.#config.animationGroup.groupDuration(),
+          animations: this.#config.animationGroup.animations().slice(0, MAX_ANIMATION_LINES_TO_SHOW),
+          onPreviewAnimationEnd: () => {
+            this.#previewAnimationDisabled = true;
+            this.requestUpdate();
+          },
+          onRemoveAnimationGroup: () => {
+            this.#config.onRemoveAnimationGroup();
+          },
+          onSelectAnimationGroup: () => {
+            this.#config.onSelectAnimationGroup();
+          },
+          onCreateScreenshotPopover: () => {
+            this.#config.onCreateScreenshotPopover();
+          },
+          onFocusNextGroup: () => {
+            this.#config.onFocusNextGroup();
+          },
+          onFocusPreviousGroup: () => {
+            this.#config.onFocusPreviousGroup();
+          }
+        },
+        this.#viewOutput, this.contentElement);
+  }
+
+  override focus(): void {
+    this.#viewOutput.focus?.();
   }
 
   replay(): void {
-    this.#replayOverlayElement.animate(
-        [
-          {offset: 0, width: '0%', opacity: 1},
-          {offset: 0.9, width: '100%', opacity: 1},
-          {offset: 1, width: '100%', opacity: 0},
-        ],
-        {duration: 200, easing: 'cubic-bezier(0, 0, 0.2, 1)'});
-  }
-
-  render(): void {
-    this.#svg.removeChildren();
-    const maxToShow = 10;
-    const numberOfAnimations = Math.min(this.#model.animations().length, maxToShow);
-    const timeToPixelRatio = 100 / Math.max(this.#model.groupDuration(), 750);
-    for (let i = 0; i < numberOfAnimations; i++) {
-      const animation = this.#model.animations()[i];
-      const line = UI.UIUtils.createSVGChild(this.#svg, 'line') as SVGLineElement;
-
-      const startPoint = animation.delayOrStartTime();
-      const endPoint = startPoint + animation.iterationDuration();
-
-      line.setAttribute('x1', String(startPoint * timeToPixelRatio));
-      line.setAttribute('x2', String(endPoint * timeToPixelRatio));
-      const y = String(Math.floor(this.#viewBoxHeight / Math.max(6, numberOfAnimations) * i + 1));
-      line.setAttribute('y1', y);
-      line.setAttribute('y2', y);
-      line.style.stroke = AnimationUI.colorForAnimation(this.#model.animations()[i]);
-    }
+    this.#viewOutput.replay?.();
   }
 }

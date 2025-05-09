@@ -573,7 +573,11 @@ text.animation-timeline-grid-label {
   }
 }
 
-.animation-buffer-preview:hover .animation-remove-button {
+.animation-group-preview-ui {
+  position: relative;
+}
+
+.animation-group-preview-ui:hover .animation-remove-button {
   display: flex;
 }
 

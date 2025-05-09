@@ -48,6 +48,10 @@ const UIStrings = {
    *@description Text that refers to a network request is render blocking
    */
   renderBlocking: 'Render blocking',
+  /**
+   * @description Text to refer to the list of redirects.
+   */
+  redirects: 'Redirects',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestTooltip.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -139,6 +143,27 @@ export class NetworkRequestTooltip extends HTMLElement {
     `;
   }
 
+  static renderRedirects(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult|null {
+    const redirectRows = [];
+    if (networkRequest.args.data.redirects.length > 0) {
+      redirectRows.push(html`
+        <div class="redirects-row">
+          ${i18nString(UIStrings.redirects)}
+        </div>
+      `);
+      for (const redirect of networkRequest.args.data.redirects) {
+        redirectRows.push(html`
+          <div class="redirects-row">
+            ${redirect.url}
+          </div>
+        `);
+      }
+      return html`${redirectRows}`;
+    }
+
+    return null;
+  }
+
   #render(): void {
     if (!this.#data.networkRequest) {
       return;
@@ -149,6 +174,8 @@ export class NetworkRequestTooltip extends HTMLElement {
     const url = new URL(this.#data.networkRequest.args.data.url);
     const entity = (this.#data.entityMapper) ? this.#data.entityMapper.entityForEvent(this.#data.networkRequest) : null;
     const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity, true);
+
+    const redirectsHtml = NetworkRequestTooltip.renderRedirects(this.#data.networkRequest);
 
     // clang-format off
     const output = html`
@@ -166,6 +193,11 @@ export class NetworkRequestTooltip extends HTMLElement {
         <div class="divider"></div>
 
         ${NetworkRequestTooltip.renderTimings(this.#data.networkRequest)}
+
+        ${redirectsHtml ? html `
+          <div class="divider"></div>
+          ${redirectsHtml}
+        ` : Lit.nothing}
       </div>
     `;
     // clang-format on

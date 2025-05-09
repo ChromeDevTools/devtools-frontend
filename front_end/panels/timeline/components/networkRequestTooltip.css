@@ -101,3 +101,7 @@ devtools-icon.priority {
     font-weight: var(--ref-typeface-weight-medium);
   }
 }
+
+.redirects-row {
+  margin-left: 15px;
+}

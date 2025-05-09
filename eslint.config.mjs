@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import stylisticPlugin from '@stylistic/eslint-plugin';
-import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
@@ -12,6 +10,7 @@ import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
 import globals from 'globals';
 import { join } from 'path';
+import typescriptEslint from 'typescript-eslint';
 
 import rulesdirPlugin from './scripts/eslint_rules/rules-dir.mjs';
 
@@ -66,7 +65,7 @@ export default defineConfig([
   {
     name: 'JavaScript files',
     plugins: {
-      '@typescript-eslint': typescriptPlugin,
+      '@typescript-eslint': typescriptEslint.plugin,
       '@stylistic': stylisticPlugin,
       '@eslint-plugin': eslintPlugin,
       mocha: mochaPlugin,
@@ -194,7 +193,7 @@ export default defineConfig([
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': ['error', {allow: ['!!']}],
+      'no-implicit-coercion': ['error', { allow: ['!!'] }],
 
       'no-array-constructor': 'error',
 
@@ -301,15 +300,15 @@ export default defineConfig([
       ecmaVersion: 'latest',
       sourceType: 'module',
 
-      parser: tsParser,
+      parser: typescriptEslint.parser,
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
@@ -549,12 +548,12 @@ export default defineConfig([
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],

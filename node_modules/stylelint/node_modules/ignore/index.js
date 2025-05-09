@@ -23,7 +23,7 @@ const REGEX_SPLITALL_CRLF = /\r?\n/g
 // - ..
 // Valid:
 // - .foo
-const REGEX_TEST_INVALID_PATH = /^\.*\/|^\.+$/
+const REGEX_TEST_INVALID_PATH = /^\.{0,2}\/|^\.{1,2}$/
 
 const REGEX_TEST_TRAILING_SLASH = /\/$/
 

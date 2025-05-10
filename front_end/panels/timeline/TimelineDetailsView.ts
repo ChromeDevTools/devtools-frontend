@@ -386,6 +386,9 @@ export class TimelineDetailsPane extends
     if (!this.updateContentsScheduled) {
       this.updateContentsScheduled = true;
       setTimeout(() => {
+        if (!this.updateContentsScheduled) {
+          return;
+        }
         this.updateContentsScheduled = false;
         this.updateContentsFromWindow();
       }, 100);
@@ -488,6 +491,9 @@ export class TimelineDetailsPane extends
     }
 
     if (selectionIsEvent(selection)) {
+      // Cancel any pending debounced range stats update
+      this.updateContentsScheduled = false;
+
       if (Trace.Types.Events.isSyntheticNetworkRequest(selection.event)) {
         await this.#setSelectionForNetworkEvent(selection.event);
       } else if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {

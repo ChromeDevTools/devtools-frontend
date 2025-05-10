@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
+import '../../ui/legacy/components/data_grid/data_grid.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -11,9 +13,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
@@ -26,6 +28,8 @@ import {
 } from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+
+const {styleMap} = Directives;
 
 const UIStrings = {
   /**
@@ -221,7 +225,7 @@ export interface OverviewData {
 
 export type FontInfo = Map<string, Map<string, Map<string, number[]>>>;
 
-function getBorderString(color: Common.Color.Legacy): string {
+function getBorderString(color: Common.Color.Color): string {
   let {h, s, l} = color.as(Common.Color.Format.HSL);
   h = Math.round(h * 360);
   s = Math.round(s * 100);
@@ -660,7 +664,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
         throw new Error('Unable to initialize CSS overview, missing models');
       }
       view = new ElementDetailsView(this.#domModel, this.#cssModel, this.#linkifier);
-      void view.populateNodes(payload.nodes);
+      view.data = payload.nodes;
       this.#viewMap.set(id, view);
     }
 
@@ -885,129 +889,88 @@ export interface EventTypes {
   [Events.TAB_CLOSED]: number;
 }
 
+interface ViewInput {
+  items: Array<{
+    data: PopulateNodesEventNodeTypes,
+    link?: HTMLElement,
+    showNode?: () => void,
+  }>;
+  visibility: Set<string>;
+}
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const {items, visibility} = input;
+  // clang-format off
+  render(html`
+    <div>
+      <devtools-data-grid class="element-grid" striped inline
+         name=${i18nString(UIStrings.cssOverviewElements)}>
+        <table>
+          <tr>
+            ${visibility.has('node-id') ? html`
+              <th id="node-id" weight="50" sortable>
+                ${i18nString(UIStrings.element)}
+              </th>` : nothing}
+            ${visibility.has('declaration') ? html`
+              <th id="declaration" weight="50" sortable>
+                ${i18nString(UIStrings.declaration)}
+              </th>` : nothing}
+            ${visibility.has('source-url') ? html`
+              <th id="source-url" weight="100">
+                ${i18nString(UIStrings.source)}
+              </th>` : nothing}
+            ${visibility.has('contrast-ratio') ? html`
+              <th id="contrast-ratio" weight="25" width="150px" sortable fixed>
+                ${i18nString(UIStrings.contrastRatio)}
+              </th>` : nothing}
+          </tr>
+          ${items.map(({data, link, showNode}) => html`
+            <tr>
+              ${visibility.has('node-id') ? renderNode(data, link, showNode) : nothing}
+              ${visibility.has('declaration') ? renderDeclaration(data) : nothing}
+              ${visibility.has('source-url') ? renderSourceURL(data, link) : nothing}
+              ${visibility.has('contrast-ratio') ? renderContrastRatio(data) : nothing}
+            </tr>`)}
+        </table>
+      </devtools-data-grid>
+    </div>`,
+    target, {host: input});
+  // clang-format on
+};
+
 export class ElementDetailsView extends UI.Widget.Widget {
   #domModel: SDK.DOMModel.DOMModel;
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #linkifier: Components.Linkifier.Linkifier;
-  readonly #elementGridColumns: DataGrid.DataGrid.ColumnDescriptor[];
-  #elementGrid: DataGrid.SortableDataGrid.SortableDataGrid<unknown>;
+  #data: PopulateNodesEventNodes;
+  readonly #view: View;
 
   constructor(
-      domModel: SDK.DOMModel.DOMModel, cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier) {
+      domModel: SDK.DOMModel.DOMModel, cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier,
+      view: View = DEFAULT_VIEW) {
     super();
 
     this.#domModel = domModel;
     this.#cssModel = cssModel;
     this.#linkifier = linkifier;
-
-    this.#elementGridColumns = [
-      {
-        id: 'node-id',
-        title: i18nString(UIStrings.element),
-        sortable: true,
-        weight: 50,
-        titleDOMFragment: undefined,
-        sort: undefined,
-        align: undefined,
-        width: undefined,
-        fixedWidth: undefined,
-        editable: undefined,
-        nonSelectable: undefined,
-        longText: undefined,
-        disclosure: undefined,
-        allowInSortByEvenWhenHidden: undefined,
-        dataType: undefined,
-        defaultWeight: undefined,
-      },
-      {
-        id: 'declaration',
-        title: i18nString(UIStrings.declaration),
-        sortable: true,
-        weight: 50,
-        titleDOMFragment: undefined,
-        sort: undefined,
-        align: undefined,
-        width: undefined,
-        fixedWidth: undefined,
-        editable: undefined,
-        nonSelectable: undefined,
-        longText: undefined,
-        disclosure: undefined,
-        allowInSortByEvenWhenHidden: undefined,
-        dataType: undefined,
-        defaultWeight: undefined,
-      },
-      {
-        id: 'source-url',
-        title: i18nString(UIStrings.source),
-        sortable: false,
-        weight: 100,
-        titleDOMFragment: undefined,
-        sort: undefined,
-        align: undefined,
-        width: undefined,
-        fixedWidth: undefined,
-        editable: undefined,
-        nonSelectable: undefined,
-        longText: undefined,
-        disclosure: undefined,
-        allowInSortByEvenWhenHidden: undefined,
-        dataType: undefined,
-        defaultWeight: undefined,
-      },
-      {
-        id: 'contrast-ratio',
-        title: i18nString(UIStrings.contrastRatio),
-        sortable: true,
-        weight: 25,
-        titleDOMFragment: undefined,
-        sort: undefined,
-        align: undefined,
-        width: '150px',
-        fixedWidth: true,
-        editable: undefined,
-        nonSelectable: undefined,
-        longText: undefined,
-        disclosure: undefined,
-        allowInSortByEvenWhenHidden: undefined,
-        dataType: undefined,
-        defaultWeight: undefined,
-      },
-    ];
-
-    this.#elementGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-      displayName: i18nString(UIStrings.cssOverviewElements),
-      columns: this.#elementGridColumns,
-      deleteCallback: undefined,
-      refreshCallback: undefined,
-    });
-    this.#elementGrid.element.classList.add('element-grid');
-    this.#elementGrid.setStriped(true);
-    this.#elementGrid.addEventListener(
-        DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
-
-    this.#elementGrid.asWidget().show(this.element);
+    this.#view = view;
+    this.#data = [];
   }
 
-  #sortMediaQueryDataGrid(): void {
-    const sortColumnId = this.#elementGrid.sortColumnId();
-    if (!sortColumnId) {
-      return;
-    }
-
-    const comparator = DataGrid.SortableDataGrid.SortableDataGrid.StringComparator.bind(null, sortColumnId);
-    this.#elementGrid.sortNodes(comparator, !this.#elementGrid.isSortOrderAscending());
+  set data(data: PopulateNodesEventNodes) {
+    this.#data = data;
+    this.requestUpdate();
   }
 
-  async populateNodes(data: PopulateNodesEventNodes): Promise<void> {
-    this.#elementGrid.rootNode().removeChildren();
-
-    if (!data.length) {
-      return;
-    }
-
-    const [firstItem] = data;
+  override async performUpdate(): Promise<void> {
     const visibility = new Set<string>();
+    if (!this.#data.length) {
+      this.#view({items: [], visibility}, {}, this.element);
+      return;
+    }
+
+    const [firstItem] = this.#data;
     'nodeId' in firstItem && firstItem.nodeId && visibility.add('node-id');
     'declaration' in firstItem && firstItem.declaration && visibility.add('declaration');
     'sourceURL' in firstItem && firstItem.sourceURL && visibility.add('source-url');
@@ -1017,7 +980,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     if ('nodeId' in firstItem && visibility.has('node-id')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
-      const nodeIds = (data as Array<{nodeId: Protocol.DOM.BackendNodeId}>).reduce((prev, curr) => {
+      const nodeIds = (this.#data as Array<{nodeId: Protocol.DOM.BackendNodeId}>).reduce((prev, curr) => {
         const nodeId = curr.nodeId;
         if (CSSOverviewCompletedView.pushedNodes.has(nodeId)) {
           return prev;
@@ -1028,135 +991,88 @@ export class ElementDetailsView extends UI.Widget.Widget {
       relatedNodesMap = await this.#domModel.pushNodesByBackendIdsToFrontend(nodeIds);
     }
 
-    for (const item of data) {
+    const items = await Promise.all(this.#data.map(async item => {
       let link, showNode;
       if ('nodeId' in item && visibility.has('node-id')) {
-        if (!relatedNodesMap) {
-          continue;
-        }
-        const frontendNode = relatedNodesMap.get(item.nodeId);
-        if (!frontendNode) {
-          continue;
-        }
+        const frontendNode = relatedNodesMap?.get(item.nodeId) ?? null;
         link = await Common.Linkifier.Linkifier.linkify(frontendNode) as HTMLElement;
-        showNode = () => frontendNode.scrollIntoView();
+        showNode = () => frontendNode?.scrollIntoView?.();
       }
       if ('range' in item && item.range && item.styleSheetId && visibility.has('source-url')) {
         const ruleLocation = TextUtils.TextRange.TextRange.fromObject(item.range);
         const styleSheetHeader = this.#cssModel.styleSheetHeaderForId(item.styleSheetId);
-        if (!styleSheetHeader) {
-          return;
+        if (styleSheetHeader) {
+          const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
+          const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
+          const matchingSelectorLocation = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+          link = this.#linkifier.linkifyCSSLocation(matchingSelectorLocation) as HTMLElement;
         }
-        const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
-        const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
-        const matchingSelectorLocation = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-        link = this.#linkifier.linkifyCSSLocation(matchingSelectorLocation) as HTMLElement;
       }
 
-      const node = new ElementNode(item, link, showNode);
-      node.selectable = false;
-      this.#elementGrid.insertChild(node);
-    }
+      return {data: item, link, showNode};
+    }));
 
-    this.#elementGrid.setColumnsVisibility(visibility);
-    this.#elementGrid.renderInline();
-    this.#elementGrid.wasShown();
+    this.#view({items, visibility}, {}, this.element);
   }
 }
 
-export class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
-  readonly #link?: HTMLElement;
-  readonly #show?: (() => Promise<void>)|undefined;
-
-  constructor(data: PopulateNodesEventNodeTypes, link?: HTMLElement, show?: () => Promise<void>) {
-    super(data);
-
-    this.#link = link;
-    this.#show = show;
+function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showNode?: () => void): TemplateResult {
+  if (!link) {
+    throw new Error('Node entry is missing a related link.');
   }
+  return html`
+    <td>
+      ${link}
+      <devtools-icon part="show-element" name="select-element"
+          title=${i18nString(UIStrings.showElement)} tabindex="0"
+          @click=${() => showNode && showNode()}></devtools-icon>
+    </td>`;
+}
 
-  override createCell(columnId: string): HTMLElement {
-    // Nodes.
-    if (columnId === 'node-id') {
-      const cell = this.createTD(columnId);
-      cell.textContent = '...';
+function renderDeclaration(data: PopulateNodesEventNodeTypes): TemplateResult {
+  if (!('declaration' in data)) {
+    throw new Error('Declaration entry is missing a declaration.');
+  }
+  return html`<td>${data.declaration}</td>`;
+}
 
-      if (!this.#link) {
-        throw new Error('Node entry is missing a related link.');
-      }
-
-      cell.textContent = '';
-      cell.appendChild(this.#link);
-      const showNodeIcon = new IconButton.Icon.Icon();
-      showNodeIcon.data = {iconName: 'select-element', color: 'var(--icon-show-element)', width: '16px'};
-      showNodeIcon.classList.add('show-element');
-      UI.Tooltip.Tooltip.install(showNodeIcon, i18nString(UIStrings.showElement));
-      showNodeIcon.tabIndex = 0;
-      showNodeIcon.onclick = () => this.#show && this.#show();
-      cell.appendChild(showNodeIcon);
-      return cell;
+function renderSourceURL(data: PopulateNodesEventNodeTypes, link?: HTMLElement): TemplateResult {
+  if ('range' in data && data.range) {
+    if (!link) {
+      return html`<td>${i18nString(UIStrings.unableToLink)}</td>`;
     }
+    return html`<td>${link}</td>`;
+  }
+  return html`<td>${i18nString(UIStrings.unableToLinkToInlineStyle)}</td>`;
+}
 
-    // Links to CSS.
-    if (columnId === 'source-url') {
-      const cell = this.createTD(columnId);
+function renderContrastRatio(data: PopulateNodesEventNodeTypes): TemplateResult {
+  if (!('contrastRatio' in data)) {
+    throw new Error('Contrast ratio entry is missing a contrast ratio.');
+  }
+  const showAPCA = Root.Runtime.experiments.isEnabled('apca');
+  const contrastRatio = Platform.NumberUtilities.floor(data.contrastRatio, 2);
+  const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
+  const border = getBorderString(data.backgroundColor);
+  const color = data.textColor.asString();
+  const backgroundColor = data.backgroundColor.asString();
 
-      if (this.data.range) {
-        if (!this.#link) {
-          cell.textContent = i18nString(UIStrings.unableToLink);
-        } else {
-          cell.appendChild(this.#link);
-        }
-      } else {
-        cell.textContent = i18nString(UIStrings.unableToLinkToInlineStyle);
-      }
-      return cell;
-    }
-
-    if (columnId === 'contrast-ratio') {
-      const cell = this.createTD(columnId);
-      const showAPCA = Root.Runtime.experiments.isEnabled('apca');
-      const contrastRatio = Platform.NumberUtilities.floor(this.data.contrastRatio, 2);
-      const contrastRatioString = showAPCA ? contrastRatio + '%' : contrastRatio;
-      const border = getBorderString(this.data.backgroundColor);
-      const color = this.data.textColor.asString();
-      const backgroundColor = this.data.backgroundColor.asString();
-      const contrastFragment = UI.Fragment.Fragment.build`
-        <div class="contrast-container-in-grid" $="container">
-          <span class="contrast-preview" style="border: ${border};
-          color: ${color};
-          background-color: ${backgroundColor};">Aa</span>
+  // clang-format off
+  return html`
+    <td>
+      <div class="contrast-container-in-grid">
+          <span class="contrast-preview" style=${styleMap({border, color, backgroundColor})}>Aa</span>
           <span>${contrastRatioString}</span>
-        </div>
-      `;
-      const container = contrastFragment.$('container');
-      if (showAPCA) {
-        container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.apca)}</span>`.element());
-        if (this.data.thresholdsViolated.apca) {
-          container.appendChild(createClearIcon());
-        } else {
-          container.appendChild(createCheckIcon());
-        }
-      } else {
-        container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.aa)}</span>`.element());
-        if (this.data.thresholdsViolated.aa) {
-          container.appendChild(createClearIcon());
-        } else {
-          container.appendChild(createCheckIcon());
-        }
-        container.append(UI.Fragment.Fragment.build`<span>${i18nString(UIStrings.aaa)}</span>`.element());
-        if (this.data.thresholdsViolated.aaa) {
-          container.appendChild(createClearIcon());
-        } else {
-          container.appendChild(createCheckIcon());
-        }
-      }
-      cell.appendChild(contrastFragment.element());
-      return cell;
-    }
-
-    return super.createCell(columnId);
-  }
+          ${showAPCA ?
+            html`
+            <span>${i18nString(UIStrings.apca)}</span>${data.thresholdsViolated.apca ? createClearIcon() : createCheckIcon()}`
+          : html`
+            <span>${i18nString(UIStrings.aa)}</span>${data.thresholdsViolated.aa ? createClearIcon() : createCheckIcon()}
+            <span>${i18nString(UIStrings.aaa)}</span>${data.thresholdsViolated.aaa ? createClearIcon() : createCheckIcon()}`
+          }
+      </div>
+    </td>`;
+  // clang-format on
 }
 
 function createClearIcon(): IconButton.Icon.Icon {

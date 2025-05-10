@@ -5,7 +5,7 @@
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import inspectorCommonStyles from '../../inspectorCommon.css.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
 import {Align, type ColumnDescriptor, DataType, Events as DataGridEvents} from './DataGrid.js';
@@ -62,9 +62,7 @@ class DataGridElement extends HTMLElement {
     this.style.display = 'flex';
     this.#dataGrid.element.style.flex = 'auto';
 
-    this.#shadowRoot = this.attachShadow({mode: 'open', delegatesFocus: true});
-    this.#shadowRoot.createChild('style').textContent = dataGridStyles;
-    this.#shadowRoot.createChild('style').textContent = inspectorCommonStyles;
+    this.#shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this, {delegatesFocus: true, cssFile: dataGridStyles});
     this.#shadowRoot.appendChild(this.#dataGrid.element);
 
     this.#dataGrid.addEventListener(
@@ -473,6 +471,7 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
       return super.createCell(columnId);
     }
     const cell = this.createTD(columnId);
+    cell.setAttribute('part', `${columnId}-column`);
     if (this.isCreationNode) {
       return cell;
     }

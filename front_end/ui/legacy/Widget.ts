@@ -159,6 +159,16 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
     }
     super.removeChildren();
   }
+
+  override cloneNode(deep: boolean): Node {
+    const clone = super.cloneNode(deep) as WidgetElement<WidgetT>;
+    if (!this.#widgetClass) {
+      throw new Error('No widgetClass defined');
+    }
+    clone.#widgetClass = this.#widgetClass;
+    clone.#widgetParams = this.#widgetParams;
+    return clone;
+  }
 }
 
 customElements.define('devtools-widget', WidgetElement);

@@ -1,9 +1,6 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "module": "nodenext",
-
-    "checkJs": false,
-    "allowJs": false
+    "outDir": "ignored"
   }
 }

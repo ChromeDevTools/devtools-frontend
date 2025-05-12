@@ -1,14 +1,14 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.test.json",
   "compilerOptions": {
     "baseUrl": "."
   },
   "references": [
     {
-      "path": "../conductor"
+      "path": "../conductor/tsconfig.json"
     },
     {
-      "path": "../e2e_non_hosted"
+      "path": "../e2e_non_hosted/tsconfig.json"
     }
   ]
 }

@@ -1,5 +1,10 @@
 {
+  "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "moduleResolution": "node"
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+
+    "outDir": "ignored",
+    "noImplicitAny": false
   }
 }

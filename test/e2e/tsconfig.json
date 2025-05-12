@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.test.json",
   "compilerOptions": {
     "baseUrl": "."
   },
@@ -7,5 +7,6 @@
     {
       "path": "../shared/tsconfig.json"
     }
-  ]
+  ],
+  "exclude": ["./resources/"]
 }

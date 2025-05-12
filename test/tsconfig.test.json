@@ -1,0 +1,14 @@
+{
+  "extends": "../config/typescript/tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+
+    "allowJs": false,
+    "checkJs": false
+  },
+  "references": [
+    {
+      "path": "../front_end/tsconfig.json"
+    }
+  ]
+}

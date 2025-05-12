@@ -51,6 +51,7 @@ function pausedReasonText(reason: string) {
     case 'step':
       return 'Debugger paused';
   }
+  return;
 }
 
 describe('CXX Debugging Extension Test Suite', function() {

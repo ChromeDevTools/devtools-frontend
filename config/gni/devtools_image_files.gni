@@ -123,6 +123,8 @@ devtools_svg_sources = [
   "dots-horizontal.svg",
   "dots-vertical.svg",
   "download.svg",
+  "drawer-dock-to-bottom.svg",
+  "drawer-dock-to-right.svg",
   "edit.svg",
   "empty.svg",
   "errorWave.svg",

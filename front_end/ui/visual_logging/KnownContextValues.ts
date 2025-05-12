@@ -2287,6 +2287,7 @@ export const knownContextValues = new Set([
   'main.search-in-panel.find-previous',
   'main.toggle-dock',
   'main.toggle-drawer',
+  'main.toggle-drawer-orientation',
   'main.zoom-in',
   'main.zoom-out',
   'main.zoom-reset',

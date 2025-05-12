@@ -28,6 +28,14 @@ describeWithEnvironment('SplitWidget', () => {
     });
   });
 
+  it('can be set to vertical and back', () => {
+    const widget = new SplitWidget(false, false);
+    widget.setVertical(true);
+    assert.isTrue(widget.isVertical());
+    widget.setVertical(false);
+    assert.isFalse(widget.isVertical());
+  });
+
   it('can be instantiated from the template', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container);

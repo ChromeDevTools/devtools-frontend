@@ -132,6 +132,10 @@ const UIStrings = {
    *@description Label for a button which opens a file picker.
    */
   selectFolder: 'Select folder',
+  /**
+   *@description Text that appears when hover the toggle orientation button
+   */
+  toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -151,6 +155,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   private ownerSplitWidget?: SplitWidget;
   private reloadRequiredInfobar?: Infobar;
   #selectOverrideFolderInfobar?: Infobar;
+  #toggleOrientationButton: ToolbarButton;
 
   constructor() {
     super();
@@ -181,6 +186,11 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
     closeDrawerButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     closeDrawerButton.addEventListener(ToolbarButton.Events.CLICK, this.closeDrawer, this);
+    this.#toggleOrientationButton = new ToolbarButton(
+        i18nString(UIStrings.toggleDrawerOrientation),
+        this.drawerSplitWidget.isVertical() ? 'drawer-dock-to-bottom' : 'drawer-dock-to-right');
+    this.#toggleOrientationButton.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
+    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, this.toggleDrawerOrientation, this);
     this.drawerTabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId), this);
@@ -196,6 +206,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
+    this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this.drawerTabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('drawer').track({
                                                          drag: true,
@@ -400,6 +411,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.emitDrawerChangeEvent(false);
     ARIAUtils.alert(i18nString(UIStrings.drawerHidden));
+  }
+
+  toggleDrawerOrientation(): void {
+    const drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+    this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'drawer-dock-to-bottom' : 'drawer-dock-to-right');
+    this.drawerSplitWidget.setVertical(drawerWillBeVertical);
   }
 
   setDrawerMinimized(minimized: boolean): void {
@@ -668,6 +685,9 @@ export class ActionDelegate implements ActionDelegateInterface {
             hasTargetDrawer: false,
           });
         }
+        return true;
+      case 'main.toggle-drawer-orientation':
+        InspectorView.instance().toggleDrawerOrientation();
         return true;
       case 'main.next-tab':
         InspectorView.instance().tabbedPane.selectNextTab();

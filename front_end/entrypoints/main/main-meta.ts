@@ -223,6 +223,10 @@ const UIStrings = {
    * @description Command to turn the browser color scheme matching off through the command menu.
    */
   dontMatchChromeColorSchemeCommand: 'Don\'t match Chrome color scheme',
+  /**
+   * @description Command to toggle the drawer orientation.
+   */
+  toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -270,6 +274,20 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Esc',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DRAWER,
+  actionId: 'main.toggle-drawer-orientation',
+  async loadActionDelegate() {
+    return new UI.InspectorView.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.toggleDrawerOrientation),
+  bindings: [
+    {
+      shortcut: 'Shift+Esc',
     },
   ],
 });

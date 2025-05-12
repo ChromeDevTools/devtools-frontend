@@ -138,6 +138,20 @@ describe('User Metrics', () => {
     ]);
   });
 
+  it('dispatches a metric event during drawer orientation toggle', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await frontend.keyboard.down('Shift');
+    await frontend.keyboard.press('Escape');
+
+    await assertHistogramEventsInclude([{
+      actionName: 'DevTools.KeyboardShortcutFired',
+      actionCode: 119,  // main.toggle-drawer-orientation
+    }]);
+
+    await frontend.keyboard.up('Shift');
+  });
+
   it('dispatches events for views', async () => {
     const {frontend} = getBrowserAndPages();
 

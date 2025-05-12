@@ -241,7 +241,8 @@ function generateNetworkDependencyTree(context: InsightSetContext): {
 
       path.forEach(request => found?.relatedRequests.add(request));
 
-      // TODO(b/372897712) Switch the UIString to markdown.
+      // TODO(b/372897712): When RelatedInsight supports markdown, remove
+      // UIStrings.warningDescription and use UIStrings.description.
       relatedEvents.set(request, depth < 2 ? [] : [i18nString(UIStrings.warningDescription)]);
 
       currentNodes = found.children;

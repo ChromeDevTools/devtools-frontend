@@ -76,6 +76,7 @@ export class RelatedInsightChips extends HTMLElement {
     // TODO: Render insight messages in a separate UX
     // Right before insight chips is acceptable for now
     const insightMessages = relatedInsights.flatMap(insight => {
+      // TODO: support markdown (`md`).
       return insight.messages.map(message => html`
         <li class="insight-message-box">
           <button type="button" @click=${this.#insightClick(insight)}>

@@ -404,7 +404,7 @@ export class NetworkRequestDetails extends HTMLElement {
           ${this.#renderServerTimings()}
           ${redirectsHtml ? html `
             <div class="column-divider"></div>
-            <div class="network-request-details-col">
+            <div class="network-request-details-col redirect-details">
               ${redirectsHtml}
             </div>
           ` : Lit.nothing}

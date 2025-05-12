@@ -271,7 +271,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     const {widgetConfig} = UI.Widget;
     return html`<devtools-widget .widgetConfig=${
         widgetConfig(
-            e => new DOMNodeLink(e, this.#node, {hiddenClassList, disabled: opts.disabled}))}></devtools-widget>`;
+            DOMNodeLink, {node: this.#node, options: {hiddenClassList, disabled: opts.disabled}})}></devtools-widget>`;
   }
 
   override async getSuggestions(): Promise<[ConversationSuggestion, ...ConversationSuggestion[]]|undefined> {

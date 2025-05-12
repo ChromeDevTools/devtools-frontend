@@ -243,12 +243,9 @@ Event.prototype.consume = function(preventDefault?: boolean): void {
   this.handled = true;
 };
 
-Node.prototype.deepTextContent = function(): string {
-  return this.childTextNodes()
-      .map(function(node) {
-        return node.textContent;
-      })
-      .join('');
+Node.prototype.deepTextContent = function(normalizeWhitespace = false): string {
+  const text = this.childTextNodes().map(node => node.textContent).join('');
+  return normalizeWhitespace ? text.replace(/\s+/g, ' ') : text;
 };
 
 Node.prototype.childTextNodes = function(): Node[] {

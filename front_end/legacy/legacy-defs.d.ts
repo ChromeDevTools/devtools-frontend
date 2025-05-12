@@ -93,7 +93,7 @@ interface Node {
   setTextContentTruncatedIfNeeded(text: unknown, placeholder?: string): boolean;
   traverseNextNode(stayWithin?: Node): Node|null;
   traversePreviousNode(stayWithin?: Node): Node|null;
-  deepTextContent(): string;
+  deepTextContent(normalizeWhitespace?: boolean): string;
   window(): Window;
   childTextNodes(): Node[];
 }

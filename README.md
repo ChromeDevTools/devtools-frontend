@@ -1,12 +1,45 @@
-# Chrome DevTools frontend
+# Chrome DevTools frontend with Agentic Framework (Browser Operator)
 
-<!-- [START badges] -->
+The custom version client-side of the Chrome DevTools, including all TypeScript & CSS to run the DevTools webapp. This version includes the ability to run multi-agent workflows directly on the browser using a stateful, orchestration framework.
 
-[![npm package](https://img.shields.io/npm/v/chrome-devtools-frontend.svg)](https://npmjs.org/package/chrome-devtools-frontend)
+|Features| Status |
+|--|--|
+| Multi-Agent Workflow | Completed |
+| OpenAI LLM | Completed |
+| Custom Prompt Support| |
+| Custom Agents | |
+| Custom Workflow Graphs | |
+| Eval Management | |
+| Local LLM | |
+| Memory | |
+| MCP | |
+| A2A Protocol | |
 
-<!-- [END badges] -->
+### Demos
 
-The client-side of the Chrome DevTools, including all TypeScript & CSS to run the DevTools webapp.
+Watch Browser Operator in action with our demo videos:
+
+#### Overview Demo
+See how Browser Operator transforms your browser into an intelligent agentic platform.
+[Watch Demo](https://player.vimeo.com/video/1081705645)
+
+#### Deep Research
+Browser Operator seamlessly integrates public web data with your private documents and knowledge bases, creating comprehensive research without switching between tools.
+[Watch Demo](https://player.vimeo.com/video/1081705602)
+
+#### Product Discovery & Comparison
+Streamline your shopping research by automatically gathering specifications, user ratings, and availability across retailers, to help you make confident purchasing decisions.
+[Watch Demo](https://player.vimeo.com/video/1081705556)
+
+#### Professional Talent Search
+Efficiently discover and evaluate potential candidates based on skills, experience, and portfolio quality, creating detailed profiles for recruitment decision-making.
+[Watch Demo](https://player.vimeo.com/video/1082407151)
+
+### Steps to run project
+
+1. Follow this instructions to [set up](chromium.googlesource.com) devtools
+2. Update the code to this fork implementation
+3. Use this to run the [code](https://github.com/tysonthomas9/browser-operator-devtools-frontend/blob/main/front_end/panels/ai_chat/Readme.md)
 
 ### Source code and documentation
 
@@ -30,40 +63,4 @@ The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium
 
 ### Getting in touch
 
-- [@ChromeDevTools] on Twitter
-- Chrome DevTools mailing list: [g/google-chrome-developer-tools]
-- File a new DevTools ticket: [goo.gle/devtools-bug]
-
-There are a few options to keep an eye on the latest and greatest of DevTools development:
-
-- Follow [What's new in DevTools].
-- Follow [Umar's Dev Tips].
-- Follow these individual Twitter accounts:
-  [@umaar](https://x.com/umaar),
-  [@malyw](https://x.com/malyw),
-  [@kdzwinel](https://x.com/kdzwinel),
-  [@addyosmani](https://x.com/addyosmani),
-  [@paul_irish](https://x.com/paul_irish),
-  [@samccone](https://x.com/samccone),
-  [@mathias](https://x.com/ziyunfei),
-  [@mattzeunert](https://x.com/mattzeunert),
-  [@PrashantPalikhe](https://x.com/PrashantPalikhe),
-  [@ziyunfei](https://x.com/ziyunfei), and
-  [@bmeurer](https://x.com/bmeurer).
-- Follow to [g/devtools-reviews@chromium.org] mailing list for all reviews of pending code,
-  and [view the log], or follow [@DevToolsCommits] on Twitter.
-- Checkout [all open DevTools tickets] on crbug.com
-- Use Chrome Canary and poke around the experiments.
-
-  [Chromium DevTools documentation]: http://goo.gle/chromium-devtools
-  [set up]: https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/get_the_code.md
-  [chromium.googlesource.com]: https://chromium.googlesource.com/devtools/devtools-frontend
-  [What's new in DevTools]: https://developer.chrome.com/docs/devtools/news
-  [Umar's Dev Tips]: https://umaar.com/dev-tips
-  [g/devtools-reviews@chromium.org]: https://groups.google.com/a/chromium.org/forum/#!forum/devtools-reviews
-  [view the log]: https://chromium.googlesource.com/devtools/devtools-frontend/+log/main
-  [@ChromeDevTools]: http://x.com/ChromeDevTools
-  [@DevToolsCommits]: http://x.com/DevToolsCommits
-  [all open DevTools tickets]: http://goo.gle/devtools-bugs
-  [g/google-chrome-developer-tools]: https://groups.google.com/forum/#!forum/google-chrome-developer-tools
-  [goo.gle/devtools-bug]: http://goo.gle/devtools-bug
+[BrowserOperator@X](https://x.com/BrowserOperator)

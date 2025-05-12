@@ -234,6 +234,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
                                      drag: true,
                                      keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space',
                                    })}`);
+    (mainHeaderElement as HTMLElement).style.display = 'none';
 
     // Store the initial selected panel for use in launch histograms
     Host.userMetrics.setLaunchPanel(this.tabbedPane.selectedTabId);

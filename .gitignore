@@ -54,3 +54,6 @@ test/perf/.generated
 .eslintcache
 .stylelintcache
 **/tsconfig.tsbuildinfo
+
+# Dependencies
+node_modules/

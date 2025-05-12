@@ -10,6 +10,7 @@ devtools_entrypoint("entrypoint") {
   deps = [
     "../../entrypoints/inspector_main:meta",
     "../../panels/accessibility:meta",
+    "../../panels/ai_chat:meta",
     "../../panels/animation:meta",
     "../../panels/application:meta",
     "../../panels/autofill:meta",

@@ -1,0 +1,180 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [
+    "ui/chatView.css",
+  ]
+}
+
+devtools_module("ai_chat") {
+  sources = [
+    "ui/AIChatPanel.ts",
+    "ui/ChatView.ts",
+    "ai_chat_impl.ts",
+    "core/Graph.ts",
+    "core/State.ts",
+    "core/Types.ts",
+    "core/AgentService.ts",
+    "core/GraphConfigs.ts",
+    "core/OpenAIClient.ts",
+    "core/ConfigurableGraph.ts",
+    "core/BaseOrchestratorAgent.ts",
+    "core/PageInfoManager.ts",
+    "core/AgentNodes.ts",
+    "core/ChatOpenAI.ts",
+    "core/GraphHelpers.ts",
+    "core/StateGraph.ts",
+    "tools/Tools.ts",
+    "tools/CritiqueTool.ts",
+    "tools/FetcherTool.ts",
+    "tools/FinalizeWithCritiqueTool.ts",
+    "tools/VisitHistoryManager.ts",
+    "tools/HTMLToMarkdownTool.ts",
+    "tools/SchemaBasedExtractorTool.ts",
+    "tools/CombinedExtractionTool.ts",
+    "tools/FullPageAccessibilityTreeToMarkdownTool.ts",
+    "agent_framework/ConfigurableAgentTool.ts",
+    "agent_framework/AgentRunner.ts",
+    "agent_framework/implementation/ConfiguredAgents.ts",
+    "common/utils.ts",
+    "common/log.ts",
+    "common/context.ts",
+    "common/page.ts",
+  ]
+
+  deps = [
+    ":css_files",
+    "../../core/common:bundle",
+    "../../core/i18n:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../models/logs:bundle",
+    "../../ui/components/helpers:bundle",
+    "../../ui/components/markdown_view:bundle",
+    "../../ui/components/text_editor:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
+  ]
+}
+
+# List of source files also used to determine JS outputs for metadata
+_ai_chat_sources = [
+    "ui/AIChatPanel.ts",
+    "ui/ChatView.ts",
+    "ai_chat_impl.ts",
+    "core/Graph.ts",
+    "core/State.ts",
+    "core/Types.ts",
+    "core/AgentService.ts",
+    "core/GraphConfigs.ts",
+    "core/OpenAIClient.ts",
+    "core/ConfigurableGraph.ts",
+    "core/BaseOrchestratorAgent.ts",
+    "core/PageInfoManager.ts",
+    "core/AgentNodes.ts",
+    "core/ChatOpenAI.ts",
+    "core/GraphHelpers.ts",
+    "core/StateGraph.ts",
+    "tools/Tools.ts",
+    "tools/CritiqueTool.ts",
+    "tools/FetcherTool.ts",
+    "tools/FinalizeWithCritiqueTool.ts",
+    "tools/VisitHistoryManager.ts",
+    "tools/HTMLToMarkdownTool.ts",
+    "tools/SchemaBasedExtractorTool.ts",
+    "tools/CombinedExtractionTool.ts",
+    "tools/FullPageAccessibilityTreeToMarkdownTool.ts",
+    "agent_framework/ConfigurableAgentTool.ts",
+    "agent_framework/AgentRunner.ts",
+    "agent_framework/implementation/ConfiguredAgents.ts",
+    "common/utils.ts",
+    "common/log.ts",
+    "common/context.ts",
+    "common/page.ts",
+]
+
+# Construct the expected JS output paths for the metadata
+_ai_chat_js_outputs_for_metadata = []
+_ai_chat_module_target_gen_dir = get_label_info(":ai_chat", "target_gen_dir")
+
+foreach(src, _ai_chat_sources) {
+  _extension = get_path_info(src, "extension")
+  _relative_file_name = rebase_path(src, ".")
+  _fileName = get_path_info(_relative_file_name, "dir") + "/" +
+              get_path_info(_relative_file_name, "name")
+
+  # Only consider .ts files that aren't definition files (.d.ts) and .js files
+  if ((_extension == "ts" &&
+       get_path_info(get_path_info(src, "name"), "extension") != "d") ||
+      _extension == "js") {
+    _ai_chat_js_outputs_for_metadata +=
+        [ "$_ai_chat_module_target_gen_dir/${_fileName}.js" ]
+  }
+}
+
+# This target generates the metadata needed for the release GRD check
+generated_file("ai_chat_release_js_metadata") {
+  outputs = [ "$target_gen_dir/ai_chat_release_js_metadata-tsconfig.json" ]
+  contents = "{\"files\":[],\"compilerOptions\":{\"composite\":true}}"
+  
+  # Make sure the actual JS files are built first
+  deps = [ ":ai_chat" ]
+  
+  metadata = {
+    # These paths should match the format ts_library would produce in debug
+    grd_files = _ai_chat_js_outputs_for_metadata
+  }
+}
+
+# Metadata target for the CSS file, needed for release GRD check
+_css_module_target_gen_dir = get_label_info(":css_files", "target_gen_dir")
+_css_outputs_for_metadata = [
+  "$_css_module_target_gen_dir/ui/chatView.css.js",
+]
+
+generated_file("ai_chat_release_css_metadata") {
+  outputs = [ "$target_gen_dir/ai_chat_release_css_metadata-tsconfig.json" ]
+  contents = "{\"files\":[],\"compilerOptions\":{\"composite\":true}}"
+  
+  # Make sure the actual CSS file is built first
+  deps = [ ":css_files" ]
+
+  metadata = {
+    grd_files = _css_outputs_for_metadata
+  }
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "ai_chat.ts"
+
+  deps = [
+    ":ai_chat",
+    ":css_files",
+    ":ai_chat_release_js_metadata",  # Add dependency on the metadata target
+    ":ai_chat_release_css_metadata", # Add dependency on the CSS metadata target
+  ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/*",
+  ]
+
+  visibility += devtools_panels_visibility
+}
+
+devtools_entrypoint("meta") {
+  entrypoint = "ai_chat-meta.ts"
+
+  deps = [ ":bundle" ]
+
+  visibility = [ "../../entrypoints/*" ]
+}

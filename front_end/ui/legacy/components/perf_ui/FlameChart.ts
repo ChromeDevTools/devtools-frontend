@@ -680,11 +680,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateHighlight();
   }
 
-  timelineData(rebuid?: boolean): FlameChartTimelineData|null {
+  timelineData(rebuild?: boolean): FlameChartTimelineData|null {
     if (!this.dataProvider) {
       return null;
     }
-    const timelineData = this.dataProvider.timelineData(rebuid);
+
+    const timelineData = this.dataProvider.timelineData(rebuild);
     if (timelineData !== this.rawTimelineData ||
         (timelineData && timelineData.entryStartTimes.length !== this.rawTimelineDataLength)) {
       this.processTimelineData(timelineData);

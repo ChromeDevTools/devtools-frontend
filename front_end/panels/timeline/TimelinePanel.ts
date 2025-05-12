@@ -998,6 +998,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateTimelineControls();
   }
 
+  /**
+   * This indicates that `this.#setModelForActiveTrace` has been called,
+   * and so the main flame chart should have been populated.
+   */
+  hasFinishedLoadingTraceForTest(): boolean {
+    return this.#viewMode.mode === 'VIEWING_TRACE';
+  }
+
   private createSettingCheckbox(setting: Common.Settings.Setting<boolean>, tooltip: Platform.UIString.LocalizedString):
       UI.Toolbar.ToolbarSettingCheckbox {
     const checkboxItem = new UI.Toolbar.ToolbarSettingCheckbox(setting, tooltip);

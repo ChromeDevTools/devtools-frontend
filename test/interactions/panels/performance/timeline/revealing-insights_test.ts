@@ -5,11 +5,12 @@ import {assert} from 'chai';
 
 import {$, $$, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample} from '../../../helpers/shared.js';
+
+import {loadTimelineDocExample} from './helpers.js';
 
 describe('Performance panel insights', () => {
   itScreenshot('can reveal insights from a click in the sidebar', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev-with-commit');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=web-dev-with-commit');
     const flameChart = await waitFor('.timeline-flamechart');
     const sidebar = await waitFor('.timeline .sidebar-insights');
 

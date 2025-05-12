@@ -11,6 +11,7 @@ node_ts_library("timeline") {
     "auction_worklets_tracks_test.ts",
     "flamechart_test.ts",
     "gpu_track_test.ts",
+    "helpers.ts",
     "layout_shifts_track_test.ts",
     "network_track_test.ts",
     "overview_test.ts",

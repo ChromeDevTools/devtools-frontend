@@ -7,7 +7,8 @@ import {assert} from 'chai';
 import type * as Trace from '../../../../../front_end/models/trace/trace.js';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
-import {loadComponentDocExample} from '../../../helpers/shared.js';
+
+import {loadTimelineDocExample} from './helpers.js';
 
 describe('FlameChart', function() {
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to prevent timeout bump.
@@ -25,12 +26,21 @@ describe('FlameChart', function() {
       if (!data) {
         throw new Error('Timeline data was not found');
       }
+      if (!data.entryStartTimes.length) {
+        throw new Error('Timeline data is empty');
+      }
+
       const entryIndices =
-          data?.entryStartTimes.map((_time, i) => i).filter(index => data.entryStartTimes[index] === (ts / 1000));
+          data.entryStartTimes.map((_time, i) => i).filter(index => data.entryStartTimes[index] === (ts / 1000));
+      if (!entryIndices.length) {
+        throw new Error(`No matching entries for that timestamp: ${ts}, title: ${title}`);
+      }
+
       const matchedIndex = entryIndices.find(index => mainFlameChart.entryTitle(index) === title);
       if (!matchedIndex) {
-        throw new Error('Match was not found');
+        throw new Error(`Match was not found for: ${title}`);
       }
+
       const entryGroup = panel.getFlameChart().getMainDataProvider().groupForEvent(matchedIndex);
       const groupIndex = entryGroup && data.groups.indexOf(entryGroup);
       if (groupIndex === null || groupIndex < 0) {
@@ -88,8 +98,7 @@ describe('FlameChart', function() {
   }
 
   it('shows the details of an entry when selected on the timeline', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=simple-js-program');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=simple-js-program');
     const {frontend} = getBrowserAndPages();
 
     // Add some margin to the coordinates so that we don't click right
@@ -121,8 +130,7 @@ describe('FlameChart', function() {
   });
 
   it('reveals an event\'s initiator in the flamechart', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=async-js-calls');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=async-js-calls');
     const {frontend} = getBrowserAndPages();
 
     // Add some margin to the coordinates so that we don't click right
@@ -165,8 +173,7 @@ describe('FlameChart', function() {
   });
 
   it('navigates to the initiated event in the flamechart from its initiator\'s details', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=async-js-calls');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=async-js-calls');
     await setWindowTimes(131719487.460, 131719515.377);
     const {frontend} = getBrowserAndPages();
 
@@ -195,8 +202,7 @@ describe('FlameChart', function() {
 
   it('the initiator link changes to text if the link is for an entry that is outside of the current breadcrumb',
      async () => {
-       await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
-       await waitFor('.timeline-flamechart');
+       await loadTimelineDocExample('performance_panel/basic.html?trace=web-dev');
        const {frontend} = getBrowserAndPages();
 
        // Add some margin to the coordinates so that we don't click right
@@ -238,9 +244,8 @@ describe('FlameChart', function() {
        assert.notEqual(initiatorLinkRole, 'link');
      });
   it('shows a tooltip describing an extension track when its header is hovered', async () => {
-    await loadComponentDocExample(
+    await loadTimelineDocExample(
         'performance_panel/basic.html?trace=extension-tracks-and-marks&disable-auto-performance-sidebar-reveal');
-    await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
     const margin = 3;
     const trackName = 'A track group — Custom track';

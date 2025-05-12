@@ -853,7 +853,7 @@ main {
   }
 
   /* TODO(b/412621009): Remove this once the bug is fixed on the VE logging side */
-  &:not(&[open]) > *:not(summary) {
+  &:not(.saved-to-disk, &[open]) > *:not(summary) {
     display: none;
   }
 

@@ -271,14 +271,6 @@ describe('use_theme_colors', () => {
     assert.deepEqual(warnings, []);
   });
 
-  it('allows any color to be used when in a :host-context dark theme block', async () => {
-    const code = `:host-context(.theme-with-dark-background) p {
-      color: #fff;
-    }`;
-    const warnings = await lintAndGetWarnings(code);
-    assert.deepEqual(warnings, []);
-  });
-
   it('does not lint against background-image properties when they are defined as just a variable', async () => {
     const code = `.spectrum-sat {
       background-image: var(--my-lovely-image);
@@ -317,14 +309,6 @@ describe('use_theme_colors', () => {
         fix: undefined,
       },
     ]);
-  });
-
-  it('allows any color to be used when in a .theme-with-dark-background block', async () => {
-    const code = `.theme-with-dark-background p {
-      color: #fff;
-    }`;
-    const warnings = await lintAndGetWarnings(code);
-    assert.deepEqual(warnings, []);
   });
 
   it('ignores any css variables prefixed with "--override-"', async () => {
@@ -489,18 +473,43 @@ describe('use_theme_colors', () => {
     ]);
   });
 
-  // TODO(crbug.com/406761701): Need fixing
-  it.skip('error with invalid variable color inside backgroung', async () => {
-    const warnings = await lintAndGetWarnings(
-        `
-        :host-context(.theme-with-dark-background) .highlight-chip.focused:hover > .delete-highlight-container {
-          /* To avoid issues with stacking semi-transparent colors, we use a hardcoded solid color here. */
-          background: linear-gradient(90deg, transparent 0%, rgb(48 55 68) 25%);
-        }`,
-    );
+  it('errors with invalid color in a :host-context dark theme block', async () => {
+    const code = `:host-context(.theme-with-dark-background) p {
+      color: #fff;
+    }`;
+    const warnings = await lintAndGetWarnings(code);
+    assert.deepEqual(warnings, [
+      {
+        column: 7,
+        endColumn: 19,
+        endLine: 2,
+        fix: undefined,
+        line: 2,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+        url: undefined,
+      },
+    ]);
+  });
 
-    assert.lengthOf(warnings, 1);
-    // Fill once fixed and remove above
-    assert.deepEqual(warnings, []);
+  it('errors with invalid color in a .theme-with-dark-background block', async () => {
+    const code = `.theme-with-dark-background p {
+      color: #fff;
+    }`;
+    const warnings = await lintAndGetWarnings(code);
+    assert.deepEqual(warnings, [
+      {
+        column: 7,
+        endColumn: 19,
+        endLine: 2,
+        fix: undefined,
+        line: 2,
+        rule: 'plugin/use_theme_colors',
+        severity: 'error',
+        text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+        url: undefined,
+      },
+    ]);
   });
 });

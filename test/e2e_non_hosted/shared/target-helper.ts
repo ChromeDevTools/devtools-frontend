@@ -11,8 +11,13 @@ export class InspectedPage extends PageWrapper {
     super(page);
     this.serverPort = serverPort;
   }
+
   async goTo(url: string, options: puppeteer.WaitForOptions = {}) {
     await this.page.goto(url, options);
+  }
+
+  waitForSelector<Selector extends string>(selector: Selector, options?: puppeteer.WaitForSelectorOptions) {
+    return this.page.waitForSelector(selector, options);
   }
 
   async goToResource(path: string, options: puppeteer.WaitForOptions = {}) {

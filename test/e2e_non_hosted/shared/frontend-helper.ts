@@ -317,6 +317,27 @@ export class DevToolsPage extends PageWrapper {
       el.scrollIntoView();
     });
   }
+
+  /**
+   * Search for all elements based on their textContent
+   *
+   * @param textContent The text content to search for.
+   * @param root The root of the search.
+   */
+  async $$textContent(textContent: string, root?: puppeteer.ElementHandle) {
+    return await this.$$(textContent, root, 'pierceShadowText');
+  }
+
+  waitForNoElementsWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+    return asyncScope.exec(() => this.waitForFunction(async () => {
+      const elems = await this.$$textContent(textContent, root);
+      if (elems && elems.length === 0) {
+        return true;
+      }
+
+      return false;
+    }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
+  }
 }
 
 export interface DevtoolsSettings {

@@ -1040,9 +1040,10 @@ function veImpressionForAccessibilityPane() {
       ])]);
 }
 
-export const toggleAccessibilityTree = async () => {
-  await click('aria/Switch to Accessibility Tree view');
-  await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')]);
+export const toggleAccessibilityTree =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.click('aria/Switch to Accessibility Tree view');
+  await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')], undefined, devToolsPage);
 };
 
 export const getPropertiesWithHints = async () => {

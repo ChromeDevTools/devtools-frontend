@@ -156,8 +156,10 @@ export const $textContent = async (textContent: string, root?: puppeteer.Element
  * @param textContent The text content to search for.
  * @param root The root of the search.
  */
-export const $$textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
-  return await $$(textContent, root, 'pierceShadowText');
+export const $$textContent = async (
+    textContent: string, root?: puppeteer.ElementHandle,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  return await devToolsPage.$$textContent(textContent, root);
 };
 
 export const timeout = (duration: number) => {
@@ -250,15 +252,9 @@ export const waitForElementsWithTextContent =
     };
 
 export const waitForNoElementsWithTextContent =
-    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
-      return asyncScope.exec(() => waitForFunction(async () => {
-                               const elems = await $$textContent(textContent, root);
-                               if (elems && elems.length === 0) {
-                                 return true;
-                               }
-
-                               return false;
-                             }, asyncScope), `Waiting for no elements with textContent '${textContent}'`);
+    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+      return devToolsPage.waitForNoElementsWithTextContent(textContent, root, asyncScope);
     };
 
 export const waitForFunction =

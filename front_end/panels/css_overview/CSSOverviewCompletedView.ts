@@ -243,7 +243,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   #formatter: Intl.NumberFormat;
   readonly #mainContainer: UI.SplitWidget.SplitWidget;
   readonly #resultsContainer: UI.Widget.VBox;
-  readonly #elementContainer: DetailsView;
+  readonly #tabbedPane: UI.TabbedPane.TabbedPane;
   readonly #sideBar: CSSOverviewSidebarPanel;
   #cssModel?: SDK.CSSModel.CSSModel;
   #domModel?: SDK.DOMModel.DOMModel;
@@ -264,11 +264,11 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
 
     this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
     this.#resultsContainer = new UI.Widget.VBox();
-    this.#elementContainer = new DetailsView();
+    this.#tabbedPane = new UI.TabbedPane.TabbedPane();
 
     // If closing the last tab, collapse the sidebar.
-    this.#elementContainer.addEventListener(Events.TAB_CLOSED, evt => {
-      if (evt.data === 0) {
+    this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, _ => {
+      if (this.#tabbedPane.tabIds().length === 0) {
         this.#mainContainer.setSidebarMinimized(true);
       }
     });
@@ -276,7 +276,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     // Dupe the styles into the main container because of the shadow root will prevent outer styles.
 
     this.#mainContainer.setMainWidget(this.#resultsContainer);
-    this.#mainContainer.setSidebarWidget(this.#elementContainer);
+    this.#mainContainer.setSidebarWidget(this.#tabbedPane);
     this.#mainContainer.setVertical(false);
     this.#mainContainer.setSecondIsSidebar(true);
     this.#mainContainer.setSidebarMinimized(true);
@@ -339,7 +339,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   #reset(): void {
     this.#resultsContainer.element.removeChildren();
     this.#mainContainer.setSidebarMinimized(true);
-    this.#elementContainer.closeTabs();
+    this.#tabbedPane.closeTabs(this.#tabbedPane.tabIds());
     this.#viewMap = new Map();
     CSSOverviewCompletedView.pushedNodes.clear();
     this.#sideBar.select('summary', false);
@@ -668,7 +668,12 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       this.#viewMap.set(id, view);
     }
 
-    this.#elementContainer.appendTab(id, tabTitle, view, payload.type);
+    if (!this.#tabbedPane.hasTab(id)) {
+      this.#tabbedPane.appendTab(
+          id, tabTitle, view, undefined, undefined, /* isCloseable */ true, undefined, undefined, payload.type);
+    }
+
+    this.#tabbedPane.selectTab(id);
   }
 
   #fontInfoToFragment(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
@@ -854,39 +859,6 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   }
 
   static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
-}
-export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  #tabbedPane: UI.TabbedPane.TabbedPane;
-  constructor() {
-    super();
-
-    this.#tabbedPane = new UI.TabbedPane.TabbedPane();
-    this.#tabbedPane.show(this.element);
-    this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, () => {
-      this.dispatchEventToListeners(Events.TAB_CLOSED, this.#tabbedPane.tabIds().length);
-    });
-  }
-
-  appendTab(id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext?: string): void {
-    if (!this.#tabbedPane.hasTab(id)) {
-      this.#tabbedPane.appendTab(
-          id, tabTitle, view, undefined, undefined, /* isCloseable */ true, undefined, undefined, jslogContext);
-    }
-
-    this.#tabbedPane.selectTab(id);
-  }
-
-  closeTabs(): void {
-    this.#tabbedPane.closeTabs(this.#tabbedPane.tabIds());
-  }
-}
-
-export const enum Events {
-  TAB_CLOSED = 'TabClosed',
-}
-
-export interface EventTypes {
-  [Events.TAB_CLOSED]: number;
 }
 
 interface ViewInput {

@@ -13,7 +13,6 @@ import * as PublicExtensions from '../../models/extensions/extensions.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as Emulation from '../../panels/emulation/emulation.js';
-import * as Timeline from '../../panels/timeline/timeline.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
@@ -595,11 +594,10 @@ export class RecorderController extends LitElement {
       this.#replayState.isPlaying = false;
       this.recordingPlayer = undefined;
       await UI.InspectorView.InspectorView.instance().showPanel(event.data?.targetPanel as string);
-      switch (event.data?.targetPanel) {
-        case Components.RecordingView.TargetPanel.PERFORMANCE_PANEL:
-          // Note: this is not passing any metadata to the Performance panel.
-          Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(events as Trace.Types.Events.Event[]);
-          break;
+      if (event.data?.targetPanel === Components.RecordingView.TargetPanel.PERFORMANCE_PANEL) {
+        // Note: this is not passing any metadata to the Performance panel.
+        const trace = new SDK.TraceObject.TraceObject(events as Trace.Types.Events.Event[]);
+        void Common.Revealer.reveal(trace);
       }
     }
   }

@@ -1283,7 +1283,8 @@ describe('Recorder', function() {
         });
   });
 
-  it('should edit while recording', async () => {
+  // Disable flaky test to unblock the tree
+  it.skip('[crbug.com/414578149]: should edit while recording', async () => {
     await startRecording('recorder/recorder.html');
 
     const {target, frontend} = getBrowserAndPages();

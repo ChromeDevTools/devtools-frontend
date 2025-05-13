@@ -203,6 +203,7 @@ export const AGENT_CONFIGS: {[key: string]: AgentConfig} = {
     description: 'Find products and compare options',
     systemPrompt: SYSTEM_PROMPTS[BaseOrchestratorAgentType.SHOPPING],
     availableTools: [
+      ToolRegistry.getToolInstance('action_agent') || (() => { throw new Error('action_agent tool not found'); })(),
       new NavigateURLTool(),
       new NavigateBackTool(),
       new SchemaBasedExtractorTool(),
@@ -274,10 +275,7 @@ export function getAgentTools(agentType: string): Tool<any, any>[] {
     new NavigateBackTool(),
     new SchemaBasedExtractorTool(),
     new NodeIDsToURLsTool(),
-    new GetVisitsByDomainTool(),
-    new GetVisitsByKeywordTool(),
     new SearchVisitHistoryTool(),
-
   ];
 }
 

@@ -90,6 +90,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       '/\\.svn/',
       '/\\.cache/',
       '/\\.project/',
+      '/\\.next/',
     ];
     const defaultWinExcludedFolders = ['/Thumbs.db$', '/ehthumbs.db$', '/Desktop.ini$', '/\\$RECYCLE.BIN/'];
     const defaultMacExcludedFolders = [

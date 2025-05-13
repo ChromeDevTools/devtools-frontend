@@ -12,6 +12,7 @@ import fileSourceIconStyles from './fileSourceIcon.css.js';
 const {classMap} = Directives;
 
 export interface FileSourceIconData {
+  iconType?: string;
   contentType?: string;
   hasDotBadge?: boolean;
   isDotPurple?: boolean;
@@ -20,25 +21,26 @@ export interface FileSourceIconData {
 export class FileSourceIcon extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #iconType: string;
+  #iconType?: string;
   #contentType?: string;
   #hasDotBadge?: boolean;
   #isDotPurple?: boolean;
 
-  constructor(iconType: string) {
+  constructor() {
     super();
-    this.#iconType = iconType;
   }
 
   set data(data: FileSourceIconData) {
     this.#contentType = data.contentType;
     this.#hasDotBadge = data.hasDotBadge;
     this.#isDotPurple = data.isDotPurple;
+    this.#iconType = data.iconType;
     this.#render();
   }
 
   get data(): FileSourceIconData {
     return {
+      iconType: this.#iconType,
       contentType: this.#contentType,
       hasDotBadge: this.#hasDotBadge,
       isDotPurple: this.#isDotPurple,
@@ -59,7 +61,7 @@ export class FileSourceIcon extends HTMLElement {
 
     // clang-format off
     render(
-      html`<style>${fileSourceIconStyles}</style><devtools-icon .name=${this.#iconType} class=${iconClasses}></devtools-icon>`,
+      html`<style>${fileSourceIconStyles}</style><devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`,
       this.#shadow, {
       host: this,
     });

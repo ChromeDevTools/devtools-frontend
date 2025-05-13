@@ -22,7 +22,7 @@ interface RenderOptions {
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
-export function renderElementIntoDOM<E extends Element|UI.Widget.Widget>(
+export function renderElementIntoDOM<E extends Node|UI.Widget.Widget>(
     element: E, renderOptions: RenderOptions = {}): E {
   const container = document.getElementById(TEST_CONTAINER_ID);
 
@@ -35,7 +35,7 @@ export function renderElementIntoDOM<E extends Element|UI.Widget.Widget>(
   if (container.childNodes.length !== 0 && !allowMultipleChildren) {
     throw new Error(`renderElementIntoDOM expects the container to be empty ${container.innerHTML}`);
   }
-  if (element instanceof Element) {
+  if (element instanceof Node) {
     container.appendChild(element);
   } else {
     element.markAsRoot();

@@ -14,7 +14,6 @@ ts_library("ts") {
     "network_request_details.ts",
     "network_request_tooltip.ts",
     "overview.ts",
-    "timeline_history_manager.ts",
     "track_example.ts",
   ]
   deps = [
@@ -40,7 +39,6 @@ copy_to_gen("performance_panel") {
     "network_request_details.html",
     "network_request_tooltip.html",
     "overview.html",
-    "timeline_history_manager.html",
     "track_example.html",
   ]
 

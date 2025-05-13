@@ -4,20 +4,16 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as url from 'node:url';
 import type {Page} from 'puppeteer-core';
 
 import type {Example} from './auto-run';
-
-// eslint-disable-next-line  @typescript-eslint/naming-convention
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 /**
  * Performance examples have a trace file so that this script does not have to
  * trigger a trace recording.
  */
 export class TraceDownloader {
-  static location = path.join(__dirname, 'performance-trace-downloads');
+  static location = path.join(import.meta.dirname, 'performance-trace-downloads');
 
   static ensureLocationExists() {
     try {

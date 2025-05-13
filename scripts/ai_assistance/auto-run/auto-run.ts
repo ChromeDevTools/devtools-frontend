@@ -6,7 +6,6 @@ import * as fs from 'fs';
 // We don't have types for `js-yaml` in the codebase.
 // @ts-expect-error
 import * as yaml from 'js-yaml';
-import * as url from 'node:url';
 import * as path from 'path';
 import type {Browser, ElementHandle, Page} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
@@ -18,9 +17,6 @@ import type {
 
 import {parseComment, parseFollowUps} from './auto-run-helpers.ts';
 import {TraceDownloader} from './trace-downloader.ts';
-
-// eslint-disable-next-line  @typescript-eslint/naming-convention
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 // Define types for browser-scope functions/variables if not globally available
 declare global {
@@ -81,7 +77,7 @@ const userArgs =
         .parseSync();
 
 const exampleUrls: string[] = [];
-const OUTPUT_DIR = path.resolve(__dirname, 'data');
+const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
 
 for (const exampleUrl of userArgs.exampleUrls) {
   for (let i = 0; i < userArgs.times; i++) {

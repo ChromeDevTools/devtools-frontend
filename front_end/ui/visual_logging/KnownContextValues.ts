@@ -1315,6 +1315,7 @@ export const knownContextValues = new Set([
   'elements.property-documentation-popover',
   'elements.redo',
   'elements.refresh-event-listeners',
+  'elements.relative-color-channel',
   'elements.reveal-node',
   'elements.select-element',
   'elements.show-all-style-properties',

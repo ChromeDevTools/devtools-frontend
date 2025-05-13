@@ -28,6 +28,7 @@ import {
   MathFunctionMatcher,
   PositionAnchorMatcher,
   PositionTryMatcher,
+  RelativeColorChannelMatcher,
   ShadowMatcher,
   StringMatcher,
   URLMatcher,
@@ -884,6 +885,7 @@ export class CSSMatchedStyles {
       new MathFunctionMatcher(),
       new AutoBaseMatcher(),
       new BinOpMatcher(),
+      new RelativeColorChannelMatcher(),
     ];
   }
 }

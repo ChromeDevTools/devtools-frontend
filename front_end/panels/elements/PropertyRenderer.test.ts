@@ -246,7 +246,10 @@ describe('TracingContext', () => {
     assert.exists(match);
     // Apply one level of substitutions (for the var(--c)).
     assert.isTrue(tracingContext.nextSubstitution());
-    const childTracingContext = tracingContext.substitution({match, matchedResult});
+    const childTracingContext = tracingContext.substitution({
+      match,
+      context: new Elements.PropertyRenderer.RenderingContext(matchedResult.ast, null, new Map(), matchedResult)
+    });
     assert.exists(childTracingContext);
     // The var(--c) appears in the longhand position #2.
     assert.strictEqual(childTracingContext?.longhandOffset, 2);

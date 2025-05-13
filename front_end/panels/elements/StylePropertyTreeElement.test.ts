@@ -876,6 +876,59 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const angle = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
       assert.exists(angle);
     });
+
+    it('shows a value tracing tooltip on color functions', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      for (const property of ['rgb(255 0 0)', 'color(srgb 0.5 0.5 0.5)', 'oklch(from purple calc(l * 2) c h)']) {
+        const stylePropertyTreeElement = getTreeElement('color', property);
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+        const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+        assert.exists(tooltip);
+        const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
+        assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
+        stylePropertyTreeElement.valueElement.remove();
+      }
+    });
+  });
+
+  describe('RelativeColorChannelRenderer', () => {
+    it('provides a tooltip for relative color channels', () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
+      stylePropertyTreeElement.updateTitle();
+
+      const tooltips = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-tooltip');
+      assert.exists(tooltips);
+      assert.lengthOf(tooltips, 3);
+      assert.deepEqual(Array.from(tooltips).map(tooltip => tooltip.textContent), ['1.000', '0.047', '0.047']);
+    });
+
+    it('evaluates relative color channels during tracing', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      setMockConnectionResponseHandler(
+          'CSS.resolveValues',
+          (request: Protocol.CSS.ResolveValuesRequest) =>
+              ({results: request.values.map(v => v === 'calc(1.000 / 2)' ? '0.5' : '')}));
+      const property = addProperty('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
+
+      const {promise, resolve} = Promise.withResolvers<void>();
+      const view = sinon.stub<Parameters<Elements.CSSValueTraceView.View>>().callsFake(() => resolve());
+      void new Elements.CSSValueTraceView.CSSValueTraceView(undefined, view)
+          .showTrace(
+              property, null, matchedStyles, new Map(),
+              Elements.StylePropertyTreeElement.getPropertyRenderers(
+                  property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+              false, 0);
+
+      await promise;
+
+      const {evaluations} = view.args[0][0];
+
+      assert.deepEqual(
+          evaluations.flat().map(args => args?.textContent).flat(),
+          ['rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)', 'rgb(from #ff0c0c 0.5 0.047 0.047)', '#800c0c']);
+    });
   });
 
   describe('BezierRenderer', () => {

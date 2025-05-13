@@ -165,12 +165,12 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
         ];
       case 'InteractionToNextPaint':
         return [
-          {title: 'Help me optimize my INP score'}, {title: 'Help me understand why a large INP score is problematic'},
-          {title: 'What was the biggest contributor to my INP score?'}
+          {title: 'Suggest fixes for my longest interaction'}, {title: 'Why is a large INP score problematic?'},
+          {title: 'What\'s the biggest contributor to my longest interaction?'}
         ];
       case 'LCPDiscovery':
         return [
-          {title: 'Help me optimize my LCP score'}, {title: 'What can I do to reduce my LCP discovery time?'},
+          {title: 'Suggest fixes to reduce my LCP'}, {title: 'What can I do to reduce my LCP discovery time?'},
           {title: 'Why is LCP discovery time important?'}
         ];
       case 'LCPPhases':

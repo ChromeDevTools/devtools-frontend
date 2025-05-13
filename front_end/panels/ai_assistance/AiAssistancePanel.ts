@@ -251,9 +251,9 @@ async function getEmptyStateSuggestions(
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE:
       return [
-        {title: 'Identify performance issues in this call tree', jslogContext: 'performance-default'},
-        {title: 'Where is most of the time being spent in this call tree?', jslogContext: 'performance-default'},
-        {title: 'How can I reduce the time of this call tree?', jslogContext: 'performance-default'},
+        {title: 'What\'s the purpose of this work?', jslogContext: 'performance-default'},
+        {title: 'Where is time being spent?', jslogContext: 'performance-default'},
+        {title: 'How can I optimize this?', jslogContext: 'performance-default'},
       ];
     case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
       return [

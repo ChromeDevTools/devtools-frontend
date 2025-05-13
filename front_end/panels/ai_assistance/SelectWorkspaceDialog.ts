@@ -126,7 +126,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
                 return html`
                   <li
                     id=${optionId}
-                    @click=${() => input.onProjectSelected(index)}
+                    @mousedown=${() => input.onProjectSelected(index)}
                     @keydown=${input.onListItemKeyDown}
                     class=${index === input.selectedIndex ? 'selected' : ''}
                     aria-selected=${index === input.selectedIndex ? 'true' : 'false'}

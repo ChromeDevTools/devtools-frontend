@@ -1,6 +1,7 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
+    "allowUmdGlobalAccess": true,
     "outDir": "ignored"
   }
 }

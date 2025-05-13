@@ -9,7 +9,6 @@ ts_library("ts") {
   testonly = true
   sources = [
     "basic.ts",
-    "flamechart.ts",
     "layout_shift_details.ts",
     "network_request_details.ts",
     "network_request_tooltip.ts",
@@ -34,7 +33,6 @@ copy_to_gen("performance_panel") {
   testonly = true
   sources = [
     "basic.html",
-    "flamechart.html",
     "layout_shift_details.html",
     "network_request_details.html",
     "network_request_tooltip.html",

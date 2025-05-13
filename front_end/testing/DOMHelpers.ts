@@ -333,6 +333,10 @@ export async function assertScreenshot(filename: string) {
     frame.scrollTo(0, 0);
     frame = frame.parent !== frame ? frame.parent : null;
   }
+
+  // For test we load the fonts though the network - front_end/testing/test_setup.ts
+  // Which means we may try to take screenshot while they are loading
+  await document.fonts.ready;
   await raf();
   // @ts-expect-error see karma config.
   const errorMessage = await window.assertScreenshot(`#${TEST_CONTAINER_ID}`, filename);

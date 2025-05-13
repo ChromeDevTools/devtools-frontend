@@ -21,9 +21,6 @@ describe('The Sources Tab', function() {
   let worker1Selectors: NestedFileSelector;
   let worker2Selectors: NestedFileSelector;
 
-  // The tests in this suite are particularly slow, as they perform a lot of actions
-  this.timeout(10000);
-
   before(() => {
     worker1Selectors = createSelectorsForFile('worker1.js');
     worker2Selectors = createSelectorsForFile('worker2.js');

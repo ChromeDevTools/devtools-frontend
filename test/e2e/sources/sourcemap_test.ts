@@ -62,12 +62,6 @@ const DEVTOOLS_LINK = 'devtools-toolbar .devtools-link';
 const INFOBAR_TEXT = '.infobar-info-text';
 
 describe('The Sources Tab', function() {
-  // Some of these tests that use instrumentation breakpoints
-  // can be slower on mac and windows. Increase the timeout for them.
-  if (this.timeout() !== 0) {
-    this.timeout(10000);
-  }
-
   it('steps over a source line mapping to a range with several statements', async () => {
     const {target} = getBrowserAndPages();
 

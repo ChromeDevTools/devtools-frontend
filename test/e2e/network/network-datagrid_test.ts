@@ -47,11 +47,6 @@ async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: st
 }
 
 describe('The Network Tab', function() {
-  if (this.timeout() !== 0.0) {
-    // These tests take some time on slow windows machines.
-    this.timeout(10000);
-  }
-
   // See byte formatting in front_end/core/i18n/ByteUtilities.ts
   const formatKbSize = (value: number) => {
     const kilobytes = value / 1000;

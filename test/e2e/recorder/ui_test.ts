@@ -30,10 +30,6 @@ import {
 } from './helpers.js';
 
 describe('Recorder', function() {
-  if (this.timeout() !== 0) {
-    this.timeout(5000);
-  }
-
   async function assertStepList(expectedStepList: string[]) {
     const {frontend} = getBrowserAndPages();
     const actualStepList = await frontend.$$eval(

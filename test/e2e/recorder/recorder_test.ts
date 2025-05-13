@@ -32,10 +32,6 @@ import {
 } from './helpers.js';
 
 describe('Recorder', function() {
-  if (this.timeout() !== 0) {
-    this.timeout(5000);
-  }
-
   it('should capture the initial page as the url of the first section', async () => {
     await startRecording('recorder/recorder.html');
     const recording = await stopRecording();

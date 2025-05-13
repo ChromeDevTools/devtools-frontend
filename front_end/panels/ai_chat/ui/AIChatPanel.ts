@@ -512,7 +512,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       <p>AI Assistant supports several OpenAI models:</p>
       <ul>
         <li>O4 Mini - Balanced performance for most tasks</li>
-        <li>GPT-4.1 Mini - Good for general coding assistance</li>
+        <li>GPT-4.1 Mini - Good for general tasks</li>
         <li>GPT-4.1 Nano - Fastest response times</li>
         <li>GPT-4.1 - Best quality for complex tasks</li>
       </ul>

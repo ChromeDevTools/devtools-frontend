@@ -919,7 +919,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
               property, null, matchedStyles, new Map(),
               Elements.StylePropertyTreeElement.getPropertyRenderers(
                   property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
-              false, 0);
+              false, 0, false);
 
       await promise;
 
@@ -1848,7 +1848,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
-          false, 0);
+          false, 0, false);
 
       sinon.assert.calledOnce(evaluationSpy);
       const originalText = evaluationSpy.args[0][0].textContent;
@@ -1867,7 +1867,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
-          false, 0);
+          false, 0, false);
 
       sinon.assert.calledOnce(resolveValuesStub);
       assert.strictEqual(resolveValuesStub.args[0][0], 'width');

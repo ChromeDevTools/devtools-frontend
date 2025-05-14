@@ -2304,7 +2304,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 property, text, matchedStyles, computedStyles,
                 getPropertyRenderers(property.name,
                   property.ownerStyle, stylesPane, matchedStyles, null, computedStyles),
-                expandPercentagesInShorthands, shorthandPositionOffset);
+                expandPercentagesInShorthands, shorthandPositionOffset, this.openedViaHotkey);
+          }
+        }}
+        @toggle=${function(this: Tooltips.Tooltip.Tooltip, e: ToggleEvent) {
+          if (e.newState !== 'open') {
+            (this.querySelector('devtools-widget') as UI.Widget.WidgetElement<CSSValueTraceView>| null)
+              ?.getWidget()
+              ?.resetPendingFocus();
           }
         }}
         ><devtools-widget

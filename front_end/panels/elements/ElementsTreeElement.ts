@@ -481,11 +481,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   #updateNodeElementToIssue(nodeElement: Element, issue: IssuesManager.Issue.Issue): void {
-    if (!this.#nodeElementToIssue.has(nodeElement)) {
-      this.#nodeElementToIssue.set(nodeElement, [issue]);
-      return;
+    let issues = this.#nodeElementToIssue.get(nodeElement);
+    if (!issues) {
+      issues = [];
+      this.#nodeElementToIssue.set(nodeElement, issues);
     }
-    this.#nodeElementToIssue.get(nodeElement)?.push(issue);
+    issues.push(issue);
+    this.treeOutline?.updateNodeElementToIssue(nodeElement, issues);
   }
 
   expandedChildrenLimit(): number {

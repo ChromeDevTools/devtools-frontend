@@ -274,12 +274,16 @@ export class ElementsTreeOutline extends
     const treeElement = this.findTreeElement(node);
     if (treeElement) {
       treeElement.addIssue(issue);
-      const treeElementNodeElementsToIssue = treeElement.issuesByNodeElement;
+      const treeElementNodeElementsToIssues = treeElement.issuesByNodeElement;
       // This element could be the treeElement tags name or an attribute.
-      for (const [element, issue] of treeElementNodeElementsToIssue) {
-        this.#nodeElementToIssues.set(element, issue);
+      for (const [element, issues] of treeElementNodeElementsToIssues) {
+        this.#nodeElementToIssues.set(element, issues);
       }
     }
+  }
+
+  updateNodeElementToIssue(element: Element, issues: IssuesManager.Issue.Issue[]): void {
+    this.#nodeElementToIssues.set(element, issues);
   }
 
   private onShowHTMLCommentsChange(): void {

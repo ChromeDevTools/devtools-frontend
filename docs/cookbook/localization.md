@@ -280,7 +280,7 @@ const UIStrings = {
 ## How to prevent a term being localized
 
 Any text within the backticks will not be translated. For example, if the
-'robots.txt' in string 'Requesting for robots.txt ...' should not be translated:
+'robots.txt' in string 'Requesting for robots.txt …' should not be translated:
 
 ```javascript
 // in example.js file
@@ -290,7 +290,7 @@ const UIStrings = {
   /**
    * @description Example description. Note: "robots.txt" is a canonical filename and should not be translated.
    */
-  requestMessage: 'Requesting for `robots.txt` ...',
+  requestMessage: 'Requesting for `robots.txt` …',
 };
 const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 
@@ -298,7 +298,7 @@ const message = i18nString(UIStrings.requestMessage);
 ```
 
 The string will rendered with robots.txt not translated and without the
-backticks around it `js 'Requesting for robots.txt ...'`
+backticks around it `js 'Requesting for robots.txt …'`
 
 ### Phrases that are fully locked
 

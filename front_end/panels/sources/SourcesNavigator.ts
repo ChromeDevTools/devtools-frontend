@@ -110,7 +110,7 @@ const UIStrings = {
   /**
    *@description Text to save content as a specific file type
    */
-  saveAs: 'Save as...',
+  saveAs: 'Save as…',
   /**
    * @description Message shown in the Workspace tab of the Sources panel to nudge
    *              developers into utilizing the Automatic Workspace Folders feature

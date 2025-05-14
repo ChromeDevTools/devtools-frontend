@@ -92,7 +92,7 @@ const UIStrings = {
   /**
    *@description A context menu item in the Image Preview
    */
-  saveImageAs: 'Save image as...',
+  saveImageAs: 'Save image as…',
   /**
    *@description The default file name when downloading a file
    */

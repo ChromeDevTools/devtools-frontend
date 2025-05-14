@@ -1,6 +1,20 @@
-# Browser Operator [Chrome DevTools with Agentic Framework]
+# Browser Operator [Chromium DevTools with Agentic Framework]
 
-This version provides an user interface to run multi-agent workflows directly on the browser using a stateful, orchestration framework.
+Chromium browser with an user interface to run multi-agent workflows directly on the browser using a stateful, orchestration framework.
+
+
+![Live Demo](front_end/panels/ai_chat/docs/demo.gif)
+
+
+## Quick Start
+
+[Download the Agentic Browser for MacOS](https://github.com/tysonthomas9/browser-operator-devtools-frontend/releases)
+
+Or
+
+[Set up the chromium dev tools with Agent framework on your system](front_end/panels/ai_chat/Readme.md)
+
+Note: Read this document to know more about the [build](front_end/panels/ai_chat/docs/PreBuilt.md)
 
 ## Key Capabilities
 
@@ -15,11 +29,6 @@ This version provides an user interface to run multi-agent workflows directly on
 ## Demos
 
 Watch Browser Operator in action with our demo videos:
-
-#### Overview Demo
-See how Browser Operator transforms your browser into an intelligent agentic platform.
-
-https://github.com/user-attachments/assets/d6ffc034-ca38-4afa-861e-c65b3ec79906
 
 #### Deep Research
 Browser Operator seamlessly integrates public web data with your private documents and knowledge bases, creating comprehensive research without switching between tools.
@@ -42,23 +51,14 @@ https://github.com/user-attachments/assets/90150f0e-e8c8-4b53-b6a6-c739f143f4a0
 |--|--|
 | Multi-Agent Workflow | Completed |
 | OpenAI LLM | Completed |
-| Local LLM | |
-| MCP | |
-| Customize Prompt in UI| |
-| Customize Agents in UI| |
-| Customize Workflow Graphs in UI| |
-| Eval Management | |
-| Memory | |
-| A2A Protocol | |
-
-### Steps to run project
-
-[Download the pre-built Chromium Browser for MacOS](front_end/panels/ai_chat/docs/PreBuilt.md)
-
-Or
-
-[Set up the dev tools on your system](front_end/panels/ai_chat/Readme.md)
-
+| Local LLM | In Progress |
+| MCP | Planned |
+| Customize Prompt in UI| Planned |
+| Customize Agents in UI| Planned |
+| Customize Workflow Graphs in UI| Planned |
+| Eval Management | Planned |
+| Memory | Planned |
+| A2A Protocol | Planned |
 
 ### DevTools Documentation
 

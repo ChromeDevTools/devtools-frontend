@@ -3,7 +3,7 @@
   "compilerOptions": {
     "moduleResolution": "nodenext",
     "module": "NodeNext",
-
+    "target": "ESNext",
     "outDir": "ignored",
     "noImplicitAny": false
   }

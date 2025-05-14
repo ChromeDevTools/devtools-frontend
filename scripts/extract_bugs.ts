@@ -5,6 +5,17 @@
 import {readFileSync} from 'fs';
 import glob from 'glob';
 import * as ts from 'typescript';
+import yargs from 'yargs';
+import {hideBin} from 'yargs/helpers';
+
+const argv = yargs(hideBin(process.argv))
+                 .option('format', {
+                   alias: 'f',
+                   describe: 'Output format',
+                   choices: ['list', 'b'],
+                   default: 'list',
+                 })
+                 .parseSync();
 
 /**
  * Usage: node --no-warnings --experimental-strip-types
@@ -15,6 +26,7 @@ import * as ts from 'typescript';
  */
 
 const bugs = new Set<string>();
+const bugToFile = new Map<string, string>();
 
 function extract(sourceFile: ts.SourceFile) {
   extractBugs(sourceFile);
@@ -54,11 +66,12 @@ function extract(sourceFile: ts.SourceFile) {
         if (!description) {
           break;
         }
-        const match = description.match(/crbug.com\/\d+/);
+        const match = description.match(/crbug.com\/(\d+)/);
         if (!match) {
           break;
         }
-        bugs.add(match[0] + '\t' + sourceFile.fileName);
+        bugs.add(match[1]);
+        bugToFile.set(match[1], sourceFile.fileName);
         break;
       }
     }
@@ -78,6 +91,10 @@ for (const file of files) {
       /* setParentNodes */ true));
 }
 
-for (const bug of bugs) {
-  console.log(bug);
+if (argv.format === 'b') {
+  console.log(`id: (${Array.from(bugs).join('|')})`);
+} else {
+  for (const bug of bugs) {
+    console.log(`crbug.com/${bug}\t${bugToFile.get(bug)}`);
+  }
 }

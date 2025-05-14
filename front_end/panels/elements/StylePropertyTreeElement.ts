@@ -765,6 +765,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     }
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
+    UI.ARIAUtils.setLabel(swatch, colorMixText);
     context.addControl('color', swatch);
 
     if (context.tracing) {
@@ -2221,8 +2222,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         event.consume();
       }, false);
       if (this.nameElement && this.valueElement) {
-        UI.ARIAUtils.setLabel(
-            enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
+        UI.ARIAUtils.setLabel(enabledCheckboxElement, `${this.name} ${this.value}`);
       }
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }

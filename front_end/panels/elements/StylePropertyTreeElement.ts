@@ -2226,6 +2226,26 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
+
+    const that = this;
+    this.valueElement.addEventListener('keydown', nonEditingNameValueKeyDown);
+    this.nameElement.addEventListener('keydown', nonEditingNameValueKeyDown);
+
+    function nonEditingNameValueKeyDown(this: HTMLElement, event: KeyboardEvent): void {
+      if (UI.UIUtils.isBeingEdited(this)) {
+        return;
+      }
+      if (event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== ' ') {
+        return;
+      }
+      if (this === that.valueElement) {
+        that.startEditingValue();
+        event.consume(true);
+      } else if (this === that.nameElement) {
+        that.startEditingName();
+        event.consume(true);
+      }
+    }
   }
 
   createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
@@ -2709,6 +2729,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       switch (result) {
         case 'cancel':
           this.editingCancelled(context);
+          if (context.isEditingName) {
+            this.nameElement?.focus();
+          } else {
+            this.valueElement?.focus();
+          }
           break;
         case 'forward':
         case 'backward':

@@ -240,8 +240,15 @@ input.enabled-button.small {
   visibility: visible;
 }
 
-:host-context(.matched-styles) ol.expanded {
-  margin-left: 16px;
+:host-context(.matched-styles) {
+  ol.expanded {
+    margin-left: 16px;
+  }
+
+  :focus {
+    border-radius: var(--sys-size-2);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
 }
 
 .devtools-link-styled-trim {
@@ -273,11 +280,6 @@ devtools-icon.open-in-animations-panel {
   &:hover {
     color: var(--icon-css-hover);
   }
-}
-
-.value :focus {
-  border-radius: var(--sys-size-2);
-  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .css-function-inline-block {

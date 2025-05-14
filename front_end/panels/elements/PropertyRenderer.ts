@@ -475,6 +475,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = name;
     nameElement.normalize();
+    nameElement.tabIndex = -1;
     return nameElement;
   }
 
@@ -499,6 +500,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         })}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: property.value}));
     valueElement.className = 'value';
+    valueElement.tabIndex = -1;
     const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing);
     nodes.forEach(node => valueElement.appendChild(node));
     valueElement.normalize();

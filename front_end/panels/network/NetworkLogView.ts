@@ -1035,6 +1035,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.textFilterSetting.set(this.textFilterUI.value());
     this.moreFiltersDropDownUI?.updateActiveFiltersCount();
     this.moreFiltersDropDownUI?.updateTooltip();
+    this.columnsInternal.filterChanged();
   }
 
   async resetFilter(): Promise<void> {

@@ -291,12 +291,13 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
 
     this.#viewMap = new Map();
 
-    this.#sideBar.addItem(i18nString(UIStrings.overviewSummary), 'summary');
-    this.#sideBar.addItem(i18nString(UIStrings.colors), 'colors');
-    this.#sideBar.addItem(i18nString(UIStrings.fontInfo), 'font-info');
-    this.#sideBar.addItem(i18nString(UIStrings.unusedDeclarations), 'unused-declarations');
-    this.#sideBar.addItem(i18nString(UIStrings.mediaQueries), 'media-queries');
-    this.#sideBar.select('summary', false);
+    this.#sideBar.items = [
+      {name: i18nString(UIStrings.overviewSummary), id: 'summary'}, {name: i18nString(UIStrings.colors), id: 'colors'},
+      {name: i18nString(UIStrings.fontInfo), id: 'font-info'},
+      {name: i18nString(UIStrings.unusedDeclarations), id: 'unused-declarations'},
+      {name: i18nString(UIStrings.mediaQueries), id: 'media-queries'}
+    ];
+    this.#sideBar.selectedId = 'summary';
 
     this.#sideBar.addEventListener(SidebarEvents.ITEM_SELECTED, this.#sideBarItemSelected, this);
     this.#sideBar.addEventListener(SidebarEvents.RESET, this.#sideBarReset, this);
@@ -342,7 +343,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#tabbedPane.closeTabs(this.#tabbedPane.tabIds());
     this.#viewMap = new Map();
     CSSOverviewCompletedView.pushedNodes.clear();
-    this.#sideBar.select('summary', false);
+    this.#sideBar.selectedId = 'summary';
   }
 
   #onClick(evt: Event): void {

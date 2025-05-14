@@ -5,13 +5,10 @@
  */
 
 .overview-sidebar-panel {
-  overflow: auto;
   display: flex;
   background: var(--sys-color-cdt-base-container);
-}
-
-.overview-sidebar-panel-container {
   min-width: fit-content;
+  flex-direction: column;
 }
 
 .overview-sidebar-panel-item {

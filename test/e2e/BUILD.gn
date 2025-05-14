@@ -28,7 +28,6 @@ node_ts_library("tests") {
     "extensions",
     "host",
     "inline_editor",
-    "inspector",
     "issues",
     "layers",
     "lighthouse",

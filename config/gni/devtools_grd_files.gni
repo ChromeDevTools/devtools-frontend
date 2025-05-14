@@ -121,8 +121,6 @@ grd_files_release_sources = [
   "front_end/Images/dots-horizontal.svg",
   "front_end/Images/dots-vertical.svg",
   "front_end/Images/download.svg",
-  "front_end/Images/drawer-dock-to-bottom.svg",
-  "front_end/Images/drawer-dock-to-right.svg",
   "front_end/Images/edit.svg",
   "front_end/Images/empty.svg",
   "front_end/Images/errorWave.svg",

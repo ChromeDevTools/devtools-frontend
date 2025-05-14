@@ -924,9 +924,8 @@ export enum KeyboardShortcutAction {
   'coverage.clear' = 116,
   'coverage.export' = 117,
   'timeline.dim-third-parties' = 118,
-  'main.toggle-drawer-orientation' = 119,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 120,
+  MAX_VALUE = 119,
 }
 
 export const enum IssueOpener {

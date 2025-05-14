@@ -28,16 +28,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable rulesdir/no-imperative-dom-api */
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';
-import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
+import {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
+
+const {styleMap} = Directives;
 
 const UIStrings = {
   /**
@@ -49,25 +51,6 @@ const UIStrings = {
    */
   excludedFolders: 'Excluded sub-folders',
   /**
-   *@description Text to add something
-   */
-  add: 'Add folder',
-  /**
-   * @description Placeholder text for an area of the UI that shows which folders have been excluded
-   * from being show in DevTools. When the user has not yet chosen any folders to exclude, this text
-   * is shown.
-   */
-  none: 'None',
-  /**
-   *@description Text in Edit File System View of the Workspace settings in Settings
-   *@example {file/path/} PH1
-   */
-  sViaDevtools: '{PH1} (via .devtools)',
-  /**
-   *@description Text in Edit File System View of the Workspace settings in Settings
-   */
-  folderPath: 'Folder path',
-  /**
    *@description Error message when a file system path is an empty string.
    */
   enterAPath: 'Enter a path',
@@ -78,150 +61,177 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/EditFileSystemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.Delegate<string> {
-  private readonly fileSystemPath: Platform.DevToolsPath.UrlString;
-  private excludedFolders: Platform.DevToolsPath.EncodedPathString[];
-  private readonly eventListeners: Common.EventTarget.EventDescriptor[];
-  private readonly excludedFoldersList: UI.ListWidget.ListWidget<string>;
-  private muteUpdate?: boolean;
-  private excludedFolderEditor?: UI.ListWidget.Editor<string>;
-  constructor(fileSystemPath: Platform.DevToolsPath.UrlString) {
-    super(true);
-    this.registerRequiredCSS(editFileSystemViewStyles);
 
-    this.fileSystemPath = fileSystemPath;
+export const enum ExcludedFolderStatus {
+  VALID = 1,
+  ERROR_NOT_A_PATH = 2,
+  ERROR_NOT_UNIQUE = 3,
+}
 
-    this.excludedFolders = [];
+function statusString(status: ExcludedFolderStatus): Platform.UIString.LocalizedString {
+  switch (status) {
+    case ExcludedFolderStatus.ERROR_NOT_A_PATH:
+      return i18nString(UIStrings.enterAPath);
+    case ExcludedFolderStatus.ERROR_NOT_UNIQUE:
+      return i18nString(UIStrings.enterAUniquePath);
+    case ExcludedFolderStatus.VALID:
+      throw new Error('unreachable');
+  }
+}
 
-    this.eventListeners = [
-      IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderAdded, this.update, this),
-      IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderRemoved, this.update, this),
-    ];
+export interface PathWithStatus {
+  path: Platform.DevToolsPath.EncodedPathString;
+  status: ExcludedFolderStatus;
+}
 
-    const excludedFoldersHeader = this.contentElement.createChild('div', 'excluded-folder-header');
-    excludedFoldersHeader.createChild('span').textContent = i18nString(UIStrings.url);
-    excludedFoldersHeader.createChild('span', 'excluded-folder-url').textContent = fileSystemPath;
+export interface EditFileSystemViewInput {
+  fileSystemPath: Platform.DevToolsPath.UrlString;
+  excludedFolderPaths: PathWithStatus[];
+  onCreate: (event: CustomEvent<{url?: string}>) => void;
+  onEdit:
+      (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => void;
+  onDelete: (event: CustomEvent<HTMLElement>) => void;
+}
 
-    const excludeSubFoldersText = this.contentElement.createChild('span', 'exclude-subfolders-text');
-    excludeSubFoldersText.textContent = i18nString(UIStrings.excludedFolders);
+export type View = (input: EditFileSystemViewInput, output: object, target: HTMLElement) => void;
 
-    this.excludedFoldersList = new UI.ListWidget.ListWidget(this);
-    this.excludedFoldersList.element.classList.add('file-system-list');
-    this.excludedFoldersList.registerRequiredCSS(editFileSystemViewStyles);
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+      <style>${editFileSystemViewStyles}</style>
+      <div class="excluded-folder-header">
+        <span>${i18nString(UIStrings.url)}</span>
+        <span class="excluded-folder-url">${input.fileSystemPath}</span>
+        <devtools-data-grid
+          @create=${input.onCreate}
+          @edit=${input.onEdit}
+          @delete=${input.onDelete}
+          class="exclude-subfolders-table"
+          parts="excluded-folder-row-with-error"
+          inline striped>
+          <table>
+            <thead>
+              <tr>
+                <th id="url" editable>${i18nString(UIStrings.excludedFolders)}</th>
+              </tr>
+            </thead>
+            <tbody>
+            ${input.excludedFolderPaths.map((path, index) => html`
+              <tr data-url=${path.path} data-index=${index}>
+                <td style=${styleMap({backgroundColor: path.status !== ExcludedFolderStatus.VALID ? 'var(--sys-color-error-container)' : undefined})}>${path.path}</td>
+              </tr>
+            `)}
+            <tr placeholder></tr>
+            </tbody>
+          </table>
+        </devtools-data-grid>
+        ${input.excludedFolderPaths.filter(({status}) => status !== ExcludedFolderStatus.VALID).map(({status}) =>
+          html`<span class="excluded-folder-error">${statusString(status)}</span>`)}
+    </div>`, target, {host: input});
+  // clang-format on
+};
 
-    const excludedFoldersPlaceholder = document.createElement('div');
-    excludedFoldersPlaceholder.classList.add('file-system-list-empty');
-    excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);
-    this.excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
-    this.excludedFoldersList.show(this.contentElement);
+export class EditFileSystemView extends UI.Widget.VBox {
+  readonly #fileSystemPath: Platform.DevToolsPath.UrlString;
+  #excludedFolderPaths: PathWithStatus[] = [];
+  readonly #view: View;
 
-    const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this),
-        {className: 'add-button', jslogContext: 'settings.add-excluded-folder'});
-
-    this.contentElement.appendChild(addButton);
-
-    this.update();
+  constructor(fileSystemPath: Platform.DevToolsPath.UrlString, view: View = DEFAULT_VIEW) {
+    super();
+    this.#fileSystemPath = fileSystemPath;
+    this.#view = view;
   }
 
-  dispose(): void {
-    Common.EventTarget.removeEventListeners(this.eventListeners);
+  override wasShown(): void {
+    this.#excludedFolderPaths = this.#getFileSystem()
+                                    .excludedFolders()
+                                    .values()
+                                    .map(path => ({path, status: ExcludedFolderStatus.VALID}))
+                                    .toArray();
+    this.requestUpdate();
   }
 
-  private getFileSystem(): PlatformFileSystem {
-    return IsolatedFileSystemManager.instance().fileSystem(this.fileSystemPath) as PlatformFileSystem;
+  override performUpdate(): void {
+    const input: EditFileSystemViewInput = {
+      fileSystemPath: this.#fileSystemPath,
+      excludedFolderPaths: this.#excludedFolderPaths,
+      onCreate: e => this.#onCreate(e.detail.url),
+      onEdit: e => this.#onEdit(e.detail.node.dataset.index ?? '-1', e.detail.valueBeforeEditing, e.detail.newText),
+      onDelete: e => this.#onDelete(e.detail.dataset.index ?? '-1'),
+    };
+    this.#view(input, {}, this.contentElement);
   }
 
-  update(): void {
-    if (this.muteUpdate) {
+  #onCreate(url?: string): void {
+    if (url === undefined) {
+      // The data grid fires onCreate even when the user just selects and then deselects the
+      // creation row. Ignore those occurrences.
       return;
     }
 
-    this.excludedFoldersList.clear();
-    this.excludedFolders = [];
-    for (const folder of this.getFileSystem().excludedFolders().values()) {
-      this.excludedFolders.push(folder);
-      this.excludedFoldersList.appendItem(folder, true);
-    }
-  }
-
-  private addExcludedFolderButtonClicked(): void {
-    this.excludedFoldersList.addNewItem(0, '');
-  }
-
-  renderItem(item: string, editable: boolean): Element {
-    const element = document.createElement('div');
-    element.classList.add('file-system-list-item');
-    const pathPrefix = editable ? item : i18nString(UIStrings.sViaDevtools, {PH1: item}) as string;
-    const pathPrefixElement = element.createChild('div', 'file-system-value');
-    pathPrefixElement.textContent = pathPrefix;
-    UI.Tooltip.Tooltip.install(pathPrefixElement, pathPrefix);
-    return element;
-  }
-
-  removeItemRequested(_item: string, index: number): void {
-    this.getFileSystem().removeExcludedFolder(this.excludedFolders[index]);
-  }
-
-  commitEdit(item: Platform.DevToolsPath.EncodedPathString, editor: UI.ListWidget.Editor<string>, isNew: boolean):
-      void {
-    this.muteUpdate = true;
-    if (!isNew) {
-      this.getFileSystem().removeExcludedFolder(item);
-    }
-    this.getFileSystem().addExcludedFolder(
-        this.normalizePrefix(editor.control('path-prefix').value) as Platform.DevToolsPath.EncodedPathString);
-    this.muteUpdate = false;
-    this.update();
-  }
-
-  beginEdit(item: string): UI.ListWidget.Editor<string> {
-    const editor = this.createExcludedFolderEditor();
-    editor.control('path-prefix').value = item;
-    return editor;
-  }
-
-  private createExcludedFolderEditor(): UI.ListWidget.Editor<string> {
-    if (this.excludedFolderEditor) {
-      return this.excludedFolderEditor;
+    const pathWithStatus = this.#validateFolder(url);
+    this.#excludedFolderPaths.push(pathWithStatus);
+    if (pathWithStatus.status === ExcludedFolderStatus.VALID) {
+      this.#getFileSystem().addExcludedFolder(pathWithStatus.path);
     }
 
-    const editor = new UI.ListWidget.Editor<string>();
-    this.excludedFolderEditor = editor;
-    const content = editor.contentElement();
-
-    const titles = content.createChild('div', 'file-system-edit-row');
-    titles.createChild('div', 'file-system-value').textContent = i18nString(UIStrings.folderPath);
-
-    const fields = content.createChild('div', 'file-system-edit-row');
-    fields.createChild('div', 'file-system-value')
-        .appendChild(editor.createInput('path-prefix', 'text', '/path/to/folder/', pathPrefixValidator.bind(this)));
-
-    return editor;
-
-    function pathPrefixValidator(
-        this: EditFileSystemView, _item: string, index: number,
-        input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
-      const prefix = this.normalizePrefix(input.value.trim());
-
-      if (!prefix) {
-        return {valid: false, errorMessage: i18nString(UIStrings.enterAPath)};
-      }
-
-      const configurableCount = this.getFileSystem().excludedFolders().size;
-      for (let i = 0; i < configurableCount; ++i) {
-        if (i !== index && this.excludedFolders[i] === prefix) {
-          return {valid: false, errorMessage: i18nString(UIStrings.enterAUniquePath)};
-        }
-      }
-      return {valid: true, errorMessage: undefined};
-    }
+    this.requestUpdate();
   }
 
-  private normalizePrefix(prefix: string): string {
+  #onEdit(idx: string, valueBeforeEditing: string, newText: string): void {
+    const index = Number.parseInt(idx, 10);
+    if (index < 0 || index >= this.#excludedFolderPaths.length) {
+      return;
+    }
+
+    const pathWithStatus = this.#validateFolder(newText);
+    const oldPathWithStatus = this.#excludedFolderPaths[index];
+    this.#excludedFolderPaths[index] = pathWithStatus;
+
+    if (oldPathWithStatus.status === ExcludedFolderStatus.VALID) {
+      this.#getFileSystem().removeExcludedFolder(valueBeforeEditing as Platform.DevToolsPath.EncodedPathString);
+    }
+
+    if (pathWithStatus.status === ExcludedFolderStatus.VALID) {
+      this.#getFileSystem().addExcludedFolder(pathWithStatus.path);
+    }
+
+    this.requestUpdate();
+  }
+
+  #onDelete(idx: string): void {
+    const index = Number.parseInt(idx, 10);
+    if (index < 0 || index >= this.#excludedFolderPaths.length) {
+      return;
+    }
+
+    this.#getFileSystem().removeExcludedFolder(this.#excludedFolderPaths[index].path);
+    this.#excludedFolderPaths.splice(index, 1);
+
+    this.requestUpdate();
+  }
+
+  #validateFolder(rawInput: string): PathWithStatus {
+    const path = EditFileSystemView.#normalizePrefix(rawInput.trim()) as Platform.DevToolsPath.EncodedPathString;
+    if (!path) {
+      return {path, status: ExcludedFolderStatus.ERROR_NOT_A_PATH};
+    }
+
+    if (this.#excludedFolderPaths.findIndex(({path: p}) => p === path) !== -1) {
+      return {path, status: ExcludedFolderStatus.ERROR_NOT_UNIQUE};
+    }
+
+    return {path, status: ExcludedFolderStatus.VALID};
+  }
+
+  static #normalizePrefix(prefix: string): string {
     if (!prefix) {
       return '';
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
+  }
+
+  #getFileSystem(): PlatformFileSystem {
+    return IsolatedFileSystemManager.instance().fileSystem(this.#fileSystemPath) as PlatformFileSystem;
   }
 }

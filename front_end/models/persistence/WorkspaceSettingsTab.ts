@@ -173,7 +173,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   private fileSystemRemoved(fileSystem: PlatformFileSystem): void {
     const mappingView = this.mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
-      mappingView.dispose();
       this.mappingViewByPath.delete(fileSystem.path());
     }
 

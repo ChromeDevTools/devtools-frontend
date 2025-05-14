@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../../../models/persistence/*",
     "../../../../panels/*",
     "../cookie_table/*",
   ]

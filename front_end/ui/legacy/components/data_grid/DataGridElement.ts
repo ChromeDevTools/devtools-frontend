@@ -489,6 +489,10 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     if (configCell.hasAttribute('aria-label')) {
       this.setCellAccessibleName(configCell.getAttribute('aria-label') || '', cell, columnId);
     }
+    const style = configCell.getAttribute('style');
+    if (style !== null) {
+      cell.setAttribute('style', style);
+    }
 
     return cell;
   }

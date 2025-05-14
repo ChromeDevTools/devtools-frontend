@@ -484,135 +484,112 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
 
     this.#data = data;
     const {
-      elementCount,
-      backgroundColors,
-      textColors,
-      textColorContrastIssues,
-      fillColors,
-      borderColors,
-      globalStyleStats,
       mediaQueries,
       unusedDeclarations,
       fontInfo,
     } = this.#data;
 
+    this.#fragment = UI.Fragment.Fragment.build`
+    <div class="vbox overview-completed-view">
+      <div $="summary" class="results-section horizontally-padded summary">
+        <h1>${i18nString(UIStrings.overviewSummary)}</h1>
+        ${this.#renderSummary(data)}
+      </div>
+      <div $="colors" class="results-section horizontally-padded colors">
+        <h1>${i18nString(UIStrings.colors)}</h1>
+        ${this.#renderColors(data)}
+      </div>
+      <div $="font-info" class="results-section font-info">
+        <h1>${i18nString(UIStrings.fontInfo)}</h1>
+        ${this.#renderFontInfo(fontInfo)}
+      </div>
+      <div $="unused-declarations" class="results-section unused-declarations">
+        <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
+        ${this.#renderUnusedDeclarations(unusedDeclarations)}
+      </div>
+      <div $="media-queries" class="results-section media-queries">
+        <h1>${i18nString(UIStrings.mediaQueries)}</h1>
+        ${this.#renderMediaQueries(mediaQueries)}
+      </div>
+    </div>`;
+
+    this.#resultsContainer.element.appendChild(this.#fragment.element());
+  }
+
+  #renderSummary(data: OverviewData): UI.Fragment.Fragment {
+    const {
+      elementCount,
+      globalStyleStats,
+      mediaQueries,
+    } = data;
+    const renderSummaryItem = (label: string, value: number): UI.Fragment.Fragment => UI.Fragment.Fragment.build`
+      <li>
+        <div class="label">${label}</div>
+        <div class="value">${this.#formatter.format(value)}</div>
+      </li>`;
+    return UI.Fragment.Fragment.build`<ul>
+      ${renderSummaryItem(i18nString(UIStrings.elements), elementCount)}
+      ${renderSummaryItem(i18nString(UIStrings.externalStylesheets), globalStyleStats.externalSheets)}
+      ${renderSummaryItem(i18nString(UIStrings.inlineStyleElements), globalStyleStats.inlineStyles)}
+      ${renderSummaryItem(i18nString(UIStrings.styleRules), globalStyleStats.styleRules)}
+      ${renderSummaryItem(i18nString(UIStrings.mediaQueries), mediaQueries.size)}
+      ${renderSummaryItem(i18nString(UIStrings.typeSelectors), globalStyleStats.stats.type)}
+      ${renderSummaryItem(i18nString(UIStrings.idSelectors), globalStyleStats.stats.id)}
+      ${renderSummaryItem(i18nString(UIStrings.classSelectors), globalStyleStats.stats.class)}
+      ${renderSummaryItem(i18nString(UIStrings.universalSelectors), globalStyleStats.stats.universal)}
+      ${renderSummaryItem(i18nString(UIStrings.attributeSelectors), globalStyleStats.stats.attribute)}
+      ${renderSummaryItem(i18nString(UIStrings.nonsimpleSelectors), globalStyleStats.stats.nonSimple)}
+    </ul>`;
+  }
+
+  #renderColors(data: OverviewData): UI.Fragment.Fragment {
+    const {
+      backgroundColors,
+      textColors,
+      textColorContrastIssues,
+      fillColors,
+      borderColors,
+    } = data;
     // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
     const sortedBackgroundColors = this.#sortColorsByLuminance(backgroundColors);
     const sortedTextColors = this.#sortColorsByLuminance(textColors);
     const sortedFillColors = this.#sortColorsByLuminance(fillColors);
     const sortedBorderColors = this.#sortColorsByLuminance(borderColors);
 
-    this.#fragment = UI.Fragment.Fragment.build`
-    <div class="vbox overview-completed-view">
-      <div $="summary" class="results-section horizontally-padded summary">
-        <h1>${i18nString(UIStrings.overviewSummary)}</h1>
-
-        <ul>
-          <li>
-            <div class="label">${i18nString(UIStrings.elements)}</div>
-            <div class="value">${this.#formatter.format(elementCount)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.externalStylesheets)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.externalSheets)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.inlineStyleElements)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.inlineStyles)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.styleRules)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.styleRules)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.mediaQueries)}</div>
-            <div class="value">${this.#formatter.format(mediaQueries.size)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.typeSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.type)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.idSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.id)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.classSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.class)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.universalSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.universal)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.attributeSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.attribute)}</div>
-          </li>
-          <li>
-            <div class="label">${i18nString(UIStrings.nonsimpleSelectors)}</div>
-            <div class="value">${this.#formatter.format(globalStyleStats.stats.nonSimple)}</div>
-          </li>
-        </ul>
-      </div>
-
-      <div $="colors" class="results-section horizontally-padded colors">
-        <h1>${i18nString(UIStrings.colors)}</h1>
-        <h2>${i18nString(UIStrings.backgroundColorsS, {
-      PH1: sortedBackgroundColors.length,
+    return UI.Fragment.Fragment.build`
+      <h2>${i18nString(UIStrings.backgroundColorsS, {
+      PH1: sortedBackgroundColors.length
     })}</h2>
-        <ul>
-          ${sortedBackgroundColors.map(this.#colorsToFragment.bind(this, 'background'))}
-        </ul>
+      <ul>${sortedBackgroundColors.map(this.#renderColor.bind(this, 'background'))}</ul>
 
-        <h2>${i18nString(UIStrings.textColorsS, {
-      PH1: sortedTextColors.length,
+      <h2>${i18nString(UIStrings.textColorsS, {
+      PH1: sortedTextColors.length
     })}</h2>
-        <ul>
-          ${sortedTextColors.map(this.#colorsToFragment.bind(this, 'text'))}
-        </ul>
+      <ul>${sortedTextColors.map(this.#renderColor.bind(this, 'text'))}</ul>
 
-        ${textColorContrastIssues.size > 0 ? this.#contrastIssuesToFragment(textColorContrastIssues) : ''}
+      ${textColorContrastIssues.size > 0 ? this.#renderContrastIssues(textColorContrastIssues) : ''}
 
-        <h2>${i18nString(UIStrings.fillColorsS, {
-      PH1: sortedFillColors.length,
+      <h2>${i18nString(UIStrings.fillColorsS, {
+      PH1: sortedFillColors.length
     })}</h2>
-        <ul>
-          ${sortedFillColors.map(this.#colorsToFragment.bind(this, 'fill'))}
-        </ul>
+      <ul>${sortedFillColors.map(this.#renderColor.bind(this, 'fill'))}</ul>
 
-        <h2>${i18nString(UIStrings.borderColorsS, {
-      PH1: sortedBorderColors.length,
+      <h2>${i18nString(UIStrings.borderColorsS, {
+      PH1: sortedBorderColors.length
     })}</h2>
-        <ul>
-          ${sortedBorderColors.map(this.#colorsToFragment.bind(this, 'border'))}
-        </ul>
-      </div>
+      <ul>${sortedBorderColors.map(this.#renderColor.bind(this, 'border'))}</ul>`;
+  }
 
-      <div $="font-info" class="results-section font-info">
-        <h1>${i18nString(UIStrings.fontInfo)}</h1>
-        ${
-        fontInfo.size > 0 ? this.#fontInfoToFragment(fontInfo) :
-                            UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`}
-      </div>
+  #renderUnusedDeclarations(unusedDeclarations: Map<string, UnusedDeclaration[]>): UI.Fragment.Fragment {
+    return unusedDeclarations.size > 0 ? this.#renderGroup(unusedDeclarations, 'unused-declarations', 'declaration') :
+                                         UI.Fragment.Fragment.build`<div class="horizontally-padded">${
+                                             i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`;
+  }
 
-      <div $="unused-declarations" class="results-section unused-declarations">
-        <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
-        ${
-        unusedDeclarations.size > 0 ? this.#groupToFragment(unusedDeclarations, 'unused-declarations', 'declaration') :
-                                      UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                          i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`}
-      </div>
-
-      <div $="media-queries" class="results-section media-queries">
-        <h1>${i18nString(UIStrings.mediaQueries)}</h1>
-        ${
-        mediaQueries.size > 0 ? this.#groupToFragment(mediaQueries, 'media-queries', 'text') :
-                                UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                    i18nString(UIStrings.thereAreNoMediaQueries)}</div>`}
-      </div>
-    </div>`;
-
-    this.#resultsContainer.element.appendChild(this.#fragment.element());
+  #renderMediaQueries(mediaQueries: Map<string, Protocol.CSS.CSSMedia[]>): UI.Fragment.Fragment {
+    return mediaQueries.size > 0 ? this.#renderGroup(mediaQueries, 'media-queries', 'text') :
+                                   UI.Fragment.Fragment.build`<div class="horizontally-padded">${
+                                       i18nString(UIStrings.thereAreNoMediaQueries)}</div>`;
   }
 
   #createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
@@ -676,17 +653,16 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#tabbedPane.selectTab(id);
   }
 
-  #fontInfoToFragment(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
+  #renderFontInfo(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
     const fonts = Array.from(fontInfo.entries());
-    return UI.Fragment.Fragment.build`
-  ${fonts.map(([font, fontMetrics]) => {
+    return fontInfo.size > 0 ? UI.Fragment.Fragment.build`${fonts.map(([font, fontMetrics]) => {
       return UI.Fragment.Fragment.build`<section class="font-family"><h2>${font}</h2> ${
-          this.#fontMetricsToFragment(font, fontMetrics)}</section>`;
-    })}
-  `;
+          this.#renderFontMetrics(font, fontMetrics)}</section>`;
+    })}` :
+                               UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`;
   }
 
-  #fontMetricsToFragment(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
+  #renderFontMetrics(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
     const fontMetricInfo = Array.from(fontMetrics.entries());
 
     return UI.Fragment.Fragment.build`
@@ -696,13 +672,13 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       return UI.Fragment.Fragment.build`
   <div>
   <h3>${label}</h3>
-  ${this.#groupToFragment(values, 'font-info', 'value', sanitizedPath)}
+  ${this.#renderGroup(values, 'font-info', 'value', sanitizedPath)}
   </div>`;
     })}
   </div>`;
   }
 
-  #groupToFragment(
+  #renderGroup(
       items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
       path = ''): UI.Fragment.Fragment {
     // Sort by number of items descending.
@@ -734,18 +710,18 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     </ul>`;
   }
 
-  #contrastIssuesToFragment(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
+  #renderContrastIssues(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
     return UI.Fragment.Fragment.build`
   <h2>${i18nString(UIStrings.contrastIssuesS, {
       PH1: issues.size,
     })}</h2>
   <ul>
-  ${[...issues.entries()].map(([key, value]) => this.#contrastIssueToFragment(key, value))}
+  ${[...issues.entries()].map(([key, value]) => this.#renderContrastIssue(key, value))}
   </ul>
   `;
   }
 
-  #contrastIssueToFragment(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
+  #renderContrastIssue(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
     console.assert(issues.length > 0);
 
     let minContrastIssue: ContrastIssue = issues[0];
@@ -821,7 +797,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     return blockFragment;
   }
 
-  #colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
+  #renderColor(section: string, color: string): UI.Fragment.Fragment|undefined {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button title=${color} data-type="color" data-color="${color}"
         data-section="${section}" class="block" $="color"
@@ -967,8 +943,10 @@ export class ElementDetailsView extends UI.Widget.Widget {
       let link, showNode;
       if ('nodeId' in item && visibility.has('node-id')) {
         const frontendNode = relatedNodesMap?.get(item.nodeId) ?? null;
-        link = await Common.Linkifier.Linkifier.linkify(frontendNode) as HTMLElement;
-        showNode = () => frontendNode?.scrollIntoView?.();
+        if (frontendNode) {
+          link = await Common.Linkifier.Linkifier.linkify(frontendNode) as HTMLElement;
+          showNode = () => frontendNode.scrollIntoView();
+        }
       }
       if ('range' in item && item.range && item.styleSheetId && visibility.has('source-url')) {
         const ruleLocation = TextUtils.TextRange.TextRange.fromObject(item.range);
@@ -990,7 +968,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
 
 function renderNode(data: PopulateNodesEventNodeTypes, link?: HTMLElement, showNode?: () => void): TemplateResult {
   if (!link) {
-    throw new Error('Node entry is missing a related link.');
+    return html``;
   }
   return html`
     <td>

@@ -168,6 +168,179 @@ self: 0.2
     assert.strictEqual(callTree?.serialize(), expectedData);
   });
 
+  it('correctly serializes selected node with multiple children', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const mainEvents = parsedTrace.Renderer.allTraceEntries;
+
+    const selectedEvent = mainEvents.find(event => event.ts === 1020034984106);
+    if (!selectedEvent) {
+      throw new Error('Could not find expected event.');
+    }
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+
+    let stringifiedNode = '';
+    if (callTree?.selectedNode) {
+      stringifiedNode =
+          callTree?.stringifyNodeCompressed(callTree.selectedNode, 2, parsedTrace, callTree.selectedNode, [''], 2);
+    }
+
+    // Entry Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
+    assert.deepEqual(stringifiedNode, '2;define;3.5;0.5;;2-6;S');
+  });
+
+  // Since the childIds are serialized while the node is visited by BFS,
+  // it is important to test that the final parent-child IDs are assigned correctly.
+  it('correctly numbers child node IDs sequentially', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const mainEvents = parsedTrace.Renderer.allTraceEntries;
+
+    // The selected event is structured like this:
+    //
+    // ||                            Task                                     ||
+    //   || recalculate style||    || layout ||    || update ||    || paint ||
+    //
+    // Here, the only node with children is task and the index of Task node children starts at 2 (Task itself is 1)
+    // If this information is provided correctly, it is enough to serialize that node.
+
+    const selectedEvent = mainEvents.find(event => event.ts === 1020034919877);
+    if (!selectedEvent) {
+      throw new Error('Could not find expected event.');
+    }
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+
+    const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
+
+    const callback = (node: Trace.Extras.TraceTree.Node, nodeIndex: number, childStartingIndex?: number): void => {
+      visited.push({name: Utils.EntryName.nameForEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
+    };
+
+    callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);
+
+    const expectedVisited = [
+      {name: 'Task', nodeIndex: 1, childStartingIndex: 2},
+      {name: 'Recalculate style', nodeIndex: 2, childStartingIndex: undefined},
+      {name: 'Layout', nodeIndex: 3, childStartingIndex: undefined},
+      {name: 'Update layer tree', nodeIndex: 4, childStartingIndex: undefined},
+      {name: 'Paint', nodeIndex: 5, childStartingIndex: undefined},
+    ];
+
+    assert.deepEqual(visited, expectedVisited, 'Callback arguments were incorrect');
+  });
+
+  it('correctly numbers child nodes IDs for larger trees', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const mainEvents = parsedTrace.Renderer.allTraceEntries;
+
+    // The selected event is structured like this:
+    //
+    // ||                          Task (1)                                                 ||
+    // ||                          Timer fired (2)                                          ||
+    // ||                          Function Call (3)                                        ||
+    //     ||                        Anonymous (4)                                          ||
+    //     ||                        Anonymous (5)                                          ||
+    //     || Ot.getEntriesByType (6) ||  ||     le.createOobTrace (7)                      ||
+    //     || getEntriesByType (8) ||     || le (9) ||  ||         ie (10)                  ||
+    //                                                  ||reqApisA= (11)|| ||oe (12)        ||
+    //                                                                     ||setTimeout (13)||
+    //
+    // Here, the only node with children is task and the index of Task node children starts at 2 (Task itself is 1)
+    // If this information is provided correctly, it is enough to serialize that node.
+
+    const selectedEvent = mainEvents.find(event => event.ts === 1020035169460);
+    if (!selectedEvent) {
+      throw new Error('Could not find expected event.');
+    }
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+
+    const visited: Array<{name: string, nodeIndex: number, childStartingIndex?: number}> = [];
+
+    const callback = (node: Trace.Extras.TraceTree.Node, nodeIndex: number, childStartingIndex?: number): void => {
+      visited.push({name: Utils.EntryName.nameForEntry(node.event, parsedTrace), nodeIndex, childStartingIndex});
+    };
+
+    callTree?.breadthFirstWalk(callTree.rootNode.children().values(), callback);
+
+    const expectedVisited = [
+      {name: 'Task', nodeIndex: 1, childStartingIndex: 2},
+      {name: 'Timer fired', nodeIndex: 2, childStartingIndex: 3},
+      {name: 'Function call', nodeIndex: 3, childStartingIndex: 4},
+      {name: '(anonymous)', nodeIndex: 4, childStartingIndex: 5},
+      {name: '(anonymous)', nodeIndex: 5, childStartingIndex: 6},
+      {name: 'Ot.getEntriesByType', nodeIndex: 6, childStartingIndex: 8},
+      {name: 'le.createOobTrace', nodeIndex: 7, childStartingIndex: 9},
+      {name: 'getEntriesByType', nodeIndex: 8, childStartingIndex: undefined},
+      {name: 'le', nodeIndex: 9, childStartingIndex: undefined},
+      {name: 'ie', nodeIndex: 10, childStartingIndex: 11},
+      {name: 'Ot.requiredApisAvailable', nodeIndex: 11, childStartingIndex: undefined},
+      {name: 'oe', nodeIndex: 12, childStartingIndex: 13},
+      {name: 'setTimeout', nodeIndex: 13, childStartingIndex: undefined},
+    ];
+
+    assert.deepEqual(visited, expectedVisited, 'Callback arguments were incorrect');
+  });
+
+  it('serializes a simple tree in a concise format', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+    const mainEvents = parsedTrace.Renderer.allTraceEntries;
+    // A function '_ds.q.ns'. Has a very small tree by default.
+    const selectedEvent = mainEvents.find(event => event.ts === 465457308823);
+    if (!selectedEvent) {
+      throw new Error('Could not find expected event.');
+    }
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+
+    // Entry Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
+    const expectedData = `
+# All URL #s:
+
+  * 0: https://www.gstatic.com/devrel-devsite/prod/vafe2e13ca17bb026e70df42a2ead1c8192750e86a12923a88eda839025dabf95/js/devsite_app_module.js
+
+# Call tree:
+
+1;Task;0.2;;;2
+2;Timer fired;0.2;;;3
+3;Function call;0.2;;0;4
+4;_ds.q.ns;0.2;;0;5;S
+5;clearTimeout;0.2;0;;6
+6;Recalculate style;0.2;0.2;;`;
+
+    assert.strictEqual(callTree?.serializeIntoCompressedFormat(), expectedData);
+  });
+
+  it('serializes a tree in a concise format', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const mainEvents = parsedTrace.Renderer.allTraceEntries;
+    const selectedEvent = mainEvents.find(event => event.ts === 1020035169460);
+    if (!selectedEvent) {
+      throw new Error('Could not find expected event.');
+    }
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
+
+    // Entry Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
+    const expectedData = `
+# All URL #s:
+
+  * 0: https://www.gstatic.com/firebasejs/6.6.1/firebase-performance.js
+
+# Call tree:
+
+1;Task;0.9;0;;2;S
+2;Timer fired;0.9;0;;3
+3;Function call;0.9;0.1;0;4
+4;(anonymous);0.8;;0;5
+5;(anonymous);0.8;;0;6-8
+6;Ot.getEntriesByType;0.1;;0;8
+7;le.createOobTrace;0.6;0.2;0;9-11
+8;getEntriesByType;0.1;0.1;;
+9;le;0.1;0.1;0;
+10;ie;0.2;;0;11-13
+11;Ot.requiredApisAvailable;0.2;0.2;0;
+12;oe;0;;0;13
+13;setTimeout;0;0;;`;
+
+    assert.strictEqual(callTree?.serializeIntoCompressedFormat(), expectedData);
+  });
+
   it('can serialize a tree from an event that is not shown unless "show all events" is enabled', async function() {
     Root.Runtime.experiments.enableForTest('timeline-show-all-events');
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');

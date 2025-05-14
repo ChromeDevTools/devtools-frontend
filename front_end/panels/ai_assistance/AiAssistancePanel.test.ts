@@ -1458,9 +1458,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
+      assert.isNull(document.body.querySelector('devtools-snackbar'));
       const response =
           await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
       assert.strictEqual(response, explanation);
+      assert.strictEqual(
+          document.body.querySelector('devtools-snackbar')?.shadowRoot?.querySelector('.message')?.textContent?.trim(),
+          'DevTools received an MCP request');
     });
 
     it('throws an error if no answer could be generated', async () => {

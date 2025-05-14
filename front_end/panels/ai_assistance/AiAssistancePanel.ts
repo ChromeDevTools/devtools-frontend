@@ -95,6 +95,10 @@ const UIStrings = {
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
+  /**
+   *@description Notification shown to the user whenever DevTools receives an MCP request.
+   */
+  mcpRequestReceived: '`DevTools` received an `MCP` request',
 } as const;
 
 /*
@@ -1519,6 +1523,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   // Called by MCP server via Puppeteer
   async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType): Promise<string> {
+    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.mcpRequestReceived)});
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
     const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     const isAidaAvailable = this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;

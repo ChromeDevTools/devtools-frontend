@@ -55,7 +55,6 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
   render(
       // clang-format off
       html`
-    <div>
       <devtools-toolbar class="top-resources-toolbar"
                         jslog=${VisualLogging.toolbar()}>
         <devtools-button title=${i18nString(UIStrings.refresh)}
@@ -89,8 +88,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
                          .variant=${Buttons.Button.Variant.TOOLBAR}></devtools-button>
         ${input.mainToolbarItems.map(item => item.element)}
       </devtools-toolbar>
-      ${input.metadataView}
-    </div>`,
+      ${input.metadataView}`,
       // clang-format on
       target, {host: input});
 };

@@ -118,6 +118,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
         render(html `
             <devtools-widget
               .widgetConfig=${widgetConfig(StorageItemsToolbar, {metadataView})}
+              class=flex-none
               ${UI.Widget.widgetRef(StorageItemsToolbar, view => {output.toolbar = view;})}
             ></devtools-widget>
             <devtools-split-view sidebar-position="second" name="${id}-split-view-state">

@@ -32,9 +32,10 @@ const flags = yargs(hideBin(process.argv))
       'Disable cache validations during debugging, useful for custom rule creation/debugging.',
   })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
-    yargs.positional('files', {
+    return yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
-      type: 'array',
+      type: 'string',
+      array: true,
       default: [
         'front_end',
         'inspector_overlay',

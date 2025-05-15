@@ -8,7 +8,6 @@ export class SearchConfig {
   readonly #query: string;
   readonly #ignoreCase: boolean;
   readonly #isRegex: boolean;
-
   readonly #queries: string[];
   readonly #fileRegexQueries: RegexQuery[];
 
@@ -30,8 +29,9 @@ export class SearchConfig {
     return new SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
-  filePathMatchesFileQuery(filePath: Platform.DevToolsPath.RawPathString|
-                           Platform.DevToolsPath.EncodedPathString|Platform.DevToolsPath.UrlString): boolean {
+  filePathMatchesFileQuery(
+      filePath: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.EncodedPathString|
+      Platform.DevToolsPath.UrlString): boolean {
     return this.#fileRegexQueries.every(({regex, shouldMatch}) => (Boolean(filePath.match(regex)) === shouldMatch));
   }
 

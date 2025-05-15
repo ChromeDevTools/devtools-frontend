@@ -283,7 +283,9 @@ export function stripLitHtmlCommentNodes(text: string) {
 export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, selector: string): string[] {
   const elements = Array.from(el.querySelectorAll(selector));
   return elements.map(element => {
-    return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, ' ') : '';
+    return ((element instanceof HTMLElement ? element.innerText : element.textContent) ?? '')
+        .trim()
+        .replace(/[ \n]{2,}/g, ' ');
   });
 }
 

@@ -115,8 +115,8 @@ describeWithEnvironment('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1 \xA0@\xA0www.example.com/script1.js',
-      'function2 \xA0@\xA0www.example.com/script2.js',
+      'function1\n\xA0@\xA0www.example.com/script1.js',
+      'function2\n\xA0@\xA0www.example.com/script2.js',
     ]);
   });
 
@@ -175,7 +175,7 @@ describeWithEnvironment('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1 \xA0@\xA0www.example.com/script.js',
+      'function1\n\xA0@\xA0www.example.com/script.js',
       'Show 1 more frame',
     ]);
 
@@ -195,8 +195,8 @@ describeWithEnvironment('StackTrace', () => {
     });
 
     assert.deepEqual(openedStackTraceText, [
-      'function1 \xA0@\xA0www.example.com/script.js',
-      'function2 \xA0@\xA0www.example.com/hidden.js',
+      'function1\n\xA0@\xA0www.example.com/script.js',
+      'function2\n\xA0@\xA0www.example.com/hidden.js',
       'Show less',
     ]);
 
@@ -215,7 +215,7 @@ describeWithEnvironment('StackTrace', () => {
     });
 
     assert.deepEqual(stackTraceText, [
-      'function1 \xA0@\xA0www.example.com/script.js',
+      'function1\n\xA0@\xA0www.example.com/script.js',
       'Show 1 more frame',
     ]);
   });

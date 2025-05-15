@@ -14,7 +14,8 @@ const COLORS_SIDEBAR_ITEM_SELECTOR = 'div[data-id="colors"]';
 const FONT_INFO_SIDEBAR_ITEM_SELECTOR = 'div[data-id="font-info"]';
 
 describe('CSS overview experiment', () => {
-  it('can display low contrast issues', async () => {
+  // Flakes with "expected '           Aa           1                        AA             AAA       ' to equal 'Aa 1 AA AAA'" blocking the tree
+  it.skip('[crbug.com/417423120]: can display low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToCssOverviewTab();
     await startCaptureCSSOverview();

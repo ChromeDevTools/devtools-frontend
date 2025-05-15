@@ -428,8 +428,8 @@ describe('The Performance panel landing page', () => {
       await targetSession.detach();
     }
   });
-
-  it('logs extra interaction details to console', async () => {
+  // flaky test
+  it.skip('[crbug.com/415210718] logs extra interaction details to console', async () => {
     const {target, frontend} = await getBrowserAndPages();
 
     await target.bringToFront();

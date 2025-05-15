@@ -41,7 +41,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel, createOption} from './UIUtils.js';
+import {bindInput, CheckboxLabel, createOption} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -128,12 +128,40 @@ const createSettingSelect = function(
   }
 };
 
-export const bindToSetting = (setting: string|Common.Settings.Setting<boolean>): ReturnType<typeof Directives.ref> => {
-  if (typeof setting === 'string') {
-    setting = Common.Settings.Settings.instance().moduleSetting(setting);
-  }
-  return Directives.ref(e => bindCheckbox(e, setting));
-};
+export const bindToSetting =
+    (setting: string|Common.Settings.Setting<boolean|string>,
+     stringValidator?: (newSettingValue: string) => boolean): ReturnType<typeof Directives.ref> => {
+      if (typeof setting === 'string') {
+        setting = Common.Settings.Settings.instance().moduleSetting(setting);
+      }
+
+      if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {
+        return Directives.ref(e => bindCheckbox(e, setting as Common.Settings.Setting<boolean>));
+      }
+      if (typeof setting.defaultValue === 'string') {
+        const stringSetting = setting as Common.Settings.Setting<string>;
+        // We can't use `setValue` as the change listener directly, otherwise we won't
+        // be able to remove it again.
+        let setValue: ReturnType<typeof bindInput>;
+        function settingChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+          setValue(event.data);
+        }
+
+        return Directives.ref(e => {
+          if (e === undefined) {
+            stringSetting.removeChangeListener(settingChanged);
+            return;
+          }
+
+          stringSetting.addChangeListener(settingChanged);
+          setValue = bindInput(
+              e as HTMLInputElement, setting.set.bind(setting), stringValidator ?? (() => true), /* numeric */ false);
+          setValue(stringSetting.get());
+        });
+      }
+
+      throw new Error(`Cannot infer type for setting  '${setting.name}'`);
+    };
 
 export const bindCheckbox = function(
     inputElement: Element|undefined, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {

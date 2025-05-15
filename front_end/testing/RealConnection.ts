@@ -8,6 +8,7 @@ import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Main from '../entrypoints/main/main.js';
+import * as RenderCoordinator from '../ui/components/render_coordinator/render_coordinator.js';
 
 import {deinitializeGlobalVars} from './EnvironmentHelpers.js';
 
@@ -53,9 +54,10 @@ function describeBody(fn: () => void) {
     initialized = true;
   });
 
-  beforeEach('describeWithRealConnection', () => {
+  beforeEach('describeWithRealConnection', async () => {
     resetHostBindingStubState();
     Common.Settings.Settings.instance().clearAll();
+    await RenderCoordinator.done();
   });
 
   fn();
@@ -66,6 +68,7 @@ function describeBody(fn: () => void) {
       throw new Error('Missing deprecatedRunAfterPendingDispatches');
     }
     await new Promise<void>(resolve => runAfterPendingDispatches(resolve));
+    await RenderCoordinator.done();
   });
 }
 

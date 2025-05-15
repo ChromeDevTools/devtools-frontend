@@ -105,8 +105,7 @@ describe('FreestylerEvaluateAction', () => {
           functionDeclaration, [], await executionContextForTest(), {throwOnSideEffect});
     }
 
-    // Flaky test, leaves pending promises behind.
-    it.skip('[crbug.com/417895340] should serialize primitive values correctly', async () => {
+    it('should serialize primitive values correctly', async () => {
       assert.strictEqual(await executeForTest('const data = "string"'), '\'string\'');
       assert.strictEqual(await executeForTest('const data = 999n'), '999n');
       assert.strictEqual(await executeForTest('const data = true'), 'true');

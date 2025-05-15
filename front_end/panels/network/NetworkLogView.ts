@@ -2258,14 +2258,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const referrer = referrerHeader ? referrerHeader.value : void 0;
 
-    const referrerPolicy = request.referrerPolicy() || void 0;
-
     const requestBody = await request.requestFormData();
 
     const fetchOptions: RequestInit = {
       headers: Object.keys(headers).length ? headers : void 0,
       referrer,
-      referrerPolicy,
       body: requestBody,
       method: request.requestMethod,
       mode: 'cors',
@@ -2283,10 +2280,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       if (referrer) {
         delete fetchOptions.referrer;
         extraHeaders['Referer'] = referrer;
-      }
-      if (referrer) {
-        delete fetchOptions.referrerPolicy;
-        extraHeaders['Referrer-Policy'] = referrerPolicy as string;
       }
       if (Object.keys(extraHeaders).length) {
         fetchOptions.headers = {

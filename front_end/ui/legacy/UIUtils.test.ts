@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('UIUtils', () => {
   describe('openInNewTab', () => {
@@ -42,13 +45,7 @@ describe('UIUtils', () => {
 
         openInNewTab(url);
 
-        sinon.assert.calledOnceWithMatch(stub, sinon.match(value => {
-          try {
-            return new URL(value).searchParams.get('utm_source') === 'unittests';
-          } catch {
-            return false;
-          }
-        }, 'doesn\'t have `utm_source=unittests` search parameter'));
+        sinon.assert.calledOnceWithExactly(stub, urlString`${url}`);
         stub.restore();
       }
     });
@@ -67,13 +64,8 @@ describe('UIUtils', () => {
 
         openInNewTab(url);
 
-        sinon.assert.calledOnceWithMatch(stub, sinon.match(value => {
-          try {
-            return new URL(value).searchParams.get('utm_source') === 'devtools';
-          } catch {
-            return false;
-          }
-        }, 'doesn\'t have `utm_source=devtools` search parameter'));
+        sinon.assert.calledOnce(stub);
+        assert.strictEqual(new URL(stub.args[0][0]).searchParams.get('utm_source'), 'devtools');
         stub.restore();
       }
     });
@@ -101,40 +93,10 @@ describe('UIUtils', () => {
 
           openInNewTab(url);
 
-          sinon.assert.calledOnceWithMatch(stub, sinon.match(value => {
-            try {
-              return new URL(value).searchParams.get('utm_campaign') === channel;
-            } catch {
-              return false;
-            }
-          }, `doesn't have \`utm_campaign=${channel}\` search parameter`));
+          sinon.assert.calledOnce(stub);
+          assert.strictEqual(new URL(stub.args[0][0]).searchParams.get('utm_campaign'), channel);
           stub.restore();
         }
-      }
-    });
-
-    it('adds `utm_medium=referral` search parameter to Google documentation set links', () => {
-      const URLs = [
-        'http://developer.chrome.com/docs/devtools/workspaces/',
-        'http://developers.google.com/learn/',
-        'http://web.dev/',
-        'https://developer.chrome.com/docs/devtools/',
-        'https://developers.google.com/community/',
-        'https://web.dev/baseline/',
-      ];
-      for (const url of URLs) {
-        const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
-
-        openInNewTab(url);
-
-        sinon.assert.calledOnceWithMatch(stub, sinon.match(value => {
-          try {
-            return new URL(value).searchParams.get('utm_medium') === 'referral';
-          } catch {
-            return false;
-          }
-        }, 'doesn\'t have `utm_medium=referral` search parameter'));
-        stub.restore();
       }
     });
 

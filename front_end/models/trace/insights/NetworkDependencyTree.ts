@@ -63,6 +63,10 @@ export const UIStrings = {
    */
   noPreconnectOrigins: 'no origins were preconnected',
   /**
+   * @description A warning message that is shown when the user added preconnect for some unnecessary origins.
+   */
+  unusedWarning: 'Unused preconnect. Only use `preconnect` for origins that the page is likely to request.',
+  /**
    * @description Label for a column in a data table; entries will be the source of the origin.
    */
   columnSource: 'Source',
@@ -124,6 +128,7 @@ export interface PreconnectOrigin {
   node_id: Protocol.DOM.BackendNodeId;
   frame?: string;
   url: string;
+  unused: boolean;
 }
 export interface PreconnectCandidate {
   origin: Platform.DevToolsPath.UrlString;
@@ -185,20 +190,12 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
   return isHighPriority || isBlocking;
 }
 
-function generateNetworkDependencyTree(context: InsightSetContext): {
+function generateNetworkDependencyTree(context: InsightSetContextWithNavigation): {
   rootNodes: CriticalRequestNode[],
   maxTime: Types.Timing.Micro,
   fail: boolean,
   relatedEvents?: RelatedEventsMap,
 } {
-  if (!context.navigation) {
-    return {
-      rootNodes: [],
-      maxTime: Types.Timing.Micro(0),
-      fail: false,
-    };
-  }
-
   const rootNodes: CriticalRequestNode[] = [];
   const relatedEvents: RelatedEventsMap = new Map();
   let maxTime = Types.Timing.Micro(0);
@@ -304,6 +301,28 @@ function generateNetworkDependencyTree(context: InsightSetContext): {
   };
 }
 
+function getSecurityOrigin(url: string): Platform.DevToolsPath.UrlString {
+  const parsedURL = new Common.ParsedURL.ParsedURL(url);
+  return parsedURL.securityOrigin();
+}
+
+// Export the function for test purpose.
+export function generatePreconnectedOrigins(
+    linkPreconnectEvents: Types.Events.LinkPreconnect[],
+    contextRequests: Types.Events.SyntheticNetworkRequest[]): PreconnectOrigin[] {
+  const preconnectOrigins: PreconnectOrigin[] = [];
+  for (const event of linkPreconnectEvents) {
+    preconnectOrigins.push({
+      node_id: event.args.data.node_id,
+      frame: event.args.data.frame,
+      url: event.args.data.url,
+      unused: !contextRequests.some(
+          request => getSecurityOrigin(event.args.data.url) === getSecurityOrigin(request.args.data.url)),
+    });
+  }
+  return preconnectOrigins;
+}
+
 function hasValidTiming(request: Types.Events.SyntheticNetworkRequest): boolean {
   return !!request.args.data.timing && request.args.data.timing.connectEnd >= 0 &&
       request.args.data.timing.connectStart >= 0;
@@ -385,14 +404,14 @@ function candidateRequestsByOrigin(
   return origins;
 }
 
+// Export the function for test purpose.
 export function generatePreconnectCandidates(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): PreconnectCandidate[] {
-  if (!context.navigation || !context.lantern) {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation,
+    contextRequests: Types.Events.SyntheticNetworkRequest[]): PreconnectCandidate[] {
+  if (!context.lantern) {
     return [];
   }
 
-  const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
-  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
   const mainResource = contextRequests.find(request => request.args.data.requestId === context.navigationId);
   if (!mainResource) {
     return [];
@@ -468,6 +487,16 @@ export function generatePreconnectCandidates(
 
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): NetworkDependencyTreeInsightModel {
+  if (!context.navigation) {
+    return finalize({
+      rootNodes: [],
+      maxTime: 0 as Types.Timing.Micro,
+      fail: false,
+      preconnectOrigins: [],
+      preconnectCandidates: [],
+    });
+  }
+
   const {
     rootNodes,
     maxTime,
@@ -475,13 +504,13 @@ export function generateInsight(
     relatedEvents,
   } = generateNetworkDependencyTree(context);
 
-  const preconnectOrigins = parsedTrace.NetworkRequests.linkPreconnectEvents.map(event => ({
-                                                                                   node_id: event.args.data.node_id,
-                                                                                   frame: event.args.data.frame,
-                                                                                   url: event.args.data.url,
-                                                                                 }));
+  const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
+  const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
 
-  const preconnectCandidates = generatePreconnectCandidates(parsedTrace, context);
+  const preconnectOrigins =
+      generatePreconnectedOrigins(parsedTrace.NetworkRequests.linkPreconnectEvents, contextRequests);
+
+  const preconnectCandidates = generatePreconnectCandidates(parsedTrace, context, contextRequests);
 
   return finalize({
     rootNodes,

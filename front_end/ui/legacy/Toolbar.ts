@@ -1345,7 +1345,7 @@ export class ToolbarSettingCheckbox extends ToolbarCheckbox {
       setting: Common.Settings.Setting<boolean>, tooltip?: Common.UIString.LocalizedString,
       alternateTitle?: Common.UIString.LocalizedString) {
     super(alternateTitle || setting.title(), tooltip, undefined, setting.name);
-    bindCheckbox(this.element, setting);
+    bindCheckbox(this.element as CheckboxLabel, setting);
   }
 }
 

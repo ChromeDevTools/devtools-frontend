@@ -135,61 +135,66 @@ export const bindToSetting =
         setting = Common.Settings.Settings.instance().moduleSetting(setting);
       }
 
-      if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {
-        return Directives.ref(e => bindCheckbox(e, setting as Common.Settings.Setting<boolean>));
+      // We can't use `setValue` as the change listener directly, otherwise we won't
+      // be able to remove it again.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let setValue: (value: any) => void;
+      function settingChanged(event: Common.EventTarget.EventTargetEvent<boolean|string>): void {
+        setValue(event.data);
       }
-      if (typeof setting.defaultValue === 'string') {
-        const stringSetting = setting as Common.Settings.Setting<string>;
-        // We can't use `setValue` as the change listener directly, otherwise we won't
-        // be able to remove it again.
-        let setValue: ReturnType<typeof bindInput>;
-        function settingChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
-          setValue(event.data);
-        }
 
+      if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {
         return Directives.ref(e => {
           if (e === undefined) {
-            stringSetting.removeChangeListener(settingChanged);
+            setting.removeChangeListener(settingChanged);
             return;
           }
 
-          stringSetting.addChangeListener(settingChanged);
+          setting.addChangeListener(settingChanged);
+          setValue = bindCheckboxImpl(e as CheckboxLabel, setting.set.bind(setting));
+          setValue(setting.get());
+        });
+      }
+
+      if (typeof setting.defaultValue === 'string') {
+        return Directives.ref(e => {
+          if (e === undefined) {
+            setting.removeChangeListener(settingChanged);
+            return;
+          }
+
+          setting.addChangeListener(settingChanged);
           setValue = bindInput(
               e as HTMLInputElement, setting.set.bind(setting), stringValidator ?? (() => true), /* numeric */ false);
-          setValue(stringSetting.get());
+          setValue(setting.get());
         });
       }
 
       throw new Error(`Cannot infer type for setting  '${setting.name}'`);
     };
 
+/**
+ * @deprecated Prefer {@link bindToSetting} as this function leaks the checkbox via the setting listener.
+ */
 export const bindCheckbox = function(
-    inputElement: Element|undefined, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
-  function settingChanged(): void {
-    const input = (inputElement as HTMLInputElement);
-    if (input.checked !== setting.get()) {
-      input.checked = setting.get();
-    }
-  }
-  if (inputElement) {
-    setting.addChangeListener(settingChanged);
-  } else {
-    setting.removeChangeListener(settingChanged);
-    return;
-  }
-  const input = (inputElement as HTMLInputElement);
-  settingChanged();
+    input: CheckboxLabel, setting: Common.Settings.Setting<boolean>, metric?: UserMetricOptions): void {
+  const setValue = bindCheckboxImpl(input, setting.set.bind(setting), metric);
+  setting.addChangeListener(event => setValue(event.data));
+  setValue(setting.get());
+};
 
-  function inputChanged(): void {
-    if (setting.get() !== input.checked) {
-      setting.set(input.checked);
-    }
+const bindCheckboxImpl = function(
+    input: CheckboxLabel, apply: (value: boolean) => void, metric?: UserMetricOptions): (value: boolean) => void {
+  input.addEventListener('change', onInputChanged, false);
 
-    if (setting.get() && metric?.enable) {
+  function onInputChanged(): void {
+    apply(input.checked);
+
+    if (input.checked && metric?.enable) {
       Host.userMetrics.actionTaken(metric.enable);
     }
 
-    if (!setting.get() && metric?.disable) {
+    if (!input.checked && metric?.disable) {
       Host.userMetrics.actionTaken(metric.disable);
     }
 
@@ -198,7 +203,11 @@ export const bindCheckbox = function(
     }
   }
 
-  input.addEventListener('change', inputChanged, false);
+  return function setValue(value: boolean): void {
+    if (value !== input.checked) {
+      input.checked = value;
+    }
+  };
 };
 
 export const createCustomSetting = function(name: string, element: Element): Element {

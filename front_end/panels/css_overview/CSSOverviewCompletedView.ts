@@ -308,6 +308,287 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#data = null;
   }
 
+  async #render(data: OverviewData): Promise<void> {
+    if (!data || !('backgroundColors' in data) || !('textColors' in data)) {
+      return;
+    }
+
+    this.#data = data;
+    const {
+      mediaQueries,
+      unusedDeclarations,
+      fontInfo,
+    } = this.#data;
+
+    this.#fragment = UI.Fragment.Fragment.build`
+    <div class="vbox overview-completed-view">
+      <div $="summary" class="results-section horizontally-padded summary">
+        <h1>${i18nString(UIStrings.overviewSummary)}</h1>
+        ${this.#renderSummary(data)}
+      </div>
+      <div $="colors" class="results-section horizontally-padded colors">
+        <h1>${i18nString(UIStrings.colors)}</h1>
+        ${this.#renderColors(data)}
+      </div>
+      <div $="font-info" class="results-section font-info">
+        <h1>${i18nString(UIStrings.fontInfo)}</h1>
+        ${this.#renderFontInfo(fontInfo)}
+      </div>
+      <div $="unused-declarations" class="results-section unused-declarations">
+        <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
+        ${this.#renderUnusedDeclarations(unusedDeclarations)}
+      </div>
+      <div $="media-queries" class="results-section media-queries">
+        <h1>${i18nString(UIStrings.mediaQueries)}</h1>
+        ${this.#renderMediaQueries(mediaQueries)}
+      </div>
+    </div>`;
+
+    this.#resultsContainer.element.appendChild(this.#fragment.element());
+  }
+
+  #renderSummary(data: OverviewData): UI.Fragment.Fragment {
+    const {
+      elementCount,
+      globalStyleStats,
+      mediaQueries,
+    } = data;
+    const renderSummaryItem = (label: string, value: number): UI.Fragment.Fragment => UI.Fragment.Fragment.build`
+      <li>
+        <div class="label">${label}</div>
+        <div class="value">${this.#formatter.format(value)}</div>
+      </li>`;
+    return UI.Fragment.Fragment.build`<ul>
+      ${renderSummaryItem(i18nString(UIStrings.elements), elementCount)}
+      ${renderSummaryItem(i18nString(UIStrings.externalStylesheets), globalStyleStats.externalSheets)}
+      ${renderSummaryItem(i18nString(UIStrings.inlineStyleElements), globalStyleStats.inlineStyles)}
+      ${renderSummaryItem(i18nString(UIStrings.styleRules), globalStyleStats.styleRules)}
+      ${renderSummaryItem(i18nString(UIStrings.mediaQueries), mediaQueries.size)}
+      ${renderSummaryItem(i18nString(UIStrings.typeSelectors), globalStyleStats.stats.type)}
+      ${renderSummaryItem(i18nString(UIStrings.idSelectors), globalStyleStats.stats.id)}
+      ${renderSummaryItem(i18nString(UIStrings.classSelectors), globalStyleStats.stats.class)}
+      ${renderSummaryItem(i18nString(UIStrings.universalSelectors), globalStyleStats.stats.universal)}
+      ${renderSummaryItem(i18nString(UIStrings.attributeSelectors), globalStyleStats.stats.attribute)}
+      ${renderSummaryItem(i18nString(UIStrings.nonsimpleSelectors), globalStyleStats.stats.nonSimple)}
+    </ul>`;
+  }
+
+  #renderColors(data: OverviewData): UI.Fragment.Fragment {
+    const {
+      backgroundColors,
+      textColors,
+      textColorContrastIssues,
+      fillColors,
+      borderColors,
+    } = data;
+    // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
+    const sortedBackgroundColors = this.#sortColorsByLuminance(backgroundColors);
+    const sortedTextColors = this.#sortColorsByLuminance(textColors);
+    const sortedFillColors = this.#sortColorsByLuminance(fillColors);
+    const sortedBorderColors = this.#sortColorsByLuminance(borderColors);
+
+    return UI.Fragment.Fragment.build`
+      <h2>${i18nString(UIStrings.backgroundColorsS, {
+      PH1: sortedBackgroundColors.length
+    })}</h2>
+      <ul>${sortedBackgroundColors.map(this.#renderColor.bind(this, 'background'))}</ul>
+
+      <h2>${i18nString(UIStrings.textColorsS, {
+      PH1: sortedTextColors.length
+    })}</h2>
+      <ul>${sortedTextColors.map(this.#renderColor.bind(this, 'text'))}</ul>
+
+      ${textColorContrastIssues.size > 0 ? this.#renderContrastIssues(textColorContrastIssues) : ''}
+
+      <h2>${i18nString(UIStrings.fillColorsS, {
+      PH1: sortedFillColors.length
+    })}</h2>
+      <ul>${sortedFillColors.map(this.#renderColor.bind(this, 'fill'))}</ul>
+
+      <h2>${i18nString(UIStrings.borderColorsS, {
+      PH1: sortedBorderColors.length
+    })}</h2>
+      <ul>${sortedBorderColors.map(this.#renderColor.bind(this, 'border'))}</ul>`;
+  }
+
+  #renderUnusedDeclarations(unusedDeclarations: Map<string, UnusedDeclaration[]>): UI.Fragment.Fragment {
+    return unusedDeclarations.size > 0 ? this.#renderGroup(unusedDeclarations, 'unused-declarations', 'declaration') :
+                                         UI.Fragment.Fragment.build`<div class="horizontally-padded">${
+                                             i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`;
+  }
+
+  #renderMediaQueries(mediaQueries: Map<string, Protocol.CSS.CSSMedia[]>): UI.Fragment.Fragment {
+    return mediaQueries.size > 0 ? this.#renderGroup(mediaQueries, 'media-queries', 'text') :
+                                   UI.Fragment.Fragment.build`<div class="horizontally-padded">${
+                                       i18nString(UIStrings.thereAreNoMediaQueries)}</div>`;
+  }
+
+  #renderFontInfo(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
+    const fonts = Array.from(fontInfo.entries());
+    return fontInfo.size > 0 ? UI.Fragment.Fragment.build`${fonts.map(([font, fontMetrics]) => {
+      return UI.Fragment.Fragment.build`<section class="font-family"><h2>${font}</h2> ${
+          this.#renderFontMetrics(font, fontMetrics)}</section>`;
+    })}` :
+                               UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`;
+  }
+
+  #renderFontMetrics(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
+    const fontMetricInfo = Array.from(fontMetrics.entries());
+
+    return UI.Fragment.Fragment.build`
+  <div class="font-metric">
+  ${fontMetricInfo.map(([label, values]) => {
+      const sanitizedPath = `${font}/${label}`;
+      return UI.Fragment.Fragment.build`
+  <div>
+  <h3>${label}</h3>
+  ${this.#renderGroup(values, 'font-info', 'value', sanitizedPath)}
+  </div>`;
+    })}
+  </div>`;
+  }
+
+  #renderGroup(
+      items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
+      path = ''): UI.Fragment.Fragment {
+    // Sort by number of items descending.
+    const values = Array.from(items.entries()).sort((d1, d2) => {
+      const v1Nodes = d1[1];
+      const v2Nodes = d2[1];
+      return v2Nodes.length - v1Nodes.length;
+    });
+
+    const total = values.reduce((prev, curr) => prev + curr[1].length, 0);
+
+    return UI.Fragment.Fragment.build`<ul aria-label="${type}">
+    ${values.map(([title, nodes]) => {
+      const width = 100 * nodes.length / total;
+      const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
+
+      return UI.Fragment.Fragment.build`<li>
+        <div class="title">${title}</div>
+        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}"
+        jslog="${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}"
+        aria-label="${title}: ${itemLabel}">
+          <div class="details">${itemLabel}</div>
+          <div class="bar-container">
+            <div class="bar" style="width: ${width}%;"></div>
+          </div>
+        </button>
+      </li>`;
+    })}
+    </ul>`;
+  }
+
+  #renderContrastIssues(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
+    return UI.Fragment.Fragment.build`
+  <h2>${i18nString(UIStrings.contrastIssuesS, {
+      PH1: issues.size,
+    })}</h2>
+  <ul>
+  ${[...issues.entries()].map(([key, value]) => this.#renderContrastIssue(key, value))}
+  </ul>
+  `;
+  }
+
+  #renderContrastIssue(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
+    console.assert(issues.length > 0);
+
+    let minContrastIssue: ContrastIssue = issues[0];
+    for (const issue of issues) {
+      // APCA contrast can be a negative value that is to be displayed. But the
+      // absolute value is used to compare against the threshold. Therefore, the min
+      // absolute value is the worst contrast.
+      if (Math.abs(issue.contrastRatio) < Math.abs(minContrastIssue.contrastRatio)) {
+        minContrastIssue = issue;
+      }
+    }
+
+    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
+    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
+
+    const showAPCA = Root.Runtime.experiments.isEnabled('apca');
+
+    const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
+      PH1: color,
+      PH2: backgroundColor,
+      PH3: issues.length,
+    });
+
+    const blockFragment = UI.Fragment.Fragment.build`<li>
+      <button
+        title="${title}" aria-label="${title}"
+        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
+        jslog="${VisualLogging.action('css-overview.contrast').track({
+      click: true,
+    })}">
+        Text
+      </button>
+      <div class="block-title">
+        <div class="contrast-warning hidden" $="aa"><span class="threshold-label">${
+        i18nString(UIStrings.aa)}</span></div>
+        <div class="contrast-warning hidden" $="aaa"><span class="threshold-label">${
+        i18nString(UIStrings.aaa)}</span></div>
+        <div class="contrast-warning hidden" $="apca"><span class="threshold-label">${
+        i18nString(UIStrings.apca)}</span></div>
+      </div>
+    </li>`;
+
+    if (showAPCA) {
+      const apca = (blockFragment.$('apca') as HTMLElement);
+      if (minContrastIssue.thresholdsViolated.apca) {
+        apca.appendChild(createClearIcon());
+      } else {
+        apca.appendChild(createCheckIcon());
+      }
+      apca.classList.remove('hidden');
+    } else {
+      const aa = (blockFragment.$('aa') as HTMLElement);
+      if (minContrastIssue.thresholdsViolated.aa) {
+        aa.appendChild(createClearIcon());
+      } else {
+        aa.appendChild(createCheckIcon());
+      }
+      const aaa = (blockFragment.$('aaa') as HTMLElement);
+      if (minContrastIssue.thresholdsViolated.aaa) {
+        aaa.appendChild(createClearIcon());
+      } else {
+        aaa.appendChild(createCheckIcon());
+      }
+      aa.classList.remove('hidden');
+      aaa.classList.remove('hidden');
+    }
+
+    const block = (blockFragment.$('color') as HTMLElement);
+    block.style.backgroundColor = backgroundColor;
+    block.style.color = color;
+    block.style.border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
+
+    return blockFragment;
+  }
+
+  #renderColor(section: string, color: string): UI.Fragment.Fragment|undefined {
+    const blockFragment = UI.Fragment.Fragment.build`<li>
+      <button title=${color} data-type="color" data-color="${color}"
+        data-section="${section}" class="block" $="color"
+        jslog="${VisualLogging.action('css-overview.color').track({
+      click: true,
+    })}"></button>
+      <div class="block-title color-text">${color}</div>
+    </li>`;
+
+    const block = (blockFragment.$('color') as HTMLElement);
+    block.style.backgroundColor = color;
+
+    const borderColor = Common.Color.parse(color)?.asLegacyColor();
+    if (!borderColor) {
+      return;
+    }
+    block.style.border = getBorderString(borderColor);
+
+    return blockFragment;
+  }
+
   initializeModels(target: SDK.Target.Target): void {
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -478,121 +759,6 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#mainContainer.setSidebarMinimized(false);
   }
 
-  async #render(data: OverviewData): Promise<void> {
-    if (!data || !('backgroundColors' in data) || !('textColors' in data)) {
-      return;
-    }
-
-    this.#data = data;
-    const {
-      mediaQueries,
-      unusedDeclarations,
-      fontInfo,
-    } = this.#data;
-
-    this.#fragment = UI.Fragment.Fragment.build`
-    <div class="vbox overview-completed-view">
-      <div $="summary" class="results-section horizontally-padded summary">
-        <h1>${i18nString(UIStrings.overviewSummary)}</h1>
-        ${this.#renderSummary(data)}
-      </div>
-      <div $="colors" class="results-section horizontally-padded colors">
-        <h1>${i18nString(UIStrings.colors)}</h1>
-        ${this.#renderColors(data)}
-      </div>
-      <div $="font-info" class="results-section font-info">
-        <h1>${i18nString(UIStrings.fontInfo)}</h1>
-        ${this.#renderFontInfo(fontInfo)}
-      </div>
-      <div $="unused-declarations" class="results-section unused-declarations">
-        <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
-        ${this.#renderUnusedDeclarations(unusedDeclarations)}
-      </div>
-      <div $="media-queries" class="results-section media-queries">
-        <h1>${i18nString(UIStrings.mediaQueries)}</h1>
-        ${this.#renderMediaQueries(mediaQueries)}
-      </div>
-    </div>`;
-
-    this.#resultsContainer.element.appendChild(this.#fragment.element());
-  }
-
-  #renderSummary(data: OverviewData): UI.Fragment.Fragment {
-    const {
-      elementCount,
-      globalStyleStats,
-      mediaQueries,
-    } = data;
-    const renderSummaryItem = (label: string, value: number): UI.Fragment.Fragment => UI.Fragment.Fragment.build`
-      <li>
-        <div class="label">${label}</div>
-        <div class="value">${this.#formatter.format(value)}</div>
-      </li>`;
-    return UI.Fragment.Fragment.build`<ul>
-      ${renderSummaryItem(i18nString(UIStrings.elements), elementCount)}
-      ${renderSummaryItem(i18nString(UIStrings.externalStylesheets), globalStyleStats.externalSheets)}
-      ${renderSummaryItem(i18nString(UIStrings.inlineStyleElements), globalStyleStats.inlineStyles)}
-      ${renderSummaryItem(i18nString(UIStrings.styleRules), globalStyleStats.styleRules)}
-      ${renderSummaryItem(i18nString(UIStrings.mediaQueries), mediaQueries.size)}
-      ${renderSummaryItem(i18nString(UIStrings.typeSelectors), globalStyleStats.stats.type)}
-      ${renderSummaryItem(i18nString(UIStrings.idSelectors), globalStyleStats.stats.id)}
-      ${renderSummaryItem(i18nString(UIStrings.classSelectors), globalStyleStats.stats.class)}
-      ${renderSummaryItem(i18nString(UIStrings.universalSelectors), globalStyleStats.stats.universal)}
-      ${renderSummaryItem(i18nString(UIStrings.attributeSelectors), globalStyleStats.stats.attribute)}
-      ${renderSummaryItem(i18nString(UIStrings.nonsimpleSelectors), globalStyleStats.stats.nonSimple)}
-    </ul>`;
-  }
-
-  #renderColors(data: OverviewData): UI.Fragment.Fragment {
-    const {
-      backgroundColors,
-      textColors,
-      textColorContrastIssues,
-      fillColors,
-      borderColors,
-    } = data;
-    // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
-    const sortedBackgroundColors = this.#sortColorsByLuminance(backgroundColors);
-    const sortedTextColors = this.#sortColorsByLuminance(textColors);
-    const sortedFillColors = this.#sortColorsByLuminance(fillColors);
-    const sortedBorderColors = this.#sortColorsByLuminance(borderColors);
-
-    return UI.Fragment.Fragment.build`
-      <h2>${i18nString(UIStrings.backgroundColorsS, {
-      PH1: sortedBackgroundColors.length
-    })}</h2>
-      <ul>${sortedBackgroundColors.map(this.#renderColor.bind(this, 'background'))}</ul>
-
-      <h2>${i18nString(UIStrings.textColorsS, {
-      PH1: sortedTextColors.length
-    })}</h2>
-      <ul>${sortedTextColors.map(this.#renderColor.bind(this, 'text'))}</ul>
-
-      ${textColorContrastIssues.size > 0 ? this.#renderContrastIssues(textColorContrastIssues) : ''}
-
-      <h2>${i18nString(UIStrings.fillColorsS, {
-      PH1: sortedFillColors.length
-    })}</h2>
-      <ul>${sortedFillColors.map(this.#renderColor.bind(this, 'fill'))}</ul>
-
-      <h2>${i18nString(UIStrings.borderColorsS, {
-      PH1: sortedBorderColors.length
-    })}</h2>
-      <ul>${sortedBorderColors.map(this.#renderColor.bind(this, 'border'))}</ul>`;
-  }
-
-  #renderUnusedDeclarations(unusedDeclarations: Map<string, UnusedDeclaration[]>): UI.Fragment.Fragment {
-    return unusedDeclarations.size > 0 ? this.#renderGroup(unusedDeclarations, 'unused-declarations', 'declaration') :
-                                         UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                             i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`;
-  }
-
-  #renderMediaQueries(mediaQueries: Map<string, Protocol.CSS.CSSMedia[]>): UI.Fragment.Fragment {
-    return mediaQueries.size > 0 ? this.#renderGroup(mediaQueries, 'media-queries', 'text') :
-                                   UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                       i18nString(UIStrings.thereAreNoMediaQueries)}</div>`;
-  }
-
   #createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
     const {payload} = evt.data;
 
@@ -652,172 +818,6 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     }
 
     this.#tabbedPane.selectTab(id);
-  }
-
-  #renderFontInfo(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
-    const fonts = Array.from(fontInfo.entries());
-    return fontInfo.size > 0 ? UI.Fragment.Fragment.build`${fonts.map(([font, fontMetrics]) => {
-      return UI.Fragment.Fragment.build`<section class="font-family"><h2>${font}</h2> ${
-          this.#renderFontMetrics(font, fontMetrics)}</section>`;
-    })}` :
-                               UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`;
-  }
-
-  #renderFontMetrics(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
-    const fontMetricInfo = Array.from(fontMetrics.entries());
-
-    return UI.Fragment.Fragment.build`
-  <div class="font-metric">
-  ${fontMetricInfo.map(([label, values]) => {
-      const sanitizedPath = `${font}/${label}`;
-      return UI.Fragment.Fragment.build`
-  <div>
-  <h3>${label}</h3>
-  ${this.#renderGroup(values, 'font-info', 'value', sanitizedPath)}
-  </div>`;
-    })}
-  </div>`;
-  }
-
-  #renderGroup(
-      items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
-      path = ''): UI.Fragment.Fragment {
-    // Sort by number of items descending.
-    const values = Array.from(items.entries()).sort((d1, d2) => {
-      const v1Nodes = d1[1];
-      const v2Nodes = d2[1];
-      return v2Nodes.length - v1Nodes.length;
-    });
-
-    const total = values.reduce((prev, curr) => prev + curr[1].length, 0);
-
-    return UI.Fragment.Fragment.build`<ul aria-label="${type}">
-    ${values.map(([title, nodes]) => {
-      const width = 100 * nodes.length / total;
-      const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
-
-      return UI.Fragment.Fragment.build`<li>
-        <div class="title">${title}</div>
-        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}"
-        jslog="${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}"
-        aria-label="${title}: ${itemLabel}">
-          <div class="details">${itemLabel}</div>
-          <div class="bar-container">
-            <div class="bar" style="width: ${width}%;"></div>
-          </div>
-        </button>
-      </li>`;
-    })}
-    </ul>`;
-  }
-
-  #renderContrastIssues(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
-    return UI.Fragment.Fragment.build`
-  <h2>${i18nString(UIStrings.contrastIssuesS, {
-      PH1: issues.size,
-    })}</h2>
-  <ul>
-  ${[...issues.entries()].map(([key, value]) => this.#renderContrastIssue(key, value))}
-  </ul>
-  `;
-  }
-
-  #renderContrastIssue(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
-    console.assert(issues.length > 0);
-
-    let minContrastIssue: ContrastIssue = issues[0];
-    for (const issue of issues) {
-      // APCA contrast can be a negative value that is to be displayed. But the
-      // absolute value is used to compare against the threshold. Therefore, the min
-      // absolute value is the worst contrast.
-      if (Math.abs(issue.contrastRatio) < Math.abs(minContrastIssue.contrastRatio)) {
-        minContrastIssue = issue;
-      }
-    }
-
-    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
-    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
-
-    const showAPCA = Root.Runtime.experiments.isEnabled('apca');
-
-    const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
-      PH1: color,
-      PH2: backgroundColor,
-      PH3: issues.length,
-    });
-
-    const blockFragment = UI.Fragment.Fragment.build`<li>
-      <button
-        title="${title}" aria-label="${title}"
-        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
-        jslog="${VisualLogging.action('css-overview.contrast').track({
-      click: true,
-    })}">
-        Text
-      </button>
-      <div class="block-title">
-        <div class="contrast-warning hidden" $="aa"><span class="threshold-label">${
-        i18nString(UIStrings.aa)}</span></div>
-        <div class="contrast-warning hidden" $="aaa"><span class="threshold-label">${
-        i18nString(UIStrings.aaa)}</span></div>
-        <div class="contrast-warning hidden" $="apca"><span class="threshold-label">${
-        i18nString(UIStrings.apca)}</span></div>
-      </div>
-    </li>`;
-
-    if (showAPCA) {
-      const apca = (blockFragment.$('apca') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.apca) {
-        apca.appendChild(createClearIcon());
-      } else {
-        apca.appendChild(createCheckIcon());
-      }
-      apca.classList.remove('hidden');
-    } else {
-      const aa = (blockFragment.$('aa') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.aa) {
-        aa.appendChild(createClearIcon());
-      } else {
-        aa.appendChild(createCheckIcon());
-      }
-      const aaa = (blockFragment.$('aaa') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.aaa) {
-        aaa.appendChild(createClearIcon());
-      } else {
-        aaa.appendChild(createCheckIcon());
-      }
-      aa.classList.remove('hidden');
-      aaa.classList.remove('hidden');
-    }
-
-    const block = (blockFragment.$('color') as HTMLElement);
-    block.style.backgroundColor = backgroundColor;
-    block.style.color = color;
-    block.style.border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
-
-    return blockFragment;
-  }
-
-  #renderColor(section: string, color: string): UI.Fragment.Fragment|undefined {
-    const blockFragment = UI.Fragment.Fragment.build`<li>
-      <button title=${color} data-type="color" data-color="${color}"
-        data-section="${section}" class="block" $="color"
-        jslog="${VisualLogging.action('css-overview.color').track({
-      click: true,
-    })}"></button>
-      <div class="block-title color-text">${color}</div>
-    </li>`;
-
-    const block = (blockFragment.$('color') as HTMLElement);
-    block.style.backgroundColor = color;
-
-    const borderColor = Common.Color.parse(color)?.asLegacyColor();
-    if (!borderColor) {
-      return;
-    }
-    block.style.border = getBorderString(borderColor);
-
-    return blockFragment;
   }
 
   #sortColorsByLuminance(srcColors: Map<string, Set<number>>): string[] {

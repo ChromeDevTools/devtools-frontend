@@ -6,7 +6,7 @@ import type {SinonStub} from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -14,6 +14,7 @@ import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.j
 import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
+  getMatchedStyles,
   getMatchedStylesWithBlankRule,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -85,6 +86,28 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         false, true, false, '', undefined, longhandProperties);
     matchedStyles.nodeStyles()[0].allProperties().push(property);
     return property;
+  }
+
+  async function getTreeElementForFunctionRule(functionName: string, result: string, propertyName = 'result') {
+    const matchedStyles = await getMatchedStyles({
+      functionRules:
+          [{name: {text: functionName}, origin: Protocol.CSS.StyleSheetOrigin.Regular, parameters: [], children: []}]
+    });
+
+    const property = new SDK.CSSProperty.CSSProperty(
+        matchedStyles.functionRules()[0].style, matchedStyles.functionRules()[0].style.pastLastSourcePropertyIndex(),
+        propertyName, result, true, false, true, false, '', undefined, []);
+    matchedStyles.functionRules()[0].style.allProperties().push(property);
+    return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+      stylesPane: stylesSidebarPane,
+      section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: true,
+    });
   }
 
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -792,6 +815,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(tooltip);
       const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
       assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
+    });
+
+    it('does not render inside function rules', async () => {
+      const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'var(--b)');
+      stylePropertyTreeElement.updateTitle();
+      assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
     });
   });
 
@@ -1683,6 +1712,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isOk(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(), 'red');
     });
+
+    it('does not render inside function rules', async () => {
+      const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'initial');
+      stylePropertyTreeElement.updateTitle();
+      assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
   });
 
   describe('PositionTryRenderer', () => {
@@ -2019,5 +2054,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
     tooltip.showPopover();
     assert.isFalse(tooltip.open);
+  });
+
+  it('does not show a variable tooltip on custom property names in function rules', async () => {
+    const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'red', '--foo');
+    stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+    stylePropertyTreeElement.updateTitle();
+    assert.exists(stylePropertyTreeElement.nameElement);
+    assert.notExists(stylePropertyTreeElement.nameElement.getAttribute('aria-details'));
+    assert.exists(stylePropertyTreeElement.nameElement.parentElement);
+    assert.notExists(stylePropertyTreeElement.nameElement.parentElement.querySelector('devtools-tooltip'));
   });
 });

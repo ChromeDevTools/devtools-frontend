@@ -251,6 +251,10 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+    }
+
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
@@ -2125,7 +2129,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);
 
-    if (this.property.name.startsWith('--')) {
+    if (this.property.name.startsWith('--') &&
+        !(this.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule)) {
       const contents = this.parentPaneInternal.getVariablePopoverContents(
           this.matchedStyles(), this.property.name,
           this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null);

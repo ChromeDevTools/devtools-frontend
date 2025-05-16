@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
@@ -1465,6 +1466,34 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.strictEqual(
           document.body.querySelector('devtools-snackbar')?.shadowRoot?.querySelector('.message')?.textContent?.trim(),
           'DevTools received an MCP request');
+    });
+
+    it('handles styling assistance requests which contain a selector', async () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: urlString`http://www.example.com`,
+        name: 'name',
+        uniqueId: 'uniqueId',
+      });
+      const executionContext = runtimeModel.defaultExecutionContext();
+      assert.isNotNull(executionContext);
+      const evaluateStub = sinon.stub().returns({object: {objectId: 'some-id'}});
+      executionContext.evaluate = evaluateStub;
+      const callFunctionOnStub = sinon.stub().returns({object: {}});
+      executionContext.callFunctionOn = callFunctionOnStub;
+
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      const response = await panel.handleMcpRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING, 'h1');
+      assert.strictEqual(response, explanation);
+      sinon.assert.calledOnce(evaluateStub);
+      sinon.assert.calledOnce(callFunctionOnStub);
+      assert.strictEqual(callFunctionOnStub.getCall(0).args[0].arguments[1].value, 'h1');
     });
 
     it('throws an error if no answer could be generated', async () => {

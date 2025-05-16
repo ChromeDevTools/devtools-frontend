@@ -83,7 +83,6 @@ export class EvaluateAction {
     }
     const response = await executionContext.callFunctionOn({
       functionDeclaration,
-      includeCommandLineAPI: false,
       returnByValue: false,
       allowUnsafeEvalBlockedByCSP: false,
       throwOnSideEffect,

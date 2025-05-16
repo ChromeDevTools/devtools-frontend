@@ -418,6 +418,44 @@ function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiA
   throw new Error('Provided agent does not have a corresponding conversation type');
 }
 
+// TODO(crbug.com/416134018): Add piercing of shadow roots and handling of child frames
+async function inspectElementBySelector(selector: string): Promise<void> {
+  const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const runtimeModel = primaryPageTarget?.model(SDK.RuntimeModel.RuntimeModel);
+  const executionContext = runtimeModel?.defaultExecutionContext();
+  if (!executionContext) {
+    throw new Error('Could not find execution context for executing code');
+  }
+
+  // `inspect()` is not available in `callFunctionOn()`, but it is in `evaluate()`.
+  // We therefore get a reference to `inspect()` via `evaluate()` and then pass
+  // this reference as an argument to `callFunctionOn()`.
+  const inspectReference = await executionContext.evaluate(
+      {
+        expression: 'window.inspect',
+        includeCommandLineAPI: true,
+        returnByValue: false,
+      },
+      /* userGesture */ false,
+      /* awaitPromise */ false,
+  );
+  if ('error' in inspectReference || inspectReference.exceptionDetails) {
+    throw new Error('Cannot find \'window.inspect\'');
+  }
+
+  const inspectResult = await executionContext.callFunctionOn({
+    functionDeclaration: 'async function (inspect, selector) { return inspect(document.querySelector(selector)); }',
+    arguments: [{objectId: inspectReference.object.objectId}, {value: selector}],
+    userGesture: false,
+    awaitPromise: true,
+    returnByValue: false,
+  });
+  if ('error' in inspectResult || inspectResult.exceptionDetails ||
+      SDK.RemoteObject.RemoteObject.isNullOrUndefined(inspectResult.object)) {
+    throw new Error(`'document.querySelector()' could not find matching element for '${selector}' selector`);
+  }
+}
+
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
@@ -1522,7 +1560,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   // Called by MCP server via Puppeteer
-  async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType): Promise<string> {
+  async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
+      Promise<string> {
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.mcpRequestReceived)});
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
     const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
@@ -1534,21 +1573,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     switch (conversationType) {
       case AiAssistanceModel.ConversationType.STYLING:
-        return await this.handleMcpStylingRequest(prompt);
+        return await this.handleMcpStylingRequest(prompt, selector);
       default:
         throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
     }
   }
 
-  async handleMcpStylingRequest(prompt: string): Promise<string> {
+  async handleMcpStylingRequest(prompt: string, selector?: string): Promise<string> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
     // Cancel any previous in-flight conversation.
     this.#cancel();
+
+    if (selector !== undefined) {
+      await inspectElementBySelector(selector);
+    }
+
     const runner = stylingAgent.run(
         prompt,
         {
           signal: this.#runAbortController.signal,
-          // TODO(crbug.com/416134018) provide context via MCP instead of using the currently selected element
           selected: this.#getConversationContext(),
         },
     );

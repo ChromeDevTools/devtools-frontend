@@ -343,7 +343,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
                             i18nString(UIStrings.generatedAiAnnotationsSendData)
         }],
         learnMoreLink: {
-          url: 'https://developer.chrome.com/docs/devtools/performance/reference#auto-annotations',
+          url: 'https://developer.chrome.com/docs/devtools/performance/annotations#auto-annotations',
           linkJSLogContext: 'learn-more.auto-annotations'
         },
         settingExpandState: {

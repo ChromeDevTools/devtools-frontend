@@ -138,6 +138,30 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format on
   }
 
+  #renderTooManyPreconnectsWarning(): Lit.LitTemplate {
+    if (!this.model) {
+      return Lit.nothing;
+    }
+    if (this.model.preconnectOrigins.length <=
+        Trace.Insights.Models.NetworkDependencyTree.TOO_MANY_PRECONNECTS_THRESHOLD) {
+      return Lit.nothing;
+    }
+
+    const warningStyles = Lit.Directives.styleMap({
+      backgroundColor: 'var(--sys-color-surface-yellow)',
+      padding: ' var(--sys-size-5) var(--sys-size-8);',
+      display: 'flex',
+    });
+
+    // clang-format off
+    return html`
+      <div style=${warningStyles}>
+        ${md(i18nString(UIStrings.tooManyPreconnectLinksWarning))}
+      </div>
+    `;
+    // clang-format on
+  }
+
   #renderPreconnectOriginsTable(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;
@@ -185,6 +209,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     return html`
       <div class="insight-section">
         ${preconnectOriginsTableTitle}
+        ${this.#renderTooManyPreconnectsWarning()}
         <devtools-performance-table
           .data=${{
             insight: this,

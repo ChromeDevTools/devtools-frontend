@@ -347,7 +347,7 @@ export interface WorkingCopyChangedEvent {
   uiSourceCode: UISourceCode;
 }
 
-export interface WorkingCopyCommitedEvent {
+export interface WorkingCopyCommittedEvent {
   uiSourceCode: UISourceCode;
   content: string;
   encoded?: boolean;
@@ -358,8 +358,8 @@ export interface EventTypes {
   [Events.UISourceCodeRemoved]: UISourceCode;
   [Events.UISourceCodeRenamed]: UISourceCodeRenamedEvent;
   [Events.WorkingCopyChanged]: WorkingCopyChangedEvent;
-  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent;
-  [Events.WorkingCopyCommittedByUser]: WorkingCopyCommitedEvent;
+  [Events.WorkingCopyCommitted]: WorkingCopyCommittedEvent;
+  [Events.WorkingCopyCommittedByUser]: WorkingCopyCommittedEvent;
   [Events.ProjectAdded]: Project;
   [Events.ProjectRemoved]: Project;
 }

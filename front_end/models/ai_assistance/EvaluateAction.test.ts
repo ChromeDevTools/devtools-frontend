@@ -4,7 +4,6 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithRealConnection, getExecutionContext} from '../../testing/RealConnection.js';
 
 import * as EvaluateAction from './EvaluateAction.js';
 
@@ -83,130 +82,92 @@ describe('FreestylerEvaluateAction', () => {
        });
   });
 
-  describeWithRealConnection('serialization', () => {
-    async function executionContextForTest() {
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      const target = targetManager.rootTarget();
-      const runtimeModel = target!.model(SDK.RuntimeModel.RuntimeModel);
-      return await getExecutionContext(runtimeModel!);
-    }
-
-    async function executeForTest(action: string, throwOnSideEffect = false) {
-      const functionDeclaration = `async function ($0) {
-  try {
-    ${action}
-    ;
-    return ((typeof data !== "undefined") ? data : undefined);
-  } catch (error) {
-    return error;
-  }
-}`;
-      return await EvaluateAction.EvaluateAction.execute(
-          functionDeclaration, [], await executionContextForTest(), {throwOnSideEffect});
-    }
-
+  describe('serialization', () => {
     it('should serialize primitive values correctly', async () => {
-      assert.strictEqual(await executeForTest('const data = "string"'), '\'string\'');
-      assert.strictEqual(await executeForTest('const data = 999n'), '999n');
-      assert.strictEqual(await executeForTest('const data = true'), 'true');
-      assert.strictEqual(await executeForTest('const data = undefined'), 'undefined');
-      assert.strictEqual(await executeForTest('const data = 42'), '42');
-      assert.strictEqual(await executeForTest('const data = Symbol("sym")'), 'Symbol(sym)');
+      assert.strictEqual(
+          await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject('string')), '\'string\'');
+      assert.strictEqual(
+          await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(999n)), '999n');
+      assert.strictEqual(
+          await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(true)), 'true');
+      assert.strictEqual(
+          await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(undefined)), 'undefined');
+      assert.strictEqual(await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(42)), '42');
+      assert.strictEqual(
+          await EvaluateAction.stringifyRemoteObject(new SDK.RemoteObject.LocalJSONObject(Symbol('sym'))),
+          'Symbol(sym)');
+    });
+
+    it('runs stringification on the page for objects', async () => {
+      const object = new SDK.RemoteObject.LocalJSONObject({});
+      const callFunctionStub = sinon.stub(object, 'callFunction');
+      callFunctionStub.resolves({object: new SDK.RemoteObject.LocalJSONObject('result')});
+      const result = await EvaluateAction.stringifyRemoteObject(object);
+      assert.strictEqual(result, 'result');
+      sinon.assert.calledOnceWithExactly(callFunctionStub, EvaluateAction.stringifyObjectOnThePage);
     });
 
     describe('HTMLElement', () => {
       it('should work with plain nodes', async () => {
-        const serializedElement = await executeForTest(`
-          const el = document.createElement('div');
-
-          const data = el;
-        `);
-        assert.strictEqual(serializedElement, '"<div></div>"');
+        const el = document.createElement('div');
+        assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div></div>"');
       });
 
       it('should serialize node with classes', async () => {
-        const serializedElement = await executeForTest(`
-          const el = document.createElement('div');
-          el.classList.add('section');
-          el.classList.add('section-main');
-
-          const data = el;
-        `);
-        assert.strictEqual(serializedElement, '"<div class=\\"section section-main\\"></div>"');
+        const el = document.createElement('div');
+        el.classList.add('section');
+        el.classList.add('section-main');
+        assert.strictEqual(
+            EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div class=\\"section section-main\\"></div>"');
       });
 
       it('should serialize node with id', async () => {
-        const serializedElement = await executeForTest(`
-          const el = document.createElement('div');
-          el.id = 'promotion-section';
-
-          const data = el;
-        `);
-        assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\"></div>"');
+        const el = document.createElement('div');
+        el.id = 'promotion-section';
+        assert.strictEqual(
+            EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div id=\\"promotion-section\\"></div>"');
       });
       it('should serialize node with class and id', async () => {
-        const serializedElement = await executeForTest(`
-          const el = document.createElement('div');
-          el.id = 'promotion-section';
-          el.classList.add('section');
-
-          const data = el;
-        `);
-        assert.strictEqual(serializedElement, '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
+        const el = document.createElement('div');
+        el.id = 'promotion-section';
+        el.classList.add('section');
+        assert.strictEqual(
+            EvaluateAction.stringifyObjectOnThePage.apply(el),
+            '"<div id=\\"promotion-section\\" class=\\"section\\"></div>"');
       });
       it('should serialize node with children', async () => {
-        const serializedElement = await executeForTest(`
-          const el = document.createElement('div');
-          const p = document.createElement('p');
-          el.appendChild(p);
-
-          const data = el;
-        `);
-        assert.strictEqual(serializedElement, '"<div>...</div>"');
+        const el = document.createElement('div');
+        const p = document.createElement('p');
+        el.appendChild(p);
+        assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply(el), '"<div>...</div>"');
       });
     });
 
     it('should serialize arrays correctly', async () => {
-      assert.strictEqual(await executeForTest('const data = []'), '[]');
-      assert.strictEqual(await executeForTest('const data = [1]'), '[1]');
-      assert.strictEqual(await executeForTest('const data = [1, 2]'), '[1,2]');
-      assert.strictEqual(await executeForTest('const data = [{key: 1}]'), '[{"key":1}]');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply([]), '[]');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply([1]), '[1]');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply([1, 2]), '[1,2]');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply([{key: 1}]), '[{"key":1}]');
     });
 
     it('should serialize objects correctly', async () => {
-      assert.strictEqual(await executeForTest('const object = {key: "str"}; const data = object;'), '{"key":"str"}');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply({key: 'str'}), '{"key":"str"}');
       assert.strictEqual(
-          await executeForTest('const object = {key: "str", secondKey: "str2"}; const data = object;'),
+          EvaluateAction.stringifyObjectOnThePage.apply({key: 'str', secondKey: 'str2'}),
           '{"key":"str","secondKey":"str2"}');
-      assert.strictEqual(await executeForTest('const object = {key: 1}; const data = object;'), '{"key":1}');
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply({key: 1}), '{"key":1}');
     });
 
     it('should not continue serializing cycles', async () => {
-      assert.strictEqual(
-          await executeForTest(`
-        const obj = { a: 1 };
-        obj.itself = obj;
-        const data = obj;
-      `),
-          '{"a":1,"itself":"(cycle)"}');
+      const obj: {a: number, itself?: object} = {a: 1};
+      obj.itself = obj;
+      assert.strictEqual(EvaluateAction.stringifyObjectOnThePage.apply(obj), '{"a":1,"itself":"(cycle)"}');
     });
 
     it('should not include number keys for CSSStyleDeclaration', async () => {
-      const result = await executeForTest('const data = getComputedStyle(document.body)');
+      const result = EvaluateAction.stringifyObjectOnThePage.apply(getComputedStyle(document.body));
       const parsedResult = JSON.parse(result);
       assert.isUndefined(parsedResult[0]);
-    });
-
-    it('should not trigger a side-effect for returning data', async () => {
-      assert.deepEqual(await executeForTest('const data = {}', true), '{}');
-    });
-
-    it('should not trigger a side-effect on errors', async () => {
-      assert.deepEqual(await executeForTest('throw new Error("test")', true), 'Error: test');
-    });
-
-    it('should not trigger a side-effect on syntax errors', async () => {
-      assert.deepEqual(await executeForTest('const data = {;', true), 'Error: SyntaxError: Unexpected token \';\'');
     });
   });
 });

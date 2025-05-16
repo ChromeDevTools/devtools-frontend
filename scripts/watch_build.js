@@ -185,7 +185,6 @@ const fastRebuildFile = async fileName => {
         'gen',
         relativeFileName(jsFileName),
     );
-    const tsConfigLocation = path.join(cwd, 'tsconfig.json');
     // Hack to mimic node_ts_library for test files.
     const cjsForTests = fileName.includes('/test/') ? ['--format=cjs'] : [];
     changedFiles.delete(fileName);
@@ -195,7 +194,6 @@ const fastRebuildFile = async fileName => {
           fileName,
           `--outfile=${outFile}`,
           '--sourcemap',
-          `--tsconfig=${tsConfigLocation}`,
           ...cjsForTests,
         ],
         {cwd, env, stdio: 'inherit'},

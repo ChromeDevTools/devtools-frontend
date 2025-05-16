@@ -671,7 +671,7 @@ class PreloadingAttemptRegistry {
       return null;
     }
 
-    const map: {[key: PreloadingAttemptId]: PreloadingAttemptInternal} = {};
+    const map: Record<PreloadingAttemptId, PreloadingAttemptInternal> = {};
     for (const [id, attempt] of this.map.entries()) {
       map[id] = attempt;
     }

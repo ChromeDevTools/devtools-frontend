@@ -98,9 +98,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let eventStylesMap: {
-  [x: string]: Utils.EntryStyles.TimelineRecordStyle,
-}|null = null;
+let eventStylesMap: Record<string, Utils.EntryStyles.TimelineRecordStyle>|null = null;
 let categories: Utils.EntryStyles.CategoryPalette|null = null;
 
 export class UIDevtoolsUtils {
@@ -108,9 +106,7 @@ export class UIDevtoolsUtils {
     return Root.Runtime.Runtime.queryParam('uiDevTools') === 'true';
   }
 
-  static categorizeEvents(): {
-    [x: string]: Utils.EntryStyles.TimelineRecordStyle,
-  } {
+  static categorizeEvents(): Record<string, Utils.EntryStyles.TimelineRecordStyle> {
     if (eventStylesMap) {
       return eventStylesMap;
     }
@@ -123,9 +119,7 @@ export class UIDevtoolsUtils {
     const painting = categories['painting'];
     const other = categories['other'];
 
-    const eventStyles: {
-      [x: string]: Utils.EntryStyles.TimelineRecordStyle,
-    } = {};
+    const eventStyles: Record<string, Utils.EntryStyles.TimelineRecordStyle> = {};
 
     const {TimelineRecordStyle} = Utils.EntryStyles;
 

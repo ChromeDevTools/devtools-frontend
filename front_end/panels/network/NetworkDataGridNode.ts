@@ -552,9 +552,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   }
 }
 
-export const _backgroundColors: {
-  [x: string]: string,
-} = {
+export const _backgroundColors: Record<string, string> = {
   Default: '--color-grid-default',
   Stripe: '--color-grid-stripe',
   Navigation: '--network-grid-navigation-color',

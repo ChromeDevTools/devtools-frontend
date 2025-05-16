@@ -306,11 +306,8 @@ export class SettingsStorage {
 
   dumpSizes(): void {
     Console.instance().log('Ten largest settings: ');
-
-    const sizes: {
-      [x: string]: number,
-      // @ts-expect-error __proto__ optimization
-    } = {__proto__: null};
+    // @ts-expect-error __proto__ optimization
+    const sizes: Record<string, number> = {__proto__: null};
     for (const key in this.object) {
       sizes[key] = this.object[key].length;
     }
@@ -751,9 +748,7 @@ export class VersionController {
   }
 
   updateVersionFrom4To5(): void {
-    const settingNames: {
-      [x: string]: string,
-    } = {
+    const settingNames: Record<string, string> = {
       FileSystemViewSidebarWidth: 'fileSystemViewSplitViewState',
       elementsSidebarWidth: 'elementsPanelSplitViewState',
       StylesPaneSplitRatio: 'stylesPaneSplitViewState',
@@ -805,9 +800,7 @@ export class VersionController {
   }
 
   updateVersionFrom5To6(): void {
-    const settingNames: {
-      [x: string]: string,
-    } = {
+    const settingNames: Record<string, string> = {
       debuggerSidebarHidden: 'sourcesPanelSplitViewState',
       navigatorHidden: 'sourcesPanelNavigatorSplitViewState',
       'WebInspector.Drawer.showOnLoad': 'Inspector.drawerSplitViewState',
@@ -918,11 +911,8 @@ export class VersionController {
     const newList = [];
     for (let i = 0; i < list.length; ++i) {
       const value = list[i];
-      const device: {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [x: string]: any,
-      } = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const device: Record<string, any> = {};
       device['title'] = value['title'];
       device['type'] = 'unknown';
       device['user-agent'] = value['userAgent'];
@@ -967,9 +957,7 @@ export class VersionController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setting = Settings.instance().createLocalSetting<any>('workspaceExcludedFolders', {});
     const oldValue = setting.get();
-    const newValue: {
-      [x: string]: string[],
-    } = {};
+    const newValue: Record<string, string[]> = {};
     for (const fileSystemPath in oldValue) {
       newValue[fileSystemPath] = [];
       for (const entry of oldValue[fileSystemPath]) {
@@ -1015,9 +1003,7 @@ export class VersionController {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setting = Settings.instance().createLocalSetting<any>('workspaceExcludedFolders', {});
     const oldValue = setting.get();
-    const newValue: {
-      [x: string]: string,
-    } = {};
+    const newValue: Record<string, string> = {};
     for (const oldKey in oldValue) {
       let newKey = oldKey.replace(/\\/g, '/');
       if (!newKey.startsWith('file://')) {
@@ -1041,11 +1027,9 @@ export class VersionController {
     visibleColumns.name = true;
     visibleColumns.timeline = true;
 
-    const configs: {
-      [x: string]: {
-        visible: number,
-      },
-    } = {};
+    const configs: Record<string, {
+      visible: number,
+    }> = {};
     for (const columnId in visibleColumns) {
       if (!visibleColumns.hasOwnProperty(columnId)) {
         continue;
@@ -1066,9 +1050,7 @@ export class VersionController {
 
   updateVersionFrom20To21(): void {
     const networkColumns = Settings.instance().createSetting('networkLogColumns', {});
-    const columns = (networkColumns.get() as {
-      [x: string]: string,
-    });
+    const columns = (networkColumns.get() as Record<string, string>);
     delete columns['timeline'];
     delete columns['waterfall'];
     networkColumns.set(columns);

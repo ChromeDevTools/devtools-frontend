@@ -36,9 +36,9 @@ export class AllocationProfile {
   readonly #strings: string[];
   #nextNodeId: number;
   #functionInfos: FunctionAllocationInfo[];
-  #idToNode: {[x: number]: BottomUpAllocationNode|null};
-  readonly #idToTopDownNode: {[x: number]: TopDownAllocationNode};
-  #collapsedTopNodeIdToFunctionInfo: {[x: number]: FunctionAllocationInfo};
+  #idToNode: Record<number, BottomUpAllocationNode|null>;
+  readonly #idToTopDownNode: Record<number, TopDownAllocationNode>;
+  #collapsedTopNodeIdToFunctionInfo: Record<number, FunctionAllocationInfo>;
   #traceTops: HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]|null;
 
   constructor(profile: Profile, liveObjectStats: LiveObjects) {

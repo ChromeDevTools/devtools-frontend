@@ -91,9 +91,7 @@ export interface ElementInfo {
   nodeHeight: number;
   isLocked: boolean;
   isLockedAncestor: boolean;
-  style: {
-    [key: string]: string|undefined,
-  }&{
+  style: Record<string, string|undefined>&{
     'color-unclamped-rgba'?: ColorRgba,
     'background-color-unclamped-rgba'?: ColorRgba,
   };

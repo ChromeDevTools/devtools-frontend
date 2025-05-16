@@ -70,7 +70,7 @@ function maybeRetrieveContextTypes<T = unknown>(
 }
 
 const viewId = 'chrome-recorder';
-(UI.ViewManager.defaultOptionsForTabs as {[key: string]: boolean})[viewId] = true;
+(UI.ViewManager.defaultOptionsForTabs as Record<string, boolean>)[viewId] = true;
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.PANEL,
   id: viewId,

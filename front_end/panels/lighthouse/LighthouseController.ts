@@ -659,9 +659,7 @@ export const Presets: Preset[] = [
   },
 ];
 
-export interface Flags {
-  [flag: string]: string|boolean;
-}
+export type Flags = Record<string, string|boolean>;
 
 export const RuntimeSettings: RuntimeSetting[] = [
   {

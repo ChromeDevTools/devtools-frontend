@@ -266,7 +266,7 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
 
 interface NamedBitSetFilterUIOptions {
   items: Item[];
-  setting?: Common.Settings.Setting<{[key: string]: boolean}>;
+  setting?: Common.Settings.Setting<Record<string, boolean>>;
 }
 
 export class NamedBitSetFilterUIElement extends HTMLElement {
@@ -321,9 +321,9 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
   private readonly typeFilterElementTypeNames = new WeakMap<HTMLElement, string>();
   private allowedTypes = new Set<string>();
   private readonly typeFilterElements: HTMLElement[] = [];
-  private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>|undefined;
+  private readonly setting: Common.Settings.Setting<Record<string, boolean>>|undefined;
 
-  constructor(items: Item[], setting?: Common.Settings.Setting<{[key: string]: boolean}>) {
+  constructor(items: Item[], setting?: Common.Settings.Setting<Record<string, boolean>>) {
     super();
     this.filtersElement = document.createElement('div');
     this.filtersElement.classList.add('filter-bitset-filter');
@@ -368,7 +368,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
   }
 
   private settingChanged(): void {
-    const allowedTypesFromSetting = (this.setting as Common.Settings.Setting<{[key: string]: boolean}>).get();
+    const allowedTypesFromSetting = (this.setting as Common.Settings.Setting<Record<string, boolean>>).get();
     this.allowedTypes = new Set();
     for (const element of this.typeFilterElements) {
       const typeName = this.typeFilterElementTypeNames.get(element);
@@ -478,7 +478,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
 
     if (this.setting) {
       // Settings do not support `Sets` so convert it back to the Map-like object.
-      const updatedSetting = ({} as {[key: string]: boolean});
+      const updatedSetting = ({} as Record<string, boolean>);
       for (const type of this.allowedTypes) {
         updatedSetting[type] = true;
       }

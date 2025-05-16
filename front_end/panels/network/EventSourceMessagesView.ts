@@ -219,9 +219,7 @@ function eventSourceMessageNodeComparator(
   return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
 }
 
-export const Comparators: {
-  [x: string]: (arg0: EventSourceMessageNode, arg1: EventSourceMessageNode) => number,
-} = {
+export const Comparators: Record<string, (arg0: EventSourceMessageNode, arg1: EventSourceMessageNode) => number> = {
   id: eventSourceMessageNodeComparator.bind(null, message => message.eventId),
   type: eventSourceMessageNodeComparator.bind(null, message => message.eventName),
   time: eventSourceMessageNodeComparator.bind(null, message => message.time),

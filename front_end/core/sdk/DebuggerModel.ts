@@ -186,8 +186,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null = null;
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
   // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
-  readonly #breakpointResolvedEventTarget =
-      new Common.ObjectWrapper.ObjectWrapper<{[breakpointId: string]: Location}>();
+  readonly #breakpointResolvedEventTarget = new Common.ObjectWrapper.ObjectWrapper<Record<string, Location>>();
   // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
   // to by way of its functionLocation (as per Debugger.CallFrame).
   #autoSteppingContext: Location|null = null;
@@ -1502,23 +1501,21 @@ export class DebuggerPausedDetails {
   debuggerModel: DebuggerModel;
   callFrames: CallFrame[];
   reason: Protocol.Debugger.PausedEventReason;
-  auxData: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [x: string]: any,
-  }|undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  auxData: Record<string, any>|undefined;
   breakpointIds: string[];
   asyncStackTrace: Protocol.Runtime.StackTrace|undefined;
   asyncStackTraceId: Protocol.Runtime.StackTraceId|undefined;
   constructor(
-      debuggerModel: DebuggerModel, callFrames: Protocol.Debugger.CallFrame[],
-      reason: Protocol.Debugger.PausedEventReason, auxData: {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [x: string]: any,
-      }|undefined,
-      breakpointIds: string[], asyncStackTrace?: Protocol.Runtime.StackTrace,
-      asyncStackTraceId?: Protocol.Runtime.StackTraceId) {
+      debuggerModel: DebuggerModel,
+      callFrames: Protocol.Debugger.CallFrame[],
+      reason: Protocol.Debugger.PausedEventReason,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      auxData: Record<string, any>|undefined,
+      breakpointIds: string[],
+      asyncStackTrace?: Protocol.Runtime.StackTrace,
+      asyncStackTraceId?: Protocol.Runtime.StackTraceId,
+  ) {
     this.debuggerModel = debuggerModel;
     this.reason = reason;
     this.auxData = auxData;

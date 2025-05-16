@@ -46,10 +46,8 @@ interface TestRetry {
 }
 
 interface HookWithParent {
-  parent: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any,
-  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  parent: Record<string, any>;
 }
 
 class ResultsDbReporter extends Mocha.reporters.Spec {

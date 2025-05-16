@@ -651,7 +651,7 @@ export class ExtensionOptions extends HTMLElement {
     this.render();
   }
 
-  private updateConfigurations(data: {[key: string]: unknown}): void {
+  private updateConfigurations(data: Record<string, unknown>): void {
     if (this.timeoutId !== undefined) {
       window.clearTimeout(this.timeoutId);
     }
@@ -661,7 +661,7 @@ export class ExtensionOptions extends HTMLElement {
   }
 
   private render(): void {
-    const configurations = new Promise<{[key: string]: unknown}>(
+    const configurations = new Promise<Record<string, unknown>>(
         resolve => chrome.storage.local.get(
             {moduleConfigurations: DEFAULT_MODULE_CONFIGURATIONS, logPluginApiCalls: false}, resolve));
     const moduleConfigurationListPromise = configurations.then(

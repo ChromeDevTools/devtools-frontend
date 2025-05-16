@@ -338,9 +338,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-export const TypeStyles: {
-  [x: string]: string,
-} = {
+export const TypeStyles: Record<string, string> = {
   attribute: 'ax-value-string',
   boolean: 'object-value-boolean',
   booleanOrUndefined: 'object-value-boolean',

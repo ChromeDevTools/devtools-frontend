@@ -639,9 +639,7 @@ export class AXBreadcrumb {
   }
 }
 
-interface RoleStyles {
-  [type: string]: string;
-}
+type RoleStyles = Record<string, string>;
 
 export const RoleStyles: RoleStyles = {
   internalRole: 'ax-internal-role',

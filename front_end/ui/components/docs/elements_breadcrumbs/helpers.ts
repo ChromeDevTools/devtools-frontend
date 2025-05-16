@@ -5,7 +5,7 @@ import type * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Elements from '../../../../panels/elements/components/components.js';
 
 interface CrumbOverrides extends Partial<Elements.Helper.DOMNode> {
-  attributes?: {[x: string]: string|undefined};
+  attributes?: Record<string, string|undefined>;
 }
 
 let id = 0;

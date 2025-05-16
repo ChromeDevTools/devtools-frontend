@@ -269,9 +269,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #contentDataInternal: Promise<TextUtils.ContentData.ContentDataOrError>|null;
   #streamingContentData: Promise<TextUtils.StreamingContentData.StreamingContentDataOrError>|null;
   readonly #framesInternal: WebSocketFrame[];
-  #responseHeaderValues: {
-    [x: string]: string|undefined,
-  };
+  #responseHeaderValues: Record<string, string|undefined>;
   #responseHeadersTextInternal: string;
   #originalResponseHeaders: Protocol.Fetch.HeaderEntry[];
   #sortedOriginalResponseHeaders?: NameValue[];
@@ -281,9 +279,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #setCookieHeaders: Protocol.Fetch.HeaderEntry[];
 
   #requestHeadersInternal: NameValue[];
-  #requestHeaderValues: {
-    [x: string]: string|undefined,
-  };
+  #requestHeaderValues: Record<string, string|undefined>;
   #remoteAddressInternal: string;
   #remoteAddressSpaceInternal: Protocol.Network.IPAddressSpace;
   #referrerPolicyInternal: Protocol.Network.RequestReferrerPolicy|null;

@@ -1479,10 +1479,11 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     function buildArrayFragment(
-        this: {
-          [x: number]: Object,
-        },
-        fromIndex?: number, toIndex?: number, sparseIterationThreshold?: number): unknown {
+        this: Record<number, Object>,
+        fromIndex?: number,
+        toIndex?: number,
+        sparseIterationThreshold?: number,
+        ): unknown {
       const result = Object.create(null);
 
       if (fromIndex === undefined || toIndex === undefined || sparseIterationThreshold === undefined) {

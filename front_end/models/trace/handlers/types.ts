@@ -32,7 +32,7 @@ export type HandlerName = keyof typeof ModelHandlers;
 // TraceWindow. The HandlerData, therefore, would determine that the
 // TraceProcessor would contain a key called 'TraceBounds' whose value is
 // a TraceWindow.
-export type EnabledHandlerDataWithMeta<T extends {[key: string]: Handler}> = {
+export type EnabledHandlerDataWithMeta<T extends Record<string, Handler>> = {
   // We allow the user to configure which handlers are created by passing them
   // in when constructing a model instance. However, we then ensure that the
   // Meta handler is added to that, as the Model relies on some of the data
@@ -47,7 +47,7 @@ export type EnabledHandlerDataWithMeta<T extends {[key: string]: Handler}> = {
   [K in keyof T]: Readonly<ReturnType<T[K]['data']>>;
 };
 
-export type HandlersWithMeta<T extends {[key: string]: Handler}> = {
+export type HandlersWithMeta<T extends Record<string, Handler>> = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Meta: typeof ModelHandlers.Meta,
 }&{

@@ -172,7 +172,7 @@ export class TestValue implements Value {
     address = address ?? elements[0].location;
     content.setUint32(0, address, true);
     const space = elements[0].typeNames[0].endsWith('*') ? '' : ' ';
-    const members: {[key: string|number]: TestValue} = {'*': elements[0]};
+    const members: Record<string|number, TestValue> = {'*': elements[0]};
     for (let i = 0; i < elements.length; ++i) {
       members[i] = elements[i];
     }

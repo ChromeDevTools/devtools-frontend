@@ -66,7 +66,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   private readonly embedderPathInternal: Platform.DevToolsPath.RawPathString;
   private readonly domFileSystem: FileSystem;
   private readonly excludedFoldersSetting:
-      Common.Settings.Setting<{[path: Platform.DevToolsPath.UrlString]: Platform.DevToolsPath.EncodedPathString[]}>;
+      Common.Settings.Setting<Record<Platform.DevToolsPath.UrlString, Platform.DevToolsPath.EncodedPathString[]>>;
   private excludedFoldersInternal: Set<Platform.DevToolsPath.EncodedPathString>;
   private readonly excludedEmbedderFolders: Platform.DevToolsPath.RawPathString[] = [];
   private readonly initialFilePathsInternal = new Set<Platform.DevToolsPath.EncodedPathString>();

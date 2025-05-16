@@ -318,23 +318,20 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('interfaceDefinitions');
   }
 
-  aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter): Promise<{
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
-  }> {
+  aggregatesWithFilter(filter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
+      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>> {
     return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 
-  aggregatesForDiff(interfaceDefinitions: string): Promise<{
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
-  }> {
+  aggregatesForDiff(interfaceDefinitions: string):
+      Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>> {
     return this.callMethodPromise('aggregatesForDiff', interfaceDefinitions);
   }
 
-  calculateSnapshotDiff(baseSnapshotId: string, baseSnapshotAggregates: {
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
-  }): Promise<{
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
-  }> {
+  calculateSnapshotDiff(
+      baseSnapshotId: string,
+      baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
+      ): Promise<Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> {
     return this.callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
   }
 

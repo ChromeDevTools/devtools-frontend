@@ -290,7 +290,7 @@ export const showWhitespace = new DynamicSetting<string>('show-whitespaces-in-ed
 
 export const allowScrollPastEof = DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
 
-const cachedIndentUnit: {[indent: string]: CM.Extension} = Object.create(null);
+const cachedIndentUnit: Record<string, CM.Extension> = Object.create(null);
 
 function getIndentUnit(indent: string): CM.Extension {
   let value = cachedIndentUnit[indent];

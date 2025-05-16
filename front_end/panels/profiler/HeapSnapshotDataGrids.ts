@@ -867,9 +867,10 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     void this.populateChildren(this.nodeFilterInternal);
   }
 
-  aggregatesReceived(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter, aggregates: {
-    [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
-  }): void {
+  aggregatesReceived(
+      nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter,
+      aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>,
+      ): void {
     this.filterInProgress = null;
     if (this.nextRequestedFilter && this.snapshot) {
       void this.snapshot.aggregatesWithFilter(this.nextRequestedFilter)

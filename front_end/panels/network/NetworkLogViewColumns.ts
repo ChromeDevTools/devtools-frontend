@@ -153,12 +153,10 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 export class NetworkLogViewColumns {
   private networkLogView: NetworkLogView;
-  private readonly persistentSettings: Common.Settings.Setting<{
-    [x: string]: {
-      visible: boolean,
-      title: string,
-    },
-  }>;
+  private readonly persistentSettings: Common.Settings.Setting<Record<string, {
+    visible: boolean,
+    title: string,
+  }>>;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private readonly eventDividers: Map<string, number[]>;
   private eventDividersShown: boolean;
@@ -591,11 +589,8 @@ export class NetworkLogViewColumns {
   }
 
   private saveColumnsSettings(): void {
-    const saveableSettings: {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      [x: string]: any,
-    } = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const saveableSettings: Record<string, any> = {};
     for (const columnConfig of this.columns) {
       saveableSettings[columnConfig.id] = {visible: columnConfig.visible, title: columnConfig.title};
     }

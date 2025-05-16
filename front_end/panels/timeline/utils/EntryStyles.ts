@@ -593,13 +593,9 @@ export class TimelineCategory {
   }
 }
 
-export type CategoryPalette = {
-  [c in EventCategory]: TimelineCategory
-};
+export type CategoryPalette = Record<EventCategory, TimelineCategory>;
 
-type EventStylesMap = {
-  [key in Trace.Types.Events.Name]?: TimelineRecordStyle;
-};
+type EventStylesMap = Partial<Record<Trace.Types.Events.Name, TimelineRecordStyle>>;
 
 /**
  * This object defines the styles for the categories used in the

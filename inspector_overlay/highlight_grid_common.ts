@@ -219,7 +219,7 @@ export interface GridHighlight {
   columnGaps: Array<string|number>;
   rows: Array<string|number>;
   columns: Array<string|number>;
-  areaNames: {[key: string]: Array<string|number>};
+  areaNames: Record<string, Array<string|number>>;
   gridHighlightConfig: {
     gridBorderDash: boolean,
     rowLineDash: boolean,
@@ -435,7 +435,7 @@ function drawExtendedGridLines(
  * placing labels in and around the grid for various things is handled later.
  */
 function drawGridAreas(
-    context: CanvasRenderingContext2D, areas: {[key: string]: Array<string|number>}, borderColor: string|undefined,
+    context: CanvasRenderingContext2D, areas: Record<string, Array<string|number>>, borderColor: string|undefined,
     emulationScaleFactor: number): AreaBounds[] {
   if (!areas || !Object.keys(areas).length) {
     return [];

@@ -107,7 +107,7 @@ export default createRule<[], MessageIds>({
           BUILTIN_ELEMENT_REGEXP.test(superNode.property.name));
     }
 
-    function reportError(node: Node, messageId: MessageIds, data?: {[key: string]: string}): void {
+    function reportError(node: Node, messageId: MessageIds, data?: Record<string, string>): void {
       context.report({
         node,
         messageId,

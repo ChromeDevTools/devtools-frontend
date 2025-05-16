@@ -11,9 +11,7 @@ export interface DOMPinnedWebIDLProp {
 export interface DOMPinnedWebIDLType {
   inheritance?: string;
   includes?: string[];
-  props?: {
-    [PropName: string]: DOMPinnedWebIDLProp,
-  };
+  props?: Record<string, DOMPinnedWebIDLProp>;
   rules?: DOMPinnedWebIDLRule[];
 }
 

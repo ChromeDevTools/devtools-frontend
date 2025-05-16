@@ -673,7 +673,7 @@ export class DevToolsPage extends PageWrapper {
 
 export interface DevtoolsSettings {
   enabledDevToolsExperiments: string[];
-  devToolsSettings: {[key: string]: string|boolean};
+  devToolsSettings: Record<string, string|boolean>;
   dockingMode: string;
 }
 

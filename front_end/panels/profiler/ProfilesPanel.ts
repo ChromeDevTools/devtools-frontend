@@ -100,9 +100,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     profile: ProfileHeader,
     view: UI.Widget.Widget,
   }>;
-  typeIdToSidebarSection: {
-    [x: string]: ProfileTypeSidebarSection,
-  };
+  typeIdToSidebarSection: Record<string, ProfileTypeSidebarSection>;
   fileSelectorElement!: HTMLInputElement;
   selectedProfileType?: ProfileType;
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
@@ -477,9 +475,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 export class ProfileTypeSidebarSection extends UI.TreeOutline.TreeElement {
   dataDisplayDelegate: DataDisplayDelegate;
   readonly profileTreeElements: ProfileSidebarTreeElement[];
-  profileGroups: {
-    [x: string]: ProfileGroup,
-  };
+  profileGroups: Record<string, ProfileGroup>;
 
   constructor(dataDisplayDelegate: DataDisplayDelegate, profileType: ProfileType) {
     super(profileType.treeItemTitle, true);

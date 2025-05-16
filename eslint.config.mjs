@@ -540,6 +540,8 @@ export default defineConfig([
       'no-array-constructor': 'off',
       '@typescript-eslint/no-array-constructor': 'error',
 
+      '@typescript-eslint/consistent-indexed-object-style': 'error',
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 

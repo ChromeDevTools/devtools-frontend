@@ -108,7 +108,7 @@ export function getLocalizedString(
  * Register a file's UIStrings with i18n, return function to generate the string ids.
  */
 export function registerUIStrings(
-    path: string, stringStructure: {[key: string]: string}): I18n.LocalizedStringSet.RegisteredFileStrings {
+    path: string, stringStructure: Record<string, string>): I18n.LocalizedStringSet.RegisteredFileStrings {
   return i18nInstance.registerFileStrings(path, stringStructure);
 }
 

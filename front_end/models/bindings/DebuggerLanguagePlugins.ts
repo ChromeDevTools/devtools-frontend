@@ -178,9 +178,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
     }
 
     const properties = [];
-    const namespaces: {
-      [x: string]: SDK.RemoteObject.RemoteObject,
-    } = {};
+    const namespaces: Record<string, SDK.RemoteObject.RemoteObject> = {};
 
     function makeProperty(name: string, obj: SDK.RemoteObject.RemoteObject): SDK.RemoteObject.RemoteObjectProperty {
       return new SDK.RemoteObject.RemoteObjectProperty(
@@ -199,9 +197,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
         sourceVar = new SDK.RemoteObject.LocalJSONObject(undefined);
       }
       if (variable.nestedName && variable.nestedName.length > 1) {
-        let parent: {
-          [x: string]: SDK.RemoteObject.RemoteObject,
-        } = namespaces;
+        let parent: Record<string, SDK.RemoteObject.RemoteObject> = namespaces;
         for (let index = 0; index < variable.nestedName.length - 1; index++) {
           const nestedName = variable.nestedName[index];
           let child: NamespaceObject|SDK.RemoteObject.RemoteObject = parent[nestedName];

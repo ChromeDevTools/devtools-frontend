@@ -72,9 +72,9 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/PaintProfilerView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let categories: {[x: string]: PaintProfilerCategory}|null = null;
+let categories: Record<string, PaintProfilerCategory>|null = null;
 
-let logItemCategoriesMap: {[x: string]: PaintProfilerCategory}|null = null;
+let logItemCategoriesMap: Record<string, PaintProfilerCategory>|null = null;
 
 export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(
     UI.Widget.HBox) {
@@ -130,7 +130,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.reset();
   }
 
-  static categories(): {[x: string]: PaintProfilerCategory} {
+  static categories(): Record<string, PaintProfilerCategory> {
     if (!categories) {
       categories = {
         shapes: new PaintProfilerCategory('shapes', i18nString(UIStrings.shapes), 'rgb(255, 161, 129)'),
@@ -142,11 +142,11 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     return categories;
   }
 
-  private static initLogItemCategories(): {[x: string]: PaintProfilerCategory} {
+  private static initLogItemCategories(): Record<string, PaintProfilerCategory> {
     if (!logItemCategoriesMap) {
       const categories = PaintProfilerView.categories();
 
-      const logItemCategories: {[x: string]: PaintProfilerCategory} = {};
+      const logItemCategories: Record<string, PaintProfilerCategory> = {};
       logItemCategories['Clear'] = categories['misc'];
       logItemCategories['DrawPaint'] = categories['misc'];
       logItemCategories['DrawData'] = categories['misc'];
@@ -260,7 +260,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     let maxBarTime = 0;
     const barTimes = [];
     const barHeightByCategory = [];
-    let heightByCategory: {[category: string]: number} = {};
+    let heightByCategory: Record<string, number> = {};
     for (let i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
       let categoryName = (this.logCategories[i]?.name) || 'misc';
       const sampleIndex = this.log[i].commandIndex;
@@ -300,7 +300,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
-  private renderBar(index: number, heightByCategory: {[x: string]: number}): void {
+  private renderBar(index: number, heightByCategory: Record<string, number>): void {
     const categories = PaintProfilerView.categories();
     let currentHeight = 0;
     const x = this.barPaddingWidth + index * this.outerBarWidth;
@@ -335,7 +335,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       return {total: 0, slices: []};
     }
     let totalTime = 0;
-    const timeByCategory: {[x: string]: number} = {};
+    const timeByCategory: Record<string, number> = {};
     for (let i = window.left; i < window.right; ++i) {
       const logEntry = this.log[i];
       const category = PaintProfilerView.categoryForLogItem(logEntry);

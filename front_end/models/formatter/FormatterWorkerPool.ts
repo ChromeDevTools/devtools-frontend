@@ -86,10 +86,7 @@ export class FormatterWorkerPool {
   }
 
   private runChunkedTask(
-      methodName: string, params: {
-        [x: string]: string,
-      },
-      callback: (arg0: boolean, arg1: unknown) => void): void {
+      methodName: string, params: Record<string, string>, callback: (arg0: boolean, arg1: unknown) => void): void {
     const task = new Task(methodName, params, onData, true);
     this.taskQueue.push(task);
     this.processNextTask();
@@ -105,11 +102,8 @@ export class FormatterWorkerPool {
     }
   }
 
-  private runTask(methodName: FormatterActions.FormatterActions, params: {
-    [x: string]: unknown,
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }): Promise<any> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private runTask(methodName: FormatterActions.FormatterActions, params: Record<string, unknown>): Promise<any> {
     return new Promise(resolve => {
       const task = new Task(methodName, params, resolve, false);
       this.taskQueue.push(task);

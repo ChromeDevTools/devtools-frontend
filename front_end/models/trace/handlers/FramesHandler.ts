@@ -90,9 +90,7 @@ function entryIsTopLevel(entry: Types.Events.Event): boolean {
 
 export class TimelineFrameModel {
   #frames: TimelineFrame[] = [];
-  #frameById: {
-    [x: number]: TimelineFrame,
-  } = {};
+  #frameById: Record<number, TimelineFrame> = {};
   #beginFrameQueue: TimelineFrameBeginFrameQueue = new TimelineFrameBeginFrameQueue();
   #lastFrame: TimelineFrame|null = null;
   #mainFrameCommitted = false;
@@ -498,9 +496,7 @@ export class TimelineFrameBeginFrameQueue {
   private queueFrames: number[] = [];
 
   // Maps frameSeqId to BeginFrameInfo.
-  private mapFrames: {
-    [x: number]: BeginFrameInfo,
-  } = {};
+  private mapFrames: Record<number, BeginFrameInfo> = {};
 
   // Add a BeginFrame to the queue, if it does not already exit.
   addFrameIfNotExists(seqId: number, startTime: Types.Timing.Micro, isDropped: boolean, isPartial: boolean): void {

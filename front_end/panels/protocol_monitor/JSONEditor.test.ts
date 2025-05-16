@@ -261,7 +261,7 @@ describeWithEnvironment('JSONEditor', () => {
     return hintDetailView?.shadowRoot?.querySelector('.hint-popup-wrapper')?.textContent?.replaceAll(/\s/g, '');
   };
 
-  const renderEditorForCommand = async(command: string, parameters: {[paramName: string]: unknown}): Promise<{
+  const renderEditorForCommand = async(command: string, parameters: Record<string, unknown>): Promise<{
     inputs: NodeListOf<SuggestionInput.SuggestionInput.SuggestionInput>,
     displayedCommand: string,
     jsonEditor: ProtocolMonitor.JSONEditor.JSONEditor,

@@ -367,7 +367,7 @@ export class CommandMenuProvider extends Provider {
   }
 }
 
-const categoryIcons: {[key: string]: string} = {
+const categoryIcons: Record<string, string> = {
   Appearance: 'palette',
   Console: 'terminal',
   Debugger: 'bug',

@@ -203,6 +203,9 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
   }
 }
 
+// 16k Tokens * ~4 char per token.
+const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+
 export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAIContext.ActiveInsight> {
   #insight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
@@ -299,6 +302,12 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         );
         const formatted =
             requests.map(r => TraceEventFormatter.networkRequest(r, activeInsight.parsedTrace, {verbose: false}));
+
+        if (this.#isFunctionResponseTooLarge(formatted.join('\n'))) {
+          return {
+            error: 'getNetworkActivitySummary response is too large. Try investigating using other functions',
+          };
+        }
         const summaryFact: Host.AidaClient.RequestFact = {
           text:
               `This is the network summary for this insight. You can use this and not call getNetworkActivitySummary again:\n${
@@ -346,6 +355,11 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
           return {error: 'Request not found'};
         }
         const formatted = TraceEventFormatter.networkRequest(request, activeInsight.parsedTrace, {verbose: true});
+        if (this.#isFunctionResponseTooLarge(formatted)) {
+          return {
+            error: 'getNetworkRequestDetail response is too large. Try investigating using other functions',
+          };
+        }
         return {result: {request: formatted}};
       },
     });
@@ -396,6 +410,11 @@ The fields are:
           return {error: 'No main thread activity found'};
         }
         const activity = tree.serialize();
+        if (this.#isFunctionResponseTooLarge(activity)) {
+          return {
+            error: 'getMainThreadActivity response is too large. Try investigating using other functions',
+          };
+        }
         const activityFact: Host.AidaClient.RequestFact = {
           text:
               `This is the main thread activity for this insight. You can use this and not call getMainThreadActivity again:\n${
@@ -410,6 +429,10 @@ The fields are:
       },
 
     });
+  }
+
+  #isFunctionResponseTooLarge(response: string): boolean {
+    return response.length > MAX_FUNCTION_RESULT_BYTE_LENGTH;
   }
 
   override parseTextResponse(response: string): ParsedResponse {

@@ -263,6 +263,7 @@ export const knownContextValues = new Set([
   'access-control-allow-origin',
   'accessibility-tree',
   'accessibility.view',
+  'accuracy',
   'achromatopsia',
   'action',
   'action-button',

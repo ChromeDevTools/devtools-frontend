@@ -26,7 +26,6 @@ devtools_module("recorder") {
     "../../models/trace:bundle",
     "../../panels/common:bundle",
     "../../panels/emulation:bundle",
-    "../../panels/timeline:bundle",
     "../../services/tracing:bundle",
     "../../third_party/puppeteer-replay:bundle",
     "../../ui/components/dialogs:bundle",

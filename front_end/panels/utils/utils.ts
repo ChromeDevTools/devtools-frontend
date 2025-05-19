@@ -211,7 +211,7 @@ export class PanelUtils {
         binding ? Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(uiSourceCode) : undefined;
     // clang-format off
     return html`<devtools-file-source-icon name=${iconType} title=${ifDefined(title)}
-      .data=${{contentType: uiSourceCode.contentType().name(), hasDotBadge, isDotPurple}}></devtools-file-source-icon>`;
+      .data=${{contentType: uiSourceCode.contentType().name(), hasDotBadge, isDotPurple, iconType}}></devtools-file-source-icon>`;
     // clang-format on
   }
 

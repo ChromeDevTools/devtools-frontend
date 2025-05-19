@@ -79,10 +79,6 @@ async function waitForExpandedIssueTitle(issueIconComponent: puppeteer.ElementHa
 }
 
 describe('The row\'s icon bucket', function() {
-  if (this.timeout()) {
-    this.timeout(10000);
-  }
-
   // This test and the tests below require the use of unsafe hoverElement/clickElement helpers
   // because they return a list of elements and check each one of them. Perhaps, the tests
   // can be changed to check the elements one by one using the safer hover/click helpers.

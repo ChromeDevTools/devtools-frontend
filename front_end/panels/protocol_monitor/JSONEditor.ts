@@ -1218,7 +1218,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
           <devtools-suggestion-input
             .options=${[...input.metadataByCommand.keys()]}
             .value=${input.command}
-            .placeholder=${'Enter your command...'}
+            .placeholder=${'Enter your command…'}
             .suggestionFilter=${suggestionFilter}
             .jslogContext=${'command'}
             @blur=${input.onCommandInputBlur}

@@ -3,13 +3,19 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../models/trace/trace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithRealConnection} from '../../testing/RealConnection.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithMockConnection,
+  dispatchEvent,
+  setMockConnectionResponseHandler
+} from '../../testing/MockConnection.js';
+import {defaultTraceEvent} from '../../testing/TraceHelpers.js';
 
 import * as Timeline from './timeline.js';
 
-describeWithRealConnection('TimelineController', () => {
+describeWithMockConnection('TimelineController', () => {
   it('calls the callback methods on the client in the expected order', async function() {
     // The test needs at least 0.5s to have progress events be sent. Set a higher timeout to avoid flakiness.
     if (this.timeout() !== 0) {
@@ -43,42 +49,50 @@ describeWithRealConnection('TimelineController', () => {
       loadingCompleteForTest() {},
     };
 
-    const primaryPage = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    LiveMetrics.LiveMetrics.instance({forceNew: true});
+
+    const primaryPage = createTarget();
     if (!primaryPage) {
       throw new Error('Could not find primary page');
     }
-    const root = SDK.TargetManager.TargetManager.instance().rootTarget();
-    if (!root) {
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (!rootTarget) {
       throw new Error('Could not find root target');
     }
 
-    const controller = new Timeline.TimelineController.TimelineController(root, primaryPage, client);
-
-    class TestTracingComponent extends HTMLElement {
-      connectedCallback() {
-        const newDiv = document.createElement('div');
-        newDiv.innerHTML = 'testing';
-        this.appendChild(newDiv);
-      }
-    }
-    customElements.define('test-tracing-component', TestTracingComponent);
-    const component = new TestTracingComponent();
-
-    // Start a recording and inject the test component to trigger some trace events.
+    const controller = new Timeline.TimelineController.TimelineController(rootTarget, primaryPage, client);
+    setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
+    setMockConnectionResponseHandler('DOM.enable', () => ({}));
+    setMockConnectionResponseHandler('CSS.enable', () => ({}));
+    setMockConnectionResponseHandler('Debugger.enable', () => ({}));
+    setMockConnectionResponseHandler('Overlay.enable', () => ({}));
+    setMockConnectionResponseHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
+    setMockConnectionResponseHandler('Animation.enable', () => ({}));
+    setMockConnectionResponseHandler('DOM.disable', () => ({}));
+    setMockConnectionResponseHandler('CSS.disable', () => ({}));
+    setMockConnectionResponseHandler('Debugger.disable', () => ({}));
+    setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => ({}));
+    setMockConnectionResponseHandler('Overlay.disable', () => ({}));
+    setMockConnectionResponseHandler('Animation.disable', () => ({}));
+    setMockConnectionResponseHandler('Tracing.start', () => ({}));
+    setMockConnectionResponseHandler('Runtime.evaluate', () => ({}));
+    setMockConnectionResponseHandler('Runtime.addBinding', () => ({}));
+    setMockConnectionResponseHandler('Page.addScriptToEvaluateOnNewDocument', () => ({}));
+    setMockConnectionResponseHandler('Tracing.end', () => {
+      dispatchEvent(rootTarget, 'Tracing.tracingComplete', {dataLossOccurred: false});
+      return {};
+    });
     await controller.startRecording({});
-    renderElementIntoDOM(component);
-    // Run the test for at least 0.5s to have progress events be sent.
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    dispatchEvent(rootTarget, 'Tracing.dataCollected', {value: [defaultTraceEvent]});
+    dispatchEvent(rootTarget, 'Tracing.bufferUsage', {percentFull: .5});
     await controller.stopRecording();
     sinon.assert.callCount(stubs.processingStarted, 1);
-    // Depending on the speed of the machine you might get more than 1 progress
-    // call, hence we assert that there is at least one.
-    assert.isAtLeast(stubs.recordingProgress.callCount, 1);
+    sinon.assert.callCount(stubs.recordingProgress, 1);
     sinon.assert.callCount(stubs.loadingStarted, 1);
-    assert.isAtLeast(stubs.loadingProgress.callCount, 1);
+    sinon.assert.callCount(stubs.loadingProgress, 1);
     sinon.assert.callCount(stubs.loadingComplete, 1);
     const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [Trace.Types.Events.Event[]];
     // Ensure we collected events during tracing.
-    assert.isTrue(collectedEvents.length > 0);
+    assert.lengthOf(collectedEvents, 1);
   });
 });

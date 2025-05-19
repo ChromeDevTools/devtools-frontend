@@ -513,9 +513,9 @@ describe('The Memory Panel', function() {
     await waitForRetainerChain([
       '{y}',
       '{d}',
-      `{${'#'.repeat(130)}, ...}`,
+      `{${'#'.repeat(130)}, …}`,
       '{b, irrelevantProperty, <symbol also irrelevant>, "}"}',
-      '{a, extraProp0, extraProp1, extraProp2, extraProp3, ..., extraProp6, extraProp7, extraProp8, extraProp9}',
+      '{a, extraProp0, extraProp1, extraProp2, extraProp3, …, extraProp6, extraProp7, extraProp8, extraProp9}',
       'Window',
     ]);
     await clickOnContextMenuForRetainer('b', 'Ignore this retainer');

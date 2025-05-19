@@ -7,7 +7,8 @@ import {assert} from 'chai';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample} from '../../../helpers/shared.js';
+
+import {loadTimelineDocExample} from './helpers.js';
 
 describe('Performance panel', function() {
   if (this.timeout() !== 0) {
@@ -16,15 +17,13 @@ describe('Performance panel', function() {
   }
 
   itScreenshot('loads a trace file and renders it in the timeline', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=basic');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=basic');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
   });
 
   itScreenshot('renders correctly the Bottom Up datagrid', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('div.tabbed-pane');
     await click('#tab-bottom-up');
     const datagrid = await waitFor('.timeline-tree-view');
@@ -37,8 +36,7 @@ describe('Performance panel', function() {
   });
 
   itScreenshot('renders correctly the Call Tree datagrid', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('div.tabbed-pane');
     await click('#tab-call-tree');
     const datagrid = await waitFor('.timeline-tree-view');
@@ -53,8 +51,7 @@ describe('Performance panel', function() {
   // Flaky on linux
   itScreenshot.skipOnPlatforms(
       ['linux'], '[crbug.com/327586819]: renders the timeline correctly when scrolling', async () => {
-        await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
-        await waitFor('.timeline-flamechart');
+        await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
         const panel = await waitFor('body');
 
         const virtualScrollBar = await waitFor('div.chart-viewport-v-scroll.always-show-scrollbar');
@@ -66,29 +63,26 @@ describe('Performance panel', function() {
       });
 
   itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile.png');
   });
 
   itScreenshot(
       'loads a cpuprofile and renders it in node mode with default track source set to new engine', async () => {
-        await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
-        await waitFor('.timeline-flamechart');
+        await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
         const panel = await waitFor('body');
         await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png');
       });
 
   itScreenshot('candy stripes long tasks', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png');
   });
 
   itScreenshot('renders screenshots in the frames track', async () => {
-    await loadComponentDocExample(
+    await loadTimelineDocExample(
         'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
     const panel = await waitFor('body');
     await waitForFunction(async () => {
@@ -102,8 +96,7 @@ describe('Performance panel', function() {
   // Flaking.
   itScreenshot.skip(
       '[crbug.com/373792008]: supports the network track being expanded and then clicked', async function() {
-        await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
-        await waitFor('.timeline-flamechart');
+        await loadTimelineDocExample('performance_panel/basic.html?trace=web-dev');
         const panel = await waitFor('body');
 
         const {frontend} = getBrowserAndPages();
@@ -118,7 +111,7 @@ describe('Performance panel', function() {
       });
 
   itScreenshot('renders the window range bounds correctly when loading multiple profiles', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?cpuprofile=basic');
+    await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=basic');
     let timingTitleHandle = await waitFor('.summary-range');
     let timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
     assert.isTrue(timingTitle.includes('0&nbsp;ms – 2.38&nbsp;s'), `got: ${timingTitle}`);
@@ -137,7 +130,7 @@ describe('Performance panel', function() {
   });
   itScreenshot('renders the flamechart correctly when toggling the custom data setting', async () => {
     const {frontend} = getBrowserAndPages();
-    await loadComponentDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');
     // expand the network track to ensure it's unaffected when toggling the custom data setting.
     await frontend.evaluate(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

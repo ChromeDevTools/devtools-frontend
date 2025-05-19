@@ -178,7 +178,7 @@ const UIStrings = {
   /**
    *@description Text to save content as a specific file type
    */
-  saveAs: 'Save as...',
+  saveAs: 'Save as…',
   /**
    *@description Text to copy Console log to clipboard
    */

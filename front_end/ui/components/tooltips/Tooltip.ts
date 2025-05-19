@@ -42,6 +42,11 @@ export class Tooltip extends HTMLElement {
   #timeout: number|null = null;
   #closing = false;
   #anchorObserver: MutationObserver|null = null;
+  #openedViaHotkey = false;
+
+  get openedViaHotkey(): boolean {
+    return this.#openedViaHotkey;
+  }
 
   get open(): boolean {
     return this.matches(':popover-open');
@@ -236,11 +241,13 @@ export class Tooltip extends HTMLElement {
   #resetClosing = (event: Event): void => {
     if ((event as ToggleEvent).newState === 'closed') {
       this.#closing = false;
+      this.#openedViaHotkey = false;
     }
   };
 
   #keyDown = (event: KeyboardEvent): void => {
     if ((event.altKey && event.key === 'ArrowDown') || (event.key === 'Escape' && this.open)) {
+      this.#openedViaHotkey = !this.open;
       this.toggle();
       event.consume(true);
     }

@@ -181,6 +181,7 @@ ts_library("unittests") {
     "KeyboardShortcut.test.ts",
     "ListModel.test.ts",
     "ListWidget.test.ts",
+    "SettingsUI.test.ts",
     "ShortcutRegistry.test.ts",
     "SplitWidget.test.ts",
     "SuggestBox.test.ts",
@@ -200,6 +201,7 @@ ts_library("unittests") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../testing",
+    "../lit:bundle",
     "./components/quick_open:bundle",
   ]
 }

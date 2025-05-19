@@ -106,14 +106,13 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     setValue(folderExcludeSetting.get());
     return excludePatternElement;
 
-    function regexValidator(value: string): {valid: boolean, errorMessage: (string|undefined)} {
-      let regex;
+    function regexValidator(value: string): boolean {
       try {
-        regex = new RegExp(value);
+        new RegExp(value);
+        return true;
       } catch {
+        return false;
       }
-      const valid = Boolean(regex);
-      return {valid, errorMessage: undefined};
     }
   }
 
@@ -173,7 +172,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
   private fileSystemRemoved(fileSystem: PlatformFileSystem): void {
     const mappingView = this.mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
-      mappingView.dispose();
       this.mappingViewByPath.delete(fileSystem.path());
     }
 

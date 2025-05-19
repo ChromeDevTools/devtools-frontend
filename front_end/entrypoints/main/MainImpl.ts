@@ -347,14 +347,6 @@ export class MainImpl {
         Root.Runtime.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
-        'Redesign of the filter bar in the Network panel',
-        false,
-        'https://goo.gle/devtools-network-filter-redesign',
-        'https://crbug.com/1500573',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
         'Performance panel: show postMessage dispatch and handling flows',
     );
@@ -365,7 +357,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.enableExperimentsByDefault([
-      Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
       Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
       Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),

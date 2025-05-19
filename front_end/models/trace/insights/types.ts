@@ -76,6 +76,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
       description: Common.UIString.LocalizedString,
       category: InsightCategory,
       state: 'pass' | 'fail' | 'informative',
+      /** Used by RelatedInsightChips.ts */
       relatedEvents?: RelatedEventsMap | Types.Events.Event[],
       warnings?: InsightWarning[],
       metricSavings?: MetricSavings,

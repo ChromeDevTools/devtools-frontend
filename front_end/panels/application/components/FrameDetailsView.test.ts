@@ -204,7 +204,11 @@ describeWithMockConnection('FrameDetailsView', () => {
       'Yes',
       'None',
       'SameOrigin',
-      'HTTP header base-uri: \'self\'object-src: \'none\'script-src: \'strict-dynamic\', \'unsafe-inline\', https:, http:, \'nonce-GsVjHiIoejpPhMPOHDQZ90yc9eJn1s\', \'unsafe-eval\'report-uri: https://www.example.com/csp',
+      `HTTP header
+base-uri: 'self'
+object-src: 'none'
+script-src: 'strict-dynamic', 'unsafe-inline', https:, http:, 'nonce-GsVjHiIoejpPhMPOHDQZ90yc9eJn1s', 'unsafe-eval'
+report-uri: https://www.example.com/csp`,
       'available, transferable',
       'available\xA0Learn more',
     ]);
@@ -225,7 +229,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       stackTraceText = stackTraceText.concat(getCleanTextContentFromElements(row.shadowRoot, '.stack-trace-row'));
     });
 
-    assert.deepEqual(stackTraceText[0], 'function1 \xA0@\xA0www.example.com/script.js:16');
+    assert.deepEqual(stackTraceText[0], 'function1\n\xA0@\xA0www.example.com/script.js:16');
 
     const adStatusList =
         component.shadowRoot.querySelector('devtools-report-value.ad-status-list devtools-expandable-list');

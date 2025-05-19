@@ -1,7 +1,6 @@
 // Copyright 2021 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 /*
  * Copyright (C) 2007 Apple Inc.  All rights reserved.
@@ -41,11 +40,14 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import propertiesWidgetStyles from './propertiesWidget.css.js';
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
+
+const {bindToSetting} = UI.SettingsUI;
 
 const UIStrings = {
   /**
@@ -69,20 +71,53 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+interface PropertiesWidgetInput {
+  onFilterChanged: (e: CustomEvent<string>) => void;
+  treeOutlineElement: HTMLElement;
+  displayNoMatchingPropertyMessage: boolean;
+}
+
+type View = (input: PropertiesWidgetInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <div jslog=${VisualLogging.pane('element-properties').track({resize: true})}>
+      <div class="hbox properties-widget-toolbar">
+        <devtools-toolbar class="styles-pane-toolbar" role="presentation">
+          <devtools-toolbar-input type="filter" @change=${input.onFilterChanged} style="flex-grow:1; flex-shrink:1"></devtools-toolbar-input>
+          <devtools-checkbox title=${i18nString(UIStrings.showAllTooltip)} ${bindToSetting(getShowAllPropertiesSetting())}
+              jslog=${VisualLogging.toggle('show-all-properties').track({change: true})}>
+            ${i18nString(UIStrings.showAll)}
+          </devtools-checkbox>
+        </devtools-toolbar>
+      </div>
+      ${input.displayNoMatchingPropertyMessage ? html`
+        <div class="gray-info-message">${i18nString(UIStrings.noMatchingProperty)}</div>
+      ` : nothing}
+      ${input.treeOutlineElement}
+    </div>`, target, {host: input});
+  // clang-format on
+};
+
+const getShowAllPropertiesSetting = (): Common.Settings.Setting<boolean> =>
+    Common.Settings.Settings.instance().createSetting('show-all-properties', /* defaultValue */ false);
+
 export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private node: SDK.DOMModel.DOMNode|null;
   private readonly showAllPropertiesSetting: Common.Settings.Setting<boolean>;
   private filterRegex: RegExp|null = null;
-  private readonly noMatchesElement: HTMLElement;
   private readonly treeOutline: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
-  private readonly expandController: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController;
   private lastRequestedNode?: SDK.DOMModel.DOMNode;
-  constructor(throttlingTimeout?: number) {
+  readonly #view: View;
+  #displayNoMatchingPropertyMessage = false;
+
+  constructor(throttlingTimeout?: number, view: View = DEFAULT_VIEW) {
     super(true /* isWebComponent */, throttlingTimeout);
     this.registerRequiredCSS(propertiesWidgetStyles);
 
-    this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('show-all-properties', false);
-    this.showAllPropertiesSetting.addChangeListener(this.filterList.bind(this));
+    this.showAllPropertiesSetting = getShowAllPropertiesSetting();
+    this.showAllPropertiesSetting.addChangeListener(this.filterAndScheduleUpdate.bind(this));
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.onNodeChange, this, {scoped: true});
@@ -95,50 +130,41 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.setNode, this);
     this.node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
-    const hbox = this.contentElement.createChild('div', 'hbox properties-widget-toolbar');
-    const toolbar = hbox.createChild('devtools-toolbar', 'styles-pane-toolbar');
-    const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
-    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
-    toolbar.appendToolbarItem(filterInput);
-    toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.showAllPropertiesSetting, i18nString(UIStrings.showAllTooltip), i18nString(UIStrings.showAll)));
-
-    this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-properties').track({resize: true})}`);
-    this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
-    this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
-
+    this.#view = view;
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
-    this.expandController =
-        new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
-    this.contentElement.appendChild(this.treeOutline.element);
 
     this.treeOutline.addEventListener(UI.TreeOutline.Events.ElementExpanded, () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
     });
 
-    this.update();
+    void this.doUpdate();
   }
 
-  private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
-    this.filterRegex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
-    this.filterList();
+  private onFilterChanged(event: CustomEvent<string>): void {
+    this.filterRegex = event.detail ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.detail), 'i') : null;
+    this.filterAndScheduleUpdate();
   }
 
-  private filterList(): void {
-    let noMatches = true;
+  private filterAndScheduleUpdate(): void {
+    const previousDisplay = this.#displayNoMatchingPropertyMessage;
+    this.internalFilterProperties();
+    if (previousDisplay !== this.#displayNoMatchingPropertyMessage) {
+      this.update();
+    }
+  }
+
+  private internalFilterProperties(): void {
+    this.#displayNoMatchingPropertyMessage = true;
     for (const element of this.treeOutline.rootElement().children()) {
       const {property} = element as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
       const hidden = !property?.match({
         includeNullOrUndefinedValues: this.showAllPropertiesSetting.get(),
         regex: this.filterRegex,
       });
-      if (!hidden) {
-        noMatches = false;
-      }
+      this.#displayNoMatchingPropertyMessage = this.#displayNoMatchingPropertyMessage && hidden;
       element.hidden = hidden;
     }
-    this.noMatchesElement.classList.toggle('hidden', !noMatches);
   }
 
   private setNode(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
@@ -154,24 +180,31 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     if (!this.node) {
       this.treeOutline.removeChildren();
-      return;
-    }
+      this.#displayNoMatchingPropertyMessage = false;
+    } else {
+      this.lastRequestedNode = this.node;
+      const object = await this.node.resolveToObject(OBJECT_GROUP_NAME);
+      if (!object) {
+        return;
+      }
 
-    this.lastRequestedNode = this.node;
-    const object = await this.node.resolveToObject(OBJECT_GROUP_NAME);
-    if (!object) {
-      return;
+      const treeElement = this.treeOutline.rootElement();
+      let {properties} = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(object, true /* generatePreview */);
+      treeElement.removeChildren();
+      if (properties === null) {
+        properties = [];
+      }
+      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
+          treeElement, properties, null, true /* skipProto */, true /* skipGettersAndSetters */, object);
+      this.internalFilterProperties();
     }
-
-    const treeElement = this.treeOutline.rootElement();
-    let {properties} = await SDK.RemoteObject.RemoteObject.loadFromObjectPerProto(object, true /* generatePreview */);
-    treeElement.removeChildren();
-    if (properties === null) {
-      properties = [];
-    }
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        treeElement, properties, null, true /* skipProto */, true /* skipGettersAndSetters */, object);
-    this.filterList();
+    this.#view(
+        {
+          onFilterChanged: this.onFilterChanged.bind(this),
+          treeOutlineElement: this.treeOutline.element,
+          displayNoMatchingPropertyMessage: this.#displayNoMatchingPropertyMessage,
+        },
+        {}, this.contentElement);
   }
 
   private onNodeChange(

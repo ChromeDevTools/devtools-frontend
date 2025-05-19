@@ -160,13 +160,13 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
 
   async #refreshItems(): Promise<void> {
     const items = await this.#extensionStorage.getItems();
-    if (!items) {
+    if (!items || !this.toolbar) {
       return;
     }
-    const filteredItems = this.filter(
-        Object.entries(items).map(
-            ([key, value]) => ({key, value: typeof value === 'string' ? value : JSON.stringify(value)})),
-        item => `${item.key} ${item.value}`);
+    const filteredItems =
+        Object.entries(items)
+            .map(([key, value]) => ({key, value: typeof value === 'string' ? value : JSON.stringify(value)}))
+            .filter(item => this.toolbar?.filterRegex?.test(`${item.key} ${item.value}`) ?? true);
     this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
         ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED);

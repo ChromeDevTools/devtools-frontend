@@ -480,8 +480,8 @@ export class Location {
       return null;
     }
 
-    const {valid: isLatitudeValid} = Location.latitudeValidator(latitudeString);
-    const {valid: isLongitudeValid} = Location.longitudeValidator(longitudeString);
+    const isLatitudeValid = Location.latitudeValidator(latitudeString);
+    const isLongitudeValid = Location.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid) {
       return null;
@@ -492,50 +492,34 @@ export class Location {
     return new Location(latitude, longitude, timezoneId, locale, false);
   }
 
-  static latitudeValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static latitudeValidator(value: string): boolean {
     const numValue = parseFloat(value);
-    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
-    return {valid, errorMessage: undefined};
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
   }
 
-  static longitudeValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static longitudeValidator(value: string): boolean {
     const numValue = parseFloat(value);
-    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
-    return {valid, errorMessage: undefined};
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
   }
 
-  static timezoneIdValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static timezoneIdValidator(value: string): boolean {
     // Chromium uses ICU's timezone implementation, which is very
     // liberal in what it accepts. ICU does not simply use an allowlist
     // but instead tries to make sense of the input, even for
     // weird-looking timezone IDs. There's not much point in validating
     // the input other than checking if it contains at least one alphabet.
     // The empty string resets the override, and is accepted as well.
-    const valid = value === '' || /[a-zA-Z]/.test(value);
-    return {valid, errorMessage: undefined};
+    return value === '' || /[a-zA-Z]/.test(value);
   }
 
-  static localeValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static localeValidator(value: string): boolean {
     // Similarly to timezone IDs, there's not much point in validating
     // input locales other than checking if it contains at least two
     // alphabetic characters.
     // https://unicode.org/reports/tr35/#Unicode_language_identifier
     // The empty string resets the override, and is accepted as
     // well.
-    const valid = value === '' || /[a-zA-Z]{2}/.test(value);
-    return {valid, errorMessage: undefined};
+    return value === '' || /[a-zA-Z]{2}/.test(value);
   }
 
   toSetting(): string {
@@ -569,9 +553,9 @@ export class DeviceOrientation {
       return null;
     }
 
-    const {valid: isAlphaValid} = DeviceOrientation.alphaAngleValidator(alphaString);
-    const {valid: isBetaValid} = DeviceOrientation.betaAngleValidator(betaString);
-    const {valid: isGammaValid} = DeviceOrientation.gammaAngleValidator(gammaString);
+    const isAlphaValid = DeviceOrientation.alphaAngleValidator(alphaString);
+    const isBetaValid = DeviceOrientation.betaAngleValidator(betaString);
+    const isGammaValid = DeviceOrientation.gammaAngleValidator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid) {
       return null;
@@ -587,38 +571,25 @@ export class DeviceOrientation {
   static angleRangeValidator(value: string, interval: {
     minimum: number,
     maximum: number,
-  }): {
-    valid: boolean,
-    errorMessage: undefined,
-  } {
+  }): boolean {
     const numValue = parseFloat(value);
-    const valid =
-        /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= interval.minimum && numValue < interval.maximum;
-    return {valid, errorMessage: undefined};
+    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= interval.minimum &&
+        numValue < interval.maximum;
   }
 
-  static alphaAngleValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static alphaAngleValidator(value: string): boolean {
     // https://w3c.github.io/deviceorientation/#device-orientation-model
     // Alpha must be within the [0, 360) interval.
     return DeviceOrientation.angleRangeValidator(value, {minimum: 0, maximum: 360});
   }
 
-  static betaAngleValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static betaAngleValidator(value: string): boolean {
     // https://w3c.github.io/deviceorientation/#device-orientation-model
     // Beta must be within the [-180, 180) interval.
     return DeviceOrientation.angleRangeValidator(value, {minimum: -180, maximum: 180});
   }
 
-  static gammaAngleValidator(value: string): {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  } {
+  static gammaAngleValidator(value: string): boolean {
     // https://w3c.github.io/deviceorientation/#device-orientation-model
     // Gamma must be within the [-90, 90) interval.
     return DeviceOrientation.angleRangeValidator(value, {minimum: -90, maximum: 90});

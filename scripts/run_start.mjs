@@ -157,6 +157,9 @@ if (status !== 0) {
 // Launch Chrome with our custom DevTools front-end.
 function start() {
   const binary = findBrowserBinary();
+  /**
+   * @type {string[]}
+   */
   const args = [];
 
   // Disable first run experience.
@@ -205,7 +208,8 @@ function start() {
   if (open) {
     args.push('--auto-open-devtools-for-tabs');
   }
-  args.push(...argv._);
+  const restArg = argv._.filter(arg => typeof arg === 'string');
+  args.push(...restArg);
 
   // Launch Chrome.
   if (verbose) {

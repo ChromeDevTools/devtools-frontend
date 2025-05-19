@@ -172,6 +172,7 @@ export class TracingContext {
     computedStyles: Map<string, string>,
     parsedValue: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
   }>();
+  #root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null;
   #propertyName: string|null;
   #asyncEvalCallbacks: Array<(() => Promise<boolean>)|undefined> = [];
   readonly expandPercentagesInShorthands: boolean;
@@ -191,6 +192,10 @@ export class TracingContext {
 
   get highlighting(): Highlighting {
     return this.#highlighting;
+  }
+
+  get root(): {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null {
+    return this.#root;
   }
 
   get propertyName(): string|null {
@@ -245,7 +250,8 @@ export class TracingContext {
   // Evaluations are applied bottom up, i.e., innermost sub-expressions are evaluated first before evaluating any
   // function call. This function produces TracingContexts for each of the arguments of the function call which should
   // be passed to the Renderer calls for the respective subtrees.
-  evaluation(args: unknown[]): TracingContext[]|null {
+  evaluation(args: unknown[], root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null):
+      TracingContext[]|null {
     const childContexts = args.map(() => {
       const child = new TracingContext(this.#highlighting, this.expandPercentagesInShorthands);
       child.#parent = this;
@@ -253,6 +259,7 @@ export class TracingContext {
       child.#evaluationCount = this.#evaluationCount;
       child.#hasMoreSubstitutions = this.#hasMoreSubstitutions;
       child.#parsedValueCache = this.#parsedValueCache;
+      child.#root = root;
       child.#propertyName = this.propertyName;
       return child;
     });
@@ -296,8 +303,7 @@ export class TracingContext {
   // Request a tracing context for the next level of substitutions. If this returns null, no further substitution should
   // be applied on this branch of the AST. Otherwise, the TracingContext should be passed to the Renderer call for the
   // substitution subtree.
-  substitution(match?: {match: SDK.CSSPropertyParser.Match, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching}):
-      TracingContext|null {
+  substitution(root: {match: SDK.CSSPropertyParser.Match, context: RenderingContext}|null = null): TracingContext|null {
     if (this.#substitutionDepth <= 0) {
       this.#setHasMoreSubstitutions();
       return null;
@@ -308,12 +314,13 @@ export class TracingContext {
     child.#evaluationCount = this.#evaluationCount;
     child.#hasMoreSubstitutions = false;
     child.#parsedValueCache = this.#parsedValueCache;
+    child.#root = root;
     // Async evaluation callbacks need to be gathered across substitution contexts so that they bubble to the root. That
     // is not the case for evaluation contexts since `applyEvaluation` conditionally collects callbacks for its subtree
     // already.
     child.#asyncEvalCallbacks = this.#asyncEvalCallbacks;
     child.#longhandOffset =
-        this.#longhandOffset + (match?.matchedResult.getComputedLonghandName(match?.match.node) ?? 0);
+        this.#longhandOffset + (root?.context.matchedResult.getComputedLonghandName(root?.match.node) ?? 0);
     child.#propertyName = this.propertyName;
     return child;
   }
@@ -371,6 +378,21 @@ export class RenderingContext {
     }
     const index = this.matchedResult.getComputedLonghandName(node);
     return longhands[index + (this.tracing?.longhandOffset ?? 0)] ?? null;
+  }
+
+  findParent<MatchT extends SDK.CSSPropertyParser.Match>(
+      node: CodeMirror.SyntaxNode|null, matchType: Platform.Constructor.Constructor<MatchT>): MatchT|null {
+    while (node) {
+      const match = this.matchedResult.getMatch(node);
+      if (match instanceof matchType) {
+        return match;
+      }
+      node = node.parent;
+    }
+    if (this.tracing?.root) {
+      return this.tracing.root.context.findParent(this.tracing.root.match.node, matchType);
+    }
+    return null;
   }
 }
 
@@ -453,6 +475,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = name;
     nameElement.normalize();
+    nameElement.tabIndex = -1;
     return nameElement;
   }
 
@@ -477,6 +500,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         })}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: property.value}));
     valueElement.className = 'value';
+    valueElement.tabIndex = -1;
     const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing);
     nodes.forEach(node => valueElement.appendChild(node));
     valueElement.normalize();

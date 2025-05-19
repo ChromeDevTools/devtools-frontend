@@ -22,7 +22,8 @@ interface RenderOptions {
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
-export function renderElementIntoDOM<E extends Element>(element: E, renderOptions: RenderOptions = {}): E {
+export function renderElementIntoDOM<E extends Node|UI.Widget.Widget>(
+    element: E, renderOptions: RenderOptions = {}): E {
   const container = document.getElementById(TEST_CONTAINER_ID);
 
   if (!container) {
@@ -34,7 +35,12 @@ export function renderElementIntoDOM<E extends Element>(element: E, renderOption
   if (container.childNodes.length !== 0 && !allowMultipleChildren) {
     throw new Error(`renderElementIntoDOM expects the container to be empty ${container.innerHTML}`);
   }
-  container.appendChild(element);
+  if (element instanceof Node) {
+    container.appendChild(element);
+  } else {
+    element.markAsRoot();
+    element.show(container);
+  }
   return element;
 }
 
@@ -277,7 +283,9 @@ export function stripLitHtmlCommentNodes(text: string) {
 export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, selector: string): string[] {
   const elements = Array.from(el.querySelectorAll(selector));
   return elements.map(element => {
-    return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, ' ') : '';
+    return ((element instanceof HTMLElement ? element.innerText : element.textContent) ?? '')
+        .trim()
+        .replace(/[ \n]{2,}/g, ' ');
   });
 }
 
@@ -327,6 +335,10 @@ export async function assertScreenshot(filename: string) {
     frame.scrollTo(0, 0);
     frame = frame.parent !== frame ? frame.parent : null;
   }
+
+  // For test we load the fonts though the network - front_end/testing/test_setup.ts
+  // Which means we may try to take screenshot while they are loading
+  await document.fonts.ready;
   await raf();
   // @ts-expect-error see karma config.
   const errorMessage = await window.assertScreenshot(`#${TEST_CONTAINER_ID}`, filename);

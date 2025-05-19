@@ -7,7 +7,7 @@ import type {ElementHandle, Page} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
-import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.js';
+import {openCommandMenu} from '../../../test/e2e/helpers/quick_open-helpers.js';
 import {
   $,
   click,
@@ -16,6 +16,7 @@ import {
   goToResource,
   platform,
   selectOption,
+  typeText,
   waitFor,
   waitForAria,
 } from '../../../test/shared/helper.js';
@@ -77,7 +78,10 @@ export async function enableUntrustedEventMode() {
 
 export async function enableAndOpenRecorderPanel(path: string) {
   await goToResource(path);
-  await openPanelViaMoreTools('Recorder');
+  const {frontend} = getBrowserAndPages();
+  await openCommandMenu();
+  await typeText('Show Recorder');
+  await frontend.keyboard.press('Enter');
   await waitFor(RECORDER_CONTROLLER_TAG_NAME);
 }
 

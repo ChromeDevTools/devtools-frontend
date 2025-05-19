@@ -111,16 +111,17 @@ export function computeCacheLifetimeInSeconds(
 
 /**
  * Computes the percent likelihood that a return visit will be within the cache lifetime, based on
- * Chrome UMA stats see the note below.
- * See https://github.com/GoogleChrome/lighthouse/blob/aba818f733552189de35121907cb5625a74af640/core/audits/byte-efficiency/uses-long-cache-ttl.js
- * TODO: This Chrome UMA stat is outdated. Using this is fine for now, but update in follow-up.
+ * historical Chrome UMA stats (see RESOURCE_AGE_IN_HOURS_DECILES comment).
+ *
+ * This function returns values on this curve: https://www.desmos.com/calculator/eaqiszhugy (but using seconds, rather than hours)
+ * See http://github.com/GoogleChrome/lighthouse/pull/3531 for history.
  */
 function getCacheHitProbability(maxAgeInSeconds: number): number {
   // This array contains the hand wavy distribution of the age of a resource in hours at the time of
   // cache hit at 0th, 10th, 20th, 30th, etc percentiles. This is used to compute `wastedMs` since there
   // are clearly diminishing returns to cache duration i.e. 6 months is not 2x better than 3 months.
-  // Based on UMA stats for HttpCache.StaleEntry.Validated.Age, see https://www.desmos.com/calculator/7v0qh1nzvh
-  // Example: a max-age of 12 hours already covers ~50% of cases, doubling to 24 hours covers ~10% more.
+  // Based on UMA stats for HttpCache.StaleEntry.Validated.Age. see https://www.desmos.com/calculator/jjwc5mzuwd
+  // This UMA data is from 2017 but the metric isn't tracked any longer in 2025.
   const RESOURCE_AGE_IN_HOURS_DECILES = [0, 0.2, 1, 3, 8, 12, 24, 48, 72, 168, 8760, Infinity];
 
   const maxAgeInHours = maxAgeInSeconds / 3600;

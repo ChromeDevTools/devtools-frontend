@@ -404,8 +404,8 @@ export const getPropertyFromComputedPane = async (name: string) => {
   return undefined;
 };
 
-export const expandSelectedNodeRecursively = async (devToolsPage?: DevToolsPage) => {
-  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+export const expandSelectedNodeRecursively =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const EXPAND_RECURSIVELY = '[aria-label="Expand recursively"]';
 
   // Find the selected node, right click.
@@ -1040,9 +1040,10 @@ function veImpressionForAccessibilityPane() {
       ])]);
 }
 
-export const toggleAccessibilityTree = async () => {
-  await click('aria/Switch to Accessibility Tree view');
-  await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')]);
+export const toggleAccessibilityTree =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.click('aria/Switch to Accessibility Tree view');
+  await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')], undefined, devToolsPage);
 };
 
 export const getPropertiesWithHints = async () => {
@@ -1091,10 +1092,9 @@ export const assertSearchResultMatchesText = async (text: string) => {
   });
 };
 
-export const goToResourceAndWaitForStyleSection =
-    async (path: string, devToolsPage?: DevToolsPage, inspectedPage?: InspectedPage) => {
-  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
-  inspectedPage = inspectedPage || getBrowserAndPagesWrappers().inspectedPage;
+export const goToResourceAndWaitForStyleSection = async (
+    path: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
   await inspectedPage.goToResource(path);
   await waitForElementsStyleSection(null, devToolsPage);
 };

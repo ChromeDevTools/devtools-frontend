@@ -1,25 +1,16 @@
 {
+  "extends": "../../../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
     "target": "esnext",
     "module": "commonjs",
-    "sourceMap": true,
+    "composite": false,
     "allowUnreachableCode": false,
-    "useUnknownInCatchVariables": false,
     "baseUrl": ".",
     "skipLibCheck": true,
     "paths": {
-      "test/*": [
-        "../../../test/*"
-      ],
-      "puppeteer": [
-        "../../../node_modules/puppeteer/lib/types.d.ts"
-      ],
-      "*": [
-        "*",
-        "../../../node_modules/@types/*/index.d.ts"
-      ]
+      "test/*": ["../../../test/*"],
+      "puppeteer": ["../../../node_modules/puppeteer/lib/types.d.ts"],
+      "*": ["*", "../../../node_modules/@types/*/index.d.ts"]
     }
   },
   "files": [

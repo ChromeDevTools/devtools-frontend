@@ -17,8 +17,8 @@ export function startTrackingAsyncActivity() {
   // We are tracking all asynchronous activity but let it run normally during
   // the test.
   stub('requestAnimationFrame', trackingRequestAnimationFrame);
-  stub('setTimeout', trackingSetTimeout);
-  stub('setInterval', trackingSetInterval);
+  stub('setTimeout', trackingSetTimeout as unknown as typeof setTimeout);
+  stub('setInterval', trackingSetInterval as unknown as typeof setInterval);
   stub('requestIdleCallback', trackingRequestIdleCallback);
   stub('cancelAnimationFrame', id => cancelTrackingActivity('a' + id));
   stub('clearTimeout', id => cancelTrackingActivity('t' + id));
@@ -135,7 +135,7 @@ function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown
   const activity: AsyncActivity = {
     pending: true,
   };
-  let id = 0;
+  let id: ReturnType<typeof setTimeout>|undefined;
   activity.promise = new (original(Promise<void>))(resolve => {
     activity.runImmediate = () => {
       if (typeof (arg) === 'function') {

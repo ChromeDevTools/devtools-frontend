@@ -30,12 +30,15 @@ export const uiFragment = {
         }
       },
       CallExpression(node: CallExpression) {
-        if (node.callee.type !== 'MemberExpression' || !isIdentifier(node.callee.property, 'element')) {
+        if (node.callee.type !== 'MemberExpression' || !isIdentifier(node.callee.property, ['element', '$'])) {
           return;
         }
         const object = node.callee.object;
         const objectFragment = DomFragment.get(object, sourceCode);
-        if (objectFragment && !objectFragment.tagName && objectFragment.expression?.startsWith('`')) {
+        if (!objectFragment || objectFragment.tagName || !objectFragment.expression?.startsWith('`')) {
+          return;
+        }
+        if (isIdentifier(node.callee.property, 'element')) {
           DomFragment.set(node, sourceCode, objectFragment);
           for (const reference of objectFragment.references) {
             if (reference.node === object) {
@@ -43,6 +46,13 @@ export const uiFragment = {
               break;
             }
           }
+        } else if (isIdentifier(node.callee.property, '$')) {
+          const domFragment = DomFragment.getOrCreate(node, sourceCode);
+          domFragment.tagName = 'template';
+          domFragment.attributes.push({
+            key: 'id',
+            value: node.arguments[0],
+          });
         }
       }
     };

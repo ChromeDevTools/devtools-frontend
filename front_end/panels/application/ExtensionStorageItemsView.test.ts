@@ -80,11 +80,15 @@ describeWithMockConnection('ExtensionStorageItemsView', function() {
         extensionStorageModel, TEST_EXTENSION_ID, TEST_EXTENSION_NAME, Protocol.Extensions.StorageArea.Local);
   });
 
-  function createView():
-      {view: View.ExtensionStorageItemsView, viewFunction: ViewFunctionStub<typeof View.ExtensionStorageItemsView>} {
-    const viewFunction = createViewFunctionStub(View.ExtensionStorageItemsView);
+  function createView(): {
+    view: View.ExtensionStorageItemsView,
+    viewFunction: ViewFunctionStub<typeof View.ExtensionStorageItemsView>,
+    toolbar: Resources.StorageItemsToolbar.StorageItemsToolbar,
+  } {
+    const toolbar = new Resources.StorageItemsToolbar.StorageItemsToolbar();
+    const viewFunction = createViewFunctionStub(View.ExtensionStorageItemsView, {toolbar});
     const view = new View.ExtensionStorageItemsView(extensionStorage, viewFunction);
-    return {view, viewFunction};
+    return {view, viewFunction, toolbar};
   }
 
   it('displays items', async () => {

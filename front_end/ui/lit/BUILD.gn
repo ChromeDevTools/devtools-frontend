@@ -25,6 +25,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/main/*",
     "../../models/ai_assistance/*",
+    "../../models/persistence/*",
     "../../panels/*",
     "../../testing/*",
     "../../ui/components/*",

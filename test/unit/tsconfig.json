@@ -5,10 +5,10 @@
   },
   "references": [
     {
-      "path": "../conductor"
+      "path": "../conductor/tsconfig.json"
     },
     {
-      "path": "../shared"
+      "path": "../shared/tsconfig.json"
     }
   ]
 }

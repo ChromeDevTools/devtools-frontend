@@ -45,7 +45,7 @@ const UIStrings = {
   /**
    *@description Loading indicator in Scope Sidebar Pane of the Sources panel
    */
-  loading: 'Loading...',
+  loading: 'Loading…',
   /**
    *@description Not paused message element text content in Call Stack Sidebar Pane of the Sources panel
    */

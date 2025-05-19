@@ -42,6 +42,7 @@ devtools_module("issues_manager") {
     "SharedDictionaryIssue.ts",
     "SourceFrameIssuesManager.ts",
     "StylesheetLoadingIssue.ts",
+    "UserReidentificationIssue.ts",
   ]
 
   deps = [
@@ -240,6 +241,7 @@ devtools_issue_description_files = [
   "placeholderDescriptionForInvisibleIssues.md",
   "fetchingPartitionedBlobURL.md",
   "navigatingPartitionedBlobURL.md",
+  "userReidentificationBlocked.md",
 ]
 
 devtools_pre_built("descriptions") {

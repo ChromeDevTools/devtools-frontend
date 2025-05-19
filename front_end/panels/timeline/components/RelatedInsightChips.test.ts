@@ -75,9 +75,9 @@ describeWithEnvironment('RelatedInsightChips', () => {
     assert.lengthOf(optimizationChips, 2);
 
     const text1 = getCleanTextContentFromElements(optimizationChips[0], 'button');
-    assert.deepEqual(text1, ['Insight: Some fake insight Message 1']);
+    assert.deepEqual(text1, ['Insight: Some fake insight\nMessage 1']);
     const text2 = getCleanTextContentFromElements(optimizationChips[1], 'button');
-    assert.deepEqual(text2, ['Insight: Some fake insight Message 2']);
+    assert.deepEqual(text2, ['Insight: Some fake insight\nMessage 2']);
   });
 
   it('calls the activateInsight function when the insight is clicked', async () => {

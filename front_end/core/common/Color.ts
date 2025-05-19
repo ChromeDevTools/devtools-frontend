@@ -1419,6 +1419,16 @@ export class ColorFunction implements Color {
     return false;
   }
 
+  isXYZ(): boolean {
+    switch (this.colorSpace) {
+      case Format.XYZ:
+      case Format.XYZ_D50:
+      case Format.XYZ_D65:
+        return true;
+    }
+    return false;
+  }
+
   /**
    * Parses given `color()` function definition and returns the `Color` object.
    * We want to special case its parsing here because it's a bit different

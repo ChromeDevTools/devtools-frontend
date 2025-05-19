@@ -65,7 +65,7 @@ space.
     [`Toolbars`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/Toolbar.ts).
     Underneath they make use of `devtools-button`.
 
-###### Don'ts
+###### Don't
 
   * Use `<button>`, as they are not styled correctly
   * Change the default color of icons (only in exceptions)
@@ -155,14 +155,12 @@ button.addEventListener('click', event => onClick(event));
     if necessary, together with core styles.
   * Override inherited `width` with CSS if necessary.
 
-###### Don'ts
+###### Don't
 
   * Override the default colors.
   * Introduce custom select components.
 
 ##### Developer examples
-
-###### Primary button
 
 Usage with lit-html:
 
@@ -205,13 +203,11 @@ select.addEventListener('change', event => onChange(event))
     nested within a [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
     for radio buttons, together with core styles.
 
-###### Don'ts
+###### Don't
 
   * Override the default colors.
 
 ##### Developer examples
-
-###### Primary button
 
 Usage with lit-html:
 
@@ -242,13 +238,11 @@ radio.addEventListener('change', event => onChange(event))
   * Use [`<input type="range">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range)
     for sliders, together with core styles.
 
-###### Don'ts
+###### Don't
 
   * Override the default colors.
 
 ##### Developer examples
-
-###### Primary button
 
 Usage with lit-html:
 
@@ -267,3 +261,40 @@ const slider = UI.UIUtils.createSlider(min, max, tabIndex);
 slider.addEventListener('change', event => onChange(event))
 ```
 
+## Icons
+
+![Icon component (variety of icons)](images/icons-header.png)
+
+### Usage
+
+#### Designer guidelines
+
+Find an exhaustive collection of icons currently used in DevTools [here](https://drive.google.com/corp/drive/folders/1EpmxLRjvdHn5Ia8iT3aicgIEPEvhXY_D?resourcekey=0-QseNsNRsF4w8F5EKz7ncnA)
+
+#### Developer guidelines
+
+##### Dos and Don'ts
+
+###### Do
+
+  * Set class and change color and / or size in .css files
+
+###### Don't
+
+  * Use icons as buttons
+  * Use Icon constructor and data setter (deprecated)
+  * Use inline styles e.g. `js icon.style.color = ‘some-color’`
+
+##### Developer examples
+
+Usage with lit-html:
+
+```js
+html`<devtools-icon name=${'some-icon-name'}></devtools-icon>`
+```
+
+Usage with the imperative API:
+
+```js
+const someIcon = IconButton.Icon.create('some-icon-name', 'some-class');
+```

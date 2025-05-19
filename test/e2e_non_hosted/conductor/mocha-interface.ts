@@ -97,7 +97,10 @@ function customDescribe(suiteImplementation: SuiteFunctions, file: string) {
   // @ts-expect-error Custom interface.
   describe.only = withAugmentedTitle(suiteImplementation.only);
   // @ts-expect-error Custom interface.
-  describe.skip = withAugmentedTitle(suiteImplementation.skip);
+  describe.skip = withAugmentedTitle(function(opts: CreateOptions) {
+    opts.pending = true;
+    return suiteImplementation.create(opts);
+  });
   return describe;
 }
 

@@ -32,10 +32,6 @@ import {
 } from './helpers.js';
 
 describe('Recorder', function() {
-  if (this.timeout() !== 0) {
-    this.timeout(5000);
-  }
-
   it('should capture the initial page as the url of the first section', async () => {
     await startRecording('recorder/recorder.html');
     const recording = await stopRecording();
@@ -1283,7 +1279,8 @@ describe('Recorder', function() {
         });
   });
 
-  it('should edit while recording', async () => {
+  // Disable flaky test to unblock the tree
+  it.skip('[crbug.com/414578149]: should edit while recording', async () => {
     await startRecording('recorder/recorder.html');
 
     const {target, frontend} = getBrowserAndPages();

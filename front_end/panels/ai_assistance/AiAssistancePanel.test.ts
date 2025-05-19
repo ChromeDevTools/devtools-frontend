@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
@@ -1394,7 +1395,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
-  describe('debugProblem', () => {
+  describe('handleMcpRequest', () => {
     const explanation = 'I need more information';
     const notAvailable =
         'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings';
@@ -1414,8 +1415,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.debugProblem('Please help me debug this problem');
-        assert.fail('Expected `debugProblem` to throw');
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, notAvailable);
       }
@@ -1427,8 +1428,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
       });
       try {
-        await panel.debugProblem('Please help me debug this problem');
-        assert.fail('Expected `debugProblem` to throw');
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, notAvailable);
       }
@@ -1447,19 +1448,52 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.debugProblem('Please help me debug this problem');
-        assert.fail('Expected `debugProblem` to throw');
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, notAvailable);
       }
     });
 
-    it('returns an explanation', async () => {
+    it('returns an explanation for styling assistance requests', async () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
-      const response = await panel.debugProblem('Please help me debug this problem');
+      assert.isNull(document.body.querySelector('devtools-snackbar'));
+      const response =
+          await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
       assert.strictEqual(response, explanation);
+      assert.strictEqual(
+          document.body.querySelector('devtools-snackbar')?.shadowRoot?.querySelector('.message')?.textContent?.trim(),
+          'DevTools received an MCP request');
+    });
+
+    it('handles styling assistance requests which contain a selector', async () => {
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: urlString`http://www.example.com`,
+        name: 'name',
+        uniqueId: 'uniqueId',
+      });
+      const executionContext = runtimeModel.defaultExecutionContext();
+      assert.isNotNull(executionContext);
+      const evaluateStub = sinon.stub().returns({object: {objectId: 'some-id'}});
+      executionContext.evaluate = evaluateStub;
+      const callFunctionOnStub = sinon.stub().returns({object: {}});
+      executionContext.callFunctionOn = callFunctionOnStub;
+
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      const response = await panel.handleMcpRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING, 'h1');
+      assert.strictEqual(response, explanation);
+      sinon.assert.calledOnce(evaluateStub);
+      sinon.assert.calledOnce(callFunctionOnStub);
+      assert.strictEqual(callFunctionOnStub.getCall(0).args[0].arguments[1].value, 'h1');
     });
 
     it('throws an error if no answer could be generated', async () => {
@@ -1473,10 +1507,70 @@ STOP`,
         ])
       });
       try {
-        await panel.debugProblem('Please help me debug this problem');
-        assert.fail('Expected `debugProblem` to throw');
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, 'Something went wrong. No answer was generated.');
+      }
+    });
+
+    it('throws an error for file assistance requests', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.FILE);
+        assert.fail('Expected `handleMcpRequest` to throw');
+      } catch (err) {
+        assert.strictEqual(
+            err.message,
+            `Debugging with an agent of type '${AiAssistanceModel.ConversationType.FILE}' is not implemented yet.`);
+      }
+    });
+
+    it('throws an error for network assistance requests', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.NETWORK);
+        assert.fail('Expected `handleMcpRequest` to throw');
+      } catch (err) {
+        assert.strictEqual(
+            err.message,
+            `Debugging with an agent of type '${AiAssistanceModel.ConversationType.NETWORK}' is not implemented yet.`);
+      }
+    });
+
+    it('throws an error for performance assistance requests', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.handleMcpRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE);
+        assert.fail('Expected `handleMcpRequest` to throw');
+      } catch (err) {
+        assert.strictEqual(
+            err.message,
+            `Debugging with an agent of type '${
+                AiAssistanceModel.ConversationType.PERFORMANCE}' is not implemented yet.`);
+      }
+    });
+
+    it('throws an error for performance-insight assistance requests', async () => {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      try {
+        await panel.handleMcpRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+        assert.fail('Expected `handleMcpRequest` to throw');
+      } catch (err) {
+        assert.strictEqual(
+            err.message,
+            `Debugging with an agent of type '${
+                AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT}' is not implemented yet.`);
       }
     });
   });

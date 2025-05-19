@@ -29,7 +29,7 @@ interface TraceEventTargetRundown extends RehydratingTraceBase {
       isolate: string,
       v8context: string,
       origin: string,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       isDefault?: boolean,
       contextType?: string,
     },
@@ -42,7 +42,7 @@ interface TraceEventScriptRundown extends RehydratingTraceBase {
     data: {
       isolate: string,
       executionContextId: Protocol.Runtime.ExecutionContextId,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       // These don't actually get set in v8.
       url: string,
       hash: string,
@@ -63,7 +63,7 @@ interface TraceEventScriptRundownSource extends RehydratingTraceBase {
   args: {
     data: {
       isolate: string,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       length?: number,
       sourceText?: string,
     },
@@ -182,9 +182,10 @@ export class EnhancedTracesParser {
         this.#scriptRundownEvents.push(event);
         const data = event.args.data;
         // Add script
-        if (!this.#scripts.find(script => script.scriptId === data.scriptId && script.isolate === data.isolate)) {
+        if (!this.#scripts.find(
+                script => script.scriptId === String(data.scriptId) && script.isolate === data.isolate)) {
           this.#scripts.push({
-            scriptId: data.scriptId,
+            scriptId: String(data.scriptId) as Protocol.Runtime.ScriptId,
             isolate: data.isolate,
             executionContextId: data.executionContextId,
             startLine: data.startLine ?? 0,
@@ -334,7 +335,7 @@ export class EnhancedTracesParser {
     return sourceMap;
   }
 
-  private getScriptIsolateId(isolate: string, scriptId: Protocol.Runtime.ScriptId): string {
+  private getScriptIsolateId(isolate: string, scriptId: Protocol.Runtime.ScriptId|number): string {
     return scriptId + '@' + isolate;
   }
 

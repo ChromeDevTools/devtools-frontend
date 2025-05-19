@@ -94,34 +94,33 @@ export enum projectTypes {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export abstract class ProjectStore implements Project {
-  private readonly workspaceInternal: WorkspaceImpl;
-  private readonly idInternal: string;
-  private readonly typeInternal: projectTypes;
-  private readonly displayNameInternal: string;
-  readonly #uiSourceCodes: Map<Platform.DevToolsPath.UrlString, UISourceCode>;
+  readonly #workspace: WorkspaceImpl;
+  readonly #id: string;
+  readonly #type: projectTypes;
+  readonly #displayName: string;
+  readonly #uiSourceCodes = new Map<Platform.DevToolsPath.UrlString, UISourceCode>();
 
   constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string) {
-    this.workspaceInternal = workspace;
-    this.idInternal = id;
-    this.typeInternal = type;
-    this.displayNameInternal = displayName;
-    this.#uiSourceCodes = new Map();
+    this.#workspace = workspace;
+    this.#id = id;
+    this.#type = type;
+    this.#displayName = displayName;
   }
 
   id(): string {
-    return this.idInternal;
+    return this.#id;
   }
 
   type(): projectTypes {
-    return this.typeInternal;
+    return this.#type;
   }
 
   displayName(): string {
-    return this.displayNameInternal;
+    return this.#displayName;
   }
 
   workspace(): WorkspaceImpl {
-    return this.workspaceInternal;
+    return this.#workspace;
   }
 
   createUISourceCode(url: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType):
@@ -135,7 +134,7 @@ export abstract class ProjectStore implements Project {
       return false;
     }
     this.#uiSourceCodes.set(url, uiSourceCode);
-    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
+    this.#workspace.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
     return true;
   }
 
@@ -145,11 +144,11 @@ export abstract class ProjectStore implements Project {
       return;
     }
     this.#uiSourceCodes.delete(url);
-    this.workspaceInternal.dispatchEventToListeners(Events.UISourceCodeRemoved, uiSourceCode);
+    this.#workspace.dispatchEventToListeners(Events.UISourceCodeRemoved, uiSourceCode);
   }
 
   removeProject(): void {
-    this.workspaceInternal.removeProject(this);
+    this.#workspace.removeProject(this);
     this.#uiSourceCodes.clear();
   }
 
@@ -170,7 +169,7 @@ export abstract class ProjectStore implements Project {
     this.#uiSourceCodes.delete(oldPath);
   }
 
-  // No-op implementation for a handfull of interface methods.
+  // No-op implementation for a handful of interface methods.
 
   rename(
       _uiSourceCode: UISourceCode, _newName: string,
@@ -213,13 +212,11 @@ export abstract class ProjectStore implements Project {
 let workspaceInstance: WorkspaceImpl|undefined;
 
 export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private projectsInternal: Map<string, Project>;
-  private hasResourceContentTrackingExtensionsInternal: boolean;
+  #projects = new Map<string, Project>();
+  #hasResourceContentTrackingExtensions = false;
 
   private constructor() {
     super();
-    this.projectsInternal = new Map();
-    this.hasResourceContentTrackingExtensionsInternal = false;
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): WorkspaceImpl {
@@ -236,12 +233,12 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   uiSourceCode(projectId: string, url: Platform.DevToolsPath.UrlString): UISourceCode|null {
-    const project = this.projectsInternal.get(projectId);
+    const project = this.#projects.get(projectId);
     return project ? project.uiSourceCodeForURL(url) : null;
   }
 
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null {
-    for (const project of this.projectsInternal.values()) {
+    for (const project of this.#projects.values()) {
       const uiSourceCode = project.uiSourceCodeForURL(url);
       if (uiSourceCode) {
         return uiSourceCode;
@@ -254,7 +251,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     const url = uiSourceCode.url();
     const contentType = uiSourceCode.contentType();
     const result: UISourceCode[] = [];
-    for (const project of this.projectsInternal.values()) {
+    for (const project of this.#projects.values()) {
       if (uiSourceCode.project().type() !== project.type()) {
         continue;
       }
@@ -268,7 +265,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   uiSourceCodesForProjectType(type: projectTypes): UISourceCode[] {
     const result: UISourceCode[] = [];
-    for (const project of this.projectsInternal.values()) {
+    for (const project of this.#projects.values()) {
       if (project.type() === type) {
         for (const uiSourceCode of project.uiSourceCodes()) {
           result.push(uiSourceCode);
@@ -279,18 +276,18 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   addProject(project: Project): void {
-    console.assert(!this.projectsInternal.has(project.id()), `A project with id ${project.id()} already exists!`);
-    this.projectsInternal.set(project.id(), project);
+    console.assert(!this.#projects.has(project.id()), `A project with id ${project.id()} already exists!`);
+    this.#projects.set(project.id(), project);
     this.dispatchEventToListeners(Events.ProjectAdded, project);
   }
 
   removeProject(project: Project): void {
-    this.projectsInternal.delete(project.id());
+    this.#projects.delete(project.id());
     this.dispatchEventToListeners(Events.ProjectRemoved, project);
   }
 
   project(projectId: string): Project|null {
-    return this.projectsInternal.get(projectId) || null;
+    return this.#projects.get(projectId) || null;
   }
 
   projectForFileSystemRoot(root: Platform.DevToolsPath.RawPathString): Project|null {
@@ -299,7 +296,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   projects(): Project[] {
-    return [...this.projectsInternal.values()];
+    return [...this.#projects.values()];
   }
 
   projectsForType(type: string): Project[] {
@@ -311,7 +308,7 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   uiSourceCodes(): UISourceCode[] {
     const result: UISourceCode[] = [];
-    for (const project of this.projectsInternal.values()) {
+    for (const project of this.#projects.values()) {
       for (const uiSourceCode of project.uiSourceCodes()) {
         result.push(uiSourceCode);
       }
@@ -320,11 +317,11 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   setHasResourceContentTrackingExtensions(hasExtensions: boolean): void {
-    this.hasResourceContentTrackingExtensionsInternal = hasExtensions;
+    this.#hasResourceContentTrackingExtensions = hasExtensions;
   }
 
   hasResourceContentTrackingExtensions(): boolean {
-    return this.hasResourceContentTrackingExtensionsInternal;
+    return this.#hasResourceContentTrackingExtensions;
   }
 }
 
@@ -350,7 +347,7 @@ export interface WorkingCopyChangedEvent {
   uiSourceCode: UISourceCode;
 }
 
-export interface WorkingCopyCommitedEvent {
+export interface WorkingCopyCommittedEvent {
   uiSourceCode: UISourceCode;
   content: string;
   encoded?: boolean;
@@ -361,8 +358,8 @@ export interface EventTypes {
   [Events.UISourceCodeRemoved]: UISourceCode;
   [Events.UISourceCodeRenamed]: UISourceCodeRenamedEvent;
   [Events.WorkingCopyChanged]: WorkingCopyChangedEvent;
-  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent;
-  [Events.WorkingCopyCommittedByUser]: WorkingCopyCommitedEvent;
+  [Events.WorkingCopyCommitted]: WorkingCopyCommittedEvent;
+  [Events.WorkingCopyCommittedByUser]: WorkingCopyCommittedEvent;
   [Events.ProjectAdded]: Project;
   [Events.ProjectRemoved]: Project;
 }

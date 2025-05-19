@@ -8,6 +8,16 @@ import type {DevToolsPage, DevtoolsSettings} from './shared/frontend-helper.js';
 import type {InspectedPage} from './shared/target-helper.js';
 
 declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __pendingEvents: Map<string, Event[]>;
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __eventHandlers: WeakMap<Element, Map<string, Promise<void>>>;
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __getRenderCoordinatorPendingFrames(): number;
+  }
   namespace Mocha {
     export interface TestFunction {
       (title: string, fn: E2E.TestAsyncCallbackWithState): void;

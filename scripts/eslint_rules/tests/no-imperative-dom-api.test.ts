@@ -859,6 +859,59 @@ class SomeWidget extends UI.Widget.Widget {
     {
       filename: 'front_end/ui/components/component/file.ts',
       code: `
+class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
+  override createCell(columnId: string): HTMLElement {
+    if (columnId === 'node-id') {
+      const cell = this.createTD(columnId);
+      cell.classList.add('node-id');
+      cell.createChild('span', 'node-id-text').textContent = this.data.id;
+      return cell;
+    }
+    if (columnId === 'source-url') {
+      const cell = this.createTD(columnId);
+      if (this.data.range) {
+        if (!this.#link) {
+          cell.textContent = i18nString(UIStrings.unableToLink);
+        } else {
+          cell.appendChild(this.#link);
+        }
+      } else {
+        cell.textContent = i18nString(UIStrings.unableToLinkToInlineStyle);
+      }
+      return cell;
+    }
+  }
+}`,
+      output: `
+class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<ElementNode> {
+  override createCell(columnId: string): HTMLElement {
+    if (columnId === 'node-id') {
+      const cell = html\`
+    <td class="node-id">
+      <span class="node-id-text">\${this.data.id}</span>
+    </td>\`;
+      return cell;
+    }
+    if (columnId === 'source-url') {
+      const cell = html\`
+    <td>\${i18nString(UIStrings.unableToLinkToInlineStyle)}
+      \${this.#link}
+    </td>\`;
+      if (this.data.range) {
+        if (!this.#link) {
+        } else {
+        }
+      } else {
+      }
+      return cell;
+    }
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}, {messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
@@ -1056,6 +1109,88 @@ export const DEFAULT_VIEW = (input, output, target) => {
         <span class="contrast-preview">Aa</span>
         <span>\${contrastRatioString}</span>
       </div>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const contrastFragment = UI.Fragment.Fragment.build\`
+      <div class="contrast-container-in-grid" $="contrast-container-element">
+        <span class="contrast-preview">Aa</span>
+        <span>\${contrastRatioString}</span>
+      </div>\`;
+    const container = contrastFragment.$('contrast-container-element');
+    container.createChild('span', 'contrast-preview').textContent = 'Aa';
+  }
+}`,
+      output: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const contrastFragment = UI.Fragment.Fragment.build\`
+      <div class="contrast-container-in-grid" $="contrast-container-element">
+        <span class="contrast-preview">Aa</span>
+        <span>\${contrastRatioString}</span>
+      </div>\`;
+    const container = html\`
+    <template id="contrast-container-element">
+      <span class="contrast-preview">Aa</span>
+    </template>\`;
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    // ... existing code ...
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.button = this.contentElement.createChild('button');
+    UI.ARIAUtils.markAsMenuButton(this.button);
+    const tree = this.contentElement.createChild('ul');
+    UI.ARIAUtils.markAsTree(tree);
+    UI.ARIAUtils.markAsTreeitem(tree.createChild('li'));
+    const alert = this.contentElement.createChild('span');
+    alert.textContent = 'Alert';
+    UI.ARIAUtils.markAsAlert(alert);
+    const slider = this.contentElement.createChild('input');
+    UI.ARIAUtils.markAsSlider(slider, 10);
+
+    UI.ARIAUtils.setDescription(this.button, 'Some button');
+    UI.ARIAUtils.setInvalid(slider, this.valid);
+
+    const progress = this.contentElement.createChild('div');
+    UI.ARIAUtils.markAsProgressBar(progress);
+    UI.ARIAUtils.setProgressBarValue(progress, 0.5, '50% done');
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <button role="button" aria-haspopup="true" aria-description="Some button"></button>
+      <ul role="tree">
+        <li role="treeitem"></li>
+      </ul>
+      <span role="alert" aria-live="polite">Alert</span>
+      <input role="slider" aria-valuemin="10" aria-valuemax="100" aria-invalid=\${this.valid}>
+      <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0.5"
+          aria-valuetext="50% done"></div>
     </div>\`,
     target, {host: input});
 };

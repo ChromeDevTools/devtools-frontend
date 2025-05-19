@@ -5,12 +5,14 @@
 import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as Extensions from '../../../../panels/timeline/extensions/extensions.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
   FakeFlameChartProvider,
   MockFlameChartDelegate,
   renderFlameChartIntoDOM,
+  renderFlameChartWithFakeProvider,
 } from '../../../../testing/TraceHelpers.js';
 
 import * as PerfUI from './perf_ui.js';
@@ -1106,5 +1108,186 @@ describeWithEnvironment('FlameChart', () => {
       customEndTime: 141253000 as Trace.Types.Timing.Milli,
     });
     await assertScreenshot('timeline/interactions_track_candystripe.png');
+  });
+
+  it('renders all the decoration types onto events', async () => {
+    class FakeProviderWithDecorations extends FakeFlameChartProvider {
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2],
+          entryStartTimes: [5, 55, 70, 5, 30, 55, 75, 5, 10, 15, 20, 25],
+          entryTotalTimes: [45, 10, 20, 20, 20, 5, 15, 4, 4, 4, 4, 1],
+          entryDecorations: [
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(25_000),
+              },
+              {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+            ],
+            [{type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE}],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+              {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(15_000),
+              },
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(10_000),
+              },
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(10_000),
+              },
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+              {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+            ],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+              {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(1_000),
+              },
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
+                startAtTime: Trace.Types.Timing.Micro(1_000),
+              },
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+              {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
+            ],
+            [
+              {
+                type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
+                // This triangle should start 1/4 of the event, and end at 3/4 of the event.
+                customStartTime: Trace.Types.Timing.Micro(25_250),
+                customEndTime: Trace.Types.Timing.Micro(25_750),
+              },
+            ],
+          ],
+          groups: [{
+            name: 'Testing decorations' as Platform.UIString.LocalizedString,
+            startLevel: 0,
+            style: defaultGroupStyle,
+          }],
+        });
+      }
+    }
+
+    await renderFlameChartWithFakeProvider(
+        new FakeProviderWithDecorations(),
+    );
+    await assertScreenshot('timeline/flamechart_all_decoration_types.png');
+  });
+
+  it('renders initiators correctly', async () => {
+    class FakeProviderWithInitiators extends FakeFlameChartProvider {
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 3],
+          entryStartTimes: [5, 5, 5, 15, 15, 15, 40, 40, 40, 55.4, 55.4, 55.4, 80, 80, 80, 17],
+          entryTotalTimes: [6, 6, 6, 5, 5, 20, 15, 15, 15, 2, 2, 2, 10, 10, 10, 10],
+          entryDecorations: [
+            [],
+            [],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [],
+            [],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+            [
+              {type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW},
+            ],
+          ],
+          initiatorsData: [
+            {initiatorIndex: 2, eventIndex: 3, isInitiatorHidden: true},
+            {initiatorIndex: 1, eventIndex: 13},
+            {initiatorIndex: 3, eventIndex: 6},
+            {initiatorIndex: 3, eventIndex: 8, isEntryHidden: true},
+            {initiatorIndex: 6, eventIndex: 11},
+            {initiatorIndex: 11, eventIndex: 12, isInitiatorHidden: true, isEntryHidden: true},
+            {initiatorIndex: 5, eventIndex: 15},
+          ],
+          groups: [{
+            name: 'Testing initiators' as Platform.UIString.LocalizedString,
+            startLevel: 0,
+            style: defaultGroupStyle,
+          }],
+        });
+      }
+
+      override maxStackDepth(): number {
+        return 4;
+      }
+    }
+
+    await renderFlameChartWithFakeProvider(
+        new FakeProviderWithInitiators(),
+    );
+    await assertScreenshot('timeline/flamechart_initiators.png');
+  });
+
+  it('renders extension tracks with the right colours', async () => {
+    const colorPalette = Trace.Types.Extensions.extensionPalette;
+    const paletteLength = colorPalette.length;
+
+    class FakeProviderWithExtensionColors extends FakeFlameChartProvider {
+      override entryColor(entryIndex: number): string {
+        const color = colorPalette[entryIndex % paletteLength];
+        return Extensions.ExtensionUI.extensionEntryColor(
+            {args: {color}} as Trace.Types.Extensions.SyntheticExtensionEntry);
+      }
+      override maxStackDepth(): number {
+        return paletteLength + 1;
+      }
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: colorPalette.map((_, i) => i),
+          entryStartTimes: colorPalette.map(() => 0),
+          entryTotalTimes: colorPalette.map(() => 100),
+          groups: [{
+            name: 'Testing extension palette' as Platform.UIString.LocalizedString,
+            startLevel: 0,
+            style: defaultGroupStyle,
+          }],
+        });
+      }
+    }
+
+    await renderFlameChartWithFakeProvider(
+        new FakeProviderWithExtensionColors(),
+    );
+    await assertScreenshot('timeline/flamechart_extension_track_colors.png');
   });
 });

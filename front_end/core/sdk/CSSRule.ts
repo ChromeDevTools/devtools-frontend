@@ -387,6 +387,10 @@ export class CSSFunctionRule extends CSSRule {
     return this.#children;
   }
 
+  nameWithParameters(): string {
+    return `${this.functionName().text}(${this.parameters().join(', ')})`;
+  }
+
   protocolNodesToNestedStyles(nodes: Protocol.CSS.CSSFunctionNode[]): CSSNestedStyle[] {
     const result = [];
     for (const node of nodes) {

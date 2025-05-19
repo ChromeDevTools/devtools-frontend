@@ -64,7 +64,7 @@ devtools_module("application") {
     "SharedStorageModel.ts",
     "SharedStorageTreeElement.ts",
     "StorageBucketsTreeElement.ts",
-    "StorageItemsView.ts",
+    "StorageItemsToolbar.ts",
     "StorageView.ts",
     "TrustTokensTreeElement.ts",
     "preloading/PreloadingView.ts",

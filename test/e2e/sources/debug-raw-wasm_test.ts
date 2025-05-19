@@ -41,11 +41,6 @@ import {
 } from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {
-  // The tests in this suite are particularly slow, as they perform a lot of actions
-  if (this.timeout() > 0) {
-    this.timeout(10000);
-  }
-
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
     await installEventListener(frontend, DEBUGGER_PAUSED_EVENT);

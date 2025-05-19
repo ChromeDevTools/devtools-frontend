@@ -475,6 +475,15 @@ export class NetworkLogViewColumns {
     this.sortHandler();
   }
 
+  filterChanged(): void {
+    // Request an animation frame because when the filter is cleared the
+    // NetworkLogView can be empty until it has been invalidated (see
+    // crbug.com/379762016).
+    window.requestAnimationFrame(() => {
+      this.dataGridInternal.scheduleUpdate();
+    });
+  }
+
   private sortHandler(): void {
     const columnId = this.dataGridInternal.sortColumnId();
     this.networkLogView.removeAllNodeHighlights();

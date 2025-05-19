@@ -68,7 +68,7 @@ describeWithMockConnection('ConsoleView', () => {
     assert.exists(messagesElement);
 
     const contextMenu = getContextMenuForElement(messagesElement);
-    const saveAsItem = findMenuItemWithLabel(contextMenu.saveSection(), 'Save as...');
+    const saveAsItem = findMenuItemWithLabel(contextMenu.saveSection(), 'Save as…');
     assert.exists(saveAsItem);
 
     const TIMESTAMP = 42;

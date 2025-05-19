@@ -46,7 +46,9 @@ devtools_module("persistence") {
     "../../models/workspace:bundle",
     "../../ui/components/cards:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/utils:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 
@@ -99,6 +101,7 @@ ts_library("unittests") {
   sources = [
     "AutomaticFileSystemManager.test.ts",
     "AutomaticFileSystemWorkspaceBinding.test.ts",
+    "EditFileSystemView.test.ts",
     "NetworkPersistenceManager.test.ts",
     "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",

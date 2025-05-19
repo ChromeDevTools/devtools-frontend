@@ -4,12 +4,12 @@
 import {assert} from 'chai';
 
 import {click, waitFor} from '../../../../shared/helper.js';
-import {loadComponentDocExample} from '../../../helpers/shared.js';
+
+import {loadTimelineDocExample} from './helpers.js';
 
 describe('Performance panel annotations', () => {
   it('allows the user to click on an entry label to select the event', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev-modifications');
-    await waitFor('.timeline-flamechart');
+    await loadTimelineDocExample('performance_panel/basic.html?trace=web-dev-modifications');
     await waitFor<HTMLElement>('.overlay-item.overlay-type-ENTRY_LABEL');
     await click('.overlay-type-ENTRY_LABEL', {clickOptions: {offset: {x: 10, y: 10}}});
 

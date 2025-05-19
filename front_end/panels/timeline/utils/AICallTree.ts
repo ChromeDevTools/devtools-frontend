@@ -183,6 +183,174 @@ export class AICallTree {
     return output;
   }
 
+  /**
+   * Iterates through nodes level by level using a Breadth-First Search (BFS) algorithm.
+   * BFS is important here because the serialization process assumes that direct child nodes
+   * will have consecutive IDs (horizontally across each depth).
+   *
+   * Example tree with IDs:
+   *
+   *             1
+   *            / \
+   *           2   3
+   *        / / /   \
+   *      4  5 6     7
+   *
+   * Here, node with an ID 2 has consecutive children in the 4-6 range.
+   *
+   * To optimize for space, the provided `callback` function is called to serialize
+   * each node as it's visited during the BFS traversal.
+   *
+   * When serializing a node, the callback receives:
+   * 1. The current node being visited.
+   * 2. The ID assigned to this current node (a simple incrementing index based on visit order).
+   * 3. The predicted starting ID for the children of this current node.
+   *
+   * A serialized node needs to know the ID range of its children. However,
+   * child node IDs are only assigned when those children are themselves visited.
+   * To handle this, we predict the starting ID for a node's children. This prediction
+   * is based on a running count of all nodes that have ever been added to the BFS queue.
+   * Since IDs are assigned consecutively as nodes are processed from the queue, and a
+   * node's children are added to the end of the queue when the parent is visited,
+   * their eventual IDs will follow this running count.
+   */
+  breadthFirstWalk(
+      nodes: MapIterator<Trace.Extras.TraceTree.Node>,
+      serializeNodeCallback:
+          (currentNode: Trace.Extras.TraceTree.Node, nodeId: number, childrenStartingId?: number) => void): void {
+    const queue: Trace.Extras.TraceTree.Node[] = Array.from(nodes);
+    let nodeIndex = 1;
+    // To predict the visited children indexes
+    let nodesAddedToQueueCount = queue.length;
+
+    let currentNode = queue.shift();
+
+    while (currentNode) {
+      if (currentNode.children().size > 0) {
+        serializeNodeCallback(currentNode, nodeIndex, nodesAddedToQueueCount + 1);
+      } else {
+        serializeNodeCallback(currentNode, nodeIndex);
+      }
+
+      queue.push(...Array.from(currentNode.children().values()));
+      nodesAddedToQueueCount += currentNode.children().size;
+
+      currentNode = queue.shift();
+      nodeIndex++;
+    }
+  }
+
+  /* This is a new serialization format that is currently only used in tests.
+   * TODO: replace the current format with this one. */
+  serializeIntoCompressedFormat(): string {
+    // Keep a map of URLs. We'll output a LUT to keep size down.
+    const allUrls: string[] = [];
+
+    let nodesStr = '';
+    this.breadthFirstWalk(this.rootNode.children().values(), (node, nodeId, childStartingNode) => {
+      nodesStr += '\n' +
+          this.stringifyNodeCompressed(node, nodeId, this.parsedTrace, this.selectedNode, allUrls, childStartingNode);
+    });
+
+    let output = '';
+    if (allUrls.length) {
+      // Output lookup table of URLs within this tree
+      output += '\n# All URL #s:\n\n' + allUrls.map((url, index) => `  * ${index}: ${url}`).join('\n');
+    }
+    output += '\n\n# Call tree:\n' + nodesStr;
+    return output;
+  }
+
+  /*
+  * Each node is serialized into a single line to minimize token usage in the context window.
+  * The format is a semicolon-separated string with the following fields:
+  * Format: `id;name;duration;selfTime;urlIndex;childRange;[S]
+  *
+  *   1. `id`: A unique numerical identifier for the node assigned by BFS.
+  *   2. `name`: The name of the event represented by the node.
+  *   3. `duration`: The total duration of the event in milliseconds, rounded to one decimal place.
+  *   4. `selfTime`: The self time of the event in milliseconds, rounded to one decimal place.
+  *   5. `urlIndex`: An index referencing a URL in the `allUrls` array. If no URL is present, this is an empty string.
+  *   6. `childRange`: A string indicating the range of IDs for the node's children. Children should always have consecutive IDs.
+  *                    If there is only one child, it's a single ID.
+  *   7. `[S]`: An optional marker indicating that this node is the selected node.
+  *
+  * Example:
+  *   `1;Parse HTML;2.5;0.3;0;2-5;S`
+  *   This represents:
+  *     - Node ID 1
+  *     - Name "Parse HTML"
+  *     - Total duration of 2.5ms
+  *     - Self time of 0.3ms
+  *     - URL index 0 (meaning the URL is the first one in the `allUrls` array)
+  *     - Child range of IDs 2 to 5
+  *     - This node is the selected node (S marker)
+  */
+  stringifyNodeCompressed(
+      node: Trace.Extras.TraceTree.Node, nodeId: number, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      selectedNode: Trace.Extras.TraceTree.Node|null, allUrls: string[], childStartingNodeIndex?: number): string {
+    const event = node.event;
+    if (!event) {
+      throw new Error('Event required');
+    }
+
+    // 1. ID
+    const idStr = String(nodeId);
+
+    // 2. Name
+    const name = nameForEntry(event, parsedTrace);
+
+    // Round milliseconds to one decimal place, return empty string if zero/undefined
+    const roundToTenths = (num: number|undefined): string => {
+      if (!num) {
+        return '';
+      }
+      return String(Math.round(num * 10) / 10);
+    };
+
+    // 3. Duration
+    const durationStr = roundToTenths(node.totalTime);
+
+    // 4. Self Time
+    const selfTimeStr = roundToTenths(node.selfTime);
+
+    // 5. URL Index
+    const url = SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    let urlIndexStr = '';
+    if (url) {
+      const existingIndex = allUrls.indexOf(url);
+      if (existingIndex === -1) {
+        urlIndexStr = String(allUrls.push(url) - 1);
+      } else {
+        urlIndexStr = String(existingIndex);
+      }
+    }
+
+    // 6. Child Range
+    const children = Array.from(node.children().values());
+    let childRangeStr = '';
+    if (childStartingNodeIndex) {
+      childRangeStr = (children.length === 1) ? String(childStartingNodeIndex) :
+                                                `${childStartingNodeIndex}-${childStartingNodeIndex + children.length}`;
+    }
+
+    // 7. Selected Marker
+    const selectedMarker = selectedNode?.event === node.event ? 'S' : '';
+
+    // Combine fields
+    let line = idStr;
+    line += ';' + name;
+    line += ';' + durationStr;
+    line += ';' + selfTimeStr;
+    line += ';' + urlIndexStr;
+    line += ';' + childRangeStr;
+
+    if (selectedMarker) {
+      line += ';' + selectedMarker;
+    }
+
+    return line;
+  }
   /* This custom YAML-like format with an adjacency list for children is 35% more token efficient than JSON */
   static stringifyNode(
       node: Trace.Extras.TraceTree.Node, parsedTrace: Trace.Handlers.Types.ParsedTrace,

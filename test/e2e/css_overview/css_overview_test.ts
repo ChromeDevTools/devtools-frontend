@@ -14,7 +14,8 @@ const COLORS_SIDEBAR_ITEM_SELECTOR = 'div[data-id="colors"]';
 const FONT_INFO_SIDEBAR_ITEM_SELECTOR = 'div[data-id="font-info"]';
 
 describe('CSS overview experiment', () => {
-  it('can display low contrast issues', async () => {
+  // Flakes with "expected '           Aa           1                        AA             AAA       ' to equal 'Aa 1 AA AAA'" blocking the tree
+  it.skip('[crbug.com/417423120]: can display low contrast issues', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToCssOverviewTab();
     await startCaptureCSSOverview();
@@ -36,9 +37,7 @@ describe('CSS overview experiment', () => {
     await click(OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR);
     await frontend.keyboard.press('Tab');
     await frontend.keyboard.press('Enter');
-    const colorsSidebarItem = await waitFor(COLORS_SIDEBAR_ITEM_SELECTOR);
-    const isSelected = await colorsSidebarItem?.evaluate(e => e.classList.contains('selected'));
-    assert.isTrue(isSelected);
+    await waitFor(`${COLORS_SIDEBAR_ITEM_SELECTOR}.selected`);
   });
 
   it('can navigate sidebar panel through keyboard arrow keys', async () => {
@@ -48,12 +47,10 @@ describe('CSS overview experiment', () => {
     const {frontend} = getBrowserAndPages();
     await click(OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR);
     await frontend.keyboard.press('ArrowDown');
-    const colorsSidebarItem = await waitFor(COLORS_SIDEBAR_ITEM_SELECTOR);
-    assert.isTrue(await colorsSidebarItem?.evaluate(e => e.classList.contains('selected')));
+    await waitFor(`${COLORS_SIDEBAR_ITEM_SELECTOR}.selected`);
     await frontend.keyboard.press('ArrowDown');
-    const fontInfoSidebarItem = await waitFor(FONT_INFO_SIDEBAR_ITEM_SELECTOR);
-    assert.isTrue(await fontInfoSidebarItem?.evaluate(e => e.classList.contains('selected')));
+    await waitFor(`${FONT_INFO_SIDEBAR_ITEM_SELECTOR}.selected`);
     await frontend.keyboard.press('ArrowUp');
-    assert.isTrue(await colorsSidebarItem?.evaluate(e => e.classList.contains('selected')));
+    await waitFor(`${COLORS_SIDEBAR_ITEM_SELECTOR}.selected`);
   });
 });

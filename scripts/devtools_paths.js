@@ -157,7 +157,7 @@ function litAnalyzerExecutablePath() {
  * @returns the path to the toplevel `tsconfig.json`.
  */
 function tsconfigJsonPath() {
-  return path.join(devtoolsRootPath(), 'tsconfig.json');
+  return path.join(devtoolsRootPath(), 'front_end', 'tsconfig.json');
 }
 
 function downloadedChromeBinaryPath() {

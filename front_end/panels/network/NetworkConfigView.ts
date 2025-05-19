@@ -19,7 +19,7 @@ const UIStrings = {
   /**
    *@description Text in Network Config View of the Network panel
    */
-  custom: 'Custom...',
+  custom: 'Custom…',
   /**
    *@description Other user agent element placeholder in Network Config View of the Network panel
    */

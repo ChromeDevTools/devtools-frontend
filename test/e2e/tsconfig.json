@@ -7,5 +7,6 @@
     {
       "path": "../shared/tsconfig.json"
     }
-  ]
+  ],
+  "exclude": ["./resources/"]
 }

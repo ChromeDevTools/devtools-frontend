@@ -70,6 +70,13 @@ describeWithLocale('DiffView', () => {
     assert.isTrue(view.querySelectorAll('.diff-line-content').length < 100);
     assert.isNotNull(view.querySelector('.diff-line-spacer'));
   });
+
+  it('renders no-diff state when the diff is empty', async () => {
+    const view = new DiffView.DiffView.DiffView({diff: [], mimeType: ''});
+    await view.loaded;
+
+    assert.exists(view.shadowRoot?.querySelector('[data-testid="no-diff"]'));
+  });
 });
 
 describe('DiffWrapper', () => {

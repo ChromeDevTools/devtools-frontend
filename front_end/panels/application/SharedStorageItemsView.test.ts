@@ -5,11 +5,7 @@
 import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {
-  dispatchClickEvent,
-  getCleanTextContentFromElements,
-  raf,
-} from '../../testing/DOMHelpers.js';
+import {getCleanTextContentFromElements, raf} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -259,12 +255,14 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     view: View.SharedStorageItemsView,
     itemsListener: SharedStorageItemsListener,
     viewFunction: ViewFunctionStub<typeof View.SharedStorageItemsView>,
+    toolbar: Resources.StorageItemsToolbar.StorageItemsToolbar,
   }> {
-    const viewFunction = createViewFunctionStub(View.SharedStorageItemsView);
+    const toolbar = new Resources.StorageItemsToolbar.StorageItemsToolbar();
+    const viewFunction = createViewFunctionStub(View.SharedStorageItemsView, {toolbar});
     const view = await View.SharedStorageItemsView.createView(sharedStorage, viewFunction);
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
     await RenderCoordinator.done({waitForWork: true});
-    return {view, itemsListener, viewFunction};
+    return {view, itemsListener, viewFunction, toolbar};
   }
 
   it('displays metadata and entries', async () => {
@@ -287,6 +285,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     const metadataView = view.metadataView;
+    assert.exists(metadataView);
     assert.isNotNull(metadataView.shadowRoot);
 
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
@@ -323,6 +322,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.lengthOf(viewFunction.input.items, 0);
 
     const metadataView = view.metadataView;
+    assert.exists(metadataView);
     assert.isNotNull(metadataView.shadowRoot);
 
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
@@ -403,7 +403,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    const {view, itemsListener, viewFunction} = await createView();
+    const {itemsListener, viewFunction, toolbar} = await createView();
     sinon.assert.calledOnceWithExactly(getMetadataSpy, {ownerOrigin: TEST_ORIGIN});
     sinon.assert.calledOnceWithExactly(getEntriesSpy, {ownerOrigin: TEST_ORIGIN});
 
@@ -412,7 +412,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     // Clicking "Refresh" will cause `getMetadata()` and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
-    dispatchClickEvent(view.refreshButton.element);
+    toolbar.dispatchEventToListeners(Resources.StorageItemsToolbar.StorageItemsToolbar.Events.REFRESH);
     await refreshedPromise2;
 
     sinon.assert.calledTwice(getMetadataSpy);
@@ -451,7 +451,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    const {view, itemsListener, viewFunction} = await createView();
+    const {itemsListener, viewFunction, toolbar} = await createView();
     sinon.assert.calledOnceWithExactly(getMetadataSpy, {ownerOrigin: TEST_ORIGIN});
     sinon.assert.calledOnceWithExactly(getEntriesSpy, {ownerOrigin: TEST_ORIGIN});
 
@@ -459,7 +459,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Clicking "Delete All" will cause `clear()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForItemsCleared();
-    dispatchClickEvent(view.deleteAllButton.element);
+    toolbar.dispatchEventToListeners(Resources.StorageItemsToolbar.StorageItemsToolbar.Events.DELETE_ALL);
     await clearedPromise;
 
     sinon.assert.calledOnceWithExactly(clearSpy, {ownerOrigin: TEST_ORIGIN});
@@ -515,7 +515,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    const {view, itemsListener, viewFunction} = await createView();
+    const {itemsListener, viewFunction, toolbar} = await createView();
     sinon.assert.calledOnceWithExactly(getMetadataSpy, {ownerOrigin: TEST_ORIGIN});
     sinon.assert.calledOnceWithExactly(getEntriesSpy, {ownerOrigin: TEST_ORIGIN});
 
@@ -524,7 +524,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     // Adding a filter to the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
-    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, 'b');
+    toolbar.filterChanged(new CustomEvent('DONTCARE', {detail: 'b'}));
     await refreshedPromise2;
 
     sinon.assert.calledTwice(getMetadataSpy);
@@ -537,7 +537,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Clicking "Delete All" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForFilteredItemsCleared();
-    dispatchClickEvent(view.deleteAllButton.element);
+    toolbar.dispatchEventToListeners(Resources.StorageItemsToolbar.StorageItemsToolbar.Events.DELETE_ALL);
     await clearedPromise;
 
     sinon.assert.calledOnceWithExactly(deleteEntrySpy, {ownerOrigin: TEST_ORIGIN, key: 'key2'});
@@ -552,7 +552,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     // Changing the filter in the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise3 = itemsListener.waitForItemsRefreshed();
-    view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, '');
+    toolbar.filterChanged(new CustomEvent('DONTCARE', {detail: ''}));
     await refreshedPromise3;
 
     sinon.assert.callCount(getMetadataSpy, 4);
@@ -591,7 +591,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    const {view, itemsListener, viewFunction} = await createView();
+    const {itemsListener, viewFunction, toolbar} = await createView();
     sinon.assert.calledOnceWithExactly(getMetadataSpy, {ownerOrigin: TEST_ORIGIN});
     sinon.assert.calledOnceWithExactly(getEntriesSpy, {ownerOrigin: TEST_ORIGIN});
 
@@ -602,7 +602,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     // Clicking "Delete Selected" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const deletedPromise = itemsListener.waitForItemsDeletedTotal(1);
-    dispatchClickEvent(view.deleteSelectedButton.element);
+    toolbar.dispatchEventToListeners(Resources.StorageItemsToolbar.StorageItemsToolbar.Events.DELETE_SELECTED);
     await deletedPromise;
 
     sinon.assert.calledOnceWithExactly(deleteEntrySpy, {ownerOrigin: TEST_ORIGIN, key: 'key2'});

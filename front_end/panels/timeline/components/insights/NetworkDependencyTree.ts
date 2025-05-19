@@ -90,7 +90,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
 
     const rows: TableDataRow[] = [{
       // Add one empty row so the main document request can also has a left border
-      values: [Lit.nothing],
+      values: [],
       subRows: nodes.map(node => this.#mapNetworkDependencyToRow(node))
     }];
 
@@ -161,17 +161,23 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     }
 
     const rows: TableDataRow[] = this.model.preconnectOrigins.map(preconnectOrigin => {
+      // clang-format off
       const nodeEl = html`
-            <devtools-performance-node-link
-              .data=${{
-        backendNodeId: preconnectOrigin.node_id,
-        frame: preconnectOrigin.frame,
-        fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
-      } as NodeLinkData}>
-            </devtools-performance-node-link>`;
+        <devtools-performance-node-link
+          .data=${{
+            backendNodeId: preconnectOrigin.node_id,
+            frame: preconnectOrigin.frame,
+            fallbackHtmlSnippet: `<link rel="preconnect" href="${preconnectOrigin.url}">`,
+          } as NodeLinkData}>
+        </devtools-performance-node-link>`;
+      // clang-format on
 
       return {
         values: [preconnectOrigin.url, nodeEl],
+        subRows: preconnectOrigin.unused ? [{
+          values: [md(i18nString(UIStrings.unusedWarning))],
+        }] :
+                                           undefined,
       };
     });
 

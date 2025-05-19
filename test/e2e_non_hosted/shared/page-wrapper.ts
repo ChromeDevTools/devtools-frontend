@@ -25,4 +25,10 @@ export class PageWrapper {
   async reload() {
     await this.page.reload();
   }
+
+  async raf() {
+    await this.page.evaluate(() => {
+      return new Promise(resolve => window.requestAnimationFrame(resolve));
+    });
+  }
 }

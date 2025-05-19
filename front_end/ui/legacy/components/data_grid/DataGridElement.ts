@@ -1,10 +1,11 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import inspectorCommonStyles from '../../inspectorCommon.css.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
 import {Align, type ColumnDescriptor, DataType, Events as DataGridEvents} from './DataGrid.js';
@@ -61,9 +62,7 @@ class DataGridElement extends HTMLElement {
     this.style.display = 'flex';
     this.#dataGrid.element.style.flex = 'auto';
 
-    this.#shadowRoot = this.attachShadow({mode: 'open', delegatesFocus: true});
-    this.#shadowRoot.createChild('style').textContent = dataGridStyles;
-    this.#shadowRoot.createChild('style').textContent = inspectorCommonStyles;
+    this.#shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this, {delegatesFocus: true, cssFile: dataGridStyles});
     this.#shadowRoot.appendChild(this.#dataGrid.element);
 
     this.#dataGrid.addEventListener(
@@ -472,6 +471,7 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
       return super.createCell(columnId);
     }
     const cell = this.createTD(columnId);
+    cell.setAttribute('part', `${columnId}-column`);
     if (this.isCreationNode) {
       return cell;
     }
@@ -488,6 +488,10 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     cell.title = configCell.title;
     if (configCell.hasAttribute('aria-label')) {
       this.setCellAccessibleName(configCell.getAttribute('aria-label') || '', cell, columnId);
+    }
+    const style = configCell.getAttribute('style');
+    if (style !== null) {
+      cell.setAttribute('style', style);
     }
 
     return cell;

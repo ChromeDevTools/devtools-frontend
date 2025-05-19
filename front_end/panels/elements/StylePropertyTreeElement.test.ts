@@ -6,7 +6,7 @@ import type {SinonStub} from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -14,6 +14,7 @@ import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.j
 import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
+  getMatchedStyles,
   getMatchedStylesWithBlankRule,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -85,6 +86,28 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         false, true, false, '', undefined, longhandProperties);
     matchedStyles.nodeStyles()[0].allProperties().push(property);
     return property;
+  }
+
+  async function getTreeElementForFunctionRule(functionName: string, result: string, propertyName = 'result') {
+    const matchedStyles = await getMatchedStyles({
+      functionRules:
+          [{name: {text: functionName}, origin: Protocol.CSS.StyleSheetOrigin.Regular, parameters: [], children: []}]
+    });
+
+    const property = new SDK.CSSProperty.CSSProperty(
+        matchedStyles.functionRules()[0].style, matchedStyles.functionRules()[0].style.pastLastSourcePropertyIndex(),
+        propertyName, result, true, false, true, false, '', undefined, []);
+    matchedStyles.functionRules()[0].style.allProperties().push(property);
+    return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+      stylesPane: stylesSidebarPane,
+      section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: true,
+    });
   }
 
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -793,6 +816,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
       assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
     });
+
+    it('does not render inside function rules', async () => {
+      const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'var(--b)');
+      stylePropertyTreeElement.updateTitle();
+      assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
   });
 
   describe('ColorRenderer', () => {
@@ -875,6 +904,59 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const angle = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-angle');
       assert.exists(angle);
+    });
+
+    it('shows a value tracing tooltip on color functions', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      for (const property of ['rgb(255 0 0)', 'color(srgb 0.5 0.5 0.5)', 'oklch(from purple calc(l * 2) c h)']) {
+        const stylePropertyTreeElement = getTreeElement('color', property);
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+        const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+        assert.exists(tooltip);
+        const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
+        assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
+        stylePropertyTreeElement.valueElement.remove();
+      }
+    });
+  });
+
+  describe('RelativeColorChannelRenderer', () => {
+    it('provides a tooltip for relative color channels', () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
+      stylePropertyTreeElement.updateTitle();
+
+      const tooltips = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-tooltip');
+      assert.exists(tooltips);
+      assert.lengthOf(tooltips, 3);
+      assert.deepEqual(Array.from(tooltips).map(tooltip => tooltip.textContent), ['1.000', '0.047', '0.047']);
+    });
+
+    it('evaluates relative color channels during tracing', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      setMockConnectionResponseHandler(
+          'CSS.resolveValues',
+          (request: Protocol.CSS.ResolveValuesRequest) =>
+              ({results: request.values.map(v => v === 'calc(1.000 / 2)' ? '0.5' : '')}));
+      const property = addProperty('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
+
+      const {promise, resolve} = Promise.withResolvers<void>();
+      const view = sinon.stub<Parameters<Elements.CSSValueTraceView.View>>().callsFake(() => resolve());
+      void new Elements.CSSValueTraceView.CSSValueTraceView(undefined, view)
+          .showTrace(
+              property, null, matchedStyles, new Map(),
+              Elements.StylePropertyTreeElement.getPropertyRenderers(
+                  property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+              false, 0, false);
+
+      await promise;
+
+      const {evaluations} = view.args[0][0];
+
+      assert.deepEqual(
+          evaluations.flat().map(args => args?.textContent).flat(),
+          ['rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)', 'rgb(from #ff0c0c 0.5 0.047 0.047)', '#800c0c']);
     });
   });
 
@@ -1630,6 +1712,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isOk(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(), 'red');
     });
+
+    it('does not render inside function rules', async () => {
+      const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'initial');
+      stylePropertyTreeElement.updateTitle();
+      assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
   });
 
   describe('PositionTryRenderer', () => {
@@ -1795,7 +1883,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
-          false, 0);
+          false, 0, false);
 
       sinon.assert.calledOnce(evaluationSpy);
       const originalText = evaluationSpy.args[0][0].textContent;
@@ -1814,7 +1902,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
               property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
-          false, 0);
+          false, 0, false);
 
       sinon.assert.calledOnce(resolveValuesStub);
       assert.strictEqual(resolveValuesStub.args[0][0], 'width');
@@ -1966,5 +2054,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').set(false);
     tooltip.showPopover();
     assert.isFalse(tooltip.open);
+  });
+
+  it('does not show a variable tooltip on custom property names in function rules', async () => {
+    const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'red', '--foo');
+    stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+    stylePropertyTreeElement.updateTitle();
+    assert.exists(stylePropertyTreeElement.nameElement);
+    assert.notExists(stylePropertyTreeElement.nameElement.getAttribute('aria-details'));
+    assert.exists(stylePropertyTreeElement.nameElement.parentElement);
+    assert.notExists(stylePropertyTreeElement.nameElement.parentElement.querySelector('devtools-tooltip'));
   });
 });

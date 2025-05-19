@@ -682,6 +682,15 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
+  /**
+   * The modified files excluding inspector stylesheets
+   */
+  get #modifiedFiles(): Workspace.UISourceCode.UISourceCode[] {
+    return this.#workspaceDiff.modifiedUISourceCodes().filter(modifiedUISourceCode => {
+      return !modifiedUISourceCode.url().startsWith('inspector://');
+    });
+  }
+
   async #applyPatchAndUpdateUI(): Promise<void> {
     const changeSummary = this.changeSummary;
     if (!changeSummary) {
@@ -708,7 +717,7 @@ export class PatchWidget extends UI.Widget.Widget {
     // made by the user. Consequently, if the AI patch itself makes no changes but the
     // user already had other modified files, the widget will still transition to the
     // success state (displaying all current workspace modifications).
-    const hasChanges = this.#workspaceDiff.modifiedUISourceCodes().length > 0;
+    const hasChanges = this.#modifiedFiles.length > 0;
     if (response?.type === AiAssistanceModel.ResponseType.ANSWER && hasChanges) {
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
     } else if (
@@ -732,11 +741,9 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   #onDiscard(): void {
-    this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      if (!modifiedUISourceCode.url().startsWith('inspector://')) {
-        modifiedUISourceCode.resetWorkingCopy();
-      }
-    });
+    for (const modifiedUISourceCode of this.#modifiedFiles) {
+      modifiedUISourceCode.resetWorkingCopy();
+    }
 
     this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     this.#patchSources = undefined;
@@ -749,11 +756,9 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   #onSaveAll(): void {
-    this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      if (!modifiedUISourceCode.url().startsWith('inspector://')) {
-        modifiedUISourceCode.commitWorkingCopy();
-      }
-    });
+    for (const modifiedUISourceCode of this.#modifiedFiles) {
+      modifiedUISourceCode.commitWorkingCopy();
+    }
     void this.changeManager?.stashChanges().then(() => {
       this.changeManager?.dropStashedChanges();
     });

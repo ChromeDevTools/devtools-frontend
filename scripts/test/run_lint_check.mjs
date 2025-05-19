@@ -32,9 +32,10 @@ const flags = yargs(hideBin(process.argv))
       'Disable cache validations during debugging, useful for custom rule creation/debugging.',
   })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
-    yargs.positional('files', {
+    return yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
-      type: 'array',
+      type: 'string',
+      array: true,
       default: [
         'front_end',
         'inspector_overlay',
@@ -173,7 +174,7 @@ async function runLitAnalyzer(files) {
   /**
    *
    * @param {string[]} subsetFiles
-   * @returns {{output: string, error: string, status:boolean}}
+   * @returns {Promise<{output: string, error: string, status:boolean}>}
    */
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
@@ -190,7 +191,6 @@ async function runLitAnalyzer(files) {
 
     return await new Promise(resolve => {
       const litAnalyzerProcess = spawn(nodePath(), args, {
-        encoding: 'utf-8',
         cwd: devtoolsRootPath(),
       });
 
@@ -218,6 +218,9 @@ async function runLitAnalyzer(files) {
       return [filesToSplit];
     }
 
+    /**
+     * @type {string[][]}
+     */
     const splitFiles = [[]];
     let index = 0;
     for (const file of filesToSplit) {
@@ -293,7 +296,6 @@ async function runEslintRulesTypeCheck(_files) {
 
     return await new Promise(resolve => {
       const tscProcess = spawn(nodePath(), args, {
-        encoding: 'utf-8',
         cwd: devtoolsRootPath(),
       });
 
@@ -328,9 +330,10 @@ async function runEslintRulesTypeCheck(_files) {
 }
 
 async function run() {
+  const files = Array.isArray(flags.files) ? flags.files : [flags.files];
   const scripts = [];
   const styles = [];
-  for (const path of sync(flags.files, {
+  for (const path of sync(files, {
     expandDirectories: { extensions: ['css', 'mjs', 'js', 'ts'] },
     gitignore: true,
   })) {

@@ -617,10 +617,9 @@ export class SensorsView extends UI.Widget.VBox {
         {PH1: deviceOrientation.alpha, PH2: deviceOrientation.beta, PH3: deviceOrientation.gamma}));
   }
 
-  private createAxisInput(parentElement: Element, input: HTMLInputElement, label: string, validator: (arg0: string) => {
-    valid: boolean,
-    errorMessage: (string|undefined),
-  }): (arg0: string) => void {
+  private createAxisInput(
+      parentElement: Element, input: HTMLInputElement, label: string,
+      validator: (arg0: string) => boolean): (arg0: string) => void {
     const div = parentElement.createChild('div', 'orientation-axis-input-container');
     div.appendChild(input);
     div.appendChild(UI.UIUtils.createLabel(label, /* className */ '', input));

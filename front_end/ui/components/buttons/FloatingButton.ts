@@ -77,10 +77,11 @@ export class FloatingButton extends HTMLElement {
   }
 
   #render(): void {
+    // clang-format off
     Lit.render(
-        html`<style>${floatingButtonStyles}</style>
-             <button><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
+        html`<style>${floatingButtonStyles}</style><button><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
         this.#shadow, {host: this});
+    // clang-format on
   }
 }
 

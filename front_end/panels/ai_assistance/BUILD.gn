@@ -46,6 +46,7 @@ devtools_module("ai_assistance") {
     "../../panels/timeline/utils:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
+    "../../ui/components/snackbars:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

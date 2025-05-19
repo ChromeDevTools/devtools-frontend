@@ -3802,7 +3802,7 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
       nextFromEnd = !nextFromEnd;
     }
     if (edgeIndexFromStart <= edgeIndexFromEnd) {
-      categoryNameStart += ', ...';
+      categoryNameStart += ', …';
     }
     if (categoryNameEnd.length > 1) {
       categoryNameStart += ', ';

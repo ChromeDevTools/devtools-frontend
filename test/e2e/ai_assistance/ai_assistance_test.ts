@@ -148,7 +148,7 @@ describe('AI Assistance', function() {
     };
   }
 
-  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Log[]> {
+  async function submitAndWaitTillDone(waitForSideEffect?: boolean, throwOnSideEffect?: boolean): Promise<Log[]> {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
@@ -167,15 +167,20 @@ describe('AI Assistance', function() {
     }
 
     const abort = new AbortController();
+    let sideEffectCount = 0;
     async function autoAcceptEvals(signal: AbortSignal) {
       while (!signal.aborted) {
         await frontend.locator('aria/Continue').click({signal});
+        sideEffectCount++;
       }
     }
     // Click continue once without sending abort signal.
     autoAcceptEvals(abort.signal).catch(() => {});
     await done;
     abort.abort();
+    if (sideEffectCount && throwOnSideEffect) {
+      throw new Error('Unexpected side effect');
+    }
     return JSON.parse(await frontend.evaluate((): string => {
       return localStorage.getItem('aiAssistanceStructuredLog') as string;
     })) as Log[];
@@ -189,6 +194,7 @@ describe('AI Assistance', function() {
     iframeId?: string,
     shadowRoot?: string,
     waitForSideEffect?: boolean,
+    throwOnSideEffect?: boolean,
   }) {
     const {
       messages,
@@ -197,7 +203,8 @@ describe('AI Assistance', function() {
       node = 'div',
       iframeId,
       shadowRoot,
-      waitForSideEffect
+      waitForSideEffect,
+      throwOnSideEffect
     } = options;
 
     await setupMocks(
@@ -225,6 +232,7 @@ describe('AI Assistance', function() {
       query,
       messages,
       waitForSideEffect,
+      throwOnSideEffect,
     });
   }
 
@@ -235,13 +243,14 @@ describe('AI Assistance', function() {
     iframeId?: string,
     shadowRoot?: string,
     waitForSideEffect?: boolean,
+    throwOnSideEffect?: boolean,
   }) {
-    const {messages, query, node = 'div', iframeId, shadowRoot, waitForSideEffect} = options;
+    const {messages, query, node = 'div', iframeId, shadowRoot, waitForSideEffect, throwOnSideEffect} = options;
 
     await resetMockMessages(messages);
     await inspectNode(node, iframeId, shadowRoot);
     await typeQuery(query);
-    return await submitAndWaitTillDone(waitForSideEffect);
+    return await submitAndWaitTillDone(waitForSideEffect, throwOnSideEffect);
   }
 
   async function openConversationFromHistory(historyEntrySelector: string) {
@@ -613,4 +622,21 @@ STOP`,
       parts: [{text: 'OBSERVATION: undefined'}],
     });
   });
+
+  for (const code of ['const data = {}', 'throw new Error("test")', 'const data = {;']) {
+    it(`should not trigger a side-effect for "${code}"`, async () => {
+      await runAiAssistance({
+        query: 'Change the fontSize for this element to blue',
+        throwOnSideEffect: true,
+        messages: [
+          `THOUGHT: data
+TITLE: data
+ACTION
+${code}
+STOP`,
+          'ANSWER: done',
+        ],
+      });
+    });
+  }
 });

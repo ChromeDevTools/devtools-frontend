@@ -39,11 +39,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/changes/CombinedDiffView.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface SingleDiffViewInput {
+  // `DiffArray` can be empty for the modified files that
+  // do not have any diff. (e.g. the file content transition was A -> B -> A)
+  diff: Diff.Diff.DiffArray;
   fileName: string;
   fileUrl: string;
   mimeType: string;
   icon: Lit.TemplateResult;
-  diff: Diff.Diff.DiffArray;
   copied: boolean;
   selectedFileUrl?: string;
   onCopy: (fileUrl: string) => void;
@@ -226,12 +228,8 @@ export class CombinedDiffView extends UI.Widget.Widget {
                                    // `requestDiff` caches the response from the previous `requestDiff` calls if the file did not change
                                    // so we can safely call it here without concerns for performance.
                                    const diffResponse = await this.#workspaceDiff?.requestDiff(modifiedUISourceCode);
-                                   if (!diffResponse || diffResponse.diff.length === 0) {
-                                     return;
-                                   }
-
                                    return {
-                                     diff: diffResponse.diff,
+                                     diff: diffResponse?.diff ?? [],
                                      uiSourceCode: modifiedUISourceCode,
                                    };
                                  }))).filter(uiSourceCodeAndDiff => !!uiSourceCodeAndDiff);

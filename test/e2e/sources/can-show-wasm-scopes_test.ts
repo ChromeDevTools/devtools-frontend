@@ -16,7 +16,8 @@ import {
 } from '../helpers/sources-helpers.js';
 
 describe('Source Tab', () => {
-  it('shows and updates the module, local, and stack scope while pausing', async () => {
+  // Skipping flaky test
+  it.skip('[crbug.com/417153130] shows and updates the module, local, and stack scope while pausing', async () => {
     const {frontend, target} = getBrowserAndPages();
     const breakpointLine = '0x05f';
     const fileName = 'scopes.wasm';

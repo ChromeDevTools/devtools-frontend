@@ -54,14 +54,15 @@ function assert(condition: unknown, message: string): void {
 type WidgetConstructor<WidgetT extends Widget> = new (element: WidgetElement<WidgetT>) => WidgetT;
 type WidgetProducer<WidgetT extends Widget> = (element: WidgetElement<WidgetT>) => WidgetT;
 type WidgetFactory<WidgetT extends Widget> = WidgetConstructor<WidgetT>|WidgetProducer<WidgetT>;
+type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT>? WidgetT : never;
 
 export class WidgetConfig<WidgetT extends Widget> {
   constructor(readonly widgetClass: WidgetFactory<WidgetT>, readonly widgetParams?: Partial<WidgetT>) {
   }
 }
 
-export function widgetConfig<WidgetT extends Widget, ParamKeys extends keyof WidgetT>(
-    widgetClass: WidgetFactory<WidgetT>, widgetParams?: Pick<WidgetT, ParamKeys>&Partial<WidgetT>):
+export function widgetConfig<F extends WidgetFactory<Widget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(
+    widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys>&Partial<InferWidgetTFromFactory<F>>):
     // This is a workaround for https://github.com/runem/lit-analyzer/issues/163
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     WidgetConfig<any> {
@@ -135,7 +136,7 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 
   override insertBefore<T extends Node>(child: T, referenceChild: Node): T {
     if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
-      Widget.getOrCreateWidget(child).show(this, referenceChild);
+      Widget.getOrCreateWidget(child).show(this, referenceChild, true);
       return child;
     }
     return super.insertBefore(child, referenceChild);
@@ -158,6 +159,16 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
       }
     }
     super.removeChildren();
+  }
+
+  override cloneNode(deep: boolean): Node {
+    const clone = super.cloneNode(deep) as WidgetElement<WidgetT>;
+    if (!this.#widgetClass) {
+      throw new Error('No widgetClass defined');
+    }
+    clone.#widgetClass = this.#widgetClass;
+    clone.#widgetParams = this.#widgetParams;
+    return clone;
   }
 }
 

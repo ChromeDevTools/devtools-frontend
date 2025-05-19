@@ -1,0 +1,60 @@
+// Copyright {{DATE}} The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import * as i18n from '{{FRONT_END_PATH_PREFIX}}/core/i18n/i18n.js';
+import * as UI from '{{FRONT_END_PATH_PREFIX}}/ui/legacy/legacy.js';
+import * as Lit from '{{FRONT_END_PATH_PREFIX}}/ui/lit/lit.js';
+
+import {{COMPONENT_NAME_CAMEL_CASE}}Styles from './{{COMPONENT_NAME_CAMEL_CASE}}.css.js';
+
+const {render, html} = Lit;
+
+const UIStrings = {
+  /**
+   *@description Example string description
+   */
+  exampleI18nString: 'Example string, please remove',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('{{COMPONENT_PATH_PREFIX}}/{{COMPONENT_NAME_PASCAL_CASE}}.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export interface ViewInput {
+}
+
+export interface ViewOutput {
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+  // clang-format off
+  render(html`
+    <style>${{{COMPONENT_NAME_CAMEL_CASE}}Styles}</style>
+    <div class="{{COMPONENT_NAME_KEBAP_CASE}}">
+      ${i18nString(UIStrings.exampleI18nString)}
+    </div>
+  `, target, {host: target});
+  // clang-format on
+};
+export type View = typeof DEFAULT_VIEW;
+
+export class {{COMPONENT_NAME_PASCAL_CASE}} extends UI.Widget.Widget {
+  #view: View;
+  #viewOutput: ViewOutput = {};
+
+  constructor(element?: HTMLElement, view?: View) {
+    super(false, false, element);
+    this.#view = view ?? DEFAULT_VIEW;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+  }
+
+  override willHide(): void {
+    super.willHide();
+  }
+
+  override performUpdate(): Promise<void>|void {
+    this.#view({}, this.#viewOutput, this.contentElement);
+  }
+}

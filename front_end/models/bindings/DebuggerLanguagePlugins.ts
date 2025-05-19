@@ -29,13 +29,13 @@ const UIStrings = {
    *@example {http://web.dev/file.wasm} PH2
    *@example {http://web.dev/file.wasm.debug.wasm} PH3
    */
-  loadingDebugSymbolsForVia: '[{PH1}] Loading debug symbols for {PH2} (via {PH3})...',
+  loadingDebugSymbolsForVia: '[{PH1}] Loading debug symbols for {PH2} (via {PH3})…',
   /**
    *@description Status message that is shown in the Console when debugging information is being loaded
    *@example {C/C++ DevTools Support (DWARF)} PH1
    *@example {http://web.dev/file.wasm} PH2
    */
-  loadingDebugSymbolsFor: '[{PH1}] Loading debug symbols for {PH2}...',
+  loadingDebugSymbolsFor: '[{PH1}] Loading debug symbols for {PH2}…',
   /**
    *@description Warning message that is displayed in the Console when debugging information was loaded, but no source files were found
    *@example {C/C++ DevTools Support (DWARF)} PH1

@@ -14,6 +14,7 @@ copy_to_gen("elements") {
     "adornment-scroll.html",
     "adornment-shadow.html",
     "adornment.html",
+    "at-function.html",
     "at-property.html",
     "css-container-queries.html",
     "css-grid-ua-shadow.html",

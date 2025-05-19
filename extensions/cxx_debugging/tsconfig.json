@@ -1,15 +1,10 @@
 {
+  "extends": "../../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "target": "esnext",
-    "module": "esnext",
     "moduleResolution": "node",
     "allowUnreachableCode": false,
-    "noEmitOnError": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "baseUrl": ".",
     "allowUmdGlobalAccess": true,
     "paths": {
@@ -17,8 +12,5 @@
       "lit-html/*": ["./third_party/lit-html/*"]
     }
   },
-  "include": [
-    "src/*.ts",
-    "tests/*.ts"
-  ]
+  "include": ["src/*.ts", "tests/*.ts"]
 }

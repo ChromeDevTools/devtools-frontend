@@ -46,11 +46,6 @@ async function validateSourceTabs() {
 }
 
 describe('Multi-Workers', function() {
-  // The tests in this suite are particularly slow, as they perform a lot of actions
-  if (this.timeout() !== 0) {
-    this.timeout(10000);
-  }
-
   [false, true].forEach(sourceMaps => {
     const withOrWithout = sourceMaps ? 'with source maps' : 'without source maps';
     const targetPage = sourceMaps ? 'sources/multi-workers-sourcemap.html' : 'sources/multi-workers.html';

@@ -740,8 +740,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       }
       const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
-        // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
-        const percentage = options.updateTraceWindowPercentage ?? 100;
+        // Trace window covering all overlays expanded by 50% so that the overlays cover 2/3 (100/150) of the visible window.
+        const percentage = options.updateTraceWindowPercentage ?? 50;
         const expandedBounds =
             Trace.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, percentage);
 

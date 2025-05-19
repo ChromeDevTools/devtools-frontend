@@ -72,7 +72,7 @@ const UIStrings = {
    */
   showLess: 'Show less',
   /**
-   *@description Header for a list of feature attributes. 'When (the feature is turned) on, you'll be able to ...'
+   *@description Header for a list of feature attributes. 'When (the feature is turned) on, you'll be able to …'
    */
   whenOn: 'When on',
   /**

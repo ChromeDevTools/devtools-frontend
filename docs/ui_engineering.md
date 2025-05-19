@@ -44,14 +44,14 @@ For backwards compatibility, the first argument to `widgetConfig` can also be a 
 
 ```html
 <devtools-widget .widgetConfig=${widgetConfig(ElementsPanel)}>
-  <devtools-split-widget>
+  <devtools-split-view>
     <devtools-widget slot="main" .widgetConfig=${widgetConfig(ElementsTree)}></devtools-widget>
     <devtools-tab-pane slot="sidebar">
       <devtools-widget .widgetConfig=${widgetConfig(StylesPane, {element: input.element})}></devtools-widget>
       <devtools-widget .widgetConfig=${widgetConfig(ComputedPane, {element: input.element})}></devtools-widget>
       ...
     </devtools-tab-pane>
-  </devtools-split-widget>
+  </devtools-split-view>
 </devtools-widget>
 ```
 

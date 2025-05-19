@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view, rulesdir/inject-checkbox-styles */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../ui/components/adorners/adorners.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
@@ -13,7 +13,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -171,27 +170,24 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`
-        <style>${Input.checkboxStyles}</style>
         <style>${autofillViewStyles}</style>
         <style>${UI.inspectorCommonStyles}</style>
         <main>
           <div class="top-left-corner">
-            <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
-              <input
-                type="checkbox"
+            <devtools-checkbox
                 ?checked=${this.#showTestAddressesInAutofillMenuSetting.get()}
+                title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}
                 @change=${this.#onShowTestAddressesInAutofillMenuChanged.bind(this)}
                 jslog=${VisualLogging.toggle(this.#showTestAddressesInAutofillMenuSetting.name).track({ change: true })}>
-              <span>${i18nString(UIStrings.showTestAddressesInAutofillMenu)}</span>
-            </label>
-            <label class="checkbox-label" title=${i18nString(UIStrings.autoShowTooltip)}>
-            <input
-              type="checkbox"
-              ?checked=${this.#autoOpenViewSetting.get()}
-              @change=${this.#onAutoOpenCheckboxChanged.bind(this)}
-              jslog=${VisualLogging.toggle(this.#autoOpenViewSetting.name).track({ change: true })}>
-            <span>${i18nString(UIStrings.autoShow)}</span>
-            </label>
+              ${i18nString(UIStrings.showTestAddressesInAutofillMenu)}
+            </devtools-checkbox>
+            <devtools-checkbox
+                title=${i18nString(UIStrings.autoShowTooltip)}
+                ?checked=${this.#autoOpenViewSetting.get()}
+                @change=${this.#onAutoOpenCheckboxChanged.bind(this)}
+                jslog=${VisualLogging.toggle(this.#autoOpenViewSetting.name).track({ change: true })}>
+              ${i18nString(UIStrings.autoShow)}
+            </devtools-checkbox>
             <x-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
           </div>
           <div class="placeholder-container" jslog=${VisualLogging.pane('autofill-empty')}>
@@ -212,7 +208,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <style>${Input.checkboxStyles}</style>
       <style>${autofillViewStyles}</style>
       <style>${UI.inspectorCommonStyles}</style>
       <main>
@@ -220,26 +215,22 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
             <div class="header">
               <div class="label-container">
-                <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
-                  <input
-                    type="checkbox"
+                <devtools-checkbox
+                    title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}
                     ?checked=${this.#showTestAddressesInAutofillMenuSetting.get()}
                     @change=${this.#onShowTestAddressesInAutofillMenuChanged.bind(this)}
                     jslog=${VisualLogging.toggle(this.#showTestAddressesInAutofillMenuSetting.name).track({ change: true })}
-                  >
-                  <span>${i18nString(UIStrings.showTestAddressesInAutofillMenu)}</span>
-                </label>
+                  >${i18nString(UIStrings.showTestAddressesInAutofillMenu)}
+                </devtools-checkbox>
               </div>
               <div class="label-container">
-                <label class="checkbox-label" title=${i18nString(UIStrings.autoShowTooltip)}>
-                  <input
-                    type="checkbox"
+                <devtools-checkbox
+                    title=${i18nString(UIStrings.autoShowTooltip)}
                     ?checked=${this.#autoOpenViewSetting.get()}
                     @change=${this.#onAutoOpenCheckboxChanged.bind(this)}
                     jslog=${VisualLogging.toggle(this.#autoOpenViewSetting.name).track({ change: true })}
-                  >
-                  <span>${i18nString(UIStrings.autoShow)}</span>
-                </label>
+                  >${i18nString(UIStrings.autoShow)}
+                </devtools-checkbox>
               </div>
               <x-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
             </div>

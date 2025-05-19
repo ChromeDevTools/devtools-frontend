@@ -51,12 +51,6 @@ describe('The Sources Tab', function() {
   const CLICK_BREAKPOINT_SCRIPT = 'click-breakpoint.js';
   const CLICK_BREAKPOINT_HTML = 'click-breakpoint.html';
 
-  // Some of these tests that use instrumentation breakpoints
-  // can be slower on mac and windows. Increaese the timeout for them.
-  if (this.timeout() !== 0) {
-    this.timeout(10000);
-  }
-
   it('sets and hits breakpoints in JavaScript', async () => {
     const {target} = getBrowserAndPages();
     await openSourceCodeEditorForFile(CLICK_BREAKPOINT_SCRIPT, CLICK_BREAKPOINT_HTML);

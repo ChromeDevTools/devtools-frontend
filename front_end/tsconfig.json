@@ -1,0 +1,19 @@
+{
+  "extends": "../config/typescript/tsconfig.base.json",
+  "compilerOptions": {
+    "allowUmdGlobalAccess": true,
+    "outDir": "ignored",
+    "lib": ["esnext", "dom", "dom.iterable", "webworker", "webworker.iterable"],
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "rules": {
+          "no-complex-attribute-binding": "off",
+          "no-missing-import": "error",
+          "no-unknown-tag-name": "error",
+          "no-unclosed-tag": "error"
+        }
+      }
+    ]
+  }
+}

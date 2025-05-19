@@ -1,9 +1,14 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "commonjs",
 
-    "checkJs": false,
-    "allowJs": false
-  }
+    "allowJs": false,
+    "checkJs": false
+  },
+  "references": [
+    {
+      "path": "../front_end/tsconfig.json"
+    }
+  ]
 }

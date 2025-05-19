@@ -707,14 +707,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   /**
-   * This "disables" the 3P checkbox in the toolbar.
-   * Disabling here does a couple of things:
-   * 1) makes the checkbox dimmed and unclickable
-   * 2) gives the checkbox UI an indeterminate state
-   */
+   * This disables the 3P checkbox in the toolbar.
+   * If the checkbox was checked, we flip it to indeterminiate to communicate it doesn't currently apply. */
   set3PCheckboxDisabled(disabled: boolean): void {
     this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
-    this.#thirdPartyCheckbox?.setIndeterminate(disabled);
+    if (this.#dimThirdPartiesSetting?.get()) {
+      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
+    }
   }
 
   static instance(opts: {
@@ -996,6 +995,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private setState(state: State): void {
     this.state = state;
     this.updateTimelineControls();
+  }
+
+  /**
+   * This indicates that `this.#setModelForActiveTrace` has been called,
+   * and so the main flame chart should have been populated.
+   */
+  hasFinishedLoadingTraceForTest(): boolean {
+    return this.#viewMode.mode === 'VIEWING_TRACE';
   }
 
   private createSettingCheckbox(setting: Common.Settings.Setting<boolean>, tooltip: Platform.UIString.LocalizedString):

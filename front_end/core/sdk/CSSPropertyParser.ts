@@ -254,8 +254,8 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.computedText.hasUnresolvedVars(from.from - this.ast.tree.from, to.to - this.ast.tree.from);
   }
 
-  getComputedText(node: CodeMirror.SyntaxNode, substitutions?: Map<Match, string>): string {
-    return this.getComputedTextRange(node, node, substitutions);
+  getComputedText(node: CodeMirror.SyntaxNode, substitutionHook?: (match: Match) => string | null): string {
+    return this.getComputedTextRange(node, node, substitutionHook);
   }
 
   getLonghandValuesCount(): number {
@@ -276,9 +276,10 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree);
   }
 
-  getComputedTextRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode, substitutions?: Map<Match, string>):
-      string {
-    return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from, substitutions);
+  getComputedTextRange(
+      from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode,
+      substitutionHook?: (match: Match) => string | null): string {
+    return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from, substitutionHook);
   }
 }
 
@@ -435,14 +436,14 @@ export class ComputedText {
   // Get a slice of the computed text corresponding to the property text in the range [begin, end). The slice may not
   // start within a substitution chunk, e.g., it's invalid to request the computed text for the property value text
   // slice "1px var(--".
-  get(begin: number, end: number, substitutions?: Map<Match, string>): string {
+  get(begin: number, end: number, substitutionHook?: (match: Match) => string | null): string {
     const pieces: string[] = [];
     const getText = (piece: string|ComputedTextChunk): string => {
       if (typeof piece === 'string') {
         return piece;
       }
-      const substitution = substitutions?.get(piece.match);
-      if (substitution) {
+      const substitution = substitutionHook?.(piece.match) ?? null;
+      if (substitution !== null) {
         return getText(substitution);
       }
       return piece.computedText ?? piece.match.text;
@@ -550,8 +551,8 @@ export namespace ASTUtils {
     return result;
   }
 
-  export function callArgs(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode[][] {
-    const args = children(node.getChild('ArgList'));
+  export function callArgs(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[][] {
+    const args = children(node?.getChild('ArgList') ?? null);
     const openParen = args.splice(0, 1)[0];
     const closingParen = args.pop();
 

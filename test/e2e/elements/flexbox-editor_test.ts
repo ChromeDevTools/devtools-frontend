@@ -15,7 +15,8 @@ import {
 } from '../helpers/elements-helpers.js';
 import {clickPropertyButton, clickStylePropertyEditorButton} from '../helpers/style-property-editor-helpers.js';
 
-describe('Flexbox Editor', function() {
+// Flaky test, closing the tree.
+describe.skip('[crbug.com/417425749] Flexbox Editor', function() {
   beforeEach(async function() {
     await goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B');
@@ -24,22 +25,21 @@ describe('Flexbox Editor', function() {
     await waitForCSSPropertyValue('#target', 'display', 'flex');
   });
 
-  it(
-      'can be opened and flexbox styles can be edited', async () => {
-        await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
+  it('can be opened and flexbox styles can be edited', async () => {
+    await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor');
 
-        // Clicking once sets the value.
-        await clickPropertyButton('[title="Add flex-direction: column"]');
-        await waitForCSSPropertyValue('#target', 'flex-direction', 'column');
+    // Clicking once sets the value.
+    await clickPropertyButton('[title="Add flex-direction: column"]');
+    await waitForCSSPropertyValue('#target', 'flex-direction', 'column');
 
-        // Clicking again removes the value.
-        await clickPropertyButton('[title="Remove flex-direction: column"]');
-        // Wait for the button's title to be updated so that we know the change
-        // was made.
-        await waitFor('[title="Add flex-direction: column"]');
-        const property = await getCSSPropertyInRule('#target', 'flex-direction');
-        assert.isUndefined(property);
-      });
+    // Clicking again removes the value.
+    await clickPropertyButton('[title="Remove flex-direction: column"]');
+    // Wait for the button's title to be updated so that we know the change
+    // was made.
+    await waitFor('[title="Add flex-direction: column"]');
+    const property = await getCSSPropertyInRule('#target', 'flex-direction');
+    assert.isUndefined(property);
+  });
 
   it('can be opened for flexbox styles with !important', async () => {
     await editCSSProperty('#target', 'display', 'flex !important');

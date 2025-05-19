@@ -21,6 +21,7 @@
   * When using a dark theme, we should inform Blink that the content is dark,
   * so that the native scrollbars are colored accordingly.
   */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
   background: rgb(0 0 0 / 1%);
 }
 

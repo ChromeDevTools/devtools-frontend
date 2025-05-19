@@ -55,7 +55,7 @@ function forwardOptions(): string[] {
 
   // @ts-expect-error yargs and unparse have slightly different types
   const unparsed = unparse(forwardedOptions);
-  const args = [];
+  const args: string[] = [];
   for (let i = 0; i < unparsed.length - 1; i++) {
     if (unparsed[i].startsWith('--') && !Number.isNaN(Number(unparsed[i + 1]))) {
       // Mocha errors on --repeat 1 as it expects --repeat=1. We assume

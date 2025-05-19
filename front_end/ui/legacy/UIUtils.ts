@@ -1493,11 +1493,8 @@ export class DevToolsCloseButton extends HTMLElement {
 customElements.define('dt-close-button', DevToolsCloseButton);
 
 export function bindInput(
-    input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => {
-      valid: boolean,
-      errorMessage: (string | undefined),
-    },
-    numeric: boolean, modifierMultiplier?: number): (arg0: string) => void {
+    input: HTMLInputElement, apply: (arg0: string) => void, validate: (arg0: string) => boolean, numeric: boolean,
+    modifierMultiplier?: number): (arg0: string) => void {
   input.addEventListener('change', onChange, false);
   input.addEventListener('input', onInput, false);
   input.addEventListener('keydown', onKeyDown, false);
@@ -1508,7 +1505,7 @@ export function bindInput(
   }
 
   function onChange(): void {
-    const {valid} = validate(input.value);
+    const valid = validate(input.value);
     input.classList.toggle('error-input', !valid);
     if (valid) {
       apply(input.value);
@@ -1517,7 +1514,7 @@ export function bindInput(
 
   function onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Enter') {
-      const {valid} = validate(input.value);
+      const valid = validate(input.value);
       if (valid) {
         apply(input.value);
       }
@@ -1534,7 +1531,7 @@ export function bindInput(
       return;
     }
     const stringValue = String(value);
-    const {valid} = validate(stringValue);
+    const valid = validate(stringValue);
     if (valid) {
       setValue(stringValue);
     }
@@ -1545,7 +1542,7 @@ export function bindInput(
     if (value === input.value) {
       return;
     }
-    const {valid} = validate(value);
+    const valid = validate(value);
     input.classList.toggle('error-input', !valid);
     input.value = value;
   }
@@ -1985,15 +1982,12 @@ export function measuredScrollbarWidth(document?: Document|null): number {
 export function openInNewTab(url: URL|string): void {
   url = new URL(`${url}`);
   if (['developer.chrome.com', 'developers.google.com', 'web.dev'].includes(url.hostname)) {
+    if (!url.searchParams.has('utm_source')) {
+      url.searchParams.append('utm_source', 'devtools');
+    }
     const {channel} = Root.Runtime.hostConfig;
     if (!url.searchParams.has('utm_campaign') && typeof channel === 'string') {
       url.searchParams.append('utm_campaign', channel);
-    }
-    if (!url.searchParams.has('utm_medium')) {
-      url.searchParams.append('utm_medium', 'referral');
-    }
-    if (!url.searchParams.has('utm_source')) {
-      url.searchParams.append('utm_source', 'devtools');
     }
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);

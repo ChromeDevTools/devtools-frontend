@@ -52,8 +52,6 @@
     "@types/webidl2": "24.4.3",
     "@types/yargs": "17.0.33",
     "@types/yargs-unparser": "2.0.3",
-    "@typescript-eslint/eslint-plugin": "8.30.0",
-    "@typescript-eslint/parser": "8.30.0",
     "@typescript-eslint/rule-tester": "8.30.0",
     "@typescript-eslint/utils": "8.30.0",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",
@@ -61,7 +59,7 @@
     "cssnano": "7.0.6",
     "cssnano-preset-lite": "4.0.3",
     "esbuild": "0.25.1",
-    "eslint": "9.24.0",
+    "eslint": "9.25.0",
     "eslint-plugin-eslint-plugin": "6.4.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsdoc": "50.6.9",
@@ -84,7 +82,7 @@
     "ora": "8.2.0",
     "postcss": "8.5.3",
     "puppeteer-core": "24.6.0",
-    "rollup-plugin-sourcemaps2": "0.5.0",
+    "rollup-plugin-sourcemaps2": "0.5.1",
     "sinon": "20.0.0",
     "source-map-support": "0.5.21",
     "stylelint": "16.18.0",
@@ -93,15 +91,19 @@
     "terser": "5.39.0",
     "ts-lit-plugin": "2.0.2",
     "typescript": "5.8.3",
+    "typescript-eslint": "8.30.0",
     "uuid": "11.1.0",
     "webidl2": "24.4.1",
     "yargs": "17.7.2"
   },
   "overrides": {
     "stylelint": {
-      "ignore": "7.0.3"
+      "flat-cache": "6.1.8",
+      "file-entry-cache": "10.0.8"
     },
-    "nanoid": "3.3.8",
+    "eslint": {
+      "@humanwhocodes/retry": "0.4.2"
+    },
     "ws": "8.18.0"
   }
 }

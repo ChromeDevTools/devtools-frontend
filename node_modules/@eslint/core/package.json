@@ -1,6 +1,6 @@
 {
   "name": "@eslint/core",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Runtime-agnostic core of ESLint",
   "type": "module",
   "types": "./dist/esm/types.d.ts",

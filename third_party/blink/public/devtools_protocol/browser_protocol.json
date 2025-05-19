@@ -10262,7 +10262,7 @@
                 },
                 {
                     "name": "setPressureStateOverride",
-                    "description": "Provides a given pressure state that will be processed and eventually be\ndelivered to PressureObserver users. |source| must have been previously\noverridden by setPressureSourceOverrideEnabled.",
+                    "description": "TODO: OBSOLETE: To remove when setPressureDataOverride is merged.\nProvides a given pressure state that will be processed and eventually be\ndelivered to PressureObserver users. |source| must have been previously\noverridden by setPressureSourceOverrideEnabled.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -10272,6 +10272,26 @@
                         {
                             "name": "state",
                             "$ref": "PressureState"
+                        }
+                    ]
+                },
+                {
+                    "name": "setPressureDataOverride",
+                    "description": "Provides a given pressure data set that will be processed and eventually be\ndelivered to PressureObserver users. |source| must have been previously\noverridden by setPressureSourceOverrideEnabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "source",
+                            "$ref": "PressureSource"
+                        },
+                        {
+                            "name": "state",
+                            "$ref": "PressureState"
+                        },
+                        {
+                            "name": "ownContributionEstimate",
+                            "optional": true,
+                            "type": "number"
                         }
                     ]
                 },
@@ -12940,6 +12960,7 @@
                         "Ping",
                         "CSPViolationReport",
                         "Preflight",
+                        "FedCM",
                         "Other"
                     ]
                 },
@@ -15752,7 +15773,7 @@
                 },
                 {
                     "name": "setCookieControls",
-                    "description": "Sets Controls for third-party cookie access\nPage reload is required before the new cookie bahavior will be observed",
+                    "description": "Sets Controls for third-party cookie access\nPage reload is required before the new cookie behavior will be observed",
                     "experimental": true,
                     "parameters": [
                         {
@@ -18244,6 +18265,7 @@
                         "media-playback-while-not-visible",
                         "microphone",
                         "midi",
+                        "on-device-speech-recognition",
                         "otp-credentials",
                         "payment",
                         "picture-in-picture",
@@ -23054,25 +23076,6 @@
                     ]
                 },
                 {
-                    "id": "AttributionReportingTriggerSpec",
-                    "experimental": true,
-                    "type": "object",
-                    "properties": [
-                        {
-                            "name": "triggerData",
-                            "description": "number instead of integer because not all uint32 can be represented by\nint",
-                            "type": "array",
-                            "items": {
-                                "type": "number"
-                            }
-                        },
-                        {
-                            "name": "eventReportWindows",
-                            "$ref": "AttributionReportingEventReportWindows"
-                        }
-                    ]
-                },
-                {
                     "id": "AttributionReportingTriggerDataMatching",
                     "experimental": true,
                     "type": "string",
@@ -23186,11 +23189,16 @@
                             "type": "integer"
                         },
                         {
-                            "name": "triggerSpecs",
+                            "name": "triggerData",
+                            "description": "number instead of integer because not all uint32 can be represented by\nint",
                             "type": "array",
                             "items": {
-                                "$ref": "AttributionReportingTriggerSpec"
+                                "type": "number"
                             }
+                        },
+                        {
+                            "name": "eventReportWindows",
+                            "$ref": "AttributionReportingEventReportWindows"
                         },
                         {
                             "name": "aggregatableReportWindow",
@@ -27664,7 +27672,6 @@
                         "InvalidSchemeRedirect",
                         "InvalidSchemeNavigation",
                         "NavigationRequestBlockedByCsp",
-                        "MainFrameNavigation",
                         "MojoBinderPolicy",
                         "RendererProcessCrashed",
                         "RendererProcessKilled",

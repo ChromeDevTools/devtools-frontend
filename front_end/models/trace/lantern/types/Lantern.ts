@@ -23,6 +23,7 @@ export const NetworkRequestTypes = {
   Preflight: 'Preflight',
   CSPViolationReport: 'CSPViolationReport',
   Prefetch: 'Prefetch',
+  FedCM: 'FedCM',
 } as const;
 
 export interface TraceEvent {

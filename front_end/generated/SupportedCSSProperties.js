@@ -1839,7 +1839,8 @@ export const generatedProperties = [
    "normal",
    "inline-size",
    "size",
-   "scroll-state"
+   "scroll-state",
+   "anchored"
   ],
   "name": "container-type"
  },
@@ -2147,7 +2148,8 @@ export const generatedProperties = [
   "keywords": [
    "nowrap",
    "wrap",
-   "wrap-reverse"
+   "wrap-reverse",
+   "balance"
   ],
   "name": "flex-wrap"
  },
@@ -5241,7 +5243,8 @@ export const generatedPropertyValues = {
    "normal",
    "inline-size",
    "size",
-   "scroll-state"
+   "scroll-state",
+   "anchored"
   ]
  },
  "content-visibility": {
@@ -5457,7 +5460,8 @@ export const generatedPropertyValues = {
   "values": [
    "nowrap",
    "wrap",
-   "wrap-reverse"
+   "wrap-reverse",
+   "balance"
   ]
  },
  "float": {

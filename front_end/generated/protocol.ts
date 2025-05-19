@@ -6697,6 +6697,12 @@ export namespace Emulation {
     state: PressureState;
   }
 
+  export interface SetPressureDataOverrideRequest {
+    source: PressureSource;
+    state: PressureState;
+    ownContributionEstimate?: number;
+  }
+
   export interface SetIdleOverrideRequest {
     /**
      * Mock isUserActive
@@ -8483,6 +8489,7 @@ export namespace Network {
     Ping = 'Ping',
     CSPViolationReport = 'CSPViolationReport',
     Preflight = 'Preflight',
+    FedCM = 'FedCM',
     Other = 'Other',
   }
 
@@ -12226,6 +12233,7 @@ export namespace Page {
     MediaPlaybackWhileNotVisible = 'media-playback-while-not-visible',
     Microphone = 'microphone',
     Midi = 'midi',
+    OnDeviceSpeechRecognition = 'on-device-speech-recognition',
     OtpCredentials = 'otp-credentials',
     Payment = 'payment',
     PictureInPicture = 'picture-in-picture',
@@ -15340,15 +15348,6 @@ export namespace Storage {
     ends: integer[];
   }
 
-  export interface AttributionReportingTriggerSpec {
-    /**
-     * number instead of integer because not all uint32 can be represented by
-     * int
-     */
-    triggerData: number[];
-    eventReportWindows: AttributionReportingEventReportWindows;
-  }
-
   export const enum AttributionReportingTriggerDataMatching {
     Exact = 'exact',
     Modulus = 'modulus',
@@ -15396,7 +15395,12 @@ export namespace Storage {
      * duration in seconds
      */
     expiry: integer;
-    triggerSpecs: AttributionReportingTriggerSpec[];
+    /**
+     * number instead of integer because not all uint32 can be represented by
+     * int
+     */
+    triggerData: number[];
+    eventReportWindows: AttributionReportingEventReportWindows;
     /**
      * duration in seconds
      */
@@ -18160,7 +18164,6 @@ export namespace Preload {
     InvalidSchemeRedirect = 'InvalidSchemeRedirect',
     InvalidSchemeNavigation = 'InvalidSchemeNavigation',
     NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
-    MainFrameNavigation = 'MainFrameNavigation',
     MojoBinderPolicy = 'MojoBinderPolicy',
     RendererProcessCrashed = 'RendererProcessCrashed',
     RendererProcessKilled = 'RendererProcessKilled',

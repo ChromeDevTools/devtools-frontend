@@ -149,6 +149,10 @@ const UIStrings = {
    *@description Name of a network initiator type
    */
   webbundle: 'WebBundle',
+  /**
+   *@description Name of a network initiator type for FedCM requests
+   */
+  fedcm: 'FedCM',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIStrings);
@@ -424,6 +428,7 @@ export const resourceTypes = {
   SourceMapStyleSheet:
       new ResourceType('sm-stylesheet', i18nLazyString(UIStrings.stylesheet), resourceCategories.Stylesheet, true),
   WebBundle: new ResourceType('webbundle', i18nLazyString(UIStrings.webbundle), resourceCategories.Other, false),
+  FedCM: new ResourceType('fedcm', i18nLazyString(UIStrings.fedcm), resourceCategories.Other, false),
 } as const;
 
 const mimeTypeByName = new Map([

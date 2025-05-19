@@ -46,7 +46,7 @@ export enum PlatformFileSystemType {
 }
 
 export class PlatformFileSystem {
-  private readonly pathInternal: Platform.DevToolsPath.UrlString;
+  readonly #path: Platform.DevToolsPath.UrlString;
   #type: PlatformFileSystemType;
   /**
    * True if the filesystem was automatically discovered (see
@@ -55,7 +55,7 @@ export class PlatformFileSystem {
   readonly automatic: boolean;
 
   constructor(path: Platform.DevToolsPath.UrlString, type: PlatformFileSystemType, automatic: boolean) {
-    this.pathInternal = path;
+    this.#path = path;
     this.#type = type;
     this.automatic = automatic;
   }
@@ -73,7 +73,7 @@ export class PlatformFileSystem {
   }
 
   path(): Platform.DevToolsPath.UrlString {
-    return this.pathInternal;
+    return this.#path;
   }
 
   embedderPath(): Platform.DevToolsPath.RawPathString {

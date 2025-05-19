@@ -621,7 +621,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!(sourceFrame instanceof UISourceCodeFrame)) {
       return;
     }
-    const uiSourceCodeFrame = (sourceFrame);
+    const uiSourceCodeFrame = sourceFrame;
     uiSourceCodeFrame.commitEditing();
   }
 

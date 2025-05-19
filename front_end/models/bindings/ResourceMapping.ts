@@ -28,11 +28,10 @@ function computeStyleSheetRange(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHea
 
 export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
   readonly workspace: Workspace.Workspace.WorkspaceImpl;
-  readonly #modelToInfo: Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>;
+  readonly #modelToInfo = new Map<SDK.ResourceTreeModel.ResourceTreeModel, ModelInfo>();
 
   constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl) {
     this.workspace = workspace;
-    this.#modelToInfo = new Map();
     targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
   }
 
@@ -248,7 +247,7 @@ export class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.R
 
 class ModelInfo {
   project: ContentProviderBasedProject;
-  readonly #bindings: Map<string, Binding>;
+  readonly #bindings = new Map<string, Binding>();
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #eventListeners: Common.EventTarget.EventDescriptor[];
   constructor(
@@ -258,8 +257,6 @@ class ModelInfo {
         workspace, 'resources:' + target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
     NetworkProject.setTargetForProject(this.project, target);
-
-    this.#bindings = new Map();
 
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
@@ -398,7 +395,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
   #edits: Array<{
     stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader,
     edit: SDK.CSSModel.Edit|null,
-  }>;
+  }> = [];
   constructor(project: ContentProviderBasedProject, resource: SDK.Resource.Resource) {
     this.resources = new Set([resource]);
     this.#project = project;
@@ -408,7 +405,6 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
       NetworkProject.setInitialFrameAttribution(this.#uiSourceCode, resource.frameId);
     }
     this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
-    this.#edits = [];
 
     void Promise.all([
       ...this.inlineScripts().map(script => DebuggerWorkspaceBinding.instance().updateLocations(script)),

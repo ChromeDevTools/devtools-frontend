@@ -158,7 +158,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   private readonly fileSystemParentURL: Platform.DevToolsPath.UrlString;
   private readonly fileSystemWorkspaceBinding: FileSystemWorkspaceBinding;
   private readonly fileSystemPathInternal: Platform.DevToolsPath.UrlString;
-  private readonly creatingFilesGuard: Set<string>;
+  private readonly creatingFilesGuard = new Set<string>();
   constructor(
       fileSystemWorkspaceBinding: FileSystemWorkspaceBinding, isolatedFileSystem: PlatformFileSystem,
       workspace: Workspace.Workspace.WorkspaceImpl) {
@@ -175,7 +175,6 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
         Common.ParsedURL.ParsedURL.substr(this.fileSystemBaseURL, 0, fileSystemPath.lastIndexOf('/') + 1);
     this.fileSystemWorkspaceBinding = fileSystemWorkspaceBinding;
     this.fileSystemPathInternal = fileSystemPath;
-    this.creatingFilesGuard = new Set();
 
     workspace.addProject(this);
     this.populate();

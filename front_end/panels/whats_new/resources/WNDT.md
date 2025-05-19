@@ -1,6 +1,6 @@
-### [New performance insights](perf-insights)
-The Performance > Insights tab gets new insights: duplicated JavaScript, modern HTTP, and use efficient cache lifetimes.
-### [Click events to keep them highlighted in Performance](click-to-highlight)
-Click items in Summary, Bottom-up, Call tree, and Event log tables to keep the corresponding events highlighted in the trace and dim the rest.
-### [Filter cookies in Privacy and security](cookies-filter)
-The cookies table in the 'Privacy and security' panel gets a filter, so you can quickly find the cookie you want to inspect.
+### [Modify and save CSS changes to your workspace with Gemini](ai-styling)
+You can now ask Gemini to modify your CSS and, with a connected workspace folder, automatically save changes back to source files.
+### [Annotate performance findings with Gemini](ai-annotations)
+With a click of a button, ask Gemini to generate annotations about events in the performance trace.
+### [Ask Gemini about performance insights](ai-insights)
+Several performance insights now have an 'Ask AI' button, so you can start a chat with Gemini about them.

@@ -323,6 +323,13 @@ export class ChatView extends HTMLElement {
    * It is set to false when the user scrolls up to view previous messages.
    */
   #pinScrollToBottom = true;
+  /**
+   * Indicates whether the scroll event originated from code
+   * or a user action. When set to `true`, `handleScroll` will ignore the event,
+   * allowing it to only handle user-driven scrolls and correctly decide
+   * whether to pin the content to the bottom.
+   */
+  #isProgrammaticScroll = false;
 
   constructor(props: Props) {
     super();
@@ -373,7 +380,7 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    this.#mainElementRef.value.scrollTop = this.#scrollTop;
+    this.#setMainElementScrollTop(this.#scrollTop);
   }
 
   scrollToBottom(): void {
@@ -381,7 +388,7 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    this.#mainElementRef.value.scrollTop = this.#mainElementRef.value.scrollHeight;
+    this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
   }
 
   #handleChatUiRef(el: Element|undefined): void {
@@ -451,8 +458,18 @@ export class ChatView extends HTMLElement {
     }
 
     if (this.#pinScrollToBottom) {
-      this.#mainElementRef.value.scrollTop = this.#mainElementRef.value.scrollHeight;
+      this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
     }
+  }
+
+  #setMainElementScrollTop(scrollTop: number): void {
+    if (!this.#mainElementRef?.value) {
+      return;
+    }
+
+    this.#scrollTop = scrollTop;
+    this.#isProgrammaticScroll = true;
+    this.#mainElementRef.value.scrollTop = scrollTop;
   }
 
   #setInputText(text: string): void {
@@ -478,6 +495,14 @@ export class ChatView extends HTMLElement {
 
   #handleScroll = (ev: Event): void => {
     if (!ev.target || !(ev.target instanceof HTMLElement)) {
+      return;
+    }
+
+    // Do not handle scroll events caused by programmatically
+    // updating the scroll position. We want to know whether user
+    // did scroll the container from the user interface.
+    if (this.#isProgrammaticScroll) {
+      this.#isProgrammaticScroll = false;
       return;
     }
 

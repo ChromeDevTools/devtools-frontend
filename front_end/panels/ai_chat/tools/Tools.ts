@@ -8,21 +8,24 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
 
 // Value imports first, then types, ordered correctly
-import { AgentService } from '../core/AgentService.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
+import type { AccessibilityNode } from '../common/context.js';
+import type { LogLine } from '../common/log.js';
 import * as Utils from '../common/utils.js';
 import { getXPathByBackendNodeId } from '../common/utils.js';
+import { AgentService } from '../core/AgentService.js';
+import { OpenAIClient } from '../core/OpenAIClient.js';
+import type { DevToolsContext } from '../core/State.js';
+import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 // Type imports
-import type { AccessibilityNode } from '../common/context.js';
-import { FullPageAccessibilityTreeToMarkdownTool, type FullPageAccessibilityTreeToMarkdownResult } from './FullPageAccessibilityTreeToMarkdownTool.js';
-import { SchemaBasedExtractorTool, SchemaExtractionResult, SchemaDefinition } from './SchemaBasedExtractorTool.js';
-import { CombinedExtractionTool, CombinedExtractionResult } from './CombinedExtractionTool.js';
-import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
+
+import { CombinedExtractionTool, type CombinedExtractionResult } from './CombinedExtractionTool.js';
 import { FetcherTool, type FetcherToolResult, type FetcherToolArgs } from './FetcherTool.js';
-import type { LogLine } from '../common/log.js';
-import type { DevToolsContext } from '../core/State.js';
 import { FinalizeWithCritiqueTool, type FinalizeWithCritiqueResult } from './FinalizeWithCritiqueTool.js';
+import { FullPageAccessibilityTreeToMarkdownTool, type FullPageAccessibilityTreeToMarkdownResult } from './FullPageAccessibilityTreeToMarkdownTool.js';
+import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
+import { SchemaBasedExtractorTool, type SchemaExtractionResult, type SchemaDefinition } from './SchemaBasedExtractorTool.js';
 import { VisitHistoryManager, type VisitData } from './VisitHistoryManager.js';
 
 /**
@@ -198,9 +201,9 @@ export interface AccessibilityTreeResult {
       name?: string,
       description?: string,
       nodeId?: string,
-      children?: Array<any>
+      children?: any[],
     }>,
-    contentSimplified?: string
+    contentSimplified?: string,
   }>;
   /**
    * Raw accessibility nodes from the tree for direct node manipulation
@@ -501,7 +504,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
       try {
         console.log('waitForPageLoad: Starting LCP observer...');
         const result = await runtimeAgent.invoke_evaluate({
-          expression: expression,
+          expression,
           awaitPromise: true, // Wait for the script's promise
           returnByValue: true, // Get the resolution value (string)
           silent: true, // Reduce console noise from evaluation itself
@@ -519,21 +522,19 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
           console.log('waitForPageLoad: LCP detected via observer.');
           // Resolve the outer lcpPromise successfully
           return Promise.resolve();
-        } else {
+        }
           // LCP observer timed out internally or failed setup
           console.warn(`waitForPageLoad: LCP observer finished with status: "${lcpStatus}"`);
           // Return a promise that never resolves.
           return new Promise(() => { });
-        }
 
       } catch (error) {
         // Catch errors invoking evaluate itself
         console.warn(`waitForPageLoad: Error invoking LCP observer script: ${error instanceof Error ? error.message : String(error)}`);
         // Invocation failed, LCP won't resolve. Return a promise that never resolves.
-        return new Promise(() => { });
+        return await new Promise(() => { });
       }
     })();
-
 
     // 4. Race the promises: Wait for the first of load, LCP success, or overall timeout
     console.log(`waitForPageLoad: Waiting for Load event, LCP, or timeout (${timeoutMs}ms)...`);
@@ -594,7 +595,6 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       }
       console.log('[NavigateURLTool] Navigation initiated successfully.');
 
-
       // *** Add wait for page load ***
       try {
         await waitForPageLoad(target, LOAD_TIMEOUT_MS);
@@ -607,7 +607,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       // Fetch page metadata AFTER waiting
       console.log('[NavigateURLTool] Fetching page metadata...');
       const metadataEval = await target.runtimeAgent().invoke_evaluate({
-        expression: `({ url: window.location.href, title: document.title })`,
+        expression: '({ url: window.location.href, title: document.title })',
         returnByValue: true,
       });
 
@@ -624,7 +624,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         };
       }
 
-      const metadata = metadataEval.result.value as { url: string; title: string };
+      const metadata = metadataEval.result.value as { url: string, title: string };
       console.log('[NavigateURLTool] Metadata fetched:', metadata);
 
       // *** Add verification: Compare intended URL with final URL ***
@@ -655,7 +655,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         const intendedHttps = 'https' + normalizedIntendedUrl.substring(4);
         if (intendedHttps === normalizedFinalUrl) {
           navigationVerified = true;
-          verificationMessage = ` (Redirected to HTTPS)`;
+          verificationMessage = ' (Redirected to HTTPS)';
         }
       }
 
@@ -805,7 +805,7 @@ export class NavigateBackTool implements Tool<{ steps: number, reasoning: string
         expression: '({ url: window.location.href, title: document.title })',
         returnByValue: true,
       });
-      const metadata = metadataEval.result.value as { url: string; title: string };
+      const metadata = metadataEval.result.value as { url: string, title: string };
 
       return {
         success: true,
@@ -1423,11 +1423,11 @@ export class GetVisibleAccessibilityTreeTool implements Tool<{ reasoning: string
 /**
  * Tool for performing actions on DOM elements
  */
-export class PerformActionTool implements Tool<{ method: string, nodeId: number, args?: Record<string, unknown> | unknown[], reasoning: string }, PerformActionResult | ErrorResult> {
+export class PerformActionTool implements Tool<{ method: string, nodeId: number, reasoning: string, args?: Record<string, unknown> | unknown[] }, PerformActionResult | ErrorResult> {
   name = 'perform_action';
   description = 'Performs an action on a DOM element identified by NodeID';
 
-  async execute(args: { method: string, nodeId: number, args?: Record<string, unknown> | unknown[], reasoning: string }): Promise<PerformActionResult | ErrorResult> {
+  async execute(args: { method: string, nodeId: number, reasoning: string, args?: Record<string, unknown> | unknown[] }): Promise<PerformActionResult | ErrorResult> {
     console.log('[PerformActionTool] Executing with args:', JSON.stringify(args));
     const method = args.method;
     const nodeId = args.nodeId;
@@ -1611,10 +1611,10 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
 
           if (verifyResult.exceptionDetails) {
             verificationMessage = ` (${method} verification failed: ${verifyResult.exceptionDetails.text})`;
-            console.log(`[PerformActionTool] Verification failed:`, verifyResult.exceptionDetails.text);
+            console.log('[PerformActionTool] Verification failed:', verifyResult.exceptionDetails.text);
           } else if (verifyResult.result?.value?.error) {
             verificationMessage = ` (${method} verification failed: ${verifyResult.result.value.error})`;
-            console.log(`[PerformActionTool] Verification failed:`, verifyResult.result.value.error);
+            console.log('[PerformActionTool] Verification failed:', verifyResult.result.value.error);
           } else {
             const actualValue = verifyResult.result?.value?.value;
             const comparisonValue = isContentEditableElement ? actualValue?.trim() : actualValue;
@@ -1623,12 +1623,12 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
               console.log(`[PerformActionTool] Verification mismatch: Expected "${expectedValue}", Got "${actualValue}"`);
             } else {
               verificationMessage = ` (${method} action verified successfully)`;
-              console.log(`[PerformActionTool] Verification successful`);
+              console.log('[PerformActionTool] Verification successful');
             }
           }
         } catch (verifyError) {
           verificationMessage = ` (${method} verification encountered an error: ${verifyError instanceof Error ? verifyError.message : String(verifyError)})`;
-          console.log(`[PerformActionTool] Verification error:`, verifyError);
+          console.log('[PerformActionTool] Verification error:', verifyError);
         }
       }
 
@@ -1669,8 +1669,8 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
       console.log('[PerformActionTool] Success result message:', message);
       return {
         success: true,
-        message: message,
-        xpath: xpath,
+        message,
+        xpath,
       };
     } catch (error: unknown) {
       console.log('[PerformActionTool] Error during execution:', error instanceof Error ? error.message : String(error));
@@ -1760,9 +1760,9 @@ Important guidelines:
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const modelNameForAction = 'gpt-4.1-mini-2025-04-14';
+    const modelNameForAction = AIChatPanel.getMiniModel();
 
-    if (!apiKey) return { error: 'API key not configured.' };
+    if (!apiKey) {return { error: 'API key not configured.' };}
     if (typeof objective !== 'string' || objective.trim() === '') {
       return { error: 'Objective must be a non-empty string' };
     }
@@ -1775,16 +1775,16 @@ Important guidelines:
 
       try {
         // --- Step 1: Get Tree ---
-        console.log("ObjectiveDrivenActionTool: Getting Accessibility Tree...");
+        console.log('ObjectiveDrivenActionTool: Getting Accessibility Tree...');
         const getAccTreeTool = new GetAccessibilityTreeTool();
         const treeResult = await getAccTreeTool.execute({ reasoning: `Attempt ${currentTry} for objective: ${objective}` });
-        if ('error' in treeResult) throw new Error(`Tree Error: ${treeResult.error}`);
+        if ('error' in treeResult) {throw new Error(`Tree Error: ${treeResult.error}`);}
         const accessibilityTreeString = treeResult.simplified;
-        if (!accessibilityTreeString || accessibilityTreeString.trim() === '') throw new Error('Tree Error: Empty or blank tree content.');
-        console.log("ObjectiveDrivenActionTool: Got Accessibility Tree.");
+        if (!accessibilityTreeString || accessibilityTreeString.trim() === '') {throw new Error('Tree Error: Empty or blank tree content.');}
+        console.log('ObjectiveDrivenActionTool: Got Accessibility Tree.');
 
         // --- Step 2: LLM - Determine Action (Method, Accessibility NodeID String, Args) ---
-        console.log("ObjectiveDrivenActionTool: Determining Action via LLM...");
+        console.log('ObjectiveDrivenActionTool: Determining Action via LLM...');
 
         // Create PerformActionTool to use its schema
         const performActionTool = new PerformActionTool();
@@ -1816,8 +1816,8 @@ Important guidelines:
 - Prefer the most direct path to accomplishing the objective.
 - Choose the most semantically appropriate element when multiple options exist.`;
 
-        // Use OpenAIClient instead of internal callOpenAI
-        const openAIResponse = await OpenAIClient.callOpenAI(
+        // Use UnifiedLLMClient with function call support
+        const response = await UnifiedLLMClient.callLLMWithResponse(
           apiKey,
           modelNameForAction,
           promptGetAction,
@@ -1832,10 +1832,10 @@ Important guidelines:
           },
         );
 
-        // --- Parse the Tool Call Response --- 
-        if (!openAIResponse.functionCall || openAIResponse.functionCall.name !== performActionTool.name) {
-          console.warn('LLM did not return the expected function call; this is likely an error', openAIResponse);
-          const errorMessage = openAIResponse.text || 'No function call returned - this tool requires a function call response.';
+        // --- Parse the Tool Call Response ---
+        if (!response.functionCall || response.functionCall.name !== performActionTool.name) {
+          console.warn('LLM did not return the expected function call; this is likely an error', response);
+          const errorMessage = response.text || 'No function call returned - this tool requires a function call response.';
 
           // Since this tool specifically handles actions, if we didn't get a function call
           // we should return an error instead of text content
@@ -1843,10 +1843,10 @@ Important guidelines:
             error: `Failed to determine appropriate action: ${errorMessage}`
           };
         }
-        const { method: actionMethod, nodeId: accessibilityNodeId, args: actionArgs } = openAIResponse.functionCall.arguments as {
-          method: string;
-          nodeId: number;
-          args?: Record<string, unknown> | unknown[];
+        const { method: actionMethod, nodeId: accessibilityNodeId, args: actionArgs } = response.functionCall.arguments as {
+          method: string,
+          nodeId: number,
+          args?: Record<string, unknown> | unknown[],
         };
         console.log('Parsed Tool Arguments:', { actionMethod, accessibilityNodeId, actionArgs });
 
@@ -1863,17 +1863,17 @@ Important guidelines:
           // Throw error to be caught by the loop's catch block
           throw new Error(`Action Error (NodeID ${actionNodeId}): ${performResult.error}`);
         }
-        console.log("ObjectiveDrivenActionTool: Action successful (but may have affected unexpected element).");
+        console.log('ObjectiveDrivenActionTool: Action successful (but may have affected unexpected element).');
 
         // Fetch page metadata
-        let metadata: { url: string; title: string } | undefined;
+        let metadata: { url: string, title: string } | undefined;
         const pageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (pageTarget) {
           const metadataEval = await pageTarget.runtimeAgent().invoke_evaluate({
             expression: '({ url: window.location.href, title: document.title })',
             returnByValue: true,
           });
-          metadata = metadataEval.result.value as { url: string; title: string };
+          metadata = metadataEval.result.value as { url: string, title: string };
         }
 
         // --- Success (potentially misleading) ---
@@ -1998,7 +1998,7 @@ export class NodeIDsToURLsTool implements Tool<{ nodeIds: number[] }, NodeIDsToU
         }
 
         const resultValue = evaluateResult.result?.value;
-        if (resultValue && resultValue.found && resultValue.url) {
+        if (resultValue?.found && resultValue.url) {
           results.push({ nodeId, url: resultValue.url });
         } else {
           results.push({ nodeId });
@@ -2625,7 +2625,7 @@ CRITICAL:
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const modelNameForExtraction = 'gpt-4.1-mini-2025-04-14';
+    const modelNameForExtraction = AIChatPanel.getMiniModel();
 
     if (!apiKey) {
       return { error: 'API key not configured.' };
@@ -2650,10 +2650,10 @@ CRITICAL:
         console.warn('SchemaBasedDataExtractionTool: Getting Accessibility Tree...');
         const getAccTreeTool = new GetAccessibilityTreeTool();
         const treeResult = await getAccTreeTool.execute({ reasoning: `Schema-based extraction attempt ${currentTry}` });
-        if ('error' in treeResult) throw new Error(`Tree Error: ${treeResult.error}`);
+        if ('error' in treeResult) {throw new Error(`Tree Error: ${treeResult.error}`);}
         const accessibilityTreeString = treeResult.simplified;
 
-        if (!accessibilityTreeString || accessibilityTreeString.trim() === '') throw new Error('Tree Error: Empty or blank tree content.');
+        if (!accessibilityTreeString || accessibilityTreeString.trim() === '') {throw new Error('Tree Error: Empty or blank tree content.');}
         console.warn('SchemaBasedDataExtractionTool: Got Accessibility Tree.');
 
         // --- Step 2: LLM - Extract NodeIDs According to Schema ---
@@ -2674,8 +2674,8 @@ ${lastError ? `Previous attempt failed with this error: "${lastError}". Consider
 Extract NodeIDs according to the provided objective and schema, then return a structured JSON with NodeIDs instead of content.`;
 
         console.log('SchemaBasedDataExtractionTool: Prompt:', promptExtractData);
-        // Use OpenAIClient to call the LLM
-        const openAIResponse = await OpenAIClient.callOpenAI(
+        // Use UnifiedLLMClient to call the LLM
+        const response = await UnifiedLLMClient.callLLM(
           apiKey,
           modelNameForExtraction,
           promptExtractData,
@@ -2683,10 +2683,10 @@ Extract NodeIDs according to the provided objective and schema, then return a st
             systemPrompt: this.getSystemPrompt(),
           },
         );
-        console.log('SchemaBasedDataExtractionTool: Response:', openAIResponse);
+        console.log('SchemaBasedDataExtractionTool: Response:', response);
 
         // Process the LLM response - this now contains NodeIDs instead of content
-        const nodeIdStructureJson = openAIResponse.text?.trim() || '';
+        const nodeIdStructureJson = response?.trim() || '';
 
         // Basic validation to ensure we got JSON
         let nodeIdStructure;
@@ -2706,14 +2706,14 @@ Extract NodeIDs according to the provided objective and schema, then return a st
         const jsonData = JSON.stringify(processedStructure);
 
         // Fetch page metadata
-        let metadata: { url: string; title: string } | undefined;
+        let metadata: { url: string, title: string } | undefined;
         const pageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (pageTarget) {
           const metadataEval = await pageTarget.runtimeAgent().invoke_evaluate({
             expression: '({ url: window.location.href, title: document.title })',
             returnByValue: true,
           });
-          metadata = metadataEval.result.value as { url: string; title: string };
+          metadata = metadataEval.result.value as { url: string, title: string };
         }
 
         // --- Success ---
@@ -2772,14 +2772,13 @@ Extract NodeIDs according to the provided objective and schema, then return a st
   };
 }
 
-
 // Create interfaces for the visit history tool results
 export interface VisitHistoryDomainResult {
   visits: Array<{
     url: string,
     title: string,
     visitTime: string,
-    keywords: string[]
+    keywords: string[],
   }>;
   count: number;
   error?: string;
@@ -2791,7 +2790,7 @@ export interface VisitHistoryKeywordResult {
     title: string,
     visitTime: string,
     domain: string,
-    keywords: string[]
+    keywords: string[],
   }>;
   count: number;
   error?: string;
@@ -2803,14 +2802,14 @@ export interface VisitHistorySearchResult {
     title: string,
     visitTime: string,
     domain: string,
-    keywords: string[]
+    keywords: string[],
   }>;
   count: number;
   filters: {
     domain?: string,
     keyword?: string,
     daysAgo?: number,
-    limit?: number
+    limit?: number,
   };
   error?: string;
 }
@@ -2893,7 +2892,7 @@ export class SearchVisitHistoryTool implements Tool<{
   domain?: string,
   keyword?: string,
   daysAgo?: number,
-  limit?: number
+  limit?: number,
 }, VisitHistorySearchResult | ErrorResult> {
   name = 'search_visit_history';
   description = 'Search browsing history with multiple filter criteria';
@@ -2902,7 +2901,7 @@ export class SearchVisitHistoryTool implements Tool<{
     domain?: string,
     keyword?: string,
     daysAgo?: number,
-    limit?: number
+    limit?: number,
   }): Promise<VisitHistorySearchResult | ErrorResult> {
     try {
       const { domain, keyword, daysAgo, limit } = args;
@@ -2988,11 +2987,11 @@ export function getTools(): Array<(
   Tool<{ query: string, limit?: number }, SearchContentResult | ErrorResult> |
   Tool<{ position?: { x: number, y: number }, direction?: string, amount?: number }, ScrollResult | ErrorResult> |
   Tool<{ reasoning: string }, AccessibilityTreeResult | ErrorResult> |
-  Tool<{ method: string, nodeId: number, args?: Record<string, unknown> | unknown[], reasoning: string }, PerformActionResult | ErrorResult> |
+  Tool<{ method: string, nodeId: number, reasoning: string, args?: Record<string, unknown> | unknown[] }, PerformActionResult | ErrorResult> |
   Tool<Record<string, unknown>, FullPageAccessibilityTreeToMarkdownResult | ErrorResult> |
   Tool<{ nodeIds: number[] }, NodeIDsToURLsResult | ErrorResult> |
-  Tool<{ instruction?: string, reasoning: string }, HTMLToMarkdownResult | ErrorResult> |
-  Tool<{ url: string, schema?: SchemaDefinition, markdownResponse?: boolean, reasoning: string, extractionInstruction?: string }, CombinedExtractionResult | ErrorResult> |
+  Tool<{ reasoning: string, instruction?: string }, HTMLToMarkdownResult | ErrorResult> |
+  Tool<{ url: string, reasoning: string, schema?: SchemaDefinition, markdownResponse?: boolean, extractionInstruction?: string }, CombinedExtractionResult | ErrorResult> |
   Tool<FetcherToolArgs, FetcherToolResult> |
   Tool<{ answer: string }, FinalizeWithCritiqueResult> |
   Tool<{ domain: string }, VisitHistoryDomainResult | ErrorResult> |

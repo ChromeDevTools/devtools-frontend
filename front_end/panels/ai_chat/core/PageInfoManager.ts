@@ -12,7 +12,7 @@ export class PageInfoManager {
   private currentInfo: { url: string, title: string } | null = null;
   private accessibilityTree: string | null = null;
   private iframeContent: Array<{ role: string, name?: string, contentSimplified?: string }> | null = null;
-  private listeners: Set<(info: { url: string, title: string } | null) => void> = new Set();
+  private listeners = new Set<(info: { url: string, title: string } | null) => void>();
 
   static getInstance(): PageInfoManager {
     if (!PageInfoManager.instance) {
@@ -46,7 +46,7 @@ export class PageInfoManager {
    * Updates page information and fetches the latest accessibility tree
    * This method is used to explicitly refresh the data before each agent iteration
    */
-  public async updatePageInfoWithFullTree(): Promise<void> {
+  async updatePageInfoWithFullTree(): Promise<void> {
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       this.setInfo(null);
@@ -238,4 +238,4 @@ ${iframeContent && iframeContent.length > 0 ? '- The page contains embedded ifra
 
 Respond to the user's query with this context in mind.
 `;
-} 
+}

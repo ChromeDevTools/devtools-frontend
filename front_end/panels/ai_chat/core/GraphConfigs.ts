@@ -4,7 +4,7 @@
 
 import type { GraphConfig } from './ConfigurableGraph.js';
 // Import NodeType from Types.ts where it's now defined
-import { NodeType } from './Types.js'; 
+import { NodeType } from './Types.js';
 
 /**
  * Defines the default agent graph configuration.
@@ -26,7 +26,7 @@ export const defaultAgentGraphConfig: GraphConfig = {
         [NodeType.AGENT.toString()]: NodeType.AGENT.toString(),
         [NodeType.TOOL_EXECUTOR.toString()]: NodeType.TOOL_EXECUTOR.toString(),
         [NodeType.FINAL.toString()]: NodeType.FINAL.toString(),
-        '__end__': '__end__',
+        __end__: '__end__',
       },
     },
     {
@@ -37,4 +37,4 @@ export const defaultAgentGraphConfig: GraphConfig = {
       },
     },
   ],
-}; 
+};

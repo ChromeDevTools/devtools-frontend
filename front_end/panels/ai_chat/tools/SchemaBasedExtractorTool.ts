@@ -4,10 +4,12 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import { Tool, NodeIDsToURLsTool } from './Tools.js';
-import { AgentService } from '../core/AgentService.js';
 import * as Utils from '../common/utils.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
+import { AgentService } from '../core/AgentService.js';
+import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
+
+import { NodeIDsToURLsTool, type Tool } from './Tools.js';
 
 // Define the structure for the metadata LLM call's expected response
 interface ExtractionMetadata {
@@ -105,8 +107,8 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       //    };
       // }
 
-      let rootBackendNodeId: Protocol.DOM.BackendNodeId | undefined = undefined;
-      let rootNodeId: Protocol.DOM.NodeId | undefined = undefined;
+      const rootBackendNodeId: Protocol.DOM.BackendNodeId | undefined = undefined;
+      const rootNodeId: Protocol.DOM.NodeId | undefined = undefined;
 
       // 2. Transform schema to replace URL fields with numeric AX Node IDs (strings)
       const [transformedSchema, urlPaths] = this.transformUrlFieldsToIds(schema);
@@ -116,7 +118,7 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       // 3. Get raw accessibility tree nodes for the target scope to build URL mapping
       const accessibilityAgent = target.accessibilityAgent();
       const axTreeParams: Protocol.Accessibility.GetFullAXTreeRequest = {};
-      
+
       // We can optionally use NodeId or BackendNodeId for scoping if needed in the future
       // Both are currently undefined since we're working with the full tree
       if (rootNodeId) {
@@ -128,9 +130,9 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
         // Fallback to backendNodeId if NodeId wasn't obtained or isn't supported for scoping
         (axTreeParams as any).backendNodeId = rootBackendNodeId;
       }
-      
+
       const rawAxTree = await accessibilityAgent.invoke_getFullAXTree(axTreeParams);
-      if (!rawAxTree || !rawAxTree.nodes) {
+      if (!rawAxTree?.nodes) {
         throw new Error('Failed to get raw accessibility tree nodes');
       }
       // Keep the URL mapping for logging purposes
@@ -151,10 +153,10 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       // 5. Initial Extract Call
       console.log('[SchemaBasedExtractorTool] Starting initial LLM extraction...');
       const initialExtraction = await this.callExtractionLLM({
-        instruction: instruction || `Extract data according to schema`,
+        instruction: instruction || 'Extract data according to schema',
         domContent: treeText,
         schema: transformedSchema,
-        apiKey: apiKey,
+        apiKey,
       });
 
       console.log('[SchemaBasedExtractorTool] Initial extraction result:', initialExtraction);
@@ -168,10 +170,10 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
 
       // 6. Refine Call
       const refinedData = await this.callRefinementLLM({
-        instruction: instruction || `Refine the extracted data based on the original request`,
+        instruction: instruction || 'Refine the extracted data based on the original request',
         schema: transformedSchema, // Use the same transformed schema
         initialData: initialExtraction,
-        apiKey: apiKey,
+        apiKey,
       });
 
       console.log('[SchemaBasedExtractorTool] Refinement result:', refinedData);
@@ -186,8 +188,8 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       // 7. LLM + Tool Call for URL Resolution - New approach
       const finalData = await this.resolveUrlsWithLLM({
         data: refinedData,
-        apiKey: apiKey,
-        schema: schema, // Original schema to understand what fields are URLs
+        apiKey,
+        schema, // Original schema to understand what fields are URLs
       });
 
       console.log('[SchemaBasedExtractorTool] Data after URL resolution:',
@@ -197,7 +199,7 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       const metadata = await this.callMetadataLLM({
         instruction: instruction || 'Assess extraction completion',
         extractedData: finalData, // Use the final data with URLs for assessment
-        apiKey: apiKey,
+        apiKey,
       });
 
       console.log('[SchemaBasedExtractorTool] Metadata result:', metadata);
@@ -235,7 +237,7 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
    */
   private transformUrlFieldsToIds(schema: SchemaDefinition): [SchemaDefinition, PathSegment[]] {
     const urlPaths: PathSegment[] = [];
-    let transformedSchema = { ...schema };
+    const transformedSchema = { ...schema };
 
     // Process root-level properties if they exist
     if (schema.properties) {
@@ -355,7 +357,7 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
     instruction: string,
     domContent: string,
     schema: SchemaDefinition,
-    apiKey: string
+    apiKey: string,
   }): Promise<any> {
     const { instruction, domContent, schema, apiKey } = options;
     console.log('[SchemaBasedExtractorTool] Calling Extraction LLM...');
@@ -385,13 +387,12 @@ CRITICAL: Ensure fields described as expecting an 'Accessibility Node ID' receiv
 Only output the JSON object.`;
 
     try {
-      const modelName = 'gpt-4.1-mini-2025-04-14'; // Or preferred model
-      const { OpenAIClient } = await import('../core/OpenAIClient.js');
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getMiniModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey, modelName, extractionPrompt, { systemPrompt, temperature: 0.1 }
       );
-      if (!response.text) { throw new Error('No text response from extraction LLM'); }
-      return this.parseJsonResponse(response.text);
+      if (!response) { throw new Error('No text response from extraction LLM'); }
+      return this.parseJsonResponse(response);
     } catch (error) {
       console.error('Error in callExtractionLLM:', error);
       return null; // Indicate failure
@@ -405,7 +406,7 @@ Only output the JSON object.`;
     instruction: string,
     schema: SchemaDefinition,
     initialData: any,
-    apiKey: string
+    apiKey: string,
   }): Promise<any> {
     const { instruction, schema, initialData, apiKey } = options;
     console.log('[SchemaBasedExtractorTool] Calling Refinement LLM...');
@@ -434,13 +435,12 @@ IMPORTANT: Ensure all URL fields contain numeric Accessibility Node IDs as NUMBE
 Return only the refined JSON object. Do not add explanations.`;
 
     try {
-      const modelName = 'gpt-4.1-nano-2025-04-14'; // Or preferred model
-      const { OpenAIClient } = await import('../core/OpenAIClient.js');
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getNanoModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey, modelName, refinePrompt, { systemPrompt, temperature: 0.1 }
       );
-      if (!response.text) { throw new Error('No text response from refinement LLM'); }
-      return this.parseJsonResponse(response.text);
+      if (!response) { throw new Error('No text response from refinement LLM'); }
+      return this.parseJsonResponse(response);
     } catch (error) {
       console.error('Error in callRefinementLLM:', error);
       return null; // Indicate failure
@@ -453,7 +453,7 @@ Return only the refined JSON object. Do not add explanations.`;
   private async callMetadataLLM(options: {
     instruction: string,
     extractedData: any,
-    apiKey: string
+    apiKey: string,
   }): Promise<ExtractionMetadata | null> {
     const { instruction, extractedData, apiKey } = options;
     console.log('[SchemaBasedExtractorTool] Calling Metadata LLM...');
@@ -493,13 +493,12 @@ Determine the extraction progress and whether the instruction is fully completed
 Return ONLY a valid JSON object conforming to the required metadata schema.`;
 
     try {
-      const modelName = 'gpt-4.1-nano-2025-04-14'; // Or preferred model
-      const { OpenAIClient } = await import('../core/OpenAIClient.js');
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getNanoModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey, modelName, metadataPrompt, { systemPrompt, temperature: 0.0 } // Use low temp for objective assessment
       );
-      if (!response.text) { throw new Error('No text response from metadata LLM'); }
-      const parsedMetadata = this.parseJsonResponse(response.text);
+      if (!response) { throw new Error('No text response from metadata LLM'); }
+      const parsedMetadata = this.parseJsonResponse(response);
       // Basic validation
       if (typeof parsedMetadata?.progress === 'string' && typeof parsedMetadata?.completed === 'boolean') {
         return parsedMetadata as ExtractionMetadata;
@@ -539,19 +538,19 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
   }
 
   /**
-   * Resolve URLs in the data using LLM with NodeIDsToURLsTool
+   * Resolve URLs in the data using LLM without function calls
    */
   private async resolveUrlsWithLLM(options: {
     data: any,
     apiKey: string,
-    schema: SchemaDefinition
+    schema: SchemaDefinition,
   }): Promise<any> {
     const { data, apiKey, schema } = options;
     console.log('[SchemaBasedExtractorTool] Starting URL resolution with LLM...');
 
     // 1. First LLM call to identify nodeIDs
     const nodeIdExtractionPrompt = `
-You need to identify numeric accessibility node IDs in the data structure and use the get_urls_from_nodeids tool to convert them to URLs.
+Extract all numeric values that appear to be accessibility node IDs from fields like "link", "url", or "href" in the data.
 
 ORIGINAL SCHEMA:
 \`\`\`json
@@ -563,56 +562,23 @@ EXTRACTED DATA (containing nodeIDs instead of URLs):
 ${JSON.stringify(data, null, 2)}
 \`\`\`
 
-EXPECTED ACTION:
-1. Identify all numeric values that appear in fields like "link", "url", or "href"
-2. These numeric values are accessibility nodeIDs that need conversion to URLs
-3. Call the get_urls_from_nodeids tool with these nodeIDs
-4. DO NOT provide any explanations - ONLY make the tool call
-
-You MUST use the get_urls_from_nodeids tool with all the nodeIDs you find. Do not respond with text.
+TASK: Return ONLY a JSON array of the numeric node IDs found. Example: [12345, 67890]
 `;
 
     try {
-      const modelName = 'gpt-4.1-mini-2025-04-14'; // Or preferred model
+      const modelName = AIChatPanel.getMiniModel();
 
-      // Define the NodeIDsToURLsTool as a tool the LLM can use
-      const urlTool = new NodeIDsToURLsTool();
-      const tools = [
-        {
-          type: 'function',
-          name: urlTool.name,
-          description: urlTool.description,
-          parameters: urlTool.schema
-        }
-      ];
-
-      const systemPrompt = `You are a specialized tool-using agent that converts nodeIDs to URLs.
-Your ONLY task is to find all numeric nodeIDs in the data and call the get_urls_from_nodeids tool with these IDs.
-DO NOT provide explanations or any other text - ONLY make the tool call.
-You should assume any numeric value in a field named "link", "url", or "href" is a nodeID that needs conversion.`;
-
-      // Make the call - force function call
-      const response = await OpenAIClient.callOpenAI(
+      const response = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         nodeIdExtractionPrompt,
-        {
-          systemPrompt,
-          tools,
-          tool_choice: "auto"
-        }
+        { systemPrompt: 'You are a JSON processor that extracts numeric node IDs.', temperature: 0 }
       );
 
-      console.log('[SchemaBasedExtractorTool] LLM nodeID extraction response:', response);
+      console.log('[SchemaBasedExtractorTool] Node ID extraction response:', response);
 
-      // Check if we got a function call
-      if (!response.functionCall || response.functionCall.name !== urlTool.name) {
-        console.error(`[SchemaBasedExtractorTool] Expected function call to ${urlTool.name} not received from LLM`);
-        return data; // Return original data if we can't proceed
-      }
-
-      // Extract the nodeIds from the function call
-      const nodeIds = response.functionCall.arguments.nodeIds;
+      // Parse the array of nodeIds
+      const nodeIds = this.parseJsonResponse(response);
       if (!Array.isArray(nodeIds) || nodeIds.length === 0) {
         console.log('[SchemaBasedExtractorTool] No nodeIDs found for URL conversion');
         return data; // Return original data if no nodeIds found
@@ -621,6 +587,7 @@ You should assume any numeric value in a field named "link", "url", or "href" is
       console.log(`[SchemaBasedExtractorTool] Found ${nodeIds.length} nodeIDs to convert:`, nodeIds);
 
       // 2. Execute the NodeIDsToURLsTool with the found nodeIds
+      const urlTool = new NodeIDsToURLsTool();
       const urlResult = await urlTool.execute({ nodeIds });
 
       if ('error' in urlResult) {
@@ -640,9 +607,9 @@ You should assume any numeric value in a field named "link", "url", or "href" is
 
       // 4. Second LLM call to replace nodeIDs with URLs
       const urlReplacementPrompt = `
-You are tasked with replacing numeric accessibility node IDs with their corresponding URLs in the following data structure.
+Replace numeric accessibility node IDs with their corresponding URLs in the data structure.
 
-ORIGINAL DATA (with numeric nodeIDs instead of URLs):
+ORIGINAL DATA (with numeric nodeIDs):
 \`\`\`json
 ${JSON.stringify(data, null, 2)}
 \`\`\`
@@ -653,24 +620,23 @@ ${JSON.stringify(nodeIdToUrlMap, null, 2)}
 \`\`\`
 
 TASK: Replace all numeric nodeIDs in the data with their corresponding URLs from the mapping.
-If a nodeID doesn't have a corresponding URL in the mapping, leave it as is.
 Return the full updated data structure with the URLs replaced.
 `;
 
-      const urlReplacementResponse = await OpenAIClient.callOpenAI(
+      const urlReplacementResponse = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         urlReplacementPrompt,
-        { systemPrompt: 'You are an expert data transformation assistant.' }
+        { systemPrompt: 'You are an expert data transformation assistant.', temperature: 0 }
       );
 
-      if (!urlReplacementResponse.text) {
-        console.error('[SchemaBasedExtractorTool] No text response from URL replacement LLM');
+      if (!urlReplacementResponse) {
+        console.error('[SchemaBasedExtractorTool] No response from URL replacement LLM');
         return data; // Return original data if we can't get a response
       }
 
       // Parse the response
-      const updatedData = this.parseJsonResponse(urlReplacementResponse.text);
+      const updatedData = this.parseJsonResponse(urlReplacementResponse);
       if (!updatedData) {
         console.error('[SchemaBasedExtractorTool] Failed to parse updated data from LLM response');
         return data; // Return original data if parsing fails

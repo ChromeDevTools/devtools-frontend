@@ -2,19 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type { getTools } from '../tools/Tools.js';
 import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
-import { type AgentState } from './State.js';
-import { type ChatOpenAI } from './ChatOpenAI.js'; // Import ChatOpenAI
-import { type ChatPromptFormatter, createSystemPrompt, getAgentToolsFromState } from './GraphHelpers.js'; // To be created
-import { getTools } from '../tools/Tools.js';
-import { type Runnable } from './Types.js';
 
-export function createAgentNode(model: ChatOpenAI, formatter: ChatPromptFormatter): Runnable<AgentState, AgentState> {
+import type { Model } from './ChatOpenAI.js'; // Import Model interface
+import { type ChatPromptFormatter, createSystemPrompt, getAgentToolsFromState } from './GraphHelpers.js'; // To be created
+import type { AgentState } from './State.js';
+import type { Runnable } from './Types.js';
+
+export function createAgentNode(model: Model, formatter: ChatPromptFormatter): Runnable<AgentState, AgentState> {
   const agentNode = new class AgentNode implements Runnable<AgentState, AgentState> {
-    private model: ChatOpenAI;
+    private model: Model;
     private formatter: ChatPromptFormatter;
 
-    constructor(model: ChatOpenAI, formatter: ChatPromptFormatter) {
+    constructor(model: Model, formatter: ChatPromptFormatter) {
       this.model = model;
       this.formatter = formatter;
     }
@@ -46,7 +47,7 @@ export function createAgentNode(model: ChatOpenAI, formatter: ChatPromptFormatte
           console.log('isAccepted decision:', isAccepted);
 
           if (isAccepted) {
-            let answerText = result.answer;
+            const answerText = result.answer;
 
             if (answerText) {
               const newModelMessage: ModelChatMessage = {
@@ -64,7 +65,7 @@ export function createAgentNode(model: ChatOpenAI, formatter: ChatPromptFormatte
                 error: undefined,
               };
             }
-            console.log('Coudnt find the answer')
+            console.log('Coudnt find the answer');
           } else {
             // If critique rejected, return to agent with feedback
             console.log('Critique REJECTED the answer - routing back to AGENT');
@@ -143,8 +144,8 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
       // Expect the last message to be the MODEL action requesting the tool
       if (lastMessage?.entity !== ChatMessageEntity.MODEL || lastMessage.action !== 'tool' || !lastMessage.toolName) {
-        console.error("ToolExecutorNode: Expected last message to be a MODEL tool action.", lastMessage);
-        return { ...state, error: "Internal Error: Invalid state for tool execution." };
+        console.error('ToolExecutorNode: Expected last message to be a MODEL tool action.', lastMessage);
+        return { ...state, error: 'Internal Error: Invalid state for tool execution.' };
       }
 
       // Get tool details from the ModelChatMessage
@@ -164,7 +165,7 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
         // Special handling for finalize_with_critique tool results to ensure proper format
         if (toolName === 'finalize_with_critique') {
-          console.log("ToolExecutorNode: finalize_with_critique result:", result);
+          console.log('ToolExecutorNode: finalize_with_critique result:', result);
           // Make sure the result is properly stringified
           resultText = typeof result === 'string' ? result : JSON.stringify(result);
         } else {
@@ -182,13 +183,13 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
       // Create the NEW ToolResultMessage
       const toolResultMessage: ToolResultMessage = {
         entity: ChatMessageEntity.TOOL_RESULT,
-        toolName: toolName,
-        resultText: resultText,
-        isError: isError,
+        toolName,
+        resultText,
+        isError,
         ...(isError && { error: resultText })
       };
 
-      console.log("ToolExecutorNode: Adding tool result message:", toolResultMessage);
+      console.log('ToolExecutorNode: Adding tool result message:', toolResultMessage);
 
       // Add the result message to the state
       return {
@@ -206,7 +207,7 @@ export function createFinalNode(): Runnable<AgentState, AgentState> {
     async invoke(state: AgentState): Promise<AgentState> {
       const lastMessage = state.messages[state.messages.length - 1];
       if (lastMessage?.entity !== ChatMessageEntity.MODEL || !lastMessage.isFinalAnswer) {
-        console.warn("FinalNode: Invoked, but last message was not a final MODEL answer as expected.");
+        console.warn('FinalNode: Invoked, but last message was not a final MODEL answer as expected.');
       }
       // Node remains simple, just returns state, assuming AgentNode set it correctly.
       return {
@@ -216,4 +217,4 @@ export function createFinalNode(): Runnable<AgentState, AgentState> {
     }
   }();
   return finalNode;
-} 
+}

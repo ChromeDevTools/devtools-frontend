@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { type AgentState } from './State.js';
-import { type ChatOpenAI } from './ChatOpenAI.js';
-import { StateGraph } from './StateGraph.js';
+import type { Model } from './ChatOpenAI.js';
 import { createAgentNode, createFinalNode, createToolExecutorNode, routeNextNode } from './Graph.js';
-import { NodeType } from './Types.js';
-import type { CompiledGraph, Runnable } from './Types.js';
 import { ChatPromptFormatter } from './GraphHelpers.js';
+import type { AgentState } from './State.js';
+import { StateGraph } from './StateGraph.js';
+import { NodeType, type CompiledGraph, type Runnable } from './Types.js';
 
 /**
  * Defines the structure for the JSON configuration of a StateGraph.
@@ -39,21 +38,21 @@ export interface GraphConfig {
  * Creates a compiled agent graph from a configuration object.
  *
  * @param config The graph configuration.
- * @param openAiModel The ChatOpenAI model instance, already initialized.
+ * @param model The Model instance (ChatOpenAI or ChatLiteLLM), already initialized.
  * @returns A compiled StateGraph.
  */
 export function createAgentGraphFromConfig(
   config: GraphConfig,
-  openAiModel: ChatOpenAI,
+  model: Model,
 ): CompiledGraph {
   console.log(`[ConfigurableGraph] Creating graph from config: ${config.name}`);
 
   const graph = new StateGraph<AgentState>({ name: config.name });
 
-  const nodeFactories: Record<string, (model: ChatOpenAI, nodeConfig: GraphNodeConfig, graphInstance?: StateGraph<AgentState>) => Runnable<AgentState, AgentState>> = {
-    'agent': (model) => createAgentNode(model, new ChatPromptFormatter()),
-    'final': () => createFinalNode(),
-    'toolExecutor': (_model, nodeCfg) => {
+  const nodeFactories: Record<string, (model: Model, nodeConfig: GraphNodeConfig, graphInstance?: StateGraph<AgentState>) => Runnable<AgentState, AgentState>> = {
+    agent: model => createAgentNode(model, new ChatPromptFormatter()),
+    final: () => createFinalNode(),
+    toolExecutor: (_model, nodeCfg) => {
       return {
         invoke: async (state: AgentState) => {
           console.warn(`[ConfigurableGraph] ToolExecutorNode "${nodeCfg.name}" invoked without being dynamically replaced. This indicates an issue.`);
@@ -66,7 +65,7 @@ export function createAgentGraphFromConfig(
   for (const nodeConfig of config.nodes) {
     const factory = nodeFactories[nodeConfig.type];
     if (factory) {
-      const nodeInstance = factory(openAiModel, nodeConfig, graph);
+      const nodeInstance = factory(model, nodeConfig, graph);
       graph.addNode(nodeConfig.name, nodeInstance);
       console.log(`[ConfigurableGraph] Added node: ${nodeConfig.name} (type: ${nodeConfig.type})`);
     } else {
@@ -80,12 +79,12 @@ export function createAgentGraphFromConfig(
     }
   }
 
-  type ConditionFunctionGenerator = (state: AgentState, graphInstance: StateGraph<AgentState>, edgeConfig: GraphEdgeConfig, model: ChatOpenAI) => string;
+  type ConditionFunctionGenerator = (state: AgentState, graphInstance: StateGraph<AgentState>, edgeConfig: GraphEdgeConfig, model: Model) => string;
 
   const conditionFactories: Record<string, ConditionFunctionGenerator> = {
-    'routeBasedOnLastMessage': (state) => routeNextNode(state),
-    'alwaysAgent': () => NodeType.AGENT.toString(),
-    'routeOrPrepareToolExecutor': (state, graphInstance, edgeConfig) => {
+    routeBasedOnLastMessage: state => routeNextNode(state),
+    alwaysAgent: () => NodeType.AGENT.toString(),
+    routeOrPrepareToolExecutor: (state, graphInstance, edgeConfig) => {
       const routingKey = routeNextNode(state);
       if (routingKey === NodeType.TOOL_EXECUTOR.toString()) {
         const toolExecutorNodeName = edgeConfig.targetMap[NodeType.TOOL_EXECUTOR.toString()];
@@ -106,7 +105,7 @@ export function createAgentGraphFromConfig(
     const conditionFactory = conditionFactories[edgeConfig.conditionType];
     if (conditionFactory) {
       const conditionFn = (state: AgentState) => {
-        return conditionFactory(state, graph, edgeConfig, openAiModel);
+        return conditionFactory(state, graph, edgeConfig, model);
       };
       graph.addConditionalEdges(edgeConfig.source, conditionFn, edgeConfig.targetMap);
       console.log(`[ConfigurableGraph] Added edge from ${edgeConfig.source} via ${edgeConfig.conditionType}`);
@@ -125,9 +124,9 @@ export function createAgentGraphFromConfig(
         graph.setEntryPoint(fallbackEntryPoint);
         console.warn(`[ConfigurableGraph] Setting entry point to fallback: ${fallbackEntryPoint}`);
     } else {
-        throw new Error("[ConfigurableGraph] No nodes defined in graph config, cannot set entry point.");
+        throw new Error('[ConfigurableGraph] No nodes defined in graph config, cannot set entry point.');
     }
   }
 
   return graph.compile();
-} 
+}

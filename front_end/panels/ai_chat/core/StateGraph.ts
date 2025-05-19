@@ -91,7 +91,7 @@ export class StateGraph<TState> {
 
       step++;
       if (step > 50) {
-        console.error("Safety break: Exceeded 50 steps. Terminating graph.");
+        console.error('Safety break: Exceeded 50 steps. Terminating graph.');
         currentNodeName = END_NODE_MARKER;
       }
     }
@@ -108,4 +108,4 @@ export class StateGraph<TState> {
   }
 }
 
-export { END_NODE_MARKER }; 
+export { END_NODE_MARKER };

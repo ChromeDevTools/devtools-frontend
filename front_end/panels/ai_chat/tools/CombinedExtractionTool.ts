@@ -3,19 +3,17 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
-import { 
-  Tool,
-  NavigateURLTool,
-  ErrorResult 
-} from './Tools.js';
 import { AgentService } from '../core/AgentService.js';
-import { 
-  SchemaBasedExtractorTool,
-  SchemaDefinition 
-} from './SchemaBasedExtractorTool.js';
-import { 
+
+import {
   HTMLToMarkdownTool,
 } from './HTMLToMarkdownTool.js';
+import {
+  SchemaBasedExtractorTool, type SchemaDefinition
+} from './SchemaBasedExtractorTool.js';
+import {
+  NavigateURLTool, type Tool, type ErrorResult
+} from './Tools.js';
 
 /**
  * Result interface for the combined extraction tool
@@ -104,7 +102,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
           error: `Navigation failed: ${navigationResult.error}`
         };
       }
-      
+
       // At this point, navigationResult is definitely NavigationResult
       if (!navigationResult.success) {
         return {

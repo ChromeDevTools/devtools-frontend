@@ -5,7 +5,7 @@
 import type { getTools } from '../tools/Tools.js';
 
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
-import { OpenAIClient, type OpenAIResponse, type ParsedLLMAction, type OpenAICallOptions } from './OpenAIClient.js';
+import { LiteLLMClient, type LiteLLMResponse, type ParsedLLMAction, type LiteLLMCallOptions } from './LiteLLMClient.js';
 import { enhancePromptWithPageContext } from './PageInfoManager.js';
 import type { AgentState } from './State.js';
 
@@ -17,15 +17,10 @@ interface ModelResponse {
     toolArgs?: Record<string, unknown>, // Defined if action is 'tool'
     answer?: string, // Defined if action is 'final'. This is the user-facing message or error.
   };
-  openAIReasoning?: {
-    summary?: string[] | null,
-    effort?: string,
-  };
 }
 
-export interface Model {
+interface Model {
   generate(prompt: string, systemPrompt: string, state: AgentState): Promise<ModelResponse>;
-  resetCallCount(): void;
 }
 
 // Create the appropriate tools for the agent based on agent type
@@ -34,20 +29,30 @@ function getAgentToolsFromState(state: AgentState): ReturnType<typeof getTools> 
   return BaseOrchestratorAgent.getAgentTools(state.selectedAgentType ?? ''); // Pass agentType or empty string
 }
 
-// Ensure ChatOpenAI tracks interaction state
-export class ChatOpenAI implements Model {
-  private apiKey: string;
+// Ensure ChatLiteLLM tracks interaction state
+export class ChatLiteLLM implements Model {
+  private apiKey: string | null;
   private modelName: string;
   private temperature: number;
+  private endpoint?: string;
+  private baseUrl?: string;
   // Add a counter to track how many times generate has been called per interaction
   private callCount = 0;
   // Maximum number of calls per interaction
   private maxCallsPerInteraction = 25;
 
-  constructor(options: { openAIApiKey: string, modelName: string, temperature?: number }) {
-    this.apiKey = options.openAIApiKey;
+  constructor(options: {
+    liteLLMApiKey: string | null,
+    modelName: string,
+    temperature?: number,
+    endpoint?: string,
+    baseUrl?: string,
+  }) {
+    this.apiKey = options.liteLLMApiKey;
     this.modelName = options.modelName;
     this.temperature = options.temperature ?? 1.0;
+    this.endpoint = options.endpoint;
+    this.baseUrl = options.baseUrl;
   }
 
   // Method to reset the call counter when a new user message is received
@@ -55,7 +60,7 @@ export class ChatOpenAI implements Model {
     this.callCount = 0;
   }
 
-  // Method to check if we\'ve exceeded the maximum number of calls
+  // Method to check if we've exceeded the maximum number of calls
   hasExceededMaxCalls(): boolean {
     return this.callCount >= this.maxCallsPerInteraction;
   }
@@ -64,7 +69,7 @@ export class ChatOpenAI implements Model {
     // Increment the call counter
     this.callCount++;
 
-    // Check if we\'ve exceeded the maximum number of calls
+    // Check if we've exceeded the maximum number of calls
     if (this.hasExceededMaxCalls()) {
       // Return a forced final response when limit is exceeded
       return {
@@ -75,85 +80,62 @@ export class ChatOpenAI implements Model {
       };
     }
 
-    console.log('Generating response from OpenAI:');
+    console.log('Generating response from LiteLLM:');
     console.log(prompt);
     try {
       // Get agent-specific tools to include in the request
       const tools = getAgentToolsFromState(state).map(tool => ({
         type: 'function',
-        name: tool.name,
-        description: tool.description,
-        parameters: tool.schema
+        function: {
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.schema
+        }
       }));
 
       // Get the enhanced system prompt - use the async version
       const enhancedSystemPrompt = await enhancePromptWithPageContext(systemPrompt);
 
-      // Prepare options for OpenAIClient
-      const clientOptions: OpenAICallOptions = {
+      // Prepare options for LiteLLMClient
+      const clientOptions: LiteLLMCallOptions = {
         tools,
         systemPrompt: enhancedSystemPrompt,
         temperature: this.temperature,
+        endpoint: this.endpoint,
+        baseUrl: this.baseUrl
       };
 
-      // Call OpenAIClient
-      const openAIResponse: OpenAIResponse = await OpenAIClient.callOpenAI(
+      // Call LiteLLMClient
+      const liteLLMResponse: LiteLLMResponse = await LiteLLMClient.callLiteLLM(
         this.apiKey,
         this.modelName,
         prompt,
         clientOptions
       );
 
-      // Process the response from OpenAIClient using OpenAIClient.parseOpenAIResponse
-      const parsedLlmAction: ParsedLLMAction = OpenAIClient.parseOpenAIResponse(openAIResponse);
+      // Parse the response
+      const parsedAction = LiteLLMClient.parseLiteLLMResponse(liteLLMResponse);
 
-      let parsedActionData: ModelResponse['parsedAction'];
-      let openAIReasoning: ModelResponse['openAIReasoning'] = undefined;
+      // Convert to the expected ModelResponse format
+      const modelResponse: ModelResponse = {
+        parsedAction: {
+          action: parsedAction.type === 'tool_call' ? 'tool' : 'final',
+          toolName: parsedAction.type === 'tool_call' ? parsedAction.name : undefined,
+          toolArgs: parsedAction.type === 'tool_call' ? parsedAction.args : undefined,
+          answer: parsedAction.type === 'final_answer' ? parsedAction.answer : (parsedAction.type === 'error' ? parsedAction.error : undefined),
+        },
+      };
 
-      switch (parsedLlmAction.type) {
-        case 'tool_call':
-          parsedActionData = {
-            action: 'tool',
-            toolName: parsedLlmAction.name,
-            toolArgs: parsedLlmAction.args,
-          };
-          break;
-        case 'final_answer':
-          parsedActionData = {
-            action: 'final',
-            answer: parsedLlmAction.answer,
-          };
-          break;
-        case 'error':
-          const errorMessage = `LLM response processing error: ${parsedLlmAction.error}`;
-          parsedActionData = {
-            action: 'final',
-            answer: errorMessage,
-          };
-          break;
-      }
-
-      // Extract reasoning information if available
-      if (openAIResponse.reasoning) {
-        openAIReasoning = {
-          summary: openAIResponse.reasoning.summary,
-          effort: openAIResponse.reasoning.effort,
-        };
-      }
-
-      return { parsedAction: parsedActionData, openAIReasoning };
+      return modelResponse;
     } catch (error) {
-      // Error logging is handled within OpenAIClient, but re-throw if needed
-      console.error('Error in ChatOpenAI.generate after calling OpenAIClient:', error);
+      console.error('[ChatLiteLLM] Error during LiteLLM call:', error);
+      // Return error as final answer
       return {
         parsedAction: {
           action: 'final',
-          answer: `error in calling API client: ${error}`,
+          answer: `Error calling LiteLLM: ${error instanceof Error ? error.message : 'Unknown error'}`,
         },
       };
     }
   }
 }
-
-// Export the interfaces and class
-export type { ModelResponse };

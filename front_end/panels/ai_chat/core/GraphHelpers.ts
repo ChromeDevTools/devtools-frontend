@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { ChatMessage, ChatMessageEntity } from '../ui/ChatView.js';
-import { type AgentState } from './State.js';
+import type { getTools } from '../tools/Tools.js';
+import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
 import { enhancePromptWithPageContext } from './PageInfoManager.js';
+import type { AgentState } from './State.js';
 import { NodeType } from './Types.js';
-import { getTools } from '../tools/Tools.js';
 
 // ChatPromptFormatter
 export class ChatPromptFormatter {
@@ -69,7 +70,7 @@ export function createSystemPrompt(state: AgentState): string {
   const { selectedAgentType } = state;
 
   // Get base prompt
-  let basePrompt = selectedAgentType ?
+  const basePrompt = selectedAgentType ?
     BaseOrchestratorAgent.getSystemPrompt(selectedAgentType) :
     BaseOrchestratorAgent.getSystemPrompt('default');
 
@@ -82,7 +83,7 @@ export async function createSystemPromptAsync(state: AgentState): Promise<string
   const { selectedAgentType } = state;
 
   // Get base prompt
-  let basePrompt = selectedAgentType ?
+  const basePrompt = selectedAgentType ?
     BaseOrchestratorAgent.getSystemPrompt(selectedAgentType) :
     BaseOrchestratorAgent.getSystemPrompt('default');
 
@@ -113,18 +114,17 @@ export function routeNextNode(state: AgentState): string { // Return type is now
     case ChatMessageEntity.MODEL:
       if (lastMessage.action === 'tool') {
         return NodeType.TOOL_EXECUTOR;
-      } else if (lastMessage.action === 'final') {
+      } if (lastMessage.action === 'final') {
         return NodeType.FINAL; // Route TO FinalNode
-      } else {
-        console.warn("routeNextNode: MODEL message has invalid action:", lastMessage.action);
-        return 'end'; // Map invalid action to 'end' key
       }
+        console.warn('routeNextNode: MODEL message has invalid action:', lastMessage.action);
+        return 'end'; // Map invalid action to 'end' key
 
     case ChatMessageEntity.TOOL_RESULT:
       return NodeType.AGENT;
 
     default:
-      console.warn("routeNextNode: Unhandled last message entity type encountered.");
+      console.warn('routeNextNode: Unhandled last message entity type encountered.');
       return 'end'; // Map unhandled types to 'end' key
   }
-} 
+}

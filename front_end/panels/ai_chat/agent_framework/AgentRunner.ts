@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { Tool } from '../tools/Tools.js';
-import { OpenAIClient, OpenAIResponse } from '../core/OpenAIClient.js';
-import { ChatMessage, ChatMessageEntity, ModelChatMessage, ToolResultMessage } from '../ui/ChatView.js';
 import { ChatPromptFormatter } from '../core/Graph.js';
 import { enhancePromptWithPageContext } from '../core/PageInfoManager.js';
-import { ConfigurableAgentArgs, ConfigurableAgentResult, AgentRunTerminationReason, ConfigurableAgentTool, ToolRegistry, HandoffConfig, HandoffTrigger /*, HandoffContextTransform, ContextFilterRegistry*/ } from './ConfigurableAgentTool.js';
+import { UnifiedLLMClient, type UnifiedLLMResponse, type ParsedLLMAction } from '../core/UnifiedLLMClient.js';
+import type { Tool } from '../tools/Tools.js';
+import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
+
+import { ConfigurableAgentTool, ToolRegistry, HandoffTrigger, type ConfigurableAgentArgs, type ConfigurableAgentResult, type AgentRunTerminationReason, type HandoffConfig /* , HandoffContextTransform, ContextFilterRegistry*/ } from './ConfigurableAgentTool.js';
 
 /**
  * Configuration for the AgentRunner
@@ -16,7 +17,7 @@ export interface AgentRunnerConfig {
   apiKey: string;
   modelName: string;
   systemPrompt: string;
-  tools: Tool<any, any>[];
+  tools: Array<Tool<any, any>>;
   maxIterations: number;
   temperature?: number;
 }
@@ -103,11 +104,13 @@ export class AgentRunner {
 
     // Enhance the target agent's system prompt with page context
     const enhancedSystemPrompt = await enhancePromptWithPageContext(targetConfig.systemPrompt);
-    
+
     // Construct Runner Config & Hooks for the target agent
     const targetRunnerConfig: AgentRunnerConfig = {
-      apiKey: apiKey,
-      modelName: targetConfig.modelName || defaultModelName,
+      apiKey,
+      modelName: typeof targetConfig.modelName === 'function'
+        ? targetConfig.modelName()
+        : (targetConfig.modelName || defaultModelName),
       systemPrompt: enhancedSystemPrompt,
       tools: targetConfig.tools
               .map(toolName => ToolRegistry.getRegisteredTool(toolName))
@@ -153,21 +156,21 @@ export class AgentRunner {
           intermediateSteps: combinedIntermediateSteps,
           terminationReason: handoffResult.terminationReason || 'handed_off',
       };
-    } else {
-      // Otherwise (default), omit the target's intermediate steps
-      console.log(`[AgentRunner] Omitting intermediateSteps from ${targetAgentTool.name} based on its config (default or flag set to false).`);
-      // Return result from target, ensuring intermediateSteps are omitted
-      const finalResult = {
-        ...handoffResult,
-        terminationReason: handoffResult.terminationReason || 'handed_off',
-      };
-      // Explicitly delete intermediateSteps if they somehow exist on handoffResult (shouldn't due to target config)
-      delete finalResult.intermediateSteps; 
-      return finalResult;
     }
+    // Otherwise (default), omit the target's intermediate steps
+    console.log(`[AgentRunner] Omitting intermediateSteps from ${targetAgentTool.name} based on its config (default or flag set to false).`);
+    // Return result from target, ensuring intermediateSteps are omitted
+    const finalResult = {
+      ...handoffResult,
+      terminationReason: handoffResult.terminationReason || 'handed_off',
+    };
+    // Explicitly delete intermediateSteps if they somehow exist on handoffResult (shouldn't due to target config)
+    delete finalResult.intermediateSteps;
+    return finalResult;
+
   }
 
-  public static async run(
+  static async run(
     initialMessages: ChatMessage[],
     args: ConfigurableAgentArgs,
     config: AgentRunnerConfig,
@@ -195,7 +198,7 @@ export class AgentRunner {
     }));
 
     // Add handoff tools based on the executing agent's config
-    if (executingAgent && executingAgent.config.handoffs) {
+    if (executingAgent?.config.handoffs) {
         // Iterate over the configured handoffs
         for (const handoffConfig of executingAgent.config.handoffs) {
             // Only add handoffs triggered by LLM tool calls to the schema
@@ -226,7 +229,7 @@ export class AgentRunner {
 
     for (iteration = 0; iteration < maxIterations; iteration++) {
       console.log(`[AgentRunner] ${agentName} Iteration ${iteration + 1}/${maxIterations}`);
-      
+
       // Prepare prompt and call LLM
       const iterationInfo = `
 ## Current Progress
@@ -238,10 +241,10 @@ export class AgentRunner {
       const currentSystemPrompt = await enhancePromptWithPageContext(systemPrompt + iterationInfo);
 
       const promptText = promptFormatter.format({ messages });
-      let openAIResponse: OpenAIResponse;
+      let llmResponse: UnifiedLLMResponse;
       try {
         console.log(`[AgentRunner] ${agentName} Calling LLM. Prompt size: ${promptText.length}`);
-        openAIResponse = await OpenAIClient.callOpenAI(
+        llmResponse = await UnifiedLLMClient.callLLMWithResponse(
           apiKey,
           modelName,
           promptText,
@@ -268,7 +271,7 @@ export class AgentRunner {
       }
 
       // Parse LLM response
-      const parsedAction = OpenAIClient.parseOpenAIResponse(openAIResponse);
+      const parsedAction = UnifiedLLMClient.parseResponse(llmResponse);
 
       // Process parsed action
       try {
@@ -279,10 +282,10 @@ export class AgentRunner {
           newModelMessage = {
             entity: ChatMessageEntity.MODEL,
             action: 'tool',
-            toolName: toolName,
-            toolArgs: toolArgs,
+            toolName,
+            toolArgs,
             isFinalAnswer: false,
-            reasoning: openAIResponse.reasoning?.summary,
+            reasoning: llmResponse.reasoning?.summary,
           };
           messages.push(newModelMessage);
           console.log(`[AgentRunner] ${agentName} LLM requested tool: ${toolName}`);
@@ -324,7 +327,8 @@ export class AgentRunner {
               // LLM tool handoff replaces the current agent's execution entirely
               return handoffResult;
 
-          } else if (!toolToExecute) { // Regular tool, but not found
+          }
+          if (!toolToExecute) { // Regular tool, but not found
               throw new Error(`Agent requested unknown tool: ${toolName}`);
           } else {
             // *** Regular tool execution ***
@@ -356,7 +360,7 @@ export class AgentRunner {
           // Add tool result message
           const toolResultMessage: ToolResultMessage = {
             entity: ChatMessageEntity.TOOL_RESULT,
-            toolName: toolName,
+            toolName,
             resultText: toolResultText,
             isError: toolIsError,
             ...(toolIsError && { error: toolResultText }), // Include raw error message if error occurred
@@ -370,9 +374,9 @@ export class AgentRunner {
           newModelMessage = {
             entity: ChatMessageEntity.MODEL,
             action: 'final',
-            answer: answer,
+            answer,
             isFinalAnswer: true,
-            reasoning: openAIResponse.reasoning?.summary,
+            reasoning: llmResponse.reasoning?.summary,
           };
           messages.push(newModelMessage);
           console.log(`[AgentRunner] ${agentName} LLM provided final answer.`);
@@ -403,7 +407,7 @@ export class AgentRunner {
     // Max iterations reached - Check for 'max_iterations' handoff trigger
     console.warn(`[AgentRunner] ${agentName} Reached max iterations (${maxIterations}) without completion.`);
 
-    if (executingAgent && executingAgent.config.handoffs) {
+    if (executingAgent?.config.handoffs) {
         const maxIterHandoffConfig = executingAgent.config.handoffs.find(h => h.trigger === 'max_iterations');
 
         if (maxIterHandoffConfig) {
@@ -427,4 +431,4 @@ export class AgentRunner {
     console.warn(`[AgentRunner] ${agentName} No 'max_iterations' handoff configured. Returning error.`);
     return createErrorResult(`Agent reached maximum iterations (${maxIterations})`, messages, 'max_iterations');
   }
-} 
+}

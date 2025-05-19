@@ -3,22 +3,22 @@
 // found in the LICENSE file.
 
 import * as Lit from '../../../ui/lit/lit.js';
-import type { Tool } from '../tools/Tools.js';
+
 // Direct imports from Tools.ts
+import { ToolRegistry } from '../agent_framework/ConfigurableAgentTool.js';
+import { initializeConfiguredAgents } from '../agent_framework/implementation/ConfiguredAgents.js';
+import { FinalizeWithCritiqueTool } from '../tools/FinalizeWithCritiqueTool.js';
+import { HTMLToMarkdownTool } from '../tools/HTMLToMarkdownTool.js';
+import { SchemaBasedExtractorTool } from '../tools/SchemaBasedExtractorTool.js';
 import {
   NavigateURLTool,
   NavigateBackTool,
   NodeIDsToURLsTool,
   GetVisitsByDomainTool,
   GetVisitsByKeywordTool,
-  SearchVisitHistoryTool
+  SearchVisitHistoryTool, type Tool
 } from '../tools/Tools.js';
 // Imports from their own files
-import { SchemaBasedExtractorTool } from '../tools/SchemaBasedExtractorTool.js';
-import { HTMLToMarkdownTool } from '../tools/HTMLToMarkdownTool.js';
-import { FinalizeWithCritiqueTool } from '../tools/FinalizeWithCritiqueTool.js';
-import { initializeConfiguredAgents } from '../agent_framework/implementation/ConfiguredAgents.js';
-import { ToolRegistry } from '../agent_framework/ConfigurableAgentTool.js';
 
 // Initialize configured agents
 initializeConfiguredAgents();
@@ -165,7 +165,7 @@ export interface AgentConfig {
   label: string;
   description?: string;
   systemPrompt: string;
-  availableTools: Tool<any, any>[];
+  availableTools: Array<Tool<any, any>>;
 }
 // Agent configurations
 export const AGENT_CONFIGS: {[key: string]: AgentConfig} = {
@@ -217,7 +217,7 @@ export const AGENT_CONFIGS: {[key: string]: AgentConfig} = {
  * Get the system prompt for a specific agent type
  */
 export function getSystemPrompt(agentType: string): string {
-  return AGENT_CONFIGS[agentType]?.systemPrompt || 
+  return AGENT_CONFIGS[agentType]?.systemPrompt ||
     // Default system prompt if agent type not found
   `
 <system>
@@ -268,7 +268,7 @@ export function getSystemPrompt(agentType: string): string {
 /**
  * Get available tools for a specific agent type
  */
-export function getAgentTools(agentType: string): Tool<any, any>[] {
+export function getAgentTools(agentType: string): Array<Tool<any, any>> {
   return AGENT_CONFIGS[agentType]?.availableTools || [
     ToolRegistry.getToolInstance('action_agent') || (() => { throw new Error('action_agent tool not found'); })(),
     new NavigateURLTool(),
@@ -289,8 +289,8 @@ export class AgentTypeSelectionEvent extends Event {
 
 // Render agent type buttons
 export function renderAgentTypeButtons(
-  selectedAgentType: string | null | undefined, 
-  handleClick: (event: Event) => void, 
+  selectedAgentType: string | null | undefined,
+  handleClick: (event: Event) => void,
   showLabels = false
 ): Lit.TemplateResult {
   return html`
@@ -298,9 +298,9 @@ export function renderAgentTypeButtons(
       ${Object.values(AGENT_CONFIGS).map(config => html`
         <button 
           class="prompt-button ${selectedAgentType === config.type ? 'selected' : ''}" 
-          data-agent-type="${config.type}" 
+          data-agent-type=${config.type} 
           @click=${handleClick}
-          title="${config.description || config.label}"
+          title=${config.description || config.label}
         >
           <span class="prompt-icon">${config.icon}</span>
           ${showLabels ? html`<span class="prompt-label">${config.label}</span>` : Lit.nothing}
@@ -324,10 +324,10 @@ export function createAgentTypeSelectionHandler(
       // Remove selected class from all agent type buttons
       const allButtons = element.shadowRoot?.querySelectorAll('.agent-type-button');
       allButtons?.forEach(btn => btn.classList.remove('selected'));
-      
+
       // Add selected class to the clicked button
       button.classList.add('selected');
-      
+
       // Update the selected agent type
       setSelectedAgentType(agentType);
 
@@ -346,5 +346,5 @@ declare global {
   interface HTMLElementEventMap {
     [AgentTypeSelectionEvent.eventName]: AgentTypeSelectionEvent;
   }
-} 
+}
 

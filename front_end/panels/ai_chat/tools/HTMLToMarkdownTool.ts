@@ -4,10 +4,12 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import { Tool, waitForPageLoad } from './Tools.js';
-import { AgentService } from '../core/AgentService.js';
 import * as Utils from '../common/utils.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
+import { AgentService } from '../core/AgentService.js';
+import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
+
+import { waitForPageLoad, type Tool } from './Tools.js';
 
 /**
  * Result interface for HTML to Markdown extraction
@@ -308,14 +310,14 @@ ${instruction}
   private async callExtractionLLM(params: {
     systemPrompt: string,
     userPrompt: string,
-    apiKey: string
+    apiKey: string,
   }): Promise<{
-    markdownContent: string
+    markdownContent: string,
   }> {
-    // Call OpenAI using the existing client
-    const response = await OpenAIClient.callOpenAI(
+    // Call LLM using the unified client
+    const response = await UnifiedLLMClient.callLLM(
       params.apiKey,
-      'gpt-4.1-nano-2025-04-14',
+      AIChatPanel.getNanoModel(),
       params.userPrompt,
       {
         systemPrompt: params.systemPrompt,
@@ -323,8 +325,8 @@ ${instruction}
       }
     );
 
-    // Process the response - OpenAIResponse provides text property
-    const markdownContent = response.text || '';
+    // Process the response - UnifiedLLMClient returns string directly
+    const markdownContent = response || '';
 
     return {
       markdownContent

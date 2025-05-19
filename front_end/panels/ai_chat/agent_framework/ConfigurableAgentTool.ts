@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { Tool } from '../tools/Tools.js';
 import { AgentService } from '../core/AgentService.js';
-import { ChatMessage, ChatMessageEntity } from '../ui/ChatView.js';
-import { AgentRunner, AgentRunnerConfig, AgentRunnerHooks } from './AgentRunner.js';
+import type { Tool } from '../tools/Tools.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+
+import { AgentRunner, type AgentRunnerConfig, type AgentRunnerHooks } from './AgentRunner.js';
 
 /**
  * Defines the possible reasons an agent run might terminate.
@@ -49,68 +51,68 @@ export interface AgentToolConfig {
    * Name of the agent tool
    */
   name: string;
-  
+
   /**
    * Description of the agent tool
    */
   description: string;
-  
+
   /**
    * System prompt for the agent
    */
   systemPrompt: string;
-  
+
   /**
    * Tool names to make available to the agent
    */
   tools: string[];
-  
+
   /**
    * Defines potential handoffs to other agents.
    * Handoffs triggered by 'llm_tool_call' are presented as tools to the LLM.
    * Handoffs triggered by 'max_iterations' are executed automatically if the agent hits the limit.
    */
   handoffs?: HandoffConfig[];
-  
+
   /**
    * Maximum iterations for the agent loop
    */
   maxIterations?: number;
-  
+
   /**
-   * Model name to use for the agent
+   * Model name to use for the agent. Can be a string or a function that returns a string.
    */
-  modelName?: string;
-  
+  modelName?: string | (() => string);
+
   /**
    * Temperature for the agent
    */
   temperature?: number;
-  
+
   /**
    * Schema for the agent tool arguments
    */
   schema: {
-    type: string;
-    properties: Record<string, unknown>;
-    required?: string[];
+    type: string,
+    properties: Record<string, unknown>,
+    required?: string[],
   };
-  
+
   /**
    * Custom initialization function name
    */
   init?: (agent: ConfigurableAgentTool) => void;
-  
+
   /**
    * Custom message preparation function name
    */
   prepareMessages?: (args: ConfigurableAgentArgs, config: AgentToolConfig) => ChatMessage[];
-  
+
   /**
    * Custom success result creation function name
    */
   createSuccessResult?: (output: string, intermediateSteps: ChatMessage[], reason: AgentRunTerminationReason, config: AgentToolConfig) => ConfigurableAgentResult;
-  
+
   /**
    * Custom error result creation function name
    */
@@ -129,11 +131,11 @@ export interface AgentToolConfig {
 export class ToolRegistry {
   private static toolFactories = new Map<string, () => Tool<any, any>>();
   private static registeredTools = new Map<string, Tool<any, any>>(); // Store instances
-  
+
   /**
    * Register a tool factory and create/store an instance
    */
-  public static registerToolFactory(name: string, factory: () => Tool<any, any>): void {
+  static registerToolFactory(name: string, factory: () => Tool<any, any>): void {
     if (this.toolFactories.has(name)) {
         console.warn(`[ToolRegistry] Tool factory already registered for: ${name}. Overwriting.`);
     }
@@ -152,19 +154,19 @@ export class ToolRegistry {
         this.toolFactories.delete(name);
     }
   }
-  
+
   /**
    * Get a tool instance by name
    */
-  public static getToolInstance(name: string): Tool<any, any> | null {
+  static getToolInstance(name: string): Tool<any, any> | null {
     const factory = this.toolFactories.get(name);
     return factory ? factory() : null;
   }
-  
+
   /**
    * Get a pre-registered tool instance by name
    */
-  public static getRegisteredTool(name: string): Tool<any, any> | null {
+  static getRegisteredTool(name: string): Tool<any, any> | null {
     const instance = this.registeredTools.get(name);
     if (!instance) {
         // Don't fallback, require pre-registration for handoffs
@@ -183,12 +185,12 @@ export interface ConfigurableAgentArgs extends Record<string, unknown> {
    * Original query or input
    */
   query: string;
-  
+
   /**
    * Reasoning for invocation
    */
   reasoning: string;
-  
+
   /**
    * Additional arguments based on schema
    */
@@ -203,22 +205,22 @@ export interface ConfigurableAgentResult {
    * Whether the execution was successful
    */
   success: boolean;
-  
+
   /**
    * Final output if successful
    */
   output?: string;
-  
+
   /**
    * Error message if unsuccessful
    */
   error?: string;
-  
+
   /**
    * Intermediate steps for debugging
    */
   intermediateSteps?: ChatMessage[];
-  
+
   /**
    * Termination reason for the agent run
    */
@@ -237,33 +239,33 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     properties: Record<string, unknown>,
     required?: string[],
   };
-  
+
   constructor(config: AgentToolConfig) {
     this.name = config.name;
     this.description = config.description;
     this.config = config;
     this.schema = config.schema;
-    
+
     // Validate that required fields are present
     if (!config.systemPrompt) {
       throw new Error(`ConfigurableAgentTool: systemPrompt is required for ${config.name}`);
     }
-    
+
     // Call custom init function directly if provided
     if (config.init) {
       config.init(this);
     }
   }
-  
+
   /**
    * Get the tool instances for this agent
    */
-  private getToolInstances(): Tool<any, any>[] {
+  private getToolInstances(): Array<Tool<any, any>> {
     return this.config.tools
       .map(toolName => ToolRegistry.getToolInstance(toolName))
       .filter((tool): tool is Tool<any, any> => tool !== null);
   }
-  
+
   /**
    * Prepare initial messages for the agent
    */
@@ -272,14 +274,14 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     if (this.config.prepareMessages) {
       return this.config.prepareMessages(args, this.config);
     }
-    
+
     // Default implementation
     return [{
       entity: ChatMessageEntity.USER,
       text: args.query,
     }];
   }
-  
+
   /**
    * Create a success result
    */
@@ -288,7 +290,7 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     if (this.config.createSuccessResult) {
       return this.config.createSuccessResult(output, intermediateSteps, reason, this.config);
     }
-    
+
     // Default implementation
     const result: ConfigurableAgentResult = {
       success: true,
@@ -303,7 +305,7 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
 
     return result;
   }
-  
+
   /**
    * Create an error result
    */
@@ -312,7 +314,7 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     if (this.config.createErrorResult) {
       return this.config.createErrorResult(error, intermediateSteps, reason, this.config);
     }
-    
+
     // Default implementation
     const result: ConfigurableAgentResult = {
       success: false,
@@ -324,34 +326,36 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     if (this.config.includeIntermediateStepsOnReturn === true) {
         result.intermediateSteps = intermediateSteps;
     }
-    
+
     return result;
   }
-  
+
   /**
    * Execute the agent
    */
   async execute(args: ConfigurableAgentArgs): Promise<ConfigurableAgentResult> {
     console.log(`[ConfigurableAgentTool] Executing ${this.name} via AgentRunner with args:`, args);
-    
+
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    
+
     if (!apiKey) {
       return this.createErrorResult(`API key not configured for ${this.name}`, [], 'error');
     }
-    
+
     // Initialize
     const maxIterations = this.config.maxIterations || 10;
-    const modelName = this.config.modelName || 'o4-mini-2025-04-16';
+    const modelName = typeof this.config.modelName === 'function'
+      ? this.config.modelName()
+      : (this.config.modelName || AIChatPanel.instance().getSelectedModel());
     const temperature = this.config.temperature ?? 0;
-    
+
     const systemPrompt = this.config.systemPrompt;
     const tools = this.getToolInstances();
-    
+
     // Prepare initial messages
     const internalMessages = this.prepareInitialMessages(args);
-    
+
     // Prepare runner config and hooks
     const runnerConfig: AgentRunnerConfig = {
       apiKey,
@@ -384,4 +388,4 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
     // Return the direct result from the runner
     return result;
   }
-} 
+}

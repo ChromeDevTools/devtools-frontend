@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 
 import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
-import { NavigateURLTool } from './Tools.js';
-import { type Tool } from './Tools.js';
+import { NavigateURLTool, type Tool } from './Tools.js';
 
 /**
  * Interface for the result of a URL fetch operation
@@ -36,7 +35,7 @@ export interface FetcherToolResult {
 
 /**
  * Agent that fetches and extracts content from URLs
- * 
+ *
  * This agent takes a list of URLs, navigates to each one, and extracts
  * the main content as markdown. It uses NavigateURLTool for navigation
  * and HTMLToMarkdownTool for content extraction.
@@ -176,4 +175,4 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
       };
     }
   }
-} 
+}

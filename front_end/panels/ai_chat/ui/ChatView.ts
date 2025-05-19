@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Lit from '../../../ui/lit/lit.js';
 import * as Marked from '../../../third_party/marked/marked.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as BaseOrchestratorAgent from '../core/BaseOrchestratorAgent.js';
+
 import chatViewStyles from './chatView.css.js';
 
 const {html, Decorators} = Lit;
@@ -78,17 +79,17 @@ export interface UserChatMessage extends BaseChatMessage {
 export interface ModelChatMessage extends BaseChatMessage {
   entity: ChatMessageEntity.MODEL;
   // Type of action the model decided on
-  action: 'tool' | 'final'; 
+  action: 'tool' | 'final';
   // Tool details (only relevant if action is 'tool')
   toolName?: string;
   toolArgs?: Record<string, unknown>;
   // Final answer (only relevant if action is 'final')
-  answer?: string; 
+  answer?: string;
   // Indicates if this message concludes the agent's turn (set if action is 'final')
-  isFinalAnswer: boolean; 
+  isFinalAnswer: boolean;
   // Reasoning summary from the model
   reasoning?: string[] | null;
-  // REMOVED steps?: Step[]; 
+  // REMOVED steps?: Step[];
 }
 
 // Represents the result of a tool execution
@@ -98,7 +99,7 @@ export interface ToolResultMessage extends BaseChatMessage {
     resultText: string;
     isError: boolean;
     // Add optional structured data field
-    resultData?: any; 
+    resultData?: any;
 }
 
 // Union type representing any possible chat message
@@ -129,7 +130,7 @@ export enum State {
 export interface Props {
   messages: ChatMessage[];
   onSendMessage: (text: string, imageInput?: ImageInputData) => void;
-  onPromptSelected: (promptType: string) => void; 
+  onPromptSelected: (promptType: string) => void;
   state: State;
   isTextInputEmpty: boolean;
   imageInput?: ImageInputData;
@@ -139,6 +140,7 @@ export interface Props {
   modelOptions?: Array<{value: string, label: string}>;
   selectedModel?: string;
   onModelChanged?: (model: string) => void;
+  onModelSelectorFocus?: () => void;
   selectedAgentType?: string | null;
   isModelSelectorDisabled?: boolean;
   // Add API key related properties
@@ -158,7 +160,7 @@ export class ChatView extends HTMLElement {
   #imageInput?: ImageInputData;
   #onSendMessage?: (text: string, imageInput?: ImageInputData) => void;
   #onImageInputClear?: () => void;
-  #onPromptSelected?: (promptType: string) => void; 
+  #onPromptSelected?: (promptType: string) => void;
   #textInputElement?: HTMLTextAreaElement;
   #markdownRenderer = new MarkdownRenderer();
   #isFirstMessageView = true; // Track if we're in the centered first-message view
@@ -168,9 +170,10 @@ export class ChatView extends HTMLElement {
   #modelOptions?: Array<{value: string, label: string}>;
   #selectedModel?: string;
   #onModelChanged?: (model: string) => void;
+  #onModelSelectorFocus?: () => void;
   #selectedAgentType?: string | null;
   #isModelSelectorDisabled = false;
-  
+
   // Add scroll-related properties
   #messagesContainerElement?: HTMLElement;
   #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
@@ -184,18 +187,18 @@ export class ChatView extends HTMLElement {
     const sheet = new CSSStyleSheet();
     sheet.replaceSync(chatViewStyles);
     this.#shadow.adoptedStyleSheets = [sheet];
-    
+
     // Initialize the prompt button click handler
     this.#updatePromptButtonClickHandler();
-    
+
     // Observe the messages container for size changes if it exists
     if (this.#messagesContainerElement) {
       this.#messagesContainerResizeObserver.observe(this.#messagesContainerElement);
     }
-    
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
-  
+
   disconnectedCallback(): void {
     // Cleanup resize observer
     this.#messagesContainerResizeObserver.disconnect();
@@ -210,7 +213,7 @@ export class ChatView extends HTMLElement {
     this.#messagesContainerElement.scrollTop = this.#messagesContainerElement.scrollHeight;
   }
 
-  // Add method to handle resizing of messages container 
+  // Add method to handle resizing of messages container
   #handleMessagesContainerResize(): void {
     if (!this.#pinScrollToBottom) {
       return;
@@ -231,9 +234,9 @@ export class ChatView extends HTMLElement {
 
     const container = event.target as HTMLElement;
     const SCROLL_ROUNDING_OFFSET = 1; // Add small offset to handle rounding errors
-    
+
     // Consider "scrolled to bottom" if within 1px of the bottom
-    this.#pinScrollToBottom = 
+    this.#pinScrollToBottom =
       container.scrollTop + container.clientHeight + SCROLL_ROUNDING_OFFSET >= container.scrollHeight;
   };
 
@@ -243,7 +246,7 @@ export class ChatView extends HTMLElement {
     if (this.#messagesContainerElement) {
       this.#messagesContainerResizeObserver.unobserve(this.#messagesContainerElement);
     }
-    
+
     this.#messagesContainerElement = el as HTMLElement | undefined;
 
     if (el) {
@@ -261,13 +264,13 @@ export class ChatView extends HTMLElement {
       this,
       this.#textInputElement,
       this.#onPromptSelected,
-      (type: string) => { 
+      (type: string) => {
         this.#selectedPromptType = type;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
       }
     );
   }
-  
+
   // Public getter to expose the centered view state
   get isCenteredView(): boolean {
     return this.#isFirstMessageView;
@@ -288,28 +291,29 @@ export class ChatView extends HTMLElement {
     this.#modelOptions = data.modelOptions;
     this.#selectedModel = data.selectedModel;
     this.#onModelChanged = data.onModelChanged;
+    this.#onModelSelectorFocus = data.onModelSelectorFocus;
     this.#selectedAgentType = data.selectedAgentType;
     this.#isModelSelectorDisabled = data.isModelSelectorDisabled || false;
-    
+
     // Store input disabled state and placeholder
     this.#isInputDisabled = data.isInputDisabled || false;
     this.#inputPlaceholder = data.inputPlaceholder || 'Ask AI Assistant...';
-    
+
     // Update the selectedPromptType from the passed selectedAgentType if it exists
     if (data.selectedAgentType !== undefined) {
       this.#selectedPromptType = data.selectedAgentType;
     }
-    
+
     // Check if we should exit the first message view state
     // We're no longer in first message view if there are user messages
     const hasUserMessages = data.messages.some(msg => msg.entity === ChatMessageEntity.USER);
     this.#isFirstMessageView = !hasUserMessages;
-    
+
     // Update the prompt button handler with new props
     this.#updatePromptButtonClickHandler();
-    
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-    
+
     // After rendering, scroll to bottom if we have new messages and auto-scroll is enabled
     if (this.#pinScrollToBottom && willHaveMoreMessages) {
       // Give the DOM time to update before scrolling
@@ -329,10 +333,10 @@ export class ChatView extends HTMLElement {
 
     // Exit the first message view mode when sending a message
     this.#isFirstMessageView = false;
-    
+
     // Always scroll to bottom after sending message
     this.#pinScrollToBottom = true;
-    
+
     this.#onSendMessage(text, this.#imageInput);
     this.#textInputElement.value = '';
     this.#textInputElement.style.height = 'auto';
@@ -380,7 +384,7 @@ export class ChatView extends HTMLElement {
             const isRunningTool = modelMessage.action === 'tool' && !isCombined;
             const isFinal = modelMessage.action === 'final';
 
-            // --- Render Final Answer --- 
+            // --- Render Final Answer ---
             if (isFinal) {
               return html`
                 <div class="message model-message final">
@@ -391,7 +395,7 @@ export class ChatView extends HTMLElement {
                       ` :
                       Lit.nothing
                     }
-                    ${modelMessage.reasoning && modelMessage.reasoning.length ? html`
+                    ${modelMessage.reasoning?.length ? html`
                       <div class="reasoning-block">
                         <details class="reasoning-details">
                           <summary class="reasoning-summary">
@@ -460,7 +464,7 @@ export class ChatView extends HTMLElement {
                 <!-- Clickable Summary (Styled like Refine Box) -->
                 <summary class="tool-call-summary">
                   <!-- Icon -->
-                  <span class="${isRunningTool ? 'spinner-icon' : ''}">
+                  <span class=${isRunningTool ? 'spinner-icon' : ''}>
                     ${isRunningTool ? spinnerIcon : (isResultError ? errorIcon : checkIcon)}
                   </span>
                   
@@ -490,7 +494,7 @@ export class ChatView extends HTMLElement {
                     </div>
                   </div>
                   <!-- Reasoning Section (if available) -->
-                  ${modelMessage.reasoning && modelMessage.reasoning.length ? html`
+                  ${modelMessage.reasoning?.length ? html`
                     <div class="reasoning-block">
                       <details class="reasoning-details">
                         <summary class="reasoning-summary">
@@ -645,15 +649,15 @@ export class ChatView extends HTMLElement {
     }
 
     // Determine whether to show actions row (not in first message view, not loading, has a model answer)
-    const showActionsRow = !this.#isFirstMessageView && 
-                          this.#state !== State.LOADING && 
+    const showActionsRow = !this.#isFirstMessageView &&
+                          this.#state !== State.LOADING &&
                           lastModelAnswer !== null;
-                          
+
     // Determine which view to render based on the first message state
     if (this.#isFirstMessageView) {
       // Render centered first message view
       const welcomeMessage = this.#messages.length > 0 ? this.#messages[0] : null;
-      
+
       Lit.render(html`
         <div class="chat-view-container centered-view">
           <div class="centered-content">
@@ -845,16 +849,16 @@ export class ChatView extends HTMLElement {
       if (jsonString.trim().startsWith('{') || jsonString.trim().startsWith('[')) {
         const parsed = JSON.parse(jsonString);
         const formatted = JSON.stringify(parsed, null, 2);
-        
+
         // Replace keys, strings, and booleans with highlighted spans
         const highlighted = formatted
           .replace(/"([^"]+)":/g, '<span class="tool-result-json-key">"$1"</span>:')
           .replace(/"([^"]+)"/g, '<span class="tool-result-json-string">"$1"</span>')
           .replace(/\b(true|false)\b/g, '<span class="tool-result-json-boolean">$1</span>');
-        
+
         return html`<div .innerHTML=${highlighted}></div>`;
       }
-      
+
       // If not JSON or parsing fails, return as is
       return html`${jsonString}`;
     } catch (e) {
@@ -868,7 +872,7 @@ export class ChatView extends HTMLElement {
     if (!this.#modelOptions || !this.#modelOptions.length || !this.#selectedModel || !this.#onModelChanged) {
       return '';
     }
-    
+
     return html`
       <div class="model-selector">
         <select 
@@ -876,6 +880,7 @@ export class ChatView extends HTMLElement {
           .value=${this.#selectedModel}
           ?disabled=${this.#isModelSelectorDisabled} 
           @change=${this.#handleModelChange.bind(this)}
+          @focus=${this.#handleModelSelectorFocus.bind(this)}
         >
           ${this.#modelOptions.map(option => html`
             <option value=${option.value} ?selected=${option.value === this.#selectedModel}>${option.label}</option>
@@ -894,6 +899,12 @@ export class ChatView extends HTMLElement {
     const selectedValue = selectElement.value;
     if (this.#onModelChanged) {
       this.#onModelChanged(selectedValue);
+    }
+  }
+
+  #handleModelSelectorFocus(): void {
+    if (this.#onModelSelectorFocus) {
+      this.#onModelSelectorFocus();
     }
   }
 

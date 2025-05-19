@@ -284,7 +284,7 @@ export async function buildHierarchicalTree(
   const nodeMap = new Map<string, AccessibilityNode>();
   const iframeList: AccessibilityNode[] = [];
   // List to store identified scrollable container nodes
-  const scrollableNodesList: Array<{nodeId: string, backendDOMNodeId?: number, name?: string, role: string}> = [];
+  const scrollableNodesList: Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}> = [];
 
   // First pass: Create nodes that are meaningful
   // We only keep nodes that either have a name or children to avoid cluttering the tree
@@ -409,7 +409,7 @@ export async function getAccessibilityTree(
     const accessibilityNodes = nodes.map(
       (node: Protocol.Accessibility.AXNode): AccessibilityNode => {
         // Map CDP nodes to AccessibilityNode format
-        let roleValue =
+        const roleValue =
           node.role && typeof node.role === 'object' && 'value' in node.role
             ? node.role.value
             : '';
@@ -852,7 +852,7 @@ export async function performAction(
       } catch (e) {
         // If direct click fails, fall back to previous implementation
         console.warn(`Direct click failed, falling back to mouse events: ${e}`);
-        
+
         // Get element coordinates
         const nodeResponse = await domAgent.invoke_describeNode({ objectId });
         if (!nodeResponse.node.backendNodeId) {
@@ -1009,7 +1009,7 @@ export async function getVisibleAccessibilityTree(
 ): Promise<TreeResult> {
   const startTime = Date.now();
   // Use console.log for debug message
-  console.log('[DEBUG] Starting getVisibleAccessibilityTree...'); 
+  console.log('[DEBUG] Starting getVisibleAccessibilityTree...');
   try {
     // 1. Get the full accessibility tree data first
     const accessibilityAgent = target.accessibilityAgent();
@@ -1020,11 +1020,11 @@ export async function getVisibleAccessibilityTree(
       throw new Error('Full accessibility tree is empty.');
     }
 
-    // --- DEBUG LOG: Full Tree --- 
+    // --- DEBUG LOG: Full Tree ---
     try {
       const fullAccessibilityNodes = allCdpNodes.map(
         (node: Protocol.Accessibility.AXNode): AccessibilityNode => {
-          let roleValue = node.role && typeof node.role === 'object' && 'value' in node.role ? node.role.value : '';
+          const roleValue = node.role && typeof node.role === 'object' && 'value' in node.role ? node.role.value : '';
           const nameValue = node.name && typeof node.name === 'object' && 'value' in node.name ? node.name.value : undefined;
           const descriptionValue = node.description && typeof node.description === 'object' && 'value' in node.description ? node.description.value : undefined;
           const valueValue = node.value && typeof node.value === 'object' && 'value' in node.value ? node.value.value : undefined;
@@ -1032,7 +1032,7 @@ export async function getVisibleAccessibilityTree(
           const childIds = node.childIds;
           return {
             role: roleValue, name: nameValue, description: descriptionValue, value: valueValue,
-            nodeId: node.nodeId, backendDOMNodeId: backendNodeId, parentId: node.parentId, childIds: childIds,
+            nodeId: node.nodeId, backendDOMNodeId: backendNodeId, parentId: node.parentId, childIds,
           };
         }
       );
@@ -1043,8 +1043,8 @@ export async function getVisibleAccessibilityTree(
         // Keep using logger for actual errors/warnings
         logger({
             category: 'observation', // Change category? maybe 'warning' or keep 'observation'
-            message: 'Error generating full tree debug log', 
-            level: 2,  
+            message: 'Error generating full tree debug log',
+            level: 2,
             auxiliary: { error: { value: fullTreeError instanceof Error ? fullTreeError.message : String(fullTreeError), type: 'string'}}
         });
     }
@@ -1093,13 +1093,13 @@ export async function getVisibleAccessibilityTree(
     }
     // Use console.log for debug message
     console.log(`[DEBUG] Found ${relevantNodeIds.size} relevant nodeIds (visible + ancestors):`, Array.from(relevantNodeIds));
-    
+
     // 5. Filter the original CDP nodes and convert to AccessibilityNode format
     const relevantAccessibilityNodes = allCdpNodes
       .filter(node => relevantNodeIds.has(node.nodeId))
       .map((node: Protocol.Accessibility.AXNode): AccessibilityNode => {
          // Map CDP nodes to AccessibilityNode format (same as in getAccessibilityTree)
-         let roleValue =
+         const roleValue =
            node.role && typeof node.role === 'object' && 'value' in node.role
              ? node.role.value
              : '';
@@ -1138,7 +1138,7 @@ export async function getVisibleAccessibilityTree(
            backendDOMNodeId: backendNodeId,
            parentId: node.parentId,
            // Store original childIds, filter them later during tree build
-           childIds: childIds,
+           childIds,
          };
       });
 
@@ -1168,7 +1168,7 @@ export async function getVisibleAccessibilityTree(
          const child = relevantNodeMap.get(node.nodeId);
          // Ensure childIds are also filtered to only include relevant children
          if (parent && child) {
-           if (!parent.children) parent.children = [];
+           if (!parent.children) {parent.children = [];}
            // Check if child already added (safety)
            if (!parent.children.some(c => c.nodeId === child.nodeId)) {
               parent.children.push(child);
@@ -1190,13 +1190,11 @@ export async function getVisibleAccessibilityTree(
       .map(node => node.nodeId ? relevantNodeMap.get(node.nodeId) : undefined) // Get the node from the map (with children links)
       .filter((node): node is AccessibilityNode => node !== undefined);
 
-
     // 8. Clean the tree starting from the relevant roots
     const cleanedRootPromises = rootNodes.map(node =>
        cleanStructuralNodes(node, target, logger) // Keep logger for cleanStructuralNodes internal logs
     );
     const finalTree = (await Promise.all(cleanedRootPromises)).filter(Boolean) as AccessibilityNode[];
-
 
     // 9. Format Output
     // Explicitly use formatSimplifiedTree to create the string representation
@@ -1233,7 +1231,7 @@ export async function getVisibleAccessibilityTree(
           }
           const iframeAccessibilityNodes = iframeResponse.nodes.map((iframeNode: Protocol.Accessibility.AXNode): AccessibilityNode => {
              // Mapping logic... (same as before)
-            let roleValue =
+            const roleValue =
               iframeNode.role && typeof iframeNode.role === 'object' && 'value' in iframeNode.role
                 ? iframeNode.role.value
                 : '';
@@ -1295,8 +1293,7 @@ export async function getVisibleAccessibilityTree(
               role: node.role
             } : null;
         })
-        .filter(Boolean) as Array<{nodeId: string, backendDOMNodeId?: number, name?: string, role: string}>;
-
+        .filter(Boolean) as Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}>;
 
     logger({
       category: 'observation',
@@ -1339,7 +1336,7 @@ async function findElementsInViewport(
   target: SDK.Target.Target
 ): Promise<Set<number>> {
   const visibleNodeIds = new Set<number>();
-  
+
   try {
     // Inject and run the viewport detection code
     const runtimeAgent = target.runtimeAgent();
@@ -1393,34 +1390,34 @@ async function findElementsInViewport(
       `,
       returnByValue: false
     });
-    
+
     // If we got a valid result, process each element
     if (result.result && result.result.objectId) {
       const domAgent = target.domAgent();
-      
+
       // Get array length
       const lengthResult = await runtimeAgent.invoke_callFunctionOn({
         objectId: result.result.objectId,
-        functionDeclaration: `function() { return this.length; }`,
+        functionDeclaration: 'function() { return this.length; }',
         returnByValue: true
       });
-      
+
       const length = lengthResult.result?.value || 0;
-      
+
       // Process elements in batches to avoid overwhelming CDP
       const batchSize = 20;
       for (let i = 0; i < length; i += batchSize) {
         const batchPromises = [];
-        
+
         for (let j = 0; j < batchSize && i + j < length; j++) {
           // Get element at index
           const elementResult = await runtimeAgent.invoke_callFunctionOn({
             objectId: result.result.objectId,
-            functionDeclaration: `function(index) { return this[index]; }`,
+            functionDeclaration: 'function(index) { return this[index]; }',
             arguments: [{ value: i + j }],
             returnByValue: false
           });
-          
+
           if (elementResult.result?.objectId) {
             // Get node details
             const nodePromise = domAgent.invoke_describeNode({
@@ -1432,11 +1429,11 @@ async function findElementsInViewport(
             }).catch(() => {
               // Ignore errors for individual elements
             });
-            
+
             batchPromises.push(nodePromise);
           }
         }
-        
+
         // Wait for batch to complete
         await Promise.all(batchPromises);
       }
@@ -1444,6 +1441,6 @@ async function findElementsInViewport(
   } catch (error) {
     console.error('Error finding visible elements:', error);
   }
-  
+
   return visibleNodeIds;
 }

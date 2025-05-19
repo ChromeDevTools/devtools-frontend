@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { 
-  AgentToolConfig, 
-  ConfigurableAgentTool, 
-  ToolRegistry,
-  ConfigurableAgentArgs
-} from '../ConfigurableAgentTool.js';
-import { ChatMessage, ChatMessageEntity } from '../../ui/ChatView.js';
-import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool } from '../../tools/Tools.js';
 import { FetcherTool } from '../../tools/FetcherTool.js';
-import { SchemaBasedExtractorTool } from '../../tools/SchemaBasedExtractorTool.js';
 import { FinalizeWithCritiqueTool } from '../../tools/FinalizeWithCritiqueTool.js';
+import { SchemaBasedExtractorTool } from '../../tools/SchemaBasedExtractorTool.js';
+import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool } from '../../tools/Tools.js';
+import { AIChatPanel } from '../../ui/AIChatPanel.js';
+import { ChatMessageEntity, type ChatMessage } from '../../ui/ChatView.js';
+import {
+  ConfigurableAgentTool,
+  ToolRegistry, type AgentToolConfig, type ConfigurableAgentArgs
+} from '../ConfigurableAgentTool.js';
 
 /**
  * Initialize all configured agents
@@ -28,17 +27,17 @@ export function initializeConfiguredAgents(): void {
   ToolRegistry.registerToolFactory('perform_action', () => new PerformActionTool());
   ToolRegistry.registerToolFactory('get_page_content', () => new GetAccessibilityTreeTool());
   ToolRegistry.registerToolFactory('search_content', () => new SearchContentTool());
-  
+
   // Create and register Research Agent
   const researchAgentConfig = createResearchAgentConfig();
   const researchAgent = new ConfigurableAgentTool(researchAgentConfig);
   ToolRegistry.registerToolFactory('research_agent', () => researchAgent);
-  
+
   // Create and register Content Writer Agent
   const contentWriterAgentConfig = createContentWriterAgentConfig();
   const contentWriterAgent = new ConfigurableAgentTool(contentWriterAgentConfig);
   ToolRegistry.registerToolFactory('content_writer_agent', () => contentWriterAgent);
-  
+
   // Create and register Action Agent
   const actionAgentConfig = createActionAgentConfig();
   const actionAgent = new ConfigurableAgentTool(actionAgentConfig);
@@ -135,7 +134,7 @@ Maintain objectivity throughout your research process and clearly distinguish be
       'finalize_with_critique'
     ],
     maxIterations: 15,
-    modelName: 'o4-mini-2025-04-16',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0,
     schema: {
       type: 'object',
@@ -208,7 +207,7 @@ Your process should follow these steps:
 The final output should be in markdown format, and it should be lengthy and detailed. Aim for 5-10 pages of content, at least 1000 words.`,
     tools: [],
     maxIterations: 2,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.3,
     schema: {
       type: 'object',
@@ -234,7 +233,7 @@ The final output should be in markdown format, and it should be lengthy and deta
 function createActionAgentConfig(): AgentToolConfig {
   return {
     name: 'action_agent',
-    description: `Executes a single, low-level browser action (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. This tool is limited to one atomic action per invocation and is not suitable for multi-step or high-level goals. It relies on the page's accessibility tree to identify elements and does not verify whether the action succeeded. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.`,
+    description: 'Executes a single, low-level browser action (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. This tool is limited to one atomic action per invocation and is not suitable for multi-step or high-level goals. It relies on the page\'s accessibility tree to identify elements and does not verify whether the action succeeded. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.',
     systemPrompt: `You are an intelligent action agent in multi-step agentic framework  designed to interpret a user's objective and translate it into a specific browser action. Your task is to:
 
 1. Analyze the current page's accessibility tree to understand its structure
@@ -266,7 +265,7 @@ function createActionAgentConfig(): AgentToolConfig {
       'scroll_page',
     ],
     maxIterations: 10,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.5,
     schema: {
       type: 'object',
@@ -363,7 +362,7 @@ Remember that verification is time-sensitive - the page state might change durin
       'schema_based_extractor'
     ],
     maxIterations: 3,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.2,
     schema: {
       type: 'object',
@@ -444,7 +443,7 @@ When selecting an element to click, prioritize:
       'node_ids_to_urls',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.7,
     schema: {
       type: 'object',
@@ -524,7 +523,7 @@ When selecting a form field to fill, prioritize:
       'schema_based_extractor',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.7,
     schema: {
       type: 'object',
@@ -600,7 +599,7 @@ When selecting an element for keyboard input, prioritize:
       'schema_based_extractor',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.7,
     schema: {
       type: 'object',
@@ -685,7 +684,7 @@ When selecting an element to hover over, prioritize:
       'schema_based_extractor',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.7,
     schema: {
       type: 'object',
@@ -767,7 +766,7 @@ The accessibility tree includes information about scrollable containers. Look fo
       'schema_based_extractor',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.7,
     schema: {
       type: 'object',
@@ -904,7 +903,7 @@ Remember to adapt your analysis based on the product category - different attrib
       'get_page_content',
     ],
     maxIterations: 5,
-    modelName: 'gpt-4.1-mini-2025-04-14',
+    modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.2,
     schema: {
       type: 'object',

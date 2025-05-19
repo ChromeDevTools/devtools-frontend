@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import {
   type ChatMessage,
@@ -71,15 +71,24 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   /**
    * Initializes the agent with the given API key
    */
-  async initialize(apiKey: string, modelName?: string): Promise<void> {
+  async initialize(apiKey: string | null, modelName?: string): Promise<void> {
     try {
       this.#apiKey = apiKey;
 
+      if (!modelName) {
+        throw new Error('Model name is required for initialization');
+      }
+
+      // Will throw error if OpenAI model is used without API key
       this.#graph = createAgentGraph(apiKey, modelName);
 
       this.#isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize agent:', error);
+      // Check if it's a specific API key error
+      if (error instanceof Error && error.message === 'OpenAI API key is required for OpenAI models') {
+        throw new Error('OpenAI API key is required for this model');
+      }
       throw new Error(i18nString(UIStrings.agentInitFailed));
     }
   }
@@ -119,10 +128,10 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
 
     // Create a user message
     const userMessage = createUserMessage(text, imageInput);
-    
+
     // Add it to our message history
     this.#state.messages.push(userMessage);
-    
+
     // Notify listeners of message update
     this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
 
@@ -142,12 +151,12 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
 
       // Run the agent graph on the state
       this.#runningGraphStatePromise = this.#graph?.invoke(state);
-      
+
       // Wait for the result
       if (!this.#runningGraphStatePromise) {
         throw new Error('Agent graph not initialized. Please try again.');
       }
-      
+
       // Iterate through the generator and update UI after each step
       for await (const currentState of this.#runningGraphStatePromise) {
         // Update our messages with the messages from the current step
@@ -156,19 +165,19 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         // Notify listeners of message update immediately
         this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
       }
-      
+
       // Check if the last message is an error (it might have been added in the loop)
       const finalMessage = this.#state.messages[this.#state.messages.length - 1];
       if (!finalMessage) {
           throw new Error('No state returned from agent. Please try again.');
       }
-      
+
       // Return the most recent message (could be final answer, tool call, or error)
       return finalMessage;
-      
+
     } catch (error) {
       console.error('Error running agent:', error);
-      
+
       // Create an error message from the model
       const errorMessage: ModelChatMessage = {
         entity: ChatMessageEntity.MODEL,
@@ -177,13 +186,13 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
         isFinalAnswer: true,
         error: error instanceof Error ? error.message : String(error),
       };
-      
+
       // Add it to our message history
       this.#state.messages.push(errorMessage);
-      
+
       // Notify listeners of message update
       this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
-      
+
       return errorMessage;
     }
   }
@@ -270,20 +279,12 @@ const UIStrings = {
    */
   welcomeMessage: 'Hello! I\'m your AI assistant. How can I help you today?',
   /**
-   * @description Error message when the API key is not set
-   */
-  apiKeyNotSet: 'API key not set. Please set an API key in settings.',
-  /**
    * @description Error message when the agent fails to initialize
    */
   agentInitFailed: 'Failed to initialize agent.',
-  /**
-   * @description Error message when the agent fails to process a message
-   */
-  messageProcessFailed: 'Sorry, I encountered an error processing your message. Please try again.',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/AgentService.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/core/AgentService.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // Register as a module

@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { Tool, ErrorResult } from './Tools.js';
 import { AgentService } from '../core/AgentService.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
-import { GetAccessibilityTreeTool } from './Tools.js';
+import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
+
+import { GetAccessibilityTreeTool, type Tool, type ErrorResult } from './Tools.js';
 
 export interface FullPageAccessibilityTreeToMarkdownResult {
   success: boolean;
@@ -47,27 +48,27 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     if (!apiKey) {
       return { error: 'API key not configured.' };
     }
-    const modelName = 'gpt-4.1-nano-2025-04-14';
+    const modelName = AIChatPanel.getNanoModel();
 
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 
     try {
-      const openAIResponse = await OpenAIClient.callOpenAI(
+      const response = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         prompt,
         { systemPrompt: this.getSystemPrompt() }
       );
-      if (openAIResponse.text) {
+      if (response) {
         return {
           success: true,
-          markdown: openAIResponse.text,
+          markdown: response,
           treeLength: accessibilityTreeString.length,
           truncated: false,
           metadata: treeResult.iframes && treeResult.iframes.length > 0 ? { title: 'Contains iframes', url: '' } : undefined,
         };
       }
-      return { error: 'No Markdown response from OpenAI.' };
+      return { error: 'No Markdown response from LLM.' };
     } catch (err) {
       return { error: err instanceof Error ? err.message : String(err) };
     }

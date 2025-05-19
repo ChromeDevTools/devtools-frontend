@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { type Tool } from './Tools.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
 import { AgentService } from '../core/AgentService.js';
+import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
+
+import type { Tool } from './Tools.js';
 
 /**
  * Arguments for the CritiqueTool
@@ -39,8 +41,8 @@ interface EvaluationCriteria {
 
 /**
  * Agent that evaluates if a planning agent's response satisfies the user's requirements.
- * 
- * This agent compares user input against a planning response to determine if 
+ *
+ * This agent compares user input against a planning response to determine if
  * all requirements are met, and provides constructive feedback if not.
  */
 export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> {
@@ -94,7 +96,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
 
     try {
       console.log('[CritiqueTool] Evaluating planning response against user requirements.');
-      
+
       // First, extract requirements from user input
       const requirementsResult = await this.extractRequirements(userInput, apiKey);
       if (!requirementsResult.success) {
@@ -103,8 +105,8 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
 
       // Then evaluate the planning response against the requirements
       const evaluationResult = await this.evaluateResponse(
-        userInput, 
-        finalResponse, 
+        userInput,
+        finalResponse,
         requirementsResult.requirements,
         apiKey
       );
@@ -114,16 +116,16 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
       }
 
       const criteria = evaluationResult.criteria;
-      
+
       // Generate feedback only if criteria not satisfied
       let feedback = undefined;
       if (!criteria.satisfiesCriteria) {
         feedback = await this.generateFeedback(criteria, userInput, finalResponse, apiKey);
       }
 
-      console.log('[CritiqueTool] Evaluation complete:', 
+      console.log('[CritiqueTool] Evaluation complete:',
         criteria.satisfiesCriteria ? 'Requirements satisfied' : 'Requirements not satisfied');
-      
+
       return {
         satisfiesCriteria: criteria.satisfiesCriteria,
         feedback,
@@ -158,20 +160,20 @@ Return a JSON array of requirement statements. Example format:
 ["Requirement 1", "Requirement 2", ...]`;
 
     try {
-      const modelName = 'gpt-4.1-mini-2025-04-14';
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getMiniModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         userPrompt,
         { systemPrompt, temperature: 0.1 }
       );
 
-      if (!response.text) {
+      if (!response) {
         return { success: false, requirements: [], error: 'No response received' };
       }
 
       // Parse the JSON array from the response
-      const requirementsMatch = response.text.match(/\[(.*)\]/s);
+      const requirementsMatch = response.match(/\[(.*)\]/s);
       if (!requirementsMatch) {
         return { success: false, requirements: [], error: 'Failed to parse requirements' };
       }
@@ -188,8 +190,8 @@ Return a JSON array of requirement statements. Example format:
    * Evaluate planning response against requirements
    */
   private async evaluateResponse(
-    userInput: string, 
-    finalResponse: string, 
+    userInput: string,
+    finalResponse: string,
     requirements: string[],
     apiKey: string
   ): Promise<{success: boolean, criteria?: EvaluationCriteria, error?: string}> {
@@ -246,20 +248,20 @@ Return a JSON object evaluating the plan against the requirements using this sch
 ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
-      const modelName = 'gpt-4.1-mini-2025-04-14';
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getMiniModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         userPrompt,
         { systemPrompt, temperature: 0.1 }
       );
 
-      if (!response.text) {
+      if (!response) {
         return { success: false, error: 'No response received' };
       }
 
       // Extract JSON object from the response
-      const jsonMatch = response.text.match(/\{[\s\S]*\}/);
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return { success: false, error: 'Failed to parse evaluation criteria' };
       }
@@ -301,18 +303,18 @@ Provide clear, actionable feedback focused on helping improve the final response
 Be concise, specific, and constructive.`;
 
     try {
-      const modelName = 'gpt-4.1-mini-2025-04-14';
-      const response = await OpenAIClient.callOpenAI(
+      const modelName = AIChatPanel.getMiniModel();
+      const response = await UnifiedLLMClient.callLLM(
         apiKey,
         modelName,
         userPrompt,
         { systemPrompt, temperature: 0.7 }
       );
 
-      return response.text || 'The plan does not meet all requirements, but no specific feedback could be generated.';
+      return response || 'The plan does not meet all requirements, but no specific feedback could be generated.';
     } catch (error: any) {
       console.error('[CritiqueTool] Error generating feedback:', error);
       return 'Failed to generate detailed feedback, but the plan does not meet all requirements.';
     }
   }
-} 
+}

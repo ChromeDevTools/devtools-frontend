@@ -6,7 +6,7 @@
  * Types for OpenAI API request and response
  */
 export interface OpenAICallOptions {
-  tools?: Array<any>;
+  tools?: any[];
   tool_choice?: any;
   systemPrompt?: string;
   temperature?: number;
@@ -16,23 +16,23 @@ export interface OpenAICallOptions {
 export interface OpenAIResponse {
   text?: string;
   functionCall?: {
-    name: string;
-    arguments: any;
+    name: string,
+    arguments: any,
   };
   rawResponse: any;
   reasoning?: {
-    summary?: string[] | null;
-    effort?: string;
+    summary?: string[] | null,
+    effort?: string,
   };
 }
 
 /**
  * Standardized structure for parsed LLM action
  */
-export type ParsedLLMAction = 
-  | { type: 'tool_call'; name: string; args: Record<string, unknown> }
-  | { type: 'final_answer'; answer: string }
-  | { type: 'error'; error: string };
+export type ParsedLLMAction =
+  | { type: 'tool_call', name: string, args: Record<string, unknown> }
+  | { type: 'final_answer', answer: string }
+  | { type: 'error', error: string };
 
 /**
  * Enum to distinguish between model families with different request/response formats
@@ -61,19 +61,19 @@ export class OpenAIClient {
   /**
    * Call the OpenAI API with the provided parameters
    */
-  public static async callOpenAI(
+  static async callOpenAI(
     apiKey: string,
     modelName: string,
     prompt: string,
     options?: OpenAICallOptions
   ): Promise<OpenAIResponse> {
-    console.log("OpenAIClient: Calling OpenAI...");
-    console.log("Model:", modelName);
-    console.log("Prompt:", prompt);
+    console.log('OpenAIClient: Calling OpenAI...');
+    console.log('Model:', modelName);
+    console.log('Prompt:', prompt);
 
     // Determine model family
     const modelFamily = this.getModelFamily(modelName);
-    console.log("Model Family:", modelFamily);
+    console.log('Model Family:', modelFamily);
 
     // Construct payload body based on model family
     const payloadBody: any = {
@@ -88,14 +88,14 @@ export class OpenAIClient {
       if (options?.systemPrompt) {
         messages.push({
           role: 'system',
-          content: [{ type: "input_text", text: options.systemPrompt }]
+          content: [{ type: 'input_text', text: options.systemPrompt }]
         });
       }
 
       // Add user message
       messages.push({
         role: 'user',
-        content: [{ type: "input_text", text: prompt }]
+        content: [{ type: 'input_text', text: prompt }]
       });
 
       payloadBody.input = messages;
@@ -141,7 +141,7 @@ export class OpenAIClient {
       };
     }
 
-    console.log("Request payload:", payloadBody);
+    console.log('Request payload:', payloadBody);
 
     try {
       const response = await fetch('https://api.openai.com/v1/responses', {
@@ -160,10 +160,10 @@ export class OpenAIClient {
       }
 
       const data = await response.json();
-      console.log("OpenAI Response:", data);
+      console.log('OpenAI Response:', data);
 
       if (data.usage) {
-        console.log("OpenAI Usage: Input tokens:", data.usage.input_tokens, "Output tokens:", data.usage.output_tokens);
+        console.log('OpenAI Usage: Input tokens:', data.usage.input_tokens, 'Output tokens:', data.usage.output_tokens);
       }
 
       // Process the response based on model family
@@ -179,14 +179,14 @@ export class OpenAIClient {
         };
       }
 
-      if (!data || !data.output) {
-        throw new Error("No output from OpenAI");
+      if (!data?.output) {
+        throw new Error('No output from OpenAI');
       }
 
       if (data.output && data.output.length > 0) {
         // Find function call or message by type instead of assuming position
-        const functionCallOutput = data.output.find((item: any) => item.type === "function_call");
-        const messageOutput = data.output.find((item: any) => item.type === "message");
+        const functionCallOutput = data.output.find((item: any) => item.type === 'function_call');
+        const messageOutput = data.output.find((item: any) => item.type === 'message');
 
         if (functionCallOutput) {
           // Process function call
@@ -196,14 +196,14 @@ export class OpenAIClient {
               arguments: JSON.parse(functionCallOutput.arguments)
             };
           } catch (error) {
-            console.error("Error parsing function arguments:", error);
+            console.error('Error parsing function arguments:', error);
             result.functionCall = {
               name: functionCallOutput.name,
               arguments: functionCallOutput.arguments // Keep as string if parsing fails
             };
           }
         }
-        else if (messageOutput && messageOutput.content && messageOutput.content.length > 0 && messageOutput.content[0].type === "output_text") {
+        else if (messageOutput?.content && messageOutput.content.length > 0 && messageOutput.content[0].type === 'output_text') {
           // Process text response
           result.text = messageOutput.content[0].text.trim();
         }
@@ -211,7 +211,7 @@ export class OpenAIClient {
 
       return result;
     } catch (error) {
-      console.error("OpenAI API request failed:", error);
+      console.error('OpenAI API request failed:', error);
       throw error;
     }
   }
@@ -219,14 +219,14 @@ export class OpenAIClient {
   /**
    * Parses the raw OpenAI response into a standardized action structure
    */
-  public static parseOpenAIResponse(response: OpenAIResponse): ParsedLLMAction {
+  static parseOpenAIResponse(response: OpenAIResponse): ParsedLLMAction {
     if (response.functionCall) {
       return {
         type: 'tool_call',
         name: response.functionCall.name,
         args: response.functionCall.arguments || {},
       };
-    } else if (response.text) {
+    } if (response.text) {
       const rawContent = response.text;
       // Attempt to parse text as JSON tool call (fallback for some models)
       if (rawContent.trim().startsWith('{') && rawContent.includes('"action":"tool"')) { // Heuristic
@@ -238,10 +238,10 @@ export class OpenAIClient {
               name: contentJson.toolName,
               args: contentJson.toolArgs || {},
             };
-          } else {
+          }
             // Fallback to treating it as text if JSON structure is not a valid tool call
             return { type: 'final_answer', answer: rawContent };
-          }
+
         } catch (e) {
           // If JSON parsing fails, treat it as plain text
           return { type: 'final_answer', answer: rawContent };
@@ -256,4 +256,4 @@ export class OpenAIClient {
       return { type: 'error', error: 'LLM returned empty response.' };
     }
   }
-} 
+}

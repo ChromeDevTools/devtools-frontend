@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { type Tool } from './Tools.js';
-import { CritiqueTool} from './CritiqueTool.js';
 import { AgentService } from '../core/AgentService.js';
 import { ChatMessageEntity } from '../ui/ChatView.js';
+
+import { CritiqueTool} from './CritiqueTool.js';
+import type { Tool } from './Tools.js';
 
 /**
  * Arguments for the FinalizeWithCritiqueTool
@@ -24,7 +25,7 @@ export interface FinalizeWithCritiqueResult {
   answer?: string;
   feedback?: string;
   error?: string;
-  resultData?: { accepted: boolean; answer?: string; feedback?: string };
+  resultData?: { accepted: boolean, answer?: string, feedback?: string };
 }
 
 /**
@@ -78,7 +79,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
       const state = agentService.getState();
       const apiKey = agentService.getApiKey();
 
-      if (!state || !state.messages || state.messages.length === 0) {
+      if (!state?.messages || state.messages.length === 0) {
         throw new Error('Invalid state or empty message history');
       }
 
@@ -97,7 +98,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
 
       // Find the last user message
       const userMessage = findLastMessage<{ text: string }>(state.messages, ChatMessageEntity.USER);
-      if (!userMessage || !userMessage.text) {
+      if (!userMessage?.text) {
         throw new Error('Could not find user message to critique against');
       }
 
@@ -106,7 +107,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
       const critiqueResult = await critiqueTool.execute({
         userInput: userMessage.text,
         finalResponse: args.answer,
-        reasoning: "Validating if the response meets all user requirements"
+        reasoning: 'Validating if the response meets all user requirements'
       });
 
       console.log('[FinalizeWithCritiqueTool] Critique result:', critiqueResult);
@@ -160,4 +161,4 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
       return result;
     }
   }
-} 
+}

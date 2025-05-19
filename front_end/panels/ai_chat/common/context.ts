@@ -39,7 +39,7 @@ export interface TreeResult {
   tree: AccessibilityNode[];
   simplified: string;
   iframes: IFrameAccessibilityNode[];
-  scrollableContainerNodes: Array<{nodeId: string, backendDOMNodeId?: number, name?: string, role: string}>;
+  scrollableContainerNodes: Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}>;
 }
 
 export interface EnhancedContext extends SDK.Target.Target {

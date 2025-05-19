@@ -44,16 +44,16 @@ let releaseNote: ReleaseNote = {
   header: 'What\'s new in DevTools 137',
   markdownLinks: [
     {
+      key: 'ai-styling',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-styling',
+    },
+    {
       key: 'ai-annotations',
       link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-annotations',
     },
     {
       key: 'ai-insights',
       link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-insights',
-    },
-    {
-      key: 'new-perf-insights',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#new-perf-insights',
     },
   ],
   videoLinks: [

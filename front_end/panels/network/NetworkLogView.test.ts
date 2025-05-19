@@ -657,6 +657,54 @@ describeWithMockConnection('NetworkLogView', () => {
     ]);
   });
 
+  function createRequestsWithAndWithoutTestHeader() {
+    const urlWithTestHeader = urlString`https://example.com/request-with-test-header`;
+    const urlWithoutTestHeader = urlString`https://example.com/request-without-test-header`;
+
+    const requestWithHeader = createNetworkRequest(urlWithTestHeader, {target});
+    const requestWithoutHeader = createNetworkRequest(urlWithoutTestHeader, {target});
+
+    requestWithHeader.requestHeaders = () => [{name: 'Accept-Language', value: 'US'}];
+    requestWithoutHeader.requestHeaders = () => [{name: 'Cache-Control', value: 'public'}];
+
+    return {
+      urlWithTestHeader,
+      urlWithoutTestHeader,
+    };
+  }
+
+  it('filters requests with has-request-header', async () => {
+    const {urlWithTestHeader} = createRequestsWithAndWithoutTestHeader();
+
+    const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+    networkLogView = createNetworkLogView(filterBar);
+    networkLogView.setTextFilterValue('has-request-header:Accept-Language');
+
+    networkLogView.markAsRoot();
+    networkLogView.show(document.body);
+
+    const rootNode = networkLogView.columns().dataGrid().rootNode();
+    const visibleUrls = rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url());
+
+    assert.deepEqual(visibleUrls, [urlWithTestHeader]);
+  });
+
+  it('does not match any request if header name is not present', async () => {
+    createRequestsWithAndWithoutTestHeader();
+
+    const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+    networkLogView = createNetworkLogView(filterBar);
+    networkLogView.setTextFilterValue('has-request-header:Nonexistent-Header');
+
+    networkLogView.markAsRoot();
+    networkLogView.show(document.body);
+
+    const rootNode = networkLogView.columns().dataGrid().rootNode();
+    const visibleUrls = rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url());
+
+    assert.deepEqual(visibleUrls, []);
+  });
+
   it('filters localized resource categories', async () => {
     // "simulate" other locale by stubbing out resource categories with a different text
     sinon.stub(Common.ResourceType.resourceCategories.Document, 'title')

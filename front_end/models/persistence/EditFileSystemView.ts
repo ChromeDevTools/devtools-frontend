@@ -135,8 +135,8 @@ export class EditFileSystemView extends UI.Widget.VBox {
   #excludedFolderPaths: PathWithStatus[] = [];
   readonly #view: View;
 
-  constructor(view: View = DEFAULT_VIEW) {
-    super();
+  constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
+    super(undefined, undefined, element);
     this.#view = view;
   }
 

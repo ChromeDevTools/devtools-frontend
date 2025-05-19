@@ -129,7 +129,7 @@ const createSettingSelect = function(
 };
 
 export const bindToSetting =
-    (setting: string|Common.Settings.Setting<boolean|string>,
+    (setting: string|Common.Settings.Setting<boolean|string>|Common.Settings.RegExpSetting,
      stringValidator?: (newSettingValue: string) => boolean): ReturnType<typeof Directives.ref> => {
       if (typeof setting === 'string') {
         setting = Common.Settings.Settings.instance().moduleSetting(setting);
@@ -139,8 +139,8 @@ export const bindToSetting =
       // be able to remove it again.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let setValue: (value: any) => void;
-      function settingChanged(event: Common.EventTarget.EventTargetEvent<boolean|string>): void {
-        setValue(event.data);
+      function settingChanged(): void {
+        setValue((setting as Common.Settings.Setting<unknown>| Common.Settings.RegExpSetting).get());
       }
 
       if (setting.type() === Common.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === 'boolean') {
@@ -151,7 +151,28 @@ export const bindToSetting =
           }
 
           setting.addChangeListener(settingChanged);
-          setValue = bindCheckboxImpl(e as CheckboxLabel, setting.set.bind(setting));
+          setValue =
+              bindCheckboxImpl(e as CheckboxLabel, (setting as Common.Settings.Setting<boolean>).set.bind(setting));
+          setValue(setting.get());
+        });
+      }
+
+      if (setting.type() === Common.Settings.SettingType.REGEX || setting instanceof Common.Settings.RegExpSetting) {
+        return Directives.ref(e => {
+          if (e === undefined) {
+            setting.removeChangeListener(settingChanged);
+            return;
+          }
+
+          setting.addChangeListener(settingChanged);
+          setValue = bindInput(e as HTMLInputElement, setting.set.bind(setting), (value: string) => {
+            try {
+              new RegExp(value);
+              return true;
+            } catch {
+              return false;
+            }
+          }, /* numeric */ false);
           setValue(setting.get());
         });
       }

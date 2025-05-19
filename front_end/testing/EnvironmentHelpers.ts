@@ -444,6 +444,11 @@ export function createFakeSetting<T>(name: string, defaultValue: T): Common.Sett
   return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 
+export function createFakeRegExpSetting(name: string, defaultValue: string): Common.Settings.RegExpSetting {
+  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
+  return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
+}
+
 export function enableFeatureForTest(feature: string): void {
   Root.Runtime.experiments.enableForTest(feature);
 }

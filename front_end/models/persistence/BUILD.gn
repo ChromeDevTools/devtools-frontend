@@ -106,6 +106,7 @@ ts_library("unittests") {
     "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",
     "PlatformFileSystem.test.ts",
+    "WorkspaceSettingsTab.test.ts",
   ]
 
   deps = [

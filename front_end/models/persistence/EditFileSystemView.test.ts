@@ -59,7 +59,7 @@ describeWithEnvironment('EditFileSystemView view', () => {
 describeWithEnvironment('EditFileSystemView widget', () => {
   async function setup(initialExcludedFolders: Set<string>) {
     const view = createViewFunctionStub(EditFileSystemView);
-    const widget = new EditFileSystemView(view);
+    const widget = new EditFileSystemView(undefined, view);
     const fileSystem = sinon.createStubInstance(Persistence.IsolatedFileSystem.IsolatedFileSystem);
     fileSystem.path.returns(urlString`file:///home/user`);
     fileSystem.excludedFolders.returns(initialExcludedFolders as Set<Platform.DevToolsPath.EncodedPathString>);

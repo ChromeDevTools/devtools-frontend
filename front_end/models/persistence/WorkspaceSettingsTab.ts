@@ -141,7 +141,8 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     fileSystemExcludeCard.heading = filename;
     fileSystemExcludeCard.append(folderIcon, removeButton, mappingViewContainer);
     this.containerElement.insertBefore(fileSystemExcludeCard, this.#addButtonContainer);
-    const mappingView = new EditFileSystemView(fileSystem.path());
+    const mappingView = new EditFileSystemView();
+    mappingView.fileSystem = fileSystem;
     this.mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
 

@@ -11,7 +11,6 @@ import argparse
 import enum
 import json
 import os
-import shutil
 import subprocess
 import sys
 
@@ -101,11 +100,22 @@ def sync_node(options):
 
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
-        from_path = os.path.normpath(from_path)
-        to_path = os.path.normpath(to_path)
-        print('%s => %s' % (from_path, to_path))
-        shutil.copy(os.path.join(options.chromium_dir, from_path),
-                    os.path.join(options.devtools_dir, to_path))
+        from_path_full = os.path.join(options.chromium_dir, os.path.normpath(from_path))
+        to_path_full = os.path.join(options.devtools_dir, os.path.normpath(to_path))
+        print(f'{os.path.normpath(from_path)} => {os.path.normpath(to_path)}')
+
+        # Create destination directory if it doesn't exist
+        os.makedirs(os.path.dirname(to_path_full), exist_ok=True)
+
+        with open(from_path_full, 'r', encoding='utf-8') as infile:
+            content = infile.read()
+
+        # Replace IFTTT tags with skipped versions.
+        content = content.replace('LINT.IfChange', 'LINT_SKIP.IfChange')
+        content = content.replace('LINT.ThenChange', 'LINT_SKIP.ThenChange')
+
+        with open(to_path_full, 'w', encoding='utf-8') as outfile:
+            outfile.write(content)
 
 
 def generate_signatures(options):

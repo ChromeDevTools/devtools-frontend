@@ -2928,7 +2928,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.7.2';
+  const packageVersion = '24.8.2';
 
   /**
    * @license
@@ -22336,6 +22336,19 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       }
       return page;
     }
+    async installExtension(path) {
+      const {
+        id
+      } = await _classPrivateFieldGet(_connection4, this).send('Extensions.loadUnpacked', {
+        path
+      });
+      return id;
+    }
+    uninstallExtension(id) {
+      return _classPrivateFieldGet(_connection4, this).send('Extensions.uninstall', {
+        id
+      });
+    }
     targets() {
       return Array.from(_classPrivateFieldGet(_targetManager3, this).getAvailableTargets().values()).filter(target => {
         return target._isTargetExposed() && target._initializedDeferred.value() === exports.InitializationStatus.SUCCESS;
@@ -24494,9 +24507,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '135.0.7049.114',
-    'chrome-headless-shell': '135.0.7049.114',
-    firefox: 'stable_137.0.2'
+    chrome: '136.0.7103.92',
+    'chrome-headless-shell': '136.0.7103.92',
+    firefox: 'stable_138.0.1'
   });
 
   /**

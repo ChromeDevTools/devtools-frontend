@@ -51,6 +51,8 @@ export declare class Browser extends EventEmitter<{
     removeIntercept(intercept: Bidi.Network.Intercept): Promise<void>;
     removePreloadScript(script: string): Promise<void>;
     createUserContext(): Promise<UserContext>;
+    installExtension(path: string): Promise<string>;
+    uninstallExtension(id: string): Promise<void>;
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=Browser.d.ts.map

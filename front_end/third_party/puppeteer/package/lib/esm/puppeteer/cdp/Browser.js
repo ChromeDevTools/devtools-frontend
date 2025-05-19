@@ -194,6 +194,13 @@ export class CdpBrowser extends BrowserBase {
         }
         return page;
     }
+    async installExtension(path) {
+        const { id } = await this.#connection.send('Extensions.loadUnpacked', { path });
+        return id;
+    }
+    uninstallExtension(id) {
+        return this.#connection.send('Extensions.uninstall', { id });
+    }
     targets() {
         return Array.from(this.#targetManager.getAvailableTargets().values()).filter(target => {
             return (target._isTargetExposed() &&

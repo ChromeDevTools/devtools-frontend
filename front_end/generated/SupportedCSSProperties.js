@@ -400,6 +400,7 @@ export const generatedProperties = [
    "caption-side",
    "caret-animation",
    "caret-color",
+   "caret-shape",
    "clear",
    "clip",
    "clip-path",
@@ -1602,6 +1603,16 @@ export const generatedProperties = [
    "currentcolor"
   ],
   "name": "caret-color"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "auto",
+   "bar",
+   "block",
+   "underscore"
+  ],
+  "name": "caret-shape"
  },
  {
   "keywords": [
@@ -3581,6 +3592,14 @@ export const generatedProperties = [
   "name": "row-gap"
  },
  {
+  "longhands": [
+   "row-rule-width",
+   "row-rule-style",
+   "row-rule-color"
+  ],
+  "name": "row-rule"
+ },
+ {
   "inherited": false,
   "keywords": [
    "none",
@@ -5077,6 +5096,14 @@ export const generatedPropertyValues = {
   "values": [
    "auto",
    "currentcolor"
+  ]
+ },
+ "caret-shape": {
+  "values": [
+   "auto",
+   "bar",
+   "block",
+   "underscore"
   ]
  },
  "clear": {

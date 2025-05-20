@@ -341,6 +341,7 @@
         "corner-shape",
         "currentcolor",
         "filter-data",
+        "gap-decorations",
         "has-transform",
         "inset",
         "layout",
@@ -2738,6 +2739,17 @@
       valid_for_highlight_legacy: true,
       invalidate: ["color"],
       includes_currentcolor: true,
+    },
+    {
+      name: "caret-shape",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      field_template: "keyword",
+      keywords: ["auto", "bar", "block", "underscore"],
+      default_value: "auto",
+      typedom_types: ["Keyword"],
+      invalidate: ["paint"],
+      runtime_flag: "CSSCaretShape",
     },
     {
       name: "clear",
@@ -6542,6 +6554,7 @@
       default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
       type_name: "GapDataList<StyleColor>",
       keywords: ["currentcolor"],
+      computed_style_custom_functions: ["setter"],
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
@@ -6558,6 +6571,7 @@
       default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
       type_name: "GapDataList<StyleColor>",
       keywords: ["currentcolor"],
+      computed_style_custom_functions: ["setter"],
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
@@ -6574,11 +6588,12 @@
         "none", "hidden", "inset", "groove", "outset", "ridge", "dotted",
         "dashed", "solid", "double"
       ],
+      computed_style_custom_functions: ["setter"],
       default_value: "GapDataList<EBorderStyle>::DefaultGapStyleDataList()",
       type_name: "GapDataList<EBorderStyle>",
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationStyleDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
     },
     {
       name: "row-rule-style",
@@ -6590,11 +6605,12 @@
         "none", "hidden", "inset", "groove", "outset", "ridge", "dotted",
         "dashed", "solid", "double"
       ],
+      computed_style_custom_functions: ["setter"],
       default_value: "GapDataList<EBorderStyle>::DefaultGapStyleDataList()",
       type_name: "GapDataList<EBorderStyle>",
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationStyleDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
       runtime_flag: "CSSGapDecoration",
     },
     {
@@ -8758,6 +8774,14 @@
         "column-rule-width", "column-rule-style", "column-rule-color"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+    },
+    {
+      name: "row-rule",
+      longhands: [
+        "row-rule-width", "row-rule-style", "row-rule-color"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSGapDecoration",
     },
     {
       name: "columns",

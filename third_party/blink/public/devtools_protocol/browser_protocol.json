@@ -18192,7 +18192,7 @@
                 },
                 {
                     "id": "PermissionsPolicyFeature",
-                    "description": "All Permissions Policy features. This enum should match the one defined\nin services/network/public/cpp/permissions_policy/permissions_policy_features.json5.\nLINT.IfChange(PermissionsPolicyFeature)",
+                    "description": "All Permissions Policy features. This enum should match the one defined\nin services/network/public/cpp/permissions_policy/permissions_policy_features.json5.\nLINT_SKIP.IfChange(PermissionsPolicyFeature)",
                     "experimental": true,
                     "type": "string",
                     "enum": [
@@ -28835,7 +28835,7 @@
                         },
                         {
                             "name": "type",
-                            "$ref": "CharacteristicOperationType"
+                            "$ref": "DescriptorOperationType"
                         },
                         {
                             "name": "data",

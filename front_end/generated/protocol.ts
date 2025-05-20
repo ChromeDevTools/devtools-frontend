@@ -12161,7 +12161,7 @@ export namespace Page {
   /**
    * All Permissions Policy features. This enum should match the one defined
    * in services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
-   * LINT.IfChange(PermissionsPolicyFeature)
+   * LINT_SKIP.IfChange(PermissionsPolicyFeature)
    */
   export const enum PermissionsPolicyFeature {
     Accelerometer = 'accelerometer',
@@ -18818,7 +18818,7 @@ export namespace BluetoothEmulation {
    */
   export interface DescriptorOperationReceivedEvent {
     descriptorId: string;
-    type: CharacteristicOperationType;
+    type: DescriptorOperationType;
     data?: binary;
   }
 }

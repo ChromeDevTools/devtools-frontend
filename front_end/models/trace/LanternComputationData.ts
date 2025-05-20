@@ -87,7 +87,7 @@ function findWorkerThreads(trace: Lantern.Types.Trace): Map<number, number[]> {
 function createLanternRequest(
     parsedTrace: Readonly<Handlers.Types.ParsedTrace>, workerThreads: Map<number, number[]>,
     request: Types.Events.SyntheticNetworkRequest): NetworkRequest|undefined {
-  if (request.args.data.connectionId === undefined || request.args.data.connectionReused === undefined) {
+  if (request.args.data.hasResponse && request.args.data.connectionId === undefined) {
     throw new Lantern.Core.LanternError('Trace is too old');
   }
 
@@ -166,8 +166,8 @@ function createLanternRequest(
   return {
     rawRequest: request,
     requestId: request.args.data.requestId,
-    connectionId: request.args.data.connectionId,
-    connectionReused: request.args.data.connectionReused,
+    connectionId: request.args.data.connectionId ?? 0,
+    connectionReused: request.args.data.connectionReused ?? false,
     url: request.args.data.url,
     protocol: request.args.data.protocol,
     parsedURL: createParsedUrl(url),

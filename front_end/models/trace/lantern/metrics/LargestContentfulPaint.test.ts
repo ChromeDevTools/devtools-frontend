@@ -30,11 +30,11 @@ describe('Metrics: Lantern LCP', function() {
           pessimisticNodeTimings: result.pessimisticEstimate.nodeTimings.size,
         },
         {
-          timing: 1536,
+          timing: 1457,
           optimistic: 1457,
-          pessimistic: 1616,
+          pessimistic: 1457,
           optimisticNodeTimings: 8,
-          pessimisticNodeTimings: 9,
+          pessimisticNodeTimings: 8,
         });
     assert.isOk(result.optimisticGraph, 'should have created optimistic graph');
     assert.isOk(result.pessimisticGraph, 'should have created pessimistic graph');

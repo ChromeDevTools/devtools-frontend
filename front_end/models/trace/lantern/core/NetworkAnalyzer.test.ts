@@ -161,8 +161,8 @@ describe('NetworkAnalyzer', () => {
       const requests = await createRequests(trace);
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(requests);
       const distinctConnections = Array.from(result.values()).filter(item => !item).length;
-      assert.strictEqual(result.size, 25);
-      assert.strictEqual(distinctConnections, 9);
+      assert.strictEqual(result.size, 24);
+      assert.strictEqual(distinctConnections, 8);
     });
   });
 

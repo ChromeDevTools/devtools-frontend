@@ -144,7 +144,7 @@ export class NetworkRequestDetails extends HTMLElement {
     this.#entityMapper = entityMapper;
     this.#serverTimings = null;
 
-    for (const header of networkRequest.args.data.responseHeaders) {
+    for (const header of networkRequest.args.data.responseHeaders ?? []) {
       const headerName = header.name.toLocaleLowerCase();
       // Some popular hosting providers like vercel or render get rid of
       // Server-Timing headers added by users, so as a workaround we

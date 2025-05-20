@@ -106,9 +106,9 @@ function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkReque
   }
 }
 
-function firstPositiveValueInList(entries: number[]): number {
+function firstPositiveValueInList(entries: Array<number|null>): number {
   for (const entry of entries) {
-    if (entry > 0) {
+    if (entry && entry > 0) {
       return entry;
     }
   }
@@ -204,7 +204,7 @@ export async function finalize(): Promise<void> {
   for (const [requestId, request] of requestMap.entries()) {
     // If we have an incomplete set of events here, we choose to drop the network
     // request rather than attempt to synthesize the missing data.
-    if (!request.sendRequests || !request.receiveResponse) {
+    if (!request.sendRequests) {
       continue;
     }
 
@@ -244,12 +244,20 @@ export async function finalize(): Promise<void> {
       });
     }
 
+    const firstSendRequest = request.sendRequests[0];
+    const finalSendRequest = request.sendRequests[request.sendRequests.length - 1];
+
+    // We currently do not want to include data URI requests. We may revisit this in the future.
+    if (finalSendRequest.args.data.url.startsWith('data:')) {
+      continue;
+    }
+
     // If a ResourceFinish event with an encoded data length is received,
     // then the resource was not cached; it was fetched before it was
     // requested, e.g. because it was pushed in this navigation.
     const isPushedResource = request.resourceFinish?.args.data.encodedDataLength !== 0;
     // This works around crbug.com/998397, which reports pushed resources, and resources served by a service worker as disk cached.
-    const isDiskCached = request.receiveResponse.args.data.fromCache &&
+    const isDiskCached = !!request.receiveResponse && request.receiveResponse.args.data.fromCache &&
         !request.receiveResponse.args.data.fromServiceWorker && !isPushedResource;
     // If the request contains a resourceMarkAsCached event, it was served from memory cache.
     // The timing data returned is from the original (uncached) request, which
@@ -265,14 +273,11 @@ export async function finalize(): Promise<void> {
     const isMemoryCached = request.resourceMarkAsCached !== undefined;
     // If a request has `resourceMarkAsCached` field, the `timing` field is not correct.
     // So let's discard it and override to 0 (which will be handled in later logic if timing field is undefined).
-    const timing = isMemoryCached ? undefined : request.receiveResponse.args.data.timing;
-    // If a non-cached request has no |timing| indicates data URLs, we ignore it.
-    if (!timing && !isMemoryCached) {
+    const timing = isMemoryCached ? undefined : request.receiveResponse?.args.data.timing;
+    // If a non-cached response has no |timing|, we ignore it. An example of this is chrome://new-page / about:blank.
+    if (request.receiveResponse && !timing && !isMemoryCached) {
       continue;
     }
-
-    const firstSendRequest = request.sendRequests[0];
-    const finalSendRequest = request.sendRequests[request.sendRequests.length - 1];
 
     const initialPriority = finalSendRequest.args.data.priority;
     let finalPriority = initialPriority;
@@ -343,13 +348,14 @@ export async function finalize(): Promise<void> {
     // Otherwise it is whichever positive number comes first from the following timing info:
     // DNS start, Connection start, Send Start, or the time duration between our start time and
     // receiving a response.
-    const stalled = timing ? Types.Timing.Micro(firstPositiveValueInList([
-      timing.dnsStart * MILLISECONDS_TO_MICROSECONDS,
-      timing.connectStart * MILLISECONDS_TO_MICROSECONDS,
-      timing.sendStart * MILLISECONDS_TO_MICROSECONDS,
-      (request.receiveResponse.ts - endRedirectTime),
-    ])) :
-                             Types.Timing.Micro(request.receiveResponse.ts - startTime);
+    const stalled = timing ?
+        Types.Timing.Micro(firstPositiveValueInList([
+          timing.dnsStart * MILLISECONDS_TO_MICROSECONDS,
+          timing.connectStart * MILLISECONDS_TO_MICROSECONDS,
+          timing.sendStart * MILLISECONDS_TO_MICROSECONDS,
+          request.receiveResponse ? (request.receiveResponse.ts - endRedirectTime) : null,
+        ])) :
+        (request.receiveResponse ? Types.Timing.Micro(request.receiveResponse.ts - startTime) : Types.Timing.Micro(0));
 
     // Sending HTTP request
     // =======================
@@ -373,8 +379,9 @@ export async function finalize(): Promise<void> {
         Types.Timing.Micro(
             timing.requestTime * SECONDS_TO_MICROSECONDS + timing.receiveHeadersEnd * MILLISECONDS_TO_MICROSECONDS) :
         startTime;
-    const download = timing ? Types.Timing.Micro(((finishTime || downloadStart) - downloadStart)) :
-                              Types.Timing.Micro(endTime - request.receiveResponse.ts);
+    const download = timing     ? Types.Timing.Micro(((finishTime || downloadStart) - downloadStart)) :
+        request.receiveResponse ? Types.Timing.Micro(endTime - request.receiveResponse.ts) :
+                                  Types.Timing.Micro(0);
 
     const totalTime = Types.Timing.Micro(networkDuration + processingDuration);
 
@@ -435,12 +442,12 @@ export async function finalize(): Promise<void> {
               decodedBodyLength,
               encodedDataLength,
               frame,
-              fromServiceWorker: request.receiveResponse.args.data.fromServiceWorker,
+              fromServiceWorker: request.receiveResponse?.args.data.fromServiceWorker,
               isLinkPreload: finalSendRequest.args.data.isLinkPreload || false,
-              mimeType: request.receiveResponse.args.data.mimeType,
+              mimeType: request.receiveResponse?.args.data.mimeType ?? '',
               priority: finalPriority,
               initialPriority,
-              protocol: request.receiveResponse.args.data.protocol ?? 'unknown',
+              protocol: request.receiveResponse?.args.data.protocol ?? 'unknown',
               redirects,
               // In the event the property isn't set, assume non-blocking.
               renderBlocking: renderBlocking ?? 'non_blocking',
@@ -448,8 +455,8 @@ export async function finalize(): Promise<void> {
               requestingFrameUrl,
               requestMethod: finalSendRequest.args.data.requestMethod,
               resourceType: finalSendRequest.args.data.resourceType ?? Protocol.Network.ResourceType.Other,
-              statusCode: request.receiveResponse.args.data.statusCode,
-              responseHeaders: request.receiveResponse.args.data.headers || [],
+              statusCode: request.receiveResponse?.args.data.statusCode ?? 0,
+              responseHeaders: request.receiveResponse?.args.data.headers ?? null,
               fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint ?? 'auto',
               initiator: finalSendRequest.args.data.initiator,
               stackTrace: finalSendRequest.args.data.stackTrace,
@@ -457,8 +464,9 @@ export async function finalize(): Promise<void> {
               url,
               failed: request.resourceFinish?.args.data.didFail ?? false,
               finished: Boolean(request.resourceFinish),
-              connectionId: request.receiveResponse.args.data.connectionId,
-              connectionReused: request.receiveResponse.args.data.connectionReused,
+              hasResponse: Boolean(request.receiveResponse),
+              connectionId: request.receiveResponse?.args.data.connectionId,
+              connectionReused: request.receiveResponse?.args.data.connectionReused,
             },
           },
           cat: 'loading',

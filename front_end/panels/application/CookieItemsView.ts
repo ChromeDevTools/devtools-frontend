@@ -158,7 +158,7 @@ class CookiePreviewWidget extends UI.Widget.VBox {
   }
 }
 
-export class CookieItemsView extends StorageItemsToolbar {
+export class CookieItemsView extends UI.Widget.VBox {
   private model: SDK.CookieModel.CookieModel;
   private cookieDomain: string;
   private cookiesTable: CookieTable.CookiesTable.CookiesTable;
@@ -170,6 +170,7 @@ export class CookieItemsView extends StorageItemsToolbar {
   private allCookies: SDK.Cookie.Cookie[];
   private shownCookies: SDK.Cookie.Cookie[];
   private selectedCookie: SDK.Cookie.Cookie|null;
+  #toolbar: StorageItemsToolbar;
   constructor(model: SDK.CookieModel.CookieModel, cookieDomain: string) {
     super();
     this.registerRequiredCSS(cookieItemsViewStyles);
@@ -179,6 +180,10 @@ export class CookieItemsView extends StorageItemsToolbar {
 
     this.model = model;
     this.cookieDomain = cookieDomain;
+
+    this.#toolbar = new StorageItemsToolbar();
+    this.#toolbar.element.classList.add('flex-none');
+    this.#toolbar.show(this.element);
 
     this.cookiesTable = new CookieTable.CookiesTable.CookiesTable(
         /* renderInline */ false, this.saveCookie.bind(this), this.refreshItems.bind(this),
@@ -207,7 +212,7 @@ export class CookieItemsView extends StorageItemsToolbar {
         i18nString(UIStrings.onlyShowCookiesWithAnIssue), i18nString(UIStrings.onlyShowCookiesWhichHaveAn), () => {
           this.updateWithCookies(this.allCookies);
         }, 'only-show-cookies-with-issues');
-    this.appendToolbarItem(this.onlyIssuesFilterUI);
+    this.#toolbar.appendToolbarItem(this.onlyIssuesFilterUI);
 
     this.allCookies = [];
     this.shownCookies = [];
@@ -215,9 +220,9 @@ export class CookieItemsView extends StorageItemsToolbar {
 
     this.setCookiesDomain(model, cookieDomain);
 
-    this.addEventListener(StorageItemsToolbar.Events.DELETE_SELECTED, this.deleteSelectedItem, this);
-    this.addEventListener(StorageItemsToolbar.Events.DELETE_ALL, this.deleteAllItems, this);
-    this.addEventListener(StorageItemsToolbar.Events.REFRESH, this.refreshItems, this);
+    this.#toolbar.addEventListener(StorageItemsToolbar.Events.DELETE_SELECTED, this.deleteSelectedItem, this);
+    this.#toolbar.addEventListener(StorageItemsToolbar.Events.DELETE_ALL, this.deleteAllItems, this);
+    this.#toolbar.addEventListener(StorageItemsToolbar.Events.REFRESH, this.refreshItems, this);
   }
 
   setCookiesDomain(model: SDK.CookieModel.CookieModel, domain: string): void {
@@ -250,7 +255,7 @@ export class CookieItemsView extends StorageItemsToolbar {
 
   private handleCookieSelected(): void {
     const cookie = this.cookiesTable.selectedCookie();
-    this.setCanDeleteSelected(Boolean(cookie));
+    this.#toolbar.setCanDeleteSelected(Boolean(cookie));
 
     this.showPreview(cookie);
   }
@@ -274,18 +279,18 @@ export class CookieItemsView extends StorageItemsToolbar {
     this.cookiesTable.setCookieDomain(host);
 
     this.shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
-    if (this.hasFilter()) {
-      this.setDeleteAllTitle(i18nString(UIStrings.clearFilteredCookies));
-      this.setDeleteAllGlyph('filter-clear');
+    if (this.#toolbar.hasFilter()) {
+      this.#toolbar.setDeleteAllTitle(i18nString(UIStrings.clearFilteredCookies));
+      this.#toolbar.setDeleteAllGlyph('filter-clear');
     } else {
-      this.setDeleteAllTitle(i18nString(UIStrings.clearAllCookies));
-      this.setDeleteAllGlyph('clear-list');
+      this.#toolbar.setDeleteAllTitle(i18nString(UIStrings.clearAllCookies));
+      this.#toolbar.setDeleteAllGlyph('clear-list');
     }
     this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
     UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this.shownCookies.length}));
-    this.setCanFilter(true);
-    this.setCanDeleteAll(this.shownCookies.length > 0);
-    this.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));
+    this.#toolbar.setCanFilter(true);
+    this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
+    this.#toolbar.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));
 
     if (!this.cookiesTable.selectedCookie()) {
       this.showPreview(null);
@@ -302,7 +307,7 @@ export class CookieItemsView extends StorageItemsToolbar {
       }
       return false;
     };
-    return items.filter(item => this.filterRegex?.test(keyFunction(item)) ?? true).filter(predicate);
+    return items.filter(item => this.#toolbar.filterRegex?.test(keyFunction(item)) ?? true).filter(predicate);
   }
 
   /**

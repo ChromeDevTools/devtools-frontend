@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import {
   dispatchClickEvent,
   getCleanTextContentFromElements,
@@ -121,7 +122,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
       disabledCondition: () => {
-        return {disabled: true, reasons: ['disabled for test']};
+        return {disabled: true, reasons: ['disabled for test' as Platform.UIString.LocalizedString]};
       },
     });
     component = new Explain.ConsoleInsight(

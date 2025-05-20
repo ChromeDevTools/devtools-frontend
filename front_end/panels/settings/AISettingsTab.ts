@@ -518,8 +518,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #getDisabledReasons(): string[] {
-    const reasons = [];
+  #getDisabledReasons(): Platform.UIString.LocalizedString[] {
+    const reasons: Platform.UIString.LocalizedString[] = [];
     if (Root.Runtime.hostConfig.isOffTheRecord) {
       reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
     }

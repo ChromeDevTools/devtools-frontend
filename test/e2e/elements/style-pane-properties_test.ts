@@ -179,10 +179,10 @@ describe('The Styles pane', () => {
     await hover('.hint-wrapper');
 
     const infobox = await waitFor(':popover-open');
-    const textContent: string = await infobox.evaluate(e => e.deepTextContent());
+    const textContent: string = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(
-        textContent.replaceAll(/\s+/g, ' ').trim(),
-        'The display: block property prevents grid-column-end from having an effect. Try setting display to something other than block.');
+        textContent,
+        'The display: block property prevents grid-column-end from having an effect.\nTry setting display to something other than block.');
     await expectVeEvents([veImpressionsUnder(
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: grid-column-end',
         [veImpression('Popover', 'elements.css-hint')])]);
@@ -205,7 +205,7 @@ describe('The Styles pane', () => {
     await hover('.exclamation-mark');
 
     const infobox = await waitFor(':popover-open');
-    const textContent: string = await infobox.evaluate(e => e.deepTextContent());
+    const textContent: string = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(
         textContent.replaceAll(/\s+/g, ' ').trim(),
         'Invalid property value, expected type "<color>" View registered property');
@@ -225,7 +225,7 @@ describe('The Styles pane', () => {
     await hover('.link-swatch-link', {root: testElementRule});
 
     const infobox = await waitFor('[aria-label="CSS property value: var(--title-color)"] :popover-open');
-    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), 'black');
     await expectVeEvents([veImpressionsUnder(
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value > Link: css-variable',
@@ -244,7 +244,7 @@ describe('The Styles pane', () => {
     await hover('aria/CSS property name: --color');
 
     const infobox = await waitFor('.tree-outline :popover-open');
-    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), 'red');
     await expectVeEvents([veImpressionsUnder(
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: custom-property > Key',
@@ -263,7 +263,7 @@ describe('The Styles pane', () => {
     await hover('devtools-color-mix-swatch');
 
     const infobox = await waitFor('[aria-label="CSS property value: color-mix(in srgb, red, blue)"] :popover-open');
-    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), '#800080');
     await expectVeEvents([veImpressionsUnder(
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
@@ -282,7 +282,7 @@ describe('The Styles pane', () => {
     await hover('text/1em', {root: await waitForAria('CSS property value: 1em')});
 
     const infobox = await waitFor('[aria-label="CSS property value: 1em"] :popover-open');
-    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    const textContent = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(textContent.trim(), '16px');
     await expectVeEvents([veImpressionsUnder(
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: width > Value',

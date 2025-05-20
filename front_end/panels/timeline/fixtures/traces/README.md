@@ -308,3 +308,7 @@ A trace generated from crrev.com/c/6197645 (January 2025), which changed the for
 ### web-dev-with-commit.json.gz
 
 The web-dev trace is old (recorded in 2021) and since its recording the events relating to frames have changed. In particular CompositeLayers was replaced by Commit, and frameSeqId was added to more events. This is a more recent (Nov 2023) trace that has the newer frame-related events in it. This was used when migrating the TimelineFrameModel to the new engine.
+
+### web-dev-with-timings.json.gz
+
+A trace of web.dev recorded in May 2025. Done because it contains performance timings marks and measures, which are useful and in this case used as a repro case for crbug.com/418223469.

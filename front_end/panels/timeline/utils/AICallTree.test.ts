@@ -34,6 +34,22 @@ describeWithEnvironment('AICallTree', () => {
     assert.isNull(Utils.AICallTree.AICallTree.fromEvent(shift, parsedTrace));
   });
 
+  it('does not build a call tree from a performance.mark', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-timings.json.gz');
+
+    const mark = parsedTrace.UserTimings.performanceMarks.at(0);
+    assert.isOk(mark);
+    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(mark, parsedTrace));
+  });
+
+  it('does not build a call tree from a performance.measure', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-timings.json.gz');
+
+    const measure = parsedTrace.UserTimings.performanceMeasures.at(0);
+    assert.isOk(measure);
+    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(measure, parsedTrace));
+  });
+
   it('supports NodeJS traces that do not have a "main thread"', async function() {
     // Bit of extra setup required: we need to mimic what the panel does where
     // it takes the CDP Profile and wraps it in fake trace events, before then

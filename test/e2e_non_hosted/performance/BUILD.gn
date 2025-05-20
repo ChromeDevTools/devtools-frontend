@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("performance") {
-  sources = [ "selector-stats-tracing_test.ts" ]
+  sources = [
+    "selector-stats-tracing_test.ts",
+    "wasm/performance_profiling_test.ts",
+  ]
   deps = [
     "../../e2e/helpers",
     "../shared",

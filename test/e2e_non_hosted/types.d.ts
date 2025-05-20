@@ -22,7 +22,7 @@ declare global {
     export interface TestFunction {
       (title: string, fn: E2E.TestAsyncCallbackWithState): void;
 
-      skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;
+      skipOnPlatforms: (platforms: Platform[], title: string, fn: E2E.TestAsyncCallbackWithState) => void;
     }
 
     export interface ExclusiveTestFunction {

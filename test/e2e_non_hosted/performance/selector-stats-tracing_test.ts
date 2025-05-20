@@ -48,7 +48,7 @@ describe('The Performance panel', () => {
        // Sort table by style sheet
        const styleSheetColumnHeader = await devToolsPage.waitFor('th.style_sheet_id-column');
        await styleSheetColumnHeader.click();
-       await devToolsPage.drainFrontendTaskQueue();
+       await devToolsPage.timeout(100);
 
        // Click on the first source link
        // await devToolsPage.scrollElementIntoView('devtools-linkifier');

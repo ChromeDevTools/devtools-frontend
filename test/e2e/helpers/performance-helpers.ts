@@ -4,14 +4,11 @@
 
 import type * as puppeteer from 'puppeteer-core';
 
-import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
   click,
-  drainFrontendTaskQueue,
-  summonSearchBox,
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
@@ -63,6 +60,7 @@ export async function navigateToPerformanceTab(
 
   // Make sure the landing page is shown.
   await devToolsPage.waitFor('.timeline-landing-page');
+  await devToolsPage.timeout(100);
   await expectVeEvents(
       [veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()], undefined,
       devToolsPage);
@@ -89,39 +87,36 @@ export async function openCaptureSettings(
       'Panel: timeline', devToolsPage);
 }
 
-export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
-  await waitFor('devtools-performance-timeline-summary');
-  await summonSearchBox();
-  // TODO: it should actually wait for rendering to finish.
-  await drainFrontendTaskQueue();
-  await waitFor('.search-bar');
-  // TODO: it should actually wait for rendering to finish.
-  await drainFrontendTaskQueue();
-  await frontend.keyboard.type(searchEntry);
-  await drainFrontendTaskQueue();
-  await frontend.keyboard.press('Tab');
-  // TODO: it should actually wait for rendering to finish.
-  await drainFrontendTaskQueue();
-  await drainFrontendTaskQueue();
-  await drainFrontendTaskQueue();
-  await expectVeEvents([
-    veKeyDown(''),
-    veImpressionsUnder('Panel: timeline', [veImpression(
-                                              'Toolbar', 'search',
-                                              [
-                                                veImpression('TextField', 'search'),
-                                                veImpression('Action', 'regular-expression'),
-                                                veImpression('Action', 'match-case'),
-                                                veImpression('Action', 'select-previous'),
-                                                veImpression('Action', 'select-next'),
-                                                veImpression('Action', 'close-search'),
-                                              ])]),
-    veChange('Panel: timeline > Toolbar: search > TextField: search'),
-  ]);
+export async function searchForComponent(
+    searchEntry: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.timeout(100);
+  await devToolsPage.summonSearchBox();
+  await devToolsPage.waitFor('.search-bar');
+  await devToolsPage.page.keyboard.type(searchEntry);
+  await devToolsPage.timeout(100);
+  await devToolsPage.page.keyboard.press('Tab');
+  await devToolsPage.timeout(100);
+  await expectVeEvents(
+      [
+        veKeyDown(''),
+        veImpressionsUnder('Panel: timeline', [veImpression(
+                                                  'Toolbar', 'search',
+                                                  [
+                                                    veImpression('TextField', 'search'),
+                                                    veImpression('Action', 'regular-expression'),
+                                                    veImpression('Action', 'match-case'),
+                                                    veImpression('Action', 'select-previous'),
+                                                    veImpression('Action', 'select-next'),
+                                                    veImpression('Action', 'close-search'),
+                                                  ])]),
+        veChange('Panel: timeline > Toolbar: search > TextField: search'),
+      ],
+      undefined, devToolsPage);
 }
 
-export async function navigateToBottomUpTab() {
-  await click(BOTTOM_UP_SELECTOR);
+export async function navigateToBottomUpTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(BOTTOM_UP_SELECTOR);
   await expectVeEvents(
       [
         veClick('Section: timeline.flame-chart-view > Toolbar: sidebar > PanelTabHeader: bottom-up'),
@@ -154,11 +149,11 @@ export async function navigateToBottomUpTab() {
             ]),
 
       ],
-      'Panel: timeline');
+      'Panel: timeline', devToolsPage);
 }
 
-export async function navigateToCallTreeTab() {
-  await click(CALL_TREE_SELECTOR);
+export async function navigateToCallTreeTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CALL_TREE_SELECTOR);
   await expectVeEvents(
       [
         veClick('Section: timeline.flame-chart-view > Toolbar: sidebar > PanelTabHeader: call-tree'),
@@ -192,7 +187,7 @@ export async function navigateToCallTreeTab() {
             ],
             ),
       ],
-      'Panel: timeline');
+      'Panel: timeline', devToolsPage);
 }
 
 export async function setFilter(filter: string) {
@@ -270,8 +265,9 @@ export async function getTotalTimeFromSummary(): Promise<number> {
   return parseInt(totalText, 10);
 }
 
-export async function getTotalTimeFromPie(): Promise<number> {
-  const pieChartTotal = await waitFor('.pie-chart-total');
+export async function getTotalTimeFromPie(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<number> {
+  const pieChartTotal = await devToolsPage.waitFor('.pie-chart-total');
   const totalText = await pieChartTotal.evaluate(node => node.textContent as string);
   return parseInt(totalText, 10);
 }
@@ -300,6 +296,7 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
 export async function navigateToSelectorStatsTab(
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(SELECTOR_STATS_SELECTOR);
+  await devToolsPage.timeout(100);
   await expectVeEvents(
       [
         veClick('Toolbar: sidebar > PanelTabHeader: selector-stats'),
@@ -319,10 +316,8 @@ export async function navigateToSelectorStatsTab(
 }
 
 export async function selectRecalculateStylesEvent() {
-  const {frontend} = getBrowserAndPages();
-
   await waitForFunction(async () => {
-    await searchForComponent(frontend, RECALCULATE_STYLE_TITLE);
+    await searchForComponent(RECALCULATE_STYLE_TITLE, getBrowserAndPagesWrappers().devToolsPage);
     const title = await $('.timeline-details-chip-title');
     if (!title) {
       return false;

@@ -166,7 +166,7 @@ export class DevToolsPage extends PageWrapper {
       const element = await this.waitFor(selector, options?.root, undefined, queryHandler);
       try {
         await action(element);
-        await this.drainFrontendTaskQueue();
+        await this.drainTaskQueue();
         return element;
       } catch {
         return undefined;
@@ -186,7 +186,7 @@ export class DevToolsPage extends PageWrapper {
    * Schedules a task in the frontend page that ensures that previously
    * handled tasks have been handled.
    */
-  async drainFrontendTaskQueue(): Promise<void> {
+  async drainTaskQueue(): Promise<void> {
     await this.evaluate(async () => {
       await new Promise(resolve => setTimeout(resolve, 0));
     });
@@ -213,7 +213,7 @@ export class DevToolsPage extends PageWrapper {
 
   async typeText(text: string) {
     await this.page.keyboard.type(text);
-    await this.drainFrontendTaskQueue();
+    await this.drainTaskQueue();
   }
 
   async pressKey(key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) {
@@ -302,7 +302,7 @@ export class DevToolsPage extends PageWrapper {
     await this.waitForFunction(async () => {
       try {
         await element.click(options?.clickOptions);
-        await this.drainFrontendTaskQueue();
+        await this.drainTaskQueue();
         return true;
       } catch {
         return false;
@@ -367,7 +367,7 @@ export class DevToolsPage extends PageWrapper {
     await this.waitForFunction(async () => {
       try {
         await element.hover();
-        await this.drainFrontendTaskQueue();
+        await this.drainTaskQueue();
         return true;
       } catch {
         return false;
@@ -390,7 +390,7 @@ export class DevToolsPage extends PageWrapper {
 
   async pasteText(text: string) {
     await this.page.keyboard.sendCharacter(text);
-    await this.drainFrontendTaskQueue();
+    await this.drainTaskQueue();
   }
 
   /**

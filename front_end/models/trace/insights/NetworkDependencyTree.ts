@@ -52,7 +52,7 @@ export const UIStrings = {
   /**
    * @description Title of the table of the detected preconnect origins.
    */
-  preconnectOriginsTableTitle: 'Preconnect origins',
+  preconnectOriginsTableTitle: 'Preconnected origins',
   /**
    * @description Description of the table of the detected preconnect origins.
    */
@@ -71,6 +71,10 @@ export const UIStrings = {
    * @description A warning message that is shown when the user added preconnect for some unnecessary origins.
    */
   unusedWarning: 'Unused preconnect. Only use `preconnect` for origins that the page is likely to request.',
+  /**
+   * @description A warning message that is shown when the user forget to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links.
+   * */
+  crossoriginWarning: 'Unused preconnect. Check that the `crossorigin` attribute is used properly.',
   /**
    * @description Label for a column in a data table; entries will be the source of the origin.
    */
@@ -136,6 +140,7 @@ export interface PreconnectOrigin {
   frame?: string;
   url: string;
   unused: boolean;
+  crossorigin: boolean;
 }
 export interface PreconnectCandidate {
   origin: Platform.DevToolsPath.UrlString;
@@ -315,16 +320,21 @@ function getSecurityOrigin(url: string): Platform.DevToolsPath.UrlString {
 
 // Export the function for test purpose.
 export function generatePreconnectedOrigins(
-    linkPreconnectEvents: Types.Events.LinkPreconnect[],
-    contextRequests: Types.Events.SyntheticNetworkRequest[]): PreconnectOrigin[] {
+    linkPreconnectEvents: Types.Events.LinkPreconnect[], contextRequests: Types.Events.SyntheticNetworkRequest[],
+    preconnectCandidates: PreconnectCandidate[]): PreconnectOrigin[] {
   const preconnectOrigins: PreconnectOrigin[] = [];
   for (const event of linkPreconnectEvents) {
     preconnectOrigins.push({
       node_id: event.args.data.node_id,
       frame: event.args.data.frame,
       url: event.args.data.url,
+      // For each origin the page wanted to preconnect to:
+      // - if we found no network requests to that origin at all then we issue a unused warning
       unused: !contextRequests.some(
           request => getSecurityOrigin(event.args.data.url) === getSecurityOrigin(request.args.data.url)),
+      // - else (we found network requests to the same origin) and if some of those network requests is too slow (if
+      //   they are preconnect candidates), then we issue a unused warning with crossorigin hint
+      crossorigin: preconnectCandidates.some(candidate => candidate.origin === getSecurityOrigin(event.args.data.url))
     });
   }
   return preconnectOrigins;
@@ -514,10 +524,10 @@ export function generateInsight(
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
   const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
 
-  const preconnectOrigins =
-      generatePreconnectedOrigins(parsedTrace.NetworkRequests.linkPreconnectEvents, contextRequests);
-
   const preconnectCandidates = generatePreconnectCandidates(parsedTrace, context, contextRequests);
+
+  const preconnectOrigins = generatePreconnectedOrigins(
+      parsedTrace.NetworkRequests.linkPreconnectEvents, contextRequests, preconnectCandidates);
 
   return finalize({
     rootNodes,

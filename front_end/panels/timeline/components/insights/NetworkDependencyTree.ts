@@ -196,12 +196,21 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
         </devtools-performance-node-link>`;
       // clang-format on
 
+      const subRows = [];
+      if (preconnectOrigin.unused) {
+        subRows.push({
+          values: [md(i18nString(UIStrings.unusedWarning))],
+        });
+      }
+      if (preconnectOrigin.crossorigin) {
+        subRows.push({
+          values: [md(i18nString(UIStrings.crossoriginWarning))],
+        });
+      }
+
       return {
         values: [preconnectOrigin.url, nodeEl],
-        subRows: preconnectOrigin.unused ? [{
-          values: [md(i18nString(UIStrings.unusedWarning))],
-        }] :
-                                           undefined,
+        subRows,
       };
     });
 

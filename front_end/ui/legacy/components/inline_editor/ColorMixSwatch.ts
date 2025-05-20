@@ -8,13 +8,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import colorMixSwatchStylesRaw from './colorMixSwatch.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const colorMixSwatchStyles = new CSSStyleSheet();
-colorMixSwatchStyles.replaceSync(colorMixSwatchStylesRaw);
+import colorMixSwatchStyles from './colorMixSwatch.css.js';
 
 const {html, render, Directives: {ref}} = Lit;
 
@@ -35,13 +29,6 @@ export class ColorMixSwatch extends HTMLElement {
   private firstColorText = '';   // hotpink
   private secondColorText = '';  // white
   #icon: HTMLElement|null = null;
-
-  constructor() {
-    super();
-    this.shadow.adoptedStyleSheets = [
-      colorMixSwatchStyles,
-    ];
-  }
 
   mixedColor(): Common.Color.Color|null {
     const colorText = this.#icon?.computedStyleMap().get('color')?.toString() ?? null;
@@ -97,7 +84,7 @@ export class ColorMixSwatch extends HTMLElement {
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     render(
-      html`<div class="swatch-icon"
+      html`<style>${colorMixSwatchStyles}</style><div class="swatch-icon"
       ${ref(e => {this.#icon = e as HTMLElement; })}
       jslog=${VisualLogging.cssColorMix()}
       style="--color: ${this.colorMixText}">

@@ -13,6 +13,14 @@ import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers
 import {closeSettings} from '../helpers/settings-helpers.js';
 
 describe('AI Assistance', function() {
+  // This waits for `networkidle0` two times and this causes timeouts in the mac bots.
+  // * We reload the page and wait until network idle in `setupMocks`.
+  // * We wait until `networkidle0` while going to the resource.
+  // These has increased times in Mac bots, so increasing the timeout here.
+  if (this.timeout() > 0) {
+    this.timeout(20000);
+  }
+
   let preloadScriptId: string;
 
   afterEach(async () => {

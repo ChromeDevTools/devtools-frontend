@@ -127,6 +127,7 @@ try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64"
 try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-15", "x86-64")
 try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64")
+try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64")
 try_pair(
     "dtf_linux",
     "dbg",
@@ -184,6 +185,7 @@ cq_builders = struct(
         "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
         "dtf_mac_arm64_rel",
+        "dtf_mac_cross_rel",
         "dtf_mac_rel",
         "dtf_win64_rel",
         "dtf_presubmit_linux",
@@ -197,6 +199,7 @@ cq_builders = struct(
         # Quarantine a builder here
         # This will make them experiment with the given percentage
         "dtf_mac_arm64_rel": 100,
+        "dtf_mac_cross_rel": 0,
     },
     includable_only_builders = [
         "devtools_frontend_linux_blink_light_rel",

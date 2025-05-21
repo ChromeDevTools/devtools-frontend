@@ -900,7 +900,6 @@ let Page = (() => {
             }
             const recorder = new ScreenRecorder(this, width, height, {
                 ...options,
-                path: options.ffmpegPath,
                 crop,
             });
             try {

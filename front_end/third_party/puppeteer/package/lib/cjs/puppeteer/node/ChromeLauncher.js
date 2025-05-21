@@ -127,6 +127,8 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             'AcceptCHFrame',
             'MediaRouter',
             'OptimizationHints',
+            // See crbug.com/418675612.
+            'TabstripComboButton',
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [

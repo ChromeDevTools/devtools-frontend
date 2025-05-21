@@ -2928,7 +2928,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.8.2';
+  const packageVersion = '24.9.0';
 
   /**
    * @license
@@ -11363,7 +11363,6 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         }
         const recorder = new ScreenRecorder(this, width, height, {
           ...options,
-          path: options.ffmpegPath,
           crop
         });
         try {
@@ -24507,9 +24506,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '136.0.7103.92',
-    'chrome-headless-shell': '136.0.7103.92',
-    firefox: 'stable_138.0.1'
+    chrome: '136.0.7103.94',
+    'chrome-headless-shell': '136.0.7103.94',
+    firefox: 'stable_138.0.4'
   });
 
   /**

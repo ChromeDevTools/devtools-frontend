@@ -2463,11 +2463,6 @@ export declare class FileChooser {
 /**
  * @public
  */
-export declare type FileFormat = 'gif' | 'webm' | 'mp4';
-
-/**
- * @public
- */
 export declare interface FirefoxSettings {
     /**
      * Tells Puppeteer to not download the browser during installation.
@@ -3559,6 +3554,11 @@ export declare abstract class HTTPResponse {
      */
     abstract frame(): Frame | null;
 }
+
+/**
+ * @public
+ */
+export declare type ImageFormat = 'png' | 'jpeg' | 'webp';
 
 /**
  * @public
@@ -6943,8 +6943,9 @@ declare namespace Puppeteer_2 {
         GeolocationOptions,
         MediaFeature,
         ScreenshotClip,
+        ImageFormat,
+        VideoFormat,
         ScreenshotOptions,
-        FileFormat,
         ScreencastOptions,
         QueryOptions,
         PageEvent,
@@ -7293,13 +7294,20 @@ export declare interface ScreencastOptions {
     /**
      * File path to save the screencast to.
      */
-    path?: `${string}.${FileFormat}`;
+    path?: `${string}.${VideoFormat}`;
+    /**
+     * Specifies whether to overwrite output file,
+     * or exit immediately if it already exists.
+     *
+     * @defaultValue `true`
+     */
+    overwrite?: boolean;
     /**
      * Specifies the output file format.
      *
-     * @defaultValue `webm`
+     * @defaultValue `'webm'`
      */
-    format?: FileFormat;
+    format?: VideoFormat;
     /**
      * Specifies the region of the viewport to crop.
      */
@@ -7363,6 +7371,8 @@ export declare interface ScreencastOptions {
      * Path to the {@link https://ffmpeg.org/ | ffmpeg}.
      *
      * Required if `ffmpeg` is not in your PATH.
+     *
+     * @defaultValue `'ffmpeg'`
      */
     ffmpegPath?: string;
 }
@@ -7403,7 +7413,7 @@ export declare interface ScreenshotOptions {
     /**
      * @defaultValue `'png'`
      */
-    type?: 'png' | 'jpeg' | 'webp';
+    type?: ImageFormat;
     /**
      * Quality of the image, between 0-100. Not applicable to `png` images.
      */
@@ -7432,7 +7442,7 @@ export declare interface ScreenshotOptions {
      * relative to current working directory. If no path is provided, the image
      * won't be saved to the disk.
      */
-    path?: string;
+    path?: `${string}.${ImageFormat}`;
     /**
      * Specifies the region of the page/element to clip.
      */
@@ -7821,6 +7831,11 @@ export declare interface TracingOptions {
  */
 export declare class UnsupportedOperation extends PuppeteerError {
 }
+
+/**
+ * @public
+ */
+export declare type VideoFormat = 'webm' | 'gif' | 'mp4';
 
 /**
  * @license

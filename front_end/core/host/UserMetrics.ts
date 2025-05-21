@@ -328,6 +328,11 @@ export class UserMetrics {
   freestylerEvalResponseSize(bytes: number): void {
     InspectorFrontendHostInstance.recordCountHistogram('DevTools.Freestyler.EvalResponseSize', bytes, 0, 100_000, 100);
   }
+
+  performanceAINetworkSummaryResponseSize(bytes: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram(
+        'DevTools.PerformanceAI.NetworkSummaryResponseSize', bytes, 0, 100_000, 100);
+  }
 }
 
 /**

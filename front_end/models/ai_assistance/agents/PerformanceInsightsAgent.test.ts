@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../core/common/common.js';
-import type * as Host from '../../../core/host/host.js';
+import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -200,7 +201,8 @@ Help me understand?`;
   });
 
   describe('function calls', () => {
-    it('calls getNetworkActivitySummary', async function() {
+    it('calls getNetworkActivitySummary and logs the response bytes size', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAINetworkSummaryResponseSize');
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
@@ -232,6 +234,10 @@ Help me understand?`;
 
       const expectedRequestsOutput =
           requests.map(r => TraceEventFormatter.networkRequest(r, parsedTrace, {verbose: false}));
+
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput.join('\n'));
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
       const expectedOutput = JSON.stringify({requests: expectedRequestsOutput});
       const titleResponse = responses.find(response => response.type === ResponseType.TITLE);
       assert.exists(titleResponse);

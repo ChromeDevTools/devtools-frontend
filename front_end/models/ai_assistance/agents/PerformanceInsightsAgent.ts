@@ -303,6 +303,9 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         const formatted =
             requests.map(r => TraceEventFormatter.networkRequest(r, activeInsight.parsedTrace, {verbose: false}));
 
+        const byteCount = Platform.StringUtilities.countWtf8Bytes(formatted.join('\n'));
+        Host.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
+
         if (this.#isFunctionResponseTooLarge(formatted.join('\n'))) {
           return {
             error: 'getNetworkActivitySummary response is too large. Try investigating using other functions',
@@ -317,6 +320,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         const cacheForInsight = this.#functionCallCache.get(activeInsight) ?? {};
         cacheForInsight.getNetworkActivitySummary = summaryFact;
         this.#functionCallCache.set(activeInsight, cacheForInsight);
+
         return {result: {requests: formatted}};
       },
     });

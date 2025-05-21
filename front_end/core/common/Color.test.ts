@@ -587,7 +587,7 @@ describe('Color', () => {
   });
 
   it('retains and returns the authored text', () => {
-    const lime: {[key in Common.Color.Format]: string} = {
+    const lime: Record<Common.Color.Format, string> = {
       [Common.Color.Format.HEX]: '#00ff00',
       [Common.Color.Format.HEXA]: '#00ff00ff',
       [Common.Color.Format.RGB]: 'rgb(0 255 0)',

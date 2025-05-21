@@ -118,7 +118,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
 
     async function finishedCallback(
-        success: boolean, _headers: {[x: string]: string},
+        success: boolean, _headers: Record<string, string>,
         errorDescription: Host.ResourceLoader.LoadErrorDescription): Promise<void> {
       if (!success) {
         return loader.reportErrorAndCancelLoading(errorDescription.message);

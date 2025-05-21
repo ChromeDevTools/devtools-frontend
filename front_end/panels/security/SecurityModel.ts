@@ -88,7 +88,7 @@ export interface EventTypes {
   [Events.VisibleSecurityStateChanged]: PageVisibleSecurityState;
 }
 
-export const SummaryMessages: {[x: string]: () => string} = {
+export const SummaryMessages: Record<string, () => string> = {
   [Protocol.Security.SecurityState.Unknown]: i18nLazyString(UIStrings.theSecurityOfThisPageIsUnknown),
   [Protocol.Security.SecurityState.Insecure]: i18nLazyString(UIStrings.thisPageIsNotSecure),
   [Protocol.Security.SecurityState.Neutral]: i18nLazyString(UIStrings.thisPageIsNotSecure),

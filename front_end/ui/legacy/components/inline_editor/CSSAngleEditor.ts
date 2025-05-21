@@ -7,7 +7,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import cssAngleEditorStylesRaw from './cssAngleEditor.css.js';
+import cssAngleEditorStyles from './cssAngleEditor.css.js';
 import {
   type Angle,
   AngleUnit,
@@ -16,12 +16,6 @@ import {
   getNewAngleFromEvent,
   getRadiansFromAngle,
 } from './CSSAngleUtils.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const cssAngleEditorStyles = new CSSStyleSheet();
-cssAngleEditorStyles.replaceSync(cssAngleEditorStylesRaw);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;
@@ -48,9 +42,9 @@ export class CSSAngleEditor extends HTMLElement {
   private mousemoveListener = this.onMousemove.bind(this);
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [cssAngleEditorStyles];
     this.style.setProperty('--clock-dial-length', `${CLOCK_DIAL_LENGTH}px`);
   }
+
   set data(data: CSSAngleEditorData) {
     this.angle = data.angle;
     this.onAngleUpdate = data.onAngleUpdate;
@@ -136,6 +130,7 @@ export class CSSAngleEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${cssAngleEditorStyles}</style>
       <div class="editor" jslog=${VisualLogging.dialog('cssAngleEditor').track({click: true, drag: true, resize: true, keydown: 'Enter|Escape'})}>
         <span class="pointer"></span>
         <div

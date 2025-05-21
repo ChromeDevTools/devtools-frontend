@@ -138,9 +138,7 @@ export interface SearchCompletedEvent {
 
 export interface DoAidaConversationResult {
   statusCode?: number;
-  headers?: {
-    [x: string]: string,
-  };
+  headers?: Record<string, string>;
   netError?: number;
   netErrorName?: string;
   error?: string;
@@ -317,9 +315,7 @@ export interface InspectorFrontendHostAPI {
 
   registerPreference(name: string, options: {synced?: boolean}): void;
 
-  getPreferences(callback: (arg0: {
-                   [x: string]: string,
-                 }) => void): void;
+  getPreferences(callback: (arg0: Record<string, string>) => void): void;
 
   getPreference(name: string, callback: (arg0: string) => void): void;
 
@@ -420,9 +416,7 @@ export interface ContextMenuDescriptor {
 }
 export interface LoadNetworkResourceResult {
   statusCode: number;
-  headers?: {
-    [x: string]: string,
-  };
+  headers?: Record<string, string>;
   netError?: number;
   netErrorName?: string;
   urlValid?: boolean;

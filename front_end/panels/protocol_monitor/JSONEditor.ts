@@ -104,7 +104,7 @@ export type Parameter = ArrayParameter|NumberParameter|StringParameter|BooleanPa
 
 export interface Command {
   command: string;
-  parameters: {[x: string]: unknown};
+  parameters: Record<string, unknown>;
   targetId?: string;
 }
 
@@ -280,7 +280,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
-  getParameters(): {[key: string]: unknown} {
+  getParameters(): Record<string, unknown> {
     const formatParameterValue = (parameter: Parameter): unknown => {
       if (parameter.value === undefined) {
         return;
@@ -293,7 +293,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
           return Boolean(parameter.value);
         }
         case ParameterType.OBJECT: {
-          const nestedParameters: {[key: string]: unknown} = {};
+          const nestedParameters: Record<string, unknown> = {};
           for (const subParameter of parameter.value) {
             const formattedValue = formatParameterValue(subParameter);
             if (formattedValue !== undefined) {
@@ -318,7 +318,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     };
 
-    const formattedParameters: {[key: string]: unknown} = {};
+    const formattedParameters: Record<string, unknown> = {};
     for (const parameter of this.parameters) {
       formattedParameters[parameter.name] = formatParameterValue(parameter);
     }
@@ -328,7 +328,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
              optional: true,
              value: this.parameters,
              description: '',
-           }) as {[key: string]: unknown};
+           }) as Record<string, unknown>;
   }
 
   // Displays a command entered in the input bar inside the editor
@@ -978,7 +978,7 @@ function renderTargetSelectorRow(input: ViewInput): Lit.TemplateResult|undefined
 function renderInlineButton(opts: {
   title: string,
   iconName: string,
-  classMap: {[name: string]: string|boolean|number},
+  classMap: Record<string, string|boolean|number>,
   onClick: (event: MouseEvent) => void,
   jslogContext: string,
 }): Lit.TemplateResult|undefined {

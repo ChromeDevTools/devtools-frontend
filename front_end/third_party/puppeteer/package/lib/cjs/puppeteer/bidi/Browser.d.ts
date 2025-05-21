@@ -49,6 +49,8 @@ export declare class BidiBrowser extends Browser {
     browserContexts(): BidiBrowserContext[];
     defaultBrowserContext(): BidiBrowserContext;
     newPage(): Promise<Page>;
+    installExtension(path: string): Promise<string>;
+    uninstallExtension(id: string): Promise<void>;
     targets(): Target[];
     target(): BidiBrowserTarget;
     disconnect(): Promise<void>;

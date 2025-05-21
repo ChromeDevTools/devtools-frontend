@@ -341,6 +341,7 @@
         "corner-shape",
         "currentcolor",
         "filter-data",
+        "gap-decorations",
         "has-transform",
         "inset",
         "layout",
@@ -2740,6 +2741,17 @@
       includes_currentcolor: true,
     },
     {
+      name: "caret-shape",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      field_template: "keyword",
+      keywords: ["auto", "bar", "block", "underscore"],
+      default_value: "auto",
+      typedom_types: ["Keyword"],
+      invalidate: ["paint"],
+      runtime_flag: "CSSCaretShape",
+    },
+    {
       name: "clear",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_template: "keyword",
@@ -2921,9 +2933,9 @@
     {
       name: "container-type",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      keywords: ["normal", "inline-size", "size", "scroll-state"],
+      keywords: ["normal", "inline-size", "size", "scroll-state", "anchored"],
       field_group: "*",
-      field_size: 3,
+      field_size: 4,
       field_template: "primitive",
       default_value: "kContainerTypeNormal",
       type_name: "unsigned",
@@ -3074,6 +3086,7 @@
     {
       name: "cursor",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      field_group: "inherited",
       inherited: true,
       independent: true,
       field_template: "keyword",
@@ -3295,12 +3308,15 @@
     },
     {
       name: "flex-wrap",
-      property_methods: ["CSSValueFromComputedStyleInternal", "InitialValue"],
+      property_methods: ["InitialValue", "ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
-      field_template: "keyword",
+      field_template: "external",
+      include_paths: ["third_party/blink/renderer/core/style/style_flex_wrap_data.h"],
+      default_value: "StyleFlexWrapData(FlexWrapMode::kNowrap)",
+      type_name: "StyleFlexWrapData",
+      converter: "ConvertFlexWrapData",
       typedom_types: ["Keyword"],
-      keywords: ["nowrap", "wrap", "wrap-reverse"],
-      default_value: "nowrap",
+      keywords: ["nowrap", "wrap", "wrap-reverse", "balance"],
       valid_for_permission_element: true,
       invalidate: ["layout", "paint"],
     },
@@ -4467,16 +4483,8 @@
         name: "overflow",
         resolver: "inline",
       },
-      runtime_flag: "CSSLogicalOverflow",
       // See comment on overflow-x.
       supports_incremental_style: false,
-    },
-    {
-      name: "-internal-overflow-inline",
-      logical_property_group: {
-        name: "overflow",
-        resolver: "inline",
-      },
     },
     {
       name: "overflow-block",
@@ -4484,16 +4492,8 @@
         name: "overflow",
         resolver: "block",
       },
-      runtime_flag: "CSSLogicalOverflow",
       // See comment on overflow-x.
       supports_incremental_style: false,
-    },
-    {
-      name: "-internal-overflow-block",
-      logical_property_group: {
-        name: "overflow",
-        resolver: "block",
-      },
     },
     {
       name: "overflow-clip-margin",
@@ -6554,6 +6554,7 @@
       default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
       type_name: "GapDataList<StyleColor>",
       keywords: ["currentcolor"],
+      computed_style_custom_functions: ["setter"],
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
@@ -6570,6 +6571,7 @@
       default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
       type_name: "GapDataList<StyleColor>",
       keywords: ["currentcolor"],
+      computed_style_custom_functions: ["setter"],
       includes_currentcolor: true,
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationColorDataList",
@@ -6586,11 +6588,12 @@
         "none", "hidden", "inset", "groove", "outset", "ridge", "dotted",
         "dashed", "solid", "double"
       ],
+      computed_style_custom_functions: ["setter"],
       default_value: "GapDataList<EBorderStyle>::DefaultGapStyleDataList()",
       type_name: "GapDataList<EBorderStyle>",
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationStyleDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
     },
     {
       name: "row-rule-style",
@@ -6602,11 +6605,12 @@
         "none", "hidden", "inset", "groove", "outset", "ridge", "dotted",
         "dashed", "solid", "double"
       ],
+      computed_style_custom_functions: ["setter"],
       default_value: "GapDataList<EBorderStyle>::DefaultGapStyleDataList()",
       type_name: "GapDataList<EBorderStyle>",
       typedom_types: ["Keyword"],
       converter: "ConvertGapDecorationStyleDataList",
-      invalidate: ["paint"],
+      invalidate: ["paint", "gap-decorations"],
       runtime_flag: "CSSGapDecoration",
     },
     {
@@ -8033,13 +8037,11 @@
       name: "navigation",
       is_descriptor: true,
       is_property: false,
-      runtime_flag: "ViewTransitionOnNavigation",
     },
     {
       name: "types",
       is_descriptor: true,
       is_property: false,
-      runtime_flag: "ViewTransitionOnNavigation",
     },
     {
       name: "result",
@@ -8772,6 +8774,14 @@
         "column-rule-width", "column-rule-style", "column-rule-color"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+    },
+    {
+      name: "row-rule",
+      longhands: [
+        "row-rule-width", "row-rule-style", "row-rule-color"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSGapDecoration",
     },
     {
       name: "columns",

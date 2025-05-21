@@ -71,9 +71,7 @@ export interface ProtocolResponse {
   id: number;
 }
 
-export type ServerMessage = (ProtocolEvent|ProtocolMessage|ProtocolResponse)&{
-  [others: string]: unknown,
-};
+export type ServerMessage = (ProtocolEvent|ProtocolMessage|ProtocolResponse)&Record<string, unknown>;
 
 export interface Session {
   target: RehydratingTarget;

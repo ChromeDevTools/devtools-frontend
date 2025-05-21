@@ -14,7 +14,7 @@ import * as Controllers from '../controllers/controllers.js';
 import * as Models from '../models/models.js';
 import * as Util from '../util/util.js';
 
-import stepEditorStylesRaw from './stepEditor.css.js';
+import stepEditorStyles from './stepEditor.css.js';
 import {
   ArrayAssignments,
   assert,
@@ -28,10 +28,6 @@ import {
   type OptionalKeys,
   type RequiredKeys,
 } from './util.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
-const stepEditorStyles = new CSSStyleSheet();
-stepEditorStyles.replaceSync(stepEditorStylesRaw);
 
 const {html, Decorators, Directives, LitElement} = Lit;
 const {customElement, property, state} = Decorators;
@@ -468,8 +464,6 @@ export class EditorState {
  */
 @customElement('devtools-recorder-selector-picker-button')
 class RecorderSelectorPickerButton extends LitElement {
-  static override styles = [stepEditorStyles];
-
   @property({type: Boolean}) declare disabled: boolean;
 
   #picker = new Controllers.SelectorPicker.SelectorPicker(this);
@@ -494,7 +488,8 @@ class RecorderSelectorPickerButton extends LitElement {
     if (this.disabled) {
       return;
     }
-    return html`<devtools-button
+    // clang-format off
+    return html`<style>${stepEditorStyles}</style><devtools-button
       @click=${this.#handleClickEvent}
       .title=${i18nString(UIStrings.selectorPicker)}
       class="selector-picker"
@@ -506,6 +501,7 @@ class RecorderSelectorPickerButton extends LitElement {
       click: true,
     })}
     ></devtools-button>`;
+    // clang-format on
   }
 }
 
@@ -515,8 +511,6 @@ class RecorderSelectorPickerButton extends LitElement {
  */
 @customElement('devtools-recorder-step-editor')
 export class StepEditor extends LitElement {
-  static override styles = [stepEditorStyles];
-
   @state() private declare state: DeepImmutable<EditorState>;
   @state() private declare error: string|undefined;
 
@@ -1169,7 +1163,8 @@ export class StepEditor extends LitElement {
 
     // clang-format off
     const result = html`
-      <div class="wrapper" jslog=${VisualLogging.tree('step-editor')}>
+      <style>${stepEditorStyles}</style>
+      <div class="wrapper" jslog=${VisualLogging.tree('step-editor')} >
         ${this.#renderTypeRow(this.isTypeEditable)} ${this.#renderRow('target')}
         ${this.#renderFrameRow()} ${this.#renderSelectorsRow()}
         ${this.#renderRow('deviceType')} ${this.#renderRow('button')}

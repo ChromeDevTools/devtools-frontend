@@ -143,9 +143,9 @@ const enumsByName = ProtocolClient.InspectorBackend.inspectorBackend.enumMap as 
 export interface Message {
   id?: number;
   method: string;
-  error?: {[x: string]: unknown};
-  result?: {[x: string]: unknown};
-  params?: {[x: string]: unknown};
+  error?: Record<string, unknown>;
+  result?: Record<string, unknown>;
+  params?: Record<string, unknown>;
   requestTime: number;
   elapsedTime?: number;
   sessionId?: string;
@@ -161,9 +161,7 @@ export interface LogMessage {
 
 export interface ProtocolDomain {
   readonly domain: string;
-  readonly metadata: {
-    [commandName: string]: {parameters: Parameter[], description: string, replyArgs: string[]},
-  };
+  readonly metadata: Record<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
 }
 
 export interface ViewInput {
@@ -477,7 +475,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
       if (!this.#selectedMessage) {
         return;
       }
-      const parameters = this.#selectedMessage.params as {[x: string]: unknown};
+      const parameters = this.#selectedMessage.params as Record<string, unknown>;
       const targetId = this.#selectedMessage.target?.id() || '';
       const command = message.method;
       this.#command = JSON.stringify({command, parameters});
@@ -573,7 +571,7 @@ export class ProtocolMonitorImpl extends UI.Panel.Panel {
   }
 
   private messageSent(
-      message: {domain: string, method: string, params: {[x: string]: unknown}, id: number, sessionId?: string},
+      message: {domain: string, method: string, params: Record<string, unknown>, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     const messageRecord = {
       method: message.method,
@@ -648,8 +646,8 @@ export class CommandAutocompleteSuggestionProvider {
 
 export class InfoWidget extends UI.Widget.VBox {
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
-  request: {[x: string]: unknown}|undefined;
-  response: {[x: string]: unknown}|undefined;
+  request: Record<string, unknown>|undefined;
+  response: Record<string, unknown>|undefined;
   type: 'sent'|'received'|undefined;
   selectedTab: 'request'|'response'|undefined;
   constructor(element: HTMLElement) {
@@ -689,7 +687,7 @@ export class InfoWidget extends UI.Widget.VBox {
   }
 }
 
-export function parseCommandInput(input: string): {command: string, parameters: {[paramName: string]: unknown}} {
+export function parseCommandInput(input: string): {command: string, parameters: Record<string, unknown>} {
   // If input cannot be parsed as json, we assume it's the command name
   // for a command without parameters. Otherwise, we expect an object
   // with "command"/"method"/"cmd" and "parameters"/"params"/"args"/"arguments" attributes.

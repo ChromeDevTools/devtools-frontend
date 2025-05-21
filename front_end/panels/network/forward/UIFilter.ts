@@ -6,6 +6,7 @@ export enum FilterType {
   /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Domain = 'domain',
   HasResponseHeader = 'has-response-header',
+  HasRequestHeader = 'has-request-header',
   HasOverrides = 'has-overrides',
   ResponseHeaderValueSetCookie = 'response-header-set-cookie',
   Is = 'is',

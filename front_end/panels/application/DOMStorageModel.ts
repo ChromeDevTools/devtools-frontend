@@ -114,9 +114,7 @@ export namespace DOMStorage {
 
 export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private readonly storageKeyManagerInternal: SDK.StorageKeyManager.StorageKeyManager|null;
-  private storagesInternal: {
-    [x: string]: DOMStorage,
-  };
+  private storagesInternal: Record<string, DOMStorage>;
   readonly agent: ProtocolProxyApi.DOMStorageApi;
   private enabled?: boolean;
 

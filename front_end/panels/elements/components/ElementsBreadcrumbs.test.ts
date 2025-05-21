@@ -20,7 +20,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as ElementsComponents from './components.js';
 
 interface MakeCrumbOptions extends Partial<ElementsComponents.Helper.DOMNode> {
-  attributes?: {[x: string]: string};
+  attributes?: Record<string, string>;
 }
 
 /*

@@ -13,7 +13,7 @@ const BUTTONS = [
   Protocol.Input.MouseButton.Back,
   Protocol.Input.MouseButton.Forward,
 ];
-const MOUSE_EVENT_TYPES: {[key: string]: Protocol.Input.DispatchMouseEventRequestType} = {
+const MOUSE_EVENT_TYPES: Record<string, Protocol.Input.DispatchMouseEventRequestType> = {
   mousedown: Protocol.Input.DispatchMouseEventRequestType.MousePressed,
   mouseup: Protocol.Input.DispatchMouseEventRequestType.MouseReleased,
   mousemove: Protocol.Input.DispatchMouseEventRequestType.MouseMoved,

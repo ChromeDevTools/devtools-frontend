@@ -15,6 +15,13 @@ const argv = yargs(hideBin(process.argv))
                    choices: ['list', 'b'],
                    default: 'list',
                  })
+                 .option('sources', {
+                   type: 'array',
+                   alias: 's',
+                   describe: 'Sources',
+                   choices: ['devtools', 'chromium'],
+                   default: ['devtools', 'chromium'],
+                 })
                  .parseSync();
 
 /**
@@ -80,15 +87,35 @@ function extract(sourceFile: ts.SourceFile) {
   }
 }
 
-const files = [
-  ...glob.sync('front_end/**/*.test.ts'),
-  ...glob.sync('test/**/*test.ts'),
-];
+if (argv.sources.includes('devtools')) {
+  const files = [
+    ...glob.sync('front_end/**/*.test.ts'),
+    ...glob.sync('test/**/*test.ts'),
+  ];
 
-for (const file of files) {
-  extract(ts.createSourceFile(
-      file, readFileSync(file).toString(), ts.ScriptTarget.ESNext,
-      /* setParentNodes */ true));
+  for (const file of files) {
+    extract(ts.createSourceFile(
+        file, readFileSync(file).toString(), ts.ScriptTarget.ESNext,
+        /* setParentNodes */ true));
+  }
+}
+
+if (argv.sources.includes('chromium')) {
+  const expectations = readFileSync('../../chromium/src/third_party/blink/web_tests/TestExpectations', 'utf-8');
+  const lines = expectations.split('\n');
+
+  for (const line of lines) {
+    if (line.includes('/tests/devtools/')) {
+      const parts = line.split(' ');
+      const crbug = parts.shift() ?? '';
+      const match = crbug.match(/crbug.com\/(\d+)/);
+      if (!match) {
+        continue;
+      }
+      bugs.add(match[1]);
+      bugToFile.set(match[1], parts.find(part => part.includes('/tests/devtools/')) ?? '');
+    }
+  }
 }
 
 if (argv.format === 'b') {

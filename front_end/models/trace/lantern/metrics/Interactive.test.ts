@@ -38,7 +38,7 @@ describe('Metrics: Lantern TTI', function() {
           timing: 1122,
         });
     assert.strictEqual(result.optimisticEstimate.nodeTimings.size, 14);
-    assert.strictEqual(result.pessimisticEstimate.nodeTimings.size, 31);
+    assert.strictEqual(result.pessimisticEstimate.nodeTimings.size, 29);
     assert.isOk(result.optimisticGraph, 'should have created optimistic graph');
     assert.isOk(result.pessimisticGraph, 'should have created pessimistic graph');
   });

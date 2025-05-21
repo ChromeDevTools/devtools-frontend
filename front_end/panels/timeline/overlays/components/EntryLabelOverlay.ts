@@ -596,7 +596,7 @@ export class EntryLabelOverlay extends HTMLElement {
         },
       ],
       onLearnMoreClick: () => {
-        UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/performance/reference#auto-annotations');
+        UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/performance/annotations#auto-annotations');
       },
       learnMoreButtonTitle: UIStringsNotTranslate.learnMoreButton,
     });

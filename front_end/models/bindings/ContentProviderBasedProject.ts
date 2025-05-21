@@ -50,14 +50,13 @@ interface UISourceCodeData {
 }
 
 export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
-  readonly #isServiceProjectInternal: boolean;
-  readonly #uiSourceCodeToData: WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeData>;
+  readonly #isServiceProject: boolean;
+  readonly #uiSourceCodeToData = new WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeData>();
   constructor(
       workspace: Workspace.Workspace.WorkspaceImpl, id: string, type: Workspace.Workspace.projectTypes,
       displayName: string, isServiceProject: boolean) {
     super(workspace, id, type, displayName);
-    this.#isServiceProjectInternal = isServiceProject;
-    this.#uiSourceCodeToData = new WeakMap();
+    this.#isServiceProject = isServiceProject;
     workspace.addProject(this);
   }
 
@@ -75,7 +74,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   isServiceProject(): boolean {
-    return this.#isServiceProjectInternal;
+    return this.#isServiceProject;
   }
 
   async requestMetadata(uiSourceCode: Workspace.UISourceCode.UISourceCode):
@@ -184,8 +183,11 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   addUISourceCodeWithProvider(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, contentProvider: TextUtils.ContentProvider.ContentProvider,
-      metadata: Workspace.UISourceCode.UISourceCodeMetadata|null, mimeType: string): void {
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      contentProvider: TextUtils.ContentProvider.ContentProvider,
+      metadata: Workspace.UISourceCode.UISourceCodeMetadata|null,
+      mimeType: string,
+      ): void {
     this.#uiSourceCodeToData.set(uiSourceCode, {mimeType, metadata, contentProvider});
     this.addUISourceCode(uiSourceCode);
   }

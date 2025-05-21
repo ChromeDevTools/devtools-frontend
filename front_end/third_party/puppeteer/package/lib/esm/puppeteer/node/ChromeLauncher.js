@@ -119,6 +119,8 @@ export class ChromeLauncher extends BrowserLauncher {
             'AcceptCHFrame',
             'MediaRouter',
             'OptimizationHints',
+            // See crbug.com/418675612.
+            'TabstripComboButton',
             ...(turnOnExperimentalFeaturesForTesting
                 ? []
                 : [
@@ -154,7 +156,6 @@ export class ChromeLauncher extends BrowserLauncher {
             '--disable-crash-reporter', // No crash reporting in CfT.
             '--disable-default-apps',
             '--disable-dev-shm-usage',
-            '--disable-extensions',
             '--disable-hang-monitor',
             '--disable-infobars',
             '--disable-ipc-flooding-protection',
@@ -176,7 +177,7 @@ export class ChromeLauncher extends BrowserLauncher {
         ].filter(arg => {
             return arg !== '';
         });
-        const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
+        const { devtools = false, headless = !devtools, args = [], userDataDir, enableExtensions = false, } = options;
         if (userDataDir) {
             chromeArguments.push(`--user-data-dir=${path.resolve(userDataDir)}`);
         }
@@ -186,6 +187,9 @@ export class ChromeLauncher extends BrowserLauncher {
         if (headless) {
             chromeArguments.push(headless === 'shell' ? '--headless' : '--headless=new', '--hide-scrollbars', '--mute-audio');
         }
+        chromeArguments.push(enableExtensions
+            ? '--enable-unsafe-extension-debugging'
+            : '--disable-extensions');
         if (args.every(arg => {
             return arg.startsWith('-');
         })) {

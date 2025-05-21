@@ -182,12 +182,8 @@ export interface FlameChartDelegate {
   containingElement?: () => HTMLElement;
 }
 
-interface GroupExpansionState {
-  [groupName: string]: boolean;
-}
-interface GroupHiddenState {
-  [groupName: string]: boolean;
-}
+type GroupExpansionState = Record<string, boolean>;
+type GroupHiddenState = Record<string, boolean>;
 
 interface PopoverState {
   // Index of the last entry the popover was shown over.

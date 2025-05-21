@@ -7,9 +7,9 @@ import * as Common from './common.js';
 const MapWithDefault = Common.MapWithDefault.MapWithDefault;
 
 function convertToObject(map: Common.MapWithDefault.MapWithDefault<string, Map<string, string>>): Object {
-  const ret: {[key: string]: {[key: string]: string}} = {};
+  const ret: Record<string, Record<string, string>> = {};
   for (const [key1, map1] of map.entries()) {
-    const ret1: {[key: string]: string} = {};
+    const ret1: Record<string, string> = {};
     for (const [key2, value] of map1.entries()) {
       ret1[key2] = value;
     }

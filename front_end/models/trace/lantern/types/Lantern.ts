@@ -23,6 +23,7 @@ export const NetworkRequestTypes = {
   Preflight: 'Preflight',
   CSPViolationReport: 'CSPViolationReport',
   Prefetch: 'Prefetch',
+  FedCM: 'FedCM',
 } as const;
 
 export interface TraceEvent {
@@ -174,8 +175,8 @@ export namespace Simulation {
   }
 
   export interface PrecomputedLanternData {
-    additionalRttByOrigin: {[origin: string]: number};
-    serverResponseTimeByOrigin: {[origin: string]: number};
+    additionalRttByOrigin: Record<string, number>;
+    serverResponseTimeByOrigin: Record<string, number>;
   }
 
   export interface Settings {

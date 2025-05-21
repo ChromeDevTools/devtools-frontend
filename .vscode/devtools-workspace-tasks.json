@@ -24,6 +24,43 @@
           }
         }
       ]
+    },
+   {
+    "label": "Create Widget",
+    "type": "shell",
+    "command": "node",
+    "args": [
+      "${workspaceFolder}/scripts/scaffold/scaffold-widget.js",
+      "${input:widgetPath}",
+      "${input:widgetName}"
+    ],
+    "options": {
+      "cwd": "${workspaceFolder}"
+    },
+    "problemMatcher": [],
+    "presentation": {
+      "echo": true,
+      "reveal": "always",
+      "focus": false,
+      "panel": "shared",
+      "showReuseMessage": false,
+      "clear": false
+    },
+    "group": {
+      "kind": "build",
+      "isDefault": false
+    }
+  }],
+  "inputs": [
+    {
+      "id": "widgetPath",
+      "type": "promptString",
+      "description": "Enter the path to create the widget (e.g., front_end/panels/ai_assistance)"
+    },
+    {
+      "id": "widgetName",
+      "type": "promptString",
+      "description": "Enter the WidgetName (PascalCase, e.g., MyWidget)"
     }
   ]
 }

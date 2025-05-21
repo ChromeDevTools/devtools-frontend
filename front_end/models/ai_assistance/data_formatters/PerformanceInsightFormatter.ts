@@ -495,6 +495,6 @@ MIME Type: ${mimeType}
 ${priorityLines.join('\n')}
 Render blocking: ${renderBlocking ? 'Yes' : 'No'}
 From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}
-${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders, true)}`;
+${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [], true)}`;
   }
 }

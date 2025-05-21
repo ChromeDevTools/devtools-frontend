@@ -96,7 +96,5 @@ export interface ExtensionTrackData {
   // If this contains the data of a track group, this property contains
   // the entries of each of the tracks in the the group. If this is a
   // standalone track, then this contains that track's entries only.
-  entriesByTrack: {
-    [x: string]: SyntheticExtensionTrackEntry[],
-  };
+  entriesByTrack: Record<string, SyntheticExtensionTrackEntry[]>;
 }

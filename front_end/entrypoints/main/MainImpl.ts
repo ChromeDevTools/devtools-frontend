@@ -150,7 +150,7 @@ export class MainImpl {
       new Promise<Root.Runtime.HostConfig>(resolve => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(resolve);
       }),
-      new Promise<{[key: string]: string}>(
+      new Promise<Record<string, string>>(
           resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve)),
     ]);
 
@@ -227,7 +227,7 @@ export class MainImpl {
     }
   }
 
-  createSettings(prefs: {[x: string]: string}): void {
+  createSettings(prefs: Record<string, string>): void {
     this.#initializeExperiments();
     let storagePrefix = '';
     if (Host.Platform.isCustomDevtoolsFrontend()) {

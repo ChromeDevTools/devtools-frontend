@@ -13,13 +13,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Extensions from '../extensions/extensions.js';
 
-import extensionViewStylesRaw from './extensionView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const extensionViewStyles = new CSSStyleSheet();
-extensionViewStyles.replaceSync(extensionViewStylesRaw);
+import extensionViewStyles from './extensionView.css.js';
 
 const {html} = Lit;
 
@@ -66,7 +60,6 @@ export class ExtensionView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [extensionViewStyles];
     this.#render();
   }
 
@@ -97,6 +90,7 @@ export class ExtensionView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
+        <style>${extensionViewStyles}</style>
         <div class="extension-view">
           <header>
             <div class="title">

@@ -66,9 +66,7 @@ export class ShortcutRegistry {
   static removeInstance(): void {
     shortcutRegistryInstance = undefined;
   }
-  private applicableActions(key: number, handlers: {
-    [x: string]: () => Promise<boolean>,
-  }|undefined = {}): Action[] {
+  private applicableActions(key: number, handlers: Record<string, () => Promise<boolean>>|undefined = {}): Action[] {
     let actions: string[] = [];
     const keyMap = this.activePrefixKey || this.keyMap;
     const keyNode = keyMap.getNode(key);
@@ -148,9 +146,7 @@ export class ShortcutRegistry {
     return devToolsModifier.value * 2;
   }
 
-  handleShortcut(event: KeyboardEvent, handlers?: {
-    [x: string]: () => Promise<boolean>,
-  }): void {
+  handleShortcut(event: KeyboardEvent, handlers?: Record<string, () => Promise<boolean>>): void {
     void this.handleKey(KeyboardShortcut.makeKeyFromEvent(event), event.key, event, handlers);
   }
 
@@ -158,7 +154,7 @@ export class ShortcutRegistry {
     return this.devToolsDefaultShortcutActions.has(actionId);
   }
 
-  getShortcutListener(handlers: {[x: string]: () => Promise<boolean>}): (event: KeyboardEvent) => void {
+  getShortcutListener(handlers: Record<string, () => Promise<boolean>>): (event: KeyboardEvent) => void {
     const shortcuts = Object.keys(handlers).flatMap(action => [...this.actionToShortcut.get(action)]);
     // We only want keys for these specific actions to get handled this
     // way; all others should be allowed to bubble up.
@@ -179,17 +175,18 @@ export class ShortcutRegistry {
     };
   }
 
-  addShortcutListener(element: Element, handlers: {
-    [x: string]: () => Promise<boolean>,
-  }): (arg0: Event) => void {
+  addShortcutListener(element: Element, handlers: Record<string, () => Promise<boolean>>): (arg0: Event) => void {
     const listener = this.getShortcutListener(handlers) as (event: Event) => void;
     element.addEventListener('keydown', listener);
     return listener;
   }
 
-  async handleKey(key: number, domKey: string, event?: KeyboardEvent, handlers?: {
-    [x: string]: () => Promise<boolean>,
-  }): Promise<void> {
+  async handleKey(
+      key: number,
+      domKey: string,
+      event?: KeyboardEvent,
+      handlers?: Record<string, () => Promise<boolean>>,
+      ): Promise<void> {
     const keyModifiers = key >> 8;
     const hasHandlersOrPrefixKey = Boolean(handlers) || Boolean(this.activePrefixKey);
     const keyMapNode = this.keyMap.getNode(key);

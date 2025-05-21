@@ -704,9 +704,7 @@ export interface Profile {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface LiveObjects {
-  [x: number]: {count: number, size: number, ids: number[]};
-}
+export type LiveObjects = Record<number, {count: number, size: number, ids: number[]}>;
 
 // The first batch of data sent from the primary worker to the secondary.
 interface SecondaryInitArgumentsStep1 {
@@ -894,25 +892,13 @@ export abstract class HeapSnapshot {
   readonly #progress: HeapSnapshotProgress;
   readonly #noDistance = -5;
   rootNodeIndexInternal = 0;
-  #snapshotDiffs: {
-    [x: string]: {
-      [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
-    },
-  } = {};
+  #snapshotDiffs: Record<string, Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> = {};
   #aggregatesForDiffInternal?: {
     interfaceDefinitions: string,
-    aggregates: {
-      [x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
-    },
+    aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
   };
-  #aggregates: {
-    [x: string]: {
-      [x: string]: AggregatedInfo,
-    },
-  } = {};
-  #aggregatesSortedFlags: {
-    [x: string]: boolean,
-  } = {};
+  #aggregates: Record<string, Record<string, AggregatedInfo>> = {};
+  #aggregatesSortedFlags: Record<string, boolean> = {};
   profile: Profile;
   nodeTypeOffset!: number;
   nodeNameOffset!: number;
@@ -1324,7 +1310,7 @@ export abstract class HeapSnapshot {
   }
 
   aggregatesWithFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
-      {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate} {
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate> {
     const filter = this.createFilter(nodeFilter);
     // @ts-expect-error key is added in createFilter
     const key = filter ? filter.key : 'allObjects';
@@ -1350,7 +1336,7 @@ export abstract class HeapSnapshot {
       return undefined;
     }
 
-    const set: {[x: number]: boolean} = {};
+    const set: Record<number, boolean> = {};
     for (let i = 0; i < traceIds.length; i++) {
       set[traceIds[i]] = true;
     }
@@ -1444,8 +1430,8 @@ export abstract class HeapSnapshot {
   }
 
   getAggregatesByClassKey(sortedIndexes: boolean, key?: string, filter?: ((arg0: HeapSnapshotNode) => boolean)):
-      {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate} {
-    let aggregates: {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate};
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate> {
+    let aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>;
     if (key && this.#aggregates[key]) {
       aggregates = this.#aggregates[key];
     } else {
@@ -1475,9 +1461,7 @@ export abstract class HeapSnapshot {
       }
     }
 
-    return aggregates as {
-      [x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate,
-    };
+    return aggregates as Record<string, HeapSnapshotModel.HeapSnapshotModel.Aggregate>;
   }
 
   allocationTracesTops(): HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[] {
@@ -1497,7 +1481,8 @@ export abstract class HeapSnapshot {
     return this.#allocationProfile.serializeAllocationStack(allocationNodeId);
   }
 
-  aggregatesForDiff(interfaceDefinitions: string): {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} {
+  aggregatesForDiff(interfaceDefinitions: string):
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff> {
     if (this.#aggregatesForDiffInternal?.interfaceDefinitions === interfaceDefinitions) {
       return this.#aggregatesForDiffInternal.aggregates;
     }
@@ -1507,7 +1492,7 @@ export abstract class HeapSnapshot {
     this.applyInterfaceDefinitions(JSON.parse(interfaceDefinitions) as InterfaceDefinition[]);
     const aggregates = this.getAggregatesByClassKey(true, 'allObjects');
     this.applyInterfaceDefinitions(originalInterfaceDefinitions ?? []);
-    const result: {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff} = {};
+    const result: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff> = {};
 
     const node = this.createNode();
     for (const classKey in aggregates) {
@@ -1717,7 +1702,7 @@ export abstract class HeapSnapshot {
     }
   }
 
-  private sortAggregateIndexes(aggregates: {[x: string]: AggregatedInfo}): void {
+  private sortAggregateIndexes(aggregates: Record<string, AggregatedInfo>): void {
     const nodeA = this.createNode();
     const nodeB = this.createNode();
 
@@ -2619,17 +2604,13 @@ export abstract class HeapSnapshot {
 
   calculateSnapshotDiff(
       baseSnapshotId: string,
-      baseSnapshotAggregates: {[x: string]: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff}):
-      {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff} {
-    let snapshotDiff: {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff}|{
-      [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
-    } = this.#snapshotDiffs[baseSnapshotId];
+      baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>):
+      Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff> {
+    let snapshotDiff: Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff> = this.#snapshotDiffs[baseSnapshotId];
     if (snapshotDiff) {
       return snapshotDiff;
     }
-    snapshotDiff = ({} as {
-      [x: string]: HeapSnapshotModel.HeapSnapshotModel.Diff,
-    });
+    snapshotDiff = ({} as Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>);
 
     const aggregates = this.getAggregatesByClassKey(true, 'allObjects');
     for (const classKey in baseSnapshotAggregates) {
@@ -2921,7 +2902,7 @@ interface HeapSnapshotMetaInfo {
   trace_function_info_fields: string[];
   trace_node_fields: string[];
   sample_fields: string[];
-  type_strings: {[key: string]: string};
+  type_strings: Record<string, string>;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

@@ -67,7 +67,7 @@ interface CollectionDate {
 
 interface CrUXRecord {
   key: Omit<CrUXRequest, 'metrics'>;
-  metrics: {[K in StandardMetricNames]?: MetricResponse;}&{
+  metrics: Partial<Record<StandardMetricNames, MetricResponse>>&{
     // eslint-disable-next-line @typescript-eslint/naming-convention
     form_factors?: FormFactorsResponse,
   };
@@ -85,9 +85,7 @@ export interface CrUXResponse {
   };
 }
 
-export type PageResult = {
-  [K in`${PageScope}-${DeviceScope}`]: CrUXResponse|null;
-}&{
+export type PageResult = Record<`${PageScope}-${DeviceScope}`, CrUXResponse|null>&{
   warnings: string[],
 };
 

@@ -60,7 +60,7 @@ export const hover = async (selector: string, options?: {root?: puppeteer.Elemen
  */
 export async function drainFrontendTaskQueue(): Promise<void> {
   const {devToolsPage} = getBrowserAndPagesWrappers();
-  await devToolsPage.drainFrontendTaskQueue();
+  await devToolsPage.drainTaskQueue();
 }
 
 /**
@@ -91,9 +91,9 @@ export const typeText = async (text: string) => {
   await devToolsPage.typeText(text);
 };
 
-export const pressKey =
-    async (key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const pressKey = async (
+    key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean},
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   await devToolsPage.pressKey(key, modifiers);
 };
 

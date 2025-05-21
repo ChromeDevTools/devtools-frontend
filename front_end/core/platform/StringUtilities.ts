@@ -518,12 +518,8 @@ export const toKebabCase = function(input: string): Lowercase<string> {
 };
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function toKebabCaseKeys(settingValue: {
-  [x: string]: any,
-}): {[x: string]: any} {
-  const result: {
-    [x: string]: any,
-  } = {};
+export function toKebabCaseKeys(settingValue: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {};
   for (const [key, value] of Object.entries(settingValue)) {
     result[toKebabCase(key)] = value;
   }

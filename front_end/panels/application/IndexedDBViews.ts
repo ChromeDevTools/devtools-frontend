@@ -645,11 +645,8 @@ export class IDBDataView extends UI.View.SimpleView {
 export class IDBDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {
   override selectable: boolean;
   valueObjectPresentation: ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection|null;
-  constructor(data: {
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [x: string]: any,
-  }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(data: Record<string, any>) {
     super(data, false);
     this.selectable = true;
     this.valueObjectPresentation = null;

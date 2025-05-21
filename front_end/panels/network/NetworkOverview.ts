@@ -310,7 +310,7 @@ export const RequestTimeRangeNameToColor = {
   [RequestTimeRangeNames.WAITING]: '--network-overview-waiting',
   [RequestTimeRangeNames.RECEIVING]: '--network-overview-receiving',
   [RequestTimeRangeNames.QUEUEING]: '--network-overview-queueing',
-} as {[key: string]: string};
+} as Record<string, string>;
 
 const BAND_HEIGHT = 3;
 const PADDING = 5;

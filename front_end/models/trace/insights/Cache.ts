@@ -197,7 +197,7 @@ export function generateInsight(
   let totalWastedBytes = 0;
   const wastedBytesByRequestId = new Map<string, number>();
   for (const req of contextRequests) {
-    if (!isCacheable(req)) {
+    if (!req.args.data.responseHeaders || !isCacheable(req)) {
       continue;
     }
 

@@ -37,10 +37,10 @@ import {
 import type {Bounds, PathCommands, Quad} from './common.js';
 
 export type PathBounds = Bounds&{
-  leftmostXForY: {[key: string]: number},
-  rightmostXForY: {[key: string]: number},
-  topmostYForX: {[key: string]: number},
-  bottommostYForX: {[key: string]: number},
+  leftmostXForY: Record<string, number>,
+  rightmostXForY: Record<string, number>,
+  topmostYForX: Record<string, number>,
+  bottommostYForX: Record<string, number>,
 };
 
 export interface LineStyle {

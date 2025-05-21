@@ -116,7 +116,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private readonly layerViewHost: LayerViewHost;
   private transformController: TransformController;
   private canvasElement: HTMLCanvasElement;
-  private lastSelection: {[x: string]: Selection|null};
+  private lastSelection: Record<string, Selection|null>;
   private layerTree: SDK.LayerTreeBase.LayerTreeBase|null;
   private readonly textureManager: LayerTextureManager;
   private chromeTextures: Array<WebGLTexture|undefined>;

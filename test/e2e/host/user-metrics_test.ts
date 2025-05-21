@@ -36,7 +36,7 @@ import {waitForSourcesPanel} from '../helpers/sources-helpers.js';
 
 interface UserMetrics {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Action: {[name: string]: number};
+  Action: Record<string, number>;
 }
 
 interface EnumHistogramEvent {

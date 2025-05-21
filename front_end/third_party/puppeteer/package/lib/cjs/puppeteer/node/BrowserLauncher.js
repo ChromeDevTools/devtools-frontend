@@ -72,7 +72,7 @@ class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -162,6 +162,16 @@ class BrowserLauncher {
                 throw new Errors_js_1.TimeoutError(error.message);
             }
             throw error;
+        }
+        if (Array.isArray(enableExtensions)) {
+            if (this.#browser === 'chrome' && !usePipe) {
+                throw new Error('To use `enableExtensions` with a list of paths in Chrome, you must be connected with `--remote-debugging-pipe` (`pipe: true`).');
+            }
+            await Promise.all([
+                enableExtensions.map(path => {
+                    return browser.installExtension(path);
+                }),
+            ]);
         }
         if (waitForInitialPage) {
             await this.waitForPageTarget(browser, timeout);

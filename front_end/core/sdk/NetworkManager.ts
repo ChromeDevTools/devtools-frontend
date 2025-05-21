@@ -1927,9 +1927,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     content: string,
     errorDescription: Host.ResourceLoader.LoadErrorDescription,
   }> {
-    const headers: {
-      [x: string]: string,
-    } = {};
+    const headers: Record<string, string> = {};
 
     const currentUserAgent = this.currentUserAgent();
     if (currentUserAgent) {

@@ -13,13 +13,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import recordingListViewStylesRaw from './recordingListView.css.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const recordingListViewStyles = new CSSStyleSheet();
-recordingListViewStyles.replaceSync(recordingListViewStylesRaw);
+import recordingListViewStyles from './recordingListView.css.js';
 
 const {html} = Lit;
 
@@ -107,7 +101,6 @@ export class RecordingListView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [recordingListViewStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -155,6 +148,7 @@ export class RecordingListView extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
+        <style>${recordingListViewStyles}</style>
         <div class="wrapper">
           <div class="header">
             <h1>${i18nString(UIStrings.savedRecordings)}</h1>

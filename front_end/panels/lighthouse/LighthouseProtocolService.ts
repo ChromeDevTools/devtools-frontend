@@ -262,14 +262,14 @@ export class ProtocolService {
     }
   }
 
-  private async send(action: string, args: {[x: string]: string|string[]|object} = {}): Promise<void> {
+  private async send(action: string, args: Record<string, string|string[]|object> = {}): Promise<void> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
     worker.postMessage({id: messageId, action, args: {...args, id: messageId}});
   }
 
   /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
-  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|object|undefined} = {}):
+  private async sendWithResponse(action: string, args: Record<string, string|string[]|object|undefined> = {}):
       Promise<ReportRenderer.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;

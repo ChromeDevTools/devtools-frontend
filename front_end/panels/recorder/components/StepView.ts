@@ -22,14 +22,8 @@ import type * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
 import type {StepEditedEvent} from './StepEditor.js';
-import stepViewStylesRaw from './stepView.css.js';
+import stepViewStyles from './stepView.css.js';
 import type {TimelineSectionData} from './TimelineSection.js';
-
-/* eslint-disable rulesdir/no-adopted-style-sheets --
- * TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
- **/
-const stepViewStyles = new CSSStyleSheet();
-stepViewStyles.replaceSync(stepViewStylesRaw);
 
 const {html} = Lit;
 
@@ -443,6 +437,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
   // clang-format off
   Lit.render(
     html`
+    <style>${stepViewStyles}</style>
     <devtools-timeline-section .data=${
       {
         isFirstSection: input.isFirstSection,
@@ -614,7 +609,6 @@ export class StepView extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [stepViewStyles];
     this.#observer.observe(this);
     this.#render();
   }

@@ -29,13 +29,10 @@ import * as Converters from './converters/converters.js';
 import * as Extensions from './extensions/extensions.js';
 import * as Models from './models/models.js';
 import * as Actions from './recorder-actions/recorder-actions.js';
-import recorderControllerStylesRaw from './recorderController.css.js';
+import recorderControllerStyles from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of Constructable Stylesheets.
-const recorderControllerStyles = new CSSStyleSheet();
-recorderControllerStyles.replaceSync(recorderControllerStylesRaw);
-
 const {html, Decorators, LitElement} = Lit;
 const {customElement, state} = Decorators;
 
@@ -202,8 +199,6 @@ const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|
 
 @customElement('devtools-recorder-controller')
 export class RecorderController extends LitElement {
-  static override readonly styles = [recorderControllerStyles];
-
   @state() declare private currentRecordingSession?: Models.RecordingSession.RecordingSession;
   @state() declare private currentRecording: StoredRecording|undefined;
   @state() declare private currentStep?: Models.Schema.Step;
@@ -1296,6 +1291,7 @@ export class RecorderController extends LitElement {
     ];
 
     return html`
+        <style>${recorderControllerStyles}</style>
         <div class="wrapper">
           <div class="header" jslog=${VisualLogging.toolbar()}>
             <devtools-button

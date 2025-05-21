@@ -215,7 +215,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","LanguageModelFactory"]
+    receivers: ["CredentialsContainer"]
   },
   {
     name: "defineProperty",
@@ -6584,6 +6584,10 @@ export const NativeFunctions = [
     signatures: [["node","child"]]
   },
   {
+    name: "QuotaExceededError",
+    signatures: [["?message","?options"]]
+  },
+  {
     name: "expand",
     signatures: [["?unit"]],
     receivers: ["Range"]
@@ -7175,6 +7179,10 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
+    name: "SnapEvent",
+    signatures: [["type","?eventInitDict"]]
+  },
+  {
     name: "ByteLengthQueuingStrategy",
     signatures: [["init"]]
   },
@@ -7305,10 +7313,6 @@ export const NativeFunctions = [
   {
     name: "queryFeatureSupport",
     signatures: [["feature"]]
-  },
-  {
-    name: "availability",
-    signatures: [["?options"]]
   },
   {
     name: "registerAnimator",
@@ -7480,10 +7484,6 @@ export const NativeFunctions = [
   {
     name: "CanvasFilter",
     signatures: [["init"]]
-  },
-  {
-    name: "placeElement",
-    signatures: [["element","x","y"]]
   },
   {
     name: "drawElement",
@@ -8816,6 +8816,10 @@ export const NativeFunctions = [
   {
     name: "getFramebufferPixelLocalStorageParameterWEBGL",
     signatures: [["plane","pname"]]
+  },
+  {
+    name: "texElement2D",
+    signatures: [["target","level","internalformat","format","type","element"]]
   },
   {
     name: "mapAsync",

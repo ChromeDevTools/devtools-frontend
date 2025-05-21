@@ -4744,6 +4744,7 @@ domain Emulation
       PressureSource source
       optional PressureMetadata metadata
 
+  # TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
   # Provides a given pressure state that will be processed and eventually be
   # delivered to PressureObserver users. |source| must have been previously
   # overridden by setPressureSourceOverrideEnabled.
@@ -4751,6 +4752,15 @@ domain Emulation
     parameters
       PressureSource source
       PressureState state
+
+  # Provides a given pressure data set that will be processed and eventually be
+  # delivered to PressureObserver users. |source| must have been previously
+  # overridden by setPressureSourceOverrideEnabled.
+  experimental command setPressureDataOverride
+    parameters
+      PressureSource source
+      PressureState state
+      optional number ownContributionEstimate
 
   # Overrides the Idle state.
   command setIdleOverride
@@ -5971,6 +5981,7 @@ domain Network
       Ping
       CSPViolationReport
       Preflight
+      FedCM
       Other
 
   # Unique loader identifier.
@@ -7959,7 +7970,7 @@ domain Network
       LoadNetworkResourcePageResult resource
 
   # Sets Controls for third-party cookie access
-  # Page reload is required before the new cookie bahavior will be observed
+  # Page reload is required before the new cookie behavior will be observed
   experimental command setCookieControls
     parameters
       # Whether 3pc restriction is enabled.
@@ -8535,7 +8546,7 @@ domain Page
 
   # All Permissions Policy features. This enum should match the one defined
   # in services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
-  # LINT.IfChange(PermissionsPolicyFeature)
+  # LINT_SKIP.IfChange(PermissionsPolicyFeature)
   experimental type PermissionsPolicyFeature extends string
     enum
       accelerometer
@@ -8607,6 +8618,7 @@ domain Page
       media-playback-while-not-visible
       microphone
       midi
+      on-device-speech-recognition
       otp-credentials
       payment
       picture-in-picture
@@ -8641,7 +8653,7 @@ domain Page
       window-management
       writer
       xr-spatial-tracking
-  # LINT.ThenChange(//services/network/public/cpp/permissions_policy/permissions_policy_features.json5:PermissionsPolicy)
+  # LINT_SKIP.ThenChange(//services/network/public/cpp/permissions_policy/permissions_policy_features.json5:PermissionsPolicy)
 
   # Reason for a permissions policy feature to be disabled.
   experimental type PermissionsPolicyBlockReason extends string
@@ -11248,13 +11260,6 @@ experimental domain Storage
       # duration in seconds
       array of integer ends
 
-  experimental type AttributionReportingTriggerSpec extends object
-    properties
-      # number instead of integer because not all uint32 can be represented by
-      # int
-      array of number triggerData
-      AttributionReportingEventReportWindows eventReportWindows
-
   experimental type AttributionReportingTriggerDataMatching extends string
     enum
       exact
@@ -11295,7 +11300,10 @@ experimental domain Storage
       Network.TimeSinceEpoch time
       # duration in seconds
       integer expiry
-      array of AttributionReportingTriggerSpec triggerSpecs
+      # number instead of integer because not all uint32 can be represented by
+      # int
+      array of number triggerData
+      AttributionReportingEventReportWindows eventReportWindows
       # duration in seconds
       integer aggregatableReportWindow
       AttributionReportingSourceType type
@@ -13052,7 +13060,6 @@ experimental domain Preload
       InvalidSchemeRedirect
       InvalidSchemeNavigation
       NavigationRequestBlockedByCsp
-      MainFrameNavigation
       MojoBinderPolicy
       RendererProcessCrashed
       RendererProcessKilled
@@ -13660,5 +13667,5 @@ experimental domain BluetoothEmulation
   event descriptorOperationReceived
     parameters
       string descriptorId
-      CharacteristicOperationType type
+      DescriptorOperationType type
       optional binary data

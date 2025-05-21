@@ -400,6 +400,7 @@ export const generatedProperties = [
    "caption-side",
    "caret-animation",
    "caret-color",
+   "caret-shape",
    "clear",
    "clip",
    "clip-path",
@@ -1604,6 +1605,16 @@ export const generatedProperties = [
   "name": "caret-color"
  },
  {
+  "inherited": true,
+  "keywords": [
+   "auto",
+   "bar",
+   "block",
+   "underscore"
+  ],
+  "name": "caret-shape"
+ },
+ {
   "keywords": [
    "none",
    "left",
@@ -1839,7 +1850,8 @@ export const generatedProperties = [
    "normal",
    "inline-size",
    "size",
-   "scroll-state"
+   "scroll-state",
+   "anchored"
   ],
   "name": "container-type"
  },
@@ -2147,7 +2159,8 @@ export const generatedProperties = [
   "keywords": [
    "nowrap",
    "wrap",
-   "wrap-reverse"
+   "wrap-reverse",
+   "balance"
   ],
   "name": "flex-wrap"
  },
@@ -3577,6 +3590,14 @@ export const generatedProperties = [
    "normal"
   ],
   "name": "row-gap"
+ },
+ {
+  "longhands": [
+   "row-rule-width",
+   "row-rule-style",
+   "row-rule-color"
+  ],
+  "name": "row-rule"
  },
  {
   "inherited": false,
@@ -5077,6 +5098,14 @@ export const generatedPropertyValues = {
    "currentcolor"
   ]
  },
+ "caret-shape": {
+  "values": [
+   "auto",
+   "bar",
+   "block",
+   "underscore"
+  ]
+ },
  "clear": {
   "values": [
    "none",
@@ -5241,7 +5270,8 @@ export const generatedPropertyValues = {
    "normal",
    "inline-size",
    "size",
-   "scroll-state"
+   "scroll-state",
+   "anchored"
   ]
  },
  "content-visibility": {
@@ -5457,7 +5487,8 @@ export const generatedPropertyValues = {
   "values": [
    "nowrap",
    "wrap",
-   "wrap-reverse"
+   "wrap-reverse",
+   "balance"
   ]
  },
  "float": {

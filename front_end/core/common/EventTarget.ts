@@ -22,10 +22,8 @@ export function removeEventListeners(eventList: EventDescriptor[]): void {
 
 // This type can be used as the type parameter for `EventTarget`/`ObjectWrapper`
 // when the set of events is not known at compile time.
-export interface GenericEvents {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [eventName: string]: any;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type GenericEvents = Record<string, any>;
 
 export type EventPayloadToRestParameters<Events, T extends keyof Events> = Events[T] extends void ? [] : [Events[T]];
 export type EventListener<Events, T extends keyof Events> = (arg0: EventTargetEvent<Events[T], Events>) => void;

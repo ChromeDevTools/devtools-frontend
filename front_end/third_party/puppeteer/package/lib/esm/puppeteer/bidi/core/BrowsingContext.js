@@ -387,6 +387,9 @@ let BrowsingContext = (() => {
             await this.userContext.browser.removePreloadScript(script);
         }
         async setGeolocationOverride(options) {
+            if (!('coordinates' in options)) {
+                throw new Error('Missing coordinates');
+            }
             await this.userContext.browser.session.send('emulation.setGeolocationOverride', {
                 coordinates: options.coordinates,
                 contexts: [this.id],

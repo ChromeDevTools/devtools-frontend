@@ -40,10 +40,8 @@ export const DevToolsStubErrorCode = -32015;
 const GenericErrorCode = -32000;
 const ConnectionClosedErrorCode = -32001;
 
-interface MessageParams {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [x: string]: any;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MessageParams = Record<string, any>;
 
 type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 
@@ -921,11 +919,9 @@ export class TargetBase {
  * of the invoke_enable, etc. methods that the front-end uses.
  */
 class AgentPrototype {
-  replyArgs: {
-    [x: string]: string[],
-  };
+  replyArgs: Record<string, string[]>;
   description = '';
-  metadata: {[commandName: string]: {parameters: CommandParameter[], description: string, replyArgs: string[]}};
+  metadata: Record<string, {parameters: CommandParameter[], description: string, replyArgs: string[]}>;
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
@@ -956,7 +952,7 @@ class AgentPrototype {
   private prepareParameters(
       method: string, parameters: CommandParameter[], args: unknown[], errorCallback: (arg0: string) => void): Object
       |null {
-    const params: {[x: string]: unknown} = {};
+    const params: Record<string, unknown> = {};
     let hasParams = false;
 
     for (const param of parameters) {

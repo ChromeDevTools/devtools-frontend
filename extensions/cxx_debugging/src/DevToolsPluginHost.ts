@@ -98,7 +98,7 @@ export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, As
 
 export interface Storage {
   onChanged: Chrome.DevTools
-      .EventSink<(changes: {[key: string]: {oldValue: unknown, newValue: unknown}}, namespace: string) => unknown>;
+      .EventSink<(changes: Record<string, {oldValue: unknown, newValue: unknown}>, namespace: string) => unknown>;
   local:
       {set<ResultT>(value: ResultT): void, get<ResultT>(keys: ResultT, callback: (result: ResultT) => unknown): void};
 }

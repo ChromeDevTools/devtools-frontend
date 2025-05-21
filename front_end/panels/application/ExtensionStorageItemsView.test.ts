@@ -70,7 +70,7 @@ describeWithMockConnection('ExtensionStorageItemsView', function() {
   const TEST_EXTENSION_ID = 'abc';
   const TEST_EXTENSION_NAME = 'Hello World';
 
-  const EXAMPLE_DATA: {[key: string]: string} = {a: 'foo', b: 'bar'};
+  const EXAMPLE_DATA: Record<string, string> = {a: 'foo', b: 'bar'};
 
   beforeEach(() => {
     target = createTarget();

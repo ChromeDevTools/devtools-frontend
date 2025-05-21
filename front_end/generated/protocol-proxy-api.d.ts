@@ -1609,11 +1609,19 @@ declare namespace ProtocolProxyApi {
     invoke_setPressureSourceOverrideEnabled(params: Protocol.Emulation.SetPressureSourceOverrideEnabledRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
      * Provides a given pressure state that will be processed and eventually be
      * delivered to PressureObserver users. |source| must have been previously
      * overridden by setPressureSourceOverrideEnabled.
      */
     invoke_setPressureStateOverride(params: Protocol.Emulation.SetPressureStateOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Provides a given pressure data set that will be processed and eventually be
+     * delivered to PressureObserver users. |source| must have been previously
+     * overridden by setPressureSourceOverrideEnabled.
+     */
+    invoke_setPressureDataOverride(params: Protocol.Emulation.SetPressureDataOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Overrides the Idle state.
@@ -2255,7 +2263,7 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Sets Controls for third-party cookie access
-     * Page reload is required before the new cookie bahavior will be observed
+     * Page reload is required before the new cookie behavior will be observed
      */
     invoke_setCookieControls(params: Protocol.Network.SetCookieControlsRequest): Promise<Protocol.ProtocolResponseWithError>;
 

@@ -59,8 +59,8 @@ export class InsertAssignment<T> {
 }
 
 export class ArrayAssignments<T> {
-  value: {[n: number]: T};
-  constructor(value: {[n: number]: T}) {
+  value: Record<number, T>;
+  constructor(value: Record<number, T>) {
     this.value = value;
   }
 }

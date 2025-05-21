@@ -41,7 +41,7 @@ export class HeapSnapshotLoader {
   #done: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #snapshot?: {[x: string]: any};
+  #snapshot?: Record<string, any>;
   #array!: Platform.TypedArrayUtilities.BigUint32Array|null;
   #arrayIndex!: number;
   #json = '';

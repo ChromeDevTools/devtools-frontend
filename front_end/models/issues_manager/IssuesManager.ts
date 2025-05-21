@@ -168,9 +168,7 @@ export interface IssuesManagerCreationOptions {
   hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>;
 }
 
-export interface HideIssueMenuSetting {
-  [x: string]: IssueStatus;
-}
+export type HideIssueMenuSetting = Record<string, IssueStatus>;
 
 export const enum IssueStatus {
   HIDDEN = 'Hidden',

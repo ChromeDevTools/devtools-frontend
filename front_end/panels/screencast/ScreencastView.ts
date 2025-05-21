@@ -95,7 +95,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private networkManager: SDK.NetworkManager.NetworkManager|null;
   private readonly inputModel: InputModel|null;
-  private shortcuts: {[x: number]: (arg0?: Event|undefined) => boolean};
+  private shortcuts: Record<number, (arg0?: Event|undefined) => boolean>;
   private scrollOffsetX: number;
   private scrollOffsetY: number;
   private screenZoom: number;

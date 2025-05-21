@@ -45,7 +45,7 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<
     return this.#storageAreaInternal;
   }
 
-  async getItems(keys?: string[]): Promise<{[key: string]: unknown}> {
+  async getItems(keys?: string[]): Promise<Record<string, unknown>> {
     const params: Protocol.Extensions.GetStorageItemsRequest = {
       id: this.#extensionIdInternal,
       storageArea: this.#storageAreaInternal,

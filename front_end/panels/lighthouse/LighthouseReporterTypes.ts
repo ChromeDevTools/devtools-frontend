@@ -53,9 +53,9 @@ export interface ReportJSON {
   runWarnings?: string[];
   // eslint-disable-next-line @typescript-eslint/naming-convention
   artifacts: {Trace: {traceEvents: unknown[]}};
-  audits: {[x: string]: AuditResultJSON};
-  categories: {[x: string]: CategoryJSON};
-  categoryGroups: {[x: string]: GroupJSON};
+  audits: Record<string, AuditResultJSON>;
+  categories: Record<string, CategoryJSON>;
+  categoryGroups: Record<string, GroupJSON>;
 }
 export interface DetailsJSON {
   type: string;

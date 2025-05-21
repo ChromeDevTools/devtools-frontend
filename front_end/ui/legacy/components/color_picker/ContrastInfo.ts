@@ -8,9 +8,7 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private readonly isNullInternal: boolean;
   private contrastRatioInternal: number|null;
   private contrastRatioAPCAInternal: number|null;
-  private contrastRatioThresholds: {
-    [x: string]: number,
-  }|null;
+  private contrastRatioThresholds: Record<string, number>|null;
   private readonly contrastRatioAPCAThresholdInternal: number|null;
   private fgColor: Common.Color.Legacy|null;
   private bgColorInternal: Common.Color.Legacy|null;

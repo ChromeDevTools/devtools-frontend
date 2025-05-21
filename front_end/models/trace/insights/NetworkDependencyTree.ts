@@ -63,6 +63,11 @@ export const UIStrings = {
    */
   noPreconnectOrigins: 'no origins were preconnected',
   /**
+   * @description A warning message that is shown when found more than 4 preconnected links
+   */
+  tooManyPreconnectLinksWarning:
+      'More than 4 `preconnect` connections were found. These should be used sparingly and only to the most important origins.',
+  /**
    * @description A warning message that is shown when the user added preconnect for some unnecessary origins.
    */
   unusedWarning: 'Unused preconnect. Only use `preconnect` for origins that the page is likely to request.',
@@ -112,6 +117,8 @@ const nonCriticalResourceTypes = new Set<Protocol.Network.ResourceType>([
 const PRECONNECT_SOCKET_MAX_IDLE_IN_MS = Types.Timing.Milli(15_000);
 
 const IGNORE_THRESHOLD_IN_MILLISECONDS = Types.Timing.Milli(50);
+
+export const TOO_MANY_PRECONNECTS_THRESHOLD = 4;
 
 export interface CriticalRequestNode {
   request: Types.Events.SyntheticNetworkRequest;
@@ -482,7 +489,7 @@ export function generatePreconnectCandidates(
 
   preconnectCandidates = preconnectCandidates.sort((a, b) => b.wastedMs - a.wastedMs);
 
-  return preconnectCandidates;
+  return preconnectCandidates.slice(0, TOO_MANY_PRECONNECTS_THRESHOLD);
 }
 
 export function generateInsight(

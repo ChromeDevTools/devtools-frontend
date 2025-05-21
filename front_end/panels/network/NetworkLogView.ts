@@ -482,7 +482,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
-  private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<{[key: string]: boolean}>;
+  private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<Record<string, boolean>>;
   private readonly networkShowOptionsToGenerateHarWithSensitiveData: Common.Settings.Setting<boolean>;
   private rawRowHeight: number;
   private readonly progressBarContainer: Element;
@@ -735,6 +735,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private static requestResponseHeaderFilter(value: string, request: SDK.NetworkRequest.NetworkRequest): boolean {
     return request.responseHeaderValue(value) !== undefined;
+  }
+
+  private static requestRequestHeaderFilter(headerName: string, request: SDK.NetworkRequest.NetworkRequest): boolean {
+    return request.requestHeaders().some(header => header.name.toLowerCase() === headerName.toLowerCase());
   }
 
   private static requestResponseHeaderSetCookieFilter(value: string, request: SDK.NetworkRequest.NetworkRequest):
@@ -1652,6 +1656,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
     }
 
+    for (const header of request.requestHeaders()) {
+      this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasRequestHeader, header.name);
+    }
+
     for (const cookie of request.responseCookies) {
       this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.SetCookieDomain, cookie.domain());
       this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.SetCookieName, cookie.name());
@@ -2042,6 +2050,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
       case NetworkForward.UIFilter.FilterType.ResponseHeaderValueSetCookie:
         return NetworkLogView.requestResponseHeaderSetCookieFilter.bind(null, value);
+
+      case NetworkForward.UIFilter.FilterType.HasRequestHeader:
+        return NetworkLogView.requestRequestHeaderFilter.bind(null, value);
 
       case NetworkForward.UIFilter.FilterType.Is:
         if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.RUNNING) {

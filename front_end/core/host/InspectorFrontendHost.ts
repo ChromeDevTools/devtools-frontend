@@ -379,12 +379,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   registerPreference(_name: string, _options: {synced?: boolean}): void {
   }
 
-  getPreferences(callback: (arg0: {
-                   [x: string]: string,
-                 }) => void): void {
-    const prefs: {
-      [x: string]: string,
-    } = {};
+  getPreferences(callback: (arg0: Record<string, string>) => void): void {
+    const prefs: Record<string, string> = {};
     for (const name in window.localStorage) {
       prefs[name] = window.localStorage[name];
     }
@@ -633,9 +629,7 @@ initializeInspectorFrontendHost();
 globalThis.InspectorFrontendAPI = new InspectorFrontendAPIImpl();
 })();
 
-export function isUnderTest(prefs?: {
-  [x: string]: string,
-}): boolean {
+export function isUnderTest(prefs?: Record<string, string>): boolean {
   // Integration tests rely on test queryParam.
   if (Root.Runtime.Runtime.queryParam('test')) {
     return true;

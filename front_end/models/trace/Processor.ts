@@ -621,7 +621,7 @@ export class TraceProcessor extends EventTarget {
  * @returns A map from trace event handler name to trace event handler whose entries
  * iterate in such a way that each handler is visited after its dependencies.
  */
-export function sortHandlers(traceHandlers: Partial<{[key in Handlers.Types.HandlerName]: Handlers.Types.Handler}>):
+export function sortHandlers(traceHandlers: Partial<Record<Handlers.Types.HandlerName, Handlers.Types.Handler>>):
     Map<Handlers.Types.HandlerName, Handlers.Types.Handler> {
   const sortedMap = new Map<Handlers.Types.HandlerName, Handlers.Types.Handler>();
   const visited = new Set<Handlers.Types.HandlerName>();

@@ -144,9 +144,9 @@ describeWithEnvironment('TraceProcessor', function() {
       reset() {},
     };
 
-    function fillHandlers(handlersDeps: {[key: string]: {deps ? () : Trace.Handlers.Types.HandlerName[]}}):
-        {[key: string]: Trace.Handlers.Types.Handler} {
-      const handlers: {[key: string]: Trace.Handlers.Types.Handler} = {};
+    function fillHandlers(handlersDeps: Record<string, {deps ? () : Trace.Handlers.Types.HandlerName[]}>):
+        Record<string, Trace.Handlers.Types.Handler> {
+      const handlers: Record<string, Trace.Handlers.Types.Handler> = {};
       for (const handler in handlersDeps) {
         handlers[handler] = {...baseHandler, ...handlersDeps[handler]};
       }
@@ -154,7 +154,7 @@ describeWithEnvironment('TraceProcessor', function() {
     }
 
     it('sorts handlers satisfying their dependencies 1', function() {
-      const handlersDeps: {[key: string]: {deps ? () : Trace.Handlers.Types.HandlerName[]}} = {
+      const handlersDeps: Record<string, {deps ? () : Trace.Handlers.Types.HandlerName[]}> = {
         Meta: {},
         GPU: {
           deps() {
@@ -194,7 +194,7 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.deepEqual([...Trace.Processor.sortHandlers(handlers).keys()], expectedOrder);
     });
     it('sorts handlers satisfying their dependencies 2', function() {
-      const handlersDeps: {[key: string]: {deps ? () : Trace.Handlers.Types.HandlerName[]}} = {
+      const handlersDeps: Record<string, {deps ? () : Trace.Handlers.Types.HandlerName[]}> = {
         GPU: {
           deps() {
             return ['LayoutShifts', 'NetworkRequests'];
@@ -213,7 +213,7 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.deepEqual([...Trace.Processor.sortHandlers(handlers).keys()], expectedOrder);
     });
     it('throws an error when a dependency cycle is present among handlers', function() {
-      const handlersDeps: {[key: string]: {deps ? () : Trace.Handlers.Types.HandlerName[]}} = {
+      const handlersDeps: Record<string, {deps ? () : Trace.Handlers.Types.HandlerName[]}> = {
         Meta: {},
         GPU: {
           deps() {

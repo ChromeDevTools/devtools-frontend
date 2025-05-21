@@ -42,7 +42,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   private minScale: number;
   private maxScale: number;
   private readonly controlPanelToolbar: UI.Toolbar.Toolbar;
-  private readonly modeButtons: {[x: string]: UI.Toolbar.ToolbarToggle};
+  private readonly modeButtons: Record<string, UI.Toolbar.ToolbarToggle>;
   constructor(element: HTMLElement, disableRotate?: boolean) {
     super();
     this.scaleInternal = 1;

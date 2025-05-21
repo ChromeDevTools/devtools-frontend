@@ -19,7 +19,8 @@ import {
   stopRecording,
 } from '../helpers/performance-helpers.js';
 
-describe('The Performance panel', function() {
+// Flaky
+describe.skip('[crbug.com/414579835] The Performance panel', function() {
   // These tests move between panels, which takes time.
   if (this.timeout() !== 0) {
     this.timeout(30000);

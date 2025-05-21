@@ -725,11 +725,6 @@ export default defineConfig([
           interfaces: ['BDD', 'TDD'],
         },
         {
-          name: 'describeWithRealConnection',
-          type: 'suite',
-          interfaces: ['BDD', 'TDD'],
-        },
-        {
           name: 'itScreenshot',
           type: 'testCase',
           interfaces: ['BDD', 'TDD'],

@@ -188,7 +188,7 @@ ElementsTestRunner.computedStyleWidget = function() {
   return Elements.ElementsPanel.ElementsPanel.instance().computedStyleWidget;
 };
 
-ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
+ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand) {
   const computed = ElementsTestRunner.computedStyleWidget();
   const treeOutline = computed.propertiesOutline.querySelector('devtools-tree-outline');
   const children = treeOutline.shadowRoot.querySelector('[role="treeitem"]');
@@ -229,7 +229,7 @@ ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInne
   }
 
   function text(node) {
-    return printInnerText ? node.innerText : node.textContent;
+    return node.innerText;
   }
 };
 
@@ -471,11 +471,11 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
 };
 
 ElementsTestRunner.dumpSelectedElementStyles =
-    async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
+    async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks) {
   const sectionBlocks = Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks;
 
   if (!excludeComputed) {
-    await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
+    await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */);
   }
 
   for (const block of sectionBlocks) {
@@ -494,16 +494,16 @@ ElementsTestRunner.dumpSelectedElementStyles =
         TestRunner.addResult('======== ' + text(section.element.previousSibling) + nodeDescription + ' ========');
       }
 
-      await printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText);
+      await printStyleSection(section, omitLonghands, includeSelectorGroupMarks);
     }
   }
 
   function text(node) {
-    return printInnerText ? node.innerText : node.textContent;
+    return node.innerText;
   }
 };
 
-async function printStyleSection(section, omitLonghands, includeSelectorGroupMarks, printInnerText) {
+async function printStyleSection(section, omitLonghands, includeSelectorGroupMarks) {
   if (!section) {
     return;
   }
@@ -533,14 +533,14 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
   }
 
   TestRunner.addResult(selectorText);
-  ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2), printInnerText);
+  ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2));
   if (!section.showAllButton.classList.contains('hidden')) {
     TestRunner.addResult(text(section.showAllButton));
   }
   TestRunner.addResult('');
 
   function text(node) {
-    return printInnerText ? node.innerText : node.textContent;
+    return node.innerText;
   }
 }
 
@@ -688,17 +688,16 @@ ElementsTestRunner.getFirstPropertyTreeItemForSection = function(section, proper
   return null;
 };
 
-ElementsTestRunner.dumpStyleTreeOutline = function(treeItem, depth, printInnerText) {
+ElementsTestRunner.dumpStyleTreeOutline = function(treeItem, depth) {
   const children = treeItem.rootElement().children();
 
   for (let i = 0; i < children.length; ++i) {
-    ElementsTestRunner.dumpStyleTreeItem(children[i], '', depth || 2, printInnerText);
+    ElementsTestRunner.dumpStyleTreeItem(children[i], '', depth || 2);
   }
 };
 
-ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printInnerText) {
-  const textContent = printInnerText ? treeItem.listItemElement.innerText :
-                                       TestRunner.textContentWithoutStyles(treeItem.listItemElement);
+ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth) {
+  const textContent = treeItem.listItemElement.innerText;
   if (textContent.indexOf(' width:') !== -1 || textContent.indexOf(' height:') !== -1) {
     return;
   }
@@ -726,7 +725,7 @@ ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printIn
     const children = treeItem.children();
 
     for (let i = 0; children && i < children.length; ++i) {
-      ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth, printInnerText);
+      ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth);
     }
   }
 };

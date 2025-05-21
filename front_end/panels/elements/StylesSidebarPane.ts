@@ -226,9 +226,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this.clipboardCopy.bind(this));
-    if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover')) {
-      this.#webCustomData = WebCustomData.create();
-    }
 
     this.boundOnScroll = this.onScroll.bind(this);
     this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
@@ -241,6 +238,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   get webCustomData(): WebCustomData|undefined {
+    if (!this.#webCustomData &&
+        Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover').get()) {
+      // WebCustomData.create() fetches the property docs, so this must happen lazily.
+      this.#webCustomData = WebCustomData.create();
+    }
     return this.#webCustomData;
   }
 

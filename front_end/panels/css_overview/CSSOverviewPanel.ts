@@ -8,17 +8,17 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as CSSOverviewComponents from './components/components.js';
 import cssOverviewStyles from './cssOverview.css.js';
 import {type ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
 import {Events, type OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
+import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {
   readonly #controller: OverviewController;
-  readonly #startView: CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView;
+  readonly #startView: CSSOverviewStartView;
   readonly #processingView: CSSOverviewProcessingView;
   readonly #completedView: CSSOverviewCompletedView;
   #model?: CSSOverviewModel;
@@ -40,9 +40,8 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     this.element.classList.add('css-overview-panel');
 
     this.#controller = controller;
-    this.#startView = new CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView();
-    this.#startView.addEventListener(
-        'overviewstartrequested', () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_START));
+    this.#startView = new CSSOverviewStartView();
+    this.#startView.onStartCapture = () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_START);
     this.#processingView = new CSSOverviewProcessingView(this.#controller);
     this.#completedView = new CSSOverviewCompletedView(this.#controller);
 
@@ -110,19 +109,18 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     this.#processingView.hideWidget();
     this.#completedView.hideWidget();
 
-    this.contentElement.append(this.#startView);
-    this.#startView.show();
+    this.#startView.show(this.contentElement);
   }
 
   #renderOverviewStartedView(): void {
-    this.#startView.hide();
+    this.#startView.hideWidget();
     this.#completedView.hideWidget();
 
     this.#processingView.show(this.contentElement);
   }
 
   #renderOverviewCompletedView(): void {
-    this.#startView.hide();
+    this.#startView.hideWidget();
     this.#processingView.hideWidget();
 
     this.#completedView.show(this.contentElement);

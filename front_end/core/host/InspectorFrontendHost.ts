@@ -30,7 +30,6 @@
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
@@ -237,6 +236,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       }
     }
 
+    /* eslint-disable-next-line rulesdir/no-imperative-dom-api */
     const link = document.createElement('a');
     link.download = fileName;
     const blob = new Blob([buffer.join('')], {type: 'text/plain'});

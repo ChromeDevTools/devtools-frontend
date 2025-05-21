@@ -127,7 +127,7 @@ try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64"
 try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-15", "x86-64")
 try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64")
-try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64")
+try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64", properties = {"target_cpu": "arm64"})
 try_pair(
     "dtf_linux",
     "dbg",

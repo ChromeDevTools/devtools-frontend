@@ -1397,8 +1397,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('handleMcpRequest', () => {
     const explanation = 'I need more information';
-    const notAvailable =
-        'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings';
 
     beforeEach(() => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
@@ -1418,7 +1416,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
         assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
-        assert.strictEqual(err.message, notAvailable);
+        assert.strictEqual(
+            err.message, 'For AI features to be available, you need to enable AI assistance in DevTools settings.');
       }
     });
 
@@ -1431,7 +1430,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
         assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
-        assert.strictEqual(err.message, notAvailable);
+        assert.strictEqual(
+            err.message, 'This feature is only available when you sign into Chrome with your Google account.');
       }
     });
 
@@ -1451,7 +1451,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
         assert.fail('Expected `handleMcpRequest` to throw');
       } catch (err) {
-        assert.strictEqual(err.message, notAvailable);
+        assert.strictEqual(err.message, 'This feature is only available to users who are 18 years of age or older.');
       }
     });
 

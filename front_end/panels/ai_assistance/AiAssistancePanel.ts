@@ -205,6 +205,10 @@ const UIStringsNotTranslate = {
    * @description Message displayed in toast in case of any failures while uploading an image file as input.
    */
   uploadImageFailureMessage: 'Failed to upload image. Please try again.',
+  /**
+   * @description Error message shown when AI assistance is not enabled in DevTools settings.
+   */
+  enableInSettings: 'For AI features to be available, you need to enable AI assistance in DevTools settings.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel.ts', UIStrings);
@@ -1563,12 +1567,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
       Promise<string> {
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.mcpRequestReceived)});
+    const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-    const isAidaAvailable = this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
-    if (!aiAssistanceSetting || isBlockedByAge || !isAidaAvailable) {
-      throw new Error(
-          'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings');
+    if (!aiAssistanceSetting) {
+      disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
+    }
+    if (disabledReasons.length > 0) {
+      throw new Error(disabledReasons.join(' '));
     }
 
     switch (conversationType) {

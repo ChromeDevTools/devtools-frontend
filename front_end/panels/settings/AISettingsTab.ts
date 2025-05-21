@@ -8,6 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../ui/components/input/input.js';
@@ -181,22 +182,6 @@ const UIStrings = {
    *@description Label for a toggle to enable the AI assistance feature
    */
   enableAiSuggestedAnnotations: 'Enable AI suggestions for performance panel annotations',
-  /**
-   * @description Message shown to the user if the age check is not successful.
-   */
-  ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
-  /**
-   * @description The error message when the user is not logged in into Chrome.
-   */
-  notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
-  /**
-   * @description Message shown when the user is offline.
-   */
-  offline: 'This feature is only available with an active internet connection.',
-  /**
-   *@description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
-   */
-  notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -518,38 +503,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #getDisabledReasons(): Platform.UIString.LocalizedString[] {
-    const reasons: Platform.UIString.LocalizedString[] = [];
-    if (Root.Runtime.hostConfig.isOffTheRecord) {
-      reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
-    }
-    switch (this.#aidaAvailability) {
-      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
-      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
-        reasons.push(i18nString(UIStrings.notLoggedIn));
-        break;
-      // @ts-expect-error
-      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:  // fallthrough
-        reasons.push(i18nString(UIStrings.offline));
-      case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
-        // No age check if there is no logged in user. Age check would always fail in that case.
-        if (Root.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
-          reasons.push(i18nString(UIStrings.ageRestricted));
-        }
-      }
-    }
-    // `consoleInsightsSetting` and `aiAssistantSetting` are both disabled for the same reasons.
-    const disabledReasons = this.#consoleInsightsSetting?.disabledReasons() || [];
-    reasons.push(...disabledReasons);
-    return reasons;
-  }
-
   #renderSetting(setting: Common.Settings.Setting<boolean>): Lit.LitTemplate {
     const settingData = this.#settingToParams.get(setting);
     if (!settingData) {
       return Lit.nothing;
     }
-    const disabledReasons = this.#getDisabledReasons();
+    const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
     const isDisabled = disabledReasons.length > 0;
     const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
     const detailsClasses = {
@@ -641,7 +600,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   }
 
   override async render(): Promise<void> {
-    const disabledReasons = this.#getDisabledReasons();
+    const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

@@ -1586,8 +1586,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   async handleMcpStylingRequest(prompt: string, selector?: string): Promise<string> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
-    // Cancel any previous in-flight conversation.
-    this.#cancel();
+    const mcpConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(stylingAgent),
+        [],
+        stylingAgent.id,
+        /* isReadOnly */ true,
+        /* isMcp */ true,
+    );
+    this.#historicalConversations.push(mcpConversation);
 
     if (selector !== undefined) {
       await inspectElementBySelector(selector);
@@ -1601,6 +1607,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         },
     );
     for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void mcpConversation.addHistoryItem(data);
+      }
+
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }

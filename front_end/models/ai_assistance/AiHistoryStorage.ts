@@ -40,11 +40,15 @@ export class Conversation {
   readonly type: ConversationType;
   #isReadOnly: boolean;
   readonly history: ResponseData[];
+  #isMcp: boolean;
 
-  constructor(type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true) {
+  constructor(
+      type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true,
+      isMcp = false) {
     this.type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
+    this.#isMcp = isMcp;
     this.history = this.#reconstructHistory(data);
   }
 
@@ -59,6 +63,9 @@ export class Conversation {
       return;
     }
 
+    if (this.#isMcp) {
+      return `[MCP] ${query.substring(0, MAX_TITLE_LENGTH - 6)}${query.length > MAX_TITLE_LENGTH - 6 ? '…' : ''}`;
+    }
     return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? '…' : ''}`;
   }
 

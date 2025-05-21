@@ -1514,6 +1514,31 @@ STOP`,
       }
     });
 
+    it('persists MCP conversations to history', async () => {
+      const {panel, view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+      await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+      const {contextMenu, id} = openHistoryContextMenu(view.input, '[MCP] Please help me debug this problem');
+      assert.isDefined(id);
+      contextMenu.invokeHandler(id);
+      assert.isTrue((await view.nextInput).isReadOnly);
+      assert.deepEqual(view.input.messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          imageInput: undefined,
+          text: 'Please help me debug this problem',
+        },
+        {
+          answer: explanation,
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+    });
+
     it('throws an error for file assistance requests', async () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),

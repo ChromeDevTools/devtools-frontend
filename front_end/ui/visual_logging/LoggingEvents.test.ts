@@ -250,11 +250,10 @@ describe('LoggingEvents', () => {
     );
     await VisualLogging.LoggingEvents.logSettingAccess('test-setting', 'test-value');
     assert.deepEqual(
-        recordSettingAccess.lastCall.firstArg,
-        {name: 'test-setting', numericValue: undefined, stringValue: 'test-value'});
+        recordSettingAccess.lastCall.firstArg, {name: -1361026584, numeric_value: undefined, string_value: 856719891});
 
     await VisualLogging.LoggingEvents.logSettingAccess('test-setting', 123);
     assert.deepEqual(
-        recordSettingAccess.lastCall.firstArg, {name: 'test-setting', numericValue: 123, stringValue: undefined});
+        recordSettingAccess.lastCall.firstArg, {name: -1361026584, numeric_value: 123, string_value: undefined});
   });
 });

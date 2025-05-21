@@ -199,9 +199,11 @@ export interface KeyDownEvent {
 }
 
 export interface SettingAccessEvent {
-  name: string;
-  numericValue?: number;
-  stringValue?: string;
+  name: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  numeric_value?: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  string_value?: number;
 }
 
 // While `EventDescriptors` are used to dynamically dispatch host binding events,

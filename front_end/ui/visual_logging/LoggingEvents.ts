@@ -178,7 +178,15 @@ export async function logSettingAccess(name: string, value: number|string|boolea
   } else if (typeof value === 'number' || typeof value === 'boolean') {
     numericValue = Number(value);
   }
-  const settingAccessEvent: Host.InspectorFrontendHostAPI.SettingAccessEvent = {name, numericValue, stringValue};
+  const nameHash = await contextAsNumber(name);
+  if (!nameHash) {
+    return;
+  }
+  const settingAccessEvent: Host.InspectorFrontendHostAPI.SettingAccessEvent = {
+    name: nameHash,
+    numeric_value: numericValue,
+    string_value: await contextAsNumber(stringValue),
+  };
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordSettingAccess(settingAccessEvent);
   processEventForDebugging('SettingAccess', null, {name, numericValue, stringValue});
 }

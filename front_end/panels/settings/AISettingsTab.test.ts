@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import * as Switch from '../../ui/components/switch/switch.js';
@@ -16,9 +17,13 @@ async function drainMicroTasks() {
 }
 
 describeWithEnvironment('AISettingsTab', () => {
+  let deleteAiAssistanceHistoryStub:
+      sinon.SinonStub<Parameters<typeof AiAssistanceModel.AiHistoryStorage.prototype.deleteAll>>;
   let view: Settings.AISettingsTab.AISettingsTab|undefined;
 
   beforeEach(async () => {
+    deleteAiAssistanceHistoryStub = sinon.stub(AiAssistanceModel.AiHistoryStorage.prototype, 'deleteAll');
+    AiAssistanceModel.AiHistoryStorage.instance({forceNew: true});
     updateHostConfig({
       devToolsAiGeneratedTimelineLabels: {
         enabled: true,
@@ -269,6 +274,7 @@ describeWithEnvironment('AISettingsTab', () => {
 
     (switches[1].parentElement as HTMLElement).click();
     assert.isFalse(Common.Settings.moduleSetting('ai-assistance-enabled').get());
-    assert.isEmpty(Common.Settings.moduleSetting('ai-assistance-history-entries').get());
+    assert.isTrue(
+        deleteAiAssistanceHistoryStub.called, 'Expected AiHistoryStorage deleteAll to be called but it is not called');
   });
 });

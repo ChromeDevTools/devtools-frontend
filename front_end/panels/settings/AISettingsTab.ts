@@ -210,7 +210,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
   #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
-  #aiAssistanceHistorySetting?: Common.Settings.Setting<unknown[]>;
   #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
   // Setting to parameters needed to display it in the UI.
@@ -228,13 +227,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
     } catch {
       this.#aiAssistanceSetting = undefined;
-    }
-    try {
-      this.#aiAssistanceHistorySetting =
-          // Name needs to match the one in AiHistoryStorage
-          Common.Settings.Settings.instance().moduleSetting('ai-assistance-history-entries');
-    } catch {
-      this.#aiAssistanceHistorySetting = undefined;
     }
 
     if (Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled) {
@@ -418,11 +410,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             .createSetting('console-insights-skip-reminder', true, Common.Settings.SettingStorageType.SESSION)
             .set(true);
       }
-    } else if (setting.name === 'ai-assistance-enabled') {
-      // If history was create create and the value changes to `false`
-      if (this.#aiAssistanceHistorySetting && !setting.get()) {
-        this.#aiAssistanceHistorySetting.set([]);
-      }
+    } else if (setting.name === 'ai-assistance-enabled' && !setting.get()) {
+      // If the "AI Assistance" is toggled off, we remove all the history entries related to the feature.
+      void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
     }
     void this.render();
   }

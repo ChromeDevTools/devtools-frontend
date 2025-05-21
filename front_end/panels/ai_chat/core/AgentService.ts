@@ -78,6 +78,15 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       if (!modelName) {
         throw new Error('Model name is required for initialization');
       }
+      
+      // Check if the configuration requires an API key
+      const requiresApiKey = this.#doesCurrentConfigRequireApiKey();
+      
+      // If API key is required but not provided, throw error
+      if (requiresApiKey && !apiKey) {
+        const provider = localStorage.getItem('ai_chat_provider') || 'openai';
+        throw new Error(`${provider === 'openai' ? 'OpenAI' : 'LiteLLM'} API key is required for this configuration`);
+      }
 
       // Will throw error if OpenAI model is used without API key
       this.#graph = createAgentGraph(apiKey, modelName);
@@ -85,9 +94,11 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       this.#isInitialized = true;
     } catch (error) {
       console.error('Failed to initialize agent:', error);
-      // Check if it's a specific API key error
-      if (error instanceof Error && error.message === 'OpenAI API key is required for OpenAI models') {
-        throw new Error('OpenAI API key is required for this model');
+      // Pass through specific errors
+      if (error instanceof Error && 
+          (error.message.includes('API key is required') || 
+           error.message.includes('endpoint is required'))) {
+        throw error;
       }
       throw new Error(i18nString(UIStrings.agentInitFailed));
     }
@@ -118,7 +129,10 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
    * Sends a message to the AI agent
    */
   async sendMessage(text: string, imageInput?: ImageInputData, selectedAgentType?: string | null): Promise<ChatMessage> {
-    if (!this.#apiKey) {
+    // Check if the current configuration requires an API key
+    const requiresApiKey = this.#doesCurrentConfigRequireApiKey();
+    
+    if (requiresApiKey && !this.#apiKey) {
       throw new Error('API key not set. Please set the API key in settings.');
     }
 
@@ -269,6 +283,36 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       }
     }
     return pageTitle;
+  }
+  
+  /**
+   * Helper to determine if the current configuration requires an API key
+   * LiteLLM with an endpoint doesn't require an API key, other providers do
+   */
+  #doesCurrentConfigRequireApiKey(): boolean {
+    try {
+      // Check the selected provider
+      const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+      
+      // OpenAI provider always requires an API key
+      if (selectedProvider === 'openai') {
+        return true;
+      }
+      
+      // For LiteLLM, only require API key if no endpoint is configured
+      if (selectedProvider === 'litellm') {
+        const hasLiteLLMEndpoint = Boolean(localStorage.getItem('ai_chat_litellm_endpoint'));
+        // If we have an endpoint, API key is optional
+        return !hasLiteLLMEndpoint;
+      }
+      
+      // Default to requiring API key for any unknown provider
+      return true;
+    } catch (error) {
+      console.error('Error checking if API key is required:', error);
+      // Default to requiring API key in case of errors
+      return true;
+    }
   }
 }
 

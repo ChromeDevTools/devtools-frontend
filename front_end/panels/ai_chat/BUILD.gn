@@ -18,6 +18,8 @@ devtools_module("ai_chat") {
   sources = [
     "ui/AIChatPanel.ts",
     "ui/ChatView.ts",
+    "ui/HelpDialog.ts",
+    "ui/SettingsDialog.ts",
     "ai_chat_impl.ts",
     "core/Graph.ts",
     "core/State.ts",
@@ -73,6 +75,8 @@ devtools_module("ai_chat") {
 _ai_chat_sources = [
     "ui/AIChatPanel.ts",
     "ui/ChatView.ts",
+    "ui/HelpDialog.ts",
+    "ui/SettingsDialog.ts",
     "ai_chat_impl.ts",
     "core/Graph.ts",
     "core/State.ts",

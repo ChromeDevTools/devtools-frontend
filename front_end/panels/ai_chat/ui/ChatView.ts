@@ -277,8 +277,9 @@ export class ChatView extends HTMLElement {
   }
 
   set data(data: Props) {
-    const previousMessageCount = this.#messages.length;
-    const willHaveMoreMessages = data.messages.length > previousMessageCount;
+    const previousMessageCount = this.#messages?.length || 0;
+    const willHaveMoreMessages = data.messages?.length > previousMessageCount;
+    const wasInputDisabled = this.#isInputDisabled;
 
     this.#messages = data.messages;
     this.#state = data.state;
@@ -298,6 +299,17 @@ export class ChatView extends HTMLElement {
     // Store input disabled state and placeholder
     this.#isInputDisabled = data.isInputDisabled || false;
     this.#inputPlaceholder = data.inputPlaceholder || 'Ask AI Assistant...';
+    
+    // Log the input state changes
+    if (wasInputDisabled !== this.#isInputDisabled) {
+      console.log(`Input disabled state changed: ${wasInputDisabled} -> ${this.#isInputDisabled}`);
+      
+      // If we have a text input element, update its disabled state directly
+      if (this.#textInputElement) {
+        this.#textInputElement.disabled = this.#isInputDisabled;
+        console.log(`Directly updated textarea disabled state to: ${this.#isInputDisabled}`);
+      }
+    }
 
     // Update the selectedPromptType from the passed selectedAgentType if it exists
     if (data.selectedAgentType !== undefined) {
@@ -306,7 +318,8 @@ export class ChatView extends HTMLElement {
 
     // Check if we should exit the first message view state
     // We're no longer in first message view if there are user messages
-    const hasUserMessages = data.messages.some(msg => msg.entity === ChatMessageEntity.USER);
+    const hasUserMessages = data.messages && Array.isArray(data.messages) ? 
+      data.messages.some(msg => msg && msg.entity === ChatMessageEntity.USER) : false;
     this.#isFirstMessageView = !hasUserMessages;
 
     // Update the prompt button handler with new props
@@ -322,7 +335,13 @@ export class ChatView extends HTMLElement {
   }
 
   #handleSendMessage(): void {
-    if (!this.#textInputElement || !this.#onSendMessage) {
+    // Check if textInputElement, onSendMessage callback, or input is disabled
+    if (!this.#textInputElement || !this.#onSendMessage || this.#isInputDisabled) {
+      console.log("Send prevented: ", {
+        hasTextInput: Boolean(this.#textInputElement),
+        hasCallback: Boolean(this.#onSendMessage),
+        isDisabled: this.#isInputDisabled
+      });
       return;
     }
 
@@ -337,6 +356,7 @@ export class ChatView extends HTMLElement {
     // Always scroll to bottom after sending message
     this.#pinScrollToBottom = true;
 
+    console.log("Sending message:", text);
     this.#onSendMessage(text, this.#imageInput);
     this.#textInputElement.value = '';
     this.#textInputElement.style.height = 'auto';

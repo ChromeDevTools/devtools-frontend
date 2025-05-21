@@ -69,6 +69,18 @@ export class LiteLLMClient {
    * Constructs the full endpoint URL based on provided options
    */
   private static getEndpoint(options?: LiteLLMCallOptions): string {
+    // Check if we have a valid endpoint or baseUrl
+    if (!options?.endpoint && !options?.baseUrl) {
+      // Check localStorage as a fallback for endpoint
+      const localStorageEndpoint = localStorage.getItem('ai_chat_litellm_endpoint');
+      if (!localStorageEndpoint) {
+        throw new Error('LiteLLM endpoint not configured. Please set endpoint in settings.');
+      }
+      console.log(`[LiteLLMClient] Using endpoint from localStorage: ${localStorageEndpoint}`);
+      const baseUrl = localStorageEndpoint.replace(/\/$/, '');
+      return `${baseUrl}${this.CHAT_COMPLETIONS_PATH}`;
+    }
+    
     // If full endpoint is provided, check if it includes the chat completions path
     if (options?.endpoint) {
       // Check if the endpoint already includes the chat completions path
@@ -88,7 +100,7 @@ export class LiteLLMClient {
       return `${baseUrl}${this.CHAT_COMPLETIONS_PATH}`;
     }
 
-    // Default to local LiteLLM
+    // Default to local LiteLLM (should not reach here due to the check at the top)
     return `${this.DEFAULT_BASE_URL}${this.CHAT_COMPLETIONS_PATH}`;
   }
 

@@ -242,7 +242,7 @@ export class UnifiedLLMClient {
         if ('function' in tool) {
           return tool;
         }
-        
+
         // Transform OpenAI format to Anthropic format
         // OpenAI: { type: 'function', name: '...', description: '...', parameters: {...} }
         // Anthropic expects: { type: 'function', function: { name: '...', description: '...', parameters: {...} } }
@@ -256,7 +256,7 @@ export class UnifiedLLMClient {
             }
           };
         }
-        
+
         // Default: return as is if we don't recognize the format
         return tool;
       });

@@ -366,7 +366,8 @@ Your task is to extract data from the provided DOM content (represented as an ac
 Focus on mapping the user's instruction to the elements in the accessibility tree.
 IMPORTANT: When a URL is expected, you MUST provide the numeric Accessibility Node ID as a NUMBER type, not as a string.
 Use the numeric Accessibility Node IDs provided in the schema description when a URL is expected.
-Return ONLY valid JSON that conforms exactly to the provided schema definition. Do not add any explanations or conversational text.`;
+Return ONLY valid JSON that conforms exactly to the provided schema definition. 
+Do not add any conversational text or explanations or thinking tags.`;
 
     const extractionPrompt = `
 INSTRUCTION: ${instruction}
@@ -432,7 +433,8 @@ ${JSON.stringify(initialData, null, 2)}
 
 TASK: Review the INITIAL EXTRACTED DATA. Refine it to better match the ORIGINAL INSTRUCTION and ensure it strictly conforms to the SCHEMA.
 IMPORTANT: Ensure all URL fields contain numeric Accessibility Node IDs as NUMBER types (not strings).
-Return only the refined JSON object. Do not add explanations.`;
+Return only the refined JSON object. 
+Do not add any conversational text or explanations or thinking tags.`;
 
     try {
       const modelName = AIChatPanel.getNanoModel();
@@ -478,7 +480,7 @@ You must respond ONLY with a valid JSON object matching the following schema:
 \`\`\`json
 ${JSON.stringify(metadataSchema, null, 2)}
 \`\`\`
-Do not add any conversational text or explanations.`;
+Do not add any conversational text or explanations or thinking tags.`;
 
     const metadataPrompt = `
 ORIGINAL INSTRUCTION: ${instruction}
@@ -521,19 +523,72 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
       // First, try parsing the whole string directly
       return JSON.parse(responseText);
     } catch (e) {
-      // If direct parsing fails, try to extract JSON block
-      const jsonMatch = responseText.match(/\{[\s\S]*\}|\[[\s\S]*\]/); // Match object or array
-      if (jsonMatch) {
-        try {
-          return JSON.parse(jsonMatch[0]);
-        } catch (nestedError) {
-          console.error('Failed to parse extracted JSON:', nestedError, 'Original text:', responseText);
-          return null;
-        }
-      } else {
-        console.error('Failed to parse and no JSON block found in response:', responseText);
+      // If direct parsing fails, remove all think tags and their content
+      console.log('[SchemaBasedExtractorTool] Removing think tags before parsing JSON');
+
+      // Remove <think>...</think> tags and everything inside them (handles multiple think tags)
+      let cleanedText = responseText.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+      // Remove any incomplete <think> tags without closing tags
+      cleanedText = cleanedText.replace(/<think>[\s\S]*/g, '');
+
+      // If after removing think tags, the text is empty or whitespace, give up
+      if (!cleanedText.trim()) {
+        console.error('[SchemaBasedExtractorTool] No content left after removing think tags');
         return null;
       }
+
+      // First, look for JSON code blocks in the cleaned text
+      const codeBlockMatch = cleanedText.match(/```json\s*([\s\S]*?)\s*```/);
+      if (codeBlockMatch && codeBlockMatch[1]) {
+        try {
+          return JSON.parse(codeBlockMatch[1]);
+        } catch (codeBlockError) {
+          console.log('[SchemaBasedExtractorTool] Failed to parse JSON from code block:', codeBlockError);
+        }
+      }
+
+      // Next, try to find a complete JSON object or array in the cleaned text
+      // Find the last valid JSON in the text (in case there are multiple)
+      let potentialJsons: string[] = [];
+      const jsonMatches = cleanedText.match(/(\{[\s\S]*?\}|\[[\s\S]*?\])/g);
+      if (jsonMatches) {
+        potentialJsons = jsonMatches;
+      }
+
+      // Try parsing each potential JSON, starting with the longest one
+      // (longer matches are more likely to be complete)
+      potentialJsons.sort((a, b) => b.length - a.length);
+
+      for (const json of potentialJsons) {
+        try {
+          return JSON.parse(json);
+        } catch (jsonError) {
+          // Continue to the next potential JSON
+        }
+      }
+
+      // If no valid JSON found yet, try a more aggressive approach
+      const jsonObjectMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonObjectMatch) {
+        try {
+          return JSON.parse(jsonObjectMatch[0]);
+        } catch (objectError) {
+          console.log('[SchemaBasedExtractorTool] Failed to parse JSON object:', objectError);
+        }
+      }
+
+      const jsonArrayMatch = cleanedText.match(/\[[\s\S]*\]/);
+      if (jsonArrayMatch) {
+        try {
+          return JSON.parse(jsonArrayMatch[0]);
+        } catch (arrayError) {
+          console.log('[SchemaBasedExtractorTool] Failed to parse JSON array:', arrayError);
+        }
+      }
+
+      console.error('[SchemaBasedExtractorTool] Failed to parse and no valid JSON found in response after removing think tags');
+      return null;
     }
   }
 
@@ -562,7 +617,8 @@ EXTRACTED DATA (containing nodeIDs instead of URLs):
 ${JSON.stringify(data, null, 2)}
 \`\`\`
 
-TASK: Return ONLY a JSON array of the numeric node IDs found. Example: [12345, 67890]
+TASK: Return ONLY a JSON array of the numeric node IDs found. Example: [12345, 67890].
+Do not add any conversational text or explanations or thinking tags.
 `;
 
     try {
@@ -620,7 +676,8 @@ ${JSON.stringify(nodeIdToUrlMap, null, 2)}
 \`\`\`
 
 TASK: Replace all numeric nodeIDs in the data with their corresponding URLs from the mapping.
-Return the full updated data structure with the URLs replaced.
+Return the full updated data structure with the URLs replaced. 
+Do not add any conversational text or explanations or thinking tags.
 `;
 
       const urlReplacementResponse = await UnifiedLLMClient.callLLM(

@@ -81,7 +81,7 @@ export function initializeConfiguredAgents(): void {
 function createResearchAgentConfig(): AgentToolConfig {
   return {
     name: 'research_agent',
-    description: 'Performs in-depth research on a specific query autonomously using multiple steps and internal tool calls (navigation, fetching, extraction). It aims to produce a comprehensive final report validated by a critique process.',
+    description: 'Performs in-depth research on a specific query autonomously using multiple steps and internal tool calls (navigation, fetching, extraction). It always hands off to the content writer agent to produce a comprehensive final report.',
     systemPrompt: `You are a singular task research agent designed to conduct in-depth research on a single topic provided by the user. Your task is to leverage browser capabilities to gather comprehensive information, following these steps:
 
 Here is an example of steps you can take to complete your research (go in this order):
@@ -90,48 +90,37 @@ Here is an example of steps you can take to complete your research (go in this o
 3. Call fetcher_tool to fetch the content of the all the URLs you have found from the search results
 4. Focus on collecting comprehensive data rather than writing the final report yourself
 
-## IMPORTANT: Hand off to content writer for final report
-Once you've collected sufficient research data (at least 3-5 different sources with substantial information), hand off to the content_writer_agent via the handoff_to_content_writer_agent tool. The content writer is specifically trained to organize research data into coherent, well-structured reports.
+## MANDATORY: Hand off to content writer for final report
+Once you've collected sufficient research data (at least 3-5 different sources with substantial information), you MUST hand off to the content_writer_agent via the handoff_to_content_writer_agent tool. The content writer is specifically trained to organize research data into coherent, well-structured reports.
 
-When to use the handoff:
+When to use the handoff (REQUIRED for ALL cases):
 - After you've collected enough diverse, high-quality information
 - When you have explored multiple perspectives on the topic
 - When you're ready for the information to be organized into a final report
-- Instead of using finalize_with_critique directly on your own report
 
 What happens during handoff:
 - The content_writer_agent will receive your research data
 - It will analyze the information and create a well-structured report
-- It will handle the finalize_with_critique stage for you
+- It will handle the finalize_with_critique stage automatically
 
-Only use finalize_with_critique yourself if you decide NOT to use the handoff for some reason.
+## Research Quality Guidelines
 
-## If Not Using Handoff
-If you decide to complete the research yourself without handoff, synthesize all collected information into a comprehensive research report in markdown and use the 'finalize_with_critique' tool to submit your final answer for quality evaluation.
+When collecting research data, focus on:
+1. Gathering information from diverse, reliable sources
+2. Exploring multiple perspectives on the topic
+3. Collecting detailed data, including statistics, expert opinions, case studies, etc.
+4. Organizing information into logical categories
+5. Including important context, historical background, and current trends
 
-The 'finalize_with_critique' tool will ensure your research meets the user's requirements. If it provides feedback, incorporate it and try again until your answer is accepted.
+Collect sufficient information to enable the content writer to create a comprehensive report of at least 5 different sections. If there is not enough content, do more research.
 
-## Here is an example of the final report structure (you can come up with your own structure that is better for the user's query):
-
-Present your findings in a structured markdown report with:
-
-1. **Executive Summary**: Brief overview of key findings
-2. **Research Question**: Clear restatement of what you investigated
-3. **Methodology**: Sources consulted and selection criteria
-4. **Key Findings**: Organized by main themes or questions
-5. **Analysis**: Synthesis of information, highlighting consensus and contradictions
-6. **Limitations**: Gaps in available information
-7. **Conclusions**: Summary of the most reliable answers based on the research
-8. **References**: Full citation list of all sources consulted
-
-Maintain objectivity throughout your research process and clearly distinguish between well-established facts and more speculative information. When appropriate, note areas where more research might be needed. Note: the final report should be at least 5000 words or even longer based on the topic, if there is not enough content do more research.`,
+Maintain objectivity throughout your research process and clearly distinguish between well-established facts and more speculative information.`,
     tools: [
       'navigate_url',
       'navigate_back',
       'fetcher_tool',
       'schema_based_extractor',
-      'node_ids_to_urls',
-      'finalize_with_critique'
+      'node_ids_to_urls'
     ],
     maxIterations: 15,
     modelName: () => AIChatPanel.getMiniModel(),
@@ -206,7 +195,7 @@ Your process should follow these steps:
 
 The final output should be in markdown format, and it should be lengthy and detailed. Aim for 5-10 pages of content, at least 1000 words.`,
     tools: [],
-    maxIterations: 2,
+    maxIterations: 3,
     modelName: () => AIChatPanel.getMiniModel(),
     temperature: 0.3,
     schema: {

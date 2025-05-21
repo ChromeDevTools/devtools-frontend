@@ -523,35 +523,52 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     this.declareFunction<{
       title: string,
       thought: string,
-      action: string,
-    }>('gatherInformation', {
-      description:
-          `When you want to gather additional information, call this function giving a THOUGHT, a TITLE and an ACTION.
-    * Use \`window.getComputedStyle\` to gather **rendered** styles and make sure that you take the distinction between authored styles and computed styles into account.
-    * **CRITICAL** Call \`window.getComputedStyle\` only once per element and store results into a local variable. Never try to return all the styles of the element in \`data\`. Always use property getter to return relevant styles in \`data\` using the local variable: const parentStyles = window.getComputedStyle($0.parentElement); const data = { parentElementColor: parentStyles['color']}.
-    * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-    * **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
-    *
-    You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
-    After that, you can answer the question with ANSWER or run another ACTION query.
-    Please run ACTION again if the information you received is not enough to answer the query.`,
+      code: string,
+    }>('executeJavaScript', {
+      description: `This function allows you to run JavaScript code on the inspected page.
+Call this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.`,
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
         nullable: false,
         properties: {
+          code: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description:
+                `JavaScript code snippet to run on the inspected page. Make sure the code is formatted for readability.
+
+# Instructions
+
+* To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
+* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
+* Use \`window.getComputedStyle\` to gather **computed** styles and make sure that you take the distinction between authored styles and computed styles into account.
+* **CRITICAL** Only get styles that might be relevant to the user request.
+* **CRITICAL** Call \`window.getComputedStyle\` only once per element and store results into a local variable. Never try to return all the styles of the element in \`data\`.
+* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
+* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+
+For example, the code to return basic styles:
+
+const styles = window.getComputedStyle($0);
+const data = {
+    display: computedStyles['display'],
+    visibility: computedStyles['visibility'],
+    position: computedStyles['position'],
+    left: computedStyles['right'],
+    top: computedStyles['top'],
+    width: computedStyles['width'],
+    height: computedStyles['height'],
+    zIndex: computedStyles['z-index']
+};
+`,
+          },
           thought: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Use THOUGHT to explain why you take the ACTION.',
+            description: 'Explain why you want to run this code',
           },
           title: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'Use TITLE to provide a short summary of the thought.',
-          },
-          action: {
-            type: Host.AidaClient.ParametersTypes.STRING,
-            description:
-                'ACTION (a JavaScript snippet to run on the page to collect additional data, do not wrap in a function definition). Add the data into a new top-level `data` variable. The serialized `data` variable will be returned. If you need to set styles on an HTML element, always call the \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for your actions and should never be presented as a command to the user.',
+            description: 'Provide a summary of what the code does. For example, "Checking related element styles".',
           },
         },
       },
@@ -559,14 +576,14 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         return {
           title: params.title,
           thought: params.thought,
-          action: params.action,
+          action: params.code,
         };
       },
       handler: async (
           params,
           options,
           ) => {
-        return await this.executeAction(params.action, options);
+        return await this.executeAction(params.code, options);
       },
     });
   }
@@ -589,11 +606,11 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     }
     // definitely a function call, emulate AIDA's function call.
     return {
-      name: 'gatherInformation',
+      name: 'executeJavaScript',
       args: {
         title: parsed.title,
         thought: parsed.thought,
-        action: parsed.action,
+        code: parsed.action,
       },
     };
   }
@@ -849,21 +866,54 @@ You always suggest considering the best web development practices and the newest
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
 
 # Considerations
-* After applying a fix, please ask the user to confirm if the fix worked or not.
+
 * Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element's parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.
+* Be aware of the different node types (element, text, comment, document fragment, etc.) and their properties. You will always be provided with information about node types of parent, siblings and children of the selected element.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * When answering, always consider MULTIPLE possible solutions.
-*
+* Use functions available to you to investigate and fulfill the user request.
+* ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. INCLUDE possible fixes withing suggestions.
 * **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about debugging web pages."
-
-Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
-When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.`;
+* **CRITICAL** You are a CSS debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.`;
 /* clang-format on */
 
 export class StylingAgentWithFunctionCalling extends StylingAgent {
   override functionCallEmulationEnabled = false;
   override preamble = preambleFunctionCalling;
+  override formatParsedAnswer({answer}: ParsedAnswer): string {
+    return answer;
+  }
+  override parseTextResponse(text: string): ParsedResponse {
+    // We're returning an empty answer to denote the erroneous case.
+    if (!text.trim()) {
+      return {answer: ''};
+    }
+
+    const lines = text.split('\n');
+    const answerLines: string[] = [];
+    let suggestions: [string, ...string[]]|undefined;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('SUGGESTIONS:')) {
+        try {
+          // TODO: Do basic validation this is an array with strings
+          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
+        } catch {
+        }
+      } else {
+        answerLines.push(line);
+      }
+    }
+
+    return {
+      // If we could not parse the parts, consider the response to be an
+      // answer.
+      answer: answerLines.join('\n'),
+      suggestions,
+    };
+  }
 }

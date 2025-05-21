@@ -150,15 +150,35 @@ const API = {
       return examplesMapCache[title];
     }
 
+    function serializeFunctionCalls(calls) {
+      const parts = calls.map(call => {
+        if (call.name === 'executeJavaScript') {
+          return `Called ${call.name}\nthought="${call.args.thought}\ntitle=${call.args.title}\n${call.args.code}`;
+        }
+        return JSON.stringify(call, null, 2);
+      });
+      return parts.join('\n');
+    }
+
+    function serializeFunctionResponse(functionResponse) {
+      if (functionResponse.response.result) {
+        functionResponse = JSON.parse(functionResponse.response.result);
+      }
+      return JSON.stringify(functionResponse, null, 2);
+    }
+
     const {examples, metadata} = await (await fetch(`${DATA_URL}/${title}`)).json();
     examples.sort((ex1, ex2) => ex1.exampleId > ex2.exampleId ? 1 : ex1.exampleId < ex2.exampleId ? -1 : 0);
     const examplesMap = {};
     for (const example of examples) {
       const exampleId = example.exampleId;
-      const request = example.request.input || example.request.current_message.parts[0].text;
+      const request = example.request.input || example.request.current_message.parts[0].text ||
+          serializeFunctionResponse(example.request.current_message.parts[0].functionResponse);
       // Even though we don't collect `response` texts anymore, we still need it for backwards compatibility.
       // TODO: Show function calling responses here as well.
-      const response = example.aidaResponse?.explanation || example.response;
+      const response =
+          (example.aidaResponse.functionCalls ? serializeFunctionCalls(example.aidaResponse.functionCalls) : null) ||
+          example.aidaResponse?.explanation || example.response;
       if (!examplesMap[exampleId]) {
         examplesMap[exampleId] = [];
       }
@@ -263,7 +283,7 @@ function renderExample(container, sourceMap, {onEvaluationChange}) {
 
   let i = 0;
   for (const requestResponse of requestResponses) {
-    const text = `${requestResponse.request}\n\n${requestResponse.response}`;
+    const text = `${requestResponse.request}\n\n=======>\n\n${requestResponse.response}`;
     const evaluationId = JSON.stringify({
       datasetTitle: viewState.dataId,
       exampleId,

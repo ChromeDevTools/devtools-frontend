@@ -643,7 +643,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return false;
     }
     const startTagTreeElement = this.treeOutline.findTreeElement(this.nodeInternal);
-    startTagTreeElement ? startTagTreeElement.remove() : this.remove();
+    startTagTreeElement ? (void startTagTreeElement.remove()) : (void this.remove());
     return true;
   }
 
@@ -1999,7 +1999,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return titleDOM;
   }
 
-  remove(): void {
+  async remove(): Promise<void> {
+    if (this.treeOutline?.isToggledToHidden(this.nodeInternal)) {
+      // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
+      await this.treeOutline.toggleHideElement(this.nodeInternal);
+    }
     if (this.nodeInternal.pseudoType()) {
       return;
     }

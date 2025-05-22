@@ -155,7 +155,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.#emptyElement.createChild('div', 'gray-info-message').textContent = i18nString(UIStrings.noBreakpoints);
     const emptyWidget =
         new UI.EmptyWidget.EmptyWidget(UIStrings.noBreakpoints, i18nString(UIStrings.domBreakpointsDescription));
-    emptyWidget.appendLink(DOM_BREAKPOINT_DOCUMENTATION_URL);
+    emptyWidget.link = DOM_BREAKPOINT_DOCUMENTATION_URL;
     emptyWidget.show(this.#emptyElement);
 
     this.#breakpoints = new UI.ListModel.ListModel();

@@ -493,7 +493,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('manifest')}`);
 
     this.emptyView = emptyView;
-    this.emptyView.appendLink('https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString);
+    this.emptyView.link = 'https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString;
 
     this.emptyView.show(this.contentElement);
     this.emptyView.hideWidget();

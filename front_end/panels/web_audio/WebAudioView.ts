@@ -72,7 +72,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     // Creates the landing page.
     this.landingPage = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noWebAudio), i18nString(UIStrings.openAPageThatUsesWebAudioApiTo));
-    this.landingPage.appendLink(WEBAUDIO_EXPLANATION_URL);
+    this.landingPage.link = WEBAUDIO_EXPLANATION_URL;
     this.landingPage.show(this.detailViewContainer);
 
     // Creates the summary bar.

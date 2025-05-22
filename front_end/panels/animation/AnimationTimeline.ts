@@ -169,7 +169,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
     const noAnimationsPlaceholder = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.waitingForAnimations), i18nString(UIStrings.animationDescription));
-    noAnimationsPlaceholder.appendLink(ANIMATION_EXPLANATION_URL);
+    noAnimationsPlaceholder.link = ANIMATION_EXPLANATION_URL;
     noAnimationsPlaceholder.show(emptyBufferHint);
 
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');

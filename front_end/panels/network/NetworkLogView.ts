@@ -1067,8 +1067,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.recordingHint = new UI.EmptyWidget.EmptyWidget(header, shortcutTitle ? description : '');
     this.recordingHint.element.classList.add('network-status-pane');
-    this.recordingHint.appendLink(
-        'https://developer.chrome.com/docs/devtools/network/' as Platform.DevToolsPath.UrlString);
+    this.recordingHint.link = 'https://developer.chrome.com/docs/devtools/network/' as Platform.DevToolsPath.UrlString;
     if (shortcutTitle && action) {
       const button = UI.UIUtils.createTextButton(buttonText, () => action.execute(), {
         jslogContext: actionName,

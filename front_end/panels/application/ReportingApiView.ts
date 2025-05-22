@@ -50,7 +50,7 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
     const networkManager = mainTarget?.model(SDK.NetworkManager.NetworkManager);
     this.#emptyWidget = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noReportOrEndpoint), i18nString(UIStrings.reportingApiDescription));
-    this.#emptyWidget.appendLink(REPORTING_API_EXPLANATION_URL);
+    this.#emptyWidget.link = REPORTING_API_EXPLANATION_URL;
     this.setMainWidget(this.#emptyWidget);
     if (networkManager) {
       networkManager.addEventListener(

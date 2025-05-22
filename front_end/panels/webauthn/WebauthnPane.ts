@@ -564,7 +564,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#learnMoreView = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noAuthenticator), i18nString(UIStrings.useWebauthnForPhishingresistant));
     this.#learnMoreView.element.classList.add('learn-more');
-    this.#learnMoreView.appendLink(WEB_AUTHN_EXPLANATION_URL);
+    this.#learnMoreView.link = WEB_AUTHN_EXPLANATION_URL;
     this.#learnMoreView.show(this.contentElement);
 
     this.#newAuthenticatorSection = this.contentElement.createChild('div', 'new-authenticator-container');

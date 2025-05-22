@@ -96,9 +96,9 @@ const UIStrings = {
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
   /**
-   *@description Notification shown to the user whenever DevTools receives an MCP request.
+   *@description Notification shown to the user whenever DevTools receives an external request.
    */
-  mcpRequestReceived: '`DevTools` received an `MCP` request',
+  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 
 /*
@@ -526,7 +526,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
 
     this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(item => {
-      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isMcp);
+      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isExternal);
     });
   }
 
@@ -1564,10 +1564,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  // Called by MCP server via Puppeteer
-  async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
+  async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
       Promise<string> {
-    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.mcpRequestReceived)});
+    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
     const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
     if (!aiAssistanceSetting) {
@@ -1579,22 +1578,22 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     switch (conversationType) {
       case AiAssistanceModel.ConversationType.STYLING:
-        return await this.handleMcpStylingRequest(prompt, selector);
+        return await this.handleExternalStylingRequest(prompt, selector);
       default:
         throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
     }
   }
 
-  async handleMcpStylingRequest(prompt: string, selector?: string): Promise<string> {
+  async handleExternalStylingRequest(prompt: string, selector?: string): Promise<string> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
-    const mcpConversation = new AiAssistanceModel.Conversation(
+    const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(stylingAgent),
         [],
         stylingAgent.id,
         /* isReadOnly */ true,
-        /* isMcp */ true,
+        /* isExternal */ true,
     );
-    this.#historicalConversations.push(mcpConversation);
+    this.#historicalConversations.push(externalConversation);
 
     if (selector !== undefined) {
       await inspectElementBySelector(selector);
@@ -1603,13 +1602,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const runner = stylingAgent.run(
         prompt,
         {
-          selected: this.#getConversationContext(mcpConversation),
+          selected: this.#getConversationContext(externalConversation),
         },
     );
     for await (const data of runner) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
-        void mcpConversation.addHistoryItem(data);
+        void externalConversation.addHistoryItem(data);
       }
 
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {

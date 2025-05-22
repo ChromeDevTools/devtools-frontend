@@ -1395,7 +1395,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
-  describe('handleMcpRequest', () => {
+  describe('handleExternalRequest', () => {
     const explanation = 'I need more information';
 
     beforeEach(() => {
@@ -1413,8 +1413,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message, 'For AI features to be available, you need to enable AI assistance in DevTools settings.');
@@ -1427,8 +1428,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message, 'This feature is only available when you sign into Chrome with your Google account.');
@@ -1448,8 +1450,9 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, 'This feature is only available to users who are 18 years of age or older.');
       }
@@ -1460,12 +1463,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       assert.isNull(document.body.querySelector('devtools-snackbar'));
-      const response =
-          await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+      const response = await panel.handleExternalRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
       assert.strictEqual(response, explanation);
       assert.strictEqual(
           document.body.querySelector('devtools-snackbar')?.shadowRoot?.querySelector('.message')?.textContent?.trim(),
-          'DevTools received an MCP request');
+          'DevTools received an external request');
     });
 
     it('handles styling assistance requests which contain a selector', async () => {
@@ -1488,7 +1491,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
-      const response = await panel.handleMcpRequest(
+      const response = await panel.handleExternalRequest(
           'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING, 'h1');
       assert.strictEqual(response, explanation);
       sinon.assert.calledOnce(evaluateStub);
@@ -1507,19 +1510,21 @@ STOP`,
         ])
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(err.message, 'Something went wrong. No answer was generated.');
       }
     });
 
-    it('persists MCP conversations to history', async () => {
+    it('persists external conversations to history', async () => {
       const {panel, view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
-      await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
-      const {contextMenu, id} = openHistoryContextMenu(view.input, '[MCP] Please help me debug this problem');
+      await panel.handleExternalRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+      const {contextMenu, id} = openHistoryContextMenu(view.input, '[External] Please help me debug this problem');
       assert.isDefined(id);
       contextMenu.invokeHandler(id);
       assert.isTrue((await view.nextInput).isReadOnly);
@@ -1599,8 +1604,8 @@ STOP`,
         },
       ]);
 
-      const response =
-          await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+      const response = await panel.handleExternalRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
       assert.strictEqual(response, 'test2');
 
       view.input.onTextSubmit('Follow-up question to DrJones?');
@@ -1637,8 +1642,8 @@ STOP`,
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.FILE);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.FILE);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message,
@@ -1651,8 +1656,9 @@ STOP`,
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.NETWORK);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        await panel.handleExternalRequest(
+            'Please help me debug this problem', AiAssistanceModel.ConversationType.NETWORK);
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message,
@@ -1665,9 +1671,9 @@ STOP`,
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest(
+        await panel.handleExternalRequest(
             'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message,
@@ -1681,9 +1687,9 @@ STOP`,
         aidaClient: mockAidaClient([[{explanation}]]),
       });
       try {
-        await panel.handleMcpRequest(
+        await panel.handleExternalRequest(
             'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
-        assert.fail('Expected `handleMcpRequest` to throw');
+        assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
         assert.strictEqual(
             err.message,

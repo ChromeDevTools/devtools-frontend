@@ -570,8 +570,8 @@ export class RecordingView extends HTMLElement {
   }
 
   #onTitleBlur = (event: Event): void => {
-    const target = event.target as HTMLElement;
-    const title = target.innerText.trim();
+    const target = event.target as HTMLInputElement;
+    const title = target.value.trim();
     if (!title) {
       this.#isTitleInvalid = true;
       this.#render();
@@ -591,14 +591,8 @@ export class RecordingView extends HTMLElement {
   };
 
   #onEditTitleButtonClick = (): void => {
-    const input = this.#shadow.getElementById('title-input') as HTMLElement;
+    const input = this.#shadow.getElementById('title-input') as HTMLInputElement;
     input.focus();
-    const range = document.createRange();
-    range.selectNodeContents(input);
-    range.collapse(false);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
   };
 
   #onSelectMenuLabelClick = (event: Event): void => {
@@ -1183,16 +1177,17 @@ export class RecordingView extends HTMLElement {
       <div class="header">
         <div class="header-title-wrapper">
           <div class="header-title">
-            <span @blur=${this.#onTitleBlur}
+            <input @blur=${this.#onTitleBlur}
                   @keydown=${this.#onTitleInputKeyDown}
                   id="title-input"
-                  .contentEditable=${isTitleEditable ? 'true' : 'false'}
                   jslog=${VisualLogging.value('title').track({change: true})}
                   class=${Lit.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
                     disabled: !isTitleEditable,
                   })}
-                  .innerText=${Lit.Directives.live(title)}></span>
+                  .value=${Lit.Directives.live(title)}
+                  .disabled=${!isTitleEditable}
+                  >
             <div class="title-button-bar">
               <devtools-button
                 @click=${this.#onEditTitleButtonClick}

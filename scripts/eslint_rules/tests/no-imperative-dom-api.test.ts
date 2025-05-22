@@ -934,12 +934,14 @@ class SomeWidget extends UI.Widget.Widget {
       },
     ];
 
-    this.#dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
+    const config = {
       displayName: i18nString(UIStrings.someTitle),
       columns,
       deleteCallback: this.#deleteCallback.bind(this),
       refreshCallback: undefined,
-    });
+    };
+
+    this.#dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid(config);
     this.#dataGrid.addEventListener(
         DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
 

@@ -30,8 +30,3 @@
   display: flex;
   justify-content: space-between;
 }
-
-.dont-show {
-  display: inline-flex;
-  align-items: center;
-}

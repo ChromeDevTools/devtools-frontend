@@ -146,11 +146,15 @@ export const dataGrid = {
         }
       },
       CallExpression(node: CallExpression) {
-        if (node.callee.type !== 'MemberExpression' || !isIdentifier(node.callee.property, 'createTD')) {
+        if (node.callee.type !== 'MemberExpression' ||
+            !isIdentifier(node.callee.property, ['createTD', 'createTDWithClass', 'createCell'])) {
           return;
         }
         const domFragment = DomFragment.getOrCreate(node, sourceCode);
         domFragment.tagName = 'td';
+        if (isIdentifier(node.callee.property, 'createTDWithClass')) {
+          domFragment.classList.push(node.arguments[0]);
+        }
       },
     };
   }

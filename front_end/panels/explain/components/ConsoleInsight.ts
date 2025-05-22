@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/components/spinners/spinners.js';
@@ -153,6 +152,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nTemplate = Lit.i18nTemplate.bind(undefined, str_);
 
 const {render, html, Directives} = Lit;
 
@@ -878,15 +878,14 @@ export class ConsoleInsight extends HTMLElement {
           </main>
         `;
       case State.SETTING_IS_NOT_TRUE: {
-        const settingsLink = document.createElement('button');
-        settingsLink.textContent = i18nString(UIStrings.settingsLink);
-        settingsLink.classList.add('link');
-        UI.ARIAUtils.markAsLink(settingsLink);
-        settingsLink.addEventListener('click', () => {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
-          void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-        });
-        settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
+        const settingsLink = html`<button
+            class="link" role="link"
+            jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
+            @click=${() => {
+              Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
+              void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+            }}
+          >${i18nString(UIStrings.settingsLink)}</button>`;
 
         return html`<main class="opt-in-teaser" jslog=${jslog}>
           <div class="badge">
@@ -898,7 +897,7 @@ export class ConsoleInsight extends HTMLElement {
             </devtools-icon>
           </div>
           <div>
-            ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnInSettings, {PH1: settingsLink})}
+            ${i18nTemplate(UIStrings.turnOnInSettings, {PH1: settingsLink})}
             ${this.#renderLearnMoreAboutInsights()}
           </div>
         </main>`;

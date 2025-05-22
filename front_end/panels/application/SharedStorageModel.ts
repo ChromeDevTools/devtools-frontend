@@ -211,6 +211,10 @@ export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implem
     this.dispatchEventToListeners(Events.SHARED_STORAGE_ACCESS, event);
   }
 
+  sharedStorageWorkletOperationExecutionFinished(
+      _event: Protocol.Storage.SharedStorageWorkletOperationExecutionFinishedEvent): void {
+  }
+
   attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {
   }
 

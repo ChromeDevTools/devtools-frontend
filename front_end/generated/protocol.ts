@@ -15208,6 +15208,11 @@ export namespace Storage {
      */
     operationName?: string;
     /**
+     * ID of the operation call.
+     * Present only for SharedStorageAccessMethods: run and selectURL.
+     */
+    operationId?: string;
+    /**
      * Whether or not to keep the worket alive for future run or selectURL
      * calls.
      * Present only for SharedStorageAccessMethods: run and selectURL.
@@ -15251,13 +15256,25 @@ export namespace Storage {
      */
     ignoreIfPresent?: boolean;
     /**
-     * If the method is called on a worklet, or as part of
-     * a worklet script, it will have an ID for the associated worklet.
+     * If the method is called on a shared storage worklet, or as part of
+     * a shared storage worklet script, it will have a number for the
+     * associated worklet, denoting the (0-indexed) order of the worklet's
+     * creation relative to all other shared storage worklets created by
+     * documents using the current storage partition.
      * Present only for SharedStorageAccessMethods: addModule, createWorklet,
      * run, selectURL, and any other SharedStorageAccessMethod when the
-     * SharedStorageAccessScope is worklet.
+     * SharedStorageAccessScope is sharedStorageWorklet.
+     * TODO(crbug.com/401011862): Pass this only for addModule & createWorklet.
      */
-    workletId?: string;
+    workletOrdinal?: integer;
+    /**
+     * Hex representation of the DevTools token used as the TargetID for the
+     * associated shared storage worklet.
+     * Present only for SharedStorageAccessMethods: addModule, createWorklet,
+     * run, selectURL, and any other SharedStorageAccessMethod when the
+     * SharedStorageAccessScope is sharedStorageWorklet.
+     */
+    workletTargetId?: Target.TargetID;
     /**
      * Name of the lock to be acquired, if present.
      * Optionally present only for SharedStorageAccessMethods: batchUpdate,
@@ -16049,6 +16066,43 @@ export namespace Storage {
      * presence/absence depends on `type`.
      */
     params: SharedStorageAccessParams;
+  }
+
+  /**
+   * A shared storage run or selectURL operation finished its execution.
+   * The following parameters are included in all events.
+   */
+  export interface SharedStorageWorkletOperationExecutionFinishedEvent {
+    /**
+     * Time that the operation finished.
+     */
+    finishedTime: Network.TimeSinceEpoch;
+    /**
+     * Time, in microseconds, from start of shared storage JS API call until
+     * end of operation execution in the worklet.
+     */
+    executionTime: integer;
+    /**
+     * Enum value indicating the Shared Storage API method invoked.
+     */
+    method: SharedStorageAccessMethod;
+    /**
+     * ID of the operation call.
+     */
+    operationId: string;
+    /**
+     * Hex representation of the DevTools token used as the TargetID for the
+     * associated shared storage worklet.
+     */
+    workletTargetId: Target.TargetID;
+    /**
+     * DevTools Frame Token for the primary frame tree's root.
+     */
+    mainFrameId: Page.FrameId;
+    /**
+     * Serialization of the origin owning the Shared Storage data.
+     */
+    ownerOrigin: string;
   }
 
   export interface StorageBucketCreatedOrUpdatedEvent {

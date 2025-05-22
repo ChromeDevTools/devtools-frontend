@@ -139,6 +139,7 @@
 }
 
 .header {
+  flex-shrink: 0;
   align-items: center;
   border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
@@ -201,6 +202,7 @@
 }
 
 .title-button-bar {
+  flex-shrink: 0;
   padding-left: 2px;
   display: flex;
 }

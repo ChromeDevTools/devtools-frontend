@@ -166,12 +166,6 @@ const UIStrings = {
   networkConditions: 'Network conditions',
   /**
    *@description Text in Timeline Panel of the Performance panel
-   *@example {wrong format} PH1
-   *@example {ERROR_FILE_NOT_FOUND} PH2
-   */
-  failedToSaveTimelineSS: 'Failed to save timeline: {PH1} ({PH2})',
-  /**
-   *@description Text in Timeline Panel of the Performance panel
    */
   CpuThrottlingIsEnabled: '- CPU throttling is enabled',
   /**
@@ -206,6 +200,10 @@ const UIStrings = {
    *@description Status text to indicate the recording has failed in the Performance panel
    */
   recordingFailed: 'Recording failed',
+  /**
+   *@description Status text to indicate that exporting the trace has failed
+   */
+  exportingFailed: 'Exporting the trace failed',
   /**
    * @description Text to indicate the progress of a profile. Informs the user that we are currently
    * creating a peformance profile.
@@ -1398,15 +1396,39 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       await Workspace.FileManager.FileManager.instance().save(
           fileName, traceAsString, true /* forceSaveAs */, false /* isBase64 */);
       Workspace.FileManager.FileManager.instance().close(fileName);
-    } catch (error) {
+    } catch (e) {
+      // We expect the error to be an Error class, but this deals with any weird case where it's not.
+      const error = e instanceof Error ? e : new Error(e);
+
       console.error(error.stack);
       if (error.name === 'AbortError') {
         // The user cancelled the action, so this is not an error we need to report.
         return;
       }
-      Common.Console.Console.instance().error(
-          i18nString(UIStrings.failedToSaveTimelineSS, {PH1: error.message, PH2: error.name}));
+
+      this.#showExportTraceErrorDialog(error);
     }
+  }
+
+  #showExportTraceErrorDialog(error: Error): void {
+    if (this.statusDialog) {
+      this.statusDialog.remove();
+    }
+
+    this.statusDialog = new StatusDialog(
+        {
+          description: error.message ?? error.toString(),
+          buttonText: i18nString(UIStrings.close),
+          hideStopButton: false,
+          showProgress: false,
+          showTimer: false,
+        },
+        async () => {
+          this.statusDialog?.remove();
+          this.statusDialog = null;
+        });
+    this.statusDialog.showPane(this.statusPaneContainer);
+    this.statusDialog.updateStatus(i18nString(UIStrings.exportingFailed));
   }
 
   async showHistoryDropdown(): Promise<void> {

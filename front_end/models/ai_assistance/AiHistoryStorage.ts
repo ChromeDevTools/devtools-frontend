@@ -23,6 +23,7 @@ export interface SerializedConversation {
   id: string;
   type: ConversationType;
   history: ResponseData[];
+  isMcp: boolean;
 }
 
 export interface SerializedImage {
@@ -118,6 +119,7 @@ export class Conversation {
         return item;
       }),
       type: this.type,
+      isMcp: this.#isMcp,
     };
   }
 }

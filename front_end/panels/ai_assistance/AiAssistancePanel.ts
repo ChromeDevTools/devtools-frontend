@@ -526,7 +526,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
 
     this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(item => {
-      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true);
+      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isMcp);
     });
   }
 

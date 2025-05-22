@@ -190,12 +190,14 @@ export class DomFragment {
       if (this.bindings.length) {
         appendExpression(',');
         if (this.bindings.length === 1) {
-          appendExpression(
-              `{${this.bindings[0].key}: ${toOutputString(this.bindings[0].value, /* quoteLiterals=*/ true)}}`);
+          appendExpression(`{${this.bindings[0].key}: ${
+              typeof this.bindings[0].value === 'string' ? this.bindings[0].value :
+                                                           sourceCode.getText(this.bindings[0].value)}}`);
         } else {
           appendExpression('{');
           for (const binding of this.bindings) {
-            appendExpression(`${binding.key}: ${toOutputString(binding.value, /* quoteLiterals=*/ true)},`);
+            appendExpression(`${binding.key}: ${
+                typeof binding.value === 'string' ? binding.value : sourceCode.getText(binding.value)},`);
           }
           appendExpression('}');
         }

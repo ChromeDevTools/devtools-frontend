@@ -73,6 +73,7 @@ devtools_module("timeline") {
     "ModificationsManager.ts",
     "NetworkTrackAppender.ts",
     "SaveFileFormatter.ts",
+    "StatusDialog.ts",
     "TargetForEvent.ts",
     "ThirdPartyTreeView.ts",
     "ThreadAppender.ts",

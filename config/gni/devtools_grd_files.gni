@@ -1876,6 +1876,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/ModificationsManager.js",
   "front_end/panels/timeline/NetworkTrackAppender.js",
   "front_end/panels/timeline/SaveFileFormatter.js",
+  "front_end/panels/timeline/StatusDialog.js",
   "front_end/panels/timeline/TargetForEvent.js",
   "front_end/panels/timeline/ThirdPartyTreeView.js",
   "front_end/panels/timeline/ThreadAppender.js",

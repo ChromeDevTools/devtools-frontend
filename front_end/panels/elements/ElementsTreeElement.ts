@@ -215,6 +215,10 @@ const UIStrings = {
    */
   showInterestTarget: 'Show interest target',
   /**
+   *@description Text of a tooltip to redirect to another element in the Elements panel
+   */
+  showCommandForTarget: 'Show commandfor target',
+  /**
    *@description Text of the tooltip for scroll adorner.
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
@@ -1701,6 +1705,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         void this.linkifyElementByRelation(
             linkedPart, Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget,
             i18nString(UIStrings.showInterestTarget));
+        break;
+      }
+      case 'commandfor': {
+        const linkedPart = value ? attrValueElement : attrNameElement;
+        void this.linkifyElementByRelation(
+            linkedPart, Protocol.DOM.GetElementByRelationRequestRelation.CommandFor,
+            i18nString(UIStrings.showCommandForTarget));
         break;
       }
     }

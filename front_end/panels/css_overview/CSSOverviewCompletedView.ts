@@ -577,8 +577,8 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     addTab: (_id, _tabTitle, _view, _jslogContext) => {}
   };
 
-  constructor(view = DEFAULT_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(false, false, element);
     this.#view = view;
     this.registerRequiredCSS(cssOverviewCompletedViewStyles);
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
@@ -586,7 +586,10 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#data = null;
   }
 
-  initializeModels(target: SDK.Target.Target): void {
+  set target(target: SDK.Target.Target|undefined) {
+    if (!target) {
+      return;
+    }
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     const domModel = target.model(SDK.DOMModel.DOMModel);
     if (!cssModel || !domModel) {
@@ -865,7 +868,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
         .map(([title, nodes]) => ({title, nodes}));
   }
 
-  setOverviewData(data: OverviewData): void {
+  set overviewData(data: OverviewData) {
     this.#data = data;
     this.requestUpdate();
   }

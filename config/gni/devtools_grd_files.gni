@@ -1395,7 +1395,6 @@ grd_files_debug_sources = [
   "front_end/panels/css_overview/CSSOverviewSidebarPanel.js",
   "front_end/panels/css_overview/CSSOverviewStartView.js",
   "front_end/panels/css_overview/CSSOverviewUnusedDeclarations.js",
-  "front_end/panels/css_overview/cssOverview.css.js",
   "front_end/panels/css_overview/cssOverviewCompletedView.css.js",
   "front_end/panels/css_overview/cssOverviewProcessingView.css.js",
   "front_end/panels/css_overview/cssOverviewSidebarPanel.css.js",

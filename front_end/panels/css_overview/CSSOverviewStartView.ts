@@ -93,10 +93,10 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
   #view: View;
   onStartCapture = (): void => {};
 
-  constructor(view = DEFAULT_VIEW) {
-    super(true, true);
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(true, true, element);
     this.#view = view;
-    this.requestUpdate();
+    this.performUpdate();
   }
 
   override performUpdate(): void {

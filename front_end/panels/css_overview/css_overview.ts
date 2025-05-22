@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './CSSOverviewController.js';
 import './CSSOverviewUnusedDeclarations.js';
 import './CSSOverviewModel.js';
 import './CSSOverviewProcessingView.js';
@@ -11,7 +10,6 @@ import './CSSOverviewSidebarPanel.js';
 import './CSSOverviewPanel.js';
 
 import * as CSSOverviewCompletedView from './CSSOverviewCompletedView.js';
-import * as CSSOverviewController from './CSSOverviewController.js';
 import * as CSSOverviewModel from './CSSOverviewModel.js';
 import * as CSSOverviewPanel from './CSSOverviewPanel.js';
 import * as CSSOverviewProcessingView from './CSSOverviewProcessingView.js';
@@ -20,7 +18,6 @@ import * as CSSOverviewUnusedDeclarations from './CSSOverviewUnusedDeclarations.
 
 export {
   CSSOverviewCompletedView,
-  CSSOverviewController,
   CSSOverviewModel,
   CSSOverviewPanel,
   CSSOverviewProcessingView,

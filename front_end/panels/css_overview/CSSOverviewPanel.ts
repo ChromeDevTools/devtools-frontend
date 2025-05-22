@@ -10,14 +10,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import cssOverviewStyles from './cssOverview.css.js';
 import {type ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
-import {Events, type OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {
-  readonly #controller: OverviewController;
+  #currentUrl: string;
   readonly #startView: CSSOverviewStartView;
   readonly #processingView: CSSOverviewProcessingView;
   readonly #completedView: CSSOverviewCompletedView;
@@ -33,27 +32,36 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #globalStyleStats!: GlobalStyleStats;
   #textColorContrastIssues!: Map<string, ContrastIssue[]>;
 
-  constructor(controller: OverviewController) {
+  constructor() {
     super('css-overview');
     this.registerRequiredCSS(cssOverviewStyles);
+    this.#currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.#checkUrlAndResetIfChanged, this);
 
     this.element.classList.add('css-overview-panel');
 
-    this.#controller = controller;
     this.#startView = new CSSOverviewStartView();
-    this.#startView.onStartCapture = () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_START);
-    this.#processingView = new CSSOverviewProcessingView(this.#controller);
-    this.#completedView = new CSSOverviewCompletedView(this.#controller);
+    this.#startView.onStartCapture = () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
+      void this.#startOverview();
+    };
+    this.#processingView = new CSSOverviewProcessingView();
+    this.#processingView.onCancel = () => this.#reset();
+    this.#completedView = new CSSOverviewCompletedView();
+    this.#completedView.onReset = () => this.#reset();
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
 
-    this.#controller.addEventListener(Events.REQUEST_OVERVIEW_START, _event => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
-      void this.#startOverview();
-    }, this);
-    this.#controller.addEventListener(Events.OVERVIEW_COMPLETED, this.#overviewCompleted, this);
-    this.#controller.addEventListener(Events.RESET, this.#reset, this);
+    this.#reset();
+  }
 
+  #checkUrlAndResetIfChanged(): void {
+    if (this.#currentUrl === SDK.TargetManager.TargetManager.instance().inspectedURL()) {
+      return;
+    }
+
+    this.#currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
     this.#reset();
   }
 
@@ -188,10 +196,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
       this.#unusedDeclarations = unusedDeclarations;
     }
 
-    this.#controller.dispatchEventToListeners(Events.OVERVIEW_COMPLETED);
-  }
-
-  #overviewCompleted(): void {
     this.#renderOverviewCompletedView();
   }
 }

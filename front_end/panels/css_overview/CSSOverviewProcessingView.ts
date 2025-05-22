@@ -7,7 +7,6 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 
-import {Events, type OverviewController} from './CSSOverviewController.js';
 import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
 
 const UIStrings = {
@@ -45,15 +44,21 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class CSSOverviewProcessingView extends UI.Widget.Widget {
-  readonly #controller: OverviewController;
-  fragment?: UI.Fragment.Fragment;
-  constructor(controller: OverviewController, view: View = DEFAULT_VIEW) {
-    super();
+  #onCancel = (): void => {};
+  #view: View;
 
-    this.#controller = controller;
-    const input = {
-      onCancel: () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_CANCEL),
-    };
-    view(input, {}, this.contentElement);
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(false, false, element);
+    this.#view = view;
+    this.requestUpdate();
+  }
+
+  set onCancel(onCancel: () => void) {
+    this.#onCancel = onCancel;
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view({onCancel: this.#onCancel}, {}, this.element);
   }
 }

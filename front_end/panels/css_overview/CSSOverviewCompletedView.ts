@@ -18,13 +18,6 @@ import {Directives, html, nothing, render, type TemplateResult} from '../../ui/l
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-import {
-  Events as CSSOverViewControllerEvents,
-  type OverviewController,
-  type PopulateNodesEvent,
-  type PopulateNodesEventNodes,
-  type PopulateNodesEventNodeTypes,
-} from './CSSOverviewController.js';
 import type {GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewSidebarPanel} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
@@ -542,8 +535,35 @@ function renderColor(section: string, color: string): TemplateResult {
   // clang-format on
 }
 
+type PopulateNodesEvent = {
+  type: 'contrast',
+  key: string,
+  section: string|undefined,
+  nodes: ContrastIssue[],
+}|{
+  type: 'color',
+  color: string,
+  section: string | undefined,
+  nodes: Array<{nodeId: Protocol.DOM.BackendNodeId}>,
+}|{
+  type: 'unused-declarations',
+  declaration: string,
+  nodes: UnusedDeclaration[],
+}|{
+  type: 'media-queries',
+  text: string,
+  nodes: Protocol.CSS.CSSMedia[],
+}|{
+  type: 'font-info',
+  name: string,
+  nodes: Array<{nodeId: Protocol.DOM.BackendNodeId}>,
+};
+
+export type PopulateNodesEventNodes = PopulateNodesEvent['nodes'];
+export type PopulateNodesEventNodeTypes = PopulateNodesEventNodes[0];
+
 export class CSSOverviewCompletedView extends UI.Widget.VBox {
-  #controller: OverviewController;
+  onReset = (): void => {};
   #selectedSection = 'summary';
   #cssModel?: SDK.CSSModel.CSSModel;
   #domModel?: SDK.DOMModel.DOMModel;
@@ -557,19 +577,12 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     addTab: (_id, _tabTitle, _view, _jslogContext) => {}
   };
 
-  constructor(controller: OverviewController, view = DEFAULT_VIEW) {
+  constructor(view = DEFAULT_VIEW) {
     super();
     this.#view = view;
     this.registerRequiredCSS(cssOverviewCompletedViewStyles);
-
-    this.#controller = controller;
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
-
     this.#viewMap = new Map();
-
-    this.#controller.addEventListener(CSSOverViewControllerEvents.RESET, this.#reset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.POPULATE_NODES, this.#createElementsView, this);
-
     this.#data = null;
   }
 
@@ -593,7 +606,8 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   }
 
   #onReset(): void {
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.RESET);
+    this.#reset();
+    this.onReset();
   }
 
   #reset(): void {
@@ -732,7 +746,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     }
 
     evt.consume();
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.POPULATE_NODES, {payload});
+    this.#createElementsView(payload);
     this.requestUpdate();
   }
 
@@ -755,14 +769,12 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       selectedSection: this.#selectedSection,
       onClick: this.#onClick.bind(this),
       onSectionSelected: this.#onSectionSelected.bind(this),
-      onReset: this.#onReset,
+      onReset: this.#onReset.bind(this),
     };
     this.#view(viewInput, this.#viewOutput, this.element);
   }
 
-  #createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
-    const {payload} = evt.data;
-
+  #createElementsView(payload: PopulateNodesEvent): void {
     let id = '';
     let tabTitle = '';
 

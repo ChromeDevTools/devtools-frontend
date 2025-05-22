@@ -5,7 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Lit from '../../../ui/lit/lit.js';
-import {debugLog, isDebugMode} from '../debug.js';
+import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
 export const enum ResponseType {
   CONTEXT = 'context',
@@ -536,7 +536,7 @@ export abstract class AiAgent<T> {
       }
     }
 
-    if (isDebugMode()) {
+    if (isStructuredLogEnabled()) {
       window.dispatchEvent(new CustomEvent('aiassistancedone'));
     }
   }
@@ -708,7 +708,7 @@ export abstract class AiAgent<T> {
       request,
       response: aidaResponse,
     });
-    if (isDebugMode() && aidaResponse) {
+    if (isStructuredLogEnabled() && aidaResponse) {
       this.#structuredLog.push({
         request: structuredClone(request),
         aidaResponse,

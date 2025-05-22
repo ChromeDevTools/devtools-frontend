@@ -4,13 +4,13 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("ai_assistance") {
+ts_e2e_library("ai_assistance") {
   sources = [ "ai_assistance_test.ts" ]
 
   deps = [
     "../../../front_end/core/host:bundle",
     "../../../front_end/core/root:bundle",
+    "../../conductor:implementation",
     "../../shared",
-    "../helpers",
   ]
 }

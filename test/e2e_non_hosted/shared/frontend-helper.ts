@@ -192,25 +192,6 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async waitForFunction<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) {
-    const innerFunction = async () => {
-      while (true) {
-        AsyncScope.abortSignal?.throwIfAborted();
-        const result = await fn();
-        AsyncScope.abortSignal?.throwIfAborted();
-        if (result) {
-          return result;
-        }
-        await this.timeout(100);
-      }
-    };
-    return await asyncScope.exec(innerFunction, description);
-  }
-
-  timeout(duration: number) {
-    return new Promise<void>(resolve => setTimeout(resolve, duration));
-  }
-
   async typeText(text: string) {
     await this.page.keyboard.type(text);
     await this.drainTaskQueue();

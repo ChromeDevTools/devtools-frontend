@@ -77,7 +77,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
           stacks.push(`${stepDescription}${stack.join('\n')}\n`);
         }
       }
-      const err = new Error(`A test function (${label}) for "${this.test?.title}" timed out`);
+      const err = new Error(`A test function (${label}) for "${this.test?.title}" timed out (${actualTimeout} ms)`);
       if (stacks.length > 0) {
         const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
         err.cause = new Error(msg);

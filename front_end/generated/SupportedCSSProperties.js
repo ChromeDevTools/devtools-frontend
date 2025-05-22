@@ -714,11 +714,13 @@ export const generatedProperties = [
    "text-emphasis-color",
    "text-emphasis-position",
    "text-emphasis-style",
+   "text-grow",
    "text-indent",
    "text-orientation",
    "text-overflow",
    "text-rendering",
    "text-shadow",
+   "text-shrink",
    "text-size-adjust",
    "text-spacing-trim",
    "text-transform",
@@ -4204,6 +4206,9 @@ export const generatedProperties = [
   "name": "text-emphasis-style"
  },
  {
+  "name": "text-grow"
+ },
+ {
   "inherited": true,
   "name": "text-indent"
  },
@@ -4239,6 +4244,9 @@ export const generatedProperties = [
    "none"
   ],
   "name": "text-shadow"
+ },
+ {
+  "name": "text-shrink"
  },
  {
   "inherited": true,

@@ -7494,6 +7494,10 @@ export const NativeFunctions = [
     signatures: [["?path"]]
   },
   {
+    name: "ClipboardChangeEvent",
+    signatures: [["?eventInitDict"]]
+  },
+  {
     name: "ClipboardItem",
     signatures: [["items"]]
   },

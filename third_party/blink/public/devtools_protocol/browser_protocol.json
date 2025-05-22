@@ -7407,7 +7407,8 @@
                             "type": "string",
                             "enum": [
                                 "PopoverTarget",
-                                "InterestTarget"
+                                "InterestTarget",
+                                "CommandFor"
                             ]
                         }
                     ],

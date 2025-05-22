@@ -4935,6 +4935,7 @@ export namespace DOM {
   export const enum GetElementByRelationRequestRelation {
     PopoverTarget = 'PopoverTarget',
     InterestTarget = 'InterestTarget',
+    CommandFor = 'CommandFor',
   }
 
   export interface GetElementByRelationRequest {

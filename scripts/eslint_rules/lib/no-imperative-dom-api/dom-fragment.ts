@@ -77,6 +77,9 @@ export class DomFragment {
         const initializer = key.identifiers[0];
         if (initializer?.parent?.type === 'VariableDeclarator') {
           result.initializer = initializer.parent?.init ?? undefined;
+          if (result.initializer?.type === 'TSAsExpression') {
+            result.initializer = result.initializer.expression;
+          }
         }
         result.expression = key.name;
       }

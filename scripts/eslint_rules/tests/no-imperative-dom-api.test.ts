@@ -915,7 +915,7 @@ class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Element
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const columns = [
+    const columns = ([
       {
         id: 'node-id',
         title: i18nString(UIStrings.element),
@@ -932,7 +932,7 @@ class SomeWidget extends UI.Widget.Widget {
         weight: 100,
         align: this.editable ? DataGrid.DataGrid.Align.RIGHT : DataGrid.DataGrid.Align.LEFT,
       },
-    ];
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
 
     const config = {
       displayName: i18nString(UIStrings.someTitle),

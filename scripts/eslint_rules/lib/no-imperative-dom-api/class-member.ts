@@ -43,6 +43,9 @@ export class ClassMember {
     }
     if (node.parent?.type === 'AssignmentExpression') {
       classMember.initializer = node.parent.right;
+      if (classMember.initializer?.type === 'TSAsExpression') {
+        classMember.initializer = classMember.initializer.expression;
+      }
     } else {
       classMember.references.add(node);
     }

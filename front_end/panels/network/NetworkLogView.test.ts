@@ -16,7 +16,7 @@ import {
   getMenu,
   getMenuItemLabels,
 } from '../../testing/ContextMenuHelpers.js';
-import {dispatchClickEvent, raf} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -105,8 +105,7 @@ describeWithMockConnection('NetworkLogView', () => {
   function createEnvironment() {
     const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     networkLogView = createNetworkLogView(filterBar);
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     return {rootNode, filterBar, networkLogView};
@@ -281,8 +280,7 @@ describeWithMockConnection('NetworkLogView', () => {
           entries: [makeHarEntry(URL_1), makeHarEntry(URL_2)],
         },
       };
-      networkLogView.markAsRoot();
-      networkLogView.show(document.body);
+      renderElementIntoDOM(networkLogView);
       const blob = new Blob([JSON.stringify(har)], {type: 'text/plain'});
       const file = new File([blob], 'log.har');
       await networkLogView.onLoadFromFile(file);
@@ -310,8 +308,7 @@ describeWithMockConnection('NetworkLogView', () => {
       resourceTreeModel.dispatchEventToListeners(
           SDK.ResourceTreeModel.Events.Load, {resourceTreeModel, loadTime: 0.686191});
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 0.683709);
-      networkLogView.markAsRoot();
-      networkLogView.show(document.body);
+      renderElementIntoDOM(networkLogView);
 
       const toolbar = networkLogView.summaryToolbar();
       const textElements = toolbar.querySelectorAll('.toolbar-text');
@@ -344,8 +341,7 @@ describeWithMockConnection('NetworkLogView', () => {
     const request2 = createNetworkRequest('url2', {target});
     const request3 = createNetworkRequest('url3', {target: anotherTarget});
     networkLogView = createNetworkLogView();
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     await RenderCoordinator.done();
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
@@ -372,8 +368,7 @@ describeWithMockConnection('NetworkLogView', () => {
     const request2 = createNetworkRequest('url2', {target});
     const request3 = createNetworkRequest('url3', {target: anotherTarget});
     networkLogView = createNetworkLogView();
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     await RenderCoordinator.done();
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
@@ -517,8 +512,7 @@ describeWithMockConnection('NetworkLogView', () => {
   it('can remove requests', async () => {
     networkLogView = createNetworkLogView();
     const request = createNetworkRequest('url1', {target});
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     assert.lengthOf(rootNode.children, 1);
@@ -532,8 +526,7 @@ describeWithMockConnection('NetworkLogView', () => {
         'network.show-options-to-generate-har-with-sensitive-data', false);
     createNetworkRequest('url1', {target});
     networkLogView = createNetworkLogView(new UI.FilterBar.FilterBar('network-panel', true));
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     networkLogView.columns().dataGrid().rootNode().children[0].select();
     const {element} = networkLogView.columns().dataGrid();
 
@@ -606,9 +599,7 @@ describeWithMockConnection('NetworkLogView', () => {
     const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-overrides:yes');
-
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
@@ -625,8 +616,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-overrides:no');
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
@@ -641,8 +631,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-overrides:headers');
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
@@ -658,8 +647,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-overrides:content');
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
@@ -675,8 +663,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-overrides:tent');  // partial text
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
@@ -708,8 +695,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-request-header:Accept-Language');
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     const visibleUrls = rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url());
@@ -724,8 +710,7 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView(filterBar);
     networkLogView.setTextFilterValue('has-request-header:Nonexistent-Header');
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     const visibleUrls = rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url());
@@ -747,8 +732,7 @@ describeWithMockConnection('NetworkLogView', () => {
     const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     networkLogView = createNetworkLogView(filterBar);
 
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     const shownRequestUrls = () => rootNode.children.map(
         n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url() as string | undefined);
@@ -769,8 +753,7 @@ describeWithMockConnection('NetworkLogView', () => {
 
     const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     networkLogView = createNetworkLogView(filterBar);
-    networkLogView.markAsRoot();
-    networkLogView.show(document.body);
+    renderElementIntoDOM(networkLogView);
     const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();
 
     // Set network filter

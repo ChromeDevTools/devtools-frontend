@@ -1342,13 +1342,15 @@ function renderMultimodalInputButtons({
 function renderImageInput({
   multimodalInputEnabled,
   imageInput,
+  isTextInputDisabled,
   onRemoveImageInput,
 }: {
   multimodalInputEnabled?: boolean,
   imageInput?: ImageInputData,
+  isTextInputDisabled?: boolean,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
-  if (!multimodalInputEnabled || !imageInput) {
+  if (!multimodalInputEnabled || !imageInput || isTextInputDisabled) {
     return Lit.nothing;
   }
   // clang-format off
@@ -1474,7 +1476,7 @@ function renderChatInput({
   <form class="input-form" @submit=${onSubmit}>
     <div class=${chatInputContainerCls}>
       ${renderImageInput(
-        {multimodalInputEnabled, imageInput, onRemoveImageInput}
+        {multimodalInputEnabled, imageInput, isTextInputDisabled, onRemoveImageInput}
       )}
       <textarea class="chat-input"
         .disabled=${isTextInputDisabled}

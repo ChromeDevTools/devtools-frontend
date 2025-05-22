@@ -1336,7 +1336,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#blockedByCrossOrigin = false;
       return;
     }
-    this.#selectedContext = this.#getConversationContext();
+    this.#selectedContext = this.#getConversationContext(this.#conversation);
     if (!this.#selectedContext) {
       this.#blockedByCrossOrigin = false;
 
@@ -1348,12 +1348,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversationAgent.origin);
   }
 
-  #getConversationContext(): AiAssistanceModel.ConversationContext<unknown>|null {
-    if (!this.#conversation) {
+  #getConversationContext(conversation?: AiAssistanceModel.Conversation):
+      AiAssistanceModel.ConversationContext<unknown>|null {
+    if (!conversation) {
       return null;
     }
     let context: AiAssistanceModel.ConversationContext<unknown>|null;
-    switch (this.#conversation.type) {
+    switch (conversation.type) {
       case AiAssistanceModel.ConversationType.STYLING:
         context = this.#selectedElement;
         break;
@@ -1382,7 +1383,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Cancel any previous in-flight conversation.
     this.#cancel();
     const signal = this.#runAbortController.signal;
-    const context = this.#getConversationContext();
+    const context = this.#getConversationContext(this.#conversation);
     // If a different context is provided, it must be from the same origin.
     if (context && !context.isOriginAllowed(this.#conversationAgent.origin)) {
       // This error should not be reached. If it happens, some
@@ -1602,8 +1603,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const runner = stylingAgent.run(
         prompt,
         {
-          signal: this.#runAbortController.signal,
-          selected: this.#getConversationContext(),
+          selected: this.#getConversationContext(mcpConversation),
         },
     );
     for await (const data of runner) {

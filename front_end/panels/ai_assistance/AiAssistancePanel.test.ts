@@ -1539,6 +1539,99 @@ STOP`,
       ]);
     });
 
+    it('can switch contexts', async () => {
+      const steps = [
+        {
+          contextDetails: [
+            {
+              text: 'Request URL: https://a.test\n\nRequest headers:\ncontent-type: bar1',
+              title: 'Request',
+            },
+            {
+              text: 'Response Status: 200 \n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3',
+              title: 'Response',
+            },
+            {
+              text:
+                  'Queued at (timestamp): 0 μs\nStarted at (timestamp): 0 μs\nConnection start (stalled) (duration): -\nDuration (duration): -',
+              title: 'Timing',
+            },
+            {
+              text: '- URL: https://a.test',
+              title: 'Request initiator chain',
+            },
+          ],
+          isLoading: false,
+          sideEffect: undefined,
+          title: 'Analyzing network data',
+        },
+      ] as AiAssistancePanel.Step[];
+
+      createTarget();
+      await createNetworkPanelForMockConnection();
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      const networkRequest = createNetworkRequest({
+        url: urlString`https://a.test`,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      const {panel, view} = await createAiAssistancePanel(
+          {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}], [{explanation: 'test3'}]])});
+
+      panel.handleAction('drjones.network-floating-button');
+      (await view.nextInput).onTextSubmit('User question to DrJones?');
+      assert.deepEqual((await view.nextInput).messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'User question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps,
+        },
+      ]);
+
+      const response =
+          await panel.handleMcpRequest('Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
+      assert.strictEqual(response, 'test2');
+
+      view.input.onTextSubmit('Follow-up question to DrJones?');
+      assert.deepEqual((await view.nextInput).messages, [
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'User question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps,
+        },
+        {
+          entity: AiAssistancePanel.ChatMessageEntity.USER,
+          text: 'Follow-up question to DrJones?',
+          imageInput: undefined,
+        },
+        {
+          answer: 'test3',
+          entity: AiAssistancePanel.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps,
+        },
+      ]);
+    });
+
     it('throws an error for file assistance requests', async () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),

@@ -3663,6 +3663,17 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "column-rule-width",
+   "column-rule-style",
+   "column-rule-color",
+   "row-rule-width",
+   "row-rule-style",
+   "row-rule-color"
+  ],
+  "name": "rule"
+ },
+ {
+  "longhands": [
    "column-rule-color",
    "row-rule-color"
   ],

@@ -2969,6 +2969,7 @@ export const knownContextValues = new Set([
   'ru',
   'ruby-align',
   'ruby-position',
+  'rule',
   'rule-color',
   'rule-set',
   'rule-set-details',

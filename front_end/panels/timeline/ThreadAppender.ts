@@ -547,6 +547,9 @@ export class ThreadAppender implements TrackAppender {
       if (event.callFrame.functionName === '(idle)') {
         return Utils.EntryStyles.getCategoryStyles().idle.getComputedColorValue();
       }
+      if (event.callFrame.functionName === '(program)') {
+        return Utils.EntryStyles.getCategoryStyles().other.getComputedColorValue();
+      }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.

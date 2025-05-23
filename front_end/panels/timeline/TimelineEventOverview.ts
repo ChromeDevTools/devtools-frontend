@@ -170,6 +170,9 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     if (Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === '(idle)') {
       return Utils.EntryStyles.EventCategory.IDLE;
     }
+    if (Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === '(program)') {
+      return Utils.EntryStyles.EventCategory.OTHER;
+    }
     const eventStyle = Utils.EntryStyles.getEventStyle(entry.name as Trace.Types.Events.Name)?.category ||
         Utils.EntryStyles.getCategoryStyles().other;
     const categoryName = eventStyle.name;

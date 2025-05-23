@@ -20,8 +20,31 @@ Note: Read this document to know more about the [build](front_end/panels/ai_chat
 
 * Built in Agent Framework for running tasks / workflows.
 * Ability to perform actions such as: Navigate URLs, Perform Actions (Clicks, Fill Form, Scroll).
-* Access to rendered web page with ability to summarize content.
-* Integrates with LLM Models (OpenAI GPT-4.1 and O4-Mini Models).
+* The agent can autonmously plan and execute tasks on behalf of user, such as
+  * Summarize content
+  * Deep research topics
+  * Literature reviews
+  * Product comparisons
+  * Shopping assistance
+  * Advanced search
+  * And many more 
+* Integrates with 100+ LLM Models
+  * OpenAI GPT-4.1, O4-Mini
+  * Claude 4, 3.7, 3.5
+  * Google Gemeni
+  * Llama
+  * Deepseek
+  * Qwen
+  * And many more
+* Integrates with LiteLLM which supports ability to use multiple providers
+  * Huggingface
+  * Groq
+  * Azure
+  * AWS
+  * OpenRouter
+  * vLLM
+  * Ollama
+  * And many more
 * Customize workflows or agent behavior with config changes.
 
 ![Architecture Flow](front_end/panels/ai_chat/docs/ArchitectureFlow.png)
@@ -49,11 +72,11 @@ https://github.com/user-attachments/assets/90150f0e-e8c8-4b53-b6a6-c739f143f4a0
 
 |Features| Status |
 |--|--|
-| Multi-Agent Workflow | Completed |
-| OpenAI LLM | Completed |
-| Local LLM | In Progress |
+| Multi-Agent Workflow | Completed (Initial Release) |
+| OpenAI LLM | Completed (Initial Release) |
+| Local LLM | Completed (May 22) |
 | MCP | Planned |
-| Customize Prompt in UI| Planned |
+| Customize System Prompts in UI| Planned |
 | Customize Agents in UI| Planned |
 | Customize Workflow Graphs in UI| Planned |
 | Eval Management | Planned |
@@ -69,6 +92,16 @@ https://github.com/user-attachments/assets/90150f0e-e8c8-4b53-b6a6-c739f143f4a0
 
 *   [`front_end/panels/ai_chat/core/Readme.md`](front_end/panels/ai_chat/core/Readme.md): Explains how to customize the `BaseOrchestratorAgent` to add new top-level agent types and UI buttons, and details its graph-based workflow.
 *   [`front_end/panels/ai_chat/agent_framework/Readme.md`](front_end/panels/ai_chat/agent_framework/Readme.md): Describes the AI Agent Framework, its core components (`ConfigurableAgentTool`, `AgentRunner`, `ToolRegistry`), and how to create, configure, and register new custom agents, including agent handoff mechanisms.
+
+### Setup LiteLLM Configuration
+
+https://github.com/user-attachments/assets/579dcfdc-71c8-4664-87b8-c2b68cc5c1ce
+
+1. Click on the setting config inside the chat panel
+2. Select LiteLLM Provider
+3. Input the LiteLLM URL and API key
+4. Click on fetch models to test the configuration
+5. Click save to update the configuration
 
 ### Contributing
 

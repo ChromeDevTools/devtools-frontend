@@ -58,6 +58,8 @@ export class Snackbar extends HTMLElement {
   #isLongAction = false;
   #actionButtonClickHandler?: () => void;
 
+  static snackbarQueue: Snackbar[] = [];
+
   /**
    * Reflects the `dismiss-timeout` attribute. Sets the message to be displayed on the snackbar.
    */
@@ -140,7 +142,10 @@ export class Snackbar extends HTMLElement {
 
   static show(properties: SnackbarProperties): Snackbar {
     const snackbar = new Snackbar(properties);
-    snackbar.#show();
+    Snackbar.snackbarQueue.push(snackbar);
+    if (Snackbar.snackbarQueue.length === 1) {
+      snackbar.#show();
+    }
     return snackbar;
   }
 
@@ -161,6 +166,14 @@ export class Snackbar extends HTMLElement {
       window.clearTimeout(this.#timeout);
     }
     this.remove();
+
+    Snackbar.snackbarQueue.shift();
+    if (Snackbar.snackbarQueue.length > 0) {
+      const nextSnackbar = Snackbar.snackbarQueue[0];
+      if (nextSnackbar) {
+        nextSnackbar.#show();
+      }
+    }
   }
 
   #onActionButtonClickHandler(event: Event): void {

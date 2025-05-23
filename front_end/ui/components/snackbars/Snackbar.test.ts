@@ -7,6 +7,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as UI from '../../legacy/legacy.js';
 
 import * as Snackbars from './snackbars.js';
 
@@ -66,32 +67,44 @@ describeWithLocale('Snackbar', () => {
     assert.exists(actionButton);
   });
 
-  it('closes the snackbar when the close button is clicked', async () => {
-    const snackbar = Snackbars.Snackbar.Snackbar.show({message: 'Click Me', closable: true});
+  describe('closes the snackbar', () => {
+    let inspectorViewRootElementStub: HTMLElement;
+    beforeEach(() => {
+      inspectorViewRootElementStub = document.createElement('div');
+      renderElementIntoDOM(inspectorViewRootElementStub, {allowMultipleChildren: true});
 
-    assert.isTrue(document.body.contains(snackbar));
-    assert.exists(snackbar.shadowRoot);
-    const closeButton = snackbar.shadowRoot.querySelector('devtools-button.dismiss');
-    assert.exists(closeButton);
-
-    dispatchClickEvent(closeButton);
-    assert.isFalse(document.body.contains(snackbar));
-  });
-
-  it('closes the snackbar and calls handler when the action button is clicked', async () => {
-    const actionHandler = sinon.spy();
-    const snackbar = Snackbars.Snackbar.Snackbar.show({
-      message: 'Message',
-      actionProperties: {label: 'Click Me', onClick: actionHandler},
+      const inspectorViewStub = sinon.createStubInstance(UI.InspectorView.InspectorView);
+      Object.assign(inspectorViewStub, {element: inspectorViewRootElementStub});
+      sinon.stub(UI.InspectorView.InspectorView, 'instance').returns(inspectorViewStub);
     });
 
-    assert.isTrue(document.body.contains(snackbar));
-    assert.exists(snackbar.shadowRoot);
-    const actionButton = snackbar.shadowRoot.querySelector('devtools-button');
-    assert.exists(actionButton);
+    it('closes the snackbar when the close button is clicked', async () => {
+      const snackbar = Snackbars.Snackbar.Snackbar.show({message: 'Click Me', closable: true});
 
-    dispatchClickEvent(actionButton);
-    sinon.assert.calledOnce(actionHandler);
-    assert.isFalse(document.body.contains(snackbar));
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar));
+      assert.exists(snackbar.shadowRoot);
+      const closeButton = snackbar.shadowRoot.querySelector('devtools-button.dismiss');
+      assert.exists(closeButton);
+
+      dispatchClickEvent(closeButton);
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar));
+    });
+
+    it('closes the snackbar and calls handler when the action button is clicked', async () => {
+      const actionHandler = sinon.spy();
+      const snackbar = Snackbars.Snackbar.Snackbar.show({
+        message: 'Message',
+        actionProperties: {label: 'Click Me', onClick: actionHandler},
+      });
+
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar));
+      assert.exists(snackbar.shadowRoot);
+      const actionButton = snackbar.shadowRoot.querySelector('devtools-button');
+      assert.exists(actionButton);
+
+      dispatchClickEvent(actionButton);
+      sinon.assert.calledOnce(actionHandler);
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar));
+    });
   });
 });

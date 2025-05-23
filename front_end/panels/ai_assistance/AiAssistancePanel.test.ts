@@ -26,6 +26,7 @@ import {
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Elements from '../elements/elements.js';
 import * as Network from '../network/network.js';
@@ -1462,13 +1463,11 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
-      assert.isNull(document.body.querySelector('devtools-snackbar'));
+      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
       const response = await panel.handleExternalRequest(
           'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING);
       assert.strictEqual(response, explanation);
-      assert.strictEqual(
-          document.body.querySelector('devtools-snackbar')?.shadowRoot?.querySelector('.message')?.textContent?.trim(),
-          'DevTools received an external request');
+      sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
     });
 
     it('handles styling assistance requests which contain a selector', async () => {

@@ -4,7 +4,6 @@
 
 import * as AccessibilityTreeNode from './AccessibilityTreeNode.js';
 import * as AdornerManager from './AdornerManager.js';
-import * as AnchorFunctionLinkSwatch from './AnchorFunctionLinkSwatch.js';
 import * as ComputedStyleProperty from './ComputedStyleProperty.js';
 import * as ComputedStyleTrace from './ComputedStyleTrace.js';
 import * as CSSHintDetailsView from './CSSHintDetailsView.js';
@@ -24,7 +23,6 @@ import * as StylePropertyEditor from './StylePropertyEditor.js';
 export {
   AccessibilityTreeNode,
   AdornerManager,
-  AnchorFunctionLinkSwatch,
   ComputedStyleProperty,
   ComputedStyleTrace,
   CSSHintDetailsView,

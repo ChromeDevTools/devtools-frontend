@@ -143,6 +143,10 @@ const UIStrings = {
    *@example {invalidValue} PH3
    */
   invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
+  /**
+   *@description Title in the styles tab for the icon button for jumping to the anchor node.
+   */
+  jumpToAnchorNode: 'Jump to anchor node',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1552,60 +1556,85 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
   }
 }
 
-async function decorateAnchorForAnchorLink(container: HTMLElement, stylesSidebarPane: StylesSidebarPane, options: {
-  needsSpace: boolean,
-  identifier?: string,
-}): Promise<void> {
-  const anchorNode = await stylesSidebarPane.node()?.getAnchorBySpecifier(options.identifier) ?? undefined;
-  const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({
-    identifier: options.identifier,
-    anchorNode,
-    needsSpace: options.needsSpace,
-    onLinkActivate: () => {
+// clang-format off
+export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AnchorFunctionMatch) {
+  // clang-format on
+  readonly #stylesPane: StylesSidebarPane;
+
+  static async decorateAnchorForAnchorLink(
+      stylesPane: StylesSidebarPane, container: HTMLElement,
+      {identifier, needsSpace}: {identifier?: string, needsSpace?: boolean}): Promise<void> {
+    if (identifier) {
+      render(html`${identifier}`, container, {host: container});
+    }
+
+    const anchorNode = await stylesPane.node()?.getAnchorBySpecifier(identifier) ?? undefined;
+
+    if (!identifier && !anchorNode) {
+      return;
+    }
+
+    const onLinkActivate = (): void => {
       if (!anchorNode) {
         return;
       }
-
       void Common.Revealer.reveal(anchorNode, false);
-    },
-    onMouseEnter: () => {
+    };
+    const handleIconClick = (ev: MouseEvent): void => {
+      ev.stopPropagation();
+      onLinkActivate();
+    };
+    const onMouseEnter = (): void => {
       anchorNode?.highlight();
-    },
-    onMouseLeave: () => {
+    };
+    const onMouseLeave = (): void => {
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-    },
-  });
+    };
 
-  container.removeChildren();
-  container.appendChild(link);
-}
+    if (identifier) {
+      render(
+          // clang-format off
+          html`<devtools-link-swatch
+                @mouseenter=${onMouseEnter}
+                @mouseleave=${onMouseLeave}
+                .data=${{
+                  text: identifier,
+                  tooltip: anchorNode ? undefined :
+                   {title:  i18nString(UIStrings.sIsNotDefined, {PH1: identifier})},
+                  isDefined: Boolean(anchorNode),
+                  jslogContext: 'anchor-link',
+                  onLinkActivate,
+                } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
+                ></devtools-link-swatch>${needsSpace ? ' ' : ''}`,
+          // clang-format on
+          container, {host: container});
+    } else {
+      // clang-format off
+      render(html`<devtools-icon
+                   role='button'
+                   title=${i18nString(UIStrings.jumpToAnchorNode)}
+                   class='icon-link'
+                   name='open-externally'
+                   jslog=${VisualLogging.action('jump-to-anchor-node').track({click: true})}
+                   @mouseenter=${onMouseEnter}
+                   @mouseleave=${onMouseLeave}
+                   @mousedown=${(ev: MouseEvent) => ev.stopPropagation()}
+                   @click=${handleIconClick}
+                  ></devtools-icon>${needsSpace ? ' ' : ''}`, container, {host: container});
+      // clang-format on
+    }
+  }
 
-// clang-format off
-export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AnchorFunctionMatch) {
-  readonly #stylesPane: StylesSidebarPane;
-  // clang-format on
   constructor(stylesPane: StylesSidebarPane) {
     super();
     this.#stylesPane = stylesPane;
-  }
-
-  anchorDecoratedForTest(): void {
-  }
-
-  async #decorateAnchor(container: HTMLElement, addSpace: boolean, identifier?: string): Promise<void> {
-    await decorateAnchorForAnchorLink(container, this.#stylesPane, {
-      identifier,
-      needsSpace: addSpace,
-    });
-    this.anchorDecoratedForTest();
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.AnchorFunctionMatch, context: RenderingContext): Node[] {
     const content = document.createElement('span');
     if (match.node.name === 'VariableName') {
       // Link an anchor double-dashed ident to its matching anchor element.
-      content.appendChild(document.createTextNode(match.text));
-      void this.#decorateAnchor(content, /* addSpace */ false, match.text);
+      void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesPane, content, {identifier: match.text});
     } else {
       // The matcher passes a 'CallExpression' node with a functionName
       // ('anchor' or 'anchor-size') if the arguments need to have an implicit
@@ -1615,7 +1644,8 @@ export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
       content.appendChild(swatchContainer);
       const args = ASTUtils.children(match.node.getChild('ArgList'));
       const remainingArgs = args.splice(1);
-      void this.#decorateAnchor(swatchContainer, /* addSpace */ remainingArgs.length > 1);
+      void AnchorFunctionRenderer.decorateAnchorForAnchorLink(
+          this.#stylesPane, swatchContainer, {needsSpace: remainingArgs.length > 1});
       Renderer.renderInto(remainingArgs, context, content);
     }
     return [content];
@@ -1632,16 +1662,9 @@ export class PositionAnchorRenderer extends rendererBase(SDK.CSSPropertyParserMa
     this.#stylesPane = stylesPane;
   }
 
-  anchorDecoratedForTest(): void {
-  }
-
   override render(match: SDK.CSSPropertyParserMatchers.PositionAnchorMatch): Node[] {
     const content = document.createElement('span');
-    content.appendChild(document.createTextNode(match.text));
-    void decorateAnchorForAnchorLink(content, this.#stylesPane, {
-      identifier: match.text,
-      needsSpace: false,
-    }).then(() => this.anchorDecoratedForTest());
+    void AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesPane, content, {identifier: match.text});
     return [content];
   }
 }

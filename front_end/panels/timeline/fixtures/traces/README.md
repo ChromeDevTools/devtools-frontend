@@ -312,3 +312,8 @@ The web-dev trace is old (recorded in 2021) and since its recording the events r
 ### web-dev-with-timings.json.gz
 
 A trace of web.dev recorded in May 2025. Done because it contains performance timings marks and measures, which are useful and in this case used as a repro case for crbug.com/418223469.
+
+### preconnect-advice
+
+A trace with generated with a simple html page that has three `<link rel=preconnect>`, and with
+HTTP [Link](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Link) header (by Header override)

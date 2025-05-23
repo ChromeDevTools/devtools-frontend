@@ -451,7 +451,7 @@ describe('NetworkRequestsHandler', function() {
 
   describe('preconnect links', () => {
     it('Correctly captures preconnect links', async function() {
-      const traceEvents = await TraceLoader.rawEvents(this, 'link-preconnect.json.gz');
+      const traceEvents = await TraceLoader.rawEvents(this, 'preconnect-advice.json.gz');
       for (const event of traceEvents) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
         Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent(event);

@@ -993,6 +993,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const parseShadow = (property: string, value: string, success: boolean) => {
         const stylePropertyTreeElement = getTreeElement(property, value);
         stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement, {allowMultipleChildren: true});
 
         assert.strictEqual(
             stylePropertyTreeElement.valueElement?.firstElementChild instanceof InlineEditor.Swatches.CSSShadowSwatch,
@@ -1065,8 +1067,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       assert.instanceOf(
           stylePropertyTreeElement.valueElement?.firstElementChild, InlineEditor.Swatches.CSSShadowSwatch);
-      const colorSwatch =
-          stylePropertyTreeElement.valueElement?.firstElementChild?.querySelector('devtools-color-swatch');
+      const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assert.exists(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(), 'blue');
     });
@@ -1078,8 +1079,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
-      assert.strictEqual(swatches[0].innerText, 'inset 10px 11px blue');
-      assert.strictEqual(swatches[1].innerText, '6px 5px red');
+      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, 'inset 10px 11px blue');
+      assert.strictEqual((swatches[1].nextElementSibling as HTMLElement).innerText, '6px 5px red');
     });
 
     it('correctly parses text-shadow', () => {
@@ -1089,7 +1090,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 1);
-      assert.strictEqual(swatches[0].innerText, '6px 5px red');
+      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, '6px 5px red');
     });
 
     it('renders a color-mix child', () => {
@@ -1112,8 +1113,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 2);
-      assert.strictEqual(swatches[0].innerText, 'var(--offset) red');
-      assert.strictEqual(swatches[1].innerText, 'var(--shadow)');
+      assert.strictEqual((swatches[0].nextElementSibling as HTMLElement).innerText, 'var(--offset) red');
+      assert.strictEqual((swatches[1].nextElementSibling as HTMLElement).innerText, 'var(--shadow)');
     });
 
     it('opens a shadow editor with the correct values', () => {
@@ -1159,6 +1160,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('updates the style for shadow editor changes', () => {
       const stylePropertyTreeElement = getTreeElement('box-shadow', '10px 11px red');
       stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 1);
@@ -1178,6 +1181,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       mockVariableMap['--y-color'] = '11px red';
       const stylePropertyTreeElement = getTreeElement('box-shadow', '10px var(--y-color)');
       stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 1);

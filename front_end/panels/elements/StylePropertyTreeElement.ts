@@ -1172,9 +1172,8 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     }
   }
 
-  renderContents(parent: HTMLElement): void {
-    parent.removeChildren();
-    const span = parent.createChild('span');
+  renderContents(span: HTMLSpanElement): void {
+    span.removeChildren();
     let previousSource = null;
     for (const property of this.#properties) {
       if (!property.source || property.source !== previousSource) {
@@ -1314,15 +1313,17 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
       swatch.iconElement().addEventListener('click', () => {
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.SHADOW);
       });
-      model.renderContents(swatch);
+
+      const contents = document.createElement('span');
+      model.renderContents(contents);
       const popoverHelper = new ShadowSwatchPopoverHelper(
           this.#treeElement, this.#treeElement.parentPane().swatchPopoverHelper(), swatch);
       const treeElement = this.#treeElement;
       popoverHelper.addEventListener(ShadowEvents.SHADOW_CHANGED, () => {
-        model.renderContents(swatch);
+        model.renderContents(contents);
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       });
-      result.push(swatch);
+      result.push(swatch, contents);
 
       if (isImportant) {
         result.push(...[document.createTextNode(' '), ...Renderer.render(isImportant, context).nodes]);

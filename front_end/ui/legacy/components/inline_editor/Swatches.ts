@@ -55,7 +55,6 @@ export class BezierSwatch extends HTMLElement {
 customElements.define('devtools-bezier-swatch', BezierSwatch);
 
 export class CSSShadowSwatch extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #icon: IconButton.Icon.Icon;
   readonly #model: CSSShadowModel;
 
@@ -63,12 +62,11 @@ export class CSSShadowSwatch extends HTMLElement {
     super();
     this.#model = model;
 
-    // clang-format off
     render(
-        html`<style>${cssShadowSwatchStyles}</style><devtools-icon name="shadow" class="shadow-swatch-icon"></devtools-icon><slot></slot>`,
-        this.#shadow, {host: this});
-    // clang-format on
-    this.#icon = this.#shadow.querySelector('devtools-icon') as IconButton.Icon.Icon;
+        html`<style>${cssShadowSwatchStyles}</style
+               ><devtools-icon tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
+        this, {host: this});
+    this.#icon = this.querySelector('devtools-icon') as IconButton.Icon.Icon;
   }
 
   model(): CSSShadowModel {

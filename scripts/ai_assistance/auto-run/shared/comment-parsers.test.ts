@@ -9,7 +9,7 @@
  */
 import {assert} from 'chai';
 
-import {parseComment, parseFollowUps} from './auto-run-helpers.ts';
+import {parseComment, parseFollowUps} from './comment-parsers.ts';
 
 describe('parsing comments', () => {
   it('parses out the prompt and evaluation sections using the "old" syntax', () => {

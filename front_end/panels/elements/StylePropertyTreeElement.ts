@@ -1407,8 +1407,8 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[] {
-    const container = document.createElement('span');
-    const valueElement = container.createChild('span');
+    const valueElement = document.createElement('span');
+    valueElement.tabIndex = -1;
     valueElement.textContent = match.text;
 
     if (!context.tracing) {

@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {findMenuItemWithLabel, getContextMenuForElement} from '../../testing/ContextMenuHelpers.js';
-import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
+import {dispatchPasteEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
@@ -37,7 +37,6 @@ describeWithMockConnection('ConsoleView', () => {
         consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('devtools-checkbox');
     if (!consoleSettingsCheckboxes) {
       assert.fail('No checkbox found in console settings');
-      return;
     }
     for (const checkbox of consoleSettingsCheckboxes) {
       assert.isTrue(checkbox.shadowRoot?.querySelector('.devtools-checkbox-text')?.hasAttribute('title'));
@@ -123,7 +122,7 @@ describeWithMockConnection('ConsoleView', () => {
       target = createTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       consoleView.markAsRoot();
-      consoleView.show(document.body);
+      renderElementIntoDOM(consoleView);
     });
 
     it('adds messages', async () => {
@@ -162,7 +161,7 @@ describeWithMockConnection('ConsoleView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const anotherTarget = createTarget();
     consoleView.markAsRoot();
-    consoleView.show(document.body);
+    renderElementIntoDOM(consoleView);
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     assert.exists(consoleModel);
@@ -190,7 +189,7 @@ describeWithMockConnection('ConsoleView', () => {
       target = createTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       consoleView.markAsRoot();
-      consoleView.show(document.body);
+      renderElementIntoDOM(consoleView);
     });
 
     it('shows', async () => {
@@ -244,7 +243,7 @@ describeWithMockConnection('ConsoleView', () => {
     const target = createTarget();
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     consoleView.markAsRoot();
-    consoleView.show(document.body);
+    renderElementIntoDOM(consoleView);
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
     assert.exists(consoleModel);
@@ -270,7 +269,7 @@ describeWithMockConnection('ConsoleView', () => {
     sinon.assert.calledOnce(spy);
 
     // Continues updating the issue counter
-    consoleView.show(document.body);
+    renderElementIntoDOM(consoleView);
     issuesManager.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
     sinon.assert.calledTwice(spy);
   });

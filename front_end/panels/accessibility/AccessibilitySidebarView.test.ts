@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
@@ -39,8 +40,7 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
 
     view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance(
         {forceNew: true, throttlingTimeout: 0});
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     view.setNode(node);
     await new Promise<void>(resolve => setTimeout(resolve, 0));
 

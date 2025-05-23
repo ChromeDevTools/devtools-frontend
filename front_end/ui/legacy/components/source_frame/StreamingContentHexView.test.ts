@@ -4,7 +4,7 @@
 
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as LinearMemoryInspectorComponents from '../../../../panels/linear_memory_inspector/components/components.js';
-import {raf} from '../../../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as SourceFrame from './source_frame.js';
@@ -40,8 +40,7 @@ describeWithEnvironment('StreamingContentHexView', () => {
     const streamingContentData = TextUtils.StreamingContentData.StreamingContentData.from(
         new TextUtils.ContentData.ContentData(window.btoa('abc'), /* isBase64 */ true, 'application/octet-stream'));
     const view = new SourceFrame.StreamingContentHexView.StreamingContentHexView(streamingContentData);
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     await raf();
 
     assert.strictEqual(getAllByteCells(view), '616263');
@@ -54,8 +53,7 @@ describeWithEnvironment('StreamingContentHexView', () => {
     const streamingContentData = TextUtils.StreamingContentData.StreamingContentData.from(
         new TextUtils.ContentData.ContentData(window.btoa('abc'), /* isBase64 */ true, 'application/octet-stream'));
     const view = new SourceFrame.StreamingContentHexView.StreamingContentHexView(streamingContentData);
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     await raf();
 
     streamingContentData.addChunk(window.btoa('def'));

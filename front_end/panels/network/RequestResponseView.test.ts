@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {raf} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -33,8 +33,7 @@ describeWithEnvironment('RequestResponseView', () => {
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
     const showPreviewSpy = sinon.spy(component, 'showPreview');
-    component.markAsRoot();
-    component.show(document.body);
+    renderElementIntoDOM(component);
     const widget = await showPreviewSpy.returnValues[0];
 
     sinon.assert.calledOnceWithExactly(viewStub, request, 'application/wasm');
@@ -56,8 +55,7 @@ describeWithEnvironment('RequestResponseView', () => {
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
     const showPreviewSpy = sinon.spy(component, 'showPreview');
-    component.markAsRoot();
-    component.show(document.body);
+    renderElementIntoDOM(component);
     const widget = await showPreviewSpy.returnValues[0];
 
     assert.instanceOf(widget, Network.BinaryResourceView.BinaryResourceView);

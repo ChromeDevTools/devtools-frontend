@@ -4,6 +4,7 @@
 
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -74,8 +75,7 @@ describeWithMockConnection('ElementsPanel', () => {
     await model.requestDocument();
 
     const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
-    panel.markAsRoot();
-    panel.show(document.body);
+    renderElementIntoDOM(panel);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
@@ -114,7 +114,7 @@ describeWithMockConnection('ElementsPanel', () => {
 
     const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
     panel.markAsRoot();
-    panel.show(document.body);
+    renderElementIntoDOM(panel);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 

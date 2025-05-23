@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
@@ -25,8 +26,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
 
   it('shows service worker registrations', async () => {
     view = new Application.ServiceWorkersView.ServiceWorkersView();
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     const serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
     assert.exists(serviceWorkersManager);
     const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
@@ -72,8 +72,7 @@ describeWithMockConnection('ServiceWorkersView', () => {
     beforeEach(() => {
       Application.ServiceWorkersView.setThrottleDisabledForDebugging(true);
       view = new Application.ServiceWorkersView.ServiceWorkersView();
-      view.markAsRoot();
-      view.show(document.body);
+      renderElementIntoDOM(view);
 
       serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
       assert.exists(serviceWorkersManager);

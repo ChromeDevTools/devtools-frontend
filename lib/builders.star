@@ -51,9 +51,6 @@ dimensions = struct(
         "cpu": "x86-64",
         "os": "Mac",
     },
-    mac_all = {
-        "os": "Mac",
-    },
     mac_arm64 = {
         "cpu": "arm64",
         "os": "Mac",

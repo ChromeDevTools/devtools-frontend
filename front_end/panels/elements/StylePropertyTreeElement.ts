@@ -180,6 +180,7 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const button = StyleEditorWidget.createTriggerButton(
         this.#stylesPane, this.#treeElement.section(), match.isFlex ? FlexboxEditor : GridEditor,
         match.isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
+    button.tabIndex = -1;
     button.setAttribute(
         'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(match.isFlex ? 'flex' : 'grid')}`);
     this.#treeElement.section().nextEditorTriggerButtonIdx++;

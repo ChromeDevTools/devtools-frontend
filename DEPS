@@ -18,7 +18,7 @@ vars = {
   'buildtools_revision': '813bee86eeb7d00fa170b81e221120576a18517a',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'b986c3475d16959f6f3c2c7dfc59e8d416e03476',
+  'depot_tools_revision': '2ce4c87bda23e5188f218c57571e347b35df8f26',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '6d1ae0f13aae6ad381ca31b17b88a0f5af29ca94',

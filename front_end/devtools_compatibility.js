@@ -1106,6 +1106,14 @@ const InspectorFrontendHostImpl = class {
     DevToolsAPI.sendMessageToEmbedder('recordSettingAccess', [settingAccessEvent], null);
   }
 
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.FunctionCallEvent} functionCallEvent
+   */
+  recordFunctionCall(functionCallEvent) {
+    DevToolsAPI.sendMessageToEmbedder('recordFunctionCall', [functionCallEvent], null);
+  }
+
   // Backward-compatible methods below this line --------------------------------------------
 
   /**

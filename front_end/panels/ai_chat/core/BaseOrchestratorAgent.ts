@@ -314,30 +314,36 @@ export function renderAgentTypeButtons(
 export function createAgentTypeSelectionHandler(
   element: HTMLElement,
   textInputElement: HTMLTextAreaElement | undefined,
-  onAgentTypeSelected: ((agentType: string) => void) | undefined,
-  setSelectedAgentType: (type: string) => void
+  onAgentTypeSelected: ((agentType: string | null) => void) | undefined,
+  setSelectedAgentType: (type: string | null) => void,
+  getCurrentSelectedType: () => string | null
 ): (event: Event) => void {
   return (event: Event): void => {
     const button = event.currentTarget as HTMLButtonElement;
     const agentType = button.dataset.agentType;
     if (agentType && onAgentTypeSelected) {
+      const currentSelected = getCurrentSelectedType();
+      
       // Remove selected class from all agent type buttons
-      const allButtons = element.shadowRoot?.querySelectorAll('.agent-type-button');
+      const allButtons = element.shadowRoot?.querySelectorAll('.prompt-button');
       allButtons?.forEach(btn => btn.classList.remove('selected'));
 
-      // Add selected class to the clicked button
-      button.classList.add('selected');
+      // Check if we're clicking on the currently selected button (toggle off)
+      if (currentSelected === agentType) {
+        // Deselect - set to null and don't add selected class
+        setSelectedAgentType(null);
+        onAgentTypeSelected(null);
+        console.log('Deselected agent type, returning to default');
+      } else {
+        // Select new agent type - add selected class to clicked button
+        button.classList.add('selected');
+        setSelectedAgentType(agentType);
+        onAgentTypeSelected(agentType);
+        console.log('Selected agent type:', agentType);
+      }
 
-      // Update the selected agent type
-      setSelectedAgentType(agentType);
-
-      // Call the handler passed via props
-      onAgentTypeSelected(agentType);
-
-      // Focus the input after selecting an agent type
+      // Focus the input after selecting/deselecting an agent type
       textInputElement?.focus();
-
-      console.log('Selected agent type:', agentType);
     }
   };
 }

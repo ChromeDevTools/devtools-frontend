@@ -130,7 +130,7 @@ export enum State {
 export interface Props {
   messages: ChatMessage[];
   onSendMessage: (text: string, imageInput?: ImageInputData) => void;
-  onPromptSelected: (promptType: string) => void;
+  onPromptSelected: (promptType: string | null) => void;
   state: State;
   isTextInputEmpty: boolean;
   imageInput?: ImageInputData;
@@ -160,7 +160,7 @@ export class ChatView extends HTMLElement {
   #imageInput?: ImageInputData;
   #onSendMessage?: (text: string, imageInput?: ImageInputData) => void;
   #onImageInputClear?: () => void;
-  #onPromptSelected?: (promptType: string) => void;
+  #onPromptSelected?: (promptType: string | null) => void;
   #textInputElement?: HTMLTextAreaElement;
   #markdownRenderer = new MarkdownRenderer();
   #isFirstMessageView = true; // Track if we're in the centered first-message view
@@ -264,10 +264,11 @@ export class ChatView extends HTMLElement {
       this,
       this.#textInputElement,
       this.#onPromptSelected,
-      (type: string) => {
+      (type: string | null) => {
         this.#selectedPromptType = type;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-      }
+      },
+      () => this.#selectedPromptType || null
     );
   }
 

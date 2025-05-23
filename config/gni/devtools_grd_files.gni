@@ -601,6 +601,8 @@ grd_files_release_sources = [
   "front_end/panels/ai_chat/ui/AIChatPanel.js",
   "front_end/panels/ai_chat/ui/ChatView.js",
   "front_end/panels/ai_chat/ui/chatView.css.js",
+  "front_end/panels/ai_chat/ui/HelpDialog.js",
+  "front_end/panels/ai_chat/ui/SettingsDialog.js",
   "front_end/panels/ai_chat/core/AgentService.js",
   "front_end/panels/ai_chat/core/State.js",
   "front_end/panels/ai_chat/core/Graph.js",

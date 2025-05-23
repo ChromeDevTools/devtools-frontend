@@ -871,11 +871,9 @@ export class AIChatPanel extends UI.Panel.Panel {
       return;
     }
     
-    // Add user message first regardless of whether we can process it
-    this.#addUserMessage(text, imageInput);
-    
     // If we can't send messages due to missing credentials, add error message and return
     if (!this.#canSendMessages) {
+      this.#addUserMessage(text, imageInput);
       this.#addCredentialErrorMessage();
       return;
     }
@@ -1021,13 +1019,17 @@ export class AIChatPanel extends UI.Panel.Panel {
 
   /**
    * Handles prompt type selection from ChatView
-   * @param promptType The selected prompt type
+   * @param promptType The selected prompt type (null means deselected)
    */
-  #handlePromptSelected(promptType: string): void {
+  #handlePromptSelected(promptType: string | null): void {
     console.log('Prompt selected in AIChatPanel:', promptType);
     this.#selectedAgentType = promptType;
     // Save selection for future sessions
-    localStorage.setItem('ai_chat_agent_type', promptType);
+    if (promptType) {
+      localStorage.setItem('ai_chat_agent_type', promptType);
+    } else {
+      localStorage.removeItem('ai_chat_agent_type');
+    }
   }
 
   #onNewChatClick(): void {

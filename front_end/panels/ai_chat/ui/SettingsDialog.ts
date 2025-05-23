@@ -288,9 +288,6 @@ export class SettingsDialog {
       
       console.log(`Provider changed to: ${selectedProvider}`);
 
-      // Store the change immediately in localStorage to ensure getModelOptions sees the new provider
-      localStorage.setItem(PROVIDER_SELECTION_KEY, selectedProvider);
-
       // If switching to LiteLLM, fetch the latest models if endpoint is configured
       if (selectedProvider === 'litellm') {
         const endpoint = litellmEndpointInput.value.trim();

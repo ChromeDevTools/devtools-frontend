@@ -9,6 +9,8 @@
     bottom: var(--sys-size-5);
     left: var(--sys-size-5);
     z-index: 9999;
+    /* left var(--sys-size-5) * 2 so that there is equal space on the left and on the right in small screens */
+    max-width: calc(100% - 2 * var(--sys-size-5));
 
     .container {
         display: flex;
@@ -21,6 +23,8 @@
         border-radius: var(--sys-shape-corner-small);
         font: var(--sys-typescale-body4-medium);
         animation: slideIn 100ms cubic-bezier(0, 0, 0.3, 1);
+        box-sizing: border-box;
+        max-width: 100%;
 
         &.closable {
             padding: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-6);

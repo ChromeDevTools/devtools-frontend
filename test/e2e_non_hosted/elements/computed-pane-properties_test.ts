@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
 import {
   filterComputedProperties,
   focusElementsTree,
@@ -18,28 +17,29 @@ import {
   waitForElementsComputedSection,
   waitForNumberOfComputedProperties,
   waitForPartialContentOfSelectedElementsNode,
-} from '../helpers/elements-helpers.js';
+} from '../../e2e/helpers/elements-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('The Computed pane', function() {
-  beforeEach(async function() {
-    await goToResource('elements/simple-styled-page.html');
-    await navigateToSidePane('Computed');
-    await waitForElementsComputedSection();
+  async function setup(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+    await inspectedPage.goToResource('elements/simple-styled-page.html');
+    await navigateToSidePane('Computed', devToolsPage);
+    await waitForElementsComputedSection(devToolsPage);
     // Note that navigating to the computed pane moved focus away from the
     // elements pane. Restore it.
-    await focusElementsTree();
-  });
+    await focusElementsTree(devToolsPage);
+  }
 
-  it('can display the CSS properties of the selected element', async () => {
-    const {frontend} = getBrowserAndPages();
-
+  it('can display the CSS properties of the selected element', async ({devToolsPage, inspectedPage}) => {
+    await setup(devToolsPage, inspectedPage);
     // Select the H1 element and wait for the computed pane to change.
-    let content = await getContentOfComputedPane();
-    await frontend.keyboard.press('ArrowDown');
-    await waitForComputedPaneChange(content);
-    await waitForElementsComputedSection();
+    let content = await getContentOfComputedPane(devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    await waitForComputedPaneChange(content, devToolsPage);
+    await waitForElementsComputedSection(devToolsPage);
 
-    const h1Properties = await getAllPropertiesFromComputedPane();
+    const h1Properties = await getAllPropertiesFromComputedPane(devToolsPage);
     assert.lengthOf(h1Properties, 11, 'There should be 11 computed properties on the H1 element');
 
     const colorProperty = h1Properties.find(property => property && property.name === 'color');
@@ -50,12 +50,12 @@ describe('The Computed pane', function() {
     });
 
     // Select the H2 element by pressing down again.
-    content = await getContentOfComputedPane();
-    await frontend.keyboard.press('ArrowDown');
-    await waitForComputedPaneChange(content);
-    await waitForElementsComputedSection();
+    content = await getContentOfComputedPane(devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    await waitForComputedPaneChange(content, devToolsPage);
+    await waitForElementsComputedSection(devToolsPage);
 
-    const h2Properties = await getAllPropertiesFromComputedPane();
+    const h2Properties = await getAllPropertiesFromComputedPane(devToolsPage);
     assert.lengthOf(h2Properties, 12, 'There should be 12 computed properties on the H2 element');
 
     const backgroundProperty = h2Properties.find(property => property && property.name === 'background-color');
@@ -66,23 +66,22 @@ describe('The Computed pane', function() {
     });
   });
 
-  it('can display inherited CSS properties of the selected element', async () => {
-    const {frontend} = getBrowserAndPages();
-
+  it('can display inherited CSS properties of the selected element', async ({devToolsPage, inspectedPage}) => {
+    await setup(devToolsPage, inspectedPage);
     // Select the H1 element and wait for the computed pane to change.
-    const content = await getContentOfComputedPane();
-    await frontend.keyboard.press('ArrowDown');
-    await waitForComputedPaneChange(content);
+    const content = await getContentOfComputedPane(devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    await waitForComputedPaneChange(content, devToolsPage);
 
-    await toggleShowAllComputedProperties();
-    await waitForElementsComputedSection();
+    await toggleShowAllComputedProperties(devToolsPage);
+    await waitForElementsComputedSection(devToolsPage);
 
     const getAlignContentProperty = async () => {
-      const allH1Properties = await getAllPropertiesFromComputedPane();
+      const allH1Properties = await getAllPropertiesFromComputedPane(devToolsPage);
       const prop = allH1Properties.find(property => property && property.name === 'align-content');
       return prop;
     };
-    const alignContentProperty = await waitForFunction(getAlignContentProperty);
+    const alignContentProperty = await devToolsPage.waitForFunction(getAlignContentProperty);
     assert.exists(alignContentProperty, 'H1 element should display the inherited align-content computed property');
     assert.deepEqual(alignContentProperty, {
       name: 'align-content',
@@ -90,38 +89,37 @@ describe('The Computed pane', function() {
     });
   });
 
-  it('remembers which properties that are expanded when re-rendering', async () => {
-    const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press('ArrowDown');
-    const colorProperty =
-        await waitFor('CSS property name: color CSS property value: rgb(255, 0, 102)', undefined, undefined, 'aria');
-    await click('.arrow-icon', {
+  it('remembers which properties that are expanded when re-rendering', async ({devToolsPage, inspectedPage}) => {
+    await setup(devToolsPage, inspectedPage);
+    await devToolsPage.pressKey('ArrowDown');
+    const colorProperty = await devToolsPage.waitFor(
+        'CSS property name: color CSS property value: rgb(255, 0, 102)', undefined, undefined, 'aria');
+    await devToolsPage.click('.arrow-icon', {
       root: colorProperty,
     });
     const isExpandedBefore = await colorProperty.evaluate(element => element.ariaExpanded);
     assert(isExpandedBefore);
-    await focusElementsTree();
-    await frontend.keyboard.press('ArrowDown');
-    const colorPropertyAfter =
-        await waitFor('CSS property name: color CSS property value: rgb(0, 0, 0)', undefined, undefined, 'aria');
+    await focusElementsTree(devToolsPage);
+    await devToolsPage.pressKey('ArrowDown');
+    const colorPropertyAfter = await devToolsPage.waitFor(
+        'CSS property name: color CSS property value: rgb(0, 0, 0)', undefined, undefined, 'aria');
     const isExpandedAfter = await colorPropertyAfter.evaluate(element => element.ariaExpanded);
     assert(isExpandedAfter);
   });
 
-  // Skip until flake is fixed
-  it.skip('[crbug.com/40854065]: allows tracing to style rules (ported layout test)', async () => {
-    const {frontend} = getBrowserAndPages();
-    await goToResource('elements/css-styles-variables.html');
-    await waitForNumberOfComputedProperties(7);
-    await toggleShowAllComputedProperties();
-    await filterComputedProperties('--');
-    await waitForNumberOfComputedProperties(1);
-    await focusElementsTree();
-    await frontend.keyboard.press('ArrowRight');
-    await frontend.keyboard.press('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id1"');
-    await waitForNumberOfComputedProperties(2);
-    const computedPane = await getComputedPanel();
+  it('allows tracing to style rules (ported layout test)', async ({devToolsPage, inspectedPage}) => {
+    await setup(devToolsPage, inspectedPage);
+    await inspectedPage.goToResource('elements/css-styles-variables.html');
+    await waitForNumberOfComputedProperties(7, devToolsPage);
+    await toggleShowAllComputedProperties(devToolsPage);
+    await filterComputedProperties('--', devToolsPage);
+    await waitForNumberOfComputedProperties(1, devToolsPage);
+    await focusElementsTree(devToolsPage);
+    await devToolsPage.pressKey('ArrowRight');
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id1"', devToolsPage);
+    await waitForNumberOfComputedProperties(2, devToolsPage);
+    const computedPane = await getComputedPanel(devToolsPage);
     await computedPane.$$eval(
         'pierce/.arrow-icon', elements => elements.map(element => (element as HTMLElement).click()));
     const expectedPropId1 = [
@@ -144,11 +142,11 @@ describe('The Computed pane', function() {
         }],
       },
     ];
-    await waitForFunction(
-        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId1));
-    await frontend.keyboard.press('ArrowRight');
-    await frontend.keyboard.press('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id2"');
+    await devToolsPage.waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties(devToolsPage)) === JSON.stringify(expectedPropId1));
+    await devToolsPage.pressKey('ArrowRight');
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id2"', devToolsPage);
     const expectedPropId2 = [
       {
         name: '--a',
@@ -176,11 +174,11 @@ describe('The Computed pane', function() {
         }],
       },
     ];
-    await waitForFunction(
-        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId2));
-    await frontend.keyboard.press('ArrowRight');
-    await frontend.keyboard.press('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode('"id3"');
+    await devToolsPage.waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties(devToolsPage)) === JSON.stringify(expectedPropId2));
+    await devToolsPage.pressKey('ArrowRight');
+    await devToolsPage.pressKey('ArrowRight');
+    await waitForPartialContentOfSelectedElementsNode('"id3"', devToolsPage);
     const expectedPropId3 = [
       {
         name: '--a',
@@ -213,7 +211,7 @@ describe('The Computed pane', function() {
         }],
       },
     ];
-    await waitForFunction(
-        async () => JSON.stringify(await getComputedStyleProperties()) === JSON.stringify(expectedPropId3));
+    await devToolsPage.waitForFunction(
+        async () => JSON.stringify(await getComputedStyleProperties(devToolsPage)) === JSON.stringify(expectedPropId3));
   });
 });

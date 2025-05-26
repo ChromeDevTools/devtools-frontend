@@ -7,6 +7,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("elements") {
   sources = [
     "accessibility-tree_test.ts",
+    "computed-pane-properties_test.ts",
     "flexbox-editor_test.ts",
     "style-pane-properties_test.ts",
     "violating-element-and-attributes_test.ts",

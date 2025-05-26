@@ -110,8 +110,8 @@ export const $ = async<ElementType extends Element|null = null, Selector extends
 
 // Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
 export const $$ = async<ElementType extends Element|null = null, Selector extends string = string>(
-    selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce') => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+    selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce', devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   return await devToolsPage.$$<ElementType, Selector>(selector, root, handler);
 };
 

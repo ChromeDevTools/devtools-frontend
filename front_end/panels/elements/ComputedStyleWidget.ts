@@ -530,16 +530,17 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       inherited: isInherited,
     };
     const trace = propertyTraces.get(propertyName);
+    const jslogContext = propertyName.startsWith('--') ? 'custom-property' : propertyName;
     if (!trace) {
       return {
         treeNodeData,
-        jslogContext: propertyName,
+        jslogContext,
         id: propertyName,
       };
     }
     return {
       treeNodeData,
-      jslogContext: propertyName,
+      jslogContext,
       id: propertyName,
       children: async () => trace.map(this.buildTraceNode),
     };

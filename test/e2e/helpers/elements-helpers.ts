@@ -290,17 +290,20 @@ export const focusElementsTree = async (devToolsPage = getBrowserAndPagesWrapper
   await expectVeEvents([veClick('Panel: elements > Tree: elements > TreeItem')], undefined, devToolsPage);
 };
 
-export const navigateToSidePane = async (paneName: string) => {
-  if ((await $$(`[aria-label="${paneName} panel"]`)).length) {
+export const navigateToSidePane = async (paneName: string, devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  if ((await $$(`[aria-label="${paneName} panel"]`, undefined, undefined, devToolsPage)).length) {
     return;
   }
-  await click(`[aria-label="${paneName}"]`);
-  await waitFor(`[aria-label="${paneName} panel"]`);
+  await devToolsPage.click(`[aria-label="${paneName}"]`);
+  await devToolsPage.waitFor(`[aria-label="${paneName} panel"]`);
   const jslogContext = paneName.toLowerCase();
-  await expectVeEvents([
-    veClick(`Panel: elements > Toolbar: sidebar > PanelTabHeader: ${jslogContext}`),
-    veImpressionsUnder('Panel: elements', [veImpression('Pane', jslogContext)]),
-  ]);
+  await expectVeEvents(
+      [
+        veClick(`Panel: elements > Toolbar: sidebar > PanelTabHeader: ${jslogContext}`),
+        veImpressionsUnder('Panel: elements', [veImpression('Pane', jslogContext)]),
+      ],
+      undefined, devToolsPage);
 };
 
 export const waitForElementsStyleSection =
@@ -353,26 +356,30 @@ export const toggleDOMBreakpointCheckbox =
   assert.strictEqual(await checkbox!.evaluate(box => (box as HTMLInputElement).checked), wantChecked);
 };
 
-export const waitForElementsComputedSection = async () => {
-  await waitFor(COMPUTED_PROPERTY_SELECTOR);
-  await expectVeEvents([veImpressionsUnder('Panel: elements', [veImpression('Pane', 'computed')])]);
+export const waitForElementsComputedSection = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  await devToolsPage.waitFor(COMPUTED_PROPERTY_SELECTOR);
+  await expectVeEvents(
+      [veImpressionsUnder('Panel: elements', [veImpression('Pane', 'computed')])], undefined, devToolsPage);
 };
 
-export const getContentOfComputedPane = async () => {
-  const pane = await waitFor('Computed panel', undefined, undefined, 'aria');
-  const tree = await waitFor('[role="tree"]', pane, undefined, 'aria');
+export const getContentOfComputedPane = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const pane = await devToolsPage.waitFor('Computed panel', undefined, undefined, 'aria');
+  const tree = await devToolsPage.waitFor('[role="tree"]', pane, undefined, 'aria');
   return await tree.evaluate(node => node.textContent as string);
 };
 
-export const waitForComputedPaneChange = async (initialValue: string) => {
-  await waitForFunction(async () => {
-    const value = await getContentOfComputedPane();
+export const waitForComputedPaneChange = async (initialValue: string, devToolsPage: DevToolsPage) => {
+  await devToolsPage.waitForFunction(async () => {
+    const value = await getContentOfComputedPane(devToolsPage);
     return value !== initialValue;
   });
 };
 
-export const getAllPropertiesFromComputedPane = async () => {
-  const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
+export const getAllPropertiesFromComputedPane = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const properties = await devToolsPage.$$(COMPUTED_PROPERTY_SELECTOR);
   return (await Promise.all(properties.map(elem => elem.evaluate(async node => {
            const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
            const valueSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-value slot');
@@ -526,35 +533,42 @@ export const getComputedStylesForDomNode =
   }, elementSelector, styleAttribute);
 };
 
-export const waitForNumberOfComputedProperties = async (numberToWaitFor: number) => {
-  const computedPane = await getComputedPanel();
-  return await waitForFunction(
+export const waitForNumberOfComputedProperties = async (numberToWaitFor: number, devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const computedPane = await getComputedPanel(devToolsPage);
+  return await devToolsPage.waitForFunction(
       async () => numberToWaitFor ===
           await computedPane.$$eval('pierce/' + COMPUTED_PROPERTY_SELECTOR, properties => properties.length));
 };
 
-export const getComputedPanel = async () => await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
-
-export const filterComputedProperties = async (filterString: string) => {
-  const initialContent = await getContentOfComputedPane();
-
-  const computedPanel = await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
-  await click('[aria-label="Filter"]', {
-    root: computedPanel,
-  });
-  await typeText(filterString);
-  await waitForComputedPaneChange(initialContent);
-  await expectVeEvents([veChange('Panel: elements > Pane: computed > TextField: filter')]);
+export const getComputedPanel = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  return await devToolsPage.waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
 };
 
-export const toggleShowAllComputedProperties = async () => {
-  const initialContent = await getContentOfComputedPane();
+export const filterComputedProperties = async (filterString: string, devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const initialContent = await getContentOfComputedPane(devToolsPage);
 
-  const computedPanel = await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
-  await click(COMPUTED_STYLES_SHOW_ALL_SELECTOR, {root: computedPanel});
-  await waitForComputedPaneChange(initialContent);
+  const computedPanel = await devToolsPage.waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
+  await devToolsPage.click('[aria-label="Filter"]', {
+    root: computedPanel,
+  });
+  await devToolsPage.typeText(filterString);
+  await waitForComputedPaneChange(initialContent, devToolsPage);
+  await expectVeEvents([veChange('Panel: elements > Pane: computed > TextField: filter')], undefined, devToolsPage);
+};
+
+export const toggleShowAllComputedProperties = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const initialContent = await getContentOfComputedPane(devToolsPage);
+
+  const computedPanel = await devToolsPage.waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
+  await devToolsPage.click(COMPUTED_STYLES_SHOW_ALL_SELECTOR, {root: computedPanel});
+  await waitForComputedPaneChange(initialContent, devToolsPage);
   await expectVeEvents(
-      [veChange('Panel: elements > Pane: computed > Toggle: show-inherited-computed-style-properties')]);
+      [veChange('Panel: elements > Pane: computed > Toggle: show-inherited-computed-style-properties')], undefined,
+      devToolsPage);
 };
 
 export const waitForDomNodeToBeVisible = async (elementSelector: string) => {
@@ -591,8 +605,9 @@ export const waitForStyleRule = async (expectedSelector: string, devToolsPage?: 
   });
 };
 
-export const getComputedStyleProperties = async () => {
-  const computedPanel = await getComputedPanel();
+export const getComputedStyleProperties = async (devToolsPage?: DevToolsPage) => {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  const computedPanel = await getComputedPanel(devToolsPage);
   const allProperties = await computedPanel.$$('pierce/[role="treeitem"][aria-level="1"]');
   const properties = [];
   for (const prop of allProperties) {

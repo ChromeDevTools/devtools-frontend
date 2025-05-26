@@ -8,9 +8,6 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class IsLong extends Trace.Extras.TraceFilter.TraceFilter {
   #minimumRecordDurationMilli = Trace.Types.Timing.Milli(0);
-  constructor() {
-    super();
-  }
 
   setMinimumRecordDuration(value: Trace.Types.Timing.Milli): void {
     this.#minimumRecordDurationMilli = value;
@@ -23,10 +20,6 @@ export class IsLong extends Trace.Extras.TraceFilter.TraceFilter {
 }
 
 export class Category extends Trace.Extras.TraceFilter.TraceFilter {
-  constructor() {
-    super();
-  }
-
   accept(event: Trace.Types.Events.Event): boolean {
     return !TimelineUIUtils.eventStyle(event).category.hidden;
   }

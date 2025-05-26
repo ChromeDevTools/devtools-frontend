@@ -114,10 +114,6 @@ class FormattingError extends Error {
 }
 
 class NamespaceObject extends SDK.RemoteObject.LocalJSONObject {
-  constructor(value: typeof SDK.RemoteObject.LocalJSONObject.prototype.value) {
-    super(value);
-  }
-
   override get description(): string {
     return this.type;
   }

@@ -338,10 +338,6 @@ export class RecordingView extends HTMLElement {
 
   #onCopyBound = this.#onCopy.bind(this);
 
-  constructor() {
-    super();
-  }
-
   set data(data: RecordingViewData) {
     this.#isRecording = data.isRecording;
     this.#replayState = data.replayState;

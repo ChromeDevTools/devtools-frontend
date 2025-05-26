@@ -26,10 +26,6 @@ export class FileSourceIcon extends HTMLElement {
   #hasDotBadge?: boolean;
   #isDotPurple?: boolean;
 
-  constructor() {
-    super();
-  }
-
   set data(data: FileSourceIconData) {
     this.#contentType = data.contentType;
     this.#hasDotBadge = data.hasDotBadge;

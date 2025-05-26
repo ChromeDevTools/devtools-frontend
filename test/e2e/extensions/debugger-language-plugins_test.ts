@@ -982,9 +982,6 @@ describe('The Debugger Language Plugins', () => {
         /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class WasmDataExtension {
-        constructor() {
-        }
-
         async addRawModule(_rawModuleId: string, symbols: string, rawModule: Chrome.DevTools.RawModule) {
           const sourceFileURL = new URL('can_access_wasm_data.wat', rawModule.url || symbols).href;
           return [sourceFileURL];

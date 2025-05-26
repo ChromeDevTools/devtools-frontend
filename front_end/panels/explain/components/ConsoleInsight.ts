@@ -1166,10 +1166,6 @@ class ConsoleInsightSourcesList extends HTMLElement {
   #sources: Source[] = [];
   #isPageReloadRecommended = false;
 
-  constructor() {
-    super();
-  }
-
   #render(): void {
     // clang-format off
      render(html`

@@ -25,10 +25,6 @@ export class CreditsItem extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: Readonly<CreditsItemData> = {title: '', homepage: '', license: ''};
 
-  constructor() {
-    super();
-  }
-
   get data(): Readonly<CreditsItemData> {
     return this.#data;
   }

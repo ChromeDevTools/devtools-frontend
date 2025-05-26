@@ -180,8 +180,6 @@ let connectionFactory: () => Connection;
 
 export class Connection {
   onMessage!: ((arg0: Object) => void)|null;
-  constructor() {
-  }
 
   setOnMessage(_onMessage: (arg0: (Object|string)) => void): void {
   }

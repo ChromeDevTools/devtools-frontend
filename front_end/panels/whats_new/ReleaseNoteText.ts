@@ -40,28 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 78,
-  header: 'What\'s new in DevTools 137',
+  version: 79,
+  header: 'What\'s new in DevTools 138',
   markdownLinks: [
     {
-      key: 'ai-styling',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-styling',
+      key: 'preconnect',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#preconnect',
     },
     {
-      key: 'ai-annotations',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-annotations',
+      key: 'doc-req-latency-times',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#doc-req-latency-times',
     },
     {
-      key: 'ai-insights',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-insights',
+      key: 'geo-accuracy',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#geo-accuracy',
     },
   ],
   videoLinks: [
     {
-      description: 'See the highlights from Chrome 137',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137' as Platform.DevToolsPath.UrlString,
+      description: 'See the highlights from Chrome 138',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-137/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-138/',
 };

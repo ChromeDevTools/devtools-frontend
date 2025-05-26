@@ -192,8 +192,8 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async typeText(text: string) {
-    await this.page.keyboard.type(text);
+  async typeText(text: string, opts?: {delay: number}) {
+    await this.page.keyboard.type(text, opts);
     await this.drainTaskQueue();
   }
 

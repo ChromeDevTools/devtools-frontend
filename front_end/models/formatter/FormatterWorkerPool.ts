@@ -117,6 +117,9 @@ export class FormatterWorkerPool {
   }
 
   javaScriptSubstitute(expression: string, mapping: Map<string, string|null>): Promise<string> {
+    if (mapping.size === 0) {
+      return Promise.resolve(expression);
+    }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})
         .then(result => result || '');
   }

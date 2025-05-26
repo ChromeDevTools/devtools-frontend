@@ -71,11 +71,6 @@ export class RequestResponseView extends UI.Widget.VBox {
   static #sourceViewForRequest(
       request: SDK.NetworkRequest.NetworkRequest,
       contentData: TextUtils.StreamingContentData.StreamingContentData): UI.Widget.Widget|null {
-    let sourceView = requestToSourceView.get(request);
-    if (sourceView !== undefined) {
-      return sourceView;
-    }
-
     let mimeType;
     // If the main document is of type JSON (or any JSON subtype), do not use the more generic canonical MIME type,
     // which would prevent the JSON from being pretty-printed. See https://crbug.com/406900
@@ -95,13 +90,9 @@ export class RequestResponseView extends UI.Widget.VBox {
 
     if (contentData.isTextContent || isWasm) {
       // Note: Even though WASM is binary data, the source view will disassemble it and show a text representation.
-      sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
-    } else {
-      sourceView = new BinaryResourceView(contentData, request.url(), request.resourceType());
+      return SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
     }
-
-    requestToSourceView.set(request, sourceView);
-    return sourceView;
+    return new BinaryResourceView(contentData, request.url(), request.resourceType());
   }
 
   override wasShown(): void {
@@ -143,5 +134,3 @@ export class RequestResponseView extends UI.Widget.VBox {
     }
   }
 }
-
-const requestToSourceView = new WeakMap<SDK.NetworkRequest.NetworkRequest, UI.Widget.Widget>();

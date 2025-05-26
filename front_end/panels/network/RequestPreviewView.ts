@@ -41,7 +41,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as NetworkComponents from './components/components.js';
 import {RequestHTMLView} from './RequestHTMLView.js';
-import {RequestResponseView} from './RequestResponseView.js';
 import {SignedExchangeInfoView} from './SignedExchangeInfoView.js';
 
 const UIStrings = {
@@ -56,14 +55,21 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class RequestPreviewView extends RequestResponseView {
+export class RequestPreviewView extends UI.Widget.VBox {
+  request: SDK.NetworkRequest.NetworkRequest;
+  private contentViewPromise: Promise<UI.Widget.Widget>|null;
+
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
-    super(request);
+    super();
+    this.element.classList.add('request-view');
+    this.request = request;
+    this.contentViewPromise = null;
     this.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
   }
 
-  override async showPreview(): Promise<UI.Widget.Widget> {
-    const view = await super.showPreview();
+  async showPreview(): Promise<UI.Widget.Widget> {
+    const view = await this.createPreview();
+    view.show(this.element);
     await view.updateComplete;
     if (!(view instanceof UI.View.SimpleView)) {
       return view;
@@ -73,6 +79,17 @@ export class RequestPreviewView extends RequestResponseView {
       items.map(item => toolbar.appendToolbarItem(item));
     });
     return view;
+  }
+
+  override wasShown(): void {
+    void this.doShowPreview();
+  }
+
+  private doShowPreview(): Promise<UI.Widget.Widget> {
+    if (!this.contentViewPromise) {
+      this.contentViewPromise = this.showPreview();
+    }
+    return this.contentViewPromise;
   }
 
   private async htmlPreview(): Promise<UI.Widget.Widget|null> {
@@ -95,7 +112,7 @@ export class RequestPreviewView extends RequestResponseView {
     return RequestHTMLView.create(contentData);
   }
 
-  override async createPreview(): Promise<UI.Widget.Widget> {
+  async createPreview(): Promise<UI.Widget.Widget> {
     if (this.request.signedExchangeInfo()) {
       return new SignedExchangeInfoView(this.request);
     }

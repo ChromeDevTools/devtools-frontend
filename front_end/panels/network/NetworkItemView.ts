@@ -153,6 +153,10 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkItemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const requestToResponseView = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestResponseView>();
+const requestToPreviewView = new WeakMap<SDK.NetworkRequest.NetworkRequest, RequestPreviewView>();
+
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {
   private requestInternal: SDK.NetworkRequest.NetworkRequest;
   private readonly resourceViewTabSetting: Common.Settings.Setting<NetworkForward.UIRequestLocation.UIRequestTabs>;
@@ -215,14 +219,16 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.EVENT_SOURCE, i18nString(UIStrings.eventstream),
           new EventSourceMessagesView(request));
-
-      this.responseView = new RequestResponseView(request);
+      this.responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
+      requestToResponseView.set(request, this.responseView);
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE, i18nString(UIStrings.response), this.responseView,
           i18nString(UIStrings.rawResponseData));
     } else {
-      this.responseView = new RequestResponseView(request);
-      const previewView = new RequestPreviewView(request);
+      this.responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
+      requestToResponseView.set(request, this.responseView);
+      const previewView = requestToPreviewView.get(request) ?? new RequestPreviewView(request);
+      requestToPreviewView.set(request, previewView);
       this.appendTab(
           NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, i18nString(UIStrings.preview), previewView,
           i18nString(UIStrings.responsePreview));

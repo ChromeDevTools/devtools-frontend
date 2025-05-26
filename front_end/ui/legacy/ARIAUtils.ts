@@ -383,7 +383,7 @@ function createAlertElement(container: HTMLElement): HTMLDivElement {
 
 export function getOrCreateAlertElement(container: HTMLElement = document.body, opts?: {force: boolean}): HTMLElement {
   const existingAlertElement = alertElements.get(container);
-  if (existingAlertElement && !opts?.force) {
+  if (existingAlertElement && existingAlertElement.isConnected && !opts?.force) {
     return existingAlertElement;
   }
 

@@ -807,6 +807,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
               nameMap => nameMap.size > 0 ?
                   Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(condition, nameMap) :
                   condition)
+          .catch(() => condition)
           .then(subsitutedCondition => addSourceUrl(subsitutedCondition), () => addSourceUrl(condition));
     }
     return addSourceUrl(condition);

@@ -75,7 +75,11 @@ export async function formatScriptContent(
 
   const pool = formatterWorkerPool();
 
-  const formatResult = await pool.format(mimeType, originalContent, indent);
+  let formatResult: FormatterActions.FormatResult = {content: originalContent, mapping: {original: [], formatted: []}};
+  try {
+    formatResult = await pool.format(mimeType, originalContent, indent);
+  } catch {
+  }
   const originalContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(originalContent);
   const formattedContentLineEndings = Platform.StringUtilities.findLineEndingIndexes(formatResult.content);
 

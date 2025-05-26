@@ -115,11 +115,11 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     switch (uiSourceCode.project().type()) {
       case Workspace.Workspace.projectTypes.Network:
         // We track differences for all Network resources.
-        return true;
+        return this.#persistence.binding(uiSourceCode) === null;
 
       case Workspace.Workspace.projectTypes.FileSystem:
         // We track differences for FileSystem resources without bindings.
-        return this.#persistence.binding(uiSourceCode) === null;
+        return true;
 
       default:
         return false;

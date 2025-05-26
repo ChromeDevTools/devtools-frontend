@@ -188,7 +188,7 @@ describe('StylesSidebarPane', () => {
       assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.FunctionRuleSection);
       assert.strictEqual(
           sectionBlocks[1].sections[0].element.deepTextContent().replaceAll(/\s+/g, ' ').trim(),
-          '--f(--x, --y) { @media (width > 400px) { @container (width > 300px) { @supports (color: red) { result: var(--y); } } } result: var(--x); }');
+          '--f(--x, --y) { @media (width > 400px) { @container (width > 300px) { @supports (color: red) { result: var(--y); } } } result: var(--x);}');
     });
 
     describe('Animation styles', () => {

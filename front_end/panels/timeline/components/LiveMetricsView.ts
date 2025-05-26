@@ -940,8 +940,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               <details>
                 <summary>
                   <span class="interaction-type">
-                    ${interaction.interactionType}
-                    ${isInp ?
+                    ${interaction.interactionType} ${isInp ?
                       html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
                     : nothing}
                   </span>

@@ -2572,6 +2572,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/treeoutline.css.js",
   "front_end/ui/legacy/viewContainers.css.js",
   "front_end/ui/lit/i18n-template.js",
+  "front_end/ui/lit/strip-whitespace.js",
   "front_end/ui/visual_logging/Debugging.js",
   "front_end/ui/visual_logging/DomState.js",
   "front_end/ui/visual_logging/KnownContextValues.js",

@@ -118,18 +118,19 @@ export class QueryContainer extends HTMLElement {
     // clang-format off
     return html`
       <span class="queried-size-details">
-        (${this.#queriedSizeDetails.queryAxis}<devtools-icon
+        (${this.#queriedSizeDetails.queryAxis}
+        <devtools-icon
           class=${axisIconClasses} .data=${{
             iconName: 'width',
             color: 'var(--icon-default)',
-          }}></devtools-icon>)
-        ${areBothAxesQueried && this.#queriedSizeDetails.width ? 'width:' : Lit.nothing}
+          }}></devtools-icon>
+        ) ${areBothAxesQueried && this.#queriedSizeDetails.width ? ' width: ' : Lit.nothing}
         ${this.#queriedSizeDetails.width || Lit.nothing}
-        ${areBothAxesQueried && this.#queriedSizeDetails.height ? 'height:' : Lit.nothing}
+        ${areBothAxesQueried && this.#queriedSizeDetails.height ? ' height: ' : Lit.nothing}
         ${this.#queriedSizeDetails.height || Lit.nothing}
       </span>
     `;
-          // clang-format on
+    // clang-format on
   }
 }
 

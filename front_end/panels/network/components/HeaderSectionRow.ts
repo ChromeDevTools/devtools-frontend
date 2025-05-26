@@ -328,13 +328,8 @@ export class HeaderSectionRow extends HTMLElement {
           <div class="explanation">${blockedDetails.explanation()}</div>
           ${blockedDetails.examples.map(example => html`
             <div class="example">
-              <code>${example.codeSnippet}</code>
-              ${example.comment ? html`
-                <span class="comment">${example.comment()}</span>
-              ` : ''}
-            </div>
-          `)}
-          ${this.#maybeRenderBlockedDetailsLink(blockedDetails)}
+              <code>${example.codeSnippet}</code> ${example.comment ? html`<span class="comment"> ${example.comment()}</span>` : ''}
+           </div>`)} ${this.#maybeRenderBlockedDetailsLink(blockedDetails)}
         </div>
       </div>
     `;

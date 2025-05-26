@@ -179,8 +179,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                     ${ruleSet.errorType !== undefined ? html`
                       <span style=${styleMap({color: 'var(--sys-color-error)'})}>
                         ${i18nString(UIStrings.errors, {errorCount: 1})}
-                      </span>` : ''}
-                    ${ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject ? html`
+                      </span>` : ''} ${ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject ? html`
                       <button class="link" role="link"
                         @click=${() => this.#revealAttemptViewWithFilter(ruleSet)}
                         title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}

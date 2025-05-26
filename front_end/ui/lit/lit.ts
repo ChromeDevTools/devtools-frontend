@@ -8,7 +8,6 @@ export {
   Decorators,
   Directive,
   Directives,
-  html,
   LitElement,
   noChange,
   nothing,
@@ -21,5 +20,8 @@ export {
 export {
   i18nTemplate,
 } from './i18n-template.js';
+export {
+  html,
+} from './strip-whitespace.js';
 
 export type LitTemplate = Lit.TemplateResult|typeof Lit.nothing;

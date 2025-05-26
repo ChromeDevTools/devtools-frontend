@@ -399,8 +399,7 @@ export function textContentWithoutStyles(node) {
     } else if (currentNode.tagName === 'DEVTOOLS-TOOLTIP') {
       // <devtools-tooltip> holds popover contents in-line in a slot, so its contents appear in textContent. This is
       // not what the tests expect, so step over its contents entirely.
-      currentNode =
-          currentNode.lastChild?.traverseNextNode(node)?.traverseNextNode(node) ?? currentNode.traverseNextNode(node);
+      currentNode = currentNode.lastChild?.traverseNextNode(node) ?? currentNode.traverseNextNode(node);
     } else if (currentNode.nodeName === 'STYLE') {
       currentNode = currentNode.traverseNextNode(node);
     }

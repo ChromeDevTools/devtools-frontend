@@ -645,8 +645,7 @@ export class EntryLabelOverlay extends HTMLElement {
     id="info-tooltip"
     ${Directives.ref(this.#richTooltip)}>
       <div class="info-tooltip-container">
-        ${opts.textContent}
-        ${opts.includeSettingsButton ? html`
+        ${opts.textContent} ${opts.includeSettingsButton ? html`
           <button
             class="link tooltip-link"
             role="link"

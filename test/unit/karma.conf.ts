@@ -5,6 +5,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 import * as path from 'path';
+import type {Page, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
@@ -54,21 +55,35 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
 
     const page = await browser.newPage();
 
-    await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
-      try {
-        // Karma sometimes runs tests in an iframe or in the main frame.
-        const testFrame = page.frames()[1] ?? page.mainFrame();
-        const element = await testFrame.waitForSelector(elementSelector);
+    async function setupBindings(page: Page) {
+      await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
+        try {
+          // Karma sometimes runs tests in an iframe or in the main frame.
+          const testFrame = page.frames()[1] ?? page.mainFrame();
+          const element = await testFrame.waitForSelector(elementSelector);
 
-        await assertElementScreenshotUnchanged(element, filename, {
-          captureBeyondViewport: false,
-        });
-        return undefined;
-      } catch (error) {
-        if (error instanceof ScreenshotError) {
-          ScreenshotError.errors.push(error);
+          await assertElementScreenshotUnchanged(element, filename, {
+            captureBeyondViewport: false,
+          });
+          return undefined;
+        } catch (error) {
+          if (error instanceof ScreenshotError) {
+            ScreenshotError.errors.push(error);
+          }
+          return `ScreenshotError: ${error.message}`;
         }
-        return `ScreenshotError: ${error.message}`;
+      });
+    }
+
+    await setupBindings(page);
+
+    browser.on('targetcreated', async (target: Target) => {
+      if (target.type() === 'page') {
+        const page = await target.page();
+        if (!page) {
+          return;
+        }
+        await setupBindings(page);
       }
     });
 

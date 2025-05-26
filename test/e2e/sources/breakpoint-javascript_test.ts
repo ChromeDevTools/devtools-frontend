@@ -188,11 +188,8 @@ describe('The Sources Tab', function() {
     });
   });
 
-  // Skip test for now to land unrelated changes that will fail this test. Inline scripts without source
-  // urls are currently not correctly handled.
-  it.skip(
-      '[crbug.com/40189975] can hit a breakpoint in an inline script on the main thread on a fresh DevTools',
-      async () => {
+  it(
+      'can hit a breakpoint in an inline script on the main thread on a fresh DevTools', async () => {
         await enableExperiment('instrumentation-breakpoints');
 
         await step('navigate to a page and open the Sources tab', async () => {

@@ -83,7 +83,7 @@ export class DevToolsFrontendTab {
       // which is controlled via localStorage, hence we need to restart test logging here
       // This can be called after a page fails to load DevTools so make it conditional
       // @ts-expect-error
-      globalThis?.setVeDebugLoggingEnabled(true, 'Test');
+      globalThis?.setVeDebugLoggingEnabled?.(true, 'Test');
     });
     await this.reload();
   }

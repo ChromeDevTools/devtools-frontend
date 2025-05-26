@@ -113,8 +113,8 @@ export async function changeNetworkConditions(condition: string) {
   const {frontend} = getBrowserAndPages();
   await frontend.waitForSelector('pierce/#tab-network');
   await frontend.click('pierce/#tab-network');
-  await frontend.waitForSelector('pierce/[aria-label="Throttling"]');
-  await frontend.select('pierce/[aria-label="Throttling"] select', condition);
+  await frontend.waitForSelector('pierce/select[aria-label="Throttling"]');
+  await frontend.select('pierce/select[aria-label="Throttling"]', condition);
 }
 
 export async function openRecorderPanel() {

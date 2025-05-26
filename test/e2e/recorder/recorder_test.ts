@@ -590,8 +590,7 @@ describe('Recorder', function() {
     });
   });
 
-  // Flaky.
-  it.skip('[crbug.com/382417597]: should also record network conditions', async () => {
+  it('should also record network conditions', async () => {
     await startRecording('recorder/recorder.html', {
       networkCondition: '3G',
     });
@@ -601,10 +600,10 @@ describe('Recorder', function() {
     await target.click('#test');
     await frontend.bringToFront();
     await changeNetworkConditions('Slow 4G');
-    await raf(frontend);
-    await openRecorderPanel();
     await target.bringToFront();
     await target.click('#test');
+    await frontend.bringToFront();
+    await openRecorderPanel();
 
     const recording = await stopRecording();
     assert.deepEqual(

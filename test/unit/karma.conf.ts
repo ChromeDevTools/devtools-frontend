@@ -56,7 +56,8 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
 
     await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
       try {
-        const testFrame = page.frames()[1];
+        // Karma sometimes runs tests in an iframe or in the main frame.
+        const testFrame = page.frames()[1] ?? page.mainFrame();
         const element = await testFrame.waitForSelector(elementSelector);
 
         await assertElementScreenshotUnchanged(element, filename, {

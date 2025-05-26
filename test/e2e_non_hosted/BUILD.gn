@@ -19,6 +19,7 @@ node_ts_library("tests") {
     "assertion",
     "console",
     "elements",
+    "layers",
     "performance",
     "sources",
     "targets",

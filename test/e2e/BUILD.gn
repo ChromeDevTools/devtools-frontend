@@ -28,7 +28,6 @@ node_ts_library("tests") {
     "host",
     "inline_editor",
     "issues",
-    "layers",
     "lighthouse",
     "media",
     "memory",

@@ -4,11 +4,8 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("layers") {
+ts_e2e_library("layers") {
   sources = [ "layers_test.ts" ]
 
-  deps = [
-    "../../shared",
-    "../helpers",
-  ]
+  deps = [ "../../e2e/helpers" ]
 }

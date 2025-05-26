@@ -50,14 +50,16 @@ export class CSSQuery extends HTMLElement {
     `;
 
     render(html`
-      <style>${cssQueryStyles}</style>
-      <style>${UI.inspectorCommonStyles}</style>
-      <div class=${queryClasses} jslog=${VisualLogging.cssRuleHeader(this.#jslogContext).track({click:true, change: true})}>
-        <slot name="indent"></slot>${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : Lit.nothing}${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : Lit.nothing}${queryText} {
-      </div>
-    `, this.#shadow, {
-      host: this,
-    });
+        <style>${cssQueryStyles}</style>
+        <style>${UI.inspectorCommonStyles}</style>
+        <div class=${queryClasses} jslog=${
+            VisualLogging.cssRuleHeader(this.#jslogContext).track({click:true, change: true})}>
+          <slot name="indent"></slot>
+          ${this.#queryPrefix ? html`<span>${this.#queryPrefix + ' '}</span>` : Lit.nothing}
+          ${this.#queryName ? html`<span>${this.#queryName + ' '}</span>` : Lit.nothing}
+          ${queryText} {
+        </div>`,
+        this.#shadow, {host: this});
     // clang-format on
   }
 }

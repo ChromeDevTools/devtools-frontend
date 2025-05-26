@@ -181,7 +181,10 @@ export class NetworkRequestTooltip extends HTMLElement {
         <div class="url url--host">${originWithEntity}</div>
 
         <div class="divider"></div>
-        <div class="network-category"><span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}></span>${networkResourceCategory(this.#data.networkRequest)}</div>
+        <div class="network-category">
+          <span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}>
+          </span>${networkResourceCategory(this.#data.networkRequest)}
+        </div>
         <div class="priority-row">${i18nString(UIStrings.priority)}: ${NetworkRequestTooltip.renderPriorityValue(this.#data.networkRequest)}</div>
         ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ?
           html`<div class="render-blocking"> ${i18nString(UIStrings.renderBlocking)} </div>` :  Lit.nothing

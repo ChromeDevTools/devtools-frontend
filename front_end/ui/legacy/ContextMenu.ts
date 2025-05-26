@@ -846,16 +846,15 @@ export class MenuButton extends HTMLElement {
     }
 
     // clang-format off
-    render(
-      html`
-              <devtools-button
-                .disabled=${this.disabled}
-                .iconName=${this.iconName}
-                .variant=${Buttons.Button.Variant.ICON}
-                .title=${this.title}
-                aria-haspopup='menu'
-                @click=${this.#triggerContextMenu}></devtools-button>`,
-      this.#shadow, { host: this });
+    render(html`
+        <devtools-button .disabled=${this.disabled}
+                         .iconName=${this.iconName}
+                         .variant=${Buttons.Button.Variant.ICON}
+                         .title=${this.title}
+                         aria-haspopup='menu'
+                         @click=${this.#triggerContextMenu}>
+        </devtools-button>`,
+        this.#shadow, { host: this });
     // clang-format on
   }
 }

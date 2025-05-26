@@ -152,7 +152,10 @@ export class LayoutShiftDetails extends HTMLElement {
     const el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
     // clang-format off
     return html`
-    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.injectedIframe)}: </span><span class="culprit-value">${el}</span></span>`;
+      <span class="culprit">
+        <span class="culprit-type"> ${i18nString(UIStrings.injectedIframe)}: </span>
+        <span class="culprit-value">${el}</span>
+      </span>`;
     // clang-format on
   }
 
@@ -169,7 +172,10 @@ export class LayoutShiftDetails extends HTMLElement {
 
     // clang-format off
     return html`
-    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.fontRequest)}: </span><span class="culprit-value">${linkifiedURL}</span></span>`;
+      <span class="culprit">
+        <span class="culprit-type">${i18nString(UIStrings.fontRequest)}: </span>
+        <span class="culprit-value">${linkifiedURL}</span>
+      </span>`;
     // clang-format on
   }
 
@@ -204,7 +210,10 @@ export class LayoutShiftDetails extends HTMLElement {
         } as Insights.NodeLink.NodeLinkData}>
       </devtools-performance-node-link>`;
     return html`
-    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span><span class="culprit-value">${el}</span></span>`;
+      <span class="culprit">
+        <span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span>
+        <span class="culprit-value">${el}</span>
+      </span>`;
     // clang-format on
   }
 

@@ -83,8 +83,10 @@ export class Linkifier extends HTMLElement {
       // eslint-disable-next-line rulesdir/no-a-tags-in-lit
       Lit.render(html`
         <style>${linkifierImplStyles}</style>
-        <a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${Lit.Directives.ifDefined(this.#title) as string}><slot>${linkText}</slot></a>
-      `, this.#shadow, { host: this});
+        <a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${Lit.Directives.ifDefined(this.#title) as string}>
+          <slot>${linkText}</slot>
+        </a>`,
+        this.#shadow, { host: this});
       // clang-format on
     });
   }

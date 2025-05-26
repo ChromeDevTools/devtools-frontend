@@ -380,15 +380,15 @@ export class Button extends HTMLElement {
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
                 jslog=${ifDefined(jslog)}
-                @keydown=${this.#onKeydown}
-        >${hasIcon
-            ? html`
-                <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
-                </devtools-icon>`
+                @keydown=${this.#onKeydown}>
+          ${hasIcon ? html`
+            <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName)}>
+            </devtools-icon>`
             : ''}
-          ${this.#props.longClickable ? html`<devtools-icon name=${'triangle-bottom-right'} class="long-click"
-            ></devtools-icon>`
-      : ''}
+          ${this.#props.longClickable ? html`
+              <devtools-icon name=${'triangle-bottom-right'} class="long-click">
+              </devtools-icon>`
+            : ''}
           ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
         </button>

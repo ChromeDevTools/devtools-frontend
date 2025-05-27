@@ -16,25 +16,6 @@ describe('Performance panel', function() {
     this.timeout(20_000);
   }
 
-  itScreenshot('loads a trace file and renders it in the timeline', async () => {
-    await loadTimelineDocExample('performance_panel/basic.html?trace=basic');
-    const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
-  });
-
-  itScreenshot('renders correctly the Call Tree datagrid', async () => {
-    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('div.tabbed-pane');
-    await click('#tab-call-tree');
-    const datagrid = await waitFor('.timeline-tree-view');
-    await waitForFunction(async () => {
-      const datagrid = await waitFor('.timeline-tree-view');
-      const height = await datagrid.evaluate(elem => elem.clientHeight);
-      return height > 150;
-    });
-    await assertElementScreenshotUnchanged(datagrid, 'performance/callTree.png');
-  });
-
   // Flaky on linux
   itScreenshot.skipOnPlatforms(
       ['linux'], '[crbug.com/327586819]: renders the timeline correctly when scrolling', async () => {

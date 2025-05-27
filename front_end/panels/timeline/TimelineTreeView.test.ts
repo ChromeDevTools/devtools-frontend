@@ -146,8 +146,13 @@ describeWithEnvironment('TimelineTreeView', function() {
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+
+      renderWidgetInVbox(callTreeView);
       callTreeView.setRange(startTime, endTime);
       callTreeView.setModelWithEvents(consoleTimings, parsedTrace);
+
+      await RenderCoordinator.done();
+      await assertScreenshot('timeline/call_tree_view.png');
 
       const tree = callTreeView.buildTree();
       const topNodesIterator = tree.children().values();

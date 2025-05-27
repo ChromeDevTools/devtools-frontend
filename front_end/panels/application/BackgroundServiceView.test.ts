@@ -20,6 +20,17 @@ describeWithMockConnection('BackgroundServiceView', () => {
   let manager: SDK.StorageKeyManager.StorageKeyManager|null|undefined;
   let view: Resources.BackgroundServiceView.BackgroundServiceView;
 
+  const BACKGROUND_SERVICE_EVENT = {
+    timestamp: 1556889085,  // 2019-05-03 14:11:25.000.
+    origin: '',
+    storageKey: testKey,
+    serviceWorkerRegistrationId: '42' as Protocol.ServiceWorker.RegistrationID,  // invalid.
+    service: serviceName,
+    eventName: 'Event1',
+    instanceId: 'Instance1',
+    eventMetadata: [],
+  };
+
   beforeEach(() => {
     target = createTarget();
     backgroundServiceModel = target.model(Resources.BackgroundServiceModel.BackgroundServiceModel);
@@ -47,20 +58,8 @@ describeWithMockConnection('BackgroundServiceView', () => {
   it('updates event list when main storage key changes', () => {
     assert.exists(backgroundServiceModel);
     assert.exists(manager);
-    backgroundServiceModel.backgroundServiceEventReceived({
-      backgroundServiceEvent: {
-        timestamp: 1556889085,  // 2019-05-03 14:11:25.000.
-        origin: '',
-        storageKey: testKey,
-        serviceWorkerRegistrationId: 42 as unknown as Protocol.ServiceWorker.RegistrationID,  // invalid.
-        service: serviceName,
-        eventName: 'Event1',
-        instanceId: 'Instance1',
-        eventMetadata: [],
-      },
-    });
+    backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
     manager.updateStorageKeys(new Set([testKey]));
-
     manager.setMainStorageKey(testKey);
 
     const dataRow = view.getDataGrid().dataTableBody.getElementsByClassName('data-grid-data-grid-node')[0];
@@ -76,18 +75,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
   it('shows placeholder text to select a value if events have been captured', () => {
     assert.exists(backgroundServiceModel);
     assert.exists(manager);
-    backgroundServiceModel.backgroundServiceEventReceived({
-      backgroundServiceEvent: {
-        timestamp: 1556889085,  // 2019-05-03 14:11:25.000.
-        origin: '',
-        storageKey: testKey,
-        serviceWorkerRegistrationId: 42 as unknown as Protocol.ServiceWorker.RegistrationID,  // invalid.
-        service: serviceName,
-        eventName: 'Event1',
-        instanceId: 'Instance1',
-        eventMetadata: [],
-      },
-    });
+    backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
     manager.updateStorageKeys(new Set([testKey]));
     manager.setMainStorageKey(testKey);
 
@@ -108,7 +96,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
         'Start to debug background services by using the "Start recording events" button or by pressing Ctrl.Learn more');
   });
 
-  it('Triggers record on button click', async () => {
+  it('Triggers record on button click', () => {
     const recordButton = view.contentElement.querySelector('.empty-state devtools-button');
     Platform.assertNotNullOrUndefined(recordButton);
     assert.deepEqual(recordButton?.textContent, 'Start recording events');
@@ -116,5 +104,61 @@ describeWithMockConnection('BackgroundServiceView', () => {
     const recordingSpy = sinon.spy(view, 'toggleRecording');
     dispatchClickEvent(recordButton);
     sinon.assert.calledOnce(recordingSpy);
+  });
+
+  it('informs developer about current recording', () => {
+    backgroundServiceModel?.recordingStateChanged(
+        {isRecording: true, service: Protocol.BackgroundService.ServiceName.BackgroundFetch});
+
+    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
+    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
+    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
+    assert.deepEqual(header, 'Recording background fetch activity…');
+    assert.deepEqual(
+        description, 'DevTools will record all background fetch activity for up to 3 days, even when closed.');
+  });
+
+  it('clears preview when view is cleared', async () => {
+    backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
+    manager?.updateStorageKeys(new Set([testKey]));
+
+    await view.updateComplete;
+    view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
+
+    // Metadata is shown.
+    assert.isNull(view.contentElement.querySelector('.empty-state'));
+
+    const toolbar = view.contentElement.querySelector('devtools-toolbar');
+    assert.exists(toolbar);
+    const clearButton = toolbar.querySelector('[aria-label="Clear"]');
+    assert.exists(clearButton);
+    dispatchClickEvent(clearButton);
+
+    // Preview is cleared, showing general empty state text.
+    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
+    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
+    assert.deepEqual(header, 'No recording yet');
+  });
+
+  it('shows metadata in preview', async () => {
+    backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
+
+    const eventWithMetadata = {
+      ...BACKGROUND_SERVICE_EVENT,
+      eventMetadata: [{key: 'key', value: 'value'}],
+      instanceId: 'Instance2',
+      eventName: 'Event2'
+    };
+    backgroundServiceModel?.backgroundServiceEventReceived({backgroundServiceEvent: eventWithMetadata});
+    manager?.updateStorageKeys(new Set([testKey]));
+
+    await view.updateComplete;
+    view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
+    let metadata = view.contentElement.querySelector('.background-service-metadata-entry');
+    assert.deepEqual(metadata?.textContent, 'No metadata for this event');
+
+    view.getDataGrid().asWidget().dataGrid.rootNode().children[1].select();
+    metadata = view.contentElement.querySelector('.background-service-metadata-entry');
+    assert.deepEqual(metadata?.textContent, 'key: value');
   });
 });

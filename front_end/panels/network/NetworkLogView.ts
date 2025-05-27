@@ -508,12 +508,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private activeGroupLookup: GroupLookupInterface|null;
   private readonly textFilterUI: UI.FilterBar.TextFilterUI;
   private readonly invertFilterUI: UI.FilterBar.CheckboxFilterUI;
-  private readonly dataURLFilterUI: UI.FilterBar.CheckboxFilterUI|undefined;
   private readonly moreFiltersDropDownUI: MoreFiltersDropDownUI|undefined;
-  private readonly onlyBlockedResponseCookiesFilterUI: UI.FilterBar.CheckboxFilterUI|undefined;
-  private readonly onlyBlockedRequestsUI: UI.FilterBar.CheckboxFilterUI|undefined;
-  private readonly onlyThirdPartyFilterUI: UI.FilterBar.CheckboxFilterUI|undefined;
-  private readonly hideChromeExtensionsUI: UI.FilterBar.CheckboxFilterUI|undefined;
   private readonly resourceCategoryFilterUI: UI.FilterBar.NamedBitSetFilterUI;
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;

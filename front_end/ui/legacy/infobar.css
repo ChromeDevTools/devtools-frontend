@@ -8,6 +8,13 @@
   transition-timing-function: var(--sys-motion-curve-spatial);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  :host {
+    transition: all var(--sys-motion-duration-long2);
+    transition-timing-function: var(--sys-motion-curve-spatial);
+  }
+}
+
 @starting-style {
   :host {
     height: 0;

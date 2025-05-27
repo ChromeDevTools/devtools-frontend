@@ -2345,6 +2345,12 @@ export namespace Browser {
      * Download status.
      */
     state: DownloadProgressEventState;
+    /**
+     * If download is "completed", provides the path of the downloaded file.
+     * Depending on the platform, it is not guaranteed to be set, nor the file
+     * is guaranteed to exist.
+     */
+    filePath?: string;
   }
 }
 
@@ -4182,6 +4188,7 @@ export namespace DOM {
     FileSelectorButton = 'file-selector-button',
     DetailsContent = 'details-content',
     Picker = 'picker',
+    PermissionIcon = 'permission-icon',
   }
 
   /**

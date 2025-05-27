@@ -253,6 +253,8 @@ Call the updateFiles with the list of files to be updated once you are done.
 
 CRITICAL: before searching always call listFiles first.
 CRITICAL: never call updateFiles with files that do not need updates.
+CRITICAL: ALWAYS call updateFiles instead of explaining in text what files need to be updated.
+CRITICAL: NEVER ask the user any questions.
 `;
 
     const responses = await Array.fromAsync(this.run(prompt, {selected: null, signal}));

@@ -98,6 +98,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ChartViewport.test.ts",
     "FilmStripView.test.ts",
     "FlameChart.test.ts",
     "PieChart.test.ts",

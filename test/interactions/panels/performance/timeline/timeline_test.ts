@@ -16,20 +16,6 @@ describe('Performance panel', function() {
     this.timeout(20_000);
   }
 
-  // Flaky on linux
-  itScreenshot.skipOnPlatforms(
-      ['linux'], '[crbug.com/327586819]: renders the timeline correctly when scrolling', async () => {
-        await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
-        const panel = await waitFor('body');
-
-        const virtualScrollBar = await waitFor('div.chart-viewport-v-scroll.always-show-scrollbar');
-
-        await virtualScrollBar.evaluate(el => {
-          el.scrollTop = 200;
-        });
-        await assertElementScreenshotUnchanged(panel, 'performance/timeline_canvas_scrolldown.png');
-      });
-
   itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
     await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
     const panel = await waitFor('body');
@@ -42,18 +28,6 @@ describe('Performance panel', function() {
         const panel = await waitFor('body');
         await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png');
       });
-
-  itScreenshot('renders screenshots in the frames track', async () => {
-    await loadTimelineDocExample(
-        'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
-    const panel = await waitFor('body');
-    await waitForFunction(async () => {
-      const mainFlameChart = await waitFor('.timeline-flamechart');
-      const height = await mainFlameChart.evaluate(elem => elem.clientHeight);
-      return height > 500;
-    });
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png');
-  });
 
   // Flaking.
   itScreenshot.skip(

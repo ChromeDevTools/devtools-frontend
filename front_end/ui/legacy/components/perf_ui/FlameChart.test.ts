@@ -6,7 +6,7 @@ import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Extensions from '../../../../panels/timeline/extensions/extensions.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
   FakeFlameChartProvider,
@@ -1108,6 +1108,57 @@ describeWithEnvironment('FlameChart', () => {
       customEndTime: 141253000 as Trace.Types.Timing.Milli,
     });
     await assertScreenshot('timeline/interactions_track_candystripe.png');
+  });
+
+  it('renders the frames track with screenshots', async function() {
+    const {flameChart} = await renderFlameChartIntoDOM(this, {
+      traceFile: 'web-dev-screenshot-source-ids.json.gz',
+      // This is a bit confusing: we filter out all tracks here because the
+      // Frames track was never migrated to an appender, and therefore it
+      // cannot be filtered using this helper.
+      // So instead, we filter all the appenders out, which leaves just the
+      // frames track. This also means we cannot expand it via this helper,
+      // hence the call to toggleGroupExpand below.
+      filterTracks() {
+        return false;
+      },
+      // A height manually picked that fits the screenshots in but no
+      // additional whitespace.
+      customHeight: 200,
+      // So that when we expand the track, the screenshots are already in
+      // memory and we do not have to async wait for them to be fetched &
+      // drawn.
+      preloadScreenshots: true,
+    });
+    flameChart.toggleGroupExpand(0);
+    await raf();
+    await assertScreenshot('timeline/frames_track_screenshots.png');
+  });
+
+  it('renders correctly with a vertical offset', async function() {
+    const {flameChart, parsedTrace, dataProvider} = await renderFlameChartIntoDOM(this, {
+      traceFile: 'web-dev.json.gz',
+      filterTracks() {
+        return true;
+      },
+      expandTracks() {
+        return true;
+      },
+      customHeight: 200,
+    });
+
+    // This event is one that is deep into the main thread, so it forces the
+    // flamechart to be vertically scrolled. That's why we pick this one.
+    const event = parsedTrace.Renderer.allTraceEntries.find(entry => {
+      return entry.dur === 462 && entry.ts === 1020035043753 &&
+          entry.name === Trace.Types.Events.Name.UPDATE_LAYOUT_TREE;
+    });
+    assert.isOk(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isOk(index);
+    flameChart.revealEntryVertically(index);
+    await raf();
+    await assertScreenshot('timeline/flamechart_with_vertical_offset.png');
   });
 
   it('renders all the decoration types onto events', async () => {

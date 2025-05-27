@@ -91,6 +91,20 @@ export interface RenderFlameChartOptions {
   expandTracks?: (trackName: string, trackIndex: number) => boolean;
   customStartTime?: Trace.Types.Timing.Milli;
   customEndTime?: Trace.Types.Timing.Milli;
+  /**
+   * A custom height in pixels. By default a height is chosen that will
+   * vertically fit the entire FlameChart.
+   * (calculated based on the pixel offset of the last visible track.)
+   */
+  customHeight?: number;
+  /**
+   * When the frames track renders screenshots, we do so async, as we have to
+   * fetch screenshots first to draw them. If this flag is `true`, we block and
+   * preload all the screenshots before rendering, thus making it faster in a
+   * test to expand the frames track as it can be done with no async calls to
+   * fetch images.
+   */
+  preloadScreenshots?: boolean;
 }
 
 /**
@@ -102,6 +116,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
   target: HTMLElement,
+  parsedTrace: Trace.Handlers.Types.ParsedTrace,
 }> {
   const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
@@ -117,6 +132,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   });
 
   const {parsedTrace} = await TraceLoader.traceEngine(context, options.traceFile);
+  if (options.preloadScreenshots) {
+    await Timeline.Utils.ImageCache.preload(parsedTrace.Screenshots.screenshots ?? []);
+  }
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   dataProvider.setModel(parsedTrace, entityMapper);
@@ -135,8 +153,10 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   const target = document.createElement('div');
   target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
   const timingsTrackOffset = flameChart.levelToOffset(dataProvider.maxStackDepth());
-  // Allow an extra 10px so no scrollbar is shown.
-  target.style.height = `${timingsTrackOffset + 10}px`;
+  // Allow an extra 10px so no scrollbar is shown if using the default height
+  // that fits everything inside.
+  const heightPixels = options.customHeight ?? timingsTrackOffset + 10;
+  target.style.height = `${heightPixels}px`;
   target.style.display = 'flex';
   target.style.width = '800px';
   renderElementIntoDOM(target);
@@ -144,11 +164,7 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
   flameChart.update();
   await raf();
 
-  return {
-    flameChart,
-    dataProvider,
-    target,
-  };
+  return {flameChart, dataProvider, target, parsedTrace};
 }
 
 /**

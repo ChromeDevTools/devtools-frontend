@@ -7,7 +7,6 @@ export const enum FormatterActions {
   PARSE_CSS = 'parseCSS',
   JAVASCRIPT_SUBSTITUTE = 'javaScriptSubstitute',
   JAVASCRIPT_SCOPE_TREE = 'javaScriptScopeTree',
-  EVALUATE_JAVASCRIPT_SUBSTRING = 'evaluatableJavaScriptSubstring',
 }
 
 export const enum FormattableMediaTypes {

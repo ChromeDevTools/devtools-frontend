@@ -22,19 +22,6 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
   });
 
-  itScreenshot('renders correctly the Bottom Up datagrid', async () => {
-    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    await waitFor('div.tabbed-pane');
-    await click('#tab-bottom-up');
-    const datagrid = await waitFor('.timeline-tree-view');
-    await waitForFunction(async () => {
-      const datagrid = await waitFor('.timeline-tree-view');
-      const height = await datagrid.evaluate(elem => elem.clientHeight);
-      return height > 150;
-    });
-    await assertElementScreenshotUnchanged(datagrid, 'performance/bottomUp.png');
-  });
-
   itScreenshot('renders correctly the Call Tree datagrid', async () => {
     await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('div.tabbed-pane');
@@ -74,12 +61,6 @@ describe('Performance panel', function() {
         const panel = await waitFor('body');
         await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png');
       });
-
-  itScreenshot('candy stripes long tasks', async () => {
-    await loadTimelineDocExample('performance_panel/basic.html?trace=one-second-interaction');
-    const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png');
-  });
 
   itScreenshot('renders screenshots in the frames track', async () => {
     await loadTimelineDocExample(

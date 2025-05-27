@@ -686,6 +686,26 @@ export async function renderFlameChartWithFakeProvider(
   await raf();
 }
 
+/**
+ * Renders a widget into an element that has the right styling to be a VBox.
+ * Useful as many of the Performance Panel elements are rendered like this and
+ * need a parent that is flex + has a height & width in order to render
+ * correctly for screenshot tests.
+ */
+export function renderWidgetInVbox(widget: UI.Widget.Widget, opts: {
+  width?: number,
+  height?: number,
+} = {}): void {
+  const target = document.createElement('div');
+  target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
+  target.classList.add('flex-auto', 'vbox');
+  target.style.width = (opts.width ?? 800) + 'px';
+  target.style.height = (opts.height ?? 600) + 'px';
+  widget.markAsRoot();
+  widget.show(target);
+  renderElementIntoDOM(target);
+}
+
 export function getMainThread(data: Trace.Handlers.ModelHandlers.Renderer.RendererHandlerData):
     Trace.Handlers.ModelHandlers.Renderer.RendererThread {
   let mainThread: Trace.Handlers.ModelHandlers.Renderer.RendererThread|null = null;

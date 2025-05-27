@@ -151,8 +151,7 @@ describe('The color swatch', () => {
     await waitForCSSPropertyValue('#inspected', 'background-color', '#00f');
   });
 
-  // Flakes with "done() called multiple times" or "Color swatch found: expected false to be true" in last line
-  it.skip('[crbug.com/416222750]: is updated when the color value is updated in the Styles pane', async () => {
+  it('is updated when the color value is updated in the Styles pane', async () => {
     await goToTestPageAndSelectTestElement();
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red');

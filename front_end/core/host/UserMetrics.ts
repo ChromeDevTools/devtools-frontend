@@ -743,20 +743,6 @@ export enum PanelWithLocation {
   MAX_VALUE = 133,
 }
 
-export enum ElementsSidebarTabCodes {
-  /* eslint-disable @typescript-eslint/naming-convention */
-  OtherSidebarPane = 0,
-  styles = 1,
-  computed = 2,
-  'elements.layout' = 3,
-  'elements.event-listeners' = 4,
-  'elements.dom-breakpoints' = 5,
-  'elements.dom-properties' = 6,
-  'accessibility.view' = 7,
-  /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 8,
-}
-
 export enum MediaTypes {
   /* eslint-disable @typescript-eslint/naming-convention */
   Unknown = 0,

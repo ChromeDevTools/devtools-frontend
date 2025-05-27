@@ -34,9 +34,6 @@ Timeline category of the [UMA](http://uma/) page.
     *Sources* panels sidebar.
 *   `DevTools.Workspaces.PopulateWallClockTime` records the wall clock time in
     milliseconds elapsed while populating a project folder in the workspace.
-*   `DevTools.SidebarPaneShown` records the `navigator-files` (*Sources -
-    Filesystem*) enum whenever the *Filesystem* tab is revealed in the *Sources*
-    panels sidebar.
 
 ## How to add UMA metrics in DevTools frontend
 

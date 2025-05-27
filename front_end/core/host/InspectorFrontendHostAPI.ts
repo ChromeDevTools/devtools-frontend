@@ -467,7 +467,6 @@ export const enum EnumeratedHistogram {
   // LINT.IfChange(EnumeratedHistogram)
   ActionTaken = 'DevTools.ActionTaken',
   PanelShown = 'DevTools.PanelShown',
-  SidebarPaneShown = 'DevTools.SidebarPaneShown',
   KeyboardShortcutFired = 'DevTools.KeyboardShortcutFired',
   IssueCreated = 'DevTools.IssueCreated',
   IssuesPanelIssueExpanded = 'DevTools.IssuesPanelIssueExpanded',

@@ -36,6 +36,7 @@ import {
   State as ChatViewState,
   type Step
 } from './components/ChatView.js';
+import {ExploreWidget} from './components/ExploreWidget.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
@@ -348,18 +349,30 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
 
 function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElement): void {
   // clang-format off
-  Lit.render(html`
-    ${toolbarView(input)}
-    <div class="chat-container">
-      <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
-        if (!el || !(el instanceof ChatView)) {
-          return;
-        }
+  Lit.render(
+    html`
+      ${toolbarView(input)}
+      <div class="ai-assistance-view-container">
+        ${input.state !== ChatViewState.EXPLORE_VIEW
+          ? html` <devtools-ai-chat-view
+              .props=${input}
+              ${Lit.Directives.ref((el: Element | undefined) => {
+                if (!el || !(el instanceof ChatView)) {
+                  return;
+                }
 
-        output.chatView = el;
-      })}></devtools-ai-chat-view>
-    </div>
-  `, target, {host: input});
+                output.chatView = el;
+              })}
+            ></devtools-ai-chat-view>`
+          : html`<devtools-widget
+              class="explore"
+              .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
+            ></devtools-widget>`}
+      </div>
+    `,
+    target,
+    { host: input },
+  );
   // clang-format on
 }
 
@@ -532,8 +545,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getChatUiState(): ChatViewState {
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-    return (this.#aiAssistanceEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? ChatViewState.CHAT_VIEW :
-                                                                                     ChatViewState.CONSENT_VIEW;
+
+    // Special case due to the way its handled downstream quirks
+    if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+      return ChatViewState.CHAT_VIEW;
+    }
+
+    if (!this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
+      return ChatViewState.CONSENT_VIEW;
+    }
+
+    if (this.#conversation?.type) {
+      return ChatViewState.CHAT_VIEW;
+    }
+
+    return ChatViewState.EXPLORE_VIEW;
   }
 
   #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {

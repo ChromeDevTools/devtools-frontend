@@ -7,7 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import {initializePersistenceImplForTests, setupAutomaticFileSystem} from '../../../testing/AiAssistanceHelpers.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
@@ -97,62 +97,6 @@ describeWithEnvironment('ChatView', () => {
 
       const optIn = chat.shadowRoot?.querySelector('.disabled-view');
       assert.strictEqual(optIn?.textContent?.trim(), 'Check your internet connection and try again');
-    });
-
-    describe('no agent empty state', () => {
-      it('should show feature cards for enabled features', () => {
-        updateHostConfig({
-          devToolsFreestyler: {
-            enabled: true,
-          },
-          devToolsAiAssistanceNetworkAgent: {
-            enabled: true,
-          },
-          devToolsAiAssistanceFileAgent: {
-            enabled: true,
-          },
-          devToolsAiAssistancePerformanceAgent: {
-            enabled: true,
-          },
-        });
-        const props = getProp({
-          conversationType: undefined,
-        });
-        const chat = new AiAssistancePanel.ChatView(props);
-        renderElementIntoDOM(chat);
-        const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
-        assert.isDefined(featureCards);
-        assert.strictEqual(featureCards?.length, 4);
-        assert.strictEqual(featureCards[0].querySelector('.feature-card-content h3')?.textContent, 'CSS styles');
-        assert.strictEqual(featureCards[1].querySelector('.feature-card-content h3')?.textContent, 'Network');
-        assert.strictEqual(featureCards[2].querySelector('.feature-card-content h3')?.textContent, 'Files');
-        assert.strictEqual(featureCards[3].querySelector('.feature-card-content h3')?.textContent, 'Performance');
-      });
-
-      it('should not show any feature cards if none of the entrypoints are available', () => {
-        updateHostConfig({
-          devToolsFreestyler: {
-            enabled: false,
-          },
-          devToolsAiAssistanceNetworkAgent: {
-            enabled: false,
-          },
-          devToolsAiAssistanceFileAgent: {
-            enabled: false,
-          },
-          devToolsAiAssistancePerformanceAgent: {
-            enabled: false,
-          },
-        });
-        const props = getProp({
-          conversationType: undefined,
-        });
-        const chat = new AiAssistancePanel.ChatView(props);
-        renderElementIntoDOM(chat);
-        const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
-        assert.isDefined(featureCards);
-        assert.strictEqual(featureCards?.length, 0);
-      });
     });
   });
 });

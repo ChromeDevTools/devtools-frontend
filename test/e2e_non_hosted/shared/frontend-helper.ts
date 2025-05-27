@@ -303,7 +303,11 @@ export class DevToolsPage extends PageWrapper {
     }
 
     await element.evaluate(el => {
-      el.scrollIntoView();
+      el.scrollIntoView({
+        behavior: 'instant',
+        block: 'center',
+        inline: 'center',
+      });
     });
   }
 

@@ -4,11 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("css_overview") {
+ts_e2e_library("css_overview") {
   sources = [ "css_overview_test.ts" ]
 
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../shared",
   ]
 }

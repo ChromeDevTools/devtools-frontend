@@ -727,7 +727,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   unusedPercentage(): number {
     // Per convention, empty files are reported as 100 % uncovered
     if (this.sizeInternal === 0) {
-      return 100;
+      return 1;
     }
     return this.unusedSize() / this.size();
   }

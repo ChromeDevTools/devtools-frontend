@@ -18,6 +18,7 @@ node_ts_library("tests") {
     "ai_assistance",
     "assertion",
     "console",
+    "coverage",
     "elements",
     "issues",
     "layers",

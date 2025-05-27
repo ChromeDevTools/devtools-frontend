@@ -17,7 +17,7 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Flexbox Editor', function() {
-  async function setup(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+  async function setupStyles(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/flexbox-editor.html');
     await waitForContentOfSelectedElementsNode('<body>\u200B', devToolsPage);
     await focusElementsTree(devToolsPage);
@@ -26,7 +26,7 @@ describe('Flexbox Editor', function() {
   }
 
   it('can be opened and flexbox styles can be edited', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await setupStyles(devToolsPage, inspectedPage);
 
     await clickStylePropertyEditorButton('Open flexbox editor', 'devtools-flexbox-editor', devToolsPage);
 
@@ -44,7 +44,7 @@ describe('Flexbox Editor', function() {
   });
 
   it('can be opened for flexbox styles with !important', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await setupStyles(devToolsPage, inspectedPage);
     await editCSSProperty('#target', 'display', 'flex !important', devToolsPage);
     await devToolsPage.drainTaskQueue();
     await waitForCSSPropertyValue('#target', 'display', 'flex !important', undefined, devToolsPage);

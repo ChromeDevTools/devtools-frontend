@@ -22,7 +22,7 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('The Computed pane', function() {
-  async function setup(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+  async function openComputedPane(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await inspectedPage.goToResource('elements/simple-styled-page.html');
     await navigateToSidePane('Computed', devToolsPage);
     await waitForElementsComputedSection(devToolsPage);
@@ -32,7 +32,7 @@ describe('The Computed pane', function() {
   }
 
   it('can display the CSS properties of the selected element', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await openComputedPane(devToolsPage, inspectedPage);
     // Select the H1 element and wait for the computed pane to change.
     let content = await getContentOfComputedPane(devToolsPage);
     await devToolsPage.pressKey('ArrowDown');
@@ -67,7 +67,7 @@ describe('The Computed pane', function() {
   });
 
   it('can display inherited CSS properties of the selected element', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await openComputedPane(devToolsPage, inspectedPage);
     // Select the H1 element and wait for the computed pane to change.
     const content = await getContentOfComputedPane(devToolsPage);
     await devToolsPage.pressKey('ArrowDown');
@@ -90,7 +90,7 @@ describe('The Computed pane', function() {
   });
 
   it('remembers which properties that are expanded when re-rendering', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await openComputedPane(devToolsPage, inspectedPage);
     await devToolsPage.pressKey('ArrowDown');
     const colorProperty = await devToolsPage.waitFor(
         'CSS property name: color CSS property value: rgb(255, 0, 102)', undefined, undefined, 'aria');
@@ -108,7 +108,7 @@ describe('The Computed pane', function() {
   });
 
   it('allows tracing to style rules (ported layout test)', async ({devToolsPage, inspectedPage}) => {
-    await setup(devToolsPage, inspectedPage);
+    await openComputedPane(devToolsPage, inspectedPage);
     await inspectedPage.goToResource('elements/css-styles-variables.html');
     await waitForNumberOfComputedProperties(7, devToolsPage);
     await toggleShowAllComputedProperties(devToolsPage);

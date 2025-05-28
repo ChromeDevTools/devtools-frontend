@@ -102,6 +102,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--disable-lcd-text',
       '--force-device-scale-factor=1',
       '--disable-device-discovery-notifications',
+      '--window-size=1280,768',
       ...args.flags,
       url,
     ];

@@ -10,6 +10,11 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('AI Assistance', function() {
+  if (this.timeout() > 0) {
+    // Takes longer on Macs.
+    this.timeout(20000);
+  }
+
   let preloadScriptId: string;
 
   async function setupMocks(
@@ -131,6 +136,8 @@ describe('AI Assistance', function() {
   }
 
   async function typeQuery(devtoolsPage: DevToolsPage, query: string): Promise<void> {
+    await devtoolsPage.waitFor('textarea.chat-input');
+    await devtoolsPage.scrollElementIntoView('textarea.chat-input');
     await devtoolsPage.click('aria/Ask a question about the selected element');
     await devtoolsPage.typeText(query);
   }
@@ -396,11 +403,7 @@ STOP`,
     });
   });
 
-  // Flaky
-  it.skip('[crbug.com/414592013] modifies multiple styles for elements inside shadow DOM', async ({
-                                                                                             devToolsPage,
-                                                                                             inspectedPage
-                                                                                           }) => {
+  it('modifies multiple styles for elements inside shadow DOM', async ({devToolsPage, inspectedPage}) => {
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [

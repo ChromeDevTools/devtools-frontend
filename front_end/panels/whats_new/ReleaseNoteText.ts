@@ -41,27 +41,27 @@ export function getReleaseNote(): ReleaseNote {
 
 let releaseNote: ReleaseNote = {
   version: 79,
-  header: 'What\'s new in DevTools 138',
+  header: 'What\'s new in DevTools 138 Beta',
   markdownLinks: [
     {
-      key: 'preconnect',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#preconnect',
+      key: 'crbug1',
+      link: 'https://issues.chromium.org/issues/420862341',
     },
     {
-      key: 'doc-req-latency-times',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#doc-req-latency-times',
+      key: 'crbug2',
+      link: 'https://issues.chromium.org/issues/420862838',
     },
     {
-      key: 'geo-accuracy',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138/#geo-accuracy',
+      key: 'crbug3',
+      link: 'https://issues.chromium.org/issues/420870269',
     },
   ],
   videoLinks: [
     {
-      description: 'See the highlights from Chrome 138',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-138' as Platform.DevToolsPath.UrlString,
+      description: 'See past highlights from Chrome 137',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-138/',
+  link: 'https://issues.chromium.org/hotlists/7004254',
 };

@@ -43,16 +43,21 @@ const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats (slow)';
 const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
 export async function navigateToPerformanceTab(
-    testName?: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    testResource?: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   await devToolsPage.evaluate(() => {
     // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
     // time the performance panel is opened, from opening in tests.
     localStorage.setItem('hide-shortcuts-dialog-for-test', 'true');
+    // Disable the auto showing of the RPP sidebar. This only
+    // happens on the first time the user should see the
+    // sidebar, so it makes tests have to check if it's open or
+    // not. Instead, let's just disable any auto-show in tests.
+    localStorage.setItem('disable-auto-show-rpp-sidebar-for-test', 'true');
   });
 
-  if (testName) {
-    await inspectedPage.goToResource(`performance/${testName}.html`);
+  if (testResource) {
+    await inspectedPage.goToResource(`performance/${testResource}.html`);
   }
 
   // Click on the tab.
@@ -231,14 +236,15 @@ export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndP
       devToolsPage);
 }
 
-export async function reloadAndRecord() {
-  await click(RELOAD_AND_RECORD_BUTTON_SELECTOR);
+export async function reloadAndRecord(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(RELOAD_AND_RECORD_BUTTON_SELECTOR);
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await waitFor('devtools-performance-timeline-summary');
+  await devToolsPage.waitFor('devtools-performance-timeline-summary');
   await expectVeEvents(
-      [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline');
+      [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline',
+      devToolsPage);
 }
 
 export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

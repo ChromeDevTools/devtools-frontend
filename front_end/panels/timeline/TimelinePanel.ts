@@ -2128,7 +2128,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * 2. The user had it open, and we hid it (for example, during recording), so now we need to bring it back.
    */
   #showSidebarIfRequired(): void {
-    if (Root.Runtime.Runtime.queryParam('disable-auto-performance-sidebar-reveal') !== null) {
+    const disabledByLocalStorage = window.localStorage.getItem('disable-auto-show-rpp-sidebar-for-test') === 'true';
+
+    if (Root.Runtime.Runtime.queryParam('disable-auto-performance-sidebar-reveal') !== null || disabledByLocalStorage) {
       // Used in interaction tests & screenshot tests.
       return;
     }

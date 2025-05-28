@@ -396,7 +396,11 @@ STOP`,
     });
   });
 
-  it('modifies multiple styles for elements inside shadow DOM', async ({devToolsPage, inspectedPage}) => {
+  // Flaky
+  it.skip('[crbug.com/414592013] modifies multiple styles for elements inside shadow DOM', async ({
+                                                                                             devToolsPage,
+                                                                                             inspectedPage
+                                                                                           }) => {
     await runAiAssistance(devToolsPage, inspectedPage, {
       query: 'Change the background color for this element to blue',
       messages: [

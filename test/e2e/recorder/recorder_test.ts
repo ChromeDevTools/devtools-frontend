@@ -1475,7 +1475,7 @@ describe('Recorder', function() {
       await target.keyboard.up('e');
 
       const recording = (await startOrStopRecordingShortcut(
-                            'page',
+                            'inspectedPage',
                             )) as UserFlow;
       assert.deepEqual(processAndVerifyBaseRecording(recording), {
         steps: [

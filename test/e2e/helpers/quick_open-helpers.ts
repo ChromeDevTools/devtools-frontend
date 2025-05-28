@@ -11,6 +11,7 @@ import {
   typeText,
   waitFor
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
 
@@ -20,9 +21,10 @@ const QUICK_OPEN_ITEM_TITLE_SELECTOR = '.filtered-list-widget-title';
 
 const QUICK_OPEN_SELECTED_ITEM_SELECTOR = `${QUICK_OPEN_ITEMS_SELECTOR}.selected`;
 
-export const openCommandMenu = async () => {
-  const {frontend} = getBrowserAndPages();
-
+export const openCommandMenu = async (
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    ) => {
+  const frontend = devToolsPage.page;
   switch (platform) {
     case 'mac':
       await frontend.keyboard.down('Meta');
@@ -51,7 +53,7 @@ export const openCommandMenu = async () => {
       break;
   }
 
-  await waitFor(QUICK_OPEN_SELECTOR);
+  await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
 export const openFileQuickOpen = async () => {

@@ -889,30 +889,51 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
     assert.notExists(columns['--this-does-not-exist-for-sure']);
   });
 
-  it('treats unknown columns with title in persistence setting as custom header', async () => {
+  it('treats unknown columns with title and prefix in persistence setting as custom header', async () => {
     const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+    // Custom request and response headers are prefixed with 'request-header-' and 'response-header-'
+    // respectively, so this column should be treated as a custom header.
+    const requestHeaderId = 'request-header-custom-request-header';
+    const responseHeaderId = 'response-header-custom-response-header';
+    const customRequestTitle = 'Custom-Request-Header';
+    const customResponseTitle = 'Custom-Response-Header';
     columnSettings.set({
-      'custom-header-for-test': {visible: false, title: 'Custom-Header'},
+      [requestHeaderId]: {visible: false, title: customRequestTitle},
+      [responseHeaderId]: {visible: false, title: customResponseTitle},
     });
+
     networkLogView = createNetworkLogView();
     const dataGrid = networkLogView.columns().dataGrid();
     const columns = dataGrid.columns;
-    assert.exists(columns['custom-header-for-test']);
+
+    assert.exists(columns[requestHeaderId], 'Custom request header column should exist');
+    assert.exists(columns[responseHeaderId], 'Custom response header column should exist');
 
     const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     const header = dataGrid.element.querySelector('thead');
+    assert.exists(header);
     const event = new MouseEvent('contextmenu');
     sinon.stub(event, 'target').value(header);
     dataGrid.element.dispatchEvent(event);
 
     sinon.assert.calledOnce(contextMenuShow);
-    const responseHeadersSubMenu = contextMenuShow.thisValues[0].footerSection().items.find(
+    const contextMenu = contextMenuShow.thisValues[0];
+
+    const requestHeadersSubMenu = contextMenu.footerSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Request Headers');
+    assert.exists(requestHeadersSubMenu, '"Request Headers" submenu should exist');
+    assert.instanceOf(requestHeadersSubMenu, UI.ContextMenu.SubMenu);
+    const customRequestHeaderItem = requestHeadersSubMenu.defaultSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === customRequestTitle);
+    assert.exists(customRequestHeaderItem, 'Custom request header item should be in the "Request Headers" submenu');
+
+    const responseHeadersSubMenu = contextMenu.footerSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Response Headers');
-    assert.exists(responseHeadersSubMenu);
+    assert.exists(responseHeadersSubMenu, '"Response Headers" submenu should exist');
     assert.instanceOf(responseHeadersSubMenu, UI.ContextMenu.SubMenu);
-    const customHeaderItem = responseHeadersSubMenu.defaultSection().items.find(
-        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Custom-Header');
-    assert.exists(customHeaderItem);
+    const customResponseHeaderItem = responseHeadersSubMenu.defaultSection().items.find(
+        (item: UI.ContextMenu.Item) => item.buildDescriptor().label === customResponseTitle);
+    assert.exists(customResponseHeaderItem, 'Custom response header item should be in the "Response Headers" submenu');
   });
 });
 

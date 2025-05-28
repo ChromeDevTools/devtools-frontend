@@ -17,7 +17,6 @@ node_ts_library("tests") {
     "../conductor:implementation",
     "ai_assistance",
     "animations",
-    "application",
     "assertion",
     "console",
     "coverage",

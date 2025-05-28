@@ -1244,6 +1244,7 @@ export const knownContextValues = new Set([
   'dom-word-wrap-false',
   'domain',
   'dominant-baseline',
+  'dont-show-again',
   'download',
   'drag',
   'drag-drop',

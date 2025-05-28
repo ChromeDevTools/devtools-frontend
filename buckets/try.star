@@ -198,7 +198,7 @@ cq_builders = struct(
     experiment_builders = {
         # Quarantine a builder here
         # This will make them experiment with the given percentage
-        "dtf_mac_arm64_rel": 100,
+        "dtf_mac_rel": 100,
     },
     includable_only_builders = [
         "dtf_mac_cross_rel",

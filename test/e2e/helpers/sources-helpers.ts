@@ -32,6 +32,7 @@ import {
   waitForAria,
   waitForFunction,
   waitForFunctionWithTries,
+  waitForMany,
   waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
@@ -665,15 +666,18 @@ export async function getValuesForScope(scope: string, expandCount: number, wait
     await click(`${scopeSelector} + ol li[aria-expanded=false]`);
   }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
-  const valueSelectorElements = await waitForFunction(async () => {
-    const elements = await $$(valueSelector);
-    if (elements.length >= waitForNoOfValues) {
-      return elements;
+  async function readValues() {
+    const valueSelectorElements = await waitForMany(valueSelector, waitForNoOfValues);
+    return await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
+  }
+  const previousValues = await readValues();
+  return await waitForFunction(async function() {
+    const values = await readValues();
+    if (values.join('') === previousValues.join('')) {
+      return values;
     }
-    return undefined;
+    return;
   });
-  const values = await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
-  return values;
 }
 
 export async function getPausedMessages() {

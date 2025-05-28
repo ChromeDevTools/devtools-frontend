@@ -36,7 +36,6 @@ node_ts_library("tests") {
     "puppeteer",
     "quick_open",
     "recorder",
-    "rendering",
     "search",
     "security",
     "sensors",

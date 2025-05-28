@@ -4,14 +4,13 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitFor} from '../../shared/helper.js';
-import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
 
 describe('Rendering pane', () => {
-  it('includes UI for simulating vision deficiencies', async () => {
-    await openPanelViaMoreTools('Rendering');
+  it('includes UI for simulating vision deficiencies', async ({devToolsPage}) => {
+    await openPanelViaMoreTools('Rendering', devToolsPage);
 
-    const option = await waitFor('option[value="achromatopsia"]');
+    const option = await devToolsPage.waitFor('option[value="achromatopsia"]');
     const actual = await option.evaluate(node => {
       const select = node.closest('select');
       return select ? select.textContent : '';
@@ -28,10 +27,10 @@ describe('Rendering pane', () => {
     assert.deepEqual(actual, expected);
   });
 
-  it('includes UI for emulating color-gamut media feature', async () => {
-    await openPanelViaMoreTools('Rendering');
+  it('includes UI for emulating color-gamut media feature', async ({devToolsPage}) => {
+    await openPanelViaMoreTools('Rendering', devToolsPage);
 
-    const option = await waitFor('option[value="rec2020"]');
+    const option = await devToolsPage.waitFor('option[value="rec2020"]');
     const actual = await option.evaluate(node => {
       const select = node.closest('select');
       return select ? select.textContent : '';
@@ -45,20 +44,10 @@ describe('Rendering pane', () => {
     assert.deepEqual(actual, expected);
   });
 
-  it('includes UI for emulating prefers-contrast media feature', async function() {
-    await openPanelViaMoreTools('Rendering');
+  it('includes UI for emulating prefers-contrast media feature', async function({devToolsPage}) {
+    await openPanelViaMoreTools('Rendering', devToolsPage);
 
-    // TODO(sartang@microsoft.com): Remove this condition once feature is fully enabled
-    const {frontend} = getBrowserAndPages();
-    const hasSupport = await frontend.evaluate(() => {
-      return window.matchMedia('(prefers-contrast)').media === '(prefers-contrast)';
-    });
-
-    if (!hasSupport) {
-      this.skip();
-    }
-
-    const option = await waitFor('option[value="custom"]');
+    const option = await devToolsPage.waitFor('option[value="custom"]');
     const actual = await option.evaluate(node => {
       const select = node.closest('select');
       return select ? select.textContent : '';
@@ -72,8 +61,8 @@ describe('Rendering pane', () => {
     assert.deepEqual(actual, expected);
   });
 
-  it('includes UI for emulating auto dark mode', async () => {
-    await openPanelViaMoreTools('Rendering');
-    await waitFor('[title="Enable automatic dark mode"]');
+  it('includes UI for emulating auto dark mode', async ({devToolsPage}) => {
+    await openPanelViaMoreTools('Rendering', devToolsPage);
+    await devToolsPage.waitFor('[title="Enable automatic dark mode"]');
   });
 });

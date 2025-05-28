@@ -4,11 +4,8 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("rendering") {
-  sources = [ "Rendering_test.ts" ]
+ts_e2e_library("rendering") {
+  sources = [ "rendering_test.ts" ]
 
-  deps = [
-    "../../shared",
-    "../helpers",
-  ]
+  deps = [ "../../e2e/helpers" ]
 }

@@ -142,7 +142,7 @@ function buildErrorMessageForNinja(error, outDir, target) {
   if (stderr) {
     // Anything that went to stderr has precedence.
     return `Failed to build \`${target}' in \`${outDir}'
-
+${stdout}
 ${stderr}
 `;
   }
@@ -186,7 +186,7 @@ export class BuildError extends Error {
   /**
    * Constructs a new `BuildError` with the given parameters.
    *
-   * @param {BuildStep} step the build step that failed.
+   * @param {keyof BuildStep} step the build step that failed.
    * @param {Object} options additional options for the `BuildError`.
    * @param {Error} options.cause the actual cause for the build error.
    * @param {string} options.outDir the absolute path to the `target` out directory.

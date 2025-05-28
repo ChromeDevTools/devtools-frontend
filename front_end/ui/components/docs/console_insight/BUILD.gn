@@ -11,10 +11,6 @@ ts_library("ts") {
     "basic.ts",
     "error.ts",
     "loading.ts",
-    "optin.ts",
-    "references.ts",
-    "reminder.ts",
-    "static.ts",
   ]
 
   deps = [
@@ -32,10 +28,6 @@ copy_to_gen("console_insight") {
     "basic.html",
     "error.html",
     "loading.html",
-    "optin.html",
-    "references.html",
-    "reminder.html",
-    "static.html",
   ]
 
   deps = [ ":ts" ]

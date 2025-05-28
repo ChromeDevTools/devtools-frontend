@@ -77,8 +77,12 @@ export async function getMainFlameChartWithTracks(
 export interface RenderFlameChartOptions {
   /**
    * The trace file to import. You must include `.json.gz` at the end of the file name.
+   * Alternatively, you can provide the actual file. This is useful only if you
+   * are providing a mocked file; generally you should prefer to pass the file
+   * name so that the TraceLoader can take care of loading and caching the
+   * trace.
    */
-  traceFile: string;
+  traceFile: string|Trace.Handlers.Types.ParsedTrace;
   /**
    * Filter the tracks that will be rendered by their name. The name here is
    * the user visible name that is drawn onto the flame chart.
@@ -131,7 +135,14 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
     debuggerWorkspaceBinding,
   });
 
-  const {parsedTrace} = await TraceLoader.traceEngine(context, options.traceFile);
+  let parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+
+  if (typeof options.traceFile === 'string') {
+    parsedTrace = (await TraceLoader.traceEngine(context, options.traceFile)).parsedTrace;
+  } else {
+    parsedTrace = options.traceFile;
+  }
+
   if (options.preloadScreenshots) {
     await Timeline.Utils.ImageCache.preload(parsedTrace.Screenshots.screenshots ?? []);
   }

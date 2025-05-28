@@ -14,6 +14,7 @@ import {
   renderFlameChartIntoDOM,
   renderFlameChartWithFakeProvider,
 } from '../../../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../../../testing/TraceLoader.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -1007,6 +1008,26 @@ describeWithEnvironment('FlameChart', () => {
   });
 
   describe('rendering tracks', () => {
+    it('can render a Node CPU Profile', async function() {
+      // We have to do some work to render this trace, as we take the raw CPU
+      // Profile and wrap it in our code that maps it to a "real" trace. This is what happens for real if a user imports a CPU Profile.
+      const rawCPUProfile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
+      const rawTrace = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+          rawCPUProfile, Trace.Types.Events.ThreadID(1));
+      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
+
+      await renderFlameChartIntoDOM(this, {
+        traceFile: parsedTrace,
+        filterTracks(trackName) {
+          return trackName.startsWith('Main');
+        },
+        expandTracks() {
+          return true;
+        },
+      });
+      await assertScreenshot('timeline/main_thread_node_cpu_profile.png');
+    });
+
     it('renders the main thread correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         traceFile: 'one-second-interaction.json.gz',

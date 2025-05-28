@@ -16,19 +16,6 @@ describe('Performance panel', function() {
     this.timeout(20_000);
   }
 
-  itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
-    await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
-    const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile.png');
-  });
-
-  itScreenshot(
-      'loads a cpuprofile and renders it in node mode with default track source set to new engine', async () => {
-        await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
-        const panel = await waitFor('body');
-        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png');
-      });
-
   // Flaking.
   itScreenshot.skip(
       '[crbug.com/373792008]: supports the network track being expanded and then clicked', async function() {

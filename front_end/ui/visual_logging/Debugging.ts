@@ -126,7 +126,7 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
   }
 }
 
-type EventType = 'Click'|'Drag'|'Hover'|'Change'|'KeyDown'|'Resize'|'SettingAccess';
+type EventType = 'Click'|'Drag'|'Hover'|'Change'|'KeyDown'|'Resize'|'SettingAccess'|'FunctionCall';
 export function processEventForDebugging(
     event: EventType, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
@@ -163,7 +163,7 @@ export function processEventForIntuitiveDebugging(
 
 export function processEventForTestDebugging(
     event: EventType, state: LoggingState|null, _extraInfo?: EventAttributes): void {
-  if (event !== 'SettingAccess') {
+  if (event !== 'SettingAccess' && event !== 'FunctionCall') {
     lastImpressionLogEntry = null;
   }
   maybeLogDebugEvent(

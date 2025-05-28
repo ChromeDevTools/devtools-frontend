@@ -256,4 +256,16 @@ describe('LoggingEvents', () => {
     assert.deepEqual(
         recordSettingAccess.lastCall.firstArg, {name: -1361026584, numeric_value: 123, string_value: undefined});
   });
+
+  it('calls UI binding to log a function call event', async () => {
+    const recordFunctionCall = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordFunctionCall',
+    );
+    await VisualLogging.LoggingEvents.logFunctionCall('test-function', 'test-context');
+    assert.deepEqual(recordFunctionCall.lastCall.firstArg, {name: -1470917656, context: 617717214});
+
+    await VisualLogging.LoggingEvents.logFunctionCall('test-function');
+    assert.deepEqual(recordFunctionCall.lastCall.firstArg, {name: -1470917656, context: undefined});
+  });
 });

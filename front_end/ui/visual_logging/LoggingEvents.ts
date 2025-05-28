@@ -190,3 +190,14 @@ export async function logSettingAccess(name: string, value: number|string|boolea
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordSettingAccess(settingAccessEvent);
   processEventForDebugging('SettingAccess', null, {name, numericValue, stringValue});
 }
+
+export async function logFunctionCall(name: string, context?: string): Promise<void> {
+  const nameHash = await contextAsNumber(name);
+  if (typeof nameHash === 'undefined') {
+    return;
+  }
+  const functionCallEvent:
+      Host.InspectorFrontendHostAPI.FunctionCallEvent = {name: nameHash, context: await contextAsNumber(context)};
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordFunctionCall(functionCallEvent);
+  processEventForDebugging('FunctionCall', null, {name, context});
+}

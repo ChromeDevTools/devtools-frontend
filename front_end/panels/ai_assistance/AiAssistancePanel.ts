@@ -1425,6 +1425,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       type: multimodalInputType,
     } :
                                                                       undefined;
+    if (this.#conversation) {
+      void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
+    }
     const runner = this.#conversationAgent.run(
         text, {
           signal,
@@ -1602,6 +1605,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       throw new Error(disabledReasons.join(' '));
     }
 
+    void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
     switch (conversationType) {
       case AiAssistanceModel.ConversationType.STYLING:
         return await this.handleExternalStylingRequest(prompt, selector);

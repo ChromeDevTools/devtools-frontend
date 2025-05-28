@@ -27,7 +27,6 @@ node_ts_library("tests") {
     "inline_editor",
     "issues",
     "lighthouse",
-    "media",
     "memory",
     "network",
     "panels",

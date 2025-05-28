@@ -22,7 +22,6 @@ node_ts_library("helpers") {
     "issues-helpers.ts",
     "layers-helpers.ts",
     "lighthouse-helpers.ts",
-    "media-helpers.ts",
     "memory-helpers.ts",
     "network-helpers.ts",
     "performance-helpers.ts",

@@ -6710,10 +6710,6 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "initMutationEvent",
-    signatures: [["type","?bubbles","?cancelable","?relatedNode","?prevValue","?newValue","?attrName","?attrChange"]]
-  },
-  {
     name: "OverscrollEvent",
     signatures: [["type","bubbles","?eventInitDict"]]
   },
@@ -7269,6 +7265,10 @@ export const NativeFunctions = [
   {
     name: "URLPattern",
     signatures: [["?input","?options"],["input","baseURL","?options"]]
+  },
+  {
+    name: "generate",
+    signatures: [["component","groups"]]
   },
   {
     name: "compareComponent",

@@ -1636,18 +1636,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
         void externalConversation.addHistoryItem(data);
       }
-
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        await this.#changeManager.stashChanges();
-        this.#changeManager.dropStashedChanges();
         return data.text;
       }
     }
-    await this.#changeManager.stashChanges();
-    this.#changeManager.dropStashedChanges();
     throw new Error('Something went wrong. No answer was generated.');
   }
 }

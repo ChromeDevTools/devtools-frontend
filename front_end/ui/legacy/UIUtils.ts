@@ -1305,7 +1305,7 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLElement {
-  static readonly observedAttributes = ['checked', 'disabled', 'indeterminate', 'name', 'title'];
+  static readonly observedAttributes = ['checked', 'disabled', 'indeterminate', 'name', 'title', 'aria-label'];
 
   readonly #shadowRoot!: DocumentFragment;
   #checkboxElement!: HTMLInputElement;
@@ -1362,7 +1362,17 @@ export class CheckboxLabel extends HTMLElement {
     } else if (name === 'title') {
       this.#checkboxElement.title = newValue ?? '';
       this.#textElement.title = newValue ?? '';
+    } else if (name === 'aria-label') {
+      this.#checkboxElement.ariaLabel = newValue;
     }
+  }
+
+  override get ariaLabel(): string|null {
+    return this.#checkboxElement.ariaLabel;
+  }
+
+  override set ariaLabel(ariaLabel: string) {
+    this.setAttribute('aria-label', ariaLabel);
   }
 
   get checked(): boolean {

@@ -69,13 +69,12 @@ describe('The Memory Panel', function() {
     await navigateToMemoryTab();
   });
 
-  // This test logs assertions to the console.
-  it.skip('[crbug.com/347709947] Can take several heap snapshots ', async () => {
+  it('Can take several heap snapshots ', async () => {
     await goToResource('memory/default.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
-    await takeHeapSnapshot();
+    await takeHeapSnapshot('Snapshot 2');
     await waitForNonEmptyHeapSnapshotData();
     const heapSnapShots = await $$('.heap-snapshot-sidebar-tree-item');
     assert.lengthOf(heapSnapShots, 2);

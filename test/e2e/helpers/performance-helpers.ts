@@ -120,7 +120,8 @@ export async function searchForComponent(
       undefined, devToolsPage);
 }
 
-export async function navigateToBottomUpTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function navigateToBottomUpTab(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage, veLinkContext: string) {
   await devToolsPage.click(BOTTOM_UP_SELECTOR);
   await expectVeEvents(
       [
@@ -148,7 +149,7 @@ export async function navigateToBottomUpTab(devToolsPage: DevToolsPage = getBrow
                         [
                           veImpression('TableCell', 'self'),
                           veImpression('TableCell', 'total'),
-                          veImpression('TableCell', 'activity', [veImpression('Link', 'url')]),
+                          veImpression('TableCell', 'activity', [veImpression('Link', veLinkContext)]),
                         ]),
                   ]),
             ]),

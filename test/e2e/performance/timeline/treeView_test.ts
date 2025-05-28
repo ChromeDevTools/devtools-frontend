@@ -65,7 +65,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['h2', 'H2', 'h2_with_suffix'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('click on the "Match Case" button and validate activities', async () => {
@@ -85,7 +85,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const allActivities = ['H2', 'h2_with_suffix', 'h2'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('click on the "Regex Button" and validate activities', async () => {
@@ -105,7 +105,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['h2', 'H2'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('click on the "Match whole word" and validate activities', async () => {
@@ -126,7 +126,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['H2', 'h2_with_suffix', 'h2'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('validate activities', async () => {
@@ -144,7 +144,7 @@ describe('The Performance tool, Bottom-up panel', function() {
   it('group by', async () => {
     const expectedActivities = ['Scripting', 'System', 'Rendering', 'Painting', 'Loading'];
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('use group-by drop down and validate activities', async () => {
@@ -169,7 +169,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['h2_with_suffix', 'container2', 'Function call', 'Timer fired', 'Profiling overhead'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('validate that top level activities have the right context', async () => {
@@ -196,7 +196,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     const expectedActivities = ['Commit', 'Function call', 'h2_with_suffix', 'h2', 'H2', 'Layerize', 'Layout'];
 
     await step('navigate to the Bottom-up tab', async () => {
-      await navigateToBottomUpTab();
+      await navigateToBottomUpTab(undefined, 'url');
     });
 
     await step('validate activities', async () => {

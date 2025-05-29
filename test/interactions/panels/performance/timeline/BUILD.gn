@@ -6,18 +6,12 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("timeline") {
   sources = [
-    "animations_track_test.ts",
     "annotations_test.ts",
-    "auction_worklets_tracks_test.ts",
-    "gpu_track_test.ts",
     "helpers.ts",
-    "layout_shifts_track_test.ts",
     "network_track_test.ts",
     "overview_test.ts",
-    "rasterizer_tracks_test.ts",
     "timeline_selection_test.ts",
     "timeline_test.ts",
-    "timings_track_test.ts",
   ]
 
   deps = [

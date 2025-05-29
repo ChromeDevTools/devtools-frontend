@@ -1182,6 +1182,73 @@ describeWithEnvironment('FlameChart', () => {
     await assertScreenshot('timeline/flamechart_with_vertical_offset.png');
   });
 
+  it('renders the animations track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'animation.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Animation');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/animations_track.png');
+  });
+
+  it('renders the GPU track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'threejs-gpu.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('GPU');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/gpu_track.png');
+  });
+
+  it('renders the user timing track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'timings-track.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Timings');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/timings_track.png');
+  });
+
+  it('renders the auction worklets track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'fenced-frame-fledge.json.gz',
+      filterTracks(trackName) {
+        return trackName.includes('Worklet');
+      },
+      expandTracks() {
+        return true;
+      },
+      customStartTime: Trace.Types.Timing.Milli(220391498.289),
+      customEndTime: Trace.Types.Timing.Milli(220391697.601),
+    });
+    await assertScreenshot('timeline/auction_worklets_track.png');
+  });
+
+  it('renders the layout shifts track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'cls-single-frame.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('LayoutShifts');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/layout_shifts_track.png');
+  });
+
   it('renders all the decoration types onto events', async () => {
     class FakeProviderWithDecorations extends FakeFlameChartProvider {
       override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {

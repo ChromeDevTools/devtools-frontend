@@ -5,6 +5,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -81,27 +82,57 @@ class ImageRef extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #request?: Trace.Types.Events.SyntheticNetworkRequest;
+  #imageDataUrl?: string|null;
 
   set request(request: Trace.Types.Events.SyntheticNetworkRequest) {
     this.#request = request;
+    this.#imageDataUrl = undefined;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #render(): void {
+  /**
+   * This only returns a data url if the resource is currently present from the active
+   * inspected page.
+   */
+  async #getOrCreateImageDataUrl(): Promise<string|null> {
+    if (!this.#request) {
+      return null;
+    }
+
+    if (this.#imageDataUrl !== undefined) {
+      return this.#imageDataUrl;
+    }
+
+    const originalUrl = this.#request.args.data.url as Platform.DevToolsPath.UrlString;
+    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalUrl);
+    if (!resource) {
+      this.#imageDataUrl = null;
+      return this.#imageDataUrl;
+    }
+
+    const content = await resource.requestContentData();
+    if ('error' in content) {
+      this.#imageDataUrl = null;
+      return this.#imageDataUrl;
+    }
+
+    this.#imageDataUrl = content.asDataUrl();
+    return this.#imageDataUrl;
+  }
+
+  async #render(): Promise<void> {
     if (!this.#request) {
       return;
     }
+
+    const url = this.#request.args.data.mimeType.includes('image') ? await this.#getOrCreateImageDataUrl() : null;
+    const img = url ? html`<img src=${url} class="element-img"/>` : Lit.nothing;
 
     // clang-format off
     Lit.render(html`
       <style>${baseInsightComponentStyles}</style>
       <div class="image-ref">
-        ${this.#request.args.data.mimeType.includes('image') ? html`
-          <img
-            class="element-img"
-            src=${this.#request.args.data.url}
-            @error=${handleBadImage}/>
-        `: Lit.nothing}
+        ${img}
         <span class="element-img-details">
           ${eventRef(this.#request)}
           <span class="element-img-details-size">${
@@ -112,11 +143,6 @@ class ImageRef extends HTMLElement {
     `, this.#shadow, {host: this});
     // clang-format on
   }
-}
-
-function handleBadImage(event: Event): void {
-  const img = event.target as HTMLImageElement;
-  img.style.display = 'none';
 }
 
 export function imageRef(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult {

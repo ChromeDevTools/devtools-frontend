@@ -42,12 +42,12 @@ export const UIStrings = {
    * @description Text to tell the user that the time starting the document request to when the server started responding is acceptable.
    * @example {600 ms} PH1
    */
-  passingServerResponseTime: 'Server responds quickly (observed {PH1}) ',
+  passingServerResponseTime: 'Server responds quickly (observed {PH1})',
   /**
    * @description Text to tell the user that the time starting the document request to when the server started responding is not acceptable.
    * @example {601 ms} PH1
    */
-  failedServerResponseTime: 'Server responded slowly (observed {PH1}) ',
+  failedServerResponseTime: 'Server responded slowly (observed {PH1})',
   /**
    * @description Text to tell the user that text compression (like gzip) was applied.
    */

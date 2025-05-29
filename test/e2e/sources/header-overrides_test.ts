@@ -119,7 +119,8 @@ describe('The Overrides Panel', function() {
     assert.deepEqual(await getTextFromHeadersRow(row), ['aaa', 'bbb']);
   });
 
-  it('can override headers via network panel', async () => {
+  // Regularly failing on CI.
+  it.skip('[crbug.com/421131932] can override headers via network panel', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.emulateMediaFeatures([
       {name: 'prefers-reduced-motion', value: 'reduce'},

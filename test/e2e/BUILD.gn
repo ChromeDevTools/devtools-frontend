@@ -36,7 +36,6 @@ node_ts_library("tests") {
     "recorder",
     "search",
     "security",
-    "sensors",
     "settings",
     "snippets",
     "sources",

@@ -306,14 +306,14 @@ export const goTo = async (url: string, options: puppeteer.WaitForOptions = {}) 
   await inspectedPage.goTo(url, options);
 };
 
-export const overridePermissions = async (permissions: puppeteer.Permission[]) => {
-  const {browser} = getBrowserAndPages();
-  await browser.defaultBrowserContext().overridePermissions(`https://localhost:${getTestServerPort()}`, permissions);
+export const overridePermissions =
+    async (permissions: puppeteer.Permission[], inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
+  await inspectedPage.page.browserContext().overridePermissions(
+      `https://localhost:${inspectedPage.serverPort}`, permissions);
 };
 
-export const clearPermissionsOverride = async () => {
-  const {browser} = getBrowserAndPages();
-  await browser.defaultBrowserContext().clearPermissionOverrides();
+export const clearPermissionsOverride = async (inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
+  await inspectedPage.page.browserContext().clearPermissionOverrides();
 };
 
 export const goToResource = async (path: string, options: puppeteer.WaitForOptions = {}) => {

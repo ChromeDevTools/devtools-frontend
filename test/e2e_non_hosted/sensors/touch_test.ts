@@ -4,16 +4,12 @@
 
 import {assert} from 'chai';
 
-import {waitFor} from '../../shared/helper.js';
-import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
 
 describe('Sensors panel', () => {
-  beforeEach(async () => {
-    await openPanelViaMoreTools('Sensors');
-  });
-
-  it('includes UI for emulating touch', async () => {
-    const select = await waitFor('.touch-section select');
+  it('includes UI for emulating touch', async ({devToolsPage}) => {
+    await openPanelViaMoreTools('Sensors', devToolsPage);
+    const select = await devToolsPage.waitFor('.touch-section select');
     const actual = await select.evaluate(node => node.textContent);
 
     const expected = [

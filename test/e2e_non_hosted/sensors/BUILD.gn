@@ -4,9 +4,10 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("sensors") {
+ts_e2e_library("sensors") {
   sources = [
     "emulate-hardware-concurrency_test.ts",
+    "helpers.ts",
     "idle_test.ts",
     "location_test.ts",
     "orientation_test.ts",
@@ -14,7 +15,7 @@ node_ts_library("sensors") {
   ]
 
   deps = [
+    "../../e2e/helpers",
     "../../shared",
-    "../helpers",
   ]
 }

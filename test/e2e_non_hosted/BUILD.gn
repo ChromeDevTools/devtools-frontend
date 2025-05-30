@@ -28,6 +28,7 @@ node_ts_library("tests") {
     "performance",
     "recorder",
     "rendering",
+    "sensors",
     "sources",
     "targets",
     "webaudio",

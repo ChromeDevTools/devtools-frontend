@@ -10,7 +10,6 @@ import {
   click,
   getBrowserAndPages,
   goToResource,
-  pasteText,
   pressKey,
   typeText,
   waitFor,
@@ -86,7 +85,10 @@ async function fileTreeEntryIsSelectedAndHasPurpleDot(): Promise<boolean> {
 async function editHeaderItem(newValue: string, previousValue: string): Promise<void> {
   let focusedTextContent = await activeElementTextContent();
   assert.strictEqual(focusedTextContent, previousValue);
-  await pasteText(newValue);
+  const element = await activeElement();
+  await element.evaluate((e, value) => {
+    e.textContent = value;
+  }, newValue);
   focusedTextContent = await activeElementTextContent();
   assert.strictEqual(focusedTextContent, newValue);
   await pressKey('Tab');
@@ -119,8 +121,7 @@ describe('The Overrides Panel', function() {
     assert.deepEqual(await getTextFromHeadersRow(row), ['aaa', 'bbb']);
   });
 
-  // Regularly failing on CI.
-  it.skip('[crbug.com/421131932] can override headers via network panel', async () => {
+  it('can override headers via network panel', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.emulateMediaFeatures([
       {name: 'prefers-reduced-motion', value: 'reduce'},

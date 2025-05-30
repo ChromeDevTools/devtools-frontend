@@ -31,7 +31,6 @@ node_ts_library("tests") {
     "network",
     "panels",
     "performance",
-    "puppeteer",
     "quick_open",
     "recorder",
     "search",

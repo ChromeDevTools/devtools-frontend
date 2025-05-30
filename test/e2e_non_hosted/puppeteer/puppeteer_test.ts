@@ -6,14 +6,10 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages} from '../../shared/helper.js';
-
 describe('Puppeteer', () => {
-  it('should connect to the browser via DevTools own connection', async () => {
-    const {frontend, browser} = getBrowserAndPages();
-
-    const version = await browser.version();
-    const result = await frontend.evaluate(`(async () => {
+  it('should connect to the browser via DevTools own connection', async ({browser, devToolsPage}) => {
+    const version = await browser.browser.version();
+    const result = await devToolsPage.evaluate(`(async () => {
       const puppeteer = await import('./third_party/puppeteer/puppeteer.js');
       const SDK = await import('./core/sdk/sdk.js');
 
@@ -46,7 +42,7 @@ describe('Puppeteer', () => {
             if (data.sessionId === this._connection.getSessionId()) {
               delete data.sessionId;
             }
-            cb(JSON.stringify(data));
+            cb?.(JSON.stringify(data));
             // TODO: DevTools should stop processing this message. This is achieved by using a wrong sessionId.
             data.sessionId = 'unknown';
           });
@@ -67,7 +63,7 @@ describe('Puppeteer', () => {
         throw new Error('Could not find main target');
       }
       const childTargetManager = mainTarget.model(SDK.ChildTargetManager.ChildTargetManager);
-      const { connection: rawConnection } = await childTargetManager.createParallelConnection();
+      const { connection: rawConnection } = await childTargetManager.createParallelConnection(() => {});
       const mainTargetId = await childTargetManager.getParentTargetId();
 
       const transport = new Transport(rawConnection);

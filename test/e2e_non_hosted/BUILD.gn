@@ -26,6 +26,7 @@ node_ts_library("tests") {
     "layers",
     "media",
     "performance",
+    "puppeteer",
     "recorder",
     "rendering",
     "sensors",

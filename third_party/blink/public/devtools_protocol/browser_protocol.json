@@ -6290,6 +6290,7 @@
                         "view-transition",
                         "view-transition-group",
                         "view-transition-image-pair",
+                        "view-transition-group-children",
                         "view-transition-old",
                         "view-transition-new",
                         "placeholder",
@@ -22893,7 +22894,7 @@
                         },
                         {
                             "name": "workletOrdinal",
-                            "description": "If the method is called on a shared storage worklet, or as part of\na shared storage worklet script, it will have a number for the\nassociated worklet, denoting the (0-indexed) order of the worklet's\ncreation relative to all other shared storage worklets created by\ndocuments using the current storage partition.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet,\nrun, selectURL, and any other SharedStorageAccessMethod when the\nSharedStorageAccessScope is sharedStorageWorklet.\nTODO(crbug.com/401011862): Pass this only for addModule & createWorklet.",
+                            "description": "A number denoting the (0-based) order of the worklet's\ncreation relative to all other shared storage worklets created by\ndocuments using the current storage partition.\nPresent only for SharedStorageAccessMethods: addModule, createWorklet.",
                             "optional": true,
                             "type": "integer"
                         },
@@ -25605,7 +25606,7 @@
                     "properties": [
                         {
                             "name": "recordMode",
-                            "description": "Controls how the trace buffer stores data.",
+                            "description": "Controls how the trace buffer stores data. The default is `recordUntilFull`.",
                             "experimental": true,
                             "optional": true,
                             "type": "string",

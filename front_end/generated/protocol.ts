@@ -4182,6 +4182,7 @@ export namespace DOM {
     ViewTransition = 'view-transition',
     ViewTransitionGroup = 'view-transition-group',
     ViewTransitionImagePair = 'view-transition-image-pair',
+    ViewTransitionGroupChildren = 'view-transition-group-children',
     ViewTransitionOld = 'view-transition-old',
     ViewTransitionNew = 'view-transition-new',
     Placeholder = 'placeholder',
@@ -15264,15 +15265,10 @@ export namespace Storage {
      */
     ignoreIfPresent?: boolean;
     /**
-     * If the method is called on a shared storage worklet, or as part of
-     * a shared storage worklet script, it will have a number for the
-     * associated worklet, denoting the (0-indexed) order of the worklet's
+     * A number denoting the (0-based) order of the worklet's
      * creation relative to all other shared storage worklets created by
      * documents using the current storage partition.
-     * Present only for SharedStorageAccessMethods: addModule, createWorklet,
-     * run, selectURL, and any other SharedStorageAccessMethod when the
-     * SharedStorageAccessScope is sharedStorageWorklet.
-     * TODO(crbug.com/401011862): Pass this only for addModule & createWorklet.
+     * Present only for SharedStorageAccessMethods: addModule, createWorklet.
      */
     workletOrdinal?: integer;
     /**
@@ -16844,7 +16840,7 @@ export namespace Tracing {
 
   export interface TraceConfig {
     /**
-     * Controls how the trace buffer stores data.
+     * Controls how the trace buffer stores data. The default is `recordUntilFull`.
      */
     recordMode?: TraceConfigRecordMode;
     /**

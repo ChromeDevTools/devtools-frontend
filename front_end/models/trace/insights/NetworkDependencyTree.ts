@@ -91,7 +91,7 @@ export const UIStrings = {
    * @description Description of the table that recommends preconnecting to the origins to save time.
    */
   estSavingTableDescription:
-      'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use fewer than 4.',
+      'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.',
   /**
    * @description Label for a column in a data table; entries will be the origin of a web resource
    */

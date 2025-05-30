@@ -137,7 +137,7 @@ button.addEventListener('click', event => onClick(event));
   * [Icon
     buttons](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=571-616&m=dev)
 
-## Combo Boxes
+## Combo Boxes and Single Select menus
 
 ![Combo Box component](images/combo-box-variations.png)
 
@@ -167,6 +167,7 @@ Usage with lit-html:
 ```js
 html`<select aria-label="Choose your champion"
              @onchange=${onChange}>
+  <option hidden value="Choose your champion"></option>
   <option jslog=${VisualLogging.item('hamster').track({click: true})}
           value="Hamster">Hamster</option>
   <option jslog=${VisualLogging.item('mouse').track({click: true})}

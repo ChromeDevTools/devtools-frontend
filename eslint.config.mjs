@@ -612,6 +612,7 @@ export default defineConfig([
       'rulesdir/no-bound-component-methods': 'error',
       'rulesdir/no-adopted-style-sheets': 'error',
       'rulesdir/no-customized-builtin-elements': 'error',
+      'rulesdir/no-deprecated-component-usages': 'error',
       'rulesdir/no-self-closing-custom-element-tagnames': 'error',
       'rulesdir/no-a-tags-in-lit': 'error',
       'rulesdir/check-css-import': 'error',

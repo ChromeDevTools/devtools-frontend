@@ -78,6 +78,9 @@ type TitleCallback = () => Lit.TemplateResult;
 
 const deployMenuArrow = new URL('../../../Images/triangle-down.svg', import.meta.url).toString();
 
+/**
+ * @deprecated use `<select>` instead.
+ */
 export class SelectMenu extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #button: SelectMenuButton|null = null;
@@ -207,6 +210,7 @@ export class SelectMenu extends HTMLElement {
     const buttonLabel = this.#getButtonText();
     if (!this.sideButton) {
       // clang-format off
+      /* eslint-disable rulesdir/no-deprecated-component-usages */
       return html`
           <devtools-select-menu-button
             @selectmenubuttontrigger=${this.#showMenu}
@@ -217,10 +221,12 @@ export class SelectMenu extends HTMLElement {
               ${buttonLabel}
             </devtools-select-menu-button>
         `;
+      /* eslint-enable rulesdir/no-deprecated-component-usages */
       // clang-format on
     }
 
     // clang-format off
+    /* eslint-disable rulesdir/no-deprecated-component-usages */
     return html`
       <button id="side-button" @click=${this.#sideButtonClicked} ?disabled=${this.disabled}>
         ${buttonLabel}
@@ -235,6 +241,7 @@ export class SelectMenu extends HTMLElement {
         .disabled=${this.disabled}>
       </devtools-select-menu-button>
     `;
+    /* eslint-enable rulesdir/no-deprecated-component-usages */
     // clang-format on
   }
 

@@ -844,6 +844,7 @@ export class RecordingView extends HTMLElement {
     const currentConverter = this.#getCurrentConverter();
     const converterFormatName = currentConverter?.getFormatName();
     // clang-format off
+    /* eslint-disable rulesdir/no-deprecated-component-usages */
     return html`
         <devtools-split-view
           direction="auto"
@@ -907,6 +908,7 @@ export class RecordingView extends HTMLElement {
           </div>
         </devtools-split-view>
       `;
+    /* eslint-enable rulesdir/no-deprecated-component-usages */
     // clang-format on
   }
 

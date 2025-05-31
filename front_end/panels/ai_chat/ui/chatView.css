@@ -204,6 +204,19 @@
   transform: translateY(-1px);
 }
 
+.prompt-button.customized {
+  position: relative;
+}
+
+.prompt-custom-indicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  color: var(--color-accent-blue);
+  font-weight: bold;
+}
+
 
 
 .prompt-buttons-row {
@@ -1454,4 +1467,164 @@ details[open] .tool-details-content {
   height: 100% !important;
   max-width: none !important;
   max-height: none !important;
+}
+
+/* Deep research actions styling */
+.deep-research-actions {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--sys-color-divider);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.view-document-btn {
+  background: var(--gradient-primary);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px var(--color-primary-shadow);
+}
+
+.view-document-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--color-primary-shadow);
+  background: var(--gradient-accent);
+}
+
+.view-document-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px var(--color-primary-shadow);
+}
+
+.test-button {
+  background: var(--sys-color-accent-green);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Inline markdown report styles */
+.inline-markdown-report {
+  margin-top: 16px;
+  border: 1px solid var(--sys-color-divider);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--sys-color-cdt-base-container);
+}
+
+.inline-report-header {
+  padding: 12px 16px;
+  background: var(--sys-color-surface1);
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.inline-report-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--sys-color-on-surface);
+}
+
+.inline-report-content {
+  padding: 16px;
+  max-height: 600px;
+  overflow-y: auto;
+  background: var(--sys-color-surface);
+}
+
+/* Style the inline report content */
+.inline-report-content h1,
+.inline-report-content h2,
+.inline-report-content h3,
+.inline-report-content h4,
+.inline-report-content h5,
+.inline-report-content h6 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  color: var(--sys-color-on-surface);
+}
+
+.inline-report-content h1:first-child,
+.inline-report-content h2:first-child {
+  margin-top: 0;
+}
+
+.inline-report-content p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.inline-report-content ul,
+.inline-report-content ol {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.inline-report-content li {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+
+.inline-report-content blockquote {
+  margin: 8px 0;
+  padding-left: 16px;
+  border-left: 3px solid var(--sys-color-divider);
+  color: var(--sys-color-on-surface-subtle);
+}
+
+.inline-report-content code {
+  background: var(--sys-color-surface1);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: var(--monospace-font-family);
+  font-size: 0.9em;
+}
+
+.inline-report-content pre {
+  background: var(--sys-color-surface1);
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.inline-report-content pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Scrollbar styling for inline report */
+.inline-report-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.inline-report-content::-webkit-scrollbar-track {
+  background: var(--sys-color-surface1);
+}
+
+.inline-report-content::-webkit-scrollbar-thumb {
+  background: var(--sys-color-divider);
+  border-radius: 4px;
+}
+
+.inline-report-content::-webkit-scrollbar-thumb:hover {
+  background: var(--sys-color-state-hover-on-subtle);
 }

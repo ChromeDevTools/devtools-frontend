@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 
 import * as Lit from '../../../ui/lit/lit.js';
+const {html} = Lit;
+
+// Constants
+const PROMPT_CONSTANTS = {
+  DOUBLE_CLICK_DELAY: 300,
+  CUSTOM_PROMPTS_STORAGE_KEY: 'ai_chat_custom_prompts',
+} as const;
 
 // Direct imports from Tools.ts
 import { ToolRegistry } from '../agent_framework/ConfigurableAgentTool.js';
@@ -22,8 +29,6 @@ import {
 
 // Initialize configured agents
 initializeConfiguredAgents();
-
-const {html} = Lit;
 
 // Define available agent types
 export enum BaseOrchestratorAgentType {
@@ -67,7 +72,21 @@ Present your findings in a structured markdown report with:
 7. **Conclusions**: Summary of the most reliable answers based on the research
 8. **References**: Full citation list of all sources consulted
 
-Maintain objectivity throughout your research process and clearly distinguish between well-established facts and more speculative information. When appropriate, note areas where more research might be needed. Note: the final report should be alteast 5000 words or even longer based on the topic, if there is not enough content do more research.`,
+Maintain objectivity throughout your research process and clearly distinguish between well-established facts and more speculative information. When appropriate, note areas where more research might be needed. Note: the final report should be at least 5000 words or even longer based on the topic, if there is not enough content do more research.
+
+## CRITICAL: Final Output Format
+
+When calling 'finalize_with_critique', you MUST structure your response in this exact XML format:
+
+<reasoning>
+[Provide 2-3 sentences explaining your research approach, key insights discovered, and how you organized the information]
+</reasoning>
+
+<markdown_report>
+[Your comprehensive markdown report goes here - this will be automatically extracted and displayed in an enhanced document viewer]
+</markdown_report>
+
+The markdown report section will be hidden from the chat interface and displayed with an enhanced document viewer button. Only the reasoning will be shown in the chat.`,
 
   [BaseOrchestratorAgentType.SHOPPING]: `You are a **Shopping Research Agent**. Your mission is to help users find and compare products tailored to their specific needs and budget, providing up-to-date, unbiased, and well-cited recommendations.
 
@@ -217,6 +236,11 @@ export const AGENT_CONFIGS: {[key: string]: AgentConfig} = {
  * Get the system prompt for a specific agent type
  */
 export function getSystemPrompt(agentType: string): string {
+  // Check if there's a custom prompt for this agent type
+  if (hasCustomPrompt(agentType)) {
+    return getAgentPrompt(agentType);
+  }
+  
   return AGENT_CONFIGS[agentType]?.systemPrompt ||
     // Default system prompt if agent type not found
   `
@@ -295,17 +319,30 @@ export function renderAgentTypeButtons(
 ): Lit.TemplateResult {
   return html`
     <div class="prompt-buttons-container">
-      ${Object.values(AGENT_CONFIGS).map(config => html`
+      ${Object.values(AGENT_CONFIGS).map(config => {
+        const isCustomized = hasCustomPrompt(config.type);
+        const buttonClasses = [
+          'prompt-button',
+          selectedAgentType === config.type ? 'selected' : '',
+          isCustomized ? 'customized' : ''
+        ].filter(Boolean).join(' ');
+        
+        const title = isCustomized ? 
+          `${config.description || config.label} (Custom prompt - double-click to edit)` : 
+          `${config.description || config.label} (Double-click to edit prompt)`;
+        
+        return html`
         <button 
-          class="prompt-button ${selectedAgentType === config.type ? 'selected' : ''}" 
+          class=${buttonClasses}
           data-agent-type=${config.type} 
           @click=${handleClick}
-          title=${config.description || config.label}
+          title=${title}
         >
           <span class="prompt-icon">${config.icon}</span>
           ${showLabels ? html`<span class="prompt-label">${config.label}</span>` : Lit.nothing}
+          ${isCustomized ? html`<span class="prompt-custom-indicator">●</span>` : Lit.nothing}
         </button>
-      `)}
+      `})}
     </div>
   `;
 }
@@ -316,36 +353,149 @@ export function createAgentTypeSelectionHandler(
   textInputElement: HTMLTextAreaElement | undefined,
   onAgentTypeSelected: ((agentType: string | null) => void) | undefined,
   setSelectedAgentType: (type: string | null) => void,
-  getCurrentSelectedType: () => string | null
+  getCurrentSelectedType: () => string | null,
+  onAgentPromptEdit?: (agentType: string) => void
 ): (event: Event) => void {
+  let clickTimeout: number | null = null;
+  let clickCount = 0;
+
   return (event: Event): void => {
     const button = event.currentTarget as HTMLButtonElement;
     const agentType = button.dataset.agentType;
     if (agentType && onAgentTypeSelected) {
-      const currentSelected = getCurrentSelectedType();
+      clickCount++;
       
-      // Remove selected class from all agent type buttons
-      const allButtons = element.shadowRoot?.querySelectorAll('.prompt-button');
-      allButtons?.forEach(btn => btn.classList.remove('selected'));
-
-      // Check if we're clicking on the currently selected button (toggle off)
-      if (currentSelected === agentType) {
-        // Deselect - set to null and don't add selected class
-        setSelectedAgentType(null);
-        onAgentTypeSelected(null);
-        console.log('Deselected agent type, returning to default');
-      } else {
-        // Select new agent type - add selected class to clicked button
-        button.classList.add('selected');
-        setSelectedAgentType(agentType);
-        onAgentTypeSelected(agentType);
-        console.log('Selected agent type:', agentType);
+      // Clear existing timeout
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
       }
+      
+      // Set timeout to distinguish between single and double click
+      clickTimeout = window.setTimeout(() => {
+        if (clickCount === 1) {
+          // Single click - handle selection/deselection
+          const currentSelected = getCurrentSelectedType();
+          
+          // Remove selected class from all agent type buttons
+          const allButtons = element.shadowRoot?.querySelectorAll('.prompt-button');
+          allButtons?.forEach(btn => btn.classList.remove('selected'));
 
-      // Focus the input after selecting/deselecting an agent type
-      textInputElement?.focus();
+          // Check if we're clicking on the currently selected button (toggle off)
+          if (currentSelected === agentType) {
+            // Deselect - set to null and don't add selected class
+            setSelectedAgentType(null);
+            onAgentTypeSelected(null);
+            console.log('Deselected agent type, returning to default');
+          } else {
+            // Select new agent type - add selected class to clicked button
+            button.classList.add('selected');
+            setSelectedAgentType(agentType);
+            onAgentTypeSelected(agentType);
+            console.log('Selected agent type:', agentType);
+          }
+
+          // Focus the input after selecting/deselecting an agent type
+          textInputElement?.focus();
+        } else if (clickCount === 2 && onAgentPromptEdit) {
+          // Double click - handle prompt editing
+          console.log('Double-clicked agent type for prompt editing:', agentType);
+          onAgentPromptEdit(agentType);
+        }
+        
+        clickCount = 0;
+        clickTimeout = null;
+      }, PROMPT_CONSTANTS.DOUBLE_CLICK_DELAY);
     }
   };
+}
+
+// Prompt management functions
+
+/**
+ * Get the current prompt for an agent type (custom or default)
+ */
+export function getAgentPrompt(agentType: string): string {
+  const customPrompts = getCustomPrompts();
+  return customPrompts[agentType] || SYSTEM_PROMPTS[agentType as keyof typeof SYSTEM_PROMPTS] || '';
+}
+
+/**
+ * Set a custom prompt for an agent type
+ */
+export function setCustomPrompt(agentType: string, prompt: string): void {
+  try {
+    const customPrompts = getCustomPrompts();
+    customPrompts[agentType] = prompt;
+    localStorage.setItem(PROMPT_CONSTANTS.CUSTOM_PROMPTS_STORAGE_KEY, JSON.stringify(customPrompts));
+  } catch (error) {
+    console.error('Failed to save custom prompt:', error);
+    throw error;
+  }
+}
+
+/**
+ * Remove custom prompt for an agent type (restore to default)
+ */
+export function removeCustomPrompt(agentType: string): void {
+  try {
+    const customPrompts = getCustomPrompts();
+    delete customPrompts[agentType];
+    localStorage.setItem(PROMPT_CONSTANTS.CUSTOM_PROMPTS_STORAGE_KEY, JSON.stringify(customPrompts));
+  } catch (error) {
+    console.error('Failed to remove custom prompt:', error);
+    throw error;
+  }
+}
+
+/**
+ * Check if an agent type has a custom prompt
+ */
+export function hasCustomPrompt(agentType: string): boolean {
+  const customPrompts = getCustomPrompts();
+  return agentType in customPrompts;
+}
+
+/**
+ * Get all custom prompts from localStorage
+ */
+function getCustomPrompts(): {[key: string]: string} {
+  try {
+    const stored = localStorage.getItem(PROMPT_CONSTANTS.CUSTOM_PROMPTS_STORAGE_KEY);
+    if (!stored) {
+      return {};
+    }
+    const parsed = JSON.parse(stored);
+    // Validate that it's an object with string values
+    if (typeof parsed !== 'object' || parsed === null) {
+      console.warn('Invalid custom prompts format, resetting');
+      return {};
+    }
+    // Ensure all values are strings
+    const validated: {[key: string]: string} = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === 'string') {
+        validated[key] = value;
+      }
+    }
+    return validated;
+  } catch (error) {
+    console.error('Error loading custom prompts:', error);
+    return {};
+  }
+}
+
+/**
+ * Get the default prompt for an agent type
+ */
+export function getDefaultPrompt(agentType: string): string {
+  return SYSTEM_PROMPTS[agentType as keyof typeof SYSTEM_PROMPTS] || '';
+}
+
+/**
+ * Type guard to check if an agent type is valid
+ */
+export function isValidAgentType(agentType: string): agentType is BaseOrchestratorAgentType {
+  return Object.values(BaseOrchestratorAgentType).includes(agentType as BaseOrchestratorAgentType);
 }
 
 declare global {

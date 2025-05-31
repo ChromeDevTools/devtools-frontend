@@ -41,9 +41,9 @@ const UIStrings = {
    */
   directSocketChunk: 'Direct Socket Chunk',
   /**
-   *@description Example for placeholder text
+   *@description Example for placeholder text. Note: "(direct)?socket)" is an example code and should not be translated.
    */
-  filterUsingRegex: 'Filter using regex (example: (direct)?socket)',
+  filterUsingRegex: 'Filter using regex (example: `(direct)?socket)`',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceDirectSocketChunkView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

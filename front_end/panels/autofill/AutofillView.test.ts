@@ -125,10 +125,10 @@ describeWithMockConnection('AutofillView', () => {
         addressText, ['Crocodile', ' Middle ', 'Dundee', 'Uluru ToursOutback Road 1Bundaberg Queensland ', '12345']);
     const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value'];
     const expectedRows = [
-      ['#input1 (text)', 'First name \nheur', '"Crocodile"'],
-      ['input2 (text)', 'Last name \nheur', '"Dundee"'],
-      ['#input3 (text)', 'Country \nheur', '"Australia"'],
-      ['#input4 (text)', 'Zip code \nattr', '"12345"'],
+      ['#input1 (text)', 'First name\nheur', '"Crocodile"'],
+      ['input2 (text)', 'Last name\nheur', '"Dundee"'],
+      ['#input3 (text)', 'Country\nheur', '"Australia"'],
+      ['#input4 (text)', 'Zip code\nattr', '"12345"'],
     ];
     assertGridContents(view, expectedHeaders, expectedRows);
   };

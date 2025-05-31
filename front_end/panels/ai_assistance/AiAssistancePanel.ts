@@ -36,6 +36,7 @@ import {
   State as ChatViewState,
   type Step
 } from './components/ChatView.js';
+import {ExploreWidget} from './components/ExploreWidget.js';
 import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
@@ -96,9 +97,9 @@ const UIStrings = {
    */
   inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
   /**
-   *@description Notification shown to the user whenever DevTools receives an MCP request.
+   *@description Notification shown to the user whenever DevTools receives an external request.
    */
-  mcpRequestReceived: '`DevTools` received an `MCP` request',
+  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 
 /*
@@ -205,6 +206,10 @@ const UIStringsNotTranslate = {
    * @description Message displayed in toast in case of any failures while uploading an image file as input.
    */
   uploadImageFailureMessage: 'Failed to upload image. Please try again.',
+  /**
+   * @description Error message shown when AI assistance is not enabled in DevTools settings.
+   */
+  enableInSettings: 'For AI features to be available, you need to enable AI assistance in DevTools settings.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel.ts', UIStrings);
@@ -344,18 +349,30 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
 
 function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElement): void {
   // clang-format off
-  Lit.render(html`
-    ${toolbarView(input)}
-    <div class="chat-container">
-      <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
-        if (!el || !(el instanceof ChatView)) {
-          return;
-        }
+  Lit.render(
+    html`
+      ${toolbarView(input)}
+      <div class="ai-assistance-view-container">
+        ${input.state !== ChatViewState.EXPLORE_VIEW
+          ? html` <devtools-ai-chat-view
+              .props=${input}
+              ${Lit.Directives.ref((el: Element | undefined) => {
+                if (!el || !(el instanceof ChatView)) {
+                  return;
+                }
 
-        output.chatView = el;
-      })}></devtools-ai-chat-view>
-    </div>
-  `, target, {host: input});
+                output.chatView = el;
+              })}
+            ></devtools-ai-chat-view>`
+          : html`<devtools-widget
+              class="explore"
+              .widgetConfig=${UI.Widget.widgetConfig(ExploreWidget)}
+            ></devtools-widget>`}
+      </div>
+    `,
+    target,
+    { host: input },
+  );
   // clang-format on
 }
 
@@ -522,14 +539,27 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
 
     this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(item => {
-      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true);
+      return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isExternal);
     });
   }
 
   #getChatUiState(): ChatViewState {
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-    return (this.#aiAssistanceEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? ChatViewState.CHAT_VIEW :
-                                                                                     ChatViewState.CONSENT_VIEW;
+
+    // Special case due to the way its handled downstream quirks
+    if (this.#aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+      return ChatViewState.CHAT_VIEW;
+    }
+
+    if (!this.#aiAssistanceEnabledSetting?.getIfNotDisabled() || blockedByAge) {
+      return ChatViewState.CONSENT_VIEW;
+    }
+
+    if (this.#conversation?.type) {
+      return ChatViewState.CHAT_VIEW;
+    }
+
+    return ChatViewState.EXPLORE_VIEW;
   }
 
   #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
@@ -1332,7 +1362,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#blockedByCrossOrigin = false;
       return;
     }
-    this.#selectedContext = this.#getConversationContext();
+    this.#selectedContext = this.#getConversationContext(this.#conversation);
     if (!this.#selectedContext) {
       this.#blockedByCrossOrigin = false;
 
@@ -1344,12 +1374,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#blockedByCrossOrigin = !this.#selectedContext.isOriginAllowed(this.#conversationAgent.origin);
   }
 
-  #getConversationContext(): AiAssistanceModel.ConversationContext<unknown>|null {
-    if (!this.#conversation) {
+  #getConversationContext(conversation?: AiAssistanceModel.Conversation):
+      AiAssistanceModel.ConversationContext<unknown>|null {
+    if (!conversation) {
       return null;
     }
     let context: AiAssistanceModel.ConversationContext<unknown>|null;
-    switch (this.#conversation.type) {
+    switch (conversation.type) {
       case AiAssistanceModel.ConversationType.STYLING:
         context = this.#selectedElement;
         break;
@@ -1378,7 +1409,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // Cancel any previous in-flight conversation.
     this.#cancel();
     const signal = this.#runAbortController.signal;
-    const context = this.#getConversationContext();
+    const context = this.#getConversationContext(this.#conversation);
     // If a different context is provided, it must be from the same origin.
     if (context && !context.isOriginAllowed(this.#conversationAgent.origin)) {
       // This error should not be reached. If it happens, some
@@ -1394,6 +1425,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       type: multimodalInputType,
     } :
                                                                       undefined;
+    if (this.#conversation) {
+      void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
+    }
     const runner = this.#conversationAgent.run(
         text, {
           signal,
@@ -1559,30 +1593,37 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  // Called by MCP server via Puppeteer
-  async handleMcpRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
+  async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
       Promise<string> {
-    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.mcpRequestReceived)});
+    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
+    const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-    const isAidaAvailable = this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
-    if (!aiAssistanceSetting || isBlockedByAge || !isAidaAvailable) {
-      throw new Error(
-          'For AI features to be available, you need to log into Chrome and enable AI assistance in DevTools settings');
+    if (!aiAssistanceSetting) {
+      disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
+    }
+    if (disabledReasons.length > 0) {
+      throw new Error(disabledReasons.join(' '));
     }
 
+    void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
     switch (conversationType) {
       case AiAssistanceModel.ConversationType.STYLING:
-        return await this.handleMcpStylingRequest(prompt, selector);
+        return await this.handleExternalStylingRequest(prompt, selector);
       default:
         throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
     }
   }
 
-  async handleMcpStylingRequest(prompt: string, selector?: string): Promise<string> {
+  async handleExternalStylingRequest(prompt: string, selector?: string): Promise<string> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
-    // Cancel any previous in-flight conversation.
-    this.#cancel();
+    const externalConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(stylingAgent),
+        [],
+        stylingAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    this.#historicalConversations.push(externalConversation);
 
     if (selector !== undefined) {
       await inspectElementBySelector(selector);
@@ -1591,22 +1632,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const runner = stylingAgent.run(
         prompt,
         {
-          signal: this.#runAbortController.signal,
-          selected: this.#getConversationContext(),
+          selected: this.#getConversationContext(externalConversation),
         },
     );
     for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+      }
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        await this.#changeManager.stashChanges();
-        this.#changeManager.dropStashedChanges();
         return data.text;
       }
     }
-    await this.#changeManager.stashChanges();
-    this.#changeManager.dropStashedChanges();
     throw new Error('Something went wrong. No answer was generated.');
   }
 }

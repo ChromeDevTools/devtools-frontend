@@ -4,20 +4,21 @@
 
 import {assert} from 'chai';
 
-import {$$, waitFor} from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 export async function clickStylePropertyEditorButton(
-    title: string, editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor') {
-  const gridEditorButtons = await $$(`[title="${title}"]`);
+    title: string, editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor',
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const gridEditorButtons = await devToolsPage.$$(`[title="${title}"]`);
   assert.lengthOf(gridEditorButtons, 1);
   const gridEditorButton = gridEditorButtons[0];
   await gridEditorButton.click();
-  await waitFor(editorElement);
+  await devToolsPage.waitFor(editorElement);
 }
 
-export async function clickPropertyButton(selector: string) {
-  await waitFor(selector);
-  const buttons = await $$(selector);
+export async function clickPropertyButton(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitFor(selector);
+  const buttons = await devToolsPage.$$(selector);
   assert.lengthOf(buttons, 1);
   const button = buttons[0];
   await button.click();

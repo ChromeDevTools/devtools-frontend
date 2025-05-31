@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {SDKModel} from './SDKModel.js';
-import {Capability, type Target} from './Target.js';
+import {Capability} from './Target.js';
 
 export class SecurityOriginManager extends SDKModel<EventTypes> {
   // if a URL is unreachable, the browser will jump to an error page at
@@ -13,9 +13,6 @@ export class SecurityOriginManager extends SDKModel<EventTypes> {
   #mainSecurityOriginInternal = '';
   #unreachableMainSecurityOriginInternal: string|null = '';
   #securityOriginsInternal = new Set<string>();
-  constructor(target: Target) {
-    super(target);
-  }
 
   updateSecurityOrigins(securityOrigins: Set<string>): void {
     const oldOrigins = this.#securityOriginsInternal;

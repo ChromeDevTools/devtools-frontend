@@ -31,12 +31,11 @@
 import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, render} from '../../ui/lit/lit.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';
-import {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const {styleMap} = Directives;
@@ -132,28 +131,37 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 export class EditFileSystemView extends UI.Widget.VBox {
-  readonly #fileSystemPath: Platform.DevToolsPath.UrlString;
+  #fileSystem?: PlatformFileSystem;
   #excludedFolderPaths: PathWithStatus[] = [];
   readonly #view: View;
 
-  constructor(fileSystemPath: Platform.DevToolsPath.UrlString, view: View = DEFAULT_VIEW) {
-    super();
-    this.#fileSystemPath = fileSystemPath;
+  constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
+    super(undefined, undefined, element);
     this.#view = view;
   }
 
+  set fileSystem(fileSystem: PlatformFileSystem) {
+    this.#fileSystem = fileSystem;
+    this.#resyncExcludedFolderPaths();
+    this.requestUpdate();
+  }
+
   override wasShown(): void {
-    this.#excludedFolderPaths = this.#getFileSystem()
-                                    .excludedFolders()
+    this.#resyncExcludedFolderPaths();
+    this.requestUpdate();
+  }
+
+  #resyncExcludedFolderPaths(): void {
+    this.#excludedFolderPaths = this.#fileSystem?.excludedFolders()
                                     .values()
                                     .map(path => ({path, status: ExcludedFolderStatus.VALID}))
-                                    .toArray();
-    this.requestUpdate();
+                                    .toArray() ??
+        [];
   }
 
   override performUpdate(): void {
     const input: EditFileSystemViewInput = {
-      fileSystemPath: this.#fileSystemPath,
+      fileSystemPath: this.#fileSystem?.path() ?? Platform.DevToolsPath.urlString``,
       excludedFolderPaths: this.#excludedFolderPaths,
       onCreate: e => this.#onCreate(e.detail.url),
       onEdit: e => this.#onEdit(e.detail.node.dataset.index ?? '-1', e.detail.valueBeforeEditing, e.detail.newText),
@@ -172,7 +180,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
     const pathWithStatus = this.#validateFolder(url);
     this.#excludedFolderPaths.push(pathWithStatus);
     if (pathWithStatus.status === ExcludedFolderStatus.VALID) {
-      this.#getFileSystem().addExcludedFolder(pathWithStatus.path);
+      this.#fileSystem?.addExcludedFolder(pathWithStatus.path);
     }
 
     this.requestUpdate();
@@ -189,11 +197,11 @@ export class EditFileSystemView extends UI.Widget.VBox {
     this.#excludedFolderPaths[index] = pathWithStatus;
 
     if (oldPathWithStatus.status === ExcludedFolderStatus.VALID) {
-      this.#getFileSystem().removeExcludedFolder(valueBeforeEditing as Platform.DevToolsPath.EncodedPathString);
+      this.#fileSystem?.removeExcludedFolder(valueBeforeEditing as Platform.DevToolsPath.EncodedPathString);
     }
 
     if (pathWithStatus.status === ExcludedFolderStatus.VALID) {
-      this.#getFileSystem().addExcludedFolder(pathWithStatus.path);
+      this.#fileSystem?.addExcludedFolder(pathWithStatus.path);
     }
 
     this.requestUpdate();
@@ -205,7 +213,7 @@ export class EditFileSystemView extends UI.Widget.VBox {
       return;
     }
 
-    this.#getFileSystem().removeExcludedFolder(this.#excludedFolderPaths[index].path);
+    this.#fileSystem?.removeExcludedFolder(this.#excludedFolderPaths[index].path);
     this.#excludedFolderPaths.splice(index, 1);
 
     this.requestUpdate();
@@ -229,9 +237,5 @@ export class EditFileSystemView extends UI.Widget.VBox {
       return '';
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
-  }
-
-  #getFileSystem(): PlatformFileSystem {
-    return IsolatedFileSystemManager.instance().fileSystem(this.#fileSystemPath) as PlatformFileSystem;
   }
 }

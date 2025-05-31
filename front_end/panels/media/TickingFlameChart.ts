@@ -342,9 +342,6 @@ export class TickingFlameChart extends UI.Widget.VBox {
  * Doesn't do much right now, but can be used in the future for selecting events.
  */
 class TickingFlameChartDelegate implements PerfUI.FlameChart.FlameChartDelegate {
-  constructor() {
-  }
-
   windowChanged(_windowStartTime: number, _windowEndTime: number, _animate: boolean): void {
   }
 

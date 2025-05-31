@@ -499,7 +499,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       emptyWidget.text = i18nString(
           UIStrings.startRecordingToDebug,
           {PH1: i18nString(UIStrings.startRecordingEvents), PH2: recordShortcuts.title()});
-      emptyWidget.appendLink(this.createLearnMoreLink());
+      emptyWidget.link = this.createLearnMoreLink();
 
       const button = UI.UIUtils.createTextButton(
           i18nString(UIStrings.startRecordingEvents), () => this.toggleRecording(),

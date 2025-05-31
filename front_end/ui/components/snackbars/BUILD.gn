@@ -17,6 +17,7 @@ devtools_module("snackbar") {
 
   deps = [
     "../../../core/platform:bundle",
+    "../../legacy:bundle",
     "../../lit:bundle",
     "../buttons:bundle",
   ]

@@ -2345,6 +2345,12 @@ export namespace Browser {
      * Download status.
      */
     state: DownloadProgressEventState;
+    /**
+     * If download is "completed", provides the path of the downloaded file.
+     * Depending on the platform, it is not guaranteed to be set, nor the file
+     * is guaranteed to exist.
+     */
+    filePath?: string;
   }
 }
 
@@ -4176,12 +4182,14 @@ export namespace DOM {
     ViewTransition = 'view-transition',
     ViewTransitionGroup = 'view-transition-group',
     ViewTransitionImagePair = 'view-transition-image-pair',
+    ViewTransitionGroupChildren = 'view-transition-group-children',
     ViewTransitionOld = 'view-transition-old',
     ViewTransitionNew = 'view-transition-new',
     Placeholder = 'placeholder',
     FileSelectorButton = 'file-selector-button',
     DetailsContent = 'details-content',
     Picker = 'picker',
+    PermissionIcon = 'permission-icon',
   }
 
   /**
@@ -4935,6 +4943,7 @@ export namespace DOM {
   export const enum GetElementByRelationRequestRelation {
     PopoverTarget = 'PopoverTarget',
     InterestTarget = 'InterestTarget',
+    CommandFor = 'CommandFor',
   }
 
   export interface GetElementByRelationRequest {
@@ -15208,6 +15217,11 @@ export namespace Storage {
      */
     operationName?: string;
     /**
+     * ID of the operation call.
+     * Present only for SharedStorageAccessMethods: run and selectURL.
+     */
+    operationId?: string;
+    /**
      * Whether or not to keep the worket alive for future run or selectURL
      * calls.
      * Present only for SharedStorageAccessMethods: run and selectURL.
@@ -15251,13 +15265,20 @@ export namespace Storage {
      */
     ignoreIfPresent?: boolean;
     /**
-     * If the method is called on a worklet, or as part of
-     * a worklet script, it will have an ID for the associated worklet.
+     * A number denoting the (0-based) order of the worklet's
+     * creation relative to all other shared storage worklets created by
+     * documents using the current storage partition.
+     * Present only for SharedStorageAccessMethods: addModule, createWorklet.
+     */
+    workletOrdinal?: integer;
+    /**
+     * Hex representation of the DevTools token used as the TargetID for the
+     * associated shared storage worklet.
      * Present only for SharedStorageAccessMethods: addModule, createWorklet,
      * run, selectURL, and any other SharedStorageAccessMethod when the
-     * SharedStorageAccessScope is worklet.
+     * SharedStorageAccessScope is sharedStorageWorklet.
      */
-    workletId?: string;
+    workletTargetId?: Target.TargetID;
     /**
      * Name of the lock to be acquired, if present.
      * Optionally present only for SharedStorageAccessMethods: batchUpdate,
@@ -16051,6 +16072,43 @@ export namespace Storage {
     params: SharedStorageAccessParams;
   }
 
+  /**
+   * A shared storage run or selectURL operation finished its execution.
+   * The following parameters are included in all events.
+   */
+  export interface SharedStorageWorkletOperationExecutionFinishedEvent {
+    /**
+     * Time that the operation finished.
+     */
+    finishedTime: Network.TimeSinceEpoch;
+    /**
+     * Time, in microseconds, from start of shared storage JS API call until
+     * end of operation execution in the worklet.
+     */
+    executionTime: integer;
+    /**
+     * Enum value indicating the Shared Storage API method invoked.
+     */
+    method: SharedStorageAccessMethod;
+    /**
+     * ID of the operation call.
+     */
+    operationId: string;
+    /**
+     * Hex representation of the DevTools token used as the TargetID for the
+     * associated shared storage worklet.
+     */
+    workletTargetId: Target.TargetID;
+    /**
+     * DevTools Frame Token for the primary frame tree's root.
+     */
+    mainFrameId: Page.FrameId;
+    /**
+     * Serialization of the origin owning the Shared Storage data.
+     */
+    ownerOrigin: string;
+  }
+
   export interface StorageBucketCreatedOrUpdatedEvent {
     bucketInfo: StorageBucketInfo;
   }
@@ -16782,7 +16840,7 @@ export namespace Tracing {
 
   export interface TraceConfig {
     /**
-     * Controls how the trace buffer stores data.
+     * Controls how the trace buffer stores data. The default is `recordUntilFull`.
      */
     recordMode?: TraceConfigRecordMode;
     /**

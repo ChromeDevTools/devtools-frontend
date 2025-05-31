@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   createTarget,
   stubNoopSettings,
@@ -166,7 +167,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
     view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
     view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     await new Promise<void>(resolve => setTimeout(resolve, 0));
 
     const previewContainer = (view.contentElement.querySelector('.animation-timeline-buffer') as HTMLElement);
@@ -203,7 +204,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     it('updates --timeline-controls-width and calls onResize', async () => {
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       view.markAsRoot();
-      view.show(document.body);
+      renderElementIntoDOM(view);
       const onResizeStub = sinon.stub(view, 'onResize');
       await new Promise<void>(resolve => setTimeout(resolve, 0));
 
@@ -246,7 +247,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     beforeEach(async () => {
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       view.markAsRoot();
-      view.show(document.body);
+      renderElementIntoDOM(view);
 
       sinon.stub(view, 'animationGroupSelectedForTest').callsFake(() => {
         waitForAnimationGroupSelectedPromise.resolve();
@@ -396,7 +397,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     beforeEach(async () => {
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       view.markAsRoot();
-      view.show(document.body);
+      renderElementIntoDOM(view);
 
       sinon.stub(view, 'animationGroupSelectedForTest').callsFake(() => {
         waitForAnimationGroupSelectedPromise.resolve();
@@ -491,7 +492,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
       view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
       view.markAsRoot();
-      view.show(document.body);
+      renderElementIntoDOM(view);
 
       sinon.stub(view, 'animationGroupSelectedForTest').callsFake(() => {
         waitForAnimationGroupSelectedPromise.resolve();
@@ -687,7 +688,7 @@ describeWithMockConnection('AnimationTimeline', () => {
 
     // Render into document in order to see the computed styles.
     view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     assert.deepEqual(window.getComputedStyle(placeholder).display, 'flex');
 
     assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'Currently waiting for animations');
@@ -710,7 +711,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     // Render into document in order to update the shown empty state.
     const view = Animation.AnimationTimeline.AnimationTimeline.instance();
     view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
 
     const previewUpdatePromise = new ManualPromise();
     sinon.stub(view, 'previewsCreatedForTest').callsFake(() => {

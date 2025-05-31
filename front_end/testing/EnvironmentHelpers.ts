@@ -56,7 +56,8 @@ function createSettingValue(
 
 export function stubNoopSettings() {
   sinon.stub(Common.Settings.Settings, 'instance').returns({
-    createSetting: () => ({
+    createSetting: (name: string) => ({
+      name,
       get: () => [],
       set: () => {},
       addChangeListener: () => {},
@@ -68,7 +69,8 @@ export function stubNoopSettings() {
       type: () => Common.Settings.SettingType.BOOLEAN,
       getAsArray: () => [],
     }),
-    moduleSetting: () => ({
+    moduleSetting: (name: string) => ({
+      name,
       get: () => [],
       set: () => {},
       addChangeListener: () => {},
@@ -80,7 +82,8 @@ export function stubNoopSettings() {
       type: () => Common.Settings.SettingType.BOOLEAN,
       getAsArray: () => [],
     }),
-    createLocalSetting: () => ({
+    createLocalSetting: (name: string) => ({
+      name,
       get: () => [],
       set: () => {},
       addChangeListener: () => {},
@@ -442,6 +445,11 @@ describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => voi
 export function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T> {
   const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
   return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
+}
+
+export function createFakeRegExpSetting(name: string, defaultValue: string): Common.Settings.RegExpSetting {
+  const storage = new Common.Settings.SettingsStorage({}, Common.Settings.NOOP_STORAGE, 'test');
+  return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 
 export function enableFeatureForTest(feature: string): void {

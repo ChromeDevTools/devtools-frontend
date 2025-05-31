@@ -22,6 +22,7 @@ import {targetForEvent} from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {rangeForSelection, type TimelineSelection} from './TimelineSelection.js';
+import timelineTreeViewStyles from './timelineTreeView.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import * as Utils from './utils/utils.js';
 
@@ -207,6 +208,7 @@ export class TimelineTreeView extends
     super();
     this.#selectedEvents = null;
     this.element.classList.add('timeline-tree-view');
+    this.registerRequiredCSS(timelineTreeViewStyles);
 
     this.searchResults = [];
   }

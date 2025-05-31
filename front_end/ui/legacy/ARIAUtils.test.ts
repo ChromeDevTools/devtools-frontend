@@ -9,13 +9,20 @@ import * as UI from './legacy.js';
 const NBSP = '\u00A0';
 
 describeWithEnvironment('ARIAUtils', () => {
+  function clearAlerts() {
+    for (const alert of document.querySelectorAll('body > [role=alert]')) {
+      alert.remove();
+    }
+  }
+
   beforeEach(() => {
     UI.Dialog.Dialog.getInstance()?.hide();
-    UI.ARIAUtils.getOrCreateAlertElement(document.body, {force: true});
+    clearAlerts();
   });
 
   afterEach(() => {
     UI.Dialog.Dialog.getInstance()?.hide();
+    clearAlerts();
   });
 
   describe('ARIAUtils.alert', () => {
@@ -38,8 +45,7 @@ describeWithEnvironment('ARIAUtils', () => {
       assert.strictEqual(UI.ARIAUtils.getOrCreateAlertElement(document.body).textContent, `test${NBSP}`);
     });
 
-    // Flaky test.
-    it.skip('[crbug.com/338872707] shows alerts in the body if the dialog is not shown', () => {
+    it('shows alerts in the body if the dialog is not shown', () => {
       UI.ARIAUtils.getOrCreateAlertElement(document.body);
       const dialog = new UI.Dialog.Dialog();
       UI.ARIAUtils.getOrCreateAlertElement(dialog.contentElement);

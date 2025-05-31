@@ -83,6 +83,20 @@ export class AICallTree {
    */
   static fromEvent(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree
       |null {
+    // Special case: performance.mark events are shown on the main thread
+    // technically, but because they are instant events they are shown with a
+    // tiny duration. Because they are instant, they also don't have any
+    // children or a call tree, and so if the user has selected a performance
+    // mark in the timings track, we do not want to attempt to build a call
+    // tree. Context: crbug.com/418223469
+    // Note that we do not have to repeat this check for performance.measure
+    // events because those are synthetic, and therefore the check
+    // further down about if this event is known to the RenderHandler
+    // deals with this.
+    if (Trace.Types.Events.isPerformanceMark(selectedEvent)) {
+      return null;
+    }
+
     // First: check that the selected event is on the thread we have identified as the main thread.
     const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
     const thread = threads.find(t => t.pid === selectedEvent.pid && t.tid === selectedEvent.tid);

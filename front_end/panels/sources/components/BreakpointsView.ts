@@ -784,9 +784,22 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                    tabindex='-1'
                    @keydown=${this.#keyDownHandler}
                    @click=${clickHandler}>
-            <span class='group-header' aria-hidden=true><span class='group-icon-or-disable'>${this.#renderFileIcon()}${this.#renderGroupCheckbox(group)}</span><span class='group-header-title' title='${group.url}'>${group.name}<span class='group-header-differentiator'>${this.#urlToDifferentiatingPath.get(group.url)}</span></span></span>
+            <span class='group-header' aria-hidden=true>
+              <span class='group-icon-or-disable'>
+                ${this.#renderFileIcon()}
+                ${this.#renderGroupCheckbox(group)}
+              </span>
+              <span class='group-header-title' title='${group.url}'>
+                ${group.name}
+                <span class='group-header-differentiator'>
+                  ${this.#urlToDifferentiatingPath.get(group.url)}
+                </span>
+              </span>
+            </span>
             <span class='group-hover-actions'>
-              ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile), Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton)}
+              ${this.#renderRemoveBreakpointButton(
+                  group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile),
+                  Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton)}
             </span>
           </summary>
         ${repeat(

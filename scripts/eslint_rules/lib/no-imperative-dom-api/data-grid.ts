@@ -64,10 +64,12 @@ export const dataGrid = {
             isIdentifierChain(node.callee, ['DataGrid', 'SortableDataGrid', 'SortableDataGrid'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);
           domFragment.tagName = 'devtools-data-grid';
-          const params = node.arguments[0];
-          if (!params) {
+          if (!node.arguments.length) {
             return;
           }
+          const tableFragment = domFragment.appendChild(node.arguments[0], sourceCode);
+          tableFragment.tagName = 'table';
+          const params = tableFragment.initializer ?? node.arguments[0];
           if (params.type !== 'ObjectExpression') {
             return;
           }
@@ -78,24 +80,14 @@ export const dataGrid = {
             if (isIdentifier(property.key, 'displayName')) {
               domFragment.attributes.push({key: 'name', value: property.value});
             } else if (isIdentifier(property.key, 'columns')) {
-              let columns = property.value;
-              const tableFragment = new DomFragment();
-              tableFragment.tagName = 'table';
-              domFragment.children.push(tableFragment);
-              const columnsFragment = tableFragment.appendChild(columns, sourceCode);
+              const columnsFragment = tableFragment.appendChild(property.value, sourceCode);
               columnsFragment.tagName = 'tr';
-              if (columns.type !== 'ArrayExpression') {
-                if (columnsFragment.initializer?.parent?.type === 'VariableDeclarator') {
-                  columns = columnsFragment.initializer.parent.init;
-                } else if (columnsFragment.initializer?.parent?.type === 'AssignmentExpression') {
-                  columns = columnsFragment.initializer.parent.right;
-                }
-              }
-              if (columns.type !== 'ArrayExpression') {
+              const columns = columnsFragment.initializer ?? property.value;
+              if (columns?.type !== 'ArrayExpression') {
                 continue;
               }
               for (const column of columns.elements) {
-                if (column.type !== 'ObjectExpression') {
+                if (column?.type !== 'ObjectExpression') {
                   continue;
                 }
                 const columnFragment = columnsFragment.appendChild(column, sourceCode);
@@ -146,11 +138,15 @@ export const dataGrid = {
         }
       },
       CallExpression(node: CallExpression) {
-        if (node.callee.type !== 'MemberExpression' || !isIdentifier(node.callee.property, 'createTD')) {
+        if (node.callee.type !== 'MemberExpression' ||
+            !isIdentifier(node.callee.property, ['createTD', 'createTDWithClass', 'createCell'])) {
           return;
         }
         const domFragment = DomFragment.getOrCreate(node, sourceCode);
         domFragment.tagName = 'td';
+        if (isIdentifier(node.callee.property, 'createTDWithClass')) {
+          domFragment.classList.push(node.arguments[0]);
+        }
       },
     };
   }

@@ -59,11 +59,11 @@ describeWithEnvironment('EditFileSystemView view', () => {
 describeWithEnvironment('EditFileSystemView widget', () => {
   async function setup(initialExcludedFolders: Set<string>) {
     const view = createViewFunctionStub(EditFileSystemView);
-    const widget = new EditFileSystemView(urlString`file:///home/user`, view);
+    const widget = new EditFileSystemView(undefined, view);
     const fileSystem = sinon.createStubInstance(Persistence.IsolatedFileSystem.IsolatedFileSystem);
-    sinon.stub(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'fileSystem')
-        .returns(fileSystem);
+    fileSystem.path.returns(urlString`file:///home/user`);
     fileSystem.excludedFolders.returns(initialExcludedFolders as Set<Platform.DevToolsPath.EncodedPathString>);
+    widget.fileSystem = fileSystem;
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);

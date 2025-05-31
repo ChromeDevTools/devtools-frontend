@@ -118,27 +118,27 @@ export class NetworkRequestTooltip extends HTMLElement {
       <div class="timings-row timings-row--duration">
         <span class="indicator"></span>
         ${i18nString(UIStrings.duration)}
-         <span class="time">${i18n.TimeUtilities.formatMicroSecondsTime(networkRequest.dur)}</span>
+         <span class="time"> ${i18n.TimeUtilities.formatMicroSecondsTime(networkRequest.dur)} </span>
       </div>
       <div class="timings-row">
         ${leftWhisker}
         ${i18nString(UIStrings.queuingAndConnecting)}
-        <span class="time">${i18n.TimeUtilities.formatMicroSecondsTime(queueing)}</span>
+        <span class="time"> ${i18n.TimeUtilities.formatMicroSecondsTime(queueing)} </span>
       </div>
       <div class="timings-row">
         <span class="indicator" style=${Lit.Directives.styleMap(styleForWaiting)}></span>
         ${i18nString(UIStrings.requestSentAndWaiting)}
-        <span class="time">${i18n.TimeUtilities.formatMicroSecondsTime(requestPlusWaiting)}</span>
+        <span class="time"> ${i18n.TimeUtilities.formatMicroSecondsTime(requestPlusWaiting)} </span>
       </div>
       <div class="timings-row">
         <span class="indicator" style=${Lit.Directives.styleMap(styleForDownloading)}></span>
         ${i18nString(UIStrings.contentDownloading)}
-        <span class="time">${i18n.TimeUtilities.formatMicroSecondsTime(download)}</span>
+        <span class="time"> ${i18n.TimeUtilities.formatMicroSecondsTime(download)} </span>
       </div>
       <div class="timings-row">
         ${rightWhisker}
         ${i18nString(UIStrings.waitingOnMainThread)}
-        <span class="time">${i18n.TimeUtilities.formatMicroSecondsTime(waitingOnMainThread)}</span>
+        <span class="time"> ${i18n.TimeUtilities.formatMicroSecondsTime(waitingOnMainThread)} </span>
       </div>
     `;
   }
@@ -152,11 +152,7 @@ export class NetworkRequestTooltip extends HTMLElement {
         </div>
       `);
       for (const redirect of networkRequest.args.data.redirects) {
-        redirectRows.push(html`
-          <div class="redirects-row">
-            ${redirect.url}
-          </div>
-        `);
+        redirectRows.push(html`<div class="redirects-row"> ${redirect.url}</div>`);
       }
       return html`${redirectRows}`;
     }
@@ -185,7 +181,10 @@ export class NetworkRequestTooltip extends HTMLElement {
         <div class="url url--host">${originWithEntity}</div>
 
         <div class="divider"></div>
-        <div class="network-category"><span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}></span>${networkResourceCategory(this.#data.networkRequest)}</div>
+        <div class="network-category">
+          <span class="network-category-chip" style=${Lit.Directives.styleMap(chipStyle)}>
+          </span>${networkResourceCategory(this.#data.networkRequest)}
+        </div>
         <div class="priority-row">${i18nString(UIStrings.priority)}: ${NetworkRequestTooltip.renderPriorityValue(this.#data.networkRequest)}</div>
         ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#data.networkRequest) ?
           html`<div class="render-blocking"> ${i18nString(UIStrings.renderBlocking)} </div>` :  Lit.nothing

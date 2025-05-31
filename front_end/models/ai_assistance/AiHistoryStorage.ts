@@ -23,6 +23,7 @@ export interface SerializedConversation {
   id: string;
   type: ConversationType;
   history: ResponseData[];
+  isExternal: boolean;
 }
 
 export interface SerializedImage {
@@ -40,11 +41,15 @@ export class Conversation {
   readonly type: ConversationType;
   #isReadOnly: boolean;
   readonly history: ResponseData[];
+  #isExternal: boolean;
 
-  constructor(type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true) {
+  constructor(
+      type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true,
+      isExternal = false) {
     this.type = type;
     this.id = id;
     this.#isReadOnly = isReadOnly;
+    this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
   }
 
@@ -59,6 +64,10 @@ export class Conversation {
       return;
     }
 
+    if (this.#isExternal) {
+      return `[External] ${query.substring(0, MAX_TITLE_LENGTH - 11)}${
+          query.length > MAX_TITLE_LENGTH - 11 ? '…' : ''}`;
+    }
     return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? '…' : ''}`;
   }
 
@@ -111,6 +120,7 @@ export class Conversation {
         return item;
       }),
       type: this.type,
+      isExternal: this.#isExternal,
     };
   }
 }

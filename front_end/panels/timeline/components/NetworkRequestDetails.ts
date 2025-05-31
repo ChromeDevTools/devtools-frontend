@@ -178,15 +178,20 @@ export class NetworkRequestDetails extends HTMLElement {
     if (!value) {
       return null;
     }
+    // clang-format off
     return html`
-      <div class="network-request-details-row"><div class="title">${title}</div><div class="value">${value}</div></div>
-    `;
+      <div class="network-request-details-row">
+        <div class="title">${title}</div>
+        <div class="value">${value}</div>
+      </div>`;
+    // clang-format on
   }
 
   #renderServerTimings(): Lit.LitTemplate[]|Lit.LitTemplate {
     if (!this.#serverTimings) {
       return Lit.nothing;
     }
+    // clang-format off
     return html`
       <div class="column-divider"></div>
       <div class="network-request-details-col server-timings">
@@ -194,15 +199,15 @@ export class NetworkRequestDetails extends HTMLElement {
           <div class="server-timing-column-header">${i18nString(UIStrings.description)}</div>
           <div class="server-timing-column-header">${i18nString(UIStrings.time)}</div>
         ${this.#serverTimings.map(timing => {
-      const classes = timing.metric.startsWith('(c') ? 'synthetic value' : 'value';
-      return html`
+          const classes = timing.metric.startsWith('(c') ? 'synthetic value' : 'value';
+          return html`
               <div class=${classes}>${timing.metric || '-'}</div>
               <div class=${classes}>${timing.description || '-'}</div>
               <div class=${classes}>${timing.value || '-'}</div>
           `;
-    })}
-      </div>
-    `;
+        })}
+      </div>`;
+    // clang-format on
   }
   #renderURL(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
@@ -313,10 +318,13 @@ export class NetworkRequestDetails extends HTMLElement {
     if (!link) {
       return null;
     }
+    // clang-format off
     return html`
-      <div class="network-request-details-item"><div class="title">${
-        i18nString(UIStrings.initiatedBy)}</div><div class="value">${link}</div></div>
-    `;
+      <div class="network-request-details-item">
+        <div class="title">${i18nString(UIStrings.initiatedBy)}</div>
+        <div class="value">${link}</div>
+      </div>`;
+    // clang-format on
   }
 
   #renderBlockingRow(): Lit.TemplateResult|null {
@@ -359,10 +367,11 @@ export class NetworkRequestDetails extends HTMLElement {
 
     const requestPreviewElement = this.#requestPreviewElements.get(this.#networkRequest);
     if (requestPreviewElement) {
+      // clang-format off
       return html`
         <div class="network-request-details-col">${requestPreviewElement}</div>
-        <div class="column-divider"></div>
-      `;
+        <div class="column-divider"></div>`;
+      // clang-format on
     }
     return null;
   }

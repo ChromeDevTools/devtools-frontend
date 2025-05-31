@@ -96,10 +96,6 @@ export class RecordingListView extends HTMLElement {
     replayAllowed: true,
   };
 
-  constructor() {
-    super();
-  }
-
   connectedCallback(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }

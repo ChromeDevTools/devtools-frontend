@@ -6,7 +6,7 @@ import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Extensions from '../../../../panels/timeline/extensions/extensions.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
   FakeFlameChartProvider,
@@ -14,6 +14,7 @@ import {
   renderFlameChartIntoDOM,
   renderFlameChartWithFakeProvider,
 } from '../../../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../../../testing/TraceLoader.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -1007,6 +1008,26 @@ describeWithEnvironment('FlameChart', () => {
   });
 
   describe('rendering tracks', () => {
+    it('can render a Node CPU Profile', async function() {
+      // We have to do some work to render this trace, as we take the raw CPU
+      // Profile and wrap it in our code that maps it to a "real" trace. This is what happens for real if a user imports a CPU Profile.
+      const rawCPUProfile = await TraceLoader.rawCPUProfile(this, 'node-fibonacci-website.cpuprofile.gz');
+      const rawTrace = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+          rawCPUProfile, Trace.Types.Events.ThreadID(1));
+      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(rawTrace);
+
+      await renderFlameChartIntoDOM(this, {
+        traceFile: parsedTrace,
+        filterTracks(trackName) {
+          return trackName.startsWith('Main');
+        },
+        expandTracks() {
+          return true;
+        },
+      });
+      await assertScreenshot('timeline/main_thread_node_cpu_profile.png');
+    });
+
     it('renders the main thread correctly', async function() {
       await renderFlameChartIntoDOM(this, {
         traceFile: 'one-second-interaction.json.gz',
@@ -1108,6 +1129,124 @@ describeWithEnvironment('FlameChart', () => {
       customEndTime: 141253000 as Trace.Types.Timing.Milli,
     });
     await assertScreenshot('timeline/interactions_track_candystripe.png');
+  });
+
+  it('renders the frames track with screenshots', async function() {
+    const {flameChart} = await renderFlameChartIntoDOM(this, {
+      traceFile: 'web-dev-screenshot-source-ids.json.gz',
+      // This is a bit confusing: we filter out all tracks here because the
+      // Frames track was never migrated to an appender, and therefore it
+      // cannot be filtered using this helper.
+      // So instead, we filter all the appenders out, which leaves just the
+      // frames track. This also means we cannot expand it via this helper,
+      // hence the call to toggleGroupExpand below.
+      filterTracks() {
+        return false;
+      },
+      // A height manually picked that fits the screenshots in but no
+      // additional whitespace.
+      customHeight: 200,
+      // So that when we expand the track, the screenshots are already in
+      // memory and we do not have to async wait for them to be fetched &
+      // drawn.
+      preloadScreenshots: true,
+    });
+    flameChart.toggleGroupExpand(0);
+    await raf();
+    await assertScreenshot('timeline/frames_track_screenshots.png');
+  });
+
+  it('renders correctly with a vertical offset', async function() {
+    const {flameChart, parsedTrace, dataProvider} = await renderFlameChartIntoDOM(this, {
+      traceFile: 'web-dev.json.gz',
+      filterTracks() {
+        return true;
+      },
+      expandTracks() {
+        return true;
+      },
+      customHeight: 200,
+    });
+
+    // This event is one that is deep into the main thread, so it forces the
+    // flamechart to be vertically scrolled. That's why we pick this one.
+    const event = parsedTrace.Renderer.allTraceEntries.find(entry => {
+      return entry.dur === 462 && entry.ts === 1020035043753 &&
+          entry.name === Trace.Types.Events.Name.UPDATE_LAYOUT_TREE;
+    });
+    assert.isOk(event);
+    const index = dataProvider.indexForEvent(event);
+    assert.isOk(index);
+    flameChart.revealEntryVertically(index);
+    await raf();
+    await assertScreenshot('timeline/flamechart_with_vertical_offset.png');
+  });
+
+  it('renders the animations track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'animation.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Animation');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/animations_track.png');
+  });
+
+  it('renders the GPU track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'threejs-gpu.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('GPU');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/gpu_track.png');
+  });
+
+  it('renders the user timing track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'timings-track.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('Timings');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/timings_track.png');
+  });
+
+  it('renders the auction worklets track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'fenced-frame-fledge.json.gz',
+      filterTracks(trackName) {
+        return trackName.includes('Worklet');
+      },
+      expandTracks() {
+        return true;
+      },
+      customStartTime: Trace.Types.Timing.Milli(220391498.289),
+      customEndTime: Trace.Types.Timing.Milli(220391697.601),
+    });
+    await assertScreenshot('timeline/auction_worklets_track.png');
+  });
+
+  it('renders the layout shifts track', async function() {
+    await renderFlameChartIntoDOM(this, {
+      traceFile: 'cls-single-frame.json.gz',
+      filterTracks(trackName) {
+        return trackName.startsWith('LayoutShifts');
+      },
+      expandTracks() {
+        return true;
+      },
+    });
+    await assertScreenshot('timeline/layout_shifts_track.png');
   });
 
   it('renders all the decoration types onto events', async () => {

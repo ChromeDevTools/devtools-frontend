@@ -32,10 +32,6 @@ function isColorInSrgbGamut(hsv: Common.ColorUtils.Color3D): boolean {
 export class SrgbOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  constructor() {
-    super();
-  }
-
   #getLinePoints({hue, width, height}: SrgbOverlayProps): Array<{x: number, y: number}>|null {
     if (width === 0 || height === 0) {
       return null;

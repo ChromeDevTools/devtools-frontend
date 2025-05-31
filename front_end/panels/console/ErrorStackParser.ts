@@ -32,7 +32,7 @@ export interface ParsedErrorFrame {
  */
 export function parseSourcePositionsFromErrorStack(
     runtimeModel: SDK.RuntimeModel.RuntimeModel, stack: string): ParsedErrorFrame[]|null {
-  if (!/^[\w.]*Error\b/.test(stack)) {
+  if (!(/\n\s*at\s/.test(stack) || stack.startsWith('SyntaxError:'))) {
     return null;
   }
   const debuggerModel = runtimeModel.debuggerModel();

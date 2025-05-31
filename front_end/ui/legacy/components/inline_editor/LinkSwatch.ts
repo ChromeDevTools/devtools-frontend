@@ -60,25 +60,19 @@ export class LinkSwatch extends HTMLElement {
     const title = tooltip && 'title' in tooltip && tooltip.title || undefined;
     const tooltipId = tooltip && 'tooltipId' in tooltip && tooltip.tooltipId || undefined;
 
-    render(
-        // clang-format off
-        html`<style>${Buttons.textButtonStyles}</style><style>${linkSwatchStyles}</style><button
-          .disabled=${!isDefined}
-          jslog=${jslogContext ? VisualLogging.link().track({click: true}).context(jslogContext) : nothing}
-          class=${classes}
-          type="button"
-          title=${ifDefined(title)}
-          aria-details=${ifDefined(tooltipId)}
-          @click=${onActivate}
-          @keydown=${onActivate}
-          role="link"
-          tabindex=${ifDefined(isDefined ? -1 : undefined)}
-          ${ref(e => {
-            this.#linkElement = e as HTMLElement;
-          })}
-          >${text}</button>`,
-        // clang-format on
-        this);
+    // clang-format off
+    render(html`
+        <style>${Buttons.textButtonStyles}</style>
+        <style>${linkSwatchStyles}</style>
+        <button .disabled=${!isDefined} class=${classes} type="button" title=${ifDefined(title)}
+                aria-details=${ifDefined(tooltipId)} @click=${onActivate} @keydown=${onActivate}
+                role="link"
+                jslog=${jslogContext ? VisualLogging.link().track({click: true}).context(jslogContext) : nothing}
+                tabindex=${ifDefined(isDefined ? -1 : undefined)}
+                ${ref(e => { this.#linkElement = e as HTMLElement; })}>
+           ${text}
+        </button>`, this);
+    // clang-format on
   }
 }
 

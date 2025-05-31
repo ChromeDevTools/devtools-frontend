@@ -5,6 +5,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 import * as Buttons from '../buttons/buttons.js';
 
@@ -56,6 +57,8 @@ export class Snackbar extends HTMLElement {
   #timeout: number|null = null;
   #isLongAction = false;
   #actionButtonClickHandler?: () => void;
+
+  static snackbarQueue: Snackbar[] = [];
 
   /**
    * Reflects the `dismiss-timeout` attribute. Sets the message to be displayed on the snackbar.
@@ -139,12 +142,15 @@ export class Snackbar extends HTMLElement {
 
   static show(properties: SnackbarProperties): Snackbar {
     const snackbar = new Snackbar(properties);
-    snackbar.#show();
+    Snackbar.snackbarQueue.push(snackbar);
+    if (Snackbar.snackbarQueue.length === 1) {
+      snackbar.#show();
+    }
     return snackbar;
   }
 
   #show(): void {
-    document.body.appendChild(this);
+    UI.InspectorView.InspectorView.instance().element.appendChild(this);
     if (this.#timeout) {
       window.clearTimeout(this.#timeout);
     }
@@ -160,6 +166,14 @@ export class Snackbar extends HTMLElement {
       window.clearTimeout(this.#timeout);
     }
     this.remove();
+
+    Snackbar.snackbarQueue.shift();
+    if (Snackbar.snackbarQueue.length > 0) {
+      const nextSnackbar = Snackbar.snackbarQueue[0];
+      if (nextSnackbar) {
+        nextSnackbar.#show();
+      }
+    }
   }
 
   #onActionButtonClickHandler(event: Event): void {

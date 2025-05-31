@@ -13,7 +13,6 @@ import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -72,7 +71,7 @@ const UIStrings = {
   /**
    *@description Label added to the text input to describe the context for screen readers. Not shown visibly on screen.
    */
-  inputTextAriraDescription: 'You can also use one of the suggested prompts above to start your conversation',
+  inputTextAriaDescription: 'You can also use one of the suggested prompts above to start your conversation',
   /**
    *@description Label added to the button that reveals the selected context item in DevTools
    */
@@ -107,10 +106,6 @@ const UIStringsNotTranslate = {
    *@description Text for the empty state of the AI assistance panel.
    */
   emptyStateText: 'How can I help you?',
-  /**
-   *@description Text for the empty state of the AI assistance panel when there is no agent selected.
-   */
-  noAgentStateText: 'Explore AI assistance',
   /**
    * @description The error message when the request to the LLM failed for some reason.
    */
@@ -266,6 +261,7 @@ export type ChatMessage = UserChatMessage|ModelChatMessage;
 export const enum State {
   CONSENT_VIEW = 'consent-view',
   CHAT_VIEW = 'chat-view',
+  EXPLORE_VIEW = 'explore-view'
 }
 
 export interface Props {
@@ -323,6 +319,13 @@ export class ChatView extends HTMLElement {
    * It is set to false when the user scrolls up to view previous messages.
    */
   #pinScrollToBottom = true;
+  /**
+   * Indicates whether the scroll event originated from code
+   * or a user action. When set to `true`, `handleScroll` will ignore the event,
+   * allowing it to only handle user-driven scrolls and correctly decide
+   * whether to pin the content to the bottom.
+   */
+  #isProgrammaticScroll = false;
 
   constructor(props: Props) {
     super();
@@ -373,7 +376,7 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    this.#mainElementRef.value.scrollTop = this.#scrollTop;
+    this.#setMainElementScrollTop(this.#scrollTop);
   }
 
   scrollToBottom(): void {
@@ -381,7 +384,7 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    this.#mainElementRef.value.scrollTop = this.#mainElementRef.value.scrollHeight;
+    this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
   }
 
   #handleChatUiRef(el: Element|undefined): void {
@@ -433,7 +436,7 @@ export class ChatView extends HTMLElement {
                 }}
               >${i18nString(UIStrings.learnAbout)}</button>
             </div>`, popover.contentElement, {host: this});
-          // clang-forat on
+          // clang-format on
           return true;
         },
       };
@@ -451,8 +454,18 @@ export class ChatView extends HTMLElement {
     }
 
     if (this.#pinScrollToBottom) {
-      this.#mainElementRef.value.scrollTop = this.#mainElementRef.value.scrollHeight;
+      this.#setMainElementScrollTop(this.#mainElementRef.value.scrollHeight);
     }
+  }
+
+  #setMainElementScrollTop(scrollTop: number): void {
+    if (!this.#mainElementRef?.value) {
+      return;
+    }
+
+    this.#scrollTop = scrollTop;
+    this.#isProgrammaticScroll = true;
+    this.#mainElementRef.value.scrollTop = scrollTop;
   }
 
   #setInputText(text: string): void {
@@ -478,6 +491,14 @@ export class ChatView extends HTMLElement {
 
   #handleScroll = (ev: Event): void => {
     if (!ev.target || !(ev.target instanceof HTMLElement)) {
+      return;
+    }
+
+    // Do not handle scroll events caused by programmatically
+    // updating the scroll position. We want to know whether user
+    // did scroll the container from the user interface.
+    if (this.#isProgrammaticScroll) {
+      this.#isProgrammaticScroll = false;
       return;
     }
 
@@ -554,6 +575,7 @@ export class ChatView extends HTMLElement {
         'is-read-only': this.#props.isReadOnly,
       });
 
+      // clang-format off
       const footerContents = this.#props.conversationType
         ? renderRelevantDataDisclaimer({
             isLoading: this.#props.isLoading,
@@ -1317,13 +1339,15 @@ function renderMultimodalInputButtons({
 function renderImageInput({
   multimodalInputEnabled,
   imageInput,
+  isTextInputDisabled,
   onRemoveImageInput,
 }: {
   multimodalInputEnabled?: boolean,
   imageInput?: ImageInputData,
+  isTextInputDisabled?: boolean,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
-  if (!multimodalInputEnabled || !imageInput) {
+  if (!multimodalInputEnabled || !imageInput || isTextInputDisabled) {
     return Lit.nothing;
   }
   // clang-format off
@@ -1449,7 +1473,7 @@ function renderChatInput({
   <form class="input-form" @submit=${onSubmit}>
     <div class=${chatInputContainerCls}>
       ${renderImageInput(
-        {multimodalInputEnabled, imageInput, onRemoveImageInput}
+        {multimodalInputEnabled, imageInput, isTextInputDisabled, onRemoveImageInput}
       )}
       <textarea class="chat-input"
         .disabled=${isTextInputDisabled}
@@ -1459,7 +1483,7 @@ function renderChatInput({
         @input=${(event: KeyboardEvent) => onTextInputChange((event.target as HTMLInputElement).value)}
         placeholder=${inputPlaceholder}
         jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
-        aria-description=${i18nString(UIStrings.inputTextAriraDescription)}
+        aria-description=${i18nString(UIStrings.inputTextAriaDescription)}
       ></textarea>
       <div class="chat-input-actions">
         <div class="chat-input-actions-left">
@@ -1542,12 +1566,9 @@ function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
     <div class="empty-state-container">
       <div class="disabled-view">
         <div class="disabled-view-icon-container">
-          <devtools-icon .data=${{
-            iconName: 'smart-assistant',
-            width: 'var(--sys-size-8)',
-            height: 'var(--sys-size-8)',
-          } as IconButton.Icon.IconData}>
-          </devtools-icon>
+          <devtools-icon
+            .name=${'smart-assistant'}
+          ></devtools-icon>
         </div>
         <div>
           ${contents}
@@ -1555,81 +1576,6 @@ function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
       </div>
     </div>
   `;
-  // clang-format on
-}
-
-function renderNoAgentState(): Lit.TemplateResult {
-  const config = Root.Runtime.hostConfig;
-  const featureCards: Array<{
-    icon: string,
-    heading: string,
-    content: Lit.TemplateResult,
-  }> =
-      [
-        ...(config.devToolsFreestyler?.enabled ? [{
-          icon: 'brush-2',
-          heading: 'CSS styles',
-          content: html`Open <button class="link" role="link" jslog=${
-              VisualLogging.link('open-elements-panel').track({click: true})} @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('elements');
-          }}>Elements</button> to ask about CSS styles`,
-        }] :
-                                                 []),
-        ...(config.devToolsAiAssistanceNetworkAgent?.enabled) ? [{
-          icon: 'arrow-up-down',
-          heading: 'Network',
-          content: html`Open <button class="link" role="link" jslog=${
-              VisualLogging.link('open-network-panel').track({click: true})} @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('network');
-          }}>Network</button> to ask about a request's details`,
-        }] :
-                                                                [],
-        ...(config.devToolsAiAssistanceFileAgent?.enabled) ? [{
-          icon: 'document',
-          heading: 'Files',
-          content: html`Open <button class="link" role="link" jslog=${
-              VisualLogging.link('open-sources-panel').track({click: true})} @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('sources');
-          }}>Sources</button> to ask about a file's content`,
-        }] :
-                                                             [],
-        ...(config.devToolsAiAssistancePerformanceAgent?.enabled ? [{
-          icon: 'performance',
-          heading: 'Performance',
-          content: html`Open <button class="link" role="link" jslog=${
-              VisualLogging.link('open-performance-panel').track({click: true})} @click=${() => {
-            void UI.ViewManager.ViewManager.instance().showView('timeline');
-          }}>Performance</button> to ask about a trace item`,
-        }] :
-                                                                   []),
-      ];
-
-  // clang-format off
-  return html`
-    <div class="empty-state-container">
-      <div class="header">
-        <div class="icon">
-          <devtools-icon
-            name="smart-assistant"
-          ></devtools-icon>
-        </div>
-        <h1>${lockedString(UIStringsNotTranslate.noAgentStateText)}</h1>
-        <p>To chat about an item, right-click and select <strong>Ask AI</strong></p>
-      </div>
-      <div class="empty-state-content">
-        ${featureCards.map(featureCard => html`
-          <div class="feature-card">
-            <div class="feature-card-icon">
-              <devtools-icon name=${featureCard.icon}></devtools-icon>
-            </div>
-            <div class="feature-card-content">
-              <h3>${featureCard.heading}</h3>
-              <p>${featureCard.content}</p>
-            </div>
-          </div>
-        `)}
-      </div>
-    </div>`;
   // clang-format on
 }
 
@@ -1667,7 +1613,7 @@ function renderMainContents({
   onMessageContainerRef: (el: Element|undefined) => void,
   conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
-}): Lit.TemplateResult {
+}): Lit.LitTemplate {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(renderConsentViewContents());
   }
@@ -1677,7 +1623,7 @@ function renderMainContents({
   }
 
   if (!conversationType) {
-    return renderNoAgentState();
+    return Lit.nothing;
   }
 
   if (messages.length > 0) {

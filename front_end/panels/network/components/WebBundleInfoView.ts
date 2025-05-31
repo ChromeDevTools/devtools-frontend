@@ -67,17 +67,22 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
       </div>
       <devtools-data-grid striped>
         <table>
-          <tr><th id="url">${i18nString(UIStrings.bundledResource)}</th></tr>
+          <tr>
+            <th id="url">${i18nString(UIStrings.bundledResource)}</th>
+          </tr>
           ${this.#webBundleInfo.resourceUrls?.map(url => {
             const mimeType = mimeFromURL(url) || null;
             const resourceType = fromMimeTypeOverride(mimeType) || fromMimeType(mimeType);
             const iconData = iconDataForResourceType(resourceType);
-            return html`<tr><td>
+            return html`<tr>
+              <td>
                 <div style="display: flex;">
                   <devtools-icon class="icon" .data=${{...iconData, width: '20px'} as IconData}>
                   </devtools-icon>
                   <span>${url}</span>
-                </div></td></tr>`;
+                </div>
+              </td>
+            </tr>`;
         })}
         </table>
       </devtools-data-grid>`,

@@ -6,21 +6,12 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type {Page} from 'puppeteer-core';
 
-import type {Example} from './auto-run';
-
 /**
  * Performance examples have a trace file so that this script does not have to
  * trigger a trace recording.
  */
 export class TraceDownloader {
   static location = path.join(import.meta.dirname, 'performance-trace-downloads');
-
-  static ensureLocationExists() {
-    try {
-      fs.mkdirSync(TraceDownloader.location);
-    } catch {
-    }
-  }
 
   static async ensureDownloadExists(filename: string, attempts = 0): Promise<boolean> {
     if (attempts === 5) {
@@ -66,8 +57,8 @@ export class TraceDownloader {
     return false;
   }
 
-  static async download(example: Example, page: Page): Promise<string> {
-    const url = new URL(example.url());
+  async download(exampleUrl: string, page: Page): Promise<string> {
+    const url = new URL(exampleUrl);
     const idForUrl = path.basename(path.dirname(url.pathname));
     const fileName = `${idForUrl}.json.gz`;
     if (!TraceDownloader.shouldDownloadFile(fileName)) {
@@ -82,7 +73,7 @@ export class TraceDownloader {
       behavior: 'allow',
       downloadPath: TraceDownloader.location,
     });
-    const traceUrl = example.url().replace('index.html', fileName);
+    const traceUrl = exampleUrl.replace('index.html', fileName);
     // Using page.goto(traceUrl) does download the file, but it also causes a
     // net::ERR_ABORTED error to be thrown. Doing it this way does not. See
     // https://github.com/puppeteer/puppeteer/issues/6728#issuecomment-986082241.
@@ -95,7 +86,6 @@ export class TraceDownloader {
           `Could not find '${fileName}' in download location (${TraceDownloader.location}). Aborting.`,
       );
     }
-    example.log(`Downloaded performance trace: ${fileName}`);
     return fileName;
   }
 }

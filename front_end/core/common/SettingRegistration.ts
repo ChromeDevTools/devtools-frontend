@@ -335,5 +335,5 @@ interface RawSettingExtensionOption {
 export type SettingExtensionOption = LocalizedSettingExtensionOption|RawSettingExtensionOption;
 export type DisabledConditionResult = {
   disabled: true,
-  reasons: string[],
+  reasons: Platform.UIString.LocalizedString[],
 }|{disabled: false};

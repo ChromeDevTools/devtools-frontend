@@ -131,6 +131,7 @@ export class StyleEditorWidget extends UI.Widget.VBox {
       widget.bindContext(pane, section);
       widget.setTriggerKey(triggerKey);
       await widget.render();
+      widget.focus();
       const scrollerElement = triggerButton.enclosingNodeOrSelfWithClass('style-panes-wrapper');
       const onScroll = (): void => {
         popoverHelper.hide(true);

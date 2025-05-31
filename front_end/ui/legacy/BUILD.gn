@@ -155,6 +155,7 @@ devtools_entrypoint("bundle") {
     "../components/linear_memory_inspector:*",
     "../components/markdown_view:*",
     "../components/request_link_icon:unittests",
+    "../components/snackbars:*",
     "./*",
 
     # Required for x-link

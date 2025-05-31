@@ -313,9 +313,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
         <devtools-report-key>${i18nString(UIStrings.detailsAction)}</devtools-report-key>
         <devtools-report-value>
           <div class="text-ellipsis" title="">
-            ${action}
-            ${maybeFellback}
-            ${maybeInspectButton}
+            ${action} ${maybeFellback} ${maybeInspectButton}
           </div>
         </devtools-report-value>
     `;

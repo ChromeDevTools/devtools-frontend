@@ -60,7 +60,7 @@ describeWithEnvironment('FilmStripView', function() {
   it('shows status text', async function() {
     const filmStripView = new PerfUI.FilmStripView.FilmStripView();
     filmStripView.markAsRoot();
-    filmStripView.show(document.body);
+    renderElementIntoDOM(filmStripView);
 
     const expectedStatusText = 'Placeholder';
 

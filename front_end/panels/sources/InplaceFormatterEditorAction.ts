@@ -39,8 +39,6 @@ export class InplaceFormatterEditorAction implements EditorAction {
   private button!: UI.Toolbar.ToolbarButton;
   private sourcesView!: SourcesView;
   private uiSourceCodeTitleChangedEvent: Common.EventTarget.EventDescriptor|null = null;
-  constructor() {
-  }
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): InplaceFormatterEditorAction {

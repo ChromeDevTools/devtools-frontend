@@ -55,8 +55,6 @@ export class ProfileTreeModel {
   root!: ProfileNode;
   total!: number;
   maxDepth!: number;
-  constructor() {
-  }
 
   initialize(root: ProfileNode): void {
     this.root = root;

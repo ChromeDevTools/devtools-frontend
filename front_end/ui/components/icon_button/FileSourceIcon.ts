@@ -26,10 +26,6 @@ export class FileSourceIcon extends HTMLElement {
   #hasDotBadge?: boolean;
   #isDotPurple?: boolean;
 
-  constructor() {
-    super();
-  }
-
   set data(data: FileSourceIconData) {
     this.#contentType = data.contentType;
     this.#hasDotBadge = data.hasDotBadge;
@@ -60,11 +56,10 @@ export class FileSourceIcon extends HTMLElement {
     });
 
     // clang-format off
-    render(
-      html`<style>${fileSourceIconStyles}</style><devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`,
-      this.#shadow, {
-      host: this,
-    });
+    render(html`
+      <style>${fileSourceIconStyles}</style>
+      <devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`,
+      this.#shadow, {host: this});
     // clang-format on
   }
 }

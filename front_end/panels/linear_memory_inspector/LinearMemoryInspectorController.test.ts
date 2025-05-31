@@ -12,10 +12,6 @@ const {LinearMemoryInspectorController} = LinearMemoryInspector;
 const {ValueInterpreterDisplayUtils} = LinearMemoryInspectorComponents;
 
 class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
-  constructor(array: ArrayBuffer) {
-    super(array);
-  }
-
   override arrayBufferByteLength() {
     return this.value.byteLength;
   }

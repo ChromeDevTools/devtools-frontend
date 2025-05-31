@@ -590,6 +590,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     if (this.parsedTrace) {
       this.compatibilityTracksAppender = this.compatibilityTracksAppenderInstance();
+      // Note for readers: NodeJS CpuProfiles are purposefully NOT generic.
+      // We wrap them in a `TracingStartedInPage` event, which causes them to
+      // be treated like "real" Chrome traces. This is by design!
       if (this.parsedTrace.Meta.traceIsGeneric) {
         this.#processGenericTrace();
       } else {

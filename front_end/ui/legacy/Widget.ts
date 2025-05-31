@@ -410,7 +410,6 @@ export class Widget {
         if (!currentParent) {
           if (suppressOrphanWidgetError) {
             this.#isRoot = true;
-            console.warn('A Widget has silently been marked as a root widget');
             this.show(parentElement, insertBefore);
             return;
           }

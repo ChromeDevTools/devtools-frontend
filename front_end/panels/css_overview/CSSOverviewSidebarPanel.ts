@@ -4,7 +4,6 @@
 
 import '../../ui/legacy/legacy.js';
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -88,14 +87,15 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format on
 };
 
-export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) {
+export class CSSOverviewSidebarPanel extends UI.Widget.VBox {
   #view: View;
   #items: Array<{name: string, id: string}> = [];
   #selectedId?: string;
+  #onItemSelected = (_id: string, _shouldFocus: boolean): void => {};
+  #onReset = (): void => {};
 
-  constructor(view = DEFAULT_VIEW) {
-    super(true, true);
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(true, true, element);
     this.#view = view;
   }
 
@@ -103,7 +103,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     const viewInput = {
       items: this.#items,
       selectedId: this.#selectedId,
-      onReset: () => this.#reset(),
+      onReset: this.#onReset,
       onItemClick: this.#onItemClick.bind(this),
       onItemKeyDown: this.#onItemKeyDown.bind(this)
     };
@@ -115,19 +115,34 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     this.requestUpdate();
   }
 
-  #reset(): void {
-    this.dispatchEventToListeners(SidebarEvents.RESET);
+  set selectedId(id: string) {
+    void this.#select(id);
+  }
+
+  set onItemSelected(callback: (id: string, shouldFocus: boolean) => void) {
+    this.#onItemSelected = callback;
+    this.requestUpdate();
+  }
+
+  set onReset(callback: () => void) {
+    this.#onReset = callback;
+    this.requestUpdate();
+  }
+
+  #select(id: string, shouldFocus = false): Promise<boolean> {
+    this.#selectedId = id;
+    this.requestUpdate();
+    this.#onItemSelected(id, shouldFocus);
+    return this.updateComplete;
   }
 
   #onItemClick(id: string): void {
-    this.selectedId = id;
-    this.dispatchEventToListeners(SidebarEvents.ITEM_SELECTED, {id, isMouseEvent: true, key: undefined});
+    void this.#select(id, false);
   }
 
   #onItemKeyDown(id: string, key: string): void {
     if (key === 'Enter') {
-      this.selectedId = id;
-      this.dispatchEventToListeners(SidebarEvents.ITEM_SELECTED, {id, isMouseEvent: false, key});
+      void this.#select(id, true);
     } else {  // arrow up/down key
       let currItemIndex = -1;
       for (let idx = 0; idx < this.#items.length; idx++) {
@@ -147,33 +162,10 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
         return;
       }
 
-      this.selectedId = nextItemId;
-      void this.updateComplete.then(() => {
+      void this.#select(nextItemId, false).then(() => {
         this.element.blur();
         this.element.focus();
       });
-      this.dispatchEventToListeners(SidebarEvents.ITEM_SELECTED, {id: nextItemId, isMouseEvent: false, key});
     }
   }
-
-  set selectedId(id: string) {
-    this.#selectedId = id;
-    this.requestUpdate();
-  }
-}
-
-export const enum SidebarEvents {
-  ITEM_SELECTED = 'ItemSelected',
-  RESET = 'Reset',
-}
-
-export interface ItemSelectedEvent {
-  id: string;
-  isMouseEvent: boolean;
-  key: string|undefined;
-}
-
-export interface EventTypes {
-  [SidebarEvents.ITEM_SELECTED]: ItemSelectedEvent;
-  [SidebarEvents.RESET]: void;
 }

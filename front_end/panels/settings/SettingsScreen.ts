@@ -240,27 +240,21 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
   }
 }
 
-abstract class SettingsTab extends UI.Widget.VBox {
-  containerElement: HTMLElement;
-  constructor(id?: string) {
-    super();
-    this.element.classList.add('settings-tab-container');
-    if (id) {
-      this.element.id = id;
-    }
-    this.containerElement =
-        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-  }
-
-  abstract highlightObject(_object: Object): void;
+interface SettingsTab {
+  highlightObject(object: Object): void;
 }
 
-export class GenericSettingsTab extends SettingsTab {
+export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   private readonly syncSection = new PanelComponents.SyncSection.SyncSection();
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
+  private readonly containerElement: HTMLElement;
 
   constructor() {
-    super('preferences-tab-content');
+    super();
+    this.element.classList.add('settings-tab-container');
+    this.element.id = 'preferences-tab-content';
+    this.containerElement =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
     this.containerElement.classList.add('settings-multicolumn-card-container');
@@ -394,13 +388,18 @@ export class GenericSettingsTab extends SettingsTab {
   }
 }
 
-export class ExperimentsSettingsTab extends SettingsTab {
+export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTab {
   #experimentsSection: Cards.Card.Card|undefined;
   #unstableExperimentsSection: Cards.Card.Card|undefined;
   private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
+  private readonly containerElement: HTMLElement;
 
   constructor() {
-    super('experiments-tab-content');
+    super();
+    this.element.classList.add('settings-tab-container');
+    this.element.id = 'experiments-tab-content';
+    this.containerElement =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
     this.containerElement.classList.add('settings-card-container');
     this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
 
@@ -603,7 +602,7 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         await SettingsScreen.showSettingsScreen({name: id});
         const widget = await view.widget();
-        if (widget instanceof SettingsTab) {
+        if ('highlightObject' in widget && typeof widget.highlightObject === 'function') {
           widget.highlightObject(object);
         }
         return;

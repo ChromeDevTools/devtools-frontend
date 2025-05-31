@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/markdown_view/markdown_view.js';
+
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Marked from '../../third_party/marked/marked.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import type * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -97,7 +98,11 @@ export class ReleaseNoteView extends UI.Panel.Panel {
               })}
             </div>
             ${markdownContent.map((markdown: Marked.Marked.Token[]) => {
-              return html`<div class="feature"><devtools-markdown-view slot="content" .data=${{tokens: markdown} as MarkdownView.MarkdownView.MarkdownViewData}></devtools-markdown-view></div>`;
+              return html`
+                  <div class="feature">
+                    <devtools-markdown-view slot="content" .data=${{tokens: markdown}}>
+                    </devtools-markdown-view>
+                  </div>`;
             })}
           </div>
         </div>

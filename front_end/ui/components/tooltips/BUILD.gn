@@ -16,6 +16,7 @@ devtools_module("tooltip") {
   sources = [ "Tooltip.ts" ]
 
   deps = [
+    "../../../services/window_bounds:bundle",
     "../../../ui/visual_logging:bundle",
     "../../lit:bundle",
   ]

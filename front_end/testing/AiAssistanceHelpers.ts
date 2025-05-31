@@ -18,6 +18,7 @@ import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
 import * as UI from '../ui/legacy/legacy.js';
 
 import {findMenuItemWithLabel} from './ContextMenuHelpers.js';
+import {renderElementIntoDOM} from './DOMHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
@@ -201,8 +202,9 @@ export async function createAiAssistancePanel(options?: {
   });
   panels.push(panel);
 
-  panel.markAsRoot();
-  panel.show(document.body);
+  // In many of the tests we create other panels to allow the right contexts to
+  // be set for the AI Assistance panel.
+  renderElementIntoDOM(panel, {allowMultipleChildren: true});
   await view.nextInput;
 
   const stubAidaCheckAccessPreconditions = (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => {
@@ -255,7 +257,7 @@ export async function createPatchWidget(options?: {
   patchWidgets.push(widget);
 
   widget.markAsRoot();
-  widget.show(document.body);
+  renderElementIntoDOM(widget);
   await view.nextInput;
 
   return {

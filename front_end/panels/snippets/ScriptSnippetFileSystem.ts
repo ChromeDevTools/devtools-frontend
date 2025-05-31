@@ -92,7 +92,7 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
   override async setFileContent(path: Platform.DevToolsPath.EncodedPathString, content: string, _isBase64: boolean):
       Promise<boolean> {
     const name = unescapeSnippetName(Common.ParsedURL.ParsedURL.substring(path, 1));
-    const snippets: Snippet[] = this.snippetsSetting.get();
+    const snippets = this.snippetsSetting.get();
     const snippet = snippets.find(snippet => snippet.name === name);
     if (snippet) {
       snippet.content = content;

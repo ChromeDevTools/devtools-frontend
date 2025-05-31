@@ -7,6 +7,7 @@ import '../../ui/components/cards/cards.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -47,6 +48,10 @@ const UIStrings = {
    *@description Label for text input for the longitude of a GPS position.
    */
   longitude: 'Longitude',
+  /**
+   *@description Label for text input for the accuracy of a GPS position.
+   */
+  accuracy: 'Accuracy',
   /**
    *@description Error message in the Locations settings pane that declares the location name input must not be empty
    */
@@ -92,6 +97,15 @@ const UIStrings = {
    *@description Error message in the Locations settings pane that declares locale input invalid
    */
   localeMustContainAlphabetic: 'Locale must contain alphabetic characters',
+  /**
+   *@description Error message in the Locations settings pane that declares that the value for the accuracy input must be a number
+   */
+  accuracyMustBeANumber: 'Accuracy must be a number',
+  /**
+   *@description Error message in the Locations settings pane that declares the minimum value for the accuracy input
+   *@example {0} PH1
+   */
+  accuracyMustBeGreaterThanOrEqual: 'Accuracy must be greater than or equal to {PH1}',
   /**
    *@description Text of add locations button in Locations Settings Tab of the Device Toolbar
    */
@@ -182,7 +196,14 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   }
 
   private addButtonClicked(): void {
-    this.list.addNewItem(this.customSetting.get().length, {title: '', lat: 0, long: 0, timezoneId: '', locale: ''});
+    this.list.addNewItem(this.customSetting.get().length, {
+      title: '',
+      lat: 0,
+      long: 0,
+      timezoneId: '',
+      locale: '',
+      accuracy: SDK.EmulationModel.Location.DEFAULT_ACCURACY
+    });
   }
 
   renderItem(location: LocationDescription, _editable: boolean): Element {
@@ -210,6 +231,9 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     const locale = element.createChild('div', 'locations-list-text');
     locale.textContent = location.locale;
     locale.role = 'cell';
+    element.createChild('div', 'locations-list-separator');
+    element.createChild('div', 'locations-list-text').textContent =
+        String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY);
     return element;
   }
 
@@ -229,6 +253,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     location.timezoneId = timezoneId;
     const locale = editor.control('locale').value.trim();
     location.locale = locale;
+    const accuracy = editor.control('accuracy').value.trim();
+    location.accuracy = accuracy ? parseFloat(accuracy) : SDK.EmulationModel.Location.DEFAULT_ACCURACY;
 
     const list = this.customSetting.get();
     if (isNew) {
@@ -244,6 +270,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     editor.control('long').value = String(location.long);
     editor.control('timezone-id').value = location.timezoneId;
     editor.control('locale').value = location.locale;
+    editor.control('accuracy').value = String(location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY);
     return editor;
   }
 
@@ -267,6 +294,8 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.timezoneId);
     titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
     titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.locale);
+    titles.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+    titles.createChild('div', 'locations-list-text').textContent = i18nString(UIStrings.accuracy);
 
     const fields = content.createChild('div', 'locations-edit-row');
     fields.createChild('div', 'locations-list-text locations-list-title locations-input-container')
@@ -287,6 +316,10 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
     cell = fields.createChild('div', 'locations-list-text locations-input-container');
     cell.appendChild(editor.createInput('locale', 'text', i18nString(UIStrings.locale), localeValidator));
+    fields.createChild('div', 'locations-list-separator locations-list-separator-invisible');
+
+    cell = fields.createChild('div', 'locations-list-text locations-input-container');
+    cell.appendChild(editor.createInput('accuracy', 'text', i18nString(UIStrings.accuracy), accuracyValidator));
 
     return editor;
 
@@ -392,6 +425,29 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
       const errorMessage = i18nString(UIStrings.localeMustContainAlphabetic);
       return {valid: false, errorMessage};
     }
+
+    function accuracyValidator(
+        _item: LocationDescription, _index: number, input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult {
+      const minAccuracy = 0;
+      const value = input.value.trim();
+      const parsedValue = Number(value);
+
+      if (!value) {
+        return {valid: true, errorMessage: undefined};
+      }
+
+      let errorMessage;
+      if (Number.isNaN(parsedValue)) {
+        errorMessage = i18nString(UIStrings.accuracyMustBeANumber);
+      } else if (parseFloat(value) < minAccuracy) {
+        errorMessage = i18nString(UIStrings.accuracyMustBeGreaterThanOrEqual, {PH1: minAccuracy});
+      }
+
+      if (errorMessage) {
+        return {valid: false, errorMessage};
+      }
+      return {valid: true, errorMessage: undefined};
+    }
   }
 }
 export interface LocationDescription {
@@ -400,4 +456,5 @@ export interface LocationDescription {
   long: number;
   timezoneId: string;
   locale: string;
+  accuracy?: number;
 }

@@ -4,7 +4,9 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import {
+  assertScreenshot,
   dispatchClickEvent,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
@@ -14,6 +16,11 @@ import * as Explain from '../explain.js';
 
 describeWithEnvironment('ConsoleInsight', () => {
   let component: Explain.ConsoleInsight|undefined;
+
+  const containerCss = `
+      box-sizing: border-box;
+      background-color: aqua;
+    `;
 
   afterEach(() => {
     component?.remove();
@@ -121,7 +128,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
       disabledCondition: () => {
-        return {disabled: true, reasons: ['disabled for test']};
+        return {disabled: true, reasons: ['disabled for test' as Platform.UIString.LocalizedString]};
       },
     });
     component = new Explain.ConsoleInsight(
@@ -578,5 +585,353 @@ after
     assert.strictEqual(xLinks[2].getAttribute('href'), 'https://www.training-and-factuality.test/');
     assert.strictEqual(xLinks[3].textContent?.trim(), 'https://www.factuality.test/');
     assert.strictEqual(xLinks[3].getAttribute('href'), 'https://www.factuality.test/');
+  });
+
+  function animatedPromise(component: Explain.ConsoleInsight): Promise<unknown> {
+    component.disableAnimations = true;
+
+    // Unfortunately, disabling animations is not enough, as some animations are
+    // not controlled by that flag.
+    const animated = new Promise(resolve => {
+      component.shadowRoot!.querySelector('.wrapper')!.addEventListener('animationend', resolve, {
+        once: true,
+      });
+    });
+
+    return animated;
+  }
+
+  it('renders the opt-in teaser', async () => {
+    Common.Settings.settingForTest('console-insights-enabled').set(false);
+
+    const component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    const container = document.createElement('div');
+    container.style.cssText = containerCss;
+    component.style.width = '574px';
+    component.style.height = '64px';
+    container.appendChild(component);
+    const animated = animatedPromise(component);
+    renderElementIntoDOM(container);
+    await animated;
+
+    await drainMicroTasks();
+    await assertScreenshot('explain/console_insight_optin.png');
+  });
+
+  it('renders the consent reminder', async () => {
+    function getPromptBuilderForConsentReminder() {
+      return {
+        getSearchQuery() {
+          return '';
+        },
+        async buildPrompt() {
+          return {
+            prompt: '',
+            isPageReloadRecommended: false,
+            sources: [
+              {
+                type: Explain.SourceType.MESSAGE,
+                value: 'Something went wrong\n\nSomething went wrong',
+              },
+              {
+                type: Explain.SourceType.NETWORK_REQUEST,
+                value: `Request: https://example.com/data.html
+
+Request headers:
+:authority: example.com
+:method: GET
+:path: https://example.com/data.json
+:scheme: https
+accept: */*
+accept-encoding: gzip, deflate, br
+accept-language: en-DE,en;q=0.9,de-DE;q=0.8,de;q=0.7,en-US;q=0.6
+referer: https://example.com/demo.html
+sec-ch-ua: "Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"
+sec-ch-ua-arch: "arm"
+sec-ch-ua-bitness: "64"
+sec-ch-ua-full-version: "121.0.6116.0"
+sec-ch-ua-full-version-list: "Not A(Brand";v="99.0.0.0", "Google Chrome";v="121.0.6116.0", "Chromium";v="121.0.6116.0"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-model: ""
+sec-ch-ua-platform: "macOS"
+sec-ch-ua-platform-version: "14.1.0"
+sec-ch-ua-wow64: ?0
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: same-origin
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+
+Response headers:
+accept-ch: Sec-CH-UA, Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version, Sec-CH-UA-WoW64
+content-length: 1646
+content-type: text/html; charset=UTF-8
+cross-origin-opener-policy-report-only: same-origin; report-to="gfe-static-content-corp"
+date: Fri, 10 Nov 2023 13:46:47 GMT
+permissions-policy: ch-ua=*, ch-ua-arch=*, ch-ua-bitness=*, ch-ua-full-version=*, ch-ua-full-version-list=*, ch-ua-mobile=*, ch-ua-model=*, ch-ua-platform=*, ch-ua-platform-version=*, ch-ua-wow64=*
+server: sffe
+strict-transport-security: max-age=31536000; includeSubdomains
+vary: Origin
+
+Response status: 404`,
+              },
+            ]
+          };
+        }
+      };
+    }
+
+    function getAidaClientForConsentReminder() {
+      return {
+        async *
+            fetch() {
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              yield {
+                explanation: `Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+`,
+                metadata: {},
+                completed: true,
+              };
+            },
+        registerClientEvent: () => Promise.resolve({}),
+      };
+    }
+
+    Common.Settings.Settings.instance().createLocalSetting('console-insights-onboarding-finished', false).set(false);
+
+    const component = new Explain.ConsoleInsight(
+        getPromptBuilderForConsentReminder(), getAidaClientForConsentReminder(),
+        Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    const container = document.createElement('div');
+    container.style.cssText = containerCss;
+    component.style.width = '574px';
+    component.style.height = '271px';
+    container.appendChild(component);
+    const animated = animatedPromise(component);
+    renderElementIntoDOM(container);
+    await animated;
+
+    await drainMicroTasks();
+    await assertScreenshot('explain/console_insight_reminder.png');
+  });
+
+  it('renders the insight', async () => {
+    function getPromptBuilderForInsight() {
+      return {
+        getSearchQuery() {
+          return '';
+        },
+        async buildPrompt() {
+          return {
+            prompt: '',
+            isPageReloadRecommended: false,
+            sources: [
+              {
+                type: Explain.SourceType.MESSAGE,
+                value: 'Something went wrong\n\nSomething went wrong',
+              },
+              {
+                type: Explain.SourceType.STACKTRACE,
+                value: 'Stacktrace line1\nStacketrace line2',
+              },
+              {
+                type: Explain.SourceType.RELATED_CODE,
+                value: 'RelatedCode',
+              },
+              {
+                type: Explain.SourceType.NETWORK_REQUEST,
+                value: `Request: https://example.com/data.html
+
+Request headers:
+:authority: example.com
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+
+Response headers:
+Response status: 404`,
+              },
+            ],
+          };
+        },
+      };
+    }
+
+    function getAidaClientForInsight() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: `## Result
+
+Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+
+\`\`\`
+<!DOCTYPE html>
+<div>Hello world</div>
+<script>
+  console.log('Hello World');
+</script>
+\`\`\`
+
+Links: [https://example.com](https://example.com)
+Images: ![https://example.com](https://example.com)
+`,
+                metadata: {},
+                completed: true,
+              };
+            },
+        registerClientEvent: () => Promise.resolve({}),
+      };
+    }
+
+    const component = new Explain.ConsoleInsight(
+        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    const container = document.createElement('div');
+    container.style.cssText = containerCss;
+    component.style.width = '574px';
+    component.style.height = '530px';
+    container.appendChild(component);
+    const animated = animatedPromise(component);
+    renderElementIntoDOM(container);
+    await animated;
+
+    await drainMicroTasks();
+    await assertScreenshot('explain/console_insight.png');
+  });
+
+  it('renders insights with references', async () => {
+    function getPromptBuilderForInsight() {
+      return {
+        getSearchQuery() {
+          return '';
+        },
+        async buildPrompt() {
+          return {
+            prompt: '',
+            isPageReloadRecommended: false,
+            sources: [
+              {
+                type: Explain.SourceType.MESSAGE,
+                value: 'Something went wrong\n\nSomething went wrong',
+              },
+              {
+                type: Explain.SourceType.STACKTRACE,
+                value: 'Stacktrace line1\nStacketrace line2',
+              },
+              {
+                type: Explain.SourceType.RELATED_CODE,
+                value: 'RelatedCode',
+              },
+              {
+                type: Explain.SourceType.NETWORK_REQUEST,
+                value: `Request: https://example.com/data.html
+
+Request headers:
+:authority: example.com
+user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36
+
+Response headers:
+Response status: 404`,
+              },
+            ],
+          };
+        },
+      };
+    }
+
+    function getAidaClientForInsight() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: `## Result
+
+Here is a text which contains both direct and indirect citations.
+
+An indirect citation is a link to a reference which applies to the whole response.
+
+A direct citation is a link to a reference, but it only applies to a specific part of the response. Direct citations are numbered and are shown as a number within square brackets in the response text.
+`,
+                metadata: {
+                  attributionMetadata: {
+                    attributionAction: Host.AidaClient.RecitationAction.CITE,
+                    citations: [
+                      {
+                        startIndex: 20,
+                        endIndex: 50,
+                        uri: 'https://www.direct-citation.dev',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                      {
+                        startIndex: 170,
+                        endIndex: 176,
+                        uri: 'https://www.another-direct-citation.dev',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                    ],
+                  },
+                  factualityMetadata: {
+                    facts: [
+                      {
+                        sourceUri: 'https://www.indirect-citation.dev',
+                      },
+                      {
+                        sourceUri: 'https://www.the-whole-world.dev',
+                      },
+                      {
+                        sourceUri: 'https://www.even-more-content.dev',
+                      },
+                    ]
+                  }
+                },
+                completed: true,
+              };
+            },
+        registerClientEvent: () => Promise.resolve({}),
+      };
+    }
+
+    const component = new Explain.ConsoleInsight(
+        getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+
+    const container = document.createElement('div');
+    container.style.cssText = containerCss;
+    component.style.width = '576px';
+    component.style.height = '463px';
+    container.appendChild(component);
+    const animated = animatedPromise(component);
+    renderElementIntoDOM(container);
+    await animated;
+
+    const detailsElement = component.shadowRoot!.querySelector('details.references');
+    const transitioned = new Promise<void>(resolve => {
+      detailsElement?.addEventListener('transitionend', () => {
+        resolve();
+      });
+    });
+    detailsElement?.querySelector('summary')?.click();
+    await transitioned;
+
+    await assertScreenshot('explain/console_insight_references.png');
   });
 });

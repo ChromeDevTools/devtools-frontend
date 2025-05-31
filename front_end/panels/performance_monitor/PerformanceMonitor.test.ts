@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -25,8 +26,7 @@ describeWithMockConnection('PerformanceMonitor', () => {
   it('updates metrics', async () => {
     const getMetrics = sinon.stub(target.performanceAgent(), 'invoke_getMetrics');
     performanceMonitor = new PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl(0);
-    performanceMonitor.markAsRoot();
-    performanceMonitor.show(document.body);
+    renderElementIntoDOM(performanceMonitor);
     assert.isFalse(
         [...performanceMonitor.contentElement.querySelectorAll('.perfmon-indicator-value')].some(e => e.textContent));
     await expectCall(getMetrics, {fakeFn: () => Promise.resolve({metrics: [{name: 'LayoutCount', value: 42}]})});

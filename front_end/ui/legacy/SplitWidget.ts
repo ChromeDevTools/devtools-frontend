@@ -933,6 +933,9 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
     const widget = new SplitWidget(
         vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
         /* constraintsInDip=*/ false, this);
+    if (this.getAttribute('sidebar-initial-size') === 'minimized') {
+      widget.setSidebarMinimized(true);
+    }
     if (autoAdjustOrientation) {
       widget.setAutoAdjustOrientation(true);
     }

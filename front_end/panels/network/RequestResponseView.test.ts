@@ -6,7 +6,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {raf} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -27,19 +27,19 @@ describeWithEnvironment('RequestResponseView', () => {
     request.mimeType = 'application/wasm';
     request.finished = true;
 
-    const mockedSourceView = new UI.EmptyWidget.EmptyWidget('<disassembled WASM>', '');
-    const viewStub = sinon.stub(SourceFrame.ResourceSourceFrame.ResourceSourceFrame, 'createSearchableView')
-                         .returns(mockedSourceView);
-
+    // This is required, as it otherwise tries to create and wait for a worker to fetch and disassemble wasm
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sinon.stub(SourceFrame.ResourceSourceFrame.ResourceSourceFrame.prototype as any, 'setContentDataOrError')
+        .callsFake(() => {});
     const component = new Network.RequestResponseView.RequestResponseView(request);
-    const showPreviewSpy = sinon.spy(component, 'showPreview');
-    component.markAsRoot();
-    component.show(document.body);
-    const widget = await showPreviewSpy.returnValues[0];
+    assert.deepEqual(component.getMimeTypeForDisplay(), 'application/wasm');
+    renderElementIntoDOM(component);
+    await component.updateComplete;
 
-    sinon.assert.calledOnceWithExactly(viewStub, request, 'application/wasm');
-    assert.strictEqual(widget, mockedSourceView);
-
+    const widget = component.contentElement.querySelector('devtools-widget') as
+            UI.Widget.WidgetElement<SourceFrame.ResourceSourceFrame.SearchableContainer>|
+        null;
+    assert.instanceOf(widget?.getWidget(), SourceFrame.ResourceSourceFrame.SearchableContainer);
     component.detach();
   });
 
@@ -55,14 +55,40 @@ describeWithEnvironment('RequestResponseView', () => {
     request.finished = true;
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
-    const showPreviewSpy = sinon.spy(component, 'showPreview');
-    component.markAsRoot();
-    component.show(document.body);
-    const widget = await showPreviewSpy.returnValues[0];
+    assert.deepEqual(component.getMimeTypeForDisplay(), 'application/octet-stream');
+    renderElementIntoDOM(component);
 
-    assert.instanceOf(widget, Network.BinaryResourceView.BinaryResourceView);
+    await component.updateComplete;
+
+    const widget = component.contentElement.querySelector('devtools-widget') as
+            UI.Widget.WidgetElement<Network.BinaryResourceView.BinaryResourceView>|
+        null;
+    assert.instanceOf(widget?.getWidget(), Network.BinaryResourceView.BinaryResourceView);
 
     await raf();
     component.detach();
   });
+
+  it('renders a view even if mime type is undefined', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/image.png`, urlString``,
+        null, null, null);
+    request.finished = true;
+
+    const component = new Network.RequestResponseView.RequestResponseView(request);
+    assert.isUndefined(component.getMimeTypeForDisplay());
+
+    renderElementIntoDOM(component);
+    await component.updateComplete;
+
+    const widget = component.contentElement.querySelector('devtools-widget') as
+            UI.Widget.WidgetElement<UI.EmptyWidget.EmptyWidget>|
+        null;
+    assert.instanceOf(widget?.getWidget(), UI.EmptyWidget.EmptyWidget);
+    assert.deepEqual(
+        widget.getWidget()?.contentElement.textContent, 'Failed to load response dataNo network manager for request');
+
+    component.detach();
+  });
+
 });

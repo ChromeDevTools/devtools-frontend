@@ -9,10 +9,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
-    "cssOverview.css",
     "cssOverviewCompletedView.css",
     "cssOverviewProcessingView.css",
     "cssOverviewSidebarPanel.css",
+    "cssOverviewStartView.css",
   ]
 }
 
@@ -21,11 +21,11 @@ import("../visibility.gni")
 devtools_module("css_overview") {
   sources = [
     "CSSOverviewCompletedView.ts",
-    "CSSOverviewController.ts",
     "CSSOverviewModel.ts",
     "CSSOverviewPanel.ts",
     "CSSOverviewProcessingView.ts",
     "CSSOverviewSidebarPanel.ts",
+    "CSSOverviewStartView.ts",
     "CSSOverviewUnusedDeclarations.ts",
   ]
 
@@ -38,12 +38,16 @@ devtools_module("css_overview") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../../models/text_utils:bundle",
+    "../../ui/components/buttons:bundle",
+    "../../ui/components/helpers:bundle",
     "../../ui/components/icon_button:bundle",
+    "../../ui/components/panel_feedback:bundle",
+    "../../ui/components/panel_introduction_steps:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/utils:bundle",
-    "./components:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 

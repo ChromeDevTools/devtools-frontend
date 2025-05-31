@@ -13,6 +13,7 @@ export * from './agents/PerformanceInsightsAgent.js';
 export * from './agents/StylingAgent.js';
 export * from './agents/PatchAgent.js';
 export * from './AiHistoryStorage.js';
+export * from './AiUtils.js';
 export * from './ChangeManager.js';
 export * from './EvaluateAction.js';
 export * from './ExtensionScope.js';

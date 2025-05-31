@@ -233,12 +233,12 @@ export class CSSAngle extends HTMLElement {
             .data=${{
               angle: this.angle,
             }}>
-          </devtools-css-angle-swatch><slot></slot></div>
+          </devtools-css-angle-swatch>
+          <slot></slot>
+        </div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
-    `, this.shadow, {
-      host: this,
-    });
+    `, this.shadow, {host: this});
     // clang-format on
   }
 
@@ -251,19 +251,18 @@ export class CSSAngle extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-    <devtools-css-angle-editor
-      class="popover popover-css-angle"
-      style=${styleMap({top: this.popoverStyleTop, left: this.popoverStyleLeft})}
-      .data=${{
-        angle: this.angle,
-        onAngleUpdate: (angle: Angle):void => {
-          this.updateAngle(angle);
-        },
-        background: contextualBackground,
-      }}
-    ></devtools-css-angle-editor>
-    `;
-        // clang-format on
+      <devtools-css-angle-editor
+        class="popover popover-css-angle"
+        style=${styleMap({top: this.popoverStyleTop, left: this.popoverStyleLeft})}
+        .data=${{
+          angle: this.angle,
+          onAngleUpdate: (angle: Angle):void => {
+            this.updateAngle(angle);
+          },
+          background: contextualBackground,
+        }}>
+      </devtools-css-angle-editor>`;
+    // clang-format on
   }
 }
 

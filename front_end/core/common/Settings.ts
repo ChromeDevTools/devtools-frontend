@@ -422,7 +422,7 @@ export class Setting<V> {
     return this.#disabled || false;
   }
 
-  disabledReasons(): string[] {
+  disabledReasons(): Platform.UIString.LocalizedString[] {
     if (this.#registration?.disabledCondition) {
       const result = this.#registration.disabledCondition(Root.Runtime.hostConfig);
       if (result.disabled) {

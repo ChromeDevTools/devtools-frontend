@@ -199,9 +199,16 @@ export interface KeyDownEvent {
 }
 
 export interface SettingAccessEvent {
-  name: string;
-  numericValue?: number;
-  stringValue?: string;
+  name: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  numeric_value?: number;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  string_value?: number;
+}
+
+export interface FunctionCallEvent {
+  name: number;
+  context?: number;
 }
 
 // While `EventDescriptors` are used to dynamically dispatch host binding events,
@@ -394,6 +401,7 @@ export interface InspectorFrontendHostAPI {
   recordChange(event: ChangeEvent): void;
   recordKeyDown(event: KeyDownEvent): void;
   recordSettingAccess(event: SettingAccessEvent): void;
+  recordFunctionCall(event: FunctionCallEvent): void;
 }
 
 export interface AcceleratorDescriptor {
@@ -465,7 +473,6 @@ export const enum EnumeratedHistogram {
   // LINT.IfChange(EnumeratedHistogram)
   ActionTaken = 'DevTools.ActionTaken',
   PanelShown = 'DevTools.PanelShown',
-  SidebarPaneShown = 'DevTools.SidebarPaneShown',
   KeyboardShortcutFired = 'DevTools.KeyboardShortcutFired',
   IssueCreated = 'DevTools.IssueCreated',
   IssuesPanelIssueExpanded = 'DevTools.IssuesPanelIssueExpanded',

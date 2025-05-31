@@ -47,7 +47,6 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
     this.#workspace = workspace;
 
-    this.#networkUISourceCodeForEncodedPath;
     this.#interceptionHandlerBound = this.interceptionHandler.bind(this);
 
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, event => {
@@ -367,7 +366,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   isActiveHeaderOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    // If this overriden file is actively in use at the moment.
+    // If this overridden file is actively in use at the moment.
     if (!this.#enabledSetting.get()) {
       return false;
     }

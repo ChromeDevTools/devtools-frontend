@@ -1,26 +1,50 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
-import * as CSSOverviewComponents from './components/components.js';
-import cssOverviewStyles from './cssOverview.css.js';
-import {type ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
-import {Events, type OverviewController} from './CSSOverviewController.js';
+import {type ContrastIssue, CSSOverviewCompletedView, type OverviewData} from './CSSOverviewCompletedView.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
+import {CSSOverviewStartView} from './CSSOverviewStartView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
+const {widgetConfig} = UI.Widget;
+
+interface ViewInput {
+  state: 'start'|'processing'|'completed';
+  onStartCapture: () => void;
+  onCancel: () => void;
+  onReset: () => void;
+  overviewData: OverviewData;
+  target?: SDK.Target.Target;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(input.state === 'start' ?  html`
+      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewStartView, {onStartCapture: input.onStartCapture})}></devtools-widget>`
+    : input.state === 'processing' ?  html`
+      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewProcessingView, {onCancel: input.onCancel})}></devtools-widget>`
+    : html`
+      <devtools-widget .widgetConfig=${widgetConfig(CSSOverviewCompletedView, {
+      onReset: input.onReset,
+      overviewData: input.overviewData,
+      target: input.target,
+    })}></devtools-widget>`,
+    target, {host: input});
+  // clang-format on
+};
+
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {
-  readonly #controller: OverviewController;
-  readonly #startView: CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView;
-  readonly #processingView: CSSOverviewProcessingView;
-  readonly #completedView: CSSOverviewCompletedView;
+  #currentUrl: string;
   #model?: CSSOverviewModel;
   #backgroundColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
   #textColors!: Map<string, Set<Protocol.DOM.BackendNodeId>>;
@@ -32,29 +56,31 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #elementCount!: number;
   #globalStyleStats!: GlobalStyleStats;
   #textColorContrastIssues!: Map<string, ContrastIssue[]>;
+  #state!: 'start'|'processing'|'completed';
+  #view: View;
 
-  constructor(controller: OverviewController) {
+  constructor(view = DEFAULT_VIEW) {
     super('css-overview');
-    this.registerRequiredCSS(cssOverviewStyles);
+    this.#currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.#checkUrlAndResetIfChanged, this);
 
-    this.element.classList.add('css-overview-panel');
-
-    this.#controller = controller;
-    this.#startView = new CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView();
-    this.#startView.addEventListener(
-        'overviewstartrequested', () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_START));
-    this.#processingView = new CSSOverviewProcessingView(this.#controller);
-    this.#completedView = new CSSOverviewCompletedView(this.#controller);
-
+    this.#view = view;
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
+    this.#reset();
+  }
 
-    this.#controller.addEventListener(Events.REQUEST_OVERVIEW_START, _event => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
-      void this.#startOverview();
-    }, this);
-    this.#controller.addEventListener(Events.OVERVIEW_COMPLETED, this.#overviewCompleted, this);
-    this.#controller.addEventListener(Events.RESET, this.#reset, this);
+  #onStartCapture(): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
+    void this.#startOverview();
+  }
 
+  #checkUrlAndResetIfChanged(): void {
+    if (this.#currentUrl === SDK.TargetManager.TargetManager.instance().inspectedURL()) {
+      return;
+    }
+
+    this.#currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
     this.#reset();
   }
 
@@ -62,9 +88,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
-    this.#completedView.initializeModels(target);
-    const model = target.model(CSSOverviewModel);
-    this.#model = (model as CSSOverviewModel);
+    this.#model = target.model(CSSOverviewModel) ?? undefined;
   }
 
   targetRemoved(): void {
@@ -107,37 +131,41 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   }
 
   #renderInitialView(): void {
-    this.#processingView.hideWidget();
-    this.#completedView.hideWidget();
-
-    this.contentElement.append(this.#startView);
-    this.#startView.show();
+    this.#state = 'start';
+    this.performUpdate();
   }
 
   #renderOverviewStartedView(): void {
-    this.#startView.hide();
-    this.#completedView.hideWidget();
-
-    this.#processingView.show(this.contentElement);
+    this.#state = 'processing';
+    this.performUpdate();
   }
 
   #renderOverviewCompletedView(): void {
-    this.#startView.hide();
-    this.#processingView.hideWidget();
+    this.#state = 'completed';
+    this.performUpdate();
+  }
 
-    this.#completedView.show(this.contentElement);
-    this.#completedView.setOverviewData({
-      backgroundColors: this.#backgroundColors,
-      textColors: this.#textColors,
-      textColorContrastIssues: this.#textColorContrastIssues,
-      fillColors: this.#fillColors,
-      borderColors: this.#borderColors,
-      globalStyleStats: this.#globalStyleStats,
-      fontInfo: this.#fontInfo,
-      elementCount: this.#elementCount,
-      mediaQueries: this.#mediaQueries,
-      unusedDeclarations: this.#unusedDeclarations,
-    });
+  override performUpdate(): void {
+    const viewInput = {
+      state: this.#state,
+      onStartCapture: this.#onStartCapture.bind(this),
+      onCancel: this.#reset.bind(this),
+      onReset: this.#reset.bind(this),
+      target: this.#model?.target(),
+      overviewData: {
+        backgroundColors: this.#backgroundColors,
+        textColors: this.#textColors,
+        textColorContrastIssues: this.#textColorContrastIssues,
+        fillColors: this.#fillColors,
+        borderColors: this.#borderColors,
+        globalStyleStats: this.#globalStyleStats,
+        fontInfo: this.#fontInfo,
+        elementCount: this.#elementCount,
+        mediaQueries: this.#mediaQueries,
+        unusedDeclarations: this.#unusedDeclarations,
+      },
+    };
+    this.#view(viewInput, {}, this.contentElement);
   }
 
   async #startOverview(): Promise<void> {
@@ -190,10 +218,6 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
       this.#unusedDeclarations = unusedDeclarations;
     }
 
-    this.#controller.dispatchEventToListeners(Events.OVERVIEW_COMPLETED);
-  }
-
-  #overviewCompleted(): void {
     this.#renderOverviewCompletedView();
   }
 }

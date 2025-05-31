@@ -307,20 +307,21 @@ export class ElementsBreadcrumbs extends HTMLElement {
                   data-node-id=${crumb.node.id}
                   data-crumb="true"
                 >
-                  <a href="#"
-                    draggable=false
-                    class="crumb-link"
+                  <a href="#" draggable=false class="crumb-link"
                     jslog=${VisualLogging.item().track({click:true})}
                     @click=${this.#onCrumbClick(crumb.node)}
                     @mousemove=${this.#onCrumbMouseMove(crumb.node)}
                     @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
                     @focus=${this.#onCrumbFocus(crumb.node)}
                     @blur=${this.#onCrumbBlur(crumb.node)}
-                  ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
-                    nodeTitle: crumb.title.main,
-                    nodeId: crumb.title.extras.id,
-                    nodeClasses: crumb.title.extras.classes,
-                  }}></devtools-node-text></a>
+                  >
+                    <devtools-node-text data-node-title=${crumb.title.main} .data=${{
+                      nodeTitle: crumb.title.main,
+                      nodeId: crumb.title.extras.id,
+                      nodeClasses: crumb.title.extras.classes,
+                    }}>
+                    </devtools-node-text>
+                  </a>
                 </li>`;
             })}
           </ul>

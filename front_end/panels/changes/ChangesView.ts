@@ -79,7 +79,6 @@ export class ChangesView extends UI.Widget.VBox {
   readonly changesSidebar: ChangesSidebar;
   private selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
   #selectedSourceCodeFormattedMapping?: Formatter.ScriptFormatter.FormatterSourceMapping;
-  #learnMoreLinkElement?: HTMLElement;
   private readonly diffContainer: HTMLElement;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats?: UI.Toolbar.ToolbarText;
@@ -281,15 +280,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.emptyWidget.header = header;
     this.emptyWidget.text = text;
 
-    if (link && !this.#learnMoreLinkElement) {
-      this.#learnMoreLinkElement = this.emptyWidget.appendLink(link);
-    } else if (link && this.#learnMoreLinkElement) {
-      this.#learnMoreLinkElement.setAttribute('href', link);
-      this.#learnMoreLinkElement.setAttribute('title', link);
-    } else if (!link && this.#learnMoreLinkElement) {
-      this.#learnMoreLinkElement.remove();
-      this.#learnMoreLinkElement = undefined;
-    }
+    this.emptyWidget.link = link;
     this.emptyWidget.showWidget();
   }
 

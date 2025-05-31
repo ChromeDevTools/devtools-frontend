@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
@@ -112,8 +112,7 @@ describeWithMockConnection('CoverageView', () => {
   it('can handle back/forward cache navigations', async () => {
     const {startSpy, stopSpy, target} = setupTargetAndModels();
     const view = Coverage.CoverageView.CoverageView.instance();
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     assert.isTrue(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));
@@ -155,8 +154,7 @@ describeWithMockConnection('CoverageView', () => {
   it('can handle prerender activations', async () => {
     const {startSpy, stopSpy} = setupTargetAndModels();
     const view = Coverage.CoverageView.CoverageView.instance();
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     assert.isTrue(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));

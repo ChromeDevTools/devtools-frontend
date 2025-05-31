@@ -357,14 +357,20 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
     // clang-format off
     return html`
-    <devtools-report-section-header>${i18n.i18n.lockedString('Origin trials')}</devtools-report-section-header>
-    <devtools-report-section><span class="report-section">${i18nString(UIStrings.originTrialsExplanation)}
+    <devtools-report-section-header>
+      ${i18n.i18n.lockedString('Origin trials')}
+    </devtools-report-section-header>
+    <devtools-report-section>
+      <span class="report-section">
+        ${i18nString(UIStrings.originTrialsExplanation)}
         <x-link href="https://developer.chrome.com/docs/web-platform/origin-trials/" class="link"
-        jslog=${VisualLogging.link('learn-more.origin-trials').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link></span>
+                jslog=${VisualLogging.link('learn-more.origin-trials').track({click: true})}>
+          ${i18nString(UIStrings.learnMore)}
+        </x-link>
+      </span>
     </devtools-report-section>
     ${this.#originTrialTreeView}
-    <devtools-report-divider></devtools-report-divider>
-    `;
+    <devtools-report-divider></devtools-report-divider>`;
     // clang-format on
   }
 
@@ -579,8 +585,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-key>${i18nString(UIStrings.adStatus)}</devtools-report-key>
       <devtools-report-value class="ad-status-list" jslog=${VisualLogging.section('ad-status')}>
         <devtools-expandable-list .data=${
-          {rows, title: i18nString(UIStrings.adStatus)} as ExpandableList.ExpandableList.ExpandableListData}></devtools-expandable-list></devtools-report-value>
-    `;
+          {rows, title: i18nString(UIStrings.adStatus)} as ExpandableList.ExpandableList.ExpandableListData}>
+        </devtools-expandable-list>
+      </devtools-report-value>`;
     // clang-format on
   }
 
@@ -713,8 +720,14 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
     const result = [];
     for (const directive in parsedDirectives) {
-      result.push(
-          html`<div><span class="bold">${directive}</span>${': ' + parsedDirectives[directive]?.join(', ')}</div>`);
+      // Disabled until https://crbug.com/1079231 is fixed.
+      // clang-format off
+      result.push(html`
+          <div>
+            <span class="bold">${directive}</span>
+            ${': ' + parsedDirectives[directive]?.join(', ')}
+          </div>`);
+      // clang-format on
     }
     return result;
   }
@@ -723,22 +736,21 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <devtools-report-key>${
-        cspInfo.isEnforced ? i18n.i18n.lockedString('Content-Security-Policy') :
-          html`${
-            i18n.i18n.lockedString('Content-Security-Policy-Report-Only')
-          }<devtools-button
-          .iconName=${'help'}
-          class='help-button'
-          .variant=${Buttons.Button.Variant.ICON}
-          .size=${Buttons.Button.Size.SMALL}
-          @click=${()=> {window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only';}}
-          jslog=${VisualLogging.link('learn-more.csp-report-only').track({click: true})}
-          ></devtools-button>`
-        }
+      <devtools-report-key>
+        ${cspInfo.isEnforced ? i18n.i18n.lockedString('Content-Security-Policy') : html`
+          ${i18n.i18n.lockedString('Content-Security-Policy-Report-Only')}
+          <devtools-button
+            .iconName=${'help'}
+            class='help-button'
+            .variant=${Buttons.Button.Variant.ICON}
+            .size=${Buttons.Button.Size.SMALL}
+            @click=${()=> {window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only';}}
+            jslog=${VisualLogging.link('learn-more.csp-report-only').track({click: true})}
+            ></devtools-button>`}
       </devtools-report-key>
       <devtools-report-value>
-        ${cspInfo.source === Protocol.Network.ContentSecurityPolicySource.HTTP ? i18n.i18n.lockedString('HTTP header') : i18n.i18n.lockedString('Meta tag')}
+        ${cspInfo.source === Protocol.Network.ContentSecurityPolicySource.HTTP ?
+          i18n.i18n.lockedString('HTTP header') : i18n.i18n.lockedString('Meta tag')}
         ${this.#renderEffectiveDirectives(cspInfo.effectiveDirectives)}
       </devtools-report-value>
       ${divider ? html`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : Lit.nothing}
@@ -755,8 +767,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         ${i18nString(UIStrings.contentSecurityPolicy)}
       </devtools-report-section-header>
       ${(cspInfos?.length) ? cspInfos.map((cspInfo, index) => this.#renderSingleCSP(cspInfo, index < cspInfos?.length - 1)) : html`
-        <devtools-report-key>${
-          i18n.i18n.lockedString('Content-Security-Policy')}</devtools-report-key>
+        <devtools-report-key>
+          ${i18n.i18n.lockedString('Content-Security-Policy')}
+        </devtools-report-key>
         <devtools-report-value>
           ${i18nString(UIStrings.none)}
         </devtools-report-value>
@@ -770,20 +783,26 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return Lit.nothing;
     }
 
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
     return html`
-      <devtools-report-section-header>${i18nString(UIStrings.apiAvailability)}</devtools-report-section-header>
+      <devtools-report-section-header>
+        ${i18nString(UIStrings.apiAvailability)}
+      </devtools-report-section-header>
       <devtools-report-section>
-        <span class="report-section">${
-        i18nString(
-            UIStrings
-                .availabilityOfCertainApisDepends)}<x-link href="https://web.dev/why-coop-coep/" class="link" jslog=${
-        VisualLogging.link('learn-more.coop-coep').track({click: true})}>${
-        i18nString(UIStrings.learnMore)}</x-link></span>
+        <span class="report-section">
+          ${i18nString(UIStrings.availabilityOfCertainApisDepends)}
+          <x-link
+            href="https://web.dev/why-coop-coep/" class="link"
+            jslog=${VisualLogging.link('learn-more.coop-coep').track({click: true})}>
+            ${i18nString(UIStrings.learnMore)}
+          </x-link>
+        </span>
       </devtools-report-section>
       ${this.#renderSharedArrayBufferAvailability()}
       ${this.#renderMeasureMemoryAvailability()}
-      <devtools-report-divider></devtools-report-divider>
-    `;
+      <devtools-report-divider></devtools-report-divider>`;
+    // clang-format on
   }
 
   #renderSharedArrayBufferAvailability(): Lit.LitTemplate {
@@ -806,16 +825,23 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
               return Lit.nothing;
             case Protocol.Page.CrossOriginIsolatedContextType.NotIsolated:
               if (sabAvailable) {
-                return html`<span class="inline-comment">${
-                    i18nString(UIStrings.willRequireCrossoriginIsolated)}</span>`;
+                // clang-format off
+                return html`
+                  <span class="inline-comment">
+                    ${i18nString(UIStrings.willRequireCrossoriginIsolated)}
+                  </span>`;
+                // clang-format on
               }
               return html`<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
             case Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled:
               if (!sabTransferAvailable) {
-                return html`<span class="inline-comment">${
-                    i18nString(
-                        UIStrings
-                            .transferRequiresCrossoriginIsolatedPermission)} <code>cross-origin-isolated</code></span>`;
+                // clang-format off
+                return html`
+                  <span class="inline-comment">
+                    ${i18nString(UIStrings.transferRequiresCrossoriginIsolatedPermission)}
+                    <code> cross-origin-isolated</code>
+                  </span>`;
+                // clang-format on
               }
               break;
           }

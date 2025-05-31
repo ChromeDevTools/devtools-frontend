@@ -180,6 +180,7 @@ Common.Settings.registerSettingExtension({
       long: 13.404954,
       timezoneId: 'Europe/Berlin',
       locale: 'de-DE',
+      accuracy: 150,
     },
     {
       title: 'London',
@@ -187,6 +188,7 @@ Common.Settings.registerSettingExtension({
       long: -0.127758,
       timezoneId: 'Europe/London',
       locale: 'en-GB',
+      accuracy: 150,
     },
     {
       title: 'Moscow',
@@ -194,6 +196,7 @@ Common.Settings.registerSettingExtension({
       long: 37.6173,
       timezoneId: 'Europe/Moscow',
       locale: 'ru-RU',
+      accuracy: 150,
     },
     {
       title: 'Mountain View',
@@ -201,6 +204,7 @@ Common.Settings.registerSettingExtension({
       long: -122.083851,
       timezoneId: 'America/Los_Angeles',
       locale: 'en-US',
+      accuracy: 150,
     },
     {
       title: 'Mumbai',
@@ -208,6 +212,7 @@ Common.Settings.registerSettingExtension({
       long: 72.877656,
       timezoneId: 'Asia/Kolkata',
       locale: 'mr-IN',
+      accuracy: 150,
     },
     {
       title: 'San Francisco',
@@ -215,6 +220,7 @@ Common.Settings.registerSettingExtension({
       long: -122.419416,
       timezoneId: 'America/Los_Angeles',
       locale: 'en-US',
+      accuracy: 150,
     },
     {
       title: 'Shanghai',
@@ -222,6 +228,7 @@ Common.Settings.registerSettingExtension({
       long: 121.473701,
       timezoneId: 'Asia/Shanghai',
       locale: 'zh-Hans-CN',
+      accuracy: 150,
     },
     {
       title: 'São Paulo',
@@ -229,6 +236,7 @@ Common.Settings.registerSettingExtension({
       long: -46.633309,
       timezoneId: 'America/Sao_Paulo',
       locale: 'pt-BR',
+      accuracy: 150,
     },
     {
       title: 'Tokyo',
@@ -236,6 +244,7 @@ Common.Settings.registerSettingExtension({
       long: 139.691706,
       timezoneId: 'Asia/Tokyo',
       locale: 'ja-JP',
+      accuracy: 150,
     },
   ],
 });

@@ -104,7 +104,7 @@ describe('The Performance panel', function() {
         await setupPerformancePanel(devToolsPage, inspectedPage);
         const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
 
-        await navigateToBottomUpTab(devToolsPage);
+        await navigateToBottomUpTab(devToolsPage, 'url');
 
         const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
         const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);

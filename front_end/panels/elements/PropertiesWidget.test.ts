@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -47,8 +48,7 @@ describeWithMockConnection('PropertiesWidget', () => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
     view = new Elements.PropertiesWidget.PropertiesWidget(0);
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
     await new Promise<void>(resolve => setTimeout(resolve, 0));
 
     const populateWithProperties =

@@ -90,6 +90,7 @@ interface Node {
   traverseNextNode(stayWithin?: Node): Node|null;
   traversePreviousNode(stayWithin?: Node): Node|null;
   deepTextContent(normalizeWhitespace?: boolean): string;
+  deepInnerText(): string;
   window(): Window;
   childTextNodes(): Node[];
 }

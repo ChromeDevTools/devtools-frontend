@@ -4,6 +4,7 @@
 
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -74,8 +75,7 @@ describeWithMockConnection('ElementsPanel', () => {
     await model.requestDocument();
 
     const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
-    panel.markAsRoot();
-    panel.show(document.body);
+    renderElementIntoDOM(panel);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
 
@@ -104,5 +104,41 @@ describeWithMockConnection('ElementsPanel', () => {
 
     sinon.assert.called(inScopeSearch);
     sinon.assert.notCalled(outOfScopeSearch);
+  });
+
+  it('deleting a node unhides it if it was hidden', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
+    const model = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(model);
+    await model.requestDocument();
+
+    const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+    panel.markAsRoot();
+    renderElementIntoDOM(panel);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+
+    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
+    assert.exists(treeOutline);
+    const selectedNode = treeOutline.selectedDOMNode();
+    assert.exists(selectedNode);
+    const selectedTreeElement = treeOutline.findTreeElement(selectedNode);
+    assert.exists(selectedTreeElement);
+    assert.isTrue(selectedTreeElement.expanded);
+
+    assert.strictEqual(selectedNode.nodeName(), 'BODY');
+
+    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+
+    const mockResolveToObject = sinon.mock().twice().returns({callFunction: () => {}, release: () => {}});
+    selectedNode.resolveToObject = mockResolveToObject;
+
+    await treeOutline.toggleHideElement(selectedNode);
+    assert.isTrue(treeOutline.isToggledToHidden(selectedNode));
+
+    await selectedTreeElement.remove();
+    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+
+    panel.detach();
   });
 });

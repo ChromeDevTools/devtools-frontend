@@ -88,6 +88,12 @@ async function createScreenshotError(error: Error): Promise<Error> {
   return error;
 }
 
+/**
+ * We track the initial timeouts for each functions because mocha
+ * does not reset test timeout for retries.
+ */
+const timeoutByTestFunction = new WeakMap<Mocha.AsyncFunc, number>();
+
 export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string) {
   return async function testFunction(this: Mocha.Context) {
     const abortController = new AbortController();
@@ -96,8 +102,9 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
     AsyncScope.abortSignal = abortController.signal;
     // Promisify the function in case it is sync.
     const promise = (async () => await fn.call(this))();
-    const actualTimeout = this.timeout();
-    // Disable test timeout.
+    const actualTimeout = timeoutByTestFunction.get(fn) ?? this.timeout();
+    timeoutByTestFunction.set(fn, actualTimeout);
+    // Disable mocha test timeout.
     this.timeout(0);
     const t = actualTimeout !== 0 ? setTimeout(async () => {
       abortController.abort();
@@ -110,7 +117,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
           stacks.push(`${stepDescription}${stack.join('\n')}\n`);
         }
       }
-      const err = new Error(`A test function (${label}) for "${this.test?.title}" timed out`);
+      const err = new Error(`A test function (${label}) for "${this.test?.title}" timed out (${actualTimeout} ms)`);
       if (stacks.length > 0) {
         const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
         err.cause = new Error(msg);
@@ -133,7 +140,6 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
             })
         .finally(() => {
           clearTimeout(t);
-          this.timeout(actualTimeout);
         });
     return await testPromise;
   };

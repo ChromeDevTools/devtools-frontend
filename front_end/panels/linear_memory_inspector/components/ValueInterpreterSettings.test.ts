@@ -8,12 +8,11 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
-const SETTINGS_INPUT_SELECTOR = '[data-input]';
-const SETTINGS_TITLE_SELECTOR = '[data-title]';
-const SETTINGS_LABEL_SELECTOR = '.type-label';
+const SETTINGS_LABEL_SELECTOR = 'devtools-checkbox';
 
 describeWithLocale('ValueInterpreterSettings', () => {
   function setUpComponent() {
@@ -32,7 +31,7 @@ describeWithLocale('ValueInterpreterSettings', () => {
 
   it('renders all checkboxes', () => {
     const {component} = setUpComponent();
-    const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
+    const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, UI.UIUtils.CheckboxLabel);
     const checkboxLabels = Array.from(checkboxes, checkbox => checkbox.getAttribute('title'));
     assert.deepEqual(checkboxLabels, [
       LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
@@ -48,14 +47,10 @@ describeWithLocale('ValueInterpreterSettings', () => {
 
   it('triggers an event on checkbox click', async () => {
     const {component} = setUpComponent();
-    const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
+    const checkboxes = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, UI.UIUtils.CheckboxLabel);
 
-    for (const label of labels) {
-      const checkbox = label.querySelector(SETTINGS_INPUT_SELECTOR);
-      assert.instanceOf(checkbox, HTMLInputElement);
-      const title = label.querySelector(SETTINGS_TITLE_SELECTOR);
-      assert.instanceOf(title, HTMLSpanElement);
-
+    for (const checkbox of checkboxes) {
+      const title = checkbox.title;
       const checked = checkbox.checked;
 
       const eventPromise = getEventPromise<LinearMemoryInspectorComponents.ValueInterpreterSettings.TypeToggleEvent>(
@@ -63,27 +58,23 @@ describeWithLocale('ValueInterpreterSettings', () => {
       checkbox.click();
       const event = await eventPromise;
 
-      assert.strictEqual(`${event.data.type}`, title.innerText);
+      assert.strictEqual(`${event.data.type}`, title);
       assert.strictEqual(checkbox.checked, !checked);
     }
   });
 
   it('correctly shows checkboxes as checked/unchecked', () => {
     const {component, data} = setUpComponent();
-    const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, HTMLLabelElement);
+    const labels = getElementsWithinComponent(component, SETTINGS_LABEL_SELECTOR, UI.UIUtils.CheckboxLabel);
     const elements = Array.from(labels).map(label => {
-      const checkbox = label.querySelector<HTMLInputElement>(SETTINGS_INPUT_SELECTOR);
-      const title = label.querySelector<HTMLSpanElement>(SETTINGS_TITLE_SELECTOR);
-      assert.instanceOf(checkbox, HTMLInputElement);
-      assert.instanceOf(title, HTMLSpanElement);
-      return {title, checked: checkbox.checked};
+      return {title: label.textContent, checked: label.checked};
     });
     assert.isAtLeast(data.valueTypes.size, 1);
-    const checkedTitles = new Set(elements.filter(n => n.checked).map(n => n.title.innerText));
+    const checkedTitles = new Set(elements.filter(n => n.checked).map(n => n.title));
     const expectedTitles = new Set([...data.valueTypes].map(type => `${type}`));
     assert.deepEqual(checkedTitles, expectedTitles);
 
-    const uncheckedTitles = new Set(elements.filter(n => !n.checked).map(n => n.title.innerText));
+    const uncheckedTitles = new Set(elements.filter(n => !n.checked).map(n => n.title));
     const allTypesTitle = [
       LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
       LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,

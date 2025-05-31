@@ -26,18 +26,3 @@
   font-weight: bold;
   margin-bottom: var(--sys-size-6);
 }
-
-.type-label {
-  display: flex;
-  flex-direction: row;;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.type-label input {
-  margin-right: var(--sys-size-4);
-}
-
-.type-label + .type-label {
-  margin-top: var(--sys-size-4);
-}

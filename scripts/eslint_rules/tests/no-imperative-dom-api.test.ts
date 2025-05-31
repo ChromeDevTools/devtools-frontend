@@ -915,7 +915,7 @@ class ElementNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Element
 class SomeWidget extends UI.Widget.Widget {
   constructor() {
     super();
-    const columns = [
+    const columns = ([
       {
         id: 'node-id',
         title: i18nString(UIStrings.element),
@@ -932,14 +932,16 @@ class SomeWidget extends UI.Widget.Widget {
         weight: 100,
         align: this.editable ? DataGrid.DataGrid.Align.RIGHT : DataGrid.DataGrid.Align.LEFT,
       },
-    ];
+    ] as DataGrid.DataGrid.ColumnDescriptor[]);
 
-    this.#dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid({
+    const config = {
       displayName: i18nString(UIStrings.someTitle),
       columns,
       deleteCallback: this.#deleteCallback.bind(this),
       refreshCallback: undefined,
-    });
+    };
+
+    this.#dataGrid = new DataGrid.ViewportDataGrid.ViewportDataGrid(config);
     this.#dataGrid.addEventListener(
         DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortMediaQueryDataGrid.bind(this));
 
@@ -1152,7 +1154,6 @@ class SomeWidget extends UI.Widget.Widget {
 }`,
       errors: [{messageId: 'preferTemplateLiterals'}],
     },
-    // ... existing code ...
     {
       filename: 'front_end/ui/components/component/file.ts',
       code: `
@@ -1191,6 +1192,36 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       <input role="slider" aria-valuemin="10" aria-valuemax="100" aria-invalid=\${this.valid}>
       <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0.5"
           aria-valuetext="50% done"></div>
+    </div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    const widget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToSeeHere), this.explanation);
+    widget.link = 'http://www.google.com';
+    widget.show(this.element);
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div>
+      <devtools-widget .widgetConfig=\${widgetConfig(UI.EmptyWidget.EmptyWidget,{
+          header: i18nString(UIStrings.nothingToSeeHere), text: this.explanation,
+          link: 'http://www.google.com',})}></devtools-widget>
     </div>\`,
     target, {host: input});
 };

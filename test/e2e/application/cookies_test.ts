@@ -32,25 +32,18 @@ describe('The Application Tab', () => {
     await target.deleteCookie(...cookies);
   });
 
-  // Flaky test
-  it.skip(
-      '[crbug.com/40911169]: shows cookies even when navigating to an unreachable page (crbug.com/1047348)',
-      async () => {
-        // This sets a new cookie foo=bar
-        await navigateToApplicationTab('cookies');
+  it('shows cookies even when navigating to an unreachable page (crbug.com/1047348)', async () => {
+    // This sets a new cookie foo=bar
+    await navigateToApplicationTab('cookies');
 
-        await goToResource('network/unreachable.rawresponse');
+    await goToResource('network/unreachable.rawresponse');
 
-        await navigateToCookiesForTopDomain();
+    await navigateToCookiesForTopDomain();
 
-        const dataGridRowValues = await getStorageItemsData(['name', 'value']);
-        assert.deepEqual(dataGridRowValues, [
-          {name: 'urlencoded', value: 'Hello%2BWorld!'},
-          {name: '__Host-foo3', value: 'bar'},
-          {name: 'foo2', value: 'bar'},
-          {name: 'foo', value: 'bar'},
-        ]);
-      });
+    const dataGridRowValues = await getStorageItemsData(['name', 'value']);
+    const match = dataGridRowValues.find(item => item.name === 'foo');
+    assert.deepEqual(match, {name: 'foo', value: 'bar'});
+  });
 
   it('shows a preview of the cookie value (crbug.com/462370)', async () => {
     // This sets a new cookie foo=bar

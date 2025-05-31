@@ -7,10 +7,21 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as UI from '../../legacy/legacy.js';
 
 import * as Snackbars from './snackbars.js';
 
 describeWithLocale('Snackbar', () => {
+  let inspectorViewRootElementStub: HTMLElement;
+  beforeEach(() => {
+    inspectorViewRootElementStub = document.createElement('div');
+    renderElementIntoDOM(inspectorViewRootElementStub, {allowMultipleChildren: true});
+
+    const inspectorViewStub = sinon.createStubInstance(UI.InspectorView.InspectorView);
+    Object.assign(inspectorViewStub, {element: inspectorViewRootElementStub});
+    sinon.stub(UI.InspectorView.InspectorView, 'instance').returns(inspectorViewStub);
+  });
+
   it('renders a basic snackbar', async () => {
     const snackbar = new Snackbars.Snackbar.Snackbar({message: 'Test message'});
     renderElementIntoDOM(snackbar, {allowMultipleChildren: true});
@@ -66,32 +77,65 @@ describeWithLocale('Snackbar', () => {
     assert.exists(actionButton);
   });
 
-  it('closes the snackbar when the close button is clicked', async () => {
-    const snackbar = Snackbars.Snackbar.Snackbar.show({message: 'Click Me', closable: true});
+  describe('closes the snackbar', () => {
+    it('closes the snackbar when the close button is clicked', async () => {
+      const snackbar = Snackbars.Snackbar.Snackbar.show({message: 'Click Me', closable: true});
 
-    assert.isTrue(document.body.contains(snackbar));
-    assert.exists(snackbar.shadowRoot);
-    const closeButton = snackbar.shadowRoot.querySelector('devtools-button.dismiss');
-    assert.exists(closeButton);
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar));
+      assert.exists(snackbar.shadowRoot);
+      const closeButton = snackbar.shadowRoot.querySelector('devtools-button.dismiss');
+      assert.exists(closeButton);
 
-    dispatchClickEvent(closeButton);
-    assert.isFalse(document.body.contains(snackbar));
-  });
-
-  it('closes the snackbar and calls handler when the action button is clicked', async () => {
-    const actionHandler = sinon.spy();
-    const snackbar = Snackbars.Snackbar.Snackbar.show({
-      message: 'Message',
-      actionProperties: {label: 'Click Me', onClick: actionHandler},
+      dispatchClickEvent(closeButton);
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar));
     });
 
-    assert.isTrue(document.body.contains(snackbar));
-    assert.exists(snackbar.shadowRoot);
-    const actionButton = snackbar.shadowRoot.querySelector('devtools-button');
-    assert.exists(actionButton);
+    it('closes the snackbar and calls handler when the action button is clicked', async () => {
+      const actionHandler = sinon.spy();
+      const snackbar = Snackbars.Snackbar.Snackbar.show({
+        message: 'Message',
+        actionProperties: {label: 'Click Me', onClick: actionHandler},
+      });
 
-    dispatchClickEvent(actionButton);
-    sinon.assert.calledOnce(actionHandler);
-    assert.isFalse(document.body.contains(snackbar));
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar));
+      assert.exists(snackbar.shadowRoot);
+      const actionButton = snackbar.shadowRoot.querySelector('devtools-button');
+      assert.exists(actionButton);
+
+      dispatchClickEvent(actionButton);
+      sinon.assert.calledOnce(actionHandler);
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar));
+    });
+  });
+
+  describe('snackbarQueue', () => {
+    beforeEach(() => {
+      Snackbars.Snackbar.Snackbar.snackbarQueue = [];
+    });
+
+    it('shows the first snackbar and queues the second', () => {
+      const snackbar1 = Snackbars.Snackbar.Snackbar.show({message: 'Snackbar 1'});
+      const snackbar2 = Snackbars.Snackbar.Snackbar.show({message: 'Snackbar 2'});
+
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar1));
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar2));
+      assert.lengthOf(Snackbars.Snackbar.Snackbar.snackbarQueue, 2);
+    });
+
+    it('shows the second snackbar after the first one is manually closed', () => {
+      const snackbar1 = Snackbars.Snackbar.Snackbar.show({message: 'Snackbar 1', closable: true});
+      const snackbar2 = Snackbars.Snackbar.Snackbar.show({message: 'Snackbar 2'});
+
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar1));
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar2));
+      assert.exists(snackbar1.shadowRoot);
+      const closeButton = snackbar1.shadowRoot.querySelector('devtools-button.dismiss');
+      assert.exists(closeButton);
+      dispatchClickEvent(closeButton);
+
+      assert.isFalse(inspectorViewRootElementStub.contains(snackbar1));
+      assert.isTrue(inspectorViewRootElementStub.contains(snackbar2));
+      assert.lengthOf(Snackbars.Snackbar.Snackbar.snackbarQueue, 1);
+    });
   });
 });

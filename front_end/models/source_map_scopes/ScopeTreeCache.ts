@@ -28,7 +28,9 @@ export function scopeTreeForScript(script: SDK.Script.Script): Promise<ScopeTree
       }
 
       const sourceType = script.isModule ? 'module' : 'script';
-      return Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptScopeTree(content.text, sourceType);
+      return Formatter.FormatterWorkerPool.formatterWorkerPool()
+          .javaScriptScopeTree(content.text, sourceType)
+          .catch(() => null);
     });
     scopeTrees.set(script, promise);
   }

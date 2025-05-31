@@ -338,10 +338,6 @@ export class RecordingView extends HTMLElement {
 
   #onCopyBound = this.#onCopy.bind(this);
 
-  constructor() {
-    super();
-  }
-
   set data(data: RecordingViewData) {
     this.#isRecording = data.isRecording;
     this.#replayState = data.replayState;
@@ -570,8 +566,8 @@ export class RecordingView extends HTMLElement {
   }
 
   #onTitleBlur = (event: Event): void => {
-    const target = event.target as HTMLElement;
-    const title = target.innerText.trim();
+    const target = event.target as HTMLInputElement;
+    const title = target.value.trim();
     if (!title) {
       this.#isTitleInvalid = true;
       this.#render();
@@ -591,14 +587,8 @@ export class RecordingView extends HTMLElement {
   };
 
   #onEditTitleButtonClick = (): void => {
-    const input = this.#shadow.getElementById('title-input') as HTMLElement;
+    const input = this.#shadow.getElementById('title-input') as HTMLInputElement;
     input.focus();
-    const range = document.createRange();
-    range.selectNodeContents(input);
-    range.collapse(false);
-    const selection = window.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
   };
 
   #onSelectMenuLabelClick = (event: Event): void => {
@@ -854,6 +844,7 @@ export class RecordingView extends HTMLElement {
     const currentConverter = this.#getCurrentConverter();
     const converterFormatName = currentConverter?.getFormatName();
     // clang-format off
+    /* eslint-disable rulesdir/no-deprecated-component-usages */
     return html`
         <devtools-split-view
           direction="auto"
@@ -917,6 +908,7 @@ export class RecordingView extends HTMLElement {
           </div>
         </devtools-split-view>
       `;
+    /* eslint-enable rulesdir/no-deprecated-component-usages */
     // clang-format on
   }
 
@@ -1183,16 +1175,17 @@ export class RecordingView extends HTMLElement {
       <div class="header">
         <div class="header-title-wrapper">
           <div class="header-title">
-            <span @blur=${this.#onTitleBlur}
+            <input @blur=${this.#onTitleBlur}
                   @keydown=${this.#onTitleInputKeyDown}
                   id="title-input"
-                  .contentEditable=${isTitleEditable ? 'true' : 'false'}
                   jslog=${VisualLogging.value('title').track({change: true})}
                   class=${Lit.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
                     disabled: !isTitleEditable,
                   })}
-                  .innerText=${Lit.Directives.live(title)}></span>
+                  .value=${Lit.Directives.live(title)}
+                  .disabled=${!isTitleEditable}
+                  >
             <div class="title-button-bar">
               <devtools-button
                 @click=${this.#onEditTitleButtonClick}

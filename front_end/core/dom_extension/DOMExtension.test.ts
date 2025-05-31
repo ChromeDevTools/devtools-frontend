@@ -4,6 +4,8 @@
 
 import './dom_extension.js';
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+
 function createSlot(parent: HTMLElement, name?: string) {
   const slot = parent.createChild('slot');
   if (name) {
@@ -231,5 +233,111 @@ describe('DataGrid', () => {
     node = traverseNextNode(node, component1);
     assert.strictEqual(node.nodeValue, 'component2 light dom text');
     assert.strictEqual(node.nodeName, '#text');
+  });
+});
+
+describe('Node.prototype.deepInnerText', () => {
+  it('gets text from a simple element', () => {
+    const element = document.createElement('div');
+    element.textContent = 'Simple text';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), 'Simple text');
+  });
+
+  it('gets text from an element with multiple children', () => {
+    const element = document.createElement('div');
+    element.createChild('p').textContent = 'First child';
+    element.createChild('span').textContent = 'Second child';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), element.innerText);
+    assert.strictEqual(element.deepInnerText(), 'First child\n\nSecond child');
+  });
+
+  it('gets text from an element with nested children', () => {
+    const element = document.createElement('div');
+    element.appendChild(document.createTextNode('  Outer text. '));
+    const childDiv = element.createChild('div');
+    childDiv.textContent = '  Child text. ';  // innerText of childDiv would be "Child text. Grandchild text."
+    const grandchildSpan = childDiv.createChild('span');
+    grandchildSpan.textContent = 'Grandchild text.';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), element.innerText);
+    assert.strictEqual(element.deepInnerText(), 'Outer text.\nChild text. Grandchild text.');
+  });
+
+  it('gets text from an element with a shadow DOM', () => {
+    const element = document.createElement('div');
+    const shadow = element.attachShadow({mode: 'open'});
+    shadow.createChild('p').textContent = 'Shadow text';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), 'Shadow text');
+  });
+
+  it('gets text from an element with a shadow DOM and slotted content', () => {
+    const element = document.createElement('div');
+    element.createChild('span').textContent = 'Slotted content';
+
+    const shadow = element.attachShadow({mode: 'open'});
+    shadow.appendChild(document.createTextNode('Shadow text before slot. '));
+    shadow.createChild('slot');
+    shadow.createChild('p').textContent = 'Shadow text after slot.';
+
+    renderElementIntoDOM(element);
+    const expectedText = 'Shadow text before slot.\nSlotted content\nShadow text after slot.';
+    assert.strictEqual(element.deepInnerText(), expectedText);
+  });
+
+  it('gets text from an element with multiple shadow DOMs and regular siblings', () => {
+    const element = document.createElement('div');
+    element.appendChild(document.createTextNode('Light DOM text before shadow 1. '));
+    const shadow1 = element.createChild('div').attachShadow({mode: 'open'});
+    const shadow1Paragraph1 = shadow1.createChild('p');
+    shadow1Paragraph1.createChild('span').textContent = 'Shadow 1';
+    shadow1Paragraph1.createChild('span').textContent = '(1)';
+    const shadow1Paragraph2 = shadow1.createChild('p');
+    shadow1Paragraph2.createChild('span').textContent = 'Shadow 1';
+    shadow1Paragraph2.createChild('span').textContent = '(2)';
+    element.appendChild(document.createTextNode(' Light DOM text between shadows. '));
+    const shadow2 = element.createChild('div').attachShadow({mode: 'open'});
+    shadow2.createChild('span').textContent = 'Shadow 2 text.';
+    element.appendChild(document.createTextNode(' Light DOM text after shadow 2.'));
+
+    renderElementIntoDOM(element);
+    const expectedText =
+        'Light DOM text before shadow 1.\nShadow 1(1)\nShadow 1(2)\nLight DOM text between shadows.\nShadow 2 text.\nLight DOM text after shadow 2.';
+    assert.strictEqual(element.deepInnerText(), expectedText);
+  });
+
+  it('returns empty string for an element with no text content', () => {
+    const element = document.createElement('div');
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), '');
+  });
+
+  it('ignores text content within SCRIPT tags', () => {
+    const element = document.createElement('div');
+    element.innerHTML = 'Visible text<script>console.log("script text")</script>';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), 'Visible text');
+  });
+
+  it('ignores text content within STYLE tags', () => {
+    const element = document.createElement('div');
+    element.innerHTML = 'Visible text<style>body { color: red; }</style>';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), 'Visible text');
+  });
+
+  it('gets text when called directly on a TextNode', () => {
+    const textNode = document.createTextNode('Direct text node content');
+    assert.strictEqual(textNode.deepInnerText(), 'Direct text node content');
+  });
+
+  it('handles elements that only contain other elements which produce text', () => {
+    const element = document.createElement('div');
+    const child = element.createChild('p');
+    child.textContent = 'Paragraph text';
+    renderElementIntoDOM(element);
+    assert.strictEqual(element.deepInnerText(), 'Paragraph text');
   });
 });

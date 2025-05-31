@@ -7,10 +7,8 @@ import '../../../ui/components/report_view/report_view.js';
 import '../../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -52,15 +50,9 @@ const UIStrings = {
   noPotentialBounceTrackersIdentified:
       'State was not cleared for any potential bounce tracking sites. Either none were identified or third-party cookies are not blocked.',
   /**
-   * @description Text shown when bounce tracking mitigations bounce tracking mitigations are disabled. Has a link.
-   * @example {Bounce Tracking Mitigations Feature Flag} PH1
+   * @description Text shown when bounce tracking mitigations are disabled.
    */
-  featureDisabled:
-      'Bounce tracking mitigations are disabled. To enable them, set the flag at {PH1} to "Enabled With Deletion".',
-  /**
-   * @description Text for link to Bounce Tracking Mitigations feature flag entry in the chrome://flags page.
-   */
-  featureFlag: 'Bounce Tracking Mitigations Feature Flag',
+  featureDisabled: 'Bounce tracking mitigations are disabled.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTrackingMitigationsView.ts', UIStrings);
@@ -105,16 +97,10 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     }
 
     if (this.#screenStatus === ScreenStatusType.DISABLED) {
-      const mitigationsFlagLink = new ChromeLink.ChromeLink.ChromeLink();
-      mitigationsFlagLink.href = 'chrome://flags/#bounce-tracking-mitigations' as Platform.DevToolsPath.UrlString;
-      mitigationsFlagLink.textContent = i18nString(UIStrings.featureFlag);
-
       // clang-format off
       return html`
         <devtools-report-section>
-          ${i18n.i18n.getFormatLocalizedString(
-              str_, UIStrings.featureDisabled,
-              {PH1: mitigationsFlagLink})}
+          ${i18nString(UIStrings.featureDisabled)}
         </devtools-report-section>
       `;
       // clang-format on

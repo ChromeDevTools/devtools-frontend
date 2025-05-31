@@ -8,11 +8,12 @@ import {
   activeElement,
   activeElementTextContent,
   click,
+  getBrowserAndPages,
   goToResource,
-  pasteText,
   pressKey,
   typeText,
   waitFor,
+  waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
@@ -65,7 +66,7 @@ async function openHeadersTab() {
 }
 
 async function editorTabHasPurpleDot(): Promise<boolean> {
-  const tabHeaderIcon = await waitFor('.tabbed-pane-header-tab-icon devtools-icon');
+  const tabHeaderIcon = await waitFor('[aria-label=".headers"] devtools-icon');
   return await tabHeaderIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 
@@ -73,14 +74,21 @@ async function fileTreeEntryIsSelectedAndHasPurpleDot(): Promise<boolean> {
   const element = await activeElement();
   const title = await element.evaluate(e => e.getAttribute('title')) || '';
   assert.match(title, /\/test\/e2e\/resources\/network\/\.headers$/);
-  const fileTreeIcon = await waitFor('.navigator-file-tree-item devtools-icon', element);
-  return await fileTreeIcon?.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
+  const fileTreeIcon = await element.waitForSelector(
+      '.navigator-file-tree-item .leading-icons devtools-file-source-icon >>> devtools-icon');
+  if (!fileTreeIcon) {
+    return false;
+  }
+  return await fileTreeIcon.evaluate(node => node.classList.contains('dot') && node.classList.contains('purple'));
 }
 
 async function editHeaderItem(newValue: string, previousValue: string): Promise<void> {
   let focusedTextContent = await activeElementTextContent();
   assert.strictEqual(focusedTextContent, previousValue);
-  await pasteText(newValue);
+  const element = await activeElement();
+  await element.evaluate((e, value) => {
+    e.textContent = value;
+  }, newValue);
   focusedTextContent = await activeElementTextContent();
   assert.strictEqual(focusedTextContent, newValue);
   await pressKey('Tab');
@@ -113,18 +121,24 @@ describe('The Overrides Panel', function() {
     assert.deepEqual(await getTextFromHeadersRow(row), ['aaa', 'bbb']);
   });
 
-  // Skip until flake is fixed
-  it.skip('[crbug.com/40264188]: can override headers via network panel', async () => {
+  it('can override headers via network panel', async () => {
+    const {frontend} = getBrowserAndPages();
+    await frontend.emulateMediaFeatures([
+      {name: 'prefers-reduced-motion', value: 'reduce'},
+    ]);
+
     await navigateToNetworkTab('hello.html');
     await waitForSomeRequestsToAppear(1);
     await selectRequestByName('hello.html');
     await openHeadersTab();
 
     await click('.enable-editing');
-    await click('[aria-label="Select a folder to store override files in."] button');
+    await waitForAria('Select a folder to store override files in');
+    await click('aria/Select folder');
     await click('.add-header-button');
 
     await waitFor('.row.header-overridden.header-editable');
+    await click('.header-name devtools-editable-span');
     await editHeaderItem('foo', 'header-name');
     await editHeaderItem('bar', 'header value');
 

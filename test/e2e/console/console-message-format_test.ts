@@ -149,25 +149,44 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/408135804] can show DOM interactions', async () => {
+  it('can show DOM interactions', async () => {
     const messages = await getConsoleMessages('dom-interactions');
 
-    assert.deepEqual(messages, [
-      '',
-      '',
-      '',
-      '',
-      '#text',
-      'HTMLCollection\xA0[select, sel: select]',
-      'HTMLCollection\xA0[]',
-      'HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]',
-      'HTMLAllCollection(12)\xA0[html, head, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
-      'HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]',
-      'RadioNodeList(2)\xA0[input, input, value: \'\']',
-      'DOMTokenList(3)\xA0[\'c1\', \'c2\', \'c3\', value: \'c1 c2 c3\']',
-      'NotFoundError: Failed to execute \'removeChild\' on \'Node\': The node to be removed is not a child of this node.',
-    ]);
+    try {
+      // Note depending on whether we got a remote object or not we have
+      // slightly different representations of DOM. Both are correct.
+      assert.deepEqual(messages, [
+        '',
+        '',
+        '',
+        '',
+        '#text',
+        'HTMLCollection\xA0[select, sel: select]',
+        'HTMLCollection\xA0[]',
+        'HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]',
+        'HTMLAllCollection(12)\xA0[html, head, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
+        'HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]',
+        'RadioNodeList(2)\xA0[input, input, value: \'\']',
+        'DOMTokenList(3)\xA0[\'c1\', \'c2\', \'c3\', value: \'c1 c2 c3\']',
+        'NotFoundError: Failed to execute \'removeChild\' on \'Node\': The node to be removed is not a child of this node.',
+      ]);
+    } catch {
+      assert.deepEqual(messages, [
+        'div#p',
+        'attr',
+        'attr',
+        'id',
+        '#text',
+        'HTMLCollection\xA0[select, sel: select]',
+        'HTMLCollection\xA0[]',
+        'HTMLOptionsCollection(2)\xA0[option, option, selectedIndex: 0]',
+        'HTMLAllCollection(12)\xA0[html, head, body, div#first-child.c1.c2.c3, div#p, form, select, option, option, input, input, script, first-child: div#first-child.c1.c2.c3, p: div#p, sel: select, input: HTMLCollection(2)]',
+        'HTMLFormControlsCollection(3)\xA0[select, input, input, sel: select, input: RadioNodeList(2)]',
+        'RadioNodeList(2)\xA0[input, input, value: \'\']',
+        'DOMTokenList(3)\xA0[\'c1\', \'c2\', \'c3\', value: \'c1 c2 c3\']',
+        'NotFoundError: Failed to execute \'removeChild\' on \'Node\': The node to be removed is not a child of this node.',
+      ]);
+    }
   });
 
   it('can handle sourceURLs in exceptions', async () => {

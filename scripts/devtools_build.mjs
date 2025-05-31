@@ -11,6 +11,7 @@ import util from 'node:util';
 import {
   autoninjaPyPath,
   gnPyPath,
+  isInChromiumDirectory,
   rootPath,
   vpython3ExecutablePath,
 } from './devtools_paths.js';
@@ -141,7 +142,7 @@ function buildErrorMessageForNinja(error, outDir, target) {
   if (stderr) {
     // Anything that went to stderr has precedence.
     return `Failed to build \`${target}' in \`${outDir}'
-
+${stdout}
 ${stderr}
 `;
   }
@@ -185,7 +186,7 @@ export class BuildError extends Error {
   /**
    * Constructs a new `BuildError` with the given parameters.
    *
-   * @param {BuildStep} step the build step that failed.
+   * @param {keyof BuildStep} step the build step that failed.
    * @param {Object} options additional options for the `BuildError`.
    * @param {Error} options.cause the actual cause for the build error.
    * @param {string} options.outDir the absolute path to the `target` out directory.
@@ -230,21 +231,90 @@ export async function prepareBuild(target) {
   }
 }
 
+/** @type Map<string, Promise<Map<string, string>>> */
+const gnArgsCache = new Map();
+
+function gnArgsForTarget(target) {
+  let gnArgs = gnArgsCache.get(target);
+  if (!gnArgs) {
+    gnArgs = (async () => {
+      const outDir = path.join(rootPath(), 'out', target);
+      try {
+        const cwd = rootPath();
+        const gnExe = vpython3ExecutablePath();
+        const gnArgs = [gnPyPath(), '-q', 'args', outDir, '--json', '--list', '--short'];
+        const {stdout} = await execFile(gnExe, gnArgs, {cwd});
+        return new Map(JSON.parse(stdout).map(arg => [arg.name, arg.current?.value ?? arg.default?.value]));
+      } catch {
+        return new Map();
+      }
+    })();
+    gnArgsCache.set(target, gnArgs);
+  }
+  return gnArgs;
+}
+
+/** @type Map<string, Map<string, Promise<Array<string>>>> */
+const gnRefsCache = new Map();
+
+function gnRefsForTarget(target, filename) {
+  let gnRefsPerTarget = gnRefsCache.get(target);
+  if (!gnRefsPerTarget) {
+    gnRefsPerTarget = new Map();
+    gnRefsCache.set(target, gnRefsPerTarget);
+  }
+  let gnRef = gnRefsPerTarget.get(filename);
+  if (!gnRef) {
+    gnRef = (async () => {
+      const cwd = rootPath();
+      const outDir = path.join(rootPath(), 'out', target);
+      const gnExe = vpython3ExecutablePath();
+      const gnArgs = [gnPyPath(), 'refs', outDir, '--as=output', filename];
+      const {stdout} = await execFile(gnExe, gnArgs, {cwd});
+      return stdout.trim().split('\n');
+    })();
+    gnRefsPerTarget.set(filename, gnRef);
+  }
+  return gnRef;
+}
+
+async function computeBuildTargetsForFiles(target, filenames) {
+  if (filenames && filenames.length && filenames.every(filename => path.extname(filename) === '.css')) {
+    if (isInChromiumDirectory().isInChromium) {
+      filenames = filenames.map(filename => path.join('third_party', 'devtools-frontend', 'src', filename));
+    }
+    const gnArgs = await gnArgsForTarget(target);
+    if (gnArgs.get('is_debug') === 'true') {
+      try {
+        const gnRefs = (await Promise.all(filenames.map(filename => gnRefsForTarget(target, filename)))).flat();
+        if (gnRefs.length) {
+          return gnRefs;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+  return ['devtools_all_files'];
+}
+
 /**
  * @param {string} target
  * @param {AbortSignal=} signal
+ * @param {Array<string>=} filenames
  * @return {Promise<BuildResult>} a `BuildResult` with statistics for the build.
  */
-export async function build(target, signal) {
+export async function build(target, signal, filenames) {
   const startTime = performance.now();
   const outDir = path.join(rootPath(), 'out', target);
 
   // Build just the devtools-frontend resources in |outDir|. This is important
   // since we might be running in a full Chromium checkout and certainly don't
   // want to build all of Chromium first.
+  const buildTargets = await computeBuildTargetsForFiles(target, filenames);
   try {
     const autoninjaExe = vpython3ExecutablePath();
-    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, 'devtools_all_files'];
+    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, ...buildTargets];
     await execFile(autoninjaExe, autoninjaArgs, {signal});
   } catch (cause) {
     if (cause.name === 'AbortError') {

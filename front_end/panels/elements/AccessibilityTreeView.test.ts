@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
@@ -27,8 +28,7 @@ describeWithMockConnection('AccessibilityTreeView', () => {
   const updatesUiOnEvent = (inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const view = new Elements.AccessibilityTreeView.AccessibilityTreeView(toggleButoon, treeComponent);
-    view.markAsRoot();
-    view.show(document.body);
+    renderElementIntoDOM(view);
 
     const model = target.model(SDK.AccessibilityModel.AccessibilityModel);
     const treeComponentDataSet = sinon.spy(treeComponent, 'data', ['set']);

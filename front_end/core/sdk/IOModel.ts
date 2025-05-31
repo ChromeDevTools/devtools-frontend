@@ -7,13 +7,9 @@ import * as Common from '../common/common.js';
 
 import {RemoteObject} from './RemoteObject.js';
 import {SDKModel} from './SDKModel.js';
-import {Capability, type Target} from './Target.js';
+import {Capability} from './Target.js';
 
 export class IOModel extends SDKModel<void> {
-  constructor(target: Target) {
-    super(target);
-  }
-
   async read(handle: Protocol.IO.StreamHandle, size?: number, offset?: number): Promise<string|ArrayBuffer|null> {
     const result = await this.target().ioAgent().invoke_read({handle, offset, size});
     if (result.getError()) {

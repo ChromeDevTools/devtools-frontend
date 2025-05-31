@@ -35,9 +35,6 @@ self.onmessage = function(event: MessageEvent): void {
       self.postMessage(FormatterWorker.ScopeParser.parseScopes(params.content, params.sourceType)?.export());
       break;
     }
-    case FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING:
-      self.postMessage(FormatterWorker.FormatterWorker.evaluatableJavaScriptSubstring(params.content));
-      break;
     default:
       Platform.assertNever(method, `Unsupport method name: ${method}`);
   }

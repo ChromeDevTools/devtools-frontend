@@ -1,9 +1,9 @@
 // Copyright 2019 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import '../../ui/legacy/components/data_grid/data_grid.js';
+import '../../ui/components/icon_button/icon_button.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -12,24 +12,18 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render, type TemplateResult} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-import {
-  Events as CSSOverViewControllerEvents,
-  type OverviewController,
-  type PopulateNodesEvent,
-  type PopulateNodesEventNodes,
-  type PopulateNodesEventNodeTypes,
-} from './CSSOverviewController.js';
-import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
+import type {GlobalStyleStats} from './CSSOverviewModel.js';
+import {CSSOverviewSidebarPanel} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
-const {styleMap} = Directives;
+const {styleMap, ref} = Directives;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -224,6 +218,10 @@ export interface OverviewData {
 }
 
 export type FontInfo = Map<string, Map<string, Map<string, number[]>>>;
+interface FontMetric {
+  label: string;
+  values: Array<{title: string, nodes: number[]}>;
+}
 
 function getBorderString(color: Common.Color.Color): string {
   let {h, s, l} = color.as(Common.Color.Format.HSL);
@@ -237,78 +235,361 @@ function getBorderString(color: Common.Color.Color): string {
   return `1px solid hsl(${h}deg ${s}% ${l}%)`;
 }
 
+interface ViewInput {
+  elementCount: number;
+  backgroundColors: string[];
+  textColors: string[];
+  textColorContrastIssues: Map<string, ContrastIssue[]>;
+  fillColors: string[];
+  borderColors: string[];
+  globalStyleStats: GlobalStyleStats;
+  mediaQueries: Array<{title: string, nodes: Protocol.CSS.CSSMedia[]}>;
+  unusedDeclarations: Array<{title: string, nodes: UnusedDeclaration[]}>;
+  fontInfo: Array<{font: string, fontMetrics: FontMetric[]}>;
+  selectedSection: string;
+  onClick: (evt: Event) => void;
+  onSectionSelected: (section: string, withKeyboard: boolean) => void;
+  onReset: () => void;
+}
+
+interface ViewOutput {
+  revealSection: Map<string, (setFocus: boolean) => void>;
+  closeAllTabs: () => void;
+  addTab: (id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext: string) => void;
+}
+
+const formatter = new Intl.NumberFormat('en-US');
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  function revealSection(section: Element|undefined, setFocus: boolean): void {
+    if (!section) {
+      return;
+    }
+    section.scrollIntoView();
+    // Set focus for keyboard invoked event
+    if (setFocus) {
+      const focusableElement: HTMLElement|null = section.querySelector('button, [tabindex="0"]');
+      focusableElement?.focus();
+    }
+  }
+
+  // clang-format off
+  render(html`
+      <style>${cssOverviewCompletedViewStyles}</style>
+      <devtools-split-view direction="column" sidebar-position="first" sidebar-initial-size="200">
+        <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(CSSOverviewSidebarPanel, {
+          minimumSize: new UI.Geometry.Size(100, 25),
+          items: [
+            {name: i18nString(UIStrings.overviewSummary), id: 'summary'},
+            {name: i18nString(UIStrings.colors), id: 'colors'},
+            {name: i18nString(UIStrings.fontInfo), id: 'font-info'},
+            {name: i18nString(UIStrings.unusedDeclarations), id: 'unused-declarations'},
+            {name: i18nString(UIStrings.mediaQueries), id: 'media-queries'}
+          ],
+          selectedId: input.selectedSection,
+          onItemSelected: input.onSectionSelected,
+          onReset: input.onReset,
+        })}>
+        </devtools-widget>
+        <devtools-split-view sidebar-position="second" slot="main" direction="row" sidebar-initial-size="minimized">
+          <div class="vbox overview-completed-view" slot="main" @click=${input.onClick}>
+            <!-- Dupe the styles into the main container because of the shadow root will prevent outer styles. -->
+            <style>${cssOverviewCompletedViewStyles}</style>
+            <div class="results-section horizontally-padded summary"
+                  ${ref(e => { output.revealSection.set('summary', revealSection.bind(null, e));})}>
+              <h1>${i18nString(UIStrings.overviewSummary)}</h1>
+              ${renderSummary(input.elementCount, input.globalStyleStats, input.mediaQueries)}
+            </div>
+            <div class="results-section horizontally-padded colors"
+                ${ref(e => { output.revealSection.set('colors', revealSection.bind(null, e));})}>
+                <h1>${i18nString(UIStrings.colors)}</h1>
+                ${renderColors(input.backgroundColors, input.textColors, input.textColorContrastIssues, input.fillColors, input.borderColors)}
+              </div>
+              <div class="results-section font-info"
+                    ${ref(e => { output.revealSection.set('font-info', revealSection.bind(null, e));})}>
+                <h1>${i18nString(UIStrings.fontInfo)}</h1>
+                ${renderFontInfo(input.fontInfo)}
+              </div>
+              <div class="results-section unused-declarations"
+                    ${ref(e => { output.revealSection.set('unused-declarations', revealSection.bind(null, e));})}>
+                <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
+                ${renderUnusedDeclarations(input.unusedDeclarations)}
+              </div>
+              <div class="results-section media-queries"
+                    ${ref(e => { output.revealSection.set('media-queries', revealSection.bind(null, e));})}>
+              <h1>${i18nString(UIStrings.mediaQueries)}</h1>
+              ${renderMediaQueries(input.mediaQueries)}
+            </div>
+          </div>
+          <devtools-widget slot="sidebar" .widgetConfig=${widgetConfig(e => {
+              const tabbedPane = new UI.TabbedPane.TabbedPane(e);
+              output.closeAllTabs = () => { tabbedPane.closeTabs(tabbedPane.tabIds()); };
+              output.addTab = (id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext: string) => {
+                if (!tabbedPane.hasTab(id)) {
+                  tabbedPane.appendTab(id, tabTitle, view, undefined, undefined,
+                                        /* isCloseable */ true, undefined, undefined, jslogContext);
+                }
+                tabbedPane.selectTab(id);
+                const splitView = tabbedPane.parentWidget() as UI.SplitWidget.SplitWidget;
+                splitView.setSidebarMinimized(false);
+              };
+              tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, _ => {
+                if (tabbedPane.tabIds().length === 0) {
+                  const splitView = tabbedPane.parentWidget() as UI.SplitWidget.SplitWidget;
+                  splitView.setSidebarMinimized(true);
+                }
+              });
+              return tabbedPane;
+            })}>
+          </devtools-widget>
+        </devtools-split-view>
+      </devtools-split-view>`,
+      target, {host: input});
+  // clang-format on
+};
+
+function renderSummary(
+    elementCount: number, globalStyleStats: GlobalStyleStats,
+    mediaQueries: Array<{title: string, nodes: Protocol.CSS.CSSMedia[]}>): TemplateResult {
+  const renderSummaryItem = (label: string, value: number): TemplateResult => html`
+    <li>
+      <div class="label">${label}</div>
+      <div class="value">${formatter.format(value)}</div>
+    </li>`;
+  return html`<ul>
+    ${renderSummaryItem(i18nString(UIStrings.elements), elementCount)}
+    ${renderSummaryItem(i18nString(UIStrings.externalStylesheets), globalStyleStats.externalSheets)}
+    ${renderSummaryItem(i18nString(UIStrings.inlineStyleElements), globalStyleStats.inlineStyles)}
+    ${renderSummaryItem(i18nString(UIStrings.styleRules), globalStyleStats.styleRules)}
+    ${renderSummaryItem(i18nString(UIStrings.mediaQueries), mediaQueries.length)}
+    ${renderSummaryItem(i18nString(UIStrings.typeSelectors), globalStyleStats.stats.type)}
+    ${renderSummaryItem(i18nString(UIStrings.idSelectors), globalStyleStats.stats.id)}
+    ${renderSummaryItem(i18nString(UIStrings.classSelectors), globalStyleStats.stats.class)}
+    ${renderSummaryItem(i18nString(UIStrings.universalSelectors), globalStyleStats.stats.universal)}
+    ${renderSummaryItem(i18nString(UIStrings.attributeSelectors), globalStyleStats.stats.attribute)}
+    ${renderSummaryItem(i18nString(UIStrings.nonsimpleSelectors), globalStyleStats.stats.nonSimple)}
+  </ul>`;
+}
+
+function renderColors(
+    backgroundColors: string[], textColors: string[], textColorContrastIssues: Map<string, ContrastIssue[]>,
+    fillColors: string[], borderColors: string[]): TemplateResult {
+  // clang-format off
+  return html`
+    <h2>${i18nString(UIStrings.backgroundColorsS, {PH1: backgroundColors.length})}</h2>
+    <ul>${backgroundColors.map(c => renderColor('background', c))}</ul>
+
+    <h2>${i18nString(UIStrings.textColorsS, {PH1: textColors.length})}</h2>
+    <ul>${textColors.map(c => renderColor('text', c))}</ul>
+
+    ${textColorContrastIssues.size > 0 ? renderContrastIssues(textColorContrastIssues) : ''}
+
+    <h2>${i18nString(UIStrings.fillColorsS, {PH1: fillColors.length})}</h2>
+    <ul>${fillColors.map(c => renderColor('fill', c))}</ul>
+
+    <h2>${i18nString(UIStrings.borderColorsS, {PH1: borderColors.length})}</h2>
+    <ul>${borderColors.map(c => renderColor('border', c))}</ul>`;
+  // clang-format on
+}
+
+function renderUnusedDeclarations(unusedDeclarations: Array<{title: string, nodes: UnusedDeclaration[]}>):
+    TemplateResult {
+  return unusedDeclarations.length > 0 ?
+      renderGroup(unusedDeclarations, 'unused-declarations') :
+      html`<div class="horizontally-padded">${i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`;
+}
+
+function renderMediaQueries(mediaQueries: Array<{title: string, nodes: Protocol.CSS.CSSMedia[]}>): TemplateResult {
+  return mediaQueries.length > 0 ?
+      renderGroup(mediaQueries, 'media-queries') :
+      html`<div class="horizontally-padded">${i18nString(UIStrings.thereAreNoMediaQueries)}</div>`;
+}
+
+function renderFontInfo(fonts: Array<{font: string, fontMetrics: FontMetric[]}>): TemplateResult {
+  return fonts.length > 0 ? html`${fonts.map(({font, fontMetrics}) => html`
+    <section class="font-family">
+      <h2>${font}</h2>
+      ${renderFontMetrics(font, fontMetrics)}
+    </section>`)}` :
+                            html`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`;
+}
+
+function renderFontMetrics(font: string, fontMetricInfo: FontMetric[]): TemplateResult {
+  return html`
+    <div class="font-metric">
+      ${fontMetricInfo.map(({label, values}) => html`
+        <div>
+          <h3>${label}</h3>
+          ${renderGroup(values, 'font-info', `${font}/${label}`)}
+        </div>`)}
+    </div>`;
+}
+
+function renderGroup(
+    values: Array<{title: string, nodes: Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>}>, type: string,
+    path = ''): TemplateResult {
+  const total = values.reduce((prev, curr) => prev + curr.nodes.length, 0);
+
+  // clang-format off
+  return html`
+      <ul aria-label=${type}>
+        ${values.map(({title, nodes}) => {
+          const width = 100 * nodes.length / total;
+          const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
+
+          return html`<li>
+            <div class="title">${title}</div>
+            <button data-type=${type} data-path=${path} data-label=${title}
+            jslog=${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}
+            aria-label=${`${title}: ${itemLabel}`}>
+              <div class="details">${itemLabel}</div>
+              <div class="bar-container">
+                <div class="bar" style=${styleMap({width})}></div>
+              </div>
+            </button>
+          </li>`;
+        })}
+  </ul>`;
+  // clang-format on
+}
+
+function renderContrastIssues(issues: Map<string, ContrastIssue[]>): TemplateResult {
+  // clang-format off
+  return html`
+    <h2>${i18nString(UIStrings.contrastIssuesS, {PH1: issues.size})}</h2>
+    <ul>
+      ${[...issues.entries()].map(([key, value]) => renderContrastIssue(key, value))}
+    </ul>`;
+  // clang-format on
+}
+
+function renderContrastIssue(key: string, issues: ContrastIssue[]): TemplateResult {
+  console.assert(issues.length > 0);
+
+  let minContrastIssue: ContrastIssue = issues[0];
+  for (const issue of issues) {
+    // APCA contrast can be a negative value that is to be displayed. But the
+    // absolute value is used to compare against the threshold. Therefore, the min
+    // absolute value is the worst contrast.
+    if (Math.abs(issue.contrastRatio) < Math.abs(minContrastIssue.contrastRatio)) {
+      minContrastIssue = issue;
+    }
+  }
+
+  const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
+  const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
+
+  const showAPCA = Root.Runtime.experiments.isEnabled('apca');
+
+  const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
+    PH1: color,
+    PH2: backgroundColor,
+    PH3: issues.length,
+  });
+  const border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
+
+  // clang-format off
+  return html`<li>
+    <button
+      title=${title} aria-label=${title}
+      data-type="contrast" data-key=${key} data-section="contrast" class="block"
+      style=${styleMap({color, backgroundColor, border})}
+      jslog=${VisualLogging.action('css-overview.contrast').track({click: true})}>
+      Text
+    </button>
+    <div class="block-title">
+      ${showAPCA ? html`
+        <div class="contrast-warning hidden" $="apca">
+          <span class="threshold-label">${i18nString(UIStrings.apca)}</span>
+          ${minContrastIssue.thresholdsViolated.apca ? createClearIcon() : createCheckIcon()}
+        </div>` : html`
+        <div class="contrast-warning hidden">
+          <span class="threshold-label">${i18nString(UIStrings.aa)}</span>
+          ${minContrastIssue.thresholdsViolated.aa ? createClearIcon() : createCheckIcon()}
+        </div>
+        <div class="contrast-warning hidden" $="aaa">
+          <span class="threshold-label">${i18nString(UIStrings.aaa)}</span>
+          ${minContrastIssue.thresholdsViolated.aaa ? createClearIcon() : createCheckIcon()}
+        </div>`}
+    </div>
+  </li>`;
+  // clang-format on
+}
+
+function renderColor(section: string, color: string): TemplateResult {
+  const borderColor = Common.Color.parse(color)?.asLegacyColor();
+  if (!borderColor) {
+    return html``;
+  }
+  // clang-format off
+  return html`<li>
+    <button title=${color} data-type="color" data-color=${color}
+      data-section=${section} class="block"
+      style=${styleMap({backgroundColor: color, border: getBorderString(borderColor)})}
+      jslog=${VisualLogging.action('css-overview.color').track({click: true})}>
+    </button>
+    <div class="block-title color-text">${color}</div>
+  </li>`;
+  // clang-format on
+}
+
+type PopulateNodesEvent = {
+  type: 'contrast',
+  key: string,
+  section: string|undefined,
+  nodes: ContrastIssue[],
+}|{
+  type: 'color',
+  color: string,
+  section: string | undefined,
+  nodes: Array<{nodeId: Protocol.DOM.BackendNodeId}>,
+}|{
+  type: 'unused-declarations',
+  declaration: string,
+  nodes: UnusedDeclaration[],
+}|{
+  type: 'media-queries',
+  text: string,
+  nodes: Protocol.CSS.CSSMedia[],
+}|{
+  type: 'font-info',
+  name: string,
+  nodes: Array<{nodeId: Protocol.DOM.BackendNodeId}>,
+};
+
+export type PopulateNodesEventNodes = PopulateNodesEvent['nodes'];
+export type PopulateNodesEventNodeTypes = PopulateNodesEventNodes[0];
+
 export class CSSOverviewCompletedView extends UI.Widget.VBox {
-  readonly #splitWidget: UI.SplitWidget.SplitWidget;
-  #controller: OverviewController;
-  #formatter: Intl.NumberFormat;
-  readonly #mainContainer: UI.SplitWidget.SplitWidget;
-  readonly #resultsContainer: UI.Widget.VBox;
-  readonly #tabbedPane: UI.TabbedPane.TabbedPane;
-  readonly #sideBar: CSSOverviewSidebarPanel;
+  onReset = (): void => {};
+  #selectedSection = 'summary';
   #cssModel?: SDK.CSSModel.CSSModel;
   #domModel?: SDK.DOMModel.DOMModel;
   #linkifier: Components.Linkifier.Linkifier;
   #viewMap: Map<string, ElementDetailsView>;
   #data: OverviewData|null;
-  #fragment?: UI.Fragment.Fragment;
+  #view: View;
+  #viewOutput: ViewOutput = {
+    revealSection: new Map(),
+    closeAllTabs: () => {},
+    addTab: (_id, _tabTitle, _view, _jslogContext) => {}
+  };
 
-  constructor(controller: OverviewController) {
-    super();
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(false, false, element);
+    this.#view = view;
     this.registerRequiredCSS(cssOverviewCompletedViewStyles);
-
-    this.#controller = controller;
-    this.#formatter = new Intl.NumberFormat('en-US');
-
-    this.#splitWidget = new UI.SplitWidget.SplitWidget(true, false, undefined, 200);
-    this.#splitWidget.show(this.element);
-
-    this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
-    this.#resultsContainer = new UI.Widget.VBox();
-    this.#tabbedPane = new UI.TabbedPane.TabbedPane();
-
-    // If closing the last tab, collapse the sidebar.
-    this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, _ => {
-      if (this.#tabbedPane.tabIds().length === 0) {
-        this.#mainContainer.setSidebarMinimized(true);
-      }
-    });
-
-    // Dupe the styles into the main container because of the shadow root will prevent outer styles.
-
-    this.#mainContainer.setMainWidget(this.#resultsContainer);
-    this.#mainContainer.setSidebarWidget(this.#tabbedPane);
-    this.#mainContainer.setVertical(false);
-    this.#mainContainer.setSecondIsSidebar(true);
-    this.#mainContainer.setSidebarMinimized(true);
-    this.#mainContainer.registerRequiredCSS(cssOverviewCompletedViewStyles);
-
-    this.#sideBar = new CSSOverviewSidebarPanel();
-    this.#sideBar.setMinimumSize(100, 25);
-    this.#splitWidget.setSidebarWidget(this.#sideBar);
-    this.#splitWidget.setMainWidget(this.#mainContainer);
-
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
-
     this.#viewMap = new Map();
-
-    this.#sideBar.items = [
-      {name: i18nString(UIStrings.overviewSummary), id: 'summary'}, {name: i18nString(UIStrings.colors), id: 'colors'},
-      {name: i18nString(UIStrings.fontInfo), id: 'font-info'},
-      {name: i18nString(UIStrings.unusedDeclarations), id: 'unused-declarations'},
-      {name: i18nString(UIStrings.mediaQueries), id: 'media-queries'}
-    ];
-    this.#sideBar.selectedId = 'summary';
-
-    this.#sideBar.addEventListener(SidebarEvents.ITEM_SELECTED, this.#sideBarItemSelected, this);
-    this.#sideBar.addEventListener(SidebarEvents.RESET, this.#sideBarReset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.RESET, this.#reset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.POPULATE_NODES, this.#createElementsView, this);
-    this.#resultsContainer.element.addEventListener('click', this.#onClick.bind(this));
-
     this.#data = null;
   }
 
-  initializeModels(target: SDK.Target.Target): void {
+  set target(target: SDK.Target.Target|undefined) {
+    if (!target) {
+      return;
+    }
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     const domModel = target.model(SDK.DOMModel.DOMModel);
     if (!cssModel || !domModel) {
@@ -318,32 +599,26 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#domModel = domModel;
   }
 
-  #sideBarItemSelected(event: Common.EventTarget.EventTargetEvent<ItemSelectedEvent>): void {
-    const {data} = event;
-    const section = (this.#fragment as UI.Fragment.Fragment).$(data.id);
-    if (!section) {
+  #onSectionSelected(sectionId: string, withKeyboard: boolean): void {
+    const revealSection = this.#viewOutput.revealSection.get(sectionId);
+    if (!revealSection) {
       return;
     }
 
-    section.scrollIntoView();
-    // Set focus for keyboard invoked event
-    if (!data.isMouseEvent && data.key === 'Enter') {
-      const focusableElement: HTMLElement|null = section.querySelector('button, [tabindex="0"]');
-      focusableElement?.focus();
-    }
+    revealSection(withKeyboard);
   }
 
-  #sideBarReset(): void {
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.RESET);
+  #onReset(): void {
+    this.#reset();
+    this.onReset();
   }
 
   #reset(): void {
-    this.#resultsContainer.element.removeChildren();
-    this.#mainContainer.setSidebarMinimized(true);
-    this.#tabbedPane.closeTabs(this.#tabbedPane.tabIds());
+    this.#viewOutput.closeAllTabs();
     this.#viewMap = new Map();
     CSSOverviewCompletedView.pushedNodes.clear();
-    this.#sideBar.selectedId = 'summary';
+    this.#selectedSection = 'summary';
+    this.requestUpdate();
   }
 
   #onClick(evt: Event): void {
@@ -410,7 +685,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       }
 
       case 'unused-declarations': {
-        const declaration = dataset.declaration;
+        const declaration = dataset.label;
         if (!declaration) {
           return;
         }
@@ -424,7 +699,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       }
 
       case 'media-queries': {
-        const text = dataset.text;
+        const text = dataset.label;
         if (!text) {
           return;
         }
@@ -438,7 +713,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       }
 
       case 'font-info': {
-        const value = dataset.value;
+        const value = dataset.label;
         if (!dataset.path) {
           return;
         }
@@ -474,128 +749,35 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     }
 
     evt.consume();
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.POPULATE_NODES, {payload});
-    this.#mainContainer.setSidebarMinimized(false);
+    this.#createElementsView(payload);
+    this.requestUpdate();
   }
 
-  async #render(data: OverviewData): Promise<void> {
-    if (!data || !('backgroundColors' in data) || !('textColors' in data)) {
+  override performUpdate(): void {
+    if (!this.#data || !('backgroundColors' in this.#data) || !('textColors' in this.#data)) {
       return;
     }
 
-    this.#data = data;
-    const {
-      mediaQueries,
-      unusedDeclarations,
-      fontInfo,
-    } = this.#data;
-
-    this.#fragment = UI.Fragment.Fragment.build`
-    <div class="vbox overview-completed-view">
-      <div $="summary" class="results-section horizontally-padded summary">
-        <h1>${i18nString(UIStrings.overviewSummary)}</h1>
-        ${this.#renderSummary(data)}
-      </div>
-      <div $="colors" class="results-section horizontally-padded colors">
-        <h1>${i18nString(UIStrings.colors)}</h1>
-        ${this.#renderColors(data)}
-      </div>
-      <div $="font-info" class="results-section font-info">
-        <h1>${i18nString(UIStrings.fontInfo)}</h1>
-        ${this.#renderFontInfo(fontInfo)}
-      </div>
-      <div $="unused-declarations" class="results-section unused-declarations">
-        <h1>${i18nString(UIStrings.unusedDeclarations)}</h1>
-        ${this.#renderUnusedDeclarations(unusedDeclarations)}
-      </div>
-      <div $="media-queries" class="results-section media-queries">
-        <h1>${i18nString(UIStrings.mediaQueries)}</h1>
-        ${this.#renderMediaQueries(mediaQueries)}
-      </div>
-    </div>`;
-
-    this.#resultsContainer.element.appendChild(this.#fragment.element());
+    const viewInput = {
+      elementCount: this.#data.elementCount,
+      backgroundColors: this.#sortColorsByLuminance(this.#data.backgroundColors),
+      textColors: this.#sortColorsByLuminance(this.#data.textColors),
+      textColorContrastIssues: this.#data.textColorContrastIssues,
+      fillColors: this.#sortColorsByLuminance(this.#data.fillColors),
+      borderColors: this.#sortColorsByLuminance(this.#data.borderColors),
+      globalStyleStats: this.#data.globalStyleStats,
+      mediaQueries: this.#sortGroupBySize(this.#data.mediaQueries),
+      unusedDeclarations: this.#sortGroupBySize(this.#data.unusedDeclarations),
+      fontInfo: this.#sortFontInfo(this.#data.fontInfo),
+      selectedSection: this.#selectedSection,
+      onClick: this.#onClick.bind(this),
+      onSectionSelected: this.#onSectionSelected.bind(this),
+      onReset: this.#onReset.bind(this),
+    };
+    this.#view(viewInput, this.#viewOutput, this.element);
   }
 
-  #renderSummary(data: OverviewData): UI.Fragment.Fragment {
-    const {
-      elementCount,
-      globalStyleStats,
-      mediaQueries,
-    } = data;
-    const renderSummaryItem = (label: string, value: number): UI.Fragment.Fragment => UI.Fragment.Fragment.build`
-      <li>
-        <div class="label">${label}</div>
-        <div class="value">${this.#formatter.format(value)}</div>
-      </li>`;
-    return UI.Fragment.Fragment.build`<ul>
-      ${renderSummaryItem(i18nString(UIStrings.elements), elementCount)}
-      ${renderSummaryItem(i18nString(UIStrings.externalStylesheets), globalStyleStats.externalSheets)}
-      ${renderSummaryItem(i18nString(UIStrings.inlineStyleElements), globalStyleStats.inlineStyles)}
-      ${renderSummaryItem(i18nString(UIStrings.styleRules), globalStyleStats.styleRules)}
-      ${renderSummaryItem(i18nString(UIStrings.mediaQueries), mediaQueries.size)}
-      ${renderSummaryItem(i18nString(UIStrings.typeSelectors), globalStyleStats.stats.type)}
-      ${renderSummaryItem(i18nString(UIStrings.idSelectors), globalStyleStats.stats.id)}
-      ${renderSummaryItem(i18nString(UIStrings.classSelectors), globalStyleStats.stats.class)}
-      ${renderSummaryItem(i18nString(UIStrings.universalSelectors), globalStyleStats.stats.universal)}
-      ${renderSummaryItem(i18nString(UIStrings.attributeSelectors), globalStyleStats.stats.attribute)}
-      ${renderSummaryItem(i18nString(UIStrings.nonsimpleSelectors), globalStyleStats.stats.nonSimple)}
-    </ul>`;
-  }
-
-  #renderColors(data: OverviewData): UI.Fragment.Fragment {
-    const {
-      backgroundColors,
-      textColors,
-      textColorContrastIssues,
-      fillColors,
-      borderColors,
-    } = data;
-    // Convert rgb values from the computed styles to either undefined or HEX(A) strings.
-    const sortedBackgroundColors = this.#sortColorsByLuminance(backgroundColors);
-    const sortedTextColors = this.#sortColorsByLuminance(textColors);
-    const sortedFillColors = this.#sortColorsByLuminance(fillColors);
-    const sortedBorderColors = this.#sortColorsByLuminance(borderColors);
-
-    return UI.Fragment.Fragment.build`
-      <h2>${i18nString(UIStrings.backgroundColorsS, {
-      PH1: sortedBackgroundColors.length
-    })}</h2>
-      <ul>${sortedBackgroundColors.map(this.#renderColor.bind(this, 'background'))}</ul>
-
-      <h2>${i18nString(UIStrings.textColorsS, {
-      PH1: sortedTextColors.length
-    })}</h2>
-      <ul>${sortedTextColors.map(this.#renderColor.bind(this, 'text'))}</ul>
-
-      ${textColorContrastIssues.size > 0 ? this.#renderContrastIssues(textColorContrastIssues) : ''}
-
-      <h2>${i18nString(UIStrings.fillColorsS, {
-      PH1: sortedFillColors.length
-    })}</h2>
-      <ul>${sortedFillColors.map(this.#renderColor.bind(this, 'fill'))}</ul>
-
-      <h2>${i18nString(UIStrings.borderColorsS, {
-      PH1: sortedBorderColors.length
-    })}</h2>
-      <ul>${sortedBorderColors.map(this.#renderColor.bind(this, 'border'))}</ul>`;
-  }
-
-  #renderUnusedDeclarations(unusedDeclarations: Map<string, UnusedDeclaration[]>): UI.Fragment.Fragment {
-    return unusedDeclarations.size > 0 ? this.#renderGroup(unusedDeclarations, 'unused-declarations', 'declaration') :
-                                         UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                             i18nString(UIStrings.thereAreNoUnusedDeclarations)}</div>`;
-  }
-
-  #renderMediaQueries(mediaQueries: Map<string, Protocol.CSS.CSSMedia[]>): UI.Fragment.Fragment {
-    return mediaQueries.size > 0 ? this.#renderGroup(mediaQueries, 'media-queries', 'text') :
-                                   UI.Fragment.Fragment.build`<div class="horizontally-padded">${
-                                       i18nString(UIStrings.thereAreNoMediaQueries)}</div>`;
-  }
-
-  #createElementsView(evt: Common.EventTarget.EventTargetEvent<{payload: PopulateNodesEvent}>): void {
-    const {payload} = evt.data;
-
+  #createElementsView(payload: PopulateNodesEvent): void {
     let id = '';
     let tabTitle = '';
 
@@ -646,178 +828,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       this.#viewMap.set(id, view);
     }
 
-    if (!this.#tabbedPane.hasTab(id)) {
-      this.#tabbedPane.appendTab(
-          id, tabTitle, view, undefined, undefined, /* isCloseable */ true, undefined, undefined, payload.type);
-    }
-
-    this.#tabbedPane.selectTab(id);
-  }
-
-  #renderFontInfo(fontInfo: Map<string, Map<string, Map<string, number[]>>>): UI.Fragment.Fragment {
-    const fonts = Array.from(fontInfo.entries());
-    return fontInfo.size > 0 ? UI.Fragment.Fragment.build`${fonts.map(([font, fontMetrics]) => {
-      return UI.Fragment.Fragment.build`<section class="font-family"><h2>${font}</h2> ${
-          this.#renderFontMetrics(font, fontMetrics)}</section>`;
-    })}` :
-                               UI.Fragment.Fragment.build`<div>${i18nString(UIStrings.thereAreNoFonts)}</div>`;
-  }
-
-  #renderFontMetrics(font: string, fontMetrics: Map<string, Map<string, number[]>>): UI.Fragment.Fragment {
-    const fontMetricInfo = Array.from(fontMetrics.entries());
-
-    return UI.Fragment.Fragment.build`
-  <div class="font-metric">
-  ${fontMetricInfo.map(([label, values]) => {
-      const sanitizedPath = `${font}/${label}`;
-      return UI.Fragment.Fragment.build`
-  <div>
-  <h3>${label}</h3>
-  ${this.#renderGroup(values, 'font-info', 'value', sanitizedPath)}
-  </div>`;
-    })}
-  </div>`;
-  }
-
-  #renderGroup(
-      items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
-      path = ''): UI.Fragment.Fragment {
-    // Sort by number of items descending.
-    const values = Array.from(items.entries()).sort((d1, d2) => {
-      const v1Nodes = d1[1];
-      const v2Nodes = d2[1];
-      return v2Nodes.length - v1Nodes.length;
-    });
-
-    const total = values.reduce((prev, curr) => prev + curr[1].length, 0);
-
-    return UI.Fragment.Fragment.build`<ul aria-label="${type}">
-    ${values.map(([title, nodes]) => {
-      const width = 100 * nodes.length / total;
-      const itemLabel = i18nString(UIStrings.nOccurrences, {n: nodes.length});
-
-      return UI.Fragment.Fragment.build`<li>
-        <div class="title">${title}</div>
-        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}"
-        jslog="${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}"
-        aria-label="${title}: ${itemLabel}">
-          <div class="details">${itemLabel}</div>
-          <div class="bar-container">
-            <div class="bar" style="width: ${width}%;"></div>
-          </div>
-        </button>
-      </li>`;
-    })}
-    </ul>`;
-  }
-
-  #renderContrastIssues(issues: Map<string, ContrastIssue[]>): UI.Fragment.Fragment {
-    return UI.Fragment.Fragment.build`
-  <h2>${i18nString(UIStrings.contrastIssuesS, {
-      PH1: issues.size,
-    })}</h2>
-  <ul>
-  ${[...issues.entries()].map(([key, value]) => this.#renderContrastIssue(key, value))}
-  </ul>
-  `;
-  }
-
-  #renderContrastIssue(key: string, issues: ContrastIssue[]): UI.Fragment.Fragment {
-    console.assert(issues.length > 0);
-
-    let minContrastIssue: ContrastIssue = issues[0];
-    for (const issue of issues) {
-      // APCA contrast can be a negative value that is to be displayed. But the
-      // absolute value is used to compare against the threshold. Therefore, the min
-      // absolute value is the worst contrast.
-      if (Math.abs(issue.contrastRatio) < Math.abs(minContrastIssue.contrastRatio)) {
-        minContrastIssue = issue;
-      }
-    }
-
-    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
-    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
-
-    const showAPCA = Root.Runtime.experiments.isEnabled('apca');
-
-    const title = i18nString(UIStrings.textColorSOverSBackgroundResults, {
-      PH1: color,
-      PH2: backgroundColor,
-      PH3: issues.length,
-    });
-
-    const blockFragment = UI.Fragment.Fragment.build`<li>
-      <button
-        title="${title}" aria-label="${title}"
-        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
-        jslog="${VisualLogging.action('css-overview.contrast').track({
-      click: true,
-    })}">
-        Text
-      </button>
-      <div class="block-title">
-        <div class="contrast-warning hidden" $="aa"><span class="threshold-label">${
-        i18nString(UIStrings.aa)}</span></div>
-        <div class="contrast-warning hidden" $="aaa"><span class="threshold-label">${
-        i18nString(UIStrings.aaa)}</span></div>
-        <div class="contrast-warning hidden" $="apca"><span class="threshold-label">${
-        i18nString(UIStrings.apca)}</span></div>
-      </div>
-    </li>`;
-
-    if (showAPCA) {
-      const apca = (blockFragment.$('apca') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.apca) {
-        apca.appendChild(createClearIcon());
-      } else {
-        apca.appendChild(createCheckIcon());
-      }
-      apca.classList.remove('hidden');
-    } else {
-      const aa = (blockFragment.$('aa') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.aa) {
-        aa.appendChild(createClearIcon());
-      } else {
-        aa.appendChild(createCheckIcon());
-      }
-      const aaa = (blockFragment.$('aaa') as HTMLElement);
-      if (minContrastIssue.thresholdsViolated.aaa) {
-        aaa.appendChild(createClearIcon());
-      } else {
-        aaa.appendChild(createCheckIcon());
-      }
-      aa.classList.remove('hidden');
-      aaa.classList.remove('hidden');
-    }
-
-    const block = (blockFragment.$('color') as HTMLElement);
-    block.style.backgroundColor = backgroundColor;
-    block.style.color = color;
-    block.style.border = getBorderString(minContrastIssue.backgroundColor.asLegacyColor());
-
-    return blockFragment;
-  }
-
-  #renderColor(section: string, color: string): UI.Fragment.Fragment|undefined {
-    const blockFragment = UI.Fragment.Fragment.build`<li>
-      <button title=${color} data-type="color" data-color="${color}"
-        data-section="${section}" class="block" $="color"
-        jslog="${VisualLogging.action('css-overview.color').track({
-      click: true,
-    })}"></button>
-      <div class="block-title color-text">${color}</div>
-    </li>`;
-
-    const block = (blockFragment.$('color') as HTMLElement);
-    block.style.backgroundColor = color;
-
-    const borderColor = Common.Color.parse(color)?.asLegacyColor();
-    if (!borderColor) {
-      return;
-    }
-    block.style.border = getBorderString(borderColor);
-
-    return blockFragment;
+    this.#viewOutput.addTab(id, tabTitle, view, payload.type);
   }
 
   #sortColorsByLuminance(srcColors: Map<string, Set<number>>): string[] {
@@ -831,14 +842,41 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     });
   }
 
-  setOverviewData(data: OverviewData): void {
-    void this.#render(data);
+  #sortFontInfo(fontInfo: Map<string, Map<string, Map<string, number[]>>>):
+      Array<{font: string, fontMetrics: FontMetric[]}> {
+    const fonts = Array.from(fontInfo.entries());
+    return fonts.map(([font, fontMetrics]) => {
+      const fontMetricInfo = Array.from(fontMetrics.entries());
+      return {
+        font,
+        fontMetrics: fontMetricInfo.map(([label, values]) => {
+          return {label, values: this.#sortGroupBySize(values)};
+        })
+      };
+    });
+  }
+
+  #sortGroupBySize<T extends number|UnusedDeclaration|Protocol.CSS.CSSMedia>(items: Map<string, T[]>):
+      Array<{title: string, nodes: T[]}> {
+    // Sort by number of items descending.
+    return Array.from(items.entries())
+        .sort((d1, d2) => {
+          const v1Nodes = d1[1];
+          const v2Nodes = d2[1];
+          return v2Nodes.length - v1Nodes.length;
+        })
+        .map(([title, nodes]) => ({title, nodes}));
+  }
+
+  set overviewData(data: OverviewData) {
+    this.#data = data;
+    this.requestUpdate();
   }
 
   static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
 }
 
-interface ViewInput {
+interface ElementDetailsViewInput {
   items: Array<{
     data: PopulateNodesEventNodeTypes,
     link?: HTMLElement,
@@ -846,9 +884,9 @@ interface ViewInput {
   }>;
   visibility: Set<string>;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+type ElementDetailsViewFunction = (input: ElementDetailsViewInput, output: object, target: HTMLElement) => void;
 
-export const DEFAULT_VIEW: View = (input, _output, target) => {
+export const ELEMENT_DETAILS_DEFAULT_VIEW: ElementDetailsViewFunction = (input, _output, target) => {
   const {items, visibility} = input;
   // clang-format off
   render(html`
@@ -893,11 +931,11 @@ export class ElementDetailsView extends UI.Widget.Widget {
   readonly #cssModel: SDK.CSSModel.CSSModel;
   readonly #linkifier: Components.Linkifier.Linkifier;
   #data: PopulateNodesEventNodes;
-  readonly #view: View;
+  readonly #view: ElementDetailsViewFunction;
 
   constructor(
       domModel: SDK.DOMModel.DOMModel, cssModel: SDK.CSSModel.CSSModel, linkifier: Components.Linkifier.Linkifier,
-      view: View = DEFAULT_VIEW) {
+      view: ElementDetailsViewFunction = ELEMENT_DETAILS_DEFAULT_VIEW) {
     super();
 
     this.#domModel = domModel;
@@ -1026,14 +1064,13 @@ function renderContrastRatio(data: PopulateNodesEventNodeTypes): TemplateResult 
   // clang-format on
 }
 
-function createClearIcon(): IconButton.Icon.Icon {
-  const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'clear', color: 'var(--icon-error)', width: '14px', height: '14px'};
-  return icon;
+function createClearIcon(): TemplateResult {
+  return html`
+    <devtools-icon name="clear" style="color:var(--icon-error); width:14px; height:14px"></devtools-icon>`;
 }
 
-function createCheckIcon(): IconButton.Icon.Icon {
-  const icon = new IconButton.Icon.Icon();
-  icon.data = {iconName: 'checkmark', color: 'var(--icon-checkmark-green)', width: '14px', height: '14px'};
-  return icon;
+function createCheckIcon(): TemplateResult {
+  return html`
+    <devtools-icon name="checkmark"
+        style="color:var(--icon-checkmark-green); width:14px; height:14px"></devtools-icon>`;
 }

@@ -77,6 +77,9 @@ export class DomFragment {
         const initializer = key.identifiers[0];
         if (initializer?.parent?.type === 'VariableDeclarator') {
           result.initializer = initializer.parent?.init ?? undefined;
+          if (result.initializer?.type === 'TSAsExpression') {
+            result.initializer = result.initializer.expression;
+          }
         }
         result.expression = key.name;
       }
@@ -190,12 +193,14 @@ export class DomFragment {
       if (this.bindings.length) {
         appendExpression(',');
         if (this.bindings.length === 1) {
-          appendExpression(
-              `{${this.bindings[0].key}: ${toOutputString(this.bindings[0].value, /* quoteLiterals=*/ true)}}`);
+          appendExpression(`{${this.bindings[0].key}: ${
+              typeof this.bindings[0].value === 'string' ? this.bindings[0].value :
+                                                           sourceCode.getText(this.bindings[0].value)}}`);
         } else {
           appendExpression('{');
           for (const binding of this.bindings) {
-            appendExpression(`${binding.key}: ${toOutputString(binding.value, /* quoteLiterals=*/ true)},`);
+            appendExpression(`${binding.key}: ${
+                typeof binding.value === 'string' ? binding.value : sourceCode.getText(binding.value)},`);
           }
           appendExpression('}');
         }

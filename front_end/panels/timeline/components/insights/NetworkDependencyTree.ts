@@ -142,7 +142,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     if (!this.model) {
       return Lit.nothing;
     }
-    if (this.model.preconnectOrigins.length <=
+    if (this.model.preconnectedOrigins.length <=
         Trace.Insights.Models.NetworkDependencyTree.TOO_MANY_PRECONNECTS_THRESHOLD) {
       return Lit.nothing;
     }
@@ -173,7 +173,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
       <div class="insight-description">${md(i18nString(UIStrings.preconnectOriginsTableDescription))}</div>
     `;
 
-    if (!this.model.preconnectOrigins.length) {
+    if (!this.model.preconnectedOrigins.length) {
       // clang-format off
       return html`
         <div class="insight-section">
@@ -184,7 +184,26 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
       // clang-format on
     }
 
-    const rows: TableDataRow[] = this.model.preconnectOrigins.map(preconnectOrigin => {
+    const rows: TableDataRow[] = this.model.preconnectedOrigins.map(preconnectOrigin => {
+      const subRows = [];
+      if (preconnectOrigin.unused) {
+        subRows.push({
+          values: [md(i18nString(UIStrings.unusedWarning))],
+        });
+      }
+      if (preconnectOrigin.crossorigin) {
+        subRows.push({
+          values: [md(i18nString(UIStrings.crossoriginWarning))],
+        });
+      }
+
+      if (preconnectOrigin.source === 'ResponseHeader') {
+        return {
+          values: [preconnectOrigin.url, eventRef(preconnectOrigin.request, {text: preconnectOrigin.headerText})],
+          subRows,
+        };
+      }
+
       // clang-format off
       const nodeEl = html`
         <devtools-performance-node-link
@@ -198,10 +217,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
 
       return {
         values: [preconnectOrigin.url, nodeEl],
-        subRows: preconnectOrigin.unused ? [{
-          values: [md(i18nString(UIStrings.unusedWarning))],
-        }] :
-                                           undefined,
+        subRows,
       };
     });
 

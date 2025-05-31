@@ -5,6 +5,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 import * as path from 'path';
+import type {Page, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
@@ -54,20 +55,35 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
 
     const page = await browser.newPage();
 
-    await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
-      try {
-        const testFrame = page.frames()[1];
-        const element = await testFrame.waitForSelector(elementSelector);
+    async function setupBindings(page: Page) {
+      await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
+        try {
+          // Karma sometimes runs tests in an iframe or in the main frame.
+          const testFrame = page.frames()[1] ?? page.mainFrame();
+          const element = await testFrame.waitForSelector(elementSelector);
 
-        await assertElementScreenshotUnchanged(element, filename, {
-          captureBeyondViewport: false,
-        });
-        return undefined;
-      } catch (error) {
-        if (error instanceof ScreenshotError) {
-          ScreenshotError.errors.push(error);
+          await assertElementScreenshotUnchanged(element, filename, {
+            captureBeyondViewport: false,
+          });
+          return undefined;
+        } catch (error) {
+          if (error instanceof ScreenshotError) {
+            ScreenshotError.errors.push(error);
+          }
+          return `ScreenshotError: ${error.message}`;
         }
-        return `ScreenshotError: ${error.message}`;
+      });
+    }
+
+    await setupBindings(page);
+
+    browser.on('targetcreated', async (target: Target) => {
+      if (target.type() === 'page') {
+        const page = await target.page();
+        if (!page) {
+          return;
+        }
+        await setupBindings(page);
       }
     });
 
@@ -86,6 +102,7 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       '--disable-lcd-text',
       '--force-device-scale-factor=1',
       '--disable-device-discovery-notifications',
+      '--window-size=1280,768',
       ...args.flags,
       url,
     ];
@@ -141,7 +158,6 @@ module.exports = function(config: any) {
       // Global hooks in test_setup must go first
       {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern, type: 'module'})),
-      {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_post_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern: `${pattern}.map`, served: true, included: false, watched: true})),
       {pattern: path.join(GEN_DIR, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/core/i18n/locales/*.json'), served: true, included: false},

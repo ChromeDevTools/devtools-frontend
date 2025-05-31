@@ -520,21 +520,21 @@ export class MetricCard extends HTMLElement {
     const goodLabel = html`
       <div class="bucket-label">
         <span>${i18nString(UIStrings.good)}</span>
-        <span class="bucket-range">${i18nString(UIStrings.leqRange, {PH1: format(thresholds[0])})}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.leqRange, {PH1: format(thresholds[0])})}</span>
       </div>
     `;
 
     const needsImprovementLabel = html`
       <div class="bucket-label">
         <span>${i18nString(UIStrings.needsImprovement)}</span>
-        <span class="bucket-range">${i18nString(UIStrings.betweenRange, {PH1: format(thresholds[0]), PH2: format(thresholds[1])})}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.betweenRange, {PH1: format(thresholds[0]), PH2: format(thresholds[1])})}</span>
       </div>
     `;
 
     const poorLabel = html`
       <div class="bucket-label">
         <span>${i18nString(UIStrings.poor)}</span>
-        <span class="bucket-range">${i18nString(UIStrings.gtRange, {PH1: format(thresholds[1])})}</span>
+        <span class="bucket-range"> ${i18nString(UIStrings.gtRange, {PH1: format(thresholds[1])})}</span>
       </div>
     `;
     // clang-format on

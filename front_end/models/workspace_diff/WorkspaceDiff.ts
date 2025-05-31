@@ -115,11 +115,11 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     switch (uiSourceCode.project().type()) {
       case Workspace.Workspace.projectTypes.Network:
         // We track differences for all Network resources.
-        return true;
+        return this.#persistence.binding(uiSourceCode) === null;
 
       case Workspace.Workspace.projectTypes.FileSystem:
         // We track differences for FileSystem resources without bindings.
-        return this.#persistence.binding(uiSourceCode) === null;
+        return true;
 
       default:
         return false;
@@ -212,7 +212,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
     this.#requestDiffPromise = null;
 
     const content = this.#uiSourceCode.content();
-    const delay = (!content || content.length < 65536) ? 0 : UpdateTimeout;
+    const delay = (!content || content.length < 65536) ? 0 : 200;
     this.#pendingChanges = window.setTimeout(emitDiffChanged.bind(this), delay);
 
     function emitDiffChanged(this: UISourceCodeDiff): void {
@@ -308,5 +308,3 @@ export function workspaceDiff({forceNew}: {forceNew?: boolean} = {}): WorkspaceD
   }
   return workspaceDiffImplInstance;
 }
-
-export const UpdateTimeout = 200;

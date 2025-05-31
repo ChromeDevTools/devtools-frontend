@@ -1,10 +1,10 @@
 Name: @vscode/web-custom-data
 Short Name: @vscode/web-custom-data
 URL: https://github.com/microsoft/vscode-custom-data
-Version: 0.4.4
+Version: 0.5.2
 License: MIT
 License File: package/LICENSE.md
-Revision: 3e7155f32586e3298d58c40af61d990a64d3676c
+Revision: 79f0e53d9ade00eb00eda53016edb637a809ec1f
 Security Critical: no
 Shipped: yes
 
@@ -15,5 +15,5 @@ Includes MDN documentation and Chrome status entries for various HTML/CSS featur
 
 To update this package, run the following command (replace version number with updated version number):
 ```bash
-wget -qO- https://registry.npmjs.org/@vscode/web-custom-data/-/web-custom-data-0.4.4.tgz | tar xzf -
+wget -qO- https://registry.npmjs.org/@vscode/web-custom-data/-/web-custom-data-0.5.2.tgz | tar xzf -
 ```

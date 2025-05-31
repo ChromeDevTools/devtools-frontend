@@ -1634,6 +1634,10 @@ domain Browser
         inProgress
         completed
         canceled
+      # If download is "completed", provides the path of the downloaded file.
+      # Depending on the platform, it is not guaranteed to be set, nor the file
+      # is guaranteed to exist.
+      experimental optional string filePath
 
   # Close browser gracefully.
   command close
@@ -3002,12 +3006,14 @@ domain DOM
       view-transition
       view-transition-group
       view-transition-image-pair
+      view-transition-group-children
       view-transition-old
       view-transition-new
       placeholder
       file-selector-button
       details-content
       picker
+      permission-icon
 
   # Shadow root type.
   type ShadowRootType extends string
@@ -3513,6 +3519,9 @@ domain DOM
         PopoverTarget
         # Get the interest target for a given element.
         InterestTarget
+        # Get the commandfor target for a given element. In this case, this given
+        # element can only be an HTMLButtonElement.
+        CommandFor
     returns
       # NodeId of the element matching the queried relation.
       NodeId nodeId
@@ -10800,6 +10809,9 @@ experimental domain Storage
       # Name of the registered operation to be run.
       # Present only for SharedStorageAccessMethods: run and selectURL.
       optional string operationName
+      # ID of the operation call.
+      # Present only for SharedStorageAccessMethods: run and selectURL.
+      optional string operationId
       # Whether or not to keep the worket alive for future run or selectURL
       # calls.
       # Present only for SharedStorageAccessMethods: run and selectURL.
@@ -10827,12 +10839,17 @@ experimental domain Storage
       # Whether or not to set an entry for a key if that key is already present.
       # Present only for SharedStorageAccessMethod: set.
       optional boolean ignoreIfPresent
-      # If the method is called on a worklet, or as part of
-      # a worklet script, it will have an ID for the associated worklet.
+      # A number denoting the (0-based) order of the worklet's
+      # creation relative to all other shared storage worklets created by
+      # documents using the current storage partition.
+      # Present only for SharedStorageAccessMethods: addModule, createWorklet.
+      optional integer workletOrdinal
+      # Hex representation of the DevTools token used as the TargetID for the
+      # associated shared storage worklet.
       # Present only for SharedStorageAccessMethods: addModule, createWorklet,
       # run, selectURL, and any other SharedStorageAccessMethod when the
-      # SharedStorageAccessScope is worklet.
-      optional string workletId
+      # SharedStorageAccessScope is sharedStorageWorklet.
+      optional Target.TargetID workletTargetId
       # Name of the lock to be acquired, if present.
       # Optionally present only for SharedStorageAccessMethods: batchUpdate,
       # set, append, delete, and clear.
@@ -11196,6 +11213,27 @@ experimental domain Storage
       # The sub-parameters wrapped by `params` are all optional and their
       # presence/absence depends on `type`.
       SharedStorageAccessParams params
+
+  # A shared storage run or selectURL operation finished its execution.
+  # The following parameters are included in all events.
+  event sharedStorageWorkletOperationExecutionFinished
+    parameters
+      # Time that the operation finished.
+      Network.TimeSinceEpoch finishedTime
+      # Time, in microseconds, from start of shared storage JS API call until
+      # end of operation execution in the worklet.
+      integer executionTime
+      # Enum value indicating the Shared Storage API method invoked.
+      SharedStorageAccessMethod method
+      # ID of the operation call.
+      string operationId
+      # Hex representation of the DevTools token used as the TargetID for the
+      # associated shared storage worklet.
+      Target.TargetID workletTargetId
+      # DevTools Frame Token for the primary frame tree's root.
+      Page.FrameId mainFrameId
+      # Serialization of the origin owning the Shared Storage data.
+      string ownerOrigin
 
   event storageBucketCreatedOrUpdated
     parameters
@@ -11994,7 +12032,7 @@ domain Tracing
 
   type TraceConfig extends object
     properties
-      # Controls how the trace buffer stores data.
+      # Controls how the trace buffer stores data. The default is `recordUntilFull`.
       experimental optional enum recordMode
         recordUntilFull
         recordContinuously

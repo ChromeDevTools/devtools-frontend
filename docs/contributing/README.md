@@ -309,7 +309,7 @@ send it to us as described on that page.
 
 ### First-time contributors
 
-Add your or your organization's name and contact info to the [`AUTHORS`](./AUTHORS)
+Add your or your organization's name and contact info to the [`AUTHORS`](../../AUTHORS)
 file for Chromium DevTools. Please include this as part of your first patch and
 not as a separate standalone patch.
 
@@ -320,11 +320,11 @@ contribution can be accepted:
 
 -   Definition: The "author" is the email address that owns the code review
     request on <https://chromium-review.googlesource.com>
--   Ensure the author is already listed in the [`AUTHORS`](./AUTHORS).
+-   Ensure the author is already listed in the [`AUTHORS`](../../AUTHORS).
     In some cases, the author's company might have a wildcard rule
     (e.g. `*@google.com`).
 -   If the author or their company is not listed, the CL should include a new
-    [`AUTHORS`](./AUTHORS) entry.
+    [`AUTHORS`](../../AUTHORS) entry.
     -    Ensure the new entry is reviewed by a reviewer who works for Google.
     -    Contributor License Agreement can be verified by Googlers at http://go/cla.
     -    If there is a corporate CLA for the author's company, it must list the

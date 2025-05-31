@@ -21,7 +21,6 @@ devtools_module("source_map_scopes") {
     "../../models/bindings:bundle",
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
-    "../../models/workspace:bundle",
   ]
 }
 

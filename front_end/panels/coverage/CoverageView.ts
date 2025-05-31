@@ -273,7 +273,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   private buildLandingPage(): UI.Widget.VBox {
     const widget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noCoverageData), '');
-    widget.appendLink('https://developer.chrome.com/docs/devtools/coverage' as Platform.DevToolsPath.UrlString);
+    widget.link = 'https://developer.chrome.com/docs/devtools/coverage' as Platform.DevToolsPath.UrlString;
     if (this.startWithReloadButton) {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction('coverage.start-with-reload');
       if (action) {
@@ -357,8 +357,8 @@ export class CoverageView extends UI.Widget.VBox {
     this.coverageTypeComboBoxSetting.set(this.coverageTypeComboBox.selectedIndex());
   }
 
-  async startRecording(options: {reload: (boolean|undefined), jsCoveragePerBlock: (boolean|undefined)}|
-                       null): Promise<void> {
+  async startRecording(options: {reload: (boolean|undefined), jsCoveragePerBlock: (boolean|undefined)}|null):
+      Promise<void> {
     let hadFocus, reloadButtonFocused;
     if ((this.startWithReloadButton?.element.hasFocus()) || (this.inlineReloadButton?.hasFocus())) {
       reloadButtonFocused = true;

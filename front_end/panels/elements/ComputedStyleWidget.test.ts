@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
@@ -66,8 +67,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
         node,
       });
       const computedStyleWidget = new Elements.ComputedStyleWidget.ComputedStyleWidget(computedStyleModel);
-      computedStyleWidget.markAsRoot();
-      computedStyleWidget.show(document.body);
+      renderElementIntoDOM(computedStyleWidget);
 
       return computedStyleWidget;
     }

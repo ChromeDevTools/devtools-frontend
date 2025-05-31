@@ -3,8 +3,11 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../models/trace/trace.js';
+import {assertScreenshot} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {renderWidgetInVbox} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Timeline from './timeline.js';
 import * as Utils from './utils/utils.js';
@@ -103,12 +106,22 @@ describeWithEnvironment('TimelineTreeView', function() {
   describe('BottomUpTimelineTreeView', function() {
     it('Creates a bottom up tree from nestable events', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
+      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+
+      // Note: order is important here. The BottomUp view skips updating if it
+      // has no parent element (because in the UI it is one of many components
+      // in tabs, so we only update it if its visible), so it must be put into
+      // the DOM before we set the model.
+      renderWidgetInVbox(bottomUpTreeView);
       bottomUpTreeView.setRange(startTime, endTime);
-      bottomUpTreeView.setModelWithEvents(consoleTimings, parsedTrace);
+      bottomUpTreeView.setModelWithEvents(consoleTimings, parsedTrace, mapper);
+
+      await RenderCoordinator.done();
+      await assertScreenshot('timeline/bottom_up_tree_view.png');
 
       const tree = bottomUpTreeView.buildTree();
       const topNodesIterator = tree.children().values();
@@ -133,8 +146,13 @@ describeWithEnvironment('TimelineTreeView', function() {
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
+
+      renderWidgetInVbox(callTreeView);
       callTreeView.setRange(startTime, endTime);
       callTreeView.setModelWithEvents(consoleTimings, parsedTrace);
+
+      await RenderCoordinator.done();
+      await assertScreenshot('timeline/call_tree_view.png');
 
       const tree = callTreeView.buildTree();
       const topNodesIterator = tree.children().values();

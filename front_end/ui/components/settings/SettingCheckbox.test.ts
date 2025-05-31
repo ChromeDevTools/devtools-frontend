@@ -101,7 +101,7 @@ describe('SettingCheckbox', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       disabledCondition: () => {
-        return {disabled: true, reasons: ['reason']};
+        return {disabled: true, reasons: ['reason' as Platform.UIString.LocalizedString]};
       },
     });
 
@@ -121,7 +121,7 @@ describe('SettingCheckbox', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       disabledCondition: () => {
-        return {disabled: true, reasons: ['reason']};
+        return {disabled: true, reasons: ['reason' as Platform.UIString.LocalizedString]};
       },
     });
 

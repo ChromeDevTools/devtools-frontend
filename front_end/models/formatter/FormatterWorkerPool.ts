@@ -81,13 +81,13 @@ export class FormatterWorkerPool {
     this.workerTasks.set(newWorker, null);
     this.processNextTask();
     if (task) {
-      task.callback(null);
+      task.errorCallback(event);
     }
   }
 
   private runChunkedTask(
       methodName: string, params: Record<string, string>, callback: (arg0: boolean, arg1: unknown) => void): void {
-    const task = new Task(methodName, params, onData, true);
+    const task = new Task(methodName, params, onData, () => onData(null), true);
     this.taskQueue.push(task);
     this.processNextTask();
 
@@ -104,8 +104,8 @@ export class FormatterWorkerPool {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private runTask(methodName: FormatterActions.FormatterActions, params: Record<string, unknown>): Promise<any> {
-    return new Promise(resolve => {
-      const task = new Task(methodName, params, resolve, false);
+    return new Promise((resolve, reject) => {
+      const task = new Task(methodName, params, resolve, reject, false);
       this.taskQueue.push(task);
       this.processNextTask();
     });
@@ -117,6 +117,9 @@ export class FormatterWorkerPool {
   }
 
   javaScriptSubstitute(expression: string, mapping: Map<string, string|null>): Promise<string> {
+    if (mapping.size === 0) {
+      return Promise.resolve(expression);
+    }
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE, {content: expression, mapping})
         .then(result => result || '');
   }
@@ -125,11 +128,6 @@ export class FormatterWorkerPool {
       Promise<FormatterActions.ScopeTreeNode|null> {
     return this.runTask(FormatterActions.FormatterActions.JAVASCRIPT_SCOPE_TREE, {content: expression, sourceType})
         .then(result => result || null);
-  }
-
-  evaluatableJavaScriptSubstring(content: string): Promise<string> {
-    return this.runTask(FormatterActions.FormatterActions.EVALUATE_JAVASCRIPT_SUBSTRING, {content})
-        .then(text => text || '');
   }
 
   parseCSS(content: string, callback: (arg0: boolean, arg1: CSSRule[]) => void): void {
@@ -148,11 +146,15 @@ class Task {
   method: string;
   params: unknown;
   callback: (arg0: MessageEvent|null) => void;
+  errorCallback: (arg0: Event) => void;
   isChunked: boolean|undefined;
-  constructor(method: string, params: unknown, callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
+  constructor(
+      method: string, params: unknown, callback: (arg0: MessageEvent|null) => void,
+      errorCallback: (arg0: Event) => void, isChunked?: boolean) {
     this.method = method;
     this.params = params;
     this.callback = callback;
+    this.errorCallback = errorCallback;
     this.isChunked = isChunked;
   }
 }

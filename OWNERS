@@ -12,6 +12,7 @@ per-file htaccess=file://config/owner/INFRA_OWNERS
 per-file package-lock.json=file://config/owner/INFRA_OWNERS
 per-file package.json=file://config/owner/INFRA_OWNERS
 per-file tsconfig.json=file://config/owner/INFRA_OWNERS
+per-file eslint.config.mjs=file://config/owner/COMMON_OWNERS
 
 # git submodules
 per-file build=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com

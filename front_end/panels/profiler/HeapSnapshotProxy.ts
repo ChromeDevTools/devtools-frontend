@@ -450,10 +450,6 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
 }
 
 export class HeapSnapshotProviderProxy extends HeapSnapshotProxyObject implements ChildrenProvider {
-  constructor(worker: HeapSnapshotWorkerProxy, objectId: number) {
-    super(worker, objectId);
-  }
-
   nodePosition(snapshotObjectId: number): Promise<number> {
     return this.callMethodPromise('nodePosition', snapshotObjectId);
   }

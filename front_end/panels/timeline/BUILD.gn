@@ -47,6 +47,7 @@ generate_css("css_files") {
     "timelinePanel.css",
     "timelineSelectorStatsView.css",
     "timelineStatusDialog.css",
+    "timelineTreeView.css",
   ]
 }
 
@@ -73,6 +74,7 @@ devtools_module("timeline") {
     "ModificationsManager.ts",
     "NetworkTrackAppender.ts",
     "SaveFileFormatter.ts",
+    "StatusDialog.ts",
     "TargetForEvent.ts",
     "ThirdPartyTreeView.ts",
     "ThreadAppender.ts",

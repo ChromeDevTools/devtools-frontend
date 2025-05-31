@@ -60,7 +60,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     assert.deepEqual(sectionsText, expected);
   });
 
-  it('shows a message explaining that Bounce Tracking Mitigations must be enabled to use the panel', async () => {
+  it('shows a message indicating that Bounce Tracking Mitigations are disabled', async () => {
     createTarget();
     setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
 
@@ -73,7 +73,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
     const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
     const expected = [
-      'Bounce tracking mitigations are disabled. To enable them, set the flag at Bounce Tracking Mitigations Feature Flag to "Enabled With Deletion".',
+      'Bounce tracking mitigations are disabled.',
     ];
 
     assert.deepEqual(sectionsText, expected);

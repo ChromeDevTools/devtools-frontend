@@ -663,11 +663,16 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     };
     infoByAnchor.set(link, linkInfo);
     if (!preventClick) {
-      link.addEventListener('click', event => {
+      const handler = (event: MouseEvent|KeyboardEvent): void => {
+        if (event instanceof KeyboardEvent && event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== ' ') {
+          return;
+        }
         if (Linkifier.handleClick(event)) {
           event.consume(true);
         }
-      }, false);
+      };
+      link.onclick = handler;
+      link.onkeydown = handler;
     } else {
       link.classList.add('devtools-link-prevent-click');
     }

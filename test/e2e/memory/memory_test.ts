@@ -10,6 +10,7 @@ import {
   $$,
   assertNotNullOrUndefined,
   clickElement,
+  drainFrontendTaskQueue,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -68,13 +69,12 @@ describe('The Memory Panel', function() {
     await navigateToMemoryTab();
   });
 
-  // This test logs assertions to the console.
-  it.skip('[crbug.com/347709947] Can take several heap snapshots ', async () => {
+  it('Can take several heap snapshots ', async () => {
     await goToResource('memory/default.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
-    await takeHeapSnapshot();
+    await takeHeapSnapshot('Snapshot 2');
     await waitForNonEmptyHeapSnapshotData();
     const heapSnapShots = await $$('.heap-snapshot-sidebar-tree-item');
     assert.lengthOf(heapSnapShots, 2);
@@ -561,7 +561,7 @@ describe('The Memory Panel', function() {
     // Objects should be grouped by interface if there are at least two matching instances.
     assert.strictEqual(2, await getCountFromCategoryRowWithName('{a, b, c, d, p, q, r}'));
     assert.isNotOk(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false));
-    const {frontend, target} = await getBrowserAndPages();
+    const {frontend, target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('button#update');
     await frontend.bringToFront();
@@ -576,12 +576,13 @@ describe('The Memory Panel', function() {
     assert.isNotOk(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false));
   });
 
-  // Failing with crbug.com/361078921
-  it.skip('[crbug.com/361078921]: Groups objects by constructor location', async () => {
+  it('Groups objects by constructor location', async () => {
     await goToResource('memory/duplicated-names.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
+    // TODO: filtering does not work while UI is rendering snapshot.
+    await drainFrontendTaskQueue();
     await setClassFilter('DuplicatedClassName');
     let rows = await waitForMany('tr.data-grid-data-grid-node', 3);
     assert.strictEqual(30, await getCountFromCategoryRow(rows[0]));
@@ -589,12 +590,13 @@ describe('The Memory Panel', function() {
     assert.strictEqual(2, await getCountFromCategoryRow(rows[2]));
     await focusTableRow(rows[0]);
     await expandFocusedRow();
-    const {frontend, target} = await getBrowserAndPages();
+    // TODO: pressing arrowDown does not work while UI is rendering.
+    await drainFrontendTaskQueue();
+    const {frontend, target} = getBrowserAndPages();
     await frontend.keyboard.press('ArrowDown');
     await clickOnContextMenuForRetainer('x', 'Reveal in Summary view');
     await waitUntilRetainerChainSatisfies(
         retainerChain => retainerChain.length > 0 && retainerChain[0].propertyName === 'a');
-
     await target.bringToFront();
     await target.click('button#update');
     await frontend.bringToFront();

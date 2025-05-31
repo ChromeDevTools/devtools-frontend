@@ -100,8 +100,10 @@ def sync_node(options):
 
 def copy_files(options):
     for from_path, to_path in FILE_MAPPINGS.items():
-        from_path_full = os.path.join(options.chromium_dir, os.path.normpath(from_path))
-        to_path_full = os.path.join(options.devtools_dir, os.path.normpath(to_path))
+        from_path_full = os.path.join(options.chromium_dir,
+                                      os.path.normpath(from_path))
+        to_path_full = os.path.join(options.devtools_dir,
+                                    os.path.normpath(to_path))
         print(f'{os.path.normpath(from_path)} => {os.path.normpath(to_path)}')
 
         # Create destination directory if it doesn't exist

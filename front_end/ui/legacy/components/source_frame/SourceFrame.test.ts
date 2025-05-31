@@ -8,6 +8,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
   dispatchInputEvent,
   dispatchPasteEvent,
+  renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../../testing/ExpectStubCall.js';
@@ -133,9 +134,8 @@ describeWithEnvironment('SourceFrame', () => {
         'application/wasm');
     const sourceFrame = new SourceFrame.SourceFrame.SourceFrameImpl(async () => contentData);
 
-    sourceFrame.markAsRoot();
     const setContentStub = sinon.stub(sourceFrame, 'setContent');
-    sourceFrame.show(document.body);
+    renderElementIntoDOM(sourceFrame);
     const content = await expectCall(setContentStub);
 
     assert.strictEqual(

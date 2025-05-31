@@ -70,6 +70,7 @@ if (watch) {
   let timeoutId = -1;
   let buildPromise = Promise.resolve();
   let abortController = new AbortController();
+  const changes = new Set();
 
   function watchCallback(eventType, filename) {
     if (eventType !== 'change') {
@@ -78,6 +79,7 @@ if (watch) {
     if (!/^(BUILD\.gn)|(.*\.(css|js|ts))$/.test(filename)) {
       return;
     }
+    changes.add(filename);
     clearTimeout(timeoutId);
     timeoutId = setTimeout(watchRebuild, 250);
   }
@@ -87,11 +89,13 @@ if (watch) {
     abortController.abort();
     abortController = new AbortController();
     const {signal} = abortController;
+    const filenames = [...changes];
+    changes.clear();
 
     buildPromise = buildPromise.then(async () => {
       try {
         spinner.start('Rebuilding...');
-        const {time} = await build(target, signal);
+        const {time} = await build(target, signal, filenames);
         spinner.succeed(`Rebuild successfully (${timeFormatter.format(time)})`);
       } catch (error) {
         if (error.name !== 'AbortError') {

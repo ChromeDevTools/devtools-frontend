@@ -40,28 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 78,
-  header: 'What\'s new in DevTools 137',
+  version: 79,
+  header: 'What\'s new in DevTools 138 Beta',
   markdownLinks: [
     {
-      key: 'ai-styling',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-styling',
+      key: 'crbug1',
+      link: 'https://issues.chromium.org/issues/420862341',
     },
     {
-      key: 'ai-annotations',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-annotations',
+      key: 'crbug2',
+      link: 'https://issues.chromium.org/issues/420862838',
     },
     {
-      key: 'ai-insights',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137/#ai-insights',
+      key: 'crbug3',
+      link: 'https://issues.chromium.org/issues/420870269',
     },
   ],
   videoLinks: [
     {
-      description: 'See the highlights from Chrome 137',
+      description: 'See past highlights from Chrome 137',
       link: 'https://developer.chrome.com/blog/new-in-devtools-137' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-137/',
+  link: 'https://issues.chromium.org/hotlists/7004254',
 };

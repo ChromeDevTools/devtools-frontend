@@ -2,13 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
-import {doubleRaf} from '../../testing/DOMHelpers.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
+import {assertScreenshot, doubleRaf, raf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
+import {
+  microsecondsTraceWindow,
+  renderWidgetInVbox,
+  setupIgnoreListManagerEnvironment
+} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -37,6 +42,132 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     setupIgnoreListManagerEnvironment();
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+  });
+
+  afterEach(() => {
+    // TODO(crbug.com/421811012): this is a temporary tweak to get the tests
+    // passing to land crrev.com/c/6597455, after that lands we will tidy
+    // this up, as we don't want to have to do this on every widget that uses AriaUtils.
+    // But, until we remove the document.body usage (particularly in ThemeSupport.test.ts) we need to.
+    UI.ARIAUtils.removeAlertElement(document.body);
+  });
+
+  describe('rendering', () => {
+    beforeEach(() => {
+      // We persist collapsed/expanded states across sessions, but we want to
+      // make sure each test here does not impact others.
+      Common.Settings.Settings.instance().createSetting('timeline-flamechart-network-view-group-expansion', {}).set({});
+    });
+
+    it('renders the network and other tracks in collapsed and expanded modes', async function() {
+      const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
+
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
+      renderWidgetInVbox(flameChartView);
+      // IMPORTANT: order is important; for the flame chart view to render properly
+      // it must be in the DOM before we set the model, so it can calculate and
+      // set heights.
+      flameChartView.setModel(parsedTrace, metadata);
+
+      // Most of the network content is in the first ~700ms of this trace
+      const {min} = parsedTrace.Meta.traceBounds;
+      const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
+      const max = Trace.Types.Timing.Micro(min + interestingRange);
+      const newBounds = microsecondsTraceWindow(min, max);
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
+      await raf();
+
+      await assertScreenshot('timeline/flamechart_view_network_collapsed.png');
+      flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
+      await raf();
+      await assertScreenshot('timeline/flamechart_view_network_expanded.png');
+    });
+
+    it('does not show the network track when there is no network request', async function() {
+      const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.updateCountersGraphToggle(false);
+      renderWidgetInVbox(flameChartView);
+      flameChartView.setModel(parsedTrace, metadata);
+      await assertScreenshot('timeline/flamechart_view_no_network_events.png');
+    });
+
+    it('shows the details for a selected network event', async function() {
+      const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
+
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+      searchableView.setMinimumSize(0, 100);
+      searchableView.hideWidget();
+      flameChartView.setSearchableView(searchableView);
+      flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
+      renderWidgetInVbox(searchableView);
+      // IMPORTANT: order is important; for the flame chart view to render properly
+      // it must be in the DOM before we set the model, so it can calculate and
+      // set heights.
+      flameChartView.show(searchableView.element);
+      flameChartView.setModel(parsedTrace, metadata);
+      flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
+
+      // Most of the network content is in the first ~700ms of this trace
+      const {min} = parsedTrace.Meta.traceBounds;
+      const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
+      const max = Trace.Types.Timing.Micro(min + interestingRange);
+      const newBounds = microsecondsTraceWindow(min, max);
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
+      await raf();
+
+      const networkRequest = parsedTrace.NetworkRequests.byTime.find(req => {
+        return req.args.data.url === 'https://web.dev/js/app.js?v=fedf5fbe';
+      });
+      assert.isOk(networkRequest);
+      const selection = Timeline.TimelineSelection.selectionFromEvent(networkRequest);
+      flameChartView.setSelectionAndReveal(selection);
+      await raf();
+      await assertScreenshot('timeline/timeline_with_network_selection.png');
+    });
+
+    it('shows the details for a selected main thread event', async function() {
+      const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
+
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+      searchableView.setMinimumSize(0, 100);
+      searchableView.hideWidget();
+      flameChartView.setSearchableView(searchableView);
+      flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
+      renderWidgetInVbox(searchableView);
+      // IMPORTANT: order is important; for the flame chart view to render properly
+      // it must be in the DOM before we set the model, so it can calculate and
+      // set heights.
+      flameChartView.show(searchableView.element);
+      flameChartView.setModel(parsedTrace, metadata);
+      flameChartView.getNetworkFlameChart().toggleGroupExpand(0);
+
+      // Most of the network content is in the first ~700ms of this trace
+      const {min} = parsedTrace.Meta.traceBounds;
+      const interestingRange = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(700));
+      const max = Trace.Types.Timing.Micro(min + interestingRange);
+      const newBounds = microsecondsTraceWindow(min, max);
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(newBounds);
+      await raf();
+
+      // No particular reason to pick this event; it's just an event in the
+      // main thread within the time bounds.
+      const event = parsedTrace.Renderer.allTraceEntries.find(event => {
+        return Trace.Types.Events.isTimerFire(event) && event.ts === 122411157276;
+      });
+      assert.isOk(event);
+      const selection = Timeline.TimelineSelection.selectionFromEvent(event);
+      flameChartView.setSelectionAndReveal(selection);
+      await raf();
+      await assertScreenshot('timeline/timeline_with_main_thread_selection.png');
+    });
   });
 
   describe('groupForLevel', () => {
@@ -130,33 +261,6 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     assert.lengthOf(results, 9);
     assert.lengthOf(results.filter(r => r.provider === 'main'), 8);
     assert.lengthOf(results.filter(r => r.provider === 'network'), 1);
-    flameChartView.detach();
-  });
-
-  // This test is still failing after bumping up the timeout to 20 seconds. So
-  // skip it while we work on a fix for the trace load speed.
-  it.skip('[crbug.com/40285510] Shows the network track correctly', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-    // The timeline flamechart view will invoke the `select` method
-    // of this delegate every time an event has matched on a search.
-    const mockViewDelegate = new MockViewDelegate();
-
-    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace, metadata);
-
-    assert.isTrue(flameChartView.isNetworkTrackShownForTests());
-  });
-
-  it('Does not show the network track when there is no network request', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'basic.json.gz');
-    // The timeline flamechart view will invoke the `select` method
-    // of this delegate every time an event has matched on a search.
-    const mockViewDelegate = new MockViewDelegate();
-
-    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace, metadata);
-
-    assert.isFalse(flameChartView.isNetworkTrackShownForTests());
     flameChartView.detach();
   });
 

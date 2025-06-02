@@ -602,10 +602,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.timelineDataInternal;
   }
 
-  /**
-   * Register the groups (aka tracks) with the VisualElements framework so
-   * later on we can log when an entry inside this group is selected.
-   */
   #processGenericTrace(): void {
     if (!this.compatibilityTracksAppender) {
       return;

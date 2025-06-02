@@ -722,10 +722,12 @@ export async function renderFlameChartWithFakeProvider(
 export function renderWidgetInVbox(widget: UI.Widget.Widget, opts: {
   width?: number,
   height?: number,
+  flexAuto?: boolean,
 } = {}): void {
   const target = document.createElement('div');
   target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
-  target.classList.add('flex-auto', 'vbox');
+  target.classList.add('vbox');
+  target.classList.toggle('flex-auto', Boolean(opts.flexAuto));
   target.style.width = (opts.width ?? 800) + 'px';
   target.style.height = (opts.height ?? 600) + 'px';
   widget.markAsRoot();

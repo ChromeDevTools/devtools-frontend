@@ -12,6 +12,7 @@ import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as Trace from '../models/trace/trace.js';
 import * as Timeline from '../panels/timeline/timeline.js';
+import * as UI from '../ui/legacy/legacy.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, setupTestDOM} from './DOMHelpers.js';
@@ -65,16 +66,10 @@ function removeGlassPanes() {
   }
 }
 
-function removeAriaAlerts() {
-  for (const alert of document.body.querySelectorAll('[role="alert"]')) {
-    document.body.removeChild(alert);
-  }
-}
-
 afterEach(async function() {
   await cleanTestDOM();
   removeGlassPanes();
-  removeAriaAlerts();
+  UI.ARIAUtils.removeAlertElement(document.body);
 
   for (const child of document.body.children) {
     if (!documentBodyElements.has(child)) {
@@ -86,6 +81,7 @@ afterEach(async function() {
     // @ts-expect-error
     delete Root.Runtime.hostConfig[key];
   }
+  await cleanTestDOM();
   await checkForPendingActivity();
   resetHostConfig();
   sinon.restore();

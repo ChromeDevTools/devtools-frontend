@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
-import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
+import {click, getBrowserAndPages, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 
 import {loadTimelineDocExample} from './helpers.js';
@@ -15,23 +15,6 @@ describe('Performance panel', function() {
     // The Perf Panel is quite heavy to render, especially on CQ bots, so give it a bit more time per test.
     this.timeout(20_000);
   }
-
-  // Flaking.
-  itScreenshot.skip(
-      '[crbug.com/373792008]: supports the network track being expanded and then clicked', async function() {
-        await loadTimelineDocExample('performance_panel/basic.html?trace=web-dev');
-        const panel = await waitFor('body');
-
-        const {frontend} = getBrowserAndPages();
-        // Click to expand the network track.
-        await frontend.mouse.click(27, 131);
-        await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png');
-        // Click to select a network event.
-        await frontend.mouse.click(104, 144);
-        await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png');
-      });
 
   itScreenshot('renders the window range bounds correctly when loading multiple profiles', async () => {
     await loadTimelineDocExample('performance_panel/basic.html?cpuprofile=basic');
@@ -51,6 +34,7 @@ describe('Performance panel', function() {
     });
     assert(didUpdate);
   });
+
   itScreenshot('renders the flamechart correctly when toggling the custom data setting', async () => {
     const {frontend} = getBrowserAndPages();
     await loadTimelineDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');

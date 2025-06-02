@@ -93,8 +93,7 @@ describe('A user can move tabs', function() {
 });
 
 describe('A user can open panels via the "panel" query param', function() {
-  // Flaky on windows
-  it.skipOnPlatforms(['win32'], '[crbug.com/377280477] Layers is shown', async () => {
+  it('Layers is shown', async () => {
     await reloadDevTools({queryParams: {panel: 'layers'}});
     await tabExistsInMainPanel(LAYERS_TAB_SELECTOR);
   });

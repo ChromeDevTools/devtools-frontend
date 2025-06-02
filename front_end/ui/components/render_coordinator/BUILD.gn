@@ -20,5 +20,8 @@ ts_library("unittests") {
 
   sources = [ "render_coordinator.test.ts" ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../../testing",
+  ]
 }

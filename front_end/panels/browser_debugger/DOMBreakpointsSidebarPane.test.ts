@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 import * as BrowserDebugger from './browser_debugger.js';
@@ -18,30 +19,26 @@ describeWithLocale('DOMBreakpointsSidebarPane placeholder', () => {
   it('shows one-liner if in sources', () => {
     const domBreakpointsSidebarPane = BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance();
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     container.classList.add('sources', 'panel');
     domBreakpointsSidebarPane.markAsRoot();
     domBreakpointsSidebarPane.show(container);
 
-    document.body.appendChild(container);
     assertElementDisplayStyle('.empty-view-scroller', 'none');
     assertElementDisplayStyle('.placeholder .gray-info-message', 'block');
 
     assert.deepEqual(
         domBreakpointsSidebarPane.contentElement.querySelector('.placeholder .gray-info-message')?.textContent,
         'No DOM breakpoints');
-
-    domBreakpointsSidebarPane.detach();
-    container.remove();
   });
 
   it('shows empty widget if in elements panel', () => {
     const domBreakpointsSidebarPane = BrowserDebugger.DOMBreakpointsSidebarPane.DOMBreakpointsSidebarPane.instance();
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     container.classList.add('elements', 'panel');
     domBreakpointsSidebarPane.markAsRoot();
     domBreakpointsSidebarPane.show(container);
-
-    document.body.appendChild(container);
     assertElementDisplayStyle('.empty-view-scroller', 'flex');
     assertElementDisplayStyle('.placeholder .gray-info-message', 'none');
 
@@ -51,8 +48,5 @@ describeWithLocale('DOMBreakpointsSidebarPane placeholder', () => {
     assert.deepEqual(
         domBreakpointsSidebarPane.contentElement.querySelector('.empty-state-description > span')?.textContent,
         'DOM breakpoints pause on the code that changes a DOM node or its children.');
-
-    domBreakpointsSidebarPane.detach();
-    container.remove();
   });
 });

@@ -79,6 +79,7 @@ export const setupTestDOM = async () => {
   const newContainer = document.createElement('div');
   newContainer.id = TEST_CONTAINER_ID;
 
+  // eslint-disable-next-line rulesdir/no-widget-show-document-body
   document.body.appendChild(newContainer);
 };
 

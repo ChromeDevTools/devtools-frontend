@@ -12,6 +12,10 @@ new RuleTester().run('no-widget-show-document-body', rule, {
       widget.show(div);`,
       filename: 'front_end/panels/foo/foo.test.ts',
     },
+    {
+      code: 'document.body.querySelector(\'foo\');',
+      filename: 'front_end/panels/foo/foo.test.ts',
+    },
   ],
 
   invalid: [
@@ -26,6 +30,16 @@ new RuleTester().run('no-widget-show-document-body', rule, {
       filename: 'front_end/panels/foo/foo.test.ts',
       errors: [{messageId: 'invalidShowUsage'}],
       output: 'renderElementIntoDOM(networkPanel);'
+    },
+    {
+      code: 'document.body.appendChild(foo)',
+      filename: 'front_end/panels/foo/foo.test.ts',
+      errors: [{messageId: 'doNotRenderIntoBody'}],
+    },
+    {
+      code: 'document.body.append(foo)',
+      filename: 'front_end/panels/foo/foo.test.ts',
+      errors: [{messageId: 'doNotRenderIntoBody'}],
     },
   ],
 });

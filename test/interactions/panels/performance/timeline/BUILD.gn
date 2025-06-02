@@ -8,7 +8,6 @@ node_ts_library("timeline") {
   sources = [
     "annotations_test.ts",
     "helpers.ts",
-    "network_track_test.ts",
     "overview_test.ts",
     "timeline_selection_test.ts",
     "timeline_test.ts",

@@ -1260,6 +1260,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
     this.updateFilterStatus();
     this.searchableViewInternal.updateSearchMatchesCount(this.regexMatchRanges.length);
+    this.jumpToMatch(this.currentMatchRangeIndex);  // Re-highlight current match.
     this.viewport.invalidate();
     this.messagesCountElement.setAttribute(
         'aria-label', i18nString(UIStrings.filteredMessagesInConsole, {PH1: this.visibleViewMessages.length}));

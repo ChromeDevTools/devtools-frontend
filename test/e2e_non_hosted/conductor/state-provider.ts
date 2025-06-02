@@ -105,9 +105,9 @@ export class StateProvider {
   }
 
   async closeBrowsers() {
-    await this.#browserMap.forEach(async (browser: BrowserWrapper) => {
+    await Promise.all([...this.#browserMap.values()].map(async browser => {
       await browser.browser.close();
-    });
+    }));
   }
 }
 

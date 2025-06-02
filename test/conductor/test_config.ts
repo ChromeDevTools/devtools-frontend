@@ -44,7 +44,7 @@ function sliceArrayFromElement(array: string[], element: string) {
 }
 
 const diffBehaviors = asArray(options['on-diff']);
-// --diff=throw is the default, so set the option to true if there is either no --diff=no-throw or if it is overriden
+// --diff=throw is the default, so set the option to true if there is either no --diff=no-throw or if it is overridden
 // by a later --diff=throw
 const onDiffThrow = !diffBehaviors.includes(DiffBehaviors.NO_THROW) ||
     sliceArrayFromElement(diffBehaviors, DiffBehaviors.NO_THROW).includes(DiffBehaviors.THROW);

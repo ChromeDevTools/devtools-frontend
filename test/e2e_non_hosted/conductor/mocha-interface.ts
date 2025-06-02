@@ -29,13 +29,13 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
         const defaultFactory = ('default' in commonInterface ? commonInterface.default : commonInterface);
         defaultImplementation = defaultFactory([rootSuite], context, mocha) as CommonFunctions;
         // @ts-expect-error Custom interface.
-        context.before = instumentWith(defaultImplementation.before);
+        context.before = instrumentWith(defaultImplementation.before);
         // @ts-expect-error Custom interface.
-        context.after = instumentWith(defaultImplementation.after);
+        context.after = instrumentWith(defaultImplementation.after);
         // @ts-expect-error Custom interface.
-        context.beforeEach = instumentWith(defaultImplementation.beforeEach);
+        context.beforeEach = instrumentWith(defaultImplementation.beforeEach);
         // @ts-expect-error Custom interface.
-        context.afterEach = instumentWith(defaultImplementation.afterEach);
+        context.afterEach = instrumentWith(defaultImplementation.afterEach);
 
         if (mocha.options.delay) {
           context.run = defaultImplementation.runWithSuite(rootSuite);
@@ -55,7 +55,7 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
   });
 }
 
-function instumentWith(withDefaultFn: (fn: Mocha.AsyncFunc) => void) {
+function instrumentWith(withDefaultFn: (fn: Mocha.AsyncFunc) => void) {
   const name = withDefaultFn.name;
   return (fn: Mocha.AsyncFunc) => withDefaultFn(makeInstrumentedTestFunction(fn, name));
 }

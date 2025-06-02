@@ -16,7 +16,6 @@ group("e2e") {
 node_ts_library("tests") {
   deps = [
     "application",
-    "changes",
     "console",
     "cross_tool_integration",
     "elements",

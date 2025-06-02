@@ -4,11 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("changes") {
+ts_e2e_library("changes") {
   sources = [ "changes_test.ts" ]
 
   deps = [
+    "../../e2e/helpers",
     "../../shared",
-    "../helpers",
   ]
 }

@@ -19,6 +19,7 @@ node_ts_library("tests") {
     "animations",
     "application",
     "assertion",
+    "changes",
     "console",
     "coverage",
     "css_overview",

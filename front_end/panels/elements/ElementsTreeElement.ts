@@ -209,15 +209,15 @@ const UIStrings = {
   /**
    *@description Text of a tooltip to redirect to another element in the Elements panel
    */
-  showPopoverTarget: 'Show popover target',
+  showPopoverTarget: 'Show element associated with the `popovertarget` attribute',
   /**
    *@description Text of a tooltip to redirect to another element in the Elements panel
    */
-  showInterestTarget: 'Show interest target',
+  showInterestTarget: 'Show element associated with the `interesttarget` attribute',
   /**
    *@description Text of a tooltip to redirect to another element in the Elements panel
    */
-  showCommandForTarget: 'Show commandfor target',
+  showCommandForTarget: 'Show element associated with the `commandfor` attribute',
   /**
    *@description Text of the tooltip for scroll adorner.
    */

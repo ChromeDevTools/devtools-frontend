@@ -7490,6 +7490,10 @@ export const NativeFunctions = [
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
+    name: "setHitTestRegions",
+    signatures: [["hitTestRegions"]]
+  },
+  {
     name: "Path2D",
     signatures: [["?path"]]
   },

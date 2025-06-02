@@ -938,14 +938,14 @@ export const getSelectedBreadcrumbTextContent = async () => {
   return await text;
 };
 
-export const navigateToElementsTab = async () => {
-  if ((await $$(ELEMENTS_PANEL_SELECTOR)).length) {
+export const navigateToElementsTab = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  if ((await devtoolsPage.$$(ELEMENTS_PANEL_SELECTOR)).length) {
     return;
   }
   // Open Elements panel
-  await click('#tab-elements');
-  await waitFor(ELEMENTS_PANEL_SELECTOR);
-  await expectVeEvents([veImpressionForElementsPanel()]);
+  await devtoolsPage.click('#tab-elements');
+  await devtoolsPage.waitFor(ELEMENTS_PANEL_SELECTOR);
+  await expectVeEvents([veImpressionForElementsPanel()], undefined, devtoolsPage);
 };
 
 export const clickOnFirstLinkInStylesPanel = async () => {

@@ -56,21 +56,22 @@ export const openCommandMenu = async (
   await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
-export const openFileQuickOpen = async () => {
-  const {frontend} = getBrowserAndPages();
+export const openFileQuickOpen = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.press('P');
-  await frontend.keyboard.up(modifierKey);
-  await waitFor(QUICK_OPEN_SELECTOR);
+  await devtoolsPage.page.keyboard.down(modifierKey);
+  await devtoolsPage.page.keyboard.press('P');
+  await devtoolsPage.page.keyboard.up(modifierKey);
+  await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
-export async function readQuickOpenResults(): Promise<string[]> {
-  const items = await $$('.filtered-list-widget-title');
+export async function readQuickOpenResults(devtoolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<string[]> {
+  const items = await devtoolsPage.$$('.filtered-list-widget-title');
   return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
 }
 
-export const openFileWithQuickOpen = async (sourceFile: string, filePosition = 0) => {
+export const openFileWithQuickOpen =
+    async (sourceFile: string, filePosition = 0, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   await waitForSourceFiles(
       SourceFileEvents.SOURCE_FILE_LOADED,
       files => files.some(f => f.endsWith(sourceFile)),
@@ -80,6 +81,7 @@ export const openFileWithQuickOpen = async (sourceFile: string, filePosition = 0
         const firstItem = await getMenuItemAtPosition(filePosition);
         await firstItem.click();
       },
+      devtoolsPage,
   );
 };
 
@@ -116,10 +118,11 @@ export async function getAvailableSnippets() {
   return snippets;
 }
 
-export async function getMenuItemAtPosition(position: number) {
-  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
-  await waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
-  const itemsHandles = await $$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
+export async function getMenuItemAtPosition(
+    position: number, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
+  await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
+  const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
   if (!item) {
     assert.fail(`Quick open: could not find item at position: ${position}.`);
@@ -127,10 +130,11 @@ export async function getMenuItemAtPosition(position: number) {
   return item;
 }
 
-export async function getMenuItemTitleAtPosition(position: number) {
-  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
-  await waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
-  const itemsHandles = await $$(QUICK_OPEN_ITEM_TITLE_SELECTOR, quickOpenElement);
+export async function getMenuItemTitleAtPosition(
+    position: number, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
+  await devtoolsPage.waitFor(QUICK_OPEN_ITEM_TITLE_SELECTOR);
+  const itemsHandles = await devtoolsPage.$$(QUICK_OPEN_ITEM_TITLE_SELECTOR, quickOpenElement);
   const item = itemsHandles[position];
   if (!item) {
     assert.fail(`Quick open: could not find item at position: ${position}.`);
@@ -153,16 +157,17 @@ export const getSelectedItemText = async () => {
   return await textContent.jsonValue();
 };
 
-export async function typeIntoQuickOpen(query: string, expectEmptyResults?: boolean) {
-  await openFileQuickOpen();
-  const prompt = await waitFor('[aria-label="Quick open prompt"]');
+export async function typeIntoQuickOpen(
+    query: string, expectEmptyResults?: boolean, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await openFileQuickOpen(devtoolsPage);
+  const prompt = await devtoolsPage.waitFor('[aria-label="Quick open prompt"]');
   await prompt.type(query);
   if (expectEmptyResults) {
-    await waitFor('.filtered-list-widget :not(.hidden).not-found-text');
+    await devtoolsPage.waitFor('.filtered-list-widget :not(.hidden).not-found-text');
   } else {
     // Because each highlighted character is in its own div, we can count the highlighted
     // characters in one item to see that the list reflects the full query.
     const highlightSelector = new Array(query.length).fill('.highlight').join(' ~ ');
-    await waitFor('.filtered-list-widget-title ' + highlightSelector);
+    await devtoolsPage.waitFor('.filtered-list-widget-title ' + highlightSelector);
   }
 }

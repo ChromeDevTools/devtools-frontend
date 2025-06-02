@@ -463,13 +463,12 @@ export const enum SourceFileEvents {
 
 let nextEventHandlerId = 0;
 export async function waitForSourceFiles<T>(
-    eventName: SourceFileEvents, waitCondition: (files: string[]) => boolean | Promise<boolean>,
-    action: () => T): Promise<T> {
-  const {frontend} = getBrowserAndPages();
+    eventName: SourceFileEvents, waitCondition: (files: string[]) => boolean | Promise<boolean>, action: () => T,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<T> {
   const eventHandlerId = nextEventHandlerId++;
 
   // Install new listener for the event
-  await frontend.evaluate((eventName, eventHandlerId) => {
+  await devToolsPage.evaluate((eventName, eventHandlerId) => {
     if (!window.__sourceFileEvents) {
       window.__sourceFileEvents = new Map();
     }
@@ -485,14 +484,14 @@ export async function waitForSourceFiles<T>(
 
   const result = await action();
 
-  await waitForFunction(async () => {
-    const files =
-        await frontend.evaluate(eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
+  await devToolsPage.waitForFunction(async () => {
+    const files = await devToolsPage.evaluate(
+        eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
     assertNotNullOrUndefined(files);
     return await waitCondition(files);
   });
 
-  await frontend.evaluate((eventName, eventHandlerId) => {
+  await devToolsPage.evaluate((eventName, eventHandlerId) => {
     const handler = window.__sourceFileEvents.get(eventHandlerId);
     if (!handler) {
       throw new Error('handler unexpectandly unregistered');

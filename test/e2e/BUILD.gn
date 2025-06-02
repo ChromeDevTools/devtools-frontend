@@ -30,7 +30,6 @@ node_ts_library("tests") {
     "network",
     "panels",
     "performance",
-    "quick_open",
     "recorder",
     "search",
     "security",

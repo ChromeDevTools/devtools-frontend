@@ -2,35 +2,33 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   $,
+  $$,
   click,
+  getBrowserAndPages,
   goToResource,
   setCheckBox,
   typeText,
   waitFor,
+  waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {veImpression} from './visual-logging-helpers.js';
 
 const REQUEST_LIST_SELECTOR = '.network-log-grid tbody';
 
-export async function waitForNetworkTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
-    Promise<void> {
+export async function waitForNetworkTab(): Promise<void> {
   // Make sure the network tab is shown on the screen
-  await devToolsPage.waitFor('.network-log-grid');
+  await waitFor('.network-log-grid');
 }
 
-export async function openNetworkTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
-    Promise<void> {
-  await devToolsPage.click('#tab-network');
-  await waitForNetworkTab(devToolsPage);
+export async function openNetworkTab(): Promise<void> {
+  await click('#tab-network');
+  await waitForNetworkTab();
 }
 
 /**
@@ -46,17 +44,16 @@ export async function navigateToNetworkTab(testName: string) {
  * @param numberOfRequests The expected number of requests to wait for.
  * @param selector Optional. The selector to use to get the list of requests.
  */
-export async function waitForSomeRequestsToAppear(
-    numberOfRequests: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.waitForFunction(async () => {
-    const requests = await getAllRequestNames(devToolsPage);
+export async function waitForSomeRequestsToAppear(numberOfRequests: number) {
+  await waitForFunction(async () => {
+    const requests = await getAllRequestNames();
     return requests.length >= numberOfRequests && Boolean(requests.map(name => name ? name.trim() : '').join(''));
   });
 }
 
-export async function getAllRequestNames(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const requests = await devToolsPage.$$(REQUEST_LIST_SELECTOR + ' .name-column');
-  return await Promise.all(requests.map(request => request.evaluate(r => r.deepInnerText().split('\n')[0])));
+export async function getAllRequestNames() {
+  const requests = await $$(REQUEST_LIST_SELECTOR + ' .name-column');
+  return await Promise.all(requests.map(request => request.evaluate(r => r.childNodes[2].textContent)));
 }
 
 export async function getNumberOfRequests() {
@@ -73,17 +70,31 @@ export async function getSelectedRequestName() {
   });
 }
 
-export async function selectRequestByName(
-    name: string, clickOptions?: puppeteer.ClickOptions,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const requests = await devToolsPage.$$(REQUEST_LIST_SELECTOR + ' .name-column');
-  const names = await Promise.all(requests.map(request => request.evaluate(r => r.deepInnerText().split('\n')[0])));
-  const index = names.findIndex(n => n === name);
-  if (index === -1) {
-    assert.fail(`Request "${name}" not found.`);
+export async function selectRequestByName(name: string, clickOptions?: puppeteer.ClickOptions) {
+  const selector = REQUEST_LIST_SELECTOR + ' .name-column';
+  const {frontend} = getBrowserAndPages();
+
+  // Finding he click position is done in a single frontend.evaluate call
+  // to make sure the element still exists after finding the element.
+  // If this were done outside of evaluate code, it would be possible for an
+  // element to be removed from the dom between the $$(.selector) call and the
+  // click(element) call.
+  const rect = await frontend.evaluate((name, selector) => {
+    const elements = document.querySelectorAll(selector);
+    for (const element of elements) {
+      if (element.childNodes[2].textContent === name) {
+        const {left, top, width, height} = element.getBoundingClientRect();
+        return {left, top, width, height};
+      }
+    }
+    return null;
+  }, name, selector);
+
+  if (rect) {
+    const x = rect.left + rect.width * 0.5;
+    const y = rect.top + rect.height * 0.5;
+    await frontend.mouse.click(x, y, clickOptions);
   }
-  const request = requests[index];
-  await request.click(clickOptions);
 }
 
 export async function waitForSelectedRequestChange(initialRequestName: string|null) {
@@ -97,9 +108,8 @@ export async function setPersistLog(persist: boolean) {
   await setCheckBox('[title="Do not clear log on page reload / navigation"]', persist);
 }
 
-export async function setCacheDisabled(
-    disabled: boolean, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
-  await devToolsPage.setCheckBox('[title^="Disable cache"]', disabled);
+export async function setCacheDisabled(disabled: boolean): Promise<void> {
+  await setCheckBox('[title^="Disable cache"]', disabled);
 }
 
 export async function setInvert(invert: boolean) {
@@ -116,12 +126,11 @@ export async function clearTimeWindow(): Promise<void> {
   await overviewGridCursorArea.click({count: 2});
 }
 
-export async function setTextFilter(
-    text: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
-  const toolbarHandle = await devToolsPage.waitFor('.text-filter');
-  const input = await devToolsPage.waitForAria('Filter', toolbarHandle);
+export async function setTextFilter(text: string): Promise<void> {
+  const toolbarHandle = await waitFor('.text-filter');
+  const input = await waitForAria('Filter', toolbarHandle);
   await input.focus();
-  await typeText(text, devToolsPage);
+  await typeText(text);
 }
 
 export async function getTextFilterContent(): Promise<string> {

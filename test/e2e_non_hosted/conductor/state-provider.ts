@@ -43,12 +43,8 @@ export class StateProvider {
     } catch (e) {
       throw await screenshotError(state, e);
     } finally {
-      try {
-        await browsingContext.close();
-      } catch {
-      } finally {
-        dumpCollectedErrors();
-      }
+      await browsingContext.close();
+      dumpCollectedErrors();
     }
   }
 

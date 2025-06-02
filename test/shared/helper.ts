@@ -86,8 +86,8 @@ export const doubleClick =
   return await devToolsPage.doubleClick(selector, options);
 };
 
-export const typeText =
-    async (text: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+export const typeText = async (text: string) => {
+  const {devToolsPage} = getBrowserAndPagesWrappers();
   await devToolsPage.typeText(text);
 };
 
@@ -550,9 +550,8 @@ export async function renderCoordinatorQueueEmpty(): Promise<void> {
   await devToolsPage.renderCoordinatorQueueEmpty();
 }
 
-export async function setCheckBox(
-    selector: string, wantChecked: boolean,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
+export async function setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
+  const {devToolsPage} = getBrowserAndPagesWrappers();
   await devToolsPage.setCheckBox(selector, wantChecked);
 }
 

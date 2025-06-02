@@ -1,11 +1,11 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import rule from '../lib/no-widget-show-document-body.ts';
+import rule from '../lib/no-document-body-mutation.ts';
 
 import {RuleTester} from './utils/RuleTester.ts';
 
-new RuleTester().run('no-widget-show-document-body', rule, {
+new RuleTester().run('no-document-body-mutation', rule, {
   valid: [
     {
       code: `const div = document.createElement('div');

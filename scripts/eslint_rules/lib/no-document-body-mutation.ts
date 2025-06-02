@@ -57,7 +57,7 @@ function isDocumentBodyMethodCallToAddDOM(node: TSESTree.Node): node is TSESTree
 }
 
 export default createRule({
-  name: 'no-widget-show-document-body',
+  name: 'no-document-body-mutation',
   meta: {
     type: 'problem',
 

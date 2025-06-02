@@ -9,7 +9,6 @@ node_ts_library("components") {
     "ButtonDialog_test.ts",
     "Dialog_test.ts",
     "SelectMenu_test.ts",
-    "ShortcutDialog_test.ts",
   ]
 
   deps = [

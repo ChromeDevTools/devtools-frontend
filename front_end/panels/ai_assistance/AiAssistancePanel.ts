@@ -1594,7 +1594,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
-      Promise<string> {
+      Promise<{response: string, devToolsLogs: object[]}> {
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
     const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
     const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
@@ -1614,7 +1614,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  async handleExternalStylingRequest(prompt: string, selector?: string): Promise<string> {
+  async handleExternalStylingRequest(prompt: string, selector?: string):
+      Promise<{response: string, devToolsLogs: object[]}> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
     const externalConversation = new AiAssistanceModel.Conversation(
         agentToConversationType(stylingAgent),
@@ -1635,16 +1636,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           selected: this.#getConversationContext(externalConversation),
         },
     );
+    const devToolsLogs: object[] = [];
     for await (const data of runner) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
         void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
       }
       if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
         data.confirm(true);
       }
       if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
-        return data.text;
+        return {response: data.text, devToolsLogs};
       }
     }
     throw new Error('Something went wrong. No answer was generated.');

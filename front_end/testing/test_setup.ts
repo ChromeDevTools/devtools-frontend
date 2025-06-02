@@ -28,9 +28,15 @@ style.innerText =
 document.head.append(style);
 document.documentElement.classList.add('platform-screenshot-test');
 
+const documentBodyElements = new Set<Element>();
+
 beforeEach(async () => {
   resetHostConfig();
+  for (const child of document.body.children) {
+    documentBodyElements.add(child);
+  }
   await setupTestDOM();
+
   // Ensure that no trace data leaks between tests when testing the trace engine.
   for (const handler of Object.values(Trace.Handlers.ModelHandlers)) {
     handler.reset();
@@ -50,12 +56,36 @@ beforeEach(async () => {
   startTrackingAsyncActivity();
 });
 
-afterEach(async () => {
+/**
+ * If a widget creates a glass pane, it can get orphaned and not cleaned up correctly.
+ */
+function removeGlassPanes() {
+  for (const pane of document.body.querySelectorAll('[data-devtools-glass-pane]')) {
+    document.body.removeChild(pane);
+  }
+}
+
+function removeAriaAlerts() {
+  for (const alert of document.body.querySelectorAll('[role="alert"]')) {
+    document.body.removeChild(alert);
+  }
+}
+
+afterEach(async function() {
+  await cleanTestDOM();
+  removeGlassPanes();
+  removeAriaAlerts();
+
+  for (const child of document.body.children) {
+    if (!documentBodyElements.has(child)) {
+      console.error(`Test "${this.currentTest?.fullTitle()}" left DOM in document.body:`);
+      console.error(child);
+    }
+  }
   for (const key of Object.keys(Root.Runtime.hostConfig)) {
     // @ts-expect-error
     delete Root.Runtime.hostConfig[key];
   }
-  await cleanTestDOM();
   await checkForPendingActivity();
   resetHostConfig();
   sinon.restore();

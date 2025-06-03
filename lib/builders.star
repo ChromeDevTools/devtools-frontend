@@ -244,10 +244,6 @@ def generate_ci_configs(configurations, builders):
         def ci_builder(**kwargs):
             category = kwargs.pop("console_category")
             properties = kwargs.pop("properties")
-            properties["$build/reclient"] = {
-                "instance": "rbe-chromium-trusted",
-                "metrics_project": "chromium-reclient-metrics",
-            }
             builder(
                 bucket = "ci",
                 builder_group = c.builder_group,
@@ -326,10 +322,6 @@ cq_retry_config = cq.retry_config(
 def try_builder_base(properties = None, use_siso = SISO.NONE, **kwargs):
     properties = properties or {}
     properties.update(use_siso)
-    properties["$build/reclient"] = {
-        "instance": "rbe-chromium-untrusted",
-        "metrics_project": "chromium-reclient-metrics",
-    }
     builder(
         bucket = TRY_BUCKET_NAME,
         builder_group = "tryserver.devtools-frontend",

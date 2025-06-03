@@ -149,11 +149,7 @@ try_pair(
 )
 
 def cpp_debug_extension_try(suffix, extra_properties):
-    properties = {"$build/reclient": {
-        "instance": "rbe-chrome-trusted",
-        "metrics_project": "chromium-reclient-metrics",
-    }}
-    properties.update(extra_properties or {})
+    properties = extra_properties or {}
     luci.builder(
         name = "cpp_debug_extension_%s" % suffix,
         bucket = "try",

@@ -13,10 +13,6 @@ def common_properties():
     props = dict(
         e2e_builder = True,
     )
-    props.update({"$build/reclient": {
-        "instance": "rbe-chrome-trusted",
-        "metrics_project": "chromium-reclient-metrics",
-    }})
     return props
 
 BUILDERS = [

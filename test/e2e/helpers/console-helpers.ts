@@ -230,9 +230,9 @@ export async function focusConsolePrompt() {
   await timeout(50);
 }
 
-export async function showVerboseMessages() {
-  await click(LOG_LEVELS_SELECTOR);
-  await click(LOG_LEVELS_VERBOSE_OPTION_SELECTOR);
+export async function showVerboseMessages(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(LOG_LEVELS_SELECTOR);
+  await devToolsPage.click(LOG_LEVELS_VERBOSE_OPTION_SELECTOR);
   await expectVeEvents(
       [
         veClick(''),
@@ -248,7 +248,7 @@ export async function showVerboseMessages() {
         veClick('Menu > Toggle: verbose'),
         veResize('Menu'),
       ],
-      `${await veRoot()} > Toolbar > DropDown: log-level`);
+      `${await veRoot(devToolsPage)} > Toolbar > DropDown: log-level`, devToolsPage);
 }
 
 export async function typeIntoConsole(message: string) {

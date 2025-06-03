@@ -8,10 +8,8 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import {
   $$,
   click,
-  getBrowserAndPages,
   getTestServerPort,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -61,14 +59,16 @@ export async function navigateToManifestInApplicationTab(testName: string) {
   await click(MANIFEST_SELECTOR);
 }
 
-export async function navigateToStorage() {
+export async function navigateToStorage(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const STORAGE_SELECTOR = '[aria-label="Storage"]';
-  await click(STORAGE_SELECTOR);
-  await waitFor('.clear-storage-button');
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: storage'),
-    veImpressionsUnder('Panel: resources', [veImpressionForStorageOverview()]),
-  ]);
+  await devToolsPage.click(STORAGE_SELECTOR);
+  await devToolsPage.waitFor('.clear-storage-button');
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: storage'),
+        veImpressionsUnder('Panel: resources', [veImpressionForStorageOverview()]),
+      ],
+      undefined, devToolsPage);
 }
 
 export async function navigateToOpenedWindows() {
@@ -318,17 +318,17 @@ export async function selectCookieByName(name: string, devToolsPage = getBrowser
       [veClick('Panel: resources > Pane: cookies-data > TableRow > TableCell: name')], undefined, devToolsPage);
 }
 
-export async function waitForQuotaUsage(p: (quota: number) => boolean) {
-  const {frontend} = getBrowserAndPages();
-  await frontend.bringToFront();
-  await waitForFunction(async () => {
-    const usedQuota = await getQuotaUsage();
+export async function waitForQuotaUsage(
+    p: (quota: number) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.bringToFront();
+  await devToolsPage.waitForFunction(async () => {
+    const usedQuota = await getQuotaUsage(devToolsPage);
     return p(usedQuota);
   });
 }
 
-export async function getQuotaUsage() {
-  const storageRow = await waitFor('.quota-usage-row');
+export async function getQuotaUsage(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const storageRow = await devToolsPage.waitFor('.quota-usage-row');
   const quotaString = await storageRow.evaluate(el => el.textContent || '');
   const [usedQuotaText, modifier] =
       quotaString.replaceAll(',', '').replace(/^\D*([\d.]+)\D*(kM?)B.used.out.of\D*\d+\D*.?B.*$/, '$1 $2').split(' ');
@@ -341,8 +341,8 @@ export async function getQuotaUsage() {
   return usedQuota;
 }
 
-export async function getPieChartLegendRows() {
-  const pieChartLegend = await waitFor('.pie-chart-legend');
+export async function getPieChartLegendRows(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const pieChartLegend = await devToolsPage.waitFor('.pie-chart-legend');
   const rows = await pieChartLegend.evaluate(legend => {
     const rows = [];
     for (const tableRow of legend.children) {

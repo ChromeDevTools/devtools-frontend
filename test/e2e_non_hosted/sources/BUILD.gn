@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("sources") {
-  sources = [ "text-editor_test.ts" ]
+  sources = [
+    "icon-row-bucket_test.ts",
+    "text-editor_test.ts",
+  ]
 
   deps = [
     "../../../front_end/ui/components/text_editor:bundle",

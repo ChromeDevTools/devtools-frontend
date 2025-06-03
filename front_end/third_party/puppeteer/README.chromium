@@ -7,6 +7,7 @@ License File: LICENSE
 Revision: 1afc8e4f0a67641cdcc95d29ebe02a508f0141c7
 Security Critical: no
 Shipped: yes
+Update Mechanism: Autoroll
 
 Description:
 Puppeteer is a Node library which provides a high-level API to control Chrome or Chromium over the DevTools Protocol.

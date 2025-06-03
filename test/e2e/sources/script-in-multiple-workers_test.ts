@@ -186,9 +186,8 @@ describe('Multi-Workers', function() {
       assert.strictEqual(breakpoints, 1);
     });
 
-    // Regularly failing on Windows CQ
-    describe.skip(`[crbug.com/40260732] copies breakpoints between workers ${withOrWithout}`, () => {
-      beforeEach(async () => {
+    describe(`copies breakpoints between workers ${withOrWithout}`, () => {
+      async function setupBreakpoints() {
         await waitForSourceFiles(
             SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
               // Have the target load the page.
@@ -225,9 +224,10 @@ describe('Multi-Workers', function() {
         await step('Close tab', async () => {
           await click('[aria-label="Close multi-workers.js"]');
         });
-      });
+      }
 
       it('when opening different file in editor', async () => {
+        await setupBreakpoints();
         // Open different worker
         await step('Open different worker', async () => {
           await openNestedWorkerFile(workerFileSelectors(3));
@@ -239,6 +239,8 @@ describe('Multi-Workers', function() {
       });
 
       it('after reloading', async () => {
+        await setupBreakpoints();
+
         const {target} = getBrowserAndPages();
 
         await step('Reload page', async () => {
@@ -259,9 +261,8 @@ describe('Multi-Workers', function() {
       });
     });
 
-    // Flaky tests in beforeEach.
-    describe.skip(`[crbug.com/40260732] hits breakpoints added to workers ${withOrWithout}`, () => {
-      beforeEach(async () => {
+    describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
+      async function setupInstrumentationBreakpoints() {
         await enableExperiment('instrumentation-breakpoints');
         await waitForSourceFiles(
             SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith('multi-workers.js')), async () => {
@@ -282,9 +283,11 @@ describe('Multi-Workers', function() {
         await step('Set breakpoint', async () => {
           await addBreakpointForLine(6);
         });
-      });
+      }
 
       it('for pre-loaded workers', async () => {
+        await setupInstrumentationBreakpoints();
+
         const {target} = getBrowserAndPages();
         // Send message to a worker to trigger break
         await target.evaluate('workers[5].postMessage({});');
@@ -300,6 +303,8 @@ describe('Multi-Workers', function() {
       });
 
       it('for newly created workers', async () => {
+        await setupInstrumentationBreakpoints();
+
         const {target} = getBrowserAndPages();
         // Launch new worker to hit breakpoint
         await target.evaluate(`new Worker('${scriptFile}').postMessage({});`);

@@ -4,6 +4,7 @@
 
 import type * as puppeteer from 'puppeteer-core';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   $$,
   click,
@@ -208,8 +209,9 @@ export async function getDataGridData(
   return dataGridRowValues;
 }
 
-export async function getTrimmedTextContent(selector: string) {
-  const elements = await $$(selector);
+export async function getTrimmedTextContent(
+    selector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const elements = await devToolsPage.$$(selector);
   return await Promise.all(elements.map(element => element.evaluate(e => {
     return (e.textContent || '').trim().replace(/[ \n]{2,}/gm, '');  // remove multiple consecutive whitespaces
   })));

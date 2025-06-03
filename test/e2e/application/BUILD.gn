@@ -7,7 +7,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 node_ts_library("application") {
   sources = [
     "frame-tree_test.ts",
-    "manifest_test.ts",
     "service-worker-network_test.ts",
     "service-worker-update_test.ts",
     "session-storage_test.ts",

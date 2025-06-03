@@ -11,7 +11,6 @@ import {
   click,
   waitFor,
   waitForAria,
-  waitForElementWithTextContent,
   waitForFunction,
   waitForMany,
 } from '../../shared/helper.js';
@@ -355,28 +354,6 @@ export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBro
   await expectVeEvents(
       [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')], undefined,
       devToolsPage);
-}
-
-export async function disableCSSSelectorStats() {
-  const timelineSettingsPane = await waitFor(TIMELINE_SETTINGS_PANE);
-  if (await timelineSettingsPane.isHidden()) {
-    await openCaptureSettings(TIMELINE_SETTINGS_PANE);
-  }
-
-  // Wait for the checkbox to load
-  const toggle =
-      await waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as puppeteer.ElementHandle<HTMLInputElement>;
-  await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
-    if (e.disabled) {
-      return false;
-    }
-    if (e.checked) {
-      e.click();
-    }
-    return true;
-  }));
-  await expectVeEvents(
-      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
 }
 
 export function veImpressionForPerformancePanel() {

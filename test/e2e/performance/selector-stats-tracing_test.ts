@@ -5,22 +5,17 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, step} from '../../shared/helper.js';
-import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
-  disableCSSSelectorStats,
   enableCSSSelectorStats,
-  getRenderingTimeFromSummary,
   navigateToPerformanceTab,
   navigateToSelectorStatsTab,
-  reloadAndRecord,
   selectRecalculateStylesEvent,
   startRecording,
   stopRecording,
 } from '../helpers/performance-helpers.js';
 
-// Flaky
-describe.skip('[crbug.com/414579835] The Performance panel', function() {
+describe('The Performance panel', function() {
   // These tests move between panels, which takes time.
   if (this.timeout() !== 0) {
     this.timeout(30000);
@@ -52,26 +47,5 @@ describe.skip('[crbug.com/414579835] The Performance panel', function() {
           await getDataGridRows(1 /* expectedNumberOfRows*/, undefined /* root*/, false /* matchExactNumberOfRows*/);
       assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
     });
-  });
-
-  // Flaking on multiple bots on CQ.
-  it.skip('[crbug.com/349787448] CSS selector stats performance test', async () => {
-    // set a tentative threshold of 50%
-    const timeDiffPercentageMax = 0.5;
-
-    await navigateToPerformanceTab('selectorStats/page-with-style-perf-test');
-    await disableCSSSelectorStats();
-    await reloadAndRecord();
-    const [recordingTimeWithSelectorStatsDisabled, chartName] = await getRenderingTimeFromSummary();
-    assert.strictEqual(chartName, 'Rendering');
-
-    await reloadDevTools({selectedPanel: {name: 'timeline'}});
-    await enableCSSSelectorStats();
-    await reloadAndRecord();
-    const [recordingTimeWithSelectorStatsEnabled] = await getRenderingTimeFromSummary();
-
-    const timeDiffPercentage = (recordingTimeWithSelectorStatsEnabled - recordingTimeWithSelectorStatsDisabled) /
-        recordingTimeWithSelectorStatsDisabled;
-    assert.isAtMost(timeDiffPercentage, timeDiffPercentageMax);
   });
 });

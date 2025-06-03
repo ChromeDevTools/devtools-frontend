@@ -12,7 +12,6 @@ import {
   getTestServerPort,
   waitFor,
   waitForFunction,
-  waitForNone,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -35,14 +34,16 @@ export async function navigateToApplicationTab(
       devToolsPage);
 }
 
-export async function navigateToServiceWorkers() {
+export async function navigateToServiceWorkers(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
-  await click(SERVICE_WORKER_ROW_SELECTOR);
-  await waitFor('.service-worker-list');
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: service-workers'),
-    veImpressionsUnder('Panel: resources', [veImpressionForServiceWorkersView()]),
-  ]);
+  await devToolsPage.click(SERVICE_WORKER_ROW_SELECTOR);
+  await devToolsPage.waitFor('.service-worker-list');
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: service-workers'),
+        veImpressionsUnder('Panel: resources', [veImpressionForServiceWorkersView()]),
+      ],
+      undefined, devToolsPage);
 }
 
 export async function navigateToFrame(name: string) {
@@ -346,12 +347,12 @@ export async function getPieChartLegendRows() {
   return rows;
 }
 
-export async function unregisterServiceWorker() {
+export async function unregisterServiceWorker(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const UNREGISTER_SERVICE_WORKER_SELECTOR = '[title="Unregister service worker"]';
-  await click('#tab-resources');
-  await navigateToServiceWorkers();
-  await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
-  await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
+  await devToolsPage.click('#tab-resources');
+  await navigateToServiceWorkers(devToolsPage);
+  await devToolsPage.click(UNREGISTER_SERVICE_WORKER_SELECTOR);
+  await devToolsPage.waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
 }
 
 export function veImpressionForApplicationPanel() {

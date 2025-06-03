@@ -4,7 +4,6 @@
 
 import {
   $$,
-  click,
   drainFrontendTaskQueue,
   getBrowserAndPages,
   platform,
@@ -143,8 +142,8 @@ export async function getMenuItemTitleAtPosition(
   return title;
 }
 
-export const closeDrawer = async () => {
-  await click('[aria-label="Close drawer"]');
+export const closeDrawer = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.click('[aria-label="Close drawer"]');
 };
 
 export const getSelectedItemText = async () => {

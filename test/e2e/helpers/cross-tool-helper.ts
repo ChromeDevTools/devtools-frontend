@@ -39,14 +39,12 @@ export const MAIN_PANEL_SELECTOR = 'div[class*="main-tabbed-pane"][slot*="main"]
 export const DRAWER_PANEL_SELECTOR = 'div[class*="drawer-tabbed-pane"][slot*="sidebar"]';
 export const TAB_HEADER_SELECTOR = 'div[class*="tabbed-pane-header"]';
 
-export async function tabExistsInMainPanel(
-    tabId: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function tabExistsInMainPanel(tabId: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const mainPanel = await devToolsPage.waitFor(MAIN_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, mainPanel);
 }
 
-export async function tabExistsInDrawer(
-    tabId: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function tabExistsInDrawer(tabId: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const drawer = await devToolsPage.waitFor(DRAWER_PANEL_SELECTOR);
   await devToolsPage.waitFor(tabId, drawer);
 }

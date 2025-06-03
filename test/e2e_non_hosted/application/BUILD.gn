@@ -9,6 +9,7 @@ ts_e2e_library("application") {
     "cookies_test.ts",
     "manifest_test.ts",
     "reporting-api_test.ts",
+    "service-worker-network_test.ts",
   ]
 
   deps = [

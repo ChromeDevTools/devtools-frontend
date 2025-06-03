@@ -164,22 +164,22 @@ exports.extract = function extract (cwd, opts) {
       return next()
     }
 
-    if (header.type === 'directory') {
-      stack.push([name, header.mtime])
-      return mkdirfix(name, {
-        fs: xfs,
-        own,
-        uid: header.uid,
-        gid: header.gid,
-        mode: header.mode
-      }, stat)
-    }
-
-    const dir = path.dirname(name)
+    const dir = path.join(name, '.') === path.join(cwd, '.') ? cwd : path.dirname(name)
 
     validate(xfs, dir, path.join(cwd, '.'), function (err, valid) {
       if (err) return next(err)
       if (!valid) return next(new Error(dir + ' is not a valid path'))
+
+      if (header.type === 'directory') {
+        stack.push([name, header.mtime])
+        return mkdirfix(name, {
+          fs: xfs,
+          own,
+          uid: header.uid,
+          gid: header.gid,
+          mode: header.mode
+        }, stat)
+      }
 
       mkdirfix(dir, {
         fs: xfs,
@@ -228,15 +228,19 @@ exports.extract = function extract (cwd, opts) {
     function onlink () {
       if (win32) return next() // skip links on win for now before it can be tested
       xfs.unlink(name, function () {
-        const dst = path.join(cwd, path.join('/', header.linkname))
+        const link = path.join(cwd, path.join('/', header.linkname))
 
-        xfs.link(dst, name, function (err) {
-          if (err && err.code === 'EPERM' && opts.hardlinkAsFilesFallback) {
-            stream = xfs.createReadStream(dst)
-            return onfile()
-          }
+        fs.realpath(link, function (err, dst) {
+          if (err || !inCwd(dst)) return next(new Error(name + ' is not a valid hardlink'))
 
-          stat(err)
+          xfs.link(dst, name, function (err) {
+            if (err && err.code === 'EPERM' && opts.hardlinkAsFilesFallback) {
+              stream = xfs.createReadStream(dst)
+              return onfile()
+            }
+
+            stat(err)
+          })
         })
       })
     }
@@ -317,10 +321,11 @@ exports.extract = function extract (cwd, opts) {
 
 function validate (fs, name, root, cb) {
   if (name === root) return cb(null, true)
+
   fs.lstat(name, function (err, st) {
-    if (err && err.code === 'ENOENT') return validate(fs, path.join(name, '..'), root, cb)
-    else if (err) return cb(err)
-    cb(null, st.isDirectory())
+    if (err && err.code !== 'ENOENT' && err.code !== 'EPERM') return cb(err)
+    if (err || st.isDirectory()) return validate(fs, path.join(name, '..'), root, cb)
+    cb(null, false)
   })
 }
 

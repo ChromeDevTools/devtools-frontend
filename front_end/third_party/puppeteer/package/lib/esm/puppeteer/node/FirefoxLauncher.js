@@ -22,13 +22,9 @@ export class FirefoxLauncher extends BrowserLauncher {
     static getPreferences(extraPrefsFirefox) {
         return {
             ...extraPrefsFirefox,
-            // Only enable the WebDriver BiDi protocol
-            'remote.active-protocols': 1,
             // Force all web content to use a single content process. TODO: remove
             // this once Firefox supports mouse event dispatch from the main frame
-            // context. Once this happens, webContentIsolationStrategy should only
-            // be set for CDP. See
-            // https://bugzilla.mozilla.org/show_bug.cgi?id=1773393
+            // context. See https://bugzilla.mozilla.org/show_bug.cgi?id=1773393.
             'fission.webContentIsolationStrategy': 0,
         };
     }

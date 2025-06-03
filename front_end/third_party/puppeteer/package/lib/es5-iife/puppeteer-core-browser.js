@@ -2928,7 +2928,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.9.0';
+  const packageVersion = '24.10.0';
 
   /**
    * @license
@@ -10185,6 +10185,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   function createIncrementalIdGenerator() {
     let id = 0;
     return () => {
+      if (id === Number.MAX_SAFE_INTEGER) {
+        id = 0;
+      }
       return ++id;
     };
   }
@@ -13217,6 +13220,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  const idGenerator = createIncrementalIdGenerator();
   /**
    * Manages callbacks and their IDs for the protocol request/response communication.
    *
@@ -13227,7 +13231,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   class CallbackRegistry {
     constructor() {
       _classPrivateFieldInitSpec(this, _callbacks, new Map());
-      _classPrivateFieldInitSpec(this, _idGenerator, createIncrementalIdGenerator());
+      _classPrivateFieldInitSpec(this, _idGenerator, idGenerator);
     }
     create(label, timeout, request) {
       const callback = new Callback(_classPrivateFieldGet(_idGenerator, this).call(this), label, timeout);
@@ -24506,9 +24510,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '136.0.7103.94',
-    'chrome-headless-shell': '136.0.7103.94',
-    firefox: 'stable_138.0.4'
+    chrome: '137.0.7151.55',
+    'chrome-headless-shell': '137.0.7151.55',
+    firefox: 'stable_139.0.1'
   });
 
   /**

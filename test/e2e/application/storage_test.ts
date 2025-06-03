@@ -53,8 +53,8 @@ describe('The Application Tab', () => {
       });
     });
 
-    // Skip test for now to allow autorollers to continue.
-    it.skip('[crbug.com/327372236] which reports storage correctly, including the pie chart legend', async () => {
+    // Fails because backend does not report IndexedDb quoate after clearing site data.
+    it.skip('[crbug.com/347114248] which reports storage correctly, including the pie chart legend', async () => {
       const {target} = getBrowserAndPages();
 
       await target.evaluate(async () => {

@@ -8,6 +8,7 @@ def siso_properties(project, jobs):
             "configs": [
                 "builder",
             ],
+            "enable_cloud_logging": True,
             "enable_cloud_profiler": True,
             "enable_cloud_trace": True,
             "experiments": [],

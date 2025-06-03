@@ -14,6 +14,8 @@ ts_e2e_library("sources") {
     "icon-row-bucket_test.ts",
     "inline-breakpoint_test.ts",
     "inline-scripts_test.ts",
+    "link-to-correct-source-line_test.ts",
+    "pause-button_test.ts",
     "text-editor_test.ts",
   ]
 

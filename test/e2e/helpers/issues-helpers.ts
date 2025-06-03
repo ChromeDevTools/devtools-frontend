@@ -267,8 +267,9 @@ export async function revealNodeInElementsPanel() {
   await revealIcon.click();
 }
 
-export async function revealViolatingSourcesLines() {
-  const sourcesLink = await waitFor(SOURCES_LINK);
+export async function revealViolatingSourcesLines(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const sourcesLink = await devToolsPage.waitFor(SOURCES_LINK);
   await sourcesLink.click();
 }
 

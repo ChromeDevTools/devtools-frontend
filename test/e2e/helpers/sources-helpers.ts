@@ -223,13 +223,14 @@ export async function getOpenSources(devToolsPage: DevToolsPage = getBrowserAndP
   return openSources;
 }
 
-export async function waitForHighlightedLine(lineNumber: number) {
-  await waitForFunction(async () => {
-    const selectedLine = await waitFor('.cm-highlightedLine');
+export async function waitForHighlightedLine(
+    lineNumber: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    const selectedLine = await devToolsPage.waitFor('.cm-highlightedLine');
     const currentlySelectedLineNumber = await selectedLine.evaluate(line => {
       return [...line.parentElement?.childNodes || []].indexOf(line);
     });
-    const lineNumbers = await waitFor('.cm-lineNumbers');
+    const lineNumbers = await devToolsPage.waitFor('.cm-lineNumbers');
     const text = await lineNumbers.evaluate(
         (node, lineNumber) => node.childNodes[lineNumber].textContent, currentlySelectedLineNumber + 1);
     return Number(text) === lineNumber;

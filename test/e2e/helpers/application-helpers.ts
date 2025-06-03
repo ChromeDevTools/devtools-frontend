@@ -138,27 +138,32 @@ export async function navigateToCookiesForTopDomain(
       undefined, devToolsPage);
 }
 
-export async function navigateToSessionStorageForTopDomain() {
+export async function navigateToSessionStorageForTopDomain(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
-  const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickTreeItem(SESSION_STORAGE_SELECTOR);
-  await doubleClickTreeItem(DOMAIN_SELECTOR);
+  const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
+  await doubleClickTreeItem(SESSION_STORAGE_SELECTOR, devToolsPage);
+  await doubleClickTreeItem(DOMAIN_SELECTOR, devToolsPage);
 
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
-    veImpressionsUnder(
-        'Panel: resources',
-        [
-          veImpression(
-              'Pane', 'session-storage', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
-          veImpressionsUnder(
-              'Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
-              [veImpression('TreeItem', 'session-storage-for-domain')]),
-        ]),
-    veClick(
-        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
-    veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
-  ]);
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
+        veImpressionsUnder(
+            'Panel: resources',
+            [
+              veImpression(
+                  'Pane', 'session-storage',
+                  [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
+              veImpressionsUnder(
+                  'Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
+                  [veImpression('TreeItem', 'session-storage-for-domain')]),
+            ]),
+        veClick(
+            'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
+        veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
+      ],
+      undefined, devToolsPage);
 }
 
 const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
@@ -261,13 +266,17 @@ export async function clearStorageItems(devToolsPage = getBrowserAndPagesWrapper
   await devToolsPage.click('#storage-items-delete-all');
 }
 
-export async function selectStorageItemAtIndex(index: number) {
-  await waitForFunction(async () => {
+export async function selectStorageItemAtIndex(
+    index: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
     try {
       const dataGridNodes = await getDataGridRows(
-          index + 1, await waitFor('.storage-view devtools-data-grid'), /* matchExactNumberOfRows=*/ false);
+          index + 1, await devToolsPage.waitFor('.storage-view devtools-data-grid'), /* matchExactNumberOfRows=*/ false,
+          devToolsPage);
       await dataGridNodes[index][1].click();
-      await expectVeEvents([veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')]);
+      await expectVeEvents(
+          [veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')], undefined,
+          devToolsPage);
     } catch (error) {
       if (error.message === 'Node is detached from document') {
         return false;
@@ -278,10 +287,11 @@ export async function selectStorageItemAtIndex(index: number) {
   });
 }
 
-export async function deleteSelectedStorageItem() {
-  await click('[title="Delete Selected"]');
-  await expectVeEvents([veClick(
-      'Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')]);
+export async function deleteSelectedStorageItem(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('[title="Delete Selected"]');
+  await expectVeEvents(
+      [veClick('Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')],
+      undefined, devToolsPage);
 }
 
 export async function selectCookieByName(name: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

@@ -10,6 +10,7 @@ ts_e2e_library("application") {
     "manifest_test.ts",
     "reporting-api_test.ts",
     "service-worker-network_test.ts",
+    "session-storage_test.ts",
   ]
 
   deps = [

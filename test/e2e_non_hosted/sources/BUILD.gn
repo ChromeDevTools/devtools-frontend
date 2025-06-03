@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("sources") {
   sources = [
+    "breakpoints-sidebarpane_test.ts",
     "icon-row-bucket_test.ts",
     "inline-scripts_test.ts",
     "text-editor_test.ts",

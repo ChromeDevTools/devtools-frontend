@@ -875,8 +875,9 @@ export class WasmLocationLabels {
   }
 }
 
-export async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
-  const editor = await waitFor('[aria-label="Code editor"]');
+export async function retrieveCodeMirrorEditorContent(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
+  const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
   return await editor.evaluate(
       node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }

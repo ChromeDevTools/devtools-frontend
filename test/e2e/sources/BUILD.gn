@@ -9,7 +9,6 @@ node_ts_library("sources") {
     "authored-deployed-grouping_test.ts",
     "breakpoint-csp-violations_test.ts",
     "breakpoint-javascript_test.ts",
-    "breakpoints-sidebarpane_test.ts",
     "can-break-with-wasm-sourcemaps_test.ts",
     "can-disable-auto-sources-focus_test.ts",
     "can-handle-special-characters_test.ts",

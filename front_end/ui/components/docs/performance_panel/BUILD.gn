@@ -12,7 +12,6 @@ ts_library("ts") {
     "layout_shift_details.ts",
     "network_request_details.ts",
     "network_request_tooltip.ts",
-    "overview.ts",
     "track_example.ts",
   ]
   deps = [
@@ -36,7 +35,6 @@ copy_to_gen("performance_panel") {
     "layout_shift_details.html",
     "network_request_details.html",
     "network_request_tooltip.html",
-    "overview.html",
     "track_example.html",
   ]
 

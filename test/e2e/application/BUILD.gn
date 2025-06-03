@@ -8,7 +8,6 @@ node_ts_library("application") {
   sources = [
     "frame-tree_test.ts",
     "shared-storage_test.ts",
-    "window-controls_test.ts",
   ]
 
   deps = [

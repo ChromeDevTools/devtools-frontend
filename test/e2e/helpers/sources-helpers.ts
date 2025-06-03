@@ -9,6 +9,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {GEN_DIR} from '../../conductor/paths.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
   $$,
@@ -20,7 +21,6 @@ import {
   getBrowserAndPages,
   getPendingEvents,
   getTestServerPort,
-  goToResource,
   pasteText,
   platform,
   pressKey,
@@ -81,8 +81,9 @@ export async function toggleDebuggerSidebar(frontend: puppeteer.Page) {
   await frontend.keyboard.up(modifierKey);
 }
 
-export async function getLineNumberElement(lineNumber: number|string) {
-  const visibleLines = await $$(CODE_LINE_SELECTOR);
+export async function getLineNumberElement(
+    lineNumber: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
   for (let i = 0; i < visibleLines.length; i++) {
     const lineValue = await visibleLines[i].evaluate(node => node.textContent);
     if (lineValue === `${lineNumber}`) {
@@ -92,8 +93,9 @@ export async function getLineNumberElement(lineNumber: number|string) {
   return null;
 }
 
-export async function doubleClickSourceTreeItem(selector: string) {
-  await click(selector, {clickOptions: {clickCount: 2, offset: {x: 40, y: 10}}});
+export async function doubleClickSourceTreeItem(
+    selector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(selector, {clickOptions: {clickCount: 2, offset: {x: 40, y: 10}}});
 }
 
 export async function waitForSourcesPanel(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
@@ -109,10 +111,12 @@ export async function openSourcesPanel(devToolsPage: DevToolsPage = getBrowserAn
   await waitForSourcesPanel(devToolsPage);
 }
 
-export async function openFileInSourcesPanel(testInput: string) {
-  await goToResource(`sources/${testInput}`);
+export async function openFileInSourcesPanel(
+    testInput: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await inspectedPage.goToResource(`sources/${testInput}`);
 
-  await openSourcesPanel();
+  await openSourcesPanel(devToolsPage);
 }
 
 export async function openRecorderSubPane() {
@@ -178,16 +182,19 @@ export async function openOverridesSubPane() {
   await waitFor('[aria-label="Overrides panel"]');
 }
 
-export async function openFileInEditor(sourceFile: string) {
+export async function openFileInEditor(
+    sourceFile: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await waitForSourceFiles(
       SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith(sourceFile)),
       // Open a particular file in the editor
-      () => doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`));
+      () => doubleClickSourceTreeItem(`[aria-label="${sourceFile}, file"]`, devToolsPage), devToolsPage);
 }
 
-export async function openSourceCodeEditorForFile(sourceFile: string, testInput: string) {
-  await openFileInSourcesPanel(testInput);
-  await openFileInEditor(sourceFile);
+export async function openSourceCodeEditorForFile(
+    sourceFile: string, testInput: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await openFileInSourcesPanel(testInput, devToolsPage, inspectedPage);
+  await openFileInEditor(sourceFile, devToolsPage);
 }
 
 export async function getSelectedSource(): Promise<string> {
@@ -238,14 +245,15 @@ export async function getToolbarText() {
   return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
-export async function addBreakpointForLine(index: number|string) {
-  const breakpointLine = await getLineNumberElement(index);
+export async function addBreakpointForLine(
+    index: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assertNotNullOrUndefined(breakpointLine);
 
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
-  await clickElement(breakpointLine);
+  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
+  await devToolsPage.clickElement(breakpointLine);
 
-  await waitForFunction(async () => await isBreakpointSet(index));
+  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
 }
 
 export async function removeBreakpointForLine(index: number|string) {
@@ -277,8 +285,9 @@ export async function addLogpointForLine(index: number, condition: string) {
   await waitForFunction(async () => await isBreakpointSet(index));
 }
 
-export async function isBreakpointSet(lineNumber: number|string) {
-  const lineNumberElement = await getLineNumberElement(lineNumber);
+export async function isBreakpointSet(
+    lineNumber: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const lineNumberElement = await getLineNumberElement(lineNumber, devToolsPage);
   const breakpointLineParentClasses = await lineNumberElement?.evaluate(n => n.className);
   return breakpointLineParentClasses?.includes('cm-breakpoint');
 }
@@ -345,10 +354,10 @@ export async function executionLineHighlighted() {
   return await waitFor('.cm-executionLine');
 }
 
-export async function getCallFrameNames() {
+export async function getCallFrameNames(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = '.call-frame-item:not(.hidden) .call-frame-item-title';
-  await waitFor(selector);
-  const items = await $$(selector);
+  await devToolsPage.waitFor(selector);
+  const items = await devToolsPage.$$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = [];
   for (const promise of promises) {
@@ -464,7 +473,7 @@ export const enum SourceFileEvents {
 let nextEventHandlerId = 0;
 export async function waitForSourceFiles<T>(
     eventName: SourceFileEvents, waitCondition: (files: string[]) => boolean | Promise<boolean>, action: () => T,
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<T> {
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<T> {
   const eventHandlerId = nextEventHandlerId++;
 
   // Install new listener for the event

@@ -310,27 +310,6 @@ describe('The Console Tab', () => {
     await testMessageFilter(filter, expectedMessageFilter);
   });
 
-  it('can reset filter', async () => {
-    let unfilteredMessages: string[];
-
-    await step('get unfiltered messages', async () => {
-      unfilteredMessages = await getConsoleMessages('console-filter');
-    });
-
-    await step('apply message filter', async () => {
-      await filterConsoleMessages('outer');
-    });
-
-    await step('delete message filter', async () => {
-      void deleteConsoleMessagesFilter();
-    });
-
-    await step('check if messages are unfiltered', async () => {
-      const messages = await getCurrentConsoleMessages();
-      assert.deepEqual(messages, unfilteredMessages);
-    });
-  });
-
   it('can exclude CORS error messages', async () => {
     const CORS_DETAILED_ERROR_PATTERN =
         /Access to fetch at 'https:.*' from origin 'https:.*' has been blocked by CORS policy: .*/;

@@ -337,9 +337,10 @@ export async function checkBreakpointDidNotActivate() {
   });
 }
 
-export async function getBreakpointDecorators(disabledOnly = false) {
+export async function getBreakpointDecorators(
+    disabledOnly = false, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''}`;
-  const breakpointDecorators = await $$(selector);
+  const breakpointDecorators = await devToolsPage.$$(selector);
   return await Promise.all(
       breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
@@ -352,8 +353,8 @@ export async function getNonBreakableLines() {
       unbreakableLines.map(unbreakableLine => unbreakableLine.evaluate(n => Number(n.textContent))));
 }
 
-export async function executionLineHighlighted() {
-  return await waitFor('.cm-executionLine');
+export async function executionLineHighlighted(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  return await devToolsPage.waitFor('.cm-executionLine');
 }
 
 export async function getCallFrameNames(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -690,14 +691,13 @@ export async function getValuesForScope(scope: string, expandCount: number, wait
   });
 }
 
-export async function getPausedMessages() {
-  const {frontend} = getBrowserAndPages();
-  const messageElement = await frontend.waitForSelector('.paused-message');
+export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const messageElement = await devToolsPage.page.waitForSelector('.paused-message');
   if (!messageElement) {
     assert.fail('getPausedMessages: did not find .paused-message element.');
   }
-  const statusMain = await waitFor('.status-main', messageElement);
-  const statusSub = await waitFor('.status-sub', messageElement);
+  const statusMain = await devToolsPage.waitFor('.status-main', messageElement);
+  const statusSub = await devToolsPage.waitFor('.status-sub', messageElement);
   return {
     statusMain: await statusMain.evaluate(x => x.textContent),
     statusSub: await statusSub.evaluate(x => x.textContent),

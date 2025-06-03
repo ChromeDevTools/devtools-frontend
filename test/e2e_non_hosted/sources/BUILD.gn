@@ -6,7 +6,11 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("sources") {
   sources = [
+    "breakpoint-csp-violations_test.ts",
     "breakpoints-sidebarpane_test.ts",
+    "can-handle-special-characters_test.ts",
+    "debugger-sidebar_test.ts",
+    "eval_test.ts",
     "icon-row-bucket_test.ts",
     "inline-breakpoint_test.ts",
     "inline-scripts_test.ts",

@@ -296,12 +296,13 @@ export async function isBreakpointSet(
  * @param lineNumber 1-based line number
  * @param index 1-based index of the inline breakpoint in the given line
  */
-export async function enableInlineBreakpointForLine(line: number, index: number) {
-  const {frontend} = getBrowserAndPages();
+export async function enableInlineBreakpointForLine(
+    line: number, index: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
-  await click(decorationSelector);
-  await waitForFunction(
-      () => frontend.$eval(decorationSelector, element => !element.classList.contains('cm-inlineBreakpoint-disabled')));
+  await devToolsPage.click(decorationSelector);
+  await devToolsPage.waitForFunction(
+      () => devToolsPage.page.$eval(
+          decorationSelector, element => !element.classList.contains('cm-inlineBreakpoint-disabled')));
 }
 
 /**
@@ -310,18 +311,19 @@ export async function enableInlineBreakpointForLine(line: number, index: number)
  * @param expectNoBreakpoint If we should wait for the line to not have any inline breakpoints after
  *                           the click instead of a disabled one.
  */
-export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint = false) {
-  const {frontend} = getBrowserAndPages();
+export async function disableInlineBreakpointForLine(
+    line: number, index: number, expectNoBreakpoint = false,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
-  await click(decorationSelector);
+  await devToolsPage.click(decorationSelector);
   if (expectNoBreakpoint) {
-    await waitForFunction(
-        () => frontend.$$eval(
+    await devToolsPage.waitForFunction(
+        () => devToolsPage.page.$$eval(
             `pierce/.cm-content > :nth-child(${line}) > .cm-inlineBreakpoint`, elements => elements.length === 0));
   } else {
-    await waitForFunction(
-        () =>
-            frontend.$eval(decorationSelector, element => element.classList.contains('cm-inlineBreakpoint-disabled')));
+    await devToolsPage.waitForFunction(
+        () => devToolsPage.page.$eval(
+            decorationSelector, element => element.classList.contains('cm-inlineBreakpoint-disabled')));
   }
 }
 

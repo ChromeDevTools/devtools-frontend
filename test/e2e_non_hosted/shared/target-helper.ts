@@ -34,7 +34,11 @@ export class InspectedPage extends PageWrapper {
   }
 
   getResourcesPath(host = 'localhost') {
-    return `https://${host}:${this.serverPort}/test/e2e/resources`;
+    return `${this.domain(host)}/test/e2e/resources`;
+  }
+
+  domain(host = 'localhost') {
+    return `https://${host}:${this.serverPort}`;
   }
 }
 

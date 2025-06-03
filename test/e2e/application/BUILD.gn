@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("application") {
   sources = [
-    "cookies_test.ts",
     "frame-tree_test.ts",
     "manifest_test.ts",
     "reporting-api_test.ts",

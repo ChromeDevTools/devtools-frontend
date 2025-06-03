@@ -158,8 +158,7 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  // Flaky
-  it.skip('[crbug.com/380230757] should display CORS ACAO mismatches with the correct affected resources', async () => {
+  it('should display CORS ACAO mismatches with the correct affected resources', async () => {
     await goToResource('empty.html');
     const {target} = getBrowserAndPages();
     await target.evaluate(async () => {

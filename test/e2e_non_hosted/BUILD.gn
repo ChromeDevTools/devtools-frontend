@@ -26,6 +26,7 @@ node_ts_library("tests") {
     "issues",
     "layers",
     "media",
+    "network",
     "performance",
     "puppeteer",
     "quick_open",

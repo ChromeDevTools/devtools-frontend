@@ -190,15 +190,20 @@ export function dumpCollectedErrors(): void {
   }
   console.log('Expected errors: ' + expectedErrors.length);
   console.log('   Fatal errors: ' + fatalErrors.length);
-  if (fatalErrors.length) {
-    throw new Error('Fatal errors logged:\n' + fatalErrors.join('\n'));
-  }
+
   if (uiComponentDocErrors.length) {
     console.log(
         '\nErrors from component examples during test run:\n', uiComponentDocErrors.map(e => e.message).join('\n  '));
   }
+
+  const allFatalErrors = fatalErrors.join('\n');
+
   expectedErrors = [];
   fatalErrors = [];
+
+  if (allFatalErrors) {
+    throw new Error('Fatal errors logged:\n' + allFatalErrors);
+  }
 }
 
 const pendingErrorExpectations = new Set<ErrorExpectation>();

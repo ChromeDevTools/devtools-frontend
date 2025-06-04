@@ -10,7 +10,6 @@ node_ts_library("performance") {
     "recording_test.ts",
     "selector-stats-tracing_test.ts",
     "settings-throttle-persist_test.ts",
-    "timeline/treeView_test.ts",
   ]
 
   deps = [

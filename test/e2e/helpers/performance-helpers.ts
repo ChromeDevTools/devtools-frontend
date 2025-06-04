@@ -8,9 +8,6 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
-  click,
-  waitFor,
-  waitForAria,
   waitForFunction,
   waitForMany,
 } from '../../shared/helper.js';
@@ -195,35 +192,45 @@ export async function navigateToCallTreeTab(devToolsPage: DevToolsPage = getBrow
       'Panel: timeline', devToolsPage);
 }
 
-export async function setFilter(filter: string) {
-  const filterBoxElement = await click(FILTER_TEXTBOX_SELECTOR);
+export async function setFilter(
+    filter: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const filterBoxElement = await devToolsPage.click(FILTER_TEXTBOX_SELECTOR);
   await filterBoxElement.type(filter);
   await expectVeEvents(
       [veChange(''), veImpression('Action', 'clear')],
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > TextField: filter');
+      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > TextField: filter',
+      devToolsPage);
 }
 
-export async function toggleCaseSensitive() {
-  const matchCaseButton = await waitForAria('Match case');
+export async function toggleCaseSensitive(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const matchCaseButton = await devToolsPage.waitForAria('Match case');
   await matchCaseButton.click();
-  await expectVeEvents([veClick(
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-case')]);
+  await expectVeEvents(
+      [veClick(
+          'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-case')],
+      undefined, devToolsPage);
 }
 
-export async function toggleRegExButtonBottomUp() {
-  const regexButton = await waitFor('[aria-label="Use regular expression"]');
+export async function toggleRegExButtonBottomUp(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const regexButton = await devToolsPage.waitFor('[aria-label="Use regular expression"]');
   await regexButton.click();
-  await expectVeEvents([
-    veClick(
-        'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: regular-expression'),
-  ]);
+  await expectVeEvents(
+      [
+        veClick(
+            'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: regular-expression')
+      ],
+      undefined, devToolsPage);
 }
 
-export async function toggleMatchWholeWordButtonBottomUp() {
-  const wholeWordButton = await waitForAria('Match whole word');
+export async function toggleMatchWholeWordButtonBottomUp(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const wholeWordButton = await devToolsPage.waitForAria('Match whole word');
   await wholeWordButton.click();
-  await expectVeEvents([veClick(
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-whole-word')]);
+  await expectVeEvents(
+      [veClick(
+          'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-whole-word')],
+      undefined, devToolsPage);
 }
 
 export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

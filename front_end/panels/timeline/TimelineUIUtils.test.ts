@@ -9,7 +9,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {
+  dispatchClickEvent,
+  doubleRaf,
+  raf,
+  renderElementIntoDOM,
+} from '../../testing/DOMHelpers.js';
 import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {
   clearMockConnectionResponseHandler,
@@ -1216,6 +1221,40 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
         {title: 'Initiator for', value: 'Fire postTask'},
       ]);
+    });
+
+    it('lets the initiator be clicked on to select it', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
+
+      // Make a stubbed TimelinePanel, and then ensure all instance() calls return it.
+      const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+      sinon.stub(Timeline.TimelinePanel.TimelinePanel, 'instance').callsFake(() => timelinePanel);
+
+      const scheduleEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isSchedulePostTaskCallback);
+      assert(scheduleEvent, 'Could not find SchedulePostTaskCallback event');
+
+      // This is the event initiated by the schedule event.
+      const postTaskEvent = parsedTrace.Initiators.initiatorToEvents.get(scheduleEvent)?.at(0);
+      assert.isOk(postTaskEvent);
+
+      const scheduleDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          scheduleEvent,
+          new Components.Linkifier.Linkifier(),
+          false,
+          null,
+      );
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      container.append(scheduleDetails);
+      await raf();
+      const link = container.querySelector<HTMLElement>('.timeline-link');
+      assert.isOk(link);
+      assert.strictEqual(link?.innerText, 'Fire postTask');
+      dispatchClickEvent(link);
+
+      sinon.assert.calledOnceWithExactly(
+          timelinePanel.select, Timeline.TimelineSelection.selectionFromEvent(postTaskEvent));
     });
 
     it('renders details for RunPostTaskCallback events', async function() {

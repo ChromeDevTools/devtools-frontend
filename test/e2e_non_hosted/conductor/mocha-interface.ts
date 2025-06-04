@@ -111,15 +111,9 @@ function iterationSuffix(iteration: number): string {
   return ` (#${iteration})`;
 }
 function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: string, mocha: Mocha) {
-  function instrumentWithState(fn: E2E.TestAsyncCallbackWithState) {
-    const fnWithState = async function(this: Mocha.Context) {
-      return await StateProvider.instance.callWithState(this, suite, fn);
-    };
-    return makeInstrumentedTestFunction(fnWithState, 'test');
-  }
-
   function createTest(title: string, fn?: Mocha.AsyncFunc) {
-    const test = new Mocha.Test(title, suite.isPending() || !fn ? undefined : instrumentWithState(fn));
+    const test =
+        new Mocha.Test(title, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn, 'test', suite));
     test.file = file;
     suite.addTest(test);
     return test;

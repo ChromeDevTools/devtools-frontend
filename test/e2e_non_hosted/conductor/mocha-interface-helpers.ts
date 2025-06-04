@@ -5,8 +5,11 @@
 import type * as Mocha from 'mocha';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
+import {dumpCollectedErrors} from '../../conductor/events.js';
 import {ScreenshotError} from '../../conductor/screenshot-error.js';
 import {TestConfig} from '../../conductor/test_config.js';
+
+import {StateProvider} from './state-provider.js';
 
 async function takeScreenshots(state: E2E.State): Promise<{target?: string, frontend?: string}> {
   try {
@@ -61,14 +64,24 @@ export async function screenshotError(state: E2E.State, error: Error) {
  */
 const timeoutByTestFunction = new WeakMap<Mocha.AsyncFunc, number>();
 
-export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string) {
+export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string, suite?: Mocha.Suite) {
   return async function testFunction(this: Mocha.Context) {
     const abortController = new AbortController();
     const {promise: testPromise, resolve, reject} = Promise.withResolvers<unknown>();
     // AbortSignal for the current test function.
     AsyncScope.abortSignal = abortController.signal;
+    let state: Awaited<ReturnType<typeof StateProvider.instance.getState>>|null;
     // Promisify the function in case it is sync.
-    const promise = (async () => await fn.call(this))();
+    const promise = (async () => {
+      state = suite ? await StateProvider.instance.getState(suite) : null;
+      if (state) {
+        // eslint-disable-next-line no-debugger
+        debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
+      }
+      const testResult =
+          await (state === null ? fn.call(this) : (fn as E2E.TestAsyncCallbackWithState).call(this, state.state));
+      return testResult;
+    })();
     const actualTimeout = timeoutByTestFunction.get(fn) ?? this.timeout();
     timeoutByTestFunction.set(fn, actualTimeout);
     // Disable mocha test timeout.
@@ -101,8 +114,10 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
               }
               reject(err instanceof ScreenshotError ? err : await createScreenshotError(this.test, err));
             })
-        .finally(() => {
+        .finally(async () => {
           clearTimeout(t);
+          dumpCollectedErrors();
+          await state?.browsingContext.close();
         });
     return await testPromise;
   };

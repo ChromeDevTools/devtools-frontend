@@ -269,9 +269,10 @@ export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPa
       'Panel: timeline', devToolsPage);
 }
 
-export async function getTotalTimeFromSummary(): Promise<number> {
+export async function getTotalTimeFromSummary(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<number> {
   const minCategories = 2;
-  const categoryValues = await waitForMany('.category-value', minCategories);
+  const categoryValues = await devToolsPage.waitForMany('.category-value', minCategories);
 
   const totalVal = categoryValues[categoryValues.length - 1];
   const totalText = await totalVal.evaluate(node => node.textContent as string);

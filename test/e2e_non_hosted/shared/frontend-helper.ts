@@ -679,6 +679,12 @@ async function setDevToolsExperiments(devToolsPage: DevToolsPage, experiments: s
   }, experiments);
 }
 
+async function disableAnimations(devToolsPage: DevToolsPage) {
+  const session = await devToolsPage.page.createCDPSession();
+  await session.send('Animation.enable');
+  await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
+}
+
 /**
  * @internal This should not be use outside setup
  */
@@ -701,6 +707,7 @@ export async function setupDevToolsPage(context: puppeteer.BrowserContext, setti
   const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();
   await Promise.all([
+    disableAnimations(devToolsPage),
     setDevToolsSettings(devToolsPage, settings.devToolsSettings),
     setDevToolsExperiments(devToolsPage, settings.enabledDevToolsExperiments),
   ]);

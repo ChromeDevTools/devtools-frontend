@@ -5,6 +5,7 @@
 import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
   click,
@@ -34,9 +35,11 @@ export async function openNetworkTab(devToolsPage: DevToolsPage = getBrowserAndP
 /**
  * Select the Network tab in DevTools
  */
-export async function navigateToNetworkTab(testName: string) {
-  await goToResource(`network/${testName}`);
-  await openNetworkTab();
+export async function navigateToNetworkTab(
+    testName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await goToResource(`network/${testName}`, {inspectedPage});
+  await openNetworkTab(devToolsPage);
 }
 
 /**
@@ -74,8 +77,8 @@ export async function getSelectedRequestName() {
 }
 
 export async function selectRequestByName(
-    name: string, clickOptions?: puppeteer.ClickOptions,
-    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    name: string, clickOptions?: puppeteer.ClickOptions&{devToolsPage?: DevToolsPage}) {
+  const devToolsPage = clickOptions?.devToolsPage ?? getBrowserAndPagesWrappers().devToolsPage;
   const selector = REQUEST_LIST_SELECTOR + ' .name-column';
 
   // Finding he click position is done in a single frontend.evaluate call

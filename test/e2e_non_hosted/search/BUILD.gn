@@ -4,11 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("search") {
+ts_e2e_library("search") {
   sources = [ "search-scope_test.ts" ]
 
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../shared",
   ]
 }

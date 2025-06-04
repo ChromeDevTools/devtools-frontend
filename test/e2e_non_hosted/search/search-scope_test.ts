@@ -4,28 +4,22 @@
 
 import {assert} from 'chai';
 
-import {$, $$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
-import {triggerFindDialog} from '../helpers/search-helpers.js';
+import {openPanelViaMoreTools} from '../../e2e/helpers/settings-helpers.js';
 
 describe('The Search Panel', () => {
-  it('provides results across scopes', async () => {
-    const {frontend} = getBrowserAndPages();
+  it('provides results across scopes', async ({devToolsPage, inspectedPage}) => {
     const SEARCH_QUERY = '[aria-label="Find"]';
     const SEARCH_RESULTS = '.search-results';
     const SEARCH_FILE_RESULT = '.search-result';
     const SEARCH_CHILDREN_RESULT = '.search-match-link';
 
-    // Wait for Devtools to settle before navigating:
-    // https://crbug.com/1150334
-    await timeout(500);
-
     // Load the search page, which has results in the HTML, JS, and CSS.
-    await goToResource('search/search.html');
+    await inspectedPage.goToResource('search/search.html');
 
     // Launch the search panel.
-    await triggerFindDialog(frontend);
-    await waitFor(SEARCH_QUERY);
-    const inputElement = await $(SEARCH_QUERY);
+    await openPanelViaMoreTools('Search', devToolsPage);
+    await devToolsPage.waitFor(SEARCH_QUERY);
+    const inputElement = await devToolsPage.$(SEARCH_QUERY);
     if (!inputElement) {
       assert.fail('Unable to find search input field');
     }
@@ -33,13 +27,13 @@ describe('The Search Panel', () => {
     // Go ahead and search.
     await inputElement.focus();
     await inputElement.type('searchTestUniqueString');
-    await frontend.keyboard.press('Enter');
+    await devToolsPage.page.keyboard.press('Enter');
 
     // Wait for results.
-    const resultsContainer = await waitFor(SEARCH_RESULTS);
+    const resultsContainer = await devToolsPage.waitFor(SEARCH_RESULTS);
 
-    const fileResults = await waitForFunction(async () => {
-      const results = await $$(SEARCH_FILE_RESULT, resultsContainer);
+    const fileResults = await devToolsPage.waitForFunction(async () => {
+      const results = await devToolsPage.$$(SEARCH_FILE_RESULT, resultsContainer);
       return results.length === 3 ? results : undefined;
     });
 
@@ -78,7 +72,7 @@ describe('The Search Panel', () => {
     ]);
 
     // Now step through the actual entries of the search result.
-    const entryResults = await $$(SEARCH_CHILDREN_RESULT, resultsContainer);
+    const entryResults = await devToolsPage.$$(SEARCH_CHILDREN_RESULT, resultsContainer);
     const entries = await Promise.all(entryResults.map(result => result.evaluate(value => {
       const SEARCH_MATCH_LINE_NUMBER = '.search-match-line-number';
       const SEARCH_MATCH_CONTENT = '.search-match-content';

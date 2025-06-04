@@ -788,6 +788,7 @@ Images: ![https://example.com](https://example.com)
 
     const component = new Explain.ConsoleInsight(
         getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.disableAnimations = true;
 
     const container = document.createElement('div');
     container.style.cssText = containerCss;
@@ -796,6 +797,9 @@ Images: ![https://example.com](https://example.com)
     container.appendChild(component);
     renderElementIntoDOM(container);
 
+    // Animation are hidden and started one by one so
+    // so we need multiple drains
+    await drainMicroTasks();
     await drainMicroTasks();
     await assertScreenshot('explain/console_insight.png');
   });

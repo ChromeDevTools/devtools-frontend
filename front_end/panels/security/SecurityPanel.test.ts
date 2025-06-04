@@ -171,4 +171,36 @@ describeWithMockConnection('SecurityPanel', () => {
     navigate(getMainFrame(target));
     assert.isFalse(reloadMessage.classList.contains('hidden'));
   });
+
+  it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+
+    const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'addOrigin');
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    securityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
+
+    const passive = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`http://foo.test`, urlString`https://foo.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    passive.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
+    const networkManager = securityModel.networkManager();
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passive);
+
+    assert.isTrue(
+        sidebarTreeClearSpy.calledOnceWith(urlString`http://foo.test`, Protocol.Security.SecurityState.Insecure));
+    sidebarTreeClearSpy.resetHistory();
+
+    const active = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`http://bar.test`, urlString`https://bar.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    active.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, active);
+
+    assert.isTrue(
+        sidebarTreeClearSpy.calledOnceWith(urlString`http://bar.test`, Protocol.Security.SecurityState.Insecure));
+  });
 });

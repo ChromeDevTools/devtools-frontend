@@ -26,6 +26,7 @@ node_ts_library("tests") {
     "elements",
     "issues",
     "layers",
+    "lighthouse",
     "media",
     "network",
     "performance",

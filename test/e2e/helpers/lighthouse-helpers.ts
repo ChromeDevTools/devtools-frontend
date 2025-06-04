@@ -6,25 +6,25 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import {
-  $,
   click,
-  clickMoreTabsButton,
   getBrowserAndPages,
-  goToResource,
   waitFor,
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
 
-export async function navigateToLighthouseTab(path?: string): Promise<ElementHandle<Element>> {
-  let lighthouseTabButton = await $('#tab-lighthouse');
+export async function navigateToLighthouseTab(
+    path?: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage): Promise<ElementHandle<Element>> {
+  let lighthouseTabButton = await devToolsPage.$('#tab-lighthouse');
 
   // Lighthouse tab can be hidden if the frontend is in a dockable state.
   if (!lighthouseTabButton) {
-    await clickMoreTabsButton();
-    lighthouseTabButton = await waitForElementWithTextContent('Lighthouse');
+    await devToolsPage.clickMoreTabsButton();
+    lighthouseTabButton = await devToolsPage.waitForElementWithTextContent('Lighthouse');
   }
 
   // TODO(b/388183157): Investigate why a single click doesn't open the tab properly sometimes
@@ -33,19 +33,18 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
   }, 500);
 
   try {
-    await waitFor('.view-container > .lighthouse');
+    await devToolsPage.waitFor('.view-container > .lighthouse');
   } finally {
     clearInterval(interval);
   }
 
-  const {target, frontend} = getBrowserAndPages();
   if (path) {
-    await target.bringToFront();
-    await goToResource(path);
-    await frontend.bringToFront();
+    await inspectedPage.bringToFront();
+    await inspectedPage.goToResource(path);
+    await devToolsPage.bringToFront();
   }
 
-  return await waitFor('.lighthouse-start-view');
+  return await devToolsPage.waitFor('.lighthouse-start-view');
 }
 
 // Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
@@ -89,8 +88,9 @@ type CheckboxLabel = Element&{checked: boolean};
  * Set the category checkboxes
  * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
  */
-export async function selectCategories(selectedCategoryIds: string[]) {
-  const startViewHandle = await waitFor('.lighthouse-start-view');
+export async function selectCategories(
+    selectedCategoryIds: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   const checkboxHandles = await startViewHandle.$$('devtools-checkbox');
   for (const checkboxHandle of checkboxHandles) {
     await checkboxHandle.evaluate((dtCheckboxElem, selectedCategoryIds: string[]) => {
@@ -102,8 +102,9 @@ export async function selectCategories(selectedCategoryIds: string[]) {
   }
 }
 
-export async function selectRadioOption(value: string, optionName: string) {
-  const startViewHandle = await waitFor('.lighthouse-start-view');
+export async function selectRadioOption(
+    value: string, optionName: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   await startViewHandle.$eval(`input[value="${value}"][name="${optionName}"]`, radioElem => {
     (radioElem as HTMLInputElement).checked = true;
     (radioElem as HTMLInputElement)
@@ -111,8 +112,9 @@ export async function selectRadioOption(value: string, optionName: string) {
   });
 }
 
-export async function selectMode(mode: 'navigation'|'timespan'|'snapshot') {
-  await selectRadioOption(mode, 'lighthouse.mode');
+export async function selectMode(
+    mode: 'navigation'|'timespan'|'snapshot', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await selectRadioOption(mode, 'lighthouse.mode', devToolsPage);
 }
 
 export async function selectDevice(device: 'mobile'|'desktop') {
@@ -145,36 +147,39 @@ export async function clickStartButton() {
   await click('.lighthouse-start-view devtools-button');
 }
 
-export async function isGenerateReportButtonDisabled() {
-  const buttonContainer = await waitFor<HTMLElement>('.lighthouse-start-button-container');
-  const button = await waitFor('button', buttonContainer);
+export async function isGenerateReportButtonDisabled(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const buttonContainer = await devToolsPage.waitFor<HTMLElement>('.lighthouse-start-button-container');
+  const button = await devToolsPage.waitFor('button', buttonContainer);
   return await button.evaluate(element => element.hasAttribute('disabled'));
 }
 
-export async function getHelpText() {
-  const helpTextHandle = await waitFor('.lighthouse-start-view .lighthouse-help-text');
+export async function getHelpText(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const helpTextHandle = await devToolsPage.waitFor('.lighthouse-start-view .lighthouse-help-text');
   return await helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
 }
 
-export async function openStorageView() {
-  await click('#tab-resources');
-  await waitFor('.storage-group-list-item');
-  await click('[aria-label="Storage"]');
+export async function openStorageView(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('#tab-resources');
+  await devToolsPage.waitFor('.storage-group-list-item');
+  await devToolsPage.click('[aria-label="Storage"]');
 }
 
-export async function clearSiteData() {
-  await goToResource('empty.html');
-  await openStorageView();
-  await waitForFunction(async () => {
-    await click('#storage-view-clear-button');
-    return (await getQuotaUsage()) === 0;
+export async function clearSiteData(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await inspectedPage.goToResource('empty.html');
+  await openStorageView(devToolsPage);
+  await devToolsPage.waitForFunction(async () => {
+    await devToolsPage.click('#storage-view-clear-button');
+    return (await getQuotaUsage(devToolsPage)) === 0;
   });
 }
 
-export async function waitForStorageUsage(p: (quota: number) => boolean) {
-  await openStorageView();
-  await waitForQuotaUsage(p);
-  await click('#tab-lighthouse');
+export async function waitForStorageUsage(
+    p: (quota: number) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await openStorageView(devToolsPage);
+  await waitForQuotaUsage(p, devToolsPage);
+  await devToolsPage.click('#tab-lighthouse');
 }
 
 export async function waitForTimespanStarted() {

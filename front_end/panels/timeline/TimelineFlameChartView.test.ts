@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
-import {assertScreenshot, doubleRaf, raf} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, doubleRaf, raf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   microsecondsTraceWindow,
@@ -42,14 +42,6 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     setupIgnoreListManagerEnvironment();
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-  });
-
-  afterEach(() => {
-    // TODO(crbug.com/421811012): this is a temporary tweak to get the tests
-    // passing to land crrev.com/c/6597455, after that lands we will tidy
-    // this up, as we don't want to have to do this on every widget that uses AriaUtils.
-    // But, until we remove the document.body usage (particularly in ThemeSupport.test.ts) we need to.
-    UI.ARIAUtils.removeAlertElement(document.body);
   });
 
   describe('rendering', () => {
@@ -168,6 +160,40 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await raf();
       await assertScreenshot('timeline/timeline_with_main_thread_selection.png');
     });
+  });
+
+  it('fires an event when an entry label overlay is clicked', async function() {
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
+    searchableView.setMinimumSize(0, 100);
+    searchableView.hideWidget();
+    flameChartView.setSearchableView(searchableView);
+    flameChartView.updateCountersGraphToggle(false);  // don't care about the memory view in this test
+    renderWidgetInVbox(searchableView);
+    // IMPORTANT: order is important; for the flame chart view to render properly
+    // it must be in the DOM before we set the model, so it can calculate and
+    // set heights.
+    flameChartView.show(searchableView.element);
+    flameChartView.setModel(parsedTrace, metadata);
+    const modifications = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modifications);
+    const labelAnnotation = modifications.getAnnotations().find(a => a.type === 'ENTRY_LABEL');
+    assert.isOk(labelAnnotation);
+    // This creates an active annotation in the UI and creates the overlay.
+    const overlay = modifications.createAnnotation(labelAnnotation);
+    flameChartView.addOverlay(overlay);
+    await raf();
+    const overlayElement = flameChartView.overlays().elementForOverlay(overlay);
+    assert.isOk(overlayElement);
+    const labelAnnotationClickedStub = sinon.stub();
+    flameChartView.addEventListener(Timeline.TimelineFlameChartView.Events.ENTRY_LABEL_ANNOTATION_CLICKED, event => {
+      labelAnnotationClickedStub(event.data.entry);
+    });
+    dispatchClickEvent(overlayElement);
+    sinon.assert.calledOnceWithExactly(labelAnnotationClickedStub, labelAnnotation.entry);
   });
 
   describe('groupForLevel', () => {

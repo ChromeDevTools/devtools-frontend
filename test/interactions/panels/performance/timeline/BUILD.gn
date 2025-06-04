@@ -6,7 +6,6 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("timeline") {
   sources = [
-    "annotations_test.ts",
     "helpers.ts",
     "timeline_test.ts",
   ]

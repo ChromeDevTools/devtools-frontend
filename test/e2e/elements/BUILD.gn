@@ -8,7 +8,6 @@ node_ts_library("elements") {
   sources = [
     "accessibility-pane_test.ts",
     "add-view-transition-pseudo-styles_test.ts",
-    "adornment_test.ts",
     "at-function-sections_test.ts",
     "at-property-sections_test.ts",
     "classes-pane_test.ts",

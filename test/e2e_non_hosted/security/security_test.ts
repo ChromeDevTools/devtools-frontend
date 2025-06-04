@@ -33,4 +33,11 @@ describe('The Security Panel', function() {
     await closeSecurityTab(devToolsPage);
     await openSecurityPanelFromCommandMenu(devToolsPage);
   });
+
+  it('shows blocked resources in the sidebar', async ({devToolsPage, inspectedPage}) => {
+    await navigateToSecurityTab(true, devToolsPage);
+    await inspectedPage.goToResourceWithCustomHost('devtools.test', 'security/mixed-content.html');
+    const nonSecureOrigins = await devToolsPage.waitForAria('Non-secure origins');
+    await devToolsPage.waitForElementWithTextContent('http://devtools.test', nonSecureOrigins);
+  });
 });

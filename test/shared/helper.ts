@@ -384,8 +384,8 @@ export const clickMoreTabsButton = async (root?: puppeteer.ElementHandle<Element
   return await devToolsPage.clickMoreTabsButton(root);
 };
 
-export const closePanelTab = async (panelTabSelector: string) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const closePanelTab =
+    async (panelTabSelector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.closePanelTab(panelTabSelector);
 };
 

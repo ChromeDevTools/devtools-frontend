@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 interface AsyncActivity {
+  type: 'promise'|'requestAnimationFrame'|'setTimeout'|'setInterval'|'requestIdleCallback';
   pending: boolean;
   cancelDelayed?: () => void;
   id?: string;
@@ -79,8 +80,8 @@ export async function checkForPendingActivity() {
   }
   if (stillPending.length) {
     throw new Error(
-        'The test has completed, but there are still pending promises, created at: \n' +
-        stillPending.map(a => a.stack).join('\n\n'));
+        'The test has completed, but there are still pending async operations\n' +
+        stillPending.map(a => `Pending '${a.type}' created at: \n${a.stack}`).join('\n\n'));
   }
 }
 
@@ -90,7 +91,7 @@ export function stopTrackingAsyncActivity() {
 }
 
 function trackingRequestAnimationFrame(fn: FrameRequestCallback) {
-  const activity: AsyncActivity = {pending: true};
+  const activity: AsyncActivity = {type: 'requestAnimationFrame', pending: true, stack: getStack(new Error())};
   let id = 0;
   activity.promise = new (original(Promise<void>))(resolve => {
     activity.runImmediate = () => {
@@ -111,7 +112,7 @@ function trackingRequestAnimationFrame(fn: FrameRequestCallback) {
 }
 
 function trackingRequestIdleCallback(fn: IdleRequestCallback, opts?: IdleRequestOptions): number {
-  const activity: AsyncActivity = {pending: true};
+  const activity: AsyncActivity = {type: 'requestIdleCallback', pending: true, stack: getStack(new Error())};
   let id = 0;
   activity.promise = new (original(Promise<void>))(resolve => {
     activity.runImmediate = (idleDeadline?: IdleDeadline) => {
@@ -132,9 +133,7 @@ function trackingRequestIdleCallback(fn: IdleRequestCallback, opts?: IdleRequest
 }
 
 function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown[]) {
-  const activity: AsyncActivity = {
-    pending: true,
-  };
+  const activity: AsyncActivity = {type: 'setTimeout', pending: true, stack: getStack(new Error())};
   let id: ReturnType<typeof setTimeout>|undefined;
   activity.promise = new (original(Promise<void>))(resolve => {
     activity.runImmediate = () => {
@@ -160,7 +159,9 @@ function trackingSetTimeout(arg: TimerHandler, time?: number, ...params: unknown
 
 function trackingSetInterval(arg: TimerHandler, time?: number, ...params: unknown[]) {
   const activity: AsyncActivity = {
+    type: 'setInterval',
     pending: true,
+    stack: getStack(new Error()),
   };
   let id = 0;
   activity.promise = new (original(Promise<void>))(resolve => {
@@ -209,6 +210,7 @@ const TrackingPromise: PromiseConstructor = Object.assign(
       const originalPromiseType = original(Promise);
       const promise = new (originalPromiseType)(arg);
       const activity: AsyncActivity = {
+        type: 'promise',
         promise,
         stack: getStack(new Error()),
         pending: false,

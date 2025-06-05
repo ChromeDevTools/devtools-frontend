@@ -11,7 +11,6 @@ import {GEN_DIR} from '../../conductor/paths.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
-  $,
   $$,
   assertNotNullOrUndefined,
   click,
@@ -21,7 +20,6 @@ import {
   getBrowserAndPages,
   getPendingEvents,
   getTestServerPort,
-  pasteText,
   platform,
   pressKey,
   setCheckBox,
@@ -137,11 +135,11 @@ export async function createNewRecording(recordingName: string) {
   await frontend.keyboard.press('Enter');
 }
 
-export async function openSnippetsSubPane() {
-  const root = await waitFor('.navigator-tabbed-pane');
-  await clickMoreTabsButton(root);
-  await click('[aria-label="Snippets"]');
-  await waitFor('[aria-label="New snippet"]');
+export async function openSnippetsSubPane(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const root = await devToolsPage.waitFor('.navigator-tabbed-pane');
+  await clickMoreTabsButton(root, devToolsPage);
+  await devToolsPage.click('[aria-label="Snippets"]');
+  await devToolsPage.waitFor('[aria-label="New snippet"]');
 }
 
 /**
@@ -152,20 +150,19 @@ export async function openSnippetsSubPane() {
  * doesn't mirror the escaping so it won't be able to wait for the snippet
  * entry in the navigation tree to appear.
  */
-export async function createNewSnippet(snippetName: string, content?: string) {
-  const {frontend} = getBrowserAndPages();
+export async function createNewSnippet(
+    snippetName: string, content?: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('[aria-label="New snippet"]');
+  await devToolsPage.waitFor('[aria-label^="Script snippet"]');
 
-  await click('[aria-label="New snippet"]');
-  await waitFor('[aria-label^="Script snippet"]');
+  await devToolsPage.typeText(snippetName);
 
-  await typeText(snippetName);
-
-  await frontend.keyboard.press('Enter');
-  await waitFor(`[aria-label*="${snippetName}"]`);
+  await devToolsPage.pressKey('Enter');
+  await devToolsPage.waitFor(`[aria-label*="${snippetName}"]`);
 
   if (content) {
-    await pasteText(content);
-    await pressKey('s', {control: true});
+    await devToolsPage.pasteText(content);
+    await devToolsPage.pressKey('s', {control: true});
   }
 }
 
@@ -707,59 +704,42 @@ export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserA
   };
 }
 
-export async function getWatchExpressionsValues() {
-  const {frontend} = getBrowserAndPages();
-  await waitForFunction(async () => {
-    const expandedOption = await $('[aria-label="Watch"].expanded');
+export async function getWatchExpressionsValues(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    const expandedOption = await devToolsPage.$('.watch-expression-title');
     if (expandedOption) {
       return true;
     }
-    await click('[aria-label="Watch"]');
+    await devToolsPage.click('[aria-label="Watch"]');
     // Wait for the click event to settle.
-    await timeout(100);
+    await devToolsPage.timeout(100);
     return expandedOption !== null;
   });
-  await frontend.keyboard.press('ArrowRight');
-  const watchExpressionValue = await $(WATCH_EXPRESSION_VALUE_SELECTOR);
+  await devToolsPage.pressKey('ArrowRight');
+  const watchExpressionValue = await devToolsPage.$(WATCH_EXPRESSION_VALUE_SELECTOR);
   if (!watchExpressionValue) {
     return null;
   }
-  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as Array<puppeteer.ElementHandle<HTMLElement>>;
+  const values = await devToolsPage.$$(WATCH_EXPRESSION_VALUE_SELECTOR) as Array<puppeteer.ElementHandle<HTMLElement>>;
   return await Promise.all(values.map(value => value.evaluate(element => element.innerText)));
 }
 
-export async function runSnippet() {
-  const {frontend} = getBrowserAndPages();
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.press('Enter');
-  await frontend.keyboard.up(modifierKey);
+export async function runSnippet(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.pressKey('Enter', {control: true});
 }
 
-export async function evaluateSelectedTextInConsole() {
-  const {frontend} = getBrowserAndPages();
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('E');
-  await frontend.keyboard.up(modifierKey);
-  await frontend.keyboard.up('Shift');
+export async function evaluateSelectedTextInConsole(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.pressKey('E', {control: true, shift: true});
   // TODO: it should actually wait for rendering to finish. Note: it is
   // drained three times because rendering currently takes 3 dependent
   // tasks to finish.
-  await drainFrontendTaskQueue();
-  await drainFrontendTaskQueue();
-  await drainFrontendTaskQueue();
+  await devToolsPage.drainTaskQueue();
+  await devToolsPage.drainTaskQueue();
+  await devToolsPage.drainTaskQueue();
 }
 
-export async function addSelectedTextToWatches() {
-  const {frontend} = getBrowserAndPages();
-  const modifierKey = platform === 'mac' ? 'Meta' : 'Control';
-  await frontend.keyboard.down(modifierKey);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('A');
-  await frontend.keyboard.up(modifierKey);
-  await frontend.keyboard.up('Shift');
+export async function addSelectedTextToWatches(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.pressKey('A', {control: true, shift: true});
 }
 
 export async function enableLocalOverrides() {

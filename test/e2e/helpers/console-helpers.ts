@@ -159,14 +159,14 @@ export async function getLastConsoleMessages(offset = 0) {
   return (await getCurrentConsoleMessages()).at(-1 - offset);
 }
 
-export async function maybeGetCurrentConsoleMessages(withAnchor = false, callback?: () => Promise<void>) {
-  const {frontend} = getBrowserAndPages();
+export async function maybeGetCurrentConsoleMessages(
+    withAnchor = false, callback?: () => Promise<void>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const asyncScope = new AsyncScope();
 
-  await navigateToConsoleTab();
+  await navigateToConsoleTab(devToolsPage);
 
   // Get console messages that were logged.
-  await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
+  await devToolsPage.waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   if (callback) {
     await callback();
@@ -175,15 +175,15 @@ export async function maybeGetCurrentConsoleMessages(withAnchor = false, callbac
   const selector = withAnchor ? CONSOLE_MESSAGE_TEXT_AND_ANCHOR_SELECTOR : CONSOLE_ALL_MESSAGES_SELECTOR;
 
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(100);
+  await devToolsPage.timeout(100);
 
   // Get the messages from the console.
-  const result = await frontend.evaluate(selector => {
+  const result = await devToolsPage.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(message => message.textContent);
   }, selector);
 
   if (result.length) {
-    await expectVeEvents([veImpressionForConsoleMessage()], await veRoot());
+    await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
   }
   return result;
 }

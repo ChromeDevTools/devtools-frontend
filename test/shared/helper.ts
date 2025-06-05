@@ -379,8 +379,9 @@ export const tabBackward = async (page?: puppeteer.Page) => {
   await devToolsPage.tabBackward(page);
 };
 
-export const clickMoreTabsButton = async (root?: puppeteer.ElementHandle<Element>) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const clickMoreTabsButton = async (
+    root?: puppeteer.ElementHandle<Element>,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.clickMoreTabsButton(root);
 };
 

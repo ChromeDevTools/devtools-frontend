@@ -3,11 +3,9 @@
 // found in the LICENSE file.
 
 import {
-  $$,
   drainFrontendTaskQueue,
   getBrowserAndPages,
   platform,
-  typeText,
   waitFor
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
@@ -101,18 +99,16 @@ export const openGoToLineQuickOpen = async () => {
   await waitFor(QUICK_OPEN_SELECTOR);
 };
 
-export const showSnippetsAutocompletion = async () => {
-  const {frontend} = getBrowserAndPages();
-
+export const showSnippetsAutocompletion = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // Clear the `>` character, as snippets use a `!` instead
-  await frontend.keyboard.press('Backspace');
+  await devtoolsPage.pressKey('Backspace');
 
-  await typeText('!');
+  await devtoolsPage.typeText('!');
 };
 
-export async function getAvailableSnippets() {
-  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
-  const snippetsDOMElements = await $$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
+export async function getAvailableSnippets(devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const quickOpenElement = await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
+  const snippetsDOMElements = await devtoolsPage.$$(QUICK_OPEN_ITEMS_SELECTOR, quickOpenElement);
   const snippets = await Promise.all(snippetsDOMElements.map(elem => elem.evaluate(elem => elem.textContent)));
   return snippets;
 }

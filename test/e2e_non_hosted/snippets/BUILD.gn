@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("snippets") {
+ts_e2e_library("snippets") {
   sources = [
     "breakpoint_test.ts",
     "name_test.ts",
@@ -12,7 +12,7 @@ node_ts_library("snippets") {
   ]
 
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../shared",
   ]
 }

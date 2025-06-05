@@ -16,6 +16,9 @@ ts_e2e_library("sources") {
     "inline-scripts_test.ts",
     "link-to-correct-source-line_test.ts",
     "pause-button_test.ts",
+    "popover_test.ts",
+    "sourcemap-without-mappings_test.ts",
+    "sources-list_test.ts",
     "text-editor_test.ts",
   ]
 

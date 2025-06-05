@@ -516,12 +516,14 @@ export async function waitForSourceFiles<T>(
   return result;
 }
 
-export async function captureAddedSourceFiles(count: number, action: () => Promise<void>): Promise<string[]> {
+export async function captureAddedSourceFiles(
+    count: number, action: () => Promise<void>,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<string[]> {
   let capturedFileNames!: string[];
   await waitForSourceFiles(SourceFileEvents.ADDED_TO_SOURCE_TREE, files => {
     capturedFileNames = files;
     return files.length >= count;
-  }, action);
+  }, action, devToolsPage);
   return capturedFileNames.map(f => new URL(`http://${f}`).pathname);
 }
 

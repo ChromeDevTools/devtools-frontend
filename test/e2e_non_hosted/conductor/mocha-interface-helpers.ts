@@ -23,12 +23,29 @@ async function takeScreenshots(state: E2E.State): Promise<{target?: string, fron
   }
 }
 
-async function createScreenshotError(test: Mocha.Runnable|undefined, error: Error): Promise<Error> {
-  if (!test?.parent?.state) {
-    console.error('Missing browsing state. Unable to take screenshots for the error:', error);
-    return error;
+/**
+ * Produces the final test error and cleans up the test state. This
+ * function should not be allowed to throw.
+ */
+async function finalizeTestError(
+    state: Awaited<ReturnType<typeof StateProvider.instance.getState>>|undefined, error: Error): Promise<Error> {
+  try {
+    if (!state) {
+      console.error('Missing browsing state. Skipping screenshot taking for the error:', error);
+      return error;
+    }
+    if (error instanceof ScreenshotError) {
+      return error;
+    }
+    return await screenshotError(state.state, error);
+  } finally {
+    try {
+      dumpCollectedErrors();
+      await state?.browsingContext.close();
+    } catch (e) {
+      console.error('Unexpected error during cleanup', e);
+    }
   }
-  return await screenshotError(test.parent.state, error);
 }
 
 export async function screenshotError(state: E2E.State, error: Error) {
@@ -70,16 +87,16 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
     const {promise: testPromise, resolve, reject} = Promise.withResolvers<unknown>();
     // AbortSignal for the current test function.
     AsyncScope.abortSignal = abortController.signal;
-    let state: Awaited<ReturnType<typeof StateProvider.instance.getState>>|null;
+    let state: Awaited<ReturnType<typeof StateProvider.instance.getState>>|undefined;
     // Promisify the function in case it is sync.
     const promise = (async () => {
-      state = suite ? await StateProvider.instance.getState(suite) : null;
+      state = suite ? await StateProvider.instance.getState(suite) : undefined;
       if (state) {
         // eslint-disable-next-line no-debugger
         debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
       }
       const testResult =
-          await (state === null ? fn.call(this) : (fn as E2E.TestAsyncCallbackWithState).call(this, state.state));
+          await (state === undefined ? fn.call(this) : (fn as E2E.TestAsyncCallbackWithState).call(this, state.state));
       return testResult;
     })();
     const actualTimeout = timeoutByTestFunction.get(fn) ?? this.timeout();
@@ -102,7 +119,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
         const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
         err.cause = new Error(msg);
       }
-      reject(await createScreenshotError(this.test, err));
+      reject(await finalizeTestError(state, err));
     }, actualTimeout) : 0;
     promise
         .then(
@@ -112,12 +129,11 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
               if (abortController.signal.aborted) {
                 return;
               }
-              reject(err instanceof ScreenshotError ? err : await createScreenshotError(this.test, err));
+              clearTimeout(t);
+              reject(await finalizeTestError(state, err));
             })
         .finally(async () => {
           clearTimeout(t);
-          dumpCollectedErrors();
-          await state?.browsingContext.close();
         });
     return await testPromise;
   };

@@ -19,7 +19,7 @@ describe('Metrics: Lantern TTI', function() {
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture({trace});
+    const data = await getComputationDataFromFixture(this, {trace});
     const result = Interactive.compute(data, {
       lcpResult: LargestContentfulPaint.compute(data, {
         fcpResult: FirstContentfulPaint.compute(data),
@@ -44,7 +44,7 @@ describe('Metrics: Lantern TTI', function() {
   });
 
   it('should compute predicted value on iframes with substantial layout', async () => {
-    const data = await getComputationDataFromFixture({
+    const data = await getComputationDataFromFixture(this, {
       trace: iframeTrace,
     });
     const result = await Interactive.compute(data, {

@@ -10,14 +10,14 @@ const {SpeedIndex, FirstContentfulPaint} = Lantern.Metrics;
 
 const defaultThrottling = Lantern.Simulation.Constants.throttling.mobileSlow4G;
 
-describe('Metrics: Lantern Speed Index', () => {
+describe('Metrics: Lantern Speed Index', function() {
   let trace: Lantern.Types.Trace;
   before(async function() {
     trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/progressive-app/trace.json.gz'));
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture({trace});
+    const data = await getComputationDataFromFixture(this, {trace});
     // TODO: observedSpeedIndex is from the Speedline library, and is used for optimistic
     // mode. At the moment callers must pass the result into Lantern.
     const observedSpeedIndex = 379.04474997520487;
@@ -39,15 +39,14 @@ describe('Metrics: Lantern Speed Index', () => {
         });
   });
 
-  // Flaky
-  it.skip('[crbug.com/404184570] should compute predicted value for different settings', async () => {
+  it('should compute predicted value for different settings', async () => {
     const settings: Lantern.Types.Simulation.Settings = {
       throttlingMethod: 'simulate',
       throttling: {...defaultThrottling, rttMs: 300},
       // @ts-expect-error: not needed for test
       networkAnalysis: null,
     };
-    const data = await getComputationDataFromFixture({trace, settings});
+    const data = await getComputationDataFromFixture(this, {trace, settings});
     const observedSpeedIndex = 379.04474997520487;
     const result = SpeedIndex.compute(data, {
       fcpResult: FirstContentfulPaint.compute(data),

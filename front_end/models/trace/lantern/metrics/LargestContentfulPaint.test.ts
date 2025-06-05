@@ -16,7 +16,7 @@ describe('Metrics: Lantern LCP', function() {
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture({trace});
+    const data = await getComputationDataFromFixture(this, {trace});
     const result = LargestContentfulPaint.compute(data, {
       fcpResult: FirstContentfulPaint.compute(data),
     });

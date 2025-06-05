@@ -93,8 +93,7 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);
   });
 
-  // Flaky
-  it.skip('[crbug.com/404184366] reports savings for main document with many issues, many redirects', async () => {
+  it('reports savings for main document with many issues, many redirects', async () => {
     const {data, insights} = await processTrace(this, 'many-redirects.json.gz');
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));

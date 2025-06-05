@@ -5,12 +5,14 @@
 import {assert} from 'chai';
 
 import {
+  increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
   reloadAndRecord,
 } from '../../e2e/helpers/performance-helpers.js';
 
-describe('Revealing insights in RPP', () => {
+describe('Revealing insights in RPP', function() {
   setup({dockingMode: 'undocked'});
+  increaseTimeoutForPerfPanel(this);
 
   it('can import a trace and show a list of insights', async ({devToolsPage, inspectedPage}) => {
     await navigateToPerformanceTab('fake-image-lcp', devToolsPage, inspectedPage);

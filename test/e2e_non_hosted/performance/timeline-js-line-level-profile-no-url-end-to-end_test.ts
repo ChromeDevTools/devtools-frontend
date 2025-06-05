@@ -2,11 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {navigateToPerformanceTab, startRecording, stopRecording} from '../../e2e/helpers/performance-helpers.js';
+import {
+  increaseTimeoutForPerfPanel,
+  navigateToPerformanceTab,
+  startRecording,
+  stopRecording
+} from '../../e2e/helpers/performance-helpers.js';
 import {openSourcesPanel} from '../../e2e/helpers/sources-helpers.js';
 
-describe('The Performance panel', () => {
+describe('The Performance panel', function() {
   setup({dockingMode: 'undocked'});
+  increaseTimeoutForPerfPanel(this);
 
   it('can collect a line-level CPU profile and show it in the text editor', async ({devToolsPage, inspectedPage}) => {
     await navigateToPerformanceTab(undefined, devToolsPage, inspectedPage);

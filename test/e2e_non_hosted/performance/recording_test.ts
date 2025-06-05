@@ -8,14 +8,16 @@ import * as path from 'path';
 import {GEN_DIR} from '../../conductor/paths.js';
 import {
   getTotalTimeFromSummary,
+  increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
   reloadAndRecord,
   startRecording,
   stopRecording,
 } from '../../e2e/helpers/performance-helpers.js';
 
-describe('The Performance panel', () => {
+describe('The Performance panel', function() {
   setup({dockingMode: 'undocked'});
+  increaseTimeoutForPerfPanel(this);
 
   it('supports the user manually starting and stopping a recording', async ({devToolsPage, inspectedPage}) => {
     await navigateToPerformanceTab('empty', devToolsPage, inspectedPage);

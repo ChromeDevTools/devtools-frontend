@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {getDataGridRows} from '../../e2e/helpers/datagrid-helpers.js';
 import {
   enableCSSSelectorStats,
+  increaseTimeoutForPerfPanel,
   navigateToPerformanceTab,
   navigateToSelectorStatsTab,
   selectRecalculateStylesEvent,
@@ -34,12 +35,8 @@ async function cssSelectorStatsRecording(testName: string, devToolsPage: DevTool
 }
 
 describe('The Performance panel', function() {
-  // These tests move between panels, which takes time.
-  if (this.timeout() !== 0) {
-    this.timeout(30000);
-  }
-
   setup({dockingMode: 'undocked'});
+  increaseTimeoutForPerfPanel(this);
 
   it('Can navigate to CSS file in source panel via available link in selector stats table',
      async ({devToolsPage, inspectedPage}) => {

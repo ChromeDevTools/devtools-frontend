@@ -239,6 +239,20 @@ export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndP
       devToolsPage);
 }
 
+/**
+ * Increases the timeout for the tests in the given context.
+ * Useful for performance as tests that import or record a trace often get over the default timeout on slower bots.
+ * Note that in e2e_non_hosted this can only be used on a `describe`, not an
+ * `it`, hence why the type of the argument is `Mocha.Suite`
+ */
+export function increaseTimeoutForPerfPanel(context: Mocha.Suite): void {
+  // If the timeout is 0, then we are in debug mode, and don't want to override
+  // that.
+  if (context.timeout()) {
+    context.timeout(30_000);
+  }
+}
+
 export async function reloadAndRecord(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(RELOAD_AND_RECORD_BUTTON_SELECTOR);
   // Make sure the timeline details panel appears. It's a sure way to assert

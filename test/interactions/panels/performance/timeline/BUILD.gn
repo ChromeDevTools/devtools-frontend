@@ -5,10 +5,7 @@
 import("../../../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("timeline") {
-  sources = [
-    "helpers.ts",
-    "timeline_test.ts",
-  ]
+  sources = [ "helpers.ts" ]
 
   deps = [
     "../../../../../front_end/models/trace:bundle",

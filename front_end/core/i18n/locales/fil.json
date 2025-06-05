@@ -17,6 +17,9 @@
   "core/common/ResourceType.ts | eventsource": {
     "message": "EventSource"
   },
+  "core/common/ResourceType.ts | fedcm": {
+    "message": "FedCM"
+  },
   "core/common/ResourceType.ts | fetch": {
     "message": "Fetch"
   },
@@ -971,7 +974,7 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "Bahagi kung saan naka-dock"
   },
-  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+  "entrypoints/main/MainImpl.ts | dockSideNavigation": {
     "message": "Gamitin ang mga pakaliwa at pakanang arrow key para mag-navigate sa mga opsyon"
   },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
@@ -1232,9 +1235,6 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Hindi na ginagamit ang pag-trigger ng window.confirm mula sa mga cross origin na iframe at aalisin na ito sa hinaharap."
   },
-  "generated/Deprecation.ts | DOMMutationEvents": {
-    "message": "Hindi na ginagamit at aalisin na ang Mga Event ng DOM Mutation, kasama ang DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, at DOMCharacterDataModified (https://w3c.github.io/uievents/#legacy-event-types). Pakigamit na lang ang MutationObserver."
-  },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "Suporta para sa data: Hindi na ginagamit ang mga URL sa SVGUseElement at aalisin na ito sa hinaharap."
   },
@@ -1364,11 +1364,26 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Dapat mag-opt in ang mga extension sa mga pag-isolate ng cross-origin para patuloy na magamit ang SharedArrayBuffer. Tingnan ang https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
+  "generated/Deprecation.ts | WebGPUAdapterIsFallbackAdapter": {
+    "message": "Hindi na ginagamit ang attribute na isFallbackAdapter ng GPUAdapter, sa halip ay gamitin ang attribute na isFallbackAdapter ng GPUAdapterInfo."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa XMLHttpRequest"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Hindi na ginagamit ang synchronous na XMLHttpRequest sa pangunahing thread dahil sa mga nakakapinsalang epekto nito sa experience ng end user. Para sa higit pang tulong, tingnan ang https://xhr.spec.whatwg.org/."
+  },
+  "models/ai_assistance/AiUtils.ts | ageRestricted": {
+    "message": "Available lang ang feature na ito sa mga user na 18 taong gulang pataas."
+  },
+  "models/ai_assistance/AiUtils.ts | notAvailableInIncognitoMode": {
+    "message": "Hindi available ang tulong ng AI sa Incognito mode o Guest mode."
+  },
+  "models/ai_assistance/AiUtils.ts | notLoggedIn": {
+    "message": "Available lang ang feature na ito kapag nag-sign in ka sa Chrome gamit ang iyong Google account."
+  },
+  "models/ai_assistance/AiUtils.ts | offline": {
+    "message": "Available lang ang feature na ito kapag may aktibong koneksyon sa internet."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Hindi kilalang error sa pag-load ng file"
@@ -1392,10 +1407,10 @@
     "message": "[{PH1}] Na-load ang mga simbolo sa pag-debug para sa {PH2}, may nahanap na {PH3} (na) source file"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsFor": {
-    "message": "[{PH1}] Nilo-load ang mga simbolo sa pag-debug para sa {PH2}..."
+    "message": "[{PH1}] Nilo-load ang mga simbolo sa pag-debug para sa {PH2}…"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
-    "message": "[{PH1}] Nilo-load ang mga simbolo sa pag-debug para sa {PH2} (sa pamamagitan ng {PH3})..."
+    "message": "[{PH1}] Nilo-load ang mga simbolo sa pag-debug para sa {PH2} (sa pamamagitan ng {PH3})…"
   },
   "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
     "message": "Idagdag ang lahat ng anonymous na script sa listahan ng babalewalain"
@@ -1634,9 +1649,6 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "pag-reset"
   },
-  "models/persistence/EditFileSystemView.ts | add": {
-    "message": "Magdagdag ng folder"
-  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Maglagay ng path"
   },
@@ -1645,15 +1657,6 @@
   },
   "models/persistence/EditFileSystemView.ts | excludedFolders": {
     "message": "Mga ibinukod na sub-folder"
-  },
-  "models/persistence/EditFileSystemView.ts | folderPath": {
-    "message": "Path ng folder"
-  },
-  "models/persistence/EditFileSystemView.ts | none": {
-    "message": "Wala"
-  },
-  "models/persistence/EditFileSystemView.ts | sViaDevtools": {
-    "message": "{PH1} (sa pamamagitan ng .devtools)"
   },
   "models/persistence/EditFileSystemView.ts | url": {
     "message": "URL"
@@ -1686,7 +1689,7 @@
     "message": "I-override na lang ang ‘{PH1}’?"
   },
   "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "I-save bilang..."
+    "message": "I-save bilang…"
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "I-save ang larawan"
@@ -1833,10 +1836,10 @@
     "message": "Pinakamahalaga ang iyong unang request sa network.  Bawasan ang latency nito sa pamamagitan ng pag-iwas sa mga pag-redirect, na tumitiyak sa mabilis na pagtugon ng server, at nagbibigay-daan sa pag-compress ng text."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
-    "message": "Nagkaroon ng mga pag-redirect"
+    "message": "Nagkaroon ng mga pag-redirect ({PH1} (na) pag-redirect, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Mas mabagal na tumugon ang server"
+    "message": "Mabagal na tumutugon ang server (naobserbahan ang {PH1}) "
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Wala inilapat na pag-compress"
@@ -1845,7 +1848,7 @@
     "message": "Umiiwas sa mga pag-redirect"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Mabilis na tumugon ang server"
+    "message": "Mabilis na tumutugon ang server (naobserbahan ang {PH1}) "
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Naglalapat ng pag-compress ng text"
@@ -1998,7 +2001,7 @@
     "message": "Pagkaantala sa pag-render ng element"
   },
   "models/trace/insights/LCPPhases.ts | fieldDuration": {
-    "message": "Ika-75 percentile ng field"
+    "message": "Field p75"
   },
   "models/trace/insights/LCPPhases.ts | noLcp": {
     "message": "Walang na-detect na LCP"
@@ -2025,7 +2028,7 @@
     "message": "Mga nasayang na byte"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga legacy na browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Pag-isipang baguhin ang iyong proseso ng pagbuo sa JavaScript para hindi ma-transpile ang mga [Baseline](https://web.dev/articles/baseline-and-polyfills) na feature, maliban kung alam mong dapat mong masuportahan ang mga legacy na browser. [Alamin kung bakit puwedeng mag-deploy ang karamihan ng mga site ng ES6+ na code nang hindi nagta-transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga mas lumang browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Pag-isipang baguhin ang iyong proseso ng pagbuo sa JavaScript para hindi ma-transpile ang mga [Baseline](https://web.dev/articles/baseline-and-polyfills) na feature, maliban kung alam mong dapat mong masuportahan ang mga mas lumang browser. [Alamin kung bakit puwedeng mag-deploy ang karamihan ng mga site ng ES6+ na code nang hindi nagta-transpile](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Legacy na JavaScript"
@@ -2045,8 +2048,32 @@
   "models/trace/insights/ModernHTTP.ts | title": {
     "message": "Modernong HTTP"
   },
+  "models/trace/insights/NetworkDependencyTree.ts | columnOrigin": {
+    "message": "Origin"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnRequest": {
+    "message": "Request"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnSource": {
+    "message": "Source"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnTime": {
+    "message": "Oras"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnWastedMs": {
+    "message": "Mga tinatayang pagtitipid sa LCP"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | crossoriginWarning": {
+    "message": "Hindi nagamit na pag-preconnect. Tingnan kung ginagamit nang maayos ang attribute na crossorigin."
+  },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Iwasan ang pag-chain ng mahahalagang request](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) sa pamamagitan ng pagbabawas sa haba ng mga chain, pagbabawas sa laki ng mga dina-download na resource, o pagpapaliban sa pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
+    "message": "Magdagdag ng mga hint sa [pag-preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) sa mga pinakamahalagang origin mo, pero subukang gumamit ng mas kaunti sa 4."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
+    "message": "Mag-preconnect ng mga candidate"
   },
   "models/trace/insights/NetworkDependencyTree.ts | maxCriticalPathLatency": {
     "message": "Maximum na latency ng critical path:"
@@ -2054,14 +2081,32 @@
   "models/trace/insights/NetworkDependencyTree.ts | noNetworkDependencyTree": {
     "message": "Walang gawain sa pag-render na naapektuhan ng mga dependency ng network"
   },
+  "models/trace/insights/NetworkDependencyTree.ts | noPreconnectCandidates": {
+    "message": "Walang karagdagang origin ang magandang candidate para sa pag-preconnect"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | noPreconnectOrigins": {
+    "message": "walang na-preconnect na origin"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableDescription": {
+    "message": "Nakakatulong ang mga hint sa [pag-preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) sa browser na bumuo ng koneksyon nang mas maaga sa pag-load ng page, kung saan may matitipid na oras kapag ginawa ang unang request para sa origin na iyon. Ang sumusunod ay mga origin kung saan naka-preconnect ang page."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableTitle": {
+    "message": "Mga na-preconnect na origin"
+  },
   "models/trace/insights/NetworkDependencyTree.ts | title": {
     "message": "Dependency tree ng network"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | tooManyPreconnectLinksWarning": {
+    "message": "Mahigit 4 na koneksyong preconnect ang nakita. Bihira lang dapat gamitin ang mga ito at tanging sa mga pinakamahalagang origin lang."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | unusedWarning": {
+    "message": "Hindi nagamit na pag-preconnect. Gamitin lang ang preconnect para sa mga origin na malamang na i-request ng page."
   },
   "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
     "message": "Iwasan ang pag-chain ng mahahalagang request sa pamamagitan ng pagbabawas sa haba ng mga chain, pagbabawas sa laki ng mga dina-download na resource, o pagpapaliban sa pag-download ng mga hindi kinakailangang resource para mapabilis ang pag-load ng page."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "Bina-block ng mga request ang unang pag-render ng page, na posibleng makaantala sa LCP. Puwedeng alisin ng [pagpapaliban o pag-inline](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ang mga request sa network na ito sa critical path."
+    "message": "Bina-block ng mga request ang unang pag-render ng page, na posibleng makaantala sa LCP. Puwedeng alisin ng [pagpapaliban o pag-inline](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ang mga request sa network na ito sa critical path."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "Tagal"
@@ -2109,7 +2154,7 @@
     "message": "Laki ng paglipat"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Puwedeng lubos na makaapekto ang code ng 3rd party sa performance ng pag-load. [Bawasan at ipagpaliban ang pag-load ng code ng 3rd party](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) para isapriyoridad ang content ng iyong page."
+    "message": "Puwedeng lubos na makaapekto ang code ng 3rd party sa performance ng pag-load. [Bawasan at ipagpaliban ang pag-load ng code ng 3rd party](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/) para isapriyoridad ang content ng iyong page."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "Walang nakitang third party"
@@ -2555,6 +2600,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "I-delete ang lokal na chat"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | externalRequestReceived": {
+    "message": "Nakatanggap ang DevTools ng external na request"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "Sundin ang mga hakbang sa itaas para makapagtanong"
   },
@@ -2602,9 +2650,6 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Para magamit ang feature na ito, itakda ang iyong gustong wika sa English sa mga setting ng DevTools."
-  },
-  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
-    "message": "Puwede mo ring gamitin ang isa sa mga iminumungkahing prompt sa itaas para simulan ang iyong pag-uusap"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Alamin ang tungkol sa AI sa DevTools"
@@ -3150,7 +3195,7 @@
     "message": "Push messaging"
   },
   "panels/application/BackgroundServiceView.ts | recordingSActivity": {
-    "message": "Nire-record ang aktibidad sa {PH1}..."
+    "message": "Nire-record ang aktibidad sa {PH1}…"
   },
   "panels/application/BackgroundServiceView.ts | saveEvents": {
     "message": "I-save ang mga event"
@@ -3190,9 +3235,6 @@
   },
   "panels/application/CookieItemsView.ts | clearFilteredCookies": {
     "message": "I-clear ang na-filter na cookies"
-  },
-  "panels/application/CookieItemsView.ts | cookies": {
-    "message": "Cookies"
   },
   "panels/application/CookieItemsView.ts | noCookieSelected": {
     "message": "Walang napiling cookie"
@@ -3620,16 +3662,16 @@
   "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
     "message": "Sa page na ito, puwede mong tingnan at i-delete ang mga storage bucket, at Storage APIs na nauugnay sa mga ito."
   },
-  "panels/application/StorageItemsView.ts | clearAll": {
+  "panels/application/StorageItemsToolbar.ts | clearAll": {
     "message": "I-clear Lahat"
   },
-  "panels/application/StorageItemsView.ts | deleteSelected": {
+  "panels/application/StorageItemsToolbar.ts | deleteSelected": {
     "message": "I-delete ang Pinili"
   },
-  "panels/application/StorageItemsView.ts | refresh": {
+  "panels/application/StorageItemsToolbar.ts | refresh": {
     "message": "I-refresh"
   },
-  "panels/application/StorageItemsView.ts | refreshedStatus": {
+  "panels/application/StorageItemsToolbar.ts | refreshedStatus": {
     "message": "Na-refresh ang talahanayan"
   },
   "panels/application/StorageView.ts | SiteDataCleared": {
@@ -3645,7 +3687,7 @@
     "message": "I-clear ang data ng site"
   },
   "panels/application/StorageView.ts | clearing": {
-    "message": "Kini-clear..."
+    "message": "Kini-clear…"
   },
   "panels/application/StorageView.ts | cookies": {
     "message": "Cookies"
@@ -3715,9 +3757,6 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "Paggamit"
-  },
-  "panels/application/StorageView.ts | webSql": {
-    "message": "SQL ng Web"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "Mga private state token"
@@ -4182,10 +4221,7 @@
     "message": "Tinitingnan ang mga posibleng site ng bounce tracking."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
-    "message": "Naka-disable ang mga pagpigil sa bounce tracking. Para i-enable ang mga ito, itakda ang flag sa {PH1} sa \"Naka-enable nang May Pag-delete.\""
-  },
-  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
-    "message": "Feature Flag ng Mga Pagpigil sa Bounce Tracking"
+    "message": "Naka-disable ang mga pag-mitigate ng bounce tracking."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Sapilitang patakbuhin"
@@ -4261,6 +4297,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "Ginawa ang frame na ito sa pamamagitan ng program. Ipinapakita ng stack trace kung saan ito naganap."
+  },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "Ancestry ng Script ng Creator Ad"
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "Naka-isolate sa Cross-Origin"
@@ -4997,9 +5036,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
     "message": "Hindi naisagawa ang prerender dahil walang sapat na kabuuang memory ng system ang device na ito para suportahan ang pag-prerender."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Na-navigate ng na-prerender na page ang sarili nito sa ibang URL, na kasalukuyang hindi sinusuportahan."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
     "message": "Hindi naisagawa ang pag-prerender na ang eagerness ay \"eager\" dahil masyado nang maraming kasalukuyang pag-prerender ang panimulang page. Alisin ang iba pang panuntunan sa speculation na may \"eager\" para ma-enable ang higit pang pag-prerender."
   },
@@ -5694,7 +5730,7 @@
     "message": "{PH1} lang"
   },
   "panels/console/ConsoleView.ts | saveAs": {
-    "message": "I-save bilang..."
+    "message": "I-save bilang…"
   },
   "panels/console/ConsoleView.ts | searching": {
     "message": "Naghahanap…"
@@ -6164,6 +6200,12 @@
   "panels/css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
     "message": "Mga selector ng uri"
   },
+  "panels/css_overview/CSSOverviewCompletedView.ts | unableToLink": {
+    "message": "(hindi ma-link)"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | unableToLinkToInlineStyle": {
+    "message": "(hindi ma-link sa inline na istilo)"
+  },
   "panels/css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
     "message": "Mga pangkalahatang selector"
   },
@@ -6178,6 +6220,24 @@
   },
   "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
     "message": "Sidebar ng panel ng pangkalahatang-ideya ng CSS"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
+    "message": "I-capture ang pangkalahatang-ideya"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "Mag-capture ng pangkalahatang-ideya ng CSS ng iyong page"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "Tumukoy ng mga posibleng pagpapahusay sa CSS"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "Tumukoy ng mga posibleng pagpapahusay sa CSS (hal. mga isyu sa mababang contrast, hindi nagamit na pag-declare, o hindi pagtutugma ng kulay o font)"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "Hanapin ang mga apektadong element sa panel na Mga Element"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "Quick start: magsimula sa bagong panel na Pangkalahatang-ideya ng CSS"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "Inilalapat ang nasa Bottom sa static na nakaposisyong element"
@@ -6199,24 +6259,6 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Inilalapat ang Width sa inline na element"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
-    "message": "I-capture ang pangkalahatang-ideya"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
-    "message": "Mag-capture ng pangkalahatang-ideya ng CSS ng iyong page"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
-    "message": "Tumukoy ng mga posibleng pagpapahusay sa CSS"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
-    "message": "Tumukoy ng mga posibleng pagpapahusay sa CSS (hal. mga isyu sa mababang contrast, hindi nagamit na pag-declare, o hindi pagtutugma ng kulay o font)"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
-    "message": "Hanapin ang mga apektadong element sa panel na Mga Element"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
-    "message": "Quick start: magsimula sa bagong panel na Pangkalahatang-ideya ng CSS"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "Pangkalahatang-ideya ng CSS"
@@ -6569,6 +6611,9 @@
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Mag-scroll hanggang sa may makita"
   },
+  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
+    "message": "Ipakita ang commandfor target"
+  },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Ipakita ang mga detalye ng iframe"
   },
@@ -6755,6 +6800,9 @@
   "panels/elements/StylePropertyTreeElement.ts | invalidString": {
     "message": "{PH1}, pangalan ng property: {PH2}, value ng property: {PH3}"
   },
+  "panels/elements/StylePropertyTreeElement.ts | jumpToAnchorNode": {
+    "message": "Lumipat sa node ng anchor"
+  },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "Pumunta sa Animations panel"
   },
@@ -6817,12 +6865,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Binalewala"
-  },
-  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
-    "message": "Lumipat sa node ng anchor"
-  },
-  "panels/elements/components/AnchorFunctionLinkSwatch.ts | sIsNotDefined": {
-    "message": "Hindi tinukoy ang {PH1}"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "Matuto pa"
@@ -6979,6 +7021,9 @@
   },
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "I-toggle ang eye dropper"
+  },
+  "panels/elements/elements-meta.ts | toggleWordWrap": {
+    "message": "I-toggle ang pag-wrap ng salita"
   },
   "panels/elements/elements-meta.ts | undo": {
     "message": "I-undo"
@@ -8745,7 +8790,7 @@
     "message": "Na-update ang user agent."
   },
   "panels/network/NetworkConfigView.ts | custom": {
-    "message": "Custom..."
+    "message": "Custom…"
   },
   "panels/network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
     "message": "Kinakailangan ang custom na field ng user agent"
@@ -8944,6 +8989,9 @@
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "Cookies"
+  },
+  "panels/network/NetworkItemView.ts | directsocketMessages": {
+    "message": "Mga mensahe ng DirectSocket"
   },
   "panels/network/NetworkItemView.ts | eventstream": {
     "message": "EventStream"
@@ -9354,13 +9402,13 @@
     "message": "I-export ang HAR (na-sanitize man o may sensitibong data)"
   },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
-    "message": "I-export ang HAR (na-sanitize)..."
+    "message": "I-export ang HAR (na-sanitize)…"
   },
   "panels/network/NetworkPanel.ts | exportHarWithSensitiveData": {
-    "message": "Mag-export ng HAR (may sensitibong data)..."
+    "message": "Mag-export ng HAR (may sensitibong data)…"
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Fine-fetch ang mga frame..."
+    "message": "Fine-fetch ang mga frame…"
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Igrupo ayon sa frame"
@@ -9372,7 +9420,7 @@
     "message": "Pindutin ang {PH1} para i-reload at i-capture ang filmstrip."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
-    "message": "Mag-import ng HAR file..."
+    "message": "Mag-import ng HAR file…"
   },
   "panels/network/NetworkPanel.ts | moreNetworkConditions": {
     "message": "Higit pang kundisyon ng network…"
@@ -9390,7 +9438,7 @@
     "message": "Panatilihin ang log"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "Nire-record ang mga frame..."
+    "message": "Nire-record ang mga frame…"
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Maghanap"
@@ -9658,6 +9706,66 @@
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "Waterfall"
+  },
+  "panels/network/ResourceChunkView.ts | all": {
+    "message": "Lahat"
+  },
+  "panels/network/ResourceChunkView.ts | clearAll": {
+    "message": "I-clear Lahat"
+  },
+  "panels/network/ResourceChunkView.ts | clearAllL": {
+    "message": "I-clear lahat"
+  },
+  "panels/network/ResourceChunkView.ts | copyMessage": {
+    "message": "Kopyahin ang mensahe"
+  },
+  "panels/network/ResourceChunkView.ts | copyMessageD": {
+    "message": "Kopyahin ang mensahe…"
+  },
+  "panels/network/ResourceChunkView.ts | data": {
+    "message": "Data"
+  },
+  "panels/network/ResourceChunkView.ts | filter": {
+    "message": "I-filter"
+  },
+  "panels/network/ResourceChunkView.ts | length": {
+    "message": "Haba"
+  },
+  "panels/network/ResourceChunkView.ts | noMessageSelected": {
+    "message": "Walang napiling mensahe"
+  },
+  "panels/network/ResourceChunkView.ts | receive": {
+    "message": "Tanggapin"
+  },
+  "panels/network/ResourceChunkView.ts | selectMessageToBrowseItsContent": {
+    "message": "Pumili ng mensahe para ma-browse ang content nito."
+  },
+  "panels/network/ResourceChunkView.ts | send": {
+    "message": "Ipadala"
+  },
+  "panels/network/ResourceChunkView.ts | time": {
+    "message": "Oras"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | address": {
+    "message": "Address"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | data": {
+    "message": "Data"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | directSocketChunk": {
+    "message": "Direct Socket Chunk"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | filterUsingRegex": {
+    "message": "Mag-filter gamit ang regex (halimbawa: (direct)?socket))"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | length": {
+    "message": "Haba"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | port": {
+    "message": "Port"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | time": {
+    "message": "Oras"
   },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "Binary na Mensahe"
@@ -11828,6 +11936,15 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Ipakita ang Seguridad"
   },
+  "panels/sensors/LocationsSettingsTab.ts | accuracy": {
+    "message": "Katumpakan"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeANumber": {
+    "message": "Numero dapat ang katumpakan"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeGreaterThanOrEqual": {
+    "message": "Dapat ay mas mataas sa o katumbas ng {PH1} ang katumpakan"
+  },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "Magdagdag ng lokasyon"
   },
@@ -11884,6 +12001,9 @@
   },
   "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
     "message": "Dapat ay may mga character na titik ang Timezone ID"
+  },
+  "panels/sensors/SensorsView.ts | accuracy": {
+    "message": "Katumpakan"
   },
   "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "Isaayos gamit ang mousewheel o pataas/pababang key {PH1}: ±10, Shift: ±1, Alt: ±0.01"
@@ -12062,9 +12182,6 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Idle ang user, na-unlock ang screen"
   },
-  "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "Available lang ang feature na ito sa mga user na 18 taong gulang pataas."
-  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "I-boost ang iyong pagiging produktibo gamit ang AI"
   },
@@ -12139,15 +12256,6 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Matuto pa"
-  },
-  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
-    "message": "Hindi available ang tulong ng AI sa Incognito mode o Guest mode"
-  },
-  "panels/settings/AISettingsTab.ts | notLoggedIn": {
-    "message": "Available lang ang feature na ito kapag nag-sign in ka sa Chrome gamit ang iyong Google account."
-  },
-  "panels/settings/AISettingsTab.ts | offline": {
-    "message": "Available lang ang feature na ito kapag may aktibong koneksyon sa internet."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Patakaran sa Privacy ng Google"
@@ -12960,7 +13068,7 @@
     "message": "Pagsasara ({PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | loading": {
-    "message": "Naglo-load..."
+    "message": "Naglo-load…"
   },
   "panels/sources/ScopeChainSidebarPane.ts | noVariables": {
     "message": "Walang variable"
@@ -13020,7 +13128,7 @@
     "message": "Patakbuhin"
   },
   "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "I-save bilang..."
+    "message": "I-save bilang…"
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pumili ng folder para sa mga override"
@@ -13538,6 +13646,9 @@
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
     "message": "I-toggle ang sidebar ng navigator"
   },
+  "panels/sources/sources-meta.ts | toggleWordWrap": {
+    "message": "I-toggle ang pag-wrap ng salita"
+  },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "Trailing"
   },
@@ -13546,6 +13657,9 @@
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "Pagbabantay"
+  },
+  "panels/sources/sources-meta.ts | wordWrap": {
+    "message": "Pag-wrap ng salita"
   },
   "panels/sources/sources-meta.ts | workspace": {
     "message": "Workspace"
@@ -13642,6 +13756,21 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "Network"
+  },
+  "panels/timeline/StatusDialog.ts | description": {
+    "message": "Paglalarawan"
+  },
+  "panels/timeline/StatusDialog.ts | downloadAfterError": {
+    "message": "I-download ang trace"
+  },
+  "panels/timeline/StatusDialog.ts | status": {
+    "message": "Status"
+  },
+  "panels/timeline/StatusDialog.ts | stop": {
+    "message": "Ihinto"
+  },
+  "panels/timeline/StatusDialog.ts | time": {
+    "message": "Oras"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "1st / 3rd party"
@@ -13790,6 +13919,9 @@
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} sa {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | backButtonTooltip": {
+    "message": "Tingnan ang page ng mga live na sukatan"
+  },
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Kasalukuyang session: {PH1}. {PH2}"
   },
@@ -13813,9 +13945,6 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- Naka-enable ang pag-throttle ng CPU"
-  },
-  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
-    "message": "- Naka-disable ang sampling ng JavaScript"
   },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- Naka-enable ang pag-throttle ng network"
@@ -13853,20 +13982,8 @@
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
-  "panels/timeline/TimelinePanel.ts | description": {
-    "message": "Paglalarawan"
-  },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "I-dim ang mga 3rd party"
-  },
-  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
-    "message": "I-disable ang mga sample ng JavaScript"
-  },
-  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
-    "message": "Dini-disable ang sampling ng JavaScript, binabawasan ang overhead kapag nagpapatakbo sa mga mobile device"
-  },
-  "panels/timeline/TimelinePanel.ts | downloadAfterError": {
-    "message": "I-download ang trace"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "I-drop ang file o URL ng timeline dito"
@@ -13886,8 +14003,8 @@
   "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
     "message": "Mga pangunahing trace ng performance"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
-    "message": "Hindi na-save ang timeline na: {PH1} ({PH2})"
+  "panels/timeline/TimelinePanel.ts | exportingFailed": {
+    "message": "Hindi na-export ang trace"
   },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Ayusin ako"
@@ -13970,20 +14087,11 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "Ipinapakita ang sidebar ng performance"
   },
-  "panels/timeline/TimelinePanel.ts | status": {
-    "message": "Status"
-  },
-  "panels/timeline/TimelinePanel.ts | stop": {
-    "message": "Ihinto"
-  },
   "panels/timeline/TimelinePanel.ts | stoppingTimeline": {
     "message": "Ihinihinto ang timeline…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
     "message": "Mga 3rd party na inuuri ayon sa third-party na web"
-  },
-  "panels/timeline/TimelinePanel.ts | time": {
-    "message": "Oras"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
     "message": "Mag-scroll at Mag-pan"
@@ -15062,6 +15170,9 @@
   "panels/timeline/components/NetworkRequestTooltip.ts | queuingAndConnecting": {
     "message": "Pag-queue at pagkonekta"
   },
+  "panels/timeline/components/NetworkRequestTooltip.ts | redirects": {
+    "message": "Mga pag-redirect"
+  },
   "panels/timeline/components/NetworkRequestTooltip.ts | renderBlocking": {
     "message": "Pag-block ng pag-render"
   },
@@ -15887,6 +15998,9 @@
   "ui/components/diff_view/DiffView.ts | deletions": {
     "message": "Na-delete:"
   },
+  "ui/components/diff_view/DiffView.ts | noDiff": {
+    "message": "Pareho ang file sa hindi nabagong status nito"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# breaking change}one{# breaking change}other{# na breaking change}}"
   },
@@ -15952,6 +16066,9 @@
   },
   "ui/components/settings/SettingCheckbox.ts | learnMore": {
     "message": "Matuto pa"
+  },
+  "ui/components/snackbars/Snackbar.ts | dismiss": {
+    "message": "I-dismiss"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "Nagka-error sa survey"
@@ -16827,7 +16944,7 @@
     "message": "Buksan ang larawan sa bagong tab"
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
-    "message": "I-save ang larawan bilang..."
+    "message": "I-save ang larawan bilang…"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Maghanap"

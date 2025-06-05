@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<style>
+  #node {
+    transition: height 150ms;
+  }
+
+  #node.css-anim {
+    animation: anim 300ms ease-in-out;
+  }
+
+  @keyframes anim {
+    from {
+      width: 100px;
+    }
+    to {
+      width: 200px;
+    }
+  }
+</style>
+<div id="node" style="background-color: red; height: 100px"></div>
+<script>
+  function startCSSTransition() {
+    node.style.height = Math.random() * 100 + 'px';
+  }
+
+  function startCSSAnimation() {
+    node.classList.add('css-anim');
+  }
+</script>

@@ -36,7 +36,6 @@ group("docs") {
     "./panel_feedback",
     "./panel_introduction_steps",
     "./perf_piechart",
-    "./performance_panel",
     "./radio_button",
     "./recorder_control_button",
     "./recorder_create_recording_view",

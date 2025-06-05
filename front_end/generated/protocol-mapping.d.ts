@@ -3484,9 +3484,9 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.Page.GetAppIdResponse;
     };
-    'Page.getAdScriptAncestryIds': {
-      paramsType: [Protocol.Page.GetAdScriptAncestryIdsRequest];
-      returnType: Protocol.Page.GetAdScriptAncestryIdsResponse;
+    'Page.getAdScriptAncestry': {
+      paramsType: [Protocol.Page.GetAdScriptAncestryRequest];
+      returnType: Protocol.Page.GetAdScriptAncestryResponse;
     };
     /**
      * Returns present frame tree structure.

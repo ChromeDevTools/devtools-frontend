@@ -4989,14 +4989,14 @@
       invalidate: ["layout", "paint"],
     },
     {
-      name: "scroll-marker-contain",
+      name: "scroll-target-group",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "keyword",
       keywords: ["none", "auto"],
       typedom_types: ["Keyword"],
       default_value: "none",
-      runtime_flag: "CSSScrollMarkerContain",
+      runtime_flag: "CSSScrollTargetGroup",
     },
     {
       name: "scroll-marker-group",
@@ -5703,7 +5703,6 @@
       name: "text-box",
       longhands: ["text-box-trim", "text-box-edge"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSTextBoxTrim",
     },
     {
       name: "text-box-edge",
@@ -5717,7 +5716,6 @@
       type_name: "TextBoxEdge",
       converter: "ConvertTextBoxEdge",
       invalidate: ["layout"],
-      runtime_flag: "CSSTextBoxTrim",
     },
     {
       name: "text-box-trim",
@@ -5728,7 +5726,6 @@
       keywords: ["none", "trim-start", "trim-end", "trim-both"],
       typedom_types: ["Keyword"],
       invalidate: ["layout"],
-      runtime_flag: "CSSTextBoxTrim",
     },
     {
       name: "text-combine-upright",
@@ -8622,6 +8619,14 @@
         "offset-anchor"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+    },
+    {
+      // This shorthand is used for testing with origin trial intergration only.
+      // It should never be web-exposed.
+      name: "origin-trial-test-shorthand",
+      longhands: ["origin-trial-test-property"],
+      property_methods: ["ParseShorthand"],
+      runtime_flag: "OriginTrialsSampleAPI",
     },
     {
       name: "outline",

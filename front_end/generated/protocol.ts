@@ -12126,19 +12126,40 @@ export namespace Page {
   }
 
   /**
-   * Identifies the bottom-most script which caused the frame to be labelled
-   * as an ad.
+   * Identifies the script which caused a script or frame to be labelled as an
+   * ad.
    */
   export interface AdScriptId {
     /**
-     * Script Id of the bottom-most script which caused the frame to be labelled
-     * as an ad.
+     * Script Id of the script which caused a script or frame to be labelled as
+     * an ad.
      */
     scriptId: Runtime.ScriptId;
     /**
-     * Id of adScriptId's debugger.
+     * Id of scriptId's debugger.
      */
     debuggerId: Runtime.UniqueDebuggerId;
+  }
+
+  /**
+   * Encapsulates the script ancestry and the root script filterlist rule that
+   * caused the frame to be labelled as an ad. Only created when `ancestryChain`
+   * is not empty.
+   */
+  export interface AdScriptAncestry {
+    /**
+     * A chain of `AdScriptId`s representing the ancestry of an ad script that
+     * led to the creation of a frame. The chain is ordered from the script
+     * itself (lower level) up to its root ancestor that was flagged by
+     * filterlist.
+     */
+    ancestryChain: AdScriptId[];
+    /**
+     * The filterlist rule that caused the root (last) script in
+     * `ancestryChain` to be ad-tagged. Only populated if the rule is
+     * available.
+     */
+    rootScriptFilterlistRule?: string;
   }
 
   /**
@@ -13389,18 +13410,19 @@ export namespace Page {
     recommendedId?: string;
   }
 
-  export interface GetAdScriptAncestryIdsRequest {
+  export interface GetAdScriptAncestryRequest {
     frameId: FrameId;
   }
 
-  export interface GetAdScriptAncestryIdsResponse extends ProtocolResponseWithError {
+  export interface GetAdScriptAncestryResponse extends ProtocolResponseWithError {
     /**
      * The ancestry chain of ad script identifiers leading to this frame's
-     * creation, ordered from the most immediate script (in the frame creation
+     * creation, along with the root script's filterlist rule. The ancestry
+     * chain is ordered from the most immediate script (in the frame creation
      * stack) to more distant ancestors (that created the immediately preceding
      * script). Only sent if frame is labelled as an ad and ids are available.
      */
-    adScriptAncestryIds: AdScriptId[];
+    adScriptAncestry?: AdScriptAncestry;
   }
 
   export interface GetFrameTreeResponse extends ProtocolResponseWithError {

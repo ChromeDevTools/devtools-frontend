@@ -10,7 +10,11 @@ module.exports = {
   // This should make mocha crash on uncaught errors.
   // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
   allowUncaught : true,
-  require : ['source-map-support/register'],
+  require :
+          [
+            path.join(path.dirname(__dirname), 'e2e_non_hosted', 'conductor', 'mocha_hooks.js'),
+            'source-map-support/register'
+          ],
   spec : loadTests(__dirname),
   timeout : TestConfig.debug ? 0 : 10_000,
   retries : TestConfig.retries,

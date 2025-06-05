@@ -91,12 +91,11 @@ export async function runCommandWithQuickOpen(command: string): Promise<void> {
   await frontend.keyboard.press('Enter');
 }
 
-export const openGoToLineQuickOpen = async () => {
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.down('Control');
-  await frontend.keyboard.press('G');
-  await frontend.keyboard.up('Control');
-  await waitFor(QUICK_OPEN_SELECTOR);
+export const openGoToLineQuickOpen = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devtoolsPage.page.keyboard.down('Control');
+  await devtoolsPage.pressKey('G');
+  await devtoolsPage.page.keyboard.up('Control');
+  await devtoolsPage.waitFor(QUICK_OPEN_SELECTOR);
 };
 
 export const showSnippetsAutocompletion = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {

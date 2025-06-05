@@ -385,7 +385,8 @@ export async function switchToCallFrame(index: number) {
   await waitFor(selector + '[aria-selected="true"]');
 }
 
-export async function retrieveTopCallFrameScriptLocation(script: string, target: puppeteer.Page) {
+export async function retrieveTopCallFrameScriptLocation(
+    script: string, target: puppeteer.Page, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.
   // Thus, we have to await it at a later point, while stepping through the code.
@@ -393,10 +394,10 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
 
   // Wait for the evaluation to be paused and shown in the UI
   // and retrieve the top level call frame script location name
-  const scriptLocation = await retrieveTopCallFrameWithoutResuming();
+  const scriptLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage);
 
   // Resume the evaluation
-  await click(RESUME_BUTTON);
+  await devToolsPage.click(RESUME_BUTTON);
 
   // Make sure to await the context evaluate before asserting
   // Otherwise the Puppeteer process might crash on a failure assertion,
@@ -406,12 +407,13 @@ export async function retrieveTopCallFrameScriptLocation(script: string, target:
   return scriptLocation;
 }
 
-export async function retrieveTopCallFrameWithoutResuming() {
+export async function retrieveTopCallFrameWithoutResuming(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Wait for the evaluation to be paused and shown in the UI
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 
   // Retrieve the top level call frame script location name
-  const locationHandle = await waitFor('.call-frame-location');
+  const locationHandle = await devToolsPage.waitFor('.call-frame-location');
   const scriptLocation = await locationHandle.evaluate(location => location.textContent);
 
   return scriptLocation;
@@ -567,26 +569,27 @@ async function isExpanded(sourceTreeItem: puppeteer.ElementHandle<Element>): Pro
   });
 }
 
-export async function expandSourceTreeItem(selector: string) {
+export async function expandSourceTreeItem(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(50);
-  const sourceTreeItem = await waitFor(selector);
+  await devToolsPage.timeout(50);
+  const sourceTreeItem = await devToolsPage.waitFor(selector);
   if (!await isExpanded(sourceTreeItem)) {
     // FIXME(crbug/1112692): Refactor test to remove the timeout.
-    await timeout(50);
-    await doubleClickSourceTreeItem(selector);
+    await devToolsPage.timeout(50);
+    await doubleClickSourceTreeItem(selector, devToolsPage);
   }
 }
 
-export async function expandFileTree(selectors: NestedFileSelector) {
-  await expandSourceTreeItem(selectors.rootSelector);
-  await expandSourceTreeItem(selectors.domainSelector);
+export async function expandFileTree(
+    selectors: NestedFileSelector, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await expandSourceTreeItem(selectors.rootSelector, devToolsPage);
+  await expandSourceTreeItem(selectors.domainSelector, devToolsPage);
   if (selectors.folderSelector) {
-    await expandSourceTreeItem(selectors.folderSelector);
+    await expandSourceTreeItem(selectors.folderSelector, devToolsPage);
   }
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(50);
-  return await waitFor(selectors.fileSelector);
+  await devToolsPage.timeout(50);
+  return await devToolsPage.waitFor(selectors.fileSelector);
 }
 
 export async function readSourcesTreeView(): Promise<string[]> {
@@ -871,8 +874,9 @@ export async function waitForLines(lineCount: number): Promise<void> {
   await waitFor(new Array(lineCount).fill('.cm-line').join(' ~ '));
 }
 
-export async function isPrettyPrinted(): Promise<boolean> {
-  const prettyButton = await waitFor('[title="Pretty print"]');
+export async function isPrettyPrinted(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<boolean> {
+  const prettyButton = await devToolsPage.waitFor('[title="Pretty print"]');
   const isPretty = await prettyButton.evaluate(e => e.classList.contains('toggled'));
   return isPretty === true;
 }

@@ -9,6 +9,7 @@ ts_e2e_library("sources") {
     "breakpoint-csp-violations_test.ts",
     "breakpoints-sidebarpane_test.ts",
     "can-handle-special-characters_test.ts",
+    "can-pretty-print-sourcecode_test.ts",
     "debugger-sidebar_test.ts",
     "eval_test.ts",
     "icon-row-bucket_test.ts",
@@ -17,8 +18,10 @@ ts_e2e_library("sources") {
     "link-to-correct-source-line_test.ts",
     "pause-button_test.ts",
     "popover_test.ts",
+    "scroll-into-view_test.ts",
     "sourcemap-without-mappings_test.ts",
     "sources-list_test.ts",
+    "sourceurl_test.ts",
     "text-editor_test.ts",
   ]
 

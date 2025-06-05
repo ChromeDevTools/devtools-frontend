@@ -438,11 +438,14 @@ export class Setting<V> {
   }
 
   #maybeLogAccess(value: V): void {
-    const valueToLog = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ?
-        value :
-        this.#serializer?.stringify(value);
-    if (valueToLog !== undefined && this.#logSettingAccess) {
-      void this.#logSettingAccess(this.name, valueToLog);
+    try {
+      const valueToLog = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ?
+          value :
+          this.#serializer?.stringify(value);
+      if (valueToLog !== undefined && this.#logSettingAccess) {
+        void this.#logSettingAccess(this.name, valueToLog);
+      }
+    } catch {
     }
   }
 

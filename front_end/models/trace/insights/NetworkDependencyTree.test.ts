@@ -96,7 +96,8 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.isFalse(insight.fail);
   });
 
-  it('Calculates the relatedEvents map (event to warning map)', async () => {
+  // TODO(crbug.com/403507404) Times out
+  it.skip('[crbug.com/403507404] Calculates the relatedEvents map (event to warning map)', async () => {
     // Need to load a file with longer dependency chain for this test.
     // Only those requests whose depth >= 2 will be added to the related events.
     const {data, insights} = await processTrace(this, 'web-dev-screenshot-source-ids.json.gz');

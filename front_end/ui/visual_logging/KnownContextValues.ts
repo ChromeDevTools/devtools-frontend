@@ -431,6 +431,7 @@ export const knownContextValues = new Set([
   'animation-trigger-type',
   'animations',
   'animations.buffer-preview',
+  'animations.buffer-preview-sda',
   'animations.clear',
   'animations.grid-header',
   'animations.keyframe',

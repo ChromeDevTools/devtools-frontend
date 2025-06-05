@@ -6,11 +6,9 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import {
-  click,
   getBrowserAndPages,
   waitFor,
   waitForElementWithTextContent,
-  waitForFunction,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -49,23 +47,23 @@ export async function navigateToLighthouseTab(
 
 // Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
 // to create the new report DOM. And we pull the LHR and artifacts off the lh-root node.
-export async function waitForResult() {
-  const {target, frontend} = await getBrowserAndPages();
-
+export async function waitForResult(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   // Ensure the target page is in front so the Lighthouse run can finish.
-  await target.bringToFront();
+  await inspectedPage.bringToFront();
 
-  await waitForFunction(() => {
-    return frontend.evaluate(`(async () => {
+  await devToolsPage.waitForFunction(() => {
+    return devToolsPage.evaluate(`(async () => {
       const Lighthouse = await import('./panels/lighthouse/lighthouse.js');
       return Lighthouse.LighthousePanel.LighthousePanel.instance().reportSelector.hasItems();
     })()`);
   });
 
   // Bring the DT frontend back in front to render the Lighthouse report.
-  await frontend.bringToFront();
+  await devToolsPage.bringToFront();
 
-  const reportEl = await waitFor('.lh-root');
+  const reportEl = await devToolsPage.waitFor('.lh-root');
   const result = await reportEl.evaluate(elem => {
     // @ts-expect-error we installed this obj on a DOM element
     const lhr = elem._lighthouseResultForTesting;
@@ -143,8 +141,8 @@ export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools
   }, throttlingMethod);
 }
 
-export async function clickStartButton() {
-  await click('.lighthouse-start-view devtools-button');
+export async function clickStartButton(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('.lighthouse-start-view devtools-button');
 }
 
 export async function isGenerateReportButtonDisabled(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -217,15 +215,14 @@ export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   return {auditResults, erroredAudits, failedAudits};
 }
 
-export async function getTargetViewport() {
-  const {target} = await getBrowserAndPages();
-  return await target.evaluate(() => ({
-                                 innerHeight: window.innerHeight,
-                                 innerWidth: window.innerWidth,
-                                 outerWidth: window.outerWidth,
-                                 outerHeight: window.outerHeight,
-                                 devicePixelRatio: window.devicePixelRatio,
-                               }));
+export async function getTargetViewport(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  return await inspectedPage.evaluate(() => ({
+                                        innerHeight: window.innerHeight,
+                                        innerWidth: window.innerWidth,
+                                        outerWidth: window.outerWidth,
+                                        outerHeight: window.outerHeight,
+                                        devicePixelRatio: window.devicePixelRatio,
+                                      }));
 }
 
 export async function getServiceWorkerCount() {

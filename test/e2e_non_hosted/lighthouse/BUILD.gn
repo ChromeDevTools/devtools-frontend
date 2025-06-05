@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("lighthouse") {
-  sources = [ "start-view_test.ts" ]
+  sources = [
+    "devtools-settings_test.ts",
+    "start-view_test.ts",
+  ]
 
   deps = [
     "../../e2e/helpers",

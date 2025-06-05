@@ -146,6 +146,9 @@ export class TraceLoader {
     insights: Trace.Insights.Types.TraceInsightSets|null,
     metadata: Trace.Types.File.MetaData|null,
   }> {
+    if (context) {
+      TraceLoader.setTestTimeout(context);
+    }
     // Force the TraceBounds to be reset to empty. This ensures that in
     // tests where we are using the new engine data we don't accidentally
     // rely on the fact that a previous test has set the BoundsManager.
@@ -158,20 +161,27 @@ export class TraceLoader {
     // If we have results from the cache, we use those to ensure we keep the
     // tests speedy and don't re-parse trace files over and over again.
     if (fromCache) {
-      const syntheticEventsManager = fromCache.model.syntheticTraceEventsManager(0);
-      if (!syntheticEventsManager) {
-        throw new Error('Cached trace engine result did not have a synthetic events manager instance');
-      }
-      Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
-      TraceLoader.initTraceBoundsManager(fromCache.parsedTrace);
-      Timeline.ModificationsManager.ModificationsManager.reset();
-      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
+      await wrapInTimeout(context, () => {
+        const syntheticEventsManager = fromCache.model.syntheticTraceEventsManager(0);
+        if (!syntheticEventsManager) {
+          throw new Error('Cached trace engine result did not have a synthetic events manager instance');
+        }
+        Trace.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
+        TraceLoader.initTraceBoundsManager(fromCache.parsedTrace);
+        Timeline.ModificationsManager.ModificationsManager.reset();
+        Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
+      }, 4_000, 'Initializing state for cached trace');
       return {parsedTrace: fromCache.parsedTrace, insights: fromCache.insights, metadata: fromCache.metadata};
     }
 
-    const fileContents = await TraceLoader.fixtureContents(context, name);
-    const parsedTraceData =
-        await TraceLoader.executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);
+    const fileContents = await wrapInTimeout(context, async () => {
+      return await TraceLoader.fixtureContents(context, name);
+    }, 15_000, `Loading fixtureContents for ${name}`);
+
+    const parsedTraceData = await wrapInTimeout(context, async () => {
+      return await TraceLoader.executeTraceEngineOnFileContents(
+          fileContents, /* emulate fresh recording */ false, config);
+    }, 15_000, `Executing traceEngine for ${name}`);
 
     const cacheByName = traceEngineCache.get(name) ?? new Map<string, {
                           parsedTrace: Trace.Handlers.Types.ParsedTrace,
@@ -183,8 +193,10 @@ export class TraceLoader {
     traceEngineCache.set(name, cacheByName);
 
     TraceLoader.initTraceBoundsManager(parsedTraceData.parsedTrace);
-    Timeline.ModificationsManager.ModificationsManager.reset();
-    Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(parsedTraceData.model, 0);
+    await wrapInTimeout(context, () => {
+      Timeline.ModificationsManager.ModificationsManager.reset();
+      Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(parsedTraceData.model, 0);
+    }, 5_000, `Creating modification manager for ${name}`);
     return {
       parsedTrace: parsedTraceData.parsedTrace,
       insights: parsedTraceData.insights,
@@ -329,4 +341,46 @@ export async function fetchFixture(url: URL): Promise<string> {
   const decoder = new TextDecoder('utf-8');
   const contents = decoder.decode(buffer);
   return contents;
+}
+
+/**
+ * Wraps an async Promise with a timeout. We use this to break down and
+ * instrument `TraceLoader` to understand on CQ where timeouts occur.
+ *
+ * @param asyncPromise The Promise representing the async operation to be timed.
+ * @param timeoutMs The timeout in milliseconds.
+ * @param stepName An identifier for the step (for logging).
+ * @returns A promise that resolves with the operation's result, or rejects if it times out.
+ */
+async function wrapInTimeout<T>(
+    mochaContext: Mocha.Context|Mocha.Suite|null, callback: () => Promise<T>| T, timeoutMs: number,
+    stepName: string): Promise<T> {
+  const timeout = Promise.withResolvers<void>();
+  const timeoutId = setTimeout(() => {
+    let testTitle = '(unknown test)';
+    if (mochaContext) {
+      if (isMochaContext(mochaContext)) {
+        testTitle = mochaContext.currentTest?.fullTitle() ?? testTitle;
+      } else {
+        testTitle = mochaContext.fullTitle();
+      }
+    }
+    console.error(`TraceLoader: [${stepName}]: took longer than ${timeoutMs}ms in test "${testTitle}"`);
+    timeout.reject(new Error(`Timeout for TraceLoader: '${stepName}' after ${timeoutMs}ms.`));
+  }, timeoutMs);
+
+  // Race the original promise against the timeout promise
+  try {
+    const cbResult = await Promise.race([callback(), timeout.promise]);
+    timeout.resolve();
+    return cbResult as T;
+  } finally {
+    // Clear the timeout if the original promise resolves/rejects,
+    // or if the timeout promise wins the race.
+    clearTimeout(timeoutId);
+  }
+}
+
+function isMochaContext(arg: unknown): arg is Mocha.Context {
+  return typeof arg === 'object' && arg !== null && 'currentTest' in arg;
 }

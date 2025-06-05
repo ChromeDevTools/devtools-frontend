@@ -295,7 +295,7 @@ describe('BaseNode', () => {
   describe('#hasCycle', () => {
     it('should return false for DAGs', () => {
       const graph = createComplexGraph();
-      assert.isFalse(BaseNode.hasCycle(graph.nodeA));
+      assert.isNull(BaseNode.findCycle(graph.nodeA));
     });
 
     it('should return false for triangular DAGs', () => {
@@ -310,7 +310,7 @@ describe('BaseNode', () => {
       nodeA.addDependent(nodeB);
       nodeB.addDependent(nodeC);
 
-      assert.isFalse(BaseNode.hasCycle(nodeA));
+      assert.isNull(BaseNode.findCycle(nodeA));
     });
 
     it('should return true for basic cycles', () => {
@@ -323,7 +323,7 @@ describe('BaseNode', () => {
       nodeB.addDependent(nodeC);
       nodeC.addDependent(nodeA);
 
-      assert.isTrue(BaseNode.hasCycle(nodeA));
+      assert.isNotNull(BaseNode.findCycle(nodeA));
     });
 
     it('should return true for children', () => {
@@ -338,7 +338,7 @@ describe('BaseNode', () => {
       nodeB.addDependent(nodeC);
       nodeB.addDependent(nodeA);
 
-      assert.isTrue(BaseNode.hasCycle(nodeC));
+      assert.isNotNull(BaseNode.findCycle(nodeC));
     });
 
     it('should return true for complex cycles', () => {
@@ -364,14 +364,14 @@ describe('BaseNode', () => {
       nodeF.addDependent(nodeG);
       nodeG.addDependent(nodeC);
 
-      assert.isTrue(BaseNode.hasCycle(nodeA));
-      assert.isTrue(BaseNode.hasCycle(nodeB));
-      assert.isTrue(BaseNode.hasCycle(nodeC));
-      assert.isTrue(BaseNode.hasCycle(nodeD));
-      assert.isTrue(BaseNode.hasCycle(nodeE));
-      assert.isTrue(BaseNode.hasCycle(nodeF));
-      assert.isTrue(BaseNode.hasCycle(nodeG));
-      assert.isTrue(BaseNode.hasCycle(nodeH));
+      assert.isNotNull(BaseNode.findCycle(nodeA));
+      assert.isNotNull(BaseNode.findCycle(nodeB));
+      assert.isNotNull(BaseNode.findCycle(nodeC));
+      assert.isNotNull(BaseNode.findCycle(nodeD));
+      assert.isNotNull(BaseNode.findCycle(nodeE));
+      assert.isNotNull(BaseNode.findCycle(nodeF));
+      assert.isNotNull(BaseNode.findCycle(nodeG));
+      assert.isNotNull(BaseNode.findCycle(nodeH));
     });
 
     it('works for very large graphs', () => {
@@ -385,7 +385,7 @@ describe('BaseNode', () => {
       }
 
       lastNode.addDependent(root);
-      assert.isTrue(BaseNode.hasCycle(root));
+      assert.isNotNull(BaseNode.findCycle(root));
     });
   });
 });

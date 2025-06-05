@@ -17,6 +17,9 @@
   "core/common/ResourceType.ts | eventsource": {
     "message": "ఈవెంట్ సోర్స్"
   },
+  "core/common/ResourceType.ts | fedcm": {
+    "message": "FedCM"
+  },
   "core/common/ResourceType.ts | fetch": {
     "message": "పొందండి"
   },
@@ -971,7 +974,7 @@
   "entrypoints/main/MainImpl.ts | dockSide": {
     "message": "ఒకవైపు డాక్ చేయండి"
   },
-  "entrypoints/main/MainImpl.ts | dockSideNaviation": {
+  "entrypoints/main/MainImpl.ts | dockSideNavigation": {
     "message": "ఆప్షన్‌లకు నావిగేట్ చేయడానికి ఎడమ, కుడి వైపు బాణం కీలను ఉపయోగించండి"
   },
   "entrypoints/main/MainImpl.ts | dockToBottom": {
@@ -1232,9 +1235,6 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "క్రాస్ ఆరిజిన్ iframeల నుండి window.confirmను ట్రిగ్గర్ చేయడం విస్మరించబడింది, భవిష్యత్తులో ఈ ఆప్షన్ తీసివేయబడుతుంది."
   },
-  "generated/Deprecation.ts | DOMMutationEvents": {
-    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, ఇంకా DOMCharacterDataModified‌తో సహా DOM మ్యుటేషన్ ఈవెంట్‌లు విస్మరించబడ్డాయి (https://w3c.github.io/uievents/#legacy-event-types) అలాగే తీసివేయబడతాయి. దయచేసి బదులుగా MutationObserver‌ను ఉపయోగించండి."
-  },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "డేటాకు సపోర్ట్: SVGUseElementలోని URLలు విస్మరించబడ్డాయి, భవిష్యత్తులో అవి తీసివేయబడతాయి."
   },
@@ -1364,11 +1364,26 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer‌ను ఉపయోగించడం కొనసాగించడానికి, ఎక్స్‌టెన్షన్‌లు క్రాస్-ఆరిజిన్ ఐసోలేషన్‌ను ఎంపిక చేసుకోవాలి. https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ లింక్‌ను చూడండి."
   },
+  "generated/Deprecation.ts | WebGPUAdapterIsFallbackAdapter": {
+    "message": "GPUAdapter isFallbackAdapter అట్రిబ్యూట్ వినియోగాన్ని ఆపివేశారు, బదులుగా GPUAdapterInfo isFallbackAdapter అట్రిబ్యూట్‌ను ఉపయోగించండి."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "XMLHttpRequest‌లోని JSON ప్రతిస్పందన ద్వారా UTF-16 సపోర్ట్ చేయబడదు"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "ప్రధాన థ్రెడ్‌లో సింక్రనస్ XMLHttpRequest విస్మరించబడింది, ఎందుకంటే ఇది ఎండ్ యూజర్ అనుభవంపై ప్రతికూల ప్రభావం చూపుతుంది. మరింత సహాయం కోసం, https://xhr.spec.whatwg.org/ లింక్‌లోని కంటెంట్‌ను రెఫర్ చేయండి."
+  },
+  "models/ai_assistance/AiUtils.ts | ageRestricted": {
+    "message": "ఈ ఫీచర్ 18 ఏళ్లు లేదా అంతకంటే ఎక్కువ వయస్సు ఉన్న యూజర్‌లకు మాత్రమే అందుబాటులో ఉంటుంది."
+  },
+  "models/ai_assistance/AiUtils.ts | notAvailableInIncognitoMode": {
+    "message": "'AI సహాయం' అజ్ఞాత మోడ్‌లో లేదా గెస్ట్ మోడ్‌లో అందుబాటులో లేదు."
+  },
+  "models/ai_assistance/AiUtils.ts | notLoggedIn": {
+    "message": "మీరు మీ Google ఖాతాతో Chromeకి సైన్ ఇన్ చేసినప్పుడు మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
+  },
+  "models/ai_assistance/AiUtils.ts | offline": {
+    "message": "యాక్టివ్ ఇంటర్నెట్ కనెక్షన్‌తో మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "ఫైల్‌ను లోడ్ చేయడంలో తెలియని ఎర్రర్ ఏర్పడింది"
@@ -1392,10 +1407,10 @@
     "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ చేయబడ్డాయి, {PH3}కానీ సోర్స్ ఫైల్(లు) కనుగొనబడ్డాయి"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsFor": {
-    "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ అవుతున్నాయి..."
+    "message": "{PH2} కోసం డీబగ్ చిహ్నాలను [{PH1}] లోడ్ చేస్తోంది…"
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
-    "message": "[{PH1}] {PH2} కోసం డీబగ్ చిహ్నాలు లోడ్ అవుతున్నాయి ({PH3} ద్వారా)..."
+    "message": "{PH2} కోసం ({PH3} ద్వారా) డీబగ్ చిహ్నాలను [{PH1}] లోడ్ చేస్తోంది…"
   },
   "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
     "message": "అజ్ఞాత స్క్రిప్ట్‌లన్నింటినీ విస్మరించదగిన వాటి లిస్ట్‌కు జోడించండి"
@@ -1634,9 +1649,6 @@
   "models/logs/logs-meta.ts | reset": {
     "message": "రీసెట్ చేయండి"
   },
-  "models/persistence/EditFileSystemView.ts | add": {
-    "message": "ఫోల్డర్‌ను జోడించండి"
-  },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "పాత్‌ను ఎంటర్ చేయండి"
   },
@@ -1645,15 +1657,6 @@
   },
   "models/persistence/EditFileSystemView.ts | excludedFolders": {
     "message": "మినహాయించబడిన సబ్-ఫోల్డర్‌లు"
-  },
-  "models/persistence/EditFileSystemView.ts | folderPath": {
-    "message": "ఫోల్డర్ పాత్"
-  },
-  "models/persistence/EditFileSystemView.ts | none": {
-    "message": "ఏదీ కాదు"
-  },
-  "models/persistence/EditFileSystemView.ts | sViaDevtools": {
-    "message": "{PH1} (.devtools ద్వారా)"
   },
   "models/persistence/EditFileSystemView.ts | url": {
     "message": "URL"
@@ -1686,7 +1689,7 @@
     "message": "బదులుగా {PH1}‌ను ఓవర్‌రైడ్ చేయాలా?"
   },
   "models/persistence/PersistenceActions.ts | saveAs": {
-    "message": "ఇలా సేవ్ చేయండి..."
+    "message": "ఇలా సేవ్ చేయాలి…"
   },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ఇమేజ్‌ను సేవ్ చేయండి"
@@ -1833,10 +1836,10 @@
     "message": "మీ మొదటి నెట్‌వర్క్ రిక్వెస్ట్ చాలా ముఖ్యమైనది.  మళ్లింపు‌లను నివారించడం, సర్వర్ ప్రతిస్పందన వేగంగా ఉండేలా చూసుకోవడం, అలాగే టెక్స్ట్ కంప్రెషన్‌ను ఎనేబుల్ చేయడం ద్వారా దాని ల్యాగ్‌ను తగ్గించండి."
   },
   "models/trace/insights/DocumentLatency.ts | failedRedirects": {
-    "message": "డాక్యుమెంట్ మల్లింపు లింక్‌లను కలిగి ఉంది"
+    "message": "మళ్లింపులు ఉన్నాయి ({PH1} మళ్లింపులు, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "సర్వర్ నెమ్మదిగా స్పందించింది"
+    "message": "సర్వర్ నెమ్మదిగా సమాధానమిచ్చింది ({PH1} సమయంలో) "
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "కంప్రెషన్ ఏదీ వర్తించబడలేదు"
@@ -1845,7 +1848,7 @@
     "message": "మళ్లింపులను నివారిస్తుంది"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "సర్వర్ త్వరగా స్పందిస్తుంది"
+    "message": "సర్వర్ వేగంగా సమాధానమిస్తోంది ({PH1} సమయంలో) "
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "టెక్స్ట్ కంప్రెషన్‌ను వర్తింపజేస్తుంది"
@@ -1998,7 +2001,7 @@
     "message": "ఎలిమెంట్ రెండర్ ల్యాగ్"
   },
   "models/trace/insights/LCPPhases.ts | fieldDuration": {
-    "message": "ఫీల్డ్ 75వ శాతం"
+    "message": "ఫీల్డ్ p75"
   },
   "models/trace/insights/LCPPhases.ts | noLcp": {
     "message": "LCP ఏదీ కనుగొనబడలేదు"
@@ -2025,7 +2028,7 @@
     "message": "వృధా బైట్‌లు"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా లెగసీ బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. మీరు లెగసీ బ్రౌజర్‌లకు సపోర్ట్ ఇవ్వాలని మీకు తెలిస్తే తప్ప, [బేస్‌లైన్](https://web.dev/articles/baseline-and-polyfills) ఫీచర్‌లను ట్రాన్స్‌పైల్ చేయకుండా మీ జావాస్క్రిప్ట్ బిల్డ్ ప్రాసెస్‌ను సవరించడాన్ని పరిగణించండి. [చాలా సైట్‌లు ట్రాన్స్‌పైలింగ్ లేకుండా ES6+ కోడ్‌ను ఎందుకు అమలు చేయగలవో తెలుసుకోండి](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
+    "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా పాత బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. మీరు మరింత పాత బ్రౌజర్‌లకు సపోర్ట్ అందించాలని మీకు ఖచ్చితంగా తెలిస్తే తప్ప, [బేస్‌లైన్](https://web.dev/articles/baseline-and-polyfills) ఫీచర్‌లను ట్రాన్స్‌పైల్ చేయకుండా మీ JavaScript బిల్డ్ ప్రాసెస్‌ను సవరించేలా పరిగణించండి. [చాలా సైట్‌లు ట్రాన్స్‌పైలింగ్ లేకుండా ES6+ కోడ్‌ను ఎందుకు అమలు చేయగలవో తెలుసుకోండి](https://philipwalton.com/articles/the-state-of-es5-on-the-web/)"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "లెగసీ JavaScript"
@@ -2045,8 +2048,32 @@
   "models/trace/insights/ModernHTTP.ts | title": {
     "message": "ఆధునిక HTTP"
   },
+  "models/trace/insights/NetworkDependencyTree.ts | columnOrigin": {
+    "message": "ఆరిజిన్"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnRequest": {
+    "message": "రిక్వెస్ట్"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnSource": {
+    "message": "సోర్స్"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnTime": {
+    "message": "సమయం"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | columnWastedMs": {
+    "message": "Est LCP సేవింగ్స్"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | crossoriginWarning": {
+    "message": "వినియోగించని ప్రీకనెక్ట్. crossorigin అట్రిబ్యూట్‌ను సరిగ్గా ఉపయోగించారో లేదో చెక్ చేయండి."
+  },
   "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా [అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
+    "message": "అత్యంత ముఖ్యమైన మీ ఆరిజిన్‌లకు [ప్రీకనెక్ట్](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) సూచనలను జోడించండి, కానీ 4 కంటే తక్కువ సూచనలను ఉపయోగించడానికి ట్రై చేయండి."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
+    "message": "ప్రీకనెక్ట్ కావలసిన ఆరిజిన్‌లు"
   },
   "models/trace/insights/NetworkDependencyTree.ts | maxCriticalPathLatency": {
     "message": "గరిష్ఠ క్లిష్టమైన పాత్ ల్యాగ్:"
@@ -2054,14 +2081,32 @@
   "models/trace/insights/NetworkDependencyTree.ts | noNetworkDependencyTree": {
     "message": "నెట్‌వర్క్ డిపెండెన్సీ‌ల ద్వారా రెండరింగ్ టాస్క్‌లు ఏవీ ప్రభావితం కాలేదు"
   },
+  "models/trace/insights/NetworkDependencyTree.ts | noPreconnectCandidates": {
+    "message": "ప్రీకనెక్ట్ చేయడానికి అదనపు ఆరిజిన్‌లు ఏవీ సరైనవి కావు"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | noPreconnectOrigins": {
+    "message": "ఆరిజిన్‌లు ఏవీ ప్రీకనెక్ట్ అయి లేవు"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableDescription": {
+    "message": "పేజీ లోడ్ అవ్వడానికి ముందే కనెక్షన్‌ను ఏర్పాటు చేసేలా [ప్రీకనెక్ట్](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) సూచనలు బ్రౌజర్‌కు సహాయపడతాయి, దాని వలన ఆ ఆరిజిన్ కోసం మొదటి రిక్వెస్ట్ చేసినప్పుడు సమయం ఆదా అవుతుంది. ఈ కింది ఆరిజిన్‌లకు పేజీ ప్రీకనెక్ట్ అయి ఉంది."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableTitle": {
+    "message": "ముందుగా కనెక్ట్ చేసిన ఆరిజిన్‌లు"
+  },
   "models/trace/insights/NetworkDependencyTree.ts | title": {
     "message": "నెట్‌వర్క్ డిపెండెన్సీ ట్రీ"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | tooManyPreconnectLinksWarning": {
+    "message": "4 కంటే ఎక్కువ preconnect కనెక్షన్‌లను కనుగొన్నాము. వీటిని పరిమితంగా, కేవలం అత్యంత ముఖ్యమైన ఆరిజిన్‌లకు మాత్రమే ఉపయోగించాలి."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | unusedWarning": {
+    "message": "వినియోగించని ప్రీకనెక్ట్ ఉంది. పేజీ రిక్వెస్ట్ చేసే అవకాశం ఉన్న ఆరిజిన్‌లకు మాత్రమే preconnect‌ను ఉపయోగించండి."
   },
   "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
     "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
-    "message": "రిక్వెస్ట్‌లు పేజీకి సంబంధించిన ప్రారంభ రెండర్‌ను బ్లాక్ చేస్తున్నాయి, దీని వలన LCP ఆలస్యం కావచ్చు. [వాయిదా వేయడం లేదా ఇన్‌లైన్ చేయడం](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ఈ నెట్‌వర్క్ రిక్వెస్ట్‌లను క్లిష్టమైన మార్గం నుండి తరలించగలదు."
+    "message": "రిక్వెస్ట్‌లు పేజీకి సంబంధించిన ప్రారంభ రెండర్‌ను బ్లాక్ చేస్తున్నాయి, దీని వలన LCP ఆలస్యం కావచ్చు. [వాయిదా వేయడం లేదా ఇన్‌లైన్ చేయడం](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources) ఈ నెట్‌వర్క్ రిక్వెస్ట్‌లను క్లిష్టమైన మార్గం నుండి తరలించగలదు."
   },
   "models/trace/insights/RenderBlocking.ts | duration": {
     "message": "వ్యవధి"
@@ -2109,7 +2154,7 @@
     "message": "బదిలీ సైజ్"
   },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "3వ-పార్టీ కోడ్ గణనీయమైన స్థాయిలో లోడ్ పనితీరుపై ప్రభావం చూపవచ్చు. మీ పేజీకి సంబంధించిన కంటెంట్‌కు ప్రాధాన్యత ఇవ్వడానికి[3వ-పార్టీ కోడ్‌ను తగ్గించండి, అలాగే లోడ్ చేయడం మినహాయించండి](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+    "message": "3వ-పార్టీ కోడ్ గణనీయమైన స్థాయిలో లోడ్ పనితీరుపై ప్రభావం చూపవచ్చు. మీ పేజీకి సంబంధించిన కంటెంట్‌కు ప్రాధాన్యత ఇవ్వడానికి[3వ-పార్టీ కోడ్‌ను తగ్గించండి, అలాగే లోడ్ చేయడం మినహాయించండి](https://web.dev/articles/optimizing-content-efficiency-loading-third-party-javascript/)."
   },
   "models/trace/insights/ThirdParties.ts | noThirdParties": {
     "message": "థర్డ్-పార్టీ‌లు ఏవీ లేవు"
@@ -2555,6 +2600,9 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "లోకల్ చాట్‌ను తొలగించండి"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | externalRequestReceived": {
+    "message": "DevTools ఎక్స్‌టర్నల్ రిక్వెస్ట్‌ను అందుకుంది"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
     "message": "ప్రశ్న అడగడానికి పై దశలను ఫాలో చేయండి"
   },
@@ -2602,9 +2650,6 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ఈ ఫీచర్‌ను ఉపయోగించడానికి, DevTools సెట్టింగ్‌లలో మీరు ఉపయోగించాలనుకుంటున్న భాషగా ఇంగ్లీష్‌ను సెట్ చేయండి."
-  },
-  "panels/ai_assistance/components/ChatView.ts | inputTextAriraDescription": {
-    "message": "మీ సంభాషణను ప్రారంభించడానికి పైన సూచించిన ప్రాంప్ట్‌లలో ఒక దాన్ని కూడా మీరు ఉపయోగించవచ్చు"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "AI DevTools గురించి తెలుసుకోండి"
@@ -3150,7 +3195,7 @@
     "message": "పుష్ మెసేజింగ్"
   },
   "panels/application/BackgroundServiceView.ts | recordingSActivity": {
-    "message": "{PH1} యాక్టివిటీని రికార్డ్ చేస్తోంది..."
+    "message": "{PH1} యాక్టివిటీ రికార్డ్ అవుతోంది…"
   },
   "panels/application/BackgroundServiceView.ts | saveEvents": {
     "message": "ఈవెంట్‌లను సేవ్ చేస్తుంది"
@@ -3190,9 +3235,6 @@
   },
   "panels/application/CookieItemsView.ts | clearFilteredCookies": {
     "message": "ఫిల్టర్ చేసిన కుక్కీలను క్లియర్ చేయండి"
-  },
-  "panels/application/CookieItemsView.ts | cookies": {
-    "message": "కుక్కీలు"
   },
   "panels/application/CookieItemsView.ts | noCookieSelected": {
     "message": "కుక్కీ ఏదీ ఎంచుకోబడలేదు"
@@ -3620,16 +3662,16 @@
   "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
     "message": "ఈ పేజీలో స్టోరేజ్ బక్కెట్‌లను, వాటికి అనుబంధించబడిన Storage APIsను మీరు చూడవచ్చు, తొలగించవచ్చు."
   },
-  "panels/application/StorageItemsView.ts | clearAll": {
+  "panels/application/StorageItemsToolbar.ts | clearAll": {
     "message": "అన్నీ తీసివేయండి"
   },
-  "panels/application/StorageItemsView.ts | deleteSelected": {
+  "panels/application/StorageItemsToolbar.ts | deleteSelected": {
     "message": "ఎంచుకున్న వాటిని తొలగించండి"
   },
-  "panels/application/StorageItemsView.ts | refresh": {
+  "panels/application/StorageItemsToolbar.ts | refresh": {
     "message": "రిఫ్రెష్ చేయండి"
   },
-  "panels/application/StorageItemsView.ts | refreshedStatus": {
+  "panels/application/StorageItemsToolbar.ts | refreshedStatus": {
     "message": "టేబుల్ రిఫ్రెష్ చేయబడింది"
   },
   "panels/application/StorageView.ts | SiteDataCleared": {
@@ -3645,7 +3687,7 @@
     "message": "సైట్ డేటాను క్లియర్ చేయండి"
   },
   "panels/application/StorageView.ts | clearing": {
-    "message": "క్లియర్ చేస్తోంది..."
+    "message": "క్లియర్ చేస్తోంది…"
   },
   "panels/application/StorageView.ts | cookies": {
     "message": "కుక్కీలు"
@@ -3715,9 +3757,6 @@
   },
   "panels/application/StorageView.ts | usage": {
     "message": "వినియోగం"
-  },
-  "panels/application/StorageView.ts | webSql": {
-    "message": "వెబ్ SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
     "message": "ప్రైవేట్ స్టేట్ టోకెన్‌లు"
@@ -4182,10 +4221,7 @@
     "message": "బౌన్స్ అయ్యే అవకాశం ఉన్న ట్రాకింగ్ సైట్‌ల కోసం బ్రౌజర్‌ను చెక్ చేయండి."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
-    "message": "బౌన్స్ ట్రాకింగ్‌ను తగ్గించే అవకాశం ఉన్న ఉపశమనాలు డిజేబుల్ చేయబడ్డాయి. వాటిని ఎనేబుల్ చేయడానికి, ఫ్లాగ్‌ను {PH1}వద్ద, \"తొలగింపుతో ఎనేబుల్ చేయబడింది\"కి సెట్ చేయండి."
-  },
-  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
-    "message": "బౌన్స్ ట్రాకింగ్‌ను తగ్గించే అవకాశం ఉన్న ఉపశమనాల ఫీచర్ ఫ్లాగ్"
+    "message": "బౌన్స్ ట్రాకింగ్ నియంత్రణల సడలింపులను డిజేబుల్ చేశారు."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "బలవంతంగా రన్ చేయండి"
@@ -4261,6 +4297,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | creationStackTraceExplanation": {
     "message": "ఈ ఫ్రేమ్, ప్రోగ్రామ్ ఆధారంగా క్రియేట్ చేయబడింది. ఇది ఎక్కడ క్రియేట్ చేయబడిందో stack trace చూపుతుంది."
+  },
+  "panels/application/components/FrameDetailsView.ts | creatorAdScriptAncestry": {
+    "message": "క్రియేటర్ యాడ్ స్క్రిప్ట్ యాన్‌సెస్ట్రీ"
   },
   "panels/application/components/FrameDetailsView.ts | crossoriginIsolated": {
     "message": "వేరు చేసిన క్రాస్-ఆరిజిన్"
@@ -4997,9 +5036,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
     "message": "ప్రీరెండరింగ్‌ను సపోర్ట్ చేయడానికి ఈ పరికరంలో మొత్తం సిస్టమ్ మెమరీ తగినంత లేనందున ప్రీరెండరింగ్ జరగలేదు."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ, స్వయంగా అదే మరొక URLకు మళ్లించబడింది, ప్రస్తుతం ఆ URL సపోర్ట్ చేయడం లేదు."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
     "message": "ప్రారంభ పేజీలో ఇప్పటికే చాలా ప్రీరెండరింగ్‌ల ప్రాసెసింగ్ జరుగుతున్నందున, \"ఈగర్\" ఈగర్‌నెస్‌తో ప్రీరెండరింగ్ ప్రాసెస్ అమలు చేయబడదు. తదుపరి ప్రీరెండరింగ్‌ను ఎనేబుల్ చేయడం కోసం \"ఈగర్\"తో ఇతర స్పెక్యులేషన్ నియమాలను తీసివేయండి."
   },
@@ -5268,7 +5304,7 @@
     "message": "కంట్రోల్"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
-    "message": "పరికరం"
+    "message": "డివైజ్"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
     "message": "DOM ఉత్పరివర్తనం"
@@ -5694,7 +5730,7 @@
     "message": "{PH1} మాత్రమే"
   },
   "panels/console/ConsoleView.ts | saveAs": {
-    "message": "ఇలా సేవ్ చేయండి..."
+    "message": "ఇలా సేవ్ చేయాలి…"
   },
   "panels/console/ConsoleView.ts | searching": {
     "message": "సెర్చ్ చేస్తోంది…"
@@ -6164,6 +6200,12 @@
   "panels/css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
     "message": "రకం ఎంపిక సాధనాలు"
   },
+  "panels/css_overview/CSSOverviewCompletedView.ts | unableToLink": {
+    "message": "(లింక్ చేయడం సాధ్యం కాలేదు)"
+  },
+  "panels/css_overview/CSSOverviewCompletedView.ts | unableToLinkToInlineStyle": {
+    "message": "(ఇన్‌లైన్ స్టయిల్‌కు లింక్ చేయడం సాధ్యం కాలేదు)"
+  },
   "panels/css_overview/CSSOverviewCompletedView.ts | universalSelectors": {
     "message": "యూనివర్సల్ ఎంపిక సాధనాలు"
   },
@@ -6178,6 +6220,24 @@
   },
   "panels/css_overview/CSSOverviewSidebarPanel.ts | cssOverviewPanelSidebar": {
     "message": "CSS ఓవర్‌వ్యూ ప్యానెల్ సైడ్‌బార్"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | captureOverview": {
+    "message": "ఓవర్‌వ్యూను క్యాప్చర్ చేయి"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | capturePageCSSOverview": {
+    "message": "మీ పేజీ CSS ఓవర్‌వ్యూను అర్ధం చేసుకోండి"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | identifyCSSImprovements": {
+    "message": "సంభావ్య CSS మెరుగుదలలను గుర్తించండి"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
+    "message": "సంభావ్య CSS మెరుగుదలలను గుర్తించండి (ఉదా. తక్కువ కాంట్రాస్ట్ సమస్యలు, ఉపయోగించని డిక్లరేషన్‌లు, సరిపోలని రంగు లేదా ఫాంట్)"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | locateAffectedElements": {
+    "message": "ఎలిమెంట్‌ల ప్యానెల్‌లో ప్రభావితమైన ఎలిమెంట్‌లను కనుగొనండి"
+  },
+  "panels/css_overview/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
+    "message": "త్వరగా ప్రారంభించండి: కొత్త CSS ఓవర్‌వ్యూ ప్యానెల్‌తో ప్రారంభించండి"
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | bottomAppliedToAStatically": {
     "message": "స్థిరంగా ఉంచిన ఎలిమెంట్‌కు Bottom వర్తింపజేయబడింది"
@@ -6199,24 +6259,6 @@
   },
   "panels/css_overview/CSSOverviewUnusedDeclarations.ts | widthAppliedToAnInlineElement": {
     "message": "Width ఇన్‌లైన్ ఎలిమెంట్‌కు వర్తించబడింది"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | captureOverview": {
-    "message": "ఓవర్‌వ్యూను క్యాప్చర్ చేయి"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | capturePageCSSOverview": {
-    "message": "మీ పేజీ CSS ఓవర్‌వ్యూను అర్ధం చేసుకోండి"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovements": {
-    "message": "సంభావ్య CSS మెరుగుదలలను గుర్తించండి"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | identifyCSSImprovementsWithExampleIssues": {
-    "message": "సంభావ్య CSS మెరుగుదలలను గుర్తించండి (ఉదా. తక్కువ కాంట్రాస్ట్ సమస్యలు, ఉపయోగించని డిక్లరేషన్‌లు, సరిపోలని రంగు లేదా ఫాంట్)"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | locateAffectedElements": {
-    "message": "ఎలిమెంట్‌ల ప్యానెల్‌లో ప్రభావితమైన ఎలిమెంట్‌లను కనుగొనండి"
-  },
-  "panels/css_overview/components/CSSOverviewStartView.ts | quickStartWithCSSOverview": {
-    "message": "త్వరగా ప్రారంభించండి: కొత్త CSS ఓవర్‌వ్యూ ప్యానెల్‌తో ప్రారంభించండి"
   },
   "panels/css_overview/css_overview-meta.ts | cssOverview": {
     "message": "CSS ఓవర్‌వ్యూ"
@@ -6569,6 +6611,9 @@
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "చూడటానికి స్క్రోల్ చేయండి"
   },
+  "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
+    "message": "టార్గెట్ కమాండ్‌ను చూడండి"
+  },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe వివరాలను చూడండి"
   },
@@ -6755,6 +6800,9 @@
   "panels/elements/StylePropertyTreeElement.ts | invalidString": {
     "message": "{PH1}, ప్రాపర్టీ పేరు: {PH2}, ప్రాపర్టీ విలువ: {PH3}"
   },
+  "panels/elements/StylePropertyTreeElement.ts | jumpToAnchorNode": {
+    "message": "యాంకర్ నోడ్‌కు వెళ్లండి"
+  },
   "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
     "message": "యానిమేషన్స్ ప్యానెల్‌కు వెళ్లండి"
   },
@@ -6817,12 +6865,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "విస్మరించబడింది"
-  },
-  "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
-    "message": "యాంకర్ నోడ్‌కు వెళ్లండి"
-  },
-  "panels/elements/components/AnchorFunctionLinkSwatch.ts | sIsNotDefined": {
-    "message": "{PH1}ను నిర్వచించలేదు"
   },
   "panels/elements/components/CSSHintDetailsView.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
@@ -6980,6 +7022,9 @@
   "panels/elements/elements-meta.ts | toggleEyeDropper": {
     "message": "కలర్ పికర్‌ను టోగుల్ చేయండి"
   },
+  "panels/elements/elements-meta.ts | toggleWordWrap": {
+    "message": "పదం సర్దుబాటును టోగుల్ చేయండి"
+  },
   "panels/elements/elements-meta.ts | undo": {
     "message": "చర్య రద్దు చేయండి"
   },
@@ -7119,7 +7164,7 @@
     "message": "స్క్రీన్‌షాట్‌ను క్యాప్చర్ చేయండి"
   },
   "panels/emulation/emulation-meta.ts | device": {
-    "message": "పరికరం"
+    "message": "డివైజ్"
   },
   "panels/emulation/emulation-meta.ts | hideDeviceFrame": {
     "message": "పరికర ఫ్రేమ్‌ను దాచండి"
@@ -8019,7 +8064,7 @@
     "message": "కేటగిరీలు"
   },
   "panels/lighthouse/LighthouseStartView.ts | device": {
-    "message": "పరికరం"
+    "message": "డివైజ్"
   },
   "panels/lighthouse/LighthouseStartView.ts | generateLighthouseReport": {
     "message": "ఒక Lighthouse రిపోర్ట్‌ను జెనరేట్ చేయండి"
@@ -8628,7 +8673,7 @@
     "message": "అప్‌లోడ్"
   },
   "panels/mobile_throttling/mobile_throttling-meta.ts | device": {
-    "message": "పరికరం"
+    "message": "డివైజ్"
   },
   "panels/mobile_throttling/mobile_throttling-meta.ts | enableFastGThrottling": {
     "message": "వేగవంతమైన 3G థ్రోట్లింగ్‌ను ఎనేబుల్ చేయండి"
@@ -8745,7 +8790,7 @@
     "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం అప్‌డేట్ చేయబడింది."
   },
   "panels/network/NetworkConfigView.ts | custom": {
-    "message": "అనుకూల..."
+    "message": "అనుకూలం…"
   },
   "panels/network/NetworkConfigView.ts | customUserAgentFieldIsRequired": {
     "message": "అనుకూల వెబ్‌సైట్ యాక్సెస్ సాధనం ఫీల్డ్ అవసరం"
@@ -8944,6 +8989,9 @@
   },
   "panels/network/NetworkItemView.ts | cookies": {
     "message": "కుక్కీలు"
+  },
+  "panels/network/NetworkItemView.ts | directsocketMessages": {
+    "message": "DirectSocket మెసేజ్‌లు"
   },
   "panels/network/NetworkItemView.ts | eventstream": {
     "message": "EventStream"
@@ -9354,13 +9402,13 @@
     "message": "HAR‌ను (సున్నితమైన వ్యక్తిగత సమాచారం లేకుండా చేసి లేదా సున్నితమైన వ్యక్తిగత సమాచారంతో)"
   },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
-    "message": "HAR (శానిటైజ్ చేసిన వాటిని) ఎగుమతి చేయండి..."
+    "message": "HAR‌ను ఎగుమతి చేయండి (శానిటైజ్ చేసి ఉంది)…"
   },
   "panels/network/NetworkPanel.ts | exportHarWithSensitiveData": {
-    "message": "HAR (సున్నితమైన వ్యక్తిగత సమాచారంతో)ని ఎగుమతి చేయండి..."
+    "message": "HAR (సున్నితమైన వ్యక్తిగత సమాచారంతో)ని ఎగుమతి చేయండి…"
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "ఫ్రేమ్‌లను పొందుతోంది..."
+    "message": "ఫ్రేమ్‌లను పొందుతోంది…"
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "ఫ్రేమ్ ఆధారంగా గ్రూప్ చేయండి"
@@ -9372,7 +9420,7 @@
     "message": "ఫిల్మ్‌స్ట్రిప్‌ను రీలోడ్ చేసి, క్యాప్చర్ చేయడానికి {PH1}‌ను నొక్కండి."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
-    "message": "HAR ఫైల్‌ను దిగుమతి చేయండి..."
+    "message": "HAR ఫైల్‌ను దిగుమతి చేయండి…"
   },
   "panels/network/NetworkPanel.ts | moreNetworkConditions": {
     "message": "మరిన్ని నెట్‌వర్క్ పరిస్థితులు…"
@@ -9390,7 +9438,7 @@
     "message": "లాగ్‌ను స్టోర్ చేయండి"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "ఫ్రేమ్‌లను రికార్డ్ చేస్తోంది..."
+    "message": "ఫ్రేమ్‌లు రికార్డ్ అవుతున్నాయి…"
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "సెర్చ్ చేయండి"
@@ -9658,6 +9706,66 @@
   },
   "panels/network/RequestTimingView.ts | waterfall": {
     "message": "వాటర్‌ఫాల్"
+  },
+  "panels/network/ResourceChunkView.ts | all": {
+    "message": "అన్నీ"
+  },
+  "panels/network/ResourceChunkView.ts | clearAll": {
+    "message": "అన్నీ తీసివేయండి"
+  },
+  "panels/network/ResourceChunkView.ts | clearAllL": {
+    "message": "అన్నింటినీ క్లియర్ చేయండి"
+  },
+  "panels/network/ResourceChunkView.ts | copyMessage": {
+    "message": "మెసేజ్‌ను కాపీ చేయండి"
+  },
+  "panels/network/ResourceChunkView.ts | copyMessageD": {
+    "message": "మెసేజ్‌ను కాపీ చేయండి…"
+  },
+  "panels/network/ResourceChunkView.ts | data": {
+    "message": "డేటా"
+  },
+  "panels/network/ResourceChunkView.ts | filter": {
+    "message": "ఫిల్టర్ చేయి"
+  },
+  "panels/network/ResourceChunkView.ts | length": {
+    "message": "పొడవు"
+  },
+  "panels/network/ResourceChunkView.ts | noMessageSelected": {
+    "message": "ఏ మెసేజ్‌నూ ఎంచుకోలేదు"
+  },
+  "panels/network/ResourceChunkView.ts | receive": {
+    "message": "స్వీకరించు"
+  },
+  "panels/network/ResourceChunkView.ts | selectMessageToBrowseItsContent": {
+    "message": "దాని కంటెంట్‌ను బ్రౌజ్ చేయడానికి మెసేజ్‌ను ఎంపిక చేయండి."
+  },
+  "panels/network/ResourceChunkView.ts | send": {
+    "message": "పంపించు"
+  },
+  "panels/network/ResourceChunkView.ts | time": {
+    "message": "సమయం"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | address": {
+    "message": "అడ్రస్"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | data": {
+    "message": "డేటా"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | directSocketChunk": {
+    "message": "డైరెక్ట్ సాకెట్ చంక్"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | filterUsingRegex": {
+    "message": "రెగ్యులర్ ఎక్స్‌ప్రెషన్‌ను ఉపయోగిస్తున్న ఫిల్టర్ (ఉదాహరణ: (direct)?socket)"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | length": {
+    "message": "పొడవు"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | port": {
+    "message": "పోర్ట్"
+  },
+  "panels/network/ResourceDirectSocketChunkView.ts | time": {
+    "message": "సమయం"
   },
   "panels/network/ResourceWebSocketFrameView.ts | binaryMessage": {
     "message": "బైనరీ మెసేజ్"
@@ -11828,6 +11936,15 @@
   "panels/security/security-meta.ts | showSecurity": {
     "message": "సెక్యూరిటీని చూపు"
   },
+  "panels/sensors/LocationsSettingsTab.ts | accuracy": {
+    "message": "ఖచ్చితత్వం"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeANumber": {
+    "message": "ఖచ్చితత్వం అనేది నంబర్ అయి ఉండాలి"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeGreaterThanOrEqual": {
+    "message": "ఖచ్చితత్వం తప్పనిసరిగా {PH1} కంటే ఎక్కువగా లేదా సమానంగా ఉండాలి"
+  },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "లొకేషన్‌ను జోడించండి"
   },
@@ -11884,6 +12001,9 @@
   },
   "panels/sensors/LocationsSettingsTab.ts | timezoneIdMustContainAlphabetic": {
     "message": "టైమ్‌జోన్ ID తప్పనిసరిగా ఆల్ఫాబెటిక్ అక్షరాలను కలిగి ఉండాలి"
+  },
+  "panels/sensors/SensorsView.ts | accuracy": {
+    "message": "ఖచ్చితత్వం"
   },
   "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
     "message": "మౌస్‌వీల్ లేదా పైకి/కిందకు కీలతో సర్దుబాటు చేయండి. {PH1}: ±10, షిఫ్ట్: ±1, Alt: ±0.01"
@@ -12062,9 +12182,6 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "యూజర్ ఇన్‌యాక్టివ్‌గా ఉన్నారు, స్క్రీన్ అన్‌లాక్ చేయబడింది"
   },
-  "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "ఈ ఫీచర్ 18 ఏళ్లు లేదా అంతకంటే ఎక్కువ వయస్సు ఉన్న యూజర్‌లకు మాత్రమే అందుబాటులో ఉంటుంది."
-  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "AI సహాయంతో మీ పని సామర్థ్యాన్ని పెంచుకోండి"
   },
@@ -12139,15 +12256,6 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
-  },
-  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
-    "message": "అజ్ఞాత మోడ్ లేదా గెస్ట్ మోడ్‌లో AI సహాయం అందుబాటులో లేదు"
-  },
-  "panels/settings/AISettingsTab.ts | notLoggedIn": {
-    "message": "మీరు మీ Google ఖాతాతో Chromeకి సైన్ ఇన్ చేసినప్పుడు మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
-  },
-  "panels/settings/AISettingsTab.ts | offline": {
-    "message": "యాక్టివ్ ఇంటర్నెట్ కనెక్షన్‌తో మాత్రమే ఈ ఫీచర్ అందుబాటులో ఉంటుంది."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google గోప్యతా పాలసీ"
@@ -12348,7 +12456,7 @@
     "message": "ఆటోమేటిక్ సెట్టింగ్ పరికరాలు"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
-    "message": "పరికరం"
+    "message": "డివైజ్"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceAddedOrUpdated": {
     "message": "{PH1} పరికరం విజయవంతంగా జోడించబడింది/ అప్‌డేట్ చేయబడింది."
@@ -12960,7 +13068,7 @@
     "message": "ముగింపు ({PH1})"
   },
   "panels/sources/ScopeChainSidebarPane.ts | loading": {
-    "message": "లోడ్ అవుతోంది..."
+    "message": "లోడ్ అవుతోంది…"
   },
   "panels/sources/ScopeChainSidebarPane.ts | noVariables": {
     "message": "వేరియబుల్‌లు ఏవీ లేవు"
@@ -13020,7 +13128,7 @@
     "message": "రన్ చేయండి"
   },
   "panels/sources/SourcesNavigator.ts | saveAs": {
-    "message": "ఇలా సేవ్ చేయండి..."
+    "message": "ఇలా సేవ్ చేయాలి…"
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ఓవర్‌రైడ్‌ల కోసం ఫోల్డర్‌ను ఎంచుకోండి"
@@ -13538,6 +13646,9 @@
   "panels/sources/sources-meta.ts | toggleNavigatorSidebar": {
     "message": "నావిగేటర్ సైడ్‌బార్‌ను టోగుల్ చేయండి"
   },
+  "panels/sources/sources-meta.ts | toggleWordWrap": {
+    "message": "పదం సర్దుబాటును టోగుల్ చేయండి"
+  },
   "panels/sources/sources-meta.ts | trailing": {
     "message": "ట్రయలింగ్"
   },
@@ -13546,6 +13657,9 @@
   },
   "panels/sources/sources-meta.ts | watch": {
     "message": "వాచ్"
+  },
+  "panels/sources/sources-meta.ts | wordWrap": {
+    "message": "పదం సర్దుబాటు"
   },
   "panels/sources/sources-meta.ts | workspace": {
     "message": "వర్క్ స్పేస్"
@@ -13642,6 +13756,21 @@
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "నెట్‌వర్క్"
+  },
+  "panels/timeline/StatusDialog.ts | description": {
+    "message": "వివరణ"
+  },
+  "panels/timeline/StatusDialog.ts | downloadAfterError": {
+    "message": "ట్రేస్‌ను డౌన్‌లోడ్ చేయండి"
+  },
+  "panels/timeline/StatusDialog.ts | status": {
+    "message": "స్టేటస్"
+  },
+  "panels/timeline/StatusDialog.ts | stop": {
+    "message": "ఆపివేయండి"
+  },
+  "panels/timeline/StatusDialog.ts | time": {
+    "message": "సమయం"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "ఫస్ట్ / థర్డ్-పార్టీ"
@@ -13790,6 +13919,9 @@
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2} వద్ద {PH1}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | backButtonTooltip": {
+    "message": "లైవ్ కొలమానాల పేజీని చూడండి"
+  },
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "ప్రస్తుత సెషన్: {PH1}. {PH2}"
   },
@@ -13813,9 +13945,6 @@
   },
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU త్రోట్లింగ్ ఎనేబుల్ చేయబడింది"
-  },
-  "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
-    "message": "- జావాస్క్రిప్ట్ శాంప్లింగ్ డిజేబుల్ చేయబడింది"
   },
   "panels/timeline/TimelinePanel.ts | NetworkThrottlingIsEnabled": {
     "message": "- నెట్‌వర్క్ త్రోట్లింగ్‌ను ఎనేబుల్ చేయండి"
@@ -13853,20 +13982,8 @@
   "panels/timeline/TimelinePanel.ts | cpu": {
     "message": "CPU:"
   },
-  "panels/timeline/TimelinePanel.ts | description": {
-    "message": "వివరణ"
-  },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
     "message": "థర్డ్-పార్టీలను డిమ్ చేయండి"
-  },
-  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
-    "message": "JavaScript నమూనాలను డిజేబుల్ చేయండి"
-  },
-  "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
-    "message": "జావాస్క్రిప్ట్ శాంప్లింగ్‌ను డిజేబుల్ చేస్తుంది, మొబైల్ పరికరాలకు వ్యతిరేకంగా రన్ అవుతున్నప్పుడు ఓవర్‌హెడ్‌ను తగ్గిస్తుంది"
-  },
-  "panels/timeline/TimelinePanel.ts | downloadAfterError": {
-    "message": "ట్రేస్‌ను డౌన్‌లోడ్ చేయండి"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "టైమ్‌లైన్ ఫైల్ లేదా URLను ఇక్కడ డ్రాప్ చేయండి"
@@ -13886,8 +14003,8 @@
   "panels/timeline/TimelinePanel.ts | exportNormalTraces": {
     "message": "ప్రాథమిక పనితీరు ట్రేస్‌లు"
   },
-  "panels/timeline/TimelinePanel.ts | failedToSaveTimelineSS": {
-    "message": "టైమ్‌లైన్‌ను సేవ్ చేయడం విఫలమైంది: {PH1} ({PH2})"
+  "panels/timeline/TimelinePanel.ts | exportingFailed": {
+    "message": "ట్రేస్‌ను ఎగుమతి చేయడంలో విఫలమైంది"
   },
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "ఏదోఒకటి పరిష్కరించండి"
@@ -13970,20 +14087,11 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "పనితీరు సైడ్‌బార్ సైట్ కనిపిస్తుంది"
   },
-  "panels/timeline/TimelinePanel.ts | status": {
-    "message": "స్టేటస్"
-  },
-  "panels/timeline/TimelinePanel.ts | stop": {
-    "message": "ఆపివేయండి"
-  },
   "panels/timeline/TimelinePanel.ts | stoppingTimeline": {
     "message": "టైమ్‌లైన్‌ను ఆపివేస్తోంది…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
     "message": "థర్డ్-పార్టీ-వెబ్ క్లాసిఫై చేసిన థర్డ్-పార్టీలు"
-  },
-  "panels/timeline/TimelinePanel.ts | time": {
-    "message": "సమయం"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
     "message": "స్క్రోల్ & ప్యాన్"
@@ -15062,6 +15170,9 @@
   "panels/timeline/components/NetworkRequestTooltip.ts | queuingAndConnecting": {
     "message": "క్యూలో ఉండడం, కనెక్ట్ అవ్వడం"
   },
+  "panels/timeline/components/NetworkRequestTooltip.ts | redirects": {
+    "message": "మళ్లింపులు"
+  },
   "panels/timeline/components/NetworkRequestTooltip.ts | renderBlocking": {
     "message": "రెండర్ బ్లాకింగ్"
   },
@@ -15887,6 +15998,9 @@
   "ui/components/diff_view/DiffView.ts | deletions": {
     "message": "తొలగింపు:"
   },
+  "ui/components/diff_view/DiffView.ts | noDiff": {
+    "message": "ఫైల్, మార్చడానికి ముందు ఉన్నట్లుగానే ఉంది"
+  },
   "ui/components/issue_counter/IssueCounter.ts | breakingChanges": {
     "message": "{issueCount,plural, =1{# తాజా మార్పు}other{# తాజా మార్పులు}}"
   },
@@ -15952,6 +16066,9 @@
   },
   "ui/components/settings/SettingCheckbox.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
+  },
+  "ui/components/snackbars/Snackbar.ts | dismiss": {
+    "message": "విస్మరించండి"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "సర్వేతో ఎర్రర్ ఏర్పడింది"
@@ -16827,7 +16944,7 @@
     "message": "కొత్త ట్యాబ్‌లో ఇమేజ్‌ను తెరువు"
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
-    "message": "ఇమేజ్‌ను ఇలా సేవ్ చేయండి..."
+    "message": "ఇమేజ్‌ను ఇలా సేవ్ చేయాలి…"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "కనుగొనండి"

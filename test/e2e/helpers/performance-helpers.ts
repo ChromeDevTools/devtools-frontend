@@ -6,11 +6,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  $,
-  waitForFunction,
-  waitForMany,
-} from '../../shared/helper.js';
+import {waitForMany} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
@@ -329,16 +325,15 @@ export async function navigateToSelectorStatsTab(
       'Panel: timeline > Section: timeline.flame-chart-view', devToolsPage);
 }
 
-export async function selectRecalculateStylesEvent() {
-  await waitForFunction(async () => {
-    await searchForComponent(RECALCULATE_STYLE_TITLE, getBrowserAndPagesWrappers().devToolsPage);
-    const title = await $('.timeline-details-chip-title');
-    if (!title) {
-      return false;
-    }
-    const titleText = await title.evaluate(x => x.textContent);
-    return titleText === RECALCULATE_STYLE_TITLE;
-  });
+export async function selectRecalculateStylesEvent(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await searchForComponent(RECALCULATE_STYLE_TITLE, devToolsPage);
+  const title = await devToolsPage.$('.timeline-details-chip-title');
+  if (!title) {
+    return false;
+  }
+  const titleText = await title.evaluate(x => x.textContent);
+  return titleText === RECALCULATE_STYLE_TITLE;
 }
 
 export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

@@ -9,9 +9,9 @@ import {
   enableCSSSelectorStats,
   navigateToPerformanceTab,
   navigateToSelectorStatsTab,
+  selectRecalculateStylesEvent,
   startRecording,
   stopRecording,
-
 } from '../../e2e/helpers/performance-helpers.js';
 import {getOpenSources} from '../../e2e/helpers/sources-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -33,7 +33,12 @@ async function cssSelectorStatsRecording(testName: string, devToolsPage: DevTool
   await stopRecording(devToolsPage);
 }
 
-describe('The Performance panel', () => {
+describe('The Performance panel', function() {
+  // These tests move between panels, which takes time.
+  if (this.timeout() !== 0) {
+    this.timeout(30000);
+  }
+
   setup({dockingMode: 'undocked'});
 
   it('Can navigate to CSS file in source panel via available link in selector stats table',
@@ -57,4 +62,21 @@ describe('The Performance panel', () => {
        // Look at source tabs
        await validateSourceTabs(devToolsPage);
      });
+
+  it('Includes a selector stats table in recalculate style events', async ({devToolsPage, inspectedPage}) => {
+    await cssSelectorStatsRecording('empty', devToolsPage, inspectedPage);
+
+    // Open select stats for a recorded "Recalculate styles" event
+    await selectRecalculateStylesEvent(devToolsPage);
+    await navigateToSelectorStatsTab(devToolsPage);
+
+    // Check that the selector stats table was rendered successfully
+    // Since the exact selector text, order, and match counts are implementation defined,
+    // we are just checking whether any rows are rendered. This indicates that the trace events
+    // we receive from the backend have the expected object structure. If the structure ever
+    // changes, the data grid will fail to render and cause this test to fail.
+    const rows = await getDataGridRows(
+        1 /* expectedNumberOfRows*/, undefined /* root*/, false /* matchExactNumberOfRows*/, devToolsPage);
+    assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
+  });
 });

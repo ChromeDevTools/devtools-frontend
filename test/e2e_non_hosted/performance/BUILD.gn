@@ -10,6 +10,7 @@ ts_e2e_library("performance") {
     "recording_test.ts",
     "revealing-insights_test.ts",
     "selector-stats-tracing_test.ts",
+    "settings-throttle-change_test.ts",
     "timeline-js-line-level-profile-no-url-end-to-end_test.ts",
     "timeline/treeview_test.ts",
     "wasm/performance_profiling_test.ts",

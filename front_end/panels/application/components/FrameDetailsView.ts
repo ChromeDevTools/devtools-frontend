@@ -253,6 +253,10 @@ const UIStrings = {
    */
   creatorAdScriptAncestry: 'Creator Ad Script Ancestry',
   /**
+   *@description Label for the filterlist rule that identified the root script in 'Creator Ad Script Ancestry' as an ad.
+   */
+  rootScriptFilterlistRule: 'Root Script Filterlist Rule',
+  /**
    *@description Text describing the absence of a value.
    */
   none: 'None',
@@ -269,7 +273,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface FrameDetailsReportViewData {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
   target?: SDK.Target.Target;
-  adScriptAncestryIds: Protocol.Page.AdScriptId[]|null;
+  adScriptAncestry: Protocol.Page.AdScriptAncestry|null;
 }
 
 export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
@@ -281,7 +285,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #permissionsPolicySectionData: PermissionsPolicySectionData = {policies: [], showDetails: false};
   #originTrialTreeView: OriginTrialTreeView = new OriginTrialTreeView();
   #linkifier = new Components.Linkifier.Linkifier();
-  #adScriptAncestryIds: Protocol.Page.AdScriptId[]|null = null;
+  #adScriptAncestry: Protocol.Page.AdScriptAncestry|null = null;
 
   constructor(frame: SDK.ResourceTreeModel.ResourceTreeFrame) {
     super();
@@ -295,15 +299,15 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 
   override async render(): Promise<void> {
-    const results = await this.#frame?.parentFrame()?.getAdScriptAncestryIds(this.#frame?.id);
-    if (Array.isArray(results) && results.length > 0) {
-      this.#adScriptAncestryIds = results;
+    const result = await this.#frame?.parentFrame()?.getAdScriptAncestry(this.#frame?.id);
+    if (result && result.ancestryChain.length > 0) {
+      this.#adScriptAncestry = result;
 
       // Obtain the Target associated with the first ad script, because in most scenarios all
       // scripts share the same debuggerId. However, discrepancies might arise when content scripts
       // from browser extensions are involved. We will monitor the debugging experiences and revisit
       // this approach if it proves problematic.
-      const firstScript = this.#adScriptAncestryIds[0];
+      const firstScript = this.#adScriptAncestry.ancestryChain[0];
       const debuggerModel = firstScript?.debuggerId ?
           await SDK.DebuggerModel.DebuggerModel.modelForDebuggerId(firstScript.debuggerId) :
           null;
@@ -600,11 +604,11 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return Lit.nothing;
     }
 
-    if (!this.#target || !this.#adScriptAncestryIds || this.#adScriptAncestryIds.length === 0) {
+    if (!this.#target || !this.#adScriptAncestry || this.#adScriptAncestry.ancestryChain.length === 0) {
       return Lit.nothing;
     }
 
-    const rows = this.#adScriptAncestryIds.map(adScriptId => {
+    const rows = this.#adScriptAncestry.ancestryChain.map(adScriptId => {
       const adScriptLinkElement = this.#linkifier.linkifyScriptLocation(
           this.#target,
           adScriptId.scriptId || null,
@@ -618,6 +622,8 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return html`<div>${adScriptLinkElement}</div>`;
     });
 
+    const shouldRenderFilterlistRule = (this.#adScriptAncestry.rootScriptFilterlistRule !== undefined);
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -627,6 +633,10 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           {rows, title: i18nString(UIStrings.creatorAdScriptAncestry)} as ExpandableList.ExpandableList.ExpandableListData}>
         </devtools-expandable-list>
       </devtools-report-value>
+      ${shouldRenderFilterlistRule ? html`
+        <devtools-report-key>${i18nString(UIStrings.rootScriptFilterlistRule)}</devtools-report-key>
+        <devtools-report-value jslog=${VisualLogging.section('root-script-filterlist-rule')}>${this.#adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
+      ` : Lit.nothing}
     `;
     // clang-format on
   }

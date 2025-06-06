@@ -31,7 +31,7 @@ const makeFrame = (target: SDK.Target.Target) => {
     unreachableUrl: () => '',
     adFrameType: () => Protocol.Page.AdFrameType.None,
     adFrameStatus: () => undefined,
-    getAdScriptAncestryIds: () => null,
+    getAdScriptAncestry: () => null,
     resourceForURL: () => null,
     isSecureContext: () => true,
     isCrossOriginIsolated: () => true,
@@ -138,16 +138,19 @@ describeWithMockConnection('FrameDetailsView', () => {
     const frame = makeFrame(target);
     frame.adFrameType = () => Protocol.Page.AdFrameType.Root;
     frame.parentFrame = () => ({
-      getAdScriptAncestryIds: () => ([
-        {
-          scriptId: '123' as Protocol.Runtime.ScriptId,
-          debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
-        },
-        {
-          scriptId: '456' as Protocol.Runtime.ScriptId,
-          debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
-        }
-      ]),
+      getAdScriptAncestry: () => ({
+        ancestryChain: [
+          {
+            scriptId: '123' as Protocol.Runtime.ScriptId,
+            debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
+          },
+          {
+            scriptId: '456' as Protocol.Runtime.ScriptId,
+            debuggerId: '42' as Protocol.Runtime.UniqueDebuggerId,
+          }
+        ],
+        rootScriptFilterlistRule: '/ad-script2.$script',
+      }),
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
@@ -183,6 +186,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       'Frame Creation Stack Trace',
       'Ad Status',
       'Creator Ad Script Ancestry',
+      'Root Script Filterlist Rule',
       'Secure Context',
       'Cross-Origin Isolated',
       'Cross-Origin Embedder Policy (COEP)',
@@ -200,6 +204,7 @@ describeWithMockConnection('FrameDetailsView', () => {
       '',
       '',
       '',
+      '/ad-script2.$script',
       'Yes\xA0Localhost is always a secure context',
       'Yes',
       'None',

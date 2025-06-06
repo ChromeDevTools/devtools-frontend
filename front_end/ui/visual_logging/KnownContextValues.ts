@@ -2978,6 +2978,7 @@ export const knownContextValues = new Set([
   'right',
   'ro',
   'roboto',
+  'root-script-filterlist-rule',
   'rotate',
   'row-gap',
   'row-rule',

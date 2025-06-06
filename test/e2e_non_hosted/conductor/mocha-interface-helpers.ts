@@ -29,23 +29,14 @@ async function takeScreenshots(state: E2E.State): Promise<{target?: string, fron
  */
 async function finalizeTestError(
     state: Awaited<ReturnType<typeof StateProvider.instance.getState>>|undefined, error: Error): Promise<Error> {
-  try {
-    if (!state) {
-      console.error('Missing browsing state. Skipping screenshot taking for the error:', error);
-      return error;
-    }
-    if (error instanceof ScreenshotError) {
-      return error;
-    }
-    return await screenshotError(state.state, error);
-  } finally {
-    try {
-      dumpCollectedErrors();
-      await state?.browsingContext.close();
-    } catch (e) {
-      console.error('Unexpected error during cleanup', e);
-    }
+  if (!state) {
+    console.error('Missing browsing state. Skipping screenshot taking for the error:', error);
+    return error;
   }
+  if (error instanceof ScreenshotError) {
+    return error;
+  }
+  return await screenshotError(state.state, error);
 }
 
 export async function screenshotError(state: E2E.State, error: Error) {
@@ -97,6 +88,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
       }
       const testResult =
           await (state === undefined ? fn.call(this) : (fn as E2E.TestAsyncCallbackWithState).call(this, state.state));
+      dumpCollectedErrors();
       return testResult;
     })();
     const actualTimeout = timeoutByTestFunction.get(fn) ?? this.timeout();
@@ -135,6 +127,15 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
         .finally(async () => {
           clearTimeout(t);
         });
-    return await testPromise;
+    return await testPromise.finally(async () => {
+      // State can be cleaned up after testPromise is finished,
+      // including all error and timeout handling that still might rely
+      // on the browserContext and pages.
+      try {
+        await state?.browsingContext.close();
+      } catch (e) {
+        console.error('Unexpected error during cleanup', e);
+      }
+    });
   };
 }

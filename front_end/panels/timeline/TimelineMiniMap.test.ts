@@ -34,9 +34,6 @@ describeWithEnvironment('TimelineMiniMap', function() {
         showScreenshots: true,
       },
     });
-    // This needs to happen once the MiniMap is in the DOM in order to first set the trace bounds.
-    TraceBounds.TraceBounds.BoundsManager.instance().resetWithNewBounds(parsedTrace.Meta.traceBounds);
-
     // Now we can zoom into the main thread activity; this means the resize handles are
     // not both on the edge of the screen, so it's a more representative screenshot.
     const mainThread = getMainThread(parsedTrace.Renderer);

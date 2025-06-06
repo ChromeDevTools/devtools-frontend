@@ -721,8 +721,10 @@ export const getStyleRuleWithSourcePosition =
       });
     };
 
-export const getColorSwatch = async (parent: puppeteer.ElementHandle<Element>|undefined, index: number) => {
-  const swatches = await $$(COLOR_SWATCH_SELECTOR, parent);
+export const getColorSwatch = async (
+    parent: puppeteer.ElementHandle<Element>|undefined, index: number,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const swatches = await devToolsPage.$$(COLOR_SWATCH_SELECTOR, parent);
   return swatches[index];
 };
 
@@ -731,19 +733,22 @@ export const getColorSwatchColor = async (parent: puppeteer.ElementHandle<Elemen
   return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
 };
 
-export const shiftClickColorSwatch =
-    async (parent: puppeteer.ElementHandle<Element>, index: number, parentVe: string) => {
-  const swatch = await getColorSwatch(parent, index);
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.down('Shift');
-  await clickElement(swatch);
-  await frontend.keyboard.up('Shift');
-  await expectVeEvents([
-    veClick(`${parentVe} > ShowStyleEditor: color`),
-    veImpressionsUnder(
-        `${parentVe} > ShowStyleEditor: color`,
-        [veImpression('Menu', undefined, [veImpression('Action', 'clipped-color'), veImpression('Item', 'color')])]),
-  ]);
+export const shiftClickColorSwatch = async (
+    parent: puppeteer.ElementHandle<Element>, index: number, parentVe: string,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const swatch = await getColorSwatch(parent, index, devToolsPage);
+  await devToolsPage.page.keyboard.down('Shift');
+  await devToolsPage.clickElement(swatch);
+  await devToolsPage.page.keyboard.up('Shift');
+  await expectVeEvents(
+      [
+        veClick(`${parentVe} > ShowStyleEditor: color`),
+        veImpressionsUnder(
+            `${parentVe} > ShowStyleEditor: color`,
+            [veImpression(
+                'Menu', undefined, [veImpression('Action', 'clipped-color'), veImpression('Item', 'color')])]),
+      ],
+      undefined, devToolsPage);
 };
 
 export const getElementStyleFontEditorButton = async () => {

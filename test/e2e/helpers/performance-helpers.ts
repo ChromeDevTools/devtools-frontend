@@ -9,6 +9,7 @@ import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {waitForMany} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
+import {openCommandMenu} from './quick_open-helpers.js';
 import {
   expectVeEvents,
   veChange,
@@ -52,15 +53,13 @@ export async function navigateToPerformanceTab(
     await inspectedPage.goToResource(`performance/${testResource}.html`);
   }
 
-  // Click on the tab.
-  await devToolsPage.click('#tab-timeline');
+  // Open the tab.
+  await openCommandMenu(devToolsPage);
+  await devToolsPage.typeText('Performance');
+  await devToolsPage.page.keyboard.press('Enter');
 
   // Make sure the landing page is shown.
   await devToolsPage.waitFor('.timeline-landing-page');
-  await devToolsPage.timeout(100);
-  await expectVeEvents(
-      [veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()], undefined,
-      devToolsPage);
 }
 
 export async function openCaptureSettings(

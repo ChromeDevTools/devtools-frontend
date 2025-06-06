@@ -11,7 +11,6 @@ import {
   click,
   getBrowserAndPages,
   goToResource,
-  timeout,
   waitFor,
   waitForFunction
 } from '../../shared/helper.js';
@@ -223,11 +222,11 @@ export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) 
   }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
 }
 
-export async function focusConsolePrompt() {
-  await click(CONSOLE_PROMPT_SELECTOR);
-  await waitFor('[aria-label="Console prompt"]');
+export async function focusConsolePrompt(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CONSOLE_PROMPT_SELECTOR);
+  await devToolsPage.waitFor('[aria-label="Console prompt"]');
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(50);
+  await devToolsPage.timeout(50);
 }
 
 export async function showVerboseMessages(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

@@ -102,7 +102,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
       for (const scope of scopes.values()) {
         const {descriptions, stack} = scope;
         if (stack) {
-          const stepDescription = descriptions ? `${descriptions.join(' > ')}:\n` : '';
+          const stepDescription = descriptions.length > 0 ? `${descriptions.join(' > ')}:\n` : '';
           stacks.push(`${stepDescription}${stack.join('\n')}\n`);
         }
       }

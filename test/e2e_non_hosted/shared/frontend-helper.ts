@@ -151,7 +151,7 @@ export class DevToolsPage extends PageWrapper {
     return await asyncScope.exec(() => this.waitForFunction(async () => {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
       return (element || undefined);
-    }, asyncScope), `Waiting for element matching selector '${selector}'`);
+    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}'`);
   }
 
   /**
@@ -233,7 +233,7 @@ export class DevToolsPage extends PageWrapper {
         return true;
       }
       return false;
-    }, asyncScope), `Waiting for no elements to match selector '${selector}'`);
+    }, asyncScope), `Waiting for no elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
   }
 
   /**
@@ -391,7 +391,7 @@ export class DevToolsPage extends PageWrapper {
       const element = await this.$<ElementType, typeof selector>(selector, root, handler);
       const visible = await element.evaluate(node => node.checkVisibility());
       return visible ? element : undefined;
-    }, asyncScope), `Waiting for element matching selector '${selector}' to be visible`);
+    }, asyncScope), `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}' to be visible`);
   }
 
   async waitForMany<ElementType extends Element|null = null, Selector extends string = string>(
@@ -400,7 +400,7 @@ export class DevToolsPage extends PageWrapper {
     return await asyncScope.exec(() => this.waitForFunction(async () => {
       const elements = await this.$$<ElementType, typeof selector>(selector, root, handler);
       return elements.length >= count ? elements : undefined;
-    }, asyncScope), `Waiting for ${count} elements to match selector '${selector}'`);
+    }, asyncScope), `Waiting for ${count} elements to match selector '${handler ? `${handler}/` : ''}${selector}'`);
   }
 
   waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {

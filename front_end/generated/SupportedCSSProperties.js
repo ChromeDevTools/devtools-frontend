@@ -1805,7 +1805,8 @@ export const generatedProperties = [
    "style",
    "paint",
    "inline-size",
-   "block-size"
+   "block-size",
+   "view-transition"
   ],
   "name": "contain"
  },
@@ -5272,7 +5273,8 @@ export const generatedPropertyValues = {
    "style",
    "paint",
    "inline-size",
-   "block-size"
+   "block-size",
+   "view-transition"
   ]
  },
  "contain-intrinsic-height": {

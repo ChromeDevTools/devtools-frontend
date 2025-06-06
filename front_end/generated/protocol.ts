@@ -6645,6 +6645,10 @@ export namespace Emulation {
     type: SetEmulatedVisionDeficiencyRequestType;
   }
 
+  export interface SetEmulatedOSTextScaleRequest {
+    scale?: number;
+  }
+
   export interface SetGeolocationOverrideRequest {
     /**
      * Mock latitude

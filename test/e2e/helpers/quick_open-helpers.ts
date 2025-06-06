@@ -12,7 +12,7 @@ import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
 
-export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"]';
+export const QUICK_OPEN_SELECTOR = '[aria-label="Quick open"],[aria-label="Abrir rápido"]';
 const QUICK_OPEN_ITEMS_SELECTOR = '.filtered-list-widget-item-wrapper';
 const QUICK_OPEN_ITEM_TITLE_SELECTOR = '.filtered-list-widget-title';
 

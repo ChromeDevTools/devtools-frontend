@@ -87,7 +87,8 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string,
         debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
       }
       const testResult =
-          await (state === undefined ? fn.call(this) : (fn as E2E.TestAsyncCallbackWithState).call(this, state.state));
+          await (state === undefined ? fn.call(this) :
+                                       (fn as unknown as E2E.TestAsyncCallbackWithState).call(undefined, state.state));
       dumpCollectedErrors();
       return testResult;
     })();

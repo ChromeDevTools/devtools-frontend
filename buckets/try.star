@@ -125,7 +125,6 @@ def try_pair(
 
 try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64")
 try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
-try_pair("dtf_mac", "rel", dimensions.mac, "Mac-15", "x86-64")
 try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64")
 try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64", properties = {"force_host_cpu": "arm64"})
 try_pair(
@@ -182,7 +181,6 @@ cq_builders = struct(
         "dtf_linux_rel",
         "dtf_mac_arm64_rel",
         "dtf_mac_cross_rel",
-        "dtf_mac_rel",
         "dtf_win64_rel",
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
@@ -194,7 +192,6 @@ cq_builders = struct(
     experiment_builders = {
         # Quarantine a builder here
         # This will make them experiment with the given percentage
-        "dtf_mac_rel": 100,
     },
     includable_only_builders = [
         "dtf_mac_cross_rel",

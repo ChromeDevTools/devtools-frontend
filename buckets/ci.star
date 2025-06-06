@@ -124,16 +124,6 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             },
         ),
         builder_descriptor(
-            name = "Stand-alone Mac",
-            recipe_name = "devtools/devtools-frontend",
-            dims = dimensions.mac,
-            consoles = ["ci"],
-            notification_muted = True,
-            properties = {
-                "coverage": False,
-            },
-        ),
-        builder_descriptor(
             name = "Stand-alone Mac-arm64",
             recipe_name = "devtools/devtools-frontend",
             dims = dimensions.mac_arm64,

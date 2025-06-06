@@ -189,8 +189,11 @@ class NonHostedMochaTests extends Tests {
       '-u',
       path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
     ];
+
     if (options['debug']) {
       args.unshift('--inspect-brk');
+      console.warn(
+          '\x1b[33mYou need to attach a debugger from chrome://inspect for tests to continue the run in debug mode.\x1b[0m');
     }
     return super.run(
         tests,

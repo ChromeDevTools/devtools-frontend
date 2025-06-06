@@ -8,6 +8,7 @@ ts_e2e_library("elements") {
   sources = [
     "accessibility-tree_test.ts",
     "adornment_test.ts",
+    "classes-pane_test.ts",
     "computed-pane-properties_test.ts",
     "flexbox-editor_test.ts",
     "style-pane-properties_test.ts",

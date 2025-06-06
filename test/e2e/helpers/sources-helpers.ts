@@ -30,7 +30,6 @@ import {
   waitForAria,
   waitForFunction,
   waitForFunctionWithTries,
-  waitForMany,
   waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
@@ -526,9 +525,12 @@ export async function captureAddedSourceFiles(
   return capturedFileNames.map(f => new URL(`http://${f}`).pathname);
 }
 
-export async function reloadPageAndWaitForSourceFile(target: puppeteer.Page, sourceFile: string) {
+export async function reloadPageAndWaitForSourceFile(
+    sourceFile: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   await waitForSourceFiles(
-      SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith(sourceFile)), () => target.reload());
+      SourceFileEvents.SOURCE_FILE_LOADED, files => files.some(f => f.endsWith(sourceFile)),
+      () => inspectedPage.reload(), devToolsPage);
 }
 
 export function isEqualOrAbbreviation(abbreviated: string, full: string): boolean {
@@ -667,25 +669,27 @@ export async function typeIntoSourcesAndSave(text: string) {
   await pressKey('s', {control: true});
 }
 
-export async function getScopeNames() {
-  const scopeElements = await $$('.scope-chain-sidebar-pane-section-title');
+export async function getScopeNames(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const scopeElements = await devToolsPage.$$('.scope-chain-sidebar-pane-section-title');
   const scopeNames = await Promise.all(scopeElements.map(nodes => nodes.evaluate(n => n.textContent)));
   return scopeNames;
 }
 
-export async function getValuesForScope(scope: string, expandCount: number, waitForNoOfValues: number) {
+export async function getValuesForScope(
+    scope: string, expandCount: number, waitForNoOfValues: number,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const scopeSelector = `[aria-label="${scope}"]`;
-  await waitFor(scopeSelector);
+  await devToolsPage.waitFor(scopeSelector);
   for (let i = 0; i < expandCount; i++) {
-    await click(`${scopeSelector} + ol li[aria-expanded=false]`);
+    await devToolsPage.click(`${scopeSelector} + ol li[aria-expanded=false]`);
   }
   const valueSelector = `${scopeSelector} + ol .name-and-value`;
   async function readValues() {
-    const valueSelectorElements = await waitForMany(valueSelector, waitForNoOfValues);
+    const valueSelectorElements = await devToolsPage.waitForMany(valueSelector, waitForNoOfValues);
     return await Promise.all(valueSelectorElements.map(elem => elem.evaluate(n => n.textContent as string)));
   }
   const previousValues = await readValues();
-  return await waitForFunction(async function() {
+  return await devToolsPage.waitForFunction(async function() {
     const values = await readValues();
     if (values.join('') === previousValues.join('')) {
       return values;

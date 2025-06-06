@@ -32,7 +32,7 @@ describe('The Sources Tab', () => {
   });
 
   it('hits two breakpoints that are set and activated separately', async () => {
-    const {target, frontend} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
 
     await step('navigate to a page and open the Sources tab', async () => {
       await openSourceCodeEditorForFile(fileName, 'wasm/wasm-with-sourcemap.html');
@@ -43,7 +43,7 @@ describe('The Sources Tab', () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(target, fileName);
+      await reloadPageAndWaitForSourceFile(fileName);
     });
 
     await step('open original source file', async () => {
@@ -69,7 +69,7 @@ describe('The Sources Tab', () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(target, fileName);
+      await reloadPageAndWaitForSourceFile(fileName);
     });
 
     await step('open original source file', async () => {
@@ -84,7 +84,7 @@ describe('The Sources Tab', () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(target, fileName);
+      await reloadPageAndWaitForSourceFile(fileName);
     });
 
     await waitForFunction(async () => await isBreakpointSet(6));

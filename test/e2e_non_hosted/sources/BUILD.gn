@@ -10,6 +10,7 @@ ts_e2e_library("sources") {
     "breakpoints-sidebarpane_test.ts",
     "can-handle-special-characters_test.ts",
     "can-pretty-print-sourcecode_test.ts",
+    "can-show-wasm-scopes_test.ts",
     "color-swatch_test.ts",
     "debugger-sidebar_test.ts",
     "eval_test.ts",

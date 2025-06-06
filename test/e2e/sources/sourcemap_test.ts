@@ -661,7 +661,7 @@ describe('The Sources Tab', function() {
       await addBreakpointForLine(2);
 
       // Reload the page and re-open (the initial) index.js.
-      await reloadPageAndWaitForSourceFile(target, 'index.js');
+      await reloadPageAndWaitForSourceFile('index.js');
 
       // Check that the breakpoint still exists on line 2.
       assert.isTrue(await isBreakpointSet(2));

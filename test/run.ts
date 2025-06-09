@@ -194,6 +194,7 @@ class NonHostedMochaTests extends Tests {
       args.unshift('--inspect-brk');
       console.warn(
           '\x1b[33mYou need to attach a debugger from chrome://inspect for tests to continue the run in debug mode.\x1b[0m');
+      console.warn('\x1b[33mWhen attached, resume execution in the Sources panel to begin debugging the test.\x1b[0m');
     }
     return super.run(
         tests,

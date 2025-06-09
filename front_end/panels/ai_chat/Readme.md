@@ -26,6 +26,7 @@ npm run build
 3. Update the code to this fork implementation
 ```sh
 git remote add upstream git@github.com:tysonthomas9/browser-operator-devtools-frontend.git
+git fetch upstream
 git checkout upstream/main
 ```
 

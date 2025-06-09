@@ -396,7 +396,8 @@ export class EntryLabelOverlay extends HTMLElement {
 
     // Draw the circle at the bottom of the connector
     circle.setAttribute('cx', EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH.toString());
-    circle.setAttribute('cy', EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
+    // Add one to the offset of the circle which positions it perfectly centered on the border of the overlay.
+    circle.setAttribute('cy', (EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT + 1).toString());
     circle.setAttribute('r', '3');
     circle.setAttribute('fill', connectorColor);
   }

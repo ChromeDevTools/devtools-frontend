@@ -14,8 +14,11 @@ import {
 } from '../ui/ChatView.js';
 
 import {createAgentGraph} from './Graph.js';
+import { createLogger } from './Logger.js';
 import {type AgentState, createInitialState, createUserMessage} from './State.js';
 import type {CompiledGraph} from './Types.js';
+
+const logger = createLogger('AgentService');
 
 /**
  * Events dispatched by the agent service
@@ -93,7 +96,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
 
       this.#isInitialized = true;
     } catch (error) {
-      console.error('Failed to initialize agent:', error);
+      logger.error('Failed to initialize agent:', error);
       // Pass through specific errors
       if (error instanceof Error && 
           (error.message.includes('API key is required') || 
@@ -190,7 +193,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       return finalMessage;
 
     } catch (error) {
-      console.error('Error running agent:', error);
+      logger.error('Error running agent:', error);
 
       // Create an error message from the model
       const errorMessage: ModelChatMessage = {
@@ -256,7 +259,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
           pageUrl = urlResult.result.value || '';
         }
       } catch (error) {
-        console.error('Error fetching page URL:', error);
+        logger.error('Error fetching page URL:', error);
       }
     }
     return pageUrl;
@@ -279,7 +282,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
           pageTitle = titleResult.result.value || '';
         }
       } catch (error) {
-        console.error('Error fetching page title:', error);
+        logger.error('Error fetching page title:', error);
       }
     }
     return pageTitle;
@@ -309,7 +312,7 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       // Default to requiring API key for any unknown provider
       return true;
     } catch (error) {
-      console.error('Error checking if API key is required:', error);
+      logger.error('Error checking if API key is required:', error);
       // Default to requiring API key in case of errors
       return true;
     }

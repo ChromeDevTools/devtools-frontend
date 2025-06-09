@@ -1,0 +1,48 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
+
+devtools_module("testing") {
+  sources = [
+    # Framework files
+    "framework/TestRunner.ts",
+    "framework/TestSuite.ts",
+    "framework/SnapshotManager.ts",
+    "framework/ResultCollector.ts",
+    "framework/Types.ts",
+    
+    # Adapter files
+    "adapters/LLMAdapter.ts",
+    "adapters/MockLLMAdapter.ts",
+    "adapters/OpenAIAdapter.ts",
+    
+    # Test case files will be added here as they are created
+  ]
+
+  deps = [
+    "../:ai_chat",
+    "../../../core/common:bundle",
+    "../../../core/sdk:bundle",
+    "../../../testing:bundle",
+  ]
+}
+
+# Test target for running the evaluation framework tests
+ts_library("unittests") {
+  testonly = true
+  
+  sources = [
+    "framework/TestRunner.test.ts",
+    "framework/SnapshotManager.test.ts",
+    "adapters/MockLLMAdapter.test.ts",
+  ]
+  
+  deps = [
+    ":testing",
+    "../:ai_chat",
+    "../../../testing:bundle",
+  ]
+}

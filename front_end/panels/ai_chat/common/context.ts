@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 
 import type { Page } from './page.js';
 
@@ -27,6 +28,7 @@ export interface AccessibilityNode {
   parentId?: string;
   nodeId?: string;
   backendDOMNodeId?: number;
+  properties?: Protocol.Accessibility.AXProperty[];
 }
 
 // Enhanced interface for iframe node with content tree
@@ -35,11 +37,20 @@ export interface IFrameAccessibilityNode extends AccessibilityNode {
   contentSimplified?: string;
 }
 
+// Backend ID mappings for DOM nodes
+export interface BackendIdMaps {
+  tagNameMap: Record<number, string>;
+  xpathMap: Record<number, string>;
+}
+
 export interface TreeResult {
   tree: AccessibilityNode[];
   simplified: string;
   iframes: IFrameAccessibilityNode[];
   scrollableContainerNodes: Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}>;
+  idToUrl?: Record<string, string>;
+  xpathMap?: Record<number, string>;
+  tagNameMap?: Record<number, string>;
 }
 
 export interface EnhancedContext extends SDK.Target.Target {

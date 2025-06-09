@@ -165,7 +165,7 @@ The system employs a two-tiered approach to agent orchestration:
 
 The system supports multiple LLM providers through a unified client interface:
 
-*   **OpenAI**: Direct integration with GPT-4 and GPT-4o-mini models using the OpenAI API.
+*   **OpenAI**: Direct integration with GPT-4 and gpt-4.1-mini models using the OpenAI API.
 *   **LiteLLM**: Support for various providers (Claude, Gemini, Mistral, etc.) through a LiteLLM proxy.
 *   **Local Models**: Integration with locally hosted models via LiteLLM proxy.
 

@@ -13,7 +13,7 @@ export interface FullPageAccessibilityTreeToMarkdownResult {
   markdown: string;
   treeLength: number;
   truncated: boolean;
-  metadata?: { url: string, title: string };
+  metadata?: { url: string, title?: string, urls?: string };
 }
 
 export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<string, unknown>, FullPageAccessibilityTreeToMarkdownResult | ErrorResult> {
@@ -65,7 +65,13 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
           markdown: response,
           treeLength: accessibilityTreeString.length,
           truncated: false,
-          metadata: treeResult.iframes && treeResult.iframes.length > 0 ? { title: 'Contains iframes', url: '' } : undefined,
+          metadata: {
+            ...(treeResult.iframes && treeResult.iframes.length > 0 && { title: 'Contains iframes' }),
+            ...(treeResult.idToUrl && Object.keys(treeResult.idToUrl).length > 0 && { 
+              urls: Object.values(treeResult.idToUrl).slice(0, 5).join(', ') // Include up to 5 URLs found
+            }),
+            url: ''
+          },
         };
       }
       return { error: 'No Markdown response from LLM.' };

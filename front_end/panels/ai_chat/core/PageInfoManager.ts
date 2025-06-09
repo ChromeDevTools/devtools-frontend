@@ -5,6 +5,9 @@
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Utils from '../common/utils.js'; // Path relative to core/ assuming utils.ts will be in common/ later, this will be common/utils.js
 import { VisitHistoryManager } from '../tools/VisitHistoryManager.js'; // Path relative to core/ assuming VisitHistoryManager.ts will be in core/
+import { createLogger } from './Logger.js';
+
+const logger = createLogger('PageInfoManager');
 
 // Add PageInfoManager class after imports but before other code
 export class PageInfoManager {
@@ -70,9 +73,9 @@ export class PageInfoManager {
       // Then, fetch the latest accessibility tree
       await this.fetchAccessibilityTree(target);
 
-      console.log('[PageInfoManager] Updated page info and accessibility tree');
+      logger.debug('Updated page info and accessibility tree');
     } catch (error) {
-      console.error('[PageInfoManager] Error updating page info with full tree:', error);
+      logger.error('Error updating page info with full tree:', error);
     }
   }
 
@@ -98,18 +101,15 @@ export class PageInfoManager {
         this.setInfo(null);
       }
     } catch (error) {
-      console.error('Error updating page info:', error);
+      logger.error('Error updating page info:', error);
       this.setInfo(null);
     }
   }
 
   private async fetchAccessibilityTree(target: SDK.Target.Target): Promise<void> {
     try {
-      // Create a simple logger for the accessibility tree
-      const logger = (): void => { };
-
       // Call the getVisibleAccessibilityTree function from Utils
-      const treeResult = await Utils.getVisibleAccessibilityTree(target, logger as any);
+      const treeResult = await Utils.getVisibleAccessibilityTree(target);
 
       // Store the simplified tree
       this.accessibilityTree = treeResult.simplified;
@@ -123,9 +123,9 @@ export class PageInfoManager {
           contentSimplified: iframe.contentSimplified
         }));
 
-      console.log('Accessibility tree updated:', this.accessibilityTree?.substring(0, 100) + '...');
+      logger.debug('Accessibility tree updated:', this.accessibilityTree?.substring(0, 100) + '...');
       if (this.iframeContent?.length) {
-        console.log(`Found ${this.iframeContent.length} iframes with content`);
+        logger.debug(`Found ${this.iframeContent.length} iframes with content`);
       }
 
       // Keep this storeVisit call - it has the most complete data (page info + accessibility tree)
@@ -135,7 +135,7 @@ export class PageInfoManager {
         VisitHistoryManager.getInstance().storeVisit(pageInfo, this.accessibilityTree);
       }
     } catch (error) {
-      console.error('Error fetching accessibility tree:', error);
+      logger.error('Error fetching accessibility tree:', error);
       this.accessibilityTree = null;
       this.iframeContent = [];
     }
@@ -146,7 +146,7 @@ export class PageInfoManager {
     const isDifferent = !oldInfo || !info || oldInfo.url !== info.url || oldInfo.title !== info.title;
 
     if (isDifferent) {
-      console.log('Page info updated:', info);
+      logger.debug('Page info updated:', info);
       this.currentInfo = info;
       // Notify all listeners
       this.listeners.forEach(listener => listener(info));

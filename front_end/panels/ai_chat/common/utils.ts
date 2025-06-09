@@ -9,9 +9,11 @@
 
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
+import { createLogger } from '../core/Logger.js';
 
-import type { AccessibilityNode, IFrameAccessibilityNode, TreeResult } from './context.js';
-import type { LogLine } from './log.js';
+const logger = createLogger('utils');
+
+import type { AccessibilityNode, IFrameAccessibilityNode, TreeResult, BackendIdMaps } from './context.js';
 
 // Parser function for str output
 export function formatSimplifiedTree(
@@ -85,7 +87,7 @@ export function getFormattedSubtreeByNodeId(targetNodeId: string, allNodes: Acce
 
   // 2. Check if the target node exists
   if (!nodeMap.has(targetNodeId)) {
-    console.warn(`Node with ID ${targetNodeId} not found in the provided list.`);
+    logger.warn(`Node with ID ${targetNodeId} not found in the provided list.`);
     return null;
   }
 
@@ -102,6 +104,114 @@ export function getFormattedSubtreeByNodeId(targetNodeId: string, allNodes: Acce
 }
 
 /**
+ * Builds backend ID mappings for DOM nodes.
+ * Returns tagNameMap (backendNodeId -> tagName) and xpathMap (backendNodeId -> xpath).
+ */
+async function buildBackendIdMaps(target: SDK.Target.Target): Promise<BackendIdMaps> {
+  const domAgent = target.domAgent();
+  
+  try {
+    // Get the full DOM document
+    const { root } = await domAgent.invoke_getDocument({
+      depth: -1,
+      pierce: true
+    });
+
+    const tagNameMap: Record<number, string> = {};
+    const xpathMap: Record<number, string> = {};
+
+    // Recursively walk the DOM tree, building XPath as we go
+    const walkNode = (node: any, path: string): void => {
+      if (node.backendNodeId) {
+        const tag = String(node.nodeName).toLowerCase();
+        tagNameMap[node.backendNodeId] = tag;
+        xpathMap[node.backendNodeId] = path;
+      }
+
+      if (!node.children?.length) return;
+      
+      // Count occurrences of each node type/name combination for XPath indexing
+      const counters: Record<string, number> = {};
+
+      for (const child of node.children) {
+        const name = String(child.nodeName).toLowerCase();
+        const counterKey = `${child.nodeType}:${name}`;
+        const idx = (counters[counterKey] = (counters[counterKey] ?? 0) + 1);
+
+        // Build XPath segment based on node type
+        let seg: string;
+        if (child.nodeType === 3) {
+          // Text node
+          seg = `text()[${idx}]`;
+        } else if (child.nodeType === 8) {
+          // Comment node
+          seg = `comment()[${idx}]`;
+        } else {
+          // Element node
+          seg = `${name}[${idx}]`;
+        }
+
+        walkNode(child, `${path}/${seg}`);
+      }
+    };
+
+    // Start walking from the root
+    walkNode(root, '');
+
+    logger.info(`Built backend ID maps: ${Object.keys(tagNameMap).length} tag mappings, ${Object.keys(xpathMap).length} xpath mappings`);
+    
+    return { tagNameMap, xpathMap };
+  } catch (error) {
+    logger.error('Error building backend ID maps:', error);
+    return { tagNameMap: {}, xpathMap: {} };
+  }
+}
+
+/**
+ * Extracts URL from accessibility node properties if available
+ */
+function extractUrlFromAXNode(axNode: AccessibilityNode): string | undefined {
+  if (!axNode.properties) return undefined;
+  
+  const urlProp = axNode.properties.find(prop => prop.name === Protocol.Accessibility.AXPropertyName.Url);
+  if (urlProp && urlProp.value && urlProp.value.type === 'string' && urlProp.value.value) {
+    return String(urlProp.value.value).trim();
+  }
+  
+  return undefined;
+}
+
+/**
+ * Removes any StaticText children whose combined text equals the parent's name.
+ * This is most often used to avoid duplicating a link's accessible name in separate child nodes.
+ */
+function removeRedundantStaticTextChildren(
+  parent: AccessibilityNode,
+  children: AccessibilityNode[],
+): AccessibilityNode[] {
+  if (!parent.name) {
+    return children;
+  }
+
+  const parentName = parent.name.replace(/\s+/g, ' ').trim();
+
+  // Gather all StaticText children and combine their text
+  const staticTextChildren = children.filter(
+    child => child.role === 'StaticText' && child.name,
+  );
+  const combinedChildText = staticTextChildren
+    .map(child => child.name!.replace(/\s+/g, ' ').trim())
+    .join('');
+
+  // If the combined text exactly matches the parent's name, remove those child nodes
+  if (combinedChildText === parentName) {
+    return children.filter(child => child.role !== 'StaticText');
+  }
+
+  return children;
+}
+
+/**
  * Helper function to remove or collapse unnecessary structural nodes
  * Handles three cases:
  * 1. Removes generic/none nodes with no children
@@ -111,8 +221,8 @@ export function getFormattedSubtreeByNodeId(targetNodeId: string, allNodes: Acce
  */
 async function cleanStructuralNodes(
   node: AccessibilityNode,
+  tagNameMap?: Record<number, string>,
   target?: SDK.Target.Target,
-  logger?: (logLine: LogLine) => void,
 ): Promise<AccessibilityNode | null> {
   // 1) Filter out nodes with negative IDs
   if (node.nodeId && parseInt(node.nodeId, 10) < 0) {
@@ -127,7 +237,7 @@ async function cleanStructuralNodes(
 
   // 3) Recursively clean children
   const cleanedChildrenPromises = node.children.map(child =>
-    cleanStructuralNodes(child, target, logger),
+    cleanStructuralNodes(child, tagNameMap, target),
   );
   const resolvedChildren = await Promise.all(cleanedChildrenPromises);
   const cleanedChildren = resolvedChildren.filter(
@@ -182,83 +292,21 @@ async function cleanStructuralNodes(
     // We'll update role below if needed.
   }
 
-  // 5) If we still have a "generic"/"none" node after pruning
-  //    (i.e., because it had multiple children), now we try
-  //    to resolve and replace its role with the DOM tag name.
-  // *** Optimization: Commented out the following block to prevent resolving generic/none to tag names ***
-  /*
+  // 5) If we still have a "generic"/"none" node after pruning,
+  //    replace the role with the DOM tag name if we have tagNameMap.
   if (
-    target &&
-    logger &&
+    (node.role === 'generic' || node.role === 'none') &&
     node.backendDOMNodeId !== undefined &&
-    (node.role === 'generic' || node.role === 'none')
+    tagNameMap
   ) {
-    try {
-      // Use DOM agent
-      const domAgent = target.domAgent();
-
-      const response = await domAgent.invoke_resolveNode({
-        backendNodeId: node.backendDOMNodeId as Protocol.DOM.BackendNodeId,
-      });
-
-      const objectId = response.object?.objectId;
-
-      if (objectId) {
-        try {
-          // Get the tagName for the node
-          const runtimeAgent = target.runtimeAgent();
-          const result = await runtimeAgent.invoke_callFunctionOn({
-            objectId: objectId as Protocol.Runtime.RemoteObjectId,
-            functionDeclaration: `
-              function() {
-                return this.tagName ? this.tagName.toLowerCase() : "";
-              }
-            `,
-            returnByValue: true,
-          });
-
-          // If we got a tagName, update the node's role
-          if (result.result?.value) {
-            node.role = result.result.value;
-          }
-        } catch (tagNameError) {
-          logger({
-            category: 'observation',
-            message: `Could not fetch tagName for node ${node.backendDOMNodeId}`,
-            level: 2,
-            auxiliary: {
-              error: {
-                value: tagNameError instanceof Error ? tagNameError.message : String(tagNameError),
-                type: 'string',
-              },
-            },
-          });
-        }
-      }
-    } catch (resolveError) {
-      logger({
-        category: 'observation',
-        message: `Could not resolve DOM node ID ${node.backendDOMNodeId}`,
-        level: 2,
-        auxiliary: {
-          error: {
-            value: resolveError instanceof Error ? resolveError.message : String(resolveError),
-            type: 'string',
-          },
-        },
-      });
+    const tagName = tagNameMap[node.backendDOMNodeId];
+    if (tagName) {
+      node.role = tagName;
     }
   }
-  */
 
-  // Optimization: Collapse single StaticText child if its name matches the parent's name
-  let finalChildren = cleanedChildren;
-  if (node.name && cleanedChildren.length === 1) {
-    const child = cleanedChildren[0];
-    if (child.role === 'StaticText' && child.name === node.name) {
-      finalChildren = []; // Remove the redundant child
-    }
-  }
+  // Remove redundant StaticText children using the new function
+  const finalChildren = removeRedundantStaticTextChildren(node, cleanedChildren);
 
   // 6) Return the updated node.
   //    If it has children, update them; otherwise keep it as-is.
@@ -276,15 +324,24 @@ async function cleanStructuralNodes(
 export async function buildHierarchicalTree(
   nodes: AccessibilityNode[],
   target?: SDK.Target.Target,
-  logger?: (logLine: LogLine) => void,
   // Add parameter to receive scrollable IDs
   scrollableBackendIds?: Set<number>,
 ): Promise<TreeResult> {
+  // Build backend ID mappings if we have a target
+  let tagNameMap: Record<number, string> = {};
+  let xpathMap: Record<number, string> = {};
+  if (target) {
+    const backendMaps = await buildBackendIdMaps(target);
+    tagNameMap = backendMaps.tagNameMap;
+    xpathMap = backendMaps.xpathMap;
+  }
   // Map to store processed nodes for quick lookup
   const nodeMap = new Map<string, AccessibilityNode>();
   const iframeList: AccessibilityNode[] = [];
   // List to store identified scrollable container nodes
   const scrollableNodesList: Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}> = [];
+  // Map to store nodeId -> URL for nodes that have URLs
+  const idToUrl: Record<string, string> = {};
 
   // First pass: Create nodes that are meaningful
   // We only keep nodes that either have a name or children to avoid cluttering the tree
@@ -295,6 +352,12 @@ export async function buildHierarchicalTree(
     const nodeIdValue = parseInt(node.nodeId, 10);
     if (nodeIdValue < 0) {
       return;
+    }
+
+    // Extract URL if available
+    const url = extractUrlFromAXNode(node);
+    if (url) {
+      idToUrl[node.nodeId] = url;
     }
 
     const hasChildren = node.childIds && node.childIds.length > 0;
@@ -346,6 +409,7 @@ export async function buildHierarchicalTree(
       const iframeNode = {
         role: node.role || '',
         nodeId: node.nodeId,
+        backendDOMNodeId: node.backendDOMNodeId,
       };
       iframeList.push(iframeNode);
     }
@@ -369,21 +433,100 @@ export async function buildHierarchicalTree(
     .filter(Boolean) as AccessibilityNode[];
 
   const cleanedTreePromises = rootNodes.map(node =>
-    cleanStructuralNodes(node, target, logger),
+    cleanStructuralNodes(node, tagNameMap, target),
   );
   const finalTree = (await Promise.all(cleanedTreePromises)).filter(
     Boolean,
   ) as AccessibilityNode[];
 
-  // Generate a simplified string representation of the tree
-  const simplified = finalTree.map(node => formatSimplifiedTree(node)).join('\n');
+  // Fetch iframe content before generating simplified tree
+  const accessibilityAgent = target?.accessibilityAgent();
+  const iframesWithContent: IFrameAccessibilityNode[] = [];
+  
+  if (accessibilityAgent && iframeList.length > 0) {
+    const iframeContentPromises = iframeList.map(async (iframe): Promise<IFrameAccessibilityNode> => {
+      try {
+        const domAgent = target!.domAgent();
+        if (!iframe.backendDOMNodeId) {
+          return iframe as IFrameAccessibilityNode;
+        }
+        const domNodeResponse = await domAgent.invoke_describeNode({
+          backendNodeId: iframe.backendDOMNodeId as Protocol.DOM.BackendNodeId
+        });
+        if (!domNodeResponse.node?.frameId) {
+          return iframe as IFrameAccessibilityNode;
+        }
+        const iframeResponse = await accessibilityAgent.invoke_getFullAXTree({
+          frameId: domNodeResponse.node.frameId
+        });
+        if (!iframeResponse.nodes || iframeResponse.nodes.length === 0) {
+          return iframe as IFrameAccessibilityNode;
+        }
+        
+        // Convert iframe nodes to AccessibilityNode format with prefixed nodeIds
+        const iframePrefix = `iframe_${iframe.nodeId}_`;
+        const iframeAccessibilityNodes = iframeResponse.nodes.map((iframeNode: any): AccessibilityNode => {
+          const roleValue = iframeNode.role && typeof iframeNode.role === 'object' && 'value' in iframeNode.role ? iframeNode.role.value : '';
+          const nameValue = iframeNode.name && typeof iframeNode.name === 'object' && 'value' in iframeNode.name ? iframeNode.name.value : undefined;
+          const descriptionValue = iframeNode.description && typeof iframeNode.description === 'object' && 'value' in iframeNode.description ? iframeNode.description.value : undefined;
+          const valueValue = iframeNode.value && typeof iframeNode.value === 'object' && 'value' in iframeNode.value ? iframeNode.value.value : undefined;
+          const backendNodeId = typeof iframeNode.backendDOMNodeId === 'number' ? iframeNode.backendDOMNodeId : undefined;
+          return {
+            role: roleValue,
+            name: nameValue,
+            description: descriptionValue,
+            value: valueValue,
+            nodeId: `${iframePrefix}${iframeNode.nodeId}`,
+            backendDOMNodeId: backendNodeId,
+            parentId: iframeNode.parentId ? `${iframePrefix}${iframeNode.parentId}` : undefined,
+            childIds: iframeNode.childIds?.map((childId: string) => `${iframePrefix}${childId}`),
+          };
+        });
+        
+        // Build iframe tree structure
+        const iframeTree = await buildHierarchicalTree(iframeAccessibilityNodes, target, scrollableBackendIds);
+        
+        return {
+          ...iframe,
+          contentTree: iframeTree.tree,
+          contentSimplified: iframeTree.simplified
+        } as IFrameAccessibilityNode;
+      } catch (error) {
+        logger.warn(`Error processing iframe content: ${String(error)}`);
+        return iframe as IFrameAccessibilityNode;
+      }
+    });
+    
+    const resolvedIframes = await Promise.all(iframeContentPromises);
+    iframesWithContent.push(...resolvedIframes);
+  } else {
+    iframesWithContent.push(...iframeList.map(iframe => iframe as IFrameAccessibilityNode));
+  }
+
+  // Generate a simplified string representation of the tree including iframe content
+  let simplified = finalTree.map(node => formatSimplifiedTree(node)).join('\n');
+  
+  // Append iframe content to the simplified tree representation
+  if (iframesWithContent.length > 0) {
+    simplified += '\n\n--- IFRAME CONTENT ---\n';
+    iframesWithContent.forEach((iframe, index) => {
+      if (iframe.contentSimplified) {
+        simplified += `\nIframe ${index + 1} (nodeId: ${iframe.nodeId}) content:\n`;
+        simplified += iframe.contentSimplified;
+      }
+    });
+  }
 
   return {
     tree: finalTree,
     simplified,
-    iframes: iframeList,
+    iframes: iframesWithContent,
     // Add the collected scrollable nodes to the result
     scrollableContainerNodes: scrollableNodesList,
+    // Add the new mappings
+    idToUrl,
+    xpathMap,
+    tagNameMap,
   };
 }
 
@@ -392,7 +535,6 @@ export async function buildHierarchicalTree(
  */
 export async function getAccessibilityTree(
   target: SDK.Target.Target,
-  logger: (logLine: LogLine) => void,
 ): Promise<TreeResult> {
   try {
     // Identify which elements are scrollable and get their backendNodeIds
@@ -457,6 +599,7 @@ export async function getAccessibilityTree(
           backendDOMNodeId: backendNodeId,
           parentId: node.parentId,
           childIds: node.childIds,
+          properties: node.properties,
         };
       },
     );
@@ -465,32 +608,13 @@ export async function getAccessibilityTree(
     const hierarchicalTree = await buildHierarchicalTree(
       accessibilityNodes,
       target,
-      logger,
       scrollableBackendIds, // Pass the set of scrollable IDs
     );
 
-    logger({
-      category: 'observation',
-      message: `got accessibility tree in ${Date.now() - startTime}ms`,
-      level: 1,
-    });
+    logger.info(`got accessibility tree in ${Date.now() - startTime}ms`);
     return hierarchicalTree;
   } catch (error) {
-    logger({
-      category: 'observation',
-      message: 'Error getting accessibility tree',
-      level: 1,
-      auxiliary: {
-        error: {
-          value: error instanceof Error ? error.message : String(error),
-          type: 'string',
-        },
-        trace: {
-          value: error instanceof Error && error.stack ? error.stack : '',
-          type: 'string',
-        },
-      },
-    });
+    logger.error('Error getting accessibility tree', error);
     throw error;
   }
 }
@@ -500,7 +624,7 @@ export async function getAccessibilityTree(
 const functionString = `
 function getNodePath(el) {
   if (!el || (el.nodeType !== Node.ELEMENT_NODE && el.nodeType !== Node.TEXT_NODE)) {
-    console.log("el is not a valid node type");
+    logger.info("el is not a valid node type");
     return "";
   }
 
@@ -590,7 +714,7 @@ export async function getXPathByBackendNodeId(
     // Then get the XPath using the resolved object
     return await getXPathByResolvedObjectId(target, objectId);
   } catch (error) {
-    console.error('Error resolving BackendNodeId to XPath:', error);
+    logger.error('Error resolving BackendNodeId to XPath:', error);
     return '';
   }
 }
@@ -753,7 +877,7 @@ export async function findScrollableElementIds(
       }
     }
   } catch (error) {
-    console.error('Error finding scrollable element IDs:', error);
+    logger.error('Error finding scrollable element IDs:', error);
   }
 
   return scrollableBackendIds;
@@ -764,25 +888,88 @@ export async function performAction(
   method: string,
   args: unknown[],
   xpath: string,
+  iframeNodeId?: string,
 ): Promise<void> {
-  // First locate element by XPath
   const runtimeAgent = target.runtimeAgent();
-  const evaluateResult = await runtimeAgent.invoke_evaluate({
-    expression: `
-      (function() {
-        const result = document.evaluate("${xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-        return result.singleNodeValue;
-      })()
-    `,
-    returnByValue: false
-  });
-
-  if (!evaluateResult.result?.objectId) {
-    throw new Error(`Could not find element with xpath ${xpath}`);
-  }
-
-  const objectId = evaluateResult.result.objectId as Protocol.Runtime.RemoteObjectId;
   const domAgent = target.domAgent();
+  let objectId: Protocol.Runtime.RemoteObjectId;
+  
+  // Handle iframe-specific elements
+  if (iframeNodeId) {
+    logger.info(`Performing action in iframe ${iframeNodeId} for element ${xpath}`);
+    
+    // Get the accessibility tree to find the iframe
+    const accessibilityAgent = target.accessibilityAgent();
+    const response = await accessibilityAgent.invoke_getFullAXTree({});
+    const { nodes } = response;
+    
+    // Find the iframe node
+    const iframeNode = nodes.find(node => node.nodeId === iframeNodeId);
+    if (!iframeNode || !iframeNode.backendDOMNodeId) {
+      throw new Error(`Could not find iframe with nodeId ${iframeNodeId}`);
+    }
+    
+    // Resolve the iframe element
+    const resolveResponse = await domAgent.invoke_resolveNode({
+      backendNodeId: iframeNode.backendDOMNodeId as Protocol.DOM.BackendNodeId
+    });
+    
+    if (!resolveResponse.object?.objectId) {
+      throw new Error(`Could not resolve iframe node ${iframeNodeId}`);
+    }
+    
+    // For iframe elements, xpath contains the element nodeId
+    // We need to find the element within the iframe's accessibility tree
+    const elementNodeId = xpath;
+    
+    // Get the iframe's accessibility tree
+    const domNodeResponse = await domAgent.invoke_describeNode({
+      backendNodeId: iframeNode.backendDOMNodeId as Protocol.DOM.BackendNodeId
+    });
+    
+    if (!domNodeResponse.node?.frameId) {
+      throw new Error(`Could not get frameId for iframe ${iframeNodeId}`);
+    }
+    
+    const iframeAccessibilityResponse = await accessibilityAgent.invoke_getFullAXTree({
+      frameId: domNodeResponse.node.frameId
+    });
+    
+    // Find the element node in the iframe's accessibility tree
+    const elementNode = iframeAccessibilityResponse.nodes.find(node => node.nodeId === elementNodeId);
+    if (!elementNode || !elementNode.backendDOMNodeId) {
+      throw new Error(`Could not find element with nodeId ${elementNodeId} in iframe ${iframeNodeId}`);
+    }
+    
+    // Resolve the element node within the iframe context
+    const elementResolveResponse = await domAgent.invoke_resolveNode({
+      backendNodeId: elementNode.backendDOMNodeId as Protocol.DOM.BackendNodeId
+    });
+    
+    if (!elementResolveResponse.object?.objectId) {
+      throw new Error(`Could not resolve element node ${elementNodeId} in iframe ${iframeNodeId}`);
+    }
+    
+    objectId = elementResolveResponse.object.objectId as Protocol.Runtime.RemoteObjectId;
+  } else {
+    // First locate element by XPath in main document
+    let evaluateResult = await runtimeAgent.invoke_evaluate({
+      expression: `
+        (function() {
+          const result = document.evaluate("${xpath}", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+          return result.singleNodeValue;
+        })()
+      `,
+      returnByValue: false
+    });
+
+    if (!evaluateResult.result?.objectId) {
+      throw new Error(`Could not find element with xpath ${xpath} in main document`);
+    }
+    
+    objectId = evaluateResult.result.objectId as Protocol.Runtime.RemoteObjectId;
+  }
+  
   const inputAgent = target.inputAgent();
 
   try {
@@ -851,7 +1038,7 @@ export async function performAction(
         });
       } catch (e) {
         // If direct click fails, fall back to previous implementation
-        console.warn(`Direct click failed, falling back to mouse events: ${e}`);
+        logger.warn(`Direct click failed, falling back to mouse events: ${e}`);
 
         // Get element coordinates
         const nodeResponse = await domAgent.invoke_describeNode({ objectId });
@@ -991,6 +1178,112 @@ export async function performAction(
         `,
         returnByValue: true
       });
+    } else if (method === 'selectOption') {
+      const optionValue = String(args[0] || '');
+      
+      // Select option from dropdown
+      await runtimeAgent.invoke_callFunctionOn({
+        objectId,
+        functionDeclaration: `
+          function(value) {
+            if (this.tagName.toLowerCase() === 'select') {
+              // Try to find option by value first
+              let optionFound = false;
+              for (let i = 0; i < this.options.length; i++) {
+                const option = this.options[i];
+                if (option.value === value || option.text === value || option.textContent === value) {
+                  this.selectedIndex = i;
+                  optionFound = true;
+                  break;
+                }
+              }
+              
+              // If not found by exact match, try partial match
+              if (!optionFound) {
+                for (let i = 0; i < this.options.length; i++) {
+                  const option = this.options[i];
+                  if (option.text.toLowerCase().includes(value.toLowerCase()) || 
+                      option.textContent.toLowerCase().includes(value.toLowerCase())) {
+                    this.selectedIndex = i;
+                    optionFound = true;
+                    break;
+                  }
+                }
+              }
+              
+              if (optionFound) {
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+                return true;
+              }
+              return false;
+            }
+            return false;
+          }
+        `,
+        arguments: [{ value: optionValue }],
+        returnByValue: true
+      });
+    } else if (method === 'check') {
+      // Check checkbox or radio button
+      await runtimeAgent.invoke_callFunctionOn({
+        objectId,
+        functionDeclaration: `
+          function() {
+            if (this.type === 'checkbox' || this.type === 'radio') {
+              if (!this.checked) {
+                this.checked = true;
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              return true;
+            }
+            return false;
+          }
+        `,
+        returnByValue: true
+      });
+    } else if (method === 'uncheck') {
+      // Uncheck checkbox
+      await runtimeAgent.invoke_callFunctionOn({
+        objectId,
+        functionDeclaration: `
+          function() {
+            if (this.type === 'checkbox') {
+              if (this.checked) {
+                this.checked = false;
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              return true;
+            }
+            return false;
+          }
+        `,
+        returnByValue: true
+      });
+    } else if (method === 'setChecked') {
+      const shouldCheck = Boolean(args[0]);
+      
+      // Set checkbox state
+      await runtimeAgent.invoke_callFunctionOn({
+        objectId,
+        functionDeclaration: `
+          function(checked) {
+            if (this.type === 'checkbox' || this.type === 'radio') {
+              if (this.checked !== checked) {
+                this.checked = checked;
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              return true;
+            }
+            return false;
+          }
+        `,
+        arguments: [{ value: shouldCheck }],
+        returnByValue: true
+      });
     } else {
       throw new Error(`Method ${method} not supported`);
     }
@@ -1004,13 +1297,14 @@ export async function performAction(
  */
 export async function getVisibleAccessibilityTree(
   target: SDK.Target.Target,
-  // Keep logger parameter for non-debug logs, but use console.log for debug
-  logger: (logLine: LogLine) => void,
 ): Promise<TreeResult> {
   const startTime = Date.now();
   // Use console.log for debug message
-  console.log('[DEBUG] Starting getVisibleAccessibilityTree...');
+  logger.info('Starting getVisibleAccessibilityTree...');
   try {
+    // Build backend ID mappings for this target
+    const backendMaps = await buildBackendIdMaps(target);
+    const tagNameMap = backendMaps.tagNameMap;
     // 1. Get the full accessibility tree data first
     const accessibilityAgent = target.accessibilityAgent();
     const fullTreeResponse = await accessibilityAgent.invoke_getFullAXTree({});
@@ -1038,27 +1332,21 @@ export async function getVisibleAccessibilityTree(
       );
       const fullTreeResult = await buildHierarchicalTree(fullAccessibilityNodes); // Use existing builder
       // Use console.log for debug message
-      console.log('[DEBUG] Full Accessibility Tree (Simplified):\n', fullTreeResult.simplified);
+      logger.info('Full Accessibility Tree (Simplified):\n', fullTreeResult.simplified);
     } catch (fullTreeError) {
-        // Keep using logger for actual errors/warnings
-        logger({
-            category: 'observation', // Change category? maybe 'warning' or keep 'observation'
-            message: 'Error generating full tree debug log',
-            level: 2,
-            auxiliary: { error: { value: fullTreeError instanceof Error ? fullTreeError.message : String(fullTreeError), type: 'string'}}
-        });
+        logger.warn('Error generating full tree debug log', fullTreeError);
     }
     // --- END DEBUG LOG ---
 
     // 2. Identify which elements are in the viewport
     const visibleBackendIds = await findElementsInViewport(target);
     // Use console.log for debug message
-    console.log(`[DEBUG] Found ${visibleBackendIds.size} visible backendNodeIds:`, Array.from(visibleBackendIds));
+    logger.info('Found ${visibleBackendIds.size} visible backendNodeIds:', Array.from(visibleBackendIds));
 
     // If we couldn't find any visible elements, return empty
     if (visibleBackendIds.size === 0) {
-      // Keep using logger for observation message
-      logger({ category: 'observation', message: 'Could not identify any elements in the viewport.', level: 1});
+      // Use module logger for observation message
+      logger.info('Could not identify any elements in the viewport.');
       return { tree: [], simplified: '', iframes: [], scrollableContainerNodes: [] };
     }
 
@@ -1092,7 +1380,7 @@ export async function getVisibleAccessibilityTree(
       }
     }
     // Use console.log for debug message
-    console.log(`[DEBUG] Found ${relevantNodeIds.size} relevant nodeIds (visible + ancestors):`, Array.from(relevantNodeIds));
+    logger.info('Found ${relevantNodeIds.size} relevant nodeIds (visible + ancestors):', Array.from(relevantNodeIds));
 
     // 5. Filter the original CDP nodes and convert to AccessibilityNode format
     const relevantAccessibilityNodes = allCdpNodes
@@ -1144,7 +1432,7 @@ export async function getVisibleAccessibilityTree(
 
     // Check if we found any relevant nodes
     if (relevantAccessibilityNodes.length === 0) {
-       logger({ category: 'observation', message: 'No relevant nodes (visible or ancestors) found.', level: 1});
+       logger.info('No relevant nodes (visible or ancestors) found.');
        return { tree: [], simplified: '', iframes: [], scrollableContainerNodes: [] };
     }
 
@@ -1192,7 +1480,7 @@ export async function getVisibleAccessibilityTree(
 
     // 8. Clean the tree starting from the relevant roots
     const cleanedRootPromises = rootNodes.map(node =>
-       cleanStructuralNodes(node, target, logger) // Keep logger for cleanStructuralNodes internal logs
+       cleanStructuralNodes(node, tagNameMap, target)
     );
     const finalTree = (await Promise.all(cleanedRootPromises)).filter(Boolean) as AccessibilityNode[];
 
@@ -1200,7 +1488,7 @@ export async function getVisibleAccessibilityTree(
     // Explicitly use formatSimplifiedTree to create the string representation
     const simplified = finalTree.map(node => formatSimplifiedTree(node)).join('\n');
     // Use console.log for debug message
-    console.log('[DEBUG] Final Visible Tree (Simplified):\n', simplified);
+    logger.info('Final Visible Tree (Simplified):\n', simplified);
 
     // Find iframe nodes *among relevant nodes*
     const iframeNodes = relevantAccessibilityNodes.filter(node => node.role === 'Iframe');
@@ -1271,11 +1559,7 @@ export async function getVisibleAccessibilityTree(
             contentSimplified: iframeTree.simplified
           } as IFrameAccessibilityNode;
         } catch (error) {
-          logger({
-            category: 'observation',
-            message: `Error processing iframe content: ${String(error)}`,
-            level: 2,
-          });
+          logger.warn(`Error processing iframe content: ${String(error)}`);
           return node;
         }
       })
@@ -1295,11 +1579,7 @@ export async function getVisibleAccessibilityTree(
         })
         .filter(Boolean) as Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}>;
 
-    logger({
-      category: 'observation',
-      message: `Got viewport accessibility tree. Initial nodes: ${allCdpNodes.length}, Visible backendIds: ${visibleBackendIds.size}, Relevant nodes (visible + ancestors): ${relevantNodeIds.size}, Final tree roots: ${finalTree.length}, Time: ${Date.now() - startTime}ms`,
-      level: 1,
-    });
+    logger.info(`Got viewport accessibility tree. Initial nodes: ${allCdpNodes.length}, Visible backendIds: ${visibleBackendIds.size}, Relevant nodes (visible + ancestors): ${relevantNodeIds.size}, Final tree roots: ${finalTree.length}, Time: ${Date.now() - startTime}ms`);
 
     // Return the tree result with the simplified property explicitly set
     return {
@@ -1309,22 +1589,8 @@ export async function getVisibleAccessibilityTree(
       scrollableContainerNodes: relevantScrollableNodes
     };
   } catch (error) {
-    logger({
-      category: 'observation',
-      message: 'Error getting viewport accessibility tree',
-      level: 1,
-      auxiliary: {
-        error: {
-          value: error instanceof Error ? error.message : String(error),
-          type: 'string',
-        },
-        trace: {
-          value: error instanceof Error && error.stack ? error.stack : '',
-          type: 'string',
-        },
-      },
-    });
-    logger({ category: 'debug', message: `getVisibleAccessibilityTree failed after ${Date.now() - startTime}ms`, level: 2 }); // Set level explicitly
+    logger.error('Error getting viewport accessibility tree', error);
+    logger.debug(`getVisibleAccessibilityTree failed after ${Date.now() - startTime}ms`);
     throw error;
   }
 }
@@ -1439,8 +1705,9 @@ async function findElementsInViewport(
       }
     }
   } catch (error) {
-    console.error('Error finding visible elements:', error);
+    logger.error('Error finding visible elements:', error);
   }
 
   return visibleNodeIds;
 }
+

@@ -17,6 +17,12 @@ export const TIMING_CONSTANTS = {
   AI_ASSISTANT_LOAD_TIMEOUT: 3000,
   AI_ASSISTANT_RETRY_DELAY: 1000,
   AI_ASSISTANT_MAX_RETRIES: 3,
+  
+  // Agent test execution timeouts
+  AGENT_TEST_DEFAULT_TIMEOUT: 180000, // 3 minutes default for agent tests
+  AGENT_TEST_RESEARCH_TIMEOUT: 300000, // 5 minutes for research agents
+  AGENT_TEST_ACTION_TIMEOUT: 120000, // 2 minutes for action agents
+  AGENT_TEST_SCHEMA_TIMEOUT: 60000, // 1 minute for schema extraction
 } as const;
 
 // Content detection thresholds
@@ -50,7 +56,7 @@ export const DIALOG_DIMENSIONS = {
 export const DEFAULTS = {
   MAX_TOKENS: 4096,
   TEMPERATURE: 0.7,
-  MODEL: 'gpt-4o',
+  MODEL: 'gpt-4.1',
 } as const;
 
 // Regular expressions

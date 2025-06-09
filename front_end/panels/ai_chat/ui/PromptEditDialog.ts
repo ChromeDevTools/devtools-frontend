@@ -4,6 +4,9 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
+import { createLogger } from '../core/Logger.js';
+
+const logger = createLogger('PromptEditDialog');
 
 interface PromptEditDialogOptions {
   agentType: string;
@@ -430,7 +433,7 @@ export class PromptEditDialog {
             restoreButton.style.display = 'none';
           }
         } catch (error) {
-          console.error('Failed to restore prompt:', error);
+          logger.error('Failed to restore prompt:', error);
           showStatus('Failed to restore prompt', 'error');
           if (options.onError) {
             options.onError(error as Error);
@@ -485,7 +488,7 @@ export class PromptEditDialog {
               showStatus(i18nString(UIStrings.promptRestored), 'success');
               newRestoreButton.style.display = 'none';
             } catch (error) {
-              console.error('Failed to restore prompt:', error);
+              logger.error('Failed to restore prompt:', error);
               showStatus('Failed to restore prompt', 'error');
               if (options.onError) {
                 options.onError(error as Error);
@@ -501,7 +504,7 @@ export class PromptEditDialog {
           restoreButton.style.display = 'inline-block';
         }
       } catch (error) {
-        console.error('Failed to save prompt:', error);
+        logger.error('Failed to save prompt:', error);
         showStatus('Failed to save prompt', 'error');
         if (options.onError) {
           options.onError(error as Error);

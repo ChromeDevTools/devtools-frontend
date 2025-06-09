@@ -2,8 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import { createLogger } from '../core/Logger.js';
 import { HTMLToMarkdownTool, type HTMLToMarkdownResult } from './HTMLToMarkdownTool.js';
 import { NavigateURLTool, type Tool } from './Tools.js';
+
+const logger = createLogger('Tool:Fetcher');
 
 /**
  * Interface for the result of a URL fetch operation
@@ -69,7 +72,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
    * Execute the fetcher agent to process multiple URLs
    */
   async execute(args: FetcherToolArgs): Promise<FetcherToolResult> {
-    console.log('[FetcherTool] Executing with args:', args);
+    logger.info('Executing with args', { args });
     const { urls, reasoning } = args;
 
     // Validate input
@@ -88,11 +91,11 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
     // Process each URL sequentially
     for (const url of urlsToProcess) {
       try {
-        console.log(`[FetcherTool] Processing URL: ${url}`);
+        logger.info('Processing URL', { url });
         const fetchedContent = await this.fetchContentFromUrl(url, reasoning);
         results.push(fetchedContent);
       } catch (error: any) {
-        console.error(`[FetcherTool] Error processing URL ${url}:`, error);
+        logger.error('Error processing URL', { url, error: error.message, stack: error.stack });
         results.push({
           url,
           title: '',
@@ -115,7 +118,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
   private async fetchContentFromUrl(url: string, reasoning: string): Promise<FetchedContent> {
     try {
       // Step 1: Navigate to the URL
-      console.log(`[FetcherTool] Navigating to URL: ${url}`);
+      logger.info('Navigating to URL', { url });
       // Note: NavigateURLTool requires both url and reasoning parameters
       const navigationResult = await this.navigateURLTool.execute({
         url,
@@ -140,7 +143,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
       const metadata = navigationResult.metadata ? navigationResult.metadata : { url: '', title: '' };
 
       // Step 2: Extract markdown content using HTMLToMarkdownTool
-      console.log(`[FetcherTool] Extracting content from ${url}`);
+      logger.info('Extracting content from URL', { url });
       const extractionResult = await this.htmlToMarkdownTool.execute({
         instruction: 'Extract the main content focusing on article text, headings, and important information. Remove ads, navigation, and distracting elements.',
         reasoning
@@ -165,7 +168,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
         success: true
       };
     } catch (error: any) {
-      console.error(`[FetcherTool] Error processing ${url}:`, error);
+      logger.error('Error processing URL', { url, error: error.message, stack: error.stack });
       return {
         url,
         title: '',

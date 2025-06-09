@@ -2,13 +2,35 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import { createLogger } from './Logger.js';
+
+const logger = createLogger('LiteLLMClient');
+
+/**
+ * OpenAI-compatible message format (LiteLLM uses OpenAI standard)
+ */
+export interface OpenAIMessage {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content?: string | null;
+  tool_calls?: Array<{
+    id: string;
+    type: 'function';
+    function: {
+      name: string;
+      arguments: string;
+    };
+  }>;
+  tool_call_id?: string;
+  name?: string;
+}
+
 /**
  * Types for LiteLLM API request and response
  */
 export interface LiteLLMCallOptions {
   tools?: any[];
   tool_choice?: any;
-  systemPrompt?: string;
+  systemPrompt?: string; // Kept for backward compatibility with old methods
   temperature?: number;
   endpoint?: string; // Full endpoint URL (e.g., http://localhost:4000/v1/chat/completions)
   baseUrl?: string; // Base URL only (e.g., http://localhost:4000 or https://your-cloud-litellm.com)
@@ -76,7 +98,7 @@ export class LiteLLMClient {
       if (!localStorageEndpoint) {
         throw new Error('LiteLLM endpoint not configured. Please set endpoint in settings.');
       }
-      console.log(`[LiteLLMClient] Using endpoint from localStorage: ${localStorageEndpoint}`);
+      logger.debug(`Using endpoint from localStorage: ${localStorageEndpoint}`);
       const baseUrl = localStorageEndpoint.replace(/\/$/, '');
       return `${baseUrl}${this.CHAT_COMPLETIONS_PATH}`;
     }
@@ -89,7 +111,7 @@ export class LiteLLMClient {
       }
       // If not, treat it as a base URL and append the path
       const baseUrl = options.endpoint.replace(/\/$/, '');
-      console.log(`[LiteLLMClient] Endpoint missing chat completions path, appending: ${baseUrl}${this.CHAT_COMPLETIONS_PATH}`);
+      logger.debug(`Endpoint missing chat completions path, appending: ${baseUrl}${this.CHAT_COMPLETIONS_PATH}`);
       return `${baseUrl}${this.CHAT_COMPLETIONS_PATH}`;
     }
 
@@ -113,14 +135,12 @@ export class LiteLLMClient {
     prompt: string,
     options?: LiteLLMCallOptions
   ): Promise<LiteLLMResponse> {
-    console.log('LiteLLMClient: Calling LiteLLM...');
-    console.log('Model:', modelName);
-    console.log('Prompt:', prompt);
+    logger.debug('Calling LiteLLM...', { model: modelName, prompt });
 
     // Use standard OpenAI chat completions format
     const messages = [];
 
-    // Add system prompt if provided
+    // Add system prompt if provided (backward compatibility)
     if (options?.systemPrompt) {
       messages.push({
         role: 'system',
@@ -147,7 +167,19 @@ export class LiteLLMClient {
 
     // Add tools if provided
     if (options?.tools) {
-      payloadBody.tools = options.tools;
+      // Ensure all tools have valid parameters
+      payloadBody.tools = options.tools.map(tool => {
+        if (tool.type === 'function' && tool.function) {
+          return {
+            ...tool,
+            function: {
+              ...tool.function,
+              parameters: tool.function.parameters || { type: 'object', properties: {} }
+            }
+          };
+        }
+        return tool;
+      });
     }
 
     // Add tool_choice if provided
@@ -155,11 +187,11 @@ export class LiteLLMClient {
       payloadBody.tool_choice = options.tool_choice;
     }
 
-    console.log('Request payload:', payloadBody);
+    logger.info('Request payload:', payloadBody);
 
     try {
       const endpoint = this.getEndpoint(options);
-      console.log('Using endpoint:', endpoint);
+      logger.debug('Using endpoint:', endpoint);
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -172,15 +204,15 @@ export class LiteLLMClient {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('LiteLLM API error:', errorData);
+        logger.error('LiteLLM API error:', errorData);
         throw new Error(`LiteLLM API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 
       const data = await response.json();
-      console.log('LiteLLM Response:', data);
+      logger.info('LiteLLM Response:', data);
 
       if (data.usage) {
-        console.log('LiteLLM Usage: Input tokens:', data.usage.prompt_tokens, 'Output tokens:', data.usage.completion_tokens);
+        logger.info('LiteLLM Usage:', { inputTokens: data.usage.prompt_tokens, outputTokens: data.usage.completion_tokens });
       }
 
       // Process the response in standard OpenAI format
@@ -209,7 +241,7 @@ export class LiteLLMClient {
               arguments: JSON.parse(toolCall.function.arguments)
             };
           } catch (error) {
-            console.error('Error parsing function arguments:', error);
+            logger.error('Error parsing function arguments:', error);
             result.functionCall = {
               name: toolCall.function.name,
               arguments: toolCall.function.arguments // Keep as string if parsing fails
@@ -223,7 +255,112 @@ export class LiteLLMClient {
 
       return result;
     } catch (error) {
-      console.error('LiteLLM API request failed:', error);
+      logger.error('LiteLLM API request failed:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Call LiteLLM API with OpenAI-compatible messages array (simplified approach)
+   */
+  static async callLiteLLMWithMessages(
+    apiKey: string | null,
+    modelName: string,
+    messages: OpenAIMessage[],
+    options?: LiteLLMCallOptions
+  ): Promise<LiteLLMResponse> {
+    logger.debug('Calling LiteLLM with messages...', { model: modelName, messageCount: messages.length });
+
+    // Construct payload body in OpenAI format (LiteLLM is OpenAI-compatible)
+    const payloadBody: any = {
+      model: modelName,
+      messages, // Direct OpenAI format - no conversion needed!
+    };
+
+    // Add temperature if provided
+    if (options?.temperature !== undefined) {
+      payloadBody.temperature = options.temperature;
+    }
+
+    // Add tools if provided
+    if (options?.tools) {
+      payloadBody.tools = options.tools;
+    }
+
+    // Add tool_choice if provided
+    if (options?.tool_choice) {
+      payloadBody.tool_choice = options.tool_choice;
+    }
+
+    logger.info('Request payload:', payloadBody);
+
+    try {
+      const endpoint = this.getEndpoint(options);
+      logger.debug('Using endpoint:', endpoint);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+        },
+        body: JSON.stringify(payloadBody),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        logger.error('LiteLLM API error:', errorData);
+        throw new Error(`LiteLLM API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
+      }
+
+      const data = await response.json();
+      logger.info('LiteLLM Response:', data);
+
+      if (data.usage) {
+        logger.info('LiteLLM Usage:', { inputTokens: data.usage.prompt_tokens, outputTokens: data.usage.completion_tokens });
+      }
+
+      // Process the response in standard OpenAI format (same as before)
+      const result: LiteLLMResponse = {
+        rawResponse: data
+      };
+
+      if (!data?.choices || data.choices.length === 0) {
+        throw new Error('No choices in LiteLLM response');
+      }
+
+      const choice = data.choices[0];
+      const message = choice.message;
+
+      if (!message) {
+        throw new Error('No message in LiteLLM choice');
+      }
+
+      // Check for tool calls
+      if (message.tool_calls && message.tool_calls.length > 0) {
+        const toolCall = message.tool_calls[0];
+        if (toolCall.function) {
+          try {
+            result.functionCall = {
+              name: toolCall.function.name,
+              arguments: JSON.parse(toolCall.function.arguments)
+            };
+          } catch (error) {
+            logger.error('Error parsing function arguments:', error);
+            result.functionCall = {
+              name: toolCall.function.name,
+              arguments: toolCall.function.arguments // Keep as string if parsing fails
+            };
+          }
+        }
+      } else if (message.content) {
+        // Plain text response
+        result.text = message.content.trim();
+      }
+
+      return result;
+    } catch (error) {
+      logger.error('LiteLLM API request failed:', error);
       throw error;
     }
   }
@@ -232,13 +369,13 @@ export class LiteLLMClient {
    * Fetch available models from LiteLLM endpoint
    */
   static async fetchModels(apiKey: string | null, baseUrl?: string): Promise<LiteLLMModel[]> {
-    console.log('LiteLLMClient: Fetching available models...');
+    logger.debug('Fetching available models...');
 
     try {
       // Construct models endpoint URL
       const baseEndpoint = baseUrl || this.DEFAULT_BASE_URL;
       const modelsUrl = `${baseEndpoint.replace(/\/$/, '')}${this.MODELS_PATH}`;
-      console.log('Using models endpoint:', modelsUrl);
+      logger.debug('Using models endpoint:', modelsUrl);
 
       const response = await fetch(modelsUrl, {
         method: 'GET',
@@ -249,12 +386,12 @@ export class LiteLLMClient {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('LiteLLM models API error:', errorData);
+        logger.error('LiteLLM models API error:', errorData);
         throw new Error(`LiteLLM models API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
       }
 
       const data: LiteLLMModelsResponse = await response.json();
-      console.log('LiteLLM Models Response:', data);
+      logger.debug('LiteLLM Models Response:', data);
 
       if (!data?.data || !Array.isArray(data.data)) {
         throw new Error('Invalid models response format');
@@ -262,7 +399,7 @@ export class LiteLLMClient {
 
       return data.data;
     } catch (error) {
-      console.error('Failed to fetch LiteLLM models:', error);
+      logger.error('Failed to fetch LiteLLM models:', error);
       throw error;
     }
   }
@@ -271,7 +408,7 @@ export class LiteLLMClient {
    * Test the LiteLLM connection with a simple completion request
    */
   static async testConnection(apiKey: string | null, modelName: string, baseUrl?: string): Promise<{success: boolean, message: string}> {
-    console.log('LiteLLMClient: Testing connection...');
+    logger.debug('Testing connection...');
 
     try {
       const testPrompt = 'Please respond with "Connection successful!" to confirm the connection is working.';
@@ -294,7 +431,7 @@ export class LiteLLMClient {
         message: `Connected to LiteLLM, but received unexpected response: ${response.text || 'No response'}`,
       };
     } catch (error) {
-      console.error('LiteLLM connection test failed:', error);
+      logger.error('LiteLLM connection test failed:', error);
       return {
         success: false,
         message: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -338,7 +475,7 @@ export class LiteLLMClient {
       }
     } else {
       // No function call or text found
-      console.error('LiteLLMClient: LLM response had no function call or text.');
+      logger.error('LLM response had no function call or text.');
       return { type: 'error', error: 'LLM returned empty response.' };
     }
   }

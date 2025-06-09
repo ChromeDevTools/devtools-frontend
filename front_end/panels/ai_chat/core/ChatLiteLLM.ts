@@ -5,9 +5,13 @@
 import type { getTools } from '../tools/Tools.js';
 
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
-import { LiteLLMClient, type LiteLLMResponse, type ParsedLLMAction, type LiteLLMCallOptions } from './LiteLLMClient.js';
+import { createLogger } from './Logger.js';
 import { enhancePromptWithPageContext } from './PageInfoManager.js';
 import type { AgentState } from './State.js';
+import { UnifiedLLMClient } from './UnifiedLLMClient.js';
+import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+
+const logger = createLogger('ChatLiteLLM');
 
 // Define interfaces for our custom implementation
 interface ModelResponse {
@@ -21,6 +25,8 @@ interface ModelResponse {
 
 interface Model {
   generate(prompt: string, systemPrompt: string, state: AgentState): Promise<ModelResponse>;
+  generateWithMessages(messages: ChatMessage[], systemPrompt: string, state: AgentState): Promise<ModelResponse>;
+  resetCallCount(): void;
 }
 
 // Create the appropriate tools for the agent based on agent type
@@ -34,8 +40,6 @@ export class ChatLiteLLM implements Model {
   private apiKey: string | null;
   private modelName: string;
   private temperature: number;
-  private endpoint?: string;
-  private baseUrl?: string;
   // Add a counter to track how many times generate has been called per interaction
   private callCount = 0;
   // Maximum number of calls per interaction
@@ -45,14 +49,10 @@ export class ChatLiteLLM implements Model {
     liteLLMApiKey: string | null,
     modelName: string,
     temperature?: number,
-    endpoint?: string,
-    baseUrl?: string,
   }) {
     this.apiKey = options.liteLLMApiKey;
     this.modelName = options.modelName;
     this.temperature = options.temperature ?? 1.0;
-    this.endpoint = options.endpoint;
-    this.baseUrl = options.baseUrl;
   }
 
   // Method to reset the call counter when a new user message is received
@@ -66,6 +66,16 @@ export class ChatLiteLLM implements Model {
   }
 
   async generate(prompt: string, systemPrompt: string, state: AgentState): Promise<ModelResponse> {
+    // Convert single prompt to message format for backward compatibility
+    const messages: ChatMessage[] = [{
+      entity: ChatMessageEntity.USER,
+      text: prompt
+    }];
+    
+    return this.generateWithMessages(messages, systemPrompt, state);
+  }
+
+  async generateWithMessages(messages: ChatMessage[], systemPrompt: string, state: AgentState): Promise<ModelResponse> {
     // Increment the call counter
     this.callCount++;
 
@@ -80,8 +90,7 @@ export class ChatLiteLLM implements Model {
       };
     }
 
-    console.log('Generating response from LiteLLM:');
-    console.log(prompt);
+    logger.debug('Generating response from LiteLLM', { messageCount: messages.length });
     try {
       // Get agent-specific tools to include in the request
       const tools = getAgentToolsFromState(state).map(tool => ({
@@ -96,25 +105,20 @@ export class ChatLiteLLM implements Model {
       // Get the enhanced system prompt - use the async version
       const enhancedSystemPrompt = await enhancePromptWithPageContext(systemPrompt);
 
-      // Prepare options for LiteLLMClient
-      const clientOptions: LiteLLMCallOptions = {
-        tools,
-        systemPrompt: enhancedSystemPrompt,
-        temperature: this.temperature,
-        endpoint: this.endpoint,
-        baseUrl: this.baseUrl
-      };
-
-      // Call LiteLLMClient
-      const liteLLMResponse: LiteLLMResponse = await LiteLLMClient.callLiteLLM(
-        this.apiKey,
+      // Use UnifiedLLMClient for consistent message handling
+      const unifiedResponse = await UnifiedLLMClient.callLLMWithMessages(
+        this.apiKey || '',
         this.modelName,
-        prompt,
-        clientOptions
+        messages,
+        {
+          tools,
+          systemPrompt: enhancedSystemPrompt,
+          temperature: this.temperature,
+        }
       );
 
-      // Parse the response
-      const parsedAction = LiteLLMClient.parseLiteLLMResponse(liteLLMResponse);
+      // Process the response using UnifiedLLMClient's parser
+      const parsedAction = UnifiedLLMClient.parseResponse(unifiedResponse);
 
       // Convert to the expected ModelResponse format
       const modelResponse: ModelResponse = {
@@ -128,7 +132,7 @@ export class ChatLiteLLM implements Model {
 
       return modelResponse;
     } catch (error) {
-      console.error('[ChatLiteLLM] Error during LiteLLM call:', error);
+      logger.error('Error during UnifiedLLMClient call:', error);
       // Return error as final answer
       return {
         parsedAction: {

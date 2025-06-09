@@ -12,6 +12,9 @@ import { PromptEditDialog } from './PromptEditDialog.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
+import { createLogger } from '../core/Logger.js';
+
+const logger = createLogger('ChatView');
 
 import chatViewStyles from './chatView.css.js';
 
@@ -168,6 +171,8 @@ export interface ModelChatMessage extends BaseChatMessage {
   isFinalAnswer: boolean;
   // Reasoning summary from the model
   reasoning?: string[] | null;
+  // Tool call ID for linking with tool responses (OpenAI format)
+  toolCallId?: string;
   // REMOVED steps?: Step[];
 }
 
@@ -179,6 +184,8 @@ export interface ToolResultMessage extends BaseChatMessage {
     isError: boolean;
     // Add optional structured data field
     resultData?: any;
+    // Tool call ID for linking to assistant tool call (OpenAI format)
+    toolCallId?: string;
 }
 
 // Union type representing any possible chat message
@@ -355,7 +362,7 @@ export class ChatView extends HTMLElement {
 
   // Handle prompt editing for agent types
   #handlePromptEdit(agentType: string): void {
-    console.log('Opening prompt editor for agent type:', agentType);
+    logger.info('Opening prompt editor for agent type:', agentType);
     this.#showPromptEditDialog(agentType);
   }
 
@@ -363,7 +370,7 @@ export class ChatView extends HTMLElement {
   #showPromptEditDialog(agentType: string): void {
     const agentConfig = BaseOrchestratorAgent.AGENT_CONFIGS[agentType];
     if (!agentConfig) {
-      console.error('Agent config not found for type:', agentType);
+      logger.error('Agent config not found for type:', agentType);
       return;
     }
 
@@ -379,7 +386,7 @@ export class ChatView extends HTMLElement {
           // Force re-render to update UI
           void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
         } catch (error) {
-          console.error('Failed to save custom prompt:', error);
+          logger.error('Failed to save custom prompt:', error);
           // TODO: Show user notification
         }
       },
@@ -389,12 +396,12 @@ export class ChatView extends HTMLElement {
           // Force re-render to update UI
           void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
         } catch (error) {
-          console.error('Failed to restore default prompt:', error);
+          logger.error('Failed to restore default prompt:', error);
           // TODO: Show user notification
         }
       },
       onError: (error: Error) => {
-        console.error('Prompt edit error:', error);
+        logger.error('Prompt edit error:', error);
         // TODO: Show user notification
       }
     });
@@ -431,12 +438,12 @@ export class ChatView extends HTMLElement {
     
     // Log the input state changes
     if (wasInputDisabled !== this.#isInputDisabled) {
-      console.log(`Input disabled state changed: ${wasInputDisabled} -> ${this.#isInputDisabled}`);
+      logger.info(`Input disabled state changed: ${wasInputDisabled} -> ${this.#isInputDisabled}`);
       
       // If we have a text input element, update its disabled state directly
       if (this.#textInputElement) {
         this.#textInputElement.disabled = this.#isInputDisabled;
-        console.log(`Directly updated textarea disabled state to: ${this.#isInputDisabled}`);
+        logger.info(`Directly updated textarea disabled state to: ${this.#isInputDisabled}`);
       }
     }
 
@@ -466,7 +473,7 @@ export class ChatView extends HTMLElement {
   #handleSendMessage(): void {
     // Check if textInputElement, onSendMessage callback, or input is disabled
     if (!this.#textInputElement || !this.#onSendMessage || this.#isInputDisabled) {
-      console.log("Send prevented: ", {
+      logger.info("Send prevented: ", {
         hasTextInput: Boolean(this.#textInputElement),
         hasCallback: Boolean(this.#onSendMessage),
         isDisabled: this.#isInputDisabled
@@ -485,7 +492,7 @@ export class ChatView extends HTMLElement {
     // Always scroll to bottom after sending message
     this.#pinScrollToBottom = true;
 
-    console.log("Sending message:", text);
+    logger.info("Sending message:", text);
     this.#onSendMessage(text, this.#imageInput);
     this.#textInputElement.value = '';
     this.#textInputElement.style.height = 'auto';
@@ -527,7 +534,7 @@ export class ChatView extends HTMLElement {
           {
              const toolResultMessage = message as (ToolResultMessage & { orphaned?: boolean });
              if (toolResultMessage.orphaned) {
-                 console.warn('Rendering orphaned ToolResultMessage:', toolResultMessage);
+                 logger.warn('Rendering orphaned ToolResultMessage:', toolResultMessage);
                  return html`
                    <div class="message tool-result-message orphaned ${toolResultMessage.isError ? 'error' : ''}" >
                      <div class="message-content">
@@ -721,11 +728,11 @@ export class ChatView extends HTMLElement {
           }
         default:
           // Should not happen, but render a fallback
-          console.warn('Unhandled message entity type in renderMessage:', (message as any).entity);
+          logger.warn('Unhandled message entity type in renderMessage:', (message as any).entity);
           return html`<div class="message unknown">Unknown message type</div>`;
       }
     } catch (error) {
-      console.error('Error rendering message:', error);
+      logger.error('Error rendering message:', error);
       return html`
         <div class="message model-message error" >
           <div class="message-content">
@@ -783,7 +790,7 @@ export class ChatView extends HTMLElement {
         // Check if the previous message was the corresponding model call
         if (!(prevMessage && prevMessage.entity === ChatMessageEntity.MODEL && prevMessage.action === 'tool' && prevMessage.toolName === message.toolName)) {
            // Orphaned tool result - add it directly (maybe mark it?)
-           console.warn('Orphaned tool result found:', message);
+           logger.warn('Orphaned tool result found:', message);
            acc.push({...message, orphaned: true }); // Add marker if needed for rendering
         }
         // Otherwise, it was handled by the MODEL case above, so we skip this result message
@@ -1059,7 +1066,7 @@ export class ChatView extends HTMLElement {
 
   #handleModelChange(event: Event): void {
     if (this.#isModelSelectorDisabled) {
-      console.log('Model selector is disabled, ignoring change');
+      logger.info('Model selector is disabled, ignoring change');
       return;
     }
     const selectElement = event.target as HTMLSelectElement;
@@ -1095,7 +1102,7 @@ export class ChatView extends HTMLElement {
         });
       })
       .catch(err => {
-        console.error('Failed to copy text: ', err);
+        logger.error('Failed to copy text: ', err);
       });
   }
 
@@ -1116,7 +1123,7 @@ export class ChatView extends HTMLElement {
         }
       }
     } catch (error) {
-      console.error('Failed to parse structured response:', error);
+      logger.error('Failed to parse structured response:', error);
     }
     
     return null;
@@ -1172,7 +1179,7 @@ export class ChatView extends HTMLElement {
               try {
                 await this.#openInAIAssistantViewer(markdownContent);
               } catch (error) {
-                console.error('Failed to open report:', error);
+                logger.error('Failed to open report:', error);
                 // Could show the inline report again as fallback
               }
             });
@@ -1183,7 +1190,7 @@ export class ChatView extends HTMLElement {
         }
       }, 500); // Wait for DOM to be fully rendered
     } catch (error) {
-      console.log('AI Assistant navigation failed, keeping report inline:', error);
+      logger.info('AI Assistant navigation failed, keeping report inline:', error);
       // Keep the inline report visible
     }
   }
@@ -1194,7 +1201,7 @@ export class ChatView extends HTMLElement {
       await this.#openInAIAssistantViewer(markdownContent);
       return true; // Successfully navigated
     } catch (error) {
-      console.log('AI Assistant navigation failed, showing report inline:', error);
+      logger.info('AI Assistant navigation failed, showing report inline:', error);
       return false; // Navigation failed
     }
   }
@@ -1226,7 +1233,7 @@ export class ChatView extends HTMLElement {
       const injectContent = async () => {
         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
         if (!runtimeModel) {
-          console.error('No RuntimeModel found');
+          logger.error('No RuntimeModel found');
           return;
         }
 
@@ -1236,41 +1243,41 @@ export class ChatView extends HTMLElement {
         // JavaScript to inject - calls the global function we added to AI Assistant
         const injectionScript = `
           (function() {
-            console.log('DevTools injecting markdown content...', 'Content length:', ${JSON.stringify(markdownContent.length)});
-            console.log('Available global functions:', Object.keys(window).filter(k => k.includes('setDevTools') || k.includes('aiAssistant')));
+            logger.info('DevTools injecting markdown content...', 'Content length:', ${JSON.stringify(markdownContent.length)});
+            logger.info('Available global functions:', Object.keys(window).filter(k => k.includes('setDevTools') || k.includes('aiAssistant')));
             
             if (typeof window.setDevToolsMarkdown === 'function') {
               try {
                 window.setDevToolsMarkdown(${escapedContent});
-                console.log('Successfully called setDevToolsMarkdown function');
+                logger.info('Successfully called setDevToolsMarkdown function');
                 return 'SUCCESS: Content injected via setDevToolsMarkdown function';
               } catch (error) {
-                console.error('Error calling setDevToolsMarkdown:', error);
+                logger.error('Error calling setDevToolsMarkdown:', error);
                 return 'ERROR: Failed to call setDevToolsMarkdown: ' + error.message;
               }
             } else {
-              console.warn('setDevToolsMarkdown function not found, using fallback methods');
-              console.log('Available window properties:', Object.keys(window).filter(k => k.includes('DevTools') || k.includes('assistant') || k.includes('ai')));
+              logger.warn('setDevToolsMarkdown function not found, using fallback methods');
+              logger.info('Available window properties:', Object.keys(window).filter(k => k.includes('DevTools') || k.includes('assistant') || k.includes('ai')));
               
               // Store in sessionStorage
               sessionStorage.setItem('devtools-markdown-content', ${escapedContent});
-              console.log('Stored content in sessionStorage');
+              logger.info('Stored content in sessionStorage');
               
               // Try to trigger app reload
               if (window.aiAssistantApp && typeof window.aiAssistantApp.loadFromSessionStorage === 'function') {
                 try {
                   window.aiAssistantApp.loadFromSessionStorage();
-                  console.log('Successfully called aiAssistantApp.loadFromSessionStorage');
+                  logger.info('Successfully called aiAssistantApp.loadFromSessionStorage');
                   return 'SUCCESS: Content stored and app reloaded';
                 } catch (error) {
-                  console.error('Error calling loadFromSessionStorage:', error);
+                  logger.error('Error calling loadFromSessionStorage:', error);
                   return 'ERROR: Content stored but failed to reload app: ' + error.message;
                 }
               } else {
-                console.log('aiAssistantApp not available or loadFromSessionStorage not a function');
-                console.log('aiAssistantApp type:', typeof window.aiAssistantApp);
+                logger.info('aiAssistantApp not available or loadFromSessionStorage not a function');
+                logger.info('aiAssistantApp type:', typeof window.aiAssistantApp);
                 if (window.aiAssistantApp) {
-                  console.log('aiAssistantApp methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.aiAssistantApp)));
+                  logger.info('aiAssistantApp methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.aiAssistantApp)));
                 }
                 
                 // Try to force a page reload as last resort
@@ -1289,7 +1296,7 @@ export class ChatView extends HTMLElement {
           // Get the default execution context and evaluate the script
           const executionContext = runtimeModel.defaultExecutionContext();
           if (!executionContext) {
-            console.error('No execution context available');
+            logger.error('No execution context available');
             return;
           }
 
@@ -1303,17 +1310,17 @@ export class ChatView extends HTMLElement {
           }, false, false);
 
           if ('error' in result) {
-            console.error('Evaluation failed:', result.error);
+            logger.error('Evaluation failed:', result.error);
             return;
           }
 
           if (result.object.value) {
-            console.log('Content injection result:', result.object.value);
+            logger.info('Content injection result:', result.object.value);
           } else if (result.exceptionDetails) {
-            console.error('Content injection failed:', result.exceptionDetails.text);
+            logger.error('Content injection failed:', result.exceptionDetails.text);
           }
         } catch (error) {
-          console.error('Failed to inject content:', error);
+          logger.error('Failed to inject content:', error);
         }
       };
       
@@ -1325,13 +1332,13 @@ export class ChatView extends HTMLElement {
         setTimeout(async () => {
           const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
           if (!runtimeModel) {
-            console.error('No RuntimeModel found');
+            logger.error('No RuntimeModel found');
             return;
           }
           
           const executionContext = runtimeModel.defaultExecutionContext();
           if (!executionContext) {
-            console.error('No execution context available');
+            logger.error('No execution context available');
             return;
           }
           
@@ -1353,7 +1360,7 @@ export class ChatView extends HTMLElement {
             retries++;
             attemptInjection();
           } else {
-            console.error('AI Assistant did not load in time');
+            logger.error('AI Assistant did not load in time');
             // Try to inject anyway as a last resort
             await injectContent();
           }

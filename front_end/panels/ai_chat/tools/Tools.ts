@@ -6,6 +6,9 @@ import * as Common from '../../../core/common/common.js'; // Import Common for E
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
+import { createLogger } from '../core/Logger.js';
+
+const logger = createLogger('Tools');
 
 // Value imports first, then types, ordered correctly
 import type { AccessibilityNode } from '../common/context.js';
@@ -17,6 +20,7 @@ import { OpenAIClient } from '../core/OpenAIClient.js';
 import type { DevToolsContext } from '../core/State.js';
 import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
+import { ChatMessageEntity } from '../ui/ChatView.js';
 
 // Type imports
 
@@ -209,6 +213,18 @@ export interface AccessibilityTreeResult {
    * Raw accessibility nodes from the tree for direct node manipulation
    */
   nodes?: Protocol.Accessibility.AXNode[];
+  /**
+   * Mapping of nodeId to URL for nodes that have URLs
+   */
+  idToUrl?: Record<string, string>;
+  /**
+   * Mapping of backendNodeId to xpath
+   */
+  xpathMap?: Record<number, string>;
+  /**
+   * Mapping of backendNodeId to tagName
+   */
+  tagNameMap?: Record<number, string>;
 }
 
 /**
@@ -273,7 +289,7 @@ export class ExecuteJavaScriptTool implements Tool<{ code: string }, JavaScriptE
   description = 'Executes JavaScript code in the page context';
 
   async execute(args: { code: string }): Promise<JavaScriptExecutionResult | ErrorResult> {
-    console.log('execute_javascript', args);
+    logger.info('execute_javascript', args);
     const code = args.code;
     if (typeof code !== 'string') {
       return { error: 'Code must be a string' };
@@ -293,7 +309,7 @@ export class ExecuteJavaScriptTool implements Tool<{ code: string }, JavaScriptE
         generatePreview: true,
       });
 
-      console.log('execute_javascript result', result);
+      logger.info('execute_javascript result', result);
 
       if (result.exceptionDetails) {
         return {
@@ -456,7 +472,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
     // 1. Overall Timeout Promise
     const timeoutPromise = new Promise<never>((_, reject) => {
       overallTimeoutId = setTimeout(() => {
-        console.warn(`waitForPageLoad: Overall timeout reached after ${timeoutMs}ms`);
+        logger.warn(`waitForPageLoad: Overall timeout reached after ${timeoutMs}ms`);
         reject(new Error(`Page load timed out after ${timeoutMs}ms (Overall)`));
       }, timeoutMs);
     });
@@ -465,7 +481,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
     const loadPromise = new Promise<void>(resolve => {
       // Attach listener - Load event should fire even if already loaded.
       loadEventListener = resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, () => {
-        console.log('waitForPageLoad: Load event received.');
+        logger.info('waitForPageLoad: Load event received.');
         resolve();
       });
     });
@@ -502,7 +518,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
         })
       `;
       try {
-        console.log('waitForPageLoad: Starting LCP observer...');
+        logger.info('waitForPageLoad: Starting LCP observer...');
         const result = await runtimeAgent.invoke_evaluate({
           expression,
           awaitPromise: true, // Wait for the script's promise
@@ -511,7 +527,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
         });
 
         if (result.exceptionDetails) {
-          console.warn(`waitForPageLoad: LCP observer script failed evaluation: ${result.exceptionDetails.text}`);
+          logger.warn(`waitForPageLoad: LCP observer script failed evaluation: ${result.exceptionDetails.text}`);
           // Evaluation failed, LCP won't resolve successfully.
           // Return a promise that never resolves to take it out of the race.
           return new Promise(() => { });
@@ -519,31 +535,31 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
 
         const lcpStatus = result.result.value as string;
         if (lcpStatus === 'LCP detected') {
-          console.log('waitForPageLoad: LCP detected via observer.');
+          logger.info('waitForPageLoad: LCP detected via observer.');
           // Resolve the outer lcpPromise successfully
           return Promise.resolve();
         }
           // LCP observer timed out internally or failed setup
-          console.warn(`waitForPageLoad: LCP observer finished with status: "${lcpStatus}"`);
+          logger.warn(`waitForPageLoad: LCP observer finished with status: "${lcpStatus}"`);
           // Return a promise that never resolves.
           return new Promise(() => { });
 
       } catch (error) {
         // Catch errors invoking evaluate itself
-        console.warn(`waitForPageLoad: Error invoking LCP observer script: ${error instanceof Error ? error.message : String(error)}`);
+        logger.warn(`waitForPageLoad: Error invoking LCP observer script: ${error instanceof Error ? error.message : String(error)}`);
         // Invocation failed, LCP won't resolve. Return a promise that never resolves.
         return await new Promise(() => { });
       }
     })();
 
     // 4. Race the promises: Wait for the first of load, LCP success, or overall timeout
-    console.log(`waitForPageLoad: Waiting for Load event, LCP, or timeout (${timeoutMs}ms)...`);
+    logger.info(`waitForPageLoad: Waiting for Load event, LCP, or timeout (${timeoutMs}ms)...`);
     await Promise.race([loadPromise, lcpPromise, timeoutPromise]);
-    console.log('waitForPageLoad: Race finished (Load, LCP, or Timeout).');
+    logger.info('waitForPageLoad: Race finished (Load, LCP, or Timeout).');
 
   } catch (error) {
     // This catch block will primarily handle the overall timeout rejection
-    console.error(`waitForPageLoad: Wait failed - ${error instanceof Error ? error.message : String(error)}`);
+    logger.error(`waitForPageLoad: Wait failed - ${error instanceof Error ? error.message : String(error)}`);
     // Rethrow the error (likely the timeout error)
     throw error;
   } finally {
@@ -553,7 +569,7 @@ export async function waitForPageLoad(target: SDK.Target.Target, timeoutMs: numb
     }
     if (loadEventListener) {
       Common.EventTarget.removeEventListeners([loadEventListener]);
-      console.log('waitForPageLoad: Load event listener removed.');
+      logger.info('waitForPageLoad: Load event listener removed.');
     }
     // The LCP observer should disconnect itself within the injected script.
   }
@@ -564,7 +580,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
   description = 'Navigates the page to a specified URL and waits for it to load';
 
   async execute(args: { url: string, reasoning: string /* Add reasoning to signature */ }): Promise<NavigationResult | ErrorResult> {
-    console.log('navigate_url', args);
+    logger.info('navigate_url', args);
     const url = args.url;
     const LOAD_TIMEOUT_MS = 30000; // 30 seconds timeout for page load
 
@@ -585,27 +601,27 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         return { error: 'Page agent not available' };
       }
 
-      console.log(`[NavigateURLTool] Initiating navigation to: ${url}`);
+      logger.info('Initiating navigation to: ${url}');
       // Perform the navigation
       const result = await pageAgent.invoke_navigate({ url });
 
       if (result.getError()) {
-        console.error(`[NavigateURLTool] Navigation invocation failed: ${result.getError()}`);
+        logger.error(`Navigation invocation failed: ${result.getError()}`);
         return { error: `Navigation invocation failed: ${result.getError()}` };
       }
-      console.log('[NavigateURLTool] Navigation initiated successfully.');
+      logger.info('Navigation initiated successfully.');
 
       // *** Add wait for page load ***
       try {
         await waitForPageLoad(target, LOAD_TIMEOUT_MS);
-        console.log('[NavigateURLTool] Page load confirmed or timeout reached.');
+        logger.info('Page load confirmed or timeout reached.');
       } catch (loadError: any) {
-        console.error(`[NavigateURLTool] Error waiting for page load: ${loadError.message}`);
+        logger.error(`Error waiting for page load: ${loadError.message}`);
       }
       // *****************************
 
       // Fetch page metadata AFTER waiting
-      console.log('[NavigateURLTool] Fetching page metadata...');
+      logger.info('Fetching page metadata...');
       const metadataEval = await target.runtimeAgent().invoke_evaluate({
         expression: '({ url: window.location.href, title: document.title })',
         returnByValue: true,
@@ -613,7 +629,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
 
       // Handle potential errors during metadata evaluation
       if (metadataEval.exceptionDetails) {
-        console.error(`[NavigateURLTool] Error fetching metadata: ${metadataEval.exceptionDetails.text}`);
+        logger.error(`Error fetching metadata: ${metadataEval.exceptionDetails.text}`);
         // Proceed but without metadata, perhaps? Or return error?
         // Let's return success but indicate metadata failure.
         return {
@@ -625,7 +641,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       }
 
       const metadata = metadataEval.result.value as { url: string, title: string };
-      console.log('[NavigateURLTool] Metadata fetched:', metadata);
+      logger.info('Metadata fetched:', metadata);
 
       // *** Add verification: Compare intended URL with final URL ***
       const intendedUrl = args.url;
@@ -660,7 +676,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       }
 
       if (!navigationVerified) {
-        console.warn(`[NavigateURLTool] URL mismatch after navigation. Intended: ${intendedUrl}, Final: ${finalUrl}`);
+        logger.warn(`URL mismatch after navigation. Intended: ${intendedUrl}, Final: ${finalUrl}`);
         // Return an error or modify success message?
         // Let's modify the message but still return success=true, as the page *did* load.
         return {
@@ -679,7 +695,7 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
         metadata,
       };
     } catch (error: any) {
-      console.error(`[NavigateURLTool] Unexpected error: ${error.message}`);
+      logger.error(`Unexpected error: ${error.message}`);
       return { error: `Failed to navigate to URL: ${error.message}` };
     }
   }
@@ -723,7 +739,7 @@ export class NavigateBackTool implements Tool<{ steps: number, reasoning: string
   };
 
   async execute(args: { steps: number, reasoning: string }): Promise<NavigateBackResult | ErrorResult> {
-    console.error('navigate_back', args);
+    logger.error('navigate_back', args);
     const steps = args.steps;
     if (typeof steps !== 'number' || steps <= 0) {
       return { error: 'Steps must be a positive number' };
@@ -788,16 +804,16 @@ export class NavigateBackTool implements Tool<{ steps: number, reasoning: string
             readyStateResult.result.value === 'complete') {
             isNavigationComplete = true;
             // Only use supported console methods
-            console.error('Navigation completed, document ready state is complete');
+            logger.error('Navigation completed, document ready state is complete');
           }
         } catch {
           // If we can't evaluate yet, navigation is still in progress
-          console.error('Still waiting for navigation to complete...');
+          logger.error('Still waiting for navigation to complete...');
         }
       }
 
       if (!isNavigationComplete) {
-        console.error('Navigation timed out after waiting for document ready state');
+        logger.error('Navigation timed out after waiting for document ready state');
       }
 
       // Fetch page metadata
@@ -1247,63 +1263,62 @@ export class ScrollPageTool implements Tool<{ position?: { x: number, y: number 
   };
 }
 
-// TODO: Add support for OpenAI Client to consume images
 /**
  * Tool for taking screenshots of the page
  */
-// export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, ScreenshotResult|ErrorResult> {
-//   name = 'take_screenshot';
-//   description = 'Takes a screenshot of the current page view or the entire page';
+export class TakeScreenshotTool implements Tool<{fullPage?: boolean}, ScreenshotResult|ErrorResult> {
+  name = 'take_screenshot';
+  description = 'Takes a screenshot of the current page view or the entire page';
 
-//   async execute(args: {fullPage?: boolean}): Promise<ScreenshotResult|ErrorResult> {
-//     const fullPage = args.fullPage || false;
+  async execute(args: {fullPage?: boolean}): Promise<ScreenshotResult|ErrorResult> {
+    const fullPage = args.fullPage || false;
 
-//     // Get the main target
-//     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-//     if (!target) {
-//       return {error: 'No page target available'};
-//     }
+    // Get the main target
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return {error: 'No page target available'};
+    }
 
-//     try {
-//       // Use the page agent to capture a screenshot
-//       const pageAgent = target.pageAgent();
-//       if (!pageAgent) {
-//         return {error: 'Page agent not available'};
-//       }
+    try {
+      // Use the page agent to capture a screenshot
+      const pageAgent = target.pageAgent();
+      if (!pageAgent) {
+        return {error: 'Page agent not available'};
+      }
 
-//       // Take the screenshot
-//       const result = await pageAgent.invoke_captureScreenshot({
-//         format: 'png',
-//         captureBeyondViewport: fullPage,
-//       });
+      // Take the screenshot
+      const result = await pageAgent.invoke_captureScreenshot({
+        format: 'png' as Protocol.Page.CaptureScreenshotRequestFormat,
+        captureBeyondViewport: fullPage,
+      });
 
-//       if (result.getError()) {
-//         return {error: `Screenshot failed: ${result.getError()}`};
-//       }
+      if (result.getError()) {
+        return {error: `Screenshot failed: ${result.getError()}`};
+      }
 
-//       // Get base64 data from result
-//       const data = result.data;
+      // Get base64 data from result
+      const data = result.data;
 
-//       return {
-//         success: true,
-//         dataUrl: `data:image/png;base64,${data}`,
-//         message: `Successfully took ${fullPage ? 'full page' : 'viewport'} screenshot`,
-//       };
-//     } catch (error) {
-//       return {error: `Failed to take screenshot: ${error.message}`};
-//     }
-//   }
+      return {
+        success: true,
+        dataUrl: `data:image/png;base64,${data}`,
+        message: `Successfully took ${fullPage ? 'full page' : 'viewport'} screenshot`,
+      };
+    } catch (error) {
+      return {error: `Failed to take screenshot: ${error.message}`};
+    }
+  }
 
-//   schema = {
-//     type: 'object',
-//     properties: {
-//       fullPage: {
-//         type: 'boolean',
-//         description: 'Whether to capture the entire page or just the viewport (default: false)',
-//       },
-//     },
-//   };
-// }
+  schema = {
+    type: 'object',
+    properties: {
+      fullPage: {
+        type: 'boolean',
+        description: 'Whether to capture the entire page or just the viewport (default: false)',
+      },
+    },
+  };
+}
 
 /**
  * Tool for getting the accessibility tree including reasoning
@@ -1315,28 +1330,22 @@ export class GetAccessibilityTreeTool implements Tool<{ reasoning: string }, Acc
   async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
     try {
       // Log reasoning for this action (addresses unused args warning)
-      console.warn(`Getting accessibility tree: ${args.reasoning}`);
+      logger.warn(`Getting accessibility tree: ${args.reasoning}`);
       // Get the main target
       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         return { error: 'No page target available' };
       }
 
-      // Use the logger function required by getAccessibilityTree
-      const logger = (logLine: { level: number }): void => {
-        // Simple logging function that matches the expected LogLine interface
-        if (logLine.level === 1) {
-          // Only log important messages
-          // Avoid console.log to prevent linter errors
-        }
-      };
-
       // Get the accessibility tree using the utility function
-      const treeResult = await Utils.getAccessibilityTree(target, logger as ((logLine: LogLine) => void));
+      const treeResult = await Utils.getAccessibilityTree(target);
 
       return {
         simplified: treeResult.simplified,
         iframes: treeResult.iframes,
+        idToUrl: treeResult.idToUrl,
+        xpathMap: treeResult.xpathMap,
+        tagNameMap: treeResult.tagNameMap,
       };
     } catch (error) {
       return { error: `Failed to get accessibility tree: ${String(error)}` };
@@ -1365,25 +1374,16 @@ export class GetVisibleAccessibilityTreeTool implements Tool<{ reasoning: string
   async execute(args: { reasoning: string }): Promise<AccessibilityTreeResult | ErrorResult> {
     try {
       // Log reasoning for this action
-      console.warn(`Getting visible accessibility tree: ${args.reasoning}`);
+      logger.warn(`Getting visible accessibility tree: ${args.reasoning}`);
       // Get the main target
       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!target) {
         return { error: 'No page target available' };
       }
 
-      // Use the logger function required by getVisibleAccessibilityTree
-      const logger = (logLine: { level: number }): void => {
-        // Simple logging function that matches the expected LogLine interface
-        if (logLine.level === 1) {
-          // Only log important messages
-          // Avoid console.log to prevent linter errors
-        }
-      };
-
       try {
         // Get only the visible accessibility tree using the utility function
-        const treeResult = await Utils.getVisibleAccessibilityTree(target, logger as ((logLine: LogLine) => void));
+        const treeResult = await Utils.getVisibleAccessibilityTree(target);
 
         // Convert the enhanced iframes to the expected format
         const enhancedIframes = treeResult.iframes.map(iframe => ({
@@ -1423,38 +1423,38 @@ export class GetVisibleAccessibilityTreeTool implements Tool<{ reasoning: string
 /**
  * Tool for performing actions on DOM elements
  */
-export class PerformActionTool implements Tool<{ method: string, nodeId: number, reasoning: string, args?: Record<string, unknown> | unknown[] }, PerformActionResult | ErrorResult> {
+export class PerformActionTool implements Tool<{ method: string, nodeId: number | string, reasoning: string, args?: Record<string, unknown> | unknown[] }, PerformActionResult | ErrorResult> {
   name = 'perform_action';
   description = 'Performs an action on a DOM element identified by NodeID';
 
-  async execute(args: { method: string, nodeId: number, reasoning: string, args?: Record<string, unknown> | unknown[] }): Promise<PerformActionResult | ErrorResult> {
-    console.log('[PerformActionTool] Executing with args:', JSON.stringify(args));
+  async execute(args: { method: string, nodeId: number | string, reasoning: string, args?: Record<string, unknown> | unknown[] }): Promise<PerformActionResult | ErrorResult> {
+    logger.info('Executing with args:', JSON.stringify(args));
     const method = args.method;
     const nodeId = args.nodeId;
     const reasoning = args.reasoning;
     let actionArgsArray: unknown[] = [];
 
     if (typeof method !== 'string') {
-      console.log('[PerformActionTool] Error: Method must be a string');
+      logger.info('Error: Method must be a string');
       return { error: 'Method must be a string' };
     }
 
-    if (typeof nodeId !== 'number') {
-      console.log('[PerformActionTool] Error: NodeID must be a number');
-      return { error: 'NodeID must be a number' };
+    if (typeof nodeId !== 'number' && typeof nodeId !== 'string') {
+      logger.info('Error: NodeID must be a number or string');
+      return { error: 'NodeID must be a number or string' };
     }
 
     // Get the main target
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
-      console.log('[PerformActionTool] Error: No primary page target found');
+      logger.info('Error: No primary page target found');
       return { error: 'No page target available' };
     }
 
     // Declare variables needed across different branches
     let initialUrl: string | undefined;
     let isLikelyNavigationElement = false;
-    let xpath: string | undefined;
+    let xpath: string = '';
     let isContentEditableElement = false;
 
     // Process arguments
@@ -1464,29 +1464,72 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
       } else {
         actionArgsArray = [args.args];
       }
-      console.log('[PerformActionTool] Processed action args:', JSON.stringify(actionArgsArray));
+      logger.info('Processed action args:', JSON.stringify(actionArgsArray));
     }
 
+    let iframeNodeId: string | undefined;
+    let elementNodeId: string | undefined;
+    let treeResult: any = null; // Cache the tree result to avoid multiple calls
+    
     try {
-      // Get the XPath
-      console.log('[PerformActionTool] Getting XPath for nodeId:', nodeId);
-      xpath = await Utils.getXPathByBackendNodeId(target, nodeId as Protocol.DOM.BackendNodeId);
-      if (!xpath || xpath === '') {
-        console.log('[PerformActionTool] Error: Could not determine XPath for NodeID:', nodeId);
-        return { error: `Could not determine XPath for NodeID: ${nodeId}` };
+      // Check if nodeId is from an iframe (has prefix)
+      const isIframeNodeId = typeof nodeId === 'string' && nodeId.startsWith('iframe_');
+      
+      if (isIframeNodeId) {
+        // Handle iframe nodeId - extract iframe nodeId and element nodeId
+        const match = (nodeId as string).match(/^iframe_(\d+)_(.+)$/);
+        if (!match) {
+          logger.info('Error: Invalid iframe nodeId format:', nodeId);
+          return { error: `Invalid iframe nodeId format: ${nodeId}` };
+        }
+        
+        iframeNodeId = match[1];
+        elementNodeId = match[2];
+        logger.info(`Iframe action detected - iframeNodeId: ${iframeNodeId}, elementNodeId: ${elementNodeId}`);
+        
+        // For iframe elements, we don't need xpath - we'll use the nodeId directly
+        // The performAction function will handle finding the element within the iframe
+        xpath = elementNodeId; // Pass the element nodeId as xpath placeholder
+      } else {
+        // Handle regular nodeId
+        logger.info('Getting XPath for nodeId:', nodeId);
+        
+        // Get the accessibility tree once for potential reuse
+        treeResult = await Utils.getAccessibilityTree(target);
+        if (treeResult.xpathMap && treeResult.xpathMap[nodeId as number]) {
+          xpath = treeResult.xpathMap[nodeId as number];
+          logger.info('Found XPath from xpathMap:', xpath);
+        } else {
+          // Fallback to CDP call
+          xpath = await Utils.getXPathByBackendNodeId(target, nodeId as Protocol.DOM.BackendNodeId);
+          if (!xpath || xpath === '') {
+            logger.info('Error: Could not determine XPath for NodeID:', nodeId);
+            return { error: `Could not determine XPath for NodeID: ${nodeId}` };
+          }
+          logger.info('Found XPath via CDP fallback:', xpath);
+        }
       }
-      console.log('[PerformActionTool] Found XPath:', xpath);
 
       // Pre-action checks
       if (method === 'fill' || method === 'type') {
-        console.log('[PerformActionTool] Performing fill/type pre-action checks');
+        logger.info('Performing fill/type pre-action checks');
         if (typeof args.args !== 'object' || args.args === null || Array.isArray(args.args) || typeof (args.args as Record<string, unknown>).text !== 'string') {
-          console.log('[PerformActionTool] Error: Missing or invalid args for fill/type action');
+          logger.info('Error: Missing or invalid args for fill/type action');
           return { error: `Missing or invalid args for action '${method}' on NodeID ${nodeId}. Expected an object with a string property 'text'. Example: { "text": "your value" }` };
         }
         const textValue = (args.args as { text: string }).text;
         actionArgsArray = [textValue]; // Prepare array for utility function
-        console.log('[PerformActionTool] Text value for fill/type:', textValue);
+        logger.info('Text value for fill/type:', textValue);
+
+        // Get tree result again for the tagNameMap (only if not iframe)
+        let elementTagName: string | undefined;
+        if (!iframeNodeId) {
+          const treeResult = await Utils.getAccessibilityTree(target);
+          if (treeResult.tagNameMap && treeResult.tagNameMap[nodeId as number]) {
+            elementTagName = treeResult.tagNameMap[nodeId as number];
+            logger.info('Found element tagName from tagNameMap:', elementTagName);
+          }
+        }
 
         const suitabilityResult = await target.runtimeAgent().invoke_evaluate({
           expression: `(() => {
@@ -1526,21 +1569,39 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
           // Log detailed error for debugging
           const errorDetailsText = suitabilityResult.exceptionDetails.text ||
             (suitabilityResult.exceptionDetails.exception ? suitabilityResult.exceptionDetails.exception.description : 'Unknown evaluation error');
-          console.log('[PerformActionTool] Error checking element suitability:', errorDetailsText);
+          logger.info('Error checking element suitability:', errorDetailsText);
           return { error: `Failed to check element suitability for '${method}' on NodeID ${nodeId}: ${errorDetailsText}. XPath used: ${xpath}` }; // Include xpath
         }
         if (!suitabilityResult.result?.value?.suitable) {
           const reason = suitabilityResult.result?.value?.reason || 'Element not suitable for text input';
-          console.log('[PerformActionTool] Element not suitable for text input:', reason);
+          logger.info('Element not suitable for text input:', reason);
           return { error: `Cannot perform '${method}' on NodeID ${nodeId}: ${reason}. Final XPath used: ${xpath}. Please try a different NodeID.` }; // Include xpath
         }
-        console.log('[PerformActionTool] Element suitable for text input');
+        logger.info('Element suitable for text input');
 
         // Assign based on suitability check result
         isContentEditableElement = suitabilityResult.result?.value?.reason === 'Content-editable element is suitable';
 
+      } else if (method === 'selectOption') {
+        logger.info('Performing selectOption pre-action checks');
+        if (typeof args.args !== 'object' || args.args === null || Array.isArray(args.args) || typeof (args.args as Record<string, unknown>).text !== 'string') {
+          logger.info('Error: Missing or invalid args for selectOption action');
+          return { error: `Missing or invalid args for action '${method}' on NodeID ${nodeId}. Expected an object with a string property 'text'. Example: { "text": "option_value" }` };
+        }
+        const optionValue = (args.args as { text: string }).text;
+        actionArgsArray = [optionValue]; // Prepare array for utility function
+        logger.info('Option value for selectOption:', optionValue);
+      } else if (method === 'setChecked') {
+        logger.info('Performing setChecked pre-action checks');
+        if (typeof args.args !== 'object' || args.args === null || Array.isArray(args.args) || typeof (args.args as Record<string, unknown>).checked !== 'boolean') {
+          logger.info('Error: Missing or invalid args for setChecked action');
+          return { error: `Missing or invalid args for action '${method}' on NodeID ${nodeId}. Expected an object with a boolean property 'checked'. Example: { "checked": true }` };
+        }
+        const checkedValue = (args.args as { checked: boolean }).checked;
+        actionArgsArray = [checkedValue]; // Prepare array for utility function
+        logger.info('Checked value for setChecked:', checkedValue);
       } else if (method === 'click') {
-        console.log('[PerformActionTool] Performing click pre-action checks');
+        logger.info('Performing click pre-action checks');
         const detailsResult = await target.runtimeAgent().invoke_evaluate({
           expression: `(() => {
             // Ensure XPath is properly escaped for use in a string literal
@@ -1563,15 +1624,18 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
         });
 
         if (detailsResult.exceptionDetails) {
-          console.log('[PerformActionTool] Could not get element details before click:', detailsResult.exceptionDetails.text);
+          logger.info('Could not get element details before click:', detailsResult.exceptionDetails.text);
           // Fallback: try getting just the URL
           const urlOnlyResult = await target.runtimeAgent().invoke_evaluate({ expression: 'window.location.href', returnByValue: true });
           initialUrl = urlOnlyResult.result?.value;
         } else if (detailsResult.result?.value) {
           initialUrl = detailsResult.result.value.url;
           isLikelyNavigationElement = detailsResult.result.value.isLinkOrButton;
-          console.log('[PerformActionTool] Click element details - tagName:', detailsResult.result.value.tagName,
-            'isLinkOrButton:', isLikelyNavigationElement, 'initialUrl:', initialUrl);
+          logger.info('Click element details', {
+            tagName: detailsResult.result.value.tagName,
+            isLinkOrButton: isLikelyNavigationElement,
+            initialUrl
+          });
         }
       }
       // Handle args for other methods if needed
@@ -1580,13 +1644,13 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
       }
 
       // --- Perform Action (Do this BEFORE verification) ---
-      console.log(`[PerformActionTool] Executing Utils.performAction('${method}', args: ${JSON.stringify(actionArgsArray)}, xpath: '${xpath}')`);
-      await Utils.performAction(target, method, actionArgsArray, xpath);
+      logger.info(`Executing Utils.performAction('${method}', args: ${JSON.stringify(actionArgsArray)}, xpath: '${xpath}', iframeNodeId: '${iframeNodeId || 'none'}')`);
+      await Utils.performAction(target, method, actionArgsArray, xpath, iframeNodeId);
 
       // --- Post-action verification ONLY for fill/type ---
       let verificationMessage = '';
       if (method === 'fill' || method === 'type') {
-        console.log('[PerformActionTool] Performing post-action verification for fill/type');
+        logger.info('Performing post-action verification for fill/type');
         const expectedValue = (args.args as { text: string }).text;
         try {
           const verifyResult = await target.runtimeAgent().invoke_evaluate({
@@ -1611,24 +1675,24 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
 
           if (verifyResult.exceptionDetails) {
             verificationMessage = ` (${method} verification failed: ${verifyResult.exceptionDetails.text})`;
-            console.log('[PerformActionTool] Verification failed:', verifyResult.exceptionDetails.text);
+            logger.info('Verification failed:', verifyResult.exceptionDetails.text);
           } else if (verifyResult.result?.value?.error) {
             verificationMessage = ` (${method} verification failed: ${verifyResult.result.value.error})`;
-            console.log('[PerformActionTool] Verification failed:', verifyResult.result.value.error);
+            logger.info('Verification failed:', verifyResult.result.value.error);
           } else {
             const actualValue = verifyResult.result?.value?.value;
             const comparisonValue = isContentEditableElement ? actualValue?.trim() : actualValue;
             if (comparisonValue !== expectedValue) {
               verificationMessage = ` (${method} verification failed: Expected value "${expectedValue}" but got "${actualValue}")`;
-              console.log(`[PerformActionTool] Verification mismatch: Expected "${expectedValue}", Got "${actualValue}"`);
+              logger.info(`Verification mismatch: Expected "${expectedValue}", Got "${actualValue}"`);
             } else {
               verificationMessage = ` (${method} action verified successfully)`;
-              console.log('[PerformActionTool] Verification successful');
+              logger.info('Verification successful');
             }
           }
         } catch (verifyError) {
           verificationMessage = ` (${method} verification encountered an error: ${verifyError instanceof Error ? verifyError.message : String(verifyError)})`;
-          console.log('[PerformActionTool] Verification error:', verifyError);
+          logger.info('Verification error:', verifyError);
         }
       }
 
@@ -1637,7 +1701,7 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
 
       // Check for navigation after 'click' on relevant elements
       if (method === 'click' && isLikelyNavigationElement && initialUrl !== undefined) {
-        console.log('[PerformActionTool] Checking for navigation after click');
+        logger.info('Checking for navigation after click');
         // Wait briefly for potential navigation.
         await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second wait
 
@@ -1649,9 +1713,13 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
         if (!urlResult.exceptionDetails && urlResult.result?.value !== undefined) {
           finalUrl = urlResult.result.value;
           navigationDetected = initialUrl !== finalUrl;
-          console.log('[PerformActionTool] Navigation check - initialUrl:', initialUrl, 'finalUrl:', finalUrl, 'navigationDetected:', navigationDetected);
+          logger.info('Navigation check', {
+            initialUrl,
+            finalUrl,
+            navigationDetected
+          });
         } else {
-          console.log('[PerformActionTool] Could not get URL after click:', urlResult.exceptionDetails?.text);
+          logger.info('Could not get URL after click:', urlResult.exceptionDetails?.text);
         }
       }
 
@@ -1666,14 +1734,14 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
         }
       }
 
-      console.log('[PerformActionTool] Success result message:', message);
+      logger.info('Success result message:', message);
       return {
         success: true,
         message,
         xpath,
       };
     } catch (error: unknown) {
-      console.log('[PerformActionTool] Error during execution:', error instanceof Error ? error.message : String(error));
+      logger.info('Error during execution:', error instanceof Error ? error.message : String(error));
       // Include XPath in the error message if it was determined before the error
       const errorMessage = `Failed to perform action '${method}' on NodeID ${nodeId}${xpath ? ` (XPath: ${xpath})` : ' (XPath determination failed or did not run)'}: ${error instanceof Error ? error.message : String(error)}`;
       return {
@@ -1687,22 +1755,29 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number,
     properties: {
       method: {
         type: 'string',
-        description: 'Action to perform (click, hover, fill, type, press, scrollIntoView)',
-        enum: ['click', 'hover', 'fill', 'type', 'press', 'scrollIntoView']
+        description: 'Action to perform (click, hover, fill, type, press, scrollIntoView, selectOption, check, uncheck, setChecked)',
+        enum: ['click', 'hover', 'fill', 'type', 'press', 'scrollIntoView', 'selectOption', 'check', 'uncheck', 'setChecked']
       },
       nodeId: {
-        type: 'number',
-        description: 'NodeID of the element to perform the action on'
+        oneOf: [
+          { type: 'number' },
+          { type: 'string' }
+        ],
+        description: 'NodeID of the element to perform the action on (number for main document, string with iframe_ prefix for iframe elements)'
       },
       args: {
         oneOf: [
           {
             type: 'object',
-            description: 'Arguments for the action. For "fill"/"type", requires an object like { "text": "value" }. For "press", requires an array like ["key"]. Other methods typically do not use args.',
+            description: 'Arguments for the action. For "fill"/"type", requires an object like { "text": "value" }. For "selectOption", requires an object like { "text": "option_value" }. For "setChecked", requires an object like { "checked": true/false }. For "press", requires an array like ["key"]. Other methods (click, hover, check, uncheck, scrollIntoView) typically do not use args.',
             properties: {
               text: {
                 type: 'string',
-                description: 'The text value to fill or type into the element.'
+                description: 'The text value to fill, type, or select option value.'
+              },
+              checked: {
+                type: 'boolean',
+                description: 'For setChecked method - whether the checkbox should be checked (true) or unchecked (false).'
               }
             },
           },
@@ -1770,21 +1845,21 @@ Important guidelines:
     // --- Internal Agentic Loop ---
     while (currentTry <= maxRetries) {
       currentTry++;
-      console.log(`ObjectiveDrivenActionTool: Attempt ${currentTry}/${maxRetries + 1} for objective: "${objective}"`);
+      logger.info(`ObjectiveDrivenActionTool: Attempt ${currentTry}/${maxRetries + 1} for objective: "${objective}"`);
       let attemptError: Error | null = null; // Use Error object for better stack traces
 
       try {
         // --- Step 1: Get Tree ---
-        console.log('ObjectiveDrivenActionTool: Getting Accessibility Tree...');
+        logger.info('ObjectiveDrivenActionTool: Getting Accessibility Tree...');
         const getAccTreeTool = new GetAccessibilityTreeTool();
         const treeResult = await getAccTreeTool.execute({ reasoning: `Attempt ${currentTry} for objective: ${objective}` });
         if ('error' in treeResult) {throw new Error(`Tree Error: ${treeResult.error}`);}
         const accessibilityTreeString = treeResult.simplified;
         if (!accessibilityTreeString || accessibilityTreeString.trim() === '') {throw new Error('Tree Error: Empty or blank tree content.');}
-        console.log('ObjectiveDrivenActionTool: Got Accessibility Tree.');
+        logger.info('ObjectiveDrivenActionTool: Got Accessibility Tree.');
 
         // --- Step 2: LLM - Determine Action (Method, Accessibility NodeID String, Args) ---
-        console.log('ObjectiveDrivenActionTool: Determining Action via LLM...');
+        logger.info('ObjectiveDrivenActionTool: Determining Action via LLM...');
 
         // Create PerformActionTool to use its schema
         const performActionTool = new PerformActionTool();
@@ -1817,10 +1892,15 @@ Important guidelines:
 - Choose the most semantically appropriate element when multiple options exist.`;
 
         // Use UnifiedLLMClient with function call support
-        const response = await UnifiedLLMClient.callLLMWithResponse(
+        const messages = [{
+          entity: ChatMessageEntity.USER as const,
+          text: promptGetAction
+        }];
+        
+        const response = await UnifiedLLMClient.callLLMWithMessages(
           apiKey,
           modelNameForAction,
-          promptGetAction,
+          messages,
           {
             systemPrompt: this.getSystemPrompt(),
             tools: [{
@@ -1834,7 +1914,7 @@ Important guidelines:
 
         // --- Parse the Tool Call Response ---
         if (!response.functionCall || response.functionCall.name !== performActionTool.name) {
-          console.warn('LLM did not return the expected function call; this is likely an error', response);
+          logger.warn('LLM did not return the expected function call; this is likely an error', response);
           const errorMessage = response.text || 'No function call returned - this tool requires a function call response.';
 
           // Since this tool specifically handles actions, if we didn't get a function call
@@ -1848,10 +1928,10 @@ Important guidelines:
           nodeId: number,
           args?: Record<string, unknown> | unknown[],
         };
-        console.log('Parsed Tool Arguments:', { actionMethod, accessibilityNodeId, actionArgs });
+        logger.info('Parsed Tool Arguments:', { actionMethod, accessibilityNodeId, actionArgs });
 
         const actionNodeId = accessibilityNodeId as Protocol.DOM.NodeId;
-        console.log(`ObjectiveDrivenActionTool: Performing action '${actionMethod}' on potentially incorrect NodeID ${actionNodeId}...`);
+        logger.info(`ObjectiveDrivenActionTool: Performing action '${actionMethod}' on potentially incorrect NodeID ${actionNodeId}...`);
 
         const performResult = await performActionTool.execute({
           method: actionMethod,
@@ -1863,7 +1943,7 @@ Important guidelines:
           // Throw error to be caught by the loop's catch block
           throw new Error(`Action Error (NodeID ${actionNodeId}): ${performResult.error}`);
         }
-        console.log('ObjectiveDrivenActionTool: Action successful (but may have affected unexpected element).');
+        logger.info('ObjectiveDrivenActionTool: Action successful (but may have affected unexpected element).');
 
         // Fetch page metadata
         let metadata: { url: string, title: string } | undefined;
@@ -1893,7 +1973,7 @@ Important guidelines:
       } catch (error) {
         // Catch errors from any step within the try block
         attemptError = error as Error;
-        console.warn(`ObjectiveDrivenActionTool: Attempt ${currentTry} failed:`, attemptError.message);
+        logger.warn(`ObjectiveDrivenActionTool: Attempt ${currentTry} failed:`, attemptError.message);
         lastError = attemptError.message; // Store error message for the next attempt's prompt
         // Optional: Add a small delay before retrying? await new Promise(resolve => setTimeout(resolve, 500));
       }
@@ -1992,7 +2072,10 @@ export class NodeIDsToURLsTool implements Tool<{ nodeIds: number[] }, NodeIDsToU
         });
 
         if (evaluateResult.exceptionDetails) {
-          console.warn('Error evaluating URL for NodeID', nodeId, 'Details:', evaluateResult.exceptionDetails);
+          logger.warn('Error evaluating URL for NodeID', {
+            nodeId,
+            details: evaluateResult.exceptionDetails
+          });
           results.push({ nodeId });
           continue;
         }
@@ -2004,7 +2087,10 @@ export class NodeIDsToURLsTool implements Tool<{ nodeIds: number[] }, NodeIDsToU
           results.push({ nodeId });
         }
       } catch (error) {
-        console.warn('Error processing NodeID', nodeId, error instanceof Error ? error.message : String(error));
+        logger.warn('Error processing NodeID', {
+          nodeId,
+          error: error instanceof Error ? error.message : String(error)
+        });
         results.push({ nodeId });
       }
     }
@@ -2182,7 +2268,7 @@ CRITICAL:
   private getNodeContent(nodeId: number, nodes: Protocol.Accessibility.AXNode[]): string | null {
     const node = nodes.find(n => Number(n.nodeId) === nodeId);
     if (!node) {
-      console.warn(`SchemaBasedDataExtractionTool: Node not found for nodeId ${nodeId}`);
+      logger.warn(`SchemaBasedDataExtractionTool: Node not found for nodeId ${nodeId}`);
       return null;
     }
 
@@ -2642,22 +2728,22 @@ CRITICAL:
     // --- Internal Agentic Loop ---
     while (currentTry <= maxRetries) {
       currentTry++;
-      console.warn(`SchemaBasedDataExtractionTool: Attempt ${currentTry}/${maxRetries + 1}`);
+      logger.warn(`SchemaBasedDataExtractionTool: Attempt ${currentTry}/${maxRetries + 1}`);
       let attemptError: Error | null = null;
 
       try {
         // --- Step 1: Get Tree ---
-        console.warn('SchemaBasedDataExtractionTool: Getting Accessibility Tree...');
+        logger.warn('SchemaBasedDataExtractionTool: Getting Accessibility Tree...');
         const getAccTreeTool = new GetAccessibilityTreeTool();
         const treeResult = await getAccTreeTool.execute({ reasoning: `Schema-based extraction attempt ${currentTry}` });
         if ('error' in treeResult) {throw new Error(`Tree Error: ${treeResult.error}`);}
         const accessibilityTreeString = treeResult.simplified;
 
         if (!accessibilityTreeString || accessibilityTreeString.trim() === '') {throw new Error('Tree Error: Empty or blank tree content.');}
-        console.warn('SchemaBasedDataExtractionTool: Got Accessibility Tree.');
+        logger.warn('SchemaBasedDataExtractionTool: Got Accessibility Tree.');
 
         // --- Step 2: LLM - Extract NodeIDs According to Schema ---
-        console.warn('SchemaBasedDataExtractionTool: Extracting NodeIDs via LLM...');
+        logger.warn('SchemaBasedDataExtractionTool: Extracting NodeIDs via LLM...');
 
         const promptExtractData = `
 Objective: ${objective}
@@ -2673,7 +2759,7 @@ ${accessibilityTreeString.length > offset + chunkSize ? `...(tree truncated at $
 ${lastError ? `Previous attempt failed with this error: "${lastError}". Consider a different approach.` : ''}
 Extract NodeIDs according to the provided objective and schema, then return a structured JSON with NodeIDs instead of content.`;
 
-        console.log('SchemaBasedDataExtractionTool: Prompt:', promptExtractData);
+        logger.info('SchemaBasedDataExtractionTool: Prompt:', promptExtractData);
         // Use UnifiedLLMClient to call the LLM
         const response = await UnifiedLLMClient.callLLM(
           apiKey,
@@ -2683,7 +2769,7 @@ Extract NodeIDs according to the provided objective and schema, then return a st
             systemPrompt: this.getSystemPrompt(),
           },
         );
-        console.log('SchemaBasedDataExtractionTool: Response:', response);
+        logger.info('SchemaBasedDataExtractionTool: Response:', response);
 
         // Process the LLM response - this now contains NodeIDs instead of content
         const nodeIdStructureJson = response?.trim() || '';
@@ -2698,10 +2784,10 @@ Extract NodeIDs according to the provided objective and schema, then return a st
         }
 
         // Step 3: Process the NodeID structure to replace IDs with content
-        console.warn('SchemaBasedDataExtractionTool: Processing NodeIDs to get content...');
+        logger.warn('SchemaBasedDataExtractionTool: Processing NodeIDs to get content...');
         const processedStructure = await this.processNodeStructure(nodeIdStructure, treeResult.nodes);
 
-        console.log('SchemaBasedDataExtractionTool: Processed structure:', processedStructure);
+        logger.info('SchemaBasedDataExtractionTool: Processed structure:', processedStructure);
         // Convert back to JSON string with proper formatting
         const jsonData = JSON.stringify(processedStructure);
 
@@ -2730,7 +2816,7 @@ Extract NodeIDs according to the provided objective and schema, then return a st
       } catch (error) {
         // Catch errors from any step within the try block
         attemptError = error as Error;
-        console.warn(`SchemaBasedDataExtractionTool: Attempt ${currentTry} failed:`, attemptError.message);
+        logger.warn(`SchemaBasedDataExtractionTool: Attempt ${currentTry} failed:`, attemptError.message);
         lastError = attemptError.message; // Store error message for the next attempt's prompt
       }
     } // End while loop

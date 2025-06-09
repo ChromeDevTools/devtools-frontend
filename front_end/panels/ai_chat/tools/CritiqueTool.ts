@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 
 import { AgentService } from '../core/AgentService.js';
+import { createLogger } from '../core/Logger.js';
 import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
+
+const logger = createLogger('Tool:Critique');
 
 /**
  * Arguments for the CritiqueTool
@@ -72,7 +75,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
    * Execute the critique agent
    */
   async execute(args: CritiqueToolArgs): Promise<CritiqueToolResult> {
-    console.log('[CritiqueTool] Executing with args:', args);
+    logger.debug('Executing with args', args);
     const { userInput, finalResponse, reasoning } = args;
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -95,7 +98,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
     }
 
     try {
-      console.log('[CritiqueTool] Evaluating planning response against user requirements.');
+      logger.info('Evaluating planning response against user requirements');
 
       // First, extract requirements from user input
       const requirementsResult = await this.extractRequirements(userInput, apiKey);
@@ -123,8 +126,10 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
         feedback = await this.generateFeedback(criteria, userInput, finalResponse, apiKey);
       }
 
-      console.log('[CritiqueTool] Evaluation complete:',
-        criteria.satisfiesCriteria ? 'Requirements satisfied' : 'Requirements not satisfied');
+      logger.info('Evaluation complete', {
+        satisfiesCriteria: criteria.satisfiesCriteria,
+        result: criteria.satisfiesCriteria ? 'Requirements satisfied' : 'Requirements not satisfied'
+      });
 
       return {
         satisfiesCriteria: criteria.satisfiesCriteria,
@@ -133,7 +138,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
       };
 
     } catch (error: any) {
-      console.error('[CritiqueTool] Error during evaluation process:', error);
+      logger.error('Error during evaluation process', error);
       return {
         satisfiesCriteria: false,
         success: false,
@@ -181,7 +186,7 @@ Return a JSON array of requirement statements. Example format:
       const requirements = JSON.parse(requirementsMatch[0]);
       return { success: true, requirements };
     } catch (error: any) {
-      console.error('[CritiqueTool] Error extracting requirements:', error);
+      logger.error('Error extracting requirements', error);
       return { success: false, requirements: [], error: String(error) };
     }
   }
@@ -269,7 +274,7 @@ ${JSON.stringify(evaluationSchema, null, 2)}`;
       const criteria = JSON.parse(jsonMatch[0]) as EvaluationCriteria;
       return { success: true, criteria };
     } catch (error: any) {
-      console.error('[CritiqueTool] Error evaluating response:', error);
+      logger.error('Error evaluating response', error);
       return { success: false, error: String(error) };
     }
   }
@@ -313,7 +318,7 @@ Be concise, specific, and constructive.`;
 
       return response || 'The plan does not meet all requirements, but no specific feedback could be generated.';
     } catch (error: any) {
-      console.error('[CritiqueTool] Error generating feedback:', error);
+      logger.error('Error generating feedback', error);
       return 'Failed to generate detailed feedback, but the plan does not meet all requirements.';
     }
   }

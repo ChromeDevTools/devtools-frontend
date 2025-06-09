@@ -5,9 +5,14 @@
 import type { getTools } from '../tools/Tools.js';
 
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
+import { createLogger } from './Logger.js';
 import { OpenAIClient, type OpenAIResponse, type ParsedLLMAction, type OpenAICallOptions } from './OpenAIClient.js';
 import { enhancePromptWithPageContext } from './PageInfoManager.js';
 import type { AgentState } from './State.js';
+import { UnifiedLLMClient } from './UnifiedLLMClient.js';
+import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+
+const logger = createLogger('ChatOpenAI');
 
 // Define interfaces for our custom implementation
 interface ModelResponse {
@@ -25,6 +30,7 @@ interface ModelResponse {
 
 export interface Model {
   generate(prompt: string, systemPrompt: string, state: AgentState): Promise<ModelResponse>;
+  generateWithMessages(messages: ChatMessage[], systemPrompt: string, state: AgentState): Promise<ModelResponse>;
   resetCallCount(): void;
 }
 
@@ -61,10 +67,20 @@ export class ChatOpenAI implements Model {
   }
 
   async generate(prompt: string, systemPrompt: string, state: AgentState): Promise<ModelResponse> {
+    // Convert single prompt to message format for backward compatibility
+    const messages: ChatMessage[] = [{
+      entity: ChatMessageEntity.USER,
+      text: prompt
+    }];
+    
+    return this.generateWithMessages(messages, systemPrompt, state);
+  }
+
+  async generateWithMessages(messages: ChatMessage[], systemPrompt: string, state: AgentState): Promise<ModelResponse> {
     // Increment the call counter
     this.callCount++;
 
-    // Check if we\'ve exceeded the maximum number of calls
+    // Check if we've exceeded the maximum number of calls
     if (this.hasExceededMaxCalls()) {
       // Return a forced final response when limit is exceeded
       return {
@@ -75,37 +91,35 @@ export class ChatOpenAI implements Model {
       };
     }
 
-    console.log('Generating response from OpenAI:');
-    console.log(prompt);
+    logger.debug('Generating response from OpenAI', { messageCount: messages.length });
     try {
       // Get agent-specific tools to include in the request
       const tools = getAgentToolsFromState(state).map(tool => ({
         type: 'function',
-        name: tool.name,
-        description: tool.description,
-        parameters: tool.schema
+        function: {
+          name: tool.name,
+          description: tool.description,
+          parameters: tool.schema
+        }
       }));
 
       // Get the enhanced system prompt - use the async version
       const enhancedSystemPrompt = await enhancePromptWithPageContext(systemPrompt);
 
-      // Prepare options for OpenAIClient
-      const clientOptions: OpenAICallOptions = {
-        tools,
-        systemPrompt: enhancedSystemPrompt,
-        temperature: this.temperature,
-      };
-
-      // Call OpenAIClient
-      const openAIResponse: OpenAIResponse = await OpenAIClient.callOpenAI(
+      // Use UnifiedLLMClient for consistent message handling
+      const unifiedResponse = await UnifiedLLMClient.callLLMWithMessages(
         this.apiKey,
         this.modelName,
-        prompt,
-        clientOptions
+        messages,
+        {
+          tools,
+          systemPrompt: enhancedSystemPrompt,
+          temperature: this.temperature,
+        }
       );
 
-      // Process the response from OpenAIClient using OpenAIClient.parseOpenAIResponse
-      const parsedLlmAction: ParsedLLMAction = OpenAIClient.parseOpenAIResponse(openAIResponse);
+      // Process the response using UnifiedLLMClient's parser
+      const parsedLlmAction: ParsedLLMAction = UnifiedLLMClient.parseResponse(unifiedResponse);
 
       let parsedActionData: ModelResponse['parsedAction'];
       let openAIReasoning: ModelResponse['openAIReasoning'] = undefined;
@@ -134,17 +148,17 @@ export class ChatOpenAI implements Model {
       }
 
       // Extract reasoning information if available
-      if (openAIResponse.reasoning) {
+      if (unifiedResponse.reasoning) {
         openAIReasoning = {
-          summary: openAIResponse.reasoning.summary,
-          effort: openAIResponse.reasoning.effort,
+          summary: unifiedResponse.reasoning.summary,
+          effort: unifiedResponse.reasoning.effort,
         };
       }
 
       return { parsedAction: parsedActionData, openAIReasoning };
     } catch (error) {
-      // Error logging is handled within OpenAIClient, but re-throw if needed
-      console.error('Error in ChatOpenAI.generate after calling OpenAIClient:', error);
+      // Error logging is handled within UnifiedLLMClient, but re-throw if needed
+      logger.error('Error in ChatOpenAI.generateWithMessages after calling UnifiedLLMClient:', error);
       return {
         parsedAction: {
           action: 'final',

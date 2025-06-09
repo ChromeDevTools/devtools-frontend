@@ -25,7 +25,6 @@
     "debug-webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",
     "install-deps": "scripts/deps/manage_node_deps.py",
-    "lint": "vpython3 third_party/node/node.py --output --experimental-strip-types --no-warnings=ExperimentalWarning scripts/test/run_lint_check.mjs",
     "prebuild": "gn gen out/Default",
     "rdb": "rdb stream -new -realm chromium:public --",
     "start": "vpython3 third_party/node/node.py --output scripts/run_start.mjs",

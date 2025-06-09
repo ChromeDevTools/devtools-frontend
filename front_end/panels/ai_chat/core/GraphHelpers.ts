@@ -6,13 +6,20 @@ import type { getTools } from '../tools/Tools.js';
 import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
 
 import * as BaseOrchestratorAgent from './BaseOrchestratorAgent.js';
+import { createLogger } from './Logger.js';
 import { enhancePromptWithPageContext } from './PageInfoManager.js';
 import type { AgentState } from './State.js';
 import { NodeType } from './Types.js';
 
-// ChatPromptFormatter
+const logger = createLogger('GraphHelpers');
+
+// DEPRECATED: ChatPromptFormatter
+// This class was used to concatenate messages into a single string for older LLM APIs.
+// Now we use the message-based approach with UnifiedLLMClient for proper conversation handling.
+// Kept for backward compatibility but should not be used in new code.
 export class ChatPromptFormatter {
   format(values: { messages: ChatMessage[] }): string {
+    logger.warn('ChatPromptFormatter is deprecated. Use message-based approach with UnifiedLLMClient instead.');
     const messageHistory = values.messages || [];
     const formattedParts: string[] = [];
 
@@ -38,9 +45,8 @@ export class ChatPromptFormatter {
         case ChatMessageEntity.MODEL:
           // Format model message based on its action
           if (message.action === 'tool') {
-            // Represent tool call concisely for the prompt
-            const argsString = message.toolArgs ? JSON.stringify(message.toolArgs) : '';
-            formattedParts.push(`assistant: {"action":"tool", "toolName":"${message.toolName || 'unknown'}", "toolArgs":${argsString}}`);
+            // Represent tool call in natural language instead of JSON to avoid LLM confusion
+            formattedParts.push(`assistant: Used tool "${message.toolName || 'unknown'}" to ${message.reasoning || 'perform an action'}.`);
           } else if (message.answer) {
             // Represent final answer - now just using plain markdown text
             formattedParts.push(`assistant: ${message.answer}`);
@@ -117,14 +123,14 @@ export function routeNextNode(state: AgentState): string { // Return type is now
       } if (lastMessage.action === 'final') {
         return NodeType.FINAL; // Route TO FinalNode
       }
-        console.warn('routeNextNode: MODEL message has invalid action:', lastMessage.action);
+        logger.warn('routeNextNode: MODEL message has invalid action:', lastMessage.action);
         return 'end'; // Map invalid action to 'end' key
 
     case ChatMessageEntity.TOOL_RESULT:
       return NodeType.AGENT;
 
     default:
-      console.warn('routeNextNode: Unhandled last message entity type encountered.');
+      logger.warn('routeNextNode: Unhandled last message entity type encountered.');
       return 'end'; // Map unhandled types to 'end' key
   }
 }

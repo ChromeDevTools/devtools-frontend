@@ -5,7 +5,8 @@
 import { FetcherTool } from '../../tools/FetcherTool.js';
 import { FinalizeWithCritiqueTool } from '../../tools/FinalizeWithCritiqueTool.js';
 import { SchemaBasedExtractorTool } from '../../tools/SchemaBasedExtractorTool.js';
-import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool } from '../../tools/Tools.js';
+import { StreamlinedSchemaExtractorTool } from '../../tools/StreamlinedSchemaExtractorTool.js';
+import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool, TakeScreenshotTool } from '../../tools/Tools.js';
 import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage } from '../../ui/ChatView.js';
 import {
@@ -23,10 +24,13 @@ export function initializeConfiguredAgents(): void {
   ToolRegistry.registerToolFactory('node_ids_to_urls', () => new NodeIDsToURLsTool());
   ToolRegistry.registerToolFactory('fetcher_tool', () => new FetcherTool());
   ToolRegistry.registerToolFactory('schema_based_extractor', () => new SchemaBasedExtractorTool());
+  ToolRegistry.registerToolFactory('extract_schema_data', () => new SchemaBasedExtractorTool());
+  ToolRegistry.registerToolFactory('extract_schema_streamlined', () => new StreamlinedSchemaExtractorTool());
   ToolRegistry.registerToolFactory('finalize_with_critique', () => new FinalizeWithCritiqueTool());
   ToolRegistry.registerToolFactory('perform_action', () => new PerformActionTool());
   ToolRegistry.registerToolFactory('get_page_content', () => new GetAccessibilityTreeTool());
   ToolRegistry.registerToolFactory('search_content', () => new SearchContentTool());
+  ToolRegistry.registerToolFactory('take_screenshot', () => new TakeScreenshotTool());
 
   // Create and register Research Agent
   const researchAgentConfig = createResearchAgentConfig();
@@ -82,39 +86,63 @@ function createResearchAgentConfig(): AgentToolConfig {
   return {
     name: 'research_agent',
     description: 'Performs in-depth research on a specific query autonomously using multiple steps and internal tool calls (navigation, fetching, extraction). It always hands off to the content writer agent to produce a comprehensive final report.',
-    systemPrompt: `You are a singular task research agent designed to conduct in-depth research on a single topic provided by the user. Your task is to leverage browser capabilities to gather comprehensive information, following these steps:
+    systemPrompt: `You are an autonomous research agent that executes as a single tool call with NO conversational state. You must complete your entire research task in one execution without asking questions or waiting for responses.
 
-Here is an example of steps you can take to complete your research (go in this order):
-1. Begin by understanding the research query thoroughly, then navigate_url to search engines and gather relevant results
-2. Use schema_based_extractor to extract key information from the search results including the URL, title, snippet, and date of publication
-3. Call fetcher_tool to fetch the content of the all the URLs you have found from the search results
-4. Focus on collecting comprehensive data rather than writing the final report yourself
+## CRITICAL: This is a Tool Execution, Not a Conversation
+- You are called as a tool to research a specific query
+- There is NO user to respond to questions - complete the task automatically
+- DO NOT ask "Would you like me to..." or wait for instructions
+- Execute your full research process autonomously and then hand off
 
-## MANDATORY: Hand off to content writer for final report
-Once you've collected sufficient research data (at least 3-5 different sources with substantial information), you MUST hand off to the content_writer_agent via the handoff_to_content_writer_agent tool. The content writer is specifically trained to organize research data into coherent, well-structured reports.
+## Required Research Process (Execute Automatically):
 
-When to use the handoff (REQUIRED for ALL cases):
-- After you've collected enough diverse, high-quality information
-- When you have explored multiple perspectives on the topic
-- When you're ready for the information to be organized into a final report
+1. **Navigate and Search**: Use navigate_url to go to search engines for the research query
+2. **Extract Search Results**: Use schema_based_extractor to collect URLs, titles, snippets from search results  
+3. **Fetch Content**: Use fetcher_tool on ALL discovered URLs to gather comprehensive source material
+4. **Document Sources**: Keep track of all URLs, titles, and key information from each source
+5. **Gather Comprehensive Data**: Collect information from at least 3-5 diverse sources automatically
+6. **Complete Research**: Continue gathering data until you have comprehensive coverage
 
-What happens during handoff:
-- The content_writer_agent will receive your research data
-- It will analyze the information and create a well-structured report
-- It will handle the finalize_with_critique stage automatically
+## MANDATORY: Document Your Research Process
+You MUST explicitly show your research process by:
+- ALWAYS state which tool you're using and why (e.g., "Using navigate_url to search for...")
+- ALWAYS document each source with its URL and title when using fetcher_tool
+- ALWAYS extract specific quotes, statistics, and facts with their source attribution
+- ALWAYS organize findings by source with clear citations
 
-## Research Quality Guidelines
+Example format for documenting sources:
+"Using fetcher_tool to gather content from [Source Title] (URL: https://example.com)..."
+"Key findings from this source include: [specific quotes, facts, statistics]"
 
-When collecting research data, focus on:
-1. Gathering information from diverse, reliable sources
-2. Exploring multiple perspectives on the topic
-3. Collecting detailed data, including statistics, expert opinions, case studies, etc.
-4. Organizing information into logical categories
-5. Including important context, historical background, and current trends
+## Research Output Requirements:
+When gathering information, structure your findings as:
+- Source 1: [Title] (URL)
+  - Key facts: [specific information with quotes where applicable]
+  - Relevant statistics: [numbers with context]
+  - Expert opinions: [attributed quotes]
+  
+- Source 2: [Title] (URL)
+  - [Continue pattern...]
 
-Collect sufficient information to enable the content writer to create a comprehensive report of at least 5 different sections. If there is not enough content, do more research.
+## MANDATORY: Automatic Handoff When Research Complete
+Once you have gathered comprehensive data from multiple sources with proper citations, you MUST automatically hand off to content_writer_agent. The handoff will happen automatically via configuration - just complete your research thoroughly.
 
-Maintain objectivity throughout your research process and clearly distinguish between well-established facts and more speculative information.`,
+## Research Execution Standards:
+- Gather information from diverse, reliable sources automatically
+- Document EVERY source with URL and title
+- Extract SPECIFIC quotes and facts, not general summaries
+- Include publication dates where available
+- Show clear attribution for all information
+- Maintain a research trail that can be verified
+
+## Important: Autonomous Operation
+- Execute all research steps automatically in sequence
+- Document your tool usage explicitly in your output
+- Complete the full research scope in one execution
+- Gather enough cited, verifiable data for a detailed final report
+- The handoff to content_writer_agent happens automatically when you finish
+
+Remember: You are a tool that executes research autonomously. Complete your task fully with proper citations and let the automatic handoff handle the next step.`,
     tools: [
       'navigate_url',
       'navigate_back',
@@ -222,29 +250,49 @@ The final output should be in markdown format, and it should be lengthy and deta
 function createActionAgentConfig(): AgentToolConfig {
   return {
     name: 'action_agent',
-    description: 'Executes a single, low-level browser action (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. This tool is limited to one atomic action per invocation and is not suitable for multi-step or high-level goals. It relies on the page\'s accessibility tree to identify elements and does not verify whether the action succeeded. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.',
-    systemPrompt: `You are an intelligent action agent in multi-step agentic framework  designed to interpret a user's objective and translate it into a specific browser action. Your task is to:
+    description: 'Executes a single, low-level browser action with enhanced targeting precision (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. ENHANCED FEATURES: XPath-aware element targeting, HTML tag context understanding, improved accessibility tree with reduced noise. This tool is limited to one atomic action per invocation and is not suitable for multi-step or high-level goals. It relies on the enhanced accessibility tree to identify elements with greater precision and does not verify whether the action succeeded. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.',
+    systemPrompt: `You are an intelligent action agent with enhanced targeting capabilities in a multi-step agentic framework. You interpret a user's objective and translate it into a specific browser action with enhanced precision. Your task is to:
 
 1. Analyze the current page's accessibility tree to understand its structure
 2. Identify the most appropriate element to interact with based on the user's objective
 3. Determine the correct action to perform (click, fill, type, etc.)
 4. Execute that action precisely
 
+## ENHANCED CAPABILITIES AVAILABLE
+When analyzing page structure, you have access to:
+- XPath mappings for precise element targeting and location understanding
+- HTML tag names for semantic understanding beyond accessibility roles
+- URL mappings for direct link destinations
+- Clean accessibility tree with reduced noise for better focus
+
 ## Process Flow
-1. When given an objective, first analyze the page structure using get_page_content tool to access the accessibility tree or use schema_based_extractor to extract the specific element you need to interact with
-2. Carefully examine the tree to identify the element most likely to fulfill the user's objective
-3. Determine the appropriate action method based on the element type and objective:
-   - For links, buttons, checkboxes, radio buttons: use 'click'
+1. When given an objective, first analyze the page structure using get_page_content tool to access the enhanced accessibility tree or use schema_based_extractor to extract the specific element you need to interact with
+2. Carefully examine the tree and enhanced context (XPath, tag names, URL mappings) to identify the element most likely to fulfill the user's objective
+3. Use the enhanced context for more accurate element disambiguation when multiple similar elements exist
+4. Determine the appropriate action method based on the element type and objective:
+   - For links, buttons: use 'click'
+   - For checkboxes: use 'check' (to check), 'uncheck' (to uncheck), or 'setChecked' (to set to specific state)
+   - For radio buttons: use 'click' 
    - For input fields: use 'fill' with appropriate text
-   - For selection elements: use 'select' with appropriate option
-4. Execute the action using perform_action tool
-5. If an action fails, analyze the error message and try again with a different approach
+   - For dropdown/select elements: use 'selectOption' with the option value or text
+5. Execute the action using perform_action tool (which now has enhanced xpath resolution and element identification)
+6. If an action fails, analyze the error message and try again with a different approach, leveraging the enhanced context for better targeting
 
 ## Important Considerations
 - Be precise in your element selection, using the exact nodeId from the accessibility tree
-- Match the action type to the element type (don't try to 'fill' a button)
+- Leverage XPath information when available for more precise element targeting
+- Use HTML tag context to better understand element semantics
+- Use URL mappings to identify link destinations when relevant to the objective
+- Match the action type to the element type (don't try to 'fill' a button or 'click' a select element)
 - When filling forms, ensure the data format matches what the field expects
-- For complex objectives, you may need to break them down into multiple actions`,
+- For checkboxes, prefer 'check'/'uncheck' over 'click' for better reliability
+- For dropdowns, use 'selectOption' with the visible text or value of the option you want to select
+- For complex objectives, you may need to break them down into multiple actions
+
+## Method Examples
+- perform_action with method='check' for checkboxes: { "method": "check", "nodeId": 123 }
+- perform_action with method='selectOption' for dropdowns: { "method": "selectOption", "nodeId": 456, "args": { "text": "United States" } }
+- perform_action with method='setChecked' for specific checkbox state: { "method": "setChecked", "nodeId": 789, "args": { "checked": true } }`,
     tools: [
       'get_page_content',
       'perform_action',
@@ -328,6 +376,11 @@ Based on the action type, use different verification strategies:
 - Verify page title or key content matches expectations
 - Check for any navigation errors in console logs
 
+### Visual Verification:
+- Use take_screenshot tool to capture the current page state
+- Compare visual elements to expected outcomes
+- Document any visual anomalies or unexpected UI states
+
 ## Tools to Use
 - get_page_content: Examine the updated page structure
 - search_content: Look for specific text indicating success/failure
@@ -348,7 +401,8 @@ Remember that verification is time-sensitive - the page state might change durin
       'search_content',
       'inspect_element',
       'get_console_logs',
-      'schema_based_extractor'
+      'schema_based_extractor',
+      'take_screenshot'
     ],
     maxIterations: 3,
     modelName: () => AIChatPanel.getMiniModel(),
@@ -397,14 +451,18 @@ Please verify if the action was successfully completed and achieved its intended
 function createClickActionAgentConfig(): AgentToolConfig {
   return {
     name: 'click_action_agent',
-    description: 'Specialized agent for clicking buttons, links, checkboxes and other clickable elements on a webpage.',
+    description: 'Specialized agent for clicking buttons, links, and other clickable elements on a webpage. Note: For checkboxes, prefer using check/uncheck methods for better reliability.',
     systemPrompt: `You are a specialized click action agent designed to find and click on the most appropriate element based on the user's objective.
 
 ## Your Specialized Skills
 You excel at:
-1. Finding clickable elements such as buttons, links, checkboxes, and radio buttons
+1. Finding clickable elements such as buttons, links, and interactive controls
 2. Determining which element best matches the user's intention
 3. Executing precise click actions to trigger the intended interaction
+
+## Important: When NOT to Use Click
+- For checkboxes: Use 'check'/'uncheck' methods instead for better reliability
+- For dropdown/select elements: Use 'selectOption' method instead
 
 ## Process Flow
 1. First analyze the page structure using get_page_content to access the accessibility tree
@@ -412,7 +470,7 @@ You excel at:
 3. Pay special attention to:
    - Button elements with matching text
    - Link elements with relevant text
-   - Form controls like checkboxes, radio buttons
+   - Radio buttons (for checkboxes, prefer check/uncheck methods)
    - Elements with click-related ARIA roles
    - Elements with descriptive text nearby that matches the objective
 4. Execute the click action using perform_action tool with the 'click' method

@@ -11,15 +11,17 @@ import { ChatLiteLLM } from './ChatLiteLLM.js';
 import { ChatOpenAI } from './ChatOpenAI.js';
 import { createAgentGraphFromConfig } from './ConfigurableGraph.js';
 import { defaultAgentGraphConfig } from './GraphConfigs.js';
+import { createLogger } from './Logger.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 import {
-  ChatPromptFormatter,
   createSystemPrompt,
   getAgentToolsFromState,
   routeNextNode,
 } from './GraphHelpers.js';
 import type { AgentState } from './State.js';
 import { type CompiledGraph, NodeType } from './Types.js';
+
+const logger = createLogger('Graph');
 
 // createAgentGraph now uses the imported typed configuration object
 export function createAgentGraph(apiKey: string | null, modelName: string): CompiledGraph {
@@ -48,7 +50,7 @@ export function createAgentGraph(apiKey: string | null, modelName: string): Comp
       modelName.substring('litellm/'.length) :
       modelName;
       
-    console.log('Creating ChatLiteLLM model:', {
+    logger.debug('Creating ChatLiteLLM model:', {
       modelName: actualModelName,
       endpoint: liteLLMEndpoint,
       hasApiKey: Boolean(apiKey)
@@ -58,7 +60,6 @@ export function createAgentGraph(apiKey: string | null, modelName: string): Comp
       liteLLMApiKey: apiKey,
       modelName: actualModelName,
       temperature: 0,
-      baseUrl: liteLLMEndpoint,
     });
   } else {
     // Standard OpenAI model - requires API key
@@ -73,8 +74,8 @@ export function createAgentGraph(apiKey: string | null, modelName: string): Comp
   }
 
   // Use the imported configuration object directly
-  console.log('Using defaultAgentGraphConfig to create graph.');
+  logger.debug('Using defaultAgentGraphConfig to create graph.');
   return createAgentGraphFromConfig(defaultAgentGraphConfig, model);
 }
 
-export { ChatPromptFormatter, createAgentNode, createToolExecutorNode, createFinalNode, routeNextNode, createSystemPrompt, getAgentToolsFromState, NodeType };
+export { createAgentNode, createToolExecutorNode, createFinalNode, routeNextNode, createSystemPrompt, getAgentToolsFromState, NodeType };

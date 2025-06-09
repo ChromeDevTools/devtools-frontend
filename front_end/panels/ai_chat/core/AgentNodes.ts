@@ -6,22 +6,23 @@ import type { getTools } from '../tools/Tools.js';
 import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
 
 import type { Model } from './ChatOpenAI.js'; // Import Model interface
-import { type ChatPromptFormatter, createSystemPrompt, getAgentToolsFromState } from './GraphHelpers.js'; // To be created
+import { createSystemPromptAsync, getAgentToolsFromState } from './GraphHelpers.js';
+import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
 import type { Runnable } from './Types.js';
 
-export function createAgentNode(model: Model, formatter: ChatPromptFormatter): Runnable<AgentState, AgentState> {
+const logger = createLogger('AgentNodes');
+
+export function createAgentNode(model: Model): Runnable<AgentState, AgentState> {
   const agentNode = new class AgentNode implements Runnable<AgentState, AgentState> {
     private model: Model;
-    private formatter: ChatPromptFormatter;
 
-    constructor(model: Model, formatter: ChatPromptFormatter) {
+    constructor(model: Model) {
       this.model = model;
-      this.formatter = formatter;
     }
 
     async invoke(state: AgentState): Promise<AgentState> {
-      console.log('AgentNode: Invoked with state. Last message:',
+      logger.debug('AgentNode: Invoked with state. Last message:',
         state.messages.length > 0 ? state.messages[state.messages.length - 1] : 'No messages');
 
       // Reset call count on new user message
@@ -31,20 +32,20 @@ export function createAgentNode(model: Model, formatter: ChatPromptFormatter): R
       }
 
       if (lastMessage?.entity === ChatMessageEntity.TOOL_RESULT && lastMessage?.toolName === 'finalize_with_critique') {
-        console.log('Found finalize_with_critique tool result:', lastMessage);
-        console.log('Raw resultText:', lastMessage.resultText);
+        logger.debug('Found finalize_with_critique tool result:', lastMessage);
+        logger.debug('Raw resultText:', lastMessage.resultText);
 
         try {
           // Parse the result to check if the critique was accepted
           const result = JSON.parse(lastMessage.resultText);
 
-          console.log('Finalize with critique parsed result:', result);
-          console.log('Result properties - accepted:', result.accepted, ', satisfiesCriteria:', result.satisfiesCriteria);
+          logger.debug('Finalize with critique parsed result:', result);
+          logger.debug('Result properties', { accepted: result.accepted, satisfiesCriteria: result.satisfiesCriteria });
 
           // Check both accepted and satisfiesCriteria for compatibility
           const isAccepted = result.accepted === true || result.satisfiesCriteria === true;
 
-          console.log('isAccepted decision:', isAccepted);
+          logger.debug('isAccepted decision:', isAccepted);
 
           if (isAccepted) {
             const answerText = result.answer;
@@ -57,7 +58,7 @@ export function createAgentNode(model: Model, formatter: ChatPromptFormatter): R
                 isFinalAnswer: true,
               };
 
-              console.log('AgentNode: Created final answer message');
+              logger.debug('AgentNode: Created final answer message');
 
               return {
                 ...state,
@@ -65,43 +66,42 @@ export function createAgentNode(model: Model, formatter: ChatPromptFormatter): R
                 error: undefined,
               };
             }
-            console.log('Coudnt find the answer');
+            logger.warn('Coudnt find the answer');
           } else {
             // If critique rejected, return to agent with feedback
-            console.log('Critique REJECTED the answer - routing back to AGENT');
-            console.log('Critique feedback:', result.feedback || 'Critique rejected the answer without specific feedback');
+            logger.info('Critique REJECTED the answer - routing back to AGENT');
+            logger.info('Critique feedback:', result.feedback || 'Critique rejected the answer without specific feedback');
           }
         } catch (error) {
-          console.error('Error parsing finalize_with_critique result:', error);
+          logger.error('Error parsing finalize_with_critique result:', error);
         }
       }
 
-      const promptText = this.formatter.format({ messages: state.messages });
+      // 1. Create the enhanced system prompt based on the current state (including selected type)
+      const systemPrompt = await createSystemPromptAsync(state);
 
-      // 1. Create the system prompt based on the current state (including selected type)
-      const systemPrompt = createSystemPrompt(state); // Needs to be imported or moved
-
-      // 2. Call the model with the formatted history, system prompt, and state
-      // No need to update page info here as it's handled by PageInfoManager
-      const response = await this.model.generate(promptText, systemPrompt, state);
-      console.log('AgentNode Response:', response);
+      // 2. Call the model with the message array directly instead of using ChatPromptFormatter
+      const response = await this.model.generateWithMessages(state.messages, systemPrompt, state);
+      logger.debug('AgentNode Response:', response);
       const parsedAction = response.parsedAction!;
 
       // Directly create the ModelChatMessage object
       let newModelMessage: ModelChatMessage;
       if (parsedAction.action === 'tool') {
+        const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
         newModelMessage = {
           entity: ChatMessageEntity.MODEL,
           action: 'tool',
           toolName: parsedAction.toolName,
           toolArgs: parsedAction.toolArgs,
+          toolCallId, // Add for linking with tool response
           isFinalAnswer: false,
           reasoning: response.openAIReasoning?.summary,
         };
 
-        console.log('AgentNode: Created tool message with toolName:', parsedAction.toolName);
+        logger.debug('AgentNode: Created tool message', { toolName: parsedAction.toolName, toolCallId });
         if (parsedAction.toolName === 'finalize_with_critique') {
-          console.log('AgentNode: finalize_with_critique call with args:', JSON.stringify(parsedAction.toolArgs));
+          logger.debug('AgentNode: finalize_with_critique call with args:', JSON.stringify(parsedAction.toolArgs));
         }
       } else {
         newModelMessage = {
@@ -112,10 +112,10 @@ export function createAgentNode(model: Model, formatter: ChatPromptFormatter): R
           reasoning: response.openAIReasoning?.summary,
         };
 
-        console.log('AgentNode: Created final answer message');
+        logger.debug('AgentNode: Created final answer message');
       }
 
-      console.log('New Model Message:', newModelMessage);
+      logger.debug('New Model Message:', newModelMessage);
 
       return {
         ...state,
@@ -123,7 +123,7 @@ export function createAgentNode(model: Model, formatter: ChatPromptFormatter): R
         error: undefined,
       };
     }
-  }(model, formatter);
+  }(model);
   return agentNode;
 }
 
@@ -144,13 +144,14 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
       // Expect the last message to be the MODEL action requesting the tool
       if (lastMessage?.entity !== ChatMessageEntity.MODEL || lastMessage.action !== 'tool' || !lastMessage.toolName) {
-        console.error('ToolExecutorNode: Expected last message to be a MODEL tool action.', lastMessage);
+        logger.error('ToolExecutorNode: Expected last message to be a MODEL tool action.', lastMessage);
         return { ...state, error: 'Internal Error: Invalid state for tool execution.' };
       }
 
       // Get tool details from the ModelChatMessage
       const toolName = lastMessage.toolName;
       const toolArgs = lastMessage.toolArgs || {};
+      const toolCallId = lastMessage.toolCallId; // Extract tool call ID for linking
       let resultText: string;
       let isError = false;
 
@@ -165,7 +166,7 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
         // Special handling for finalize_with_critique tool results to ensure proper format
         if (toolName === 'finalize_with_critique') {
-          console.log('ToolExecutorNode: finalize_with_critique result:', result);
+          logger.debug('ToolExecutorNode: finalize_with_critique result:', result);
           // Make sure the result is properly stringified
           resultText = typeof result === 'string' ? result : JSON.stringify(result);
         } else {
@@ -176,7 +177,7 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
 
       } catch (err) {
         resultText = `Error during tool execution: ${err instanceof Error ? err.message : String(err)}`;
-        console.error(resultText, `Tool: ${toolName}`, toolArgs);
+        logger.error(resultText, { tool: toolName, args: toolArgs });
         isError = true;
       }
 
@@ -186,10 +187,11 @@ export function createToolExecutorNode(state: AgentState): Runnable<AgentState, 
         toolName,
         resultText,
         isError,
+        toolCallId, // Link back to the tool call for OpenAI format
         ...(isError && { error: resultText })
       };
 
-      console.log('ToolExecutorNode: Adding tool result message:', toolResultMessage);
+      logger.debug('ToolExecutorNode: Adding tool result message with toolCallId:', { toolCallId, toolResultMessage });
 
       // Add the result message to the state
       return {
@@ -207,7 +209,7 @@ export function createFinalNode(): Runnable<AgentState, AgentState> {
     async invoke(state: AgentState): Promise<AgentState> {
       const lastMessage = state.messages[state.messages.length - 1];
       if (lastMessage?.entity !== ChatMessageEntity.MODEL || !lastMessage.isFinalAnswer) {
-        console.warn('FinalNode: Invoked, but last message was not a final MODEL answer as expected.');
+        logger.warn('FinalNode: Invoked, but last message was not a final MODEL answer as expected.');
       }
       // Node remains simple, just returns state, assuming AgentNode set it correctly.
       return {

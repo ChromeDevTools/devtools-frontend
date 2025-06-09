@@ -6,6 +6,9 @@ import { AgentService } from '../core/AgentService.js';
 import type { Tool } from '../tools/Tools.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage } from '../ui/ChatView.js';
+import { createLogger } from '../core/Logger.js';
+
+const logger = createLogger('ConfigurableAgentTool');
 
 import { AgentRunner, type AgentRunnerConfig, type AgentRunnerHooks } from './AgentRunner.js';
 
@@ -137,19 +140,19 @@ export class ToolRegistry {
    */
   static registerToolFactory(name: string, factory: () => Tool<any, any>): void {
     if (this.toolFactories.has(name)) {
-        console.warn(`[ToolRegistry] Tool factory already registered for: ${name}. Overwriting.`);
+        logger.warn(`Tool factory already registered for: ${name}. Overwriting.`);
     }
     if (this.registeredTools.has(name)) {
-        console.warn(`[ToolRegistry] Tool instance already registered for: ${name}. Overwriting.`);
+        logger.warn(`Tool instance already registered for: ${name}. Overwriting.`);
     }
     this.toolFactories.set(name, factory);
     // Create and store the instance immediately upon registration
     try {
         const instance = factory();
         this.registeredTools.set(name, instance);
-        console.log(`[ToolRegistry] Registered and instantiated tool: ${name}`);
+        logger.info('Registered and instantiated tool: ${name}');
     } catch (error) {
-        console.error(`[ToolRegistry] Failed to instantiate tool '${name}' during registration:`, error);
+        logger.error(`Failed to instantiate tool '${name}' during registration:`, error);
         // Remove the factory entry if instantiation fails
         this.toolFactories.delete(name);
     }
@@ -170,7 +173,7 @@ export class ToolRegistry {
     const instance = this.registeredTools.get(name);
     if (!instance) {
         // Don't fallback, require pre-registration for handoffs
-        // console.warn(`[ToolRegistry] No registered instance found for tool: ${name}.`);
+        // logger.warn(`No registered instance found for tool: ${name}.`);
         return null;
     }
     return instance;
@@ -334,7 +337,7 @@ export class ConfigurableAgentTool implements Tool<ConfigurableAgentArgs, Config
    * Execute the agent
    */
   async execute(args: ConfigurableAgentArgs): Promise<ConfigurableAgentResult> {
-    console.log(`[ConfigurableAgentTool] Executing ${this.name} via AgentRunner with args:`, args);
+    logger.info('Executing ${this.name} via AgentRunner with args:', args);
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();

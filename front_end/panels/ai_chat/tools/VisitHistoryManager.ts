@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 // Interface for visit history data
+import { createLogger } from '../core/Logger.js';
+
+const logger = createLogger('VisitHistoryManager');
 export interface VisitData {
   url: string;
   domain: string;
@@ -42,14 +45,14 @@ export class VisitHistoryManager {
       const request = indexedDB.open(this.dbName, this.dbVersion);
 
       request.onerror = event => {
-        console.error('Error opening visit history database:', event);
+        logger.error('Error opening visit history database:', event);
         reject(new Error('Failed to open database'));
       };
 
       request.onsuccess = event => {
         this.db = (event.target as IDBOpenDBRequest).result;
         this.initialized = true;
-        console.log('Visit history database opened successfully');
+        logger.info('Visit history database opened successfully');
         resolve();
       };
 
@@ -66,7 +69,7 @@ export class VisitHistoryManager {
           store.createIndex('timestampIndex', 'timestamp', { unique: false });
           store.createIndex('keywordsIndex', 'keywords', { unique: false, multiEntry: true });
 
-          console.log('Visit history object store created');
+          logger.info('Visit history object store created');
         }
       };
     });
@@ -115,7 +118,7 @@ export class VisitHistoryManager {
       const urlObj = new URL(url);
       return urlObj.hostname;
     } catch (e) {
-      console.error('Error extracting domain from URL:', e);
+      logger.error('Error extracting domain from URL:', e);
       return '';
     }
   }
@@ -127,7 +130,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return;
     }
 
@@ -192,9 +195,9 @@ export class VisitHistoryManager {
         store.add(visitData);
       }
 
-      console.log('Stored visit:', visitData);
+      logger.info('Stored visit:', visitData);
     } catch (error) {
-      console.error('Error storing visit:', error);
+      logger.error('Error storing visit:', error);
     }
   }
 
@@ -205,7 +208,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return [];
     }
 
@@ -228,7 +231,7 @@ export class VisitHistoryManager {
       };
 
       request.onerror = () => {
-        console.error('Error retrieving visits by domain');
+        logger.error('Error retrieving visits by domain');
         resolve([]);
       };
     });
@@ -241,7 +244,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return [];
     }
 
@@ -264,7 +267,7 @@ export class VisitHistoryManager {
       };
 
       request.onerror = () => {
-        console.error('Error retrieving visits by keyword');
+        logger.error('Error retrieving visits by keyword');
         resolve([]);
       };
     });
@@ -277,7 +280,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return [];
     }
 
@@ -300,7 +303,7 @@ export class VisitHistoryManager {
       };
 
       request.onerror = () => {
-        console.error('Error retrieving visits by date range');
+        logger.error('Error retrieving visits by date range');
         resolve([]);
       };
     });
@@ -319,7 +322,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return [];
     }
 
@@ -388,7 +391,7 @@ export class VisitHistoryManager {
       };
 
       request.onerror = () => {
-        console.error('Error searching visits');
+        logger.error('Error searching visits');
         resolve([]);
       };
     });
@@ -401,7 +404,7 @@ export class VisitHistoryManager {
     await this.initDB();
 
     if (!this.db) {
-      console.error('Database not initialized');
+      logger.error('Database not initialized');
       return;
     }
 
@@ -414,16 +417,16 @@ export class VisitHistoryManager {
         const request = store.clear();
 
         request.onsuccess = () => {
-          console.log('Visit history cleared successfully');
+          logger.info('Visit history cleared successfully');
           resolve();
         };
 
         request.onerror = event => {
-          console.error('Error clearing visit history:', event);
+          logger.error('Error clearing visit history:', event);
           reject(new Error('Failed to clear visit history'));
         };
       } catch (error) {
-        console.error('Error clearing visit history:', error);
+        logger.error('Error clearing visit history:', error);
         reject(error);
       }
     });

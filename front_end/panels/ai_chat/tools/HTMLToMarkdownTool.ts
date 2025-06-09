@@ -6,10 +6,13 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
+import { createLogger } from '../core/Logger.js';
 import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import { waitForPageLoad, type Tool } from './Tools.js';
+
+const logger = createLogger('Tool:HTMLToMarkdown');
 
 /**
  * Result interface for HTML to Markdown extraction
@@ -54,7 +57,7 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
    * Execute the HTML to Markdown extraction
    */
   async execute(args: HTMLToMarkdownArgs): Promise<HTMLToMarkdownResult> {
-    console.log('[HTMLToMarkdownTool] Executing with args:', args);
+    logger.info('Executing with args', { args });
     const { instruction } = args;
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -75,15 +78,15 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
         throw new Error('No page target available');
       }
       try {
-        console.log(`[HTMLToMarkdownTool] Checking page readiness (Timeout: ${READINESS_TIMEOUT_MS}ms)...`);
+        logger.info('Checking page readiness', { timeoutMs: READINESS_TIMEOUT_MS });
         await waitForPageLoad(target, READINESS_TIMEOUT_MS);
-        console.log('[HTMLToMarkdownTool] Page is ready or timeout reached.');
+        logger.info('Page is ready or timeout reached');
       } catch (readinessError: any) {
-         console.error(`[HTMLToMarkdownTool] Page readiness check failed: ${readinessError.message}`);
+         logger.error('Page readiness check failed', { error: readinessError.message, stack: readinessError.stack });
       }
 
       // Get the page content from the accessibility tree
-      console.log('[HTMLToMarkdownTool] Getting page content from accessibility tree');
+      logger.info('Getting page content from accessibility tree');
       const content = await this.getPageContent(target);
 
       if (!content) {
@@ -94,21 +97,21 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
         };
       }
 
-      console.log(`[HTMLToMarkdownTool] Retrieved page content (${content.length} characters)`);
+      logger.info('Retrieved page content', { contentLength: content.length });
 
       // Create prompts for the LLM
       const systemPrompt = this.createSystemPrompt();
       const userPrompt = this.createUserPrompt(content, instruction);
 
       // Call the LLM for extraction
-      console.log('[HTMLToMarkdownTool] Calling LLM for extraction');
+      logger.info('Calling LLM for extraction');
       const extractionResult = await this.callExtractionLLM({
         systemPrompt,
         userPrompt,
         apiKey,
       });
 
-      console.log('[HTMLToMarkdownTool] Extraction completed successfully');
+      logger.info('Extraction completed successfully');
 
       // Return the result
       return {
@@ -117,7 +120,7 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
       };
 
     } catch (error: any) {
-      console.error('[HTMLToMarkdownTool] Error during extraction:', error);
+      logger.error('Error during extraction', { error: error.message, stack: error.stack });
       return {
         success: false,
         markdownContent: null,
@@ -135,7 +138,7 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
     }
 
     // Get accessibility tree using existing utility
-    const processedTreeResult = await Utils.getAccessibilityTree(target, console.log);
+    const processedTreeResult = await Utils.getAccessibilityTree(target);
     return processedTreeResult.simplified;
   }
 

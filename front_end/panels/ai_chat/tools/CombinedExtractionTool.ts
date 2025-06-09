@@ -4,6 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import { AgentService } from '../core/AgentService.js';
+import { createLogger } from '../core/Logger.js';
 
 import {
   HTMLToMarkdownTool,
@@ -14,6 +15,8 @@ import {
 import {
   NavigateURLTool, type Tool, type ErrorResult
 } from './Tools.js';
+
+const logger = createLogger('Tool:CombinedExtraction');
 
 /**
  * Result interface for the combined extraction tool
@@ -75,7 +78,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
    * Execute the combined extraction
    */
   async execute(args: CombinedExtractionArgs): Promise<CombinedExtractionResult | ErrorResult> {
-    console.log('[CombinedExtractionTool] Executing with args:', args);
+    logger.info('Executing with args', { args });
     const { url, schema, markdownResponse, reasoning, extractionInstruction } = args;
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -90,7 +93,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
 
     try {
       // STEP 1: Navigate to the URL using NavigateURLTool
-      console.log(`[CombinedExtractionTool] Navigating to URL: ${url}`);
+      logger.info('Navigating to URL', { url });
       const navigateUrlTool = new NavigateURLTool();
       const navigationResult = await navigateUrlTool.execute({ url, reasoning });
 
@@ -132,7 +135,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
       // STEP 3: Process according to requested extraction types
       // If schema is provided, extract structured data
       if (schema && schema?.type === 'object') {
-        console.log('[CombinedExtractionTool] Extracting data based on schema');
+        logger.info('Extracting data based on schema', { schema });
         const schemaExtractorTool = new SchemaBasedExtractorTool();
         const schemaResult = await schemaExtractorTool.execute({
           schema,
@@ -149,7 +152,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
 
       // If markdown conversion is requested
       if (markdownResponse) {
-        console.log('[CombinedExtractionTool] Converting page to Markdown');
+        logger.info('Converting page to Markdown');
         const htmlToMarkdownTool = new HTMLToMarkdownTool();
         const markdownResult = await htmlToMarkdownTool.execute({
           instruction: extractionInstruction,
@@ -170,7 +173,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
       return result;
 
     } catch (error: any) {
-      console.error('[CombinedExtractionTool] Error during execution:', error);
+      logger.error('Error during execution', { error: error.message, stack: error.stack });
       return {
         success: false,
         url,

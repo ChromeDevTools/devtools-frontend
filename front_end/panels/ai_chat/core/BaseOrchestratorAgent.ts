@@ -17,6 +17,7 @@ import { initializeConfiguredAgents } from '../agent_framework/implementation/Co
 import { FinalizeWithCritiqueTool } from '../tools/FinalizeWithCritiqueTool.js';
 import { HTMLToMarkdownTool } from '../tools/HTMLToMarkdownTool.js';
 import { SchemaBasedExtractorTool } from '../tools/SchemaBasedExtractorTool.js';
+import { createLogger } from './Logger.js';
 import {
   NavigateURLTool,
   NavigateBackTool,
@@ -29,6 +30,8 @@ import {
 
 // Initialize configured agents
 initializeConfiguredAgents();
+
+const logger = createLogger('BaseOrchestratorAgent');
 
 // Define available agent types
 export enum BaseOrchestratorAgentType {
@@ -385,20 +388,20 @@ export function createAgentTypeSelectionHandler(
             // Deselect - set to null and don't add selected class
             setSelectedAgentType(null);
             onAgentTypeSelected(null);
-            console.log('Deselected agent type, returning to default');
+            logger.debug('Deselected agent type, returning to default');
           } else {
             // Select new agent type - add selected class to clicked button
             button.classList.add('selected');
             setSelectedAgentType(agentType);
             onAgentTypeSelected(agentType);
-            console.log('Selected agent type:', agentType);
+            logger.debug('Selected agent type:', agentType);
           }
 
           // Focus the input after selecting/deselecting an agent type
           textInputElement?.focus();
         } else if (clickCount === 2 && onAgentPromptEdit) {
           // Double click - handle prompt editing
-          console.log('Double-clicked agent type for prompt editing:', agentType);
+          logger.debug('Double-clicked agent type for prompt editing:', agentType);
           onAgentPromptEdit(agentType);
         }
         
@@ -428,7 +431,7 @@ export function setCustomPrompt(agentType: string, prompt: string): void {
     customPrompts[agentType] = prompt;
     localStorage.setItem(PROMPT_CONSTANTS.CUSTOM_PROMPTS_STORAGE_KEY, JSON.stringify(customPrompts));
   } catch (error) {
-    console.error('Failed to save custom prompt:', error);
+    logger.error('Failed to save custom prompt:', error);
     throw error;
   }
 }
@@ -442,7 +445,7 @@ export function removeCustomPrompt(agentType: string): void {
     delete customPrompts[agentType];
     localStorage.setItem(PROMPT_CONSTANTS.CUSTOM_PROMPTS_STORAGE_KEY, JSON.stringify(customPrompts));
   } catch (error) {
-    console.error('Failed to remove custom prompt:', error);
+    logger.error('Failed to remove custom prompt:', error);
     throw error;
   }
 }
@@ -467,7 +470,7 @@ function getCustomPrompts(): {[key: string]: string} {
     const parsed = JSON.parse(stored);
     // Validate that it's an object with string values
     if (typeof parsed !== 'object' || parsed === null) {
-      console.warn('Invalid custom prompts format, resetting');
+      logger.warn('Invalid custom prompts format, resetting');
       return {};
     }
     // Ensure all values are strings
@@ -479,7 +482,7 @@ function getCustomPrompts(): {[key: string]: string} {
     }
     return validated;
   } catch (error) {
-    console.error('Error loading custom prompts:', error);
+    logger.error('Error loading custom prompts:', error);
     return {};
   }
 }

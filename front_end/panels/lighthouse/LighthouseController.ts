@@ -93,6 +93,10 @@ const UIStrings = {
    */
   applyMobileEmulationDuring: 'Apply mobile emulation during auditing',
   /**
+   *@description Tooltip text of checkbox to emulate desktop device behavior when running audits in Lighthouse
+   */
+  applyDesktopEmulationDuring: 'Apply desktop emulation during auditing',
+  /**
    * @description ARIA label for a radio button input to select the Lighthouse mode.
    */
   lighthouseMode: 'Lighthouse mode',
@@ -672,8 +676,16 @@ export const RuntimeSettings: RuntimeSetting[] = [
       flags.formFactor = value;
     },
     options: [
-      {label: i18nLazyString(UIStrings.mobile), value: 'mobile'},
-      {label: i18nLazyString(UIStrings.desktop), value: 'desktop'},
+      {
+        label: i18nLazyString(UIStrings.mobile),
+        tooltip: i18nLazyString(UIStrings.applyMobileEmulationDuring),
+        value: 'mobile'
+      },
+      {
+        label: i18nLazyString(UIStrings.desktop),
+        tooltip: i18nLazyString(UIStrings.applyDesktopEmulationDuring),
+        value: 'desktop'
+      },
     ],
     learnMore: undefined,
   },

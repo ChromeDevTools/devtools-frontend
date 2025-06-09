@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation groups</title>
+</head>
+<body>
+  <style>
+      div {
+          transition: height 1ms;
+          height: 100px;
+          width: 100px;
+      }
+
+      div.expand {
+          height: 200px;
+          width: 200px;
+      }
+
+      div.duration {
+          transition-duration: 2ms !important;
+      }
+
+      #node4 {
+          transition: all 1ms;
+      }
+      </style>
+
+      <div id="node1" style="background-color: red"></div>
+      <div id="node2" style="background-color: red"></div>
+      <div id="node3" style="background-color: red"></div>
+      <div id="node4" style="background-color: red"></div>
+
+    <script>
+      function startTransition(id) {
+          document.getElementById(id).style.height = Math.random() * 100 + "px";
+      }
+
+      function toggleClass(id, className) {
+          document.getElementById(id).classList.toggle(className);
+      }
+
+      function resetElement(id) {
+          var element = document.getElementById(id);
+          element.style.transitionProperty = "none";
+          element.style.width = "100px";
+          element.style.height = "100px";
+          element.offsetWidth;
+          element.style.transitionProperty = "";
+          element.style.width = "";
+          element.style.height = "";
+          element.setAttribute("class", "");
+      }
+    </script>
+</body>
+</html>

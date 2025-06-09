@@ -21,11 +21,29 @@ import {
 } from './conductor/paths.js';
 
 const options = commandLineArgs(yargs(process.argv.slice(2)))
-                    .options('skip-ninja', {type: 'boolean', desc: 'Skip rebuilding'})
-                    .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
-                    .options('verbose', {alias: 'v', type: 'count', desc: 'Increases the log level'})
-                    .options('bail', {type: 'boolean', alias: 'b', desc: ' bail after first test failure'})
+                    .options('skip-ninja', {
+                      type: 'boolean',
+                      default: false,
+                      desc: 'Skip rebuilding',
+                    })
+                    .options('debug-driver', {
+                      type: 'boolean',
+                      hidden: true,
+                      desc: 'Debug the driver part of tests',
+                    })
+                    .options('verbose', {
+                      alias: 'v',
+                      type: 'count',
+                      desc: 'Increases the log level',
+                    })
+                    .options('bail', {
+                      type: 'boolean',
+                      alias: 'b',
+                      desc: 'Bail after first test failure',
+                    })
                     .options('auto-watch', {
+                      type: 'boolean',
+                      default: false,
                       desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
                     })
                     .positional('tests', {
@@ -171,8 +189,11 @@ class NonHostedMochaTests extends Tests {
       '-u',
       path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
     ];
+
     if (options['debug']) {
       args.unshift('--inspect-brk');
+      console.warn(
+          '\x1b[33mYou need to attach a debugger from chrome://inspect for tests to continue the run in debug mode.\x1b[0m');
     }
     return super.run(
         tests,

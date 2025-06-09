@@ -282,12 +282,15 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
   }
 
   /**
-   * Returns whether the given node has a cycle in its dependent graph by performing a DFS.
+   * If the given node has a cycle, returns a path representing that cycle.
+   * Else returns null.
+   *
+   * Does a DFS on in its dependent graph.
    */
-  static hasCycle(node: Node, direction: 'dependents'|'dependencies'|'both' = 'both'): boolean {
+  static findCycle(node: Node, direction: 'dependents'|'dependencies'|'both' = 'both'): BaseNode[]|null {
     // Checking 'both' is the default entrypoint to recursively check both directions
     if (direction === 'both') {
-      return BaseNode.hasCycle(node, 'dependents') || BaseNode.hasCycle(node, 'dependencies');
+      return BaseNode.findCycle(node, 'dependents') || BaseNode.findCycle(node, 'dependencies');
     }
 
     const visited = new Set();
@@ -303,7 +306,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
 
       // We've hit a cycle if the node we're visiting is in our current dependency path
       if (currentPath.includes(currentNode)) {
-        return true;
+        return currentPath;
       }
       // If we've already visited the node, no need to revisit it
       if (visited.has(currentNode)) {
@@ -331,7 +334,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
       }
     }
 
-    return false;
+    return null;
   }
 
   canDependOn(node: Node): boolean {

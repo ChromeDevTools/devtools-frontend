@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 import * as EventListeners from './event_listeners.js';
@@ -17,30 +18,26 @@ describeWithLocale('EventListenersView placeholder', () => {
   it('shows one-liner if in sources', () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView(() => {});
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     container.classList.add('sources', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
 
-    document.body.appendChild(container);
     assertElementDisplayStyle(eventListenersView, '.empty-view-scroller', 'none');
     assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'block');
 
     assert.deepEqual(
         eventListenersView.contentElement.querySelector('.placeholder .gray-info-message')?.textContent,
         'No event listeners');
-
-    eventListenersView.detach();
-    container.remove();
   });
 
   it('shows empty widget if in elements panel', () => {
     const eventListenersView = new EventListeners.EventListenersView.EventListenersView(() => {});
     const container = document.createElement('div');
+    renderElementIntoDOM(container);
     container.classList.add('elements', 'panel');
     eventListenersView.markAsRoot();
     eventListenersView.show(container);
-
-    document.body.appendChild(container);
     assertElementDisplayStyle(eventListenersView, '.empty-view-scroller', 'block');
     assertElementDisplayStyle(eventListenersView, '.placeholder .gray-info-message', 'none');
 
@@ -49,8 +46,5 @@ describeWithLocale('EventListenersView placeholder', () => {
     assert.deepEqual(
         eventListenersView.contentElement.querySelector('.empty-state-description')?.textContent,
         'On this page you will find registered event listeners');
-
-    eventListenersView.detach();
-    container.remove();
   });
 });

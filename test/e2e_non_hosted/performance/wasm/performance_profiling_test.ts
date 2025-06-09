@@ -11,6 +11,7 @@ import {
   BOTTOM_UP_SELECTOR,
   CALL_TREE_SELECTOR,
   getTotalTimeFromPie,
+  increaseTimeoutForPerfPanel,
   navigateToBottomUpTab,
   navigateToCallTreeTab,
   navigateToPerformanceTab,
@@ -61,6 +62,8 @@ async function expandAndCheckActivityTree(expectedActivities: string[], devtools
 
 describe('The Performance panel', function() {
   setup({dockingMode: 'undocked'});
+  increaseTimeoutForPerfPanel(this);
+
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
 

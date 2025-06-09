@@ -9,6 +9,7 @@ import {
   assertScreenshot,
   dispatchClickEvent,
   getCleanTextContentFromElements,
+  raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
@@ -587,20 +588,6 @@ after
     assert.strictEqual(xLinks[3].getAttribute('href'), 'https://www.factuality.test/');
   });
 
-  function animatedPromise(component: Explain.ConsoleInsight): Promise<unknown> {
-    component.disableAnimations = true;
-
-    // Unfortunately, disabling animations is not enough, as some animations are
-    // not controlled by that flag.
-    const animated = new Promise(resolve => {
-      component.shadowRoot!.querySelector('.wrapper')!.addEventListener('animationend', resolve, {
-        once: true,
-      });
-    });
-
-    return animated;
-  }
-
   it('renders the opt-in teaser', async () => {
     Common.Settings.settingForTest('console-insights-enabled').set(false);
 
@@ -612,9 +599,7 @@ after
     component.style.width = '574px';
     component.style.height = '64px';
     container.appendChild(component);
-    const animated = animatedPromise(component);
     renderElementIntoDOM(container);
-    await animated;
 
     await drainMicroTasks();
     await assertScreenshot('explain/console_insight_optin.png');
@@ -723,9 +708,7 @@ document.querySelector('test').style = 'black';
     component.style.width = '574px';
     component.style.height = '271px';
     container.appendChild(component);
-    const animated = animatedPromise(component);
     renderElementIntoDOM(container);
-    await animated;
 
     await drainMicroTasks();
     await assertScreenshot('explain/console_insight_reminder.png');
@@ -805,16 +788,18 @@ Images: ![https://example.com](https://example.com)
 
     const component = new Explain.ConsoleInsight(
         getPromptBuilderForInsight(), getAidaClientForInsight(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    component.disableAnimations = true;
 
     const container = document.createElement('div');
     container.style.cssText = containerCss;
     component.style.width = '574px';
     component.style.height = '530px';
     container.appendChild(component);
-    const animated = animatedPromise(component);
     renderElementIntoDOM(container);
-    await animated;
 
+    // Animation are hidden and started one by one so
+    // so we need multiple drains
+    await drainMicroTasks();
     await drainMicroTasks();
     await assertScreenshot('explain/console_insight.png');
   });
@@ -919,17 +904,17 @@ A direct citation is a link to a reference, but it only applies to a specific pa
     component.style.width = '576px';
     component.style.height = '463px';
     container.appendChild(component);
-    const animated = animatedPromise(component);
     renderElementIntoDOM(container);
-    await animated;
+    await raf();
 
-    const detailsElement = component.shadowRoot!.querySelector('details.references');
+    const detailsElement = component.shadowRoot!.querySelector('details.references')!;
     const transitioned = new Promise<void>(resolve => {
-      detailsElement?.addEventListener('transitionend', () => {
+      detailsElement.addEventListener('transitionend', () => {
         resolve();
       });
     });
-    detailsElement?.querySelector('summary')?.click();
+    await raf();
+    detailsElement.querySelector('summary')!.click();
     await transitioned;
 
     await assertScreenshot('explain/console_insight_references.png');

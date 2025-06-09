@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es-modules-import
+import {assertScreenshot, raf} from '../../../testing/DOMHelpers.js';
 import {
   describeWithLocale,
 } from '../../../testing/EnvironmentHelpers.js';
@@ -12,22 +13,37 @@ import * as Dialogs from './dialogs.js';
 
 describeWithLocale('ShortcutDialog', () => {
   async function getShortcutDialog(open?: boolean, prependedElement?: HTMLElement) {
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '600px';
+    container.style.display = 'flex';
+    container.style.padding = '2rem';
+    container.style.justifyContent = 'flex-end';
+
     const shortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
     if (prependedElement) {
       shortcutDialog.prependElement(prependedElement);
     }
     shortcutDialog.data = {
-      shortcuts: [{
-        title: 'Shortcut Title',
-        rows: [
-          [{key: 'Cmd'}, {joinText: '+'}, {key: 'W'}],
-          {footnote: 'close the window'},
-        ]
-      }],
+      shortcuts: [
+        {
+          title: 'Shortcut Title',
+          rows: [
+            [{key: 'Cmd'}, {joinText: '+'}, {key: 'W'}],
+            {footnote: 'close the window'},
+          ]
+        },
+        {
+          title: 'Second Shortcut Title',
+          rows: [[{key: 'F8'}]],
+        }
+      ],
       open
     };
-    Helpers.renderElementIntoDOM(shortcutDialog);
+    container.append(shortcutDialog);
+    Helpers.renderElementIntoDOM(container);
     await RenderCoordinator.done();
+    await raf();
 
     return shortcutDialog;
   }
@@ -51,5 +67,15 @@ describeWithLocale('ShortcutDialog', () => {
     const prependedElementInShortcutDialog = dialog.querySelector('div.prepended-element');
 
     assert.instanceOf(prependedElementInShortcutDialog, HTMLDivElement);
+  });
+
+  it('renders the shortcut dialog button', async () => {
+    await getShortcutDialog();
+    await assertScreenshot('dialog/shortcut_dialog_closed.png');
+  });
+
+  it('renders the shortcut dialog', async () => {
+    await getShortcutDialog(true);
+    await assertScreenshot('dialog/shortcut_dialog_open.png');
   });
 });

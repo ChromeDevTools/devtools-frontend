@@ -12,6 +12,13 @@ import {
   stopInstrumentingCoverage,
   waitForTheCoveragePanelToLoad,
 } from '../../e2e/helpers/coverage-helpers.js';
+import {
+  clickOnContextMenuItemFromTab,
+  MOVE_TO_MAIN_PANEL_SELECTOR,
+  tabExistsInMainPanel,
+} from '../../e2e/helpers/cross-tool-helper.js';
+
+const COVERAGE_TAB_ID = '#tab-coverage';
 
 describe('The Coverage Panel', () => {
   it('Loads correctly', async ({devToolsPage}) => {
@@ -45,11 +52,13 @@ describe('The Coverage Panel', () => {
     ]);
   });
 
-  // In linux, empty.css does not show up in coverage
-  it.skipOnPlatforms(
-      ['linux'], '[crbug.com/40264187]: Shows completly uncovered css files', async ({devToolsPage, inspectedPage}) => {
+  it(
+      'Shows completely uncovered css files', async ({devToolsPage, inspectedPage}) => {
         await inspectedPage.goToResource('coverage/unused-css-coverage.html');
         await waitForTheCoveragePanelToLoad(devToolsPage);
+        // Bring the coverage panel to the top to ensure it has enough height to show all the rows.
+        await clickOnContextMenuItemFromTab(COVERAGE_TAB_ID, MOVE_TO_MAIN_PANEL_SELECTOR, devToolsPage);
+        await tabExistsInMainPanel(COVERAGE_TAB_ID, devToolsPage);
         await startInstrumentingCoverage(devToolsPage);
         const URL_PREFIX = `${inspectedPage.getResourcesPath()}/coverage`;
         assert.deepEqual(await getCoverageData(5, devToolsPage), [

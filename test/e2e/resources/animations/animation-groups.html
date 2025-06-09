@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animation groups</title>
+</head>
+<body>
+  <style>
+    div {
+        animation-duration: 1ms;
+    }
+
+    .long {
+        animation-duration: 2ms;
+    }
+
+    .expandWidth {
+        animation-name: expandWidthAnim;
+    }
+
+    .expand {
+        animation-name: expandWidthAnim, expandHeightAnim !important;
+    }
+
+    @keyframes expandWidthAnim {
+        from {
+            width: 100px;
+        }
+        to {
+            width: 200px;
+        }
+    }
+
+    @keyframes expandHeightAnim {
+        from {
+            height: 100px;
+        }
+        to {
+            height: 200px;
+        }
+    }
+    </style>
+
+    <div id="node1" style="background-color: red; height: 100px"></div>
+    <div id="node2" style="background-color: red; height: 100px"></div>
+    <div id="node3" style="background-color: red; height: 100px"></div>
+    <div id="node4" style="background-color: red; height: 100px"></div>
+
+    <script>
+      function restartAnimation(id, name) {
+          const element = document.getElementById(id);
+          element.classList.remove(name);
+          // Force style recalc.
+          element.offsetHeight;
+          element.classList.add(name);
+      }
+
+      function toggleClass(id, name, enabled) {
+          document.getElementById(id).classList.toggle(name, enabled);
+      }
+    </script>
+</body>
+</html>

@@ -5,13 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("performance") {
-  sources = [
-    "landing-page_test.ts",
-    "recording_test.ts",
-    "selector-stats-tracing_test.ts",
-    "settings-throttle-persist_test.ts",
-    "timeline/treeView_test.ts",
-  ]
+  sources = [ "landing-page_test.ts" ]
 
   deps = [
     "../../shared",

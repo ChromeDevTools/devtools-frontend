@@ -5,12 +5,7 @@
 import("../../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("components") {
-  sources = [
-    "ButtonDialog_test.ts",
-    "Dialog_test.ts",
-    "SelectMenu_test.ts",
-    "ShortcutDialog_test.ts",
-  ]
+  sources = [ "SelectMenu_test.ts" ]
 
   deps = [
     "../../../../front_end/ui/components/dialogs:bundle",

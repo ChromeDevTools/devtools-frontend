@@ -39,8 +39,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   // neterror.js started serving sourcemaps and we're requesting it unnecessarily.
   'Request Network.loadNetworkResource failed. {"code":-32602,"message":"Unsupported URL scheme"}',
   'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.',
-  // crbug.com/413061397: Temporarily ignore until CfT roll includes https://crrev.com/c/6480657
-  'Request Page.getAdScriptAncestryIds failed. {"code":-32601,"message":"\'Page.getAdScriptAncestryIds\' wasn\'t found"}',
+  'Request Storage.getAffectedUrlsForThirdPartyCookieMetadata failed. {"code":-32603,"message":"Internal error"}',
 ];
 
 const logLevels = {
@@ -190,15 +189,20 @@ export function dumpCollectedErrors(): void {
   }
   console.log('Expected errors: ' + expectedErrors.length);
   console.log('   Fatal errors: ' + fatalErrors.length);
-  if (fatalErrors.length) {
-    throw new Error('Fatal errors logged:\n' + fatalErrors.join('\n'));
-  }
+
   if (uiComponentDocErrors.length) {
     console.log(
         '\nErrors from component examples during test run:\n', uiComponentDocErrors.map(e => e.message).join('\n  '));
   }
+
+  const allFatalErrors = fatalErrors.join('\n');
+
   expectedErrors = [];
   fatalErrors = [];
+
+  if (allFatalErrors) {
+    throw new Error('Fatal errors logged:\n' + allFatalErrors);
+  }
 }
 
 const pendingErrorExpectations = new Set<ErrorExpectation>();

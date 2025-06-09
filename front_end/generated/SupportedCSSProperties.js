@@ -652,7 +652,6 @@ export const generatedProperties = [
    "scroll-margin-left",
    "scroll-margin-right",
    "scroll-margin-top",
-   "scroll-marker-contain",
    "scroll-marker-group",
    "scroll-padding-block-end",
    "scroll-padding-block-start",
@@ -669,6 +668,7 @@ export const generatedProperties = [
    "scroll-start-inline",
    "scroll-start-x",
    "scroll-start-y",
+   "scroll-target-group",
    "scroll-timeline-axis",
    "scroll-timeline-name",
    "scrollbar-color",
@@ -1805,7 +1805,8 @@ export const generatedProperties = [
    "style",
    "paint",
    "inline-size",
-   "block-size"
+   "block-size",
+   "view-transition"
   ],
   "name": "contain"
  },
@@ -3177,6 +3178,12 @@ export const generatedProperties = [
   "name": "origin-trial-test-property"
  },
  {
+  "longhands": [
+   "origin-trial-test-property"
+  ],
+  "name": "origin-trial-test-shorthand"
+ },
+ {
   "inherited": true,
   "name": "orphans"
  },
@@ -3772,13 +3779,6 @@ export const generatedProperties = [
  {
   "keywords": [
    "none",
-   "auto"
-  ],
-  "name": "scroll-marker-contain"
- },
- {
-  "keywords": [
-   "none",
    "after",
    "before"
   ],
@@ -3902,6 +3902,13 @@ export const generatedProperties = [
  },
  {
   "name": "scroll-start-y"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "scroll-target-group"
  },
  {
   "longhands": [
@@ -5266,7 +5273,8 @@ export const generatedPropertyValues = {
    "style",
    "paint",
    "inline-size",
-   "block-size"
+   "block-size",
+   "view-transition"
   ]
  },
  "contain-intrinsic-height": {
@@ -6363,12 +6371,6 @@ export const generatedPropertyValues = {
    "nearest"
   ]
  },
- "scroll-marker-contain": {
-  "values": [
-   "none",
-   "auto"
-  ]
- },
  "scroll-marker-group": {
   "values": [
    "none",
@@ -6440,6 +6442,12 @@ export const generatedPropertyValues = {
    "both",
    "mandatory",
    "proximity"
+  ]
+ },
+ "scroll-target-group": {
+  "values": [
+   "none",
+   "auto"
   ]
  },
  "scrollbar-color": {

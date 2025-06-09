@@ -5,14 +5,13 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {$, getBrowserAndPages, step} from '../../shared/helper.js';
+import {getBrowserAndPages, step} from '../../shared/helper.js';
 import {
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,
   deleteConsoleMessagesFilter,
   filterConsoleMessages,
   getConsoleMessages,
   getCurrentConsoleMessages,
-  showVerboseMessages,
   toggleShowCorsErrors,
   waitForConsoleMessagesToBeNonEmpty,
 } from '../helpers/console-helpers.js';
@@ -83,42 +82,6 @@ describe('The Console Tab', () => {
         'log-source.js:6 5topGroup: log2()',
         'console-filter.html:38 Hello 1',
         'console-filter.html:39 Hello 2',
-        'console-filter.html:42 end',
-      ]);
-    });
-  });
-
-  it('shows messages from all levels', async () => {
-    let messages: string[];
-    const withAnchor = true;
-    await step('navigate to console-filter.html and get console messages', async () => {
-      messages = await getConsoleMessages('console-filter', withAnchor, showVerboseMessages);
-    });
-
-    await step('ensure that all levels are logged', async () => {
-      const allLevelsDropdown = await $('[aria-label^="Log level: All levels"]');
-      assert.isNotNull(allLevelsDropdown);
-    });
-
-    await step('check that all console messages appear', async () => {
-      assert.deepEqual(messages, [
-        'console-filter.html:10 1topGroup: log1()',
-        'log-source.js:6 2topGroup: log2()',
-        'console-filter.html:10 3topGroup: log1()',
-        'console-filter.html:17 enter outerGroup',
-        'console-filter.html:10 1outerGroup: log1()',
-        'log-source.js:6 2outerGroup: log2()',
-        'console-filter.html:21 enter innerGroup1',
-        'console-filter.html:10 1innerGroup1: log1()',
-        'log-source.js:6 2innerGroup1: log2()',
-        'console-filter.html:26 enter innerGroup2',
-        'console-filter.html:10 1innerGroup2: log1()',
-        'log-source.js:6 2innerGroup2: log2()',
-        'console-filter.html:10 4topGroup: log1()',
-        'log-source.js:6 5topGroup: log2()',
-        'console-filter.html:38 Hello 1',
-        'console-filter.html:39 Hello 2',
-        'console-filter.html:41 verbose debug message',
         'console-filter.html:42 end',
       ]);
     });
@@ -308,27 +271,6 @@ describe('The Console Tab', () => {
       return /[2-3]top/.test(msg);
     };
     await testMessageFilter(filter, expectedMessageFilter);
-  });
-
-  it('can reset filter', async () => {
-    let unfilteredMessages: string[];
-
-    await step('get unfiltered messages', async () => {
-      unfilteredMessages = await getConsoleMessages('console-filter');
-    });
-
-    await step('apply message filter', async () => {
-      await filterConsoleMessages('outer');
-    });
-
-    await step('delete message filter', async () => {
-      void deleteConsoleMessagesFilter();
-    });
-
-    await step('check if messages are unfiltered', async () => {
-      const messages = await getCurrentConsoleMessages();
-      assert.deepEqual(messages, unfilteredMessages);
-    });
   });
 
   it('can exclude CORS error messages', async () => {

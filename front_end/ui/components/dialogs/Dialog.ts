@@ -311,6 +311,10 @@ export class Dialog extends HTMLElement {
     this.dispatchEvent(new ClickOutsideDialogEvent());
   }
 
+  #animationEndedEvent(): void {
+    this.dispatchEvent(new AnimationEndedEvent());
+  }
+
   #mouseEventWasInDialogContent(evt: MouseEvent): boolean {
     const dialogBounds = this.#dialogClientRect;
 
@@ -654,7 +658,7 @@ export class Dialog extends HTMLElement {
     // clang-format off
     Lit.render(html`
       <style>${dialogStyles}</style>
-      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}
+      <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel} @animationend=${this.#animationEndedEvent}
               jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
         <div id="content">
           <div class="dialog-header">${this.#renderHeaderRow()}</div>
@@ -690,6 +694,14 @@ export class ClickOutsideDialogEvent extends Event {
 
   constructor() {
     super(ClickOutsideDialogEvent.eventName, {bubbles: true, composed: true});
+  }
+}
+
+export class AnimationEndedEvent extends Event {
+  static readonly eventName = 'animationended';
+
+  constructor() {
+    super(AnimationEndedEvent.eventName, {bubbles: true, composed: true});
   }
 }
 

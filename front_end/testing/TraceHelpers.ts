@@ -75,6 +75,7 @@ export async function getMainFlameChartWithTracks(
 }
 
 export interface RenderFlameChartOptions {
+  dataProvider: 'MAIN'|'NETWORK';
   /**
    * The trace file to import. You must include `.json.gz` at the end of the file name.
    * Alternatively, you can provide the actual file. This is useful only if you
@@ -118,7 +119,8 @@ export interface RenderFlameChartOptions {
  */
 export async function renderFlameChartIntoDOM(context: Mocha.Context|null, options: RenderFlameChartOptions): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
-  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
+  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider |
+      Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
   target: HTMLElement,
   parsedTrace: Trace.Handlers.Types.ParsedTrace,
 }> {
@@ -147,12 +149,20 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
     await Timeline.Utils.ImageCache.preload(parsedTrace.Screenshots.screenshots ?? []);
   }
   const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
-  const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+  const dataProvider = options.dataProvider === 'MAIN' ?
+      new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider() :
+      new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+
   dataProvider.setModel(parsedTrace, entityMapper);
-  dataProvider.buildWithCustomTracksForTest({
-    filterTracks: options.filterTracks,
-    expandTracks: options.expandTracks,
-  });
+  if (dataProvider instanceof Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider) {
+    dataProvider.buildWithCustomTracksForTest({
+      filterTracks: options.filterTracks,
+      expandTracks: options.expandTracks,
+    });
+  } else {
+    // Calling this method triggers the data being generated & the Network appender being created + drawn.
+    dataProvider.timelineData();
+  }
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = options.customStartTime ?? Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
@@ -163,7 +173,9 @@ export async function renderFlameChartIntoDOM(context: Mocha.Context|null, optio
 
   const target = document.createElement('div');
   target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
+
   const timingsTrackOffset = flameChart.levelToOffset(dataProvider.maxStackDepth());
+
   // Allow an extra 10px so no scrollbar is shown if using the default height
   // that fits everything inside.
   const heightPixels = options.customHeight ?? timingsTrackOffset + 10;
@@ -722,10 +734,12 @@ export async function renderFlameChartWithFakeProvider(
 export function renderWidgetInVbox(widget: UI.Widget.Widget, opts: {
   width?: number,
   height?: number,
+  flexAuto?: boolean,
 } = {}): void {
   const target = document.createElement('div');
   target.innerHTML = `<style>${UI.inspectorCommonStyles}</style>`;
-  target.classList.add('flex-auto', 'vbox');
+  target.classList.add('vbox');
+  target.classList.toggle('flex-auto', Boolean(opts.flexAuto));
   target.style.width = (opts.width ?? 800) + 'px';
   target.style.height = (opts.height ?? 600) + 'px';
   widget.markAsRoot();

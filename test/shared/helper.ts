@@ -11,6 +11,7 @@ import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 import {getTestServerPort} from '../conductor/server_port.js';
 import type {DevToolsPage} from '../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../e2e_non_hosted/shared/target-helper.js';
 
 import {getBrowserAndPagesWrappers} from './non_hosted_wrappers.js';
 
@@ -316,8 +317,9 @@ export const clearPermissionsOverride = async (inspectedPage = getBrowserAndPage
   await inspectedPage.page.browserContext().clearPermissionOverrides();
 };
 
-export const goToResource = async (path: string, options: puppeteer.WaitForOptions = {}) => {
-  const {inspectedPage} = getBrowserAndPagesWrappers();
+export const goToResource =
+    async (path: string, options: puppeteer.WaitForOptions&{inspectedPage?: InspectedPage} = {}) => {
+  const inspectedPage = options.inspectedPage ?? getBrowserAndPagesWrappers().inspectedPage;
   await inspectedPage.goToResource(path, options);
 };
 
@@ -377,13 +379,14 @@ export const tabBackward = async (page?: puppeteer.Page) => {
   await devToolsPage.tabBackward(page);
 };
 
-export const clickMoreTabsButton = async (root?: puppeteer.ElementHandle<Element>) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const clickMoreTabsButton = async (
+    root?: puppeteer.ElementHandle<Element>,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.clickMoreTabsButton(root);
 };
 
-export const closePanelTab = async (panelTabSelector: string) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const closePanelTab =
+    async (panelTabSelector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.closePanelTab(panelTabSelector);
 };
 

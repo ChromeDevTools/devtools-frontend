@@ -4,40 +4,44 @@
 
 import type * as puppeteer from 'puppeteer-core';
 
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  $,
   $$,
   click,
-  getBrowserAndPages,
   getTestServerPort,
-  goToResource,
   waitFor,
-  waitForFunction,
-  waitForNone,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {getDataGridRows} from './datagrid-helpers.js';
 import {expectVeEvents, veChange, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
 
-export async function navigateToApplicationTab(testName: string) {
-  const {target, frontend} = getBrowserAndPages();
-  await target.bringToFront();
-  await goToResource(`application/${testName}.html`);
-  await frontend.bringToFront();
-  await click('#tab-resources');
+export async function navigateToApplicationTab(
+    testName: string,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage,
+) {
+  await inspectedPage.bringToFront();
+  await inspectedPage.goToResource(`application/${testName}.html`);
+  await devToolsPage.bringToFront();
+  await devToolsPage.click('#tab-resources');
   // Make sure the application navigation list is shown
-  await waitFor('.storage-group-list-item');
-  await expectVeEvents([veClick('Toolbar: main > PanelTabHeader: resources'), veImpressionForApplicationPanel()]);
+  await devToolsPage.waitFor('.storage-group-list-item');
+  await expectVeEvents(
+      [veClick('Toolbar: main > PanelTabHeader: resources'), veImpressionForApplicationPanel()], undefined,
+      devToolsPage);
 }
 
-export async function navigateToServiceWorkers() {
+export async function navigateToServiceWorkers(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
-  await click(SERVICE_WORKER_ROW_SELECTOR);
-  await waitFor('.service-worker-list');
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: service-workers'),
-    veImpressionsUnder('Panel: resources', [veImpressionForServiceWorkersView()]),
-  ]);
+  await devToolsPage.click(SERVICE_WORKER_ROW_SELECTOR);
+  await devToolsPage.waitFor('.service-worker-list');
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: service-workers'),
+        veImpressionsUnder('Panel: resources', [veImpressionForServiceWorkersView()]),
+      ],
+      undefined, devToolsPage);
 }
 
 export async function navigateToFrame(name: string) {
@@ -55,14 +59,16 @@ export async function navigateToManifestInApplicationTab(testName: string) {
   await click(MANIFEST_SELECTOR);
 }
 
-export async function navigateToStorage() {
+export async function navigateToStorage(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const STORAGE_SELECTOR = '[aria-label="Storage"]';
-  await click(STORAGE_SELECTOR);
-  await waitFor('.clear-storage-button');
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: storage'),
-    veImpressionsUnder('Panel: resources', [veImpressionForStorageOverview()]),
-  ]);
+  await devToolsPage.click(STORAGE_SELECTOR);
+  await devToolsPage.waitFor('.clear-storage-button');
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: application > TreeItem: storage'),
+        veImpressionsUnder('Panel: resources', [veImpressionForStorageOverview()]),
+      ],
+      undefined, devToolsPage);
 }
 
 export async function navigateToOpenedWindows() {
@@ -104,51 +110,60 @@ export async function navigateToFrameServiceWorkers(frameName: string) {
   ]);
 }
 
-export async function navigateToCookiesForTopDomain() {
+export async function navigateToCookiesForTopDomain(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
   const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
-  const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickTreeItem(COOKIES_SELECTOR);
-  await doubleClickTreeItem(DOMAIN_SELECTOR);
+  const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
+  await doubleClickTreeItem(COOKIES_SELECTOR, devToolsPage);
+  await doubleClickTreeItem(DOMAIN_SELECTOR, devToolsPage);
 
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
-    veImpressionsUnder(
-        'Panel: resources',
-        [
-          veImpression(
-              'Pane', 'cookies', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
-          veImpressionsUnder(
-              'Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies',
-              [veImpression('TreeItem', 'cookies-for-frame')]),
-        ]),
-    veClick(
-        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies > TreeItem: cookies-for-frame'),
-    veImpressionsUnder('Panel: resources', [veImpressionForCookieTable()]),
-  ]);
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies'),
+        veImpressionsUnder(
+            'Panel: resources',
+            [
+              veImpression(
+                  'Pane', 'cookies', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
+              veImpressionsUnder(
+                  'Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies',
+                  [veImpression('TreeItem', 'cookies-for-frame')]),
+            ]),
+        veClick(
+            'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: cookies > TreeItem: cookies-for-frame'),
+        veImpressionsUnder('Panel: resources', [veImpressionForCookieTable()]),
+      ],
+      undefined, devToolsPage);
 }
 
-export async function navigateToSessionStorageForTopDomain() {
+export async function navigateToSessionStorageForTopDomain(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
-  const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  await doubleClickTreeItem(SESSION_STORAGE_SELECTOR);
-  await doubleClickTreeItem(DOMAIN_SELECTOR);
+  const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
+  await doubleClickTreeItem(SESSION_STORAGE_SELECTOR, devToolsPage);
+  await doubleClickTreeItem(DOMAIN_SELECTOR, devToolsPage);
 
-  await expectVeEvents([
-    veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
-    veImpressionsUnder(
-        'Panel: resources',
-        [
-          veImpression(
-              'Pane', 'session-storage', [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
-          veImpressionsUnder(
-              'Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
-              [veImpression('TreeItem', 'session-storage-for-domain')]),
-        ]),
-    veClick(
-        'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
-    veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
-  ]);
+  await expectVeEvents(
+      [
+        veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage'),
+        veImpressionsUnder(
+            'Panel: resources',
+            [
+              veImpression(
+                  'Pane', 'session-storage',
+                  [veImpression('Section', 'empty-view', [veImpression('Link', 'learn-more')])]),
+              veImpressionsUnder(
+                  'Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage',
+                  [veImpression('TreeItem', 'session-storage-for-domain')]),
+            ]),
+        veClick(
+            'Panel: resources > Pane: sidebar > Tree > TreeItem: storage > TreeItem: session-storage > TreeItem: session-storage-for-domain'),
+        veImpressionsUnder('Panel: resources', [veImpressionForSessionStorageView()]),
+      ],
+      undefined, devToolsPage);
 }
 
 const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
@@ -176,17 +191,18 @@ export async function navigateToSharedStorageForTopDomain() {
   ]);
 }
 
-async function doubleClickTreeItem(selector: string) {
-  const element = await waitFor(selector);
+async function doubleClickTreeItem(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const element = await devToolsPage.waitFor(selector);
   await element.evaluate(el => el.scrollIntoView(true));
-  await click(selector, {clickOptions: {clickCount: 2}});
+  await devToolsPage.click(selector, {clickOptions: {clickCount: 2}});
 }
 
-export async function getDataGridData(selector: string, columns: string[]) {
+export async function getDataGridData(
+    selector: string, columns: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Wait for Storage data-grid to show up
-  await waitFor(selector);
+  await devToolsPage.waitFor(selector);
 
-  const dataGridNodes = await $$('.data-grid-data-grid-node:not(.creation-node)');
+  const dataGridNodes = await devToolsPage.$$('.data-grid-data-grid-node:not(.creation-node)');
   const dataGridRowValues = await Promise.all(dataGridNodes.map(node => node.evaluate((row: Element, columns) => {
     const data: Record<string, string|null> = {};
     for (const column of columns) {
@@ -199,8 +215,9 @@ export async function getDataGridData(selector: string, columns: string[]) {
   return dataGridRowValues;
 }
 
-export async function getTrimmedTextContent(selector: string) {
-  const elements = await $$(selector);
+export async function getTrimmedTextContent(
+    selector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const elements = await devToolsPage.$$(selector);
   return await Promise.all(elements.map(element => element.evaluate(e => {
     return (e.textContent || '').trim().replace(/[ \n]{2,}/gm, '');  // remove multiple consecutive whitespaces
   })));
@@ -211,9 +228,10 @@ export async function getFrameTreeTitles() {
   return await Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
-export async function getStorageItemsData(columns: string[], leastExpected = 1) {
-  const gridData = await waitForFunction(async () => {
-    const values = await getDataGridData('.storage-view table', columns);
+export async function getStorageItemsData(
+    columns: string[], leastExpected = 1, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const gridData = await devToolsPage.waitForFunction(async () => {
+    const values = await getDataGridData('.storage-view table', columns, devToolsPage);
     if (values.length >= leastExpected) {
       return values;
     }
@@ -222,35 +240,43 @@ export async function getStorageItemsData(columns: string[], leastExpected = 1) 
   return gridData;
 }
 
-export async function filterStorageItems(filter: string) {
-  const element = await $('.toolbar-input-prompt') as puppeteer.ElementHandle;
+export async function filterStorageItems(filter: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const element = await devToolsPage.$('.toolbar-input-prompt') as puppeteer.ElementHandle;
   await expectVeEvents(
-      [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField', 'filter')])]);
+      [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField', 'filter')])],
+      undefined, devToolsPage);
   await element.type(filter);
-  await expectVeEvents([
-    veChange('Panel: resources > Pane: cookies-data > Toolbar > TextField: filter'),
-    veImpressionsUnder(
-        'Panel: resources > Pane: cookies-data > Toolbar > TextField: filter', [veImpression('Action', 'clear')]),
-  ]);
-}
-
-export async function clearStorageItemsFilter() {
-  await click('.toolbar-input .toolbar-input-clear-button');
   await expectVeEvents(
-      [veClick('Panel: resources > Pane: cookies-data > Toolbar > TextField: filter > Action: clear')]);
+      [
+        veChange('Panel: resources > Pane: cookies-data > Toolbar > TextField: filter'),
+        veImpressionsUnder(
+            'Panel: resources > Pane: cookies-data > Toolbar > TextField: filter', [veImpression('Action', 'clear')]),
+      ],
+      undefined, devToolsPage);
 }
 
-export async function clearStorageItems() {
-  await click('#storage-items-delete-all');
+export async function clearStorageItemsFilter(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('.toolbar-input .toolbar-input-clear-button');
+  await expectVeEvents(
+      [veClick('Panel: resources > Pane: cookies-data > Toolbar > TextField: filter > Action: clear')], undefined,
+      devToolsPage);
 }
 
-export async function selectStorageItemAtIndex(index: number) {
-  await waitForFunction(async () => {
+export async function clearStorageItems(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('#storage-items-delete-all');
+}
+
+export async function selectStorageItemAtIndex(
+    index: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
     try {
       const dataGridNodes = await getDataGridRows(
-          index + 1, await waitFor('.storage-view devtools-data-grid'), /* matchExactNumberOfRows=*/ false);
+          index + 1, await devToolsPage.waitFor('.storage-view devtools-data-grid'), /* matchExactNumberOfRows=*/ false,
+          devToolsPage);
       await dataGridNodes[index][1].click();
-      await expectVeEvents([veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')]);
+      await expectVeEvents(
+          [veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')], undefined,
+          devToolsPage);
     } catch (error) {
       if (error.message === 'Node is detached from document') {
         return false;
@@ -261,17 +287,18 @@ export async function selectStorageItemAtIndex(index: number) {
   });
 }
 
-export async function deleteSelectedStorageItem() {
-  await click('[title="Delete Selected"]');
-  await expectVeEvents([veClick(
-      'Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')]);
+export async function deleteSelectedStorageItem(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('[title="Delete Selected"]');
+  await expectVeEvents(
+      [veClick('Panel: resources > Pane: session-storage-data > Toolbar > Action: storage-items-view.delete-selected')],
+      undefined, devToolsPage);
 }
 
-export async function selectCookieByName(name: string) {
-  const dataGrid = await waitFor('.cookies-table devtools-data-grid');
-  const cell = await waitForFunction(async () => {
+export async function selectCookieByName(name: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const dataGrid = await devToolsPage.waitFor('.cookies-table devtools-data-grid');
+  const cell = await devToolsPage.waitForFunction(async () => {
     const rows = await getDataGridRows(
-        /* expectedNumberOfRows=*/ 1, dataGrid, /* matchExactNumberOfRows=*/ false);
+        /* expectedNumberOfRows=*/ 1, dataGrid, /* matchExactNumberOfRows=*/ false, devToolsPage);
     for (const row of rows) {
       for (const cell of row) {
         const cellContent = await cell.evaluate(x => {
@@ -284,22 +311,24 @@ export async function selectCookieByName(name: string) {
     }
     return undefined;
   });
-  await expectVeEvents([veImpressionsUnder('Panel: resources', [veImpression('Pane', 'cookies-data')])]);
+  await expectVeEvents(
+      [veImpressionsUnder('Panel: resources', [veImpression('Pane', 'cookies-data')])], undefined, devToolsPage);
   await cell.click();
-  await expectVeEvents([veClick('Panel: resources > Pane: cookies-data > TableRow > TableCell: name')]);
+  await expectVeEvents(
+      [veClick('Panel: resources > Pane: cookies-data > TableRow > TableCell: name')], undefined, devToolsPage);
 }
 
-export async function waitForQuotaUsage(p: (quota: number) => boolean) {
-  const {frontend} = getBrowserAndPages();
-  await frontend.bringToFront();
-  await waitForFunction(async () => {
-    const usedQuota = await getQuotaUsage();
+export async function waitForQuotaUsage(
+    p: (quota: number) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.bringToFront();
+  await devToolsPage.waitForFunction(async () => {
+    const usedQuota = await getQuotaUsage(devToolsPage);
     return p(usedQuota);
   });
 }
 
-export async function getQuotaUsage() {
-  const storageRow = await waitFor('.quota-usage-row');
+export async function getQuotaUsage(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const storageRow = await devToolsPage.waitFor('.quota-usage-row');
   const quotaString = await storageRow.evaluate(el => el.textContent || '');
   const [usedQuotaText, modifier] =
       quotaString.replaceAll(',', '').replace(/^\D*([\d.]+)\D*(kM?)B.used.out.of\D*\d+\D*.?B.*$/, '$1 $2').split(' ');
@@ -312,8 +341,8 @@ export async function getQuotaUsage() {
   return usedQuota;
 }
 
-export async function getPieChartLegendRows() {
-  const pieChartLegend = await waitFor('.pie-chart-legend');
+export async function getPieChartLegendRows(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const pieChartLegend = await devToolsPage.waitFor('.pie-chart-legend');
   const rows = await pieChartLegend.evaluate(legend => {
     const rows = [];
     for (const tableRow of legend.children) {
@@ -328,12 +357,12 @@ export async function getPieChartLegendRows() {
   return rows;
 }
 
-export async function unregisterServiceWorker() {
+export async function unregisterServiceWorker(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const UNREGISTER_SERVICE_WORKER_SELECTOR = '[title="Unregister service worker"]';
-  await click('#tab-resources');
-  await navigateToServiceWorkers();
-  await click(UNREGISTER_SERVICE_WORKER_SELECTOR);
-  await waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
+  await devToolsPage.click('#tab-resources');
+  await navigateToServiceWorkers(devToolsPage);
+  await devToolsPage.click(UNREGISTER_SERVICE_WORKER_SELECTOR);
+  await devToolsPage.waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
 }
 
 export function veImpressionForApplicationPanel() {

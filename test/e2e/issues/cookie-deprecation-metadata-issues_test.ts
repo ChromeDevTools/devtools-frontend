@@ -17,8 +17,7 @@ describe('Cookie Deprecation Metadata issue', () => {
     await goToResource('empty.html');
   });
 
-  // Flaky
-  it.skip('[crbug.com/380046260] should display correct information', async () => {
+  it('should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
     await frontend.evaluate(() => {

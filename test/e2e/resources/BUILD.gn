@@ -30,6 +30,7 @@ group("resources") {
     "performance",
     "recorder",
     "search",
+    "security",
     "sensors",
     "sources",
     "webaudio",

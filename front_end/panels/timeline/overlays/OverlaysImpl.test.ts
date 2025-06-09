@@ -6,7 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as AiAssistanceModels from '../../../models/ai_assistance/ai_assistance.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {cleanTextContent, dispatchClickEvent, doubleRaf} from '../../../testing/DOMHelpers.js';
+import {cleanTextContent, dispatchClickEvent, doubleRaf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {
   makeInstantEvent,
@@ -52,8 +52,9 @@ function createCharts(parsedTrace?: Trace.Handlers.Types.ParsedTrace): Overlays.
   const delegate = new MockFlameChartDelegate();
   const mainChart = new PerfUI.FlameChart.FlameChart(mainProvider, delegate);
   const networkChart = new PerfUI.FlameChart.FlameChart(networkProvider, delegate);
-  // Add to DOM for offsetWidth, etc working
-  document.body.append(mainChart.element, networkChart.element);
+
+  renderElementIntoDOM(mainChart, {allowMultipleChildren: true});
+  renderElementIntoDOM(networkChart, {allowMultipleChildren: true});
 
   if (parsedTrace) {
     // Force the charts to render. Normally the TimelineFlameChartView would do
@@ -75,11 +76,6 @@ describeWithEnvironment('Overlays', () => {
   beforeEach(() => {
     showFreDialogStub = sinon.stub(PanelCommon.FreDialog, 'show');
     setupIgnoreListManagerEnvironment();
-  });
-
-  afterEach(() => {
-    // Remove any FlameChart elements from the DOM
-    document.body.querySelectorAll('widget').forEach(e => e.remove());
   });
 
   it('can calculate the x position of an event based on the dimensions and its timestamp', async () => {

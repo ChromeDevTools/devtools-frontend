@@ -8,6 +8,7 @@ import { rewriteError } from '../util/ErrorLike.js';
 import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 import { ProtocolError, TargetCloseError } from './Errors.js';
 import { debugError } from './util.js';
+const idGenerator = createIncrementalIdGenerator();
 /**
  * Manages callbacks and their IDs for the protocol request/response communication.
  *
@@ -15,7 +16,7 @@ import { debugError } from './util.js';
  */
 export class CallbackRegistry {
     #callbacks = new Map();
-    #idGenerator = createIncrementalIdGenerator();
+    #idGenerator = idGenerator;
     create(label, timeout, request) {
         const callback = new Callback(this.#idGenerator(), label, timeout);
         this.#callbacks.set(callback.id, callback);

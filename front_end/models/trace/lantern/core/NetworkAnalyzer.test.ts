@@ -9,8 +9,8 @@ import {runTrace, toLanternTrace} from '../testing/testing.js';
 
 const {NetworkAnalyzer} = Lantern.Core;
 
-async function createRequests(trace: Lantern.Types.Trace) {
-  const parsedTrace = await runTrace(trace);
+async function createRequests(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
+  const parsedTrace = await runTrace(context, trace);
   return Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
 }
 
@@ -74,7 +74,7 @@ describe('NetworkAnalyzer', () => {
     assert.isOk(Math.abs(valueA - valueB) < threshold, message);
   }
 
-  describe('#estimateIfConnectionWasReused', () => {
+  describe('#estimateIfConnectionWasReused', function() {
     it('should use built-in value when trustworthy', () => {
       const records = [
         createRecord({requestId: 1, connectionId: 1, connectionReused: false}),
@@ -158,7 +158,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should work on a real trace', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(requests);
       const distinctConnections = Array.from(result.values()).filter(item => !item).length;
       assert.strictEqual(result.size, 24);
@@ -166,7 +166,7 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#estimateRTTByOrigin', () => {
+  describe('#estimateRTTByOrigin', function() {
     it('should infer from tcp timing when available', () => {
       const timing = {connectStart: 0, connectEnd: 99};
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
@@ -267,7 +267,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should work on a real trace', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.estimateRTTByOrigin(requests);
       assertCloseEnough(result.get('https://www.paulirish.com')?.min ?? 0, 10);
       assertCloseEnough(result.get('https://www.googletagmanager.com')?.min ?? 0, 17);
@@ -275,7 +275,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should approximate well with either method', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.estimateRTTByOrigin(requests).get(NetworkAnalyzer.summary);
       const resultApprox = NetworkAnalyzer
                                .estimateRTTByOrigin(requests, {
@@ -290,7 +290,7 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#estimateServerResponseTimeByOrigin', () => {
+  describe('#estimateServerResponseTimeByOrigin', function() {
     it('should estimate server response time using ttfb times', () => {
       const timing = {sendEnd: 100, receiveHeadersEnd: 200};
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
@@ -318,7 +318,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should work on a real trace', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests);
       assertCloseEnough(result.get('https://www.paulirish.com')?.avg ?? 0, 35);
       assertCloseEnough(result.get('https://www.googletagmanager.com')?.avg ?? 0, 8);
@@ -326,7 +326,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should approximate well with either method', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests).get(
           NetworkAnalyzer.summary,
       );
@@ -441,9 +441,9 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#computeRTTAndServerResponseTime', () => {
+  describe('#computeRTTAndServerResponseTime', function() {
     it('should work', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.computeRTTAndServerResponseTime(requests);
 
       expect(result.rtt).to.be.closeTo(0.082, 0.001);
@@ -488,25 +488,25 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#findMainDocument', () => {
+  describe('#findMainDocument', function() {
     it('should find the main document', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/');
       assert.isOk(mainDocument);
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
 
     it('should find the main document if the URL includes a fragment', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/#info');
       assert.isOk(mainDocument);
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
   });
 
-  describe('#resolveRedirects', () => {
+  describe('#resolveRedirects', function() {
     it('should resolve to the same document when no redirect', async () => {
-      const requests = await createRequests(trace);
+      const requests = await createRequests(this, trace);
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/');
       assert.isOk(mainDocument);
       const finalDocument = NetworkAnalyzer.resolveRedirects(mainDocument);
@@ -515,7 +515,7 @@ describe('NetworkAnalyzer', () => {
     });
 
     it('should resolve to the final document with redirects', async () => {
-      const requests = await createRequests(traceWithRedirect);
+      const requests = await createRequests(this, traceWithRedirect);
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'http://www.vkontakte.ru/');
       assert.isOk(mainDocument);
       const finalDocument = NetworkAnalyzer.resolveRedirects(mainDocument);

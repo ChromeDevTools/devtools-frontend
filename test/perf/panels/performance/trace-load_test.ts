@@ -10,32 +10,46 @@ import {
   navigateToPerformanceTab,
 } from '../../../e2e/helpers/performance-helpers.js';
 import {
+  getBrowserAndPages,
   reloadDevTools,
   waitFor,
+  waitForFunction,
 } from '../../../shared/helper.js';
 import {mean, percentile} from '../../helpers/perf-helper.js';
 import {addBenchmarkResult, type Benchmark} from '../../report/report.js';
 
 async function timeFixture(fixture: string): Promise<number> {
+  const {frontend} = getBrowserAndPages();
   await navigateToPerformanceTab();
   const panelElement = await waitFor('.widget.panel.timeline');
-  const eventPromise = panelElement.evaluate(el => {
-    return new Promise<number>(resolve => {
-      el.addEventListener('traceload', e => {
-        const ev = e as Timeline.BenchmarkEvents.TraceLoadEvent;
-        resolve(ev.duration);
-      }, {once: true});
-    });
+  await panelElement.evaluate(el => {
+    // @ts-expect-error page context.
+    window.perfDuration = 0;
+    el.addEventListener('traceload', e => {
+      const ev = e as Timeline.BenchmarkEvents.TraceLoadEvent;
+      // @ts-expect-error page context.
+      window.perfDuration = ev.duration;
+    }, {once: true});
   });
   const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
   await uploadProfileHandle.uploadFile(path.join(GEN_DIR, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`));
-  return await eventPromise;
+  // We use wait for function to avoid long running evaluation calls to
+  // avoid protocol-level timeouts.
+  return await waitForFunction(async () => {
+    const result = await frontend.evaluate(() => {
+      // @ts-expect-error page context.
+      return window.perfDuration;
+    });
+    if (!result) {
+      return undefined;
+    }
+    return result;
+  });
 }
 
 describe('Performance panel trace load performance', () => {
   const allTestValues: Array<{name: string, values: number[]}> = [];
-  // Slow test
-  describe.skip('[crbug.com/383713603]: Large CPU profile load benchmark', () => {
+  describe('Large CPU profile load benchmark', () => {
     beforeEach(async () => {
       // Reload devtools to get a fresh version of the panel on each
       // run and prevent a skew due to caching, etc.
@@ -48,7 +62,7 @@ describe('Performance panel trace load performance', () => {
     };
     for (let run = 1; run <= RUNS; run++) {
       it('run large cpu profile benchmark', async function() {
-        this.timeout(20_000);
+        this.timeout(40_000);
         const duration = await timeFixture('large-profile.cpuprofile');
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));

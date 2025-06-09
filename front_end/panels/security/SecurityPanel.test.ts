@@ -171,4 +171,72 @@ describeWithMockConnection('SecurityPanel', () => {
     navigate(getMainFrame(target));
     assert.isFalse(reloadMessage.classList.contains('hidden'));
   });
+
+  it('shows origins with blockable and optionally blockable resources in the sidebar', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+
+    const sidebarTreeClearSpy = sinon.spy(securityPanel.sidebar, 'addOrigin');
+    const pageVisibleSecurityState = new Security.SecurityModel.PageVisibleSecurityState(
+        Protocol.Security.SecurityState.Neutral, null, null, ['displayed-mixed-content', 'ran-mixed-content']);
+    const securityModel = target.model(Security.SecurityModel.SecurityModel);
+    assert.exists(securityModel);
+    securityModel.dispatchEventToListeners(
+        Security.SecurityModel.Events.VisibleSecurityStateChanged, pageVisibleSecurityState);
+
+    const passive = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`http://foo.test`, urlString`https://foo.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    passive.mixedContentType = Protocol.Security.MixedContentType.OptionallyBlockable;
+    const networkManager = securityModel.networkManager();
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, passive);
+
+    assert.isTrue(
+        sidebarTreeClearSpy.calledOnceWith(urlString`http://foo.test`, Protocol.Security.SecurityState.Insecure));
+    sidebarTreeClearSpy.resetHistory();
+
+    const active = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`http://bar.test`, urlString`https://bar.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    active.mixedContentType = Protocol.Security.MixedContentType.Blockable;
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, active);
+
+    assert.isTrue(
+        sidebarTreeClearSpy.calledOnceWith(urlString`http://bar.test`, Protocol.Security.SecurityState.Insecure));
+  });
+
+  it('hides and shows the sidebar origin list when an interstitial is shown or hidden', async () => {
+    const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
+
+    const toggleSidebarSpy = sinon.spy(securityPanel.sidebar, 'toggleOriginsList');
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const request1 = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`https://foo.test/`, urlString`https://foo.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    request1.setSecurityState(Protocol.Security.SecurityState.Secure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request1);
+
+    const request2 = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`https://bar.test/foo.jpg`, urlString`https://bar.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    request2.setSecurityState(Protocol.Security.SecurityState.Secure);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request2);
+
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialShown);
+    // Simulate a request finishing after the interstitial is shown, to make sure that doesn't show up in the sidebar.
+    const request3 = SDK.NetworkRequest.NetworkRequest.create(
+        '0' as Protocol.Network.RequestId, urlString`https://bar.test/foo.jpg`, urlString`https://bar.test`,
+        '0' as Protocol.Page.FrameId, '0' as Protocol.Network.LoaderId, null);
+    request3.setSecurityState(Protocol.Security.SecurityState.Unknown);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request3);
+    assert.isTrue(toggleSidebarSpy.calledOnceWith(true));
+    toggleSidebarSpy.resetHistory();
+
+    // Test that the sidebar is shown again when the interstitial is hidden. https://crbug.com/559150
+    resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
+
+    assert.isTrue(toggleSidebarSpy.calledOnceWith(false));
+  });
 });

@@ -6,10 +6,8 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("lighthouse") {
   sources = [
-    "devtools-settings_test.ts",
     "navigation_test.ts",
     "snapshot_test.ts",
-    "start-view_test.ts",
     "timespan_test.ts",
   ]
 

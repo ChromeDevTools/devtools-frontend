@@ -276,25 +276,28 @@ function createNetworkRequests(
     endTime = Number.POSITIVE_INFINITY): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
-  const lanternRequests: NetworkRequest[] = [];
+  const lanternRequestsNoRedirects: NetworkRequest[] = [];
   for (const request of parsedTrace.NetworkRequests.byTime) {
     if (request.ts >= startTime && request.ts < endTime) {
       const lanternRequest = createLanternRequest(parsedTrace, workerThreads, request);
       if (lanternRequest) {
-        lanternRequests.push(lanternRequest);
+        lanternRequestsNoRedirects.push(lanternRequest);
       }
     }
   }
 
+  const lanternRequests: NetworkRequest[] = [];
+
   // Trace Engine consolidates all redirects into a single request object, but lantern needs
   // an entry for each redirected request.
-  for (const request of [...lanternRequests]) {
+  for (const request of [...lanternRequestsNoRedirects]) {
     if (!request.rawRequest) {
       continue;
     }
 
     const redirects = request.rawRequest.args.data.redirects;
     if (!redirects.length) {
+      lanternRequests.push(request);
       continue;
     }
 
@@ -341,6 +344,7 @@ function createNetworkRequests(
       lanternRequests.push(redirectedRequest);
     }
     requestChain.push(request);
+    lanternRequests.push(request);
 
     for (let i = 0; i < requestChain.length; i++) {
       const request = requestChain[i];
@@ -362,9 +366,7 @@ function createNetworkRequests(
 
   linkInitiators(lanternRequests);
 
-  // This would already be sorted by rendererStartTime, if not for the redirect unwrapping done
-  // above.
-  return lanternRequests.sort((a, b) => a.rendererStartTime - b.rendererStartTime);
+  return lanternRequests;
 }
 
 function collectMainThreadEvents(

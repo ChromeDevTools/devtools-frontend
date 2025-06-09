@@ -29,6 +29,7 @@ describeWithEnvironment('ChartViewport', () => {
     renderWidgetInVbox(viewport, {
       width: 600,
       height: 400,
+      flexAuto: true,
     });
     viewport.setContentHeight(300);
 
@@ -40,10 +41,7 @@ describeWithEnvironment('ChartViewport', () => {
     const viewport = new PerfUI.ChartViewport.ChartViewport(delegate, {enableCursorElement: false});
     viewport.alwaysShowVerticalScroll();
 
-    renderWidgetInVbox(viewport, {
-      width: 600,
-      height: 400,
-    });
+    renderWidgetInVbox(viewport, {width: 600, height: 400, flexAuto: true});
     viewport.setContentHeight(300);
 
     await assertScreenshot('timeline/chart_viewport_always_show_vertical_scroll.png');
@@ -56,6 +54,7 @@ describeWithEnvironment('ChartViewport', () => {
     renderWidgetInVbox(viewport, {
       width: 600,
       height: 400,
+      flexAuto: true,
     });
     viewport.setContentHeight(1000);
 

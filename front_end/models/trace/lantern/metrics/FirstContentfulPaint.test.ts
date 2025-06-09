@@ -17,7 +17,7 @@ describe('Metrics: Lantern FCP', function() {
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture({trace});
+    const data = await getComputationDataFromFixture(this, {trace});
     const result = FirstContentfulPaint.compute(data);
 
     assert.deepEqual(
@@ -40,7 +40,7 @@ describe('Metrics: Lantern FCP', function() {
   });
 
   it('should handle negative request networkEndTime', async () => {
-    const data = await getComputationDataFromFixture({trace});
+    const data = await getComputationDataFromFixture(this, {trace});
     // eslint-disable-next-line rulesdir/prefer-assert-strict-equal
     assert(data.graph.type === 'network');
     data.graph.request.networkEndTime = -1;

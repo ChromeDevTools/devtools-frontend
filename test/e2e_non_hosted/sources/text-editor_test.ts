@@ -9,6 +9,10 @@ import type * as TextEditor from '../../../front_end/ui/components/text_editor/t
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('text editor', () => {
+  // Undocked mode helps against flakes when opening tabs (here Sources)
+  // update to openPanel once it is able to also look for tabs in 'More tabs' menu
+  setup({dockingMode: 'undocked'});
+
   async function getEditorContent(textEditor: ElementHandle<TextEditor.TextEditor.TextEditor>): Promise<string> {
     return await textEditor.evaluate(node => node.state.doc.toString());
   }

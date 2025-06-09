@@ -86,6 +86,14 @@ export class TimelineMiniMap extends
     this.#overviewComponent.enableCreateBreadcrumbsButton();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+    // Set the initial bounds for the overview. Otherwise if we mount & there
+    // is not an immediate RESET event, then we don't render correctly.
+    const state = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (state) {
+      const {timelineTraceWindow, minimapTraceBounds} = state.milli;
+      this.#overviewComponent.setWindowTimes(timelineTraceWindow.min, timelineTraceWindow.max);
+      this.#overviewComponent.setBounds(minimapTraceBounds.min, minimapTraceBounds.max);
+    }
   }
 
   #onOverviewPanelWindowChanged(

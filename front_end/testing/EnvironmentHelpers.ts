@@ -392,6 +392,14 @@ describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) =
     after(async () => await deinitializeGlobalVars());
   });
 };
+describeWithEnvironment.skip = function(title: string, fn: (this: Mocha.Suite) => void, _opts: {reset: boolean} = {
+  reset: true,
+}) {
+  // eslint-disable-next-line rulesdir/check-test-definitions
+  return describe.skip(title, function() {
+    fn.call(this);
+  });
+};
 
 export async function initializeGlobalLocaleVars() {
   // Expose the locale.

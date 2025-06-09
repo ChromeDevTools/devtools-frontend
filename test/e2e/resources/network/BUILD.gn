@@ -12,6 +12,7 @@ copy_to_gen("network") {
     "code-with-json-subtype-request.html",
     "coffees.json",
     "csp-report-only.rawresponse",
+    "csp.html",
     "embedded_requests.html",
     "event-stream.rawresponse",
     "eventstream.html",

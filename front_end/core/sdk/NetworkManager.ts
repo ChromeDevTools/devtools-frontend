@@ -2236,10 +2236,20 @@ SDKModel.register(NetworkManager, {capabilities: Capability.NETWORK, autostart: 
 export class ConditionsSerializer implements Serializer<Conditions, Conditions> {
   stringify(value: unknown): string {
     const conditions = value as Conditions;
-    return JSON.stringify({
-      ...conditions,
-      title: typeof conditions.title === 'function' ? conditions.title() : conditions.title,
-    });
+    try {
+      return JSON.stringify({
+        ...conditions,
+        title: typeof conditions.title === 'function' ? conditions.title() : conditions.title,
+      });
+
+    } catch {
+      // See: crbug.com/420384038
+      // A rename of the i18n strings means that if a user has an old version and we try to parse it, it errors.
+      // In this case, we catch that and just fall back to the default, no
+      // throttling condition. It's not ideal, but it means we don't break the
+      // user's DevTools. We have also landed a migration (see common/Settings.ts) to upgrade users.
+      return new ConditionsSerializer().stringify(NoThrottlingConditions);
+    }
   }
 
   parse(serialized: string): Conditions {

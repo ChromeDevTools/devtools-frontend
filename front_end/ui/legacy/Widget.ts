@@ -924,30 +924,34 @@ export class WidgetFocusRestorer {
   }
 }
 
+function domOperationError(funcName: 'appendChild'|'insertBefore'|'removeChild'|'removeChildren'): Error {
+  return new Error(`Attempt to modify widget with native DOM method \`${funcName}\``);
+}
+
 Element.prototype.appendChild = function<T extends Node>(node: T): T {
   if (widgetMap.get(node) && node.parentElement !== this) {
-    throw new Error('Attempt to add widget via regular DOM operation.');
+    throw domOperationError('appendChild');
   }
   return originalAppendChild.call(this, node) as T;
 };
 
 Element.prototype.insertBefore = function<T extends Node>(node: T, child: Node|null): T {
   if (widgetMap.get(node) && node.parentElement !== this) {
-    throw new Error('Attempt to add widget via regular DOM operation.');
+    throw domOperationError('insertBefore');
   }
   return originalInsertBefore.call(this, node, child) as T;
 };
 
 Element.prototype.removeChild = function<T extends Node>(child: T): T {
   if (widgetCounterMap.get(child) || widgetMap.get(child)) {
-    throw new Error('Attempt to remove element containing widget via regular DOM operation');
+    throw domOperationError('removeChild');
   }
   return originalRemoveChild.call(this, child) as T;
 };
 
 Element.prototype.removeChildren = function(): void {
   if (widgetCounterMap.get(this)) {
-    throw new Error('Attempt to remove element containing widget via regular DOM operation');
+    throw domOperationError('removeChildren');
   }
   return originalRemoveChildren.call(this);
 };

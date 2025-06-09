@@ -6031,6 +6031,14 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "addAnimation",
+    signatures: [["animation"]]
+  },
+  {
+    name: "removeAnimation",
+    signatures: [["animation"]]
+  },
+  {
     name: "Animation",
     signatures: [["?effect","?timeline"]]
   },
@@ -7490,6 +7498,10 @@ export const NativeFunctions = [
     signatures: [["element","x","y","?dwidth","?dheight"]]
   },
   {
+    name: "setHitTestRegions",
+    signatures: [["hitTestRegions"]]
+  },
+  {
     name: "Path2D",
     signatures: [["?path"]]
   },
@@ -8546,12 +8558,18 @@ export const NativeFunctions = [
     signatures: [["phrase","?boost"]]
   },
   {
-    name: "availableOnDevice",
-    signatures: [["lang"]]
+    name: "available",
+    signatures: [["options"]]
   },
   {
-    name: "installOnDevice",
-    signatures: [["lang"]]
+    name: "install",
+    signatures: [["options"]],
+    receivers: ["SpeechRecognition"]
+  },
+  {
+    name: "install",
+    signatures: [["?install_url","?manifest_id"]],
+    receivers: ["Navigator"]
   },
   {
     name: "SpeechSynthesisErrorEvent",
@@ -8576,10 +8594,6 @@ export const NativeFunctions = [
   {
     name: "VirtualKeyboardGeometryChangeEvent",
     signatures: [["type"]]
-  },
-  {
-    name: "install",
-    signatures: [["?install_url","?manifest_id"]]
   },
   {
     name: "AnalyserNode",

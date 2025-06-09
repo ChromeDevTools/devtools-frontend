@@ -6,14 +6,11 @@ import type * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer-core';
 
 import {querySelectorShadowTextAll, querySelectorShadowTextOne} from '../../conductor/custom-query-handlers.js';
-import {dumpCollectedErrors} from '../../conductor/events.js';
 import {TestConfig} from '../../conductor/test_config.js';
 import {startServer} from '../../conductor/test_server.js';
 import {type BrowserWrapper, DEFAULT_BROWSER_SETTINGS, Launcher} from '../shared/browser-helper.js';
 import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
 import {setupInspectedPage} from '../shared/target-helper.js';
-
-import {screenshotError} from './mocha-interface-helpers.js';
 
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,
@@ -32,20 +29,6 @@ export class StateProvider {
 
   registerSettingsCallback(suite: Mocha.Suite, suiteSettings: E2E.SuiteSettings) {
     this.#settingsCallbackMap.set(suite, suiteSettings);
-  }
-
-  async callWithState(context: Mocha.Context, suite: Mocha.Suite, testFn: E2E.TestAsyncCallbackWithState) {
-    const {state, browsingContext} = await this.#getState(suite);
-    try {
-      // eslint-disable-next-line no-debugger
-      debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
-      return await testFn.call(context, state);
-    } catch (e) {
-      throw await screenshotError(state, e);
-    } finally {
-      await browsingContext.close();
-      dumpCollectedErrors();
-    }
   }
 
   async resolveBrowser(suite: Mocha.Suite) {
@@ -68,7 +51,7 @@ export class StateProvider {
     suite.browser = browser;
   }
 
-  async #getState(suite: Mocha.Suite) {
+  async getState(suite: Mocha.Suite) {
     const settings = await this.#getSettings(suite);
     const browser = suite.browser;
     const browsingContext = await browser.createBrowserContext();
@@ -105,9 +88,9 @@ export class StateProvider {
   }
 
   async closeBrowsers() {
-    await this.#browserMap.forEach(async (browser: BrowserWrapper) => {
+    await Promise.all([...this.#browserMap.values()].map(async browser => {
       await browser.browser.close();
-    });
+    }));
   }
 }
 

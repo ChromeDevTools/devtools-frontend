@@ -821,7 +821,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   private onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
     const timestamp = event.data;
-    this.overviewPane.setWindowTimes(0, timestamp);
+    this.overviewPane.setWindowTimes(Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(timestamp));
   }
 
   private onFilmFrameEnter(event: Common.EventTarget.EventTargetEvent<number>): void {

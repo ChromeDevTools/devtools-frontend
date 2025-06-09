@@ -10152,6 +10152,17 @@
                     ]
                 },
                 {
+                    "name": "setEmulatedOSTextScale",
+                    "description": "Emulates the given OS text scale.",
+                    "parameters": [
+                        {
+                            "name": "scale",
+                            "optional": true,
+                            "type": "number"
+                        }
+                    ]
+                },
+                {
                     "name": "setGeolocationOverride",
                     "description": "Overrides the Geolocation Position or Error. Omitting latitude, longitude or\naccuracy emulates position unavailable.",
                     "parameters": [
@@ -18150,19 +18161,41 @@
                 },
                 {
                     "id": "AdScriptId",
-                    "description": "Identifies the bottom-most script which caused the frame to be labelled\nas an ad.",
+                    "description": "Identifies the script which caused a script or frame to be labelled as an\nad.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
                         {
                             "name": "scriptId",
-                            "description": "Script Id of the bottom-most script which caused the frame to be labelled\nas an ad.",
+                            "description": "Script Id of the script which caused a script or frame to be labelled as\nan ad.",
                             "$ref": "Runtime.ScriptId"
                         },
                         {
                             "name": "debuggerId",
-                            "description": "Id of adScriptId's debugger.",
+                            "description": "Id of scriptId's debugger.",
                             "$ref": "Runtime.UniqueDebuggerId"
+                        }
+                    ]
+                },
+                {
+                    "id": "AdScriptAncestry",
+                    "description": "Encapsulates the script ancestry and the root script filterlist rule that\ncaused the frame to be labelled as an ad. Only created when `ancestryChain`\nis not empty.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "ancestryChain",
+                            "description": "A chain of `AdScriptId`s representing the ancestry of an ad script that\nled to the creation of a frame. The chain is ordered from the script\nitself (lower level) up to its root ancestor that was flagged by\nfilterlist.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdScriptId"
+                            }
+                        },
+                        {
+                            "name": "rootScriptFilterlistRule",
+                            "description": "The filterlist rule that caused the root (last) script in\n`ancestryChain` to be ad-tagged. Only populated if the rule is\navailable.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -20091,7 +20124,7 @@
                     ]
                 },
                 {
-                    "name": "getAdScriptAncestryIds",
+                    "name": "getAdScriptAncestry",
                     "experimental": true,
                     "parameters": [
                         {
@@ -20101,12 +20134,10 @@
                     ],
                     "returns": [
                         {
-                            "name": "adScriptAncestryIds",
-                            "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
-                            "type": "array",
-                            "items": {
-                                "$ref": "AdScriptId"
-                            }
+                            "name": "adScriptAncestry",
+                            "description": "The ancestry chain of ad script identifiers leading to this frame's\ncreation, along with the root script's filterlist rule. The ancestry\nchain is ordered from the most immediate script (in the frame creation\nstack) to more distant ancestors (that created the immediately preceding\nscript). Only sent if frame is labelled as an ad and ids are available.",
+                            "optional": true,
+                            "$ref": "AdScriptAncestry"
                         }
                     ]
                 },

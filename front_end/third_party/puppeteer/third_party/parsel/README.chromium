@@ -5,6 +5,7 @@ License: MIT
 License File: LICENSE
 Security Critical: no
 Shipped: yes
+Update Mechanism: Autoroll
 
 Description: parsel is a transitive dependency of Puppeteer, shipped as part of
 Puppeteer. The license is also included in the source files in

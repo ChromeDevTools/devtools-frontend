@@ -75,7 +75,16 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       });
     }
 
-    await setupBindings(page);
+    async function disableAnimations(page: Page) {
+      const session = await page.createCDPSession();
+      await session.send('Animation.enable');
+      await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
+    }
+
+    await Promise.all([
+      setupBindings(page),
+      disableAnimations(page),
+    ]);
 
     browser.on('targetcreated', async (target: Target) => {
       if (target.type() === 'page') {
@@ -83,7 +92,10 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
         if (!page) {
           return;
         }
-        await setupBindings(page);
+        await Promise.all([
+          setupBindings(page),
+          disableAnimations(page),
+        ]);
       }
     });
 

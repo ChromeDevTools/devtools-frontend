@@ -268,8 +268,9 @@ UI.ActionRegistration.registerActionExtension({
 
 // @ts-expect-error
 globalThis.handleExternalRequest =
-    async(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string): Promise<string> => {
-  const AiAssistance = await loadAiAssistanceModule();
-  const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-  return await panelInstance.handleExternalRequest(prompt, conversationType, selector);
-};
+    async(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
+        Promise<{response: string, devToolsLogs: object[]}> => {
+          const AiAssistance = await loadAiAssistanceModule();
+          const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+          return await panelInstance.handleExternalRequest(prompt, conversationType, selector);
+        };

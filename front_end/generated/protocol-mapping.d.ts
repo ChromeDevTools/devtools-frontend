@@ -2350,6 +2350,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Emulates the given OS text scale.
+     */
+    'Emulation.setEmulatedOSTextScale': {
+      paramsType: [Protocol.Emulation.SetEmulatedOSTextScaleRequest?];
+      returnType: void;
+    };
+    /**
      * Overrides the Geolocation Position or Error. Omitting latitude, longitude or
      * accuracy emulates position unavailable.
      */
@@ -3484,9 +3491,9 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: Protocol.Page.GetAppIdResponse;
     };
-    'Page.getAdScriptAncestryIds': {
-      paramsType: [Protocol.Page.GetAdScriptAncestryIdsRequest];
-      returnType: Protocol.Page.GetAdScriptAncestryIdsResponse;
+    'Page.getAdScriptAncestry': {
+      paramsType: [Protocol.Page.GetAdScriptAncestryRequest];
+      returnType: Protocol.Page.GetAdScriptAncestryResponse;
     };
     /**
      * Returns present frame tree structure.

@@ -6,15 +6,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {
-  $,
-  click,
-  waitFor,
-  waitForAria,
-  waitForElementWithTextContent,
-  waitForFunction,
-  waitForMany,
-} from '../../shared/helper.js';
+import {waitForMany} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
@@ -196,35 +188,45 @@ export async function navigateToCallTreeTab(devToolsPage: DevToolsPage = getBrow
       'Panel: timeline', devToolsPage);
 }
 
-export async function setFilter(filter: string) {
-  const filterBoxElement = await click(FILTER_TEXTBOX_SELECTOR);
+export async function setFilter(
+    filter: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const filterBoxElement = await devToolsPage.click(FILTER_TEXTBOX_SELECTOR);
   await filterBoxElement.type(filter);
   await expectVeEvents(
       [veChange(''), veImpression('Action', 'clear')],
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > TextField: filter');
+      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > TextField: filter',
+      devToolsPage);
 }
 
-export async function toggleCaseSensitive() {
-  const matchCaseButton = await waitForAria('Match case');
+export async function toggleCaseSensitive(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const matchCaseButton = await devToolsPage.waitForAria('Match case');
   await matchCaseButton.click();
-  await expectVeEvents([veClick(
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-case')]);
+  await expectVeEvents(
+      [veClick(
+          'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-case')],
+      undefined, devToolsPage);
 }
 
-export async function toggleRegExButtonBottomUp() {
-  const regexButton = await waitFor('[aria-label="Use regular expression"]');
+export async function toggleRegExButtonBottomUp(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const regexButton = await devToolsPage.waitFor('[aria-label="Use regular expression"]');
   await regexButton.click();
-  await expectVeEvents([
-    veClick(
-        'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: regular-expression'),
-  ]);
+  await expectVeEvents(
+      [
+        veClick(
+            'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: regular-expression')
+      ],
+      undefined, devToolsPage);
 }
 
-export async function toggleMatchWholeWordButtonBottomUp() {
-  const wholeWordButton = await waitForAria('Match whole word');
+export async function toggleMatchWholeWordButtonBottomUp(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const wholeWordButton = await devToolsPage.waitForAria('Match whole word');
   await wholeWordButton.click();
-  await expectVeEvents([veClick(
-      'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-whole-word')]);
+  await expectVeEvents(
+      [veClick(
+          'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > Toggle: match-whole-word')],
+      undefined, devToolsPage);
 }
 
 export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -235,6 +237,20 @@ export async function startRecording(devToolsPage: DevToolsPage = getBrowserAndP
   await expectVeEvents(
       [veClick('Toolbar > Toggle: timeline.toggle-recording'), veImpressionForStatusDialog()], 'Panel: timeline',
       devToolsPage);
+}
+
+/**
+ * Increases the timeout for the tests in the given context.
+ * Useful for performance as tests that import or record a trace often get over the default timeout on slower bots.
+ * Note that in e2e_non_hosted this can only be used on a `describe`, not an
+ * `it`, hence why the type of the argument is `Mocha.Suite`
+ */
+export function increaseTimeoutForPerfPanel(context: Mocha.Suite): void {
+  // If the timeout is 0, then we are in debug mode, and don't want to override
+  // that.
+  if (context.timeout()) {
+    context.timeout(30_000);
+  }
 }
 
 export async function reloadAndRecord(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -263,9 +279,10 @@ export async function stopRecording(devToolsPage: DevToolsPage = getBrowserAndPa
       'Panel: timeline', devToolsPage);
 }
 
-export async function getTotalTimeFromSummary(): Promise<number> {
+export async function getTotalTimeFromSummary(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<number> {
   const minCategories = 2;
-  const categoryValues = await waitForMany('.category-value', minCategories);
+  const categoryValues = await devToolsPage.waitForMany('.category-value', minCategories);
 
   const totalVal = categoryValues[categoryValues.length - 1];
   const totalText = await totalVal.evaluate(node => node.textContent as string);
@@ -322,16 +339,15 @@ export async function navigateToSelectorStatsTab(
       'Panel: timeline > Section: timeline.flame-chart-view', devToolsPage);
 }
 
-export async function selectRecalculateStylesEvent() {
-  await waitForFunction(async () => {
-    await searchForComponent(RECALCULATE_STYLE_TITLE, getBrowserAndPagesWrappers().devToolsPage);
-    const title = await $('.timeline-details-chip-title');
-    if (!title) {
-      return false;
-    }
-    const titleText = await title.evaluate(x => x.textContent);
-    return titleText === RECALCULATE_STYLE_TITLE;
-  });
+export async function selectRecalculateStylesEvent(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await searchForComponent(RECALCULATE_STYLE_TITLE, devToolsPage);
+  const title = await devToolsPage.$('.timeline-details-chip-title');
+  if (!title) {
+    return false;
+  }
+  const titleText = await title.evaluate(x => x.textContent);
+  return titleText === RECALCULATE_STYLE_TITLE;
 }
 
 export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -355,28 +371,6 @@ export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBro
   await expectVeEvents(
       [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')], undefined,
       devToolsPage);
-}
-
-export async function disableCSSSelectorStats() {
-  const timelineSettingsPane = await waitFor(TIMELINE_SETTINGS_PANE);
-  if (await timelineSettingsPane.isHidden()) {
-    await openCaptureSettings(TIMELINE_SETTINGS_PANE);
-  }
-
-  // Wait for the checkbox to load
-  const toggle =
-      await waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as puppeteer.ElementHandle<HTMLInputElement>;
-  await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
-    if (e.disabled) {
-      return false;
-    }
-    if (e.checked) {
-      e.click();
-    }
-    return true;
-  }));
-  await expectVeEvents(
-      [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
 }
 
 export function veImpressionForPerformancePanel() {

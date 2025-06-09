@@ -6,7 +6,10 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("animations") {
   sources = [
+    "animation-groups.html",
     "animations-shown.html",
     "default.html",
+    "transition-and-animation-groups.html",
+    "transition-groups.html",
   ]
 }

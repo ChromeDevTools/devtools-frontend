@@ -23,7 +23,7 @@ const LINEAR_MEMORY_INSPECTOR_TAB_TITLE_SELECTOR = '.tabbed-pane-header-tab-titl
 
 describe('Scope View', () => {
   it('opens linear memory inspector', async () => {
-    const {frontend, target} = getBrowserAndPages();
+    const {frontend} = getBrowserAndPages();
     const breakpointLine = '0x039';
     const fileName = 'memory.wasm';
 
@@ -36,7 +36,7 @@ describe('Scope View', () => {
     });
 
     await step('reload the page', async () => {
-      await reloadPageAndWaitForSourceFile(target, fileName);
+      await reloadPageAndWaitForSourceFile(fileName);
     });
 
     await step('expand the module scope', async () => {

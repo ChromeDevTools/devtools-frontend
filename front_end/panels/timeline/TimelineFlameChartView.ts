@@ -1084,10 +1084,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     debouncedUpdate();
   }
 
-  isNetworkTrackShownForTests(): boolean {
-    return this.networkSplitWidget.showMode() !== UI.SplitWidget.ShowMode.ONLY_MAIN;
-  }
-
   getLinkSelectionAnnotation(): Trace.Types.File.EntriesLinkAnnotation|null {
     return this.#linkSelectionAnnotation;
   }

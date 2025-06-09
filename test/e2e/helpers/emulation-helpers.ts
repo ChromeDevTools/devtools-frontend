@@ -10,8 +10,8 @@ import {
   getBrowserAndPages,
   goToResource,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
   reloadDevTools,
@@ -36,24 +36,25 @@ export const reloadDockableFrontEnd = async () => {
   await reloadDevTools({canDock: true});
 };
 
-export const deviceModeIsEnabled = async () => {
+export const deviceModeIsEnabled = async (inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
   // Check the userAgent string to see whether emulation is really enabled.
-  const {target} = getBrowserAndPages();
-  const userAgent = await target.evaluate(() => navigator.userAgent);
+  const userAgent = await inspectedPage.evaluate(() => navigator.userAgent);
   return userAgent.includes('Mobile');
 };
 
-export const clickDeviceModeToggler = async () => {
-  const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
-  await clickElement(deviceToolbarToggler);
+export const clickDeviceModeToggler = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const deviceToolbarToggler = await devToolsPage.waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
+  await devToolsPage.clickElement(deviceToolbarToggler);
 };
 
-export const openDeviceToolbar = async () => {
-  if (await deviceModeIsEnabled()) {
+export const openDeviceToolbar = async (
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
+  if (await deviceModeIsEnabled(inspectedPage)) {
     return;
   }
-  await clickDeviceModeToggler();
-  await waitFor(DEVICE_TOOLBAR_SELECTOR);
+  await clickDeviceModeToggler(devToolsPage);
+  await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
 };
 
 export const showMediaQueryInspector = async () => {
@@ -81,9 +82,9 @@ export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTML
   });
 };
 
-export const clickDevicesDropDown = async () => {
-  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
-  await click(DEVICE_LIST_DROPDOWN_SELECTOR, {root: toolbar});
+export const clickDevicesDropDown = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const toolbar = await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
+  await devToolsPage.click(DEVICE_LIST_DROPDOWN_SELECTOR, {root: toolbar});
 };
 
 export const clickDevicePostureDropDown = async () => {
@@ -113,10 +114,10 @@ export const selectEdit = async () => {
   await waitForNotExpanded(DEVICE_LIST_DROPDOWN_SELECTOR);
 };
 
-export const selectDevice = async (name: string) => {
-  await clickDevicesDropDown();
-  await click(`[aria-label*="${name}, unchecked"]`);
-  await waitForNotExpanded(DEVICE_LIST_DROPDOWN_SELECTOR);
+export const selectDevice = async (name: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await clickDevicesDropDown(devToolsPage);
+  await devToolsPage.click(`[aria-label*="${name}, unchecked"]`);
+  await waitForNotExpanded(DEVICE_LIST_DROPDOWN_SELECTOR, devToolsPage);
 };
 
 export const selectTestDevice = async () => {
@@ -138,10 +139,10 @@ export const selectFoldableDevice = async () => {
   await waitForNotExpanded(DEVICE_LIST_DROPDOWN_SELECTOR);
 };
 
-const waitForNotExpanded = async (selector: string) => {
-  const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
-  const dropdown = await waitFor(selector, toolbar);
-  await waitForFunction(async () => {
+const waitForNotExpanded = async (selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const toolbar = await devToolsPage.waitFor(DEVICE_TOOLBAR_SELECTOR);
+  const dropdown = await devToolsPage.waitFor(selector, toolbar);
+  await devToolsPage.waitForFunction(async () => {
     const expanded = await dropdown.evaluate(el => el.getAttribute('aria-expanded'));
     return expanded === null;
   });

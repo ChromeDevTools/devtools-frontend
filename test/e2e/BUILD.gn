@@ -16,9 +16,7 @@ group("e2e") {
 node_ts_library("tests") {
   deps = [
     "application",
-    "changes",
     "console",
-    "coverage",
     "cross_tool_integration",
     "elements",
     "emulation",
@@ -31,13 +29,9 @@ node_ts_library("tests") {
     "network",
     "panels",
     "performance",
-    "puppeteer",
-    "quick_open",
     "recorder",
-    "search",
     "security",
     "settings",
-    "snippets",
     "sources",
     "throttling",
   ]

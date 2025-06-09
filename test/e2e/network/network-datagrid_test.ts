@@ -108,7 +108,7 @@ describe('The Network Tab', function() {
       const expectedValues = JSON.stringify(['Last-Modified', '', 'Sun, 26 Sep 2010 22:04:35 GMT']);
       await waitForFunction(async () => {
         const lastModifiedColumnValues = await frontend.$$eval(
-            'pierce/.last-modified-column',
+            'pierce/.response-header-last-modified-column',
             cells => cells.map(element => element.textContent),
         );
         return JSON.stringify(lastModifiedColumnValues) === expectedValues;

@@ -1578,6 +1578,11 @@ declare namespace ProtocolProxyApi {
     invoke_setEmulatedVisionDeficiency(params: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Emulates the given OS text scale.
+     */
+    invoke_setEmulatedOSTextScale(params: Protocol.Emulation.SetEmulatedOSTextScaleRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Overrides the Geolocation Position or Error. Omitting latitude, longitude or
      * accuracy emulates position unavailable.
      */
@@ -2749,7 +2754,7 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getAppId(): Promise<Protocol.Page.GetAppIdResponse>;
 
-    invoke_getAdScriptAncestryIds(params: Protocol.Page.GetAdScriptAncestryIdsRequest): Promise<Protocol.Page.GetAdScriptAncestryIdsResponse>;
+    invoke_getAdScriptAncestry(params: Protocol.Page.GetAdScriptAncestryRequest): Promise<Protocol.Page.GetAdScriptAncestryResponse>;
 
     /**
      * Returns present frame tree structure.

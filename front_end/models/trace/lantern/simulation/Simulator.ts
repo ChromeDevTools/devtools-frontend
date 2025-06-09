@@ -448,7 +448,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
    * connection).
    */
   simulate(graph: Graph.Node, options?: {label?: string}): Result<T> {
-    if (Graph.BaseNode.hasCycle(graph)) {
+    if (Graph.BaseNode.findCycle(graph)) {
       throw new Core.LanternError('Cannot simulate graph with cycle');
     }
 

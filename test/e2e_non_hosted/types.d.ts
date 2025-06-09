@@ -53,6 +53,7 @@ declare global {
       browser: BrowserWrapper;
     }
 
-    export type TestAsyncCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<unknown>;
+    // We do not allow test functions to affect mocha context.
+    export type TestAsyncCallbackWithState = (this: undefined, state: State) => PromiseLike<unknown>;
   }
 }

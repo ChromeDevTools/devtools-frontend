@@ -1303,6 +1303,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private contextMenu(event: Event): void {
+    // If we are recording (or transitioning to/from recording, don't let the user use the context menu)
+    if (this.state === State.START_PENDING || this.state === State.RECORDING || this.state === State.STOP_PENDING) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     // Do not show this Context menu on FlameChart entries because we have a different context menu for FlameChart entries
     const mouseEvent = (event as MouseEvent);
     if (this.flameChart.getMainFlameChart().coordinatesToEntryIndex(mouseEvent.offsetX, mouseEvent.offsetY) !== -1) {

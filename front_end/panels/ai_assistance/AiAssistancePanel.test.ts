@@ -1214,6 +1214,69 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert.isTrue(view.input.isTextInputDisabled);
            assert.strictEqual(view.input.inputPlaceholder, 'Select an element to ask a question');
          });
+
+      it('shows the right placeholder for the performance agent when the user has no trace', async () => {
+        updateHostConfig({
+          devToolsAiAssistancePerformanceAgent: {
+            enabled: true,
+          },
+        });
+        UI.Context.Context.instance().setFlavor(
+            Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
+        Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+        const {panel, view} =
+            await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+        panel.handleAction('drjones.performance-panel-context');
+
+        assert.isNull((await view.nextInput).selectedContext);
+        assert.isTrue(view.input.isTextInputDisabled);
+        assert.strictEqual(
+            view.input.inputPlaceholder, 'Record a performance trace and select an item to ask a question');
+      });
+
+      it('shows the right placeholder for the performance agent when the user has a trace but no selected item',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+             },
+           });
+
+           const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+           timelinePanel.hasActiveTrace.callsFake(() => true);
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const {panel, view} =
+               await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+           panel.handleAction('drjones.performance-panel-context');
+
+           assert.isNull((await view.nextInput).selectedContext);
+           assert.isTrue(view.input.isTextInputDisabled);
+           assert.strictEqual(view.input.inputPlaceholder, 'Select an item to ask a question');
+         });
+
+      it('shows the right placeholder for the performance agent when the user has a trace and a selected item',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+             },
+           });
+
+           const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+           timelinePanel.hasActiveTrace.callsFake(() => true);
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
+
+           const fakeCallTree = sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree);
+           UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, fakeCallTree);
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const {panel, view} =
+               await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+           panel.handleAction('drjones.performance-panel-context');
+
+           assert.isFalse(view.input.isTextInputDisabled);
+           assert.strictEqual(view.input.inputPlaceholder, 'Ask a question about the selected item and its call tree');
+         });
     });
 
     it('should disable the send button when the input is empty', async () => {

@@ -827,6 +827,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.statusDialog = null;
   }
 
+  hasActiveTrace(): boolean {
+    return this.#viewMode.mode === 'VIEWING_TRACE';
+  }
+
   #changeView(newMode: ViewMode): void {
     if (this.#viewModesEquivalent(this.#viewMode, newMode)) {
       return;

@@ -135,6 +135,10 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForPerformance: 'Ask a question about the selected item and its call tree',
   /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceWithNoRecording: 'Record a performance trace and select an item to ask a question',
+  /**
    *@description Placeholder text for the chat UI input when there is no context selected.
    */
   inputPlaceholderForStylingNoContext: 'Select an element to ask a question',
@@ -1033,9 +1037,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AiAssistanceModel.ConversationType.NETWORK:
         return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
                                        lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
-      case AiAssistanceModel.ConversationType.PERFORMANCE:
-        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForPerformance) :
-                                       lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceNoContext);
+      case AiAssistanceModel.ConversationType.PERFORMANCE: {
+        const perfPanel = UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+        if (perfPanel?.hasActiveTrace()) {
+          return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForPerformance) :
+                                         lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceNoContext);
+        }
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceWithNoRecording);
+      }
       case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
         return this.#selectedContext ?
             lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsights) :

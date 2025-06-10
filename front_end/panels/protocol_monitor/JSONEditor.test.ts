@@ -1002,7 +1002,7 @@ describeWithEnvironment('JSONEditor', () => {
          const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
 
          dispatchKeyDownEvent(
-             jsonEditor.contentElement.querySelector('.wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
+             jsonEditor.contentElement.querySelector('.editor-wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
 
          const response = await promise;
 
@@ -1262,7 +1262,7 @@ describeWithEnvironment('JSONEditor', () => {
 
        // We send the command
        dispatchKeyDownEvent(
-           jsonEditor.contentElement.querySelector('.wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
+           jsonEditor.contentElement.querySelector('.editor-wrapper')!, {key: 'Enter', ctrlKey: true, metaKey: true});
 
        const response = await promise;
 

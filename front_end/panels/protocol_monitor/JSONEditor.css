@@ -62,10 +62,15 @@ ul {
 }
 
 .wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.editor-wrapper {
   padding-left: 1em;
   overflow-x: hidden;
-  height: 100%;
-  width: 100%;
+  flex-grow: 1;
   padding-bottom: 50px;
   padding-top: 0.5em;
 }

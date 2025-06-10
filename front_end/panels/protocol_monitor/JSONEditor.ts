@@ -1210,8 +1210,8 @@ function renderParameters(
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   // clang-format off
   render(html`
-    <div jslog=${VisualLogging.pane('command-editor').track({resize: true})}>
-      <div class="wrapper" @keydown=${input.onKeydown}>
+    <div class="wrapper" jslog=${VisualLogging.pane('command-editor').track({resize: true})}>
+      <div class="editor-wrapper" @keydown=${input.onKeydown}>
         ${renderTargetSelectorRow(input)}
         <div class="row attribute padded">
           <div class="command">command<span class="separator">:</span></div>

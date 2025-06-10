@@ -243,6 +243,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       this.tabbedPane.setAutoSelectFirstItemOnShow(false);
     }
     this.drawerSplitWidget.setMainWidget(this.tabbedPane);
+    this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
 
     this.keyDownBound = this.keyDown.bind(this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

@@ -326,7 +326,8 @@ type ViewMode = {
   mode: 'STATUS_PANE_OVERLAY',
 };
 
-export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
+export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Panel.Panel>(UI.Panel.Panel)
+    implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly recordingOptionUIControls: UI.Toolbar.ToolbarItem[];
   private state: State;
@@ -875,6 +876,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       case 'LANDING_PAGE': {
         this.#removeStatusPane();
         this.#showLandingPage();
+        this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, false);
 
         // Whilst we don't reset this, we hide it, mainly so the user cannot
         // hit Ctrl/Cmd-F and try to search when it isn't visible.
@@ -888,6 +890,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#removeStatusPane();
         this.#showSidebarIfRequired();
         this.flameChart.dimThirdPartiesIfRequired();
+        this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, true);
         return;
       }
 
@@ -896,6 +899,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         // recordingStarted/recordingProgress callbacks, but we do make sure we
         // hide the landing page.
         this.#hideLandingPage();
+        this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, false);
 
         // We also hide the sidebar - else if the user is viewing a trace and
         // then load/record another, the sidebar remains visible.
@@ -2943,4 +2947,10 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 export class SelectedInsight {
   constructor(public insight: TimelineComponents.Sidebar.ActiveInsight) {
   }
+}
+export const enum Events {
+  IS_VIEWING_TRACE = 'IsViewingTrace',
+}
+export interface EventTypes {
+  [Events.IS_VIEWING_TRACE]: boolean;
 }

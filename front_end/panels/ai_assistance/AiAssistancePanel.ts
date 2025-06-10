@@ -523,6 +523,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #imageInput?: ImageInputData;
   // Used to disable send button when there is not text input.
   #isTextInputEmpty = true;
+  #timelinePanelInstance: TimelinePanel.TimelinePanel.TimelinePanel|null = null;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -629,6 +630,32 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     return panelInstance;
+  }
+
+  /**
+   * Called when the TimelinePanel instance changes. We use this to listen to
+   * the status of if the user is viewing a trace or not, and update the
+   * placeholder text in the panel accordingly. We do this because if the user
+   * has an active trace, we show different text than if they are viewing
+   * the performance panel but have no trace imported.
+   */
+  #bindTimelineTraceListener(): void {
+    const timelinePanel = UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel);
+
+    // Avoid binding multiple times.
+    if (timelinePanel === this.#timelinePanelInstance) {
+      return;
+    }
+
+    // Ensure we clear up any listener from the old TimelinePanel instance.
+    this.#timelinePanelInstance?.removeEventListener(
+        TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE, this.requestUpdate, this);
+    this.#timelinePanelInstance = timelinePanel;
+
+    if (this.#timelinePanelInstance) {
+      this.#timelinePanelInstance.addEventListener(
+          TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE, this.requestUpdate, this);
+    }
   }
 
   // We select the default agent based on the open panels if
@@ -766,6 +793,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -774,6 +802,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
+
+    // Listen to changes in the Timeline Panel state. We also call the
+    // function immediately in case the Performance panel is already shown
+    // when AI Assistance is loaded.
+    UI.Context.Context.instance().addFlavorChangeListener(
+        TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
+    this.#bindTimelineTraceListener();
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }
@@ -800,6 +835,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().removeFlavorChangeListener(
         TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        TimelinePanel.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.DOMModel.DOMModel,
         SDK.DOMModel.Events.AttrModified,
@@ -815,6 +852,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
+
+    if (this.#timelinePanelInstance) {
+      this.#timelinePanelInstance.removeEventListener(
+          TimelinePanel.TimelinePanel.Events.IS_VIEWING_TRACE, this.requestUpdate, this);
+      this.#timelinePanelInstance = null;
+    }
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {

@@ -18,7 +18,10 @@ import {assertElementScreenshotUnchanged} from '../shared/screenshots.js';
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 const REMOTE_DEBUGGING_PORT = 7722;
 
-const tests = loadTests(path.join(GEN_DIR, 'front_end'));
+const tests = [
+  ...loadTests(path.join(GEN_DIR, 'front_end')),
+  ...loadTests(path.join(GEN_DIR, 'inspector_overlay')),
+];
 
 function* reporters() {
   if (ResultsDb.available()) {

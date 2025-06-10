@@ -8,6 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {GEN_DIR} from '../../../conductor/paths.js';
 import {
+  increaseTimeoutForPerfPanel,
   navigateToBottomUpTab,
   navigateToPerformanceTab,
   setFilter,
@@ -35,10 +36,7 @@ async function enumerateTreeItems(devtoolsPage: DevToolsPage) {
 }
 
 describe('The Performance tool, Bottom-up panel', function() {
-  // These tests have lots of waiting which might take more time to execute
-  if (this.timeout() !== 0) {
-    this.timeout(20000);
-  }
+  increaseTimeoutForPerfPanel(this);
 
   setup({dockingMode: 'undocked'});
   // navigate to the Performance tab and upload performance profile

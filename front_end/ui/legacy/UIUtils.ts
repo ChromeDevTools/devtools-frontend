@@ -1498,6 +1498,10 @@ export class DevToolsCloseButton extends HTMLElement {
       this.#button.tabIndex = -1;
     }
   }
+
+  override focus(): void {
+    this.#button.focus();
+  }
 }
 
 customElements.define('dt-close-button', DevToolsCloseButton);

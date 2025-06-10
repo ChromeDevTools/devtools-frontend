@@ -281,7 +281,8 @@ export class ConsolePin {
             }
             // User should be able to tab out of edit field after auto complete is done
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
-            this.focusOut();
+            this.editor.blur();
+            this.deletePinIcon.focus();
             return true;
           },
         },

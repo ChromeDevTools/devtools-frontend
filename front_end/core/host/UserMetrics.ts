@@ -773,8 +773,9 @@ export enum KeyboardShortcutAction {
   'coverage.clear' = 116,
   'coverage.export' = 117,
   'timeline.dim-third-parties' = 118,
+  'main.toggle-drawer-orientation' = 119,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 119,
+  MAX_VALUE = 120,
 }
 
 export const enum IssueOpener {
@@ -816,12 +817,11 @@ export enum DevtoolsExperiments {
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
   'timeline-experimental-insights' = 102,
-  // 106 was historically used [https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/6230097]
-  // next experiment should be 107
+  'vertical-drawer' = 107,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 106,
+  MAX_VALUE = 108,
 }
 
 // Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.

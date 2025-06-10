@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -223,6 +224,10 @@ const UIStrings = {
    * @description Command to turn the browser color scheme matching off through the command menu.
    */
   dontMatchChromeColorSchemeCommand: 'Don\'t match Chrome color scheme',
+  /**
+   * @description Command to toggle the drawer orientation.
+   */
+  toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -272,6 +277,21 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Esc',
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.DRAWER,
+  actionId: 'main.toggle-drawer-orientation',
+  async loadActionDelegate() {
+    return new UI.InspectorView.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.toggleDrawerOrientation),
+  bindings: [
+    {
+      shortcut: 'Shift+Esc',
+    },
+  ],
+  experiment: Root.Runtime.ExperimentName.VERTICAL_DRAWER,
 });
 
 UI.ActionRegistration.registerActionExtension({

@@ -288,6 +288,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('sampling-heap-profiler-timeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
         'show-option-tp-expose-internals-in-heap-snapshot', 'Show option to expose internals in heap snapshots');
+    Root.Runtime.experiments.register('vertical-drawer', 'Enable vertical drawer configuration');
 
     // Timeline
     Root.Runtime.experiments.register(

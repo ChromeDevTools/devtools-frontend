@@ -1903,6 +1903,7 @@ export const knownContextValues = new Set([
   'landscape-left',
   'landscape-right',
   'language',
+  'language-browser-language',
   'language-af',
   'language-am',
   'language-ar',

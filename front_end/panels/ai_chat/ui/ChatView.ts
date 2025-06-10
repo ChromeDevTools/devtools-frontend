@@ -269,6 +269,9 @@ export class ChatView extends HTMLElement {
   #isInputDisabled = false;
   #inputPlaceholder = '';
   
+  // Add state tracking for AI Assistant operations
+  #aiAssistantStates = new Map<string, 'pending' | 'opened' | 'failed'>();
+  #lastProcessedMessageKey: string | null = null;
 
   connectedCallback(): void {
     const sheet = new CSSStyleSheet();
@@ -289,6 +292,10 @@ export class ChatView extends HTMLElement {
   disconnectedCallback(): void {
     // Cleanup resize observer
     this.#messagesContainerResizeObserver.disconnect();
+    
+    // Clear state maps to prevent memory leaks
+    this.#aiAssistantStates.clear();
+    this.#lastProcessedMessageKey = null;
   }
 
   // Add method to scroll to bottom
@@ -344,6 +351,98 @@ export class ChatView extends HTMLElement {
       this.#pinScrollToBottom = true;
     }
   };
+
+  // Helper methods for AI Assistant state management
+  #getMessageStateKey(structuredResponse: {reasoning: string, markdownReport: string}): string {
+    // Create stable hash from content - Unicode safe
+    const content = structuredResponse.reasoning + structuredResponse.markdownReport;
+    
+    // Unicode-safe hash function using TextEncoder
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(content);
+    
+    let hash = 0;
+    for (let i = 0; i < bytes.length; i++) {
+      hash = ((hash << 5) - hash) + bytes[i];
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    
+    // Convert to hex for consistent 8-character length
+    const key = Math.abs(hash).toString(16).padStart(8, '0');
+    
+    return key;
+  }
+
+  #getMessageAIAssistantState(messageKey: string): 'pending' | 'opened' | 'failed' | 'not-attempted' {
+    return this.#aiAssistantStates.get(messageKey) || 'not-attempted';
+  }
+
+  #setMessageAIAssistantState(messageKey: string, state: 'pending' | 'opened' | 'failed'): void {
+    this.#aiAssistantStates.set(messageKey, state);
+  }
+
+
+  #isLastStructuredMessage(currentCombinedIndex: number): boolean {
+    // We need to work with the combined messages logic to properly identify the last structured message
+    // The currentCombinedIndex is from the combined array, but we need to check against the original array
+    
+    // Recreate the combined messages logic to understand the mapping
+    let combinedIndex = 0;
+    let lastStructuredCombinedIndex = -1;
+    
+    for (let originalIndex = 0; originalIndex < this.#messages.length; originalIndex++) {
+      const message = this.#messages[originalIndex];
+      
+      // Keep User messages and Final Model answers
+      if (message.entity === ChatMessageEntity.USER ||
+          (message.entity === ChatMessageEntity.MODEL && message.action === 'final')) {
+        
+        // Check if this is a structured final answer
+        if (message.entity === ChatMessageEntity.MODEL && message.action === 'final') {
+          const structuredResponse = this.#parseStructuredResponse((message as any).answer || '');
+          if (structuredResponse) {
+            lastStructuredCombinedIndex = combinedIndex;
+          }
+        }
+        
+        combinedIndex++;
+        continue;
+      }
+
+      // Handle Model Tool Call message
+      if (message.entity === ChatMessageEntity.MODEL && message.action === 'tool') {
+        const nextMessage = this.#messages[originalIndex + 1];
+        
+        // Check if the next message is the corresponding result
+        if (nextMessage && nextMessage.entity === ChatMessageEntity.TOOL_RESULT && nextMessage.toolName === (message as any).toolName) {
+          // Combined representation: tool call + result = 1 entry in combined array
+          combinedIndex++;
+        } else {
+          // Tool call is still running (no result yet)
+          combinedIndex++;
+        }
+        continue;
+      }
+
+      // Handle Tool Result message - skip if it was combined previously
+      if (message.entity === ChatMessageEntity.TOOL_RESULT) {
+        const prevMessage = this.#messages[originalIndex - 1];
+        // Check if the previous message was the corresponding model call
+        if (!(prevMessage && prevMessage.entity === ChatMessageEntity.MODEL && prevMessage.action === 'tool' && prevMessage.toolName === (message as any).toolName)) {
+           // Orphaned tool result - add it directly
+           combinedIndex++;
+        }
+        // Otherwise, it was handled by the MODEL case above, so we skip this result message
+        continue;
+      }
+
+      // Fallback for any unexpected message types
+      combinedIndex++;
+    }
+    
+    return lastStructuredCombinedIndex === currentCombinedIndex;
+  }
+
 
   // Update the prompt button click handler when props/state changes
   #updatePromptButtonClickHandler(): void {
@@ -417,6 +516,34 @@ export class ChatView extends HTMLElement {
     const willHaveMoreMessages = data.messages?.length > previousMessageCount;
     const wasInputDisabled = this.#isInputDisabled;
 
+    // Handle AI Assistant state cleanup for last-message-only approach
+    if (willHaveMoreMessages && this.#messages) {
+      // When new messages are added, reset states for previous final messages
+      // so that only the last message can attempt to open AI Assistant
+      const previousLastFinalIndex = this.#messages.findLastIndex(msg => 
+        msg.entity === ChatMessageEntity.MODEL && 
+        (msg as ModelChatMessage).action === 'final'
+      );
+      
+      if (previousLastFinalIndex >= 0) {
+        const previousLastMessage = this.#messages[previousLastFinalIndex] as ModelChatMessage;
+        if (previousLastMessage.answer) {
+          const structuredResponse = this.#parseStructuredResponse(previousLastMessage.answer);
+          if (structuredResponse) {
+            const messageKey = this.#getMessageStateKey(structuredResponse);
+            const currentState = this.#getMessageAIAssistantState(messageKey);
+            
+            // If the previous last message was pending, mark it as failed
+            // But keep 'opened' state to preserve successfully opened reports
+            if (currentState === 'pending') {
+              this.#setMessageAIAssistantState(messageKey, 'failed');
+            }
+            // If it was 'opened', keep it that way to show button only
+          }
+        }
+      }
+    }
+
     this.#messages = data.messages;
     this.#state = data.state;
     this.#isTextInputEmpty = data.isTextInputEmpty;
@@ -473,11 +600,6 @@ export class ChatView extends HTMLElement {
   #handleSendMessage(): void {
     // Check if textInputElement, onSendMessage callback, or input is disabled
     if (!this.#textInputElement || !this.#onSendMessage || this.#isInputDisabled) {
-      logger.info("Send prevented: ", {
-        hasTextInput: Boolean(this.#textInputElement),
-        hasCallback: Boolean(this.#onSendMessage),
-        isDisabled: this.#isInputDisabled
-      });
       return;
     }
 
@@ -492,7 +614,6 @@ export class ChatView extends HTMLElement {
     // Always scroll to bottom after sending message
     this.#pinScrollToBottom = true;
 
-    logger.info("Sending message:", text);
     this.#onSendMessage(text, this.#imageInput);
     this.#textInputElement.value = '';
     this.#textInputElement.style.height = 'auto';
@@ -511,12 +632,20 @@ export class ChatView extends HTMLElement {
     const textarea = event.target as HTMLTextAreaElement;
     textarea.style.height = 'auto'; // Reset height to shrink if needed
     textarea.style.height = `${textarea.scrollHeight}px`;
-    this.#isTextInputEmpty = textarea.value.trim().length === 0;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    
+    const newIsEmpty = textarea.value.trim().length === 0;
+    
+    // Only trigger re-render if empty state actually changed
+    if (this.#isTextInputEmpty !== newIsEmpty) {
+      this.#isTextInputEmpty = newIsEmpty;
+      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    } else {
+      this.#isTextInputEmpty = newIsEmpty;
+    }
   }
 
   // Render messages based on the combined structure
-  #renderMessage(message: ChatMessage | (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean }) | (ToolResultMessage & { orphaned?: boolean }), index?: number ): Lit.TemplateResult {
+  #renderMessage(message: ChatMessage | (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean }) | (ToolResultMessage & { orphaned?: boolean }), combinedIndex?: number ): Lit.TemplateResult {
     try {
       switch (message.entity) {
         case ChatMessageEntity.USER:
@@ -534,7 +663,6 @@ export class ChatView extends HTMLElement {
           {
              const toolResultMessage = message as (ToolResultMessage & { orphaned?: boolean });
              if (toolResultMessage.orphaned) {
-                 logger.warn('Rendering orphaned ToolResultMessage:', toolResultMessage);
                  return html`
                    <div class="message tool-result-message orphaned ${toolResultMessage.isError ? 'error' : ''}" >
                      <div class="message-content">
@@ -568,7 +696,7 @@ export class ChatView extends HTMLElement {
               const structuredResponse = this.#parseStructuredResponse(modelMessage.answer || '');
               
               if (structuredResponse) {
-                return this.#renderStructuredResponse(structuredResponse, index);
+                return this.#renderStructuredResponse(structuredResponse, combinedIndex);
               } else {
                 // Regular response - use the old logic
                 const isDeepResearch = isDeepResearchContent(modelMessage.answer || '');
@@ -583,7 +711,7 @@ export class ChatView extends HTMLElement {
                             <div class="deep-research-actions">
                               <button 
                                 class="view-document-btn"
-                                @click=${() => this.#tryOpenInAIAssistantViewer(modelMessage.answer || '')}
+                                @click=${() => this.#openInAIAssistantViewer(modelMessage.answer || '')}
                                 title="Open in full document viewer with table of contents">
                                 📄 View as Document
                               </button>
@@ -621,33 +749,10 @@ export class ChatView extends HTMLElement {
             const toolArgs = modelMessage.toolArgs || {};
             const filteredArgs = Object.fromEntries(Object.entries(toolArgs).filter(([key]) => key !== 'reasoning'));
 
-            // --- Styling and Icons ---
-            const blockStyles = (bgColor: string) => Lit.Directives.styleMap({
-              padding: '10px',
-              borderRadius: '8px',
-              marginBottom: '5px', // Reduced margin between blocks if they are separate
-              border: '1px solid var(--sys-color-outline)',
-              backgroundColor: bgColor,
-            });
-
-            const headerStyles = Lit.Directives.styleMap({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '8px',
-              fontWeight: '500',
-            });
-
-            const contentStyles = Lit.Directives.styleMap({
-              marginLeft: '24px', // Indent content under the header icon
-              paddingTop: '5px',
-            });
-
-            // Icons
+            // Icons for tool status
             const spinnerIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation: spin 1s linear infinite;"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0z" fill="currentColor"/><path d="M8 0a8 8 0 0 1 8 8h-1.5A6.5 6.5 0 0 0 8 1.5V0z" fill="currentColor"/></svg>`;
             const checkIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7071 4.29289C14.0976 4.68342 14.0976 5.31658 13.7071 5.70711L7.70711 11.7071C7.31658 12.0976 6.68342 12.0976 6.29289 11.7071L2.29289 7.70711C1.90237 7.31658 1.90237 6.68342 2.29289 6.29289C2.68342 5.90237 3.31658 5.90237 3.70711 6.29289L7 9.58579L12.2929 4.29289C12.6834 3.90237 13.3166 3.90237 13.7071 4.29289Z" fill="currentColor"/></svg>`;
             const errorIcon = html`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8.78-2.53a.75.75 0 0 0-1.56 0v5.06a.75.75 0 0 0 1.56 0V5.47zm-1.5 7.06a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5z" fill="currentColor"/></svg>`;
-            // --- End Styling and Icons ---
 
             return html`
               <!-- Reasoning (if any) displayed above the block -->
@@ -728,7 +833,6 @@ export class ChatView extends HTMLElement {
           }
         default:
           // Should not happen, but render a fallback
-          logger.warn('Unhandled message entity type in renderMessage:', (message as any).entity);
           return html`<div class="message unknown">Unknown message type</div>`;
       }
     } catch (error) {
@@ -789,9 +893,9 @@ export class ChatView extends HTMLElement {
         const prevMessage = allMessages[index - 1];
         // Check if the previous message was the corresponding model call
         if (!(prevMessage && prevMessage.entity === ChatMessageEntity.MODEL && prevMessage.action === 'tool' && prevMessage.toolName === message.toolName)) {
-           // Orphaned tool result - add it directly (maybe mark it?)
+           // Orphaned tool result - add it directly
            logger.warn('Orphaned tool result found:', message);
-           acc.push({...message, orphaned: true }); // Add marker if needed for rendering
+           acc.push({...message, orphaned: true }); // Add marker for rendering
         }
         // Otherwise, it was handled by the MODEL case above, so we skip this result message
         return acc;
@@ -804,6 +908,7 @@ export class ChatView extends HTMLElement {
     // Define the type for the accumulator array more accurately
     // Allow ToolResultMessage to potentially have an 'orphaned' flag
     }, [] as Array<ChatMessage | (ModelChatMessage & { resultText?: string, isError?: boolean, resultError?: string, combined?: boolean }) | (ToolResultMessage & { orphaned?: boolean }) >);
+
 
     // General loading state (before any model response or after tool result)
     const showGeneralLoading = this.#state === State.LOADING && !isModelRunningTool;
@@ -912,7 +1017,7 @@ export class ChatView extends HTMLElement {
           <div class="messages-container" 
             @scroll=${this.#handleScroll} 
             ${Lit.Directives.ref(this.#handleMessagesContainerRef)}>
-            ${combinedMessages?.map((message, index) => this.#renderMessage(message, index)) || Lit.nothing}
+            ${combinedMessages?.map((message, combinedIndex) => this.#renderMessage(message, combinedIndex)) || Lit.nothing}
 
             ${showGeneralLoading ? html`
               <div class="message model-message loading" >
@@ -1066,7 +1171,6 @@ export class ChatView extends HTMLElement {
 
   #handleModelChange(event: Event): void {
     if (this.#isModelSelectorDisabled) {
-      logger.info('Model selector is disabled, ignoring change');
       return;
     }
     const selectElement = event.target as HTMLSelectElement;
@@ -1129,82 +1233,126 @@ export class ChatView extends HTMLElement {
     return null;
   }
 
-  // Render structured response with conditional inline report
-  #renderStructuredResponse(structuredResponse: {reasoning: string, markdownReport: string}, index?: number): Lit.TemplateResult {
-    const messageClass = `structured-response-${index || 0}`;
+  // Render structured response with last-message-only auto-processing
+  #renderStructuredResponse(structuredResponse: {reasoning: string, markdownReport: string}, combinedIndex?: number): Lit.TemplateResult {
+    logger.info('Starting renderStructuredResponse:', {
+      combinedIndex,
+      hasMessages: Boolean(this.#messages),
+      messagesLength: this.#messages?.length,
+      lastProcessedKey: this.#lastProcessedMessageKey,
+      reasoningPreview: structuredResponse.reasoning.slice(0, 50) + '...'
+    });
     
-    // Start with inline report visible
-    const messageElement = html`
-      <div class="message model-message final ${messageClass}">
+    const messageKey = this.#getMessageStateKey(structuredResponse);
+    const isLastMessage = this.#isLastStructuredMessage(combinedIndex || 0);
+    
+    logger.info('Rendering structured response decision:', {
+      messageKey,
+      combinedIndex,
+      isLastMessage,
+      lastProcessedKey: this.#lastProcessedMessageKey,
+      shouldAutoProcess: isLastMessage && messageKey !== this.#lastProcessedMessageKey
+    });
+    
+    // Auto-process only last message
+    if (isLastMessage && messageKey !== this.#lastProcessedMessageKey) {
+      const aiState = this.#getMessageAIAssistantState(messageKey);
+      if (aiState === 'not-attempted') {
+        // Set to pending immediately for loading state
+        logger.info('Setting state to pending and starting AI Assistant for LAST message key:', messageKey);
+        this.#setMessageAIAssistantState(messageKey, 'pending');
+        this.#attemptAIAssistantOpen(structuredResponse.markdownReport, messageKey);
+        this.#lastProcessedMessageKey = messageKey;
+      }
+    }
+    
+    const aiState = this.#getMessageAIAssistantState(messageKey);
+    return this.#renderStructuredMessage(structuredResponse, messageKey, aiState, isLastMessage);
+  }
+
+  // Unified render method for structured response messages
+  #renderStructuredMessage(structuredResponse: {reasoning: string, markdownReport: string}, messageKey: string, aiState: 'pending' | 'opened' | 'failed' | 'not-attempted', isLastMessage: boolean): Lit.TemplateResult {
+    logger.info('Rendering structured message:', { messageKey, aiState, isLastMessage });
+    
+    return html`
+      <div class="message model-message final">
         <div class="message-content">
           <div class="message-text">${renderMarkdown(structuredResponse.reasoning, this.#markdownRenderer)}</div>
-          <div class="inline-markdown-report">
-            <div class="inline-report-header">
-              <h3>Full Research Report</h3>
+          
+          ${aiState === 'pending' ? html`
+            <!-- Loading state: Use existing loading element -->
+            <div class="message-loading">
+              <svg class="loading-spinner" width="16" height="16" viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="30 12" stroke-linecap="round">
+                  <animateTransform 
+                    attributeName="transform" 
+                    attributeType="XML" 
+                    type="rotate" 
+                    from="0 8 8" 
+                    to="360 8 8" 
+                    dur="1s" 
+                    repeatCount="indefinite" />
+                </circle>
+              </svg>
             </div>
-            <div class="inline-report-content">
-              ${renderMarkdown(structuredResponse.markdownReport, this.#markdownRenderer)}
+          ` : aiState === 'opened' ? html`
+            <!-- Success: just button -->
+            <div class="deep-research-actions">
+              <button 
+                class="view-document-btn"
+                @click=${() => this.#openInAIAssistantViewer(structuredResponse.markdownReport)}
+                title="Open full report in document viewer">
+                📄 View Full Report
+              </button>
             </div>
-          </div>
+          ` : html`
+            <!-- Failed or previous messages: inline + button -->
+            <div class="inline-markdown-report">
+              <div class="inline-report-header">
+                <h3>Full Research Report</h3>
+              </div>
+              <div class="inline-report-content">
+                ${renderMarkdown(structuredResponse.markdownReport, this.#markdownRenderer)}
+              </div>
+            </div>
+            <div class="deep-research-actions">
+              <button 
+                class="view-document-btn"
+                @click=${() => this.#openInAIAssistantViewer(structuredResponse.markdownReport)}
+                title="Open full report in document viewer">
+                📄 ${isLastMessage ? 'Try AI Assistant' : 'View Full Report'}
+              </button>
+            </div>
+          `}
         </div>
       </div>
     `;
-    
-    // Try to open in AI Assistant and hide inline report if successful
-    this.#tryOpenAndHideIfSuccessful(structuredResponse.markdownReport, messageClass);
-    
-    return messageElement;
   }
   
-  // Try to open in AI Assistant and hide inline report if successful
-  async #tryOpenAndHideIfSuccessful(markdownContent: string, messageClass: string): Promise<void> {
+  // Attempt to open AI Assistant for a specific message
+  async #attemptAIAssistantOpen(markdownContent: string, messageKey: string): Promise<void> {
+    logger.info('ATTEMPTING AI ASSISTANT OPEN:', {
+      messageKey,
+      contentLength: markdownContent.length,
+      contentPreview: markdownContent.slice(0, 200) + '...'
+    });
+    
     try {
+      logger.info('Calling #openInAIAssistantViewer for key:', messageKey);
       await this.#openInAIAssistantViewer(markdownContent);
-      // Navigation successful - hide the inline report after a short delay
-      setTimeout(() => {
-        const messageElement = this.#shadow.querySelector(`.${messageClass}`);
-        if (messageElement) {
-          const inlineReport = messageElement.querySelector('.inline-markdown-report');
-          if (inlineReport) {
-            inlineReport.remove();
-            // Add a button to view the report again
-            const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'deep-research-actions';
-            
-            const viewButton = document.createElement('button');
-            viewButton.className = 'view-document-btn';
-            viewButton.title = 'Open full report in document viewer';
-            viewButton.textContent = '📄 View Full Report';
-            viewButton.addEventListener('click', async () => {
-              try {
-                await this.#openInAIAssistantViewer(markdownContent);
-              } catch (error) {
-                logger.error('Failed to open report:', error);
-                // Could show the inline report again as fallback
-              }
-            });
-            
-            actionsDiv.appendChild(viewButton);
-            messageElement.querySelector('.message-content')?.appendChild(actionsDiv);
-          }
-        }
-      }, 500); // Wait for DOM to be fully rendered
+      
+      logger.info('AI Assistant opened successfully, setting state to opened for key:', messageKey);
+      this.#setMessageAIAssistantState(messageKey, 'opened');
     } catch (error) {
-      logger.info('AI Assistant navigation failed, keeping report inline:', error);
-      // Keep the inline report visible
+      logger.warn('AI Assistant navigation failed for key:', { messageKey, error });
+      this.#setMessageAIAssistantState(messageKey, 'failed');
     }
+    
+    // Trigger single re-render after state change
+    logger.info('Triggering re-render after AI Assistant state change for key:', messageKey);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
   
-  // Try to open markdown content in AI Assistant viewer
-  async #tryOpenInAIAssistantViewer(markdownContent: string): Promise<boolean> {
-    try {
-      await this.#openInAIAssistantViewer(markdownContent);
-      return true; // Successfully navigated
-    } catch (error) {
-      logger.info('AI Assistant navigation failed, showing report inline:', error);
-      return false; // Navigation failed
-    }
-  }
 
   // Method to open markdown content in AI Assistant viewer in the same tab
   async #openInAIAssistantViewer(markdownContent: string): Promise<void> {
@@ -1230,11 +1378,11 @@ export class ChatView extends HTMLElement {
 
       // Wait for the page to load, then inject the markdown content
       // Use event-based detection or timeout as fallback
-      const injectContent = async () => {
+      const injectContent = async (): Promise<void> => {
         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
         if (!runtimeModel) {
           logger.error('No RuntimeModel found');
-          return;
+          throw new Error('No RuntimeModel found');
         }
 
         // Escape the markdown content for JavaScript injection
@@ -1243,41 +1391,41 @@ export class ChatView extends HTMLElement {
         // JavaScript to inject - calls the global function we added to AI Assistant
         const injectionScript = `
           (function() {
-            logger.info('DevTools injecting markdown content...', 'Content length:', ${JSON.stringify(markdownContent.length)});
-            logger.info('Available global functions:', Object.keys(window).filter(k => k.includes('setDevTools') || k.includes('aiAssistant')));
+            console.log('DevTools injecting markdown content...', 'Content length:', ${JSON.stringify(markdownContent.length)});
+            console.log('Available global functions:', Object.keys(window).filter(k => k.includes('setDevTools') || k.includes('aiAssistant')));
             
             if (typeof window.setDevToolsMarkdown === 'function') {
               try {
                 window.setDevToolsMarkdown(${escapedContent});
-                logger.info('Successfully called setDevToolsMarkdown function');
+                console.log('Successfully called setDevToolsMarkdown function');
                 return 'SUCCESS: Content injected via setDevToolsMarkdown function';
               } catch (error) {
-                logger.error('Error calling setDevToolsMarkdown:', error);
+                console.error('Error calling setDevToolsMarkdown:', error);
                 return 'ERROR: Failed to call setDevToolsMarkdown: ' + error.message;
               }
             } else {
-              logger.warn('setDevToolsMarkdown function not found, using fallback methods');
-              logger.info('Available window properties:', Object.keys(window).filter(k => k.includes('DevTools') || k.includes('assistant') || k.includes('ai')));
+              console.warn('setDevToolsMarkdown function not found, using fallback methods');
+              console.log('Available window properties:', Object.keys(window).filter(k => k.includes('DevTools') || k.includes('assistant') || k.includes('ai')));
               
               // Store in sessionStorage
               sessionStorage.setItem('devtools-markdown-content', ${escapedContent});
-              logger.info('Stored content in sessionStorage');
+              console.log('Stored content in sessionStorage');
               
               // Try to trigger app reload
               if (window.aiAssistantApp && typeof window.aiAssistantApp.loadFromSessionStorage === 'function') {
                 try {
                   window.aiAssistantApp.loadFromSessionStorage();
-                  logger.info('Successfully called aiAssistantApp.loadFromSessionStorage');
+                  console.log('Successfully called aiAssistantApp.loadFromSessionStorage');
                   return 'SUCCESS: Content stored and app reloaded';
                 } catch (error) {
-                  logger.error('Error calling loadFromSessionStorage:', error);
+                  console.error('Error calling loadFromSessionStorage:', error);
                   return 'ERROR: Content stored but failed to reload app: ' + error.message;
                 }
               } else {
-                logger.info('aiAssistantApp not available or loadFromSessionStorage not a function');
-                logger.info('aiAssistantApp type:', typeof window.aiAssistantApp);
+                console.log('aiAssistantApp not available or loadFromSessionStorage not a function');
+                console.log('aiAssistantApp type:', typeof window.aiAssistantApp);
                 if (window.aiAssistantApp) {
-                  logger.info('aiAssistantApp methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.aiAssistantApp)));
+                  console.log('aiAssistantApp methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.aiAssistantApp)));
                 }
                 
                 // Try to force a page reload as last resort
@@ -1297,7 +1445,7 @@ export class ChatView extends HTMLElement {
           const executionContext = runtimeModel.defaultExecutionContext();
           if (!executionContext) {
             logger.error('No execution context available');
-            return;
+            throw new Error('No execution context available');
           }
 
           const result = await executionContext.evaluate({
@@ -1311,16 +1459,22 @@ export class ChatView extends HTMLElement {
 
           if ('error' in result) {
             logger.error('Evaluation failed:', result.error);
-            return;
+            throw new Error(`Evaluation failed: ${result.error}`);
           }
 
           if (result.object.value) {
             logger.info('Content injection result:', result.object.value);
+            // Check if injection was successful
+            if (typeof result.object.value === 'string' && result.object.value.startsWith('ERROR:')) {
+              throw new Error(result.object.value);
+            }
           } else if (result.exceptionDetails) {
             logger.error('Content injection failed:', result.exceptionDetails.text);
+            throw new Error(`Content injection failed: ${result.exceptionDetails.text || 'Unknown error'}`);
           }
         } catch (error) {
           logger.error('Failed to inject content:', error);
+          throw error; // Re-throw to propagate to caller
         }
       };
       
@@ -1328,46 +1482,59 @@ export class ChatView extends HTMLElement {
       let retries = 0;
       const maxRetries = TIMING_CONSTANTS.AI_ASSISTANT_MAX_RETRIES;
       
-      const attemptInjection = () => {
-        setTimeout(async () => {
-          const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-          if (!runtimeModel) {
-            logger.error('No RuntimeModel found');
-            return;
-          }
-          
-          const executionContext = runtimeModel.defaultExecutionContext();
-          if (!executionContext) {
-            logger.error('No execution context available');
-            return;
-          }
-          
-          // Check if AI Assistant is ready
-          const checkResult = await executionContext.evaluate({
-            expression: 'typeof window.setDevToolsMarkdown === "function" || (window.aiAssistantApp && typeof window.aiAssistantApp.loadFromSessionStorage === "function")',
-            objectGroup: 'console',
-            includeCommandLineAPI: false,
-            silent: true,
-            returnByValue: true,
-            generatePreview: false
-          }, false, false);
-          
-          if (!('error' in checkResult) && checkResult.object.value === true) {
-            // AI Assistant is ready
-            await injectContent();
-          } else if (retries < maxRetries) {
-            // Retry with exponential backoff
-            retries++;
-            attemptInjection();
-          } else {
-            logger.error('AI Assistant did not load in time');
-            // Try to inject anyway as a last resort
-            await injectContent();
-          }
-        }, TIMING_CONSTANTS.AI_ASSISTANT_RETRY_DELAY * Math.pow(2, retries));
-      };
-      
-      attemptInjection();
+      // Return a promise that resolves/rejects based on injection success
+      return new Promise<void>((resolve, reject) => {
+        const attemptInjection = () => {
+          setTimeout(async () => {
+            try {
+              const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+              if (!runtimeModel) {
+                reject(new Error('No RuntimeModel found'));
+                return;
+              }
+              
+              const executionContext = runtimeModel.defaultExecutionContext();
+              if (!executionContext) {
+                reject(new Error('No execution context available'));
+                return;
+              }
+              
+              // Check if AI Assistant is ready
+              const checkResult = await executionContext.evaluate({
+                expression: 'typeof window.setDevToolsMarkdown === "function" || (window.aiAssistantApp && typeof window.aiAssistantApp.loadFromSessionStorage === "function")',
+                objectGroup: 'console',
+                includeCommandLineAPI: false,
+                silent: true,
+                returnByValue: true,
+                generatePreview: false
+              }, false, false);
+              
+              if (!('error' in checkResult) && checkResult.object.value === true) {
+                // AI Assistant is ready
+                await injectContent();
+                resolve();
+              } else if (retries < maxRetries) {
+                // Retry with exponential backoff
+                retries++;
+                attemptInjection();
+              } else {
+                logger.error('AI Assistant did not load in time');
+                // Try to inject anyway as a last resort
+                try {
+                  await injectContent();
+                  resolve();
+                } catch (error) {
+                  reject(error);
+                }
+              }
+            } catch (error) {
+              reject(error);
+            }
+          }, TIMING_CONSTANTS.AI_ASSISTANT_RETRY_DELAY * Math.pow(2, retries));
+        };
+        
+        attemptInjection();
+      });
   }
 
 }

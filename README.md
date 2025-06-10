@@ -1,115 +1,229 @@
-# Browser Operator [Chromium DevTools with Agentic Framework]
+# Browser Operator - Open Source Agentic Browser
 
-Chromium browser with an user interface to run multi-agent workflows directly on the browser using a stateful, orchestration framework.
+![GitHub Release](https://img.shields.io/github/v/release/tysonthomas9/browser-operator-devtools-frontend)
+![Platform](https://img.shields.io/badge/platform-macOS-blue)
+[![License](https://img.shields.io/badge/license-BSD--3--Clause-green)](LICENSE)
 
+**The first open-source, privacy-friendly AI browser that transforms how you work on the web. Your intelligent partner for research, analysis, and automation - all running locally in your browser.**
 
 ![Live Demo](front_end/panels/ai_chat/docs/demo.gif)
 
+## 🚀 Download & Get Started
 
-## Quick Start
+**[⬇️ Download Browser Operator for macOS](https://github.com/tysonthomas9/browser-operator-devtools-frontend/releases)**
 
-[Download the Agentic Browser for MacOS](https://github.com/tysonthomas9/browser-operator-devtools-frontend/releases)
+Or build from source: [Developer Setup Guide](front_end/panels/ai_chat/Readme.md)
 
-Or
+## 🎬 See It In Action
 
-[Set up the chromium dev tools with Agent framework on your system](front_end/panels/ai_chat/Readme.md)
+### Deep Research & Analysis
+Watch Browser Operator synthesize information from multiple sources, creating comprehensive research reports without manual copying and pasting.
 
-Note: Read this document to know more about the [build](front_end/panels/ai_chat/docs/PreBuilt.md)
-
-## Key Capabilities
-
-* Built in Agent Framework for running tasks / workflows.
-* Ability to perform actions such as: Navigate URLs, Perform Actions (Clicks, Fill Form, Scroll).
-* The agent can autonmously plan and execute tasks on behalf of user, such as
-  * Summarize content
-  * Deep research topics
-  * Literature reviews
-  * Product comparisons
-  * Shopping assistance
-  * Advanced search
-  * And many more 
-* Integrates with 100+ LLM Models
-  * OpenAI GPT-4.1, O4-Mini
-  * Claude 4, 3.7, 3.5
-  * Google Gemeni
-  * Llama
-  * Deepseek
-  * Qwen
-  * And many more
-* Integrates with LiteLLM which supports ability to use multiple providers
-  * Huggingface
-  * Groq
-  * Azure
-  * AWS
-  * OpenRouter
-  * vLLM
-  * Ollama
-  * And many more
-* Customize workflows or agent behavior with config changes.
-
-![Architecture Flow](front_end/panels/ai_chat/docs/ArchitectureFlow.png)
-
-## Demos
-
-Watch Browser Operator in action with our demo videos:
-
-#### Deep Research
-Browser Operator seamlessly integrates public web data with your private documents and knowledge bases, creating comprehensive research without switching between tools.
 
 https://github.com/user-attachments/assets/225319db-c5a0-4834-9f37-5787fb646d16
 
-#### Product Discovery & Comparison
-Streamline your shopping research by automatically gathering specifications, user ratings, and availability across retailers, to help you make confident purchasing decisions.
+
+### Smart Shopping Assistant
+See how it automatically compares products, analyzes reviews, and helps you make informed purchasing decisions.
 
 https://github.com/user-attachments/assets/c478b18e-0342-400d-98ab-222c93eecd7a
 
-#### Professional Talent Search
-Efficiently discover and evaluate potential candidates based on skills, experience, and portfolio quality, creating detailed profiles for recruitment decision-making.
+### Professional Research
+Discover how businesses use Browser Operator for talent search, competitive analysis, and market research.
 
 https://github.com/user-attachments/assets/90150f0e-e8c8-4b53-b6a6-c739f143f4a0
 
-### Quick Roadmap
+## ✨ Key Features
 
-|Features| Status |
-|--|--|
-| Multi-Agent Workflow | Completed (Initial Release) |
-| OpenAI LLM | Completed (Initial Release) |
-| Local LLM | Completed (May 22) |
-| MCP | Planned |
-| Customize System Prompts in UI| Planned |
-| Customize Agents in UI| Planned |
-| Customize Workflow Graphs in UI| Planned |
-| Eval Management | Planned |
-| Memory | Planned |
-| A2A Protocol | Planned |
+### 🤖 Intelligent Automation
+- **Multi-Agent Framework**: Specialized agents work together to handle complex tasks
+- **Autonomous Navigation**: Understands and interacts with any website
+- **Smart Actions**: Click, fill forms, extract data, and navigate without manual scripting
+- **Adaptive Learning**: Improves task execution based on patterns and feedback
 
-### DevTools Documentation
+### 🔒 Privacy First (Use local LLM)
+- **Local Processing**: Your data never leaves your machine
+- **No Cloud Dependencies**: Full functionality without sending data to external servers
+- **Secure Sessions**: Works with your existing browser authentication
+- **Open Source**: Complete transparency in how your data is handled
 
-- [Agentic Framework Documentation](front_end/panels/ai_chat/Readme.md)
-- [Chromium Devtools Original Documentation](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/README.md)
+### 🧩 Extensible Platform
+- **100+ AI Models**: Support for OpenAI, Claude, Gemini, Llama, and more
+- **Custom Workflows**: Build your own automation sequences
+- **Plugin Architecture**: Extend functionality with custom agents
+- **API Integration**: Connect with your existing tools and services
 
-### Agentic Framework Documentation
+## 💡 What Can You Build?
 
-*   [`front_end/panels/ai_chat/core/Readme.md`](front_end/panels/ai_chat/core/Readme.md): Explains how to customize the `BaseOrchestratorAgent` to add new top-level agent types and UI buttons, and details its graph-based workflow.
-*   [`front_end/panels/ai_chat/agent_framework/Readme.md`](front_end/panels/ai_chat/agent_framework/Readme.md): Describes the AI Agent Framework, its core components (`ConfigurableAgentTool`, `AgentRunner`, `ToolRegistry`), and how to create, configure, and register new custom agents, including agent handoff mechanisms.
+<table>
+<tr>
+<td width="50%">
 
-### Setup LiteLLM Configuration
+**Personal Productivity**
+- 📚 Literature reviews and research papers
+- 🛍️ Price tracking and comparison shopping  
+- 📰 News aggregation and summarization
+- 📊 Data collection and analysis
+- ✈️ Travel planning and booking research
 
-https://github.com/user-attachments/assets/579dcfdc-71c8-4664-87b8-c2b68cc5c1ce
+</td>
+<td width="50%">
 
-1. Click on the setting config inside the chat panel
-2. Select LiteLLM Provider
-3. Input the LiteLLM URL and API key
-4. Click on fetch models to test the configuration
-5. Click save to update the configuration
+**Business Intelligence**
+- 🔍 Competitive analysis and monitoring
+- 👥 Talent sourcing and recruitment
+- 📈 Market research and trends
+- 🏢 Lead generation and qualification
+- 📋 Compliance and audit automation
+
+</td>
+</tr>
+</table>
+
+## 🛠️ Technical Architecture
+
+Browser Operator combines a Chromium-based browser with an advanced agentic framework:
+
+```
+┌─────────────────────────────────────────────────┐
+│             Browser Operator UI                 │
+├─────────────────────────────────────────────────┤
+│          Multi-Agent Orchestrator               │
+├──────────────┬────────────────┬─────────────────┤
+│ Research     │  Navigation    │   Analysis      │
+│ Agent        │  Agent         │   Agent         │
+├──────────────┴────────────────┴─────────────────┤
+│            Chromium Browser Engine              │
+└─────────────────────────────────────────────────┘
+```
+
+### Core Components
+- **Orchestrator Agent**: Coordinates multi-agent workflows and task distribution
+- **Navigation Engine**: Handles web interactions and page understanding
+- **Tool Registry**: Extensible system for adding new capabilities
+- **State Management**: Maintains context across complex workflows
+
+[Full Technical Documentation →](front_end/panels/ai_chat/Readme.md)
+
+## ⚙️ Quick Setup
+
+### For Users: Pre-built Application
+
+1. [Download the latest release](https://github.com/tysonthomas9/browser-operator-devtools-frontend/releases)
+2. Open Browser Operator
+3. Configure your AI provider (see below)
+4. Start automating!
+
+### For Developers: Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/tysonthomas9/browser-operator-devtools-frontend.git
+
+# Follow the detailed build instructions
+cd browser-operator-devtools-frontend
+# See front_end/panels/ai_chat/Readme.md for complete setup
+```
+
+### AI Provider Configuration
+
+<details>
+<summary><b>Option 1: OpenAI (Recommended for beginners)</b></summary>
+
+1. Get an API key from [OpenAI Platform](https://platform.openai.com)
+2. Open Browser Operator settings
+3. Select "OpenAI" as provider
+4. Enter your API key
+5. Choose a model (GPT-4.1 recommended)
+6. Save and start using!
+
+</details>
+
+<details>
+<summary><b>Option 2: LiteLLM (For multiple providers)</b></summary>
+
+Perfect for using multiple AI providers or self-hosted models:
+
+1. Set up your LiteLLM proxy server
+2. Select "LiteLLM Provider" in settings
+3. Enter proxy URL and API key
+4. Click "Fetch Models" to verify connection
+5. Select your preferred model
+
+[LiteLLM Setup Video →](https://github.com/user-attachments/assets/579dcfdc-71c8-4664-87b8-c2b68cc5c1ce)
+
+</details>
+
+<details>
+<summary><b>Option 3: Local Models (Maximum privacy)</b></summary>
+
+Run completely offline with Ollama:
+
+1. Install Ollama on your system
+2. Pull your preferred model (e.g., `ollama pull llama3`)
+3. Configure Browser Operator to use local endpoint
+4. Enjoy private, offline automation
+
+</details>
+
+## 🗺️ Roadmap
+
+### ✅ Released
+- Multi-agent workflow engine
+- Support for 100+ AI models
+- macOS application
+- Core automation capabilities
+
+### 🚧 In Development
+- Windows and Linux support
+- Enhanced memory system
+- Custom agent builder
+
+### 🔮 Planned Features
+- MCP (Model Context Protocol) support
+- Visual workflow designer
+- Team collaboration features
+- Advanced scheduling system
+
+## 👥 Community & Support
+
+### Get Help
+- 📖 [Documentation](front_end/panels/ai_chat/Readme.md)
+- 💬 [Discord Community](https://discord.gg/fp7ryHYBSY)
+- 🐛 [Report Issues](https://github.com/tysonthomas9/browser-operator-devtools-frontend/issues)
+- 🐦 [Follow Updates](https://x.com/BrowserOperator)
 
 ### Contributing
 
-Found a bug 🐛 or have a feature idea ✨? Please create issues [here](https://github.com/tysonthomas9/browser-operator-devtools-frontend/issues)
+We welcome contributions! Here's how you can help:
 
-### Join Us
+- **🐛 Report Bugs**: Help us identify and fix issues
+- **✨ Request Features**: Share your ideas for new capabilities
+- **📝 Improve Docs**: Help others get started
+- **💻 Submit PRs**: Contribute code improvements
 
-If you like this project, don't hesitate to ⭐ star this repository. For those who'd like to contribute code or just hang out with the community please join our Discord.
+See our [Contributing Guide](CONTRIBUTING.md) for details.
 
-[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/JKYuuubr)
-[![X (Twitter)](https://img.shields.io/badge/X_(Twitter)-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/BrowserOperator)
+## 📚 Documentation
+
+- [Getting Started Guide](front_end/panels/ai_chat/docs/GettingStarted.md)
+- [Agent Framework](front_end/panels/ai_chat/agent_framework/Readme.md)
+- [Creating Custom Agents](front_end/panels/ai_chat/core/Readme.md)
+- [Architecture Overview](front_end/panels/ai_chat/docs/Architecture.md)
+- [Build Instructions](front_end/panels/ai_chat/docs/PreBuilt.md)
+
+## 🙏 Acknowledgments
+
+Browser Operator is built on top of Chromium and integrates with numerous open-source projects. Special thanks to all contributors and the open-source community.
+
+## 📄 License
+
+Browser Operator is released under the [BSD-3-Clause License](LICENSE).
+
+---
+
+<div align="center">
+
+**⭐ Star this repo to support open-source AI development!**
+
+</div>

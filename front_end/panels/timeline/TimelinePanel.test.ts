@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
   registerNoopActions,
@@ -165,5 +165,22 @@ describeWithEnvironment('TimelinePanel', function() {
         timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
     assert.exists(annotationsAfterToggle);
     assert.isAbove(annotationsAfterToggle.length, 0);
+  });
+
+  it('clears out AI related contexts when the user presses "Clear"', async () => {
+    const context = UI.Context.Context.instance();
+    const {AICallTree, InsightAIContext} = Timeline.Utils;
+
+    const callTree = sinon.createStubInstance(AICallTree.AICallTree);
+    const insight = sinon.createStubInstance(InsightAIContext.ActiveInsight);
+    context.setFlavor(AICallTree.AICallTree, callTree);
+    context.setFlavor(InsightAIContext.ActiveInsight, insight);
+
+    const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
+    assert.isOk(clearButton);
+    dispatchClickEvent(clearButton);
+
+    assert.isNull(context.flavor(AICallTree.AICallTree));
+    assert.isNull(context.flavor(InsightAIContext.ActiveInsight));
   });
 });

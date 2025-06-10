@@ -1894,6 +1894,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.getNetworkDataProvider().reset();
     this.flameChart.reset();
     this.#changeView({mode: 'LANDING_PAGE'});
+    UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
+    UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, null);
   }
 
   #hasActiveTrace(): boolean {

@@ -305,11 +305,6 @@ export class UserMetrics {
         EnumeratedHistogram.AnimationPlaybackRateChanged, playbackRate, AnimationsPlaybackRate.MAX_VALUE);
   }
 
-  animationPointDragged(dragType: AnimationPointDragType): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.AnimationPointDragged, dragType, AnimationPointDragType.MAX_VALUE);
-  }
-
   workspacesPopulated(wallClockTimeInMilliseconds: number): void {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
@@ -1394,19 +1389,6 @@ export const enum AnimationsPlaybackRate {
   PERCENT_10 = 2,
   OTHER = 3,
   MAX_VALUE = 4,
-}
-
-export const enum AnimationPointDragType {
-  // Animation is dragged as a whole in the Animations panel.
-  ANIMATION_DRAG = 0,
-  // A keyframe point inside animation timeline is dragged.
-  KEYFRAME_MOVE = 1,
-  // Start point of the animation inside animation timeline is dragged.
-  START_ENDPOINT_MOVE = 2,
-  // Finish point of the animation inside animation timeline is dragged.
-  FINISH_ENDPOINT_MOVE = 3,
-  OTHER = 4,
-  MAX_VALUE = 5,
 }
 
 export const enum TimelineNavigationSetting {

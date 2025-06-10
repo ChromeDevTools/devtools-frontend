@@ -537,6 +537,7 @@ text.animation-timeline-grid-label {
 .animation-playback-rate-button:focus-visible {
   outline: 2px solid var(--sys-color-primary);
   outline-offset: 2px;
+  z-index: 9999;
 }
 
 .animation-playback-rate-button:not(.selected, [disabled]):hover {

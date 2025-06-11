@@ -341,6 +341,17 @@ describe('generatePreconnectedOrigins', () => {
           result, [{url: 'https://example.com', headerText: '<https://example.com>; rel="preconnect"; crossorigin'}]);
     });
 
+    it('should parse a preconnect link with comma in urls', () => {
+      const linkHeader =
+          '<https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry>; rel="preconnect"';
+      const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);
+      assert.deepEqual(
+          result, [{
+            url: 'https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry',
+            headerText: '<https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry>; rel="preconnect"'
+          }]);
+    });
+
     it('should ignore links with other rel values', () => {
       const linkHeader = '<https://example.com>; rel="preload"';
       const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);

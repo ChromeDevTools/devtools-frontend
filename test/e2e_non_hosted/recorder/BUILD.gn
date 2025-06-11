@@ -7,9 +7,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("recorder") {
   sources = [ "ui_test.ts" ]
   deps = [
-    "../../../front_end/panels/recorder:bundle",
     "../../e2e/helpers",
-    "../../e2e/recorder",
     "../shared",
   ]
 }

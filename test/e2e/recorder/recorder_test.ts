@@ -15,7 +15,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
-
 import {
   changeNetworkConditions,
   fillCreateRecordingForm,
@@ -29,7 +28,7 @@ import {
   startRecording,
   startRecordingViaShortcut,
   stopRecording,
-} from './helpers.js';
+} from '../helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
   it('should capture the initial page as the url of the first section', async () => {

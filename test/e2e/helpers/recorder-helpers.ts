@@ -7,12 +7,13 @@ import type {Page} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
-import {openCommandMenu} from '../../../test/e2e/helpers/quick_open-helpers.js';
 import {
   platform,
   selectOption,
-} from '../../../test/shared/helper.js';
+} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+
+import {openCommandMenu} from './quick_open-helpers.js';
 
 const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller' as const;
 const TEST_RECORDING_NAME = 'New Recording';

@@ -7,13 +7,11 @@ import("../../../scripts/build/typescript/typescript.gni")
 node_ts_library("recorder") {
   sources = [
     "export_test.ts",
-    "helpers.ts",
     "recorder_test.ts",
     "replay_test.ts",
   ]
 
   deps = [
-    "../../../front_end/panels/recorder:bundle",
     "../../../test/e2e/helpers",
     "../../../test/shared",
   ]

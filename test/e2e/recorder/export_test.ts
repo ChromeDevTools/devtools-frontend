@@ -9,12 +9,11 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
-
 import {
   createAndStartRecording,
   enableAndOpenRecorderPanel,
   stopRecording,
-} from './helpers.js';
+} from '../helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
   if (this.timeout() !== 0) {

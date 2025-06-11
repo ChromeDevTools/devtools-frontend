@@ -14,14 +14,13 @@ import {
   waitFor,
 } from '../../../test/shared/helper.js';
 import {expectError} from '../../conductor/events.js';
-
 import {
   clickSelectButtonItem,
   onReplayFinished,
   replayShortcut,
   setupRecorderWithScript,
   setupRecorderWithScriptAndReplay,
-} from './helpers.js';
+} from '../helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
   if (this.timeout() !== 0) {

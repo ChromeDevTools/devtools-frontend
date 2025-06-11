@@ -1014,18 +1014,26 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   #populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+    // If the current trace is annotated, add an option to save it without annotations.
+    const currModificationManager = ModificationsManager.activeManager();
+    const annotationsExist = currModificationManager && currModificationManager.getAnnotations()?.length > 0;
+
     contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       void this.saveToFile(/* isEnhancedTrace */ false, /* addModifications */ true);
     }, {
-      jslogContext: 'timeline.save-to-file-with-annotations',
+      jslogContext: annotationsExist ? 'timeline.save-to-file-with-annotations' :
+                                       'timeline.save-to-file-without-annotations',
     });
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile();
-    }, {
-      jslogContext: 'timeline.save-to-file-without-annotations',
-    });
+
+    if (annotationsExist) {
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
+        void this.saveToFile();
+      }, {
+        jslogContext: 'timeline.save-to-file-without-annotations',
+      });
+    }
   }
 
   private populateToolbar(): void {

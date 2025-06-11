@@ -482,7 +482,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     const expectedHeaderSectionItemsLabels =
         ['Copy declaration', 'Copy property', 'Copy value', 'Copy rule', 'Copy declaration as JS'];
     const expectedClipboardSectionItemsLabels = ['Copy all declarations', 'Copy all declarations as JS'];
-    const expectedDefaultSectionItemsLabels = ['Copy all CSS changes'];
     const expectedFooterSectionItemsLabels = ['View computed value'];
 
     it('should create a context menu', () => {
@@ -496,11 +495,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const headerSection = contextMenu.headerSection();
       const clipboardSection = contextMenu.clipboardSection();
-      const defaultSection = contextMenu.defaultSection();
       const footerSection = contextMenu.footerSection();
       verifySection(expectedHeaderSectionItemsLabels, headerSection.items);
       verifySection(expectedClipboardSectionItemsLabels, clipboardSection.items);
-      verifySection(expectedDefaultSectionItemsLabels, defaultSection.items);
       verifySection(expectedFooterSectionItemsLabels, footerSection.items);
     });
   });

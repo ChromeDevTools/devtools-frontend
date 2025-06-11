@@ -43,11 +43,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import type * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
-import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
-import {PanelUtils} from '../../panels/utils/utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -202,7 +198,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #webCustomData?: WebCustomData;
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
-  #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;
 
@@ -1331,23 +1326,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return sections;
   }
 
-  async getFormattedChanges(): Promise<string> {
-    let allChanges = '';
-    for (const [url, {uiSourceCode}] of this.#urlToChangeTracker) {
-      const diffResponse = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode);
-      // Diff array with real diff will contain at least 2 lines.
-      if (!diffResponse || diffResponse?.diff.length < 2) {
-        continue;
-      }
-      const changes = await PanelUtils.formatCSSChangesFromDiff(diffResponse.diff);
-      if (changes.length > 0) {
-        allChanges += `/* ${escapeUrlAsCssComment(url)} */\n\n${changes}\n\n`;
-      }
-    }
-
-    return allChanges;
-  }
-
   private clipboardCopy(_event: Event): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleCopied);
   }
@@ -1504,13 +1482,6 @@ interface CompletionResult extends UI.SuggestBox.Suggestion {
 export interface EventTypes {
   [Events.INITIAL_UPDATE_COMPLETED]: void;
   [Events.STYLES_UPDATE_COMPLETED]: StylesUpdateCompletedEvent;
-}
-
-interface ChangeTracker {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  changedLines: Set<number>;
-  diffChangeCallback: () => Promise<void>;
-  formattedCurrentMapping?: Formatter.ScriptFormatter.FormatterSourceMapping;
 }
 
 const MAX_LINK_LENGTH = 23;

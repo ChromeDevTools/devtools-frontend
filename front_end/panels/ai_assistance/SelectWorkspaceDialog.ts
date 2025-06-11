@@ -69,7 +69,80 @@ interface ViewInput {
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-
+// clang-format off
+export const SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  const hasFolders = input.folders.length > 0;
+  render(
+    html`
+      <style>${selectWorkspaceDialogStyles}</style>
+      <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
+      <div class="main-content">
+        <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
+        ${input.showAutomaticWorkspaceNudge ? html`
+          <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
+          <div>
+            Tip: provide a
+            <x-link
+              class="devtools-link"
+              href="https://goo.gle/devtools-automatic-workspace-folders"
+              jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('automatic-workspaces-documentation')}
+            >com.chrome.devtools.json</x-link>
+            file to automatically connect your project to DevTools.
+          </div>
+        ` : nothing}
+      </div>
+      ${hasFolders ? html`
+        <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)}
+          aria-activedescendant=${input.folders.length > 0 ? `option-${input.selectedIndex}` : ''}>
+          ${input.folders.map((folder, index) => {
+            const optionId = `option-${index}`;
+            return html`
+              <li
+                id=${optionId}
+                @mousedown=${() => input.onProjectSelected(index)}
+                @keydown=${input.onListItemKeyDown}
+                class=${index === input.selectedIndex ? 'selected' : ''}
+                aria-selected=${index === input.selectedIndex ? 'true' : 'false'}
+                title=${folder.path}
+                role="option"
+                tabindex=${index === input.selectedIndex ? '0' : '-1'}
+              >
+                <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
+                <span class="ellipsis">${folder.name}</span>
+              </li>`;
+          })}
+        </ul>
+      ` : nothing}
+      <div class="buttons">
+        <devtools-button
+          title=${lockedString(UIStringsNotTranslate.cancel)}
+          aria-label="Cancel"
+          .jslogContext=${'cancel'}
+          @click=${input.onCancelButtonClick}
+          .variant=${Buttons.Button.Variant.OUTLINED}>${lockedString(UIStringsNotTranslate.cancel)}</devtools-button>
+        <devtools-button
+          class="add-folder-button"
+          title=${lockedString(UIStringsNotTranslate.addFolder)}
+          aria-label="Add folder"
+          .iconName=${'plus'}
+          .jslogContext=${'add-folder'}
+          @click=${input.onAddFolderButtonClick}
+          .variant=${hasFolders ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
+        ${hasFolders ? html`
+          <devtools-button
+            title=${lockedString(UIStringsNotTranslate.select)}
+            aria-label="Select"
+            @click=${input.onSelectButtonClick}
+            .jslogContext=${'select'}
+            .variant=${Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
+        ` : nothing}
+      </div>
+    `,
+    target,
+    {host: target}
+  );
+};
+// clang-format on
 export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #view: View;
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -88,7 +161,6 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       view?: View) {
     super();
     this.element.classList.add('dialog-container');
-    this.registerRequiredCSS(selectWorkspaceDialogStyles);
     this.#onProjectSelected = options.onProjectSelected;
     this.#dialog = options.dialog;
     this.#updateProjectsAndFolders();
@@ -97,79 +169,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       this.#selectedIndex = Math.max(0, this.#folders.findIndex(folder => folder.project === options.currentProject));
     }
 
-    // clang-format off
-    this.#view = view ?? ((input, _output, target) => {
-      const hasFolders = input.folders.length > 0;
-      render(
-        html`
-          <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
-          <div class="main-content">
-            <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
-            ${input.showAutomaticWorkspaceNudge ? html`
-              <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
-              <div>
-                Tip: provide a
-                <x-link
-                  class="devtools-link"
-                  href="https://goo.gle/devtools-automatic-workspace-folders"
-                  jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('automatic-workspaces-documentation')}
-                >com.chrome.devtools.json</x-link>
-                file to automatically connect your project to DevTools.
-              </div>
-            ` : nothing}
-          </div>
-          ${hasFolders ? html`
-            <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)}
-              aria-activedescendant=${input.folders.length > 0 ? `option-${input.selectedIndex}` : ''}>
-              ${input.folders.map((folder, index) => {
-                const optionId = `option-${index}`;
-                return html`
-                  <li
-                    id=${optionId}
-                    @mousedown=${() => input.onProjectSelected(index)}
-                    @keydown=${input.onListItemKeyDown}
-                    class=${index === input.selectedIndex ? 'selected' : ''}
-                    aria-selected=${index === input.selectedIndex ? 'true' : 'false'}
-                    title=${folder.path}
-                    role="option"
-                    tabindex=${index === input.selectedIndex ? '0' : '-1'}
-                  >
-                    <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
-                    <span class="ellipsis">${folder.name}</span>
-                  </li>`;
-              })}
-            </ul>
-          ` : nothing}
-          <div class="buttons">
-            <devtools-button
-              title=${lockedString(UIStringsNotTranslate.cancel)}
-              aria-label="Cancel"
-              .jslogContext=${'cancel'}
-              @click=${input.onCancelButtonClick}
-              .variant=${Buttons.Button.Variant.OUTLINED}>${lockedString(UIStringsNotTranslate.cancel)}</devtools-button>
-            <devtools-button
-              class="add-folder-button"
-              title=${lockedString(UIStringsNotTranslate.addFolder)}
-              aria-label="Add folder"
-              .iconName=${'plus'}
-              .jslogContext=${'add-folder'}
-              @click=${input.onAddFolderButtonClick}
-              .variant=${hasFolders ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
-            ${hasFolders ? html`
-              <devtools-button
-                title=${lockedString(UIStringsNotTranslate.select)}
-                aria-label="Select"
-                @click=${input.onSelectButtonClick}
-                .jslogContext=${'select'}
-                .variant=${Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
-            ` : nothing}
-          </div>
-        `,
-        target,
-        {host: target}
-      );
-    }) as View;
-    // clang-format on
+    this.#view = view ?? SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW;
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.contentElement?.querySelector<HTMLUListElement>('.selected')?.focus();

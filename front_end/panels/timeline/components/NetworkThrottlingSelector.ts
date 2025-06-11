@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
+import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/menus/menus.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -173,11 +173,9 @@ export class NetworkThrottlingSelector extends HTMLElement {
 
     let recommendedInfoEl;
     if (this.#recommendedConditions && this.#currentConditions === SDK.NetworkManager.NoThrottlingConditions) {
-      recommendedInfoEl = html`<devtools-button
+      recommendedInfoEl = html`<devtools-icon
         title=${i18nString(UIStrings.recommendedThrottlingReason)}
-        .iconName=${'info'}
-        .variant=${Buttons.Button.Variant.ICON}
-      ></devtools-button>`;
+        name=info></devtools-icon>`;
     }
 
     // clang-format off

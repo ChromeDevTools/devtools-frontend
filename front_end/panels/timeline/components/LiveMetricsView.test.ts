@@ -899,7 +899,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         assert.match(envRecs[1].textContent!, /Slow 4G/);
 
         const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
-                              ?.shadowRoot!.querySelector('devtools-button');
+                              ?.shadowRoot!.querySelector('devtools-icon[name="info"]');
         assert.exists(recNotice);
       });
 
@@ -916,7 +916,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         assert.strictEqual(envRecs[1].textContent, 'Not enough data');
 
         const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
-                              ?.shadowRoot!.querySelector('devtools-button');
+                              ?.shadowRoot!.querySelector('devtools-icon[name="info"]');
         assert.notExists(recNotice);
       });
 

@@ -260,8 +260,8 @@ input[type='radio'] {
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 
-  &:focus {
-    box-shadow: var(--legacy-focus-ring-active-shadow);
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 }
 

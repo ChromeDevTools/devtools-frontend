@@ -17,12 +17,13 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {
+  createTarget,
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {MockProtocolBackend} from '../../../testing/MockScopeChain.js';
 import {
   createContentProviderUISourceCode,
-  createFakeScriptMapping,
   setupMockedUISourceCode,
 } from '../../../testing/UISourceCodeHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -823,28 +824,42 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
         Common.Revealer.RevealerRegistry.instance(),
         'reveal');  // Prevent pending reveal promises after tests are done.
 
+    const backend = new MockProtocolBackend();
+    const target = createTarget();
+    target.targetManager().setScopeTarget(target);
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
+
+    const sourceRoot = 'http://example.com';
+    const scriptInfo = {
+      url: `${sourceRoot}/foo.js`,
+      content: 'foo();\n',
+    };
+
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const uiSourceCodePromise =
+        debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${`${sourceRoot}/foo.js`}`, target);
+
+    const script = await backend.addScript(target, scriptInfo, null);
+    await uiSourceCodePromise;
+    const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+    assert.exists(uiSourceCode);
 
     // Set up sdk and ui location, and a mapping between them, such that we can identify that
     // the hit breakpoint is the one we are adding.
-    const scriptId = '0' as Protocol.Runtime.ScriptId;
+    const responderPromise = backend.responderToBreakpointByUrlRequest(uiSourceCode.url(), 0)({
+      breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+      locations: [{
+        scriptId: script.scriptId,
+        lineNumber: 0,
+        columnNumber: 0,
+      }]
+    });
+    const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
+    assert.exists(b1);
+    await responderPromise;
 
-    const {uiSourceCode, project} =
-        createContentProviderUISourceCode({url: urlString`test.js`, mimeType: 'text/javascript'});
-    const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, 0, 0);
-
-    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
-    const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, scriptId, 0);
-
-    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, 0, scriptId);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-
-    // Add one breakpoint and collapse its group.
-    const b1 = await breakpointManager.setBreakpoint(
-        uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, ...DEFAULT_BREAKPOINT);
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance(
         {forceNew: true, breakpointManager, settings: Common.Settings.Settings.instance()});
-    assert.exists(b1);
     controller.expandedStateChanged(uiSourceCode.url(), false /* expanded */);
 
     // Double check that the group is collapsed.
@@ -855,7 +870,7 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
 
     // Simulating a breakpoint hit. Update the DebuggerPausedDetails to contain the info on the hit breakpoint.
     const callFrame = sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
-    callFrame.location.returns(new SDK.DebuggerModel.Location(debuggerModel, scriptId, sdkLocation.lineNumber));
+    callFrame.location.returns(new SDK.DebuggerModel.Location(script.debuggerModel, script.scriptId, 0, 0));
     const pausedDetails = sinon.createStubInstance(SDK.DebuggerModel.DebuggerPausedDetails);
     pausedDetails.callFrames = [callFrame];
 
@@ -863,7 +878,6 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
     // Setting the flavor would have other listeners listening to it, and would cause undesirable side effects.
     sinon.stub(UI.Context.Context.instance(), 'flavor')
         .callsFake(flavorType => flavorType === SDK.DebuggerModel.DebuggerPausedDetails ? pausedDetails : null);
-    controller.flavorChanged(pausedDetails);
     {
       const data = await controller.getUpdatedBreakpointViewData();
       // Assert that the breakpoint is hit and the group is expanded.
@@ -873,8 +887,6 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
 
     // Clean up.
     await b1.remove(false /* keepInStorage */);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
   });
 
   it('changes pause on exception state', async () => {

@@ -24,7 +24,6 @@ import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import {
   createContentProviderUISourceCode,
-  createFakeScriptMapping,
 } from '../../testing/UISourceCodeHelpers.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
@@ -509,26 +508,29 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.isNull(modelBreakpoint.currentState);
   });
 
-  it('removes ui source code from breakpoint even after breakpoint live location update', async () => {
-    const BREAKPOINT_TS_LINE = 10;
-
-    const {uiSourceCode: uiSourceCodeTs} =
-        createContentProviderUISourceCode({url: urlString`http://example.com/source.ts`, mimeType: 'text/typescript'});
+  it('removes ui source code from breakpoint after breakpoint live location update', async () => {
+    const compiledScript = 'script.min.js';
+    const sourceRoot = 'https://site/';
+    const compiledScriptURL = sourceRoot + compiledScript;
+    const scriptInfo = {url: compiledScriptURL, content: COMPILED_SCRIPT_SOURCES_CONTENT};
+    const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent, sourceRoot, sources: 'original-script.js'};
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assert.exists(debuggerModel);
 
-    // Create an inline script and get a UI source code instance for it.
-    const script = await backend.addScript(target, scriptDescription, null);
-    const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
+    const uiSourceCodePromise =
+        debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${compiledScriptURL}`, target);
+    const script = await backend.addScript(target, scriptInfo, sourceMapInfo);
+    const uiSourceCodeTs = await uiSourceCodeFromScript(debuggerModel, script);
+    const uiSourceCode = await uiSourceCodePromise;
+    assert.exists(uiSourceCodeTs);
     assert.exists(uiSourceCode);
 
     // Register our interest in the breakpoint request.
-    const breakpointResponder = backend.responderToBreakpointByUrlRequest(URL, BREAKPOINT_SCRIPT_LINE);
+    const breakpointResponder = backend.responderToBreakpointByUrlRequest(compiledScriptURL, 0);
 
-    // Set the breakpoint.
-    const breakpoint =
-        await breakpointManager.setBreakpoint(uiSourceCode, BREAKPOINT_SCRIPT_LINE, 2, ...DEFAULT_BREAKPOINT);
+    // Set the breakpoint on the compiled script.
+    const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(breakpoint);
 
     // Await the breakpoint request at the mock backend and send a CDP response once the request arrives.
@@ -543,24 +545,20 @@ describeWithMockConnection('BreakpointManager', () => {
       breakpoint.refreshInDebugger(),
     ]);
 
-    // Map the breakpoint location to a different file (this will internally update its live location).
-    const mapping = createFakeScriptMapping(debuggerModel, uiSourceCodeTs, BREAKPOINT_TS_LINE, script.scriptId);
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().addSourceMapping(mapping);
-    await breakpointManager.debuggerWorkspaceBinding.updateLocations(script);
+    // Verify that the location of the breakpoint is tied to the original script.
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode), 0);
 
-    // Verify that the location of the breakpoint was updated.
     assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs), 1);
     assert.strictEqual(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs)[0].breakpoint, breakpoint);
     assert.strictEqual(
-        breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs)[0].uiLocation.lineNumber,
-        BREAKPOINT_TS_LINE);
+        breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs)[0].uiLocation.lineNumber, 2);
 
     // Remove the target and verify that the UI source codes were removed from the breakpoint.
     breakpointManager.targetManager.removeTarget(target);
     assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
     assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs), 0);
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode), 0);
 
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     await breakpoint.remove(false);
   });
 

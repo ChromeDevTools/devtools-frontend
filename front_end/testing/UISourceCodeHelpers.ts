@@ -4,8 +4,7 @@
 
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
-import * as SDK from '../core/sdk/sdk.js';
-import type * as Protocol from '../generated/protocol.js';
+import type * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
@@ -155,23 +154,4 @@ export function setupMockedUISourceCode(url = 'https://example.com/') {
   const uiSourceCode = new Workspace.UISourceCode.UISourceCode(projectStub, urlStringTagExample, contentTypeStub);
 
   return {sut: uiSourceCode, projectStub, contentTypeStub};
-}
-
-export function createFakeScriptMapping(
-    debuggerModel: SDK.DebuggerModel.DebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
-    uiLineNumber: number,
-    scriptId: Protocol.Runtime.ScriptId): Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
-  const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, scriptId, 13);
-  const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, uiLineNumber);
-  const mapping: Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping = {
-    rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => uiLocation,
-    uiLocationToRawLocations:
-        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
-         _columnNumber?: number) => [sdkLocation],
-    uiLocationRangeToRawLocationRanges:
-        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _textRange: TextUtils.TextRange.TextRange) => {
-          throw new Error('Not implemented');
-        },
-  };
-  return mapping;
 }

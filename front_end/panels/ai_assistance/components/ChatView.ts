@@ -987,7 +987,7 @@ function renderChatMessage({
               }
               onFeedbackSubmit(message.rpcId, rating, feedback);
             },
-            suggestions: isLast ? message.suggestions : undefined,
+            suggestions: (isLast && !isReadOnly) ? message.suggestions : undefined,
             onSuggestionClick,
             canShowFeedbackForm,
           })}></devtools-widget>`

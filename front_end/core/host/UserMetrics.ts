@@ -768,8 +768,6 @@ export enum KeyboardShortcutAction {
   'chrome-recorder.replay-recording' = 109,
   'chrome-recorder.toggle-code-view' = 110,
   'chrome-recorder.copy-recording-or-step' = 111,
-  'changes.revert' = 112,
-  'changes.copy' = 113,
   'elements.new-style-rule' = 114,
   'elements.refresh-event-listeners' = 115,
   'coverage.clear' = 116,

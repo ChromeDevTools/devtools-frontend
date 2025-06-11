@@ -8,6 +8,5 @@ export function veImpressionForChangesPanel() {
   return veImpression('Panel', 'changes', [
     veImpression('Pane', 'sidebar'),
     veImpression('Section', 'empty-view'),
-    veImpression('Toolbar', undefined, [veImpression('Action', 'changes.revert')]),
   ]);
 }

@@ -80,7 +80,7 @@ export const DEFAULT_VIEW = (
           </div>
           <h1>${lockedString(UIStringsNotTranslate.Explore)}</h1>
           <p>
-            To chat about an item, right-click and select
+            To chat about an item, right-click and select${' '}
             <strong>Ask AI</strong>.
           </p>
         </div>

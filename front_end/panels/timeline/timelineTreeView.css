@@ -42,6 +42,19 @@
   position: relative;
 }
 
+.timeline-tree-view .data-grid td.activity-column {
+  padding-left: 0;
+
+  &::before {
+    mask-position: center;
+    mask-repeat: no-repeat;
+    width: var(--sys-size-9);
+    height: 18px;
+    margin: 0 calc(-1 * var(--sys-size-2)) 0 0;
+    top: 0;
+  }
+}
+
 .timeline-tree-view .data-grid div.background-bar-text {
   position: relative;
   z-index: 1;

@@ -779,4 +779,11 @@ function formatted2() {
             '}\n' +
             '}`\n');
   });
+
+  it('formats methods on literals correctly', () => {
+    const formattedCode = formatJavaScript('num=1 .toString();str="abc" . toUpperCase();');
+    assert.strictEqual(formattedCode, `num = 1 .toString();
+str = "abc".toUpperCase();
+`);
+  });
 });

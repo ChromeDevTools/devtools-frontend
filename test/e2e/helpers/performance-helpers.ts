@@ -86,13 +86,12 @@ export async function openCaptureSettings(
 export async function searchForComponent(
     searchEntry: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.waitFor('devtools-performance-timeline-summary');
-  await devToolsPage.timeout(100);
   await devToolsPage.summonSearchBox();
   await devToolsPage.waitFor('.search-bar');
   await devToolsPage.page.keyboard.type(searchEntry);
-  await devToolsPage.timeout(100);
+  await devToolsPage.timeout(300);
   await devToolsPage.page.keyboard.press('Tab');
-  await devToolsPage.timeout(100);
+  await devToolsPage.timeout(300);
   await expectVeEvents(
       [
         veKeyDown(''),
@@ -319,7 +318,7 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
 export async function navigateToSelectorStatsTab(
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(SELECTOR_STATS_SELECTOR);
-  await devToolsPage.timeout(100);
+  await devToolsPage.waitFor('#tab-selector-stats.selected');
   await expectVeEvents(
       [
         veClick('Toolbar: sidebar > PanelTabHeader: selector-stats'),

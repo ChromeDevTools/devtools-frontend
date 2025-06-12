@@ -481,7 +481,8 @@ let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
 
-  #toggleSearchElementAction: UI.ActionRegistration.Action;
+  // NodeJS debugging does not have Elements panel, thus this action might not exist.
+  #toggleSearchElementAction?: UI.ActionRegistration.Action;
   #aidaClient: Host.AidaClient.AidaClient;
   #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
@@ -534,8 +535,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.registerRequiredCSS(aiAssistancePanelStyles);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
-    this.#toggleSearchElementAction =
-        UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
     this.#aidaAvailability = aidaAvailability;
     this.#userInfo = {
@@ -546,6 +545,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#historicalConversations = AiAssistanceModel.AiHistoryStorage.instance().getHistory().map(item => {
       return new AiAssistanceModel.Conversation(item.type, item.history, item.id, true, item.isExternal);
     });
+
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
+      this.#toggleSearchElementAction =
+          UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
+    }
   }
 
   #getChatUiState(): ChatViewState {
@@ -773,7 +777,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
+    this.#toggleSearchElementAction?.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -817,7 +821,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.removeEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
+    this.#toggleSearchElementAction?.removeEventListener(
+        UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -966,7 +971,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           conversationType: this.#conversation?.type,
           isReadOnly: this.#conversation?.isReadOnly ?? false,
           changeSummary: this.#getChangeSummary(),
-          inspectElementToggled: this.#toggleSearchElementAction.toggled(),
+          inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
           userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
           multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
@@ -1014,7 +1019,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleSelectElementClick(): void {
-    void this.#toggleSearchElementAction.execute();
+    void this.#toggleSearchElementAction?.execute();
   }
 
   #isTextInputDisabled(): boolean {

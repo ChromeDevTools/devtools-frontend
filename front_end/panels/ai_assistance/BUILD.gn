@@ -101,5 +101,6 @@ ts_library("unittests") {
     "../../generated:protocol",
     "../../panels/timeline/utils:bundle",
     "../../testing",
+    "../../ui/legacy:bundle",
   ]
 }

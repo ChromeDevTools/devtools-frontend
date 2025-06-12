@@ -305,6 +305,10 @@ export class ViewManager {
     return widgetForView.get(view) || null;
   }
 
+  hasView(viewId: string): boolean {
+    return this.views.has(viewId);
+  }
+
   async showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
     const view = this.views.get(viewId);
     if (!view) {

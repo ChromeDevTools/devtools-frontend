@@ -190,7 +190,8 @@ export class ShortcutRegistry {
     const keyModifiers = key >> 8;
     const hasHandlersOrPrefixKey = Boolean(handlers) || Boolean(this.activePrefixKey);
     const keyMapNode = this.keyMap.getNode(key);
-    const maybeHasActions = (this.applicableActions(key, handlers)).length > 0 || (keyMapNode?.hasChords());
+    const actions = this.applicableActions(key, handlers);
+    const maybeHasActions = actions.length > 0 || (keyMapNode?.hasChords());
     if ((!hasHandlersOrPrefixKey && isPossiblyInputKey()) || !maybeHasActions ||
         KeyboardShortcut.isModifier(KeyboardShortcut.keyCodeAndModifiersFromKey(key).keyCode)) {
       return;
@@ -198,7 +199,13 @@ export class ShortcutRegistry {
     if (event) {
       event.consume(true);
     }
-    if (!hasHandlersOrPrefixKey && Dialog.hasInstance()) {
+
+    // We allow the use of Ctrl/Meta+Plus/Minus/0 even when a modal dialog is open,
+    // so that users are able to zoom in and out even while for example the Settings
+    // dialog is shown.
+    const DIALOG_ALLOWED_ACTION_IDS = ['main.zoom-in', 'main.zoom-out', 'main.zoom-reset'];
+    if (!hasHandlersOrPrefixKey && Dialog.hasInstance() &&
+        (actions.length !== 1 || !DIALOG_ALLOWED_ACTION_IDS.includes(actions[0].id()))) {
       return;
     }
 

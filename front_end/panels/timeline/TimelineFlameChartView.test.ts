@@ -37,11 +37,31 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   element = document.createElement('div');
 }
 
+function clearPersistTrackConfigSettings() {
+  const mainGroupSetting = Common.Settings.Settings.instance().createSetting('timeline-main-flame-group-config', {});
+  const networkGroupSetting =
+      Common.Settings.Settings.instance().createSetting('timeline-network-flame-group-config', {});
+
+  // In case they already existed and need clearing out.
+  mainGroupSetting.set({});
+  networkGroupSetting.set({});
+}
+
 describeWithEnvironment('TimelineFlameChartView', function() {
+  before(() => {
+    // In case any previous test suite set this.
+    clearPersistTrackConfigSettings();
+  });
+
   beforeEach(() => {
     setupIgnoreListManagerEnvironment();
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+  });
+
+  afterEach(() => {
+    // Avoid any group expansion state leaking across tests.
+    clearPersistTrackConfigSettings();
   });
 
   describe('rendering', () => {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -22,6 +23,7 @@ import {
   selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
+import {buildPersistedConfig, keyForTraceConfig} from './TrackConfiguration.js';
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
@@ -39,6 +41,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #lastInitiatorEntry = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
+  #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>|null = null;
 
   constructor() {
     this.reset();
@@ -460,6 +463,30 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       initiatorsData: this.#timelineDataInternal.initiatorsData,
       entryDecorations: this.#timelineDataInternal.entryDecorations,
     });
+  }
+
+  /**
+   * Note that although we use the same mechanism to track configuration
+   * changes in the Network part of the timeline, we only really use it to track
+   * the expanded state because the user cannot re-order or hide/show tracks in
+   * here.
+   */
+  handleTrackConfigurationChange(groups: readonly PerfUI.FlameChart.Group[], indexesInVisualOrder: number[]): void {
+    if (!this.#persistedGroupConfigSetting) {
+      return;
+    }
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const persistedDataForTrace = buildPersistedConfig(groups, indexesInVisualOrder);
+    const traceKey = keyForTraceConfig(this.#parsedTrace);
+    const setting = this.#persistedGroupConfigSetting.get();
+    setting[traceKey] = persistedDataForTrace;
+    this.#persistedGroupConfigSetting.set(setting);
+  }
+
+  setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>): void {
+    this.#persistedGroupConfigSetting = setting;
   }
 
   preferredHeight(): number {

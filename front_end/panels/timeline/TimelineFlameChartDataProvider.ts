@@ -50,6 +50,7 @@ import {
   selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
+import {buildPersistedConfig, keyForTraceConfig} from './TrackConfiguration.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -146,6 +147,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * have to recalculate. This is reset when the trace changes.
    */
   #initiatorsCache = new Map<number, PerfUI.FlameChart.FlameChartInitiatorData[]>();
+  #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>|null = null;
 
   constructor() {
     super();
@@ -186,6 +188,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     Common.Settings.Settings.instance()
         .moduleSetting('skip-anonymous-scripts')
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
+  }
+
+  handleTrackConfigurationChange(groups: readonly PerfUI.FlameChart.Group[], indexesInVisualOrder: number[]): void {
+    if (!this.#persistedGroupConfigSetting) {
+      return;
+    }
+    if (!this.parsedTrace) {
+      return;
+    }
+    const persistedDataForTrace = buildPersistedConfig(groups, indexesInVisualOrder);
+    const traceKey = keyForTraceConfig(this.parsedTrace);
+
+    const setting = this.#persistedGroupConfigSetting.get();
+    setting[traceKey] = persistedDataForTrace;
+    this.#persistedGroupConfigSetting.set(setting);
+  }
+
+  setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>): void {
+    this.#persistedGroupConfigSetting = setting;
   }
 
   hasTrackConfigurationMode(): boolean {
@@ -538,6 +559,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           threadAppender => threadAppender.setHeaderAppended(false));
     }
   }
+
   /**
    * Reset all data other than the UI elements.
    * This should be called when

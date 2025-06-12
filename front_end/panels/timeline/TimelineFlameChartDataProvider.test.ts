@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -367,5 +368,49 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
     // Made sure the event does not have annotations
     assert.isFalse(dataProvider.entryHasAnnotations(eventIndex));
+  });
+
+  it('persists track configurations to the setting if it is provided with one', async function() {
+    const {Settings} = Common.Settings;
+    const setting =
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
+    dataProvider.setPersistedGroupConfigSetting(setting);
+
+    let groups = dataProvider.timelineData().groups;
+
+    // To save the size of the assertion, let's only care about the first 3 groups.
+    groups = groups.slice(0, 3);
+    // Move the first group to the end.
+    const newVisualOrder = [1, 2, 0];
+
+    dataProvider.handleTrackConfigurationChange(groups, newVisualOrder);
+
+    const newSetting = setting.get();
+    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
+    assert.deepEqual(newSetting[traceKey], [
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 0,
+        visualIndex: 2,
+      },
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 1,
+        visualIndex: 0,
+      },
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 2,
+        visualIndex: 1,
+      }
+    ]);
   });
 });

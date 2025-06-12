@@ -248,6 +248,7 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   private readonly syncSection = new PanelComponents.SyncSection.SyncSection();
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
   private readonly containerElement: HTMLElement;
+  #updateSyncSectionTimerId = -1;
 
   constructor() {
     super();
@@ -321,16 +322,27 @@ export class GenericSettingsTab extends UI.Widget.VBox implements SettingsTab {
   }
 
   override willHide(): void {
+    if (this.#updateSyncSectionTimerId > 0) {
+      window.clearTimeout(this.#updateSyncSectionTimerId);
+      this.#updateSyncSectionTimerId = -1;
+    }
     super.willHide();
     UI.Context.Context.instance().setFlavor(GenericSettingsTab, null);
   }
 
   private updateSyncSection(): void {
+    if (this.#updateSyncSectionTimerId > 0) {
+      window.clearTimeout(this.#updateSyncSectionTimerId);
+      this.#updateSyncSectionTimerId = -1;
+    }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(syncInfo => {
       this.syncSection.data = {
         syncInfo,
         syncSetting: Common.Settings.moduleSetting('sync-preferences') as Common.Settings.Setting<boolean>,
       };
+      if (!syncInfo.isSyncActive || !syncInfo.arePreferencesSynced) {
+        this.#updateSyncSectionTimerId = window.setTimeout(this.updateSyncSection.bind(this), 500);
+      }
     });
   }
 

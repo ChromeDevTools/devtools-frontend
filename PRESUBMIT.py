@@ -51,28 +51,25 @@ PRESUBMIT_VERSION = '2.0.0'
 def _ExecuteSubProcess(input_api,
                        output_api,
                        script_path,
-                       script_arguments=[],
-                       results=[],
+                       script_arguments=None,
                        message=None):
     if isinstance(script_path, six.string_types):
         script_path = [input_api.python3_executable, script_path]
 
     start_time = time.time()
-    process = input_api.subprocess.Popen(script_path + script_arguments,
+    process = input_api.subprocess.Popen(script_path +
+                                         (script_arguments or []),
                                          stdout=input_api.subprocess.PIPE,
                                          stderr=input_api.subprocess.STDOUT)
     out, _ = process.communicate()
     end_time = time.time()
     time_difference = end_time - start_time
-    if process.returncode != 0:
-        results.extend([
-            output_api.PresubmitError(
-                "%s (%.1fs): %s" %
-                (message if message is not None else script_path,
-                 time_difference, out.decode('utf-8').strip()))
-        ])
-
-    return results
+    return [
+        output_api.PresubmitError(
+            "%s (%.1fs): %s" %
+            (message if message is not None else script_path, time_difference,
+             out.decode('utf-8').strip()))
+    ] if process.returncode != 0 else []
 
 
 def _IsEnvCog(input_api):
@@ -113,7 +110,7 @@ def _GetAffectedFiles(input_api, parent_directories, excluded_actions,
 def _CheckWithNodeScript(input_api,
                          output_api,
                          script_path,
-                         script_arguments=[],
+                         script_arguments=None,
                          allow_typescript=False,
                          message=None):
     original_sys_path = sys.path
@@ -170,19 +167,9 @@ def _CheckFormat(input_api, output_api):
                 'Non-git environment detected, skipping _CheckFormat.')
         ]
 
-    results = []
-
-    _ExecuteSubProcess(input_api,
-                       output_api, ['git', 'cl', 'format', '--js'],
-                       results=results,
-                       message='Format JS')
-
-    _ExecuteSubProcess(input_api,
-                       output_api, ['git', 'cl', 'format'],
-                       results=results,
-                       message='Format')
-
-    return results
+    return _ExecuteSubProcess(input_api,
+                              output_api, ['git', 'cl', 'format', '--js'],
+                              message='Format')
 
 
 def CheckBugAssociationOnCommit(input_api, output_api):

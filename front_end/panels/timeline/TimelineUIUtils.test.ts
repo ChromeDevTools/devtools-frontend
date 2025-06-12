@@ -804,6 +804,41 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
     });
 
+    it('can handle an extension entry having a `null` value', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const extensionEntry =
+          parsedTrace.ExtensionTraceData.extensionTrackData[1].entriesByTrack['An Extension Track'][0];
+
+      if (!extensionEntry) {
+        throw new Error('Could not find extension entry.');
+      }
+
+      const mutableEntry: Trace.Types.Extensions.SyntheticExtensionEntry = {
+        ...extensionEntry,
+        args: {
+          ...extensionEntry.args,
+          // Note: we do not support this, but bad values can come in via mistakes in user code.
+          properties: [['key', null]]
+        }
+      };
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          mutableEntry,
+          new Components.Linkifier.Linkifier(),
+          false,
+          null,
+      );
+      const rowData = getRowDataForDetailsElement(details).slice(0, 3);
+      assert.deepEqual(
+          rowData,
+          [
+            {title: 'Duration', value: '1.00\xA0s'},
+            {title: 'key', value: 'null'},
+          ],
+      );
+    });
+
     it('renders the details for an extension marker properly', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
       const extensionMark = parsedTrace.ExtensionTraceData.extensionMarkers[0];

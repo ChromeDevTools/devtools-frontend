@@ -1188,7 +1188,7 @@ export class TimelineUIUtils {
 
     if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
       for (const [key, value] of event.args.properties || []) {
-        contentHelper.appendTextRow(key, value);
+        contentHelper.appendTextRow(key, String(value));
       }
     }
 

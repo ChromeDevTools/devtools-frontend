@@ -181,6 +181,7 @@ describe('isTextType', () => {
     ['application/manifest+json', true],
     ['multipart/mixed', true],
     ['application/vnd.linkedin.normalized+json+2.1', true],
+    ['application/x-amz-json-1.0', true],
   ]);
 
   it('determines if a mime type has text content', () => {

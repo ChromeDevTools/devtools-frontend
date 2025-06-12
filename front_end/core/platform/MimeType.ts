@@ -38,12 +38,13 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
 
 /**
  * @returns true iff `mimeType` has textual content. Concretely we return true if:
- *   - `mimeType` starts with "text/"
- *   - `mimeType` ends with "+json" or "+xml"
+ *   - `mimeType` starts with "text/" or "multipart/"
+ *   - `mimeType` ends with "+xml"
+ *   - `mimeType` contains "json"
  *   - if `mimeType` is one of a predefined list textual mime types.
  */
 export function isTextType(mimeType: string): boolean {
-  return mimeType.startsWith('text/') || mimeType.startsWith('multipart/') || mimeType.includes('+json') ||
+  return mimeType.startsWith('text/') || mimeType.startsWith('multipart/') || mimeType.includes('json') ||
       mimeType.endsWith('+xml') || ADDITIONAL_TEXT_MIME_TYPES.has(mimeType);
 }
 

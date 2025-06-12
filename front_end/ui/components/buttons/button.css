@@ -235,14 +235,32 @@ button {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: 2px;
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: var(--sys-size-2);
     z-index: 1;
 
     &.toolbar,
     &.icon,
     &.reduced-focus-ring {
-      outline-offset: -2px;
+      outline-offset: calc(-1 * var(--sys-size-2));
+    }
+
+    &.only-icon {
+      outline: none;
+
+      devtools-icon {
+        outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+        outline-offset: var(--sys-size-1);
+        border-radius: inherit;
+      }
+
+      &.micro devtools-icon {
+        outline-offset: calc(-1 * var(--sys-size-2));
+      }
+
+      &.small devtools-icon {
+        outline-offset: 0;
+      }
     }
   }
 

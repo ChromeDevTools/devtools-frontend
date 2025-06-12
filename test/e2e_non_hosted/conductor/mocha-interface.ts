@@ -13,7 +13,6 @@ import {TestConfig} from '../../conductor/test_config.js';
 
 import {makeInstrumentedTestFunction} from './mocha-interface-helpers.js';
 import {StateProvider} from './state-provider.js';
-
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;
 
 function devtoolsTestInterface(rootSuite: Mocha.Suite) {
@@ -44,15 +43,49 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
         context.describe = customDescribe(defaultImplementation.suite, file);
       },
   );
-  rootSuite.on(Mocha.Suite.constants.EVENT_SUITE_ADD_SUITE, (suite: Mocha.Suite) => {
+
+  function customDescribe(suiteImplementation: SuiteFunctions, file: string) {
+    function withAugmentedTitle(suiteFn: (opts: CreateOptions) => Mocha.Suite) {
+      return function(title: string, fn: SuiteFunction) {
+        const suite = suiteFn({
+          title: describeTitle(file, title),
+          file,
+          fn: function(this: Mocha.Suite) {
+            const thisSuite = this;
+            // @ts-expect-error Custom interface.
+            mochaGlobals.describe = customDescribe(defaultImplementation.suite, '', thisSuite);
+            // @ts-expect-error Custom interface.
+            mochaGlobals.setup = function(suiteSettings: SuiteSettings) {
+              StateProvider.instance.registerSettingsCallback(thisSuite, suiteSettings);
+            };
+            // @ts-expect-error Custom interface.
+            mochaGlobals.it = customIt(defaultImplementation.test, thisSuite, thisSuite.file || '', mochaRoot);
+            if (fn) {
+              fn.call(thisSuite);
+            }
+          },
+        });
+
+        if (!suite.isPending()) {
+          suite.beforeAll(async function(this: Mocha.Context) {
+            this.timeout(0);
+            await StateProvider.instance.resolveBrowser(suite);
+          });
+        }
+        return suite;
+      };
+    }
+
+    const describe = withAugmentedTitle(suiteImplementation.create);
     // @ts-expect-error Custom interface.
-    mochaGlobals.setup = function(suiteSettings: SuiteSettings) {
-      StateProvider.instance.registerSettingsCallback(suite, suiteSettings);
-    };
-    const it = customIt(defaultImplementation.test, suite, suite.file || '', mochaRoot);
+    describe.only = withAugmentedTitle(suiteImplementation.only);
     // @ts-expect-error Custom interface.
-    mochaGlobals.it = it;
-  });
+    describe.skip = withAugmentedTitle(function(opts: CreateOptions) {
+      opts.pending = true;
+      return suiteImplementation.create(opts);
+    });
+    return describe;
+  }
 }
 
 function instrumentWith(withDefaultFn: (fn: Mocha.AsyncFunc) => void) {
@@ -72,36 +105,6 @@ function describeTitle(file: string, title: string) {
     return title;
   }
   return `${prefix}: ${title}`;
-}
-
-function customDescribe(suiteImplementation: SuiteFunctions, file: string) {
-  function withAugmentedTitle(suiteFn: (opts: CreateOptions) => Mocha.Suite) {
-    return (title: string, fn: SuiteFunction) => {
-      const suite = suiteFn({
-        title: describeTitle(file, title),
-        file,
-        fn,
-      });
-
-      if (!suite.isPending()) {
-        suite.beforeAll(async function(this: Mocha.Context) {
-          this.timeout(0);
-          await StateProvider.instance.resolveBrowser(suite);
-        });
-      }
-      return suite;
-    };
-  }
-
-  const describe = withAugmentedTitle(suiteImplementation.create);
-  // @ts-expect-error Custom interface.
-  describe.only = withAugmentedTitle(suiteImplementation.only);
-  // @ts-expect-error Custom interface.
-  describe.skip = withAugmentedTitle(function(opts: CreateOptions) {
-    opts.pending = true;
-    return suiteImplementation.create(opts);
-  });
-  return describe;
 }
 
 function iterationSuffix(iteration: number): string {

@@ -2323,7 +2323,6 @@ export class DataGridNode<T> {
     if (this.elementInternal) {
       this.elementInternal.classList.add('selected');
       this.elementInternal.focus();
-      this.dataGrid.element.focus();
       this.dataGrid.setHasSelection(true);
       this.dataGrid.announceSelectedGridNode();
     }

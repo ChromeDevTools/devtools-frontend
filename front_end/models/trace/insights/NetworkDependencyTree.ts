@@ -215,6 +215,33 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
   return isHighPriority || isBlocking;
 }
 
+function findMaxLeafNode(node: CriticalRequestNode): CriticalRequestNode {
+  if (node.children.length === 0) {
+    return node;
+  }
+  let maxLeaf = node.children[0];
+  for (const child of node.children) {
+    const leaf = findMaxLeafNode(child);
+    if (leaf.timeFromInitialRequest > maxLeaf.timeFromInitialRequest) {
+      maxLeaf = leaf;
+    }
+  }
+  return maxLeaf;
+}
+
+function sortRecursively(nodes: CriticalRequestNode[]): void {
+  for (const node of nodes) {
+    if (node.children.length > 0) {
+      node.children.sort((nodeA, nodeB) => {
+        const leafA = findMaxLeafNode(nodeA);
+        const leafB = findMaxLeafNode(nodeB);
+        return leafB.timeFromInitialRequest - leafA.timeFromInitialRequest;
+      });
+      sortRecursively(node.children);
+    }
+  }
+}
+
 function generateNetworkDependencyTree(context: InsightSetContextWithNavigation): {
   rootNodes: CriticalRequestNode[],
   maxTime: Types.Timing.Micro,
@@ -317,6 +344,8 @@ function generateNetworkDependencyTree(context: InsightSetContextWithNavigation)
       }
     }
   }
+
+  sortRecursively(rootNodes);
 
   return {
     rootNodes,

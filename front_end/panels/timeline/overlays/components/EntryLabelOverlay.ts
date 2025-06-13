@@ -626,10 +626,11 @@ export class EntryLabelOverlay extends HTMLElement {
     if (!hasAiExperiment || aiDisabledByEnterprisePolicy || !dataToGenerateLabelAvailable || !labelIsEmpty) {
       this.#currAIButtonState = AIButtonState.HIDDEN;
     } else {
-      // To verify whether AI can be used, check if the user is logged in, over 18, in a supported
-      // location and offline. If the user is not logged in, `blockedByAge` will return true.
-      const aiAvailable = !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
-          !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && !navigator.onLine === false;
+      // To verify whether AI can be used, check if aida is available, the user is logged in, over 18, in a supported
+      // location and offline.
+      const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enabled &&
+          !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge &&
+          !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && navigator.onLine;
       if (aiAvailable) {
         this.#currAIButtonState = AIButtonState.ENABLED;
       } else {

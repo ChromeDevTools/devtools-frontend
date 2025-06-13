@@ -331,12 +331,6 @@ describeWithEnvironment('Overlays', () => {
       event: Trace.Types.Events.Event,
       component: Components.EntryLabelOverlay.EntryLabelOverlay,
     }> {
-      updateHostConfig({
-        devToolsAiGeneratedTimelineLabels: {
-          enabled: true,
-        }
-      });
-
       const {parsedTrace} = await TraceLoader.traceEngine(context, file);
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       let event;
@@ -491,6 +485,14 @@ describeWithEnvironment('Overlays', () => {
 
     it('should show FRE dialog on the ai suggestion button click if the `ai-annotations-enabled` setting is off',
        async function() {
+         updateHostConfig({
+           devToolsAiGeneratedTimelineLabels: {
+             enabled: true,
+           },
+           aidaAvailability: {
+             enabled: true,
+           },
+         });
          Common.Settings.moduleSetting('ai-annotations-enabled').set(false);
          const {elementsWrapper, inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
 
@@ -520,6 +522,14 @@ describeWithEnvironment('Overlays', () => {
 
     it('should not show FRE dialog on the ai suggestion button click if the `ai-annotations-enabled` setting is on',
        async function() {
+         updateHostConfig({
+           devToolsAiGeneratedTimelineLabels: {
+             enabled: true,
+           },
+           aidaAvailability: {
+             enabled: true,
+           },
+         });
          Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
          const {elementsWrapper, inputField} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
 
@@ -579,6 +589,15 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('generates a label when the user clicks "Generate" if the setting is enabled', async function() {
+      updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        },
+        aidaAvailability: {
+          enabled: true,
+        },
+      });
+
       const {elementsWrapper, inputField, component} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
       Common.Settings.moduleSetting('ai-annotations-enabled').set(true);
 
@@ -616,6 +635,14 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('shows correct tooltip on the `generate ai label` hover for the users with logging enabled', async function() {
+      updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        },
+        aidaAvailability: {
+          enabled: true,
+        },
+      });
       const {elementsWrapper} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
 
       const aiLabelButtonWrapper =
@@ -640,6 +667,9 @@ describeWithEnvironment('Overlays', () => {
 
     it('shows correct tooltip text on `generate ai label` hover for the users with logging disabled', async function() {
       updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        },
         aidaAvailability: {
           enabled: true,
           blockedByAge: false,
@@ -651,7 +681,6 @@ describeWithEnvironment('Overlays', () => {
       });
 
       const {elementsWrapper} = await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50);
-
       const aiLabelButtonWrapper =
           elementsWrapper.querySelector<HTMLElement>('.ai-label-button-wrapper') as HTMLSpanElement;
       assert.isOk(aiLabelButtonWrapper);
@@ -687,6 +716,9 @@ describeWithEnvironment('Overlays', () => {
 
     it('Shows the `generate ai label` button if the label is empty', async function() {
       updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        },
         aidaAvailability: {
           enabled: false,
           blockedByAge: true,
@@ -708,6 +740,9 @@ describeWithEnvironment('Overlays', () => {
     it('Shows disabled `generate ai label` button if the user is not logged into their google account or is under 18',
        async function() {
          updateHostConfig({
+           devToolsAiGeneratedTimelineLabels: {
+             enabled: true,
+           },
            aidaAvailability: {
              enabled: false,
              blockedByAge: true,
@@ -735,6 +770,9 @@ describeWithEnvironment('Overlays', () => {
 
     it('Shows disabled `generate ai label` button if the user is in an unsupported location', async function() {
       updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        },
         aidaAvailability: {
           enabled: false,
           blockedByAge: false,

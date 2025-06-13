@@ -7,7 +7,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
-import {assertScreenshot, dispatchClickEvent, doubleRaf, raf} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   microsecondsTraceWindow,
@@ -180,6 +180,115 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       await raf();
       await assertScreenshot('timeline/timeline_with_main_thread_selection.png');
     });
+  });
+
+  it('can gather the visual track config to store as metadata', async function() {
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    renderElementIntoDOM(flameChartView);
+    flameChartView.setModel(parsedTrace, metadata);
+
+    const mainChart = flameChartView.getMainFlameChart();
+    mainChart.hideGroup(0);
+    // Can't do group one as that is the screenshots, which are nested under
+    // "Frames", so we pick Group 2 (which is animations).
+    mainChart.moveGroupDown(2);
+
+    const networkChart = flameChartView.getNetworkFlameChart();
+    networkChart.toggleGroupExpand(0);
+
+    const visualMetadata = flameChartView.getPersistedConfigMetadata(parsedTrace);
+
+    assert.deepEqual(visualMetadata.network, [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}]);
+
+    assert.deepEqual(visualMetadata.main, [
+      {expanded: false, hidden: true, originalIndex: 0, visualIndex: 0},
+      {expanded: false, hidden: false, originalIndex: 1, visualIndex: 1},
+      {expanded: false, hidden: false, originalIndex: 2, visualIndex: 3},
+      {expanded: true, hidden: false, originalIndex: 3, visualIndex: 2},
+      {expanded: false, hidden: false, originalIndex: 4, visualIndex: 4},
+      {expanded: false, hidden: false, originalIndex: 5, visualIndex: 5},
+      {expanded: false, hidden: false, originalIndex: 6, visualIndex: 6},
+      {expanded: false, hidden: false, originalIndex: 7, visualIndex: 7},
+      {expanded: false, hidden: false, originalIndex: 8, visualIndex: 8},
+      {expanded: false, hidden: false, originalIndex: 9, visualIndex: 9},
+      {expanded: false, hidden: false, originalIndex: 10, visualIndex: 10},
+      {expanded: false, hidden: false, originalIndex: 11, visualIndex: 11},
+      {expanded: false, hidden: false, originalIndex: 12, visualIndex: 12}
+    ]);
+  });
+
+  it('will apply metadata on disk to the setting when a trace is imported', async function() {
+    const {parsedTrace, metadata: originalMetdata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+
+    const FAKE_VISUAL_CONFIG_MAIN: Trace.Types.File.TrackVisualConfig[] = [
+      // Move the order of Group 1 and Group 2 around
+      {expanded: false, hidden: true, originalIndex: 0, visualIndex: 0},
+      {expanded: false, hidden: false, originalIndex: 1, visualIndex: 1},
+      {expanded: false, hidden: false, originalIndex: 2, visualIndex: 3},
+      {expanded: true, hidden: false, originalIndex: 3, visualIndex: 2},
+      {expanded: false, hidden: false, originalIndex: 4, visualIndex: 4},
+      {expanded: false, hidden: false, originalIndex: 5, visualIndex: 5},
+      {expanded: false, hidden: false, originalIndex: 6, visualIndex: 6},
+      {expanded: false, hidden: false, originalIndex: 7, visualIndex: 7},
+      {expanded: false, hidden: false, originalIndex: 8, visualIndex: 8},
+      {expanded: false, hidden: false, originalIndex: 9, visualIndex: 9},
+      {expanded: false, hidden: false, originalIndex: 10, visualIndex: 10},
+      {expanded: false, hidden: false, originalIndex: 11, visualIndex: 11},
+      {expanded: false, hidden: false, originalIndex: 12, visualIndex: 12}
+    ];
+
+    const FAKE_VISUAL_CONFIG_NETWORK: Trace.Types.File.TrackVisualConfig[] =
+        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}];
+
+    const metadata: Trace.Types.File.MetaData = {
+      ...originalMetdata,
+      visualTrackConfig: {
+        main: FAKE_VISUAL_CONFIG_MAIN,
+        network: FAKE_VISUAL_CONFIG_NETWORK,
+      }
+    };
+    const mockViewDelegate = new MockViewDelegate();
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setModel(parsedTrace, metadata);
+
+    const metadataInSetting = flameChartView.getPersistedConfigMetadata(parsedTrace);
+    assert.deepEqual(metadataInSetting, {main: FAKE_VISUAL_CONFIG_MAIN, network: FAKE_VISUAL_CONFIG_NETWORK});
+  });
+
+  it('does not use visual config from file if the user has locally made config changes', async function() {
+    const {parsedTrace, metadata: originalMetadata} =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+
+    const FROM_FILE_VISUAL_CONFIG_NETWORK: Trace.Types.File.TrackVisualConfig[] =
+        [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0}];
+
+    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
+    // Populate the in-memory setting to pretend the user has already modified
+    // this trace's visual config.
+    // Importantly for this test, this is a different setting to FAKE_VISUAL_CONFIG_NETWORK above.
+    const networkGroupSetting =
+        Common.Settings.Settings.instance()
+            .createSetting<PerfUI.FlameChart.PersistedConfigPerTrace>('timeline-network-flame-group-config', {})
+            .get();
+    const USER_VISUAL_CONFIG_NETWORK = {hidden: true, expanded: true, originalIndex: 0, visualIndex: 0};
+    networkGroupSetting[traceKey] = [USER_VISUAL_CONFIG_NETWORK];
+
+    // Now add network configuration to the metadata that we get from the trace file itself.
+    const metadata: Trace.Types.File.MetaData = {
+      ...originalMetadata,
+      visualTrackConfig: {
+        main: null,
+        network: FROM_FILE_VISUAL_CONFIG_NETWORK,
+      }
+    };
+    const mockViewDelegate = new MockViewDelegate();
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setModel(parsedTrace, metadata);
+
+    const metadataInSetting = flameChartView.getPersistedConfigMetadata(parsedTrace);
+    assert.deepEqual(metadataInSetting, {main: null, network: [USER_VISUAL_CONFIG_NETWORK]});
   });
 
   it('fires an event when an entry label overlay is clicked', async function() {

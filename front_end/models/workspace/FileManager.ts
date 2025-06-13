@@ -34,7 +34,7 @@ import type * as Platform from '../../core/platform/platform.js';
 
 let fileManagerInstance: FileManager|null;
 
-interface SaveCallbackParam {
+export interface SaveCallbackParam {
   fileSystemPath?: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
 }
 

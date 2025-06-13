@@ -183,4 +183,104 @@ describeWithEnvironment('TimelinePanel', function() {
     assert.isNull(context.flavor(AICallTree.AICallTree));
     assert.isNull(context.flavor(InsightAIContext.ActiveInsight));
   });
+
+  it('saves visual track config metadata to disk if the user has modified it', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+
+    const FAKE_METADATA: Trace.Types.File.PersistedTraceVisualConfig = {
+      main: [{hidden: true, expanded: false, originalIndex: 0, visualIndex: 0}],
+      network: [{hidden: false, expanded: false, originalIndex: 0, visualIndex: 0}],
+    };
+
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return FAKE_METADATA;
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    const closeSpy = sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: true,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+    sinon.assert.calledOnce(closeSpy);
+
+    const [fileName, traceAsString] = saveSpy.getCall(0).args;
+    // Matches Trace-20250613T132120.json
+    assert.match(fileName, /Trace-[\d|T]+\.json$/);
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    assert.deepEqual(parsedData.metadata.visualTrackConfig, FAKE_METADATA);
+  });
+
+  it('does not save visual track config if the user does not save with modifications', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+
+    const FAKE_METADATA: Trace.Types.File.PersistedTraceVisualConfig = {
+      main: [{hidden: true, expanded: false, originalIndex: 0, visualIndex: 0}],
+      network: [{hidden: false, expanded: false, originalIndex: 0, visualIndex: 0}],
+    };
+
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return FAKE_METADATA;
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: false,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsString] = saveSpy.getCall(0).args;
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+  });
+
+  it('does not save visual track config if the user has not made any', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return {main: null, network: null};
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: true,
+    });
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsString] = saveSpy.getCall(0).args;
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+  });
 });

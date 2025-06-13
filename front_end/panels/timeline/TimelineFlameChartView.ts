@@ -44,6 +44,7 @@ import {
 } from './TimelineSelection.js';
 import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
+import {keyForTraceConfig} from './TrackConfiguration.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -1179,12 +1180,37 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     this.#parsedTrace = newParsedTrace;
     this.#traceMetadata = traceMetadata;
+    if (traceMetadata?.visualTrackConfig) {
+      this.#addPersistedConfigToSettings(newParsedTrace, traceMetadata.visualTrackConfig);
+    }
     for (const dimmer of this.#flameChartDimmers) {
       dimmer.active = false;
       dimmer.mainChartIndices = [];
       dimmer.networkChartIndices = [];
     }
     this.rebuildDataForTrace();
+  }
+
+  /**
+   * When the user imports a new trace and it has the visual config metadata, we add that data into the DevTools setting.
+   * NOTE: if the user has modifications for this trace already in memory,
+   * those are preferred over the modifications stored in the trace file itself.
+   */
+  #addPersistedConfigToSettings(
+      trace: Trace.Handlers.Types.ParsedTrace,
+      visualConfigForTrace: Trace.Types.File.PersistedTraceVisualConfig): void {
+    const key = keyForTraceConfig(trace);
+
+    if (visualConfigForTrace.main) {
+      const mainSetting = this.#mainPersistedGroupConfigSetting.get();
+      mainSetting[key] = mainSetting[key] ?? visualConfigForTrace.main;
+      this.#mainPersistedGroupConfigSetting.set(mainSetting);
+    }
+    if (visualConfigForTrace.network) {
+      const networkSetting = this.#networkPersistedGroupConfigSetting.get();
+      networkSetting[key] = networkSetting[key] ?? visualConfigForTrace.network;
+      this.#networkPersistedGroupConfigSetting.set(networkSetting);
+    }
   }
 
   /**
@@ -1228,6 +1254,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.setMarkers(this.#parsedTrace);
     this.dimThirdPartiesIfRequired();
     ModificationsManager.activeManager()?.applyAnnotationsFromCache();
+  }
+
+  /**
+   * Gets the persisted config (if the user has made any visual changes) in
+   * order to save it to disk as part of the trace.
+   */
+  getPersistedConfigMetadata(
+      trace: Trace.Handlers.Types.ParsedTrace,
+      ): Trace.Types.File.PersistedTraceVisualConfig {
+    const main = this.#getPersistedConfigForTrace(trace, this.#mainPersistedGroupConfigSetting);
+    const network = this.#getPersistedConfigForTrace(trace, this.#networkPersistedGroupConfigSetting);
+    return {main, network};
   }
 
   #getPersistedConfigForTrace(

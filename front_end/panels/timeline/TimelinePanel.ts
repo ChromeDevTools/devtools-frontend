@@ -1020,7 +1020,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile(/* isEnhancedTrace */ false, /* addModifications */ true);
+      void this.saveToFile({savingEnhancedTrace: false, addModifications: true});
     }, {
       jslogContext: annotationsExist ? 'timeline.save-to-file-with-annotations' :
                                        'timeline.save-to-file-without-annotations',
@@ -1029,7 +1029,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (annotationsExist) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-        void this.saveToFile();
+        void this.saveToFile({
+          savingEnhancedTrace: false,
+          addModifications: false,
+        });
       }, {
         jslogContext: 'timeline.save-to-file-without-annotations',
       });
@@ -1064,15 +1067,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         if (event.ctrlKey || event.button === 2) {
           const contextMenu = new UI.ContextMenu.ContextMenu(event);
           contextMenu.saveSection().appendItem(i18nString(UIStrings.exportNormalTraces), () => {
-            void this.saveToFile();
+            void this.saveToFile({savingEnhancedTrace: false, addModifications: false});
           });
           contextMenu.saveSection().appendItem(i18nString(UIStrings.exportEnhancedTraces), () => {
-            void this.saveToFile(/* isEnhancedTrace */ true);
+            void this.saveToFile({savingEnhancedTrace: true, addModifications: false});
           });
 
           void contextMenu.show();
         } else {
-          void this.saveToFile();
+          void this.saveToFile({savingEnhancedTrace: false, addModifications: false});
         }
       });
     }
@@ -1336,20 +1339,36 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     void contextMenu.show();
   }
 
-  async saveToFile(savingEnhancedTrace = false, addModifications = false): Promise<void> {
+  /**
+   * Saves a trace file to disk.
+   * Pass `config.savingEnhancedTrace === true` to include source maps in the resulting metadata.
+   * Pass `config.addModifications === true` to include user modifications to the trace file, which includes:
+   *      1. Annotations
+   *      2. Filtering / collapsing of the flame chart.
+   *      3. Visual track configuration (re-ordering or hiding tracks).
+   */
+  async saveToFile(config: {
+    savingEnhancedTrace: boolean,
+    addModifications: boolean,
+  }): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return;
     }
+    const trace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
+    if (!trace) {
+      return;
+    }
     let traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
-    const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
     if (!traceEvents) {
       return;
     }
 
-    const shouldRetainScriptSources = savingEnhancedTrace &&
+    const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex) ?? {};
+
+    const shouldRetainScriptSources = config.savingEnhancedTrace &&
         Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES);
     if (!shouldRetainScriptSources) {
       traceEvents = traceEvents.map(event => {
@@ -1371,11 +1390,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       });
     }
 
-    if (metadata) {
-      metadata.modifications = addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
-      metadata.enhancedTraceVersion =
-          savingEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
+    metadata.modifications = config.addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
+    if (config.addModifications) {
+      // Get any visual track config
+      const visualConfig = this.flameChart.getPersistedConfigMetadata(trace);
+      // If both these values are null then the user has not made any visual
+      // changes, so we don't need to store it into the saved file.
+      if (visualConfig.main !== null || visualConfig.network !== null) {
+        metadata.visualTrackConfig = visualConfig;
+      }
     }
+    metadata.enhancedTraceVersion =
+        config.savingEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
     let fileName: Platform.DevToolsPath.RawPathString;
@@ -1409,7 +1435,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       } else {
         const formattedTraceIter = traceJsonGenerator(traceEvents, {
           ...metadata,
-          sourceMaps: savingEnhancedTrace ? metadata?.sourceMaps : undefined,
+          sourceMaps: config.savingEnhancedTrace ? metadata?.sourceMaps : undefined,
         });
         traceAsString = Array.from(formattedTraceIter).join('');
       }
@@ -2922,7 +2948,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         panel.recordReload();
         return true;
       case 'timeline.save-to-file':
-        void panel.saveToFile();
+        void panel.saveToFile({savingEnhancedTrace: false, addModifications: false});
         return true;
       case 'timeline.load-from-file':
         panel.selectFileToLoad();

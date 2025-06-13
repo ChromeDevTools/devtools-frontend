@@ -9783,6 +9783,11 @@ export namespace Network {
      */
     outerResponse: Response;
     /**
+     * Whether network response for the signed exchange was accompanied by
+     * extra headers.
+     */
+    hasExtraInfo: boolean;
+    /**
      * Information about the signed exchange header.
      */
     header?: SignedExchangeHeader;

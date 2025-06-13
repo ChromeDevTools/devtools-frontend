@@ -31,6 +31,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as TraceBounds from '../../../../services/trace_bounds/trace_bounds.js';
 import * as VisualLoggging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
@@ -132,7 +133,9 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   override wasShown(): void {
-    this.update();
+    const start = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.min;
+    const end = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.max;
+    this.update(start, end);
   }
 
   override willHide(): void {

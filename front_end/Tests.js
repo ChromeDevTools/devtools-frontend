@@ -1029,44 +1029,55 @@
     }
   };
 
-  TestSuite.prototype.testRawHeadersWithHSTS = function(url) {
+  TestSuite.prototype.testRawHeadersWithHSTS = async function(url) {
     const test = this;
     test.takeControl({slownessFactor: 10});
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
 
-    this.evaluateInConsole_(`location.href= "${url}";`, () => {});
-
-    let count = 0;
-    function onResponseReceived(event) {
-      const networkRequest = event.data.request;
-      if (!networkRequest.url().startsWith('http')) {
-        return;
+    const rawResponseEventsPromise = new Promise(resolve => {
+      let count = 0;
+      this.addSniffer(SDK.NetworkManager.NetworkDispatcher.prototype, 'responseReceivedExtraInfo', function() {
+        if (++count === 2) {
+          resolve();
+        }
+      }, /* sticky=*/ true);
+    });
+    const requests = await new Promise(resolve => {
+      SDK.TargetManager.TargetManager.instance().addModelListener(
+          SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
+      const requests = [];
+      function onResponseReceived(event) {
+        const networkRequest = event.data.request;
+        console.error(`${networkRequest.url()} ${networkRequest.statusCode}`);
+        if (!networkRequest.url().startsWith('http')) {
+          return;
+        }
+        requests.push(networkRequest);
+        if (requests.length === 3) {
+          resolve(requests);
+        }
       }
-      switch (++count) {
-        case 1:  // Original redirect
-          test.assertEquals(301, networkRequest.statusCode);
-          test.assertEquals('Moved Permanently', networkRequest.statusText);
-          test.assertTrue(url.endsWith(networkRequest.responseHeaderValue('Location')));
-          break;
+      this.evaluateInConsole_(`location.href= "${url}";`, () => {});
+    });
 
-        case 2:  // HSTS internal redirect
-          test.assertTrue(networkRequest.url().startsWith('http://'));
-          test.assertEquals(307, networkRequest.statusCode);
-          test.assertEquals('Internal Redirect', networkRequest.statusText);
-          test.assertEquals('HSTS', networkRequest.responseHeaderValue('Non-Authoritative-Reason'));
-          test.assertTrue(networkRequest.responseHeaderValue('Location').startsWith('https://'));
-          break;
+    await rawResponseEventsPromise;
 
-        case 3:  // Final response
-          test.assertTrue(networkRequest.url().startsWith('https://'));
-          test.assertTrue(networkRequest.requestHeaderValue('Referer').startsWith('http://127.0.0.1'));
-          test.assertEquals(200, networkRequest.statusCode);
-          test.assertEquals('OK', networkRequest.statusText);
-          test.assertEquals('132', networkRequest.responseHeaderValue('Content-Length'));
-          test.releaseControl();
-      }
-    }
+    test.assertTrue(requests[0] !== requests[1]);
+    test.assertEquals(301, requests[0].statusCode);
+    test.assertEquals('Moved Permanently', requests[0].statusText);
+    test.assertTrue(url.endsWith(requests[0].responseHeaderValue('Location')));
+
+    test.assertTrue(requests[1].url().startsWith('http://'));
+    test.assertEquals(307, requests[1].statusCode);
+    test.assertEquals('Internal Redirect', requests[1].statusText);
+    test.assertEquals('HSTS', requests[1].responseHeaderValue('Non-Authoritative-Reason'));
+    test.assertTrue(requests[1].responseHeaderValue('Location').startsWith('https://'));
+
+    test.assertTrue(requests[2].url().startsWith('https://'));
+    test.assertTrue(requests[2].requestHeaderValue('Referer').startsWith('http://127.0.0.1'));
+    test.assertEquals(200, requests[2].statusCode);
+    test.assertEquals('OK', requests[2].statusText);
+    test.assertEquals('132', requests[2].responseHeaderValue('Content-Length'));
+    test.releaseControl();
   };
 
   TestSuite.prototype.waitForTestResultsInConsole = function() {

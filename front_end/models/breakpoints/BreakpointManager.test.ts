@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {
   clearMockConnectionResponseHandler,
@@ -236,6 +236,12 @@ describeWithMockConnection('BreakpointManager', () => {
       return new Breakpoints.BreakpointManager.Breakpoint(
           breakpointManager, uiSourceCode, storageState, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
     }
+
+    expectConsoleLogs({
+      error: [
+        'Unexpected setBreakpointByUrl request [object Object]',
+      ],
+    });
 
     it('wraps logpoints in console.log', () => {
       const breakpoint = createBreakpoint('x', /* isLogpoint */ true);

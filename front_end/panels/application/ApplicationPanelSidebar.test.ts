@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
@@ -415,6 +415,9 @@ describeWithMockConnection('IDBDatabaseTreeElement', () => {
   beforeEach(() => {
     stubNoopSettings();
   });
+  expectConsoleLogs({
+    error: ['Error: No LanguageSelector instance exists yet.'],
+  });
 
   it('only becomes selectable after database is updated', () => {
     const target = createTarget();
@@ -437,6 +440,10 @@ describeWithMockConnection('ResourcesSection', () => {
       stubNoopSettings();
       SDK.FrameManager.FrameManager.instance({forceNew: true});
       target = createTarget();
+    });
+
+    expectConsoleLogs({
+      error: ['Error: No LanguageSelector instance exists yet.'],
     });
 
     it('adds tree elements for a frame and resource', () => {

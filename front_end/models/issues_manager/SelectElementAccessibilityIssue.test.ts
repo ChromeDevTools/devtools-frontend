@@ -4,7 +4,7 @@
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
+import {describeWithLocale, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
@@ -26,6 +26,10 @@ describeWithLocale('SelectElementAccessibilityIssue', () => {
       details: {selectElementAccessibilityIssueDetails},
     };
   }
+
+  expectConsoleLogs({
+    warn: ['Select Element Accessibility issue without details received.'],
+  });
 
   it('can be created for various reasons', () => {
     const reasons = [

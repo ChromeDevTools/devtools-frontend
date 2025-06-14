@@ -15,7 +15,12 @@ import {
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  deinitializeGlobalVars,
+  expectConsoleLogs,
+  initializeGlobalVars
+} from '../../testing/EnvironmentHelpers.js';
 import {
   clearMockConnectionResponseHandler,
   describeWithMockConnection,
@@ -242,6 +247,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   describe('mapping to authored function name when recording is fresh', function() {
+    expectConsoleLogs({
+      error: ['Error: No LanguageSelector instance exists yet.'],
+    });
     it('maps to the authored name and script of a profile call', async function() {
       const {script} = await loadBasicSourceMapExample(target);
       // Ideally we would get a column number we can use from the source
@@ -336,6 +344,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   });
   describe('adjusting timestamps for events and navigations', function() {
+    expectConsoleLogs({
+      error: ['Error: No LanguageSelector instance exists yet.'],
+    });
     it('adjusts the time for a DCL event after a navigation', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 

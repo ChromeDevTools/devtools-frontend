@@ -482,6 +482,7 @@ export function setupActionRegistry() {
   });
 }
 
+// This needs to be invoked within a describe block, rather than within an it() block.
 export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}) {
   const {error, warn, log} = console;
   before(() => {

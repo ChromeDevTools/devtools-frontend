@@ -5,7 +5,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, expectConsoleLogs} from '../../../testing/EnvironmentHelpers.js';
 import {fetchFixture} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -153,6 +153,10 @@ describeWithEnvironment('ScriptDuplication', function() {
       });
     });
 
+    expectConsoleLogs({
+      error: ['Failed to parse source map Error: Unexpected char \' \' encountered while decoding'],
+    });
+
     it('fault tolerance (bogus mappings)', async function() {
       const script = await loadScriptFixture('foo.min', fixture => {
         fixture.sourceMapJson.mappings = 'blahblah blah';
@@ -253,12 +257,11 @@ describeWithEnvironment('ScriptDuplication', function() {
         scripts: [await loadScriptFixture('coursehero-bundle-1'), await loadScriptFixture('coursehero-bundle-2')],
       };
 
-      const results =
-          Object.fromEntries([...getDuplication(scriptsData).entries()].map(([key, data]) => {
-            return [
-              key, data.duplicates.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.attributedSize}))
-            ];
-          }));
+      const results = Object.fromEntries([...getDuplication(scriptsData).entries()].map(([key, data]) => {
+        return [
+          key, data.duplicates.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.attributedSize}))
+        ];
+      }));
       assert.deepEqual(results, {
         'coursehero:///Control/assets/js/vendor/ng/select/select.js': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 48513},

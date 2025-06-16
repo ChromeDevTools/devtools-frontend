@@ -198,15 +198,15 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderUnsizedImage(frame: string, backendNodeId: Protocol.DOM.BackendNodeId): Lit.TemplateResult|null {
+  #renderUnsizedImage(frame: string, unsizedImage: Trace.Insights.Models.CLSCulprits.UnsizedImage): Lit.TemplateResult
+      |null {
     // clang-format off
     const el = html`
       <devtools-performance-node-link
         .data=${{
-          backendNodeId,
+          backendNodeId: unsizedImage.backendNodeId,
           frame,
-          // TODO(crbug.com/371620361): if ever rendered for non-fresh traces, this needs to set a fallback text value. This requires
-          // `rootCauses.unsizedImages` to have more than just the backend node id.
+          fallbackUrl: unsizedImage.paintImageEvent.args.data.url,
         } as Insights.NodeLink.NodeLinkData}>
       </devtools-performance-node-link>`;
     return html`
@@ -224,7 +224,7 @@ export class LayoutShiftDetails extends HTMLElement {
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
       ${rootCauses?.iframeIds.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
-      ${rootCauses?.unsizedImages.map(unsizedImage => this.#renderUnsizedImage(frame, unsizedImage.backendNodeId))}
+      ${rootCauses?.unsizedImages.map(unsizedImage => this.#renderUnsizedImage(frame, unsizedImage))}
     `;
   }
 
@@ -267,7 +267,7 @@ export class LayoutShiftDetails extends HTMLElement {
               ${this.#renderShiftedElements(shift, elementsShifted)}
             </div>
           </td>` : Lit.nothing}
-        ${hasCulprits && this.#isFreshRecording ? html`
+        ${hasCulprits ? html`
           <td class="culprits">
             ${this.#renderRootCauseValues(shift.args.frame, rootCauses)}
           </td>` : Lit.nothing}
@@ -334,7 +334,7 @@ export class LayoutShiftDetails extends HTMLElement {
             <th>${i18nString(UIStrings.shiftScore)}</th>
             ${hasShiftedElements && this.#isFreshRecording ? html`
               <th>${i18nString(UIStrings.elementsShifted)}</th>` : Lit.nothing}
-            ${hasCulprits && this.#isFreshRecording ? html`
+            ${hasCulprits ? html`
               <th>${i18nString(UIStrings.culprit)}</th> ` : Lit.nothing}
           </tr>
         </thead>
@@ -378,7 +378,7 @@ export class LayoutShiftDetails extends HTMLElement {
                 <th>${i18nString(UIStrings.shiftScore)}</th>
                 ${this.#isFreshRecording ? html`
                   <th>${i18nString(UIStrings.elementsShifted)}</th>` : Lit.nothing}
-                ${hasCulprits && this.#isFreshRecording ? html`
+                ${hasCulprits ? html`
                   <th>${i18nString(UIStrings.culprit)}</th> ` : Lit.nothing}
               </tr>
             </thead>

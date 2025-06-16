@@ -6,9 +6,12 @@
 // TODO: move to ui/components/node_link?
 
 import * as Common from '../../../../core/common/common.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
 const {html} = Lit;
@@ -18,13 +21,18 @@ export interface NodeLinkData {
   frame: string;
   options?: Common.Linkifier.Options;
   /**
+   * URL to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
+   * Will be given to linkifyURL. Use this or one of the other fallback fields.
+   */
+  fallbackUrl?: Platform.DevToolsPath.UrlString;
+  /**
    * Text to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
-   * Displayed as monospace code. Use this or the next field.
+   * Displayed as monospace code.
    */
   fallbackHtmlSnippet?: string;
   /**
    * Text to display if backendNodeId cannot be resolved (ie for traces loaded from disk).
-   * Displayed as plain text. Use this or the previous field.
+   * Displayed as plain text.
    */
   fallbackText?: string;
 }
@@ -34,6 +42,7 @@ export class NodeLink extends HTMLElement {
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #frame?: string;
   #options?: Common.Linkifier.Options;
+  #fallbackUrl?: Platform.DevToolsPath.UrlString;
   #fallbackHtmlSnippet?: string;
   #fallbackText?: string;
   /**
@@ -46,6 +55,7 @@ export class NodeLink extends HTMLElement {
     this.#backendNodeId = data.backendNodeId;
     this.#frame = data.frame;
     this.#options = data.options;
+    this.#fallbackUrl = data.fallbackUrl;
     this.#fallbackHtmlSnippet = data.fallbackHtmlSnippet;
     this.#fallbackText = data.fallbackText;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -93,6 +103,19 @@ export class NodeLink extends HTMLElement {
     let template;
     if (relatedNodeEl) {
       template = html`<div class='node-link'>${relatedNodeEl}</div>`;
+    } else if (this.#fallbackUrl) {
+      const MAX_URL_LENGTH = 20;
+      const options = {
+        tabStop: true,
+        showColumnNumber: false,
+        inlineFrameIndex: 0,
+        maxLength: MAX_URL_LENGTH,
+      };
+      const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(this.#fallbackUrl, options);
+      template = html`<div class='node-link'>
+        <style>${Buttons.textButtonStyles}</style>
+        ${linkEl}
+      </div>`;
     } else if (this.#fallbackHtmlSnippet) {
       // TODO: Use CodeHighlighter.
       template = html`<pre style='text-wrap: auto'>${this.#fallbackHtmlSnippet}</pre>`;

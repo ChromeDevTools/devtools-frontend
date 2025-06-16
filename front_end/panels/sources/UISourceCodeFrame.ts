@@ -703,7 +703,7 @@ class MessageWidget extends CodeMirror.WidgetType {
     const issue = this.messages.find(m => m.level() === Workspace.UISourceCode.Message.Level.ISSUE);
     if (issue) {
       const issueIcon = wrap.appendChild(new IconButton.Icon.Icon());
-      issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.ISSUE);
+      issueIcon.data = getIconDataForMessage(issue);
       issueIcon.classList.add('cm-messageIcon-issue');
       issueIcon.addEventListener('click', () => (issue.clickHandler() || Math.min)());
     }

@@ -84,6 +84,7 @@ ts_library("unittests") {
     "BaseInsightComponent.test.ts",
     "CLSCulprits.test.ts",
     "InteractionToNextPaint.test.ts",
+    "NodeLink.test.ts",
     "Table.test.ts",
   ]
 

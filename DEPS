@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:d704490133011610c402696584afedea80829dbd',
+  'siso_version': 'git_revision:7e7d85fc69f9084d2168385fb504b31e830dbfff',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

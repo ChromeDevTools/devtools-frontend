@@ -797,8 +797,15 @@ export class DOMNode {
           if (!response.getError()) {
             this.#domModelInternal.markUndoableState();
           }
+          const pastedNode = this.#domModelInternal.nodeForId(response.nodeId);
+          if (pastedNode) {
+            // For every marker in this.#markers, set a marker in the copied node.
+            for (const [name, value] of this.#markers) {
+              pastedNode.setMarker(name, value);
+            }
+          }
           if (callback) {
-            callback(response.getError() || null, this.#domModelInternal.nodeForId(response.nodeId));
+            callback(response.getError() || null, pastedNode);
           }
         });
   }

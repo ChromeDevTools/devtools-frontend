@@ -2274,6 +2274,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
     const container = document.createElement('span');
     const exclamationElement = container.createChild('span');
+    exclamationElement.tabIndex = -1;
     exclamationElement.classList.add('exclamation-mark');
     const invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
         i18nString(UIStrings.invalidPropertyValue) :
@@ -2406,6 +2407,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const hintIcon = new IconButton.Icon.Icon();
         hintIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '14px', height: '14px'};
         hintIcon.classList.add('hint');
+        hintIcon.tabIndex = -1;
         wrapper.append(hintIcon);
         this.listItemElement.append(wrapper);
         this.listItemElement.classList.add('inactive-property');

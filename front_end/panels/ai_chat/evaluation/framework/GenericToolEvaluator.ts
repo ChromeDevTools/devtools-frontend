@@ -78,8 +78,6 @@ export class GenericToolEvaluator {
           `GenericToolEvaluator.toolExecution:${testCase.tool}`
         );
 
-        // 3. Store the raw tool response for debugging
-        const rawResponse = toolResult;
 
         // Call afterToolExecution hook
         if (this.hooks?.afterToolExecution) {
@@ -87,15 +85,14 @@ export class GenericToolEvaluator {
           await this.hooks.afterToolExecution(testCase, tool, toolResult);
         }
 
-        // 4. Extract success/failure and output
+        // 3. Extract success/failure and error from tool result
         const success = this.isSuccessfulResult(toolResult);
-        const output = this.extractOutput(toolResult);
         const error = this.extractError(toolResult);
 
         const result: TestResult = {
           testId: testCase.id,
           status: success ? 'passed' : 'failed',
-          output,
+          output: toolResult, // Use raw tool result directly
           error: error ? ErrorHandlingUtils.formatUserFriendlyError(error, undefined) : undefined,
           duration: Date.now() - startTime,
           timestamp: Date.now(),
@@ -105,8 +102,8 @@ export class GenericToolEvaluator {
               ? `Successfully executed ${testCase.tool}`
               : `${testCase.tool} execution failed: ${error}`,
           },
-          // Add raw response for debugging
-          rawResponse,
+          // Store full tool response for debugging and display
+          rawResponse: toolResult,
         };
 
         // Call beforeEvaluation hook
@@ -214,49 +211,6 @@ export class GenericToolEvaluator {
     return true;
   }
 
-  /**
-   * Extract the meaningful output from any tool result
-   */
-  private extractOutput(result: unknown): unknown {
-    if (typeof result === 'object' && result !== null) {
-      // Common output patterns
-      if ('data' in result) return this.sanitizeOutputIfNeeded(result.data);
-      if ('output' in result) return this.sanitizeOutputIfNeeded(result.output);
-      if ('result' in result) return this.sanitizeOutputIfNeeded(result.result);
-      if ('value' in result) return this.sanitizeOutputIfNeeded(result.value);
-      
-      // For tools that return success + other fields
-      if ('success' in result) {
-        const resultObj = result as Record<string, unknown>;
-        const { success, error, ...output } = resultObj;
-        return this.sanitizeOutputIfNeeded(output);
-      }
-    }
-    return this.sanitizeOutputIfNeeded(result);
-  }
-  
-  /**
-   * Sanitize output data if it contains URLs or dynamic content
-   */
-  private sanitizeOutputIfNeeded(output: unknown): unknown {
-    if (typeof output === 'string' && this.looksLikeUrl(output)) {
-      return SanitizationUtils.sanitizeUrl(output);
-    }
-    
-    if (typeof output === 'object' && output !== null) {
-      // Deep clone and sanitize
-      return SanitizationUtils.sanitizeOutput(output);
-    }
-    
-    return output;
-  }
-  
-  /**
-   * Check if a string looks like a URL
-   */
-  private looksLikeUrl(str: string): boolean {
-    return str.startsWith('http://') || str.startsWith('https://') || str.includes('://');
-  }
 
   /**
    * Extract error message from any tool result

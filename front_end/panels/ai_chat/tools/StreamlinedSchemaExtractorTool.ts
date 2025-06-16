@@ -8,7 +8,7 @@ import * as Utils from '../common/utils.js';
 import type { AccessibilityNode } from '../common/context.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
@@ -61,6 +61,15 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
     },
     required: ['schema', 'instruction']
   };
+
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
 
   async execute(args: StreamlinedSchemaExtractionArgs): Promise<StreamlinedExtractionResult> {
     try {
@@ -237,12 +246,18 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
         }
 
         const modelName = AIChatPanel.getMiniModel();
-        const result = await UnifiedLLMClient.callLLM(
-          apiKey, 
-          modelName, 
-          extractionPrompt, 
-          { systemPrompt, temperature: 0.1, strictJsonMode: true }
-        );
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider: this.detectProvider(modelName),
+          model: modelName,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: extractionPrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.1
+        });
+        const result = llmResponse.text;
         
         logger.debug(`JSON extraction successful on attempt ${attempt}`);
         return result;
@@ -357,12 +372,18 @@ CRITICAL: Only use nodeIds that you can actually see in the accessibility tree a
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-      const result = await UnifiedLLMClient.callLLM(
-        apiKey, 
-        modelName, 
-        extractionPrompt, 
-        { systemPrompt, temperature: 0.1, strictJsonMode: true }
-      );
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: extractionPrompt }
+        ],
+        systemPrompt: systemPrompt,
+        temperature: 0.1
+      });
+      const result = llmResponse.text;
       
       return result;
     } catch (error) {

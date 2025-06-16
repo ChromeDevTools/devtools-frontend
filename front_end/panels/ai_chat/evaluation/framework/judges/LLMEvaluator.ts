@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { UnifiedLLMClient } from '../../../core/UnifiedLLMClient.js';
+import { LLMClient } from '../../../LLM/LLMClient.js';
 import type { TestCase, LLMJudgeResult, ValidationConfig } from '../types.js';
 import { createLogger } from '../../../core/Logger.js';
 import { ErrorHandlingUtils } from '../../utils/ErrorHandlingUtils.js';
@@ -23,6 +23,15 @@ export class LLMEvaluator {
   constructor(apiKey: string, defaultModel: string = 'gpt-4.1-mini') {
     this.apiKey = apiKey;
     this.defaultModel = defaultModel;
+  }
+
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
   }
 
   /**
@@ -84,16 +93,18 @@ export class LLMEvaluator {
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const response = await UnifiedLLMClient.callLLM(
-          this.apiKey,
-          model,
-          prompt,
-          {
-            systemPrompt: PromptTemplates.buildSystemPrompt({ hasVision: false }),
-            temperature: llmConfig.temperature ?? 0,
-            responseFormat: { type: 'json_object' },
-          }
-        );
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider: this.detectProvider(model),
+          model: model,
+          messages: [
+            { role: 'system', content: PromptTemplates.buildSystemPrompt({ hasVision: false }) },
+            { role: 'user', content: prompt }
+          ],
+          systemPrompt: PromptTemplates.buildSystemPrompt({ hasVision: false }),
+          temperature: llmConfig.temperature ?? 0
+        });
+        const response = llmResponse.text || '';
 
         // Clean response before parsing
         const cleanedResponse = ResponseParsingUtils.cleanResponseText(response);

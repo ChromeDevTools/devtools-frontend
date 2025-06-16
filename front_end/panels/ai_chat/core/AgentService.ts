@@ -17,6 +17,7 @@ import {createAgentGraph} from './Graph.js';
 import { createLogger } from './Logger.js';
 import {type AgentState, createInitialState, createUserMessage} from './State.js';
 import type {CompiledGraph} from './Types.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 
 const logger = createLogger('AgentService');
 
@@ -72,6 +73,48 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   }
 
   /**
+   * Initializes the LLM client with provider configurations
+   */
+  async #initializeLLMClient(): Promise<void> {
+    const llm = LLMClient.getInstance();
+    
+    // Get configuration from localStorage
+    const provider = localStorage.getItem('ai_chat_provider') || 'openai';
+    const openaiKey = localStorage.getItem('ai_chat_api_key') || '';
+    const litellmKey = localStorage.getItem('ai_chat_litellm_api_key') || '';
+    const litellmEndpoint = localStorage.getItem('ai_chat_litellm_endpoint') || '';
+    
+    const providers = [];
+    
+    // Add OpenAI if it's the selected provider and has an API key
+    if (provider === 'openai' && openaiKey) {
+      providers.push({ 
+        provider: 'openai' as const, 
+        apiKey: openaiKey 
+      });
+    }
+    
+    // Add LiteLLM if it's the selected provider and has configuration
+    if (provider === 'litellm' && litellmEndpoint) {
+      providers.push({ 
+        provider: 'litellm' as const, 
+        apiKey: litellmKey, // Can be empty for some LiteLLM endpoints
+        providerURL: litellmEndpoint 
+      });
+    }
+    
+    if (providers.length === 0) {
+      const errorMessage = provider === 'openai' 
+        ? 'OpenAI API key is required for this configuration'
+        : 'LiteLLM endpoint is required for this configuration';
+      throw new Error(errorMessage);
+    }
+    
+    await llm.initialize({ providers });
+    logger.info('LLM client initialized successfully');
+  }
+
+  /**
    * Initializes the agent with the given API key
    */
   async initialize(apiKey: string | null, modelName?: string): Promise<void> {
@@ -81,6 +124,9 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       if (!modelName) {
         throw new Error('Model name is required for initialization');
       }
+      
+      // Initialize LLM client first
+      await this.#initializeLLMClient();
       
       // Check if the configuration requires an API key
       const requiresApiKey = this.#doesCurrentConfigRequireApiKey();

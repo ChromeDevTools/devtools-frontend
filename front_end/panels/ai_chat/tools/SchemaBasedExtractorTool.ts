@@ -7,7 +7,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import { NodeIDsToURLsTool, type Tool } from './Tools.js';
@@ -62,6 +62,15 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
     },
     required: ['schema', 'reasoning']
   };
+
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
 
   /**
    * Execute the schema-based extraction
@@ -438,9 +447,18 @@ Only output the JSON object with real data from the accessibility tree.`;
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey, modelName, extractionPrompt, { systemPrompt, temperature: 0.1 }
-      );
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: extractionPrompt }
+        ],
+        systemPrompt: systemPrompt,
+        temperature: 0.1
+      });
+      const response = llmResponse.text;
       if (!response) { throw new Error('No text response from extraction LLM'); }
       return this.parseJsonResponse(response);
     } catch (error) {
@@ -497,9 +515,18 @@ Do not add any conversational text or explanations or thinking tags.`;
 
     try {
       const modelName = AIChatPanel.getNanoModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey, modelName, refinePrompt, { systemPrompt, temperature: 0.1 }
-      );
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: refinePrompt }
+        ],
+        systemPrompt: systemPrompt,
+        temperature: 0.1
+      });
+      const response = llmResponse.text;
       if (!response) { throw new Error('No text response from refinement LLM'); }
       return this.parseJsonResponse(response);
     } catch (error) {
@@ -584,9 +611,18 @@ Return ONLY a valid JSON object conforming to the required metadata schema.`;
 
     try {
       const modelName = AIChatPanel.getNanoModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey, modelName, metadataPrompt, { systemPrompt, temperature: 0.0 } // Use low temp for objective assessment
-      );
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: metadataPrompt }
+        ],
+        systemPrompt: systemPrompt,
+        temperature: 0.0 // Use low temp for objective assessment
+      });
+      const response = llmResponse.text;
       if (!response) { throw new Error('No text response from metadata LLM'); }
       const parsedMetadata = this.parseJsonResponse(response);
       // Basic validation
@@ -711,13 +747,19 @@ Do not add any conversational text or explanations or thinking tags.
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        nodeIdExtractionPrompt,
-        { systemPrompt: 'You are a JSON processor that extracts numeric node IDs.', temperature: 0 }
-      );
+      const llmClient = LLMClient.getInstance();
+      
+      const llmResponse = await llmClient.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: 'You are a JSON processor that extracts numeric node IDs.' },
+          { role: 'user', content: nodeIdExtractionPrompt }
+        ],
+        systemPrompt: 'You are a JSON processor that extracts numeric node IDs.',
+        temperature: 0
+      });
+      const response = llmResponse.text || '';
 
       logger.debug('Node ID extraction response:', response);
 
@@ -768,12 +810,18 @@ Return the full updated data structure with the URLs replaced.
 Do not add any conversational text or explanations or thinking tags.
 `;
 
-      const urlReplacementResponse = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        urlReplacementPrompt,
-        { systemPrompt: 'You are an expert data transformation assistant.', temperature: 0 }
-      );
+      const llmClient2 = LLMClient.getInstance();
+      const llmUrlResponse = await llmClient2.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: 'You are an expert data transformation assistant.' },
+          { role: 'user', content: urlReplacementPrompt }
+        ],
+        systemPrompt: 'You are an expert data transformation assistant.',
+        temperature: 0
+      });
+      const urlReplacementResponse = llmUrlResponse.text;
 
       if (!urlReplacementResponse) {
         logger.error('No response from URL replacement LLM');

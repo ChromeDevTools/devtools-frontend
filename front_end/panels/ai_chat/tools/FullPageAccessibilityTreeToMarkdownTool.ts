@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import { AgentService } from '../core/AgentService.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import { GetAccessibilityTreeTool, type Tool, type ErrorResult } from './Tools.js';
@@ -24,6 +24,15 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     type: 'object',
     properties: {},
   };
+
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
 
   private getSystemPrompt(): string {
     return `You are an expert Markdown tool. 
@@ -53,12 +62,18 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 
     try {
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        prompt,
-        { systemPrompt: this.getSystemPrompt() }
-      );
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider: this.detectProvider(modelName),
+        model: modelName,
+        messages: [
+          { role: 'system', content: this.getSystemPrompt() },
+          { role: 'user', content: prompt }
+        ],
+        systemPrompt: this.getSystemPrompt(),
+        temperature: 0.7
+      });
+      const response = llmResponse.text;
       if (response) {
         return {
           success: true,

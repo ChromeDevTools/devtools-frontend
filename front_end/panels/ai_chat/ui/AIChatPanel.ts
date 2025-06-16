@@ -10,7 +10,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentService, Events as AgentEvents} from '../core/AgentService.js';
-import { LiteLLMClient } from '../core/LiteLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { createLogger } from '../core/Logger.js';
 
 const logger = createLogger('AIChatPanel');
@@ -603,7 +603,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       }
 
       // Always fetch fresh models from LiteLLM
-      const models = await LiteLLMClient.fetchModels(apiKey, endpoint);
+      const models = await LLMClient.fetchLiteLLMModels(apiKey, endpoint);
 
       // Check if wildcard model exists
       const hadWildcard = models.some(model => model.id === '*');

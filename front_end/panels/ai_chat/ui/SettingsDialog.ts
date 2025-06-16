@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import { LiteLLMClient } from '../core/LiteLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { createLogger } from '../core/Logger.js';
 
 const logger = createLogger('SettingsDialog');
@@ -740,7 +740,7 @@ export class SettingsDialog {
               throw new Error(i18nString(UIStrings.endpointRequired));
             }
 
-            const result = await LiteLLMClient.testConnection(liteLLMApiKey, model, endpoint);
+            const result = await LLMClient.testLiteLLMConnection(liteLLMApiKey, model, endpoint);
 
             if (result.success) {
               testStatus.textContent = '✓';
@@ -831,7 +831,7 @@ export class SettingsDialog {
           throw new Error(i18nString(UIStrings.endpointRequired));
         }
         
-        const result = await LiteLLMClient.testConnection(liteLLMApiKey, modelName, endpoint);
+        const result = await LLMClient.testLiteLLMConnection(liteLLMApiKey, modelName, endpoint);
         
         if (result.success) {
           modelTestStatus.textContent = `Test passed: ${result.message}`;

@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import type { getTools } from '../tools/Tools.js';
-import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
+import { ChatMessageEntity, type ModelChatMessage, type ToolResultMessage, type ChatMessage } from '../ui/ChatView.js';
 
-import type { Model } from './ChatOpenAI.js'; // Import Model interface
+import { LLMClient } from '../LLM/LLMClient.js';
+import type { LLMMessage, LLMProvider } from '../LLM/LLMTypes.js';
 import { createSystemPromptAsync, getAgentToolsFromState } from './GraphHelpers.js';
 import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
@@ -13,12 +14,16 @@ import type { Runnable } from './Types.js';
 
 const logger = createLogger('AgentNodes');
 
-export function createAgentNode(model: Model): Runnable<AgentState, AgentState> {
+export function createAgentNode(modelName: string, temperature: number): Runnable<AgentState, AgentState> {
   const agentNode = new class AgentNode implements Runnable<AgentState, AgentState> {
-    private model: Model;
+    private modelName: string;
+    private temperature: number;
+    private callCount = 0;
+    private readonly MAX_CALLS_PER_INTERACTION = 50;
 
-    constructor(model: Model) {
-      this.model = model;
+    constructor(modelName: string, temperature: number) {
+      this.modelName = modelName;
+      this.temperature = temperature;
     }
 
     async invoke(state: AgentState): Promise<AgentState> {
@@ -28,7 +33,7 @@ export function createAgentNode(model: Model): Runnable<AgentState, AgentState> 
       // Reset call count on new user message
       const lastMessage = state.messages[state.messages.length - 1];
       if (lastMessage?.entity === ChatMessageEntity.USER) {
-        this.model.resetCallCount();
+        this.resetCallCount();
       }
 
       if (lastMessage?.entity === ChatMessageEntity.TOOL_RESULT && lastMessage?.toolName === 'finalize_with_critique') {
@@ -80,50 +85,172 @@ export function createAgentNode(model: Model): Runnable<AgentState, AgentState> 
       // 1. Create the enhanced system prompt based on the current state (including selected type)
       const systemPrompt = await createSystemPromptAsync(state);
 
-      // 2. Call the model with the message array directly instead of using ChatPromptFormatter
-      const response = await this.model.generateWithMessages(state.messages, systemPrompt, state);
-      logger.debug('AgentNode Response:', response);
-      const parsedAction = response.parsedAction!;
-
-      // Directly create the ModelChatMessage object
-      let newModelMessage: ModelChatMessage;
-      if (parsedAction.action === 'tool') {
-        const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
-        newModelMessage = {
-          entity: ChatMessageEntity.MODEL,
-          action: 'tool',
-          toolName: parsedAction.toolName,
-          toolArgs: parsedAction.toolArgs,
-          toolCallId, // Add for linking with tool response
-          isFinalAnswer: false,
-          reasoning: response.openAIReasoning?.summary,
-        };
-
-        logger.debug('AgentNode: Created tool message', { toolName: parsedAction.toolName, toolCallId });
-        if (parsedAction.toolName === 'finalize_with_critique') {
-          logger.debug('AgentNode: finalize_with_critique call with args:', JSON.stringify(parsedAction.toolArgs));
-        }
-      } else {
-        newModelMessage = {
-          entity: ChatMessageEntity.MODEL,
-          action: 'final',
-          answer: parsedAction.answer,
-          isFinalAnswer: true,
-          reasoning: response.openAIReasoning?.summary,
-        };
-
-        logger.debug('AgentNode: Created final answer message');
+      // 2. Call the LLM with the message array
+      this.callCount++;
+      
+      if (this.callCount > this.MAX_CALLS_PER_INTERACTION) {
+        logger.warn('Max calls per interaction reached:', this.callCount);
+        throw new Error(`Maximum calls (${this.MAX_CALLS_PER_INTERACTION}) per interaction exceeded. This might be an infinite loop.`);
       }
 
-      logger.debug('New Model Message:', newModelMessage);
+      logger.debug('Generating response with LLMClient:', {
+        modelName: this.modelName,
+        callCount: this.callCount,
+        messageCount: state.messages.length,
+      });
 
-      return {
-        ...state,
-        messages: [...state.messages, newModelMessage],
-        error: undefined,
-      };
+      try {
+        const llm = LLMClient.getInstance();
+        
+        // Detect provider from model name
+        const provider = this.detectProvider(this.modelName);
+        
+        // Get tools for the current agent type
+        const tools = getAgentToolsFromState(state);
+        
+        // Convert ChatMessage[] to LLMMessage[]
+        const llmMessages = this.convertChatMessagesToLLMMessages(state.messages);
+        
+        // Call LLM with the new API
+        const response = await llm.call({
+          provider,
+          model: this.modelName,
+          messages: llmMessages,
+          systemPrompt,
+          tools: tools.map(tool => ({
+            type: 'function',
+            function: {
+              name: tool.name,
+              description: tool.description,
+              parameters: tool.schema,
+            }
+          })),
+          temperature: this.temperature,
+        });
+
+        // Parse the response
+        const parsedAction = llm.parseResponse(response);
+
+        // Directly create the ModelChatMessage object
+        let newModelMessage: ModelChatMessage;
+        if (parsedAction.type === 'tool_call') {
+          const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
+          newModelMessage = {
+            entity: ChatMessageEntity.MODEL,
+            action: 'tool',
+            toolName: parsedAction.name,
+            toolArgs: parsedAction.args,
+            toolCallId, // Add for linking with tool response
+            isFinalAnswer: false,
+            reasoning: response.reasoning?.summary,
+          };
+
+          logger.debug('AgentNode: Created tool message', { toolName: parsedAction.name, toolCallId });
+          if (parsedAction.name === 'finalize_with_critique') {
+            logger.debug('AgentNode: finalize_with_critique call with args:', JSON.stringify(parsedAction.args));
+          }
+        } else if (parsedAction.type === 'final_answer') {
+          newModelMessage = {
+            entity: ChatMessageEntity.MODEL,
+            action: 'final',
+            answer: parsedAction.answer,
+            isFinalAnswer: true,
+            reasoning: response.reasoning?.summary,
+          };
+
+          logger.debug('AgentNode: Created final answer message');
+        } else {
+          // Error case
+          newModelMessage = {
+            entity: ChatMessageEntity.MODEL,
+            action: 'final',
+            answer: parsedAction.error || 'An error occurred',
+            isFinalAnswer: true,
+            reasoning: response.reasoning?.summary,
+          };
+
+            logger.debug('AgentNode: Created error message');
+        }
+
+        logger.debug('New Model Message:', newModelMessage);
+
+        return {
+          ...state,
+          messages: [...state.messages, newModelMessage],
+          error: undefined,
+        };
+      } catch (error) {
+        logger.error('Error generating response:', error);
+        throw error;
+      }
     }
-  }(model);
+
+    resetCallCount(): void {
+      logger.debug(`Resetting call count from ${this.callCount} to 0`);
+      this.callCount = 0;
+    }
+
+    /**
+     * Detect provider from user's settings, not just model name
+     */
+    private detectProvider(modelName: string): LLMProvider {
+      // Respect user's provider selection from settings
+      const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+      return selectedProvider as LLMProvider;
+    }
+
+    /**
+     * Convert ChatMessage[] to LLMMessage[]
+     */
+    private convertChatMessagesToLLMMessages(messages: ChatMessage[]): LLMMessage[] {
+      const llmMessages: LLMMessage[] = [];
+      
+      for (const msg of messages) {
+        if (msg.entity === ChatMessageEntity.USER) {
+          // User message
+          if ('text' in msg) {
+            llmMessages.push({
+              role: 'user',
+              content: msg.text,
+            });
+          }
+        } else if (msg.entity === ChatMessageEntity.MODEL) {
+          // Model message
+          if ('answer' in msg && msg.answer) {
+            llmMessages.push({
+              role: 'assistant',
+              content: msg.answer,
+            });
+          } else if ('action' in msg && msg.action === 'tool' && 'toolName' in msg && 'toolArgs' in msg && 'toolCallId' in msg) {
+            // Tool call message - convert from ModelChatMessage structure
+            llmMessages.push({
+              role: 'assistant',
+              content: undefined,
+              tool_calls: [{
+                id: msg.toolCallId!,
+                type: 'function' as const,
+                function: {
+                  name: msg.toolName!,
+                  arguments: JSON.stringify(msg.toolArgs),
+                }
+              }],
+            });
+          }
+        } else if (msg.entity === ChatMessageEntity.TOOL_RESULT) {
+          // Tool result message
+          if ('toolCallId' in msg && 'resultText' in msg) {
+            llmMessages.push({
+              role: 'tool',
+              content: String(msg.resultText),
+              tool_call_id: msg.toolCallId,
+            });
+          }
+        }
+      }
+      
+      return llmMessages;
+    }
+  }(modelName, temperature);
   return agentNode;
 }
 

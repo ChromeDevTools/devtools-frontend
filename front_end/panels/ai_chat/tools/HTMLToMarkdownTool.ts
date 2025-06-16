@@ -7,7 +7,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import { waitForPageLoad, type Tool } from './Tools.js';
@@ -52,6 +52,15 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
     },
     required: ['reasoning']
   };
+
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
 
   /**
    * Execute the HTML to Markdown extraction
@@ -318,15 +327,19 @@ ${instruction}
     markdownContent: string,
   }> {
     // Call LLM using the unified client
-    const response = await UnifiedLLMClient.callLLM(
-      params.apiKey,
-      AIChatPanel.getNanoModel(),
-      params.userPrompt,
-      {
-        systemPrompt: params.systemPrompt,
-        temperature: 0.2, // Lower temperature for more deterministic results
-      }
-    );
+    const modelName = AIChatPanel.getNanoModel();
+    const llm = LLMClient.getInstance();
+    const llmResponse = await llm.call({
+      provider: this.detectProvider(modelName),
+      model: modelName,
+      messages: [
+        { role: 'system', content: params.systemPrompt },
+        { role: 'user', content: params.userPrompt }
+      ],
+      systemPrompt: params.systemPrompt,
+      temperature: 0.2 // Lower temperature for more deterministic results
+    });
+    const response = llmResponse.text;
 
     // Process the response - UnifiedLLMClient returns string directly
     const markdownContent = response || '';

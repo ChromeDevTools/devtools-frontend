@@ -4,7 +4,8 @@
 
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
+import type { LLMProvider } from '../LLM/LLMTypes.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
@@ -51,6 +52,21 @@ interface EvaluationCriteria {
 export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> {
   name = 'critique_tool';
   description = 'Evaluates if finalresponse satisfies the user\'s requirements and provides feedback if needed.';
+
+  /**
+   * Helper method to detect provider from model name
+   */
+  private detectProvider(modelName: string): LLMProvider {
+    // OpenAI patterns
+    if (modelName.startsWith('gpt-') || 
+        modelName.startsWith('o1-') ||
+        modelName.startsWith('o4-')) {
+      return 'openai';
+    }
+    
+    // Everything else goes to LiteLLM
+    return 'litellm';
+  }
 
   schema = {
     type: 'object',
@@ -166,19 +182,25 @@ Return a JSON array of requirement statements. Example format:
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.1 }
-      );
+      const llm = LLMClient.getInstance();
+      const provider = this.detectProvider(modelName);
+      
+      const response = await llm.call({
+        provider,
+        model: modelName,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.1,
+      });
 
-      if (!response) {
+      if (!response.text) {
         return { success: false, requirements: [], error: 'No response received' };
       }
 
       // Parse the JSON array from the response
-      const requirementsMatch = response.match(/\[(.*)\]/s);
+      const requirementsMatch = response.text.match(/\[(.*)\]/s);
       if (!requirementsMatch) {
         return { success: false, requirements: [], error: 'Failed to parse requirements' };
       }
@@ -254,19 +276,25 @@ ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.1 }
-      );
+      const llm = LLMClient.getInstance();
+      const provider = this.detectProvider(modelName);
+      
+      const response = await llm.call({
+        provider,
+        model: modelName,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.1,
+      });
 
-      if (!response) {
+      if (!response.text) {
         return { success: false, error: 'No response received' };
       }
 
       // Extract JSON object from the response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      const jsonMatch = response.text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return { success: false, error: 'Failed to parse evaluation criteria' };
       }
@@ -309,14 +337,20 @@ Be concise, specific, and constructive.`;
 
     try {
       const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.7 }
-      );
+      const llm = LLMClient.getInstance();
+      const provider = this.detectProvider(modelName);
+      
+      const response = await llm.call({
+        provider,
+        model: modelName,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.7,
+      });
 
-      return response || 'The plan does not meet all requirements, but no specific feedback could be generated.';
+      return response.text || 'The plan does not meet all requirements, but no specific feedback could be generated.';
     } catch (error: any) {
       logger.error('Error generating feedback', error);
       return 'Failed to generate detailed feedback, but the plan does not meet all requirements.';

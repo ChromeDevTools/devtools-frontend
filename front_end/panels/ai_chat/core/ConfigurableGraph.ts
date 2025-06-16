@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type { Model } from './ChatOpenAI.js';
 import { createAgentNode, createFinalNode, createToolExecutorNode, routeNextNode } from './Graph.js';
 import { createLogger } from './Logger.js';
 import type { AgentState } from './State.js';
@@ -34,27 +33,27 @@ export interface GraphConfig {
   entryPoint: string;
   nodes: GraphNodeConfig[];
   edges: GraphEdgeConfig[];
+  modelName?: string;
+  temperature?: number;
 }
 
 /**
  * Creates a compiled agent graph from a configuration object.
  *
- * @param config The graph configuration.
- * @param model The Model instance (ChatOpenAI or ChatLiteLLM), already initialized.
+ * @param config The graph configuration with model information.
  * @returns A compiled StateGraph.
  */
 export function createAgentGraphFromConfig(
   config: GraphConfig,
-  model: Model,
 ): CompiledGraph {
-  logger.info(`Creating graph from config: ${config.name}`);
+  logger.info(`Creating graph from config: ${config.name} with model: ${config.modelName}`);
 
   const graph = new StateGraph<AgentState>({ name: config.name });
 
-  const nodeFactories: Record<string, (model: Model, nodeConfig: GraphNodeConfig, graphInstance?: StateGraph<AgentState>) => Runnable<AgentState, AgentState>> = {
-    agent: model => createAgentNode(model),
+  const nodeFactories: Record<string, (nodeConfig: GraphNodeConfig, graphInstance?: StateGraph<AgentState>) => Runnable<AgentState, AgentState>> = {
+    agent: () => createAgentNode(config.modelName!, config.temperature || 0),
     final: () => createFinalNode(),
-    toolExecutor: (_model, nodeCfg) => {
+    toolExecutor: (nodeCfg) => {
       return {
         invoke: async (state: AgentState) => {
           logger.warn(`ToolExecutorNode "${nodeCfg.name}" invoked without being dynamically replaced. This indicates an issue.`);
@@ -67,7 +66,7 @@ export function createAgentGraphFromConfig(
   for (const nodeConfig of config.nodes) {
     const factory = nodeFactories[nodeConfig.type];
     if (factory) {
-      const nodeInstance = factory(model, nodeConfig, graph);
+      const nodeInstance = factory(nodeConfig, graph);
       graph.addNode(nodeConfig.name, nodeInstance);
       logger.debug(`Added node: ${nodeConfig.name} (type: ${nodeConfig.type})`);
     } else {
@@ -81,7 +80,7 @@ export function createAgentGraphFromConfig(
     }
   }
 
-  type ConditionFunctionGenerator = (state: AgentState, graphInstance: StateGraph<AgentState>, edgeConfig: GraphEdgeConfig, model: Model) => string;
+  type ConditionFunctionGenerator = (state: AgentState, graphInstance: StateGraph<AgentState>, edgeConfig: GraphEdgeConfig) => string;
 
   const conditionFactories: Record<string, ConditionFunctionGenerator> = {
     routeBasedOnLastMessage: state => routeNextNode(state),
@@ -107,7 +106,7 @@ export function createAgentGraphFromConfig(
     const conditionFactory = conditionFactories[edgeConfig.conditionType];
     if (conditionFactory) {
       const conditionFn = (state: AgentState) => {
-        return conditionFactory(state, graph, edgeConfig, model);
+        return conditionFactory(state, graph, edgeConfig);
       };
       graph.addConditionalEdges(edgeConfig.source, conditionFn, edgeConfig.targetMap);
       logger.debug(`Added edge from ${edgeConfig.source} via ${edgeConfig.conditionType}`);

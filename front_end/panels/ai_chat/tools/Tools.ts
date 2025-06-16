@@ -16,9 +16,8 @@ import type { LogLine } from '../common/log.js';
 import * as Utils from '../common/utils.js';
 import { getXPathByBackendNodeId } from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
-import { OpenAIClient } from '../core/OpenAIClient.js';
 import type { DevToolsContext } from '../core/State.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { ChatMessageEntity } from '../ui/ChatView.js';
 
@@ -1828,6 +1827,15 @@ Important guidelines:
 - Choose the most semantically appropriate element when multiple options exist.`;
   }
 
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
+
   async execute(args: { objective: string, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<ObjectiveDrivenActionResult | ErrorResult> {
     const { objective, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
@@ -1891,26 +1899,32 @@ Important guidelines:
 - Prefer the most direct path to accomplishing the objective.
 - Choose the most semantically appropriate element when multiple options exist.`;
 
-        // Use UnifiedLLMClient with function call support
-        const messages = [{
-          entity: ChatMessageEntity.USER as const,
-          text: promptGetAction
-        }];
-        
-        const response = await UnifiedLLMClient.callLLMWithMessages(
-          apiKey,
-          modelNameForAction,
-          messages,
-          {
-            systemPrompt: this.getSystemPrompt(),
-            tools: [{
-              type: 'function',
+        // Use LLMClient with function call support
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider: this.detectProvider(modelNameForAction),
+          model: modelNameForAction,
+          messages: [
+            { role: 'system', content: this.getSystemPrompt() },
+            { role: 'user', content: promptGetAction }
+          ],
+          systemPrompt: this.getSystemPrompt(),
+          tools: [{
+            type: 'function',
+            function: {
               name: performActionTool.name,
               description: performActionTool.description,
               parameters: performActionTool.schema
-            }],
-          },
-        );
+            }
+          }],
+          temperature: 0.4
+        });
+        
+        // Convert LLMResponse to expected format
+        const response = {
+          text: llmResponse.text,
+          functionCall: llmResponse.functionCall
+        };
 
         // --- Parse the Tool Call Response ---
         if (!response.functionCall || response.functionCall.name !== performActionTool.name) {
@@ -2704,6 +2718,15 @@ CRITICAL:
     return value === undefined || value === null || value === '';
   }
 
+  /**
+   * Helper function to detect provider from user's settings
+   */
+  private detectProvider(modelName: string): 'openai' | 'litellm' {
+    // Respect user's provider selection from settings
+    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
+    return selectedProvider as 'openai' | 'litellm';
+  }
+
   async execute(args: { objective: string, schema: Record<string, unknown>, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<SchemaBasedDataExtractionResult | ErrorResult> {
     const { objective, schema, offset = 0, chunkSize = 60000, maxRetries = 1 } = args; // Default offset 0, chunkSize 60000, maxRetries 1
     let currentTry = 0;
@@ -2760,15 +2783,19 @@ ${lastError ? `Previous attempt failed with this error: "${lastError}". Consider
 Extract NodeIDs according to the provided objective and schema, then return a structured JSON with NodeIDs instead of content.`;
 
         logger.info('SchemaBasedDataExtractionTool: Prompt:', promptExtractData);
-        // Use UnifiedLLMClient to call the LLM
-        const response = await UnifiedLLMClient.callLLM(
-          apiKey,
-          modelNameForExtraction,
-          promptExtractData,
-          {
-            systemPrompt: this.getSystemPrompt(),
-          },
-        );
+        // Use LLMClient to call the LLM
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider: this.detectProvider(modelNameForExtraction),
+          model: modelNameForExtraction,
+          messages: [
+            { role: 'system', content: this.getSystemPrompt() },
+            { role: 'user', content: promptExtractData }
+          ],
+          systemPrompt: this.getSystemPrompt(),
+          temperature: 0.7
+        });
+        const response = llmResponse.text;
         logger.info('SchemaBasedDataExtractionTool: Response:', response);
 
         // Process the LLM response - this now contains NodeIDs instead of content

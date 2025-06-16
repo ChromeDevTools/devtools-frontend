@@ -9,7 +9,7 @@ import type * as Types from '../types/types.js';
 describeWithEnvironment('FontDisplay', function() {
   it('finds no requests for remote fonts', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
-    assert.strictEqual(insights.size, 2);
+    assert.strictEqual(insights.size, 1);
     const insight =
         getInsightOrError('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 

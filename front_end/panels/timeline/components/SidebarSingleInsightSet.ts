@@ -92,6 +92,11 @@ const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([]);
 type InsightNameToComponentMapping =
     Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>>;
 
+interface CategorizedInsightData {
+  componentClass: typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
+  model: Trace.Insights.Types.InsightModel;
+}
+
 /**
  * Every insight (INCLUDING experimental ones).
  *
@@ -369,23 +374,24 @@ export class SidebarSingleInsightSet extends HTMLElement {
     `;
   }
 
-  #renderInsights(
+  static categorizeInsights(
       insightSets: Trace.Insights.Types.TraceInsightSets|null,
       insightSetKey: string,
-      ): Lit.LitTemplate {
+      activeCategory: Trace.Insights.Types.InsightCategory,
+      ): {shownInsights: CategorizedInsightData[], passedInsights: CategorizedInsightData[]} {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );
 
     const insightSet = insightSets?.get(insightSetKey);
     if (!insightSet) {
-      return Lit.nothing;
+      return {shownInsights: [], passedInsights: []};
     }
 
-    const models = insightSet.model;
-    const shownInsights: Lit.TemplateResult[] = [];
-    const passedInsights: Lit.TemplateResult[] = [];
-    for (const [name, model] of Object.entries(models)) {
+    const shownInsights: CategorizedInsightData[] = [];
+    const passedInsights: CategorizedInsightData[] = [];
+
+    for (const [name, model] of Object.entries(insightSet.model)) {
       const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
       if (!componentClass) {
         continue;
@@ -395,8 +401,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
-      if (!model ||
-          !shouldRenderForCategory({activeCategory: this.#data.activeCategory, insightCategory: model.category})) {
+      if (!model || !shouldRenderForCategory({activeCategory, insightCategory: model.category})) {
         continue;
       }
 
@@ -404,10 +409,36 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
-      const fieldMetrics = this.#getFieldMetrics(insightSetKey);
+      if (model.state === 'pass') {
+        passedInsights.push({componentClass, model});
+      } else {
+        shownInsights.push({componentClass, model});
+      }
+    }
+    return {shownInsights, passedInsights};
+  }
 
+  #renderInsights(
+      insightSets: Trace.Insights.Types.TraceInsightSets|null,
+      insightSetKey: string,
+      ): Lit.LitTemplate {
+    const insightSet = insightSets?.get(insightSetKey);
+    if (!insightSet) {
+      return Lit.nothing;
+    }
+
+    const fieldMetrics = this.#getFieldMetrics(insightSetKey);
+    const {shownInsights: shownInsightsData, passedInsights: passedInsightsData} =
+        SidebarSingleInsightSet.categorizeInsights(
+            insightSets,
+            insightSetKey,
+            this.#data.activeCategory,
+        );
+
+    const renderInsightComponent = (insightData: CategorizedInsightData): Lit.TemplateResult => {
+      const {componentClass, model} = insightData;
       // clang-format off
-      const component = html`<div>
+      return html`<div>
         <${componentClass.litTagName}
           .selected=${this.#data.activeInsight?.model === model}
           ${Lit.Directives.ref(elem => {
@@ -423,13 +454,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
         </${componentClass.litTagName}>
       </div>`;
       // clang-format on
+    };
 
-      if (model.state === 'pass') {
-        passedInsights.push(component);
-      } else {
-        shownInsights.push(component);
-      }
-    }
+    const shownInsights = shownInsightsData.map(renderInsightComponent);
+    const passedInsights = passedInsightsData.map(renderInsightComponent);
 
     // clang-format off
     return html`

@@ -481,6 +481,26 @@ export class TraceProcessor extends EventTarget {
       Object.assign(model, {[name]: insightResult});
     }
 
+    // We may choose to exclude the insightSet if it's trivial. Trivial means:
+    //   1. There's no navigation (it's an initial trace period)
+    //   2. The duration is short.
+    //   3. All the insights are passing (aka no insights to show the user)
+    //   4. It has no metrics to report (apart from a CLS of 0, which is default)
+    // Generally, these cases are the short time ranges before a page reload starts.
+    const isNavigation = id === Types.Events.NO_NAVIGATION;
+    const trivialThreshold = Helpers.Timing.milliToMicro(Types.Timing.Milli(5000));
+    const everyInsightPasses =
+        Object.values(model).filter(model => !(model instanceof Error)).every(model => model.state === 'pass');
+
+    const noLcp = !model.LCPPhases.lcpEvent;
+    const noInp = !model.InteractionToNextPaint.longestInteractionEvent;
+    const noLayoutShifts = model.CLSCulprits.shifts?.size === 0;
+    const shouldExclude = isNavigation && context.bounds.range < trivialThreshold && everyInsightPasses && noLcp &&
+        noInp && noLayoutShifts;
+    if (shouldExclude) {
+      return;
+    }
+
     let url;
     try {
       url = new URL(urlString);
@@ -541,24 +561,12 @@ export class TraceProcessor extends EventTarget {
         Helpers.Timing.traceWindowFromMicroSeconds(parsedTrace.Meta.traceBounds.min, navigations[0].ts) :
         parsedTrace.Meta.traceBounds;
 
-    // Define threshold for considering the pre-navigation period significant enough to analyze.
-    // When using "Record and reload" option, it typically takes ~5ms. So use 50ms to be safe.
-    const threshold = Helpers.Timing.milliToMicro(50 as Types.Timing.Milli);
-
-    // Compute insights if either:
-    // 1. There are no navigations (we analyze the whole trace).
-    // 2. There are navigations, AND the initial period before the first navigation is longer than the threshold.
-    const shouldComputeInsights = navigations.length === 0 || bounds.range > threshold;
-
-    // If navigations exist but the initial period is below the threshold, we intentionally do nothing for this portion of the trace.
-    if (shouldComputeInsights) {
-      const context: Insights.Types.InsightSetContext = {
-        bounds,
-        frameId: parsedTrace.Meta.mainFrameId,
-        // No navigation or lantern context applies to this initial/no-navigation period.
-      };
-      this.#computeInsightSet(parsedTrace, context, options);
-    }
+    const context: Insights.Types.InsightSetContext = {
+      bounds,
+      frameId: parsedTrace.Meta.mainFrameId,
+      // No navigation or lantern context applies to this initial/no-navigation period.
+    };
+    this.#computeInsightSet(parsedTrace, context, options);
   }
 
   /**

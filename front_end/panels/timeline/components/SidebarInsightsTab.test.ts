@@ -8,6 +8,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
+
 describeWithEnvironment('SidebarInsightsTab', () => {
   it('renders a list of insights per navigation in the sidebar', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');

@@ -227,5 +227,18 @@ describeWithLocale('Toolbar', () => {
       box.setSelectedIndex(0);
       assert.strictEqual(box.element.title, 'Option 1');
     });
+
+    it('updates the title when the user changes the setting', async () => {
+      const setting = Common.Settings.Settings.instance().createSetting<string>('test-combo-box-setting', 'option-1');
+      setting.set('option-1');
+      const box = new UI.Toolbar.ToolbarSettingComboBox(
+          [{value: 'option-1', label: 'Option 1'}, {value: 'option-2', label: 'Option 2'}], setting, 'title-value');
+
+      // Pretend that the user has interacted & clicked Option 2
+      sinon.stub(box, 'selectedIndex').callsFake(() => 1);
+      const changeEvent = new Event('change');
+      box.element.dispatchEvent(changeEvent);
+      assert.strictEqual(box.element.title, 'Option 2');
+    });
   });
 });

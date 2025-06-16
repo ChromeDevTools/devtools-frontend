@@ -10,7 +10,6 @@ import {DeferredDOMNode, type DOMNode} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {Events as RuntimeModelEvents, type EventTypes as RuntimeModelEventTypes, RuntimeModel} from './RuntimeModel.js';
-import {ScreenCaptureModel} from './ScreenCaptureModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 
@@ -291,7 +290,6 @@ export class AnimationModel extends SDKModel<EventTypes> {
   readonly animationGroups = new Map<string, AnimationGroup>();
   #pendingAnimations = new Set<string>();
   playbackRate = 1;
-  readonly #screenshotCapture?: ScreenshotCapture;
   #flushPendingAnimations: () => void;
 
   constructor(target: Target) {
@@ -306,10 +304,6 @@ export class AnimationModel extends SDKModel<EventTypes> {
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);
     resourceTreeModel.addEventListener(ResourceTreeModelEvents.PrimaryPageChanged, this.reset, this);
-    const screenCaptureModel = target.model(ScreenCaptureModel);
-    if (screenCaptureModel) {
-      this.#screenshotCapture = new ScreenshotCapture(this, screenCaptureModel);
-    }
 
     this.#flushPendingAnimations = Common.Debouncer.debounce(() => {
       while (this.#pendingAnimations.size) {
@@ -409,10 +403,6 @@ export class AnimationModel extends SDKModel<EventTypes> {
 
     if (!matchedGroup) {
       this.animationGroups.set(incomingGroup.id(), incomingGroup);
-      if (this.#screenshotCapture) {
-        void this.#screenshotCapture.captureScreenshots(
-            incomingGroup.finiteDuration(), incomingGroup.screenshotsInternal);
-      }
       this.dispatchEventToListeners(Events.AnimationGroupStarted, incomingGroup);
     } else {
       this.dispatchEventToListeners(Events.AnimationGroupUpdated, matchedGroup);
@@ -848,16 +838,11 @@ export class AnimationGroup {
   #scrollNodeInternal: AnimationDOMNode|undefined;
   #animationsInternal: AnimationImpl[];
   #pausedInternal: boolean;
-  screenshotsInternal: string[];
-  readonly #screenshotImages: HTMLImageElement[];
   constructor(animationModel: AnimationModel, id: string, animations: AnimationImpl[]) {
     this.#animationModel = animationModel;
     this.#idInternal = id;
     this.#animationsInternal = animations;
     this.#pausedInternal = false;
-    this.screenshotsInternal = [];
-
-    this.#screenshotImages = [];
   }
 
   isScrollDriven(): boolean {
@@ -1012,16 +997,6 @@ export class AnimationGroup {
     this.#animationsInternal = group.#animationsInternal;
     this.#scrollNodeInternal = undefined;
   }
-
-  screenshots(): HTMLImageElement[] {
-    for (let i = 0; i < this.screenshotsInternal.length; ++i) {
-      const image = new Image();
-      image.src = 'data:image/jpeg;base64,' + this.screenshotsInternal[i];
-      this.#screenshotImages.push(image);
-    }
-    this.screenshotsInternal = [];
-    return this.#screenshotImages;
-  }
 }
 
 export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher {
@@ -1061,76 +1036,7 @@ export class AnimationDispatcher implements ProtocolProxyApi.AnimationDispatcher
   }
 }
 
-export class ScreenshotCapture {
-  #requests: Request[];
-  readonly #screenCaptureModel: ScreenCaptureModel;
-  readonly #animationModel: AnimationModel;
-  // This prevents multiple synchronous calls to captureScreenshots to result in one startScreencast call in model.
-  #isCapturing = false;
-  // Holds the id for capturing & cancelling the screencast operation.
-  #screencastOperationId: number|undefined;
-  #stopTimer?: number;
-  #endTime?: number;
-  constructor(animationModel: AnimationModel, screenCaptureModel: ScreenCaptureModel) {
-    this.#requests = [];
-    this.#screenCaptureModel = screenCaptureModel;
-    this.#animationModel = animationModel;
-    this.#animationModel.addEventListener(Events.ModelReset, this.stopScreencast, this);
-  }
-
-  async captureScreenshots(duration: number, screenshots: string[]): Promise<void> {
-    const screencastDuration = Math.min(duration / this.#animationModel.playbackRate, 3000);
-    const endTime = screencastDuration + window.performance.now();
-    this.#requests.push({endTime, screenshots});
-
-    if (!this.#endTime || endTime > this.#endTime) {
-      clearTimeout(this.#stopTimer);
-      this.#stopTimer = window.setTimeout(this.stopScreencast.bind(this), screencastDuration);
-      this.#endTime = endTime;
-    }
-
-    if (this.#isCapturing) {
-      return;
-    }
-
-    this.#isCapturing = true;
-    this.#screencastOperationId = await this.#screenCaptureModel.startScreencast(
-        Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, undefined, 300, 2, this.screencastFrame.bind(this),
-        _visible => {});
-  }
-
-  private screencastFrame(base64Data: string, _metadata: Protocol.Page.ScreencastFrameMetadata): void {
-    function isAnimating(request: Request): boolean {
-      return request.endTime >= now;
-    }
-
-    if (!this.#isCapturing) {
-      return;
-    }
-
-    const now = window.performance.now();
-    this.#requests = this.#requests.filter(isAnimating);
-    for (const request of this.#requests) {
-      request.screenshots.push(base64Data);
-    }
-  }
-
-  private stopScreencast(): void {
-    if (!this.#screencastOperationId) {
-      return;
-    }
-
-    this.#screenCaptureModel.stopScreencast(this.#screencastOperationId);
-    this.#stopTimer = undefined;
-    this.#endTime = undefined;
-    this.#requests = [];
-    this.#isCapturing = false;
-    this.#screencastOperationId = undefined;
-  }
-}
-
 SDKModel.register(AnimationModel, {capabilities: Capability.DOM, autostart: true});
 export interface Request {
   endTime: number;
-  screenshots: string[];
 }

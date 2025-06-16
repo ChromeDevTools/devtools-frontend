@@ -254,28 +254,4 @@ describeWithMockConnection('AnimationModel', () => {
          assert.strictEqual(animationImpl.delayOrStartTime(), 0);    // in pixels
        });
   });
-
-  describe('ScreenshotCapture', () => {
-    let mockAnimationModel: SDK.AnimationModel.AnimationModel;
-    let mockScreenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
-    let startScreencastStub:
-        sinon.SinonStub<Parameters<typeof SDK.ScreenCaptureModel.ScreenCaptureModel.prototype.startScreencast>>;
-
-    beforeEach(() => {
-      startScreencastStub = sinon.stub();
-      mockAnimationModel = sinon.createStubInstance(SDK.AnimationModel.AnimationModel);
-      mockScreenCaptureModel = sinon.createStubInstance(SDK.ScreenCaptureModel.ScreenCaptureModel, {
-        startScreencast: startScreencastStub,
-      });
-    });
-
-    it('should call `screenCaptureModel.startScreencast` on `captureScreenshots` call', async () => {
-      const screenshotCapture = new SDK.AnimationModel.ScreenshotCapture(mockAnimationModel, mockScreenCaptureModel);
-
-      await screenshotCapture.captureScreenshots(100, []);
-      await screenshotCapture.captureScreenshots(100, []);
-
-      sinon.assert.calledOnce(startScreencastStub);
-    });
-  });
 });

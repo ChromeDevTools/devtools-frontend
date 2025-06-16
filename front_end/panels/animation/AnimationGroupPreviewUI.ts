@@ -27,7 +27,6 @@ interface ViewInput {
   onPreviewAnimationEnd: () => void;
   onRemoveAnimationGroup: () => void;
   onSelectAnimationGroup: () => void;
-  onCreateScreenshotPopover: () => void;
   onFocusNextGroup: () => void;
   onFocusPreviousGroup: () => void;
 }
@@ -104,10 +103,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         role="option"
         aria-label=${input.label}
         tabindex=${input.isFocusable ? 0 : -1}
-        @mouseover=${{
-          handleEvent: input.onCreateScreenshotPopover,
-          once: true,
-        }}
         @keydown=${handleKeyDown}
         @click=${input.onSelectAnimationGroup}
         @animationend=${input.onPreviewAnimationEnd}
@@ -152,7 +147,6 @@ interface AnimationGroupPreviewConfig {
   label: string;
   onRemoveAnimationGroup: () => void;
   onSelectAnimationGroup: () => void;
-  onCreateScreenshotPopover: () => void;
   onFocusNextGroup: () => void;
   onFocusPreviousGroup: () => void;
 }
@@ -220,9 +214,6 @@ export class AnimationGroupPreviewUI extends UI.Widget.Widget {
           },
           onSelectAnimationGroup: () => {
             this.#config.onSelectAnimationGroup();
-          },
-          onCreateScreenshotPopover: () => {
-            this.#config.onCreateScreenshotPopover();
           },
           onFocusNextGroup: () => {
             this.#config.onFocusNextGroup();

@@ -561,6 +561,7 @@ export class PreloadPipeline {
   }
 
   // Returns attempts in the order: prefetch < prerender.
+  // Currently unused.
   getAttempts(): PreloadingAttempt[] {
     const ret = [];
 

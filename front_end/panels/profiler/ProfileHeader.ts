@@ -186,15 +186,6 @@ export class ProfileType extends Common.ObjectWrapper.ObjectWrapper<ProfileEvent
   setCustomContentEnabled(_enable: boolean): void {
   }
 
-  getProfile(uid: number): ProfileHeader|null {
-    for (let i = 0; i < this.profiles.length; ++i) {
-      if (this.profiles[i].uid === uid) {
-        return this.profiles[i];
-      }
-    }
-    return null;
-  }
-
   loadFromFile(file: File): Promise<Error|DOMError|null> {
     let name: string = file.name;
     const fileExtension = this.fileExtension();

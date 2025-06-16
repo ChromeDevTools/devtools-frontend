@@ -162,4 +162,5 @@ const untypedEmitter = new UntypedEventEmitter();
   untypedEmitter.addEventListener('foo', genericListener());
   untypedEmitter.addEventListener(Symbol('foo'), genericListener());
   untypedEmitter.addEventListener(Events.VOID_EVENT, genericListener());
+  untypedEmitter.testDispatch();
 })();

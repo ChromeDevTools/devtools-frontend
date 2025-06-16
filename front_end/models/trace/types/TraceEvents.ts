@@ -2524,9 +2524,6 @@ export interface FireAnimationFrame extends Complete {
     },
   };
 }
-export function isFireAnimationFrame(event: Event): event is FireAnimationFrame {
-  return event.name === Name.FIRE_ANIMATION_FRAME;
-}
 
 export interface RequestAnimationFrame extends Instant {
   name: Name.REQUEST_ANIMATION_FRAME;
@@ -2537,9 +2534,6 @@ export interface RequestAnimationFrame extends Instant {
       stackTrace?: CallFrame,
     },
   };
-}
-export function isRequestAnimationFrame(event: Event): event is RequestAnimationFrame {
-  return event.name === Name.REQUEST_ANIMATION_FRAME;
 }
 
 export interface TimerInstall extends Instant {
@@ -2582,9 +2576,6 @@ export interface RequestIdleCallback extends Instant {
     },
 
   };
-}
-export function isRequestIdleCallback(event: Event): event is RequestIdleCallback {
-  return event.name === Name.REQUEST_IDLE_CALLBACK;
 }
 
 export interface WebSocketCreate extends Instant {
@@ -2649,10 +2640,6 @@ export interface WebSocketSend extends Instant {
   };
 }
 
-export function isWebSocketSend(event: Event): event is WebSocketSend {
-  return event.name === Name.WEB_SOCKET_SEND;
-}
-
 export interface WebSocketReceive extends Instant {
   name: Name.WEB_SOCKET_RECEIVE;
   args: Args&{
@@ -2664,9 +2651,6 @@ export interface WebSocketReceive extends Instant {
       workerId?: string,
     },
   };
-}
-export function isWebSocketReceive(event: Event): event is WebSocketReceive {
-  return event.name === Name.WEB_SOCKET_RECEIVE;
 }
 
 export interface WebSocketSendHandshakeRequest extends Instant {
@@ -3230,11 +3214,6 @@ export interface V8SourceRundownSourcesStubScriptCatchupEvent extends Event {
       scriptId: number,
     },
   };
-}
-
-export function isV8SourceRundownSourcesStubScriptCatchupEvent(event: Event):
-    event is V8SourceRundownSourcesStubScriptCatchupEvent {
-  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'StubScriptCatchup';
 }
 
 export function isAnyScriptCatchupEvent(event: Event): event is V8SourceRundownSourcesScriptCatchupEvent|

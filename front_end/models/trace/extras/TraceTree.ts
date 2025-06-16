@@ -243,10 +243,6 @@ export class TopDownNode extends Node {
     this.childrenInternal = children;
     return children;
   }
-
-  getRoot(): TopDownRootNode|null {
-    return this.root;
-  }
 }
 
 export class TopDownRootNode extends TopDownNode {

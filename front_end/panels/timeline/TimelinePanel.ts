@@ -777,10 +777,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return this.flameChart;
   }
 
-  getMinimap(): TimelineMiniMap {
-    return this.#minimapComponent;
-  }
-
   /**
    * Determine if two view modes are equivalent. Useful because if {@see
    * #changeView} gets called and the new mode is identical to the current,
@@ -984,14 +980,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private setState(state: State): void {
     this.state = state;
     this.updateTimelineControls();
-  }
-
-  /**
-   * This indicates that `this.#setModelForActiveTrace` has been called,
-   * and so the main flame chart should have been populated.
-   */
-  hasFinishedLoadingTraceForTest(): boolean {
-    return this.#viewMode.mode === 'VIEWING_TRACE';
   }
 
   private createSettingCheckbox(setting: Common.Settings.Setting<boolean>, tooltip: Platform.UIString.LocalizedString):

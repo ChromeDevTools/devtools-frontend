@@ -655,10 +655,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     }
   }
 
-  getMoreFiltersDropdown(): MoreFiltersDropDownUI|undefined {
-    return this.moreFiltersDropDownUI;
-  }
-
   private updateGroupByFrame(): void {
     const value = Common.Settings.Settings.instance().moduleSetting('network.group-by-frame').get();
     this.setGrouping(value ? 'Frame' : null);

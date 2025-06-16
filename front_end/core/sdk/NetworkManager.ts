@@ -1775,10 +1775,6 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
   }
 
-  userAgentOverride(): string {
-    return this.#userAgentOverrideInternal;
-  }
-
   setCustomUserAgentOverride(
       userAgent: string, userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null): void {
     this.#customUserAgent = userAgent;
@@ -2096,12 +2092,6 @@ export class InterceptedRequest {
     console.assert(!this.#hasRespondedInternal);
     this.#hasRespondedInternal = true;
     void this.#fetchAgent.invoke_continueRequest({requestId: this.requestId});
-  }
-
-  continueRequestWithError(errorReason: Protocol.Network.ErrorReason): void {
-    console.assert(!this.#hasRespondedInternal);
-    this.#hasRespondedInternal = true;
-    void this.#fetchAgent.invoke_failRequest({requestId: this.requestId, errorReason});
   }
 
   async responseBody(): Promise<TextUtils.ContentData.ContentDataOrError> {

@@ -463,10 +463,6 @@ export function createFakeRegExpSetting(name: string, defaultValue: string): Com
   return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 
-export function enableFeatureForTest(feature: string): void {
-  Root.Runtime.experiments.enableForTest(feature);
-}
-
 export function setupActionRegistry() {
   before(function() {
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();

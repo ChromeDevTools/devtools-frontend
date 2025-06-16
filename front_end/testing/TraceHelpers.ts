@@ -27,53 +27,6 @@ export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDeleg
   }
 }
 
-/**
- * @deprecated this will be removed once we have migrated from interaction tests for screenshots. Please use `renderFlameChartIntoDOM`.
- *
- * Draws a set of tracks track in the flame chart using the new system.
- * For this to work, every track that will be rendered must have a
- * corresponding track appender registered in the
- * CompatibilityTracksAppender.
- *
- * @param context The unit test context.
- * @param traceFileName The name of the trace file to be loaded into the
- * flame chart.
- * @param trackAppenderNames A Set with the names of the tracks to be
- * rendered. For example, Set("Timings").
- * @param expanded whether the track should be expanded
- * @param trackName optional param to filter tracks by their name.
- * @returns a flame chart element and its corresponding data provider.
- */
-export async function getMainFlameChartWithTracks(
-    context: Mocha.Context|null, traceFileName: string,
-    trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>, expanded: boolean,
-    trackName?: string): Promise<{
-  flameChart: PerfUI.FlameChart.FlameChart,
-  dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
-}> {
-  await initializeGlobalVars();
-
-  // This function is used to load a component example.
-  const {parsedTrace} = await TraceLoader.traceEngine(context, traceFileName);
-  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
-
-  const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-  dataProvider.setModel(parsedTrace, entityMapper);
-  const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
-  tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildWithCustomTracksForTest(
-      {filterTracks: name => trackName ? name.includes(trackName) : true, expandTracks: _ => expanded});
-
-  const delegate = new MockFlameChartDelegate();
-  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
-  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
-  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
-  flameChart.setWindowTimes(minTime, maxTime);
-  flameChart.markAsRoot();
-  flameChart.update();
-  return {flameChart, dataProvider};
-}
-
 export interface RenderFlameChartOptions {
   dataProvider: 'MAIN'|'NETWORK';
   /**
@@ -277,34 +230,6 @@ export function getAllNodes(roots: Set<Trace.Helpers.TreeHelpers.TraceEntryNode>
     }
   }
   return allNodes;
-}
-
-/**
- * Gets the node with an id from a tree in a thread.
- * @see RendererHandler.ts
- */
-export function getNodeFor(
-    thread: Trace.Handlers.ModelHandlers.Renderer.RendererThread,
-    nodeId: Trace.Helpers.TreeHelpers.TraceEntryNodeId): Trace.Helpers.TreeHelpers.TraceEntryNode {
-  const tree = getTree(thread);
-
-  function findNode(
-      nodes: Set<Trace.Helpers.TreeHelpers.TraceEntryNode>|Trace.Helpers.TreeHelpers.TraceEntryNode[],
-      nodeId: Trace.Helpers.TreeHelpers.TraceEntryNodeId): Trace.Helpers.TreeHelpers.TraceEntryNode|undefined {
-    for (const node of nodes) {
-      const event = node.entry;
-      if (Trace.Types.Events.isProfileCall(event) && event.nodeId === nodeId) {
-        return node;
-      }
-      return findNode(node.children, nodeId);
-    }
-    return undefined;
-  }
-  const node = findNode(tree.roots, nodeId);
-  if (!node) {
-    assert(false, `Couldn't get the node with id ${nodeId} in thread ${thread.name}`);
-  }
-  return node;
 }
 
 /**
@@ -602,27 +527,6 @@ export function makeMockSamplesHandlerData(profileCalls: Trace.Types.Events.Synt
     profilesInProcess: new Map([[1 as Trace.Types.Events.ProcessID, profilesInThread]]),
     entryToNode,
   };
-}
-
-export function makeMockEntityData(events: Trace.Types.Events.Event[]): Trace.Handlers.Helpers.EntityMappings {
-  const eventsByEntity = new Map<Trace.Handlers.Helpers.Entity, Trace.Types.Events.Event[]>();
-  const entityByEvent = new Map<Trace.Types.Events.Event, Trace.Handlers.Helpers.Entity>();
-  const createdEntityCache = new Map<string, Trace.Handlers.Helpers.Entity>();
-
-  events.forEach(event => {
-    const entity = Trace.Handlers.Helpers.getEntityForEvent(event, createdEntityCache);
-    if (!entity) {
-      return;
-    }
-    if (eventsByEntity.has(entity)) {
-      const events = eventsByEntity.get(entity) ?? [];
-      events?.push(event);
-    } else {
-      eventsByEntity.set(entity, [event]);
-    }
-    entityByEvent.set(event, entity);
-  });
-  return {eventsByEntity, entityByEvent, createdEntityCache};
 }
 
 export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {

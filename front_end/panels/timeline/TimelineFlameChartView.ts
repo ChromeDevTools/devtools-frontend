@@ -1597,6 +1597,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#overlays.enterLabelEditMode(overlay);
   }
 
+  bringLabelForward(overlay: Overlays.Overlays.EntryLabel): void {
+    this.#overlays.bringLabelForward(overlay);
+  }
+
   private onAddEntryLabelAnnotation(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {
@@ -1678,6 +1682,12 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     dataProvider.buildFlowForInitiator(entryIndex);
     this.delegate.select(dataProvider.createSelection(entryIndex));
+
+    // If the selected entry has a label, bring it forward.
+    const traceEventForSelection = dataProvider.eventByIndex(entryIndex);
+    if (traceEventForSelection) {
+      ModificationsManager.activeManager()?.bringEntryLabelForwardIfExists(traceEventForSelection);
+    }
   }
 
   /**

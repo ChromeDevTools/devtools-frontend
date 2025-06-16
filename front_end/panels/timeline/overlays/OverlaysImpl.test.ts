@@ -1175,6 +1175,40 @@ describeWithEnvironment('Overlays', () => {
       inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
       assert.isTrue(inputField.isContentEditable);
     });
+
+    it('brings the correct label forward when multiple labels exist', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+
+      const event1 = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event1);
+      const labelOverlay1 = overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event1,
+        label: 'label 1',
+      });
+
+      const event2 = charts.mainProvider.eventByIndex?.(51);
+      assert.isOk(event2);
+      const labelOverlay2 = overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event2,
+        label: 'label 2',
+      });
+
+      await overlays.update();
+
+      const element1 = overlays.elementForOverlay(labelOverlay1);
+      const element2 = overlays.elementForOverlay(labelOverlay2);
+
+      overlays.bringLabelForward(labelOverlay1);
+      assert.isTrue(element1?.classList.contains('bring-forward'));
+      assert.isFalse(element2?.classList.contains('bring-forward'));
+
+      overlays.bringLabelForward(labelOverlay2);
+      assert.isFalse(element1?.classList.contains('bring-forward'));
+      assert.isTrue(element2?.classList.contains('bring-forward'));
+    });
   });
 
   describe('traceWindowContainingOverlays', () => {

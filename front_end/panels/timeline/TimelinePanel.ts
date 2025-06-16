@@ -2067,6 +2067,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         });
       } else if (action === 'EnterLabelEditState' && AnnotationHelpers.isEntryLabel(overlay)) {
         this.flameChart.enterLabelEditMode(overlay);
+      } else if (action === 'LabelBringForward' && AnnotationHelpers.isEntryLabel(overlay)) {
+        this.flameChart.bringLabelForward(overlay);
       }
 
       const annotations = currentManager.getAnnotations();

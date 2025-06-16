@@ -27,6 +27,11 @@
   /* also bump the z-index if the label is being hovered, to ensure it appears above any other labels that might obstruct it */
   &:has([data-user-editing-label]),
   &:hover {
+    z-index: 4;
+  }
+
+  /* Added to the selected entry label to bring it forward. Hovered entry's label will still be on top */
+  &.bring-forward {
     z-index: 3;
   }
 }

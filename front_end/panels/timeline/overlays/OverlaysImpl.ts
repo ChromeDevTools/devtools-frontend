@@ -657,6 +657,16 @@ export class Overlays extends EventTarget {
     }
   }
 
+  bringLabelForward(overlay: EntryLabel): void {
+    // Before bringing the element forward, remove the 'bring-forward' class from all the other elements
+    for (const element of this.#overlaysToElements.values()) {
+      element?.classList.remove('bring-forward');
+    }
+
+    const element = this.#overlaysToElements.get(overlay);
+    element?.classList.add('bring-forward');
+  }
+
   /**
    * @returns the list of overlays associated with a given entry.
    */

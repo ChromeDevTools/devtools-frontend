@@ -6375,19 +6375,6 @@ export namespace Emulation {
   }
 
   /**
-   * Used to specify User Agent form-factor values. See https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors
-   */
-  export const enum UserAgentFormFactor {
-    Desktop = 'Desktop',
-    Automotive = 'Automotive',
-    Mobile = 'Mobile',
-    Tablet = 'Tablet',
-    XR = 'XR',
-    EInk = 'EInk',
-    Watch = 'Watch',
-  }
-
-  /**
    * Used to specify User Agent Client Hints to emulate. See https://wicg.github.io/ua-client-hints
    */
   export interface UserAgentBrandVersion {
@@ -6416,7 +6403,11 @@ export namespace Emulation {
     mobile: boolean;
     bitness?: string;
     wow64?: boolean;
-    formFactors?: UserAgentFormFactor[];
+    /**
+     * Used to specify User Agent form-factor values.
+     * See https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors
+     */
+    formFactors?: string[];
   }
 
   /**

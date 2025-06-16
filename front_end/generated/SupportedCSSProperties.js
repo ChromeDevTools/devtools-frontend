@@ -1892,10 +1892,31 @@ export const generatedProperties = [
   "name": "corner-bottom-right-shape"
  },
  {
+  "longhands": [
+   "corner-bottom-left-shape",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-bottom-shape"
+ },
+ {
   "name": "corner-end-end-shape"
  },
  {
   "name": "corner-end-start-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-left-shape",
+   "corner-bottom-left-shape"
+  ],
+  "name": "corner-left-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-right-shape",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-right-shape"
  },
  {
   "longhands": [
@@ -1933,6 +1954,13 @@ export const generatedProperties = [
    "square"
   ],
   "name": "corner-top-right-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-left-shape",
+   "corner-top-right-shape"
+  ],
+  "name": "corner-top-shape"
  },
  {
   "keywords": [

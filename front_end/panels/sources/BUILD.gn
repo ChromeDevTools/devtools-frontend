@@ -159,6 +159,7 @@ ts_library("unittests") {
     "SourcesNavigator.test.ts",
     "SourcesView.test.ts",
     "TabbedEditorContainer.test.ts",
+    "UISourceCodeFrame.test.ts",
   ]
 
   deps = [

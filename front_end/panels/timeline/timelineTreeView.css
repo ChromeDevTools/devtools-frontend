@@ -136,10 +136,6 @@
   border-bottom: 1px solid var(--app-border-selected-progress-bar);
 }
 
-.timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {
-  background-color: inherit;
-}
-
 .timeline-tree-view .data-grid thead {
   height: 21px;
   /* so the header is always above any body rows that the user has scrolled past */

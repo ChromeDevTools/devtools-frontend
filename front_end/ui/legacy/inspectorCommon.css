@@ -506,25 +506,6 @@ dt-icon-label {
   flex: none;
 }
 
-.full-widget-dimmed-banner a {
-  color: inherit;
-}
-
-.full-widget-dimmed-banner {
-  color: var(--sys-color-token-subtle);
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-  position: absolute;
-  inset: 0;
-  font-size: 13px;
-  overflow: auto;
-  z-index: 500;
-}
-
 .dot::before {
   content: var(--image-file-empty);
   width: 6px;

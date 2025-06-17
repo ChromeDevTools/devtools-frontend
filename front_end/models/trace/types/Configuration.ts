@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
+// TODO(b/376051759): remove / fix.
+// eslint-disable-next-line rulesdir/no-imports-in-directory
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Lantern from '../lantern/lantern.js';

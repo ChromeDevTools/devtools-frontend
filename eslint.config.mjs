@@ -798,8 +798,9 @@ export default defineConfig([
     },
   },
   {
-    name: 'Traces import rule',
-    files: ['front_end/models/trace/handlers/**/*.ts'],
+    name: 'No SDK in models/trace',
+    files: ['front_end/models/trace/**/*.ts'],
+    ignores: ['front_end/models/trace/**/*.test.ts'],
     rules: {
       'rulesdir/no-imports-in-directory': [
         'error',

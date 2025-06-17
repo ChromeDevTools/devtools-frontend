@@ -1234,7 +1234,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // If the index is -1 and the selection is a TraceEvent, it might be
     // the case that this Entry is hidden by the Context Menu action.
     // Try revealing the entry and getting the index again.
-    if (index > -1) {
+    if (index === -1) {
       if (this.timelineDataInternal?.selectedGroup) {
         ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(selection.event);
         this.timelineData(true);

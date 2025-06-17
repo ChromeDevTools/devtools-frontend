@@ -535,68 +535,65 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatches an event when a SelectElementAccessibility DisallowedSelectChild issue is created', async () => {
+  it('dispatches an event when a ElementAccessibility DisallowedSelectChild issue is created', async () => {
     await goToResource('issues/select-element-accessibility-issue-DisallowedSelectChild.html');
     await waitFor('.issue');
 
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.IssueCreated',
-        actionCode: 86,  // SelectElementAccessibilityIssue::DisallowedSelectChild
+        actionCode: 86,  // ElementAccessibilityIssue::DisallowedSelectChild
       },
     ]);
   });
 
-  it('dispatches an event when a SelectElementAccessibility DisallowedOptGroupChild issue is created', async () => {
+  it('dispatches an event when a ElementAccessibility DisallowedOptGroupChild issue is created', async () => {
     await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
     await waitFor('.issue');
 
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.IssueCreated',
-        actionCode: 87,  // SelectElementAccessibilityIssue::DisallowedOptGroupChild
+        actionCode: 87,  // ElementAccessibilityIssue::DisallowedOptGroupChild
       },
     ]);
   });
 
-  it('dispatches an event when a SelectElementAccessibility NonPhrasingContentOptionChild issue is created',
-     async () => {
-       await goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');
-       await waitFor('.issue');
+  it('dispatches an event when a ElementAccessibility NonPhrasingContentOptionChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');
+    await waitFor('.issue');
 
-       await assertHistogramEventsInclude([
-         {
-           actionName: 'DevTools.IssueCreated',
-           actionCode: 88,  // SelectElementAccessibilityIssue::NonPhrasingContentOptionChild
-         },
-       ]);
-     });
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 88,  // ElementAccessibilityIssue::NonPhrasingContentOptionChild
+      },
+    ]);
+  });
 
-  it('dispatches an event when a SelectElementAccessibility InteractiveContentOptionChild issue is created',
-     async () => {
-       await goToResource('issues/select-element-accessibility-issue-InteractiveContentOptionChild.html');
-       await waitFor('.issue');
+  it('dispatches an event when a ElementAccessibility InteractiveContentOptionChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-InteractiveContentOptionChild.html');
+    await waitFor('.issue');
 
-       await assertHistogramEventsInclude([
-         {
-           actionName: 'DevTools.IssueCreated',
-           actionCode: 89,  // SelectElementAccessibilityIssue::InteractiveContentOptionChild
-         },
-       ]);
-     });
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 89,  // ElementAccessibilityIssue::InteractiveContentOptionChild
+      },
+    ]);
+  });
 
-  it('dispatches an event when a SelectElementAccessibility InteractiveContentLegendChild issue is created',
-     async () => {
-       await goToResource('issues/select-element-accessibility-issue-InteractiveContentLegendChild.html');
-       await waitFor('.issue');
+  it('dispatches an event when a ElementAccessibility InteractiveContentLegendChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-InteractiveContentLegendChild.html');
+    await waitFor('.issue');
 
-       await assertHistogramEventsInclude([
-         {
-           actionName: 'DevTools.IssueCreated',
-           actionCode: 90,  // SelectElementAccessibilityIssue::InteractiveContentLegendChild
-         },
-       ]);
-     });
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 90,  // ElementAccessibilityIssue::InteractiveContentLegendChild
+      },
+    ]);
+  });
 });
 
 describe('User Metrics for CSS custom properties in the Styles pane', () => {

@@ -156,17 +156,16 @@ describeWithMockConnection('ElementsTreeOutline', () => {
     // Test that <select> issue can be added to the tree element.
     {
       const inspectorIssue = {
-        code: Protocol.Audits.InspectorIssueCode.SelectElementAccessibilityIssue,
+        code: Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
         details: {
-          selectElementAccessibilityIssueDetails: {
+          elementAccessibilityIssueDetails: {
             nodeId: 2 as Protocol.DOM.BackendNodeId,
-            selectElementAccessibilityIssueReason:
-                Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild,
+            elementAccessibilityIssueReason: Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
             hasDisallowedAttributes: false,
           },
         },
       };
-      const issue = IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue.fromInspectorIssue(
+      const issue = IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(
           mockModel, inspectorIssue)[0];
       issuesManager.dispatchEventToListeners(
           IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});

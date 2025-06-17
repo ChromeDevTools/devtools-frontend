@@ -8,22 +8,22 @@ import {describeWithLocale, expectConsoleLogs} from '../../testing/EnvironmentHe
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-describeWithLocale('SelectElementAccessibilityIssue', () => {
+describeWithLocale('ElementAccessibilityIssue', () => {
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;
 
   function createProtocolIssueWithoutDetails(): Protocol.Audits.InspectorIssue {
     return {
-      code: Protocol.Audits.InspectorIssueCode.SelectElementAccessibilityIssue,
+      code: Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
       details: {},
     };
   }
 
   function createProtocolIssueWithDetails(
-      selectElementAccessibilityIssueDetails: Protocol.Audits.SelectElementAccessibilityIssueDetails):
+      elementAccessibilityIssueDetails: Protocol.Audits.ElementAccessibilityIssueDetails):
       Protocol.Audits.InspectorIssue {
     return {
-      code: Protocol.Audits.InspectorIssueCode.SelectElementAccessibilityIssue,
-      details: {selectElementAccessibilityIssueDetails},
+      code: Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
+      details: {elementAccessibilityIssueDetails},
     };
   }
 
@@ -33,22 +33,22 @@ describeWithLocale('SelectElementAccessibilityIssue', () => {
 
   it('can be created for various reasons', () => {
     const reasons = [
-      Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild,
-      Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedOptGroupChild,
-      Protocol.Audits.SelectElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
-      Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild,
-      Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentLegendChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.DisallowedOptGroupChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentLegendChild,
+      Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant,
     ];
     for (const reason of reasons) {
       const issueDetails = {
         nodeId: 1 as Protocol.DOM.BackendNodeId,
-        selectElementAccessibilityIssueReason: reason,
+        elementAccessibilityIssueReason: reason,
         hasDisallowedAttributes: false,
       };
       const issue = createProtocolIssueWithDetails(issueDetails);
       const selectIssues =
-          IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue.fromInspectorIssue(
-              mockModel, issue);
+          IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(mockModel, issue);
       assert.lengthOf(selectIssues, 1);
       const selectIssue = selectIssues[0];
 
@@ -61,9 +61,8 @@ describeWithLocale('SelectElementAccessibilityIssue', () => {
 
   it('adds a disallowed select child issue without details', () => {
     const inspectorIssueWithoutGenericDetails = createProtocolIssueWithoutDetails();
-    const selectIssues =
-        IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue.fromInspectorIssue(
-            mockModel, inspectorIssueWithoutGenericDetails);
+    const selectIssues = IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(
+        mockModel, inspectorIssueWithoutGenericDetails);
 
     assert.isEmpty(selectIssues);
   });
@@ -71,14 +70,12 @@ describeWithLocale('SelectElementAccessibilityIssue', () => {
   it('adds an interactive content attributes select child issue with valid details', () => {
     const issueDetails = {
       nodeId: 1 as Protocol.DOM.BackendNodeId,
-      selectElementAccessibilityIssueReason:
-          Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild,
+      elementAccessibilityIssueReason: Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild,
       hasDisallowedAttributes: true,
     };
     const issue = createProtocolIssueWithDetails(issueDetails);
     const selectIssues =
-        IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue.fromInspectorIssue(
-            mockModel, issue);
+        IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue.fromInspectorIssue(mockModel, issue);
     assert.lengthOf(selectIssues, 1);
     const selectIssue = selectIssues[0];
 

@@ -37,11 +37,11 @@ export class AffectedDescendantsWithinSelectElementView extends AffectedElements
 
   async #doUpdate(): Promise<void> {
     this.clear();
-    await this.#appendDisallowedSelectDescendants(this.issue.getSelectElementAccessibilityIssues());
+    await this.#appendDisallowedSelectDescendants(this.issue.getElementAccessibilityIssues());
   }
 
-  async #appendDisallowedSelectDescendant(
-      issue: IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue): Promise<void> {
+  async #appendDisallowedSelectDescendant(issue: IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue):
+      Promise<void> {
     const row = document.createElement('tr');
     row.classList.add('affected-resource-select-element-descendant');
 
@@ -54,7 +54,7 @@ export class AffectedDescendantsWithinSelectElementView extends AffectedElements
   }
 
   async #appendDisallowedSelectDescendants(
-      issues: Iterable<IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue>): Promise<void> {
+      issues: Iterable<IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue>): Promise<void> {
     let count = 0;
     for (const issue of issues) {
       count++;

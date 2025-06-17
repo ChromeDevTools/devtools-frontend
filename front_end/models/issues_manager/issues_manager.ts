@@ -12,6 +12,7 @@ import * as CookieIssue from './CookieIssue.js';
 import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as DeprecationIssue from './DeprecationIssue.js';
+import * as ElementAccessibilityIssue from './ElementAccessibilityIssue.js';
 import * as FederatedAuthUserInfoRequestIssue from './FederatedAuthUserInfoRequestIssue.js';
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
@@ -25,7 +26,6 @@ import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
-import * as SelectElementAccessibilityIssue from './SelectElementAccessibilityIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
@@ -43,6 +43,7 @@ export {
   CorsIssue,
   CrossOriginEmbedderPolicyIssue,
   DeprecationIssue,
+  ElementAccessibilityIssue,
   FederatedAuthUserInfoRequestIssue,
   GenericIssue,
   HeavyAdIssue,
@@ -56,7 +57,6 @@ export {
   PropertyRuleIssue,
   QuirksModeIssue,
   RelatedIssue,
-  SelectElementAccessibilityIssue,
   SharedArrayBufferIssue,
   SharedDictionaryIssue,
   SourceFrameIssuesManager,

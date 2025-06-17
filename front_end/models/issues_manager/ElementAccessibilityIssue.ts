@@ -12,15 +12,15 @@ import {
   resolveLazyDescription
 } from './MarkdownIssueDescription.js';
 
-export class SelectElementAccessibilityIssue extends Issue {
-  private issueDetails: Protocol.Audits.SelectElementAccessibilityIssueDetails;
+export class ElementAccessibilityIssue extends Issue {
+  private issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails;
 
   constructor(
-      issueDetails: Protocol.Audits.SelectElementAccessibilityIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
+      issueDetails: Protocol.Audits.ElementAccessibilityIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel,
       issueId?: Protocol.Audits.IssueId) {
     const issueCode = [
-      Protocol.Audits.InspectorIssueCode.SelectElementAccessibilityIssue,
-      issueDetails.selectElementAccessibilityIssueReason,
+      Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
+      issueDetails.elementAccessibilityIssueReason,
     ].join('::');
     super(issueCode, issuesModel, issueId);
     this.issueDetails = issueDetails;
@@ -37,7 +37,7 @@ export class SelectElementAccessibilityIssue extends Issue {
         links: [],
       };
     }
-    const description = issueDescriptions.get(this.issueDetails.selectElementAccessibilityIssueReason);
+    const description = issueDescriptions.get(this.issueDetails.elementAccessibilityIssueReason);
     if (!description) {
       return null;
     }
@@ -52,61 +52,69 @@ export class SelectElementAccessibilityIssue extends Issue {
     return IssueCategory.OTHER;
   }
 
-  details(): Protocol.Audits.SelectElementAccessibilityIssueDetails {
+  details(): Protocol.Audits.ElementAccessibilityIssueDetails {
     return this.issueDetails;
   }
 
   isInteractiveContentAttributesSelectDescendantIssue(): boolean {
     return this.issueDetails.hasDisallowedAttributes &&
-        (this.issueDetails.selectElementAccessibilityIssueReason !==
-         Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild);
+        (this.issueDetails.elementAccessibilityIssueReason !==
+             Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild &&
+         this.issueDetails.elementAccessibilityIssueReason !==
+             Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant);
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):
-      SelectElementAccessibilityIssue[] {
-    const selectElementAccessibilityIssueDetails = inspectorIssue.details.selectElementAccessibilityIssueDetails;
-    if (!selectElementAccessibilityIssueDetails) {
-      console.warn('Select Element Accessibility issue without details received.');
+      ElementAccessibilityIssue[] {
+    const elementAccessibilityIssueDetails = inspectorIssue.details.elementAccessibilityIssueDetails;
+    if (!elementAccessibilityIssueDetails) {
+      console.warn('Element Accessibility issue without details received.');
       return [];
     }
-    return [new SelectElementAccessibilityIssue(
-        selectElementAccessibilityIssueDetails, issuesModel, inspectorIssue.issueId)];
+    return [new ElementAccessibilityIssue(elementAccessibilityIssueDetails, issuesModel, inspectorIssue.issueId)];
   }
 }
 
-const issueDescriptions = new Map<Protocol.Audits.SelectElementAccessibilityIssueReason, LazyMarkdownIssueDescription>([
+const issueDescriptions = new Map<Protocol.Audits.ElementAccessibilityIssueReason, LazyMarkdownIssueDescription>([
   [
-    Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild,
+    Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild,
     {
       file: 'selectElementAccessibilityDisallowedSelectChild.md',
       links: [],
     },
   ],
   [
-    Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedOptGroupChild,
+    Protocol.Audits.ElementAccessibilityIssueReason.DisallowedOptGroupChild,
     {
       file: 'selectElementAccessibilityDisallowedOptGroupChild.md',
       links: [],
     },
   ],
   [
-    Protocol.Audits.SelectElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
+    Protocol.Audits.ElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
     {
       file: 'selectElementAccessibilityNonPhrasingContentOptionChild.md',
       links: [],
     },
   ],
   [
-    Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild,
+    Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild,
     {
       file: 'selectElementAccessibilityInteractiveContentOptionChild.md',
       links: [],
     },
   ],
   [
-    Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentLegendChild,
+    Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentLegendChild,
     {
       file: 'selectElementAccessibilityInteractiveContentLegendChild.md',
+      links: [],
+    },
+  ],
+  [
+    Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant,
+    {
+      file: 'summaryElementAccessibilityInteractiveContentSummaryDescendant.md',
       links: [],
     },
   ],

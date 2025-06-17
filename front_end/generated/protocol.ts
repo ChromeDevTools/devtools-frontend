@@ -1336,20 +1336,21 @@ export namespace Audits {
     partitioningBlobURLInfo: PartitioningBlobURLInfo;
   }
 
-  export const enum SelectElementAccessibilityIssueReason {
+  export const enum ElementAccessibilityIssueReason {
     DisallowedSelectChild = 'DisallowedSelectChild',
     DisallowedOptGroupChild = 'DisallowedOptGroupChild',
     NonPhrasingContentOptionChild = 'NonPhrasingContentOptionChild',
     InteractiveContentOptionChild = 'InteractiveContentOptionChild',
     InteractiveContentLegendChild = 'InteractiveContentLegendChild',
+    InteractiveContentSummaryDescendant = 'InteractiveContentSummaryDescendant',
   }
 
   /**
-   * This issue warns about errors in the select element content model.
+   * This issue warns about errors in the select or summary element content model.
    */
-  export interface SelectElementAccessibilityIssueDetails {
+  export interface ElementAccessibilityIssueDetails {
     nodeId: DOM.BackendNodeId;
-    selectElementAccessibilityIssueReason: SelectElementAccessibilityIssueReason;
+    elementAccessibilityIssueReason: ElementAccessibilityIssueReason;
     hasDisallowedAttributes: boolean;
   }
 
@@ -1447,7 +1448,7 @@ export namespace Audits {
     FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
     PropertyRuleIssue = 'PropertyRuleIssue',
     SharedDictionaryIssue = 'SharedDictionaryIssue',
-    SelectElementAccessibilityIssue = 'SelectElementAccessibilityIssue',
+    ElementAccessibilityIssue = 'ElementAccessibilityIssue',
     SRIMessageSignatureIssue = 'SRIMessageSignatureIssue',
     UserReidentificationIssue = 'UserReidentificationIssue',
   }
@@ -1480,7 +1481,7 @@ export namespace Audits {
     propertyRuleIssueDetails?: PropertyRuleIssueDetails;
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
-    selectElementAccessibilityIssueDetails?: SelectElementAccessibilityIssueDetails;
+    elementAccessibilityIssueDetails?: ElementAccessibilityIssueDetails;
     sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
     userReidentificationIssueDetails?: UserReidentificationIssueDetails;
   }
@@ -13021,16 +13022,6 @@ export namespace Page {
   }
 
   /**
-   * Enum of possible auto-response for permission / prompt dialogs.
-   */
-  export const enum AutoResponseMode {
-    None = 'none',
-    AutoAccept = 'autoAccept',
-    AutoReject = 'autoReject',
-    AutoOptOut = 'autoOptOut',
-  }
-
-  /**
    * The type of a frameNavigated event.
    */
   export const enum NavigationType {
@@ -13972,12 +13963,26 @@ export namespace Page {
     data: binary;
   }
 
+  export const enum SetSPCTransactionModeRequestMode {
+    None = 'none',
+    AutoAccept = 'autoAccept',
+    AutoChooseToAuthAnotherWay = 'autoChooseToAuthAnotherWay',
+    AutoReject = 'autoReject',
+    AutoOptOut = 'autoOptOut',
+  }
+
   export interface SetSPCTransactionModeRequest {
-    mode: AutoResponseMode;
+    mode: SetSPCTransactionModeRequestMode;
+  }
+
+  export const enum SetRPHRegistrationModeRequestMode {
+    None = 'none',
+    AutoAccept = 'autoAccept',
+    AutoReject = 'autoReject',
   }
 
   export interface SetRPHRegistrationModeRequest {
-    mode: AutoResponseMode;
+    mode: SetRPHRegistrationModeRequestMode;
   }
 
   export interface GenerateTestReportRequest {

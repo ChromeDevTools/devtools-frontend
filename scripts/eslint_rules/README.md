@@ -15,8 +15,8 @@ all rules that disallow something with `no-`.
 
 ## Testing the rules
 
-When writing a custom ESLint rule, place the logic into a file `lib/foo.js` and
-add a corresponding test for the logic to `tests/foo.test.js`.
+When writing a custom ESLint rule, place the logic into a file `lib/foo.ts` and
+add a corresponding test for the logic to `tests/foo.test.ts`.
 
 You can use
 
@@ -25,3 +25,5 @@ npm run test -- ./scripts/eslint_rules/tests
 ```
 
 to run the tests for the custom ESLint rules.
+
+To run only specific test cases, add `only: true` to the objects within the valid/invalid arrays.

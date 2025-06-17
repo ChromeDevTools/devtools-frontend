@@ -563,6 +563,8 @@ export default defineConfig([
           importName: 'Trace',
         },
       ],
+
+      'rulesdir/validate-timing-types': 'error',
     },
   },
   {

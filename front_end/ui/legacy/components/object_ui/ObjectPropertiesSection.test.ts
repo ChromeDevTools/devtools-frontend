@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import {dispatchClickEvent} from '../../../../testing/DOMHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as ObjectUI from './object_ui.js';
@@ -50,5 +50,23 @@ describe('ObjectPropertiesSection', () => {
         sinon.assert.calledOnceWithMatch(reveal, sinon.match({object, expression}), false);
       });
     });
+  });
+});
+
+describeWithEnvironment('ObjectPropertyTreeElement', () => {
+  it('can edit values', async () => {
+    const property = new SDK.RemoteObject.RemoteObjectProperty(
+        'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(property);
+    section.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+
+    const promptStub =
+        sinon.stub(ObjectUI.ObjectPropertiesSection.ObjectPropertyPrompt.prototype, 'attachAndStartEditing');
+    promptStub.returns(document.createElement('div'));
+    renderElementIntoDOM(section.listItemElement);
+    section.update();
+    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+    section.valueElement.dispatchEvent(event);
+    sinon.assert.calledOnce(promptStub);
   });
 });

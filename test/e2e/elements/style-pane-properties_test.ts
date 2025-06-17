@@ -171,7 +171,7 @@ describe('The Styles pane', () => {
     await goToHtml(`
        <style>
          body {
-           grid-column-end: 4;
+           grid-column-gap: 4px;
          }
        </style>`);
     await waitForElementsStyleSection();
@@ -182,9 +182,9 @@ describe('The Styles pane', () => {
     const textContent: string = await infobox.evaluate(e => e.deepInnerText());
     assert.strictEqual(
         textContent,
-        'The display: block property prevents grid-column-end from having an effect.\nTry setting display to something other than block.');
+        'The display: block property prevents grid-column-gap from having an effect.\nTry setting display to something other than block.');
     await expectVeEvents([veImpressionsUnder(
-        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: grid-column-end',
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: grid-column-gap',
         [veImpression('Popover', 'elements.css-hint')])]);
   });
 

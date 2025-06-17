@@ -85,6 +85,10 @@ const UIStrings = {
    *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
    */
   copyValue: 'Copy value',
+  /**
+   *@description announcement for when watch expression is deleted
+   */
+  watchExpressionDeleted: 'Watch expression deleted',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -438,6 +442,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private deleteWatchExpression(event: Event): void {
     event.consume(true);
+    UI.ARIAUtils.alert(i18nString(UIStrings.watchExpressionDeleted));
     this.updateExpression(null);
   }
 

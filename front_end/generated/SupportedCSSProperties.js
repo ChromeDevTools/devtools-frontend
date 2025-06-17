@@ -1870,6 +1870,20 @@ export const generatedProperties = [
   "name": "content-visibility"
  },
  {
+  "longhands": [
+   "corner-end-start-shape",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-block-end-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-start-shape",
+   "corner-start-end-shape"
+  ],
+  "name": "corner-block-start-shape"
+ },
+ {
   "keywords": [
    "notch",
    "scoop",
@@ -1903,6 +1917,20 @@ export const generatedProperties = [
  },
  {
   "name": "corner-end-start-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-end-shape",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-inline-end-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-start-shape",
+   "corner-end-start-shape"
+  ],
+  "name": "corner-inline-start-shape"
  },
  {
   "longhands": [

@@ -57,6 +57,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   private windowEndTime = Trace.Types.Timing.Milli(Infinity);
   private muteOnWindowChanged = false;
   #dimHighlightSVG: Element;
+  readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
   constructor(prefix: string) {
     super();
@@ -132,14 +133,24 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.overviewInfo.hide();
   }
 
+  #onThemeChanged(): void {
+    this.scheduleUpdate();
+  }
+
   override wasShown(): void {
+    super.wasShown();
     const start = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.min;
     const end = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.max;
     this.update(start, end);
+    ThemeSupport.ThemeSupport.instance().addEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
   }
 
   override willHide(): void {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
     this.overviewInfo.hide();
+    super.willHide();
   }
 
   override onResize(): void {

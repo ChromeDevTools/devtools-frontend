@@ -325,6 +325,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   #indexToDrawOverride = new Map<number, DrawOverride>();
   #persistedGroupConfig: PersistedGroupConfig[]|null = null;
+  readonly #boundOnThemeChanged = this.#onThemeChanged.bind(this);
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
@@ -417,14 +418,23 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this.keyboardFocusedGroup = -1;
+  }
 
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      this.scheduleUpdate();
-    });
+  #onThemeChanged(): void {
+    this.scheduleUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    ThemeSupport.ThemeSupport.instance().addEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
   }
 
   override willHide(): void {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.#boundOnThemeChanged);
     this.hideHighlight();
+    super.willHide();
   }
 
   canvasBoundingClientRect(): DOMRect|null {

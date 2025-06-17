@@ -404,19 +404,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   );
 
   #sideBar = new TimelineComponents.Sidebar.SidebarWidget();
-  /**
-   * Rather than auto-pop the sidebar every time the user records a trace,
-   * which could get annoying, we instead persist the state of the sidebar
-   * visibility to a setting so it's restored across sessions.
-   * However, sometimes we have to automatically hide the sidebar, like when a
-   * trace recording is happening, or the user is on the landing page. In those
-   * times, we toggle this flag to true. Then, when we enter the VIEWING_TRACE
-   * mode, we check this flag and pop the sidebar open if it's set to true.
-   * Longer term a better fix here would be to divide the 3 UI screens
-   * (status pane, landing page, trace view) into distinct components /
-   * widgets, to avoid this complexity.
-   */
-  #restoreSidebarVisibilityOnTraceLoad = false;
 
   /**
    * Used to track an aria announcement that we need to alert for
@@ -889,7 +876,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.#hideLandingPage();
         this.#setModelForActiveTrace();
         this.#removeStatusPane();
-        this.#showSidebarIfRequired();
+        this.#showSidebar();
         this.flameChart.dimThirdPartiesIfRequired();
         this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, true);
         return;
@@ -2161,8 +2148,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       }
     }
 
-    this.#showSidebarIfRequired();
-
     // When the timeline is loaded for the first time, setup the shortcuts dialog and log what navigation setting is selected.
     // Logging the setting on the first timeline load will allow us to get an estimate number of people using each option.
     if (this.#traceEngineModel.size() === 1) {
@@ -2178,24 +2163,18 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   /**
-   * We automatically show the sidebar in only 2 scenarios:
-   * 1. The user has never seen it before, so we show it once to aid discovery
-   * 2. The user had it open, and we hid it (for example, during recording), so now we need to bring it back.
+   * After the user imports / records a trace, we auto-show the sidebar.
    */
-  #showSidebarIfRequired(): void {
-    const disabledByLocalStorage = window.localStorage.getItem('disable-auto-show-rpp-sidebar-for-test') === 'true';
-
-    if (Root.Runtime.Runtime.queryParam('disable-auto-performance-sidebar-reveal') !== null || disabledByLocalStorage) {
-      // Used in interaction tests & screenshot tests.
+  #showSidebar(): void {
+    const disabledByLocalStorageForTests =
+        window.localStorage.getItem('disable-auto-show-rpp-sidebar-for-test') === 'true';
+    if (disabledByLocalStorageForTests) {
       return;
     }
-    const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
-    const userHasSeenSidebar = this.#sideBar.userHasOpenedSidebarOnce();
 
-    if (!userHasSeenSidebar || needToRestore) {
+    if (!this.#splitWidget.sidebarIsShowing()) {
       this.#splitWidget.showBoth();
     }
-    this.#restoreSidebarVisibilityOnTraceLoad = false;
   }
 
   // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.
@@ -2278,7 +2257,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    */
   #hideSidebar(): void {
     if (this.#splitWidget.sidebarIsShowing()) {
-      this.#restoreSidebarVisibilityOnTraceLoad = true;
       this.#splitWidget.hideSidebar();
     }
   }

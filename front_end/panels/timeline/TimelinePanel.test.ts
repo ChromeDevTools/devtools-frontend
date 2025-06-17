@@ -218,7 +218,7 @@ describeWithEnvironment('TimelinePanel', function() {
     assert.match(fileName, /Trace-[\d|T]+\.json$/);
 
     // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
     assert.deepEqual(parsedData.metadata.visualTrackConfig, FAKE_METADATA);
   });
 
@@ -253,7 +253,7 @@ describeWithEnvironment('TimelinePanel', function() {
     const [, traceAsString] = saveSpy.getCall(0).args;
 
     // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
     assert.isUndefined(parsedData.metadata.visualTrackConfig);
   });
 
@@ -280,7 +280,7 @@ describeWithEnvironment('TimelinePanel', function() {
     const [, traceAsString] = saveSpy.getCall(0).args;
 
     // easier to assert on the data if we parse it back
-    const parsedData = JSON.parse(traceAsString) as Trace.Types.File.TraceFile;
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
     assert.isUndefined(parsedData.metadata.visualTrackConfig);
   });
 });

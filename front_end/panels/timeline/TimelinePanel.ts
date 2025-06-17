@@ -44,6 +44,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -1443,7 +1444,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         throw new Error('Trace content empty');
       }
       await Workspace.FileManager.FileManager.instance().save(
-          fileName, traceAsString, true /* forceSaveAs */, false /* isBase64 */);
+          fileName, new TextUtils.ContentData.ContentData(traceAsString, /* isBase64=*/ false, 'application/json'),
+          /* forceSaveAs=*/ true);
       Workspace.FileManager.FileManager.instance().close(fileName);
     } catch (e) {
       // We expect the error to be an Error class, but this deals with any weird case where it's not.

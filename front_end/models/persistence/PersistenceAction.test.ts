@@ -32,13 +32,13 @@ describeWithLocale('ContextMenuProvider', () => {
     sinon.stub(event, 'target').value(document);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const menuProvider = new Persistence.PersistenceActions.ContextMenuProvider();
+    const contentData = new TextUtils.ContentData.ContentData('AGFzbQEAAAA=', true, 'image/webp');
     const contentProvider: TextUtils.ContentProvider.ContentProvider = {
       contentURL: () => urlString`https://example.com/sample.webp`,
       contentType: () => Common.ResourceType.resourceTypes
                              .Document,  // Navigating a tab to an image will result in a document type for images.
-      requestContent: () => Promise.resolve({isEncoded: true, content: 'AGFzbQEAAAA='}),
-      requestContentData: () =>
-          Promise.resolve(new TextUtils.ContentData.ContentData('AGFzbQEAAAA=', true, 'image/webp')),
+      requestContent: () => Promise.resolve({isEncoded: true, content: contentData.base64}),
+      requestContentData: () => Promise.resolve(contentData),
       searchInContent: () => assert.fail('Not implemented'),
     };
 
@@ -51,7 +51,9 @@ describeWithLocale('ContextMenuProvider', () => {
     contextMenu.invokeHandler(saveItem.id());
 
     assert.deepEqual(await expectCall(saveStub), [
-      urlString`https://example.com/sample.webp`, 'AGFzbQEAAAA=', true /* forceSaveAs */, true, /* isBase64 */
+      urlString`https://example.com/sample.webp`,
+      contentData,
+      /* forceSaveAs=*/ true,
     ]);
   });
 
@@ -83,8 +85,10 @@ describeWithLocale('ContextMenuProvider', () => {
 
     contextMenu.invokeHandler(saveItem.id());
 
-    assert.deepEqual(await expectCall(saveStub), [
-      urlString`https://example.com/sample.wasm`, 'AQIDBA==', true /* forceSaveAs */, true, /* isBase64 */
-    ]);
+    const args = await expectCall(saveStub);
+    assert.lengthOf(args, 3);
+    assert.strictEqual(args[0], urlString`https://example.com/sample.wasm`);
+    assert.strictEqual(args[1].base64, 'AQIDBA==');
+    assert.isTrue(args[2]);
   });
 });

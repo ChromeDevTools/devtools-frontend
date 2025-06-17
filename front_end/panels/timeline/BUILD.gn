@@ -111,6 +111,7 @@ devtools_module("timeline") {
     "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
     "../../models/source_map_scopes:bundle",
+    "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/coverage:bundle",

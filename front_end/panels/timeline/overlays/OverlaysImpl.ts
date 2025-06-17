@@ -1303,6 +1303,7 @@ export class Overlays extends EventTarget {
       return null;
     }
     const entryWrapper = component.entryHighlightWrapper();
+    const inputField = component.shadowRoot?.querySelector<HTMLElement>('.input-field');
 
     if (!entryWrapper) {
       return null;
@@ -1315,8 +1316,11 @@ export class Overlays extends EventTarget {
       return null;
     }
 
+    // Use the actual inputfield height to position the overlay, with a default value in case the element has not yet been rendered.
+    const inputFieldHeight = inputField?.offsetHeight ?? 25;
     // Position the start of label overlay at the start of the entry + length of connector + length of the label element
-    element.style.top = `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT}px`;
+    element.style.top =
+        `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT - inputFieldHeight}px`;
     element.style.left = `${x}px`;
     element.style.width = `${entryWidth}px`;
 

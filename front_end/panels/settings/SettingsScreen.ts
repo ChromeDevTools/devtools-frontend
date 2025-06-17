@@ -181,6 +181,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     dialog.setEscapeKeyCallback(settingsScreen.onEscapeKeyPressed.bind(settingsScreen));
     dialog.setMarginBehavior(UI.GlassPane.MarginBehavior.NO_MARGIN);
     dialog.show();
+    dialog.contentElement.focus();
 
     return settingsScreen;
   }

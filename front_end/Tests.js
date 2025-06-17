@@ -46,8 +46,6 @@
   let Root;
   /** @type {import('./core/sdk/sdk.js')} */
   let SDK;
-  /** @type {import('./panels/sources/sources.js')} */
-  let Sources;
   /** @type {import('./ui/legacy/legacy.js')} */
   let UI;
   /** @type {import('./models/workspace/workspace.js')} */
@@ -162,7 +160,6 @@
       HostModule,
       Root,
       SDK,
-      Sources,
       UI,
       Workspace,
     ] =
@@ -171,7 +168,6 @@
            self.runtime.loadLegacyModule('core/host/host.js'),
            self.runtime.loadLegacyModule('core/root/root.js'),
            self.runtime.loadLegacyModule('core/sdk/sdk.js'),
-           self.runtime.loadLegacyModule('panels/sources/sources.js'),
            self.runtime.loadLegacyModule('ui/legacy/legacy.js'),
            self.runtime.loadLegacyModule('models/workspace/workspace.js'),
          ]));
@@ -1487,7 +1483,8 @@
   /**
    * Waits until all the scripts are parsed and invokes the callback.
    */
-  TestSuite.prototype._waitUntilScriptsAreParsed = function(expectedScripts, callback) {
+  TestSuite.prototype._waitUntilScriptsAreParsed = async function(expectedScripts, callback) {
+    const Sources = await self.runtime.loadLegacyModule('panels/sources/sources.js');
     const test = this;
 
     function waitForAllScripts() {

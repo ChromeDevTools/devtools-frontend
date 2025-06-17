@@ -194,6 +194,12 @@ used to make sure we filter out events in iFrames (such as MarkDOMContent).
 
 A trace containing multiple top level renderers.
 
+### nytimes-bad-mobile-viewport.json.gz
+
+Trace of a site with a non-mobile optimized viewport, plus some click/tap interactions.
+
+crbug.com/371566378#comment3
+
 ### over-20-invalidations-per-event.json.gz
 
 Contains a trace where one Layout event has 26 invalidations associated with it.

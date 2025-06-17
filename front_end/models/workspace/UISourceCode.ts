@@ -89,7 +89,12 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
         this.#name = parsedURL.lastPathComponent + '?' + parsedURL.queryParams;
       } else {
         // file name looks best decoded
-        this.#name = decodeURIComponent(parsedURL.lastPathComponent);
+        try {
+          this.#name = decodeURIComponent(parsedURL.lastPathComponent);
+        } catch {
+          // Decoding might fail.
+          this.#name = parsedURL.lastPathComponent;
+        }
       }
     } else {
       this.#origin = Platform.DevToolsPath.EmptyUrlString;

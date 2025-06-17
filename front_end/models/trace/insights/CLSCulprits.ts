@@ -218,8 +218,13 @@ export interface UnsizedImage {
   paintImageEvent: Types.Events.PaintImage;
 }
 
+export interface IframeRootCause {
+  frame: string;
+  url?: string;
+}
+
 export interface LayoutShiftRootCausesData {
-  iframeIds: string[];
+  iframes: IframeRootCause[];
   fontRequests: Types.Events.SyntheticNetworkRequest[];
   nonCompositedAnimations: NoncompositedAnimationFailure[];
   unsizedImages: UnsizedImage[];
@@ -364,6 +369,7 @@ function getNextEvent(sourceEvents: Types.Events.Event[], targetEvent: Types.Eve
  * and within this prePaint event a layout shift(s) occurs.
  */
 function getIframeRootCauses(
+    parsedTrace: Handlers.Types.ParsedTrace,
     iframeCreatedEvents: readonly Types.Events.RenderFrameImplCreateChildFrame[],
     prePaintEvents: Types.Events.PrePaint[],
     shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
@@ -394,7 +400,15 @@ function getIframeRootCauses(
         return e.ts >= iframeEvent.ts && e.ts <= maxIframe;
       });
       if (domEvent?.args.frame) {
-        rootCausesForShift.iframeIds.push(domEvent.args.frame);
+        const frame = domEvent.args.frame;
+
+        let url;
+        const processes = parsedTrace.Meta.rendererProcessesByFrame.get(frame);
+        if (processes && processes.size > 0) {
+          url = [...processes.values()][0]?.[0].frame.url;
+        }
+
+        rootCausesForShift.iframes.push({frame, url});
       }
     }
   }
@@ -505,7 +519,7 @@ function getTopCulprits(
     }
 
     const fontReq = culprits.fontRequests;
-    const iframes = culprits.iframeIds;
+    const iframes = culprits.iframes;
     const animations = culprits.nonCompositedAnimations;
     const unsizedImages = culprits.unsizedImages;
 
@@ -576,11 +590,11 @@ export function generateInsight(
   const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
 
   for (const shift of layoutShifts) {
-    rootCausesByShift.set(shift, {iframeIds: [], fontRequests: [], nonCompositedAnimations: [], unsizedImages: []});
+    rootCausesByShift.set(shift, {iframes: [], fontRequests: [], nonCompositedAnimations: [], unsizedImages: []});
   }
 
   // Populate root causes for rootCausesByShift.
-  getIframeRootCauses(iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift, domLoadingEvents);
+  getIframeRootCauses(parsedTrace, iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift, domLoadingEvents);
   getFontRootCauses(networkRequests, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
   getUnsizedImageRootCauses(unsizedImageEvents, paintImageEvents, shiftsByPrePaint, rootCausesByShift);
   const animationFailures =

@@ -247,7 +247,7 @@ Layout shifts in this cluster:
 - Start time: 857.25 ms
 - Score: 0.0844
 - Potential root causes:
-  - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104 was injected into the page)
+  - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104, url: https://www.google.com/ was injected into the page)
 ### Layout shift 3:
 - Start time: 1,352.45 ms
 - Score: 0.0068

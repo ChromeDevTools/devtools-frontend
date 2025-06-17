@@ -99,6 +99,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
       disabledByDefault('devtools.timeline'),
       disabledByDefault('devtools.v8-source-rundown-sources'),
       disabledByDefault('devtools.v8-source-rundown'),
+      disabledByDefault('layout_shift.debug'),
       // Looking for disabled-by-default-v8.compile? We disabled it: crbug.com/414330508.
       disabledByDefault('v8.inspector'),
       disabledByDefault('v8.cpu_profiler.hires'),

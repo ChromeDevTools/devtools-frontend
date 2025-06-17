@@ -917,6 +917,7 @@ export interface TraceImpactedNode {
   new_rect: TraceRect;
   node_id: Protocol.DOM.BackendNodeId;
   old_rect: TraceRect;
+  debug_name?: string;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

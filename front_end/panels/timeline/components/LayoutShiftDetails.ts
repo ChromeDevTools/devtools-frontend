@@ -130,7 +130,7 @@ export class LayoutShiftDetails extends HTMLElement {
               .data=${{
                 backendNodeId: el.node_id,
                 frame: shift.args.frame,
-                // TODO(crbug.com/371620361): if ever rendered for non-fresh traces, this needs to set a fallback text value.
+                fallbackHtmlSnippet: el.debug_name,
               } as Insights.NodeLink.NodeLinkData}>
             </devtools-performance-node-link>`;
         }
@@ -139,17 +139,17 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderIframe(iframeId: string): Lit.TemplateResult|null {
-    const domLoadingId = iframeId as Protocol.Page.FrameId;
-    if (!domLoadingId) {
-      return null;
+  #renderIframe(iframeRootCause: Trace.Insights.Models.CLSCulprits.IframeRootCause): Lit.TemplateResult|null {
+    const domLoadingId = iframeRootCause.frame as Protocol.Page.FrameId;
+    const domLoadingFrame = SDK.FrameManager.FrameManager.instance().getFrame(domLoadingId);
+
+    let el;
+    if (domLoadingFrame) {
+      el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
+    } else {
+      el = this.#linkifyURL(iframeRootCause.url as Platform.DevToolsPath.UrlString);
     }
 
-    const domLoadingFrame = SDK.FrameManager.FrameManager.instance().getFrame(domLoadingId);
-    if (!domLoadingFrame) {
-      return null;
-    }
-    const el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
     // clang-format off
     return html`
       <span class="culprit">
@@ -159,16 +159,17 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderFontRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult|null {
-    const options = {
+  #linkifyURL(url: Platform.DevToolsPath.UrlString): HTMLElement {
+    return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, {
       tabStop: true,
       showColumnNumber: false,
       inlineFrameIndex: 0,
       maxLength: MAX_URL_LENGTH,
-    };
+    });
+  }
 
-    const linkifiedURL = LegacyComponents.Linkifier.Linkifier.linkifyURL(
-        request.args.data.url as Platform.DevToolsPath.UrlString, options);
+  #renderFontRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult|null {
+    const linkifiedURL = this.#linkifyURL(request.args.data.url as Platform.DevToolsPath.UrlString);
 
     // clang-format off
     return html`
@@ -222,7 +223,7 @@ export class LayoutShiftDetails extends HTMLElement {
       rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|undefined): Lit.TemplateResult|null {
     return html`
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
-      ${rootCauses?.iframeIds.map(iframe => this.#renderIframe(iframe))}
+      ${rootCauses?.iframes.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
       ${rootCauses?.unsizedImages.map(unsizedImage => this.#renderUnsizedImage(frame, unsizedImage))}
     `;
@@ -251,17 +252,15 @@ export class LayoutShiftDetails extends HTMLElement {
     }
     const hasCulprits = Boolean(
         rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length ||
+        (rootCauses.fontRequests.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
          rootCauses.unsizedImages.length));
-
-    // TODO(crbug.com/371620361): Needs to show something for non-fresh recordings.
 
     // clang-format off
     return html`
       <tr class="shift-row" data-ts=${shift.ts}>
         <td>${this.#renderStartTime(shift, parsedTrace)}</td>
         <td>${(score.toFixed(4))}</td>
-        ${this.#isFreshRecording ? html`
+        ${elementsShifted.length ? html`
           <td>
             <div class="elements-shifted">
               ${this.#renderShiftedElements(shift, elementsShifted)}
@@ -315,9 +314,14 @@ export class LayoutShiftDetails extends HTMLElement {
     }
 
     const rootCauses = clsInsight.shifts.get(layoutShift);
-    const elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
+
+    let elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
+    if (!this.#isFreshRecording) {
+      elementsShifted = elementsShifted?.filter(el => el.debug_name);
+    }
+
     const hasCulprits = rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length ||
+        (rootCauses.fontRequests.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
          rootCauses.unsizedImages.length);
     const hasShiftedElements = elementsShifted?.length;
 
@@ -332,7 +336,7 @@ export class LayoutShiftDetails extends HTMLElement {
           <tr>
             <th>${i18nString(UIStrings.startTime)}</th>
             <th>${i18nString(UIStrings.shiftScore)}</th>
-            ${hasShiftedElements && this.#isFreshRecording ? html`
+            ${hasShiftedElements ? html`
               <th>${i18nString(UIStrings.elementsShifted)}</th>` : Lit.nothing}
             ${hasCulprits ? html`
               <th>${i18nString(UIStrings.culprit)}</th> ` : Lit.nothing}
@@ -376,8 +380,7 @@ export class LayoutShiftDetails extends HTMLElement {
               <tr>
                 <th>${i18nString(UIStrings.startTime)}</th>
                 <th>${i18nString(UIStrings.shiftScore)}</th>
-                ${this.#isFreshRecording ? html`
-                  <th>${i18nString(UIStrings.elementsShifted)}</th>` : Lit.nothing}
+                <th>${i18nString(UIStrings.elementsShifted)}</th>
                 ${hasCulprits ? html`
                   <th>${i18nString(UIStrings.culprit)}</th> ` : Lit.nothing}
               </tr>

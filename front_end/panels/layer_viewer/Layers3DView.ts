@@ -152,7 +152,11 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-    this.transformController = new TransformController(this.contentElement);
+    // Install transform controller, but still allow drag events to set focus on the element, which is needed
+    // to correctly listen for keyboard shortcuts.
+    this.transformController =
+        new TransformController(this.contentElement, false, false /* preventDefaultOnMouseDown */);
+
     this.transformController.addEventListener(TransformControllerEvents.TRANSFORM_CHANGED, this.update, this);
 
     this.initToolbar();

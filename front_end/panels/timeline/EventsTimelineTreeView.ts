@@ -73,29 +73,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: Trace.Types.Events.Event): Trace.Extras.TraceTree.Node|null {
-    if (event.name === Trace.Types.Events.Name.RUN_TASK) {
-      // No node is ever created for the top level RunTask event, so
-      // bail out preemptively
-      return null;
-    }
-    const iterators = [this.currentTree.children().values()];
-    while (iterators.length) {
-      const {done, value: child} = iterators[iterators.length - 1].next();
-      if (done) {
-        iterators.pop();
-        continue;
-      }
-      if (child.event === event) {
-        return child;
-      }
-      iterators.push(child.children().values());
-    }
-    return null;
-  }
-
   private selectEvent(event: Trace.Types.Events.Event, expand?: boolean): void {
-    const node = this.findNodeWithEvent(event);
+    const node = this.eventToTreeNode.get(event);
     if (!node) {
       return;
     }

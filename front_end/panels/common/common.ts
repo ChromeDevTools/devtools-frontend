@@ -119,6 +119,14 @@ export class FreDialog {
       dialog.hide();
       result.resolve(false);
     });
+
+    // This ensures that if the dialog gets hidden for any unexpected reason,
+    // or if the user goes to another panel and comes back, that we resolve
+    // rather than leave the promise dangling.
+    dialog.setOnHideCallback(() => {
+      result.resolve(false);
+    });
+
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     dialog.show();

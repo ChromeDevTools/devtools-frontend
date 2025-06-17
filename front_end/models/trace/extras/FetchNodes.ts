@@ -20,36 +20,7 @@ export function clearCacheForTesting(): void {
   domLookUpBatchNodesCache.clear();
 }
 
-/**
- * Looks up the DOM Node on the page for the given BackendNodeId. Uses the
- * provided ParsedTrace as the cache and will cache the result after the
- * first lookup.
- */
-export async function domNodeForBackendNodeID(
-    modelData: Handlers.Types.ParsedTrace, nodeId: Protocol.DOM.BackendNodeId): Promise<SDK.DOMModel.DOMNode|null> {
-  const fromCache = domLookUpSingleNodeCache.get(modelData)?.get(nodeId);
-  if (fromCache !== undefined) {
-    return fromCache;
-  }
-
-  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-  const domModel = target?.model(SDK.DOMModel.DOMModel);
-  if (!domModel) {
-    return null;
-  }
-
-  const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
-  const result = domNodesMap?.get(nodeId) || null;
-
-  const cacheForModel =
-      domLookUpSingleNodeCache.get(modelData) || new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>();
-  cacheForModel.set(nodeId, result);
-  domLookUpSingleNodeCache.set(modelData, cacheForModel);
-
-  return result;
-}
-
-const nodeIdsForEventCache = new WeakMap<Types.Events.Event, Set<Protocol.DOM.BackendNodeId>>();
+export const nodeIdsForEventCache = new WeakMap<Types.Events.Event, Set<Protocol.DOM.BackendNodeId>>();
 /**
  * Extracts a set of NodeIds for a given event.
  * NOTE: you probably don't want to call this and instead use

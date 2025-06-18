@@ -114,7 +114,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private focusedPlaceholderElement?: Element;
   private placeholderContainerElement?: HTMLElement;
   private lastSelectedOverflowTab?: TabbedPaneTab;
-  private overflowDisabled?: boolean;
   private measuredDropDownButtonWidth?: number;
   private leftToolbarInternal?: Toolbar;
   private rightToolbarInternal?: Toolbar;
@@ -721,10 +720,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return numTabsShown;
   }
 
-  disableOverflowMenu(): void {
-    this.overflowDisabled = true;
-  }
-
   private updateTabsDropDown(): void {
     const tabsToShowIndexes =
         this.tabsToShowIndexes(this.tabs, this.tabsHistory, this.totalWidth(), this.measuredDropDownButtonWidth || 0);
@@ -746,9 +741,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     }
 
-    if (!this.overflowDisabled) {
-      this.maybeShowDropDown(tabsToShowIndexes.length !== this.tabs.length);
-    }
+    this.maybeShowDropDown(tabsToShowIndexes.length !== this.tabs.length);
   }
 
   private maybeShowDropDown(hasMoreTabs: boolean): void {
@@ -760,7 +753,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private measureDropDownButton(): void {
-    if (this.overflowDisabled || this.measuredDropDownButtonWidth) {
+    if (this.measuredDropDownButtonWidth) {
       return;
     }
     this.dropDownButton.classList.add('measuring');

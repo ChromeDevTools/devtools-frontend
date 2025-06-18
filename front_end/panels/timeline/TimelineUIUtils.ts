@@ -189,26 +189,6 @@ const UIStrings = {
    */
   consumedCacheSize: 'Consumed cache size',
   /**
-   *@description Title for a group of cities
-   */
-  location: 'Location',
-  /**
-   *@description Text used to show a coordinate pair (e.g. (3, 2)).
-   *@example {2} PH1
-   *@example {2} PH2
-   */
-  sSCurlyBrackets: '({PH1}, {PH2})',
-  /**
-   *@description Text used to indicate to the user they are looking at the physical dimensions of a shape that was drawn by the browser.
-   */
-  dimensions: 'Dimensions',
-  /**
-   *@description Text used to show the user the dimensions of a shape and indicate its area (e.g. 3x2).
-   *@example {2} PH1
-   *@example {2} PH2
-   */
-  sSDimensions: '{PH1} × {PH2}',
-  /**
    *@description Related node label in Timeline UIUtils of the Performance panel
    */
   layerRoot: 'Layer root',
@@ -1156,17 +1136,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      // @ts-expect-error Fall-through intended.
-      case Trace.Types.Events.Name.PAINT: {
-        const clip = unsafeEventData['clip'];
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.location), i18nString(UIStrings.sSCurlyBrackets, {PH1: clip[0], PH2: clip[1]}));
-        const clipWidth = TimelineUIUtils.quadWidth(clip);
-        const clipHeight = TimelineUIUtils.quadHeight(clip);
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.dimensions), i18nString(UIStrings.sSDimensions, {PH1: clipWidth, PH2: clipHeight}));
-      }
-
+      case Trace.Types.Events.Name.PAINT:
       case Trace.Types.Events.Name.PAINT_SETUP:
       case Trace.Types.Events.Name.RASTERIZE:
       case Trace.Types.Events.Name.SCROLL_LAYER: {

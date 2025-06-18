@@ -2359,7 +2359,6 @@ export interface Paint extends Complete {
   name: Name.PAINT;
   args: Args&{
     data: ArgsData & {
-      clip: number[],
       frame: string,
       layerId: number,
       // With CompositeAfterPaint enabled, paint events are no longer
@@ -2367,6 +2366,8 @@ export interface Paint extends Complete {
       nodeId?: Protocol.DOM.BackendNodeId,
       // Optional as it was added in M137: crrev.com/c/6491448
       nodeName?: string,
+      /** This rect is unreliable and often wrong. We'll remove it. crbug.com/41402938#comment10 */
+      clip?: number[],
     },
   };
 }

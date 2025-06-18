@@ -283,4 +283,34 @@ describeWithEnvironment('TimelinePanel', function() {
     const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
     assert.isUndefined(parsedData.metadata.visualTrackConfig);
   });
+
+  it('includes the trace metadata when saving to a file', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
+    const metadata = await TraceLoader.metadata(this, 'web-dev-with-commit.json.gz');
+    await timeline.loadingComplete(events, null, metadata);
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: false,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsContentData] = saveSpy.getCall(0).args;
+
+    // Assert that each value in the metadata of the JSON matches the metadata in memory.
+    // We can't do a simple deepEqual() on the two objects as the in-memory
+    // contains values that are `undefined` which do not exist in the JSON
+    // version.
+    const parsedData = JSON.parse(traceAsContentData.text) as Trace.Types.File.TraceFile;
+    for (const k in parsedData) {
+      const key = k as keyof Trace.Types.File.MetaData;
+      assert.deepEqual(parsedData.metadata[key], metadata[key]);
+    }
+  });
 });

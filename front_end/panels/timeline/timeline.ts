@@ -20,6 +20,7 @@ import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
 import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as ModificationsManager from './ModificationsManager.js';
 import * as NetworkTrackAppender from './NetworkTrackAppender.js';
+import * as RecordingMetadata from './RecordingMetadata.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as TargetForEvent from './TargetForEvent.js';
 import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
@@ -65,6 +66,7 @@ export {
   LayoutShiftsTrackAppender,
   ModificationsManager,
   NetworkTrackAppender,
+  RecordingMetadata,
   SaveFileFormatter,
   TargetForEvent,
   ThirdPartyTreeView,

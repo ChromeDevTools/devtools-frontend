@@ -208,7 +208,6 @@ export interface MetaData {
   networkThrottlingConditions?: Omit<SDK.NetworkManager.Conditions, 'title'>;
   // Only set if CPU throttling is active.
   cpuThrottling?: number;
-  hardwareConcurrency?: number;
   dataOrigin?: DataOrigin;
   enhancedTraceVersion?: number;
   modifications?: Modifications;

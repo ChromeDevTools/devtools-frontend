@@ -11,6 +11,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 
+import * as RecordingMetadata from './RecordingMetadata.js';
 import type {Client} from './TimelineController.js';
 
 const UIStrings = {
@@ -258,7 +259,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
   private async finalizeTrace(): Promise<void> {
     if (!this.#metadata && this.#traceIsCPUProfile) {
-      this.#metadata = {dataOrigin: Trace.Types.File.DataOrigin.CPU_PROFILE};
+      this.#metadata = RecordingMetadata.forCPUProfile();
     }
 
     await (this.client as Client).loadingComplete(this.#collectedEvents, this.filter, this.#metadata);

@@ -7,10 +7,11 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
-import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../models/trace/trace.js';
+
+import * as RecordingMetadata from './RecordingMetadata.js';
 
 const UIStrings = {
   /**
@@ -210,18 +211,6 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     return await Promise.all(urls.map(url => cruxManager.getFieldDataForPage(url)));
   }
 
-  private async createMetadata(): Promise<Trace.Types.File.MetaData> {
-    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-    let emulatedDeviceTitle;
-    if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
-      emulatedDeviceTitle = deviceModeModel.device()?.title ?? undefined;
-    } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
-      emulatedDeviceTitle = 'Responsive';
-    }
-    return await Trace.Extras.Metadata.forNewRecording(
-        false, this.#recordingStartTime ?? undefined, emulatedDeviceTitle, this.#fieldData ?? undefined);
-  }
-
   private async waitForTracingToStop(): Promise<void> {
     if (this.tracingManager) {
       await this.tracingCompletePromise?.promise;
@@ -275,7 +264,10 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStopped();
 
     this.client.processingStarted();
-    const metadata = await this.createMetadata();
+    const metadata = await RecordingMetadata.forTrace({
+      recordingStartTime: this.#recordingStartTime ?? undefined,
+      cruxFieldData: this.#fieldData ?? undefined,
+    });
     await this.client.loadingComplete(this.#collectedEvents, /* exclusiveFilter= */ null, metadata);
     this.client.loadingCompleteForTest();
     SDK.SourceMap.SourceMap.retainRawSourceMaps = false;

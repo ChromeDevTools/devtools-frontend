@@ -10,6 +10,7 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as Tracing from '../../services/tracing/tracing.js';
 
 import * as RecordingMetadata from './RecordingMetadata.js';
 
@@ -23,10 +24,10 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineController implements Trace.TracingManager.TracingManagerClient {
+export class TimelineController implements Tracing.TracingManager.TracingManagerClient {
   readonly primaryPageTarget: SDK.Target.Target;
   readonly rootTarget: SDK.Target.Target;
-  private tracingManager: Trace.TracingManager.TracingManager|null;
+  private tracingManager: Tracing.TracingManager.TracingManager|null;
   #collectedEvents: Trace.Types.Events.Event[] = [];
   #navigationUrls: string[] = [];
   #fieldData: CrUXManager.PageResult[]|null = null;
@@ -65,7 +66,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     this.rootTarget = rootTarget;
     // Ensure the tracing manager is the one for the Root Target, NOT the
     // primaryPageTarget, as that is the one we have to invoke tracing against.
-    this.tracingManager = rootTarget.model(Trace.TracingManager.TracingManager);
+    this.tracingManager = rootTarget.model(Tracing.TracingManager.TracingManager);
     this.client = client;
   }
 

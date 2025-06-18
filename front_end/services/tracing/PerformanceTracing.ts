@@ -3,15 +3,16 @@
 // found in the LICENSE file.
 
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as Trace from '../../models/trace/trace.js';
 
-export class PerformanceTracing implements Trace.TracingManager.TracingManagerClient {
+import {TracingManager, type TracingManagerClient} from './TracingManager.js';
+
+export class PerformanceTracing implements TracingManagerClient {
   readonly #traceEvents: Object[] = [];
-  #tracingManager: Trace.TracingManager.TracingManager|null = null;
+  #tracingManager: TracingManager|null = null;
   #delegate: Delegate;
 
   constructor(target: SDK.Target.Target, delegate: Delegate) {
-    this.#tracingManager = target.model(Trace.TracingManager.TracingManager);
+    this.#tracingManager = target.model(TracingManager);
     this.#delegate = delegate;
   }
 

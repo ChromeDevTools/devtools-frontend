@@ -120,6 +120,7 @@ devtools_module("timeline") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/profiler:bundle",
     "../../services/trace_bounds:bundle",
+    "../../services/tracing:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
     "../../ui/components/copy_to_clipboard:bundle",
@@ -156,6 +157,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
     "../../panels/ai_assistance/*",
+    "../../services/tracing/*",
     "../../testing",
     "../../testing/*",
     "../../ui/components/docs/performance_panel/*",

@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(b/376051759): move TracingManager out of models/trace.
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
-
-import type * as Types from './types/types.js';
+import type * as Trace from '../../models/trace/trace.js';
 
 export class TracingManager extends SDK.SDKModel.SDKModel<void> {
   readonly #tracingAgent: ProtocolProxyApi.TracingApi;
@@ -30,7 +27,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     }
   }
 
-  eventsCollected(events: Types.Events.Event[]): void {
+  eventsCollected(events: Trace.Types.Events.Event[]): void {
     if (!this.#activeClient) {
       return;
     }
@@ -104,7 +101,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
 }
 
 export interface TracingManagerClient {
-  traceEventsCollected(events: Types.Events.Event[]): void;
+  traceEventsCollected(events: Trace.Types.Events.Event[]): void;
 
   tracingComplete(): void;
   tracingBufferUsage(usage: number): void;

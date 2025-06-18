@@ -73,23 +73,33 @@ export async function relatedDOMNodesForEvent(
   if (fromCache) {
     return fromCache;
   }
+
   const nodeIds = nodeIdsForEvent(modelData, event);
   if (nodeIds.size) {
-    const result = await domNodesForBackendIds(nodeIds);
+    const frame = event.args?.data?.frame as Protocol.Page.FrameId;
+    const result = await domNodesForBackendIds(frame, nodeIds);
     domNodesForEventCache.set(event, result);
     return result;
   }
+
   return null;
 }
 
 /**
  * Takes a set of Protocol.DOM.BackendNodeId ids and will return a map of NodeId=>DOMNode.
  */
-async function domNodesForBackendIds(nodeIds: Set<Protocol.DOM.BackendNodeId>):
+async function domNodesForBackendIds(frameId: Protocol.Page.FrameId, nodeIds: Set<Protocol.DOM.BackendNodeId>):
     Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const domModel = target?.model(SDK.DOMModel.DOMModel);
-  if (!domModel) {
+  const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
+  if (!domModel || !resourceTreeModel) {
+    return new Map();
+  }
+
+  // The node is only relevant if the target contains the specified frame.
+  // For now, allow events that specify no frame id to continue to resolve a node.
+  if (frameId && !resourceTreeModel.frames().some(frame => frame.id === frameId)) {
     return new Map();
   }
 

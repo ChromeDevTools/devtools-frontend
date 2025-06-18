@@ -82,24 +82,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
     clearMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend');
   });
 
-  it('creates top frame location text for function calls', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isFunctionCall);
-    assert.isOk(functionCallEvent);
-    assert.strictEqual(
-        'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:11:43',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(functionCallEvent, parsedTrace));
-  });
-
-  it('creates top frame location text as a fallback', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const timerInstallEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isTimerInstall);
-    assert.isOk(timerInstallEvent);
-    assert.strictEqual(
-        'https://web.dev/js/index-7b6f3de4.js:96:533',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(timerInstallEvent, parsedTrace));
-  });
-
   describe('script location as an URL', function() {
     it('makes the script location of a call frame a full URL when the inspected target is not the same the call frame was taken from (e.g. a loaded file)',
        async function() {

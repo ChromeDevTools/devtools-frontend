@@ -142,7 +142,7 @@ export interface Sample extends Event {
  * trace engine.
  */
 export interface SyntheticCpuProfile extends Instant, SyntheticBased<Phase.INSTANT> {
-  name: 'CpuProfile';
+  name: Name.CPU_PROFILE;
   args: Args&{
     data: ArgsData & {
       cpuProfile: Protocol.Profiler.Profile,
@@ -151,7 +151,7 @@ export interface SyntheticCpuProfile extends Instant, SyntheticBased<Phase.INSTA
 }
 
 export interface Profile extends Sample {
-  name: 'Profile';
+  name: Name.PROFILE;
   id: ProfileID;
   args: Args&{
     data: ArgsData & {
@@ -161,7 +161,7 @@ export interface Profile extends Sample {
 }
 
 export interface ProfileChunk extends Sample {
-  name: 'ProfileChunk';
+  name: Name.PROFILE_CHUNK;
   id: ProfileID;
   args: Args&{
     // `data` is only missing in "fake" traces
@@ -2164,15 +2164,15 @@ export function isGPUTask(event: Event): event is GPUTask {
 }
 
 export function isProfile(event: Event): event is Profile {
-  return event.name === 'Profile';
+  return event.name === Name.PROFILE;
 }
 
 export function isSyntheticCpuProfile(event: Event): event is SyntheticCpuProfile {
-  return event.name === 'CpuProfile';
+  return event.name === Name.CPU_PROFILE;
 }
 
 export function isProfileChunk(event: Event): event is ProfileChunk {
-  return event.name === 'ProfileChunk';
+  return event.name === Name.PROFILE_CHUNK;
 }
 
 export function isResourceChangePriority(
@@ -3039,6 +3039,7 @@ export const enum Name {
   WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST = 'WebSocketReceiveHandshakeResponse',
 
   /* CPU Profiling */
+  CPU_PROFILE = 'CpuProfile',
   PROFILE = 'Profile',
   START_PROFILING = 'CpuProfiler::StartProfiling',
   PROFILE_CHUNK = 'ProfileChunk',

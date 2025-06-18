@@ -1405,19 +1405,16 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       // TODO(crbug.com/1456818): Extract this logic and add more tests.
       let traceAsString;
       if (metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE) {
-        const profileEvent = traceEvents.find(e => e.name === 'CpuProfile');
-        if (!profileEvent?.args?.data) {
-          return;
-        }
-        const profileEventData = profileEvent.args?.data;
-        if (profileEventData.hasOwnProperty('cpuProfile')) {
+        const profileEvent = traceEvents.find(e => Trace.Types.Events.isSyntheticCpuProfile(e));
+
+        const profile = profileEvent?.args.data.cpuProfile;
+        if (profile) {
           // TODO(crbug.com/1456799): Currently use a hack way because we can't differentiate
           // cpuprofile from trace events when loading a file.
           // The loader will directly add the fake trace created from CpuProfile to the tracingModel.
           // And there is where the old saving logic saves the cpuprofile.
           // This will be solved when the CPUProfileHandler is done. Then we can directly get it
           // from the new traceEngine
-          const profile = (profileEventData as {cpuProfile: Protocol.Profiler.Profile}).cpuProfile;
           traceAsString = cpuprofileJsonGenerator(profile);
         }
       } else {

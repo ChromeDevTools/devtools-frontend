@@ -8,7 +8,7 @@ describe('Base64 decoder', () => {
   function decode(str: string) {
     const encoded = btoa(str);
     const decoded = Common.Base64.decode(encoded);
-    const view = new DataView(decoded);
+    const view = new DataView(decoded.buffer);
     for (let idx = 0; idx < str.length; idx++) {
       assert.strictEqual(view.getUint8(idx), str.charCodeAt(idx));
     }

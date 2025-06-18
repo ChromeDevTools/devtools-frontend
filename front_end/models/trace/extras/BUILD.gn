@@ -9,7 +9,6 @@ import("../../visibility.gni")
 
 devtools_module("extras") {
   sources = [
-    "FetchNodes.ts",
     "FilmStrip.ts",
     "MainThreadActivity.ts",
     "ScriptDuplication.ts",
@@ -43,7 +42,6 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "FetchNodes.test.ts",
     "FilmStrip.test.ts",
     "MainThreadActivity.test.ts",
     "ScriptDuplication.test.ts",

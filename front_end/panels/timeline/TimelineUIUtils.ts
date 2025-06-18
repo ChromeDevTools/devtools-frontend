@@ -1076,7 +1076,7 @@ export class TimelineUIUtils {
     const maybeTarget = targetForEvent(parsedTrace, event);
     const {duration} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
     const selfTime = getEventSelfTime(event, parsedTrace);
-    const relatedNodesMap = await Trace.Extras.FetchNodes.extractRelatedDOMNodesFromEvent(
+    const relatedNodesMap = await Utils.EntryNodes.relatedDOMNodesForEvent(
         parsedTrace,
         event,
     );

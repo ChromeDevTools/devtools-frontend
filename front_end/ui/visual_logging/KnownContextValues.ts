@@ -3633,6 +3633,7 @@ export const knownContextValues = new Set([
   'timeline.annotations.create-entry-label',
   'timeline.annotations.create-entry-link',
   'timeline.annotations.delete-entry-annotations',
+  'timeline.annotations.delete-entry-label',
   'timeline.annotations.entry-annotation-create',
   'timeline.annotations.entry-label-input',
   'timeline.annotations.time-range-label-input',

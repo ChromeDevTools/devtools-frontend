@@ -129,11 +129,11 @@ function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 
-export class EmptyEntryLabelRemoveEvent extends Event {
-  static readonly eventName = 'emptyentrylabelremoveevent';
+export class EntryLabelRemoveEvent extends Event {
+  static readonly eventName = 'entrylabelremoveevent';
 
   constructor() {
-    super(EmptyEntryLabelRemoveEvent.eventName);
+    super(EntryLabelRemoveEvent.eventName);
   }
 }
 
@@ -477,7 +477,7 @@ export class EntryLabelOverlay extends HTMLElement {
     // If the label is empty when it is being navigated away from, dispatch an event to remove this entry overlay
     if (!editable && newLabelText.length === 0 && !this.#isPendingRemoval) {
       this.#isPendingRemoval = true;
-      this.dispatchEvent(new EmptyEntryLabelRemoveEvent());
+      this.dispatchEvent(new EntryLabelRemoveEvent());
     }
   }
 
@@ -821,6 +821,21 @@ export class EntryLabelOverlay extends HTMLElement {
               jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true, change: true})}
               tabindex="0"
             ></span>
+            ${this.#isLabelEditable && this.#inputField?.innerText !== '' ? html`
+              <button
+                class="delete-button"
+                @click=${() => this.dispatchEvent(new EntryLabelRemoveEvent())}
+                jslog=${VisualLogging.action('timeline.annotations.delete-entry-label').track({click: true})}>
+              <devtools-icon
+                .data=${{
+                  iconName: 'cross',
+                  color: 'var(--color-background)',
+                  width: '14px',
+                  height: '14px'
+                }}
+              ></devtools-icon>
+              </button>
+            ` : Lit.nothing}
             ${(() => {
               switch (this.#currAIButtonState) {
                 case AIButtonState.HIDDEN:

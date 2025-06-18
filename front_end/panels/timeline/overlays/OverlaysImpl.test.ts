@@ -1209,6 +1209,40 @@ describeWithEnvironment('Overlays', () => {
       assert.isFalse(element1?.classList.contains('bring-forward'));
       assert.isTrue(element2?.classList.contains('bring-forward'));
     });
+
+    it('shows and hides the delete button on the entry label overlay correctly', async function() {
+      let {elementsWrapper, inputField, component} =
+          await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, '');
+
+      // Double click on the label box to make it editable and focus on it
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+
+      // Ensure the label content is editable and empty
+      assert.isTrue(inputField.isContentEditable);
+      assert.isTrue(component.hasAttribute('data-user-editing-label'));
+      assert.isEmpty(inputField.innerText);
+
+      // Even though the label is editable. Delete button should not be visible the th elabel is empty.
+      let deleteButton = elementsWrapper.querySelector<HTMLElement>('.delete-button');
+      assert.isNull(deleteButton);
+
+      // Make the label non-empty. Delete button should be visible.
+      ({elementsWrapper, inputField, component} =
+           await createAnnotationsLabelElement(this, 'web-dev.json.gz', 50, 'label'));
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+
+      assert.isTrue(component.hasAttribute('data-user-editing-label'));
+      assert.isTrue(inputField.isContentEditable);
+      deleteButton = elementsWrapper.querySelector<HTMLElement>('.delete-button');
+      assert.isNotNull(deleteButton);
+
+      // Set to not editable. Delete button should not be visible.
+      component.setLabelEditabilityAndRemoveEmptyLabel(false);
+      assert.isFalse(component.hasAttribute('data-user-editing-label'));
+
+      deleteButton = elementsWrapper.querySelector<HTMLElement>('.delete-button');
+      assert.isNull(deleteButton);
+    });
   });
 
   describe('traceWindowContainingOverlays', () => {

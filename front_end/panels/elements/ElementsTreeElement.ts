@@ -211,11 +211,11 @@ const UIStrings = {
    */
   showPopoverTarget: 'Show element associated with the `popovertarget` attribute',
   /**
-   *@description Text of a tooltip to redirect to another element in the Elements panel
+   *@description Text of a tooltip to redirect to another element in the Elements panel, associated with the `interesttarget` attribute
    */
   showInterestTarget: 'Show element associated with the `interesttarget` attribute',
   /**
-   *@description Text of a tooltip to redirect to another element in the Elements panel
+   *@description Text of a tooltip to redirect to another element in the Elements panel, associated with the `commandfor` attribute
    */
   showCommandForTarget: 'Show element associated with the `commandfor` attribute',
   /**

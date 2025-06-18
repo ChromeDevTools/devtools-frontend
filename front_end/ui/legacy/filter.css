@@ -73,19 +73,26 @@
 }
 
 .filter-bitset-filter span:focus-visible {
-  outline: -webkit-focus-ring-color auto 5px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .filter-bitset-filter span:hover {
-  outline: none;
   background: var(--sys-color-state-hover-on-subtle);
+}
+
+.filter-bitset-filter span:hover:not(:focus-visible) {
+  outline: none;
 }
 
 .filter-bitset-filter span.selected,
 .filter-bitset-filter span:active {
   color: var(--sys-color-on-tonal-container);
-  outline: none;
   background-color: var(--sys-color-tonal-container);
+}
+
+.filter-bitset-filter span.selected:not(:focus-visible),
+.filter-bitset-filter span:active:not(:focus-visible) {
+  outline: none;
 }
 
 .filter-bitset-filter-divider {

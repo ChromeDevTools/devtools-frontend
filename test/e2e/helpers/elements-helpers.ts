@@ -249,8 +249,9 @@ export const waitForSelectedTreeElementSelectorWhichIncludesText = async (expect
   });
 };
 
-export const waitForChildrenOfSelectedElementNode = async () => {
-  await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li`);
+export const waitForChildrenOfSelectedElementNode =
+    async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR} + ol > li`);
 };
 
 export const waitForAndClickTreeElementWithPartialText = async (text: string, devToolsPage?: DevToolsPage) => {

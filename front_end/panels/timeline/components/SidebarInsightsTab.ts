@@ -241,7 +241,7 @@ export class SidebarInsightsTab extends HTMLElement {
       </div>
 
       <div class="feedback-wrapper">
-        <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'experiment'} @click=${this.#onFeedbackClick}>
+        <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'review'} @click=${this.#onFeedbackClick}>
           ${i18nString(UIStrings.feedbackButton)}
         </devtools-button>
 

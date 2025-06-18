@@ -5,11 +5,13 @@
 import {assert} from 'chai';
 
 import {
+  clickNthChildOfSelectedElementNode,
   expandSelectedNodeRecursively,
   getContentOfSelectedNode,
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,
   waitForPartialContentOfSelectedElementsNode,
+  waitForSelectedNodeChange,
 } from '../../e2e/helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../../e2e/helpers/settings-helpers.js';
 
@@ -50,4 +52,35 @@ describe('The Elements tab', function() {
         await getContentOfSelectedNode(devToolsPage),
         /#document \(https?:\/\/.*\/test\/e2e\/resources\/elements\/shadow-dom-modify-chardata.html\)/);
   });
+
+  it('automatically selects previously selected user agent and open shadow roots after reload',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToHtml(`
+        <span id="hostElement"></span>
+        <script>
+          var root = document.getElementById("hostElement").attachShadow({mode: 'open'});
+          root.innerHTML = "<input type='text'>";
+        </script>
+        `);
+       await togglePreferenceInSettingsTab('Show user agent shadow DOM', undefined, devToolsPage);
+       await expandSelectedNodeRecursively(devToolsPage);
+
+       const userAgentRootSelector = '#shadow-root (user-agent)';
+       await devToolsPage.click(`pierceShadowText/${userAgentRootSelector}`);
+       await waitForContentOfSelectedElementsNode(userAgentRootSelector, devToolsPage);
+
+       await inspectedPage.reload();
+       await waitForContentOfSelectedElementsNode(userAgentRootSelector, devToolsPage);
+
+       const openRootSelector = '#shadow-root (open)';
+       await devToolsPage.click(`pierceShadowText/${openRootSelector}`);
+
+       await waitForContentOfSelectedElementsNode(openRootSelector, devToolsPage);
+
+       await clickNthChildOfSelectedElementNode(1, devToolsPage);
+       await waitForSelectedNodeChange('openRootSelector', devToolsPage);
+
+       await inspectedPage.reload();
+       await waitForContentOfSelectedElementsNode('<input type=​"text">​', devToolsPage);
+     });
 });

@@ -3533,6 +3533,8 @@ declare namespace ProtocolProxyApi {
 
     attributionReportingReportSent(params: Protocol.Storage.AttributionReportingReportSentEvent): void;
 
+    attributionReportingVerboseDebugReportSent(params: Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent): void;
+
   }
 
   export interface SystemInfoApi {

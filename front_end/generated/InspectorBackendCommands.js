@@ -1124,6 +1124,7 @@ inspectorBackend.registerEvent("Storage.storageBucketDeleted", ["bucketId"]);
 inspectorBackend.registerEvent("Storage.attributionReportingSourceRegistered", ["registration", "result"]);
 inspectorBackend.registerEvent("Storage.attributionReportingTriggerRegistered", ["registration", "eventLevel", "aggregatable"]);
 inspectorBackend.registerEvent("Storage.attributionReportingReportSent", ["url", "body", "result", "netError", "netErrorName", "httpStatusCode"]);
+inspectorBackend.registerEvent("Storage.attributionReportingVerboseDebugReportSent", ["url", "body", "netError", "netErrorName", "httpStatusCode"]);
 inspectorBackend.registerCommand("Storage.getStorageKeyForFrame", [{"name": "frameId", "type": "string", "optional": false, "description": "", "typeRef": "Page.FrameId"}], ["storageKey"], "Returns a storage key given a frame id.");
 inspectorBackend.registerCommand("Storage.clearDataForOrigin", [{"name": "origin", "type": "string", "optional": false, "description": "Security origin.", "typeRef": null}, {"name": "storageTypes", "type": "string", "optional": false, "description": "Comma separated list of StorageType to clear.", "typeRef": null}], [], "Clears storage for origin.");
 inspectorBackend.registerCommand("Storage.clearDataForStorageKey", [{"name": "storageKey", "type": "string", "optional": false, "description": "Storage key.", "typeRef": null}, {"name": "storageTypes", "type": "string", "optional": false, "description": "Comma separated list of StorageType to clear.", "typeRef": null}], [], "Clears storage for storage key.");

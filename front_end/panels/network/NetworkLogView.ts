@@ -2257,7 +2257,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       headers: Object.keys(headers).length ? headers : void 0,
       referrer,
       body: requestBody,
-      method: request.requestMethod,
+      method: request.requestMethod !== 'GET' ? request.requestMethod : void 0,
       mode: 'cors',
     };
 

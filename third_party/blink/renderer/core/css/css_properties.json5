@@ -3500,7 +3500,7 @@
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
       style_builder_template_args: {
-        type: "GridTemplateColumns",
+        type: "Column",
       },
       keywords: ["none"],
       typedom_types: ["Keyword"],
@@ -3518,7 +3518,7 @@
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
       style_builder_template_args: {
-        type: "GridTemplateRows",
+        type: "Row",
       },
       keywords: ["none"],
       typedom_types: ["Keyword"],
@@ -3563,7 +3563,7 @@
     },
     {
       name: "interest-target-delay",
-      runtime_flag: "HTMLInterestTargetAttribute",
+      runtime_flag: "CSSInterestDelayShorthand",
       longhands: [
         "interest-target-show-delay", "interest-target-hide-delay"
       ],
@@ -4024,21 +4024,6 @@
       invalidate: ["paint"],
     },
     {
-      name: "masonry-auto-tracks",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_track_list.h"],
-      default_value: "NGGridTrackList(GridTrackSize(Length::Auto()))",
-      type_name: "NGGridTrackList",
-      converter: "ConvertGridTrackSizeList",
-      keywords: ["auto", "min-content", "max-content"],
-      typedom_types: ["Keyword", "Length", "Percentage", "Flex"],
-      separator: " ",
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
       name: "masonry-direction",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
@@ -4072,50 +4057,6 @@
       converter: "ConvertItemTolerance",
       typedom_types: ["Length", "Percentage"],
       keywords: ["normal"],
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-template-tracks",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
-      layout_dependent: true,
-      field_group: "misc->masonry",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/computed_grid_track_list.h"],
-      default_value: "ComputedGridTrackList::DefaultMasonryTrackList()",
-      type_name: "ComputedGridTrackList",
-      style_builder_template: "grid",
-      style_builder_template_args: {
-        type: "MasonryTemplateTracks",
-      },
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-track-end",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_position.h"],
-      default_value: "GridPosition()",
-      type_name: "GridPosition",
-      keywords: ["auto"],
-      typedom_types: ["Keyword"],
-      converter: "ConvertGridPosition",
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-track-start",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_position.h"],
-      default_value: "GridPosition()",
-      type_name: "GridPosition",
-      keywords: ["auto"],
-      typedom_types: ["Keyword"],
-      converter: "ConvertGridPosition",
       invalidate: ["layout", "paint"],
       runtime_flag: "CSSMasonryLayout",
     },
@@ -6831,6 +6772,7 @@
     },
     {
       name: "mask-mode",
+      keywords: ["alpha", "luminance", "match-source"],
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "mask_layer",
       style_builder_template_args: {
@@ -6851,6 +6793,7 @@
     },
     {
       name: "mask-composite",
+      keywords: ["add", "subtract", "intersect", "exclude"],
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "mask_layer",
       style_builder_template_args: {
@@ -8542,6 +8485,20 @@
       valid_for_page_context: true,
     },
     {
+      name: "corners",
+      longhands: [
+        "border-top-left-radius", "corner-top-left-shape",
+        "border-top-right-radius", "corner-top-right-shape",
+        "border-bottom-right-radius", "corner-bottom-right-shape",
+        "border-bottom-left-radius", "corner-bottom-left-shape"
+      ],
+      keywords: ["normal"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornersShorthand",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
       name: "flex",
       longhands: ["flex-grow", "flex-shrink", "flex-basis"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
@@ -8706,26 +8663,12 @@
       runtime_flag: "CSSMasonryLayout",
     },
     {
-      name: "masonry-track",
-      longhands: ["masonry-track-start", "masonry-track-end"],
-      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
       name: "offset",
       longhands: [
         "offset-position", "offset-path", "offset-distance", "offset-rotate",
         "offset-anchor"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-    },
-    {
-      // This shorthand is used for testing with origin trial intergration only.
-      // It should never be web-exposed.
-      name: "origin-trial-test-shorthand",
-      longhands: ["origin-trial-test-property"],
-      property_methods: ["ParseShorthand"],
-      runtime_flag: "OriginTrialsSampleAPI",
     },
     {
       name: "outline",

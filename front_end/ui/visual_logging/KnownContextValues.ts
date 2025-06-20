@@ -974,6 +974,7 @@ export const knownContextValues = new Set([
   'corner-top-left-shape',
   'corner-top-right-shape',
   'corner-top-shape',
+  'corners',
   'cors-details',
   'count',
   'count-delta',

@@ -81,7 +81,7 @@ export async function getLineNumberElement(
   return await devToolsPage.waitForFunction(async () => {
     const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
     for (let i = 0; i < visibleLines.length; i++) {
-      const lineValue = await visibleLines[i].evaluate(node => node.textContent);
+      const lineValue = await visibleLines[i].evaluate(node => (node as HTMLElement).innerText);
       if (lineValue === `${lineNumber}`) {
         return visibleLines[i];
       }

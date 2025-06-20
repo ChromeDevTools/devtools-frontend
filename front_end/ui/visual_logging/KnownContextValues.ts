@@ -648,6 +648,7 @@ export const knownContextValues = new Set([
   'break-on',
   'breakpoint',
   'breakpoint-group',
+  'breakpoint-tooltip',
   'breakpoints-active',
   'browser-debugger.refresh-global-event-listeners',
   'browser-language',

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {
-  getCleanTextContentFromElements,
   getCleanTextContentFromSingleElement,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
@@ -35,10 +34,11 @@ describeWithEnvironment('CLSCulprits component', () => {
     const worstClusterText = getCleanTextContentFromSingleElement(component.shadowRoot, '.worst-cluster');
     assert.strictEqual(worstClusterText, 'Worst cluster: Layout shift cluster @ 1.37 s');
 
-    const culpritsList = component.shadowRoot.querySelector<HTMLUListElement>('.worst-culprits');
+    const culpritsList = component.shadowRoot.querySelector<HTMLElement>('.worst-culprits');
     assert.isOk(culpritsList);
-    const culpritsText = getCleanTextContentFromElements(culpritsList, 'li');
-    // There are two shifts hence the two culprits.
-    assert.deepEqual(culpritsText, ['Unsized Images', 'Unsized Images']);
+    assert.strictEqual(
+        culpritsList.deepInnerText(),
+        'Unsized image element\ncuzillion.…wfQ%3D%3D\n' +
+            'Unsized image element\ncuzillion.…wfQ%3D%3D');
   });
 });

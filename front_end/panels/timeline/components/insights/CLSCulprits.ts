@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './NodeLink.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {CLSCulpritsInsightModel} from '../../../../models/trace/insights/CLSCulprits.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -10,6 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
+import type * as NodeLink from './NodeLink.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.CLSCulprits;
 
@@ -50,7 +53,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
-  #renderCulpritsSection(culprits: string[]): Lit.LitTemplate {
+  #renderCulpritsSection(culprits: Trace.Insights.Models.CLSCulprits.LayoutShiftItem[]): Lit.LitTemplate {
     if (culprits.length === 0) {
       return html`<div class="insight-section">${i18nString(UIStrings.noCulprits)}</div>`;
     }
@@ -61,9 +64,21 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
         <p class="list-title">${i18nString(UIStrings.topCulprits)}:</p>
         <ul class="worst-culprits">
           ${culprits.map(culprit => {
-            return html `
-              <li>${culprit}</li>
-            `;
+            if (culprit.type === Trace.Insights.Models.CLSCulprits.LayoutShiftType.UNSIZED_IMAGE) {
+              return html`
+                <li>
+                  ${culprit.description}
+                  <devtools-performance-node-link
+                    .data=${{
+                      backendNodeId: culprit.backendNodeId,
+                      frame: culprit.frame,
+                      fallbackUrl: culprit.url,
+                    } as NodeLink.NodeLinkData}>
+                  </devtools-performance-node-link>
+                </li>`;
+            }
+
+            return html `<li>${culprit.description}</li>`;
           })}
         </ul>
       </div>`;

@@ -2928,7 +2928,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.10.1';
+  const packageVersion = '24.10.2';
 
   /**
    * @license
@@ -16508,7 +16508,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         } = options;
         let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
-        let error = await Deferred.race([navigate(_classPrivateFieldGet(_client9, this), url, referer, referrerPolicy, this._id), watcher.terminationPromise()]);
+        let error = await Deferred.race([navigate(_classPrivateFieldGet(_client9, this), url, referer, referrerPolicy ? referrerPolicyToProtocol(referrerPolicy) : undefined, this._id), watcher.terminationPromise()]);
         if (!error) {
           error = await Deferred.race([watcher.terminationPromise(), ensureNewDocumentNavigation ? watcher.newDocumentNavigationPromise() : watcher.sameDocumentNavigationPromise()]);
         }
@@ -16780,6 +16780,17 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       return this._frameManager._deviceRequestPromptManager(_classPrivateFieldGet(_client9, this));
     }
   })();
+  /**
+   * @internal
+   */
+  function referrerPolicyToProtocol(referrerPolicy) {
+    // See
+    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#type-ReferrerPolicy
+    // We need to conver from Web-facing phase to CDP's camelCase.
+    return referrerPolicy.replaceAll(/-./g, match => {
+      return match[1].toUpperCase();
+    });
+  }
 
   /**
    * @license
@@ -17464,7 +17475,14 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           return handler.bind(this)(client, arg);
         });
       }
-      await Promise.all([client.send('Network.enable'), _assertClassBrand(_NetworkManager_brand, this, _applyExtraHTTPHeaders).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolRequestInterception).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).call(this, client)]);
+      try {
+        await Promise.all([client.send('Network.enable'), _assertClassBrand(_NetworkManager_brand, this, _applyExtraHTTPHeaders).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolRequestInterception).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).call(this, client)]);
+      } catch (error) {
+        if (isErrorLike(error) && isTargetClosedError(error)) {
+          return;
+        }
+        throw error;
+      }
     }
     async authenticate(credentials) {
       _classPrivateFieldSet(_credentials, this, credentials);
@@ -17549,9 +17567,16 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     if (_classPrivateFieldGet(_extraHTTPHeaders, this) === undefined) {
       return;
     }
-    await client.send('Network.setExtraHTTPHeaders', {
-      headers: _classPrivateFieldGet(_extraHTTPHeaders, this)
-    });
+    try {
+      await client.send('Network.setExtraHTTPHeaders', {
+        headers: _classPrivateFieldGet(_extraHTTPHeaders, this)
+      });
+    } catch (error) {
+      if (isErrorLike(error) && isTargetClosedError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
   async function _applyToAllClients(fn) {
     await Promise.all(Array.from(_classPrivateFieldGet(_clients, this).keys()).map(client => {
@@ -17562,44 +17587,72 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     if (_classPrivateFieldGet(_emulatedNetworkConditions, this) === undefined) {
       return;
     }
-    await client.send('Network.emulateNetworkConditions', {
-      offline: _classPrivateFieldGet(_emulatedNetworkConditions, this).offline,
-      latency: _classPrivateFieldGet(_emulatedNetworkConditions, this).latency,
-      uploadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).upload,
-      downloadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).download
-    });
+    try {
+      await client.send('Network.emulateNetworkConditions', {
+        offline: _classPrivateFieldGet(_emulatedNetworkConditions, this).offline,
+        latency: _classPrivateFieldGet(_emulatedNetworkConditions, this).latency,
+        uploadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).upload,
+        downloadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).download
+      });
+    } catch (error) {
+      if (isErrorLike(error) && isTargetClosedError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
   async function _applyUserAgent(client) {
     if (_classPrivateFieldGet(_userAgent, this) === undefined) {
       return;
     }
-    await client.send('Network.setUserAgentOverride', {
-      userAgent: _classPrivateFieldGet(_userAgent, this),
-      userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this)
-    });
+    try {
+      await client.send('Network.setUserAgentOverride', {
+        userAgent: _classPrivateFieldGet(_userAgent, this),
+        userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this)
+      });
+    } catch (error) {
+      if (isErrorLike(error) && isTargetClosedError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
   async function _applyProtocolRequestInterception(client) {
     if (_classPrivateFieldGet(_userCacheDisabled, this) === undefined) {
       _classPrivateFieldSet(_userCacheDisabled, this, false);
     }
-    if (_classPrivateFieldGet(_protocolRequestInterceptionEnabled, this)) {
-      await Promise.all([_assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), client.send('Fetch.enable', {
-        handleAuthRequests: true,
-        patterns: [{
-          urlPattern: '*'
-        }]
-      })]);
-    } else {
-      await Promise.all([_assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), client.send('Fetch.disable')]);
+    try {
+      if (_classPrivateFieldGet(_protocolRequestInterceptionEnabled, this)) {
+        await Promise.all([_assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), client.send('Fetch.enable', {
+          handleAuthRequests: true,
+          patterns: [{
+            urlPattern: '*'
+          }]
+        })]);
+      } else {
+        await Promise.all([_assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), client.send('Fetch.disable')]);
+      }
+    } catch (error) {
+      if (isErrorLike(error) && isTargetClosedError(error)) {
+        return;
+      }
+      throw error;
     }
   }
   async function _applyProtocolCacheDisabled(client) {
     if (_classPrivateFieldGet(_userCacheDisabled, this) === undefined) {
       return;
     }
-    await client.send('Network.setCacheDisabled', {
-      cacheDisabled: _classPrivateFieldGet(_userCacheDisabled, this)
-    });
+    try {
+      await client.send('Network.setCacheDisabled', {
+        cacheDisabled: _classPrivateFieldGet(_userCacheDisabled, this)
+      });
+    } catch (error) {
+      if (isErrorLike(error) && isTargetClosedError(error)) {
+        return;
+      }
+      throw error;
+    }
   }
   function _onRequestWillBeSent(client, event) {
     // Request interception doesn't happen for data URLs with Network Service.
@@ -24510,8 +24563,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '137.0.7151.70',
-    'chrome-headless-shell': '137.0.7151.70',
+    chrome: '137.0.7151.119',
+    'chrome-headless-shell': '137.0.7151.119',
     firefox: 'stable_139.0.4'
   });
 
@@ -24686,6 +24739,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   exports.paperFormats = paperFormats;
   exports.parsePDFOptions = parsePDFOptions;
   exports.parsePSelectors = parsePSelectors;
+  exports.referrerPolicyToProtocol = referrerPolicyToProtocol;
   exports.releaseObject = releaseObject;
   exports.rewriteError = rewriteError$1;
   exports.scriptInjector = scriptInjector;

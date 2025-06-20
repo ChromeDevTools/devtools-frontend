@@ -323,6 +323,7 @@ type ViewMode = {
 }|{
   mode: 'VIEWING_TRACE',
   traceIndex: number,
+  forceOpenSidebar: boolean,
 }|{
   mode: 'STATUS_PANE_OVERLAY',
 };
@@ -876,7 +877,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.#hideLandingPage();
         this.#setModelForActiveTrace();
         this.#removeStatusPane();
-        this.#showSidebar();
+        if (newMode.forceOpenSidebar) {
+          this.#showSidebar();
+        }
         this.flameChart.dimThirdPartiesIfRequired();
         this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, true);
         return;
@@ -1475,6 +1478,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.#changeView({
           mode: 'VIEWING_TRACE',
           traceIndex: recordingData.parsedTraceIndex,
+          forceOpenSidebar: false,
         });
       }
     }
@@ -1488,6 +1492,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#changeView({
         mode: 'VIEWING_TRACE',
         traceIndex: recordingData.parsedTraceIndex,
+        forceOpenSidebar: false,
       });
     }
     return true;
@@ -2378,6 +2383,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         this.#changeView({
           mode: 'VIEWING_TRACE',
           traceIndex: this.#traceEngineModel.lastTraceIndex(),
+          forceOpenSidebar: false,
         });
       } else {
         this.#changeView({mode: 'LANDING_PAGE'});
@@ -2394,6 +2400,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.#changeView({
         mode: 'VIEWING_TRACE',
         traceIndex,
+        // This is a new trace, so we want to open the insights sidebar automatically.
+        forceOpenSidebar: true,
       });
 
       const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);

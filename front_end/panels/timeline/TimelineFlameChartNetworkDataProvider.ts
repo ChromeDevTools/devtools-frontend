@@ -541,7 +541,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!this.#timelineDataInternal) {
       return false;
     }
-    if (this.#lastInitiatorEntry === entryIndex) {
+    if (entryIndex > -1 && this.#lastInitiatorEntry === entryIndex) {
       if (this.#lastInitiatorsData) {
         this.#timelineDataInternal.initiatorsData = this.#lastInitiatorsData;
       }

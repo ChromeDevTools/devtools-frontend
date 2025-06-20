@@ -1668,7 +1668,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       return;
     }
     const entryIndex = event.data;
-
     const entryLevel = data.entryLevels[entryIndex];
 
     // Find the group that contains this level and log a click for it.
@@ -1680,7 +1679,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       }
     }
 
-    dataProvider.buildFlowForInitiator(entryIndex);
     this.delegate.select(dataProvider.createSelection(entryIndex));
 
     // If the selected entry has a label, bring it forward.

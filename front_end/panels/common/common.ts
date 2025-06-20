@@ -93,8 +93,10 @@ export class FreDialog {
           <div class="right-buttons">
             <devtools-button
               @click=${() => {
-                dialog.hide();
+                // The order of operations are important here as hiding the dialog by
+                // itself causes the promise to be resolved with `false` in `onHideCallback`.
                 result.resolve(false);
+                dialog.hide();
               }}
               .jslogContext=${'fre-disclaimer.cancel'}
               .variant=${Buttons.Button.Variant.TONAL}>
@@ -102,8 +104,10 @@ export class FreDialog {
             </devtools-button>
             <devtools-button
               @click=${() => {
-                dialog.hide();
+                // The order of operations are important here as hiding the dialog by
+                // itself causes the promise to be resolved with `false` in `onHideCallback`.
                 result.resolve(true);
+                dialog.hide();
               }}
               .jslogContext=${'fre-disclaimer.continue'}
               .variant=${Buttons.Button.Variant.PRIMARY}>

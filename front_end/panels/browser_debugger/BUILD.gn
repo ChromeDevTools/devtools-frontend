@@ -71,6 +71,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "CategorizedBreakpointsSidebarPane.test.ts",
     "DOMBreakpointsSidebarPane.test.ts",
     "browser_debugger.test.ts",
   ]

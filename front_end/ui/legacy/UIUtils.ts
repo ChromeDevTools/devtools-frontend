@@ -1409,6 +1409,14 @@ export class CheckboxLabel extends HTMLElement {
     return this.#checkboxElement.indeterminate;
   }
 
+  override set title(title: string) {
+    this.setAttribute('title', title);
+  }
+
+  override get title(): string {
+    return this.#checkboxElement.title;
+  }
+
   set name(name: string) {
     this.setAttribute('name', name);
   }

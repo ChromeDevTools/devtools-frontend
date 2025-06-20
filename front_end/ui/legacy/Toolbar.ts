@@ -1388,5 +1388,6 @@ export const enum ToolbarItemLocation {
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-toolbar': Toolbar;
+    'devtools-toolbar-input': ToolbarInputElement;
   }
 }

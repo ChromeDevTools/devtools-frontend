@@ -13,6 +13,7 @@ ts_e2e_library("elements") {
     "elements-tree_test.ts",
     "flexbox-editor_test.ts",
     "grid-editor_test.ts",
+    "pseudo-states_test.ts",
     "style-pane-properties_test.ts",
     "violating-element-and-attributes_test.ts",
   ]

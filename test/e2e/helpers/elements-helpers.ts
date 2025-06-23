@@ -14,7 +14,6 @@ import {
   clickElement,
   clickMoreTabsButton,
   drainFrontendTaskQueue,
-  getBrowserAndPages,
   getTextContent,
   pressKey,
   step,
@@ -23,7 +22,6 @@ import {
   waitFor,
   waitForAria,
   waitForFunction,
-  waitForVisible,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -438,14 +436,14 @@ export const expandSelectedNodeRecursively = async (devToolsPage = getBrowserAnd
       undefined, devToolsPage);
 };
 
-export const findElementById = async (id: string) => {
-  await pressKey('f', {control: true});
-  await waitFor('.search-bar:not(.hidden)');
-  await typeText('#' + id);
-  await pressKey('Enter');
-  await waitFor(`.highlight > .webkit-html-tag[aria-label*="\\"${id}\\"`);
-  await pressKey('Escape');
-  await waitFor('.search-bar.hidden');
+export const findElementById = async (id: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.pressKey('f', {control: true});
+  await devToolsPage.waitFor('.search-bar:not(.hidden)');
+  await devToolsPage.typeText('#' + id);
+  await devToolsPage.pressKey('Enter');
+  await devToolsPage.waitFor(`.highlight > .webkit-html-tag[aria-label*="\\"${id}\\"`);
+  await devToolsPage.pressKey('Escape');
+  await devToolsPage.waitFor('.search-bar.hidden');
 };
 
 function veImpressionForSelectedNodeMenu(content: string) {
@@ -479,62 +477,66 @@ function veImpressionForSelectedNodeMenu(content: string) {
                             ])]);
 }
 
-export const showForceState = async (specificStates?: boolean) => {
+export const showForceState =
+    async (specificStates?: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // Check if it is already visible
-  if (!(await $(EMULATE_FOCUSED_PAGE, undefined, 'aria'))) {
-    await click('[aria-label="Toggle Element State"]');
-    await waitForAria(EMULATE_FOCUSED_PAGE);
+  if (!(await devToolsPage.$(EMULATE_FOCUSED_PAGE, undefined, 'aria'))) {
+    await devToolsPage.click('[aria-label="Toggle Element State"]');
+    await devToolsPage.waitForAria(EMULATE_FOCUSED_PAGE);
   }
 
   if (specificStates) {
-    const specificStatesPane = await waitFor('.specific-pseudo-states');
+    const specificStatesPane = await devToolsPage.waitFor('.specific-pseudo-states');
     if (!(await specificStatesPane.evaluate(node => node.checkVisibility()))) {
-      await click('.force-specific-element-header');
-      await waitForVisible('.specific-pseudo-states');
+      await devToolsPage.click('.force-specific-element-header');
+      await devToolsPage.waitForVisible('.specific-pseudo-states');
     }
   }
 };
 
-export const forcePseudoState = async (pseudoState: string, specificStates?: boolean) => {
+export const forcePseudoState =
+    async (pseudoState: string, specificStates?: boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // Open element & page state pane and wait for it to be loaded asynchronously
-  await showForceState(specificStates);
+  await showForceState(specificStates, devToolsPage);
 
-  const stateEl = await waitForAria(pseudoState);
-  // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  // await timeout(100);
+  const stateEl = await devToolsPage.waitForAria(pseudoState);
   await stateEl.click();
-  await expectVeEvents([
-    veClick('Panel: elements > Pane: styles > ToggleSubpane: element-states'),
-    veImpressionsUnder('Panel: elements > Pane: styles', [veImpression(
-                                                             'Pane', 'element-states',
-                                                             [
-                                                               veImpression('Action: learn-more'),
-                                                               veImpression('Toggle: active'),
-                                                               veImpression('Toggle: focus'),
-                                                               veImpression('Toggle: focus-visible'),
-                                                               veImpression('Toggle: focus-within'),
-                                                               veImpression('Toggle: hover'),
-                                                               veImpression('Toggle: target'),
-                                                             ])]),
-    veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
-        pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
-  ]);
+  await expectVeEvents(
+      [
+        veClick('Panel: elements > Pane: styles > ToggleSubpane: element-states'),
+        veImpressionsUnder('Panel: elements > Pane: styles', [veImpression(
+                                                                 'Pane', 'element-states',
+                                                                 [
+                                                                   veImpression('Action: learn-more'),
+                                                                   veImpression('Toggle: active'),
+                                                                   veImpression('Toggle: focus'),
+                                                                   veImpression('Toggle: focus-visible'),
+                                                                   veImpression('Toggle: focus-within'),
+                                                                   veImpression('Toggle: hover'),
+                                                                   veImpression('Toggle: target'),
+                                                                 ])]),
+        veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
+            pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
+      ],
+      undefined, devToolsPage);
 };
 
-export const removePseudoState = async (pseudoState: string) => {
-  const stateEl = await waitForAria(pseudoState);
+export const removePseudoState =
+    async (pseudoState: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const stateEl = await devToolsPage.waitForAria(pseudoState);
   await stateEl.click();
-  await expectVeEvents([
-    veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
-        pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
-  ]);
+  await expectVeEvents(
+      [
+        veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
+            pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
+      ],
+      undefined, devToolsPage);
 };
 
-export const getComputedStylesForDomNode =
-    async (elementSelector: string, styleAttribute: keyof CSSStyleDeclaration) => {
-  const {target} = getBrowserAndPages();
-
-  return await target.evaluate((elementSelector, styleAttribute) => {
+export const getComputedStylesForDomNode = async (
+    elementSelector: string, styleAttribute: keyof CSSStyleDeclaration,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
+  return await inspectedPage.evaluate((elementSelector, styleAttribute) => {
     const element = document.querySelector(elementSelector);
     if (!element) {
       throw new Error(`${elementSelector} could not be found`);
@@ -581,21 +583,21 @@ export const toggleShowAllComputedProperties = async (devToolsPage?: DevToolsPag
       devToolsPage);
 };
 
-export const waitForDomNodeToBeVisible = async (elementSelector: string) => {
-  const {target} = getBrowserAndPages();
-
+export const waitForDomNodeToBeVisible =
+    async (elementSelector: string, inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
   // DevTools will force Blink to make the hover shown, so we have
   // to wait for the element to be DOM-visible (e.g. no `display: none;`)
-  await target.waitForSelector(elementSelector, {visible: true});
+  await inspectedPage.waitForSelector(elementSelector, {visible: true});
 };
 
-export const waitForDomNodeToBeHidden = async (elementSelector: string) => {
-  const {target} = getBrowserAndPages();
-  await target.waitForSelector(elementSelector, {hidden: true});
+export const waitForDomNodeToBeHidden =
+    async (elementSelector: string, inspectedPage = getBrowserAndPagesWrappers().inspectedPage) => {
+  await inspectedPage.waitForSelector(elementSelector, {hidden: true});
 };
 
-export const assertGutterDecorationForDomNodeExists = async () => {
-  await waitFor('.elements-gutter-decoration');
+export const assertGutterDecorationForDomNodeExists =
+    async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitFor('.elements-gutter-decoration');
 };
 
 export const getStyleRuleSelector = (selector: string) => `[aria-label="${selector}, css selector"]`;

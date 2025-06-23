@@ -89,7 +89,6 @@ div:has(.settings-select) + div:has(.settings-select) {
   gap: var(--sys-size-9);
 
   > devtools-button {
-    min-width: var(--sys-size-31);
     max-width: var(--sys-size-35);
     width: calc(100% - var(--sys-size-5));
     margin-left: var(--sys-size-5);

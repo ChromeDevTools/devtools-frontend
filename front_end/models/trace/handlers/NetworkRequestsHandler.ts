@@ -51,11 +51,6 @@ const linkPreconnectEvents: Types.Events.LinkPreconnect[] = [];
 
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
-  byOrigin: Map<string, {
-    renderBlocking: Types.Events.SyntheticNetworkRequest[],
-    nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
-    all: Types.Events.SyntheticNetworkRequest[],
-  }>;
   byTime: Types.Events.SyntheticNetworkRequest[];
   eventToInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
   webSocket: WebSocketTraceData[];
@@ -65,11 +60,6 @@ interface NetworkRequestData {
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
 const requestsById = new Map<string, Types.Events.SyntheticNetworkRequest>();
-const requestsByOrigin = new Map<string, {
-  renderBlocking: Types.Events.SyntheticNetworkRequest[],
-  nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
-  all: Types.Events.SyntheticNetworkRequest[],
-}>();
 const requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
 
 const networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
@@ -121,7 +111,6 @@ function firstPositiveValueInList(entries: Array<number|null>): number {
 
 export function reset(): void {
   requestsById.clear();
-  requestsByOrigin.clear();
   requestMap.clear();
   requestsByTime.length = 0;
   networkRequestEventByInitiatorUrl.clear();
@@ -480,25 +469,8 @@ export async function finalize(): Promise<void> {
           tid: finalSendRequest.tid,
         });
 
-    const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, parsedUrl.host, () => {
-      return {
-        renderBlocking: [],
-        nonRenderBlocking: [],
-        all: [],
-      };
-    });
-
-    // For ease of rendering we sometimes want to differentiate between
-    // render-blocking and non-render-blocking, so we divide the data here.
-    if (!Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkEvent)) {
-      requests.nonRenderBlocking.push(networkEvent);
-    } else {
-      requests.renderBlocking.push(networkEvent);
-    }
-
     // However, there are also times where we just want to loop through all
     // the captured requests, so here we store all of them together.
-    requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
 
@@ -530,7 +502,6 @@ export async function finalize(): Promise<void> {
 export function data(): NetworkRequestData {
   return {
     byId: requestsById,
-    byOrigin: requestsByOrigin,
     byTime: requestsByTime,
     eventToInitiator: eventToInitiatorMap,
     webSocket: [...webSocketData.values()],

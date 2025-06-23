@@ -848,7 +848,6 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
     NetworkRequests: {
       byId: new Map(),
       eventToInitiator: new Map(),
-      byOrigin: new Map(),
       byTime: [],
       webSocket: [],
       entityMappings: {
@@ -987,4 +986,15 @@ export function microseconds(x: number): Trace.Types.Timing.Micro {
 
 export function milliseconds(x: number): Trace.Types.Timing.Milli {
   return Trace.Types.Timing.Milli(x);
+}
+
+export function getAllNetworkRequestsByHost(
+    networkRequests: Trace.Types.Events.SyntheticNetworkRequest[],
+    host: string): Trace.Types.Events.SyntheticNetworkRequest[] {
+  const reqs = networkRequests.filter(r => {
+    const parsedUrl = new URL(r.args.data.url);
+    return parsedUrl.host === host;
+  });
+
+  return reqs;
 }

@@ -344,6 +344,7 @@ export class FieldSettingsDialog extends HTMLElement {
         .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
         .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
         .jslogContext=${'timeline.field-data.settings'}
+        .expectedMutationsSelector=${'.timeline-settings-pane option'}
         .dialogTitle=${i18nString(UIStrings.configureFieldData)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#dialog = node as Dialogs.Dialog.Dialog;

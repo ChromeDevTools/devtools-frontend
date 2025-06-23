@@ -1781,7 +1781,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       sinon.stub(swatch, 'dispatchEvent');
       swatch.popOver();
-      const popover = swatch.shadowRoot?.querySelector('devtools-css-angle-editor');
+      const popover = swatch.querySelector('devtools-css-angle-editor');
       assert.exists(popover);
       const clock = popover.shadowRoot?.querySelector<HTMLElement>('.clock');
       assert.exists(clock);

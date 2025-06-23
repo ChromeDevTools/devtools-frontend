@@ -470,8 +470,7 @@ export function generatePreconnectedOrigins(
     });
   }
 
-  const documentRequest =
-      parsedTrace.NetworkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
+  const documentRequest = parsedTrace.NetworkRequests.byId.get(context.navigationId);
   documentRequest?.args.data.responseHeaders?.forEach(header => {
     if (header.name.toLowerCase() === 'link') {
       const preconnectedOriginsFromResponseHeader = handleLinkResponseHeader(header.value);  // , documentRequest);
@@ -583,8 +582,8 @@ export function generatePreconnectCandidates(
     return [];
   }
 
-  const mainResource = contextRequests.find(request => request.args.data.requestId === context.navigationId);
-  if (!mainResource) {
+  const documentRequest = parsedTrace.NetworkRequests.byId.get(context.navigationId);
+  if (!documentRequest) {
     return [];
   }
 
@@ -604,13 +603,13 @@ export function generatePreconnectCandidates(
     }
   });
 
-  const origins = candidateRequestsByOrigin(parsedTrace, mainResource, contextRequests, lcpGraphURLs);
+  const groupedOrigins = candidateRequestsByOrigin(parsedTrace, documentRequest, contextRequests, lcpGraphURLs);
 
   let maxWastedLcp = Types.Timing.Milli(0);
   let maxWastedFcp = Types.Timing.Milli(0);
   let preconnectCandidates: PreconnectCandidate[] = [];
 
-  origins.forEach(requests => {
+  groupedOrigins.forEach(requests => {
     const firstRequestOfOrigin = requests[0];
 
     // Skip the origin if we don't have timing information
@@ -632,7 +631,8 @@ export function generatePreconnectCandidates(
     }
 
     const timeBetweenMainResourceAndDnsStart = Types.Timing.Micro(
-        firstRequestOfOrigin.args.data.syntheticData.sendStartTime - mainResource.args.data.syntheticData.finishTime +
+        firstRequestOfOrigin.args.data.syntheticData.sendStartTime -
+        documentRequest.args.data.syntheticData.finishTime +
         Helpers.Timing.milliToMicro(firstRequestOfOrigin.args.data.timing.dnsStart));
     const wastedMs =
         Math.min(connectionTime, Helpers.Timing.microToMilli(timeBetweenMainResourceAndDnsStart)) as Types.Timing.Milli;

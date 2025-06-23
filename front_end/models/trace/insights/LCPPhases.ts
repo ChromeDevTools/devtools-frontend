@@ -197,7 +197,7 @@ export function generateInsight(
   const lcpTs = metricScore.event?.ts ? Helpers.Timing.microToMilli(metricScore.event?.ts) : undefined;
   const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
 
-  const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
+  const docRequest = networkRequests.byId.get(context.navigationId);
   if (!docRequest) {
     return finalize({lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }

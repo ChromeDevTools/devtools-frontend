@@ -130,7 +130,7 @@ describe('generatePreconnectedOrigins', () => {
     const mockParsedTrace = {
       NetworkRequests: {
         linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
-        byTime: [] as Trace.Types.Events.SyntheticNetworkRequest[],
+        byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       },
     } as Trace.Handlers.Types.ParsedTrace;
 
@@ -384,6 +384,7 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
     NetworkRequests: {
       eventToInitiator: new Map<Trace.Types.Events.SyntheticNetworkRequest, Trace.Types.Events.Event>(),
       byTime: [] as Trace.Types.Events.SyntheticNetworkRequest[],
+      byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
     },
   } as Trace.Handlers.Types.ParsedTrace;
@@ -445,8 +446,10 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
   beforeEach(() => {
     mockParsedTrace.NetworkRequests.eventToInitiator.clear();
     mockParsedTrace.NetworkRequests.byTime.length = 0;
+    mockParsedTrace.NetworkRequests.byId.clear();
     mockParsedTrace.NetworkRequests.linkPreconnectEvents.length = 0;
     mockParsedTrace.NetworkRequests.byTime.push(mainRequest);
+    mockParsedTrace.NetworkRequests.byId.set(mainRequest.args.data.requestId, mainRequest);
   });
 
   it('generates preconnect results for valid requests', () => {

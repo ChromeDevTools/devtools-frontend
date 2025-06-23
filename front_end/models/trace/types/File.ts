@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(b/376051759): remove / fix.
-// eslint-disable-next-line rulesdir/no-imports-in-directory
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as CrUXManager from '../../../models/crux-manager/crux-manager.js';

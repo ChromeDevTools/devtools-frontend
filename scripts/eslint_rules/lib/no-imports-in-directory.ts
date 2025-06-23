@@ -8,7 +8,10 @@ import {createRule} from './utils/ruleCreator.ts';
 
 // Define the structure of the options object
 interface Options {
-  bannedImportPaths?: string[];
+  bannedImportPaths?: Array<{
+    bannedPath: string,
+    allowTypeImports: boolean,
+  }>;
 }
 
 export default createRule<Options[], 'invalidImport'>({
@@ -30,7 +33,11 @@ export default createRule<Options[], 'invalidImport'>({
           bannedImportPaths: {
             type: 'array',
             items: {
-              type: 'string',
+              type: 'object',
+              properties: {
+                bannedPath: {type: 'string'},
+                allowTypeImports: {type: 'boolean'},
+              }
             },
           },
         },
@@ -60,12 +67,16 @@ export default createRule<Options[], 'invalidImport'>({
             path.dirname(fileNameOfFileBeingChecked),
             node.source.value,
         );
-        for (const banned of bannedPaths) {
-          // Ensure 'banned' is a string before calling includes
-          if (typeof banned === 'string' && importPath.includes(banned)) {
-            context.report({node, messageId: 'invalidImport'});
-            break;
+        for (const {bannedPath, allowTypeImports} of bannedPaths) {
+          if (!importPath.includes(bannedPath)) {
+            continue;
           }
+          if (allowTypeImports && node.importKind === 'type') {
+            continue;
+          }
+
+          context.report({node, messageId: 'invalidImport'});
+          break;
         }
       },
     };

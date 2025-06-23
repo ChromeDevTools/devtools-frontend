@@ -39,7 +39,22 @@ new RuleTester().run('no-imports-in-directory', rule, {
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
         {
-          bannedImportPaths: [NOT_SDK_PATH],
+          bannedImportPaths: [{
+            bannedPath: NOT_SDK_PATH,
+            allowTypeImports: false,
+          }],
+        },
+      ],
+    },
+    {
+      code: 'import type * as SDK from \'../../../core/sdk/sdk.js\';',
+      filename: 'front_end/models/trace/handlers/TestHandler.ts',
+      options: [
+        {
+          bannedImportPaths: [{
+            bannedPath: SDK_PATH,
+            allowTypeImports: true,
+          }],
         },
       ],
     },
@@ -50,7 +65,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
         {
-          bannedImportPaths: [SDK_PATH],
+          bannedImportPaths: [{bannedPath: SDK_PATH, allowTypeImports: false}],
         },
       ],
       errors: [{messageId: 'invalidImport'}],
@@ -60,7 +75,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
         {
-          bannedImportPaths: [SDK_PATH],
+          bannedImportPaths: [{bannedPath: SDK_PATH, allowTypeImports: false}],
         },
       ],
       errors: [{messageId: 'invalidImport'}],
@@ -70,7 +85,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
         {
-          bannedImportPaths: [SDK_PATH],
+          bannedImportPaths: [{bannedPath: SDK_PATH, allowTypeImports: false}],
         },
       ],
       errors: [{messageId: 'invalidImport'}],
@@ -80,7 +95,7 @@ new RuleTester().run('no-imports-in-directory', rule, {
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
       options: [
         {
-          bannedImportPaths: [SDK_PATH],
+          bannedImportPaths: [{bannedPath: SDK_PATH, allowTypeImports: false}],
         },
       ],
       errors: [{messageId: 'invalidImport'}],

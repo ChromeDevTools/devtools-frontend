@@ -807,9 +807,10 @@ export default defineConfig([
       'rulesdir/no-imports-in-directory': [
         'error',
         {
-          bannedImportPaths: [
-            join(import.meta.dirname, 'front_end', 'core', 'sdk', 'sdk.js'),
-          ],
+          bannedImportPaths: [{
+            bannedPath: join(import.meta.dirname, 'front_end', 'core', 'sdk', 'sdk.js'),
+            allowTypeImports: true,
+          }],
         },
       ],
     },

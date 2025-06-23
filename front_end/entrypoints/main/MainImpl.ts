@@ -41,6 +41,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -1020,3 +1021,12 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
+
+// @ts-expect-error
+globalThis.handleExternalRequest =
+    async(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
+        Promise<{response: string, devToolsLogs: object[]}> => {
+          const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+          const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+          return await panelInstance.handleExternalRequest(prompt, conversationType, selector);
+        };

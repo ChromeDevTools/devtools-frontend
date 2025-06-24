@@ -97,4 +97,18 @@ describe('Select element accessibility issues test', () => {
        ];
        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
      });
+
+  it('should display issue when there is an interactive element as a descendant of a summary element', async () => {
+    await goToResource('issues/summary-element-accessibility-issue-InteractiveContentSummaryDescendant.html');
+    await navigateToIssuesTab();
+    const issueElement = await getAndExpandSpecificIssueByTitle('Interactive element inside of a <summary> element');
+    assertNotNullOrUndefined(issueElement);
+
+    const section = await getResourcesElement('1 element', issueElement);
+    await ensureResourceSectionIsExpanded(section);
+    const expectedTableRows = [
+      ['Disallowed descendant'],
+    ];
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+  });
 });

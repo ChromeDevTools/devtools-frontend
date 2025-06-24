@@ -594,6 +594,19 @@ describe('User Metrics for Issue Panel', () => {
       },
     ]);
   });
+
+  it('dispatches an event when a ElementAccessibility InteractiveContentSummaryDescendant issue is created',
+     async () => {
+       await goToResource('issues/summary-element-accessibility-issue-InteractiveContentSummaryDescendant.html');
+       await waitFor('.issue');
+
+       await assertHistogramEventsInclude([
+         {
+           actionName: 'DevTools.IssueCreated',
+           actionCode: 113,  // ElementAccessibilityIssue::InteractiveContentSummaryDescendant
+         },
+       ]);
+     });
 });
 
 describe('User Metrics for CSS custom properties in the Styles pane', () => {

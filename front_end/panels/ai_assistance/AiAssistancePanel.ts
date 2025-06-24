@@ -1679,7 +1679,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  async handleExternalStylingRequest(prompt: string, selector?: string):
+  async handleExternalStylingRequest(prompt: string, selector = 'body'):
       Promise<{response: string, devToolsLogs: object[]}> {
     const stylingAgent = this.#createAgent(AiAssistanceModel.ConversationType.STYLING);
     const externalConversation = new AiAssistanceModel.Conversation(
@@ -1691,10 +1691,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     this.#historicalConversations.push(externalConversation);
 
-    if (selector !== undefined) {
-      await inspectElementBySelector(selector);
-    }
-
+    await inspectElementBySelector(selector);
     const runner = stylingAgent.run(
         prompt,
         {

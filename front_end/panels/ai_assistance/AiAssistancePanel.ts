@@ -473,7 +473,7 @@ async function inspectElementBySelector(selector: string): Promise<void> {
   });
   if ('error' in inspectResult || inspectResult.exceptionDetails ||
       SDK.RemoteObject.RemoteObject.isNullOrUndefined(inspectResult.object)) {
-    throw new Error(`'document.querySelector()' could not find matching element for '${selector}' selector`);
+    throw new Error(`Could not find an element matching the '${selector}' selector. Please try a different selector.`);
   }
 }
 
@@ -1652,22 +1652,30 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
       Promise<{response: string, devToolsLogs: object[]}> {
-    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
-    const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
-    const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
-    if (!aiAssistanceSetting) {
-      disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
-    }
-    if (disabledReasons.length > 0) {
-      throw new Error(disabledReasons.join(' '));
-    }
+    try {
+      Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
+      const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
+      const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
+      if (!aiAssistanceSetting) {
+        disabledReasons.push(lockedString(UIStringsNotTranslate.enableInSettings));
+      }
+      if (disabledReasons.length > 0) {
+        throw new Error(disabledReasons.join(' '));
+      }
 
-    void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
-    switch (conversationType) {
-      case AiAssistanceModel.ConversationType.STYLING:
-        return await this.handleExternalStylingRequest(prompt, selector);
-      default:
-        throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
+      void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
+      switch (conversationType) {
+        case AiAssistanceModel.ConversationType.STYLING:
+          return await this.handleExternalStylingRequest(prompt, selector);
+        default:
+          throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
+      }
+    } catch (error) {
+      // Puppeteer would append the stack trace to the error message. Callers of
+      // `handleExternalRequest` have no use for the stack trace.
+      console.error(error);
+      error.stack = '';
+      throw error;
     }
   }
 

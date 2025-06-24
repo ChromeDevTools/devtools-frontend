@@ -328,6 +328,16 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordCountHistogram(
         'DevTools.PerformanceAI.NetworkSummaryResponseSize', bytes, 0, 100_000, 100);
   }
+
+  performanceAINetworkRequestDetailResponseSize(bytes: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram(
+        'DevTools.PerformanceAI.NetworkRequestDetailResponseSize', bytes, 0, 100_000, 100);
+  }
+
+  performanceAIMainThreadActivityResponseSize(bytes: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram(
+        'DevTools.PerformanceAI.MainThreadActivityResponseSize', bytes, 0, 100_000, 100);
+  }
 }
 
 /**

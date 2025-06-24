@@ -253,6 +253,8 @@ Help me understand?`;
     });
 
     it('can call getNetworkRequestDetail to get detail about a single request', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAINetworkRequestDetailResponseSize');
+
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
@@ -278,6 +280,9 @@ Help me understand?`;
       const expectedRequestOutput = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       const expectedOutput = JSON.stringify({request: expectedRequestOutput});
 
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestOutput);
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
       assert.exists(action);
       assert.deepEqual(action, {
         type: 'action' as ActionResponse['type'],
@@ -288,6 +293,8 @@ Help me understand?`;
     });
 
     it('calls getMainThreadActivity', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
+
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
@@ -309,6 +316,10 @@ Help me understand?`;
 
       const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpPhases, parsedTrace);
       assert.isOk(expectedTree);
+
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedTree.serialize());
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
       const expectedOutput = JSON.stringify({activity: expectedTree.serialize()});
 
       assert.deepEqual(action, {

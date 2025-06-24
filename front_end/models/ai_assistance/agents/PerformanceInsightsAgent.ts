@@ -359,6 +359,10 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
           return {error: 'Request not found'};
         }
         const formatted = TraceEventFormatter.networkRequest(request, activeInsight.parsedTrace, {verbose: true});
+
+        const byteCount = Platform.StringUtilities.countWtf8Bytes(formatted);
+        Host.userMetrics.performanceAINetworkRequestDetailResponseSize(byteCount);
+
         if (this.#isFunctionResponseTooLarge(formatted)) {
           return {
             error: 'getNetworkRequestDetail response is too large. Try investigating using other functions',
@@ -414,6 +418,10 @@ The fields are:
           return {error: 'No main thread activity found'};
         }
         const activity = tree.serialize();
+
+        const byteCount = Platform.StringUtilities.countWtf8Bytes(activity);
+        Host.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
+
         if (this.#isFunctionResponseTooLarge(activity)) {
           return {
             error: 'getMainThreadActivity response is too large. Try investigating using other functions',

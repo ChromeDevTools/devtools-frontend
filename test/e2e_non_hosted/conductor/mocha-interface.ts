@@ -11,7 +11,7 @@ import * as Path from 'path';
 import {platform, type Platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {makeInstrumentedTestFunction} from './mocha-interface-helpers.js';
+import {InstrumentedTestFunction} from './mocha-interface-helpers.js';
 import {StateProvider} from './state-provider.js';
 
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;
@@ -28,14 +28,6 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
         // Different module outputs between tsc and esbuild.
         const defaultFactory = ('default' in commonInterface ? commonInterface.default : commonInterface);
         defaultImplementation = defaultFactory([rootSuite], context, mocha) as CommonFunctions;
-        // @ts-expect-error Custom interface.
-        context.before = instrumentWith(defaultImplementation.before);
-        // @ts-expect-error Custom interface.
-        context.after = instrumentWith(defaultImplementation.after);
-        // @ts-expect-error Custom interface.
-        context.beforeEach = instrumentWith(defaultImplementation.beforeEach);
-        // @ts-expect-error Custom interface.
-        context.afterEach = instrumentWith(defaultImplementation.afterEach);
 
         if (mocha.options.delay) {
           context.run = defaultImplementation.runWithSuite(rootSuite);
@@ -53,11 +45,6 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
     // @ts-expect-error Custom interface.
     mochaGlobals.it = it;
   });
-}
-
-function instrumentWith(withDefaultFn: (fn: Mocha.AsyncFunc) => void) {
-  const name = withDefaultFn.name;
-  return (fn: Mocha.AsyncFunc) => withDefaultFn(makeInstrumentedTestFunction(fn, name));
 }
 
 function describeTitle(file: string, title: string) {
@@ -112,8 +99,8 @@ function iterationSuffix(iteration: number): string {
 }
 function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: string, mocha: Mocha) {
   function createTest(title: string, fn?: Mocha.AsyncFunc) {
-    const test =
-        new Mocha.Test(title, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn, 'test', suite));
+    const test = new Mocha.Test(
+        title, suite.isPending() || !fn ? undefined : InstrumentedTestFunction.instrument(fn, 'test', suite));
     test.file = file;
     suite.addTest(test);
     return test;

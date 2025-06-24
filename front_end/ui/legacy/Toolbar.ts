@@ -1316,16 +1316,20 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 }
 
 export class ToolbarCheckbox extends ToolbarItem<void> {
+  #checkboxLabel: CheckboxLabel;
   constructor(
       text: Common.UIString.LocalizedString, tooltip?: Common.UIString.LocalizedString,
       listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
-    super(CheckboxLabel.create(text, undefined, undefined, jslogContext));
+    const checkboxLabel = CheckboxLabel.create(text, undefined, undefined, jslogContext);
+    super(checkboxLabel);
     if (tooltip) {
       Tooltip.install(this.element, tooltip);
     }
     if (listener) {
       this.element.addEventListener('click', listener, false);
     }
+
+    this.#checkboxLabel = checkboxLabel;
   }
 
   checked(): boolean {
@@ -1343,6 +1347,14 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 
   setIndeterminate(indeterminate: boolean): void {
     (this.element as CheckboxLabel).indeterminate = indeterminate;
+  }
+
+  /**
+   * Sets the user visible text shown alongside the checkbox.
+   * If you want to update the title/aria-label, use setTitle.
+   */
+  setLabelText(content: Common.UIString.LocalizedString): void {
+    this.#checkboxLabel.setLabelText(content);
   }
 }
 

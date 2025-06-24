@@ -1377,6 +1377,14 @@ export class CheckboxLabel extends HTMLElement {
     }
   }
 
+  getLabelText(): string|null {
+    return this.#textElement.textContent;
+  }
+
+  setLabelText(content: string): void {
+    this.#textElement.textContent = content;
+  }
+
   override get ariaLabel(): string|null {
     return this.#checkboxElement.ariaLabel;
   }

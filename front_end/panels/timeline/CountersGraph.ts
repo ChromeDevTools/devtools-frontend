@@ -416,15 +416,14 @@ export class CounterUI {
   counter: Counter;
   private readonly formatter: (arg0: number) => string;
   private readonly setting: Common.Settings.Setting<boolean>;
-  private filter: UI.Toolbar.ToolbarSettingCheckbox;
-  private range: HTMLElement;
-  private value: HTMLElement;
+  private readonly filter: UI.Toolbar.ToolbarSettingCheckbox;
+  private readonly value: HTMLElement;
   graphColor: string;
   limitColor: string|null|undefined;
   graphYValues: number[];
   private readonly verticalPadding: number;
-  private currentValueLabel: string;
-  private marker: HTMLElement;
+  private readonly counterName: Common.UIString.LocalizedString;
+  private readonly marker: HTMLElement;
 
   constructor(
       countersPane: CountersGraph, title: Common.UIString.LocalizedString, settingsKey: string, graphColor: string,
@@ -447,7 +446,6 @@ export class CounterUI {
     }
     this.filter.element.addEventListener('click', this.toggleCounterGraph.bind(this));
     countersPane.toolbar.appendToolbarItem(this.filter);
-    this.range = this.filter.element.createChild('span', 'range');
 
     this.value = (countersPane.currentValuesBar as HTMLElement).createChild('span', 'memory-counter-value');
     this.value.style.color = graphColor;
@@ -458,20 +456,31 @@ export class CounterUI {
     this.graphYValues = [];
     this.verticalPadding = 10;
 
-    this.currentValueLabel = title;
+    this.counterName = title;
     this.marker = countersPane.canvasContainer.createChild('div', 'memory-counter-marker');
     this.marker.style.backgroundColor = graphColor;
     this.clearCurrentValueAndMarker();
   }
 
+  /**
+   * Updates both the user visible text and the title & aria-label for the
+   * checkbox label shown in the toolbar
+   */
+  #updateFilterLabel(text: Common.UIString.LocalizedString): void {
+    this.filter.setLabelText(text);
+    this.filter.setTitle(text);
+  }
+
   reset(): void {
-    this.range.textContent = '';
+    this.#updateFilterLabel(this.counterName);
   }
 
   setRange(minValue: number, maxValue: number): void {
     const min = this.formatter(minValue);
     const max = this.formatter(maxValue);
-    this.range.textContent = i18nString(UIStrings.ss, {PH1: min, PH2: max});
+    const rangeText = i18nString(UIStrings.ss, {PH1: min, PH2: max});
+    const newLabelText = `${this.counterName} ${rangeText}` as Common.UIString.LocalizedString;
+    this.#updateFilterLabel(newLabelText);
   }
 
   private toggleCounterGraph(): void {
@@ -492,7 +501,7 @@ export class CounterUI {
     }
     const index = this.recordIndexAt(x);
     const value = Platform.NumberUtilities.withThousandsSeparator(this.counter.values[index]);
-    this.value.textContent = `${this.currentValueLabel}: ${value}`;
+    this.value.textContent = `${this.counterName}: ${value}`;
     const y = this.graphYValues[index] / window.devicePixelRatio;
     this.marker.style.left = x + 'px';
     this.marker.style.top = y + 'px';

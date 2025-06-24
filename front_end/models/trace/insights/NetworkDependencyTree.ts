@@ -63,16 +63,16 @@ export const UIStrings = {
    */
   noPreconnectOrigins: 'no origins were preconnected',
   /**
-   * @description A warning message that is shown when found more than 4 preconnected links
+   * @description A warning message that is shown when found more than 4 preconnected links. "preconnect" should not be translated.
    */
   tooManyPreconnectLinksWarning:
       'More than 4 `preconnect` connections were found. These should be used sparingly and only to the most important origins.',
   /**
-   * @description A warning message that is shown when the user added preconnect for some unnecessary origins.
+   * @description A warning message that is shown when the user added preconnect for some unnecessary origins. "preconnect" should not be translated.
    */
   unusedWarning: 'Unused preconnect. Only use `preconnect` for origins that the page is likely to request.',
   /**
-   * @description A warning message that is shown when the user forget to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links.
+   * @description A warning message that is shown when the user forget to set the `crossorigin` HTML attribute, or setting it to an incorrect value, on the link is a common mistake when adding preconnect links. "preconnect" should not be translated.
    * */
   crossoriginWarning: 'Unused preconnect. Check that the `crossorigin` attribute is used properly.',
   /**
@@ -88,7 +88,7 @@ export const UIStrings = {
    */
   estSavingTableTitle: 'Preconnect candidates',
   /**
-   * @description Description of the table that recommends preconnecting to the origins to save time.
+   * @description Description of the table that recommends preconnecting to the origins to save time. "preconnect" should not be translated.
    */
   estSavingTableDescription:
       'Add [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) hints to your most important origins, but try to use no more than 4.',

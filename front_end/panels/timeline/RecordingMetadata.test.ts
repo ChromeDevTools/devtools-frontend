@@ -45,6 +45,7 @@ describeWithEnvironment('RecordingMetadata', () => {
       cruxFieldData: undefined,
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       emulatedDeviceTitle: undefined,
+      hostDPR: 1,
     });
   });
 
@@ -64,6 +65,7 @@ describeWithEnvironment('RecordingMetadata', () => {
       cruxFieldData: undefined,
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       emulatedDeviceTitle: undefined,
+      hostDPR: 1,
     });
   });
 
@@ -98,6 +100,7 @@ describeWithEnvironment('RecordingMetadata', () => {
       cruxFieldData: undefined,
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       emulatedDeviceTitle: undefined,
+      hostDPR: 1,
     });
   });
 
@@ -130,6 +133,7 @@ describeWithEnvironment('RecordingMetadata', () => {
         targetLatency: undefined,
       },
       emulatedDeviceTitle: undefined,
+      hostDPR: 1,
       cruxFieldData: undefined,
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
     });

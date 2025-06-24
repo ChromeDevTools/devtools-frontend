@@ -886,6 +886,8 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       paintImageByDrawLazyPixelRef: new Map(),
       paintImageForEvent: new Map(),
       paintImageEventForUrl: new Map(),
+      paintEventToCorrectedDisplaySize: new Map(),
+      didCorrectForHostDpr: false,
     },
     Initiators: {
       eventToInitiator: new Map(),

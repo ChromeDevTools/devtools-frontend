@@ -26,6 +26,7 @@ copy_to_gen("traces") {
     "dom-size-long.json.gz",
     "dom-size-overlap.json.gz",
     "dom-size.json.gz",
+    "dpr.json.gz",
     "dupe-js-inline-maps.json.gz",
     "dupe-js.json.gz",
     "enhanced-traces.json.gz",

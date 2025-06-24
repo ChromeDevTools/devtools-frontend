@@ -41,7 +41,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -1022,11 +1021,33 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
   }
 }
 
+type ExternalRequestInput = {
+  kind: 'LIVE_STYLE_DEBUGGER',
+  args: {prompt: string, selector: string},
+}|{
+  kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
+  args: {url: string},
+};
+
+interface ExternalRequestResponse {
+  response: string;
+  devToolsLogs: object[];
+}
+
+export async function handleExternalRequest(input: ExternalRequestInput): Promise<ExternalRequestResponse> {
+  switch (input.kind) {
+    case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
+      return await Promise.resolve({response: 'Not yet implemented', devToolsLogs: []});
+    }
+    case 'LIVE_STYLE_DEBUGGER': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest(
+          input.args.prompt, AiAssistanceModel.ConversationType.STYLING, input.args.selector);
+    }
+  }
+}
+
 // @ts-expect-error
-globalThis.handleExternalRequest =
-    async(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
-        Promise<{response: string, devToolsLogs: object[]}> => {
-          const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
-          const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-          return await panelInstance.handleExternalRequest(prompt, conversationType, selector);
-        };
+globalThis.handleExternalRequest = handleExternalRequest;

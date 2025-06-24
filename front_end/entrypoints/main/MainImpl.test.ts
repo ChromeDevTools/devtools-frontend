@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as AiAssistance from '../../panels/ai_assistance/ai_assistance.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
@@ -56,5 +58,17 @@ describeWithMockConnection('MainMenuItem', () => {
     sinon.assert.calledOnce(contextMenuShow);
     assert.notExists(contextMenuShow.thisValues[0].defaultSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === 'Focus page'));
+  });
+
+  describe('handleExternalRequest', () => {
+    const {handleExternalRequest} = Main.MainImpl;
+
+    it('calls into the AiAssistance Panel for LIVE_STYLE_DEBUGGER', async () => {
+      const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
+      sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
+
+      await handleExternalRequest({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
+      sinon.assert.calledWith(panel.handleExternalRequest, 'test', AiAssistanceModel.ConversationType.STYLING, '#test');
+    });
   });
 });

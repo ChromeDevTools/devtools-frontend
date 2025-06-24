@@ -193,6 +193,7 @@ ts_library("unittests") {
   sources = [
     "AnnotationHelpers.test.ts",
     "Breadcrumbs.test.ts",
+    "CountersGraph.test.ts",
     "EntriesFilter.test.ts",
     "EventsSerializer.test.ts",
     "FreshRecording.test.ts",

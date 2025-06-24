@@ -62,6 +62,14 @@ export function generateInsight(
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 
+  // Fixed-width viewports are excluded.
+  const declaredWidth = viewportEvent?.args.data.content.includes('width=');
+  if (declaredWidth) {
+    return finalize({
+      mobileOptimized: true,
+    });
+  }
+
   const compositorEvents = parsedTrace.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;

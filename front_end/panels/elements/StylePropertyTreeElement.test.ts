@@ -256,7 +256,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
             stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
         assert.exists(tooltip);
         tooltip.showPopover();
-        assert.strictEqual(tooltip.innerText, '#ff8000');
+        assert.strictEqual(tooltip.textContent, '#ff8000');
       });
 
       it('shows a popover with it\'s computed color as wide gamut if necessary', () => {
@@ -269,7 +269,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         const tooltip = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
         tooltip?.showPopover();
-        assert.strictEqual(tooltip?.innerText, 'color(srgb 1 0.24 0.17)');
+        assert.strictEqual(tooltip?.textContent, 'color(srgb 1 0.24 0.17)');
       });
 
       it('propagates updates to outer color-mixes', () => {

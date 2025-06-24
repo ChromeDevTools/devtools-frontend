@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {checkForPendingActivity} from '../../../testing/TrackAsyncOperations.js';
+import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 
 import * as Tooltips from './tooltips.js';
@@ -37,6 +37,7 @@ function renderTooltip({
     <devtools-tooltip
      id=${id}
      variant=${variant}
+     hover-delay=${0}
      ?use-click=${useClick}
      ?use-hotkey=${useHotkey}
      jslogContext=${jslogContext??nothing}
@@ -45,11 +46,34 @@ function renderTooltip({
     </devtools-tooltip>
   `, container);
   // clang-format on
-  renderElementIntoDOM(container);
+  renderElementIntoDOM(container, {allowMultipleChildren: true});
   return container;
 }
 
+async function waitForToggle(tooltip: Tooltips.Tooltip.Tooltip, state: 'open'|'closed'): Promise<void> {
+  return await new Promise<void>(resolve => {
+    tooltip.addEventListener('toggle', (event: Event) => {
+      if ((event as ToggleEvent).newState === state) {
+        resolve();
+      }
+    }, {once: true});
+  });
+}
+
 describe('Tooltip', () => {
+  let inspectorViewRootElementStub: HTMLElement;
+
+  beforeEach(async () => {
+    inspectorViewRootElementStub = document.createElement('div');
+    renderElementIntoDOM(inspectorViewRootElementStub, {allowMultipleChildren: true});
+
+    const inspectorViewStub = sinon.createStubInstance(UI.InspectorView.InspectorView);
+    Object.assign(inspectorViewStub, {element: inspectorViewRootElementStub});
+    sinon.stub(UI.InspectorView.InspectorView, 'instance').returns(inspectorViewStub);
+
+    Tooltips.Tooltip.Tooltip.lastOpenedTooltipId = null;
+  });
+
   it('renders a simple tooltip', () => {
     const container = renderTooltip();
     const tooltip = container.querySelector('devtools-tooltip');
@@ -66,74 +90,90 @@ describe('Tooltip', () => {
 
   it('should be activated if hovered', async () => {
     const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
 
     const button = container.querySelector('button');
+    const opened = waitForToggle(tooltip, 'open');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
 
-    await checkForPendingActivity();
-    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+    await opened;
+    assert.isTrue(tooltip.open);
   });
 
   it('should be activated if focused', async () => {
     const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
 
+    const opened = waitForToggle(tooltip, 'open');
     const button = container.querySelector('button');
     button?.dispatchEvent(new FocusEvent('focus'));
 
-    await checkForPendingActivity();
-    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+    await opened;
+    assert.isTrue(tooltip.open);
   });
 
-  it('should not be activated if un-hovered', async () => {
+  it('should not be activated if un-hovered', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
     const container = renderTooltip();
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
     button?.dispatchEvent(new MouseEvent('mouseleave'));
 
-    await checkForPendingActivity();
+    clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
   });
 
-  it('should not be activated if dragged', async () => {
+  it('should not be activated if dragged', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
     const container = renderTooltip();
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter', {buttons: 1}));
 
-    await checkForPendingActivity();
+    clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
   });
 
-  it('should not be activated if un-focused', async () => {
+  it('should not be activated if un-focused', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
     const container = renderTooltip();
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new FocusEvent('focus'));
     button?.dispatchEvent(new FocusEvent('blur'));
 
-    await checkForPendingActivity();
+    clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
   });
 
-  it('should not open on hover if use-click is set', async () => {
+  it('should not open on hover if use-click is set', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
     const container = renderTooltip({useClick: true});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
 
-    await checkForPendingActivity();
+    clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
   });
 
-  it('should not open on focus if use-click is set', async () => {
+  it('should not open on focus if use-click is set', () => {
+    const clock = sinon.useFakeTimers({toFake: ['setTimeout']});
     const container = renderTooltip({useClick: true});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new FocusEvent('focus'));
 
-    await checkForPendingActivity();
+    clock.runAll();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    clock.restore();
   });
 
   it('should open with click if use-click is set', () => {
@@ -154,20 +194,19 @@ describe('Tooltip', () => {
     assert.isTrue(container.querySelector('devtools-tooltip')?.open);
   });
 
-  it('should not open on focus if use-hotkey is set', async () => {
+  it('should not open on focus if use-hotkey is set', () => {
     const container = renderTooltip({useHotkey: true});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new FocusEvent('focus'));
 
-    await checkForPendingActivity();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
   });
 
   const eventsNotToPropagate = ['click', 'mouseup'];
 
   eventsNotToPropagate.forEach(eventName => {
-    it('shoould stop propagation of click events', () => {
+    it('should stop propagation of click events', () => {
       const container = renderTooltip();
       const callback = sinon.spy();
       container.addEventListener(eventName, callback);
@@ -186,29 +225,21 @@ describe('Tooltip', () => {
     sinon.assert.calledOnce(consoleSpy);
   });
 
-  it('can be instantiated programatically', () => {
-    const container = document.createElement('div');
-    const anchor = document.createElement('button');
-    anchor.setAttribute('aria-describedby', 'tooltip-id');
-    const tooltip = new Tooltips.Tooltip.Tooltip({id: 'tooltip-id', anchor});
-    tooltip.append('Text content');
-    container.appendChild(anchor);
-    container.appendChild(tooltip);
-    renderElementIntoDOM(container);
-
-    assert.strictEqual(anchor.style.anchorName, '--devtools-tooltip-tooltip-id-anchor');
-  });
-
   it('should hide the tooltip if anchor is removed from DOM', async () => {
     const container = renderTooltip();
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
 
+    const opened = waitForToggle(tooltip, 'open');
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
-    await checkForPendingActivity();
-    button?.remove();
-    await checkForPendingActivity();
+    await opened;
 
-    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+    const closed = waitForToggle(tooltip, 'closed');
+    button?.remove();
+    await closed;
+
+    assert.isFalse(tooltip.open);
   });
 
   it('should not hide the tooltip if focus moves from the anchor into deep DOM within the tooltip', async () => {
@@ -222,14 +253,14 @@ describe('Tooltip', () => {
     // child, so for this test we make a nested DOM structure and test on that.
     tooltip.innerHTML = '<div><span><p class="deep-nested">nested</p></span></div>';
 
+    const opened = waitForToggle(tooltip, 'open');
     anchor.dispatchEvent(new FocusEvent('focus'));
-    await checkForPendingActivity();
+    await opened;
     assert.isTrue(tooltip.open);
     const richContents = container.querySelector('devtools-tooltip')?.querySelector('p.deep-nested');
     assert.exists(richContents);
 
     anchor.dispatchEvent(new FocusEvent('blur', {relatedTarget: richContents}));
-    await checkForPendingActivity();
     assert.isTrue(tooltip.open);  // tooltip should still be open
   });
 
@@ -255,10 +286,9 @@ describe('Tooltip', () => {
     const tooltip = container.querySelector('devtools-tooltip');
     assert.exists(tooltip);
 
-    const waitForOpen = Promise.withResolvers<Event>();
-    tooltip.ontoggle = waitForOpen.resolve;
+    const opened = waitForToggle(tooltip, 'open');
     tooltip.showTooltip();
-    await waitForOpen.promise;
+    await opened;
     assert.isTrue(tooltip.open);
 
     container.remove();

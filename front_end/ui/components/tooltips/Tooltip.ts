@@ -3,12 +3,146 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
+import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import tooltipStyles from './tooltip.css.js';
 
 const {html} = Lit;
+
+interface ProposedRect {
+  left: number;
+  top: number;
+}
+
+interface PositioningParams {
+  anchorRect: DOMRect;
+  currentPopoverRect: DOMRect;
+}
+
+const positioningUtils = {
+  bottomSpanRight: ({anchorRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.left,
+      top: anchorRect.bottom,
+    };
+  },
+  bottomSpanLeft: ({anchorRect, currentPopoverRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.right - currentPopoverRect.width,
+      top: anchorRect.bottom,
+    };
+  },
+  bottomCentered: ({anchorRect, currentPopoverRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.left + anchorRect.width / 2 - currentPopoverRect.width / 2,
+      top: anchorRect.bottom,
+    };
+  },
+  topCentered: ({anchorRect, currentPopoverRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.left + anchorRect.width / 2 - currentPopoverRect.width / 2,
+      top: anchorRect.top - currentPopoverRect.height,
+    };
+  },
+  topSpanRight: ({anchorRect, currentPopoverRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.left,
+      top: anchorRect.top - currentPopoverRect.height,
+    };
+  },
+  topSpanLeft: ({anchorRect, currentPopoverRect}: PositioningParams): ProposedRect => {
+    return {
+      left: anchorRect.right - currentPopoverRect.width,
+      top: anchorRect.top - currentPopoverRect.height,
+    };
+  },
+  // Adjusts proposed rect so that the resulting popover is always inside the inspector view bounds.
+  insetAdjustedRect:
+      ({inspectorViewRect, anchorRect, currentPopoverRect, proposedRect}:
+           {inspectorViewRect: DOMRect, anchorRect: DOMRect, currentPopoverRect: DOMRect, proposedRect: ProposedRect}):
+          ProposedRect => {
+            if (inspectorViewRect.left > proposedRect.left) {
+              proposedRect.left = inspectorViewRect.left;
+            }
+
+            if (inspectorViewRect.right < proposedRect.left + currentPopoverRect.width) {
+              proposedRect.left = inspectorViewRect.right - currentPopoverRect.width;
+            }
+
+            if (proposedRect.top + currentPopoverRect.height > inspectorViewRect.bottom) {
+              proposedRect.top = anchorRect.top - currentPopoverRect.height;
+            }
+            return proposedRect;
+          },
+  isInBounds: ({inspectorViewRect, currentPopoverRect, proposedRect}:
+                   {inspectorViewRect: DOMRect, currentPopoverRect: DOMRect, proposedRect: ProposedRect}): boolean => {
+    return inspectorViewRect.left < proposedRect.left &&
+        proposedRect.left + currentPopoverRect.width < inspectorViewRect.right &&
+        inspectorViewRect.top < proposedRect.top &&
+        proposedRect.top + currentPopoverRect.height < inspectorViewRect.bottom;
+  },
+  isSameRect: (rect1: DOMRect|null, rect2: DOMRect|null): boolean => {
+    if (!rect1 || !rect2) {
+      return false;
+    }
+
+    return rect1 && rect1.left === rect2.left && rect1.top === rect2.top && rect1.width === rect2.width &&
+        rect1.height === rect2.height;
+  }
+};
+
+const proposedRectForRichTooltip =
+    ({inspectorViewRect, anchorRect, currentPopoverRect}:
+         {inspectorViewRect: DOMRect, anchorRect: DOMRect, currentPopoverRect: DOMRect}): ProposedRect => {
+      // Tries the default positioning of bottom right, bottom left, top right and top left.
+      // If they don't work out, we default back to showing in bottom right and adjust its insets so that the popover is inside the inspector view bounds.
+      let proposedRect = positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      proposedRect = positioningUtils.bottomSpanLeft({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      proposedRect = positioningUtils.topSpanRight({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      proposedRect = positioningUtils.topSpanLeft({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      // If none of the options work above, we position to bottom right
+      // and adjust the insets so that it does not go out of bounds.
+      proposedRect = positioningUtils.bottomSpanRight({anchorRect, currentPopoverRect});
+      return positioningUtils.insetAdjustedRect({anchorRect, currentPopoverRect, inspectorViewRect, proposedRect});
+    };
+
+const proposedRectForSimpleTooltip =
+    ({inspectorViewRect, anchorRect, currentPopoverRect}:
+         {inspectorViewRect: DOMRect, anchorRect: DOMRect, currentPopoverRect: DOMRect}): ProposedRect => {
+      // Default options are bottom centered & top centered.
+      let proposedRect = positioningUtils.bottomCentered({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      proposedRect = positioningUtils.topCentered({anchorRect, currentPopoverRect});
+      if (positioningUtils.isInBounds({inspectorViewRect, currentPopoverRect, proposedRect})) {
+        return proposedRect;
+      }
+
+      // The default options did not work out, so position it to bottom center
+      // and adjust the insets to make sure that it does not go out of bounds.
+      proposedRect = positioningUtils.bottomCentered({anchorRect, currentPopoverRect});
+      return positioningUtils.insetAdjustedRect({anchorRect, currentPopoverRect, inspectorViewRect, proposedRect});
+    };
 
 export type TooltipVariant = 'simple'|'rich';
 
@@ -43,6 +177,8 @@ export class Tooltip extends HTMLElement {
   #closing = false;
   #anchorObserver: MutationObserver|null = null;
   #openedViaHotkey = false;
+  #previousAnchorRect: DOMRect|null = null;
+  #previousPopoverRect: DOMRect|null = null;
 
   get openedViaHotkey(): boolean {
     return this.#openedViaHotkey;
@@ -211,6 +347,35 @@ export class Tooltip extends HTMLElement {
     }
   };
 
+  #positionPopover = (): void => {
+    if (!this.#anchor || !this.open) {
+      this.#previousAnchorRect = null;
+      this.#previousPopoverRect = null;
+      this.style.visibility = 'hidden';
+      return;
+    }
+
+    // If there is no change from the previous anchor rect, we don't need to recompute the position.
+    const anchorRect = this.#anchor.getBoundingClientRect();
+    const currentPopoverRect = this.getBoundingClientRect();
+    if (positioningUtils.isSameRect(this.#previousAnchorRect, anchorRect) &&
+        positioningUtils.isSameRect(this.#previousPopoverRect, currentPopoverRect)) {
+      requestAnimationFrame(this.#positionPopover);
+      return;
+    }
+    this.#previousAnchorRect = anchorRect;
+    this.#previousPopoverRect = currentPopoverRect;
+
+    const inspectorViewRect = UI.InspectorView.InspectorView.instance().element.getBoundingClientRect();
+    const proposedPopoverRect = this.variant === 'rich' ?
+        proposedRectForRichTooltip({inspectorViewRect, anchorRect, currentPopoverRect}) :
+        proposedRectForSimpleTooltip({inspectorViewRect, anchorRect, currentPopoverRect});
+    this.style.left = `${proposedPopoverRect.left}px`;
+    this.style.top = `${proposedPopoverRect.top}px`;
+    this.style.visibility = 'visible';
+    requestAnimationFrame(this.#positionPopover);
+  };
+
   #updateJslog(): void {
     if (this.jslogContext && this.#anchor) {
       VisualLogging.setMappedParent(this, this.#anchor);
@@ -274,6 +439,7 @@ export class Tooltip extends HTMLElement {
     this.addEventListener('mouseup', this.#stopPropagation);
     this.addEventListener('beforetoggle', this.#setClosing);
     this.addEventListener('toggle', this.#resetClosing);
+    this.addEventListener('toggle', this.#positionPopover);
   }
 
   #removeEventListeners(): void {
@@ -293,6 +459,7 @@ export class Tooltip extends HTMLElement {
     this.removeEventListener('mouseup', this.#stopPropagation);
     this.removeEventListener('beforetoggle', this.#setClosing);
     this.removeEventListener('toggle', this.#resetClosing);
+    this.removeEventListener('toggle', this.#positionPopover);
   }
 
   #attachToAnchor(): void {
@@ -321,11 +488,7 @@ export class Tooltip extends HTMLElement {
       }
     }
 
-    const anchorName = `--devtools-tooltip-${this.id}-anchor`;
-    this.#anchor.style.anchorName = anchorName;
-    this.style.positionAnchor = anchorName;
     this.#observeAnchorRemoval(this.#anchor);
-
     this.#updateJslog();
   }
 
@@ -356,10 +519,5 @@ customElements.define('devtools-tooltip', Tooltip);
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-tooltip': Tooltip;
-  }
-  // Remove this once the CSSStyleDeclaration interface is updated in the TypeScript standard library.
-  interface CSSStyleDeclaration {
-    anchorName: string;
-    positionAnchor: string;
   }
 }

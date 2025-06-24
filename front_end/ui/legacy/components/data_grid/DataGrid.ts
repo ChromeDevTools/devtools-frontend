@@ -1029,7 +1029,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private applyColumnWeights(): void {
-    let tableWidth = this.element.offsetWidth - this.cornerWidth;
+    // Subtract 1 to prevent unnecessary overflow in x-axis
+    let tableWidth = this.element.offsetWidth - this.cornerWidth - 1;
     if (tableWidth <= 0) {
       return;
     }
@@ -1048,7 +1049,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     let sum = 0;
     let lastOffset = 0;
-    const minColumnWidth = 14;  // px
+    const minColumnWidth = ColumnResizePadding;  // px
 
     for (let i = 0; i < this.visibleColumnsArray.length; ++i) {
       const column = this.visibleColumnsArray[i];
@@ -1705,7 +1706,7 @@ export const enum DataType {
   BOOLEAN = 'Boolean',
 }
 
-export const ColumnResizePadding = 34;
+export const ColumnResizePadding = 30;
 export const CenterResizerOverBorderAdjustment = 3;
 
 export const enum ResizeMethod {

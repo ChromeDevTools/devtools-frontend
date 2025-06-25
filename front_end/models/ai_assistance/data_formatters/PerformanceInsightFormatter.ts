@@ -106,9 +106,9 @@ ${this.#links()}`;
   }
 
   #details(): string {
-    if (Trace.Insights.Models.LCPPhases.isLCPPhases(this.#insight)) {
-      const {phases, lcpMs} = this.#insight;
-      if (!lcpMs || !phases) {
+    if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(this.#insight)) {
+      const {subparts, lcpMs} = this.#insight;
+      if (!lcpMs || !subparts) {
         return '';
       }
 
@@ -116,13 +116,13 @@ ${this.#links()}`;
       // Image based has TTFB, Load delay, Load time and Render delay
       // Note that we expect every trace + LCP to have TTFB + Render delay, but
       // very old traces are missing the data, so we have to code defensively
-      // in case the phases are not present.
+      // in case the subparts are not present.
       const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
 
-      Object.values(phases).forEach((phase: Trace.Insights.Models.LCPPhases.Phase) => {
-        const phaseMilli = Trace.Helpers.Timing.microToMilli(phase.range);
+      Object.values(subparts).forEach((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
+        const phaseMilli = Trace.Helpers.Timing.microToMilli(subpart.range);
         const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: phase.label, value: formatMilli(phaseMilli), percentage});
+        phaseBulletPoints.push({name: subpart.label, value: formatMilli(phaseMilli), percentage});
       });
 
       return `${this.#lcpMetricSharedContext()}
@@ -277,7 +277,7 @@ ${shiftsFormatted.join('\n')}`;
       case 'LCPDiscovery':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      case 'LCPPhases':
+      case 'LCPBreakdown':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
       case 'NetworkDependencyTree':
@@ -341,7 +341,7 @@ The sum of these three phases is the total latency. It is important to optimize 
 3. The resource was not lazy loaded as this can delay the browser loading the resource.
 
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.`;
-      case 'LCPPhases':
+      case 'LCPBreakdown':
         return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.';
       case 'NetworkDependencyTree':
         return '';

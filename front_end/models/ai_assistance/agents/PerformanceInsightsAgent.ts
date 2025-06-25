@@ -173,7 +173,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
           {title: 'Suggest fixes to reduce my LCP'}, {title: 'What can I do to reduce my LCP discovery time?'},
           {title: 'Why is LCP discovery time important?'}
         ];
-      case 'LCPPhases':
+      case 'LCPBreakdown':
         return [
           {title: 'Help me optimize my LCP score'}, {title: 'Which LCP phase was most problematic?'},
           {title: 'What can I do to reduce the LCP time for this page load?'}

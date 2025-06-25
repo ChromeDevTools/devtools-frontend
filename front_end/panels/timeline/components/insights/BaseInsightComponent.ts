@@ -57,7 +57,7 @@ const UIStrings = {
   estimatedSavingsTimingAndBytesAria: 'Estimated savings for this insight: {PH1} and {PH2} transfer size',
   /**
    * @description Used for screen-readers as a label on the button to expand an insight to view details
-   * @example {LCP by phase} PH1
+   * @example {LCP breakdown} PH1
    */
   viewDetails: 'View details for {PH1} insight.',
 } as const;

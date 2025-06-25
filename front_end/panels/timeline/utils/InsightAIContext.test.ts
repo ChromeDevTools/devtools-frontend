@@ -14,9 +14,9 @@ describeWithEnvironment('InsightAIContext', () => {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LCPPhases', insights, firstNav);
+    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
     const aiContext = new Utils.InsightAIContext.ActiveInsight(insight, parsedTrace);
-    assert.strictEqual(aiContext.title(), 'LCP by phase');
+    assert.strictEqual(aiContext.title(), 'LCP breakdown');
   });
 });
 
@@ -25,7 +25,7 @@ describeWithEnvironment('AIQueries', () => {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LCPPhases', insights, firstNav);
+    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
     const requests = Utils.InsightAIContext.AIQueries.networkRequests(insight, parsedTrace);
     const expected = [
@@ -48,8 +48,8 @@ describeWithEnvironment('AIQueries', () => {
     const [firstNav, secondNav] = parsedTrace.Meta.mainFrameNavigations;
     assert.isOk(firstNav);
     assert.isOk(secondNav);
-    const lcpNav1 = getInsightOrError('LCPPhases', insights, firstNav);
-    const lcpNav2 = getInsightOrError('LCPPhases', insights, secondNav);
+    const lcpNav1 = getInsightOrError('LCPBreakdown', insights, firstNav);
+    const lcpNav2 = getInsightOrError('LCPBreakdown', insights, secondNav);
 
     const requests1 = Utils.InsightAIContext.AIQueries.networkRequests(lcpNav1, parsedTrace);
     const requests2 = Utils.InsightAIContext.AIQueries.networkRequests(lcpNav2, parsedTrace);
@@ -71,7 +71,7 @@ describeWithEnvironment('AIQueries', () => {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LCPPhases', insights, firstNav);
+    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
     const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, parsedTrace);
     assert.instanceOf(activity, Utils.AICallTree.AICallTree);
     // There are a few smaller tasks but for this test we want to make sure we

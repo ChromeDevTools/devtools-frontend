@@ -113,7 +113,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   ImageDelivery: Insights.ImageDelivery.ImageDelivery,
   InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
   LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
-  LCPPhases: Insights.LCPPhases.LCPPhases,
+  LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
   LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,
   ModernHTTP: Insights.ModernHTTP.ModernHTTP,
   NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,

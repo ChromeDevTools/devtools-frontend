@@ -53,7 +53,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponentNoAISupport();
       component.selected = false;
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -79,7 +79,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponentNoAISupport();
       component.selected = true;
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -135,7 +135,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('outputs the correct estimated savings for both bytes and time', async () => {
       const component = makeTestComponent({wastedBytes: 5_000, timeSavings: 50});
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -154,7 +154,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('outputs the correct estimated savings for bytes only', async () => {
       const component = makeTestComponent({wastedBytes: 5_000});
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -173,7 +173,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('outputs the correct estimated savings for time only', async () => {
       const component = makeTestComponent({timeSavings: 50});
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -192,7 +192,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('includes the output in the insight aria label', async () => {
       const component = makeTestComponent({wastedBytes: 5_000, timeSavings: 50});
       component.model = {
-        insightKey: 'LCPPhases',
+        insightKey: 'LCPBreakdown',
         strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
@@ -215,7 +215,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
   describe('Ask AI Insights', () => {
     const FAKE_PARSED_TRACE = {} as unknown as Trace.Handlers.Types.ParsedTrace;
     const FAKE_LCP_MODEL = {
-      insightKey: 'LCPPhases',
+      insightKey: 'LCPBreakdown',
       strings: {},
       title: 'LCP by Phase' as Common.UIString.LocalizedString,
       description: 'some description' as Common.UIString.LocalizedString,

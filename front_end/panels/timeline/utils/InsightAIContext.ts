@@ -172,7 +172,7 @@ function getNextNavigation(
 }
 
 function customMaxBoundForInsight(insight: Trace.Insights.Types.InsightModel): Trace.Types.Timing.Micro|null {
-  if (Trace.Insights.Models.LCPPhases.isLCPPhases(insight) && insight.lcpEvent) {
+  if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(insight) && insight.lcpEvent) {
     return insight.lcpEvent.ts;
   }
   return null;

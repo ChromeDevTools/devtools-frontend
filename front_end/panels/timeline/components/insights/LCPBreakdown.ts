@@ -5,7 +5,7 @@
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type {LCPPhasesInsightModel} from '../../../../models/trace/insights/LCPPhases.js';
+import type {LCPBreakdownInsightModel} from '../../../../models/trace/insights/LCPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -13,12 +13,12 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.LCPPhases;
+const {UIStrings, i18nString} = Trace.Insights.Models.LCPBreakdown;
 
 const {html} = Lit;
 
-export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-by-phases`;
+export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-breakdown`;
   override internalName = 'lcp-by-phase';
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 
@@ -29,11 +29,11 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlay = null;
 
-    if (!this.model || !this.model.phases || !this.model.lcpTs) {
+    if (!this.model || !this.model.subparts || !this.model.lcpTs) {
       return [];
     }
 
-    const {phases} = this.model;
+    const {subparts} = this.model;
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
     if (this.model.lcpRequest) {
       overlays.push({type: 'ENTRY_OUTLINE', entry: this.model.lcpRequest, outlineReason: 'INFO'});
@@ -41,19 +41,20 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
 
     this.#overlay = {
       type: 'TIMESPAN_BREAKDOWN',
-      sections: Object.values(phases).map(
-          (phase: Trace.Insights.Models.LCPPhases.Phase) => ({bounds: phase, label: phase.label, showDuration: true})),
+      sections: Object.values(subparts).map(
+          (subpart: Trace.Insights.Models.LCPBreakdown.Subpart) =>
+              ({bounds: subpart, label: subpart.label, showDuration: true})),
     };
     overlays.push(this.#overlay);
     return overlays;
   }
 
-  #renderFieldPhases(): Lit.LitTemplate|null {
+  #renderFieldSubparts(): Lit.LitTemplate|null {
     if (!this.fieldMetrics) {
       return null;
     }
 
-    const {ttfb, loadDelay, loadDuration, renderDelay} = this.fieldMetrics.lcpPhases;
+    const {ttfb, loadDelay, loadDuration, renderDelay} = this.fieldMetrics.lcpBreakdown;
     if (!ttfb || !loadDelay || !loadDuration || !renderDelay) {
       return null;
     }
@@ -79,7 +80,7 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
         <devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.fieldDuration)],
+            headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.fieldDuration)],
             rows,
           } as TableData}>
         </devtools-performance-table>
@@ -102,17 +103,17 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
       return Lit.nothing;
     }
 
-    const {phases} = this.model;
+    const {subparts} = this.model;
 
-    if (!phases) {
+    if (!subparts) {
       return html`<div class="insight-section">${i18nString(UIStrings.noLcp)}</div>`;
     }
 
-    const rows = Object.values(phases).map((phase: Trace.Insights.Models.LCPPhases.Phase) => {
-      const section = this.#overlay?.sections.find(section => phase.label === section.label);
-      const timing = Trace.Helpers.Timing.microToMilli(phase.range);
+    const rows = Object.values(subparts).map((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
+      const section = this.#overlay?.sections.find(section => subpart.label === section.label);
+      const timing = Trace.Helpers.Timing.microToMilli(subpart.range);
       return {
-        values: [phase.label, i18n.TimeUtilities.preciseMillisToString(timing)],
+        values: [subpart.label, i18n.TimeUtilities.preciseMillisToString(timing)],
         overlays: section && [{
                     type: 'TIMESPAN_BREAKDOWN',
                     sections: [section],
@@ -126,7 +127,7 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
         <devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
+            headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
             rows,
           } as TableData}>
         </devtools-performance-table>
@@ -134,7 +135,7 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     ];
     // clang-format on
 
-    const fieldDataSection = this.#renderFieldPhases();
+    const fieldDataSection = this.#renderFieldSubparts();
     if (fieldDataSection) {
       sections.push(fieldDataSection);
     }
@@ -145,8 +146,8 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-lcp-by-phases': LCPPhases;
+    'devtools-performance-lcp-breakdown': LCPBreakdown;
   }
 }
 
-customElements.define('devtools-performance-lcp-by-phases', LCPPhases);
+customElements.define('devtools-performance-lcp-breakdown', LCPBreakdown);

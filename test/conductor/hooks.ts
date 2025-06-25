@@ -57,8 +57,6 @@ function launchChrome() {
   // Use port 0 to request any free port.
   // LINT.IfChange(features)
   const enabledFeatures = [
-    'Portals',
-    'PortalsCrossOrigin',
     'PartitionedCookies',
     'SharedStorageAPI',
     'FencedFrames',

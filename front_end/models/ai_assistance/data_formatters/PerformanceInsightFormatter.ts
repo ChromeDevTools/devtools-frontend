@@ -379,7 +379,7 @@ export class TraceEventFormatter {
       rootCauses.iframes.forEach(
           iframe => potentialRootCauses.push(
               `An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
-      rootCauses.fontRequests.forEach(req => {
+      rootCauses.webFonts.forEach(req => {
         potentialRootCauses.push(`A font that was loaded over the network (${req.args.data.url}).`);
       });
       // TODO(b/413285103): use the nice strings for non-composited animations.

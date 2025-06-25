@@ -173,7 +173,7 @@ describeWithEnvironment('CLSCulprits', function() {
         assert.isOk(shift2);
         const shiftEvent = shift2[0];
 
-        const shiftFonts = shift2[1].fontRequests;
+        const shiftFonts = shift2[1].webFonts;
         assert.exists(shiftFonts);
         assert.lengthOf(shiftFonts, 1);
 
@@ -185,11 +185,11 @@ describeWithEnvironment('CLSCulprits', function() {
         // Other shifts should not have font root causes.
         const shift1 = layoutShiftEvents.at(0);
         assert.isOk(shift1);
-        assert.isEmpty(shift1[1].fontRequests);
+        assert.isEmpty(shift1[1].webFonts);
 
         const shift3 = layoutShiftEvents.at(2);
         assert.isOk(shift3);
-        assert.isEmpty(shift3[1].fontRequests);
+        assert.isEmpty(shift3[1].webFonts);
       });
 
       it('handles potential unsized images root cause correctly', async function() {

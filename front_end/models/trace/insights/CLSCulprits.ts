@@ -48,9 +48,9 @@ export const UIStrings = {
    */
   injectedIframe: 'Injected iframe',
   /**
-   * @description Text for a culprit type of Font request.
+   * @description Text for a culprit type of web font request.
    */
-  fontRequest: 'Font request',
+  webFont: 'Web font',
   /**
    * @description Text for a culprit type of Animation.
    */
@@ -104,7 +104,7 @@ export const enum AnimationFailureReasons {
 }
 
 export const enum LayoutShiftType {
-  FONT_REQUESTS = 0,
+  WEB_FONT = 0,
   IFRAMES = 1,
   ANIMATIONS = 2,
   UNSIZED_IMAGE = 3,
@@ -243,7 +243,7 @@ export interface IframeRootCause {
 
 export interface LayoutShiftRootCausesData {
   iframes: IframeRootCause[];
-  fontRequests: Types.Events.SyntheticNetworkRequest[];
+  webFonts: Types.Events.SyntheticNetworkRequest[];
   nonCompositedAnimations: NoncompositedAnimationFailure[];
   unsizedImages: UnsizedImage[];
 }
@@ -513,7 +513,7 @@ function getFontRootCauses(
       if (!rootCausesForShift) {
         throw new Error('Unaccounted shift');
       }
-      rootCausesForShift.fontRequests.push(req);
+      rootCausesForShift.webFonts.push(req);
     }
   }
   return rootCausesByShift;
@@ -535,13 +535,13 @@ function getTopCulprits(
       continue;
     }
 
-    const fontReq = culprits.fontRequests;
+    const fontReq = culprits.webFonts;
     const iframes = culprits.iframes;
     const animations = culprits.nonCompositedAnimations;
     const unsizedImages = culprits.unsizedImages;
 
     for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push({type: LayoutShiftType.FONT_REQUESTS, description: i18nString(UIStrings.fontRequest)});
+      causes.push({type: LayoutShiftType.WEB_FONT, description: i18nString(UIStrings.webFont)});
     }
     for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
       causes.push({type: LayoutShiftType.IFRAMES, description: i18nString(UIStrings.injectedIframe)});
@@ -613,7 +613,7 @@ export function generateInsight(
   const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
 
   for (const shift of layoutShifts) {
-    rootCausesByShift.set(shift, {iframes: [], fontRequests: [], nonCompositedAnimations: [], unsizedImages: []});
+    rootCausesByShift.set(shift, {iframes: [], webFonts: [], nonCompositedAnimations: [], unsizedImages: []});
   }
 
   // Populate root causes for rootCausesByShift.

@@ -222,7 +222,7 @@ export class LayoutShiftDetails extends HTMLElement {
       frame: string,
       rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|undefined): Lit.TemplateResult|null {
     return html`
-      ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
+      ${rootCauses?.webFonts.map(fontReq => this.#renderFontRequest(fontReq))}
       ${rootCauses?.iframes.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
       ${rootCauses?.unsizedImages.map(unsizedImage => this.#renderUnsizedImage(frame, unsizedImage))}
@@ -252,7 +252,7 @@ export class LayoutShiftDetails extends HTMLElement {
     }
     const hasCulprits = Boolean(
         rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
+        (rootCauses.webFonts.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
          rootCauses.unsizedImages.length));
 
     // clang-format off
@@ -321,7 +321,7 @@ export class LayoutShiftDetails extends HTMLElement {
     }
 
     const hasCulprits = rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
+        (rootCauses.webFonts.length || rootCauses.iframes.length || rootCauses.nonCompositedAnimations.length ||
          rootCauses.unsizedImages.length);
     const hasShiftedElements = elementsShifted?.length;
 

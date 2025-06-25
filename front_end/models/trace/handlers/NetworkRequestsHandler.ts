@@ -241,6 +241,27 @@ export async function finalize(): Promise<void> {
       continue;
     }
 
+    /**
+     * LR loses transfer size information, but passes it in the 'X-TotalFetchedSize' header.
+     * 'X-TotalFetchedSize' is the canonical transfer size in LR.
+     *
+     * In Lightrider, due to instrumentation limitations, our values for encodedDataLength are bogus
+     * and not valid. However the resource's true encodedDataLength/transferSize is shared via a
+     * special response header, X-TotalFetchedSize. In this situation, we read this value from
+     * responseReceived, use it for the transferSize and ignore the original encodedDataLength values.
+     */
+    // @ts-expect-error
+    const isLightrider = globalThis.isLightrider;
+    if (isLightrider && request.resourceFinish && request.receiveResponse?.args.data.headers) {
+      const lrSizeHeader = request.receiveResponse.args.data.headers.find(h => h.name === 'X-TotalFetchedSize');
+      if (lrSizeHeader) {
+        const size = parseFloat(lrSizeHeader.value);
+        if (!isNaN(size)) {
+          request.resourceFinish.args.data.encodedDataLength = size;
+        }
+      }
+    }
+
     // If a ResourceFinish event with an encoded data length is received,
     // then the resource was not cached; it was fetched before it was
     // requested, e.g. because it was pushed in this navigation.
@@ -496,6 +517,7 @@ export async function finalize(): Promise<void> {
       }
     }
   }
+
   finalizeWebSocketData();
 }
 

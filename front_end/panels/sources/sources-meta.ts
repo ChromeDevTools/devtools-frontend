@@ -610,7 +610,7 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
     const SourcesComponents = await loadSourcesComponentsModule();
-    return SourcesComponents.BreakpointsView.BreakpointsView.instance().wrapper as UI.Widget.Widget;
+    return SourcesComponents.BreakpointsView.BreakpointsView.instance();
   },
 });
 

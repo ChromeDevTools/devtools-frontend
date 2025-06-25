@@ -1,7 +1,6 @@
 // Copyright (c) 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import '../../../ui/components/icon_button/icon_button.js';
 
@@ -16,7 +15,6 @@ import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Input from '../../../ui/components/input/input.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -25,7 +23,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import breakpointsViewStyles from './breakpointsView.css.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
 
-const {html, Directives: {ifDefined, repeat, classMap, live}} = Lit;
+const {html, render, Directives: {ifDefined, repeat, classMap, live}} = Lit;
 
 const UIStrings = {
   /**
@@ -143,7 +141,7 @@ export const enum BreakpointStatus {
   INDETERMINATE = 'INDETERMINATE',
 }
 
-let breakpointsViewInstance: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.Widget, BreakpointsView>|null;
+let breakpointsViewInstance: BreakpointsView|null = null;
 let breakpointsViewControllerInstance: BreakpointsSidebarController|null;
 
 export class BreakpointsSidebarController implements UI.ContextFlavorListener.ContextFlavorListener {
@@ -506,24 +504,188 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
   }
 }
 
-export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
+/**
+ * These properties should really be part of {@link BreakpointItem}, but for migrating
+ * to the UI eng vision, we use a Map<BreakpointItemId, BreakpointItemDetails>.
+ */
+export interface BreakpointItemDetails {
+  itemDescription: string;
+  codeSnippet: string;
+  codeSnippetTooltip: string|undefined;
+}
+
+export interface BreakpointsViewInput {
+  clickHandler: (event: Event) => void;
+  keyDownHandler: (event: KeyboardEvent) => Promise<void>;
+  pauseOnUncaughtExceptions: boolean;
+  onPauseOnUncaughtExceptionsStateChanged: (event: Event) => void;
+  pauseOnCaughtExceptions: boolean;
+  onPauseOnCaughtExceptionsStateChanged: (event: Event) => void;
+  breakpointGroups: BreakpointGroup[];
+  breakpointsActive: boolean;
+  groupContextMenuHandler: (group: BreakpointGroup, event: Event) => void;
+  groupToggleHandler: (group: BreakpointGroup, event: Event) => void;
+  groupClickHandler: (event: Event) => void;
+  groupCheckboxToggled: (group: BreakpointGroup, event: Event) => void;
+  urlToDifferentiatingPath: Map<Platform.DevToolsPath.UrlString, string>;
+  removeAllBreakpointsInFileClickHandler: (items: BreakpointItem[], event: Event) => void;
+  itemDetails: Map<string, BreakpointItemDetails>;
+  itemContextMenuHandler: (item: BreakpointItem, editable: boolean, event: Event) => void;
+  itemClickHandler: (event: Event) => void;
+  itemSnippetClickHandler: (item: BreakpointItem, event: Event) => void;
+  itemCheckboxToggled: (item: BreakpointItem, event: Event) => void;
+  itemEditClickHandler: (item: BreakpointItem, event: Event) => void;
+  itemRemoveClickHandler: (item: BreakpointItem, event: Event) => void;
+}
+
+export type View = (input: BreakpointsViewInput, output: object, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(html`
+    <style>${Input.checkboxStyles}</style>
+    <style>${breakpointsViewStyles}</style>
+    <div jslog=${VisualLogging.section('sources.js-breakpoints')} id="devtools-breakpoint-view">
+      <div class='pause-on-uncaught-exceptions'
+          tabindex='0'
+          @click=${input.clickHandler}
+          @keydown=${input.keyDownHandler}
+          role='checkbox'
+          aria-checked=${input.pauseOnUncaughtExceptions}
+          data-first-pause>
+        <label class='checkbox-label'>
+          <input type='checkbox' tabindex=-1 class="small" ?checked=${input.pauseOnUncaughtExceptions} @change=${input.onPauseOnUncaughtExceptionsStateChanged} jslog=${VisualLogging.toggle('pause-uncaught').track({ change: true })}>
+          <span>${i18nString(UIStrings.pauseOnUncaughtExceptions)}</span>
+        </label>
+      </div>
+      <div class='pause-on-caught-exceptions'
+            tabindex='-1'
+            @click=${input.clickHandler}
+            @keydown=${input.keyDownHandler}
+            role='checkbox'
+            aria-checked=${input.pauseOnCaughtExceptions}
+            data-last-pause>
+          <label class='checkbox-label'>
+            <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 ?checked=${input.pauseOnCaughtExceptions} @change=${input.onPauseOnCaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-on-caught-exception').track({ change: true })}>
+            <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
+          </label>
+      </div>
+      <div role=tree>
+        ${repeat(
+          input.breakpointGroups,
+          group => group.url,
+          (group, groupIndex) => html`
+            <details class=${classMap({active: input.breakpointsActive})}
+                  ?data-first-group=${groupIndex === 0}
+                  ?data-last-group=${groupIndex === input.breakpointGroups.length - 1}
+                  role=group
+                  aria-label='${group.name}'
+                  aria-description='${group.url}'
+                  ?open=${live(group.expanded)}
+                  @toggle=${input.groupToggleHandler.bind(undefined, group)}>
+              <summary @contextmenu=${input.groupContextMenuHandler.bind(undefined, group)}
+                      tabindex='-1'
+                      @keydown=${input.keyDownHandler}
+                      @click=${input.clickHandler}>
+                <span class='group-header' aria-hidden=true>
+                  <span class='group-icon-or-disable'>
+                    <devtools-icon name="file-script"></devtools-icon>
+                    <input class='group-checkbox small' type='checkbox'
+                          aria-label=''
+                          .checked=${group.breakpointItems.some(item => item.status === BreakpointStatus.ENABLED)}
+                          @change=${input.groupCheckboxToggled.bind(undefined, group)}
+                          tabindex=-1
+                          jslog=${VisualLogging.toggle('breakpoint-group').track({change: true,})}></input>
+                  </span>
+                  <span class='group-header-title' title='${group.url}'>
+                    ${group.name}
+                    <span class='group-header-differentiator'>
+                      ${input.urlToDifferentiatingPath.get(group.url)}
+                    </span>
+                  </span>
+                </span>
+                <span class='group-hover-actions'>
+                  <button data-remove-breakpoint
+                          @click=${input.removeAllBreakpointsInFileClickHandler.bind(undefined, group.breakpointItems)}
+                          title=${i18nString(UIStrings.removeAllBreakpointsInFile)}
+                          aria-label=${i18nString(UIStrings.removeAllBreakpointsInFile)}
+                          jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
+                    <devtools-icon name="bin"></devtools-icon>
+                  </button>
+                </span>
+              </summary>
+            ${repeat(
+              group.breakpointItems,
+              item => item.id,
+              (item, itemIndex) => html`
+                <div class=${classMap({
+                        'breakpoint-item': true,
+                        hit: item.isHit,
+                        'conditional-breakpoint': item.type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+                        logpoint: item.type === SDK.DebuggerModel.BreakpointType.LOGPOINT,
+                      })}
+                    ?data-first-breakpoint=${itemIndex === 0}
+                    ?data-last-breakpoint=${itemIndex === group.breakpointItems.length - 1}
+                    aria-label=${ifDefined(input.itemDetails.get(item.id)?.itemDescription)}
+                    role=treeitem
+                    tabindex='-1'
+                    @contextmenu=${input.itemContextMenuHandler.bind(undefined, item, group.editable)}
+                    @click=${input.itemClickHandler}
+                    @keydown=${input.keyDownHandler}>
+                  <label class='checkbox-label'>
+                    <span class='type-indicator'></span>
+                    <input type='checkbox'
+                          aria-label=${item.location}
+                          class='small'
+                          ?indeterminate=${item.status === BreakpointStatus.INDETERMINATE}
+                          .checked=${item.status === BreakpointStatus.ENABLED}
+                          @change=${input.itemCheckboxToggled.bind(undefined, item)}
+                          tabindex=-1
+                          jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
+                  </label>
+                  <span class='code-snippet' @click=${input.itemSnippetClickHandler.bind(undefined, item)}
+                          title=${ifDefined(input.itemDetails.get(item.id)?.codeSnippetTooltip)}
+                          jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${input.itemDetails.get(item.id)?.codeSnippet}</span>
+                  <span class='breakpoint-item-location-or-actions'>
+                    ${group.editable ? html`
+                          <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(undefined, item)}
+                                  title=${item.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ? i18nString(UIStrings.editLogpoint) : i18nString(UIStrings.editCondition)}
+                                  jslog=${VisualLogging.action('edit-breakpoint').track({click: true})}>
+                            <devtools-icon name="edit"></devtools-icon>
+                          </button>` : Lit.nothing}
+                    <button data-remove-breakpoint
+                            @click=${input.itemRemoveClickHandler.bind(undefined, item)}
+                            title=${i18nString(UIStrings.removeBreakpoint)}
+                            aria-label=${i18nString(UIStrings.removeBreakpoint)}
+                            jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
+                      <devtools-icon name="bin"></devtools-icon>
+                    </button>
+                    <span class='location'>${item.location}</span>
+                  </span>
+                </div>`)}
+            </details>`)}
+      </div>
+    </div>`, target, {host: input});
+  // clang-format on
+};
+
+export class BreakpointsView extends UI.Widget.VBox {
+  readonly #view: View;
   readonly #controller: BreakpointsSidebarController;
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): BreakpointsView {
     if (!breakpointsViewInstance || forceNew) {
-      breakpointsViewInstance = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, new BreakpointsView());
+      breakpointsViewInstance = new BreakpointsView(undefined);
     }
-    return breakpointsViewInstance.getComponent();
+    return breakpointsViewInstance;
   }
 
-  constructor() {
-    super();
+  constructor(element: HTMLElement|undefined, view: View = DEFAULT_VIEW) {
+    // TODO(crbug.com/407751705): Scope CSS via naming/nesting and remove the shadow root.
+    super(/* useShadowDom */ true, undefined, element);
+    this.#view = view;
     this.#controller = BreakpointsSidebarController.instance();
-    this.setAttribute('jslog', `${VisualLogging.section('sources.js-breakpoints')}`);
     void this.#controller.update();
   }
-
-  readonly #shadow = this.attachShadow({mode: 'open'});
 
   #pauseOnUncaughtExceptions = false;
   #pauseOnCaughtExceptions = false;
@@ -531,76 +693,139 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #breakpointsActive = true;
   #breakpointGroups: BreakpointGroup[] = [];
   #urlToDifferentiatingPath = new Map<Platform.DevToolsPath.UrlString, string>();
+  #breakpointItemDetails = new Map<string, BreakpointItemDetails>();
 
   set data(data: BreakpointsViewData) {
     this.#pauseOnUncaughtExceptions = data.pauseOnUncaughtExceptions;
     this.#pauseOnCaughtExceptions = data.pauseOnCaughtExceptions;
     this.#breakpointsActive = data.breakpointsActive;
     this.#breakpointGroups = data.groups;
+    this.#breakpointItemDetails = new Map<string, BreakpointItemDetails>();
 
     const titleInfos: TitleInfo[] = [];
     for (const group of data.groups) {
       titleInfos.push({name: group.name, url: group.url});
+
+      for (const item of group.breakpointItems) {
+        this.#breakpointItemDetails.set(item.id, {
+          itemDescription: this.#getBreakpointItemDescription(item),
+          codeSnippet: Platform.StringUtilities.trimEndWithMaxLength(item.codeSnippet, MAX_SNIPPET_LENGTH),
+          codeSnippetTooltip: this.#getCodeSnippetTooltip(item.type, item.hoverText),
+        });
+      }
     }
     this.#urlToDifferentiatingPath = getDifferentiatingPathMap(titleInfos);
 
-    void this.render();
+    this.requestUpdate();
   }
 
-  override async render(): Promise<void> {
-    await RenderCoordinator.write('BreakpointsView render', () => {
-      const clickHandler = async(event: Event): Promise<void> => {
-        const currentTarget = event.currentTarget as HTMLElement;
-        await this.#setSelected(currentTarget);
-        event.consume();
-      };
+  override wasShown(): void {
+    this.requestUpdate();
+  }
 
-      // clang-format off
-      const out = html`
-        <style>${Input.checkboxStyles}</style>
-        <style>${breakpointsViewStyles}</style>
-        <div class='pause-on-uncaught-exceptions'
-            tabindex='0'
-            @click=${clickHandler}
-            @keydown=${this.#keyDownHandler}
-            role='checkbox'
-            aria-checked=${this.#pauseOnUncaughtExceptions}
-            data-first-pause>
-          <label class='checkbox-label'>
-            <input type='checkbox' tabindex=-1 class="small" ?checked=${this.#pauseOnUncaughtExceptions} @change=${this.#onPauseOnUncaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-uncaught').track({ change: true })}>
-            <span>${i18nString(UIStrings.pauseOnUncaughtExceptions)}</span>
-          </label>
-        </div>
-        <div class='pause-on-caught-exceptions'
-              tabindex='-1'
-              @click=${clickHandler}
-              @keydown=${this.#keyDownHandler}
-              role='checkbox'
-              aria-checked=${this.#pauseOnCaughtExceptions}
-              data-last-pause>
-            <label class='checkbox-label'>
-              <input data-pause-on-caught-checkbox type='checkbox' class="small" tabindex=-1 ?checked=${this.#pauseOnCaughtExceptions} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)} jslog=${VisualLogging.toggle('pause-on-caught-exception').track({ change: true })}>
-              <span>${i18nString(UIStrings.pauseOnCaughtExceptions)}</span>
-            </label>
-        </div>
-        <div role=tree>
-          ${repeat(
-            this.#breakpointGroups,
-            group => group.url,
-            (group, groupIndex) => html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
-        </div>`;
-      // clang-format on
-      Lit.render(out, this.#shadow, {host: this});
-    });
+  override performUpdate(): void {
+    const input: BreakpointsViewInput = {
+      clickHandler: this.#clickHandler.bind(this),
+      keyDownHandler: this.#keyDownHandler.bind(this),
+      pauseOnUncaughtExceptions: this.#pauseOnUncaughtExceptions,
+      onPauseOnUncaughtExceptionsStateChanged: this.#onPauseOnUncaughtExceptionsStateChanged.bind(this),
+      pauseOnCaughtExceptions: this.#pauseOnCaughtExceptions,
+      onPauseOnCaughtExceptionsStateChanged: this.#onPauseOnCaughtExceptionsStateChanged.bind(this),
+      breakpointGroups: this.#breakpointGroups,
+      breakpointsActive: this.#breakpointsActive,
+      groupContextMenuHandler: this.#groupContextMenuHandler.bind(this),
+      groupToggleHandler: this.#groupToggleHandler.bind(this),
+      groupClickHandler: this.#groupClickHandler.bind(this),
+      groupCheckboxToggled: this.#groupCheckboxToggled.bind(this),
+      urlToDifferentiatingPath: this.#urlToDifferentiatingPath,
+      removeAllBreakpointsInFileClickHandler: this.#removeAllBreakpointsInFileClickHandler.bind(this),
+      itemDetails: this.#breakpointItemDetails,
+      itemContextMenuHandler: this.#itemContextMenuHandler.bind(this),
+      itemClickHandler: this.#itemClickHandler.bind(this),
+      itemSnippetClickHandler: this.#itemSnippetClickHandler.bind(this),
+      itemCheckboxToggled: this.#onCheckboxToggled.bind(this),
+      itemEditClickHandler: this.#itemEditClickHandler.bind(this),
+      itemRemoveClickHandler: this.#itemRemoveClickHandler.bind(this),
+    };
+    this.#view(input, {}, this.contentElement);
 
     // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
     // if the previously focused element was removed.
-    await RenderCoordinator.write('BreakpointsView make pause-on-exceptions focusable', () => {
-      if (this.#shadow.querySelector('[tabindex="0"]') === null) {
-        const element = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
-        element?.setAttribute('tabindex', '0');
-      }
+    if (this.contentElement.querySelector('[tabindex="0"]') === null) {
+      const element = this.contentElement.querySelector<HTMLElement>('[data-first-pause]');
+      element?.setAttribute('tabindex', '0');
+    }
+  }
+
+  async #clickHandler(event: Event): Promise<void> {
+    const currentTarget = event.currentTarget as HTMLElement;
+    await this.#setSelected(currentTarget);
+    event.consume();
+  }
+
+  #groupContextMenuHandler(group: BreakpointGroup, event: Event): void {
+    this.#onBreakpointGroupContextMenu(event, group);
+    event.consume();
+  }
+
+  #groupToggleHandler(group: BreakpointGroup, event: Event): void {
+    const htmlDetails = event.target as HTMLDetailsElement;
+    group.expanded = htmlDetails.open;
+    void this.#controller.expandedStateChanged(group.url, group.expanded);
+  }
+
+  async #groupClickHandler(event: Event): Promise<void> {
+    const selected = event.currentTarget as HTMLElement;
+    await this.#setSelected(selected);
+    // Record the metric for expanding/collapsing in the click handler,
+    // as we only then get the number of expand/collapse actions that were
+    // initiated by the user.
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
+    event.consume();
+  }
+
+  #groupCheckboxToggled(group: BreakpointGroup, event: Event): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
+    const element = event.target as HTMLInputElement;
+    const updatedStatus = element.checked ? BreakpointStatus.ENABLED : BreakpointStatus.DISABLED;
+    const itemsToUpdate = group.breakpointItems.filter(item => item.status !== updatedStatus);
+    itemsToUpdate.forEach(item => {
+      this.#controller.breakpointStateChanged(item, element.checked);
     });
+    event.consume();
+  }
+
+  #removeAllBreakpointsInFileClickHandler(items: BreakpointItem[], event: Event): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton);
+    void this.#controller.breakpointsRemoved(items);
+    event.consume();
+  }
+
+  #itemContextMenuHandler(item: BreakpointItem, editable: boolean, event: Event): void {
+    this.#onBreakpointEntryContextMenu(event, item, editable);
+    event.consume();
+  }
+
+  async #itemClickHandler(event: Event): Promise<void> {
+    const target = event.currentTarget as HTMLDivElement;
+    await this.#setSelected(target);
+    event.consume();
+  }
+
+  #itemSnippetClickHandler(item: BreakpointItem, event: Event): void {
+    void this.#controller.jumpToSource(item);
+    event.consume();
+  }
+
+  #itemEditClickHandler(item: BreakpointItem, event: Event): void {
+    void this.#controller.breakpointEdited(item, true /* editButtonClicked */);
+    event.consume();
+  }
+
+  #itemRemoveClickHandler(item: BreakpointItem, event: Event): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton);
+    void this.#controller.breakpointsRemoved([item]);
+    event.consume();
   }
 
   async #keyDownHandler(event: KeyboardEvent): Promise<void> {
@@ -633,7 +858,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return;
     }
     void RenderCoordinator.write('BreakpointsView focus on selected element', () => {
-      const prevSelected = this.#shadow.querySelector('[tabindex="0"]');
+      const prevSelected = this.contentElement.querySelector('[tabindex="0"]');
       prevSelected?.setAttribute('tabindex', '-1');
       element.setAttribute('tabindex', '0');
       element.focus();
@@ -657,13 +882,13 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   async #handleHomeOrEndKey(key: 'Home'|'End'): Promise<void> {
     if (key === 'Home') {
-      const pauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
+      const pauseOnExceptionsNode = this.contentElement.querySelector<HTMLElement>('[data-first-pause]');
       return await this.#setSelected(pauseOnExceptionsNode);
     }
     if (key === 'End') {
       const numGroups = this.#breakpointGroups.length;
       if (numGroups === 0) {
-        const lastPauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-last-pause]');
+        const lastPauseOnExceptionsNode = this.contentElement.querySelector<HTMLElement>('[data-last-pause]');
         return await this.#setSelected(lastPauseOnExceptionsNode);
       }
       const lastGroupIndex = numGroups - 1;
@@ -671,46 +896,12 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
       if (lastGroup.expanded) {
         const lastBreakpointItem =
-            this.#shadow.querySelector<HTMLElement>('[data-last-group] > [data-last-breakpoint]');
+            this.contentElement.querySelector<HTMLElement>('[data-last-group] > [data-last-breakpoint]');
         return await this.#setSelected(lastBreakpointItem);
       }
-      const lastGroupSummaryElement = this.#shadow.querySelector<HTMLElement>('[data-last-group] > summary');
+      const lastGroupSummaryElement = this.contentElement.querySelector<HTMLElement>('[data-last-group] > summary');
       return await this.#setSelected(lastGroupSummaryElement);
     }
-    return;
-  }
-
-  #renderEditBreakpointButton(breakpointItem: BreakpointItem): Lit.TemplateResult {
-    const clickHandler = (event: Event): void => {
-      void this.#controller.breakpointEdited(breakpointItem, true /* editButtonClicked */);
-      event.consume();
-    };
-    const title = breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT ?
-        i18nString(UIStrings.editLogpoint) :
-        i18nString(UIStrings.editCondition);
-    // clang-format off
-    return html`
-    <button data-edit-breakpoint @click=${clickHandler} title=${title} jslog=${VisualLogging.action('edit-breakpoint').track({click: true})}>
-      <devtools-icon name="edit"></devtools-icon>
-    </button>
-      `;
-    // clang-format on
-  }
-
-  #renderRemoveBreakpointButton(
-      breakpointItems: BreakpointItem[], tooltipText: string, action: Host.UserMetrics.Action): Lit.TemplateResult {
-    const clickHandler = (event: Event): void => {
-      Host.userMetrics.actionTaken(action);
-      void this.#controller.breakpointsRemoved(breakpointItems);
-      event.consume();
-    };
-    // clang-format off
-    return html`
-    <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText} jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
-      <devtools-icon name="bin"></devtools-icon>
-    </button>
-      `;
-    // clang-format on
   }
 
   #onBreakpointGroupContextMenu(event: Event, breakpointGroup: BreakpointGroup): void {
@@ -749,95 +940,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }, {disabled: notDisabledItems.length === 0, jslogContext: 'disable-file-breakpoints'});
 
     void menu.show();
-  }
-
-  #renderBreakpointGroup(group: BreakpointGroup, groupIndex: number): Lit.TemplateResult {
-    const contextmenuHandler = (event: Event): void => {
-      this.#onBreakpointGroupContextMenu(event, group);
-      event.consume();
-    };
-    const toggleHandler = (event: Event): void => {
-      const htmlDetails = event.target as HTMLDetailsElement;
-      group.expanded = htmlDetails.open;
-      void this.#controller.expandedStateChanged(group.url, group.expanded);
-    };
-    const clickHandler = async(event: Event): Promise<void> => {
-      const selected = event.currentTarget as HTMLElement;
-      await this.#setSelected(selected);
-      // Record the metric for expanding/collapsing in the click handler,
-      // as we only then get the number of expand/collapse actions that were
-      // initiated by the user.
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
-      event.consume();
-    };
-    // clang-format off
-    return html`
-      <details class=${classMap({active: this.#breakpointsActive})}
-               ?data-first-group=${groupIndex === 0}
-               ?data-last-group=${groupIndex === this.#breakpointGroups.length - 1}
-               role=group
-               aria-label='${group.name}'
-               aria-description='${group.url}'
-               ?open=${live(group.expanded)}
-               @toggle=${toggleHandler}>
-          <summary @contextmenu=${contextmenuHandler}
-                   tabindex='-1'
-                   @keydown=${this.#keyDownHandler}
-                   @click=${clickHandler}>
-            <span class='group-header' aria-hidden=true>
-              <span class='group-icon-or-disable'>
-                ${this.#renderFileIcon()}
-                ${this.#renderGroupCheckbox(group)}
-              </span>
-              <span class='group-header-title' title='${group.url}'>
-                ${group.name}
-                <span class='group-header-differentiator'>
-                  ${this.#urlToDifferentiatingPath.get(group.url)}
-                </span>
-              </span>
-            </span>
-            <span class='group-hover-actions'>
-              ${this.#renderRemoveBreakpointButton(
-                  group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile),
-                  Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton)}
-            </span>
-          </summary>
-        ${repeat(
-          group.breakpointItems,
-          item => item.id,
-          (item, breakpointItemIndex) => this.#renderBreakpointEntry(item, group.editable, groupIndex, breakpointItemIndex))}
-      </details>
-      `;
-    // clang-format on
-  }
-
-  #renderGroupCheckbox(group: BreakpointGroup): Lit.TemplateResult {
-    const groupCheckboxToggled = (e: Event): void => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
-      const element = e.target as HTMLInputElement;
-      const updatedStatus = element.checked ? BreakpointStatus.ENABLED : BreakpointStatus.DISABLED;
-      const itemsToUpdate = group.breakpointItems.filter(item => item.status !== updatedStatus);
-      itemsToUpdate.forEach(item => {
-        this.#controller.breakpointStateChanged(item, element.checked);
-      });
-      e.consume();
-    };
-
-    const checked = group.breakpointItems.some(item => item.status === BreakpointStatus.ENABLED);
-    return html`
-      <input class='group-checkbox small' type='checkbox'
-            aria-label=''
-            .checked=${checked}
-            @change=${groupCheckboxToggled}
-            tabindex=-1
-            jslog=${VisualLogging.toggle('breakpoint-group').track({
-      change: true,
-    })}>
-    `;
-  }
-
-  #renderFileIcon(): Lit.TemplateResult {
-    return html`<devtools-icon name="file-script"></devtools-icon>`;
   }
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
@@ -884,65 +986,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void menu.show();
   }
 
-  #renderBreakpointEntry(
-      breakpointItem: BreakpointItem, editable: boolean, groupIndex: number,
-      breakpointItemIndex: number): Lit.TemplateResult {
-    const codeSnippetClickHandler = (event: Event): void => {
-      void this.#controller.jumpToSource(breakpointItem);
-      event.consume();
-    };
-    const breakpointItemClickHandler = async(event: Event): Promise<void> => {
-      const target = event.currentTarget as HTMLDivElement;
-      await this.#setSelected(target);
-      event.consume();
-    };
-    const contextmenuHandler = (event: Event): void => {
-      this.#onBreakpointEntryContextMenu(event, breakpointItem, editable);
-      event.consume();
-    };
-    const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
-    const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
-    const codeSnippetTooltip = this.#getCodeSnippetTooltip(breakpointItem.type, breakpointItem.hoverText);
-    const itemsInGroup = this.#breakpointGroups[groupIndex].breakpointItems;
-
-    // clang-format off
-    return html`
-    <div class=${classMap({
-            'breakpoint-item': true,
-            hit: breakpointItem.isHit,
-            'conditional-breakpoint': breakpointItem.type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
-            logpoint: breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT,
-          })}
-         ?data-first-breakpoint=${breakpointItemIndex === 0}
-         ?data-last-breakpoint=${breakpointItemIndex === itemsInGroup.length - 1}
-         aria-label=${breakpointItemDescription}
-         role=treeitem
-         tabindex='-1'
-         @contextmenu=${contextmenuHandler}
-         @click=${breakpointItemClickHandler}
-         @keydown=${this.#keyDownHandler}>
-      <label class='checkbox-label'>
-        <span class='type-indicator'></span>
-        <input type='checkbox'
-              aria-label=${breakpointItem.location}
-              class='small'
-              ?indeterminate=${breakpointItem.status === BreakpointStatus.INDETERMINATE}
-              .checked=${breakpointItem.status === BreakpointStatus.ENABLED}
-              @change=${(e: Event) => this.#onCheckboxToggled(e, breakpointItem)}
-              tabindex=-1
-              jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
-      </label>
-      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${ifDefined(codeSnippetTooltip)} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
-      <span class='breakpoint-item-location-or-actions'>
-        ${editable ? this.#renderEditBreakpointButton(breakpointItem) : Lit.nothing}
-        ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}
-        <span class='location'>${breakpointItem.location}</span>
-      </span>
-    </div>
-    `;
-    // clang-format on
-  }
-
   #getCodeSnippetTooltip(type: SDK.DebuggerModel.BreakpointType, hoverText?: string): string|undefined {
     switch (type) {
       case SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT:
@@ -975,8 +1018,8 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return i18nString(UIStrings.breakpointHit, {PH1: checkboxDescription});
   }
 
-  #onCheckboxToggled(e: Event, item: BreakpointItem): void {
-    const element = e.target as HTMLInputElement;
+  #onCheckboxToggled(item: BreakpointItem, event: Event): void {
+    const element = event.target as HTMLInputElement;
     this.#controller.breakpointStateChanged(item, element.checked);
   }
 
@@ -988,13 +1031,5 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #onPauseOnUncaughtExceptionsStateChanged(e: Event): void {
     const {checked} = e.target as HTMLInputElement;
     this.#controller.setPauseOnUncaughtExceptions(checked);
-  }
-}
-
-customElements.define('devtools-breakpoint-view', BreakpointsView);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-breakpoint-view': BreakpointsView;
   }
 }

@@ -5,9 +5,6 @@
 
 import './SidebarSingleInsightSet.js';
 
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -20,22 +17,6 @@ import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
 import type {SidebarSingleInsightSet, SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = Lit;
-
-const FEEDBACK_URL = 'https://crbug.com/371170842' as Platform.DevToolsPath.UrlString;
-
-const UIStrings = {
-  /**
-   *@description text show in feedback button
-   */
-  feedbackButton: 'Feedback',
-  /**
-   *@description text show in feedback tooltip
-   */
-  feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
-} as const;
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarInsightsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -123,10 +104,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #insightSetUnhovered(): void {
     this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
-  }
-
-  #onFeedbackClick(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(FEEDBACK_URL);
   }
 
   #onZoomClick(event: Event, id: string): void {
@@ -238,14 +215,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
           return contents;
         })}
-      </div>
-
-      <div class="feedback-wrapper">
-        <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'review'} @click=${this.#onFeedbackClick}>
-          ${i18nString(UIStrings.feedbackButton)}
-        </devtools-button>
-
-        <p class="tooltip">${i18nString(UIStrings.feedbackTooltip)}</p>
       </div>
     `;
     // clang-format on

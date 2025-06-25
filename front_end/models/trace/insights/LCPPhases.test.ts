@@ -4,6 +4,7 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 describeWithEnvironment('LCPPhases', function() {
@@ -14,9 +15,11 @@ describeWithEnvironment('LCPPhases', function() {
 
     assert.strictEqual(insight.lcpMs, 106.482);
 
-    const wantTtfb = Types.Timing.Milli(6.115);
-    const wantRenderDelay = Types.Timing.Milli(100.367);
-    assert.deepEqual(insight.phases, {ttfb: wantTtfb, renderDelay: wantRenderDelay});
+    const wantTtfb = Types.Timing.Micro(6115);
+    const wantRenderDelay = Types.Timing.Micro(100367);
+    assert.exists(insight.phases);
+    const actual = Object.fromEntries(Object.entries(insight.phases).map(([key, value]) => [key, value.range]));
+    assert.deepEqual(actual, {ttfb: wantTtfb, renderDelay: wantRenderDelay});
   });
 
   it('calculates image lcp phases', async () => {
@@ -31,12 +34,12 @@ describeWithEnvironment('LCPPhases', function() {
     }
 
     const phases = {
-      ttfb: insight.phases.ttfb?.toFixed(2),
-      loadTime: insight.phases.loadTime?.toFixed(2),
-      loadDelay: insight.phases.loadDelay?.toFixed(2),
-      renderDelay: insight.phases.renderDelay?.toFixed(2),
+      ttfb: Helpers.Timing.microToMilli(insight.phases.ttfb?.range).toFixed(2),
+      loadTime: Helpers.Timing.microToMilli(insight.phases.loadDuration?.range as Types.Timing.Micro).toFixed(2),
+      loadDelay: Helpers.Timing.microToMilli(insight.phases.loadDelay?.range as Types.Timing.Micro).toFixed(2),
+      renderDelay: Helpers.Timing.microToMilli(insight.phases.renderDelay?.range).toFixed(2),
     };
-    assert.deepEqual(phases, {ttfb: '6.94', loadTime: '12.09', loadDelay: '33.74', renderDelay: '56.85'});
+    assert.deepEqual(phases, {ttfb: '6.94', loadTime: '12.10', loadDelay: '33.74', renderDelay: '56.85'});
   });
 
   describe('warnings', function() {

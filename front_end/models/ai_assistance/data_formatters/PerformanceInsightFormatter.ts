@@ -108,7 +108,7 @@ ${this.#links()}`;
   #details(): string {
     if (Trace.Insights.Models.LCPPhases.isLCPPhases(this.#insight)) {
       const {phases, lcpMs} = this.#insight;
-      if (!lcpMs) {
+      if (!lcpMs || !phases) {
         return '';
       }
 
@@ -118,22 +118,12 @@ ${this.#links()}`;
       // very old traces are missing the data, so we have to code defensively
       // in case the phases are not present.
       const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
-      if (phases?.ttfb) {
-        const percentage = (phases.ttfb / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Time to first byte', value: formatMilli(phases.ttfb), percentage});
-      }
-      if (phases?.loadDelay) {
-        const percentage = (phases.loadDelay / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Resource load delay', value: formatMilli(phases.loadDelay), percentage});
-      }
-      if (phases?.loadTime) {
-        const percentage = (phases.loadTime / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Resource load duration', value: formatMilli(phases.loadTime), percentage});
-      }
-      if (phases?.renderDelay) {
-        const percentage = (phases.renderDelay / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Element render delay', value: formatMilli(phases.renderDelay), percentage});
-      }
+
+      Object.values(phases).forEach((phase: Trace.Insights.Models.LCPPhases.Phase) => {
+        const phaseMilli = Trace.Helpers.Timing.microToMilli(phase.range);
+        const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: phase.label, value: formatMilli(phaseMilli), percentage});
+      });
 
       return `${this.#lcpMetricSharedContext()}
 

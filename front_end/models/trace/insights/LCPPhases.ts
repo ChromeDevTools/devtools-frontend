@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
@@ -63,26 +64,28 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPPhases.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// A TraceWindow plus its UIString.
+export type Phase = Types.Timing.TraceWindowMicro&{label: Common.UIString.LocalizedString};
 interface LCPPhases {
   /**
    * The time between when the user initiates loading the page until when
    * the browser receives the first byte of the html response.
    */
-  ttfb: Types.Timing.Milli;
+  ttfb: Phase;
   /**
    * The time between ttfb and the LCP request request being started.
    * For a text LCP, this is undefined given no request is loaded.
    */
-  loadDelay?: Types.Timing.Milli;
+  loadDelay?: Phase;
   /**
    * The time it takes to load the LCP request.
    */
-  loadTime?: Types.Timing.Milli;
+  loadDuration?: Phase;
   /**
    * The time between when the LCP request finishes loading and when
    * the LCP element is rendered.
    */
-  renderDelay: Types.Timing.Milli;
+  renderDelay: Phase;
 }
 
 export function isLCPPhases(model: InsightModel): model is LCPPhasesInsightModel {
@@ -101,49 +104,70 @@ function anyValuesNaN(...values: number[]): boolean {
   return values.some(v => Number.isNaN(v));
 }
 /**
- * Calculates the 4 phases of an LCP and the timings of each.
+ * Calculates the 4 phases of an LCP as bounds.
  * Will return `null` if any required values were missing. We don't ever expect
  * them to be missing on newer traces, but old trace files may lack some of the
  * data we rely on, so we want to handle that case.
  */
-function breakdownPhases(
-    nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest, lcpMs: Types.Timing.Milli,
+function phaseTimings(
+    nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
+    lcpEvent: Types.Events.LargestContentfulPaintCandidate,
     lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPPhases|null {
   const docReqTiming = docRequest.args.data.timing;
   if (!docReqTiming) {
     throw new Error('no timing for document request');
   }
-  const firstDocByteTs = Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
-      Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart);
+  const firstDocByteTs = Types.Timing.Micro(
+      Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
+      Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
 
-  const firstDocByteTiming = Types.Timing.Micro(firstDocByteTs - nav.ts);
-  const ttfb = Helpers.Timing.microToMilli(firstDocByteTiming);
-  let renderDelay = Types.Timing.Milli(lcpMs - ttfb);
+  const ttfb = Helpers.Timing.traceWindowFromMicroSeconds(nav.ts, firstDocByteTs) as Phase;
+  ttfb.label = i18nString(UIStrings.timeToFirstByte);
 
+  let renderDelay = Helpers.Timing.traceWindowFromMicroSeconds(ttfb.max, lcpEvent.ts) as Phase;
+  renderDelay.label = i18nString(UIStrings.elementRenderDelay);
+
+  // If the LCP is text, we don't have a request, so just 2 phases.
   if (!lcpRequest) {
-    if (anyValuesNaN(ttfb, renderDelay)) {
+    /** Text LCP. 2 phases, thus 3 timestamps
+     *
+     *       |          ttfb           |             renderDelay              |
+     *                                                                        ^ lcpEvent.ts
+     *                                 ^ firstDocByteTs
+     *       ^ navStartTs
+     */
+    if (anyValuesNaN(ttfb.range, renderDelay.range)) {
       return null;
     }
     return {ttfb, renderDelay};
   }
 
-  const lcpStartTs = Types.Timing.Micro(lcpRequest.ts - nav.ts);
-  const requestStart = Helpers.Timing.microToMilli(lcpStartTs);
+  /** Image LCP. 4 phases means 5 timestamps
+   *
+   *       |  ttfb   |    loadDelay     |     loadTime    |    renderDelay    |
+   *                                                                          ^ lcpEvent.ts
+   *                                                      ^ lcpReqEndTs
+   *                                    ^ lcpStartTs
+   *                 ^ ttfbTs
+   *       ^ navStartTs
+   */
+  const lcpStartTs = lcpRequest.ts;
+  const lcpReqEndTs = lcpRequest.args.data.syntheticData.finishTime;
 
-  const lcpReqEndTs = Types.Timing.Micro(lcpRequest.args.data.syntheticData.finishTime - nav.ts);
-  const requestEnd = Helpers.Timing.microToMilli(lcpReqEndTs);
-
-  const loadDelay = Types.Timing.Milli(requestStart - ttfb);
-  const loadTime = Types.Timing.Milli(requestEnd - requestStart);
-  renderDelay = Types.Timing.Milli(lcpMs - requestEnd);
-  if (anyValuesNaN(ttfb, loadDelay, loadTime, renderDelay)) {
+  const loadDelay = Helpers.Timing.traceWindowFromMicroSeconds(ttfb.max, lcpStartTs) as Phase;
+  const loadDuration = Helpers.Timing.traceWindowFromMicroSeconds(lcpStartTs, lcpReqEndTs) as Phase;
+  renderDelay = Helpers.Timing.traceWindowFromMicroSeconds(lcpReqEndTs, lcpEvent.ts) as Phase;
+  loadDelay.label = i18nString(UIStrings.resourceLoadDelay);
+  loadDuration.label = i18nString(UIStrings.resourceLoadDuration);
+  renderDelay.label = i18nString(UIStrings.elementRenderDelay);
+  if (anyValuesNaN(ttfb.range, loadDelay.range, loadDuration.range, renderDelay.range)) {
     return null;
   }
 
   return {
     ttfb,
     loadDelay,
-    loadTime,
+    loadDuration,
     renderDelay,
   };
 }
@@ -202,21 +226,11 @@ export function generateInsight(
     return finalize({lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
-  if (!lcpRequest) {
-    return finalize({
-      lcpMs,
-      lcpTs,
-      lcpEvent,
-      lcpRequest,
-      phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
-    });
-  }
-
   return finalize({
     lcpMs,
     lcpTs,
     lcpEvent,
     lcpRequest,
-    phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
+    phases: phaseTimings(context.navigation, docRequest, lcpEvent, lcpRequest) ?? undefined,
   });
 }

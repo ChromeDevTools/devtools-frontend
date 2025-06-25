@@ -4,7 +4,7 @@
 /* eslint-disable rulesdir/no-lit-render-outside-of-view */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Platform from '../../../../core/platform/platform.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -13,7 +13,7 @@ import * as Utils from '../../utils/utils.js';
 
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
 
-const {html} = Lit;
+const {html, Directives: {ifDefined}} = Lit;
 
 export class EventReferenceClick extends Event {
   static readonly eventName = 'eventreferenceclick';
@@ -57,24 +57,22 @@ class EventRef extends HTMLElement {
   }
 }
 
-type EventRefSupportedEvents = Trace.Types.Events.SyntheticNetworkRequest;
-
 export function eventRef(
-    event: EventRefSupportedEvents, options?: {text?: string, title?: string}): Lit.TemplateResult {
+    event: Trace.Types.Events.Event, options?: {text?: string, title?: string}): Lit.TemplateResult {
   let title = options?.title;
   let text = options?.text;
   if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
     text = text ?? Utils.Helpers.shortenUrl(new URL(event.args.data.url));
     title = title ?? event.args.data.url;
-  } else {
-    Platform.TypeScriptUtilities.assertNever(
-        event, `unsupported event in eventRef: ${(event as Trace.Types.Events.Event).name}`);
+  } else if (!text) {
+    console.warn('No text given for eventRef');
+    text = event.name;
   }
 
   return html`<devtools-performance-event-ref
     .event=${event as Trace.Types.Events.Event}
     .text=${text}
-    title=${title}
+    title=${ifDefined(title)}
   ></devtools-performance-event-ref>`;
 }
 

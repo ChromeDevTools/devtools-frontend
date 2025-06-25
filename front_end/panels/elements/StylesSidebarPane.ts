@@ -322,7 +322,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void {
-    this.decorator.highlightProperty(cssProperty);
+    void this.decorator.highlightProperty(cssProperty);
     this.lastRevealedProperty = cssProperty;
     this.update();
   }
@@ -985,7 +985,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       this.noMatchesElement.classList.toggle('hidden', this.sectionBlocks.length > 0);
     }
     if (this.lastRevealedProperty) {
-      this.decorator.highlightProperty(this.lastRevealedProperty);
+      void this.decorator.highlightProperty(this.lastRevealedProperty);
       this.lastRevealedProperty = null;
     }
 

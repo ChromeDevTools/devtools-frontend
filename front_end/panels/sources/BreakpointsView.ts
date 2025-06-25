@@ -2,23 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/icon_button/icon_button.js';
 
-import * as Common from '../../../core/common/common.js';
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
-import * as TextUtils from '../../../models/text_utils/text_utils.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
-import * as Input from '../../../ui/components/input/input.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
+import * as Input from '../../ui/components/input/input.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
@@ -106,7 +106,7 @@ const UIStrings = {
    */
   logpointCode: 'Logpoint: {PH1}',
 } as const;
-const str_ = i18n.i18n.registerUIStrings('panels/sources/components/BreakpointsView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_SNIPPET_LENGTH = 200;
 

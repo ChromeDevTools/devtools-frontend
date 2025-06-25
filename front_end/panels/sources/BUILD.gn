@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "breakpointEditDialog.css",
+    "breakpointsView.css",
     "callStackSidebarPane.css",
     "debuggerPausedMessage.css",
     "dialog.css",
@@ -30,6 +31,8 @@ devtools_module("sources") {
     "AddSourceMapURLDialog.ts",
     "AiWarningInfobarPlugin.ts",
     "BreakpointEditDialog.ts",
+    "BreakpointsView.ts",
+    "BreakpointsViewUtils.ts",
     "CSSPlugin.ts",
     "CallStackSidebarPane.ts",
     "CategorizedBreakpointL10n.ts",
@@ -136,7 +139,6 @@ devtools_entrypoint("meta") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/quick_open:bundle",
-    "./components:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]
@@ -147,6 +149,8 @@ ts_library("unittests") {
 
   sources = [
     "BreakpointEditDialog.test.ts",
+    "BreakpointsView.test.ts",
+    "BreakpointsViewUtils.test.ts",
     "CSSPlugin.test.ts",
     "CoveragePlugin.test.ts",
     "DebuggerPausedMessage.test.ts",

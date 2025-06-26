@@ -56,16 +56,16 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/INPBreakdown.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type INPInsightModel = InsightModel<typeof UIStrings, {
+export type INPBreakdownInsightModel = InsightModel<typeof UIStrings, {
   longestInteractionEvent?: SyntheticInteractionPair,
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-export function isINP(insight: InsightModel): insight is INPInsightModel {
+export function isINPBreakdown(insight: InsightModel): insight is INPBreakdownInsightModel {
   return insight.insightKey === InsightKeys.INP_BREAKDOWN;
 }
 
-function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
+function finalize(partialModel: PartialInsightModel<INPBreakdownInsightModel>): INPBreakdownInsightModel {
   return {
     insightKey: InsightKeys.INP_BREAKDOWN,
     strings: UIStrings,
@@ -77,7 +77,8 @@ function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsigh
   };
 }
 
-export function generateInsight(parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): INPInsightModel {
+export function generateInsight(
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): INPBreakdownInsightModel {
   const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });

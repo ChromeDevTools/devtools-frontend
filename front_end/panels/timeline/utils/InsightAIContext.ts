@@ -141,7 +141,7 @@ export class AIQueries {
 function insightBounds(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
     Trace.Types.Timing.TraceWindowMicro {
   // For Interactions, we know we only care about the time period of the interaction.
-  if (Trace.Insights.Models.InteractionToNextPaint.isINP(insight) && insight.longestInteractionEvent) {
+  if (Trace.Insights.Models.INPBreakdown.isINPBreakdown(insight) && insight.longestInteractionEvent) {
     return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         insight.longestInteractionEvent.ts,
         insight.longestInteractionEvent.ts + insight.longestInteractionEvent.dur as Trace.Types.Timing.Micro);

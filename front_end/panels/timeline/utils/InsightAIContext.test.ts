@@ -97,7 +97,7 @@ describeWithEnvironment('AIQueries', () => {
   it('limits the trace bounds for an INP insight to just the interaction', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     assert.isOk(insights);
-    const insight = getInsightOrError('InteractionToNextPaint', insights);
+    const insight = getInsightOrError('INPBreakdown', insights);
 
     const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, parsedTrace);
     assert.isOk(activity);

@@ -210,7 +210,7 @@ The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
     }
 
-    if (Trace.Insights.Models.INPBreakdown.isINP(this.#insight)) {
+    if (Trace.Insights.Models.INPBreakdown.isINPBreakdown(this.#insight)) {
       const event = this.#insight.longestInteractionEvent;
       if (!event) {
         return '';

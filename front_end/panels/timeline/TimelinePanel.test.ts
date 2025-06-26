@@ -330,7 +330,7 @@ describeWithEnvironment('TimelinePanel', function() {
       const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
       assert.include(response, 'Insights from this recording');
       const EXPECTED_INSIGHT_TITLES = [
-        'LCP by phase',
+        'LCP breakdown',
         'LCP request discovery',
         'Render blocking requests',
         'Document request latency',

@@ -140,6 +140,13 @@ export class AIQueries {
  */
 function insightBounds(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
     Trace.Types.Timing.TraceWindowMicro {
+  // For Interactions, we know we only care about the time period of the interaction.
+  if (Trace.Insights.Models.InteractionToNextPaint.isINP(insight) && insight.longestInteractionEvent) {
+    return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+        insight.longestInteractionEvent.ts,
+        insight.longestInteractionEvent.ts + insight.longestInteractionEvent.dur as Trace.Types.Timing.Micro);
+  }
+
   const navigationStart =
       insight.navigationId ? parsedTrace.Meta.navigationsByNavigationId.get(insight.navigationId) : undefined;
   const minBound = navigationStart?.ts ?? parsedTrace.Meta.traceBounds.min;
@@ -173,8 +180,19 @@ function getNextNavigation(
 }
 
 function customMaxBoundForInsight(insight: Trace.Insights.Types.InsightModel): Trace.Types.Timing.Micro|null {
+  // For insights that only care about LCP, the max time bound is the timestamp
+  // of the LCP event itself.
   if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(insight) && insight.lcpEvent) {
     return insight.lcpEvent.ts;
+  }
+  if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(insight) && insight.lcpEvent) {
+    return insight.lcpEvent.ts;
+  }
+
+  // For the document request latency Insight, we care about anything that
+  // happened up to the end of the initial document request.
+  if (Trace.Insights.Models.DocumentLatency.isDocumentLatency(insight) && insight.data?.documentRequest) {
+    return insight.data.documentRequest.ts + insight.data.documentRequest.dur as Trace.Types.Timing.Micro;
   }
   return null;
 }

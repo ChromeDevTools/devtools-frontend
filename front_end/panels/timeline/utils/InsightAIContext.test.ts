@@ -81,4 +81,50 @@ describeWithEnvironment('AIQueries', () => {
     const longTaskDuration = Trace.Types.Timing.Micro(999544);
     assert.isTrue(children.some(event => event.dur === longTaskDuration));
   });
+
+  it('limits the time bounds for DocumentRequestLatency to the timestamp of the document request', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    assert.isOk(insights);
+    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('DocumentLatency', insights, firstNav);
+
+    const requests = Utils.InsightAIContext.AIQueries.networkRequests(insight, parsedTrace);
+    assert.isOk(insight.data?.documentRequest);
+    // The only relevant request is the document request itself.
+    assert.deepEqual(requests, [insight.data.documentRequest]);
+  });
+
+  it('limits the trace bounds for an INP insight to just the interaction', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+    assert.isOk(insights);
+    const insight = getInsightOrError('InteractionToNextPaint', insights);
+
+    const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, parsedTrace);
+    assert.isOk(activity);
+
+    // These are the first 3 nodes that we expect. The structure of the
+    // timeline under the long keydown interaction are:
+    // X YYYYYYYYYYYYYYY
+    // A ..............
+    // Where X = Node 1 below, A = Node 2 below, and YYYYYYY is the long
+    // interaction = Node 3 below.
+    const expectedToContain = `# Call tree:
+
+Node: 1 – Task
+dur: 1.1
+self: 0.2
+Children:
+  * 2 – Event: keydown
+
+Node: 2 – Event: keydown
+dur: 1
+self: 1
+
+Node: 3 – Task
+dur: 143.2
+self: 0.1
+Children:
+  * 4 – Event: keypress`;
+    assert.include(activity.serialize(), expectedToContain);
+  });
 });

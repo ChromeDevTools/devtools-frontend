@@ -15,8 +15,6 @@ import * as ElementsBreadcrumbs from './ElementsBreadcrumbs.js';
 import * as ElementsBreadcrumbsUtils from './ElementsBreadcrumbsUtils.js';
 import * as ElementsTreeExpandButton from './ElementsTreeExpandButton.js';
 import * as Helper from './Helper.js';
-import * as LayoutPane from './LayoutPane.js';
-import * as LayoutPaneUtils from './LayoutPaneUtils.js';
 import * as QueryContainer from './QueryContainer.js';
 import * as StylePropertyEditor from './StylePropertyEditor.js';
 
@@ -34,8 +32,6 @@ export {
   ElementsBreadcrumbsUtils,
   ElementsTreeExpandButton,
   Helper,
-  LayoutPane,
-  LayoutPaneUtils,
   QueryContainer,
   StylePropertyEditor,
 };

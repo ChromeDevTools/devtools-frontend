@@ -2,18 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import {
-  renderElementIntoDOM,
-} from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {spyCall} from '../../testing/ExpectStubCall.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
-import * as ElementsComponents from './components.js';
+import * as Elements from './elements.js';
 
 describeWithMockConnection('LayoutPane', () => {
   let target: SDK.Target.Target;
@@ -30,16 +28,16 @@ describeWithMockConnection('LayoutPane', () => {
   });
 
   async function renderComponent() {
-    const component = new ElementsComponents.LayoutPane.LayoutPane();
+    const component = new Elements.LayoutPane.LayoutPane();
+    const performUpdateSpy = spyCall(component, 'performUpdate');
     renderElementIntoDOM(component);
     component.wasShown();
-    await RenderCoordinator.done({waitForWork: true});
+    await (await performUpdateSpy).result;
     return component;
   }
 
   function queryLabels(component: HTMLElement, selector: string) {
-    assert.isNotNull(component.shadowRoot);
-    return Array.from(component.shadowRoot.querySelectorAll(selector)).map(label => {
+    return Array.from(component.querySelectorAll(selector)).map(label => {
       const input = label.querySelector('[data-input]');
       assert.instanceOf(input, HTMLElement);
 
@@ -59,18 +57,18 @@ describeWithMockConnection('LayoutPane', () => {
         .setTitle('Boolean setting title' as Platform.UIString.LocalizedString);
 
     const component = await renderComponent();
-    assert.deepEqual(queryLabels(component, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);
     assert.deepEqual(
-        queryLabels(component, '[data-boolean-setting]'),
+        queryLabels(component.contentElement, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);
+    assert.deepEqual(
+        queryLabels(component.contentElement, '[data-boolean-setting]'),
         [{label: 'Boolean setting title', input: 'INPUT'}, {label: '', input: 'INPUT'}, {label: '', input: 'INPUT'}]);
   });
 
   it('stores a setting when changed', async () => {
     const component = await renderComponent();
 
-    assert.isNotNull(component.shadowRoot);
     assert.isTrue(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
-    const input = component.shadowRoot.querySelector('[data-boolean-setting] [data-input]');
+    const input = component.contentElement.querySelector('[data-boolean-setting] [data-input]');
     assert.instanceOf(input, HTMLInputElement);
 
     input.click();
@@ -110,9 +108,8 @@ describeWithMockConnection('LayoutPane', () => {
         .returns(makeNode(ID_2));
 
     const component = await renderComponent();
-    assert.isNotNull(component.shadowRoot);
 
-    assert.lengthOf(queryLabels(component, '[data-element]'), 3);
+    assert.lengthOf(queryLabels(component.contentElement, '[data-element]'), 3);
   });
 
   it('renders flex elements', async () => {
@@ -130,9 +127,8 @@ describeWithMockConnection('LayoutPane', () => {
         .returns(makeNode(ID_3));
 
     const component = await renderComponent();
-    assert.isNotNull(component.shadowRoot);
 
-    assert.lengthOf(queryLabels(component, '[data-element]'), 3);
+    assert.lengthOf(queryLabels(component.contentElement, '[data-element]'), 3);
   });
 
   it('send an event when an element overlay is toggled', async () => {
@@ -143,9 +139,8 @@ describeWithMockConnection('LayoutPane', () => {
     const highlightGrid = sinon.spy(overlayModel, 'highlightGridInPersistentOverlay');
 
     const component = await renderComponent();
-    assert.isNotNull(component.shadowRoot);
 
-    const input = component.shadowRoot.querySelector('[data-element] [data-input]');
+    const input = component.contentElement.querySelector('[data-element] [data-input]');
     assert.instanceOf(input, HTMLInputElement);
     input.click();
     assert.isTrue(highlightGrid.calledOnceWith(ID_1));
@@ -160,9 +155,8 @@ describeWithMockConnection('LayoutPane', () => {
     const reveal = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
 
     const component = await renderComponent();
-    assert.isNotNull(component.shadowRoot);
 
-    const button = component.shadowRoot.querySelector('.show-element');
+    const button = component.contentElement.querySelector('.show-element');
     assert.instanceOf(button, HTMLElement);
     button.click();
     assert.isTrue(reveal.calledOnceWith(node, false));
@@ -170,8 +164,7 @@ describeWithMockConnection('LayoutPane', () => {
 
   it('expands/collapses <details> using ArrowLeft/ArrowRight keys', async () => {
     const component = await renderComponent();
-    assert.isNotNull(component.shadowRoot);
-    const details = component.shadowRoot.querySelector('details');
+    const details = component.contentElement.querySelector('details');
     assert.instanceOf(details, HTMLDetailsElement);
     const summary = details.querySelector('summary');
     assert.instanceOf(summary, HTMLElement);
@@ -185,16 +178,15 @@ describeWithMockConnection('LayoutPane', () => {
   const updatesUiOnEvent = <T extends keyof SDK.OverlayModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
-    const render = sinon.spy(ElementsComponents.LayoutPane.LayoutPane.prototype, 'render');
+    const renderSpy = sinon.spy(Elements.LayoutPane.LayoutPane.prototype, 'requestUpdate');
     await renderComponent();
-    await RenderCoordinator.done();
-    render.resetHistory();
+
+    renderSpy.resetHistory();
     overlayModel.dispatchEventToListeners(
         event,
         ...[{nodeId: 42, enabled: true}] as unknown as
             Common.EventTarget.EventPayloadToRestParameters<SDK.OverlayModel.EventTypes, T>);
-    await RenderCoordinator.done();
-    assert.strictEqual(render.called, inScope);
+    assert.strictEqual(renderSpy.called, inScope);
   };
 
   it('updates UI on in scope grid overlay update event',

@@ -1026,7 +1026,6 @@ type ExternalRequestInput = {
   args: {prompt: string, selector: string},
 }|{
   kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
-  args: {url: string},
 };
 
 interface ExternalRequestResponse {
@@ -1037,7 +1036,8 @@ interface ExternalRequestResponse {
 export async function handleExternalRequest(input: ExternalRequestInput): Promise<ExternalRequestResponse> {
   switch (input.kind) {
     case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
-      return await Promise.resolve({response: 'Not yet implemented', devToolsLogs: []});
+      const TimelinePanel = await import('../../panels/timeline/timeline.js');
+      return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
     }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');

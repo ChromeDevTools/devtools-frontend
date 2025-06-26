@@ -91,6 +91,10 @@ export class PerformanceInsightFormatter {
     return parts.join('\n');
   }
 
+  insightIsSupported(): boolean {
+    return this.#description().length > 0;
+  }
+
   formatInsight(): string {
     const {title} = this.#insight;
     return `## Insight Title: ${title}

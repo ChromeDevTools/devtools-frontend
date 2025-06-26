@@ -43,6 +43,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -51,6 +52,7 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -301,7 +303,11 @@ const UIStrings = {
   /**
    * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
    */
-  shortcutsDialogTitle: 'Keyboard shortcuts for flamechart'
+  shortcutsDialogTitle: 'Keyboard shortcuts for flamechart',
+  /**
+   * @description Notification shown to the user whenever DevTools receives an external request.
+   */
+  externalRequestReceived: '`DevTools` received an external request',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -907,6 +913,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       return this.#viewMode.traceIndex;
     }
     return null;
+  }
+
+  /**
+   * Exposed for handling external requests.
+   */
+  get model(): Trace.TraceModel.Model {
+    return this.#traceEngineModel;
   }
 
   /**
@@ -2426,12 +2439,17 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         parsedTrace,
         metadata,
       });
+
+      this.dispatchEventToListeners(Events.RECORDING_COMPLETED, {
+        traceIndex,
+      });
     } catch (error) {
       // If we errored during the parsing stage, it
       // is useful to get access to the raw events to download the trace. This
       // allows us to debug crashes!
       void this.recordingFailed(error.message, collectedEvents);
       console.error(error);
+      this.dispatchEventToListeners(Events.RECORDING_COMPLETED, {errorText: error.message});
     } finally {
       this.recordTraceLoadMetric();
     }
@@ -2856,6 +2874,85 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const insightSetKey = insightModel.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
     this.#setActiveInsight({model: insightModel, insightSetKey}, {highlightInsight: true});
   }
+
+  static async handleExternalRecordRequest(): Promise<{response: string, devToolsLogs: object[]}> {
+    Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
+
+    const panelInstance = TimelinePanel.instance();
+    // Given how the current UX works, it's nice to show the user the Perf
+    // Panel so they see what's happening
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+
+    function onRecordingCompleted(eventData: EventTypes[Events.RECORDING_COMPLETED]):
+        {response: string, devToolsLogs: object[]} {
+      if ('errorText' in eventData) {
+        return {
+          response: `Error running the trace: ${eventData.errorText}`,
+          devToolsLogs: [],
+        };
+      }
+      const parsedTrace = panelInstance.model.parsedTrace(eventData.traceIndex);
+      const insights = panelInstance.model.traceInsights(eventData.traceIndex);
+      if (!parsedTrace || !insights || insights.size === 0) {
+        return {
+          response: 'The trace was loaded successfully but no Insights were detected.',
+          devToolsLogs: [],
+        };
+      }
+
+      const navigationId = Array.from(insights.keys()).find(k => k !== 'NO_NAVIGATION');
+      if (!navigationId) {
+        return {
+          response: 'The trace was loaded successfully but no navigation was detected.',
+          devToolsLogs: [],
+        };
+      }
+
+      const insightsForNav = insights.get(navigationId);
+      if (!insightsForNav) {
+        return {
+          response: 'The trace was loaded successfully but no Insights were detected.',
+          devToolsLogs: [],
+        };
+      }
+
+      let responseText = '';
+      for (const modelName in insightsForNav.model) {
+        const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
+        const data = insightsForNav.model[model];
+        if (data.state === 'pass') {
+          continue;
+        }
+        const activeInsight = new Utils.InsightAIContext.ActiveInsight(
+            data,
+            parsedTrace,
+        );
+        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(activeInsight);
+        if (!formatter.insightIsSupported()) {
+          // Not all Insights are integrated with "Ask AI" yet, let's avoid
+          // filling up the response with those ones because there will be no
+          // useful information.
+          continue;
+        }
+
+        responseText += `${formatter.formatInsight()}\n\n`;
+      }
+      return {
+        response: `Insights from this recording:\n${responseText}`,
+        devToolsLogs: [],
+      };
+    }
+
+    return await new Promise(resolve => {
+      function listener(e: Common.EventTarget.EventTargetEvent<EventTypes[Events.RECORDING_COMPLETED]>): void {
+        resolve(onRecordingCompleted(e.data));
+        panelInstance.removeEventListener(Events.RECORDING_COMPLETED, listener);
+      }
+      panelInstance.addEventListener(Events.RECORDING_COMPLETED, listener);
+
+      panelInstance.recordReload();
+    });
+  }
 }
 
 export const enum State {
@@ -2971,7 +3068,9 @@ export class SelectedInsight {
 }
 export const enum Events {
   IS_VIEWING_TRACE = 'IsViewingTrace',
+  RECORDING_COMPLETED = 'RecordingCompleted',
 }
 export interface EventTypes {
   [Events.IS_VIEWING_TRACE]: boolean;
+  [Events.RECORDING_COMPLETED]: {traceIndex: number}|{errorText: string};
 }

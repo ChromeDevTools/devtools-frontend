@@ -25,6 +25,7 @@ export class ActiveInsight {
   get insight(): Readonly<Trace.Insights.Types.InsightModel> {
     return this.#insight;
   }
+
   get parsedTrace(): Trace.Handlers.Types.ParsedTrace {
     return this.#parsedTrace;
   }

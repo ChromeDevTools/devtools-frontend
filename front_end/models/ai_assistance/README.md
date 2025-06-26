@@ -34,6 +34,21 @@ The process for adding "Ask AI" support to a new insight is mostly limited to up
 
 Once you've done that, you will need to update the UI component to tell it that it can render the "Ask AI" button. To do this, override the `hasAskAiSupport()` method in the component and return `true`.
 
+### `InsightAIContext` and time bounds for insights
+
+The `PerformanceInsightsAgent` has the ability to make function calls to be informed about network and main thread activity. When this happens we determine the time bounds that are relevant for the selected Insight. For example, for any LCP based Insights we limit the time frame to be:
+
+- **Start time**: navigation start or trace start
+- **End time**: the LCP timestamp
+
+For all other Insights, we use:
+
+- **Start time**: navigation start or trace start
+- **End time**: the next navigation start or the trace end
+
+You can override this if you need to; see the `insightBounds` function in `InsightAIContext.ts`.
+
+
 ### Testing the new Insight
 
 Once it's working, it's a good idea to manually experiment with the new Insight and ask a bunch of questions on different traces. Try to find (or create) websites that cause the insight to identify a variety of outputs and see how far you can push the AI. Look for instances where you can perhaps clarify the data you are passing into it, or tweak your wording, to try to make it clearer. You can also take the data you are sending and paste it into Gemini to get feedback on your prompt from the AI.

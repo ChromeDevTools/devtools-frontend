@@ -20,10 +20,10 @@ describeWithMockConnection('WebAuthn pane', () => {
     Webauthn = await import('./webauthn.js');
   });
 
-  it('disables the large blob checkbox if resident key is disabled', () => {
+  it('disables the large blob checkbox if resident key is disabled', async () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-    const largeBlob = panel.largeBlobCheckbox;
-    const residentKeys = panel.residentKeyCheckbox;
+    const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+    const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
     if (!largeBlob || !residentKeys) {
       assert.fail('Required checkbox not found');
@@ -34,6 +34,7 @@ describeWithMockConnection('WebAuthn pane', () => {
     // unchecked.
     residentKeys.checked = false;
     residentKeys.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
     assert.isTrue(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
 
@@ -41,17 +42,21 @@ describeWithMockConnection('WebAuthn pane', () => {
     // checked.
     residentKeys.checked = true;
     residentKeys.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
     assert.isFalse(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
 
     // Manually check large blob.
     largeBlob.checked = true;
-    assert.isTrue(largeBlob.checked);
+    largeBlob.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
 
     // Disabling resident keys should reset large blob to disabled and
     // unchecked.
     residentKeys.checked = false;
     residentKeys.dispatchEvent(new Event('change'));
+    console.error('disabling resident keys');
+    await panel.updateComplete;
     assert.isTrue(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
   });
@@ -71,18 +76,20 @@ describeWithMockConnection('WebAuthn pane', () => {
     });
 
     it('adds an authenticator with large blob option', async () => {
-      const largeBlob = panel.largeBlobCheckbox;
-      const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
         return;
       }
       residentKeys.checked = true;
+      residentKeys.dispatchEvent(new Event('change'));
       largeBlob.checked = true;
+      largeBlob.dispatchEvent(new Event('change'));
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (inScope) {
@@ -93,18 +100,20 @@ describeWithMockConnection('WebAuthn pane', () => {
     });
 
     it('adds an authenticator without the large blob option', async () => {
-      const largeBlob = panel.largeBlobCheckbox;
-      const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
         return;
       }
       residentKeys.checked = true;
+      residentKeys.dispatchEvent(new Event('change'));
       largeBlob.checked = false;
+      largeBlob.dispatchEvent(new Event('change'));
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (inScope) {
@@ -119,7 +128,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (!inScope) {
@@ -176,7 +185,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (!inScope) {
@@ -269,7 +278,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (!inScope) {
@@ -319,7 +328,7 @@ describeWithMockConnection('WebAuthn pane', () => {
     it('disables "internal" if an internal authenticator exists', async () => {
       const authenticatorId = 'authenticator-1' as Protocol.WebAuthn.AuthenticatorId;
       let panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-      let transport = panel.transportSelect;
+      let transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
       if (!transport) {
         assert.fail('Transport select is not present');
       }
@@ -335,8 +344,9 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an internal authenticator.
       transport.selectedIndex = internalTransportIndex;
+      transport.dispatchEvent(new Event('change'));
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(addAuthenticator.called, inScope);
       if (!inScope) {
@@ -349,7 +359,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Restoring the authenticator when loading the panel again should also cause "internal" to be disabled.
       panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-      transport = panel.transportSelect;
+      transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
       if (!transport) {
         assert.fail('Transport select is not present');
       }
@@ -357,6 +367,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Removing the internal authenticator should re-enable the option.
       panel.removeAuthenticator(authenticatorId);
+      await panel.updateComplete;
       assert.isFalse(transport.options[internalTransportIndex].disabled);
     });
   };

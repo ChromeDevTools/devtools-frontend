@@ -317,6 +317,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   #renderNewAuthenticatorSection(): Lit.TemplateResult {
+    const options = this.#newAuthenticatorOptions;
+    const isCtap2 = options.protocol === Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
     // clang-format off
     return html`
       <div class="new-authenticator-container">
@@ -329,11 +331,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
               ${i18nString(UIStrings.protocol)}
             </label>
             <select id="protocol" jslog=${VisualLogging.dropDown('protocol').track({change: true})}
-                value=${Protocol.WebAuthn.AuthenticatorProtocol.Ctap2}
-                @change=${this.#updateNewAuthenticatorSectionOptions}
-                ${ref(e => { this.#protocolSelect = e as HTMLSelectElement; })}>
+                value=${options.protocol}
+                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({protocol:
+                    (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorProtocol})}>
               ${Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
-                <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}>
+                <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}
+                        .selected=${options.protocol === option}>
                   ${option}
                 </option>`)}
             </select>
@@ -342,8 +345,24 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
             <label for="transport" class="authenticator-option-label">
               ${i18nString(UIStrings.transport)}
             </label>
-            <select id="transport" jslog=${VisualLogging.dropDown('transport').track({change: true})}
-              ${ref(e => { this.transportSelect = e as HTMLSelectElement; })}>
+            <select id="transport"
+                value=${options.transport}
+                jslog=${VisualLogging.dropDown('transport').track({change: true})}
+                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({transport:
+                    (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorTransport})}>
+              ${[
+                Protocol.WebAuthn.AuthenticatorTransport.Usb,
+                Protocol.WebAuthn.AuthenticatorTransport.Ble,
+                Protocol.WebAuthn.AuthenticatorTransport.Nfc,
+                  ...(isCtap2 ? [Protocol.WebAuthn.AuthenticatorTransport.Internal] : [])
+              ].map(option => html`
+                  <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}
+                      .selected=${options.transport === option}
+                      .disabled=${this.#hasInternalAuthenticator
+                          && option === Protocol.WebAuthn.AuthenticatorTransport.Internal}>
+                    ${option}
+                  </option>`)
+              }
             </select>
           </div>
           <div class="authenticator-option">
@@ -352,8 +371,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
             </label>
             <input id="resident-key" class="authenticator-option-checkbox" type="checkbox"
                 jslog=${VisualLogging.toggle('resident-key').track({change: true})}
-                @change=${this.#updateNewAuthenticatorSectionOptions}
-                ${ref(e => { this.residentKeyCheckbox = e as HTMLInputElement; })}>
+                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({hasResidentKey:
+                    (e.target as HTMLInputElement).checked})}
+                .checked=${Boolean(options.hasResidentKey && isCtap2)} .disabled=${!isCtap2}>
           </div>
           <div class="authenticator-option">
             <label for="user-verification" class="authenticator-option-label">
@@ -361,7 +381,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
             </label>
             <input id="user-verification" class="authenticator-option-checkbox" type="checkbox"
                 jslog=${VisualLogging.toggle('user-verification').track({change: true})}
-                ${ref(e => { this.#userVerificationCheckbox = e as HTMLInputElement; })}>
+                @change=${(e: Event) => this.#updateNewAuthenticatorSectionOptions({hasUserVerification:
+                    (e.target as HTMLInputElement).checked})}
+                .checked=${Boolean(options.hasUserVerification && isCtap2)} .disabled=${!isCtap2}>
           </div>
           <div class="authenticator-option">
             <label for="large-blob" class="authenticator-option-label">
@@ -369,16 +391,19 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
             </label>
             <input id="large-blob" class="authenticator-option-checkbox" type="checkbox"
                 jslog=${VisualLogging.toggle('large-blob').track({change: true})}
-                ${ref(e => { this.largeBlobCheckbox = e as HTMLInputElement; })}>
+                @change=${(e: Event) => this.#updateNewAuthenticatorSectionOptions({hasLargeBlob:
+                    (e.target as HTMLInputElement).checked})}
+                .checked=${Boolean(options.hasLargeBlob && isCtap2 && options.hasResidentKey)}
+                .disabled=${!options.hasResidentKey || !isCtap2}>
           </div>
           <div class="authenticator-option">
             <div class="authenticator-option-label"></div>
             <devtools-button @click=${this.#handleAddAuthenticatorButton}
+                id="add-authenticator"
                 .jslogContext=${'webauthn.add-authenticator'}
-                .variant=${Buttons.Button.Variant.OUTLINED}
-                ${ref(e => { this.addAuthenticatorButton = e as Buttons.Button.Button; })}>
+                .variant=${Buttons.Button.Variant.OUTLINED}>
               ${i18nString(UIStrings.add)}
-           </devtools-button>
+            </devtools-button>
           </div>
         </div>
       </div>`;
@@ -512,12 +537,16 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   readonly #availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
   #model?: SDK.WebAuthnModel.WebAuthnModel;
   #authenticatorsView: HTMLElement;
-  #protocolSelect: HTMLSelectElement|undefined;
-  transportSelect: HTMLSelectElement|undefined;
-  residentKeyCheckbox: HTMLInputElement|undefined;
-  #userVerificationCheckbox: HTMLInputElement|undefined;
-  largeBlobCheckbox: HTMLInputElement|undefined;
-  addAuthenticatorButton: Buttons.Button.Button|undefined;
+  #newAuthenticatorOptions: Protocol.WebAuthn.VirtualAuthenticatorOptions = {
+    protocol: Protocol.WebAuthn.AuthenticatorProtocol.Ctap2,
+    transport: Protocol.WebAuthn.AuthenticatorTransport.Usb,
+    hasResidentKey: false,
+    hasUserVerification: false,
+    hasLargeBlob: false,
+    automaticPresenceSimulation: true,
+    isUserVerified: true,
+  };
+  #hasInternalAuthenticator = false;
   #isEnabling?: Promise<void>;
 
   constructor() {
@@ -533,8 +562,14 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#availableAuthenticatorSetting =
         Common.Settings.Settings.instance().createSetting<AvailableAuthenticatorOptions[]>(
             'webauthn-authenticators', []);
+    this.#updateInternalTransportAvailability();
 
     this.#authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
+    this.performUpdate();
+    this.#updateVisibility(false);
+  }
+
+  override performUpdate(): void {
     // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
     render(
         [
@@ -542,8 +577,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
           this.#renderNewAuthenticatorSection()
         ],
         this.contentElement, {host: this});
-    this.#updateNewAuthenticatorSectionOptions();
-    this.#updateVisibility(false);
   }
 
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
@@ -675,83 +708,23 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     void this.#setVirtualAuthEnvEnabled((e.target as HTMLInputElement).checked);
   }
 
-  #updateEnabledTransportOptions(enabledOptions: Protocol.WebAuthn.AuthenticatorTransport[]): void {
-    if (!this.transportSelect) {
-      return;
-    }
-
-    const prevValue = this.transportSelect.value;
-    this.transportSelect.removeChildren();
-
-    for (const option of enabledOptions) {
-      this.transportSelect.appendChild(UI.UIUtils.createOption(option, option, option));
-    }
-
-    // Make sure the currently selected value stays the same.
-    this.transportSelect.value = prevValue;
-    // If the new set does not include the previous value.
-    if (!this.transportSelect.value) {
-      // Select the first available value.
-      this.transportSelect.selectedIndex = 0;
-    }
-    this.#updateInternalTransportAvailability();
+  #updateNewAuthenticatorSectionOptions(change: Partial<Protocol.WebAuthn.VirtualAuthenticatorOptions>): void {
+    Object.assign(this.#newAuthenticatorOptions, change);
+    this.requestUpdate();
   }
 
   #updateInternalTransportAvailability(): void {
-    if (!this.transportSelect?.options) {
-      return;
-    }
-    const hasInternal = Boolean(this.#availableAuthenticatorSetting.get().find(
+    this.#hasInternalAuthenticator = Boolean(this.#availableAuthenticatorSetting.get().find(
         authenticator => authenticator.transport === Protocol.WebAuthn.AuthenticatorTransport.Internal));
-    for (let i = 0; i < this.transportSelect.options.length; ++i) {
-      const option = this.transportSelect.options[i];
-      if (option.value === Protocol.WebAuthn.AuthenticatorTransport.Internal) {
-        option.disabled = hasInternal;
-        // This relies on "internal" never being the first or only element.
-        if (i === this.transportSelect.selectedIndex) {
-          --this.transportSelect.selectedIndex;
-        }
-        break;
-      }
+    if (this.#hasInternalAuthenticator &&
+        this.#newAuthenticatorOptions.transport === Protocol.WebAuthn.AuthenticatorTransport.Internal) {
+      this.#newAuthenticatorOptions.transport = Protocol.WebAuthn.AuthenticatorTransport.Nfc;
     }
-  }
-
-  #updateNewAuthenticatorSectionOptions(): void {
-    if (!this.#protocolSelect || !this.residentKeyCheckbox || !this.#userVerificationCheckbox ||
-        !this.largeBlobCheckbox) {
-      return;
-    }
-
-    if (this.#protocolSelect.value === Protocol.WebAuthn.AuthenticatorProtocol.Ctap2) {
-      this.residentKeyCheckbox.disabled = false;
-      this.#userVerificationCheckbox.disabled = false;
-      this.largeBlobCheckbox.disabled = !this.residentKeyCheckbox.checked;
-      if (this.largeBlobCheckbox.disabled) {
-        this.largeBlobCheckbox.checked = false;
-      }
-      this.#updateEnabledTransportOptions([
-        Protocol.WebAuthn.AuthenticatorTransport.Usb,
-        Protocol.WebAuthn.AuthenticatorTransport.Ble,
-        Protocol.WebAuthn.AuthenticatorTransport.Nfc,
-        Protocol.WebAuthn.AuthenticatorTransport.Internal,
-      ]);
-    } else {
-      this.residentKeyCheckbox.checked = false;
-      this.residentKeyCheckbox.disabled = true;
-      this.#userVerificationCheckbox.checked = false;
-      this.#userVerificationCheckbox.disabled = true;
-      this.largeBlobCheckbox.checked = false;
-      this.largeBlobCheckbox.disabled = true;
-      this.#updateEnabledTransportOptions([
-        Protocol.WebAuthn.AuthenticatorTransport.Usb,
-        Protocol.WebAuthn.AuthenticatorTransport.Ble,
-        Protocol.WebAuthn.AuthenticatorTransport.Nfc,
-      ]);
-    }
+    this.requestUpdate();
   }
 
   async #handleAddAuthenticatorButton(): Promise<void> {
-    const options = this.#createOptionsFromCurrentInputs();
+    const options = this.#newAuthenticatorOptions;
     if (this.#model) {
       const authenticatorId = await this.#model.addAuthenticator(options);
       const availableAuthenticators = this.#availableAuthenticatorSetting.get();
@@ -867,27 +840,6 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       }
     }
     this.#updateInternalTransportAvailability();
-  }
-
-  #createOptionsFromCurrentInputs(): Protocol.WebAuthn.VirtualAuthenticatorOptions {
-    // TODO(crbug.com/1034663): Add optionality for isUserVerified param.
-    if (!this.#protocolSelect || !this.transportSelect || !this.residentKeyCheckbox ||
-        !this.#userVerificationCheckbox || !this.largeBlobCheckbox) {
-      throw new Error('Unable to create options from current inputs');
-    }
-
-    return {
-      protocol: this.#protocolSelect.options[this.#protocolSelect.selectedIndex].value as
-          Protocol.WebAuthn.AuthenticatorProtocol,
-      ctap2Version: Protocol.WebAuthn.Ctap2Version.Ctap2_1,
-      transport: this.transportSelect.options[this.transportSelect.selectedIndex].value as
-          Protocol.WebAuthn.AuthenticatorTransport,
-      hasResidentKey: this.residentKeyCheckbox.checked,
-      hasUserVerification: this.#userVerificationCheckbox.checked,
-      hasLargeBlob: this.largeBlobCheckbox.checked,
-      automaticPresenceSimulation: true,
-      isUserVerified: true,
-    };
   }
 
   /**

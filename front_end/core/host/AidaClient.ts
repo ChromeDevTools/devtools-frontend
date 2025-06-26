@@ -551,7 +551,7 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
     }
   }
 
-  private async pollAidaAvailability(): Promise<void> {
+  async pollAidaAvailability(): Promise<void> {
     this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2000);
     const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {

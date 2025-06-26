@@ -6,7 +6,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createContextForNavigation, getFirst, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('InteractionToNextPaint', function() {
+describeWithEnvironment('INPBreakdown', function() {
   const test = (traceFile: string, longest?: number, highPercentile?: number) => {
     if (highPercentile === undefined) {
       highPercentile = longest;
@@ -19,7 +19,7 @@ describeWithEnvironment('InteractionToNextPaint', function() {
         bounds: data.Meta.traceBounds,
         frameId: data.Meta.mainFrameId,
       };
-      const insight = Trace.Insights.Models.InteractionToNextPaint.generateInsight(data, context);
+      const insight = Trace.Insights.Models.INPBreakdown.generateInsight(data, context);
       assert.strictEqual(insight.longestInteractionEvent?.dur, longest);
       assert.strictEqual(insight.highPercentileInteractionEvent?.dur, highPercentile);
     });

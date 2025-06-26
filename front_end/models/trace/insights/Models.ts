@@ -10,7 +10,7 @@ export * as DuplicatedJavaScript from './DuplicatedJavaScript.js';
 export * as FontDisplay from './FontDisplay.js';
 export * as ForcedReflow from './ForcedReflow.js';
 export * as ImageDelivery from './ImageDelivery.js';
-export * as InteractionToNextPaint from './InteractionToNextPaint.js';
+export * as INPBreakdown from './INPBreakdown.js';
 export * as LCPBreakdown from './LCPBreakdown.js';
 export * as LCPDiscovery from './LCPDiscovery.js';
 export * as LegacyJavaScript from './LegacyJavaScript.js';

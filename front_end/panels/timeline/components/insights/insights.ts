@@ -14,7 +14,7 @@ import * as FontDisplay from './FontDisplay.js';
 import * as ForcedReflow from './ForcedReflow.js';
 import * as Helpers from './Helpers.js';
 import * as ImageDelivery from './ImageDelivery.js';
-import * as InteractionToNextPaint from './InteractionToNextPaint.js';
+import * as INPBreakdown from './INPBreakdown.js';
 import * as LCPBreakdown from './LCPBreakdown.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LegacyJavaScript from './LegacyJavaScript.js';
@@ -42,7 +42,7 @@ export {
   ForcedReflow,
   Helpers,
   ImageDelivery,
-  InteractionToNextPaint,
+  INPBreakdown,
   LCPBreakdown,
   LCPDiscovery,
   LegacyJavaScript,

@@ -132,7 +132,7 @@ export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
 
 export const enum InsightKeys {
   LCP_BREAKDOWN = 'LCPBreakdown',
-  INTERACTION_TO_NEXT_PAINT = 'InteractionToNextPaint',
+  INP_BREAKDOWN = 'INPBreakdown',
   CLS_CULPRITS = 'CLSCulprits',
   THIRD_PARTIES = 'ThirdParties',
   DOCUMENT_LATENCY = 'DocumentLatency',

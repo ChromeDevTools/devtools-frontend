@@ -12,7 +12,7 @@ import * as RenderCoordinator from '../../../../ui/components/render_coordinator
 
 import * as Insights from './insights.js';
 
-describeWithEnvironment('Interaction to next paint component', () => {
+describeWithEnvironment('INP breakdown component', () => {
   beforeEach(() => {
     // Ensure the environment is setup for AI being supported so we can
     // test the presence of the button being conditional on the insight
@@ -31,10 +31,10 @@ describeWithEnvironment('Interaction to next paint component', () => {
     const firstInsightSet = insights.values().next()?.value;
     assert.isOk(firstInsightSet);
     const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const interactionInsight = getInsightOrError('InteractionToNextPaint', insights, firstNav);
+    const interactionInsight = getInsightOrError('INPBreakdown', insights, firstNav);
     assert.isDefined(interactionInsight.longestInteractionEvent);
 
-    const component = new Insights.InteractionToNextPaint.InteractionToNextPaint();
+    const component = new Insights.INPBreakdown.INPBreakdown();
     component.model = interactionInsight;
     component.insightSetKey = firstInsightSet.id;
     component.bounds = parsedTrace.Meta.traceBounds;
@@ -53,10 +53,10 @@ describeWithEnvironment('Interaction to next paint component', () => {
     const firstInsightSet = insights.values().next()?.value;
     assert.isOk(firstInsightSet);
     const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const interactionInsight = getInsightOrError('InteractionToNextPaint', insights, firstNav);
+    const interactionInsight = getInsightOrError('INPBreakdown', insights, firstNav);
     assert.isUndefined(interactionInsight.longestInteractionEvent);
 
-    const component = new Insights.InteractionToNextPaint.InteractionToNextPaint();
+    const component = new Insights.INPBreakdown.INPBreakdown();
     component.model = interactionInsight;
     component.insightSetKey = firstInsightSet.id;
     component.bounds = parsedTrace.Meta.traceBounds;

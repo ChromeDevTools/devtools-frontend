@@ -111,7 +111,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   FontDisplay: Insights.FontDisplay.FontDisplay,
   ForcedReflow: Insights.ForcedReflow.ForcedReflow,
   ImageDelivery: Insights.ImageDelivery.ImageDelivery,
-  InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
+  INPBreakdown: Insights.INPBreakdown.INPBreakdown,
   LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
   LCPBreakdown: Insights.LCPBreakdown.LCPBreakdown,
   LegacyJavaScript: Insights.LegacyJavaScript.LegacyJavaScript,

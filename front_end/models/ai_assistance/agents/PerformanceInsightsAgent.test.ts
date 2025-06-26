@@ -30,9 +30,9 @@ const FAKE_LCP_MODEL = {
   frameId: '123',
 } as const;
 const FAKE_INP_MODEL = {
-  insightKey: Trace.Insights.Types.InsightKeys.INTERACTION_TO_NEXT_PAINT,
+  insightKey: Trace.Insights.Types.InsightKeys.INP_BREAKDOWN,
   strings: {},
-  title: 'INP by phase' as Common.UIString.LocalizedString,
+  title: 'INP breakdown' as Common.UIString.LocalizedString,
   description: 'some description' as Common.UIString.LocalizedString,
   category: Trace.Insights.Types.InsightCategory.ALL,
   state: 'fail',
@@ -196,7 +196,7 @@ Help me understand?`;
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
       assert.include(firstQuery, '## Insight Title: LCP breakdown');
       assert.notInclude(secondQuery, '## Insight Title');
-      assert.include(thirdQuery, '## Insight Title: INP by phase');
+      assert.include(thirdQuery, '## Insight Title: INP breakdown');
     });
   });
 

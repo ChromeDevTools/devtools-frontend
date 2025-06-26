@@ -54,7 +54,7 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
 
 export function getINP(insights: TraceInsightSets|null, key: string|null):
     {value: Types.Timing.Micro, event: Types.Events.SyntheticInteractionPair}|null {
-  const insight = getInsight(InsightKeys.INTERACTION_TO_NEXT_PAINT, insights, key);
+  const insight = getInsight(InsightKeys.INP_BREAKDOWN, insights, key);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
   }

@@ -210,7 +210,7 @@ The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
     }
 
-    if (Trace.Insights.Models.InteractionToNextPaint.isINP(this.#insight)) {
+    if (Trace.Insights.Models.INPBreakdown.isINP(this.#insight)) {
       const event = this.#insight.longestInteractionEvent;
       if (!event) {
         return '';
@@ -273,7 +273,7 @@ ${shiftsFormatted.join('\n')}`;
         return '';
       case 'ImageDelivery':
         return '';
-      case 'InteractionToNextPaint':
+      case 'INPBreakdown':
         return `- https://web.dev/articles/inp
 - https://web.dev/explore/how-to-optimize-inp
 - https://web.dev/articles/optimize-long-tasks
@@ -326,7 +326,7 @@ ${shiftsFormatted.join('\n')}`;
         return '';
       case 'ImageDelivery':
         return '';
-      case 'InteractionToNextPaint':
+      case 'INPBreakdown':
         return `Interaction to Next Paint (INP) is a metric that tracks the responsiveness of the page when the user interacts with it. INP is a Core Web Vital and the thresholds for how we categorize a score are:
 - Good: 200 milliseconds or less.
 - Needs improvement: more than 200 milliseconds and 500 milliseconds or less.

@@ -20,15 +20,15 @@ export const UIStrings = {
    * @description Text to tell the user about the longest user interaction.
    */
   description:
-      'Start investigating with the longest phase. [Delays can be minimized](https://web.dev/articles/optimize-inp#optimize_interactions). To reduce processing duration, [optimize the main-thread costs](https://web.dev/articles/optimize-long-tasks), often JS.',
+      'Start investigating with the longest subpart. [Delays can be minimized](https://web.dev/articles/optimize-inp#optimize_interactions). To reduce processing duration, [optimize the main-thread costs](https://web.dev/articles/optimize-long-tasks), often JS.',
   /**
-   * @description Title for the performance insight "INP by phase", which shows a breakdown of INP by phases / sections.
+   * @description Title for the performance insight "INP breakdown", which shows a breakdown of INP by subparts / sections.
    */
-  title: 'INP by phase',
+  title: 'INP breakdown',
   /**
-   *@description Label used for the phase/component/stage/section of a larger duration.
+   *@description Label used for the subpart/component/stage/section of a larger duration.
    */
-  phase: 'Phase',
+  subpart: 'Subpart',
   /**
    *@description Label used for a time duration.
    */
@@ -53,7 +53,7 @@ export const UIStrings = {
   noInteractions: 'No interactions detected',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('models/trace/insights/InteractionToNextPaint.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/INPBreakdown.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type INPInsightModel = InsightModel<typeof UIStrings, {
@@ -62,12 +62,12 @@ export type INPInsightModel = InsightModel<typeof UIStrings, {
 }>;
 
 export function isINP(insight: InsightModel): insight is INPInsightModel {
-  return insight.insightKey === InsightKeys.INTERACTION_TO_NEXT_PAINT;
+  return insight.insightKey === InsightKeys.INP_BREAKDOWN;
 }
 
 function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
   return {
-    insightKey: InsightKeys.INTERACTION_TO_NEXT_PAINT,
+    insightKey: InsightKeys.INP_BREAKDOWN,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

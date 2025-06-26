@@ -6,19 +6,19 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import type {INPInsightModel} from '../../../../models/trace/insights/InteractionToNextPaint.js';
+import type {INPInsightModel} from '../../../../models/trace/insights/INPBreakdown.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.InteractionToNextPaint;
+const {UIStrings, i18nString} = Trace.Insights.Models.INPBreakdown;
 
 const {html} = Lit;
 
-export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
-  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp`;
+export class INPBreakdown extends BaseInsightComponent<INPInsightModel> {
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp-breakdown`;
   override internalName = 'inp';
 
   protected override hasAskAiSupport(): boolean {
@@ -35,11 +35,11 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
       return [];
     }
 
-    return this.#createOverlaysForPhase(event);
+    return this.#createOverlaysForSbupart(event);
   }
 
-  // If `phase` is -1, then all phases are included. Otherwise it's just that phase index.
-  #createOverlaysForPhase(event: Trace.Types.Events.SyntheticInteractionPair, phase = -1):
+  // If `subpart` is -1, then all subparts are included. Otherwise it's just that index.
+  #createOverlaysForSbupart(event: Trace.Types.Events.SyntheticInteractionPair, subpartIndex = -1):
       Overlays.Overlays.TimelineOverlay[] {
     const p1 = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         event.ts,
@@ -58,8 +58,8 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
       {bounds: p2, label: i18nString(UIStrings.processingDuration), showDuration: true},
       {bounds: p3, label: i18nString(UIStrings.presentationDelay), showDuration: true},
     ];
-    if (phase !== -1) {
-      sections = [sections[phase]];
+    if (subpartIndex !== -1) {
+      sections = [sections[subpartIndex]];
     }
 
     return [
@@ -87,19 +87,19 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
         ${html`<devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
+            headers: [i18nString(UIStrings.subpart), i18nString(UIStrings.duration)],
             rows: [
               {
                 values: [i18nString(UIStrings.inputDelay), time(event.inputDelay)],
-                overlays: this.#createOverlaysForPhase(event, 0),
+                overlays: this.#createOverlaysForSbupart(event, 0),
               },
               {
                 values: [i18nString(UIStrings.processingDuration), time(event.mainThreadHandling)],
-                overlays: this.#createOverlaysForPhase(event, 1),
+                overlays: this.#createOverlaysForSbupart(event, 1),
               },
               {
                 values: [i18nString(UIStrings.presentationDelay), time(event.presentationDelay)],
-                overlays: this.#createOverlaysForPhase(event, 2),
+                overlays: this.#createOverlaysForSbupart(event, 2),
               },
             ],
           }}>
@@ -111,8 +111,8 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-inp': InteractionToNextPaint;
+    'devtools-performance-inp-breakdown': INPBreakdown;
   }
 }
 
-customElements.define('devtools-performance-inp', InteractionToNextPaint);
+customElements.define('devtools-performance-inp-breakdown', INPBreakdown);

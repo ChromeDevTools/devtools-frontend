@@ -66,7 +66,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
 
     const passedInsightTitles = getPassedInsights(component);
     assert.deepEqual(passedInsightTitles, [
-      'INP by phase',
+      'INP breakdown',
       'Layout shift culprits',
       'Network dependency tree',
       'Improve image delivery',
@@ -112,7 +112,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const passedInsightTitles = getPassedInsights(component);
     // Does not include "font display", which is experimental.
     assert.deepEqual(passedInsightTitles, [
-      'INP by phase',
+      'INP breakdown',
       'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
@@ -157,7 +157,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
 
     const passedInsightTitles = getPassedInsights(component);
     assert.deepEqual(passedInsightTitles, [
-      'INP by phase',
+      'INP breakdown',
       'LCP request discovery',
       'Render blocking requests',
       'Document request latency',

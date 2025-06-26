@@ -51,8 +51,8 @@ describe('Multi-Workers', function() {
       await waitForLines(12, devToolsPage);
       // Wait for breakpoints to be present
       await devToolsPage.waitFor('.cm-gutterElement ~ .cm-breakpoint ~ .cm-breakpoint');
-      assert.deepEqual(await getBreakpointDecorators(false, devToolsPage), [6, 12]);
-      assert.deepEqual(await getBreakpointDecorators(true, devToolsPage), [6]);
+      assert.deepEqual(await getBreakpointDecorators(false, 2, devToolsPage), [6, 12]);
+      assert.deepEqual(await getBreakpointDecorators(true, 1, devToolsPage), [6]);
     }
 
     describe(`loads scripts exactly once ${withOrWithout}`, () => {

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {$, $$, click, waitForFunction} from '../../shared/helper.js';
+import {$, $$, waitForFunction} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 export async function waitForSoftContextMenu(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
@@ -65,13 +65,14 @@ export async function assertSubMenuItemsText(subMenuText: string, expectedOption
   assert.deepEqual(subMenuItemsText, expectedOptions);
 }
 
-export async function openSoftContextMenuAndClickOnItem(selector: string, label: string) {
+export async function openSoftContextMenuAndClickOnItem(
+    selector: string, label: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Find the selected node, right click.
-  await click(selector, {clickOptions: {button: 'right'}});
+  await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 
   // Wait for the context menu option, and click it.
-  const root = await waitForSoftContextMenu();
-  await click(`[aria-label="${label}"]`, {root});
+  const root = await waitForSoftContextMenu(devToolsPage);
+  await devToolsPage.click(`[aria-label="${label}"]`, {root});
 }
 
 export async function openSubMenu(

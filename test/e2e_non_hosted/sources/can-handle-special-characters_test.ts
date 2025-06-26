@@ -29,7 +29,7 @@ describe('Sources Tab', () => {
     await devToolsPage.waitFor(RESUME_BUTTON);
 
     // Breakpoint is still visible
-    assert.deepEqual(await getBreakpointDecorators(false, devToolsPage), [2]);
+    assert.deepEqual(await getBreakpointDecorators(false, 1, devToolsPage), [2]);
 
     await executionLineHighlighted(devToolsPage);
 

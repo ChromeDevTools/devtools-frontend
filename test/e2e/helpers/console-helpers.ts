@@ -225,8 +225,6 @@ export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) 
 export async function focusConsolePrompt(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(CONSOLE_PROMPT_SELECTOR);
   await devToolsPage.waitFor('[aria-label="Console prompt"]');
-  // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await devToolsPage.timeout(50);
 }
 
 export async function showVerboseMessages(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

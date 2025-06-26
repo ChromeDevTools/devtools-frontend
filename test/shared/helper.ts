@@ -162,8 +162,8 @@ export const getAllTextContents =
  * @param selector jquery selector to match
  * @returns array containing text contents from visible elements
  */
-export const getVisibleTextContents = async (selector: string) => {
-  const {devToolsPage} = getBrowserAndPagesWrappers();
+export const getVisibleTextContents =
+    async (selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   return await devToolsPage.getVisibleTextContents(selector);
 };
 

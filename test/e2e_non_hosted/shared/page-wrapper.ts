@@ -26,7 +26,8 @@ export class PageWrapper {
     this.locator = page.locator.bind(page);
   }
 
-  async waitForFunction<T>(fn: () => Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) {
+  async waitForFunction<T>(
+      fn: () => T | undefined | Promise<T|undefined>, asyncScope = new AsyncScope(), description?: string) {
     const innerFunction = async () => {
       while (true) {
         AsyncScope.abortSignal?.throwIfAborted();

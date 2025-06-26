@@ -27,7 +27,6 @@ import {
   waitFor,
   waitForAria,
   waitForFunction,
-  waitForFunctionWithTries,
   waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
@@ -253,13 +252,14 @@ export async function addBreakpointForLine(
   await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
 }
 
-export async function removeBreakpointForLine(index: number|string) {
-  const breakpointLine = await getLineNumberElement(index);
+export async function removeBreakpointForLine(
+    index: number|string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assertNotNullOrUndefined(breakpointLine);
 
-  await waitForFunction(async () => await isBreakpointSet(index));
-  await clickElement(breakpointLine);
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
+  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
+  await devToolsPage.clickElement(breakpointLine);
+  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
 }
 
 export async function addLogpointForLine(index: number, condition: string) {
@@ -335,9 +335,9 @@ export async function checkBreakpointDidNotActivate() {
 }
 
 export async function getBreakpointDecorators(
-    disabledOnly = false, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    disabledOnly = false, expected = 0, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''}`;
-  const breakpointDecorators = await devToolsPage.$$(selector);
+  const breakpointDecorators = await devToolsPage.waitForMany(selector, expected);
   return await Promise.all(
       breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
@@ -385,7 +385,8 @@ export async function switchToCallFrame(index: number) {
 }
 
 export async function retrieveTopCallFrameScriptLocation(
-    script: string, target: puppeteer.Page, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    script: string, target: puppeteer.Page|InspectedPage,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.
   // Thus, we have to await it at a later point, while stepping through the code.
@@ -418,12 +419,12 @@ export async function retrieveTopCallFrameWithoutResuming(
   return scriptLocation;
 }
 
-export async function waitForStackTopMatch(matcher: RegExp) {
+export async function waitForStackTopMatch(matcher: RegExp, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The call stack is updated asynchronously, so let us wait until we see the correct one
   // (or report the last one we have seen before timeout).
   let stepLocation = '<no call stack>';
-  await waitForFunctionWithTries(async () => {
-    stepLocation = await retrieveTopCallFrameWithoutResuming() ?? '<invalid>';
+  await devToolsPage.waitForFunctionWithTries(async () => {
+    stepLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage) ?? '<invalid>';
     return stepLocation?.match(matcher);
   }, {tries: 10});
   return stepLocation;

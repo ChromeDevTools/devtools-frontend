@@ -711,7 +711,7 @@ export const getStyleRuleWithSourcePosition =
         return getStyleRule(styleSelector, devToolsPage);
       }
       const selector = getStyleRuleSelector(styleSelector);
-      return waitForFunction(async () => {
+      return devToolsPage.waitForFunction(async () => {
         const candidate = await devToolsPage.waitFor(selector);
         if (candidate) {
           const sourcePositionElement = await candidate.$('.styles-section-subtitle .devtools-link');

@@ -23,6 +23,7 @@ ts_e2e_library("sources") {
     "script-in-multiple-workers_test.ts",
     "scroll-into-view_test.ts",
     "sourcemap-without-mappings_test.ts",
+    "sourcemap_test.ts",
     "sources-list_test.ts",
     "sourceurl_test.ts",
     "text-editor_test.ts",

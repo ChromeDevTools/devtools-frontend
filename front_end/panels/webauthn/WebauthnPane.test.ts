@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
@@ -55,7 +56,6 @@ describeWithMockConnection('WebAuthn pane', () => {
     // unchecked.
     residentKeys.checked = false;
     residentKeys.dispatchEvent(new Event('change'));
-    console.error('disabling resident keys');
     await panel.updateComplete;
     assert.isTrue(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
@@ -90,13 +90,14 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
-      if (inScope) {
-        const options = addAuthenticator.firstCall.firstArg;
-        assert.isTrue(options.hasLargeBlob);
-        assert.isTrue(options.hasResidentKey);
+      await panel.updateComplete;
+      if (!inScope) {
+        return;
       }
+      await expectCalled(addAuthenticator);
+      const options = addAuthenticator.firstCall.firstArg;
+      assert.isTrue(options.hasLargeBlob);
+      assert.isTrue(options.hasResidentKey);
     });
 
     it('adds an authenticator without the large blob option', async () => {
@@ -114,8 +115,11 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      await panel.updateComplete;
+      if (!inScope) {
+        return;
+      }
+      await expectCalled(addAuthenticator);
       if (inScope) {
         const options = addAuthenticator.firstCall.firstArg;
         assert.isFalse(options.hasLargeBlob);
@@ -129,11 +133,12 @@ describeWithMockConnection('WebAuthn pane', () => {
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      await panel.updateComplete;
+
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Verify a data grid appeared with a single row to show there is no data.
       const dataGrid = panel.dataGrids.get(authenticatorId);
@@ -173,8 +178,8 @@ describeWithMockConnection('WebAuthn pane', () => {
       emptyNode = dataGrid.rootNode().children[0];
       assert.isOk(emptyNode);
       assert.deepEqual(emptyNode.data, {});
-      await new Promise(resolve => setTimeout(resolve, 0));
-      sinon.assert.called(removeCredential);
+      await panel.updateComplete;
+      await expectCalled(removeCredential);
 
       assert.strictEqual(removeCredential.firstCall.firstArg, authenticatorId);
       assert.strictEqual(removeCredential.firstCall.lastArg, credential.credentialId);
@@ -186,11 +191,11 @@ describeWithMockConnection('WebAuthn pane', () => {
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Add a credential.
       const credential = {
@@ -279,11 +284,11 @@ describeWithMockConnection('WebAuthn pane', () => {
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Add a credential.
       const credential = {
@@ -347,11 +352,11 @@ describeWithMockConnection('WebAuthn pane', () => {
       transport.dispatchEvent(new Event('change'));
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
       panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // The "internal" option should have been disabled, and another option selected.
       assert.notEqual(transport.selectedIndex, internalTransportIndex);

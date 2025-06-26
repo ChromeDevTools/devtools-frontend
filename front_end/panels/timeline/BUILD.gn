@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/ninja/node.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
@@ -21,7 +22,7 @@ node_action("generate_easter_egg_file") {
 
   outputs = [ "$target_gen_dir/EasterEgg.js" ]
   data = outputs
-  if (is_debug) {
+  if (!devtools_bundle) {
     metadata = {
       grd_files = outputs
     }

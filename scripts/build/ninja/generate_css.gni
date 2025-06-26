@@ -18,9 +18,11 @@ template("generate_css") {
     inputs +=
         [ devtools_location_prepend + "node_modules/cssnano/package.json" ]
 
+    _minify = is_debug
+
     args = [
       build_timestamp,
-      "$is_debug",
+      "$_minify",
       target_name,
       _src,
       _dest,
@@ -34,7 +36,7 @@ template("generate_css") {
 
     data = outputs
 
-    if (is_debug) {
+    if (!devtools_bundle) {
       metadata = {
         grd_files = outputs
       }

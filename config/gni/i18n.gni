@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/config/devtools.gni")
+import("../../scripts/build/ninja/vars.gni")
 
 remote_devtools_locales = [
   "af",
@@ -92,7 +93,7 @@ bundled_devtools_locales = [
   "zh",
 ]
 
-include_en_xl = is_debug
+include_en_xl = !devtools_bundle
 if (include_en_xl) {
   bundled_devtools_locales += [ "en-XL" ]
 }

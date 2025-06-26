@@ -60,6 +60,15 @@ gn gen out/fast-build --args="devtools_skip_typecheck=true"
 
 and use `npm run build -- -t fast-build` to build this target.
 
+Additionally, we now bundle files together by default in all builds, which has
+a build time cost. If you want an even fast fast build, you might want to opt
+out of bundling by setting `devtools_bundle` to `false`:
+
+```bash
+gn gen out/fast-build --args="devtools_skip_typecheck=true devtools_bundle=false"
+```
+
+
 ### Rebuilding automatically
 
 You can use

@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -365,6 +366,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
   it('shows the placeholder', () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
+    renderElementIntoDOM(panel);
     assert.exists(panel.contentElement.querySelector('.empty-state'));
     assert.deepEqual(panel.contentElement.querySelector('.empty-state-header')?.textContent, 'No authenticator set up');
     assert.deepEqual(

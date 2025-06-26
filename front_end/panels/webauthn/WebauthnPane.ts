@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api */
+/* eslint-disable rulesdir/no-imperative-dom-api, rulesdir/inject-checkbox-styles */
 
 import '../../ui/legacy/legacy.js';
 
@@ -18,7 +18,8 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import webauthnPaneStyles from './webauthnPane.css.js';
-const {render, html} = Lit;
+const {render, html, Directives: {ref}} = Lit;
+const {widgetConfig} = UI.Widget;
 
 const UIStrings = {
   /**
@@ -101,10 +102,6 @@ const UIStrings = {
    *@description Text to add something
    */
   add: 'Add',
-  /**
-   *@description Label for button to add a new virtual authenticator.
-   */
-  addAuthenticator: 'Add authenticator',
   /**
    *@description Label for radio button that toggles whether an authenticator is active.
    */
@@ -245,15 +242,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #activeAuthId: Protocol.WebAuthn.AuthenticatorId|null = null;
   #hasBeenEnabled = false;
   readonly dataGrids = new Map<Protocol.WebAuthn.AuthenticatorId, DataGrid.DataGrid.DataGridImpl<DataGridNode>>();
-  #enableCheckbox!: UI.Toolbar.ToolbarCheckbox;
+  #enableCheckbox!: HTMLInputElement;
   readonly #availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
   #model?: SDK.WebAuthnModel.WebAuthnModel;
   #authenticatorsView: HTMLElement;
-  #topToolbarContainer: HTMLElement|undefined;
-  #topToolbar: UI.Toolbar.Toolbar|undefined;
-  #learnMoreView: UI.EmptyWidget.EmptyWidget|undefined;
-  #newAuthenticatorSection: HTMLElement|undefined;
-  #newAuthenticatorForm: HTMLElement|undefined;
   #protocolSelect: HTMLSelectElement|undefined;
   transportSelect: HTMLSelectElement|undefined;
   residentKeyCheckbox: HTMLInputElement|undefined;
@@ -276,9 +268,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().createSetting<AvailableAuthenticatorOptions[]>(
             'webauthn-authenticators', []);
 
-    this.#createToolbar();
     this.#authenticatorsView = this.contentElement.createChild('div', 'authenticators-view');
-    this.#createNewAuthenticatorSection();
+    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    render(
+        [
+          this.#renderToolbar(), this.#authenticatorsView, this.#renderLearnMoreView(),
+          this.#renderNewAuthenticatorSection()
+        ],
+        this.contentElement, {host: this});
+    this.#updateNewAuthenticatorSectionOptions();
     this.#updateVisibility(false);
   }
 
@@ -320,21 +318,26 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   override async ownerViewDisposed(): Promise<void> {
     if (this.#enableCheckbox) {
-      this.#enableCheckbox.setChecked(false);
+      this.#enableCheckbox.checked = false;
     }
     await this.#setVirtualAuthEnvEnabled(false);
   }
 
-  #createToolbar(): void {
-    this.#topToolbarContainer = this.contentElement.createChild('div', 'webauthn-toolbar-container');
-    this.#topToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    this.#topToolbarContainer.role = 'toolbar';
-    this.#topToolbar = this.#topToolbarContainer.createChild('devtools-toolbar', 'webauthn-toolbar');
-    this.#topToolbar.role = 'presentation';
+  #renderToolbar(): Lit.TemplateResult {
     const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
-    this.#enableCheckbox = new UI.Toolbar.ToolbarCheckbox(
-        enableCheckboxTitle, enableCheckboxTitle, this.#handleCheckboxToggle.bind(this), 'virtual-authenticators');
-    this.#topToolbar.appendToolbarItem(this.#enableCheckbox);
+    // clang-format off
+    return html`
+      <div class="webauthn-toolbar-container" jslog=${VisualLogging.toolbar()} role="toolbar">
+        <devtools-toolbar class="webauthn-toolbar" role="presentation">
+          <devtools-checkbox title=${enableCheckboxTitle}
+              @click=${this.#handleCheckboxToggle.bind(this)}
+              .jslogContext=${'virtual-authenticators'}
+              ${ref(e => { this.#enableCheckbox = e as HTMLInputElement; })}>
+            ${enableCheckboxTitle}
+          </devtools-checkbox>
+        </devtools-toolbar>
+      </div>`;
+    // clang-format on
   }
 
   #createCredentialsDataGrid(authenticatorId: Protocol.WebAuthn.AuthenticatorId):
@@ -547,92 +550,84 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     }
   }
 
-  #createNewAuthenticatorSection(): void {
-    this.#learnMoreView = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noAuthenticator), i18nString(UIStrings.useWebauthnForPhishingresistant));
-    this.#learnMoreView.element.classList.add('learn-more');
-    this.#learnMoreView.link = WEB_AUTHN_EXPLANATION_URL;
-    this.#learnMoreView.show(this.contentElement);
+  #renderLearnMoreView(): Lit.TemplateResult {
+    // clang-format off
+    return html`
+      <devtools-widget class="learn-more" .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+          header: i18nString(UIStrings.noAuthenticator),
+          text: i18nString(UIStrings.useWebauthnForPhishingresistant),
+          link: WEB_AUTHN_EXPLANATION_URL})}>
+      </devtools-widget>`;
+    // clang-format on
+  }
 
-    this.#newAuthenticatorSection = this.contentElement.createChild('div', 'new-authenticator-container');
-    const newAuthenticatorTitle =
-        UI.UIUtils.createLabel(i18nString(UIStrings.newAuthenticator), 'new-authenticator-title');
-    this.#newAuthenticatorSection.appendChild(newAuthenticatorTitle);
-    this.#newAuthenticatorForm = this.#newAuthenticatorSection.createChild('div', 'new-authenticator-form');
-    this.#newAuthenticatorForm.setAttribute('jslog', `${VisualLogging.section('new-authenticator')}`);
-
-    const protocolGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-    const transportGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-    const residentKeyGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-    const userVerificationGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-    const largeBlobGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-    const addButtonGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
-
-    const protocolSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.protocol), 'authenticator-option-label');
-    protocolGroup.appendChild(protocolSelectTitle);
-    this.#protocolSelect = protocolGroup.createChild('select');
-    this.#protocolSelect.setAttribute('jslog', `${VisualLogging.dropDown('protocol').track({change: true})}`);
-    UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, (this.#protocolSelect as Element));
-    Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().forEach((option: Protocol.WebAuthn.AuthenticatorProtocol) => {
-      if (this.#protocolSelect) {
-        this.#protocolSelect.appendChild(UI.UIUtils.createOption(option, option, option));
-      }
-    });
-
-    if (this.#protocolSelect) {
-      this.#protocolSelect.value = Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
-    }
-
-    const transportSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.transport), 'authenticator-option-label');
-    transportGroup.appendChild(transportSelectTitle);
-    this.transportSelect = transportGroup.createChild('select');
-    this.transportSelect.setAttribute('jslog', `${VisualLogging.dropDown('transport').track({change: true})}`);
-    UI.ARIAUtils.bindLabelToControl(transportSelectTitle, (this.transportSelect as Element));
-    // transportSelect will be populated in updateNewAuthenticatorSectionOptions.
-
-    const residentKeyCheckboxLabel =
-        UI.UIUtils.createLabel(i18nString(UIStrings.supportsResidentKeys), 'authenticator-option-label');
-    residentKeyCheckboxLabel.setAttribute('jslog', `${VisualLogging.toggle('resident-key').track({change: true})}`);
-    residentKeyGroup.appendChild(residentKeyCheckboxLabel);
-    this.residentKeyCheckbox = residentKeyGroup.createChild('input', 'authenticator-option-checkbox');
-    this.residentKeyCheckbox.type = 'checkbox';
-    this.residentKeyCheckbox.checked = false;
-    UI.ARIAUtils.bindLabelToControl(residentKeyCheckboxLabel, this.residentKeyCheckbox);
-
-    const userVerificationCheckboxLabel =
-        UI.UIUtils.createLabel(i18nString(UIStrings.supportsUserVerification), 'authenticator-option-label');
-    userVerificationCheckboxLabel.setAttribute(
-        'jslog', `${VisualLogging.toggle('user-verification').track({change: true})}`);
-    userVerificationGroup.appendChild(userVerificationCheckboxLabel);
-    this.#userVerificationCheckbox = userVerificationGroup.createChild('input', 'authenticator-option-checkbox');
-    this.#userVerificationCheckbox.type = 'checkbox';
-    this.#userVerificationCheckbox.checked = false;
-    UI.ARIAUtils.bindLabelToControl(userVerificationCheckboxLabel, this.#userVerificationCheckbox);
-
-    const largeBlobCheckboxLabel =
-        UI.UIUtils.createLabel(i18nString(UIStrings.supportsLargeBlob), 'authenticator-option-label');
-    largeBlobCheckboxLabel.setAttribute('jslog', `${VisualLogging.toggle('large-blob').track({change: true})}`);
-    largeBlobGroup.appendChild(largeBlobCheckboxLabel);
-    this.largeBlobCheckbox = largeBlobGroup.createChild('input', 'authenticator-option-checkbox');
-    this.largeBlobCheckbox.type = 'checkbox';
-    this.largeBlobCheckbox.checked = false;
-    UI.ARIAUtils.bindLabelToControl(largeBlobCheckboxLabel, this.largeBlobCheckbox);
-
-    this.addAuthenticatorButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.add), this.#handleAddAuthenticatorButton.bind(this),
-        {jslogContext: 'webauthn.add-authenticator'});
-    addButtonGroup.createChild('div', 'authenticator-option-label');
-    addButtonGroup.appendChild(this.addAuthenticatorButton);
-    const addAuthenticatorTitle = UI.UIUtils.createLabel(i18nString(UIStrings.addAuthenticator), '');
-    UI.ARIAUtils.bindLabelToControl(addAuthenticatorTitle, this.addAuthenticatorButton);
-
-    this.#updateNewAuthenticatorSectionOptions();
-    if (this.#protocolSelect) {
-      this.#protocolSelect.addEventListener('change', this.#updateNewAuthenticatorSectionOptions.bind(this));
-    }
-    if (this.residentKeyCheckbox) {
-      this.residentKeyCheckbox.addEventListener('change', this.#updateNewAuthenticatorSectionOptions.bind(this));
-    }
+  #renderNewAuthenticatorSection(): Lit.TemplateResult {
+    // clang-format off
+    return html`
+      <div class="new-authenticator-container">
+        <label class="new-authenticator-title">
+          ${i18nString(UIStrings.newAuthenticator)}
+        </label>
+        <div class="new-authenticator-form" jslog=${VisualLogging.section('new-authenticator')}>
+          <div class="authenticator-option">
+            <label class="authenticator-option-label" for="protocol">
+              ${i18nString(UIStrings.protocol)}
+            </label>
+            <select id="protocol" jslog=${VisualLogging.dropDown('protocol').track({change: true})}
+                value=${Protocol.WebAuthn.AuthenticatorProtocol.Ctap2}
+                @change=${this.#updateNewAuthenticatorSectionOptions}
+                ${ref(e => { this.#protocolSelect = e as HTMLSelectElement; })}>
+              ${Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
+                <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}>
+                  ${option}
+                </option>`)}
+            </select>
+          </div>
+          <div class="authenticator-option">
+            <label for="transport" class="authenticator-option-label">
+              ${i18nString(UIStrings.transport)}
+            </label>
+            <select id="transport" jslog=${VisualLogging.dropDown('transport').track({change: true})}
+              ${ref(e => { this.transportSelect = e as HTMLSelectElement; })}>
+            </select>
+          </div>
+          <div class="authenticator-option">
+            <label for="resident-key" class="authenticator-option-label">
+              ${i18nString(UIStrings.supportsResidentKeys)}
+            </label>
+            <input id="resident-key" class="authenticator-option-checkbox" type="checkbox"
+                jslog=${VisualLogging.toggle('resident-key').track({change: true})}
+                @change=${this.#updateNewAuthenticatorSectionOptions}
+                ${ref(e => { this.residentKeyCheckbox = e as HTMLInputElement; })}>
+          </div>
+          <div class="authenticator-option">
+            <label for="user-verification" class="authenticator-option-label">
+              ${i18nString(UIStrings.supportsUserVerification)}
+            </label>
+            <input id="user-verification" class="authenticator-option-checkbox" type="checkbox"
+                jslog=${VisualLogging.toggle('user-verification').track({change: true})}
+                ${ref(e => { this.#userVerificationCheckbox = e as HTMLInputElement; })}>
+          </div>
+          <div class="authenticator-option">
+            <label for="large-blob" class="authenticator-option-label">
+              ${i18nString(UIStrings.supportsLargeBlob)}
+            </label>
+            <input id="large-blob" class="authenticator-option-checkbox" type="checkbox"
+                jslog=${VisualLogging.toggle('large-blob').track({change: true})}
+                ${ref(e => { this.largeBlobCheckbox = e as HTMLInputElement; })}>
+          </div>
+          <div class="authenticator-option">
+            <div class="authenticator-option-label"></div>
+            <devtools-button @click=${this.#handleAddAuthenticatorButton}
+                .jslogContext=${'webauthn.add-authenticator'}
+                .variant=${Buttons.Button.Variant.OUTLINED}
+                ${ref(e => { this.addAuthenticatorButton = e as Buttons.Button.Button; })}>
+              ${i18nString(UIStrings.add)}
+           </devtools-button>
+          </div>
+        </div>
+      </div>`;
+    // clang-format on
   }
 
   async #handleAddAuthenticatorButton(): Promise<void> {
@@ -659,62 +654,54 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     section.setAttribute('data-authenticator-id', authenticatorId);
     section.setAttribute('jslog', `${VisualLogging.section('authenticator')}`);
     this.#authenticatorsView.appendChild(section);
-
-    const headerElement = section.createChild('div', 'authenticator-section-header');
-    const titleElement = headerElement.createChild('div', 'authenticator-section-title');
-    UI.ARIAUtils.markAsHeading(titleElement, 2);
-
     await this.#clearActiveAuthenticator();
-    const activeButtonContainer = headerElement.createChild('div', 'active-button-container');
-    const {label: activeLabel, radio: activeRadio} = UI.UIUtils.createRadioButton(
-        'active-authenticator', i18nString(UIStrings.active), 'webauthn.active-authenticator');
-    activeRadio.addEventListener('change', this.#setActiveAuthenticator.bind(this, authenticatorId));
-    activeRadio.checked = true;
-    activeButtonContainer.appendChild(activeLabel);
     this.#activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
 
-    const removeButton = headerElement.createChild('button', 'text-button');
-    removeButton.textContent = i18nString(UIStrings.remove);
-    removeButton.addEventListener('click', this.removeAuthenticator.bind(this, authenticatorId));
-    removeButton.setAttribute('jslog', `${VisualLogging.action('webauthn.remove-authenticator').track({click: true})}`);
-
-    const toolbar = titleElement.createChild('devtools-toolbar', 'edit-name-toolbar');
-    const editName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
-    const saveName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveName), 'checkmark', undefined, 'save-name');
-    saveName.setVisible(false);
-
-    const nameField = titleElement.createChild('input', 'authenticator-name-field');
-    nameField.placeholder = i18nString(UIStrings.enterNewName);
-    nameField.disabled = true;
-    nameField.setAttribute('jslog', `${VisualLogging.textField('name').track({keydown: 'Enter', change: true})}`);
     const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
-    nameField.value = i18nString(UIStrings.authenticatorS, {PH1: userFriendlyName});
-    this.#updateActiveLabelTitle(activeLabel, nameField.value);
-
-    editName.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK,
-        () => this.#handleEditNameButton(titleElement, nameField, editName, saveName));
-    saveName.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK,
-        () => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
-
-    nameField.addEventListener(
-        'focusout', () => this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel));
-    nameField.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        this.#handleSaveNameButton(titleElement, nameField, editName, saveName, activeLabel);
-      }
-    });
-
-    toolbar.appendToolbarItem(editName);
-    toolbar.appendToolbarItem(saveName);
-
-    this.#createAuthenticatorFields(section, authenticatorId, options);
-
-    const label = document.createElement('div');
-    label.classList.add('credentials-title');
-    label.textContent = i18nString(UIStrings.credentials);
-    section.appendChild(label);
+    // clang-format off
+    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
+    render(html`
+      <div class="authenticator-section-header">
+        <div class="authenticator-section-title" role="heading" aria-level="2">
+          <devtools-toolbar class="edit-name-toolbar">
+            <devtools-button title=${i18nString(UIStrings.editName)}
+                class="edit-name"
+                @click=${(e: Event) => this.#handleEditNameButton(e.target as HTMLElement)}
+                .iconName=${'edit'} .variant=${Buttons.Button.Variant.TOOLBAR}
+                .jslogContext=${'edit-name'}></devtools-button>
+            <devtools-button title=${i18nString(UIStrings.saveName)}
+                @click=${(e: Event) => this.#handleSaveNameButton(e.target as HTMLElement)}
+                .iconName=${'checkmark'} .variant=${Buttons.Button.Variant.TOOLBAR}
+                class="save-name hidden"
+                .jslogContext=${'save-name'}></devtools-button>
+          </devtools-toolbar>
+          <input class="authenticator-name-field"
+              placeholder=${i18nString(UIStrings.enterNewName)}
+              jslog=${VisualLogging.textField('name').track({keydown: 'Enter', change: true})}
+              value=${i18nString(UIStrings.authenticatorS, {PH1: userFriendlyName})} disabled
+              @focusout=${(e: Event) => this.#handleSaveNameButton(e.target as HTMLElement)}
+              @keydown=${(event: KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                  this.#handleSaveNameButton(event.target as HTMLElement);
+                }
+              }}>
+        </div>
+        <div class="active-button-container">
+          <label title=${i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: userFriendlyName})}>
+            <input type="radio" checked @change=${this.#setActiveAuthenticator.bind(this, authenticatorId)}
+                  jslog=${VisualLogging.toggle('webauthn.active-authenticator').track({change: true})}>
+            ${i18nString(UIStrings.active)}
+          </label>
+        </div>
+        <button class="text-button" @click=${this.removeAuthenticator.bind(this, authenticatorId)}
+            jslog=${VisualLogging.action('webauthn.remove-authenticator').track({click: true})}>
+          ${i18nString(UIStrings.remove)}
+        </button>
+      </div>
+      ${this.#renderAuthenticatorFields(authenticatorId, options)}
+      <div class="credentials-title">${i18nString(UIStrings.credentials)}</div>
+    `, section, {host: this});
+    // clang-format on
 
     const dataGrid = this.#createCredentialsDataGrid(authenticatorId);
     dataGrid.asWidget().show(section);
@@ -769,57 +756,75 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   /**
    * Creates the fields describing the authenticator in the front end.
    */
-  #createAuthenticatorFields(
-      section: Element, authenticatorId: string, options: Protocol.WebAuthn.VirtualAuthenticatorOptions): void {
-    const sectionFields = section.createChild('div', 'authenticator-fields');
-    const uuidField = sectionFields.createChild('div', 'authenticator-field');
-    const protocolField = sectionFields.createChild('div', 'authenticator-field');
-    const transportField = sectionFields.createChild('div', 'authenticator-field');
-    const srkField = sectionFields.createChild('div', 'authenticator-field');
-    const slbField = sectionFields.createChild('div', 'authenticator-field');
-    const suvField = sectionFields.createChild('div', 'authenticator-field');
-
-    uuidField.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.uuid), 'authenticator-option-label'));
-    protocolField.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.protocol), 'authenticator-option-label'));
-    transportField.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.transport), 'authenticator-option-label'));
-    srkField.appendChild(
-        UI.UIUtils.createLabel(i18nString(UIStrings.supportsResidentKeys), 'authenticator-option-label'));
-    slbField.appendChild(UI.UIUtils.createLabel(i18nString(UIStrings.supportsLargeBlob), 'authenticator-option-label'));
-    suvField.appendChild(
-        UI.UIUtils.createLabel(i18nString(UIStrings.supportsUserVerification), 'authenticator-option-label'));
-
-    uuidField.createChild('div', 'authenticator-field-value').textContent = authenticatorId;
-    protocolField.createChild('div', 'authenticator-field-value').textContent = options.protocol;
-    transportField.createChild('div', 'authenticator-field-value').textContent = options.transport;
-    srkField.createChild('div', 'authenticator-field-value').textContent =
-        options.hasResidentKey ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
-    slbField.createChild('div', 'authenticator-field-value').textContent =
-        options.hasLargeBlob ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
-    suvField.createChild('div', 'authenticator-field-value').textContent =
-        options.hasUserVerification ? i18nString(UIStrings.yes) : i18nString(UIStrings.no);
+  #renderAuthenticatorFields(authenticatorId: string, options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
+      Lit.TemplateResult {
+    return html`
+      <div class="authenticator-fields">
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">${i18nString(UIStrings.uuid)}</label>
+          <div class="authenticator-field-value">${authenticatorId}</div>
+        </div>
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">${i18nString(UIStrings.protocol)}</label>
+          <div class="authenticator-field-value">${options.protocol}</div>
+        </div>
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">${i18nString(UIStrings.transport)}</label>
+          <div class="authenticator-field-value">${options.transport}</div>
+        </div>
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsResidentKeys)}
+          </label>
+          <div class="authenticator-field-value">
+            ${options.hasResidentKey ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+          </div>
+        </div>
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsLargeBlob)}
+          </label>
+          <div class="authenticator-field-value">
+           ${options.hasLargeBlob ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+          </div>
+        </div>
+        <div class="authenticator-field">
+          <label class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsUserVerification)}
+          </label>
+          <div class="authenticator-field-value">
+            ${options.hasUserVerification ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+          </div>
+        </div>
+      </div>`;
   }
 
-  #handleEditNameButton(
-      titleElement: Element, nameField: HTMLInputElement, editName: UI.Toolbar.ToolbarButton,
-      saveName: UI.Toolbar.ToolbarButton): void {
+  #handleEditNameButton(target: HTMLElement): void {
+    const titleElement = target.closest('.authenticator-section-title') as HTMLElement;
+    const nameField = titleElement.querySelector('.authenticator-name-field') as HTMLInputElement;
+    const editName = titleElement.querySelector('.edit-name') as Buttons.Button.Button;
+    const saveName = titleElement.querySelector('.save-name') as Buttons.Button.Button;
     nameField.disabled = false;
     titleElement.classList.add('editing-name');
     nameField.focus();
-    saveName.setVisible(true);
-    editName.setVisible(false);
+    saveName.classList.remove('hidden');
+    editName.classList.add('hidden');
   }
 
-  #handleSaveNameButton(
-      titleElement: Element, nameField: HTMLInputElement, editName: UI.Toolbar.ToolbarItem,
-      saveName: UI.Toolbar.ToolbarItem, activeLabel: HTMLLabelElement): void {
+  #handleSaveNameButton(target: HTMLElement): void {
+    const titleElement = target.closest('.authenticator-section-title') as HTMLElement;
+    const nameField = titleElement.querySelector('.authenticator-name-field') as HTMLInputElement;
+    const editName = titleElement.querySelector('.edit-name') as Buttons.Button.Button;
+    const saveName = titleElement.querySelector('.save-name') as Buttons.Button.Button;
+    const activeLabel = titleElement.querySelector('.active-button-container > label') as HTMLLabelElement;
     const name = nameField.value;
     if (!name) {
       return;
     }
     nameField.disabled = true;
     titleElement.classList.remove('editing-name');
-    editName.setVisible(true);
-    saveName.setVisible(false);
+    editName.classList.remove('hidden');
+    saveName.classList.add('hidden');
     this.#updateActiveLabelTitle(activeLabel, name);
   }
 

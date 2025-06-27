@@ -49,7 +49,7 @@ export class ScreenshotError extends Error {
       generated: {filePath: this.stashArtifact(generatedImgPath, 'generated')},
     };
     const screenshotPath =
-        path.join('test/interactions/goldens', path.relative(path.join(GEN_DIR, 'test/.generated'), generatedImgPath));
+        path.join('test/goldens', path.relative(path.join(GEN_DIR, 'test/.generated'), generatedImgPath));
     return new ScreenshotError(screenshots, message, undefined, screenshotPath);
   }
 

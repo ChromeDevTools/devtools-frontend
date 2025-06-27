@@ -116,7 +116,7 @@ function copyGoldens() {
     return;
   }
   fs.cpSync(
-      path.join(SOURCE_ROOT, 'test', 'interactions', 'goldens'),
+      path.join(SOURCE_ROOT, 'test', 'goldens'),
       path.join(TestConfig.artifactsDir, 'goldens'),
       {recursive: true},
   );

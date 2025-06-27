@@ -28,7 +28,7 @@ import {
  * goldens from there.
  */
 const testRunnerCWD = SOURCE_ROOT;
-const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'interactions', 'goldens', platform);
+const GOLDENS_FOLDER = path.join(testRunnerCWD, 'test', 'goldens', platform);
 
 /**
  * It's assumed that the image_diff binaries are in CWD/third_party/image_diff/{platform}/image_diff

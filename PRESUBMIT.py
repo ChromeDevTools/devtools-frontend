@@ -436,15 +436,6 @@ def CheckForTooLargeFiles(input_api, output_api):
 
 
 def CheckObsoleteScreenshotGoldens(input_api, output_api):
-    interaction_test_root_path = input_api.os_path.join(
-        input_api.PresubmitLocalPath(), 'test', 'interactions')
-    interaction_test_files = [interaction_test_root_path]
-
-    interaction_test_files_changed = _GetAffectedFiles(input_api,
-                                                       interaction_test_files,
-                                                       [], [])
-    if len(interaction_test_files_changed) == 0:
-        return []
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
                                          'scripts', 'test',
                                          'check_obsolete_goldens.js')

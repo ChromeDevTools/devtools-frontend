@@ -5,7 +5,7 @@
 """The purpose of this CLI tool is to help you manage changes to screenshots in
 tests across multiple platforms.
 
-For more information, see test/interactions/README.md.
+For more information, see test/README.md.
 
 If you've made changes that impact the screenshots, you'll need to update them
 for all supported platforms. Assuming you've committed your changes and
@@ -58,7 +58,7 @@ TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.normpath(os.path.join(TOOLS_DIR, '..', '..'))
 DEPOT_TOOLS_DIR = os.path.join(BASE_DIR, 'third_party', 'depot_tools')
 VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython3')
-GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'interactions', 'goldens')
+GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'goldens')
 
 WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
     'running.\nBuilders in progress:\n  %s\n'

@@ -6,6 +6,5 @@
 * [Home][home]
 * [Unit Testing](/test/unit/README.md)
 * [E2E Testing](/test/e2e/README.md)
-* [Interaction Testing](/test/interactions/README.md)
 * [Performance Testing](/test/perf/README.md)
 * [DevTools Documentation](/docs/README.md)

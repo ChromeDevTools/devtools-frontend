@@ -70,7 +70,7 @@ press F5.
 
 ![Debugging E2E tests with VSCode](../../docs/images/debugging-e2e-tests-with-vscode.png "Debugging E2E tests with VSCode")
 
-Current limitations when using VSCode for e2e and interactions tests:
+Current limitations when using VSCode for e2e tests:
 
 - VSCode only attaches to the node portion of the code (mostly the test files
   and the test helpers), not to Chrome.

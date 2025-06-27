@@ -698,7 +698,6 @@ export default defineConfig([
       'rulesdir/no-assert-equal-boolean-null-undefined': 'error',
       'rulesdir/no-imperative-dom-api': 'off',
       'rulesdir/no-lit-render-outside-of-view': 'off',
-      'rulesdir/no-screenshot-test-outside-perf-panel': 'error',
       'rulesdir/prefer-assert-instance-of': 'error',
       'rulesdir/prefer-assert-is-ok': 'error',
       'rulesdir/prefer-assert-length-of': 'error',

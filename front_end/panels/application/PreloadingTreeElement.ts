@@ -45,7 +45,7 @@ class PreloadingTreeElementBase<View extends PreloadingRuleSetView|PreloadingAtt
     this.#viewConstructor = viewConstructor;
     this.#path = path;
 
-    const icon = IconButton.Icon.create('arrow-up-down');
+    const icon = IconButton.Icon.create('speculative-loads');
     this.setLeadingIcons([icon]);
     this.#selectedInternal = false;
 
@@ -94,7 +94,7 @@ export class PreloadingSummaryTreeElement extends ExpandableApplicationPanelTree
   constructor(panel: ResourcesPanel) {
     super(panel, i18nString(UIStrings.speculativeLoads), '', '', 'preloading');
 
-    const icon = IconButton.Icon.create('arrow-up-down');
+    const icon = IconButton.Icon.create('speculative-loads');
     this.setLeadingIcons([icon]);
     this.#selectedInternal = false;
 

@@ -263,6 +263,7 @@ grd_files_bundled_sources = [
   "front_end/Images/smart-assistant.svg",
   "front_end/Images/snippet.svg",
   "front_end/Images/spark-info.svg",
+  "front_end/Images/speculative-loads.svg",
   "front_end/Images/star.svg",
   "front_end/Images/step-into.svg",
   "front_end/Images/step-out.svg",

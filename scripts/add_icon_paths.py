@@ -26,7 +26,7 @@ def add_image_to_config(image_name):
     with open(grd_files_path, "r") as f:
         grd_files_lines = f.readlines()
 
-    start_index = grd_files_lines.index("grd_files_release_sources = [\n") + 1
+    start_index = grd_files_lines.index("grd_files_bundled_sources = [\n") + 1
     end_index = grd_files_lines.index("]\n", start_index)
 
     for i in range(start_index, end_index):

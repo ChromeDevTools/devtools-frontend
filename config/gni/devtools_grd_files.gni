@@ -3,13 +3,13 @@
 # found in the LICENSE file.
 
 # This represents all the files expected to be be in the GRD. The file
-# has two lists, one for files expected for the Release build
-# (is_debug=false), and another for the Debug build (is_debug=true).
+# has two lists, one for files expected for the "bundled" build
+# (devtools_bundle=true), and another for the "unbundled" build (devtools_bundle=false).
 # The two lists are checked for overlap, and an error thrown if there is
 # any. In the root BUILD.gn these lists are used to ensure that no files
 # are missed from the GRD.
 
-grd_files_release_sources = [
+grd_files_bundled_sources = [
   "front_end/Images/3d-center.svg",
   "front_end/Images/3d-pan.svg",
   "front_end/Images/3d-rotate.svg",
@@ -797,7 +797,7 @@ grd_files_release_sources = [
   "front_end/worker_app.html",
 ]
 
-grd_files_debug_sources = [
+grd_files_unbundled_sources = [
   "front_end/core/common/App.js",
   "front_end/core/common/AppProvider.js",
   "front_end/core/common/Base64.js",
@@ -2587,12 +2587,12 @@ grd_files_debug_sources = [
 ]
 
 # Confirm that there is no overlap between the two lists.
-_grd_files_release_sources =
-    filter_exclude(grd_files_release_sources, grd_files_debug_sources)
-assert(_grd_files_release_sources == grd_files_release_sources,
-       "Debug and Release file lists overlap")
+_grd_files_bundled_sources =
+    filter_exclude(grd_files_bundled_sources, grd_files_unbundled_sources)
+assert(_grd_files_bundled_sources == grd_files_bundled_sources,
+       "Bundled and Bundled file lists overlap")
 
-_grd_files_debug_sources =
-    filter_exclude(grd_files_debug_sources, grd_files_release_sources)
-assert(_grd_files_debug_sources == grd_files_debug_sources,
-       "Debug and Release file lists overlap")
+_grd_files_unbundled_sources =
+    filter_exclude(grd_files_unbundled_sources, grd_files_bundled_sources)
+assert(_grd_files_unbundled_sources == grd_files_unbundled_sources,
+       "Bundled and Bundled file lists overlap")

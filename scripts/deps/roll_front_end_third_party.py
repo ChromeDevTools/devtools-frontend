@@ -173,13 +173,13 @@ def main():
 
     # Update devtools_grd_files.gni
     update_gn_var(
-        './config/gni/devtools_grd_files.gni', 'grd_files_debug_sources', [
+        './config/gni/devtools_grd_files.gni', 'grd_files_unbundled_sources', [
             f'front_end/third_party/{output_dir}/' + name
             for name in members if name.startswith(f'package/{library_dir}/')
             and name not in excluded_sources and name.endswith('.js')
         ] + [
             name for name in read_gn_var('./config/gni/devtools_grd_files.gni',
-                                         'grd_files_debug_sources')
+                                         'grd_files_unbundled_sources')
             if not name.startswith(f'front_end/third_party/{output_dir}/')
         ])
 

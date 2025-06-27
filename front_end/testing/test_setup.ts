@@ -31,6 +31,19 @@ document.documentElement.classList.add('platform-screenshot-test');
 
 const documentBodyElements = new Set<Element>();
 
+// Warm-up fonts to be readily available.
+before(async () => {
+  const div = document.createElement('div');
+  div.style.fontFamily = 'roboto';
+  // Some latin characters to trigger the latin font file to be loaded.
+  // Additional non-lating characters can be included if needed.
+  div.innerText = 'abc';
+  // eslint-disable-next-line rulesdir/no-document-body-mutation
+  document.body.append(div);
+  await document.fonts.ready;
+  div.remove();
+});
+
 beforeEach(async () => {
   resetHostConfig();
   for (const child of document.body.children) {

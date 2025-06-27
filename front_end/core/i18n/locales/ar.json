@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "عدم محاكاة نوع وسائط CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "عدم محاكاة حجم النص في نظام التشغيل"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "عدم تمديد خطوط الشبكة"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "محاكاة عمى اللون الأخضر (بدون لون أخضر)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "محاكاة حجم النص في نظام التشغيل"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "محاكاة عمى اللون الأحمر (بدون لون أحمر)"
@@ -732,6 +738,30 @@
     "message": "حظر طلب الشبكة"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "بلا محاكاة"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "‫100% (تلقائي)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "بلا محاكاة"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "يتيح هذا الإعداد فرض نوع الوسائط لاختبار أنماط الطباعة والشاشة."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "يعمل هذا الإعداد على فرض محاكاة حجم النص في نظام التشغيل"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "يؤدي هذا الإعداد إلى فرض محاكاة قصور الرؤية"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "تبديل الدرج"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "تبديل اتجاه الدرج"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "إلغاء الإرساء في نافذة منفصلة"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "يتم حظر طلبات المصادر التي تتضمّن عناوين URL الخاصة بها كلاً من أحرف المسافة البيضاء \\(n|r|t) ورمز \"الأقل من\" (<). لتحميل هذه المصادر، يُرجى إزالة السطور الجديدة وترميز رمز \"الأقل من\" من خلال مواضع مثل قيم سمات العناصر."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "تقرَّر الإيقاف النهائي لميزة الرصد التلقائي لدليل الرموز ISO-2022-JP في المستقبل القريب. يُرجى تحديد دليل الرموز في عنوان \"نوع المحتوى\" أو باستخدام علامة وصفية (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "تم إيقاف واجهة برمجة التطبيقات chrome.loadTimes() نهائيًا ويمكنك بدلاً منها استخدام واجهة برمجة التطبيقات Navigation Timing 2 الموحَّدة."
@@ -1437,7 +1470,7 @@
     "message": "تعذّر تعديل LiveEdit: {PH1}."
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "تم إعداد بيانات الحقول لعنوان URL غير الصفحة الحالية."
+    "message": "تم إعداد بيانات مقاييس تجارب بيانات المستخدمِين الحقيقيين لعنوان URL مختلف عن عنوان الصفحة الحالية."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "نسبة وحدات البكسل على الجهاز يجب أن تكون رقمًا أو يُترك حقلها فارغًا."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "حفظ بتنسيق…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "تعذَّر حفظ الملف على القرص."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "حفظ الصورة"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "أهم أسباب تغييرات التصميم"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "صور بلا حجم محدَّد"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "أسوأ مجموعة"
@@ -1839,7 +1875,7 @@
     "message": "تضمَّن الطلب عمليات إعادة توجيه (عدد عمليات إعادة التوجيه: {PH1}، ومدتها {PH2}+)"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "استجابة الخادم كانت بطيئة (المدة المرصودة: {PH1}) "
+    "message": "استجابة الخادم كانت بطيئة (المدة المرصودة: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "لم يتمّ تطبيق أي ضغط"
@@ -1848,7 +1884,7 @@
     "message": "يتجنّب هذا الطلب عمليات إعادة التوجيه"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "يستجيب الخادم بسرعة (المدة المرصودة: {PH1}) "
+    "message": "يستجيب الخادم بسرعة (المدة المرصودة: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "تمّ تطبيق ضغط النص"
@@ -2070,7 +2106,7 @@
     "message": "يُمكن [تجنُّب تقييد الطلبات المهمة](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) عن طريق تقليل طول السلاسل أو تقليل حجم تنزيل الموارد أو تأجيل تنزيل الموارد غير الضرورية لتحسين تحميل الصفحة."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "يمكنك إضافة إشارات [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) إلى أهم مصادرك، ولكن يُرجى محاولة استخدام أقل من 4 إشارات."
+    "message": "يمكنك إضافة إشارات [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) إلى أهم مصادرك، ولكن يُرجى محاولة استخدام 4 إشارات كحدّ أقصى."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "المصادر المُرشَّحة للاتصال المُسبَق"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "قد يتم [تأخير الاستجابة لتفاعلات النقر بمقدار 300 ملي ثانية كحد أقصى](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) إذا لم يتم تحسين إطار العرض للأجهزة الجوّالة."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "مدة تأخير الاستجابة للنقر على الأجهزة الجوّالة"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "تحسين إطار العرض للأجهزة الجوّالة"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "لاستخدام هذه الميزة، يجب تغيير اللغة المفضّلة إلى اللغة الإنجليزية من خلال إعدادات \"أدوات مطوّري البرامج\"."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "يمكنك أيضًا استخدام أحد الطلبات المقترحة أعلاه لبدء المحادثة"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "مزيد من المعلومات حول الذكاء الاصطناعي في \"أدوات مطوري البرامج\""
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "تصغير"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "هل المطلوب محو مساحة تخزين العناصر \"{PH1}\"؟"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "هل المطلوب حذف قاعدة بيانات \"{PH1}\"؟"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "المفتاح"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "ستتم إزالة البيانات المحفوظة في مساحة تخزين العناصر المحدّدة."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "العناصر المخزّنة"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "تم تحديد نوع هذا الإطار كإطار جذر لإعلان."
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "قاعدة قائمة الفلاتر للنص البرمجي الأصلي"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "سياق آمن"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (من خريطة المصادر)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "لا تعرض علامة التبويب \"التغييرات\" أي تعديلات تتم على البيانات الثنائية"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "في هذه الصفحة، يمكنك تتبُّع التغييرات التي تم إجراؤها على الرموز البرمجية من خلال \"أدوات مطوّري البرامج في Chrome\"."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "نسخ"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ما مِن تغييرات حتى الآن"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ما مِن اختلافات نصية"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{حذف سطر واحد (-)}zero{حذف # سطر (-)}two{حذف سطرَين (-)}few{حذف # أسطر (-)}many{حذف # سطرًا (-)}other{حذف # سطر (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{إدراج سطر واحد (+)}zero{إدراج # سطر (+)}two{إدراج سطرَين (+)}few{إدراج # أسطر (+)}many{إدراج # سطرًا (+)}other{إدراج # سطر (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "تم النسخ إلى الحافظة"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "التغييرات"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "نسخ جميع التغييرات من الملف الحالي"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "عودة جميع التغييرات إلى الملف الحالي"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "إظهار التغييرات"
@@ -5715,7 +5745,7 @@
     "message": "عرض رسائل من السياق الحالي فقط (top وiframe وworker وإضافة)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "تم تجاوزه بواسطة الشريط الجانبي للفلتر."
+    "message": "يتم التحكّم في مستويات السجلّ من خلال الشريط الجانبي لوحدة التحكّم."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "حفظ السجلّ"
@@ -6612,16 +6642,16 @@
     "message": "التمرير للوصول إلى طريقة العرض"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "عرض هدف commandfor"
+    "message": "عرض العنصر المرتبط بسمة commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "عرض تفاصيل iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "عرض هدف الاهتمامات"
+    "message": "عرض العنصر المرتبط بسمة interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "عرض هدف النافذة المنبثقة"
+    "message": "عرض العنصر المرتبط بسمة popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "هذا الإطار تم تحديده بوصفه إطار إعلان"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "أوراق الأنماط التي تم إنشاؤها"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "نسخ جميع التغييرات من صفحات CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "نسخ كل التعريفات"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "من خلال أداة الفحص"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "نسخ جميع التغييرات من صفحات CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "نسخ جميع التعريفات بتنسيق JavaScript"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "تسهيل الاستخدام"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "تطبيق عملية محاكاة الكمبيوتر المكتبي أثناء التدقيق"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "تطبيق محاكاة الأجهزة الجوّالة"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "إعادة ترتيب الحزم"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "نسبة مئوية"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "اسم الملف التعريفي"
   },
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "مساحة العنوان عن بعد"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "عناوين الطلبات"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "عناوين الاستجابة"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "حفظ بتنسيق…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "تعذَّر حفظ الملف على القرص."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "اختيار مجلّد لعمليات الإلغاء"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "إعادة تحميل تعبيرات المشاهدة"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "تم حذف تعبير المشاهدة"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "الوصول إلى نقطة الإيقاف {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "التفاصيل"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "الأبعاد"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "المدة"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "الموقع الجغرافي"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "رسالة"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (عناصر ثانوية)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "تمّ تجميع {PH1}."
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "‫{PH1} من إجمالي {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}، {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "‫{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "اختَر \"{PH1}\" لجمع إحصاءات مطابقة تفصيلية لأداة اختيار لغة CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ذاتي)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "نص برمجي"
@@ -14682,7 +14694,7 @@
     "message": "ضبط"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ضبط عملية استرجاع بيانات الحقول"
+    "message": "ضبط عملية استرجاع بيانات مقاييس تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "لا يتضمّن \"تقرير تجربة المستخدم على Chrome\" بيانات كافية عن السرعة الفعلية لهذه الصفحة."
@@ -14694,7 +14706,7 @@
     "message": "‫\"{PH1}\" ليس مصدرًا أو عنوان URL صالحًا."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "يمكنك ربط مصدر التطوير بمصدر الموقع الإلكتروني العلني للحصول تلقائيًا على بيانات تجارب المستخدمِين الحقيقيين ذات الصلة."
+    "message": "يمكنك ربط مصدر التطوير بمصدر الموقع الإلكتروني العلني للحصول تلقائيًا على بيانات مقاييس تجارب المستخدمِين الحقيقيين ذات الصلة."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "جديد"
@@ -14703,7 +14715,7 @@
     "message": "حسنًا"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين دائمًا بشأن عنوان URL أدناه"
+    "message": "عرض بيانات مقاييس تجارب المستخدمِين الحقيقيين دائمًا بشأن عنوان URL أدناه"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "إيقاف"
@@ -14718,7 +14730,7 @@
     "message": "عنوان URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "عند فتح \"أدوات مطوّري البرامج\"، سيتم إرسال عناوين URL التي تزورها إلى Google لطلب بيانات الحقول. وتكون هذه الطلبات غير مرتبطة بحسابك على Google."
+    "message": "عند فتح \"أدوات مطوّري البرامج\"، سيتم إرسال عناوين URL التي تزورها إلى Google لطلب بيانات مقاييس تجارب المستخدمِين الحقيقيين. وتكون هذه الطلبات غير مرتبطة بحسابك على Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "إضافة قاعدة تعبير عادي لعنوان URL الخاص بالنص البرمجي"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "قسم سجلات التفاعل وتغييرات التصميم"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "بيانات تجارب المستخدمِين الحقيقيين"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "بيانات مقاييس تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "هناك تأخير في استجابة الصفحة لتفاعلات المستخدم (INP) بنسبة %98 مقارنةً بالتفاعلات الأخرى."
@@ -14856,10 +14868,10 @@
     "message": "المقاييس على نظامك المحلي ومقاييس تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "مزيد من المعلومات عن البيانات المحلية والميدانية"
+    "message": "مزيد من المعلومات حول مقاييس النظام المحلي ومقاييس تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "يتم جمع بيانات المقاييس المحلية من الصفحة الحالية باستخدام جهازك واتصالك بالشبكة. ويتم قياس البيانات الميدانية من قِبل مستخدمين حقيقيين يستخدمون العديد من اتصالات الشبكة والأجهزة المختلفة."
+    "message": "يتم جمع بيانات مقاييس النظام المحلي من الصفحة الحالية باستخدام جهازك واتصالك بالشبكة، وجمع بيانات مقاييس تجارب المستخدمِين الحقيقيين من قِبل مستخدمين حقيقيين يستخدمون العديد من اتصالات الشبكة والأجهزة المختلفة."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "المقاييس على نظامك المحلي"
@@ -14922,10 +14934,10 @@
     "message": "الانتقال إلى أسوأ مجموعة لتغييرات التصميم"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين بشأن أنواع الأجهزة التالية: {PH1}"
+    "message": "عرض بيانات مقاييس تجارب المستخدمِين الحقيقيين بشأن أنواع الأجهزة التالية: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "عرض بيانات تجارب المستخدمِين الحقيقيين بشأن {PH1}"
+    "message": "عرض بيانات مقاييس تجارب المستخدمِين الحقيقيين بشأن {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "الانتقال إلى مقياس مدى استجابة الصفحة لتفاعلات المستخدم (INP)"
@@ -15033,13 +15045,13 @@
     "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي أفضل بكثير من تجارب المستخدمِين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، تُعَد قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، جيدة."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، تُعَد قيمة الشريحة المئوية الـ 75 لمقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، جيدة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أما قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، فتحتاج إلى التحسين."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، فتحتاج إلى التحسين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي ضعيفة."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي ضعيفة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} جيدة، وهي مماثلة لتجارب المستخدمِين."
@@ -15054,13 +15066,13 @@
     "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، ولكنّها أفضل بكثير من تجارب المستخدمِين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي جيدة."
+    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي جيدة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، فإنّ قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1} تحتاج إلى التحسين."
+    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، فإنّ قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1} تحتاج إلى التحسين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي ضعيفة."
+    "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة {PH2} بحاجة إلى التحسين، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي ضعيفة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "إنّ قيمة {PH1} على نظامك المحلي البالغة{PH2} بحاجة إلى التحسين، وهي مماثلة لتجارب المستخدمِين."
@@ -15075,13 +15087,13 @@
     "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، ولكنها أفضل بكثير من تجارب المستخدمِين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي جيدة."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا بالنسبة إلى قيمة الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، فهي جيدة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أما قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، فتحتاج إلى التحسين."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. أمّا قيمة {PH3} التي تمثّل الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، فتحتاج إلى التحسين."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، تُعَد قيمة الشريحة المئوية الـ 75 لبيانات تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، ضعيفة."
+    "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مطابقة للقيمة المرصودة في ‎{PH4} من تجارب المستخدمِين الحقيقيين على {PH1}. بالإضافة إلى ذلك، تُعَد قيمة الشريحة المئوية الـ 75 لبيانات مقاييس تجارب المستخدمِين الحقيقيين في {PH1}، والتي تبلغ {PH3}، ضعيفة."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "تُعَد قيمة {PH1} على نظامك المحلي البالغة {PH2} ضعيفة، وهي مماثلة لتجارب المستخدمِين."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "تغيير لغة أدوات مطوري البرامج إلى {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "تبديل اتجاه الدرج"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "إضافة"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "لقطة شاشة لمدة {PH1}، اختَر لعرض الطلبات السابقة."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "حذف التعليقات التوضيحية"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ضبط إعدادات قنوات الإصدار"

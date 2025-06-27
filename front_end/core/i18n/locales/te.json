@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS మీడియా రకాన్ని అనుకరించకండి"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS టెక్స్ట్ స్కేల్‌ను అనుకరించవద్దు"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "గ్రిడ్ లైన్‌లను విస్తరించకండి"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "డ్యూటెరానోపియాను (ఆకుపచ్చ ఉండదు) ఎమ్యులేట్ చేయండి"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS టెక్స్ట్ స్కేల్ అనుకరణ"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ప్రొటానోపియాను (ఎరుపు రంగు ఉండదు) ఎమ్యులేట్ చేయండి"
@@ -732,6 +738,30 @@
     "message": "నెట్‌వర్క్ రిక్వెస్ట్ బ్లాకింగ్"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "అనుకరణ లేదు"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ఆటోమేటిక్ సెట్టింగ్)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "అనుకరణ లేదు"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "ప్రింట్, స్క్రీన్ స్టయిల్‌లను పరీక్షించడానికి మీడియా రకాన్ని ఫోర్స్ చేస్తుంది"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS టెక్స్ట్ స్కేల్ అనుకరణను అనుమతిస్తుంది"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "దృష్టి లోప అనుకరణను ఫోర్స్ చేస్తుంది"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "డ్రాయర్‌ను టోగుల్ చేయండి"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "డ్రాయర్ ఓరియంటేషన్‌ను టాగిల్ చేయండి"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "ప్రత్యేక విండోకు అన్‌డాక్ చేయండి"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "రిసోర్స్ రిక్వెస్ట్‌లు వేటి URLలు అయితే, తీసివేయబడిన వైట్‌స్పేస్ \\(n|r|t) అక్షరాలను, (<) అక్షరాలు కంటే తక్కువ ఉన్న వాటి రెండింటి కలయికను కలిగి ఉన్నాయో, అవి బ్లాక్ చేయబడ్డాయి. ఈ రిసోర్స్‌లను లోడ్ చేయడానికి, దయచేసి ఎలిమెంట్ లక్షణం విలువలు వంటి స్థలాల నుండి కొత్తలైన్‌లను తీసివేయండి, అంత కంటే తక్కువ అక్షరాలను ఎన్‌కోడ్ చేయండి."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP క్యారెక్టర్‌ల సెట్‌ను ఆటోమేటిక్‌గా గుర్తించే ఫీచర్ నిలిపివేయబడింది, సమీప భవిష్యత్తులో ఇది డిజేబుల్ అవుతుంది. దయచేసి కంటెంట్ రకం హెడర్‌లో లేదా మెటా ట్యాగ్ (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)‌ను ఉపయోగించి క్యారెక్టర్‌ల సెట్‌ను పేర్కొనండి."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() విస్మరించబడింది, బదులుగా ప్రామాణిక APIని ఉపయోగించండి: నావిగేషన్ సమయం 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit విఫలమైంది: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ఫీల్డ్ డేటా ప్రస్తుత పేజీ కోసం కాకుండా వేరొక URL కోసం కాన్ఫిగర్ చేయబడింది."
+    "message": "ఫీల్డ్ కొలమానాలు ప్రస్తుత పేజీకి కాకుండా, వేరొక URL కోసం కాన్ఫిగర్ అయ్యాయి."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "పరికర పిక్సెల్ నిష్పత్తి నంబర్ లేదా ఖాళీగా ఉండాలి."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "ఇలా సేవ్ చేయాలి…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ఫైల్‌ను డిస్క్‌కు సేవ్ చేయడంలో విఫలమైంది."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ఇమేజ్‌ను సేవ్ చేయండి"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "టాప్ లేఅవుట్ షిఫ్ట్ కారణాలను చూపండి"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "కొలతలు లేని ఇమేజ్‌లు"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "కొలతలు లేని ఇమేజ్ ఎలిమెంట్"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "పనికి రాని క్లస్టర్"
@@ -1839,7 +1875,7 @@
     "message": "మళ్లింపులు ఉన్నాయి ({PH1} మళ్లింపులు, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "సర్వర్ నెమ్మదిగా సమాధానమిచ్చింది ({PH1} సమయంలో) "
+    "message": "సర్వర్ నెమ్మదిగా సమాధానం ఇచ్చింది ({PH1} సమయంలో)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "కంప్రెషన్ ఏదీ వర్తించబడలేదు"
@@ -1848,7 +1884,7 @@
     "message": "మళ్లింపులను నివారిస్తుంది"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "సర్వర్ వేగంగా సమాధానమిస్తోంది ({PH1} సమయంలో) "
+    "message": "సర్వర్ వేగంగా సమాధానం ఇస్తోంది ({PH1} సమయంలో)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "టెక్స్ట్ కంప్రెషన్‌ను వర్తింపజేస్తుంది"
@@ -2070,7 +2106,7 @@
     "message": "పేజీ లోడ్‌ను మెరుగుపరచడానికి చెయిన్‌ల పొడవును తగ్గించడం, రిసోర్స్‌ల డౌన్‌లోడ్ సైజును తగ్గించడం, లేదా అనవసరమైన రిసోర్స్‌లను డౌన్‌లోడ్ చేయడాన్ని వాయిదా వేయడం వంటివి చేయడం ద్వారా [అతి ముఖ్యమైన రిక్వెస్ట్‌ల చైనింగ్‌ను నివారించండి](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "అత్యంత ముఖ్యమైన మీ ఆరిజిన్‌లకు [ప్రీకనెక్ట్](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) సూచనలను జోడించండి, కానీ 4 కంటే తక్కువ సూచనలను ఉపయోగించడానికి ట్రై చేయండి."
+    "message": "అత్యంత ముఖ్యమైన మీ ఆరిజిన్‌లకు [ప్రీకనెక్ట్](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) సూచనలను జోడించండి, కానీ 4 కంటే ఎక్కువ ఉపయోగించకుండా ట్రై చేయండి."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "ప్రీకనెక్ట్ కావలసిన ఆరిజిన్‌లు"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయనట్లయితే ట్యాప్ ఇంటరాక్షన్‌లు [గరిష్ఠంగా 300 మి.సె. వరకు ఆలస్యం కావచ్చు](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "మొబైల్ ట్యాప్‌లో ఆలస్యం"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయండి"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ఈ ఫీచర్‌ను ఉపయోగించడానికి, DevTools సెట్టింగ్‌లలో మీరు ఉపయోగించాలనుకుంటున్న భాషగా ఇంగ్లీష్‌ను సెట్ చేయండి."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "మీ సంభాషణను ప్రారంభించడానికి పైన సూచించిన ప్రాంప్ట్‌లలో ఒక దాన్ని కూడా మీరు ఉపయోగించవచ్చు"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "AI DevTools గురించి తెలుసుకోండి"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "కుదించు"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" ఆబ్జెక్ట్ స్టోర్‌ను క్లియర్ చేయాలా?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" డేటాబేస్‌ను తొలగించాలా?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "కీ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "ఎంచుకున్న ఆబ్జెక్ట్ స్టోర్‌లో ఉన్న డేటాను తీసివేయడం జరుగుతుంది."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ఆబ్జెక్ట్ స్టోర్‌లు"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ఈ ఫ్రేమ్, యాడ్ యొక్క రూట్ ఫ్రేమ్‌గా గుర్తించబడింది"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "రూట్ స్క్రిప్ట్ ఫిల్టర్‌లిస్ట్ నియమం"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "సురక్షిత కాంటెక్స్ట్"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (సోర్స్ మ్యాప్ నుండి)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "బైనరీ డేటాకు చేసిన మార్పులు, మార్పుల ట్యాబ్‌లో కనిపించవు"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "ఈ పేజీలో మీరు DevToolsలో చేసిన కోడ్ మార్పులను ట్రాక్ చేయవచ్చు."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "కాపీ చేయండి"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ఇంకా మార్పులేవీ చేయలేదు"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "టెక్స్ట్‌లో ఎటువంటి మార్పూ లేదు"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# తొలగింపు (-)}other{# తొలగింపులు (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# చొప్పింపు (+)}other{# చొప్పించడాలు (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "మార్పులు"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "ప్రస్తుత ఫైల్‌లోని మార్పులన్నింటిని కాపీ చేయండి"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "ప్రస్తుత ఫైల్ మార్పులన్నింటినీ పూర్వస్థితికి మార్చండి"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "మార్పులను చూపించు"
@@ -5715,7 +5745,7 @@
     "message": "ప్రస్తుత కాంటెక్స్ట్ నుండి మాత్రమే మెసేజ్‌లను చూపుతుంది (top, iframe, worker, ఎక్స్‌టెన్షన్)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "ఫిల్టర్ సైడ్‌బార్ ద్వారా ఓవర్‌రైడ్ చేయబడింది"
+    "message": "లాగ్ లెవెల్స్‌ను కన్సోల్ సైడ్‌బార్ కంట్రోల్ చేస్తుంది."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "లాగ్‌ను స్టోర్ చేయండి"
@@ -6612,16 +6642,16 @@
     "message": "చూడటానికి స్క్రోల్ చేయండి"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "టార్గెట్ కమాండ్‌ను చూడండి"
+    "message": "commandfor అట్రిబ్యూట్‌తో లింక్ అయి ఉన్న ఎలిమెంట్‌ను చూపండి"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe వివరాలను చూడండి"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "ఆసక్తి ఆధారిత టార్గెటింగ్‌ను చూడండి"
+    "message": "interesttarget అట్రిబ్యూట్‌తో లింక్ అయి ఉన్న ఎలిమెంట్‌ను చూపండి"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "పాప్‌ఓవర్ టార్గెట్‌ను చూడండి"
+    "message": "popovertarget అట్రిబ్యూట్‌తో లింక్ అయి ఉన్న ఎలిమెంట్‌ను చూపండి"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ఈ ఫ్రేమ్ యాడ్ ఫ్రేమ్‌గా గుర్తించబడింది"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "నిర్మాణం చేయబడిన స్టయిల్‌షీట్"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "CSS మార్పులన్నింటిని కాపీ చేయండి"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "అన్ని డిక్లరేషన్‌లను కాపీ చేయండి"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ఇన్స్పెక్టర్ ద్వారా"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "CSS మార్పులన్నింటిని కాపీ చేయండి"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "అన్ని డిక్లరేషన్‌లను JSగా కాపీ చేయండి"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "యాక్సెసిబిలిటీ"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ఆడిట్ చేసేటప్పుడు మొబైల్ అనుకరణను వర్తింపజేయండి"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "మొబైల్ అనుకరణను వర్తింపజేయండి"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "ప్యాకెట్ రీఆర్డరింగ్"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "శాతం"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "ప్రొఫైల్ పేరు"
   },
@@ -8802,7 +8826,7 @@
     "message": "అనుకూల యూజర్ ఏజెంట్‌ను ఎంటర్ చేయండి"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "నెట్‌వర్క్ పరిస్థితులు చూపబడ్డాయి"
+    "message": "నెట్‌వర్క్ పరిస్థితులు చూపడం జరిగింది."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "నెట్‌వర్క్ త్రోట్లింగ్"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "రిమోట్ అడ్రస్ స్పేస్"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "హెడర్‌లను రిక్వెస్ట్ చేయండి"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ప్రతిస్పందన హెడర్‌లు"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "ఇలా సేవ్ చేయాలి…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ఫైల్‌ను డిస్క్‌కు సేవ్ చేయడంలో విఫలమైంది."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ఓవర్‌రైడ్‌ల కోసం ఫోల్డర్‌ను ఎంచుకోండి"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "వాచ్ ఎక్స్ప్రెషన్‌లను రిఫ్రెష్ చేయండి"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "వాచ్ ఎక్స్‌ప్రెషన్‌ను తొలగించడం జరిగింది"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} బ్రేక్‌పాయింట్ హిట్"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "వివరాలు"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "డైమెన్షన్‌లు"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "వ్యవధి"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "మరింత తెలుసుకోండి"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "లొకేషన్"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "మెసేజ్ చేయండి"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (చిన్నారులు)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} సేకరించబడింది"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}‌లో {PH1}‌వది"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "వివరణాత్మక CSS ఎంపిక సాధనం మ్యాచింగ్ గణాంకాలను కలెక్ట్ చేయడానికి \"{PH1}\"ను ఎంచుకోండి."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (స్వీయ)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "స్క్రిప్ట్"
@@ -14682,19 +14694,19 @@
     "message": "కాన్ఫిగర్ చేయండి"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ఫీల్డ్ డేటా ఫెచింగ్‌ను కాన్ఫిగర్ చేయండి"
+    "message": "ఫీల్డ్ కొలమానాల ఫెచింగ్‌ను కాన్ఫిగర్ చేయండి"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX రిపోర్ట్, ఈ పేజీ విషయంలో, ఖచ్చితమైన సందర్శకుల డేటాను తగినంతగా కలిగి లేదు."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "సైట్‌లో రియల్ యూజర్‌ల ఎక్స్‌పీరియన్స్‌తో లోకల్ కొలమానాలను సందర్భోచితంగా చేయడంలో మీకు సహాయం చేయడానికి {PH1} రిపోర్ట్ నుండి సమగ్ర ఫీల్డ్ డేటాను ఫెచ్ చేసుకోండి."
+    "message": "సైట్‌లో రియల్ యూజర్‌ల ఎక్స్‌పీరియన్స్‌తో లోకల్ కొలమానాలను సందర్భోచితంగా చేయడంలో మీకు సహాయం చేయడానికి {PH1} రిపోర్ట్ నుండి సమగ్ర ఫీల్డ్ కొలమానాలను ఫెచ్ చేసుకోండి."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" చెల్లుబాటు అయ్యే ఆరిజిన్ లేదా URL కాదు."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "దాని ప్రొడక్షన్ ఆరిజిన్ కోసం సంబంధిత ఫీల్డ్ డేటాను ఆటోమేటిక్‌గా పొందడానికి డెవలప్‌మెంట్ ఆరిజిన్‌ను సెట్ చేయండి."
+    "message": "దాని ప్రొడక్షన్ ఆరిజిన్ కోసం సంబంధిత ఫీల్డ్ కొలమానాలను ఆటోమేటిక్‌గా పొందడానికి డెవలప్‌మెంట్ ఆరిజిన్‌ను సెట్ చేయండి."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "కొత్తది"
@@ -14703,7 +14715,7 @@
     "message": "సరే"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "దిగువ URL కోసం ఫీల్డ్ డేటాను ఎల్లప్పుడూ చూపించండి"
+    "message": "దిగువ URLకు ఫీల్డ్ కొలమానాలను ఎల్లప్పుడూ చూపండి"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "సమ్మతిని నిలిపివేయండి"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools తెరిచినప్పుడు, ఫీల్డ్ డేటా క్వెరీ కోసం మీరు చూసే URLలు Googleకు పంపబడతాయి. ఈ రిక్వెస్ట్‌లు మీ Google ఖాతాతో ముడిపడి లేవు."
+    "message": "DevTools తెరిచి ఉన్నప్పుడు, ఫీల్డ్ కొలమానాలను క్వెరీ చేయడానికి మీరు చూసే URLలు Googleకు పంపడం జరుగుతుంది. ఈ రిక్వెస్ట్‌లు మీ Google ఖాతాతో ముడిపడి లేవు."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "స్క్రిప్ట్ URL కోసం రెగ్యులర్ ఎక్స్‌ప్రెషన్ నియమాన్ని జోడించండి"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ఇంటరాక్షన్, అలాగే లేఅవుట్ షిఫ్ట్ లాగ్స్ విభాగం"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ఫీల్డ్ డేటా"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "ఫీల్డ్ కొలమానాలు"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP ఇంటరాక్షన్, ఇంటరాక్షన్ ల్యాగ్‌లలో 98వ శతాంశం వద్ద ఉంది."
@@ -14856,10 +14868,10 @@
     "message": "లోకల్, ఫీల్డ్ కొలమానాలు"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "లోకల్, ఫీల్డ్ డేటా గురించి మరింత తెలుసుకోండి"
+    "message": "లోకల్, ఫీల్డ్ కొలమానాల గురించి మరింత తెలుసుకోండి"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "మీ నెట్‌వర్క్ కనెక్షన్‌ను, పరికరాన్ని ఉపయోగించి ప్రస్తుత పేజీ నుండి స్థానిక కొలమానాలను క్యాప్చర్ చేయబడ్డాయి. అనేక విభిన్న నెట్‌వర్క్ కనెక్షన్‌లను, పరికరాలను ఉపయోగించి రియల్-యూజర్‌ల ద్వారా ఫీల్డ్ డేటా కొలవబడుతుంది."
+    "message": "మీ నెట్‌వర్క్ కనెక్షన్‌ను, డివైజ్‌ను ఉపయోగించి ప్రస్తుత పేజీ నుండి లోకల్ కొలమానాలు క్యాప్చర్ చేయబడ్డాయి. ఫీల్డ్ కొలమానాలను అనేక విభిన్న నెట్‌వర్క్ కనెక్షన్‌లను, డివైజ్‌లను ఉపయోగించి రియల్ యూజర్‌లు కొలుస్తారు."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "లోకల్ కొలమానాలు"
@@ -14922,10 +14934,10 @@
     "message": "పనికి రాని లేఅవుట్ షిఫ్ట్ క్లస్టర్‌కు వెళ్లండి."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "పరికర రకం కోసం ఫీల్డ్ డేటాను చూపించండి:{PH1}"
+    "message": "డివైజ్ రకానికి ఫీల్డ్ కొలమానాలను చూడండి: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} కోసం ఫీల్డ్ డేటాను చూపండి"
+    "message": "{PH1}‌కు ఫీల్డ్ కొలమానాలను చూడండి"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP ఇంటరాక్షన్‌కు వెళ్లండి."
@@ -15033,13 +15045,13 @@
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగుంది, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్ కంటే గణనీయంగా మెరుగ్గా ఉంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. అదనంగా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. అదనంగా, ఫీల్డ్ కొలమానాలు 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1}కి సంబంధించిన విలువ {PH3}కు మెరుగుదల చేయడం అవసరం."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1}‌కు సంబంధించిన విలువ {PH3}‌కు మెరుగుపరచడం అవసరం."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగాలేదు."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాగుంది, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1} విలువ {PH3} బాలేదు."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగుంది, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్‌ను పోలి ఉంది."
@@ -15054,13 +15066,13 @@
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్ కంటే గణనీయంగా బాగుంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. అదనంగా, ఫీల్డ్ డేటా 75వ శాతం {PH1}కి సంబంధించిన విలువ {PH3}కు మెరుగుదల చేయడం అవసరం."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. అదనంగా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1}‌కు సంబంధించిన విలువ {PH3}‌కు మెరుగుపరచడం అవసరం."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగాలేదు."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1} విలువ {PH3} బాలేదు."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువకు మెరుగుదల అవసరం, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్‌ను పోలి ఉంది."
@@ -15075,13 +15087,13 @@
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగాలేదు, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్ కంటే గణనీయంగా మెరుగ్గా ఉంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1} విలువ {PH3} బాగుంది."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. ఏదేమైనా, ఫీల్డ్ డేటా 75వ శాతం {PH1}కి సంబంధించిన విలువ {PH3}కు మెరుగుదల చేయడం అవసరం."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. ఏదేమైనా, ఫీల్డ్ కొలమానాల 75వ శాతం {PH1}‌కు సంబంధించిన విలువ {PH3}‌కు మెరుగుపరచడం అవసరం."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేట్ చేయబడింది. అదనంగా, ఫీల్డ్ డేటా 75వ శాతం {PH1} విలువ {PH3} బాగాలేదు."
+    "message": "మీ లోకల్ {PH2}‌కు సంబంధించిన {PH1} విలువ బాలేదు, అది రియల్-యూజర్ {PH1} ఎక్స్‌పీరియన్స్‌లలో {PH4} ఎలా ఉందో అదే విధంగా రేటింగ్ ఇవ్వడం జరిగింది. అదనంగా, ఫీల్డ్ కొలమానాలు 75వ శాతం {PH1} విలువ {PH3} బాలేదు."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "మీ లోకల్ {PH2}కు సంబంధించిన {PH1} విలువ బాగా లేదు, అది మీ యూజర్‌ల ఎక్స్‌పీరియన్స్‌ను పోలి ఉంది."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevToolsను {PH1}కు మార్చండి"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "డ్రాయర్ ఓరియంటేషన్‌ను టాగిల్ చేయండి"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "జోడించండి"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} కోసం స్క్రీన్‌షాట్ - మునుపటి రిక్వెస్ట్‌లను చూడటానికి ఎంచుకోండి."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "అదనపు గమనిక‌లను తొలగించండి"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ట్రాక్‌లను కాన్ఫిగర్ చేయండి"

@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Không mô phỏng loại đa phương tiện của CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Không mô phỏng tỷ lệ văn bản của hệ điều hành"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Không kéo dài đường lưới"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Mô phỏng mù màu xanh lục (không có màu xanh lục)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Mô phỏng tỷ lệ văn bản của hệ điều hành"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Mô phỏng chứng mù màu đỏ (không có màu đỏ)"
@@ -732,6 +738,30 @@
     "message": "Chặn yêu cầu kết nối mạng"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Không mô phỏng"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (mặc định)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Không mô phỏng"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Buộc có loại đa phương tiện để thử nghiệm kiểu in ấn và màn ảnh"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Buộc mô phỏng tỷ lệ văn bản của hệ điều hành"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Buộc mô phỏng khiếm khuyết thị giác"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Bật/tắt ngăn"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Bật/tắt nút chuyển hướng ngăn"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Gỡ vào cửa sổ riêng biệt"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Các yêu cầu tài nguyên có URL chứa cả ký tự \\(n|r|t) khoảng trắng đã bị xoá và ký tự nhỏ hơn (<) sẽ bị chặn. Vui lòng xoá các dòng mới và mã hoá ký tự nhỏ hơn khỏi các vị trí như giá trị thuộc tính phần tử để tải những tài nguyên như vậy."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Tính năng tự động phát hiện bộ ký tự ISO-2022-JP không được dùng nữa và sẽ bị tắt trong tương lai gần. Vui lòng chỉ định bộ ký tự trong tiêu đề Loại nội dung hoặc bằng cách sử dụng thẻ meta (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() không được dùng nữa; thay vào đó, hãy sử dụng API đã chuẩn hoá: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit không thành công: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Dữ liệu trường được định cấu hình cho một URL khác với trang hiện tại."
+    "message": "Chỉ số thực địa được định cấu hình cho một URL khác với trang hiện tại."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Tỷ lệ pixel của thiết bị phải ở dạng số hoặc để trống."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Lưu dưới dạng…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Không lưu được tệp vào ổ đĩa."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Lưu hình ảnh"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Nguyên nhân làm thay đổi bố cục thường gặp nhất"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Hình ảnh chưa xác định kích thước"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Thành phần hình ảnh chưa xác định kích thước"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Cụm tệ nhất"
@@ -1839,7 +1875,7 @@
     "message": "Có chuyển hướng ({PH1} chuyển hướng, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Máy chủ phản hồi chậm (theo quan sát là {PH1}) "
+    "message": "Máy chủ phản hồi chậm (theo quan sát là {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Không áp dụng tính năng nén"
@@ -1848,7 +1884,7 @@
     "message": "Tránh chuyển hướng"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Máy chủ phản hồi nhanh (theo quan sát là {PH1}) "
+    "message": "Máy chủ phản hồi nhanh (theo quan sát là {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Áp dụng tính năng nén văn bản"
@@ -2070,7 +2106,7 @@
     "message": "[Tránh tạo chuỗi các yêu cầu quan trọng](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) bằng cách giảm độ dài chuỗi, giảm kích thước tài nguyên tải xuống hoặc trì hoãn tải xuống các tài nguyên không cần thiết để cải thiện tốc độ tải trang."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Thêm gợi ý [kết nối trước](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) cho các điểm gốc quan trọng nhất, nhưng hãy cố gắng sử dụng ít hơn 4 gợi ý."
+    "message": "Thêm gợi ý [kết nối trước](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) cho các nguồn gốc quan trọng nhất, nhưng hãy cố gắng sử dụng không quá 4 gợi ý."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Đề xuất kết nối trước"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Hoạt động tương tác nhấn có thể [bị chậm tới 300 mili giây](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) nếu khung nhìn chưa được tối ưu hoá cho thiết bị di động."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Độ trễ khi nhấn trên thiết bị di động"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Tối ưu hoá khung nhìn cho thiết bị di động"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Để sử dụng tính năng này, hãy đặt tuỳ chọn ngôn ngữ là tiếng Anh trong phần cài đặt của Công cụ cho nhà phát triển."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Bạn cũng có thể sử dụng một trong những câu lệnh được đề xuất ở trên để bắt đầu cuộc trò chuyện"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Tìm hiểu về AI trong Công cụ cho nhà phát triển"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Thu gọn"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Xoá kho đối tượng \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Xoá cơ sở dữ liệu \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Khóa"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Dữ liệu có trong kho đối tượng đã chọn sẽ bị xoá."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Kho lưu trữ đối tượng"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Khung này đã được xác định là khung gốc của một quảng cáo"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Quy tắc danh sách bộ lọc cho tập lệnh gốc"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Bối cảnh an toàn"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (từ bản đồ nguồn)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Thẻ thay đổi không hiển thị các thay đổi đối với dữ liệu nhị phân"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Trên trang này, bạn có thể theo dõi các thay đổi về mã được thực hiện trong Công cụ cho nhà phát triển."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Sao chép"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Chưa có thay đổi nào"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Không có sự khác biệt về văn bản"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# dòng đã xóa (-)}other{# dòng đã xóa (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# dòng đã chèn (+)}other{# dòng đã chèn (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Đã sao chép vào bảng nhớ tạm"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Thay đổi"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Sao chép mọi thay đổi từ tệp hiện tại"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Hủy bỏ mọi thay đổi đối với tệp hiện tại"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Hiển thị công cụ Thay đổi"
@@ -5715,7 +5745,7 @@
     "message": "Chỉ hiển thị thông báo từ bối cảnh hiện tại (top, iframe, worker, tiện ích)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Bị thanh bên của bộ lọc ghi đè"
+    "message": "Các cấp độ nhật ký do thanh bên của bảng điều khiển kiểm soát."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Lưu giữ nhật ký"
@@ -6612,16 +6642,16 @@
     "message": "Cuộn cho đến khi hiển thị"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Hiện lệnh cho mục tiêu"
+    "message": "Hiển thị phần tử liên kết với thuộc tính commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Hiện thông tin chi tiết về iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Hiện mục tiêu theo mối quan tâm"
+    "message": "Hiển thị phần tử liên kết với thuộc tính interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Hiện mục tiêu cửa sổ bật lên"
+    "message": "Hiển thị phần tử liên kết với thuộc tính popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Khung này đã được xác định là khung quảng cáo"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "biểu định kiểu được tạo"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Sao chép mọi thay đổi CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Sao chép mọi nội dung khai báo"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "qua trình kiểm tra"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Sao chép mọi thay đổi CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Sao chép tất cả nội dung khai báo dưới dạng thuộc tính JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Hỗ trợ tiếp cận"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Áp dụng quy trình mô phỏng trên máy tính trong khi kiểm tra"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Áp dụng quy trình mô phỏng trên thiết bị di động"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Sắp xếp lại gói tin"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "phần trăm"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Tên cấu hình"
   },
@@ -8802,7 +8826,7 @@
     "message": "Nhập một tác nhân người dùng tùy chỉnh"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Đang hiện tình trạng mạng"
+    "message": "Đang hiển thị tình trạng mạng."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Hạn chế băng thông mạng"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Không gian địa chỉ từ xa"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Tiêu đề của yêu cầu"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Tiêu đề phản hồi"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Lưu dưới dạng…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Không lưu được tệp vào ổ đĩa."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Chọn thư mục để ghi đè"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Làm mới biểu thức canh gác"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Đã xoá biểu thức theo dõi"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} lần truy cập có điểm ngắt"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Thông tin chi tiết"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Kích thước"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Thời lượng"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Tìm hiểu thêm"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Vị trí"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Thông báo"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (phần tử con)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Đã thu thập {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Chọn \"{PH1}\" để thu thập số liệu thống kê chi tiết khớp với bộ chọn CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (thời gian riêng)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Tập lệnh"
@@ -14682,19 +14694,19 @@
     "message": "Định cấu hình"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Định cấu hình tính năng tìm nạp dữ liệu trường"
+    "message": "Định cấu hình tính năng tìm nạp chỉ số thực địa"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Báo cáo trải nghiệm người dùng trên Chrome không có đủ dữ liệu tốc độ thực tế cho trang này."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Tìm nạp dữ liệu thực địa tổng hợp từ {PH1} để giúp bạn tìm hiểu bối cảnh của các kết quả đo lường cục bộ kết hợp với trải nghiệm của người dùng thực tế trên trang web."
+    "message": "Tìm nạp chỉ số thực địa tổng hợp từ {PH1} để giúp bạn tìm hiểu bối cảnh của các kết quả đo lường cục bộ kết hợp với trải nghiệm của người dùng thực tế trên trang web."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" không phải là một nguồn gốc hoặc URL hợp lệ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Đặt một nguồn gốc trong môi trường phát triển để tự động nhận dữ liệu thực địa có liên quan cho nguồn gốc trong môi trường phát hành công khai tương ứng."
+    "message": "Đặt một nguồn gốc trong môi trường phát triển để tự động nhận chỉ số thực địa có liên quan cho nguồn gốc trong môi trường phát hành công khai tương ứng."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Mới"
@@ -14703,7 +14715,7 @@
     "message": "Ok"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Luôn hiện dữ liệu thực địa cho URL bên dưới"
+    "message": "Luôn hiển thị chỉ số thực địa cho URL bên dưới"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Chọn không tham gia"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Khi Công cụ cho nhà phát triển đang mở, các URL bạn truy cập sẽ được gửi cho Google để truy vấn dữ liệu trường. Các yêu cầu này không liên kết với Tài khoản Google của bạn."
+    "message": "Khi Công cụ cho nhà phát triển đang mở, các URL bạn truy cập sẽ được gửi cho Google để truy vấn chỉ số thực địa. Các yêu cầu này không liên kết với Tài khoản Google của bạn."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Thêm quy tắc biểu thức chính quy cho URL của tập lệnh"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Mục nhật ký thay đổi bố cục và tương tác"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Dữ liệu trường"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Chỉ số thực địa"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Lượt tương tác INP nằm ở phân vị thứ 98 của độ trễ tương tác."
@@ -14856,10 +14868,10 @@
     "message": "Chỉ số cục bộ và chỉ số thực địa"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Tìm hiểu thêm về dữ liệu cục bộ và dữ liệu thực địa"
+    "message": "Tìm hiểu thêm về chỉ số cục bộ và chỉ số thực địa"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Chỉ số cục bộ được thu thập từ trang hiện tại bằng kết nối mạng và thiết bị của bạn. Dữ liệu thực địa do người dùng thực tế đo lường bằng nhiều kết nối mạng và thiết bị."
+    "message": "Chỉ số cục bộ được thu thập từ trang hiện tại bằng kết nối mạng và thiết bị của bạn. Chỉ số thực địa do người dùng thực tế đo lường bằng nhiều kết nối mạng và thiết bị."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Chỉ số cục bộ"
@@ -14922,10 +14934,10 @@
     "message": "Chuyển đến cụm thay đổi bố cục tệ nhất."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Hiện dữ liệu thực địa cho loại thiết bị: {PH1}"
+    "message": "Hiển thị chỉ số thực địa cho loại thiết bị: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Hiện dữ liệu thực địa cho {PH1}"
+    "message": "Hiển thị chỉ số thực địa cho {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Chuyển đến lượt tương tác INP."
@@ -15033,13 +15045,13 @@
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt nhưng tốt hơn đáng kể so với trải nghiệm của người dùng."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3} và cần được cải thiện."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3} và cần được cải thiện."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức chưa tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức chưa tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức tốt và tương tự như trải nghiệm của người dùng."
@@ -15054,13 +15066,13 @@
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này tốt hơn đáng kể so với trải nghiệm của người dùng."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3} và cần được cải thiện."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3} và cần được cải thiện."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức chưa tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức chưa tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2} và cần được cải thiện. Giá trị này tương tự với trải nghiệm của người dùng."
@@ -15075,13 +15087,13 @@
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt nhưng tốt hơn đáng kể so với trải nghiệm của người dùng."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3} và cần được cải thiện."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Tuy nhiên, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3} và cần được cải thiện."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của dữ liệu thực địa là {PH3}, nằm ở mức chưa tốt."
+    "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và có cùng mức xếp hạng với {PH4} theo trải nghiệm về {PH1} của người dùng thực tế. Ngoài ra, giá trị {PH1} tại nhóm 75 phần trăm của chỉ số thực địa là {PH3}, nằm ở mức chưa tốt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Giá trị {PH1} cục bộ của bạn là {PH2}, nằm ở mức chưa tốt và tương tự như trải nghiệm của người dùng."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Chuyển ngôn ngữ trên Công cụ cho nhà phát triển sang {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Bật/tắt nút chuyển hướng ngăn"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Thêm"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Ảnh chụp màn hình của {PH1} – chọn để xem các yêu cầu trước đó."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Xoá chú thích"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Định cấu hình các kênh"

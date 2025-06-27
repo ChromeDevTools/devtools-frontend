@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS મીડિયા પ્રકારને એમ્યુલેટ કરશો નહીં"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS ટેક્સ્ટ સ્કેલ એમ્યુલેટ કરશો નહીં"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ગ્રિડ લાઇન આગળ વધારશો નહીં"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ડ્યુટેરેનોપિયા (લીલો નહીં)નું એમ્યુલેશન કરો"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS ટેક્સ્ટ સ્કેલ એમ્યુલેટ કરો"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "પ્રોટેનોપિયા (લાલ નહીં)નું એમ્યુલેશન કરો"
@@ -732,6 +738,30 @@
     "message": "નેટવર્કની વિનંતી બ્લૉક કરનારું ટૂલ"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "કોઈ એમ્યુલેશન નથી"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ડિફૉલ્ટ)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "કોઈ એમ્યુલેશન નથી"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "મીડિયા પ્રકારને પ્રિન્ટ અને સ્ક્રીનની શૈલીઓનું પરીક્ષણ કરવા માટે જરૂરી બનાવે છે"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS ટેક્સ્ટ સ્કેલ એમ્યુલેશનને જરૂરી બનાવે છે"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "જોવાની ખામીને એમ્યુલેટ કરવાનું જરૂરી બનાવે છે"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "ડ્રોઅરને ટૉગલ કરો"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "ડ્રોઅર ઓરિએન્ટેશન ટૉગલ કરો"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "અલગ વિન્ડોમાં અનડૉક કરો"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "જેમના URLsમાં કાઢી નાખવામાં આવેલા વ્હાઇટસ્પેસ \\(n|r|t) અક્ષર અને 'આના કરતાં ઓછા'નું ચિહ્ન (<) એમ બન્ને શામેલ હોય, એવા સંસાધનોની વિનંતીઓને બ્લૉક કરવામાં આવી છે. આ સંસાધનોને લોડ કરવા માટે કૃપા કરીને વિશેષતા ધરાવતા ઘટકના મૂલ્યો જેવા સ્થાનોમાંથી નવી લાઇન કાઢી નાખો અને 'આના કરતાં ઓછા'ના ચિહ્નને એન્કોડ કરો."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP વર્ણ સેટની ઑટોમૅટિક રીતે ભાળ મેળવવાની સુવિધા બંધ કરવામાં આવી છે અને તેને નજીકના ભવિષ્યમાં અક્ષમ કરવામાં આવશે. કૃપા કરીને 'કન્ટેન્ટનો પ્રકાર' હેડરમાં અથવા મેટા ટૅગનો ઉપયોગ કરીને વર્ણ સેટ જણાવો (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes()નો ઉપયોગ ટાળવામાં આવ્યો છે, તેને બદલે પ્રમાણિત API: નૅવિગેશન ટાઇમિંગ 2નો ઉપયોગ કરો."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit નિષ્ફળ રહ્યું: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ફીલ્ડ ડેટાની ગોઠવણી વર્તમાન પેજથી અલગ URL માટે કરવામાં આવી છે."
+    "message": "ફીલ્ડ મેટ્રિકની ગોઠવણી વર્તમાન પેજથી અલગ URL માટે કરવામાં આવી છે."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "ડિવાઇસના પિક્સેલનો ગુણોત્તર સંખ્યામાં અથવા ખાલી હોવો આવશ્યક છે."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "આ ફૉર્મેટમાં સાચવો…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ફાઇલને ડિસ્ક પર સાચવવામાં નિષ્ફળ રહ્યાં."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "છબી સાચવો"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "લેઆઉટ શિફ્ટ માટેના ટોચના જવાબદાર કારણો"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "કદના મૂલ્યો સેટ કર્યા વિનાની છબીઓ"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "કદ વિનાનું છબીનું એલિમેન્ટ"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "સૌથી ખરાબ ક્લસ્ટર"
@@ -1839,7 +1875,7 @@
     "message": "રીડાયરેક્ટની વિનંતીઓ હતી ({PH1} રીડાયરેક્ટ, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "સર્વરે ધીમેથી જવાબ આપ્યો (અવલોકન કરેલો સમય {PH1}) "
+    "message": "સર્વરે ધીમેથી જવાબ આપ્યો (અવલોકન કરેલો સમય {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "નાની કરવાની કોઈ પ્રક્રિયા લાગુ કરવામાં આવી નથી"
@@ -1848,7 +1884,7 @@
     "message": "રીડાયરેક્ટ થવાના કિસ્સા ટાળ્યા છે"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "સર્વર ઝડપથી જવાબ આપે છે (અવલોકન કરેલો સમય {PH1}) "
+    "message": "સર્વર ઝડપથી જવાબ આપે છે (અવલોકન કરેલો સમય {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "ટેક્સ્ટને નાની કરવાની પ્રક્રિયા લાગુ કરવામાં આવી છે"
@@ -2070,7 +2106,7 @@
     "message": "ચેનની લંબાઈ ઘટાડીને, સંસાધનોને ડાઉનલોડ કરવાના કદને ઘટાડીને અથવા પેજને લોડ કરવાની પ્રક્રિયાને બહેતર બનાવવા માટે બિનજરૂરી સંસાધનોને ડાઉનલોડ કરવાની પ્રક્રિયાને મુલતવી રાખીને [નોંધપાત્ર વિનંતીઓની ચેન બનાવવાનું ટાળો](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "તમારા સૌથી મહત્વપૂર્ણ ઑરિજિનમાં [પ્રીકનેક્ટ કરો](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) હિન્ટ ઉમેરો, પણ 4 કરતાં ઓછી હિન્ટનો ઉપયોગ કરવાનો પ્રયાસ કરો."
+    "message": "તમારા સૌથી મહત્વપૂર્ણ ઑરિજિનમાં [પ્રીકનેક્ટ કરો](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) હિન્ટ ઉમેરો, પણ 4થી વધુ હિન્ટનો ઉપયોગ કરવાનો પ્રયાસ કરશો નહીં."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "કેન્ડિડેટને પ્રીકનેક્ટ કરો"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "જો મોબાઇલ માટે વ્યૂપોર્ટને ઑપ્ટિમાઇઝ ન કરવામાં આવ્યું હોય, તો ટૅપ કરવાની ક્રિયાપ્રતિક્રિયાઓ [300 મિલિસેકન્ડ સુધી વિલંબિત](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) થઈ શકે છે."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "મોબાઇલ ટૅપમાં વિલંબ"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "મોબાઇલ માટે વ્યૂપોર્ટને ઑપ્ટિમાઇઝ કરો"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "આ સુવિધાનો ઉપયોગ કરવા માટે, DevTools સેટિંગમાં તમારી ભાષાની પસંદગી અંગ્રેજી પર સેટ કરો."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "તમારી વાતચીત શરૂ કરવા માટે, તમે ઉપર સૂચવેલા પ્રૉમ્પ્ટમાંથી એકનો ઉપયોગ પણ કરી શકો છો"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevToolsમાં AI વિશે જાણો"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "નાનું કરો"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" ઑબ્જેક્ટ સ્ટોર સાફ કરીએ?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" ડેટાબેઝ ડિલીટ કરીએ?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "કી"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "પસંદ કરેલા ઑબ્જેક્ટ સ્ટોરમાં શામેલ ડેટા કાઢી નાખવામાં આવશે."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ઑબ્જેક્ટ સ્ટોર"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "આ ફ્રેમની ઓળખ જાહેરાતની રૂટ ફ્રેમ તરીકે કરવામાં આવી છે"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "રૂટ સ્ક્રિપ્ટ ફિલ્ટરલિસ્ટનો નિયમ"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "સુરક્ષિત સંદર્ભ"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (સૉર્સના નકશામાંથી)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "'ફેરફારો' ટૅબ બાઇનરી ડેટા સંબંધિત ફેરફારો બતાવતું નથી"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "આ પેજ પર તમે DevToolsની અંદર કરવામાં આવેલા કોડ સંબંધી ફેરફારોને ટ્રૅક કરી શકો છો."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "કૉપિ કરો"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "હજુ સુધી કોઈ ફેરફાર કરવામાં આવ્યો નથી"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ટેક્સ્ટના રૂપમાં કોઈ તફાવત ઉપલબ્ધ નથી"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{#ને ડિલીટ કરો (-)}one{#ને ડિલીટ કરો (-)}other{#ને ડિલીટ કરો (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{#નો ઉમેરો (+)}one{#નો ઉમેરો (+)}other{#નો ઉમેરો (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "ક્લિપબોર્ડ પર કૉપિ કરી"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "ફેરફારો"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "હાલની ફાઇલમાંથી તમામ ફેરફારો કૉપિ કરો"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "વર્તમાન ફાઇલના તમામ ફેરફારો પાછા ફેરવો"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "ફેરફારો બતાવો"
@@ -5715,7 +5745,7 @@
     "message": "માત્ર વર્તમાન સંદર્ભ (top, iframe, worker, એક્સ્ટેન્શન)માંથી મેસેજ બતાવો"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "ફિલ્ટર સાઇડબાર વડે ઓવરરાઇડ કરવામાં આવ્યું"
+    "message": "કન્સોલ સાઇડબાર દ્વારા લૉગના લેવલ નિયંત્રિત કરવામાં આવે છે."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "લૉગ સાચવો"
@@ -6612,16 +6642,16 @@
     "message": "વ્યૂમાં સ્ક્રોલ કરો"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "લક્ષ્ય માટેનો આદેશ બતાવો"
+    "message": "commandfor વિશેષતા સાથે સંકળાયેલું એલિમેન્ટ બતાવો"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframeની વિગતો બતાવો"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "રૂચિ મુજબનું લક્ષ્ય બતાવો"
+    "message": "interesttarget વિશેષતા સાથે સંકળાયેલું એલિમેન્ટ બતાવો"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "પૉપઑવર લક્ષ્ય બતાવો"
+    "message": "popovertarget વિશેષતા સાથે સંકળાયેલું એલિમેન્ટ બતાવો"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "આ ફ્રેમની ઓળખાણ જાહેરાતની ફ્રેમ તરીકે કરવામાં આવી હતી"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "બનાવેલી સ્ટાઇલશીટ"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "CSSના તમામ ફેરફારો કૉપિ કરો"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "બધી ઘોષણાઓ કૉપિ કરો"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ઇન્સપેક્ટર મારફતે"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "CSSના તમામ ફેરફારો કૉપિ કરો"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "બધી ઘોષણાઓને JS તરીકે કૉપિ કરો"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ઍક્સેસિબિલિટી"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ઑડિટિંગ દરમિયાન ડેસ્કટૉપ ઈમ્યુલેશન લાગુ કરો"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "મોબાઇલ ઈમ્યુલેશન લાગુ કરો"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "પૅકેટનો ક્રમ ફરીથી ગોઠવવો"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "ટકા"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "પ્રોફાઇલનું નામ"
   },
@@ -8802,7 +8826,7 @@
     "message": "કસ્ટમ વપરાશકર્તા એજન્ટ દાખલ કરો"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "નેટવર્કની સ્થિતિઓ બતાવી"
+    "message": "નેટવર્કની સ્થિતિઓ બતાવી."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "નેટવર્ક થ્રોટલિંગ"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "રીમોટ ઍડ્રેસ સ્પેસ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "વિનંતીના હેડર"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "પ્રતિસાદના હેડર"
@@ -12057,7 +12084,7 @@
     "message": "લોકેલ"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "સ્થાન"
+    "message": "લોકેશન"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "સ્થાન ઉપલબ્ધ નથી"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "આ ફૉર્મેટમાં સાચવો…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ફાઇલને ડિસ્ક પર સાચવવામાં નિષ્ફળ રહ્યાં."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ઓવરરાઇડ કરવા માટે ફોલ્ડર પસંદ કરો"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "વૉચ એક્સપ્રેશન રિફ્રેશ કરો"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "વૉચ એક્સપ્રેશન ડિલીટ કર્યું"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} બ્રેકપૉઇન્ટ હિટ"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "વિગતો"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "પરિમાણો"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "અવધિ"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "વધુ જાણો"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "સ્થાન"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "મેસેજ"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ચિલ્ડ્રન ઘટકો)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} એકત્રિત કર્યા"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}નો {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "CSS પસંદગીકર્તાની મેળ ખાતી વિગતવાર આંકડાકીય માહિતી એકત્રિત કરવા માટે, \"{PH1}\" પસંદ કરો."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (પોતે)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "સ્ક્રિપ્ટ"
@@ -14682,19 +14694,19 @@
     "message": "ગોઠવો"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ફીલ્ડ ડેટા મેળવવાનું ગોઠવો"
+    "message": "ફીલ્ડ મેટ્રિક મેળવવાનું ગોઠવો"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "આ પેજ માટે Chrome UX Reportમાં વાસ્તવિક ઝડપની વપરાશનો ડેટા પર્યાપ્ત પ્રમાણમાં ઉપલબ્ધ નથી."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "સાઇટ પર વાસ્તવિક વપરાશકર્તાઓ જે અનુભવે, તેની સ્થાનિક માપણીઓને સંદર્ભિત કરવામાં સહાયતા માટે, {PH1}માંથી એકીકૃત કરેલો ફીલ્ડ ડેટા મેળવો."
+    "message": "સાઇટ પર વાસ્તવિક વપરાશકર્તાઓ જે અનુભવે, તેની સ્થાનિક માપણીઓને સંદર્ભિત કરવામાં સહાયતા માટે, {PH1}માંથી એકીકૃત કરેલા ફીલ્ડ મેટ્રિક મેળવો."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" માન્ય ઑરિજિન અથવા URL નથી."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "તેના પ્રોડક્શન ઑરિજિન માટેનો સંબંધિત ફીલ્ડ ડેટા ઑટોમૅટિક રીતે મેળવવા માટે, ડેવલપમેન્ટ ઑરિજિનને સેટ કરો."
+    "message": "તેના પ્રોડક્શન ઑરિજિન માટેનો સંબંધિત ફીલ્ડ મેટ્રિક ઑટોમૅટિક રીતે મેળવવા માટે, ડેવલપમેન્ટ ઑરિજિનને સેટ કરો."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "નવું"
@@ -14703,7 +14715,7 @@
     "message": "ઓકે"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "નીચે આપેલા URL માટે હંમેશાં ફીલ્ડ ડેટા બતાવો"
+    "message": "નીચે આપેલા URL માટે હંમેશાં ફીલ્ડ મેટ્રિક બતાવો"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "નાપસંદ કરો"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "જ્યારે DevTools ખુલ્લા હોય, ત્યારે જે URLsની તમે મુલાકાત લેશો, તેના ફીલ્ડ ડેટા સંબંધિત ક્વેરી માટે Googleને મોકલવામાં આવશે. આ વિનંતીઓને તમારા Google એકાઉન્ટ સાથે સાંકળવામાં આવતી નથી."
+    "message": "જ્યારે DevTools ખુલ્લા હોય, ત્યારે જે URLsની તમે મુલાકાત લેશો, તેના ફીલ્ડ મેટ્રિક સંબંધિત ક્વેરી માટે Googleને મોકલવામાં આવશે. આ વિનંતીઓને તમારા Google એકાઉન્ટ સાથે સાંકળવામાં આવતી નથી."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "સ્ક્રિપ્ટના URL માટે રેગ્યુલર એક્સપ્રેશનનો કોઈ નિયમ ઉમેરો"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ક્રિયાપ્રતિક્રિયા અને લેઆઉટ શિફ્ટ લૉગના વિભાગ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ફીલ્ડ ડેટા"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "ફીલ્ડ મેટ્રિક"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP ક્રિયાપ્રતિક્રિયા એ ક્રિયાપ્રતિક્રિયાના વિલંબની 98મી ટકાવારી પર છે."
@@ -14856,10 +14868,10 @@
     "message": "સ્થાનિક અને ફીલ્ડ મેટ્રિક"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "સ્થાનિક અને ફીલ્ડ ડેટા વિશે વધુ જાણો"
+    "message": "સ્થાનિક અને ફીલ્ડ મેટ્રિક વિશે વધુ જાણો"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "તમારા નેટવર્ક કનેક્શન અને ડિવાઇસનો ઉપયોગ કરીને હાલના પેજમાંથી સ્થાનિક મેટ્રિકને કૅપ્ચર કરવામાં આવે છે. વિવિધ પ્રકારના અનેક નેટવર્ક કનેક્શન અને ડિવાઇસનો ઉપયોગ કરીને વાસ્તવિક વપરાશકર્તાઓ દ્વારા ફીલ્ડ ડેટા માપવામાં આવે છે."
+    "message": "તમારા નેટવર્ક કનેક્શન અને ડિવાઇસનો ઉપયોગ કરીને હાલના પેજમાંથી સ્થાનિક મેટ્રિકને કૅપ્ચર કરવામાં આવે છે. ઘણા બધા અલગ-અલગ નેટવર્ક કનેક્શન અને ડિવાઇસનો ઉપયોગ કરીને વાસ્તવિક વપરાશકર્તાઓ દ્વારા ફીલ્ડ મેટ્રિકની માપણી કરવામાં આવે છે."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "સ્થાનિક મેટ્રિક"
@@ -14922,10 +14934,10 @@
     "message": "સૌથી ખરાબ લેઆઉટ શિફ્ટ ક્લસ્ટર પર જાઓ."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "ડિવાઇસના પ્રકાર માટે ફીલ્ડનો ડેટા બતાવો: {PH1}"
+    "message": "ડિવાઇસના પ્રકાર માટે ફીલ્ડ મેટ્રિક બતાવો: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} માટે ફીલ્ડ ડેટા બતાવો"
+    "message": "{PH1} માટે ફીલ્ડ મેટ્રિક બતાવો"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP ક્રિયાપ્રતિક્રિયા પર જાઓ."
@@ -15033,13 +15045,13 @@
     "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે પરંતુ તે તમારા વપરાશકર્તાઓના અનુભવ કરતાં નોંધપાત્ર રીતે બહેતર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. ઉપરાંત, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. ઉપરાંત, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} સારું છે અને તે તમારા વપરાશકર્તાઓના અનુભવ જેટલું જ છે."
@@ -15054,13 +15066,13 @@
     "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે, પરંતુ તે તમારા વપરાશકર્તાઓના અનુભવ કરતાં નોંધપાત્ર રીતે બહેતર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
+    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. ઉપરાંત, ફીલ્ડ ડેટાના 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
+    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. ઉપરાંત, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
+    "message": "તમારા સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4} જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "તમારૂં સ્થાનિક {PH1} મૂલ્ય {PH2}ને સુધારવાની જરૂર છે અને તે તમારા વપરાશકર્તાઓના અનુભવ જેટલું જ છે."
@@ -15075,13 +15087,13 @@
     "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે પરંતુ તે તમારા વપરાશકર્તાઓના અનુભવ કરતાં નોંધપાત્ર રીતે બહેતર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} સારું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ ડેટાના 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. જોકે, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીના {PH1} મૂલ્ય {PH3}ને સુધારવાની જરૂર છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. ઉપરાંત, ફીલ્ડ ડેટાના 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
+    "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તેનું રેટિંગ વાસ્તવિક વપરાશકર્તાના {PH1} અનુભવોના {PH4}ના રેટિંગ જેટલું જ છે. ઉપરાંત, ફીલ્ડ મેટ્રિકની 75મી ટકાવારીનું {PH1} મૂલ્ય {PH3} નબળું છે."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "તમારૂં સ્થાનિક {PH1}નું મૂલ્ય {PH2} નબળું છે અને તે તમારા વપરાશકર્તાઓના અનુભવ જેટલું જ છે."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevToolsને {PH1} પર સ્વિચ કરો"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "ડ્રોઅર ઓરિએન્ટેશન ટૉગલ કરો"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "ઉમેરો"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} માટે સ્ક્રીનશૉટ - અગાઉની વિનંતીઓ જોવા માટે પસંદ કરો."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "ટીકાટિપ્પણીઓ ડિલીટ કરો"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ટ્રૅકને ગોઠવો"

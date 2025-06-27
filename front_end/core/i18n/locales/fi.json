@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ei CSS:n mediatyyppiemulointia"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Älä emuloi käyttöjärjestelmän tekstin skaalausta"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Älä laajenna ruudukkoviivoja"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emuloi vihersokeutta (ei vihreää)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuloi käyttöjärjestelmän tekstin skaalausta"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emuloi punasokeutta (ei punaista)"
@@ -732,6 +738,30 @@
     "message": "Verkkopyyntöjen esto"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Ei emulointia"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100 % (oletus)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Ei emulointia"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Pakottaa käyttöön mediatyypin print- ja screen-tyylien testausta varten"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Pakottaa käyttöjärjestelmän tekstin skaalauksen emuloinnin"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Pakottaa käyttöön näkörajoitteiden emuloinnin"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Vetopaneeli esiin/pois"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Vaihda vetopaneelin suunta"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Irrota erilliseen ikkunaan"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Resurssipyynnöt, joiden URL-osoitteet sisälsivät sekä poistettuja tyhjätilamerkkejä (\\(n|r|t)) että pienempi kuin ‑merkkejä (<) on estetty. Poista newline-koodit ja koodaa pienempi kuin ‑merkkejä esimerkiksi elementin attribuuttiarvoista, jos haluat ladata näitä resursseja."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP-merkistön automaattinen tunnistus on poistettu käytöstä, ja se poistetaan lähiaikoina. Määritä merkistö \"Content Type\" ‐otsikossa tai metatagilla (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() on poistettu käytöstä, käytä sen sijaan standardoitua APIa: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit epäonnistui: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Kenttädata on määritetty toiselle URL-osoitteelle kuin nykyiselle sivulle."
+    "message": "Kenttämittarit on määritetty toiselle URL-osoitteelle kuin nykyiselle sivulle."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Laitteen pikselisuhteen on oltava luku, tai se on jätettävä tyhjäksi."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Tallenna nimellä…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Tiedoston tallentaminen levylle epäonnistui."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Tallenna kuva"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Asettelun muutoksen yleisimmät aiheuttajat"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Kuvien kokoa ei ole asetettu"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Kuvaelementti, jonka kokoa ei ole asetettu"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Huonoin klusteri"
@@ -1839,7 +1875,7 @@
     "message": "Uudelleenohjauksia ({PH1} uudelleenohjausta, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Palvelin vastasi hitaasti (havaittu {PH1}) "
+    "message": "Palvelin vastasi hitaasti (havaittu {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Ei pakattu"
@@ -1848,7 +1884,7 @@
     "message": "Välttää uudelleenohjaukset"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Palvelin vastaa nopeasti (havaittu {PH1}) "
+    "message": "Palvelin vastaa nopeasti (havaittu {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Pakkaa tekstin"
@@ -2070,7 +2106,7 @@
     "message": "[Vältä kriittisten pyyntöjen ketjuttamista](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) lyhentämällä ketjuja, pienentämällä resurssien latauskokoa ja lykkäämällä tarpeettomien resurssien lataamista."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Lisää [ennakkoyhdistämisen](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) vihjeitä tärkeimpiin alkuperiin, mutta pyri käyttämään alle neljää."
+    "message": "Lisää [ennakkoyhdistämisen](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) vihjeitä tärkeimpiin alkuperiin, mutta pyri käyttämään enintään neljää."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Ennakkoyhteydet"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Napautusinteraktiot voivat [viivästyä jopa 300 ms:lla](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), jos näkymää ei ole optimoitu mobiililaitteille."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Mobiililaitteen napautuksen viive"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimoi näkymä mobiililaitteille"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Jos haluat käyttää tätä ominaisuutta, valitse DevTools-asetuksista kieleksi englanti."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Voit myös aloittaa keskustelun jollakin yllä olevista ehdotetuista kehotteista"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Lue lisää tekoälystä DevToolsissa"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Tiivistä"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Tyhjennetäänkö kohdetallennus \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Poistetaanko tietokanta \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Avain"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Valitun kohdetallennuksen sisältämä data poistetaan."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Kohdesäilöt"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Tämä kehys on tunnistettu mainoksen juurikehykseksi"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Skriptin suodatinlistan sääntö"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Suojattu konteksti"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (lähdekartasta)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Muutokset-välilehdellä ei näy binääridatan muutoksia"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Tällä sivulla voit seurata DevToolsissa tehtyjä koodin muutoksia."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopioi"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ei vielä muutoksia"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Tekstin erotusprosentti ei ole saatavilla"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# poisto (-)}other{# poistoa (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# lisäys (+)}other{# lisäystä (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopioitu leikepöydälle"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Muutokset"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopioi kaikki muutokset nykyisestä tiedostosta"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Palauta kaikki avoimen tiedoston muutokset"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Näytä muutokset"
@@ -5715,7 +5745,7 @@
     "message": "Näytä vain viestit nykyisestä kontekstista (top, iframe, worker, laajennus)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Ohitettu suodatinsivupalkilla"
+    "message": "Lokitasoja hallitaan konsolin sivupalkista."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Säilytä loki"
@@ -6612,16 +6642,16 @@
     "message": "Vieritä, kunnes sisältö näkyy"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Näytä commandfor-kohde"
+    "message": "Näytä elementti, joka liittyy tähän: commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Näytä tiedot: iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Näytä kiinnostuksen kohde"
+    "message": "Näytä elementti, joka liittyy tähän: interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Näytä ponnahdusikkunan kohde"
+    "message": "Näytä elementti, joka liittyy tähän: popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Tämä kehys tunnistettiin mainoskehykseksi"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "muodostettu tyyliarkki"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopioi kaikki CSS-muutokset"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopioi kaikki määrittelyt"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "tarkastajan kautta"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopioi kaikki CSS-muutokset"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopioi kaikki määrittelyt JS-muodossa"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Esteettömyys"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Käytä tietokone-emulointia tarkastuksen aikana"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Käytä mobiiliemulointia"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Pakettien uudelleenjärjestely"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "prosenttia"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profiilin nimi"
   },
@@ -8802,7 +8826,7 @@
     "message": "Lisää oma käyttäjäagentti"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Näytetyt verkko-olosuhteet"
+    "message": "Näytetyt verkko-olosuhteet."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Verkon hidastaminen"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Etäosoiteavaruus"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Pyynnön otsikot"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Vastausten otsikot"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Tallenna nimellä…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Tiedoston tallentaminen levylle epäonnistui."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Valitse ohitusten kansio"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Päivitä katselun lausekkeet"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Katselun lauseke poistettu"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Pysäytyspiste ({PH1}) saavutettu"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Tiedot"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Mitat"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Kesto"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Lue lisää"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Sijainti"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Viesti"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (lapset)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} kerätty"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Valitse {PH1}, niin voit kerätä CSS-valitsimen yksityiskohtaiset vastaavuustilastot."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (itse)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skripti"
@@ -14682,19 +14694,19 @@
     "message": "Määritä"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Määritä kenttien datan haku"
+    "message": "Määritä kenttämittareiden nouto"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX ‑raportissa ei ole riittävästi todellista nopeusdataa tästä sivusta."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Nouda koottua kenttädataa ({PH1}). Näin voit nähdä paikalliset mittaukset kontekstissa, johon ne liittyvät oikeiden käyttäjien sivustolla."
+    "message": "Nouda koottuja kenttämittareita ({PH1}). Näin voit nähdä paikalliset mittaukset kontekstissa, johon ne liittyvät oikeiden käyttäjien sivustolla."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" ei ole hyväksyttävä alkuperä tai URL-osoite."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Määritä kehityksen alkuperä niin, että sen tuotantoversion alkuperästä saadaan automaattisesti olennaista kenttädataa."
+    "message": "Määritä kehityksen alkuperä niin, että sen tuotantoversion alkuperästä saadaan automaattisesti olennaisia kenttämittareita."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Uusi"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Näytä aina alla olevan URL-osoitteen kenttädata"
+    "message": "Näytä aina alla olevan URL-osoitteen kenttämittarit"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Poista käytöstä"
@@ -14718,7 +14730,7 @@
     "message": "URL-osoite"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Kun DevTools on auki, avaamasi URL-osoitteet lähetetään Googlelle kenttädataa varten. Näitä pyyntöjä ei yhdistetä Google-tiliisi."
+    "message": "Kun DevTools on auki, avaamasi URL-osoitteet lähetetään Googlelle kenttämittareita varten. Näitä pyyntöjä ei yhdistetä Google-tiliisi."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Lisää säännöllisen lausekkeen sääntö skriptin URL-osoitteelle"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Interaktion ja asettelun muutoslokien osio"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Kentän data"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Kenttämittarit"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP-tapahtuma on interaktioviiveiden 98. prosenttipisteessä."
@@ -14856,10 +14868,10 @@
     "message": "Paikalliset ja kenttämittarit"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Lue lisää paikallis- ja kenttädatasta"
+    "message": "Lue lisää paikallis- ja kenttämittareista"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Paikalliset mittarit tallennetaan tältä sivulta verkkoyhteyden ja laitteen avulla. Kenttädata on oikeiden käyttäjien monilla eri verkkoyhteyksillä ja laitteilla mittaamaa dataa."
+    "message": "Paikalliset mittarit tallennetaan tältä sivulta verkkoyhteyden ja laitteen avulla. Kenttämittarit ovat oikeiden käyttäjien monilla eri verkkoyhteyksillä ja laitteilla mittaamaa dataa."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Paikalliset mittarit"
@@ -14922,10 +14934,10 @@
     "message": "Siirry huonoimman asettelun muutosklusteriin."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Näytä kenttädata laitetyypille: {PH1}"
+    "message": "Näytä kenttämittarit laitetyypille: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Näytä kenttädata: {PH1}"
+    "message": "Näytä kenttämittarit: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Siirry INP-interaktioon."
@@ -15033,13 +15045,13 @@
     "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, mutta se on huomattavasti käyttäjien kokemusta parempi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on hyvä."
+    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} on hyvä."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee kuitenkin parannuksia."
+    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee kuitenkin parannuksia."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin huono."
+    "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin huono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Paikallinen {PH1}-arvo {PH2} on hyvä, ja se vastaa käyttäjien kokemusta."
@@ -15054,13 +15066,13 @@
     "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, mutta se on huomattavasti käyttäjien kokemusta parempi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin hyvä."
+    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin hyvä."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee parannuksia."
+    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee parannuksia."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin huono."
+    "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin huono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Paikallinen {PH1}-arvo {PH2} tarvitsee parannuksia, ja se vastaa käyttäjien kokemusta."
@@ -15075,13 +15087,13 @@
     "message": "Paikallinen {PH1}-arvo {PH2} on huono, mutta se on huomattavasti käyttäjien kokemusta parempi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin hyvä."
+    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} on kuitenkin hyvä."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee kuitenkin parannuksia."
+    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Kenttämittareiden 75. prosenttipisteen {PH1}-arvo {PH3} tarvitsee kuitenkin parannuksia."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttädatan 75. prosenttipisteen {PH1}-arvo {PH3} on huono."
+    "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se on saanut saman arvion kuin {PH4} oikeista käyttäjäkokemuksista ({PH1}). Lisäksi kenttämittarin 75. prosenttipisteen {PH1}-arvo {PH3} on huono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Paikallinen {PH1}-arvo {PH2} on huono, ja se vastaa käyttäjien kokemusta."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Vaihda DevTools tähän: {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Vaihda vetopaneelin suunta"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Lisää"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Kuvakaappaus: {PH1} – valitse nähdäksesi edeltävät pyynnöt."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Poista merkinnät"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Määritä kanavat"

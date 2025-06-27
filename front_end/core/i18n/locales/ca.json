@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "No emulis el tipus multimèdia de CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "No emulis l'escala de text de l'SO"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "No allarguis les línies de la quadrícula"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emula la deuteranopia (sense verd)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emula l'escala de text de l'SO"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emula la protanopia (sense vermell)"
@@ -732,6 +738,30 @@
     "message": "Bloqueig de sol·licituds de xarxes"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Cap emulació"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100 % (valor predeterminat)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Cap emulació"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Força el tipus multimèdia per provar estils de pantalla i d'impressió"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Força l'emulació de l'escala de text de l'SO"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Força l'emulació de les deficiències de visió"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Commuta el tauler"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Commuta l'orientació del tauler"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Desacobla en una altra finestra"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Les sol·licituds de recursos amb URL que contenien tant caràcters d'espai en blanc (\\(n|r|t)) com caràcters d'\"inferior a\" (<) suprimits estan bloquejades. Suprimeix les línies noves i codifica els caràcters d'\"inferior a\" de llocs com els valors d'atribut d'element per carregar aquests recursos."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "La detecció automàtica del conjunt de caràcters ISO-2022-JP està obsoleta i es desactivarà pròximament. Especifica el conjunt de caràcters a la capçalera Content-Type o mitjançant una metaetiqueta (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() està obsoleta. Substitueix-la per l'API estandarditzada: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit ha fallat: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Les dades de camp estan configurades per a un URL diferent del de la pàgina actual."
+    "message": "Les mètriques de camp estan configurades per a un URL diferent del de la pàgina actual."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "La relació de píxels del dispositiu ha de ser un número o ha d'estar en blanc."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Anomena i desa…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "No s'ha pogut desar el fitxer al disc."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Desa la imatge"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Principals causants del canvi de disseny"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Imatges sense mida"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "El pitjor clúster"
@@ -1839,7 +1875,7 @@
     "message": "Tenia redireccions ({PH1} redireccions, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "El servidor ha respost lentament (temps observat: {PH1}) "
+    "message": "El servidor ha respost lentament (temps observat: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "No s'ha aplicat cap compressió"
@@ -1848,7 +1884,7 @@
     "message": "Evita les redireccions"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "El servidor respon ràpidament (temps observat: {PH1}) "
+    "message": "El servidor respon ràpidament (temps observat: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "S'aplica la compressió de text"
@@ -2070,7 +2106,7 @@
     "message": "[Evita encadenar sol·licituds crítiques](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) escurçant les cadenes, reduint la mida de baixada dels recursos o ajornant la baixada de recursos innecessaris per millorar la càrrega de les pàgines."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Afegeix suggeriments de [preconnexió](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) als teus orígens més importants, però prova d'utilitzar-ne menys de 4."
+    "message": "Afegeix suggeriments de [preconnexió](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) als teus orígens més importants, però prova d'utilitzar-ne 4 com a màxim."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Candidats per a la preconnexió"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Les interaccions amb tocs poden [retardar-se fins a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) si la finestra gràfica no està optimitzada per a mòbils."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Retard del toc en mòbil"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimitza la finestra gràfica per a mòbils"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Per utilitzar aquesta funció, canvia a l'anglès la teva preferència d'idioma a Configuració de DevTools."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "També pots utilitzar una de les indicacions suggerides més amunt per iniciar la conversa"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Informació sobre la IA a DevTools"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Replega"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Vols esborrar l'emmagatzematge d'objectes \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Vols suprimir la base de dades {PH1}?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Clau"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Les dades que conté l'emmagatzematge d'objectes seleccionat se suprimiran."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Emmagatzematges d'objectes"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Aquest marc s'ha identificat com a marc arrel d'un anunci"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Regla de la llista de filtres de l'script arrel"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Context segur"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (del mapa d'origen)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "La pestanya Canvis no mostra els canvis en les dades binàries"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "En aquesta pàgina pots fer un seguiment dels canvis de codi que s'han fet a DevTools."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Copia"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Encara no hi ha cap canvi"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No hi ha cap diferència textual disponible"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# supressió (-)}other{# supressions (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# inserció (+)}other{# insercions (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "S'ha copiat al porta-retalls"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Canvis"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Copia tots els canvis del fitxer actual"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Desfés tots els canvis del fitxer actual"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Mostra els canvis"
@@ -5715,7 +5745,7 @@
     "message": "Només mostra missatges del context actual (top, iframe, worker i extensió)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "S'ha substituït per la barra lateral de filtres"
+    "message": "Els nivells de registre es controlen a la barra lateral de la consola."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Conserva el registre"
@@ -6612,16 +6642,16 @@
     "message": "Desplaça fins que sigui visible"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Mostra l'ordre per a l'objectiu"
+    "message": "Mostra l'element associat a l'atribut commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Mostra els detalls de: iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Mostra la segmentació per interès"
+    "message": "Mostra l'element associat a l'atribut interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Mostra l'objectiu de la finestra emergent"
+    "message": "Mostra l'element associat a l'atribut popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Aquest marc s'ha identificat com un marc publicitari"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "full d'estil construït"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Copia tots els canvis de CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Copia totes les declaracions"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "a través de l'inspector"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Copia tots els canvis de CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copia totes les declaracions com a JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accessibilitat"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Aplica l'emulació d'ordinador durant l'auditoria"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Aplica l'emulació mòbil"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Reordenació de paquets"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "percentatge"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Nom del perfil"
   },
@@ -8802,7 +8826,7 @@
     "message": "Introdueix un agent d'usuari personalitzat"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Es mostren totes les condicions de la xarxa"
+    "message": "Es mostren les condicions de la xarxa."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitació de xarxa"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Espai d'adreces remot"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Capçaleres de sol·licitud"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Capçaleres de resposta"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Anomena i desa…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "No s'ha pogut desar el fitxer al disc."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Selecciona una carpeta per a les substitucions"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Actualitza les expressions d'inspecció"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "L'expressió d'inspecció s'ha suprimit"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Petició del punt de ruptura {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Detalls"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Dimensions"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durada"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Més informació"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Ubicació"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Missatge"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (secundaris)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} recollits"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} de {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Selecciona {PH1} per recollir estadístiques de coincidència detallades del selector CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (temps individual)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Script"
@@ -14682,19 +14694,19 @@
     "message": "Configura"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Configura la recollida de dades de camp"
+    "message": "Configura la recollida de mètriques de camp"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "L'informe EU de Chrome no té prou dades sobre la velocitat real d'aquesta pàgina."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Recull dades del camp agregades de {PH1} per ajudar-te a contextualitzar els mesuraments locals amb l'experiència real dels usuaris al lloc web."
+    "message": "Recull mètriques de camp agregades de {PH1} per ajudar-te a contextualitzar els mesuraments locals amb l'experiència real dels usuaris al lloc web."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "{PH1} no és un origen o URL vàlid."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Defineix un origen del desenvolupament per obtenir automàticament dades del camp rellevants per a l'origen de la producció."
+    "message": "Defineix un origen del desenvolupament per obtenir automàticament mètriques de camp rellevants per a l'origen de la producció."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Nova"
@@ -14703,7 +14715,7 @@
     "message": "D'acord"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Mostra sempre les dades dels camps de l'URL següent"
+    "message": "Mostra sempre les mètriques dels camps de l'URL següent"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Desactiva"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Quan DevTools estigui obert, els URL que visitis s'enviaran a Google perquè pugui consultar dades dels camps. Aquestes sol·licituds no estan vinculades al teu Compte de Google."
+    "message": "Quan DevTools estigui obert, els URL que visitis s'enviaran a Google perquè pugui consultar mètriques de camp. Aquestes sol·licituds no estan vinculades al teu Compte de Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Afegeix una regla d'expressió regular per a l'URL de l'script"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Secció de registres d'interaccions i de canvis de disseny"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Dades del camp"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Mètriques de camp"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "La interacció associada amb la INP és al percentil 98 dels retards d'interacció."
@@ -14856,10 +14868,10 @@
     "message": "Mètriques locals i de camp"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Més informació sobre les dades locals i les dades del camp"
+    "message": "Més informació sobre les mètriques locals i les de camp"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Les mètriques locals s'obtenen de la pàgina actual mitjançant la connexió de xarxa i el dispositiu. Les dades del camp les mesuren usuaris reals que fan servir molts dispositius i connexions de xarxa diferents."
+    "message": "Les mètriques locals s'obtenen de la pàgina actual mitjançant la connexió de xarxa i el dispositiu. Les mètriques de camp les mesuren usuaris reals que fan servir molts dispositius i connexions de xarxa diferents."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Mètriques locals"
@@ -14922,10 +14934,10 @@
     "message": "Ves al pitjor clúster de canvi de disseny."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Mostra les dades del camp per a aquest tipus de dispositiu: {PH1}"
+    "message": "Mostra les mètriques de camp per a aquest tipus de dispositiu: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Mostra les dades del camp de {PH1}"
+    "message": "Mostra les mètriques de camp de {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Ves a la interacció associada amb la INP."
@@ -15033,13 +15045,13 @@
     "message": "El valor {PH1} local de {PH2} és bo, però és significativament millor que l'experiència dels usuaris."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. A més, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és bo."
+    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. A més, el percentil 75 de les mètriques del camp del valor {PH1} de {PH3} és bo."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} necessita millores."
+    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} necessita millores."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és deficient."
+    "message": "El valor {PH1} local de {PH2} és bo i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} és deficient."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "El valor {PH1} local de {PH2} és bo i és similar a l'experiència dels usuaris."
@@ -15054,13 +15066,13 @@
     "message": "El valor {PH1} local de {PH2} s'ha de millorar, però és considerablement millor que l'experiència dels usuaris."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és bo."
+    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} és bo."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. A més, el percentil 75 de les dades del camp del valor {PH1} de {PH3} necessita millores."
+    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. A més, el percentil 75 de les mètriques del camp del valor {PH1} de {PH3} necessita millores."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és deficient."
+    "message": "El valor {PH1} local de {PH2} s'ha de millorar i té la mateixa puntuació que el valor {PH4} de les experiències de {PH1} dels usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} és deficient."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "El valor {PH1} local de {PH2} necessita millores i és similar a l'experiència dels usuaris."
@@ -15075,13 +15087,13 @@
     "message": "El valor {PH1} local de {PH2} és deficient, però és significativament millor que l'experiència dels usuaris."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és bo."
+    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} és bo."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les dades del camp del valor {PH1} de {PH3} necessita millores."
+    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. Tanmateix, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} necessita millores."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. A més, el percentil 75 de les dades del camp del valor {PH1} de {PH3} és deficient."
+    "message": "El valor {PH1} local de {PH2} és deficient i té la mateixa puntuació que el {PH4} de les experiències de {PH1} d'usuaris reals. A més, el percentil 75 de les mètriques de camp del valor {PH1} de {PH3} és deficient."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "El valor {PH1} local de {PH2} és deficient i és similar a l'experiència dels usuaris."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Canvia DevTools a {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Commuta l'orientació del tauler"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Afegeix"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Captura de pantalla durant {PH1}: selecciona per veure les sol·licituds anteriors."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Suprimeix les anotacions"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Configura els canals"

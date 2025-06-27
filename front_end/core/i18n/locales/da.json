@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Emuler ikke CSS-medietypen"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Emuler ikke OS-tekstskalering"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Udvid ikke gitterlinjer"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emuler deuteranopi (ingen grøn)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuler OS-tekstskalering"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emuler protanopi (ingen rød)"
@@ -732,6 +738,30 @@
     "message": "Blokering af netværksanmodninger"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Ingen emulering"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100 % (standard)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Ingen emulering"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Gennemtvinger medietypen for test af udskrivnings- og skærmtype"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Gennemtvinger emulering af OS-tekstskalering"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Gennemtvinger emulering af utilstrækkelig visning"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Åbn eller luk skuffe"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Skift skufferetning"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Frigør til et separat vindue"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Anmodninger om ressourcer, hvis webadresser både indeholder tegnene \\(n|r|t) uden blanktegn og mindre end-tegn (<), blokeres. Hvis du vil indlæse disse ressourcer, skal du fjerne linjeskift og indkode mindre end-tegn fra f.eks. attributværdier for elementer."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Automatisk registrering af ISO-2022-JP-tegnsættet er udfaset og deaktiveres snart. Angiv tegnsættet i headeren Content Type, eller brug et metatag (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() er udfaset. Brug i stedet den standardiserede API: Navigation Timing 2."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Gem som…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Filen kunne ikke gemmes på disken."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Gem billede"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Typiske årsager til layoutændringer"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Billeder uden mål"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Værste klynge"
@@ -1839,7 +1875,7 @@
     "message": "Der var omdirigeringer ({PH1} omdirigeringer, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Serveren reagerede langsomt (observeret {PH1}) "
+    "message": "Serveren reagerede langsomt (observeret {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Der er ikke anvendt komprimering"
@@ -1848,7 +1884,7 @@
     "message": "Undgår omdirigeringer"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Serveren svarer hurtigt (observeret {PH1}) "
+    "message": "Serveren svarer hurtigt (observeret {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Tekstkomprimering er anvendt"
@@ -2070,7 +2106,7 @@
     "message": "[Undgå at sammenkæde kritiske anmodninger](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) ved at reducere kædernes længde, så ressourcernes downloadstørrelse bliver mindre, eller at udskyde download af unødvendige ressourcer, så sideindlæsningen forbedres."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Føj hints til at [oprette forbindelse på forhånd](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) til dine vigtigste oprindelser, men prøv at bruge færre end 4."
+    "message": "Føj hints til at [oprette tilknytning på forhånd](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) til dine vigtigste oprindelser, men prøv at bruge færre end 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Opret forbindelse til kandidater på forhånd"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Trykinteraktioner kan blive [forsinket med op til 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), hvis viewport ikke er optimeret til mobilen."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Forsinkelse ved tryk på mobil"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimer viewport til mobil"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Hvis du vil bruge denne funktion, skal du angive engelsk som sprogpræference i indstillingerne for Udviklerværktøjer."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Du kan også bruge et af promptforslagene ovenfor til at starte din samtale"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Få flere oplysninger om AI i Udviklerværktøjer"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Skjul"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Vil du rydde objektlageret \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Vil du slette databasen \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Nøgle"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "De data, der er indeholdt i det valgte objektlager, fjernes."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektlagre"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Denne ramme er defineret som en annonces rodramme"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Regel for filterliste for rodscript"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Sikker kontekst"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (fra kildekort)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Fanen med ændringer viser ikke ændringer af binære data"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "På denne side kan du spore kodeændringer, der er foretaget i Udviklerværktøjer."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopiér"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Der er ingen ændringer endnu"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Der er ingen tilgængelig tekstuel forskel"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# sletning (-)}one{# sletning (-)}other{# sletninger (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# indsættelse (+)}one{# indsættelse (+)}other{# indsættelser (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopieret til udklipsholderen"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ændringer"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopiér alle ændringer fra den aktuelle fil"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Fortryd alle ændringer af aktuel fil"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Vis ændringer"
@@ -5715,7 +5745,7 @@
     "message": "Vis kun meddelelser fra aktuel kontekst (top, iframe, worker, udvidelse)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Tilsidesat af filtersidebjælke"
+    "message": "Logniveauer styres af konsolsidebjælken."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Bevar log"
@@ -6612,16 +6642,16 @@
     "message": "Rul indtil visning"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Vis kommando for mål"
+    "message": "Vis element, der er tilknyttet attributten commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Se oplysninger om iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Vis interessemål"
+    "message": "Vis element, der er tilknyttet attributten interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Vis pop op-mål"
+    "message": "Vis element, der er tilknyttet attributten popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denne ramme blev identificeret som en annonceramme"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "konstrueret typografiark"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopiér alle CSS-ændringerne"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopiér alle erklæringer"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "via inspektør"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopiér alle CSS-ændringerne"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle erklæringer som JavaScript"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Hjælpefunktioner"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Anvend computeremulering under kontrol"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Anvend mobilemulering"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Omorganisering af pakke"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "procent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profilnavn"
   },
@@ -8802,7 +8826,7 @@
     "message": "Angiv en tilpasset brugeragent"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Visning af Netværksforhold"
+    "message": "Netværksforhold vises."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netværksbegrænsning"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Eksternt adresseområde"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Anmodningsheadere"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Svarheaders"
@@ -12057,7 +12084,7 @@
     "message": "Landestandard"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "Sted"
+    "message": "Lokation"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "Placeringen er ikke tilgængelig"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Gem som…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Filen kunne ikke gemmes på disken."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Vælg mappe til tilsidesættelser"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Opdater kontrolværdiudtryk"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Værdikontroludtrykket er slettet"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} ramt stoppunkt"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Info"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Mål"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Varighed"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Få flere oplysninger"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Sted"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Besked"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (underordnede)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} er indsamlet"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} af {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Vælg \"{PH1}\" for at indsamle detaljeret matchstatistik for CSS-vælger."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (dig selv)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Script"
@@ -14688,7 +14700,7 @@
     "message": "Chrome UX Report har ikke tilstrækkeligt med faktiske hastighedsdata for denne side."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Hent samlede feltdata fra {PH1} for at få hjælp til at sætte lokale målinger i kontekst med, hvad virkelige brugere oplever på websitet."
+    "message": "Hent samlede feltdata fra {PH1}, så du kan kontekstualisere lokale målinger ud fra den faktiske brugeroplevelse på websitet."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" er ikke en gyldig oprindelse eller webadresse."
@@ -14825,7 +14837,7 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Sektionen med logs for interaktioner og layoutskift"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Feltdata"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
@@ -14856,10 +14868,10 @@
     "message": "Lokale metrics og metrics for feltet"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Få flere oplysninger om lokale data og feltdata"
+    "message": "Få flere oplysninger om lokale metrics og feltdata"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Lokale metrics indsamles fra den aktuelle side ved hjælp af din netværksforbindelse og enhed. Feltdata måles af virkelige brugere med mange forskellige netværksforbindelser og enheder."
+    "message": "Lokale metrics indsamles fra den aktuelle side ved hjælp af din netværksforbindelse og enhed. Feltdata måles på virkelige brugere med mange forskellige netværksforbindelser og enheder."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Lokale metrics"
@@ -14922,7 +14934,7 @@
     "message": "Gå til den værste klynge med layoutskift."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Vis feltdata for enhedstypen: {PH1}"
+    "message": "Vis feltdata for enhedstypen {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
     "message": "Vis feltdata for {PH1}"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Skift til {PH1} i Udviklerværktøjer"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Skift skufferetning"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Tilføj"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot på {PH1} – vælg for at se foregående anmodninger."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Slet annoteringer"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurer spor"

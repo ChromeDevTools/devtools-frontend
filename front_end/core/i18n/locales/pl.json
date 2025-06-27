@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Nie emuluj typu mediów CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Nie emuluj skali tekstu systemu operacyjnego"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Nie wydłużaj linii siatki"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emuluj deuteranopię (bez zielonego)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuluj skalę tekstu systemu operacyjnego"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emuluj protanopię (bez czerwonego)"
@@ -732,6 +738,30 @@
     "message": "Blokowanie żądań sieciowych"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Bez emulacji"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (wartość domyślna)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Bez emulacji"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Wymusza typ multimediów na potrzeby testowania stylów drukowania i ekranu"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Wymusza emulację skali tekstu systemu operacyjnego"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Wymusza emulację ślepoty barw"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Przełącz panel"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Przełącz orientację panelu"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Oddokuj do oddzielnego okna"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Żądania zasobów, których adresy URL zawierają znaki \\(n|r|t) z usuniętymi odstępami i znaki mniejszości (<), są blokowane. Usuń nowe wiersze i zakoduj znaki mniejszości z miejsc takich jak wartości atrybutów elementów, aby umożliwić wczytywanie tych zasobów."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Automatyczne wykrywanie zestawu znaków ISO-2022-JP zostało wycofane i w najbliższej przyszłości zostanie wyłączone. Określ zestaw znaków w nagłówku Content Type lub za pomocą metatagu (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Wycofano interfejs chrome.loadTimes(). Użyj standaryzowanego interfejsu API: Navigation Timing 2."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Zapisz jako…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Nie udało się zapisać pliku na dysku."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Zapisz obraz"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Najczęstsze przyczyny problemów związanych z przesunięciem układu"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Obrazy bez określonego rozmiaru"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Element graficzny bez określonego rozmiaru"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Najgorszy klaster"
@@ -1839,7 +1875,7 @@
     "message": "Zawierało przekierowania (liczba przekierowań: {PH1}, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Serwer zareagował z opóźnieniem (zaobserwowany czas: {PH1}) "
+    "message": "Serwer zareagował z opóźnieniem (zaobserwowany czas: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Nie zastosowano kompresji"
@@ -1848,7 +1884,7 @@
     "message": "Nie używa przekierowań"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Serwer odpowiada szybko (zaobserwowany czas: {PH1}) "
+    "message": "Serwer odpowiada szybko (zaobserwowany czas: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Stosuje kompresję tekstu"
@@ -2070,7 +2106,7 @@
     "message": "Aby przyspieszyć ładowanie strony, [unikaj tworzenia łańcuchów żądań krytycznych](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains): skróć łańcuchy, zmniejsz rozmiar pobieranych zasobów lub opóźnij pobieranie zasobów, które nie są niezbędne."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Dodaj wskazówki [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) do najważniejszych źródeł, ale staraj się używać ich mniej niż 4."
+    "message": "Dodaj wskazówki [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) do najważniejszych źródeł, ale staraj się używać ich nie więcej niż 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Kandydaci do połączenia w trybie preconnect"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Interakcje dotykowe mogą być [opóźnione nawet o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), jeśli widoczny obszar nie jest zoptymalizowany dla telefonów."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Opóźnienie kliknięcia na urządzeniu mobilnym"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Zoptymalizuj widoczny obszar dla telefonów"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Aby korzystać z tej funkcji, ustaw język angielski w ustawieniach Narzędzi deweloperskich."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Możesz też użyć jednego z powyższych sugerowanych promptów, aby rozpocząć rozmowę"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Dowiedz się więcej o AI w Narzędziach deweloperskich"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Zwiń"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Wyczyścić magazyn obiektów „{PH1}”?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Usunąć bazę danych „{PH1}”?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Klucz"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Dane znajdujące się w wybranym magazynie obiektów zostaną usunięte."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Magazyny obiektów"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Ta ramka została zidentyfikowana jako ramka główna reklamy"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Reguła listy filtrów skryptu głównego"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Bezpieczny kontekst"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (z mapy źródeł)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Na karcie zmian nie są widoczne zmiany danych binarnych"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Na tej stronie możesz śledzić zmiany kodu wprowadzone w Narzędziach deweloperskich."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopiuj"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Jeszcze nie ma zmian"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Brak różnic tekstowych"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# usunięcie (-)}few{# usunięcia (-)}many{# usunięć (-)}other{# usunięcia (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# wstawienie (+)}few{# wstawienia (+)}many{# wstawień (+)}other{# wstawienia (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Skopiowano do schowka"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Zmiany"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Skopiuj wszystkie zmiany z bieżącego pliku"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Cofnij wszystkie zmiany bieżącego pliku"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Pokaż zmiany"
@@ -5715,7 +5745,7 @@
     "message": "Pokazuj tylko komunikaty z bieżącego kontekstu (top, iframe, worker, rozszerzenie)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Zastąpione przez pasek boczny filtrowania"
+    "message": "Poziomy logów są kontrolowane przez pasek boczny konsoli."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Zachowaj dziennik"
@@ -6612,16 +6642,16 @@
     "message": "Przewiń, aby pokazać"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Pokaż polecenie dla celu"
+    "message": "Pokaż element powiązany z atrybutem commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Pokaż szczegóły iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Pokaż cel zainteresowania"
+    "message": "Pokaż element powiązany z atrybutem interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Pokaż element docelowy wyskakującego okienka"
+    "message": "Pokaż element powiązany z atrybutem popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Ta ramka została zidentyfikowana jako ramka reklamy"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "skonstruowany arkusz stylów"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Skopiuj wszystkie zmiany CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Skopiuj wszystkie deklaracje"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "przez inspektora"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Skopiuj wszystkie zmiany CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiuj wszystkie deklaracje jako JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Ułatwienia dostępu"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Zastosuj emulację komputera podczas kontroli"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Zastosuj emulację sieci komórkowej"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Zmiana kolejności pakietów"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "procent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Nazwa profilu"
   },
@@ -8802,7 +8826,7 @@
     "message": "Wpisz niestandardowego klienta użytkownika"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Wyświetlane warunki sieci"
+    "message": "Wyświetlane są warunki sieci."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ograniczanie wykorzystania sieci"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Przestrzeń adresów zdalnych"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Nagłówki żądania"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Nagłówki odpowiedzi"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Zapisz jako…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Nie udało się zapisać pliku na dysku."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Wybierz folder dla zastąpień"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Odśwież obserwowane wyrażenia"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Obserwowane wyrażenie zostało usunięte"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Trafienie punktu przerwania {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Szczegóły"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Wymiary"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Długość snu"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Więcej informacji"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Lokalizacja"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Wiadomość"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (elementy podrzędne)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Zebrano {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} z {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Aby zbierać szczegółowe statystyki dopasowywania selektora arkusza CSS, wybierz „{PH1}”."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (własny)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skrypt"
@@ -14682,13 +14694,13 @@
     "message": "Skonfiguruj"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Skonfiguruj pobieranie danych z pól"
+    "message": "Skonfiguruj pobieranie zgromadzonych danych"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Raport na temat użytkowania Chrome zawiera za mało danych o rzeczywistej szybkości tej strony."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Pobierz zgromadzone dane zbiorcze w raporcie {PH1}, aby łatwiej porównać wartości lokalne z wrażeniami prawdziwych użytkowników witryny."
+    "message": "Pobierz zgromadzone dane zbiorcze z raportu {PH1}, aby łatwiej porównać wartości lokalne z wrażeniami prawdziwych użytkowników witryny."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "„{PH1}” nie jest prawidłowym źródłem ani adresem URL."
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Gdy narzędzia deweloperskie są otwarte, adresy URL odwiedzanych stron są wysyłane do Google w celu zapytania o dane z pól. Te żądania nie są powiązane z Twoim kontem Google."
+    "message": "Gdy Narzędzia deweloperskie są otwarte, adresy URL odwiedzanych stron są wysyłane do Google w celu utworzenia zapytania o zgromadzone dane. Te żądania nie są powiązane z Twoim kontem Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Dodaj regułę wyrażenia regularnego dla adresu URL skryptu"
@@ -14825,7 +14837,7 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Sekcja logów interakcji i przesunięć układu"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
     "message": "Zgromadzone dane"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
@@ -14859,7 +14871,7 @@
     "message": "Więcej informacji o danych lokalnych i zgromadzonych"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Dane lokalne są pozyskiwane z bieżącej strony za pomocą połączenia sieciowego i urządzenia. Zgromadzone dane są mierzone przez rzeczywistych użytkowników korzystających z wielu różnych połączeń sieciowych i urządzeń."
+    "message": "Dane lokalne są pozyskiwane z bieżącej strony za pomocą połączenia sieciowego. Zgromadzone dane z urządzeń są mierzone przez rzeczywistych użytkowników korzystających z wielu różnych połączeń sieciowych i urządzeń."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Dane lokalne"
@@ -14925,7 +14937,7 @@
     "message": "Pokaż zgromadzone dane dla typu urządzenia: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Pokaż zgromadzone dane dotyczące: {PH1}"
+    "message": "Pokaż zgromadzone dane dla: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Przejdź do interakcji INP."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Przełącz Narzędzia deweloperskie na język {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Przełącz orientację panelu"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Dodaj"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Zrzut ekranu elementu {PH1} – wybierz, aby zobaczyć poprzedzające żądania."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Usuń adnotacje"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Skonfiguruj ścieżki"

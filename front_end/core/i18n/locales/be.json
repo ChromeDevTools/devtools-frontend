@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Не эмуляваць тып мультымедыя CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Не эмуляваць маштабаванне тэксту АС"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Не падаўжаць лініі сеткі"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Эмуляцыя дэйтэранапіі (без зялёнага колеру)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Эмуляваць маштабаванне тэксту АС"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Эмуляцыя пратанапіі (без чырвонага колеру)"
@@ -732,6 +738,30 @@
     "message": "Блакіроўка сеткавых запытаў"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Без эмуляцыі"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (стандартна)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Без эмуляцыі"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Прымусова задае тып мультымедыя для праверкі стыляў print і screen"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Прымусовая эмуляцыя маштабавання тэксту АС"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Прымусова задае эмуляцыю парушэння зроку"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Уключыць або выключыць высоўнае меню"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Пераключыць арыентацыю высоўнага меню"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Адмацаваць у асобнае акно"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Запыты рэсурсаў, чые URL-адрасы змяшчаюць і выдаленыя прабельныя сімвалы (\\(n|r|t)), і сімвалы \"менш\" (<), блакіруюцца. Каб загружаць такія рэсурсы, вам трэба выдаліць сімвалы новага радка і выкарыстаць коды для сімвалаў \"менш\" у такіх месцах URL-адраса, дзе, напрыклад, указваюцца значэнні атрыбутаў элементаў."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Аўтаматычнае выяўленне набору сімвалаў ISO-2022-JP больш не падтрымліваецца і будзе адключана ў бліжэйшы час. Укажыце набор сімвалаў у загалоўку \"Тып змесціва\" або з дапамогай метатэга (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Метад chrome.loadTimes() не падтрымліваецца. Замест яго выкарыстоўвайце стандартызаваную версію API: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "Збой LiveEdit: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Рэальныя даныя наладжаны для іншага URL-адраса, а не для бягучай старонкі."
+    "message": "Рэальныя паказчыкі наладжаны для іншага URL-адраса, а не для бягучай старонкі."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Каэфіцыент суадносін пікселяў прылады павінен быць лікам або адсутнічаць."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Захаваць як…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Не ўдалося захаваць файл на дыск."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Захаваць відарыс"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Асноўныя прычыны зрушэння макета"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Відарысы без зададзенага памеру"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Найгоршы кластар"
@@ -1839,7 +1875,7 @@
     "message": "Ёсць перанакіраванні (перанакіраванняў: {PH1}, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Сервер адказаў павольна (зафіксаваная хуткасць: {PH1}) "
+    "message": "Сервер адказаў павольна (зафіксаваная хуткасць: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Сцісканне не прымянялася"
@@ -1848,7 +1884,7 @@
     "message": "Без перанакіраванняў"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Сервер адказвае хутка (зафіксаваная хуткасць: {PH1}) "
+    "message": "Сервер адказвае хутка (зафіксаваная хуткасць: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Прымяняецца сцісканне тэксту"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Калі акно прагляду не аптымізавана для мабільнай прылады, узаемадзеянне з дотыкам можа [затрымлівацца на велічыню да 300 мс](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Затрымка націскання для мабільнай прылады"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Аптымізаваць акно прагляду для мабільнай прылады"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Для выкарыстання гэтай функцыі трэба выбраць англійскую мову ў наладах інструментаў распрацоўшчыка."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Таксама вы можаце пачаць размову, скарыстаўшы адзін з запытаў, прапанаваных вышэй"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Даведацца больш пра выкарыстанне AI ў інструментах распрацоўшчыка"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Згарнуць"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Ачысціць сховішча аб’ектаў \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Выдаліць базу даных \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Ключ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Даныя, якія змяшчаюцца ў выбраным сховішчы аб’ектаў, будуць выдалены."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Склады аб’ектаў"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Гэты фрэйм быў ідэнтыфікаваны як каранёвы фрэйм рэкламнай аб’явы"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Правіла фільтрацыі спісу са сцэнарыем каранёвага ўзроўню"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Бяспечны кантэкст"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (з карты крыніц)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Укладка \"Змяненні\" не паказвае змены ў бінарных даных"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "На гэтай старонцы можна адсочваць змяненні кода, зробленыя інструментамі распрацоўшчыка."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Скапіраваць"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Змен пакуль няма"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Даступнай тэкставай розніцы няма"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# выдаленне (-)}one{# выдаленне (-)}few{# выдаленні (-)}many{# выдаленняў (-)}other{# выдалення (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# устаўка (+)}one{# устаўка (+)}few{# устаўкі (+)}many{# уставак (+)}other{# устаўкі (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Скапіравана ў буфер абмену"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Змяненні"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Скапіраваць усе змяненні ў бягучым файле"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Аднавіць усе змены ў бягучым файле"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Паказаць змены"
@@ -5715,7 +5745,7 @@
     "message": "Паказваць паведамленні толькі з бягучага кантэксту (top, iframe, worker, пашырэнне)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Перавызначана бакавой панэллю фільтраў"
+    "message": "Узроўні вядзення журнала рэгулююцца на бакавой панэлі кансолі."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Захаваць журнал"
@@ -6612,16 +6642,16 @@
     "message": "Прагартайце, пакуль змесціва не стане бачным"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Паказаць каманду для мэтавага элемента"
+    "message": "Паказаць элемент, звязаны з атрыбутам \"commandfor\""
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Паказаць падрабязныя звесткі пра iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Паказаць мэту групы інтарэсаў"
+    "message": "Паказаць элемент, звязаны з атрыбутам \"interesttarget\""
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Паказаць мэтавы ўсплывальны элемент"
+    "message": "Паказаць элемент, звязаны з атрыбутам \"popovertarget\""
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Гэты фрэйм быў ідэнтыфікаваны як фрэйм рэкламы"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "сканструяваная табліца стыляў"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Скапіраваць усе змяненні CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Скапіраваць усе абвяшчэнні"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "праз інспектар"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Скапіраваць усе змяненні CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Скапіраваць усе абвяшчэнні як JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Даступнасць"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Прымяняць эмуляцыю камп’ютара падчас вядзення аўдыту"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Прымяніць эмуляцыю мабільнай прылады"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Змяненне парадку пакетаў"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "%"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Назва профілю"
   },
@@ -8802,7 +8826,7 @@
     "message": "Увядзіце ўласны агент карыстальніка"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Паказаны ўмовы сеткі"
+    "message": "Паказаны ўмовы сеткі."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Рэгуляванне нагрузкі на сетку"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Аддаленая адрасная прастора"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Загалоўкі запытаў"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Загалоўкі адказаў"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Захаваць як…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Не ўдалося захаваць файл на дыск."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Выбраць папку для перавызначэнняў"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Абнавіць выразы кантрольнага значэння"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Выраз кантрольнага значэння выдалены"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "дасягнуты пункт прыпынення {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Падрабязныя звесткі"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Памеры"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Працягласць"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Даведацца больш"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Месцазнаходжанне"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Паведамленне"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (даччыныя элементы)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} сабрана"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} з {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Выберыце \"{PH1}\", каб збіраць падрабязную статыстыку пра супадзенні селектараў CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (уласны час дзеяння)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Сцэнарый"
@@ -14682,19 +14694,19 @@
     "message": "Наладзіць"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Наладзьце загрузку даных палёў"
+    "message": "Наладзьце атрыманне рэальных паказчыкаў"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "У справаздачы па зручнасці выкарыстання Chrome недастаткова даных пра рэальную хуткасць для гэтай старонкі."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Вы можаце загрузіць аб’яднаныя рэальныя даныя з дакумента \"{PH1}\". Яны дапамогуць узгадніць даныя лакальных вымярэнняў з паказчыкамі рэальных карыстальнікаў на сайце."
+    "message": "Вы можаце загрузіць аб’яднаныя рэальныя паказчыкі з дакумента \"{PH1}\". Яны дапамогуць узгадніць даныя лакальных вымярэнняў з паказчыкамі рэальных карыстальнікаў на сайце."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" не з’яўляецца сапраўдным паходжаннем ці URL-адрасам."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Укажыце, каб паходжанне распрацоўкі аўтаматычна атрымлівала рэальныя даныя, якія адпавядаюць яго паходжанню вытворчасці."
+    "message": "Укажыце, каб паходжанне распрацоўкі аўтаматычна атрымлівала рэальныя паказчыкі, якія адпавядаюць яго паходжанню вытворчасці."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Дадаць"
@@ -14703,7 +14715,7 @@
     "message": "ОК"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Заўсёды паказваць рэальныя даныя для URL-адраса, паказанага ніжэй"
+    "message": "Заўсёды адлюстроўваць рэальныя паказчыкі для URL-адраса, прыведзенага ніжэй"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Адмовіцца"
@@ -14718,7 +14730,7 @@
     "message": "URL-адрас"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Калі адкрыты інструменты распрацоўшчыка, URL-адрасы, якія вы наведваеце, будуць адпраўляцца ў Google для запытвання даных палёў. Такія запыты не прывязваюцца да Уліковага запісу Google."
+    "message": "Калі адкрыты інструменты распрацоўшчыка, URL-адрасы, якія вы наведваеце, будуць адпраўляцца ў Google для запытвання рэальных паказчыкаў. Такія запыты не прывязваюцца да ўліковага запісу Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Дадаць правіла рэгулярнага выразу для URL-адраса сцэнарыя"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Раздзел журналаў узаемадзеяння і зрушэнняў макета"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Рэальныя даныя"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Рэальныя паказчыкі"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Узаемадзеянне INP разлічваецца на 98-м працэнтылі затрымак узаемадзеяння."
@@ -14856,10 +14868,10 @@
     "message": "Лакальныя і рэальныя паказчыкі"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Даведацца больш пра лакальныя і рэальныя даныя"
+    "message": "Даведацца больш пра лакальныя і рэальныя паказчыкі"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Лакальныя паказчыкі збіраюцца з бягучай старонкі праз падключэнне да сеткі і прыладу. Вынікі вымярэнняў паступаюць ад рэальных карыстальнікаў шматлікіх прылад і падключэнняў да сетак."
+    "message": "Лакальныя паказчыкі збіраюцца з бягучай старонкі праз падключэнне да сеткі і прыладу. Рэальныя паказчыкі вымяраюцца на аснове даных ад рэальных карыстальнікаў з рознымі прыладамі і спосабамі падключэння да сеткі."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Лакальныя паказчыкі"
@@ -14922,10 +14934,10 @@
     "message": "Перайсці да кластара найгоршых зрушэнняў макета."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Паказваць рэальныя даныя для прылад наступнага тыпу: {PH1}"
+    "message": "Адлюстроўваць рэальныя паказчыкі для прылад наступнага тыпу: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Паказаць рэальныя даныя для старонкі (дамена) \"{PH1}\""
+    "message": "Адлюстроўваць рэальныя паказчыкі для старонкі або дамена {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Перайсці да значэння ўзаемадзеяння INP."
@@ -15033,13 +15045,13 @@
     "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён значна лепшы за паказчык у вашых карыстальнікаў."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных таксама добры."
+    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Рэальны паказчык {PH1} ({PH3}) 75-га працэнтыля паказчыкаў таксама добры."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Аднак паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных трэба палепшыць."
+    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Аднак паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў трэба палепшыць."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных кепскі."
+    "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў кепскі."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "У вас добры лакальны паказчык {PH1} ({PH2}), ён на тым жа ўзроўні, што і паказчык у вашых карыстальнікаў."
@@ -15054,13 +15066,13 @@
     "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, але ён значна лепшы за паказчык у вашых карыстальнікаў."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных добры."
+    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў добры."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Таксама трэба палепшыць паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных."
+    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Таксама трэба палепшыць паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных кепскі."
+    "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў кепскі."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Ваш лакальны паказчык {PH1} ({PH2}) трэба палепшыць, ён на тым жа ўзроўні, што і паказчык у вашых карыстальнікаў."
@@ -15075,13 +15087,13 @@
     "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), але ён значна лепшы за паказчык у вашых карыстальнікаў."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных добры."
+    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Пры гэтым паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў добры."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Аднак паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных трэба палепшыць."
+    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Аднак паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў трэба палепшыць."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных даных таксама кепскі."
+    "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён знаходзіцца на тым жа ўзроўні, што і паказчык {PH1} у {PH4} рэальных карыстальнікаў. Паказчык {PH1} ({PH3}) 75-га працэнтыля рэальных паказчыкаў таксама кепскі."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "У вас кепскі лакальны паказчык {PH1} ({PH2}), ён на тым жа ўзроўні, што і паказчык у вашых карыстальнікаў."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Пераключыць інструменты распрацоўшчыка на іншую мову ({PH1})"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Пераключыць арыентацыю высоўнага меню"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Дадаць"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Здымак экрана ({PH1}) – выберыце, каб пабачыць папярэднія запыты."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Выдаліць анатацыі"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Наладзіць версіі"

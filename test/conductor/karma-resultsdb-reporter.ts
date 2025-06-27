@@ -124,7 +124,14 @@ export const ResultsDBReporter = function(
         if (!result.log?.[0]?.includes(screenshotError.message)) {
           throw new Error('Unexpected screenshot assertion error');
         }
-        [testResult.artifacts, testResult.summaryHtml] = screenshotError.toMiloArtifacts();
+        testResult.artifacts = screenshotError.screenshots;
+        testResult.summaryHtml = screenshotError.toMiloSummary();
+        if (screenshotError.screenshotPath) {
+          if (!testResult.tags) {
+            testResult.tags = [];
+          }
+          testResult.tags.push({key: 'screenshot_path', value: screenshotError.screenshotPath});
+        }
       }
     }
     ResultsDb.sendTestResult(testResult);

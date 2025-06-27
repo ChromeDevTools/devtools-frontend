@@ -92,19 +92,16 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     testResult.status = 'FAIL';
     testResult.expected = false;
     if (error instanceof ScreenshotError) {
-      [testResult.artifacts, testResult.summaryHtml] = error.toMiloArtifacts();
+      testResult.artifacts = error.screenshots;
+      testResult.summaryHtml = error.toMiloSummary();
+      if (error.screenshotPath) {
+        testResult.tags?.push({key: 'screenshot_path', value: error.screenshotPath});
+      }
     } else {
       testResult.summaryHtml = `<pre>${getErrorMessage(error).slice(0, ResultsDbReporter.SUMMARY_LENGTH_CUTOFF)}</pre>`;
     }
     if (this.htmlResult) {
       this.htmlResult.write(testResult.summaryHtml);
-      if (testResult.artifacts) {
-        for (const screenshot in testResult.artifacts) {
-          this.htmlResult.write(`<details><summary>${screenshot} screenshot:</summary><p><img src="${
-              testResult.artifacts[screenshot].filePath}"></img></p></details>`);
-        }
-      }
-      this.htmlResult.write('<hr>');
     }
     ResultsDb.sendTestResult(testResult);
   }

@@ -17,7 +17,7 @@ describe('Example test', () => {
 
 ## Screenshot tests
 
-> Ensure you are a member of the g/devtools-dev group, otherwise the `update_goldens_v2.py` tool will not work.
+> Ensure you are a member of the g/devtools-dev group, otherwise the `update_goldens.py` tool will not work.
 
 Interaction tests also have the ability to store a screenshot of an element and in future tests ensure that the screenshot has not changed. These should be used sparingly - our usage so far has found that you should prefer HTML assertions if possible - but they are useful particularly for `<canvas>` based UI.
 
@@ -47,7 +47,7 @@ This tells the test runner to update any screenshots that fail. Once you've done
 
 1. Commit the changes for your platform locally.
 2. Trigger a CQ run and wait for it to finish using `git cl try`.
-3. Fetch the new screenshots from the bots by using `./scripts/tools/update_goldens_v2.py`.
+3. Fetch the new screenshots from the bots by using `./scripts/tools/update_goldens.py`.
 
 Note that if you do this step on Linux, you shouldn't need to then get the updates from the bot, because the bots also test and run on Linux.
 
@@ -65,7 +65,7 @@ First, authenticate (using your Google corp credentials):
 And then call the script to update the golden screenshots:
 
 ```
-./scripts/tools/update_goldens_v2.py
+./scripts/tools/update_goldens.py
 ```
 
 This will fetch any relevant screenshots locally. You can then commit these and update your CL. Please manually check the screenshots to ensure they are as expected on all platforms!

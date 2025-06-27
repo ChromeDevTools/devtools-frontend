@@ -5,8 +5,11 @@
 import * as fs from 'fs';
 import * as http from 'http';
 
-// This type mirrors test_result.proto.
-// https://source.chromium.org/chromium/infra/infra/+/main:recipes-py/recipe_proto/go.chromium.org/luci/resultdb/proto/sink/v1/test_result.proto
+import type {ArtifactGroup} from './screenshot-error.js';
+
+// This type mirrors test_result.proto but it might fall behind.
+// TODO(liviurau): Update at convenient times.
+// https://source.chromium.org/chromium/infra/infra/+/main:go/src/go.chromium.org/luci/resultdb/sink/proto/v1/test_result.proto
 export interface TestResult {
   testId: SanitizedTestId;
   expected?: boolean;
@@ -14,9 +17,7 @@ export interface TestResult {
   summaryHtml?: string;
   duration?: string;
   tags?: Array<{key: string, value: string}>;
-  artifacts?: Record<string, {
-    filePath: string,
-  }>;
+  artifacts?: ArtifactGroup;
 }
 
 export type SanitizedTestId = string&{
@@ -29,7 +30,7 @@ export type SanitizedTestId = string&{
 // This function removees non-printable characters and truncates the string
 // to the max allowed length.
 export function sanitizedTestId(rawTestId: string): SanitizedTestId {
-  return rawTestId.replace(/[^\x20-\x7E]/g, '').substr(0, 512) as SanitizedTestId;
+  return rawTestId.replace(/[^\x20-\x7E]/g, '').substring(0, 512) as SanitizedTestId;
 }
 
 interface SinkData {

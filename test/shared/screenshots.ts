@@ -172,7 +172,7 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
     if (process.env.LUCI_CONTEXT !== undefined && !shouldUpdate) {
       // If the image is missing, there's no point retrying the test N more times.
       onBotAndImageNotFound = true;
-      throw ScreenshotError.fromMessage(
+      throw ScreenshotError.fromGeneratedScreenshot(
           `Failing test: in an environment with LUCI_CONTEXT and did not find a golden screenshot.
 
         Here's the image that this test generated as a base64:
@@ -187,7 +187,8 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
     console.log('Golden does not exist, using generated screenshot.');
     setGeneratedFileAsGolden(goldenScreenshotPath, generatedScreenshotPath);
     if (throwAfterGoldensUpdate) {
-      throw new Error('Golden does not exist, using generated screenshot.');
+      throw ScreenshotError.fromGeneratedScreenshot(
+          'Golden does not exist, using generated screenshot.', generatedScreenshotPath);
     }
   }
 
@@ -326,7 +327,7 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
     }
 
   } catch (assertionError) {
-    throw ScreenshotError.fromError(assertionError, golden, generated, diffPath);
+    throw ScreenshotError.fromScreenshotAssertionError(assertionError, golden, generated, diffPath);
   }
 }
 

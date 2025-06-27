@@ -969,22 +969,25 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
     super();
     this.#treeElement = treeElement;
   }
-  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch): Node[] {
-    return [this.renderSwatch(match)];
-  }
-
-  renderSwatch(match: SDK.CSSPropertyParserMatchers.BezierMatch): Node {
-    if (!this.#treeElement?.editable() || !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(match.text)) {
-      return document.createTextNode(match.text);
+  override render(match: SDK.CSSPropertyParserMatchers.BezierMatch, context: RenderingContext): Node[] {
+    const nodes = match.node.name === 'CallExpression' ? Renderer.render(ASTUtils.children(match.node), context).nodes :
+                                                         [document.createTextNode(match.text)];
+    if (!this.#treeElement?.editable() ||
+        !InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(
+            context.matchedResult.getComputedText(match.node))) {
+      return nodes;
     }
     const swatchPopoverHelper = this.#treeElement.parentPane().swatchPopoverHelper();
-    const swatch = InlineEditor.Swatches.BezierSwatch.create();
-    swatch.iconElement().addEventListener('click', () => {
+    const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
+    icon.tabIndex = -1;
+    icon.addEventListener('click', () => {
       Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.ANIMATION_TIMING);
     });
-    swatch.setBezierText(match.text);
-    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch});
-    return swatch;
+    const bezierText = document.createElement('span');
+    bezierText.append(...nodes);
+    new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch: icon, bezierText});
+    return [icon, bezierText];
   }
 }
 

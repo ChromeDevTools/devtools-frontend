@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -32,13 +33,15 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 interface BezierPopoverIconParams {
   treeElement: StylePropertyTreeElement;
   swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
-  swatch: InlineEditor.Swatches.BezierSwatch;
+  swatch: IconButton.Icon.Icon;
+  bezierText: HTMLElement;
 }
 
 export class BezierPopoverIcon {
   private treeElement: StylePropertyTreeElement;
   private readonly swatchPopoverHelper: InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper;
-  private swatch: InlineEditor.Swatches.BezierSwatch;
+  private readonly swatch: IconButton.Icon.Icon;
+  private readonly bezierText: HTMLElement;
   private readonly boundBezierChanged: (event: Common.EventTarget.EventTargetEvent<string>) => void;
   private readonly boundOnScroll: (event: Event) => void;
   private bezierEditor?: InlineEditor.BezierEditor.BezierEditor;
@@ -49,31 +52,37 @@ export class BezierPopoverIcon {
     treeElement,
     swatchPopoverHelper,
     swatch,
+    bezierText,
   }: BezierPopoverIconParams) {
     this.treeElement = treeElement;
     this.swatchPopoverHelper = swatchPopoverHelper;
     this.swatch = swatch;
+    this.bezierText = bezierText;
 
-    UI.Tooltip.Tooltip.install(this.swatch.iconElement(), i18nString(UIStrings.openCubicBezierEditor));
-    this.swatch.iconElement().addEventListener('click', this.iconClick.bind(this), false);
-    this.swatch.iconElement().addEventListener('mousedown', (event: Event) => event.consume(), false);
+    UI.Tooltip.Tooltip.install(this.swatch, i18nString(UIStrings.openCubicBezierEditor));
+    this.swatch.addEventListener('click', this.iconClick.bind(this), false);
+    this.swatch.addEventListener('keydown', this.iconClick.bind(this), false);
+    this.swatch.addEventListener('mousedown', (event: Event) => event.consume(), false);
 
     this.boundBezierChanged = this.bezierChanged.bind(this);
     this.boundOnScroll = this.onScroll.bind(this);
   }
 
-  private iconClick(event: Event): void {
+  private iconClick(event: MouseEvent|KeyboardEvent): void {
+    if (event instanceof KeyboardEvent && !Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      return;
+    }
     event.consume(true);
     if (this.swatchPopoverHelper.isShowing()) {
       this.swatchPopoverHelper.hide(true);
       return;
     }
 
-    const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(this.swatch.bezierText()) ||
+    const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(this.bezierText.innerText) ||
         InlineEditor.AnimationTimingModel.LINEAR_BEZIER;
     this.bezierEditor = new InlineEditor.BezierEditor.BezierEditor(model);
     this.bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, this.boundBezierChanged);
-    this.swatchPopoverHelper.show(this.bezierEditor, this.swatch.iconElement(), this.onPopoverHidden.bind(this));
+    this.swatchPopoverHelper.show(this.bezierEditor, this.swatch, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.swatch.enclosingNodeOrSelfWithClass('style-panes-wrapper');
     if (this.scrollerElement) {
       this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
@@ -89,7 +98,7 @@ export class BezierPopoverIcon {
   }
 
   private bezierChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
-    this.swatch.setBezierText(event.data);
+    this.bezierText.textContent = event.data;
     void this.treeElement.applyStyleText(this.treeElement.renderedPropertyText(), false);
   }
 

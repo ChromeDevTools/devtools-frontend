@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Να μην γίνεται προσομοίωση του τύπου μέσων CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Να μην γίνεται προσομοίωση της κλίμακας κειμένου λειτουργικού συστήματος"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Να μην γίνεται επέκταση των γραμμών πλέγματος"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Προσομοίωση δευτερανοπίας (χωρίς πράσινο)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Προσομοίωση κλίμακας κειμένου λειτουργικού συστήματος"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Προσομοίωση πρωτανοπίας (χωρίς κόκκινο)"
@@ -732,6 +738,30 @@
     "message": "Αποκλεισμός αιτήματος δικτύου"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Χωρίς προσομοίωση"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (προεπιλογή)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Χωρίς προσομοίωση"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Επιβάλλει τον τύπο μέσων για τη δοκιμή στιλ εκτύπωσης και οθόνης"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Επιβάλλει την προσομοίωση κλίμακας κειμένου λειτουργικού συστήματος"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Επιβάλλει την προσομοίωση διαταραχών όρασης"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Εναλλαγή συρταριού"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Εναλλαγή προσανατολισμού συρταριού"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Απαγκύρωση σε ξεχωριστό παράθυρο"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Ο αυτόματος εντοπισμός του συνόλου χαρακτήρων ISO-2022-JP έχει καταργηθεί και θα απενεργοποιηθεί σύντομα. Προσδιορίστε το σύνολο χαρακτήρων στην κεφαλίδα Τύπος περιεχομένου ή χρησιμοποιώντας μια μεταετικέτα (https://developer.mozilla.org/el-GR/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "Η λειτουργία LiveEdit απέτυχε: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Τα δεδομένα πεδίου έχουν διαμορφωθεί για διαφορετικό URL από την τρέχουσα σελίδα."
+    "message": "Οι μετρήσεις πεδίου έχουν διαμορφωθεί για διαφορετικό URL από την τρέχουσα σελίδα."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Ο λόγος διαστάσεων pixel συσκευής πρέπει να είναι αριθμός ή κενός."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Αποθήκευση ως…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Η αποθήκευση του αρχείου στον δίσκο απέτυχε."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Αποθήκευση εικόνας"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Κορυφαίες αιτίες για τη μετατόπιση διάταξης"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Εικόνες χωρίς καθορισμένο μέγεθος"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Χειρότερο σύμπλεγμα"
@@ -1839,7 +1875,7 @@
     "message": "Είχε ανακατευθύνσεις ({PH1} ανακατευθύνσεις, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Ο διακομιστής ανταποκρίθηκε αργά (παρατηρήθηκε {PH1}) "
+    "message": "Ο διακομιστής ανταποκρίθηκε αργά (παρατηρήθηκε {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Δεν εφαρμόστηκε συμπίεση"
@@ -1848,7 +1884,7 @@
     "message": "Αποφεύγει τις ανακατευθύνσεις"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Ο διακομιστής ανταποκρίνεται γρήγορα (παρατηρήθηκε {PH1}) "
+    "message": "Ο διακομιστής ανταποκρίνεται γρήγορα (παρατηρήθηκε {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Εφαρμόζει συμπίεση κειμένου"
@@ -2070,7 +2106,7 @@
     "message": "Για τη βελτίωση της φόρτωσης σελίδας, [αποφύγετε τη δημιουργία αλυσίδων κρίσιμων αιτημάτων](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains), μειώνοντας το μήκος των αλυσίδων ή το μέγεθος λήψης των πόρων ή αναβάλλοντας τη λήψη των μη απαραίτητων πόρων."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Προσθέστε υποδείξεις [προσύνδεσης](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) στις πιο σημαντικές προελεύσεις σας, αλλά προσπαθήστε να χρησιμοποιήσετε λιγότερες από 4."
+    "message": "Προσθέστε υποδείξεις [προσύνδεσης](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) στις πιο σημαντικές προελεύσεις σας, αλλά προσπαθήστε να μην χρησιμοποιήσετε πάνω από 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Υποψήφιες για προσύνδεση"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Οι αλληλεπιδράσεις με πάτημα μπορεί να [καθυστερούν έως και 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), αν η θύρα προβολής δεν είναι βελτιστοποιημένη για κινητά."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Καθυστέρηση πατήματος σε κινητό"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Βελτιστοποίηση θύρας προβολής για κινητά"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Για να χρησιμοποιήσετε αυτή τη λειτουργία, ορίστε την προτίμηση γλώσσας στα Αγγλικά στις ρυθμίσεις των Εργαλείων για προγραμματιστές."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Μπορείτε επίσης να χρησιμοποιήσετε μία από τις προτεινόμενες οδηγίες για να ξεκινήσετε τη συνομιλία σας"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Μάθετε σχετικά με το AI στα Εργαλεία για προγραμματιστές"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Σύμπτυξη"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Να διαγραφεί ο αποθηκευτικός χώρος αντικειμένων {PH1};"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Να διαγραφεί η βάση δεδομένων {PH1};"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Κλειδί"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Τα δεδομένα που περιέχονται στον επιλεγμένο αποθηκευτικό χώρο αντικειμένων θα καταργηθούν."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Χώροι αποθήκευσης αντικειμένων"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Αυτό το πλαίσιο αναγνωρίστηκε ως το πλαίσιο ρίζας μιας διαφήμισης"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Κανόνας λίστας φίλτρων σεναρίου ρίζας"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Ασφαλές περιβάλλον"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (από αντιστοίχιση πηγής)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Η καρτέλα αλλαγών δεν εμφανίζει αλλαγές στα δυαδικά δεδομένα"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Σε αυτή τη σελίδα μπορείτε να παρακολουθείτε τις αλλαγές κώδικα που πραγματοποιούνται στα Εργαλεία για προγραμματιστές."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Αντιγραφή"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Δεν έχουν γίνει ακόμα αλλαγές"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Δεν υπάρχουν διαφορές στο κείμενο"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# διαγραφή (-)}other{# διαγραφές (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# εισαγωγή (+)}other{# εισαγωγές (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Αντιγράφηκε στο πρόχειρο"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Αλλαγές"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Αντιγραφή όλων των αλλαγών από το τρέχον αρχείο"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Επαναφορά όλων των αλλαγών στο τρέχον αρχείο"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Εμφάνιση αλλαγών"
@@ -5715,7 +5745,7 @@
     "message": "Να εμφανίζονται μηνύματα μόνο από το τρέχον περιβάλλον (top, iframe, worker, επέκταση)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Παρακάμφθηκε από την πλευρική γραμμή φίλτρου"
+    "message": "Τα επίπεδα αρχείου καταγραφής ελέγχονται από την πλευρική γραμμή της κονσόλας."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Διατήρηση αρχείου καταγραφής"
@@ -6612,16 +6642,16 @@
     "message": "Κύλιση για προβολή"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Εμφάνιση εντολής για στόχο"
+    "message": "Εμφάνιση στοιχείου που συσχετίζεται με το χαρακτηριστικό commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Εμφάνιση λεπτομερειών iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Εμφάνιση στόχου ενδιαφέροντος"
+    "message": "Εμφάνιση στοιχείου που συσχετίζεται με το χαρακτηριστικό interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Εμφάνιση στόχου αναδυόμενου παραθύρου"
+    "message": "Εμφάνιση στοιχείου που συσχετίζεται με το χαρακτηριστικό popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Αυτό το πλαίσιο προσδιορίστηκε ως πλαίσιο διαφήμισης"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "κατασκευασμένο φύλλο στιλ"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Αντιγραφή όλων των αλλαγών CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Αντιγραφή όλων των δηλώσεων"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "μέσω επιθεώρησης"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Αντιγραφή όλων των αλλαγών CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Αντιγραφή όλων των δηλώσεων ως JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Προσβασιμότητα"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Εφαρμογή προσομοίωσης υπολογιστή κατά τη διάρκεια ελέγχου"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Εφαρμογή προσομοίωσης κινητού"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Αναδιάταξη πακέτων"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "τοις εκατό"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Όνομα προφίλ"
   },
@@ -8802,7 +8826,7 @@
     "message": "Εισαγωγή προσαρμοσμένου παράγοντα χρήστη"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Εμφανίζονται οι συνθήκες του δικτύου"
+    "message": "Εμφανίζονται οι συνθήκες του δικτύου."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Περιορισμός δικτύου"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Χώρος απομακρυσμένης διεύθυνσης"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Κεφαλίδες αιτημάτων"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Κεφαλίδες αποκρίσεων"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Αποθήκευση ως…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Η αποθήκευση του αρχείου στον δίσκο απέτυχε."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Επιλογή φακέλου για παρακάμψεις"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Ανανέωση εκφράσεων παρακολούθησης"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Η έκφραση παρακολούθησης διαγράφηκε"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Επίτευξη σημείου διακοπής {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Λεπτομέρειες"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Διαστάσεις"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Διάρκεια"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Μάθετε περισσότερα"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Τοποθεσία"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Μήνυμα"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (θυγατρικά)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Συλλέχθηκαν {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} από {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1}×{PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Επιλέξτε {PH1}, για να συλλέξετε λεπτομερή στατιστικά στοιχεία αντιστοίχισης επιλογέα CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ιδίου)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Σενάριο"
@@ -14682,19 +14694,19 @@
     "message": "Διαμόρφωση"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Διαμόρφωση λήψης δεδομένων πεδίου"
+    "message": "Διαμόρφωση λήψης μετρήσεων πεδίου"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Η αναφορά Chrome UX δεν διαθέτει αρκετά πραγματικά δεδομένα ταχύτητας για αυτή τη σελίδα."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Λάβετε συγκεντρωτικά δεδομένα πεδίου από την {PH1}, τα οποία θα σας βοηθήσουν να ερμηνεύσετε σε ένα ευρύτερο πλαίσιο τις τοπικές μετρήσεις σχετικά με την εμπειρία των πραγματικών χρηστών στον ιστότοπο."
+    "message": "Λάβετε συγκεντρωτικές μετρήσεις πεδίου από την {PH1}, οι οποίες θα σας βοηθήσουν να ερμηνεύσετε σε ένα ευρύτερο πλαίσιο τις τοπικές μετρήσεις σχετικά με την εμπειρία των πραγματικών χρηστών στον ιστότοπο."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "Η διεύθυνση {PH1} δεν αποτελεί έγκυρη προέλευση ή URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Ορίστε μια προέλευση ανάπτυξης για αυτόματη λήψη σχετικών δεδομένων πεδίου για την προέλευση παραγωγής της."
+    "message": "Ορίστε μια προέλευση ανάπτυξης για αυτόματη λήψη σχετικών μετρήσεων πεδίου για την προέλευση παραγωγής της."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Νέα"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Να εμφανίζονται πάντα δεδομένα πεδίου για το παρακάτω URL"
+    "message": "Να εμφανίζονται πάντα μετρήσεις πεδίου για το παρακάτω URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Εξαίρεση"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Όταν τα Εργαλεία για προγραμματιστές είναι ανοιχτά, τα URL που επισκέπτεστε θα αποστέλλονται στην Google για υποβολή ερωτημάτων δεδομένων πεδίου. Αυτά τα αιτήματα δεν συνδέονται με τον Λογαριασμό σας Google."
+    "message": "Όταν τα Εργαλεία για προγραμματιστές είναι ανοιχτά, τα URL που επισκέπτεστε θα αποστέλλονται στην Google για υποβολή ερωτημάτων μετρήσεων πεδίου. Αυτά τα αιτήματα δεν συνδέονται με τον Λογαριασμό σας Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Προσθέστε έναν κανόνα τυπικής έκφρασης για το URL του σεναρίου"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Ενότητα αρχείων καταγραφής αλληλεπίδρασης και μετατόπισης διάταξης"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Δεδομένα πεδίου"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Μετρήσεις πεδίου"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Η αλληλεπίδραση INP βρίσκεται στο 98ο εκατοστημόριο των καθυστερήσεων αλληλεπίδρασης."
@@ -14856,10 +14868,10 @@
     "message": "Τοπικές μετρήσεις και μετρήσεις πεδίου"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Μάθετε περισσότερα σχετικά με τα τοπικά δεδομένα και τα δεδομένα πεδίου"
+    "message": "Μάθετε περισσότερα σχετικά με τις τοπικές μετρήσεις και τις μετρήσεις πεδίου"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Οι τοπικές μετρήσεις καταγράφονται από την τρέχουσα σελίδα, χρησιμοποιώντας τη σύνδεση δικτύου και τη συσκευή σας. Τα δεδομένα πεδίου μετρώνται από πραγματικούς χρήστες που χρησιμοποιούν πολλές διαφορετικές συνδέσεις δικτύου και συσκευές."
+    "message": "Οι τοπικές μετρήσεις καταγράφονται από την τρέχουσα σελίδα, με χρήση της σύνδεσης δικτύου και της συσκευή σας. Οι μετρήσεις πεδίου πραγματοποιούνται από πραγματικούς χρήστες που χρησιμοποιούν πολλές διαφορετικές συνδέσεις δικτύου και συσκευές."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Τοπικές μετρήσεις"
@@ -14922,10 +14934,10 @@
     "message": "Μετάβαση στο χειρότερο σύμπλεγμα μετατόπισης διάταξης."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Εμφάνιση δεδομένων πεδίου για τον τύπο συσκευής: {PH1}"
+    "message": "Εμφάνιση μετρήσεων πεδίου για τον τύπο συσκευής: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Εμφάνιση δεδομένων πεδίου για {PH1}"
+    "message": "Εμφάνιση μετρήσεων πεδίου για {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Μεταβείτε στην αλληλεπίδραση INP."
@@ -15033,13 +15045,13 @@
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι καλή, αλλά είναι σημαντικά καλύτερη από την εμπειρία των χρηστών σας."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι καλή."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι καλή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} χρειάζεται βελτίωση."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} χρειάζεται βελτίωση."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι κακή."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι καλή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι κακή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι καλή και είναι παρόμοια με την εμπειρία των χρηστών σας."
@@ -15054,13 +15066,13 @@
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} χρειάζεται βελτίωση, αλλά είναι σημαντικά καλύτερη από την εμπειρία των χρηστών σας."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι καλή."
+    "message": "Η τοπική τιμή {PH1} {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι καλή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} χρειάζεται βελτίωση."
+    "message": "Η τοπική τιμή {PH1} {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} χρειάζεται βελτίωση."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι κακή."
+    "message": "Η τοπική τιμή {PH1} {PH2} χρειάζεται βελτίωση και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι κακή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} χρειάζεται βελτίωση και είναι παρόμοια με την εμπειρία των χρηστών σας."
@@ -15075,13 +15087,13 @@
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι κακή, αλλά σημαντικά καλύτερη από την εμπειρία των χρηστών σας."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι καλή."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι καλή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} χρειάζεται βελτίωση."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Ωστόσο, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} χρειάζεται βελτίωση."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον, η τιμή {PH1} 75ου εκατοστημόριου των δεδομένων πεδίου ύψους {PH3} είναι κακή."
+    "message": "Η τοπική τιμή {PH1} {PH2} είναι κακή και αξιολογείται το ίδιο με το {PH4} των εμπειριών {PH1} πραγματικών χρηστών. Επιπλέον, η τιμή {PH1} 75ου εκατοστημόριου των μετρήσεων πεδίου {PH3} είναι κακή."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Η τοπική τιμή {PH1} ύψους {PH2} είναι κακή και παρόμοια με την εμπειρία των χρηστών σας."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Αλλαγή Εργαλείων για προγραμματιστές στα {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Εναλλαγή προσανατολισμού συρταριού"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Προσθήκη"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Στιγμιότυπο οθόνης για {PH1} - επιλέξτε για να δείτε τα προηγούμενα αιτήματα."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Διαγραφή σχολιασμών"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Διαμόρφωση καναλιών"

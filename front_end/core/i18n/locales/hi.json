@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "सीएसएस मीडिया टाइप को एम्युलेट न करें"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "ओएस के टेक्स्ट स्केल को एम्युलेट न करें"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ग्रिड लाइनों को आगे न बढ़ाएं"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "हरा रंग न देख पाने की समस्या को एम्युलेट करें"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "ओएस के टेक्स्ट स्केल को एम्युलेट करें"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "लाल रंग न देख पाने की समस्या को एम्युलेट करें"
@@ -732,7 +738,31 @@
     "message": "नेटवर्क के अनुरोध को ब्लॉक करने वाला टूल"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "कोई भी एम्युलेशन नहीं"
+    "message": "एम्युलेट न करें"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (डिफ़ॉल्ट)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
+    "message": "एम्युलेट न करें"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "अपवादों पर रुकें"
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "मीडिया टाइप को प्रिंट और स्क्रीन स्टाइल की जांच करने के लिए बाध्य करता है"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "इससे ओएस के टेक्स्ट स्केल को एम्युलेट करने की अनुमति मिलती है"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "देखने की क्षमता में कमी को एम्युलेट करने के लिए बाध्य करना"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "दराज टॉगल करें"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "ड्रॉवर ओरिएंटेशन को टॉगल करें"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "अलग विंडो में अनडॉक करें"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Resource requests whose URLs contained both removed whitespace \\(n|r|t) characters and less-than characters (<) are blocked. Please remove newlines and encode less-than characters from places like element attribute values in order to load these resources."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP वर्ण सेट की अपने-आप पहचान करने की सुविधा के इस्तेमाल पर रोक लगा दी गई. जल्द ही, इस सुविधा को बंद कर दिया जाएगा. कृपया कॉन्टेंट टाइप हेडर में वर्ण सेट की जानकारी दें या मेटा टैग (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding) का इस्तेमाल करें."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() is deprecated, instead use standardized API: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit नहीं हो पाया: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "फ़ील्ड डेटा को मौजूदा पेज के बजाय, किसी दूसरे यूआरएल के लिए कॉन्फ़िगर किया गया है."
+    "message": "फ़ील्ड मेट्रिक को मौजूदा पेज के बजाय, किसी दूसरे यूआरएल के लिए कॉन्फ़िगर किया गया है."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "डिवाइस पिक्सल का अनुपात कोई संख्या होनी चाहिए या खाली होना चाहिए."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "इस टाइप के तौर पर सेव करें…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "फ़ाइल को डिस्क में सेव नहीं किया जा सका."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "इमेज सेव करें"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "लेआउट शिफ़्ट की मुख्य वजहें"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "ऐसी इमेज जिनका साइज़ सेट नहीं किया गया है"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "सबसे खराब क्लस्टर"
@@ -1839,7 +1875,7 @@
     "message": "डॉक्यूमेंट के अनुरोध में रीडायरेक्ट करने वाले लिंक मौजूद थे ({PH1} रीडायरेक्ट, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "सर्वर धीरे काम कर रहा है ({PH1} तक इंतज़ार किया) "
+    "message": "सर्वर धीरे काम कर रहा है ({PH1} तक इंतज़ार किया)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "कोई कंप्रेस नहीं किया गया"
@@ -1848,7 +1884,7 @@
     "message": "डॉक्यूमेंट के अनुरोध में रीडायरेक्ट करने वाला कोई लिंक मौजूद नहीं था"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "सर्वर तुरंत जवाब देता है ({PH1} तक इंतज़ार किया) "
+    "message": "सर्वर तेज़ी से काम कर रहा है ({PH1} तक इंतज़ार किया)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "टेक्स्ट कंप्रेस कर दिया गया है"
@@ -2070,7 +2106,7 @@
     "message": "पेज लोड होने की प्रोसेस को बेहतर बनाने के लिए, [एक-दूसरे पर निर्भर रहने वाले ज़रूरी अनुरोधों की चेन न बनाएं](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains). इसके लिए चेन की लेंथ कम रखें और कम साइज़ वाले रिसॉर्स डाउनलोड करें. इसके अलावा, अनचाहे रिसॉर्स डाउनलोड न करें."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "सबसे अहम ऑरिजिन में, [पहले से कनेक्ट](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) होने के संकेत जोड़ें. हालांकि, चार से कम संकेत इस्तेमाल करने की कोशिश करें."
+    "message": "सबसे अहम वेबसाइटों में, [प्रीकनेक्ट](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) (पहले से लोड करने का निर्देश) करने के लिए संकेत जोड़ें. हालांकि, चार से ज़्यादा संकेत नहीं जोड़ें जा सकते."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "ऑरिजिन को पहले से कनेक्ट करें"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "अगर व्यूपोर्ट को मोबाइल के लिए ऑप्टिमाइज़ नहीं किया गया है, तो टैप इंटरैक्शन में [300 मि॰से॰ तक की देरी](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) हो सकती है."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "मोबाइल की स्क्रीन पर टैप करके कार्रवाई करने में देरी हुई"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "मोबाइल के लिए व्यूपोर्ट को ऑप्टिमाइज़ करें"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "इस सुविधा का इस्तेमाल करने के लिए DevTools की सेटिंग में जाकर, अपनी भाषा की सेटिंग को अंग्रेज़ी पर सेट करें."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "आपके पास बातचीत शुरू करने के लिए, ऊपर सुझाए गए प्रॉम्प्ट में से कोई प्रॉम्प्ट इस्तेमाल करने का विकल्प भी है"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools में एआई की सुविधा के बारे में जानें"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "छोटा करें"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "क्या आपको \"{PH1}\" ऑब्जेक्ट स्टोर मिटाना है?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "क्या आपको \"{PH1}\" डेटाबेस मिटाना है?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "कुंजी"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "चुने गए ऑब्जेक्ट स्टोर में मौजूद डेटा हटा दिया जाएगा."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ऑब्जेक्ट स्टोर"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "इस फ़्रेम की पहचान किसी विज्ञापन के मूल फ़्रेम के तौर पर की गई"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "रूट स्क्रिप्ट के फ़िल्टर की सूची का नियम"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "सुरक्षित कॉन्टेक्स्ट"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (स्रोत मैप से)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "बदलावों वाले टैब में, बाइनरी डेटा में किए गए बदलाव नहीं दिखते"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "इस पेज पर, DevTools पर कोड में किए गए बदलावों को ट्रैक किया जा सकता है."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "कॉपी करें"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "अब तक कोई बदलाव नहीं किया गया है"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "टेक्स्ट में कोई बदलाव नहीं हुआ है"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# कोड लाइन मिटाई गई (-)}one{# कोड लाइन मिटाई गई (-)}other{# कोड लाइन मिटाई गईं (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# इंसर्शन (+)}one{# इंसर्शन (+)}other{# इंसर्शन (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "क्लिपबोर्ड पर कॉपी किया गया"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "बदलाव"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "मौजूदा फ़ाइल में किए गए सभी बदलावों को कॉपी करें"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "मौजूदा फ़ाइल में सभी बदलाव वापस लाएं"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "बदलाव दिखाएं"
@@ -5715,7 +5745,7 @@
     "message": "सिर्फ़ मौजूदा कॉन्टेक्स्ट से मैसेज दिखाएं (top, iframe, worker, एक्सटेंशन)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "फ़िल्टर साइडबार से बदला गया"
+    "message": "लॉग लेवल को कंसोल साइडबार से कंट्रोल किया जाता है."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "लॉग बचाएं"
@@ -6612,16 +6642,16 @@
     "message": "देखने के लिए स्क्रोल करें"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "टारगेट के लिए निर्देश दिखाएं"
+    "message": "commandfor एट्रिब्यूट से जुड़ा एलिमेंट दिखाएं"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe का ब्यौरा देखें"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "दिलचस्पी के मुताबिक टारगेट दिखाएं"
+    "message": "interesttarget एट्रिब्यूट से जुड़ा एलिमेंट दिखाएं"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "पॉपओवर टारगेट दिखाएं"
+    "message": "popovertarget एट्रिब्यूट से जुड़ा एलिमेंट दिखाएं"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "इस फ़्रेम की पहचान एक विज्ञापन फ़्रेम के तौर पर की गई"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "स्टाइलशीट बनाई गई"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "सीएसएस में हुए सभी बदलावों को कॉपी करें"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "सभी एलान कॉपी करें"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "इंस्पेक्टर के ज़रिए"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "सीएसएस में हुए सभी बदलावों को कॉपी करें"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "सभी एलान को JS के तौर पर कॉपी करें"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "सुलभता"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ऑडिट करने के दौरान डेस्कटॉप एम्युलेशन लागू करें"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "मोबाइल एम्युलेशन लागू करें"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "पैकेट को फिर से क्रम में लगाना"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "प्रतिशत"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "प्रोफ़ाइल का नाम"
   },
@@ -8802,7 +8826,7 @@
     "message": "कोई कस्टम उपयोगकर्ता एजेंट डालें"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "नेटवर्क की स्थिति दिखाई गई है"
+    "message": "नेटवर्क की स्थिति दिखाई गई है."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "नेटवर्क थ्रॉटलिंग"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "रिमोट एड्रेस स्पेस"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "अनुरोध का हेडर"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "रिस्पॉन्स हेडर"
@@ -12057,7 +12084,7 @@
     "message": "स्थान-भाषा"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "लोकेशन"
+    "message": "जगह"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "जगह उपलब्ध नहीं है"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "इस टाइप के तौर पर सेव करें…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "फ़ाइल को डिस्क में सेव नहीं किया जा सका."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "बदलने के लिए फ़ोल्डर चुनें"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "वॉच एक्सप्रेशन रीफ़्रेश करें"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "वॉच एक्सप्रेशन मिटाया गया"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} ब्रेकपॉइंट हिट"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "ब्यौरा"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "डाइमेंशन"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "कुल समय"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "ज़्यादा जानें"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "लोकेशन"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "मैसेज"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (बच्चे)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "मिले हुए {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} में से {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "सीएसएस सिलेक्टर से मिलते-जुलते, ज़्यादा जानकारी वाले आंकड़े इकट्ठा करने के लिए, \"{PH1}\" को चुनें."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (सेल्फ़)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "स्क्रिप्ट"
@@ -14682,19 +14694,19 @@
     "message": "कॉन्फ़िगर करें"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "फ़ील्ड डेटा को फ़ेच करने की सुविधा कॉन्फ़िगर करें"
+    "message": "फ़ील्ड मेट्रिक फ़ेच करने की सुविधा कॉन्फ़िगर करें"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report में, इस पेज के लोड होने की स्पीड का रीयल-वर्ल्ड डेटा ज़रूरत के मुताबिक नहीं है."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "{PH1} से, इकट्ठा किया गया फ़ील्ड डेटा फ़ेच करें. इससे आपको साइट पर असल उपयोगकर्ता अनुभव के हिसाब से लोकल मेज़रमेंट को समझने में मदद मिलेगी."
+    "message": "{PH1} से, एग्रीगेट की गई फ़ील्ड मेट्रिक फ़ेच करें. इससे आपको यह समझने में मदद मिलेगी कि साइट पर असल उपयोगकर्ता का अनुभव कैसा होता है."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" कोई मान्य ऑरिजिन या यूआरएल नहीं है."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "डेवलपमेंट ऑरिजिन सेट करें, ताकि इसके प्रोडक्शन ऑरिजिन के लिए काम का फ़ील्ड डेटा अपने-आप मिल पाए."
+    "message": "डेवलपमेंट ऑरिजिन सेट करें, ताकि इसके प्रोडक्शन ऑरिजिन के लिए काम की फ़ील्ड मेट्रिक अपने-आप मिल पाए."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "नया"
@@ -14703,7 +14715,7 @@
     "message": "चालू करें"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "यहां दिए गए यूआरएल के लिए फ़ील्ड डेटा हमेशा दिखाएं"
+    "message": "यहां दिए गए यूआरएल के लिए फ़ील्ड मेट्रिक हमेशा दिखाएं"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ऑप्ट आउट करें"
@@ -14718,7 +14730,7 @@
     "message": "यूआरएल"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools खुले होने पर, आपके देखे गए यूआरएल Google को भेजे जाएंगे, ताकि फ़ील्ड डेटा के बारे में क्वेरी की जा सके. ये अनुरोध, आपके Google खाते से नहीं जुड़े होते."
+    "message": "DevTools खुले होने पर, आपके देखे गए यूआरएल Google को भेजे जाएंगे, ताकि फ़ील्ड मेट्रिक के बारे में क्वेरी की जा सके. ये अनुरोध, आपके Google खाते से नहीं जुड़े होते."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "स्क्रिप्ट के यूआरएल के लिए, रेगुलर एक्सप्रेशन का नियम जोड़ें"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "इंटरैक्शन और लेआउट शिफ़्ट लॉग का सेक्शन"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "फ़ील्ड डेटा"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "फ़ील्ड मेट्रिक"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "आईएनपी, इंटरैक्शन में होने वाली देरी के 98वें पर्सेंटाइल पर है."
@@ -14856,10 +14868,10 @@
     "message": "लोकल और फ़ील्ड मेट्रिक"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "लोकल और फ़ील्ड डेटा के बारे में ज़्यादा जानें"
+    "message": "लोकल और फ़ील्ड मेट्रिक के बारे में ज़्यादा जानें"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "लोकल मेट्रिक को मौजूदा पेज से कैप्चर किया गया है. इसके लिए, आपके इंटरनेट और डिवाइस का इस्तेमाल किया जाता है. फ़ील्ड डेटा को, अलग-अलग इंटरनेट और डिवाइसों का इस्तेमाल करने वाले असल उपयोगकर्ताओं के हिसाब से मापा गया है."
+    "message": "लोकल मेट्रिक को मौजूदा पेज से कैप्चर किया गया है. इसके लिए, आपके इंटरनेट और डिवाइस का इस्तेमाल किया गया है. फ़ील्ड मेट्रिक को, अलग-अलग इंटरनेट और डिवाइसों का इस्तेमाल करने वाले असल उपयोगकर्ताओं के हिसाब से मापा गया है."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "लोकल मेट्रिक"
@@ -14922,10 +14934,10 @@
     "message": "लेआउट शिफ़्ट के सबसे खराब क्लस्टर पर जाएं."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "इस डिवाइस के लिए फ़ील्ड डेटा दिखाएं: {PH1}"
+    "message": "इस डिवाइस टाइप के लिए फ़ील्ड मेट्रिक दिखाएं: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} के लिए फ़ील्ड डेटा दिखाएं"
+    "message": "{PH1} के लिए फ़ील्ड मेट्रिक दिखाएं"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "आईएनपी इंटरैक्शन पर जाएं."
@@ -15033,13 +15045,13 @@
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. यह आपके असल उपयोगकर्ता अनुभव से काफ़ी बेहतर है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. इसके अलावा, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह भी एक अच्छी वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. इसके अलावा, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह भी एक अच्छी वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक अच्छी वैल्यू है. यह आपके असल उपयोगकर्ता अनुभव से मिलती-जुलती है."
@@ -15054,13 +15066,13 @@
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. यह आपके असल उपयोगकर्ता अनुभव से काफ़ी अच्छी है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक अच्छी वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक अच्छी वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. साथ ही, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. साथ ही, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. इसे बेहतर बनाने की ज़रूरत है. यह आपके असल उपयोगकर्ता अनुभव की तरह है."
@@ -15075,13 +15087,13 @@
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. हालांकि, यह आपके असल उपयोगकर्ता अनुभव से काफ़ी बेहतर है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक अच्छी वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक अच्छी वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. हालांकि, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. इसे बेहतर बनाने की ज़रूरत है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. साथ ही, फ़ील्ड डेटा के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
+    "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. साथ ही, इसे {PH1} से जुड़े {PH4} असल उपयोगकर्ता अनुभव की तरह ही रेट किया गया है. साथ ही, फ़ील्ड मेट्रिक के आधार पर उपलब्ध {PH1} के 75वें पर्सेंटाइल की वैल्यू {PH3} है. यह एक खराब वैल्यू है."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "आपके लोकल {PH1} की वैल्यू {PH2} है. यह एक खराब वैल्यू है. यह आपके असल उपयोगकर्ता अनुभव से मिलती-जुलती है."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools को {PH1} पर स्विच करें"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "ड्रॉवर ओरिएंटेशन को टॉगल करें"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "जोड़ें"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} का स्क्रीनशॉट - पिछले अनुरोध देखने के लिए इसे चुनें."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "एनोटेशन मिटाएं"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ट्रैक कॉन्फ़िगर करें"

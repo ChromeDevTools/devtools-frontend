@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ikke emuler CSS-mediatype"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Ikke emuler OS-tekstskalering"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ikke utvid rutenettlinjer"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emuler grønnblindhet"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuler tekstskalering for OS"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emuler rødblindhet"
@@ -732,6 +738,30 @@
     "message": "Blokkering av nettverksforespørsler"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Ingen emulering"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100 % (standard)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Ingen emulering"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Tvinger medietype for testing av utskrifts- og skjermstiler"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Tvinger emulering av OS-tekststørrelse"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Tvinger emulering ved mangel på syn"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Vis eller skjul skuff"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Vis eller skjul uttrekksmenyen"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Løsne i separat vindu"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Ressursforespørsler med nettadresser som inneholdt både fjernede mellomromstegn (\\(n|r|t)) og mindre-enn-tegn (<), er blokkert. For å kunne laste inn disse ressursene, fjern linjeskift og gjør mindre-enn-tegn om til kode på steder som i attributtverdiene til elementer."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Automatisk gjenkjenning av ISO-2022-JP-tegnsettet er avviklet og blir deaktivert i nær fremtid. Angi tegnsettet i Content Type-hodet eller ved å bruke en metatag (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() er avviklet. Bruk heller det standardiserte API-et Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit mislyktes: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Feltdataene er konfigurert for en annen nettadresse enn den nåværende siden."
+    "message": "Feltberegningene er konfigurert for en annen nettadresse enn den nåværende siden."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Pikselforholdet for enhet må være et tall eller tomt."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Lagre som …"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Kunne ikke lagre filen på disken."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Lagre bilde"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "De vanligste årsakene til utseendeforskyvning"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Bilder uten størrelse"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Verste klynge"
@@ -1839,7 +1875,7 @@
     "message": "Hadde viderekoblinger ({PH1} viderekoblinger, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Tjeneren svarte tregt (observert {PH1}) "
+    "message": "Tjeneren svarte tregt (observert {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Ingen komprimering er brukt"
@@ -1848,7 +1884,7 @@
     "message": "Unngår viderekoblinger"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Tjeneren svarer raskt (observert {PH1}) "
+    "message": "Tjeneren svarer raskt (observert {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Bruker tekstkomprimering"
@@ -2070,7 +2106,7 @@
     "message": "[Unngå kjeding av kritiske forespørsler](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) ved å redusere lengden på kjedene, redusere nedlastingsstørrelsen på ressursene eller utsette nedlasting av unødvendige ressurser for å bedre sideinnlastingen."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Legg til hint om [forhåndstilkobling](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)-for de viktigste opphavsstedene dine, men prøv å bruke færre enn fire."
+    "message": "Legg til hint om [forhåndstilkobling](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) for de viktigste opphavsstedene dine, men prøv å bruke maksimalt fire."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Forhåndstilkoble kandidater"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Trykkeinteraksjoner kan [forsinkes med opptil 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) hvis det synlige området ikke er optimalisert for mobil."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Forsinkelse av trykk på mobil"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimaliser det synlige området for mobil"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "For å bruke denne funksjonen, sett foretrukket språk til engelsk i Utviklerverktøy-innstillingene."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Du kan også bruke en av de foreslåtte forespørslene over for å starte samtalen"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Finn ut mer om AI i Utviklerverktøy"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Skjul"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Vil du fjerne «{PH1}»-objektlageret?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Vil du slette databasen «{PH1}»?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Nøkkel"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Dataene i den valgte objektlageret fjernes."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektlagre"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Denne rammen er identifisert som rotrammen til en annonse"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Filterlisteregel for rotskript"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Sikker kontekst"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (fra kildekart)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Endringer-fanen viser ikke endringer i binære data"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "På denne siden kan du spore kodeendringer som er gjort i Utviklerverktøy."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopiér"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ingen endringer ennå"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Ingen tekst-diff er tilgjengelig"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# sletting (-)}other{# slettinger (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# insetting (+)}other{# innsettinger (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopiert til utklippstavlen"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Endringer"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopier alle endringer fra den gjeldende filen"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Gjør om alle endringer i gjeldende fil"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Vis endringer"
@@ -5715,7 +5745,7 @@
     "message": "Vis kun meldinger fra den nåværende konteksten (top, iframe, worker, utvidelse)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Overstyrt av filter-sidefelt"
+    "message": "Loggnivåer styres via sidefeltet i konsollen."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Ivareta loggen"
@@ -6612,16 +6642,16 @@
     "message": "Rull slik at innholdet blir synlig"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Vis kommandoen for målet"
+    "message": "Vis elementet som er tilknyttet commandfor-attributtet"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Vis iframe-detaljer"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Vis interessemål"
+    "message": "Vis elementet som er tilknyttet interesttarget-attributtet"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Vis mål for forgrunnsvindu"
+    "message": "Vis elementet som er tilknyttet popovertarget-attributtet"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denne rammen ble identifisert som en annonseramme"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "konstruert stilark"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopier alle CSS-endringer"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopier alle erklæringer"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "via inspektør"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopier alle CSS-endringer"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiér alle deklarasjoner som JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Tilgjengelighet"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Bruk datamaskinemulering under revisjon"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Bruk mobilemulering"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Omorganisering av pakker"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "prosent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profilnavn"
   },
@@ -8802,7 +8826,7 @@
     "message": "Oppgi en egendefinert brukeragent"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Nettverksbetingelsene vises"
+    "message": "Nettverksbetingelsene vises."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Struping av nettverkshastighet"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Område av eksterne adresser"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Forespørselshoder"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Svarhoder"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Lagre som …"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Kunne ikke lagre filen på disken."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Velg mappe for overstyringer"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Oppdater klokkeuttrykk"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Klokkeuttrykket er slettet"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1}-stoppunkttreff"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Detaljer"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Mål"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Varighet"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Finn ut mer"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Sted"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Melding"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (underordnet)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} innhentet"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} av {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Velg «{PH1}» for å samle inn detaljert treffstatistikk for CSS-velgere."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (egen)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skript"
@@ -14682,13 +14694,13 @@
     "message": "Konfigurer"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Konfigurer henting av feltdata"
+    "message": "Konfigurer henting av feltberegninger"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Brukeropplevelsesrapporten for Chrome har ikke nok virkelige hastighetsdata for denne siden."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Hent samlede feltdata fra {PH1} for å sette lokale målinger i sammenheng med virkelige brukeres opplevelser på nettstedet."
+    "message": "Hent samlede feltberegninger fra {PH1} for å sette lokale målinger i sammenheng med virkelige brukeres opplevelser på nettstedet."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "«{PH1}» er ikke et gyldig opphav eller en gyldig nettadresse."
@@ -14718,7 +14730,7 @@
     "message": "Nettadresse"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Når utviklerverktøyet er åpent, blir nettadressene du besøker, sendt til Google for søk i feltdata. Disse forespørslene knyttes ikke til Google-kontoen din."
+    "message": "Når utviklerverktøyet er åpent, sendes nettadressene du besøker til Google for søk i feltdata. Disse forespørslene knyttes ikke til Google-kontoen din."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Legg til en regel med regulært uttrykk for skriptets nettadresse"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Loggdel for interaksjoner og utseendeforskyvninger"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Feltdata"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Feltverdier"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Interaksjonen for INP (tid fra interaksjon til neste opptegning) er i 98. persentil for interaksjonsforsinkelser."
@@ -14856,10 +14868,10 @@
     "message": "Verdier lokalt og fra felten"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Finn ut mer om lokale data og feltdata"
+    "message": "Finn ut mer om lokale data og feltberegninger"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Lokal statistikk samles inn fra den gjeldende siden via nettverkstilkoblingen og enheten din. Feltdata måles av virkelige brukere med mange forskjellige nettverkstilkoblinger og enheter."
+    "message": "Lokal statistikk samles inn fra den gjeldende siden via nettverkstilkoblingen og enheten din. Feltstatistikk måles av virkelige brukere med mange forskjellige nettverkstilkoblinger og enheter."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Lokale verdier"
@@ -14922,10 +14934,10 @@
     "message": "Gå til den verste klyngen med utseendeforskyvning."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Vis feltdata for enhetstypen {PH1}"
+    "message": "Vis feltberegninger for enhetstypen: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Vis feltdata for {PH1}"
+    "message": "Vis feltberegninger for {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Gå til interaksjonen for INP (tid fra interaksjon til neste opptegning)."
@@ -15033,13 +15045,13 @@
     "message": "Den lokale {PH1}-verdien på {PH2} er god, men betydelig bedre enn opplevelsen som brukerne dine har."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltdataene i 75. persentil av {PH1}, {PH3}, gode."
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltberegningene i 75. persentil av {PH1}, {PH3}, gode."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. feltberegningene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
+    "message": "Den lokale {PH1}-verdien på {PH2} er god. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltberegningene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Den lokale {PH1}-verdien på {PH2} er god. Den ligner på opplevelsen som brukerne dine har."
@@ -15054,13 +15066,13 @@
     "message": "Den lokale {PH1}-verdien på {PH2} må forbedres, men er betydelig bedre enn opplevelsen som brukerne dine har."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltberegningene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg må feltdataene i 75. persentil av {PH1}, {PH3}, forbedres."
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg må feltberegningene i 75. persentil av {PH1}, {PH3}, forbedres."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
+    "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltberegningene i 75. persentil av {PH1}, {PH3}, er imidlertid dårlige."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Den lokale {PH1}-verdien på {PH2} må forbedres. Den ligner på opplevelsen som brukerne dine har."
@@ -15075,13 +15087,13 @@
     "message": "Den lokale {PH1}-verdien på {PH2} er dårlig, men betydelig bedre enn opplevelsen som brukerne dine har."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltberegningene i 75. persentil av {PH1}, {PH3}, er imidlertid gode."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. Feltdataene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. feltberegningene i 75. persentil av {PH1}, {PH3}, må imidlertid forbedres."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltdataene i 75. persentil av {PH1}, {PH3}, dårlige."
+    "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den har samme vurdering som {PH4} av {PH1}-opplevelsene til virkelige brukere. I tillegg er feltdataene i 75. persentil av {PH1}, {PH3}, dårlige."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Den lokale {PH1}-verdien på {PH2} er dårlig. Den ligner på opplevelsen som brukerne dine har."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Bytt til {PH1} for Utviklerverktøy"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Vis eller skjul uttrekksmenyen"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Legg til"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skjermbilde for {PH1} – velg for å vise foregående forespørsler."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Slett annoteringer"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurer spor"

@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS medya türü emülasyonu kullanılmasın"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "İşletim sistemi metin ölçeği emülasyonu kullanılmasın"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Kılavuz çizgileri uzatılmasın"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Yeşil körlüğü emülasyonu"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "İşletim sistemi metin ölçeği emülasyonu"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Kırmızı körlüğü emülasyonu"
@@ -732,6 +738,30 @@
     "message": "Ağ isteği engelleme"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Emülasyon yok"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "%100 (varsayılan)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "%115"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "%130"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "%150"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "%180"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "%200"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "%85"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Emülasyon yok"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Yazdırma ve ekran stillerinin test edilmesi için medya türünü zorunlu kılar"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "İşletim sistemi metin ölçeği emülasyonunu zorunlu kılar"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Görme bozukluğu emülasyonunu zorunlu kılar"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Çekmeceyi aç/kapat"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Çekmece yönünü değiştir"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Ayrı pencereye yerleştir"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "URL'lerinde hem kaldırılan boşluk \\(n|r|t) karakterleri hem küçüktür karakterleri (<) bulunan kaynak istekleri engellenir. Bu kaynakları yüklemek için lütfen yeni satırları kaldırıp öğe özellik değeri gibi yerlerdeki küçüktür karakterlerini kodlayın."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP karakter kümesinin otomatik algılanması kullanımdan kaldırılmıştır ve yakın zamanda devre dışı bırakılacak. Lütfen karakter kümesini İçerik Türü üstbilgisinde veya bir meta etiket kullanarak (https://developer.mozilla.org/tr/docs/Glossary/Character_encoding) belirtin."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() kullanımdan kaldırıldı. Onun yerine standart API: Navigation Timing 2'yi kullanın."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit başarısız oldu: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Alan verileri, mevcut sayfadan farklı bir URL için yapılandırılmış."
+    "message": "Alan metrikleri, mevcut sayfadan farklı bir URL için yapılandırılmış."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Cihaz piksel oranı bir sayı olmalı veya boş bırakılmalıdır."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Farklı kaydet…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Dosya diske kaydedilemedi."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Resmi kaydet"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Düzen kayması sorununun en önemli nedenleri"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Boyutu Belirlenmemiş Resimler"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "En kötü küme"
@@ -1839,7 +1875,7 @@
     "message": "Yönlendirmeler vardı ({PH1} yönlendirme, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Sunucu yavaş yanıt verdi ({PH1} gözlemlendi) "
+    "message": "Sunucu yavaş yanıt verdi ({PH1} gözlemlendi)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Sıkıştırma uygulanmadı"
@@ -1848,7 +1884,7 @@
     "message": "Yönlendirme içermiyor"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Sunucu hızlı yanıt veriyor ({PH1} gözlemlendi) "
+    "message": "Sunucu hızlı yanıt veriyor ({PH1} gözlemlendi)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Metin sıkıştırma uygulanır"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Görüntü alanı, mobil cihazlar için optimize edilmezse dokunma etkileşimleri [300 ms.ye kadar gecikebilir](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Mobil dokunma gecikmesi"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Görüntü alanını mobil cihazlar için optimize edin"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Bu özelliği kullanmak için Geliştirici Araçları Ayarları'nda dil tercihinizi İngilizce olarak ayarlayın."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Sohbet başlatmak için yukarıda önerilen istemlerden birini de kullanabilirsiniz"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Geliştirici Araçları'nda yapay zeka hakkında bilgi edinin"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Daralt"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" nesne deposu temizlensin mi?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" veritabanı silinsin mi?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Anahtar"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Seçilen nesne deposundaki veriler kaldırılır."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Nesne depoları"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Bu çerçevenin bir reklamın kök çerçevesi olduğu belirlendi"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Kök Komut Dosyası Filtre Listesi Kuralı"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Güvenli Bağlam"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (kaynak eşleşmesinden)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Değişiklikler sekmesinde ikili veri değişiklikleri gösterilmez"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Geliştirici Araçları'nda yapılan kod değişikliklerini bu sayfadan takip edebilirsiniz."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopyala"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Henüz değişiklik yok"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Metin karşılaştırması yapılamıyor"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# silme (-)}other{#silme (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# ekleme (+)}other{# ekleme (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Panoya kopyalandı"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Değişiklikler"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Mevcut dosyadaki tüm değişiklikleri kopyala"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Tüm değişiklikleri mevcut dosyaya döndür"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Değişiklikleri Göster"
@@ -5715,7 +5745,7 @@
     "message": "Yalnızca şu anki bağlamdan mesajları göster (top, iframe, worker, uzantı)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Filtre kenar çubuğu geçersiz kıldı"
+    "message": "Günlük seviyeleri, konsol kenar çubuğu tarafından kontrol edilir."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Günlüğü sakla"
@@ -6612,16 +6642,16 @@
     "message": "Görünüme kaydır"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Hedef için komutu göster"
+    "message": "commandfor özelliğiyle ilişkili öğeyi göster"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe ayrıntılarını göster"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Kullanıcıların ilgilerine dayalı hedefi göster"
+    "message": "interesttarget özelliğiyle ilişkili öğeyi göster"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Pop-up hedefini göster"
+    "message": "popovertarget özelliğiyle ilişkili öğeyi göster"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Bu çerçeve bir reklam çerçevesi olarak tanımlandı"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "oluşturulan stil sayfası"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Tüm CSS değişikliklerini kopyala"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Tüm tanımlamaları kopyala"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "denetleyici aracılığıyla"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Tüm CSS değişikliklerini kopyala"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Tüm tanımlamaları JS olarak kopyala"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Erişilebilirlik"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Denetleme sırasında masaüstü emülasyonunu uygula"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Mobil emülasyonu uygula"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Paketi Yeniden Sıralama"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "yüzde"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profil Adı"
   },
@@ -8802,7 +8826,7 @@
     "message": "Özel kullanıcı aracısı girin"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Ağ koşulları gösteriliyor"
+    "message": "Ağ koşulları gösteriliyor."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ağ sınırlama"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Uzak Adres Alanı"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "İstek Başlıkları"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Yanıt Üst Bilgileri"
@@ -12057,7 +12084,7 @@
     "message": "Yerel ayar"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "Yer"
+    "message": "Konum"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "Konum bilgisi mevcut değil"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Farklı kaydet…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Dosya diske kaydedilemedi."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Geçersiz kılmalar için klasör seçimi"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "İzlenen ifadeleri yenile"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "İzlenen ifade silindi"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} ayrılma noktası isabeti"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Ayrıntılar"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Boyutlar"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Süre"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Daha fazla bilgi"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Yer"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Mesaj"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (alt öğe)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} Teslim toplandı"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}/{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Ayrıntılı CSS seçici eşleşme istatistiklerini toplamak için \"{PH1}\" öğesini seçin."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (kendisi)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Komut dosyası"
@@ -14682,7 +14694,7 @@
     "message": "Yapılandır"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Alan verilerini getirme işlemini yapılandırın"
+    "message": "Alan metriklerini getirme işlemini yapılandırın"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report, bu sayfa için gerçek dünyadan yeterli miktarda hız verisine sahip değil."
@@ -14694,7 +14706,7 @@
     "message": "\"{PH1}\" geçerli bir kaynak veya URL değil."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Bir geliştirme kaynağı ayarlayarak üretim kaynağıyla alakalı alan verilerini otomatik olarak alabilirsiniz."
+    "message": "Bir geliştirme kaynağı ayarlayarak üretim kaynağıyla alakalı alan metriklerini otomatik olarak alabilirsiniz."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Yeni"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Geliştirici Araçları açıkken ziyaret ettiğiniz URL'ler, alan verilerini sorgulamak için Google'a gönderilir. Bu istekler Google Hesabınıza bağlanmaz."
+    "message": "Geliştirici Araçları açıkken ziyaret ettiğiniz URL'ler, alan metriklerini sorgulamak için Google'a gönderilir. Bu istekler Google Hesabınıza bağlanmaz."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Komut dosyasının URL'si için normal ifade kuralı ekleyin"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Etkileşim ve düzen kayması günlükleri bölümü"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Alan verileri"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Alan metrikleri"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP etkileşimi, etkileşim gecikmelerinin 98. yüzdelik diliminde yer alıyor."
@@ -14859,7 +14871,7 @@
     "message": "Yerel ve alan verileri hakkında daha fazla bilgi"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Yerel metrikler, ağ bağlantınız ve cihazınız kullanılarak geçerli sayfadan alınır. Alan verileri, birçok farklı ağ bağlantısı ve cihaz kullanan gerçek kullanıcılar tarafından ölçülür."
+    "message": "Yerel metrikler, ağ bağlantınız ve cihazınız kullanılarak mevcut sayfadan alınır. Alan metrikleri, birçok farklı ağ bağlantısı ve cihaz kullanan gerçek kullanıcılar tarafından ölçülür."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Yerel metrikler"
@@ -14922,10 +14934,10 @@
     "message": "En kötü düzen kayması kümesine gidin."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "{PH1} cihaz türü için alan verilerini göster"
+    "message": "{PH1} cihaz türü için alan metriklerini göster"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} ile ilgili alan verilerini göster"
+    "message": "{PH1} için alan metriklerini göster"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP etkileşimine gidin."
@@ -15036,10 +15048,10 @@
     "message": "Yerel {PH1} değeriniz ({PH2}) iyi durumda ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ayrıca alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) de iyi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Yerel {PH1} değeriniz ({PH2}) iyi durumda ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
+    "message": "Yerel {PH1} değeriniz ({PH2}) iyi durumda ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Yerel {PH1} değeriniz ({PH2}) iyi durumda ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) düşük."
+    "message": "Yerel {PH1} değeriniz ({PH2}) iyi durumda ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) düşük."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Yerel {PH1} değeriniz ({PH2}) iyi ve kullanıcılarınızın deneyimine benzer durumda."
@@ -15054,13 +15066,13 @@
     "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, kullanıcılarınızın deneyimine kıyasla önemli ölçüde daha iyi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) iyi."
+    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) iyi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ayrıca alan verilerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
+    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ayrıca alan metriklerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) düşük."
+    "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) düşük."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Yerel {PH1} değerinizin ({PH2}) iyileştirilmesi gerekiyor. Bu değer, kullanıcılarınızın deneyimine benzer durumda."
@@ -15075,13 +15087,13 @@
     "message": "Yerel {PH1} değeriniz ({PH2}) düşük ancak kullanıcılarınızın deneyimine kıyasla önemli ölçüde daha iyi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) iyi."
+    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) iyi."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan verilerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
+    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ancak alan metriklerinin 75. yüzdelik dilimine ait {PH1} değerinin ({PH3}) iyileştirilmesi gerekiyor."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ayrıca alan verilerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) de düşük."
+    "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve gerçek kullanıcıların {PH1} deneyimlerinin {PH4} kadarıyla aynı hıza sahip. Ayrıca alan metriklerinin 75. yüzdelik dilimine ait {PH1} değeri ({PH3}) de düşük."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Yerel {PH1} değeriniz ({PH2}) düşük ve kullanıcılarınızın deneyimine benzer durumda."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools araçlarının dilini {PH1} yap"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Çekmece yönünü değiştir"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Ekle"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} ekran görüntüsü: Önceki istekleri görüntülemek için seçin."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Ek açıklamaları sil"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Kanalları yapılandır"

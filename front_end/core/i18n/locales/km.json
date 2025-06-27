@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "កុំត្រាប់តាម​ប្រភេទមេឌៀ CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "កុំត្រាប់តាម​សមាមាត្រ​អក្សរ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "កុំពង្រីក​បន្ទាត់​ក្រឡា"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ត្រាប់តាមការមើលមិនឃើញពណ៌បៃតង (គ្មានពណ៌បៃតង)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "ត្រាប់តាម​សមាមាត្រ​អក្សរ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ត្រាប់តាមការមើល​មិនឃើញ​ពណ៌ក្រហម (គ្មានពណ៌ក្រហម)"
@@ -732,6 +738,30 @@
     "message": "ការទប់ស្កាត់សំណើសុំភ្ជាប់បណ្ដាញ"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "គ្មាន​ការត្រាប់តាម​ទេ"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (លំនាំដើម)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "គ្មាន​ការត្រាប់តាម​ទេ"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "បង្ខំ​ប្រភេទ​មេឌៀ​សម្រាប់​ធ្វើតេស្ត​រចនាប័ទ្ម​អេក្រង់ និង​ការបោះពុម្ព"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "បង្ខំ​ការត្រាប់តាម​សមាមាត្រ​អក្សរ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "បង្ខំ​ការត្រាប់តាម​ការមើល​មិនច្បាស់"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "បិទ/បើក​ថត"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "បិទ/បើក​ទិស​ថត"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "ផ្ដាច់​ទៅជា​វិនដូ​ដាច់ដោយឡែក"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "សំណើធនធានដែល URL របស់​ពួកវា​មាន​តួ​អក្សរ \\(n|r|t) ​ចន្លោះ​ទទេ​ដែល​បាន​ដក​ចេញ និងតួ​អក្សរ​តូចជាង (<) ត្រូវបានទប់ស្កាត់។ សូមដកជួរថ្មី​ចេញ និង​បំប្លែងកូដ​នៃ​តួ​អក្សរ​តូចជាង​ពីកន្លែងដូចជាតម្លៃលក្ខណៈធាតុ ដើម្បីផ្ទុកធនធានទាំងនេះ។"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ការរកឃើញ​សំណុំ​តួអក្សរ ISO-2022-JP ដោយ​ស្វ័យប្រវត្តិ​ត្រូវបាន​បញ្ឈប់ ហើយវា​នឹងត្រូវបានបិទ​នាពេល​ខាងមុខ​ឆាប់ៗនេះ។ សូម​បញ្ជាក់​សំណុំ​តួអក្សរ​នៅក្នុង​ផ្នែកក្បាល​ប្រភេទ​ខ្លឹមសារ ឬ​ដោយប្រើ​ស្លាក​មេតា (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)។"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() ត្រូវបានបញ្ឈប់ ហើយ​ប្រើ API ស្តង់ដារ​ជំនួស​វិញ៖ Navigation Timing 2។"
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit មិនបាន​សម្រេច៖ {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ទិន្នន័យ​ពីអ្នក​ប្រើប្រាស់ពិត​ត្រូវបាន​កំណត់​រចនាសម្ព័ន្ធ​សម្រាប់ URL ផ្សេងពី​ទំព័រ​បច្ចុប្បន្ន។"
+    "message": "មេទ្រិក​ពីអ្នក​ប្រើប្រាស់ពិត​ត្រូវបាន​កំណត់​រចនាសម្ព័ន្ធ​សម្រាប់ URL ផ្សេងពី​ទំព័រ​បច្ចុប្បន្ន។"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "សមាមាត្រ​ភីកសែល​ឧបករណ៍​ត្រូវតែជា​លេខ ឬទទេ​។"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "រក្សាទុក​ជា…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "មិនអាច​រក្សាទុក​ឯកសារទៅ​ថាស​បានទេ។"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "រក្សាទុករូបភាព"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "ដើមហេតុ​ចម្បង​នៃការប្ដូរ​ប្លង់"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "រូបភាព​ដែលមិនបាន​កំណត់ទំហំ"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "បណ្ដុំ​អន់បំផុត"
@@ -1839,7 +1875,7 @@
     "message": "មាន​ការបញ្ជូន​បន្ត (ការបញ្ជូន​បន្ត {PH1}, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "ម៉ាស៊ីនមេ​បាន​ឆ្លើយតប​យឺត (បាន​សង្កេត​មើល {PH1}) "
+    "message": "ម៉ាស៊ីនមេ​បាន​ឆ្លើយតប​យ៉ាងយឺត (បើតាមការ​សង្កេត {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "មិនបានធ្វើការបង្ហាប់ទេ"
@@ -1848,7 +1884,7 @@
     "message": "ជៀសវាងការបញ្ជូនបន្ត"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "ម៉ាស៊ីនមេ​ឆ្លើយតប​យ៉ាងរហ័ស (បានសង្កេត​មើល {PH1}) "
+    "message": "ម៉ាស៊ីនមេ​ឆ្លើយតប​យ៉ាងរហ័ស (បើតាមការសង្កេត {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "អនុវត្តការបង្ហាប់អក្សរ"
@@ -2070,7 +2106,7 @@
     "message": "[ជៀសវាងភ្ជាប់សំណើសំខាន់ៗ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)ដោយកាត់បន្ថយប្រវែងតំណភ្ជាប់ កាត់បន្ថយទំហំទាញយកនៃធនធាន ឬពន្យារពេលទាញយកធនធានដែលមិនចាំបាច់ ដើម្បីធ្វើឱ្យការផ្ទុកទំព័រប្រសើរឡើង។"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "បញ្ចូល​តម្រុយ[ភ្ជាប់​ជាមុន](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ទៅ​ប្រភពដើម​សំខាន់ៗ​បំផុត​របស់អ្នក ប៉ុន្តែ​សូមព្យាយាម​ប្រើតិចជាង 4។"
+    "message": "បញ្ចូល​តម្រុយ[ភ្ជាប់​ជាមុន](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ទៅ​ប្រភពដើម​សំខាន់ៗ​បំផុត​របស់អ្នក ប៉ុន្តែ​សូមព្យាយាម​ប្រើកុំឱ្យ​លើសពី 4។"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "ជម្រើស​ភ្ជាប់​ជាមុន"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "អន្តរកម្ម​ដោយ​ការចុច​អាចត្រូវបាន[ពន្យារពេល​រហូតដល់ 300 មិល្លីវិនាទី](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ប្រសិនបើ​ផ្ទាំងមើលឃើញ​មិនត្រូវបាន​បង្កើន​ប្រសិទ្ធភាព​សម្រាប់​ឧបករណ៍​ចល័តទេ។"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "ការពន្យារ​ពេលចុចលើ​ឧបករណ៍​ចល័ត"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "បង្កើន​ប្រសិទ្ធភាព​ផ្ទាំងមើលឃើញ​សម្រាប់​ឧបករណ៍​ចល័ត"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ដើម្បីប្រើ​មុខងារនេះ សូម​កំណត់​ចំណូលចិត្ត​ភាសា​របស់អ្នក​ទៅភាសា​អង់គ្លេស​នៅក្នុងការកំណត់​ឧបករណ៍អ្នកអភិវឌ្ឍន៍។"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "អ្នក​ក៏អាចប្រើ​សារតម្រុយ​មួយ​ដែលបាន​ណែនាំ​ខាងលើ ដើម្បី​ចាប់ផ្ដើម​ការសន្ទនា​របស់អ្នក​ផងដែរ"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ស្វែងយល់​អំពី AI នៅក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "បង្រួម"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "សម្អាត​កន្លែង​ផ្ទុកវត្ថុ \"{PH1}\" ឬ?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "លុប​មូលដ្ឋាន​ទិន្នន័យ \"{PH1}\" ឬ?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "សោ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "ទិន្នន័យ​ដែលមាន​នៅក្នុង​កន្លែង​ផ្ទុកវត្ថុ​ដែលបាន​ជ្រើសរើស នឹងត្រូវបាន​ដកចេញ។"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "កន្លែងផ្ទុកវត្ថុ"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ស៊ុមនេះត្រូវបានសម្គាល់ថាជាស៊ុមដើមនៃការផ្សាយពាណិជ្ជកម្ម"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "វិធាន​បញ្ជីតម្រង​ស្គ្រីប​គោល"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "បរិបទដែលមានសុវត្ថិភាព"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ពីផែនទី​ប្រភព)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "ផ្ទាំង​នៃការផ្លាស់ប្ដូរ​មិនបង្ហាញ​ការផ្លាស់ប្ដូរ​ទិន្នន័យ​គោលពីរទេ"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "នៅលើ​ទំព័រនេះ អ្នកអាច​តាមដាន​ការផ្លាស់ប្ដូរកូដ​ដែលបាន​ធ្វើឡើង​នៅក្នុង​ឧបករណ៍អ្នកអភិវឌ្ឍន៍។"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "ចម្លង"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "មិនទាន់មាន​ការផ្លាស់ប្ដូរទេ"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "គ្មាន​ភាពខុសគ្នា​នៃអក្សរទេ"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{ការលុប # (-)}other{ការលុប # (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{ការ​បញ្ចូល # (+)}other{ការ​បញ្ចូល # (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "បាន​ចម្លង​ទៅ​ឃ្លីបបត"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "ការផ្លាស់ប្ដូរ"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "ចម្លង​ការផ្លាស់ប្ដូរទាំងអស់​ពីឯកសារបច្ចុប្បន្ន"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "ត្រឡប់​ការផ្លាស់ប្ដូរ​ទាំងអស់​ទៅ​ឯកសារ​បច្ចុប្បន្នវិញ"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "បង្ហាញ​ការផ្លាស់ប្ដូរ"
@@ -5715,7 +5745,7 @@
     "message": "បង្ហាញសារពី​បរិបទបច្ចុប្បន្ន​តែប៉ុណ្ណោះ (top, iframe, worker, កម្មវិធីបន្ថែម)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "បានលុបពីលើដោយរបារចំហៀងរបស់តម្រង"
+    "message": "កម្រិត​កំណត់​ហេតុ​ត្រូវបាន​គ្រប់គ្រងដោយ​របារចំហៀង​នៃកុងសូល។"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "រក្សាទុក​កំណត់ហេតុ"
@@ -6612,16 +6642,16 @@
     "message": "រំកិល​រហូតដល់​មើលឃើញ"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "បង្ហាញ​ឃ្លាបញ្ជា​សម្រាប់​គោលដៅ"
+    "message": "បង្ហាញ​ធាតុ​ដែលបានភ្ជាប់​ជាមួយ​លក្ខណៈ commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "បង្ហាញ​ព័ត៌មាន​លម្អិតអំពី iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "បង្ហាញ​គោលដៅ​ចំណាប់​អារម្មណ៍"
+    "message": "បង្ហាញ​ធាតុ​ដែលបានភ្ជាប់​ជាមួយ​លក្ខណៈ interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "បង្ហាញគោលដៅផ្ទាំងផុសពីលើ"
+    "message": "បង្ហាញ​ធាតុ​ដែលបានភ្ជាប់​ជាមួយ​លក្ខណៈ popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ស៊ុមនេះ​ត្រូវបានសម្គាល់ថាជា​ស៊ុម​នៃការផ្សាយ​ពាណិជ្ជកម្ម"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "បញ្ជី​រចនាប័ទ្ម​ដែលបាន​បង្កើត"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "ចម្លងការផ្លាស់ប្ដូរ CSS ទាំងអស់"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "ចម្លង​សេចក្ដី​ប្រកាស​ទាំងអស់"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "តាមរយៈ​កម្មវិធី​ត្រួតពិនិត្យ"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "ចម្លងការផ្លាស់ប្ដូរ CSS ទាំងអស់"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ចម្លង​សេចក្ដីប្រកាស​ទាំងអស់ជា JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ភាពងាយស្រួល"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ប្រើ​ការត្រាប់តាម​កុំព្យូទ័រ ក្នុងអំឡុងពេល​ត្រួតពិនិត្យ"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "ប្រើ​ការត្រាប់តាម​ឧបករណ៍ចល័ត"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "ការតម្រៀប​កញ្ចប់​ឡើងវិញ"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "ភាគរយ"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "ឈ្មោះកម្រងព័ត៌មាន"
   },
@@ -8802,7 +8826,7 @@
     "message": "បញ្ចូលភ្នាក់ងារ​អ្នកប្រើប្រាស់​ផ្ទាល់ខ្លួន"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "លក្ខខណ្ឌបណ្ដាញដែលបង្ហាញ"
+    "message": "បានបង្ហាញ​លក្ខខណ្ឌ​បណ្ដាញ។"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ការពន្យឺត​បណ្ដាញ"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "ចន្លោះអាសយដ្ឋានពីចម្ងាយ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "ផ្នែកក្បាល​សំណើ"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ផ្នែកក្បាលនៃការឆ្លើយតប"
@@ -9978,7 +10005,7 @@
     "message": "អាសយដ្ឋាន​ពីចម្ងាយ"
   },
   "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "ស្នើ​ផ្នែកក្បាល"
+    "message": "ផ្នែក​ក្បាល​នៃ​សំណើ"
   },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "វិធី​ស្នើ"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "រក្សាទុក​ជា…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "មិនអាច​រក្សាទុក​ឯកសារទៅ​ថាស​បានទេ។"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ជ្រើសរើស​ថត​សម្រាប់​ការលុបពីលើ"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ផ្ទុក​កន្សោម​នៃការមើល​ឡើងវិញ"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "បានលុបកន្សោម​ដែលមើល"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "ការឈានដល់ចំណុចផ្អាក {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "ព័ត៌មាន​លម្អិត"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "វិមាត្រ"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "រយៈពេល"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "ស្វែងយល់បន្ថែម"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "ទីតាំង"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "សារ"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ផ្នែកកូន)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "បានប្រមូល {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} នៃ {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}៖ {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "ជ្រើសរើស \"{PH1}\" ដើម្បីប្រមូលស្ថិតិលម្អិតអំពីការផ្គូផ្គងផ្ទាំងជ្រើសរើស CSS។"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ផ្ទាល់ខ្លួន)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "ស្គ្រីប"
@@ -14682,19 +14694,19 @@
     "message": "កំណត់រចនាសម្ព័ន្ធ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "កំណត់រចនាសម្ព័ន្ធនៃការទាញយកទិន្នន័យពីអ្នកប្រើប្រាស់ពិត"
+    "message": "កំណត់​រចនាសម្ព័ន្ធ​ការទាញយក​មេទ្រិក​ពីអ្នកប្រើប្រាស់​ពិត"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report មិនមានទិន្នន័យល្បឿនពិតជាក់ស្ដែងគ្រប់គ្រាន់សម្រាប់ទំព័រនេះទេ។"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "ទាញយក​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិតដែលបាន​ច្របាច់​បញ្ចូលគ្នាពី {PH1} ដើម្បីជួយអ្នក​ក្នុងការសិក្សាបរិបទនៃ​ការវាស់វែង​ក្នុងមូលដ្ឋាន​ដោយផ្សារ​ភ្ជាប់ជាមួយនឹង​បទពិសោធដែល​អ្នកប្រើប្រាស់​ពិត​ទទួលបាន​នៅលើ​គេហទំព័រ។"
+    "message": "ទាញយក​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិតដែលបាន​ច្របាច់​បញ្ចូលគ្នាពី {PH1} ដើម្បីជួយអ្នក​ក្នុងការសិក្សាបរិបទនៃ​ការវាស់វែង​ក្នុងមូលដ្ឋាន​ដោយផ្សារ​ភ្ជាប់ជាមួយនឹង​បទពិសោធដែល​អ្នកប្រើប្រាស់​ពិត​ទទួលបាន​នៅលើ​គេហទំព័រ។"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" មិនមែនជា​ប្រភពដើម ឬ URL ដែល​ត្រឹមត្រូវទេ។"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "កំណត់​ប្រភពដើម​នៃការអភិវឌ្ឍ ដើម្បី​ទទួលបាន​ទិន្នន័យ​ពីអ្នក​ប្រើប្រាស់ពិត​ដែលពាក់ព័ន្ធ​ដោយស្វ័យប្រវត្តិ​សម្រាប់​ប្រភពដើម​នៃផលិតកម្ម​របស់វា។"
+    "message": "កំណត់​ប្រភពដើម​នៃការអភិវឌ្ឍ ដើម្បី​ទទួលបាន​មេទ្រិក​ពីអ្នក​ប្រើប្រាស់ពិត​ដែលពាក់ព័ន្ធ​ដោយស្វ័យប្រវត្តិ​សម្រាប់​ប្រភពដើម​នៃផលិតកម្ម​របស់វា។"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "ថ្មី"
@@ -14703,7 +14715,7 @@
     "message": "យល់ព្រម"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "បង្ហាញ​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិតសម្រាប់ URL ខាងក្រោម​ជានិច្ច"
+    "message": "បង្ហាញ​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិតសម្រាប់ URL ខាងក្រោម​ជានិច្ច"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ផ្ដាច់ចេញ"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "នៅពេលបើកឧបករណ៍អ្នកអភិវឌ្ឍន៍ URL ដែលអ្នកចូលមើលនឹងត្រូវបានបញ្ជូនទៅ Google ដើម្បីសួររកទិន្នន័យពីអ្នកប្រើប្រាស់ពិត។ សំណើទាំងនេះមិនត្រូវបានភ្ជាប់ជាមួយគណនី Google របស់អ្នកទេ។"
+    "message": "នៅពេលបើក​ឧបករណ៍អ្នកអភិវឌ្ឍន៍ URL ដែលអ្នក​ចូលមើល​នឹងត្រូវបាន​បញ្ជូនទៅ Google ដើម្បី​សួររក​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត។ សំណើទាំងនេះមិនត្រូវបានភ្ជាប់ជាមួយគណនី Google របស់អ្នកទេ។"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "បញ្ចូល​វិធាន​កន្សោម​ធម្មតា​សម្រាប់ URL របស់​ស្គ្រីប"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ផ្នែកកំណត់ហេតុនៃការប្ដូរប្លង់ និងអន្តរកម្ម"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ទិន្នន័យ​ពីអ្នក​ប្រើប្រាស់ពិត"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "មេទ្រិក​ពីអ្នកប្រើប្រាស់​ពិត"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "អន្តរកម្ម INP គឺជា​ចំណុច​សតភាគទី 98 នៃ​ការពន្យារពេល​អន្តរកម្ម។"
@@ -14856,10 +14868,10 @@
     "message": "មេទ្រិក​មូលដ្ឋាន និង​ពីអ្នកប្រើប្រាស់​ពិត"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "ស្វែងយល់​បន្ថែម​អំពី​ទិន្នន័យ​ពីអ្នកប្រើ​ប្រាស់ពិត និង​ទិន្នន័យ​មូលដ្ឋាន"
+    "message": "ស្វែងយល់​បន្ថែម​អំពី​មេទ្រិក​មូលដ្ឋាន និង​មេទ្រិកពីអ្នកប្រើប្រាស់​ពិត"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "មេទ្រិក​មូលដ្ឋាន​ត្រូវបានចាប់យកពី​ទំព័រ​បច្ចុប្បន្ន​ដោយប្រើ​ឧបករណ៍ និង​ការតភ្ជាប់បណ្ដាញ​របស់អ្នក។ ទិន្នន័យ​ពីអ្នក​ប្រើប្រាស់ពិត​ត្រូវបាន​វាស់វែង​ដោយ​អ្នកប្រើប្រាស់ពិត​ដោយប្រើ​ឧបករណ៍ និង​ការតភ្ជាប់​បណ្ដាញ​ខុសៗគ្នា​ជាច្រើន។"
+    "message": "មេទ្រិក​មូលដ្ឋាន​ត្រូវបាន​ចាប់យកពី​ទំព័រ​បច្ចុប្បន្ន​ដោយប្រើ​ឧបករណ៍ និង​ការតភ្ជាប់បណ្ដាញ​របស់អ្នក។ មេទ្រិក​ពីអ្នកប្រើប្រាស់ពិត​ត្រូវបាន​វាស់ដោយ​អ្នកប្រើប្រាស់​ពិត​ដោយប្រើ​ឧបករណ៍ និង​ការតភ្ជាប់បណ្ដាញ​ជាច្រើន​ផ្សេងៗគ្នា។"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "មេទ្រិក​មូលដ្ឋាន"
@@ -14922,10 +14934,10 @@
     "message": "ទៅ​កាន់​បណ្ដុំនៃការប្ដូរប្លង់អន់បំផុត។"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "បង្ហាញ​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត​សម្រាប់​ប្រភេទ​ឧបករណ៍៖ {PH1}"
+    "message": "បង្ហាញ​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត​សម្រាប់​ប្រភេទ​ឧបករណ៍៖ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "បង្ហាញ​ទិន្នន័យ​ពីអ្នក​ប្រើប្រាស់ពិត​សម្រាប់ {PH1}"
+    "message": "បង្ហាញ​មេទ្រិក​ពីអ្នក​ប្រើប្រាស់ពិត​សម្រាប់ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "ចូល​ទៅកាន់​អន្តរកម្ម INP។"
@@ -15033,13 +15045,13 @@
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ ប៉ុន្តែល្អប្រសើរជាងបទ​ពិសោធអ្នកប្រើប្រាស់របស់អ្នកយ៉ាងខ្លាំង។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺល្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺល្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺល្អ និង​ស្រដៀងនឹង​បទពិសោធ​អ្នកប្រើប្រាស់​របស់អ្នក។"
@@ -15054,13 +15066,13 @@
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ ប៉ុន្តែល្អប្រសើរជាងបទ​ពិសោធអ្នកប្រើប្រាស់របស់អ្នកយ៉ាងខ្លាំង។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់ពិត {PH3} គឺល្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់ពិត {PH3} គឺល្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋានរបស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} ត្រូវការ​ការកែលម្អ និង​ស្រដៀងនឹង​បទពិសោធ​អ្នកប្រើប្រាស់​របស់អ្នក។"
@@ -15075,13 +15087,13 @@
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ ប៉ុន្តែល្អប្រសើរជាងបទ​ពិសោធអ្នកប្រើប្រាស់របស់អ្នកយ៉ាងខ្លាំង។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់ពិត {PH3} គឺល្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់ពិត {PH3} គឺល្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណាក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ ទោះយ៉ាងណា​ក៏ដោយ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} ត្រូវការ​ការកែលម្អ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​ទិន្នន័យពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
+    "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ទទួលបាន​ការវាយតម្លៃ​ដូចគ្នានឹង {PH4} នៃបទពិសោធ​ប្រើប្រាស់ {PH1} របស់​អ្នកប្រើប្រាស់​ពិត។ លើស​ពីនេះ តម្លៃ {PH1} នៃចំណុច​សតភាគទី 75 របស់​មេទ្រិកពី​អ្នកប្រើប្រាស់​ពិត {PH3} គឺខ្សោយ។"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "តម្លៃ {PH1} មូលដ្ឋាន​របស់អ្នក {PH2} គឺខ្សោយ និង​ស្រដៀងនឹង​បទពិសោធ​អ្នកប្រើប្រាស់​របស់អ្នក។"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "ប្ដូរ DevTools ទៅ {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "បិទ/បើក​ទិស​ថត"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "បញ្ចូល"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "រូបថតអេក្រង់​សម្រាប់ {PH1} - ជ្រើសរើស ដើម្បីមើលសំណើមុន។"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "លុប​ចំណារ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "កំណត់​រចនាសម្ព័ន្ធ​សំឡេង"

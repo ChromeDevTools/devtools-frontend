@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS මාධ්‍ය වර්ගය අනුකරණය නොකරන්න"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS පෙළ පරිමාණය අනුකරණය නොකරන්න"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ජාල රේඛා දිගු නොකරන්න"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ඩියුටරනෝපියාව අනුකරණය කරන්න (කොළ නැත)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS පෙළ පරිමාණය අනුකරණය කරන්න"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ප්‍රෝටනෝපියාව අනුකරණය කරන්න (රතු නැත)"
@@ -732,6 +738,30 @@
     "message": "ජාල ඉල්ලීම අවහිර කිරීම"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "අනුකරණයක් නැත"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (පෙරනිමි)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "අනුකරණයක් නැත"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "මුද්‍රණ සහ තිර මෝස්තර පරීක්ෂා කිරීම සඳහා මාධ්‍ය වර්ගයට බල කරයි"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS පෙළ පරිමාණ අනුකරණය බල කරයි"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "දෘශ්‍ය ඌනතා අනුකරණයට බල කරයි"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "ලාච්චුව ටොගල් කරන්න"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "ලාච්චු දිශානතිය ටොගල් කරන්න"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "වෙනම කවුළුවකට නොඈඳන්න"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "ඉවත් කරන ලද හිස්ඉඩ \\(n|r|t) අනුලකුණු සහ අනුලකුණුවලට වඩා අඩු (<) යන දෙකම අඩංගු URL ඉල්ලන සම්පත් අවහිර කර ඇත. කරුණාකර මෙම සම්පත් පූරණය කිරීම සඳහා මූලාංග උපලක්ෂණ අගයන් වැනි ස්ථානවලින් නව පේළි ඉවත් කර අනුලකුණුවලට වඩා අඩු ඒවා කේතනය කරන්න."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP අනුලකුණු කට්ටලයේ ස්වයං අනාවරණය අත්හරින ලද අතර නුදුරු අනාගතයේ දී එය අබල කරනු ලැබේ. අන්තර්ගත වර්ග ශීර්ෂයේ හෝ මෙටා ටැගයක් භාවිතයෙන් (https://developer.mozilla.org/si-LK/docs/Glossary/Character_encoding) අනුලකුණු කට්ටලය සඳහන් කරන්න."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() අත්හැර ඇත, ඒ වෙනුවට ප්‍රමිතිගත API භාවිත කරන්න: සංචාලන වේලාව 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit අසාර්ථක විය: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ක්ෂේත්‍ර දත්ත වත්මන් පිටුවට වඩා වෙනස් URL එකක් සඳහා වින්‍යාස කර ඇත."
+    "message": "ක්ෂේත්‍ර මිතික වත්මන් පිටුවට වඩා වෙනස් URL එකක් සඳහා වින්‍යාස කර ඇත."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "උපාංග පික්සල අනුපාතය අංකයක් හෝ හිස් විය යුතුය."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "ලෙස සුරකින්න…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ගොනුව තැටියට සුරැකීමට නොහැකි විය."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "රූපය සුරකින්න"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "ඉහළ පිරිසැලසුම් මාරු වැරදිකරුවන්"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "ප්‍රමාණ නොකළ රූප"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "නරකම පොකුරක්"
@@ -1839,7 +1875,7 @@
     "message": "යළි-යොමුවීම් තිබුණා (යළි-යොමුවීම් {PH1}, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "සේවාදායකයා සෙමින් ප්‍රතිචාර දැක්වීය (නිරීක්ෂණය කරන ලදි {PH1}) "
+    "message": "සේවාදායකයා සෙමින් ප්‍රතිචාර දැක්වීය (නිරීක්ෂණය කරන ලදි {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "කිසිදු සම්පීඩනයක් යොදවා නැත"
@@ -1848,7 +1884,7 @@
     "message": "යළි-යොමුවීම් වළක්වයි"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "සේවාදායකය ඉක්මනින් ප්‍රතිචාර දක්වයි (නිරීක්ෂණය කරන ලදි {PH1}) "
+    "message": "සේවාදායකය ඉක්මනින් ප්‍රතිචාර දක්වයි (නිරීක්ෂණය කරන ලදි {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "පෙළ සම්පීඩනය යොදයි"
@@ -2070,7 +2106,7 @@
     "message": "පිටු පූරණ වීම වැඩි දියුණු කිරීම සඳහා දාමවල දිග අඩු කිරීම, සම්පත් බාගැනීම් ප්‍රමාණය අඩු කිරීම හෝ අනවශ්‍ය සම්පත් බාගැනීම කල් දැමීම මඟින් [තීරණාත්මක ඉල්ලීම් දාමගත කිරීමෙන් වළකින්න](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "ඔබේ වඩාත්ම වැදගත් මූලාරම්භයන්ට [පූර්ව සම්බන්ධතා](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ඉඟි එක් කරන්න, නමුත් 4ට වඩා අඩුවෙන් භාවිතා කිරීමට උත්සාහ කරන්න."
+    "message": "ඔබේ වඩාත්ම වැදගත් මූලාරම්භයන්ට [පූර්ව සම්බන්ධතා](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ඉඟි එක් කරන්න, නමුත් 4ට වඩා භාවිතා නොකිරීමට උත්සාහ කරන්න."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "අපේක්ෂකයින් පූර්ව සම්බන්ධ කරන්න"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "viewport ජංගම දුරකථන සඳහා ප්‍රශස්ත කර නොමැති නම්, තට්ටු අන්තර්ක්‍රියා [300 ms දක්වා ප්‍රමාද විය](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) හැක."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "ජංගම තට්ටු ප්‍රමාදය"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "ජංගමය සඳහා බැලීම් පෝටය ප්‍රශස්ත කරන්න"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "මෙම විශේෂාංගය භාවිත කිරීමට, DevTools සැකසීම් තුළ ඔබේ භාෂා මනාපය ඉංග්‍රීසි වෙත සකසන්න."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "ඔබේ සංවාදය ආරම්භ කිරීමට ඉහත යෝජිත විමසුම් වලින් එකක් භාවිතා කිරීමට ද ඔබට හැක"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools හි AI ගැන ඉගෙන ගන්න"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "හකුළන්න"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" වස්තු ගබඩාව හිස් කරන්න ද?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" දත්ත සමුදාය මකන්න ද?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "යතුර"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "තෝරාගත් වස්තු ගබඩාවේ අඩංගු දත්ත ඉවත් කරනු ලැබේ."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "වස්තු ගබඩා"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "මෙම රාමුව වෙළඳ දැන්වීමක මූල රාමුව ලෙස හඳුනා ගෙන ඇත"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "මූල ස්ක්‍රිප්ට් පෙරහන් ලැයිස්තු රීතිය"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "සුරක්ෂිත සන්දර්භය"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (මූලාශ්‍ර සිතියම වෙතින්)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "වෙනස්කම් පටිත්ත ද්විමය දත්ත වෙනස්කම් පෙන්වන්නේ නැත"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "මෙම පිටුවේ දී ඔබට DevTools තුළ සිදු කරන ලද කේත වෙනස්කම් නිරීක්ෂණය කළ හැක."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "පිටපත් කරන්න"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "තවමත් වෙනස්කම් නොමැත"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "පාඨමය වෙනසක් නොමැත"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{මැකීම # (-)}one{මැකීම් # (-)}other{මැකීම් # (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{ඇතුළත් කිරීම් # (+)}one{ඇතුළත් කිරීම් # (+)}other{ඇතුළත් කිරීම් # (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "පසුරු පුවරුවට පිටපත් කරන ලදි"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "වෙනස්කම්"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "වත්මන් ගොනුවෙන් සියලු වෙනස් කිරීම් පිටපත් කරන්න"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "සියලු වෙනස් කිරීම් වත්මන් ගොනුවට ප්‍රතිවර්තනය කරන්න"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "වෙනස් කිරීම් පෙන්වන්න"
@@ -5715,7 +5745,7 @@
     "message": "වත්මන් සන්දර්භයෙන් පමණක් පණිවිඩ පෙන්වන්න (top, iframe, worker, දිගුව)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "පෙරහන් පැති තීරුව මගින් අභිබවා ඇත"
+    "message": "ලොග් මට්ටම් කොන්සෝල පැති තීරුව මගින් පාලනය වේ."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "ලොගය සංරක්ෂණය කරන්න"
@@ -6612,16 +6642,16 @@
     "message": "දසුනට අනුචලනය කරන්න"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "ඉලක්කය සඳහා විධානය පෙන්වන්න"
+    "message": "commandfor උපලක්ෂණය හා සම්බන්ධ මූලද්‍රව්‍යය පෙන්වන්න"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe විස්තර පෙන්වන්න"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "උනන්දුව දක්වන ඉලක්කය පෙන්වන්න"
+    "message": "interesttarget උපලක්ෂණය හා සම්බන්ධ මූලද්‍රව්‍යය පෙන්වන්න"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "උත්පතන ඉලක්කය පෙන්වන්න"
+    "message": "popovertarget උපලක්ෂණය හා සම්බන්ධ මූලද්‍රව්‍යය පෙන්වන්න"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "මෙම රාමුව වෙළඳ දැන්වීම් රාමුවක් ලෙස හඳුනා ගන්නා ලදි"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ගොඩනගන ලද මෝස්තර පත්‍රය"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "සියලු CSS වෙනස් කිරීම් පිටපත් කරන්න"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "සියලු ප්‍රකාශ පිටපත් කරන්න"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "පරීක්ෂක හරහා"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "සියලු CSS වෙනස් කිරීම් පිටපත් කරන්න"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "සියලුම ප්‍රකාශ JS ලෙස පිටපත් කරන්න"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ප්‍රවේශ්‍යතාව"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "විගණනය අතරතුර ඩෙස්ක්ටොප් අනුකරණය යොදන්න"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "ජංගම අනුකරණය යොදන්න"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "පැකට් නැවත අනුපිළිවෙලට සැකසීම"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "ප්‍රතිශතය"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "පැතිකඩ නම"
   },
@@ -8796,13 +8820,13 @@
     "message": "අභිරුචි පරිශීලක නියෝජිත ක්ෂේත්‍රය අවශ්‍යයි"
   },
   "panels/network/NetworkConfigView.ts | disableCache": {
-    "message": "හැඹිලිය අබල කරන්න"
+    "message": "කෑෂ් අබල කරන්න"
   },
   "panels/network/NetworkConfigView.ts | enterACustomUserAgent": {
     "message": "අභිරුචි පරිශීලක නියෝජිතයකු ඇතුළත් කරන්න"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "ජාල තත්ත්ව පෙන්වා ඇත"
+    "message": "ජාල තත්ත්ව පෙන්වා ඇත."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ජාල අවකරණය"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "දුරස්ථ ලිපින ඉඩ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "ඉල්ලීම් ශීර්ෂක"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ප්‍රතිචාර ශීර්ෂක"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "ලෙස සුරකින්න…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ගොනුව තැටියට සුරැකීමට නොහැකි විය."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ප්‍රතික්ෂේප කිරීම් සඳහා ෆෝල්ඩරය තෝරන්න"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ඔරලෝසු ප්‍රකාශන නැවුම් කරන්න"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "ඔරලෝසු ප්‍රකාශනය මකන ලදි"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} බිඳුම් ලක්ෂ්‍ය පහර"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "විස්තර"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "මාන"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "කාල සීමාව"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "තව දැන ගන්න"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "ස්ථානය"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "පණිවිඩය"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ළමයින්)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} රැස් කරන ලදි"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} න් {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "විස්තරාත්මක CSS ගැළපුම් සංඛ්‍යාපන එකතු කිරීමට \"{PH1}\" තෝරන්න."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ස්වයං)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "ස්ක්‍රිප්ට"
@@ -14682,19 +14694,19 @@
     "message": "වින්‍යාස කරන්න"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ක්ෂේත්‍ර දත්ත ලබා ගැනීම වින්‍යාස කරන්න"
+    "message": "ක්ෂේත්‍ර මිතික ලබා ගැනීම වින්‍යාස කරන්න"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX වාර්තාවේ මෙම පිටුව සඳහා ප්‍රමාණවත් සැබෑ ලෝක වේග දත්ත නොමැත."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "වෙබ් අඩවියේ සැබෑ පරිශීලකයින් අත්විඳින දේ සමග දේශීය මිනුම් සන්දර්භගත කිරීමට ඔබට උදවු කිරීමට {PH1} වෙතින් එකතු කළ ක්ෂේත්‍ර දත්ත ලබා ගන්න."
+    "message": "වෙබ් අඩවියේ සැබෑ පරිශීලකයින් අත්විඳින දේ සමග දේශීය මිනුම් සන්දර්භගත කිරීමට ඔබට උදවු කිරීමට {PH1} වෙතින් එකතු කළ ක්ෂේත්‍ර මිතික ලබා ගන්න."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" වලංගු මූලාරම්භයක් හෝ URL එකක් නොවේ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "එහි නිෂ්පාදන සම්භවය සඳහා අදාළ ක්ෂේත්‍ර දත්ත ස්වයංක්‍රීයව ලබා ගැනීමට සංවර්ධන මූලාරම්භයක් සකසන්න."
+    "message": "එහි නිෂ්පාදන සම්භවය සඳහා අදාළ ක්ෂේත්‍ර මිතික ස්වයංක්‍රීයව ලබා ගැනීමට සංවර්ධන මූලාරම්භයක් සකසන්න."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "නව"
@@ -14703,7 +14715,7 @@
     "message": "හරි"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "පහත URL සඳහා ක්ෂේත්‍ර දත්ත සැම විට පෙන්වන්න"
+    "message": "පහත URL එක සඳහා සැම විට ම ක්ෂේත්‍ර මිතික පෙන්වන්න"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ඉවත් වන්න"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools විවෘතව ඇති විට, ඔබ පිවිසෙන URL ක්ෂේත්‍ර දත්ත විමසීමට Google වෙත යවනු ලැබේ. මෙම ඉල්ලීම් ඔබේ Google ගිණුමට බැඳී නැත."
+    "message": "DevTools විවෘතව ඇති විට, ඔබ පිවිසෙන URL ක්ෂේත්‍ර මිතික විමසීමට Google වෙත යවනු ලැබේ. මෙම ඉල්ලීම් ඔබේ Google ගිණුමට බැඳී නැත."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "ස්ක්‍රිප්ටයේ URL සඳහා විධිමත් ප්‍රකාශනය රීතියක් එක් කරන්න"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "අන්තර්ක්‍රියා සහ පිරිසැලසුම් මාරු ලොග් කොටස"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ක්ෂේත්‍ර දත්ත"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "ක්ෂේත්‍ර මිතික"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP අන්තර්ක්‍රියා ප්‍රමාදයේ 98 වැනි ප්‍රතිශතයේ ඇත."
@@ -14856,10 +14868,10 @@
     "message": "දේශීය සහ ක්ෂේත්‍ර මාත්‍රික"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "දේශීය සහ ක්ෂේත්‍ර දත්ත ගැන තව දැන ගන්න"
+    "message": "දේශීය සහ ක්ෂේත්‍ර මිතික ගැන තව දැන ගන්න"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "ඔබේ ජාල සම්බන්ධතාව සහ උපාංගය භාවිතයෙන් වත්මන් පිටුවෙන් ස්ථානීය මාත්‍රික ලබා ගත හැක. ක්ෂේත්‍ර දත්ත මනිනු ලබන්නේ විවිධ ජාල සම්බන්ධතා සහ උපාංග භාවිත කරන සැබෑ පරිශීලකයින් විසිනි."
+    "message": "ඔබේ ජාල සම්බන්ධතාවය සහ උපාංගය භාවිතයෙන් වත්මන් පිටුවෙන් දේශීය මිනුම් ග්‍රහණය කර ගනු ලැබේ. ක්ෂේත්‍ර මිනුම් විවිධ ජාල සම්බන්ධතා සහ උපාංග භාවිතා කරන සැබෑ පරිශීලකයින් විසින් මනිනු ලැබේ."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "දේශීය මාත්‍රික"
@@ -14922,10 +14934,10 @@
     "message": "නරකම පිරිසැලසුම් මාරු පොකුර වෙත යන්න."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "උපාංග වර්ගය සඳහා ක්ෂේත්‍ර දත්ත පෙන්වන්න: {PH1}"
+    "message": "උපාංග වර්ගය සඳහා ක්ෂේත්‍ර මිතික පෙන්වන්න: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} සඳහා ක්ෂේත්‍ර දත්ත පෙන්වන්න"
+    "message": "{PH1} සඳහා ක්ෂේත්‍ර මිතික පෙන්වන්න"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP අන්තර්ක්‍රියා වෙත යන්න."
@@ -15033,13 +15045,13 @@
     "message": "{PH2} හි ඔබේ දේශීය {PH1} අගය හොඳයි, නමුත් ඔබේ පරිශීලකයන්ගේ අත්දැකීමට වඩා සැලකිය යුතු ලෙස හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. අතිරේක වශයෙන්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. අතිරේක වශයෙන්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "ඔබේ දේශීය {PH1} අගය {PH2} හොඳ වන අතර, එය ඔබේ පරිශීලකයන්ගේ අත්දැකීමට සමානයි."
@@ -15054,13 +15066,13 @@
     "message": "{PH2} හි ඔබේ දේශීය {PH1} අගය වැඩිදියුණු කිරීම අවශ්‍ය වේ, නමුත් ඔබේ පරිශීලකයින්ගේ අත්දැකීමට වඩා සැලකිය යුතු ලෙස හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
+    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. අතිරේක වශයෙන්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
+    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. අතිරේක වශයෙන්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
+    "message": "ඔබේ දේශීය {PH1} {PH2} හි අගය වැඩි දියුණු කිරීම අවශ්‍ය වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4} ලෙසම ඇගයීමට ලක් කරනු ලැබේ. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "ඔබේ දේශීය {PH1} අගය {PH2} වැඩි දියුණු කිරීම අවශ්‍ය වන අතර, ඔබේ පරිශීලකයින්ගේ අත්දැකීමට සමාන වේ."
@@ -15075,13 +15087,13 @@
     "message": "{PH2} හි ඔබේ දේශීය {PH1} අගය දුර්වලයි, නමුත් ඔබේ පරිශීලකයින්ගේ අත්දැකීමට වඩා සැලකිය යුතු ලෙස හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} හොඳයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. කෙසේ වෙතත්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} වැඩි දියුණු කිරීම අවශ්‍ය වේ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. අතිරේක වශයෙන්, ක්ෂේත්‍ර දත්ත 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
+    "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර සැබෑ පරිශීලක {PH1} අත්දැකීම් {PH4}කට සමානව ශ්‍රේණිගත කර ඇත. අතිරේක වශයෙන්, ක්ෂේත්‍ර මිතික 75 වැනි ප්‍රතිශතය {PH1} අගය {PH3} දුර්වලයි."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "ඔබේ දේශීය {PH1} අගය {PH2} දුර්වල වන අතර, එය ඔබේ පරිශීලකයන්ගේ අත්දැකීමට සමානයි."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools {PH1} වෙත මාරු කරන්න"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "ලාච්චු දිශානතිය ටොගල් කරන්න"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "එක් කරන්න"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} සඳහා තිර රුව - පෙර ඉල්ලීම් බැලීමට තෝරන්න."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "අනුසටහන් මකන්න"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ඛණ්ඩ වින්‍යාස කරන්න"

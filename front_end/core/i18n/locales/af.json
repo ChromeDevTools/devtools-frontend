@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Moenie CSS-mediatipe emuleer nie"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Moenie teksskaal van bedryfstelsel emuleer nie"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Moenie roosterlyne verleng nie"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emuleer deuteranopie (geen groen nie)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuleer teksskaal van bedryfstelsel"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emuleer protanopie (geen rooi nie)"
@@ -732,6 +738,30 @@
     "message": "Netwerkversoekblokkering"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Geen emulering nie"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (verstek)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Geen emulering nie"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Verplig mediatipe vir toets van druk- en skermstyle"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Dwing teksskaalemulering van bedryfstelsel af"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Verplig visiegebrekemulering"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Wissel laai"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Wissel laaioriëntasie"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Maak los in afsonderlike venster"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Hulpbronversoeke waarvan die URL'e sowel verwyderde \\(n|r|t)-witspasiekarakters as kleiner-as-karakters (<) bevat, word geblokkeer. Verwyder asseblief nuwe reëls en enkodeer kleiner-as-karakters op plekke soos elementkenmerkwaardes om hierdie hulpbronne te laai."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Outobespeuring van ISO-2022-JP-karakterstel is opgeskort en dit sal in die nabye toekoms gedeaktiveer word. Spesifiseer karakterstel in die Inhoudtipe-opskrif of deur ’n metamerker te gebruik (https://developer.mozilla.org/af-ZA/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() is opgeskort. Gebruik pleks daarvan gestandaardiseerde API: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit het misluk: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Velddata is vir ’n ander URL as die huidige bladsy opgestel."
+    "message": "Veldmaatstawwe is vir ’n ander URL as die huidige bladsy opgestel."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Toestelpiekselverhouding moet 'n getal of leeg wees."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Stoor as …"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Kon nie lêer na skyf stoor nie."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Stoor prent"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Hoofoorsake van uitlegverskuiwings"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Prente sonder grootte"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Slegste groep"
@@ -1839,7 +1875,7 @@
     "message": "Het herleidings gehad ({PH1} herleidings, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Bediener het stadig gereageer (waargeneem {PH1}) "
+    "message": "Bediener het stadig gereageer (waargeneem {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Geen saampersing toegepas nie"
@@ -1848,7 +1884,7 @@
     "message": "Vermy herleidings"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Bediener reageer vinnig (waargeneem {PH1}) "
+    "message": "Bediener reageer vinnig (waargeneem {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Pas tekssaampersing toe"
@@ -2070,7 +2106,7 @@
     "message": "[Vermy die ketting van kritieke versoeke](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) deur die lengte van kettings te verminder, die aflaaigrootte van hulpbronne te verminder, of die aflaai van onnodige hulpbronne uit te stel om bladsylading te verbeter."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Voeg [voorafverbinding](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)-wenke by jou belangrikste oorspronge, maar probeer om minder as 4 te gebruik."
+    "message": "Voeg [voorafverbinding](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)-wenke by jou belangrikste oorspronge, maar probeer om nie meer as 4 te gebruik nie."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Voorafverbindingskandidate"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Tikinteraksies kan met [tot 300 ms vertraag word](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) as die kykvenster nie vir mobiele toestelle geoptimeer is nie."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Mobieletikvertraging"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimeer kykvenster vir mobiele toestel"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Stel jou taalvoorkeur as Engels in die Ontwikkelaarnutsgoed-instellings om hierdie kenmerk te gebruik."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Jy kan ook een van die voorgestelde portekse hier bo gebruik om jou gesprek te begin"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Kry meer inligting oor AI in Ontwikkelaarnutsgoed"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Vou in"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Maak “{PH1}”-objekstoor skoon?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Vee “{PH1}”-databasis uit?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Sleutel"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Die data wat in die gekose objekstoor bevat word, sal verwyder word."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Voorwerpberging"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Hierdie raam is as 'n advertensie se kernraam geïdentifiseer"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Kernskripfilterlysreël"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Veilige konteks"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (van bronkaart af)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Die Veranderinge-oortjie wys nie binêre dataveranderinge nie"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Jy kan kodeveranderinge wat binne DevTools gemaak is op hierdie bladsy naspoor."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopieer"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Nog geen veranderinge nie"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Geen tekstuele verskille beskikbaar nie"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# skrapping (-)}other{# skrappings (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# invoeging (+)}other{# invoegings (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Gekopieer na knipbord"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Veranderinge"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopieer alle veranderinge van huidige lêer af"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Stel alle veranderinge terug na huidige lêer"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Wys veranderinge"
@@ -5715,7 +5745,7 @@
     "message": "Wys net boodskappe vanuit die huidige konteks (top, iframe, worker, uitbreiding)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Geïgnoreer deur filterkantbalk"
+    "message": "Loglêervlakke word deur die konsolekantbalk beheer."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Bewaar logêer"
@@ -6612,16 +6642,16 @@
     "message": "Rollees totdat jy kan sien"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Wys opdrag vir teiken"
+    "message": "Wys element wat met die commandfor-kenmerk geassosieer word"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Wys iframe-besonderhede"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Wys belangstellingteiken"
+    "message": "Wys element wat met die interesttarget-kenmerk geassosieer word"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Wys opspringerteiken"
+    "message": "Wys element wat met die popovertarget-kenmerk geassosieer word"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Hierdie raam is as 'n advertensieraam geïdentifiseer"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "saamgestelde stylblad"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopieer alle CSS-veranderinge"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopieer alle verklarings"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "deur kontroleerder"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopieer alle CSS-veranderinge"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopieer alle verklarings as JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Toeganklikheid"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Pas rekenaaremulering toe tydens oudit"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Pas mobiele emulering toe"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Herrangskikking van pakket"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "persent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profielnaam"
   },
@@ -8802,7 +8826,7 @@
     "message": "Voer 'n gepasmaakte gebruikeragent in"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Netwerktoestande word gewys"
+    "message": "Netwerktoestande word gewys."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Netwerkregulering"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Afgeleë adresruimte"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Versoekopskrifte"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Antwoordopskrifte"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Stoor as …"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Kon nie lêer na skyf stoor nie."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Kies vouer vir ignorerings"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Herlaai dophou-uitdrukkings"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Waarnemingsuitdrukking uitgevee"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} breekpuntslag"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Besonderhede"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Afmetings"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Tydsduur"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Kom meer te wete"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Ligging"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Boodskap"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (kinders)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} ingesamel"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} van {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Kies \"{PH1}\" om statistieke van gedetailleerde VID-kieserpassing in te samel."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (self)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skrip"
@@ -14682,19 +14694,19 @@
     "message": "Stel op"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Stel die velddata wat gaan haal word op"
+    "message": "Stel veldmaatstawwe-ophaling op"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Die Chrome UX-verslag het nie voldoende werklike spoeddata vir hierdie bladsy nie."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Gaan haal saamgevoegde data vanaf die {PH1} om jou te help om plaaslike metings te kontekstualiseer met wat werklike gebruikers op die werf ervaar."
+    "message": "Gaan haal saamgevoegde maatstawwe vanaf die {PH1} om jou te help om plaaslike metings te kontekstualiseer met wat werklike gebruikers op die werf ervaar."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "“{PH1}” is nie ’n geldige oorsprong of URL nie."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Stel ’n ontwikkelingoorsprong om outomaties relevante velddata vir sy produksie-oorsprong te kry."
+    "message": "Stel ’n ontwikkelingoorsprong om outomaties relevante veldmaatstawwe vir sy produksie-oorsprong te kry."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Nuut"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Wys altyd velddata vir die URL hier onder"
+    "message": "Wys altyd veldmaatstawwe vir die URL hier onder"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Onttrek"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Wanneer Ontwikkelaarnutsgoed oop is, sal die URL’e wat jy besoek na Google toe gestuur word om velddata te bevraagteken. Hierdie versoeke is nie aan jou Google-rekening gekoppel nie."
+    "message": "Wanneer Ontwikkelaarnutsgoed oop is, sal die URL’e wat jy besoek na Google toe gestuur word om veldmaatstawwe te bevraagteken. Hierdie versoeke is nie aan jou Google-rekening gekoppel nie."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Voeg ’n gewoneuitdrukkingreël vir die skrip se URL by"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Afdeling vir loglêers oor interaksies en uitlegverskuiwing"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Velddata"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Veldmaatstawwe"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Die INP-interaksie is by die 98ste persentiel van interaksievertragings."
@@ -14856,10 +14868,10 @@
     "message": "Plaaslike en veldmaatstawwe"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Kry meer inligting oor plaaslike- en velddata"
+    "message": "Kry meer inligting oor plaaslike- en veldmaatstawwe"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Plaaslike maatstawwe word vanaf die huidige bladsy vasgelê deur jou netwerkverbinding en toestel te gebruik. Velddata word gemeet deur werklike gebruikers wat baie verskillende netwerkverbindings en toestelle gebruik."
+    "message": "Plaaslike maatstawwe word vanaf die huidige bladsy vasgelê deur jou netwerkverbinding en toestel te gebruik. Veldmaatstawwe word gemeet deur regte gebruikers wat baie verskillende netwerkverbindings en toestelle gebruik."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Plaaslike maatstawwe"
@@ -14922,10 +14934,10 @@
     "message": "Gaan na die slegste uitlegverskuiwinggroep."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Wys velddata vir toesteltipe: {PH1}"
+    "message": "Wys veldmaatstawwe vir toesteltipe: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Wys velddata vir {PH1}"
+    "message": "Wys veldmaatstawwe vir {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Gaan na die INP-interaksie."
@@ -15033,13 +15045,13 @@
     "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed, maar is heelwat beter as jou gebruikers se ervaring."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is bowendien goed."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} is bowendien goed."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} moet egter verbeter."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} moet egter verbeter."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is egter swak."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} is egter swak."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Jou plaaslike {PH1}-waarde van {PH2} is goed en is soortgelyk aan jou gebruikers se ervaring."
@@ -15054,13 +15066,13 @@
     "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter, maar is heelwat beter as jou gebruikers se ervaring."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is egter goed."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} is egter goed."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Verder moet die velddata se 75e persentiel {PH1}-waarde van {PH3} verbeter."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Verder moet die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} verbeter."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is egter swak."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} moet verbeter en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} is egter swak."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Jou plaaslike {PH1} {PH2} moet verbeter en is soortgelyk aan jou gebruikers se ervaring."
@@ -15075,10 +15087,10 @@
     "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak, maar is heelwat beter as jou gebruikers se ervaring."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is egter goed."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} is egter goed."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} moet egter verbeter."
+    "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die veldmaatstawwe se 75e persentiel {PH1}-waarde van {PH3} moet egter verbeter."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
     "message": "Jou plaaslike {PH1}-waarde van {PH2} is swak en word dieselfde as {PH4} van werklike gebruikers se {PH1}-ervarings gegradeer. Die velddata se 75e persentiel {PH1}-waarde van {PH3} is bowendien swak."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Wissel DevTools na {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Wissel laaioriëntasie"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Voeg by"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skermkiekie vir {PH1} – kies om voorafgaande versoeke te bekyk."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Vee annotasies uit"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Stel bane op"

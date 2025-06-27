@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "不模擬 CSS 媒體類型"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "不模擬 OS 文字縮放"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "不要延長格線"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "模擬綠色盲 (看不到綠色)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "模擬 OS 文字縮放"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "模擬紅色盲 (看不到紅色)"
@@ -732,6 +738,30 @@
     "message": "網路要求封鎖"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "不模擬"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (預設)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "不模擬"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "強制使用測試列印和畫面樣式的媒體類型"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "強制模擬 OS 文字縮放"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "強制模擬視覺障礙人士看到的內容"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "切換導覽匣"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "切換導覽匣方向"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "卸除至個別視窗"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "如果資源要求網址中同時包含已移除的 \\(n|r|t) 字元和小於字元 (<)，系統會予以封鎖。請從元素屬性值等位置移除換行符號，並編碼小於字元，以便載入這些資源。"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "自動偵測 ISO-2022-JP 字元集的功能已淘汰，近期即將停用。請在「Content Type」標頭，或是使用中繼標記 (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)，指定字元集。"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() 已淘汰，請改用標準化 API：Navigation Timing 2。"
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit 失敗：{PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "實際資料設定的網址與目前網頁不同。"
+    "message": "設定的實際使用者資料屬於其他網址，不是目前的頁面。"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "裝置像素比例必須為數字，或者直接留空。"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "另存新檔…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "檔案無法儲存到磁碟。"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "儲存圖片"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "版面配置位移的常見主因"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "原寸圖片"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "最嚴重的叢集"
@@ -1839,7 +1875,7 @@
     "message": "有重新導向 ({PH1} 次重新導向，+{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "伺服器回應緩慢 (觀測結果：{PH1}) "
+    "message": "伺服器回應緩慢 (觀測結果：{PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "未套用壓縮功能"
@@ -1848,7 +1884,7 @@
     "message": "避免重新導向"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "伺服器回應迅速 (觀測結果：{PH1}) "
+    "message": "伺服器回應迅速 (觀測結果：{PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "套用文字壓縮"
@@ -2070,7 +2106,7 @@
     "message": "如要[避免鏈結關鍵要求](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)，可以縮短鏈結長度、降低資源的下載大小或延後下載非必要資源，提高頁面載入速度。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "請為最重要的來源新增 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但盡量不要超過 4 個。"
+    "message": "請新增最重要來源的 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但盡量不要超過 4 個。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "預先連結候選來源"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "如果可視區域未針對行動裝置進行最佳化調整，輕觸互動可能會[延遲最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "行動裝置輕觸延遲"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "針對行動裝置最佳化可視區域"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "如要使用這項功能，請前往開發人員工具設定，將語言偏好設定設為英文。"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "你也可以使用上方建議的任一提示詞開始對話"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "瞭解開發人員工具的 AI 功能"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "收合"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "要清除「{PH1}」物件存放區嗎？"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "要刪除「{PH1}」資料庫嗎？"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "金鑰"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "將移除所選物件儲存庫中的資料。"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "物件存放區"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "系統已將該頁框視為廣告的根頁框"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "根指令碼篩選器清單規則"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "安全內容"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (來自來源對應)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "「變更」分頁未顯示二進位檔資料變更"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "在這個頁面中，你可以追蹤在開發人員工具中所做的程式碼變更。"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "複製"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "目前沒有任何變更"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "沒有文字差異比較"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# 行已刪除的程式碼 (-)}other{# 行已刪除的程式碼 (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# 個插入項目 (+)}other{# 個插入項目 (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "已複製到剪貼簿"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "變更"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "複製目前檔案中的所有變更內容"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "將所有變更還原至目前的檔案"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "顯示變更"
@@ -5715,7 +5745,7 @@
     "message": "僅顯示目前內容的訊息 (top，iframe，worker，擴充功能)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "已由篩選器側欄覆寫"
+    "message": "記錄層級由控制台側欄控制。"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "保留記錄"
@@ -6612,16 +6642,16 @@
     "message": "捲動查看"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "顯示目標適用的指令"
+    "message": "顯示與 commandfor 屬性相關的元素"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "顯示 iframe 詳細資料"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "顯示興趣目標"
+    "message": "顯示與 interesttarget 屬性相關的元素"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "顯示彈出式視窗目標"
+    "message": "顯示與 popovertarget 屬性相關的元素"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "系統已將該頁框視為廣告頁框"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "結構化樣式表"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "複製所有 CSS 變更內容"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "複製所有宣告"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "透過檢查工具"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "複製所有 CSS 變更內容"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式複製全部宣告內容"
@@ -7056,7 +7080,7 @@
     "message": "裝置類型"
   },
   "panels/emulation/DeviceModeToolbar.ts | dimensions": {
-    "message": "尺寸"
+    "message": "維度"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "編輯…"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "無障礙功能"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "稽核期間套用電腦模擬"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "套用行動裝置模擬"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "封包重新排序"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "百分比"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "設定檔名稱"
   },
@@ -8802,7 +8826,7 @@
     "message": "輸入自訂使用者代理程式"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "顯示網路狀況"
+    "message": "顯示網路狀況。"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "網路節流"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "遠端位址空間"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "要求標頭"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "回應標頭"
@@ -12057,7 +12084,7 @@
     "message": "語言代碼"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "地點"
+    "message": "位置"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "無法取得位置資訊"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "另存新檔…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "檔案無法儲存到磁碟。"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "選取覆寫項目的資料夾"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "重新整理監看運算式"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "監看運算式已刪除"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "遇到{PH1}中斷點"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "詳細資料"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "尺寸"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "時間長度"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "瞭解詳情"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "地點"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "訊息"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (子項)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "已收集 {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}：{PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}，{PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "選取「{PH1}」即可收集詳細的 CSS 選取器比對統計資料。"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (本身)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "指令碼"
@@ -14682,19 +14694,19 @@
     "message": "設定"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "設定欄位資料擷取"
+    "message": "設定欄位指標擷取"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "在 Chrome 使用者體驗報告中，這個網頁的實際速度資料不足。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "從 {PH1}擷取而來的匯總實際資料，協助你根據該網站的實際使用者體驗分析本機測量指標。"
+    "message": "從 {PH1}擷取匯總過的實際使用者資料，協助你根據該網站的實際使用者體驗分析本機測量指標。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "「{PH1}」不是有效的來源或網址。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "設定開發環境來源，即可自動取得其實際環境來源的相關實際資料。"
+    "message": "設定開發環境來源，即可自動取得其實際環境來源的相關實際使用者資料。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "新增"
@@ -14703,7 +14715,7 @@
     "message": "確定"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "一律顯示以下網址的實際資料"
+    "message": "一律顯示以下網址的實際使用者資料"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "退出"
@@ -14718,7 +14730,7 @@
     "message": "網址"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "開發人員工具開啟時，你造訪的網址會傳送給 Google，用於查詢欄位資料。這些要求不會連結到你的 Google 帳戶。"
+    "message": "開發人員工具開啟時，你造訪的網址會傳送給 Google，用於查詢實際使用者資料。這些要求不會連結到你的 Google 帳戶。"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "新增指令碼網址的規則運算式規則"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "「互動和版面配置位移記錄」專區"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "實際資料"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "實際使用者資料"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP 互動是發生在互動延遲的第 98 個百分位數。"
@@ -14856,10 +14868,10 @@
     "message": "本機和實際環境指標"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "進一步瞭解本機資料和實際資料"
+    "message": "進一步瞭解本機資料和實際使用者資料"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "系統會使用你的網路連線和裝置，從目前的網頁擷取本機指標。實際資料是根據使用許多不同網路連線和裝置的實際使用者測量而得。"
+    "message": "系統會使用你的網路連線和裝置，擷取目前頁面的本機資料。實際使用者資料則是許多不同網路連線和裝置的評估結果。"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "本機指標"
@@ -14922,10 +14934,10 @@
     "message": "前往最嚴重的版面配置位移叢集。"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "顯示以下裝置類型的實際資料：{PH1}"
+    "message": "顯示以下裝置類型的實際使用者資料：{PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "顯示以下位置的實際資料：{PH1}"
+    "message": "顯示 {PH1} 的實際使用者資料"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "前往 INP 互動。"
@@ -15033,13 +15045,13 @@
     "message": "你的本機 {PH1} 值 ({PH2}) 表現良好，明顯優於使用者體驗。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} 值 {PH3} 表現良好。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於良好等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。此外，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，同屬良好等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 需要改善。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於良好等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於需要改善的等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 表現良好，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 表現不佳。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於良好等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於不良等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "你的本機 {PH1} 值 ({PH2}) 表現良好，與使用者體驗相近。"
@@ -15054,13 +15066,13 @@
     "message": "你的本機 {PH1} 值 ({PH2}) 需要改善，但明顯優於使用者體驗。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 需要改善，與 {PH4} 的實際使用者的 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 表現良好。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於需要改善的等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於良好等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 需要改善，與 {PH4} 的實際使用者的 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 需要改善。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於需要改善的等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。此外，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，同屬需要改善的等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "你的本機 {PH1} 值 ({PH2}) 需要改善，與 {PH4} 的實際使用者的 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 表現不佳。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於需要改善的等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於不良等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "你的本機 {PH1} 值 ({PH2}) 需要改善，與使用者體驗相近。"
@@ -15075,13 +15087,13 @@
     "message": "你的本機 {PH1} 值 ({PH2}) 表現不佳，但明顯優於使用者體驗。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "你的本機 {PH1} ({PH2}) 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 表現良好。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於不良等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於良好等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "你的本機 {PH1} ({PH2}) 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。但是，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 需要改善。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於不良等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。不過，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，屬於需要改善的等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "你的本機 {PH1} ({PH2}) 表現不佳，與 {PH4} 的實際使用者 {PH1} 體驗評分相同。此外，實際資料的第 75 個百分位數 {PH1} 值 ({PH3}) 表現不佳。"
+    "message": "本機的 {PH1} 值為 {PH2}，屬於不良等級，與 {PH4} 的實際使用者 {PH1} 體驗相同。此外，實際使用者資料的第 75 個百分位數 {PH1} 值為 {PH3}，同屬不良等級。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "你的本機 {PH1} 值 ({PH2}) 表現不佳，與使用者體驗相近。"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "將開發人員工具的語言改為{PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "切換導覽匣方向"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "新增"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} 的螢幕截圖，選取截圖即可查看先前的要求。"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "刪除註解"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "設定追蹤項目"

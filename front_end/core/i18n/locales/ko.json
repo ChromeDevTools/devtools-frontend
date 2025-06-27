@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS 미디어 유형 에뮬레이션 안함"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS 텍스트 크기 에뮬레이션 안 함"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "그리드 라인 확장 안함"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "제2색맹(녹색맹) 에뮬레이션"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS 텍스트 배율 에뮬레이션"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "제1색맹(적색맹) 에뮬레이션"
@@ -732,7 +738,31 @@
     "message": "네트워크 요청 차단"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "에뮬레이션 없음"
+    "message": "에뮬레이션 안 함"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100%(기본)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
+    "message": "에뮬레이션 안 함"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "예외에서 일시중지됨"
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "테스트 인쇄 및 화면 스타일의 미디어 유형을 강제 실행합니다."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS 텍스트 배율 에뮬레이션 강제 실행"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "색맹 에뮬레이션 강제 실행"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "폴더 전환"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "창 방향 전환"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "별도의 창으로 고정 해제"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "삭제된 공백 \\(n|r|t)자 및 글자수 제한(<)이 URL에 포함된 리소스 요청이 차단되었습니다. 이러한 리소스를 로드하려면 엘리먼트 속성 값과 같은 위치에서 줄바꿈을 삭제하고 글자수 제한을 인코딩하세요."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP 문자 집합의 자동 감지는 지원 중단되었으며 조만간 사용 중지됩니다. 콘텐츠 유형 헤더에서 문자 집합을 지정하거나 메타 태그(https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)를 사용하세요."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes()는 지원 중단되었습니다. 대신 표준화된 API인 Navigation Timing 2를 사용하세요."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit 실패: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "필드 데이터가 현재 페이지와 다른 URL에 대해 구성되었습니다."
+    "message": "실제 사용자 데이터가 현재 페이지와 다른 URL에 대해 구성되었습니다."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "기기 픽셀 비율은 숫자이거나 비어 있어야 합니다."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "다른 이름으로 저장…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "파일을 디스크에 저장할 수 없습니다."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "이미지 저장"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "상위 레이아웃 변경 원인"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "크기가 지정되지 않은 이미지"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "최악의 클러스터"
@@ -1839,7 +1875,7 @@
     "message": "리디렉션 있음(리디렉션 {PH1}개, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "서버 응답이 느림({PH1} 관찰됨) "
+    "message": "서버 응답이 느림({PH1} 관측됨)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "적용된 압축 없음"
@@ -1848,7 +1884,7 @@
     "message": "리디렉션 방지"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "서버 응답이 빠름({PH1} 관찰됨) "
+    "message": "서버 응답이 빠름({PH1} 관측됨)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "텍스트 압축 적용"
@@ -2070,7 +2106,7 @@
     "message": "체인의 길이를 줄이고, 리소스의 다운로드 크기를 줄이거나 불필요한 리소스의 다운로드를 지연하여 페이지 로드 속도를 개선하는 방식으로 [크리티컬 요청 체이닝을 방지](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)합니다."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "가장 중요한 출처에 [사전 연결](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 힌트를 추가하되 4개 미만으로 사용하세요."
+    "message": "가장 중요한 출처에 [사전 연결](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 힌트를 추가하되 4개 이하로 사용하세요."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "후보 사전 연결"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "표시 영역이 모바일에 최적화되어 있지 않으면 탭 상호작용이 [최대 300밀리초 지연될 수 있습니다](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "모바일 탭 지연"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "모바일 표시 영역 최적화"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "이 기능을 사용하려면 DevTools 설정에서 언어 환경설정을 영어로 설정하세요."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "위의 제안된 프롬프트 중 하나를 사용하여 대화를 시작할 수도 있습니다."
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools의 AI에 관해 알아보기"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "접기"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" 객체 스토어를 삭제하시겠습니까?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "'{PH1}' 데이터베이스를 삭제하시겠습니까?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "키"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "선택한 객체 스토어에 포함된 데이터가 삭제됩니다."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "객체 저장"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "이 프레임은 광고의 루트 프레임으로 확인됨"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "루트 스크립트 필터 목록 규칙"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "보안 컨텍스트"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1}(소스 맵에서)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "변경사항 탭에 바이너리 데이터 변경사항이 표시되지 않습니다."
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "이 페이지에서 DevTools 내에서 변경된 코드를 추적할 수 있습니다."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "복사"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "아직 변경사항 없음"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "텍스트 차이가 없습니다."
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{삭제 #건(-)}other{삭제 #건(-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{#개 삽입(+)}other{#개 삽입(+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "클립보드에 복사됨"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "변경사항"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "현재 파일에서 모든 변경사항 복사"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "모든 변경사항을 현재 파일로 되돌리기"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "변경사항 표시"
@@ -5715,7 +5745,7 @@
     "message": "현재 컨텍스트에서 가져온 메시지만 표시합니다(top, iframe, worker, 확장 프로그램)."
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "필터 사이드바 우선 적용됨"
+    "message": "로그 수준은 콘솔 사이드바에서 제어됩니다."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "로그 보존"
@@ -6612,16 +6642,16 @@
     "message": "보기로 스크롤"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "타겟에 대한 명령어 표시"
+    "message": "commandfor 속성과 연결된 요소 표시"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe 세부정보 표시"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "관심분야 타겟 표시"
+    "message": "interesttarget 속성과 연결된 요소 표시"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "팝오버 대상 표시"
+    "message": "popovertarget 속성과 연결된 요소 표시"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "이 프레임은 광고 프레임으로 확인됨"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "구성된 스타일시트"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "모든 CSS 변경사항 복사"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "모든 선언 복사"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "검사기를 통해"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "모든 CSS 변경사항 복사"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "모든 선언을 JS로 복사"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "접근성"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "감사 중 데스크톱 에뮬레이션 적용"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "모바일 에뮬레이션 적용"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "패킷 재정렬"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "퍼센트"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "프로필 이름"
   },
@@ -8802,7 +8826,7 @@
     "message": "맞춤 사용자 에이전트 입력"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "네트워크 상태 표시됨"
+    "message": "네트워크 상태가 표시됩니다."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "네트워크 제한"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "원격 주소 공간"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "요청 헤더"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "응답 헤더"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "다른 이름으로 저장…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "파일을 디스크에 저장할 수 없습니다."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "재정의할 폴더 선택"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "감시 표현식 새로고침"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "감시 표현식 삭제됨"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} 중단점 도달"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "세부정보"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "크기"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "기간"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "자세히 알아보기"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "위치"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "메시지"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1}(하위 요소)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} 수집됨"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}개 중 {PH1}번째"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1}×{PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "자세한 CSS 선택자 일치 통계를 수집하려면 \"{PH1}\"을(를) 선택하세요."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1}(자체)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1}[{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "스크립트"
@@ -14679,22 +14691,22 @@
     "message": "취소"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configure": {
-    "message": "설정"
+    "message": "구성"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "필드 데이터 가져오기 구성"
+    "message": "실제 사용자 데이터 가져오기 구성"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX 보고서에 이 페이지의 실제 속도 데이터가 충분하지 않습니다."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "{PH1}에서 집계된 필드 데이터를 가져와 실제 사용자가 사이트에서 경험하는 내용을 바탕으로 지역 측정항목을 문맥에 맞게 분석할 수 있습니다."
+    "message": "{PH1}에서 합산된 실제 사용자 데이터를 가져와 실제 사용자가 사이트에서 경험하는 내용을 바탕으로 지역 측정값을 문맥에 맞게 분석할 수 있습니다."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\"은 유효한 출처 또는 URL이 아닙니다."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "개발 출처를 설정하여 프로덕션 출처의 관련 필드 데이터를 자동으로 가져옵니다"
+    "message": "개발 출처를 설정하여 프로덕션 출처의 관련 실제 사용자 데이터를 자동으로 가져옵니다."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "신규"
@@ -14703,7 +14715,7 @@
     "message": "확인"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "아래 URL의 필드 데이터 항상 표시"
+    "message": "아래 URL의 실제 사용자 데이터 항상 표시"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "선택 해제"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools가 열려 있으면 방문하는 URL이 Google로 전송되어 필드 데이터를 쿼리합니다. 이러한 요청은 Google 계정에 연결되지 않습니다."
+    "message": "DevTools가 열려 있으면 방문하는 URL이 Google로 전송되어 실제 사용자 데이터를 쿼리합니다. 이러한 요청은 Google 계정에 연결되지 않습니다."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "스크립트 URL에 대한 정규 표현식 규칙 추가"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "상호작용 및 레이아웃 전환 로그 섹션"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "필드 데이터"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "실제 사용자 데이터"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP 상호작용은 상호작용 지연의 98번째 백분위수에 있습니다."
@@ -14856,10 +14868,10 @@
     "message": "로컬 및 필드 측정항목"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "로컬 및 필드 데이터 자세히 알아보기"
+    "message": "로컬 측정항목 및 실제 사용자 데이터에 대해 자세히 알아보기"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "로컬 측정항목은 네트워크 연결 및 기기를 사용하여 현재 페이지에서 캡처됩니다. 필드 데이터는 다양한 네트워크 연결 및 기기를 사용하는 실제 사용자에 의해 측정됩니다."
+    "message": "로컬 측정항목은 네트워크 연결 및 기기를 사용하여 현재 페이지에서 캡처됩니다. 실제 사용자 데이터는 다양한 네트워크 연결 및 기기를 사용하는 실제 사용자에 의해 측정됩니다."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "로컬 측정항목"
@@ -14922,10 +14934,10 @@
     "message": "최악의 레이아웃 변경 클러스터로 이동합니다."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "기기 유형 관련 필드 데이터 표시: {PH1}"
+    "message": "기기 유형 관련 실제 사용자 데이터 표시: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1}의 필드 데이터 표시"
+    "message": "{PH1}의 실제 사용자 데이터 표시"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP 상호작용으로 이동"
@@ -15033,13 +15045,13 @@
     "message": "로컬 {PH1} 값 {PH2}가 양호하며 사용자 환경보다 훨씬 낫습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 또한 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
+    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 동일한 수준으로 평가됩니다. 또한 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 하지만 필드 데이터 75번째 백분위수 {PH3} {PH1} 값에 개선이 필요합니다."
+    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH3} 값 {PH1}에 개선이 필요합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 하지만 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
+    "message": "로컬 {PH1} 값 {PH2}가 양호하며 실제 사용자 {PH1} 환경의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "로컬 {PH1} 값 {PH2}가 양호하며 사용자 환경과 유사합니다."
@@ -15054,13 +15066,13 @@
     "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하지만 사용자 환경보다 훨씬 낫습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH4}의 {PH1} 경험과 동일하게 평가합니다. 하지만 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
+    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH4}의 {PH1} 경험과 동일하게 평가합니다. 또한 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}에 개선이 필요합니다."
+    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 또한 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}에 개선이 필요합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH4}의 {PH1} 경험과 동일하게 평가합니다. 하지만 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
+    "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "로컬 {PH1} 값 {PH2}에 개선이 필요하며 사용자 환경과 유사합니다."
@@ -15075,13 +15087,13 @@
     "message": "로컬 {PH1} 값 {PH2}가 좋지 않지만 사용자 환경보다 훨씬 낫습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 하지만 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
+    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 양호합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 하지만 필드 데이터 75번째 백분위수 {PH3} {PH1} 값에 개선이 필요합니다."
+    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 하지만 실제 사용자 데이터 75번째 백분위수 {PH3} 값 {PH1}에 개선이 필요합니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 환경의 {PH4}와 유사합니다. 또한 필드 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
+    "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 실제 사용자 {PH1} 경험의 {PH4}와 동일한 수준으로 평가됩니다. 또한 실제 사용자 데이터 75번째 백분위수 {PH1} 값 {PH3}가 좋지 않습니다."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "로컬 {PH1} 값 {PH2}가 좋지 않으며 사용자 환경과 유사합니다."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools를 {PH1}로 표시하기"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "창 방향 전환"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "추가"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} 스크린샷 - 이전 요청을 확인하려면 선택하세요."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "주석 삭제"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "트랙 구성"

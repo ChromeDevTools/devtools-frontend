@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS медиа төрлийг бүү эмуляц хий"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS-н текстийн хэмжээг эмуляц хийхгүй"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Хүснэгтийн шугамыг бүү сунга"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Дейтеранопиг эмуляц хийх (ногоон өнгө байхгүй)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS-н текстийн хэмжээг эмуляц хийх"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Протанопиг эмуляц хийх (улаан өнгө байхгүй)"
@@ -732,6 +738,30 @@
     "message": "Сүлжээний хүсэлтийг блоклох"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Эмуляц байхгүй"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (өгөгдмөл)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Эмуляц байхгүй"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Туршилтын хэвлэл болон дэлгэцийн загварын медиагийн төрлийг хүчилнэ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS-н текстийн хэмжээг эмуляц хийхийг хүчилнэ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Хараа муудах эмуляцыг хүчилнэ"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Шургуулгыг асаах/унтраах"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Шургуулгын чиглэлийг сэлгэх"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Тусдаа цонх руу салгах"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "URL-ууд нь хассан хоосон зайн \\(n|r|t) тэмдэгт болон багын тэмдэгтийн (<) аль алиныг агуулсан нөөцийн хүсэлтүүдийг блоклосон. Эдгээр нөөцийг ачаалахын тулд шинэ мөрийг хасаж, багын тэмдэгтийг элементийн атрибутын утга зэрэг газруудаас кодлоно уу."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP тэмдэгтийн олонлогийг автоматаар илрүүлэхийг зогсоосон бөгөөд үүнийг ойрын ирээдүйд идэвхгүй болгоно. Контентын төрлийн толгой хэсэг эсвэл мета шошгыг ашиглаж тэмдэгтийн олонлогийг заана уу (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes()-г зогсоосон бөгөөд оронд нь стандартжуулсан API ашиглана уу: Навигацын хугацаа 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit амжилтгүй болсон: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Талбарын өгөгдлийг одоогийн хуудаснаас өөр URL-д зориулж тохируулсан."
+    "message": "Талбарын хэмжигдэхүүнийг одоогийн хуудаснаас өөр URL-д зориулж тохируулсан."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Төхөөрөмжийн пикселийн харьцаа нь тоо эсвэл хоосон байх ёстой."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Дараах хэлбэрээр хадгалах…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Файлыг дискт хадгалж чадсангүй."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Зураг хадгалах"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Дээд талын бүдүүвчийн шилжилтийн буруутан"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Хэмжээг нь тохируулаагүй зураг"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Хамгийн муу кластер"
@@ -1839,7 +1875,7 @@
     "message": "Дахин чиглүүлэх хүсэлтүүдтэй ({PH1} дахин чиглүүлэх хүсэлт, +{PH2}) байсан"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Сервер удаан хариу үйлдэл үзүүлсэн ({PH1}-г ажигласан) "
+    "message": "Сервер удаан хариу үйлдэл үзүүлсэн ({PH1}-г ажигласан)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Шахалт ашиглаагүй"
@@ -1848,7 +1884,7 @@
     "message": "Дахин чиглүүлэхээс зайлсхийнэ"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Сервер хэт хурдан хариу үйлдэл үзүүлсэн ({PH1}-г ажигласан) "
+    "message": "Сервер хэт хурдан хариу үйлдэл үзүүлсэн ({PH1}-г ажигласан)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Текст шахалтыг ашиглана"
@@ -2070,7 +2106,7 @@
     "message": "Хуудасны ачааллыг сайжруулахын тулд хэлхээний уртыг багасгаж, нөөцийн татах хэмжээг багасгаж, шаардлагагүй нөөцийг татахыг хойшлуулж [чухал хүсэлтийн хэлхээ үүсгэхээс зайлсхийнэ үү](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Хамгийн чухал эхдээ [урьдчилан холбох](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) заавар нэмнэ үү. Гэхдээ 4-өөс цөөнийг ашиглахаар оролдоно уу."
+    "message": "Хамгийн чухал эхдээ [урьдчилан холбох](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) заавар нэмнэ үү. Гэхдээ 4-өөс ихгүйг ашиглахаар оролдоно уу."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Урьдчилан холбох боломжит эх"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Хэрэв харагдах хэсгийг гар утсанд зориулж оновчлоогүй бол товшилтын харилцан үйлдлийг [300 хүртэлх мс саатуулж](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) магадгүй."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Гар утасны товшилтын саатал"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Гар утасны харагдах хэсгийг оновчлох"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Энэ онцлогийг ашиглахын тулд хэлний сонголтоо DevTools-н тохиргоонд англи хэл болгож тохируулна уу."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Та мөн харилцан яриагаа эхлүүлэхийн тулд дээр санал болгосон заавруудын аль нэгийг ашиглаж болно"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools дахь ХОУ-ы талаар мэдэж авах"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Хураах"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\"-н объектын хадгалах санг цэвэрлэх үү?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" өгөгдлийн баазыг устгах уу?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Түлхүүр"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Сонгосон объектын хадгалах санд агуулж буй өгөгдлийг хасна."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Объект хадгалалт"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Энэ фреймийг зарын үндсэн фреймээр тодорхойлсон байна"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Үндсэн скриптийн шүүлтүүрийн жагсаалтын дүрэм"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Аюулгүй хам сэдэв"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (эх газрын зургаас)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Өөрчлөлтийн таб хоёртын кодын өгөгдлийн өөрчлөлтийг харуулдаггүй"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Энэ хуудсан дээр та DevTools дотор хийсэн кодын өөрчлөлтийг хянах боломжтой."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Хуулах"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Одоогоор ямар ч өөрчлөлт байхгүй"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Текстийн ямар ч ялгаа байхгүй байна"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# устгал (-)}other{# устгал (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# оруулалт (+)}other{# оруулалт (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Түр санах ойд хуулсан"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Өөрчлөлтүүд"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Одоогийн файлаас бүх өөрчлөлтийг хуулах"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Бүх өөрчлөлтийг одоогийн файл руу буцаах"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Өөрчлөлтийг харуулах"
@@ -5715,7 +5745,7 @@
     "message": "Зөвхөн одоогийн хам сэдвээс мессеж харуулах (top, iframe, worker, өргөтгөл)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Шүүлтүүрийн хажуугийн цэсээр дарсан"
+    "message": "Логийн түвшнийг консолын хажуугийн цэсээс удирддаг."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Логийг хадгалах"
@@ -6612,16 +6642,16 @@
     "message": "Харагдах хүртэл гүйлгэх"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Зорилтот зориулсан тушаалыг харуулах"
+    "message": "commandfor атрибуттай холбоотой элементийг харуулах"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe-н дэлгэрэнгүйг харуулах"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Сонирхлын зорилтыг харуулах"
+    "message": "interesttarget атрибуттай холбоотой элементийг харуулах"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Поповерын зорилтыг харуулах"
+    "message": "popovertarget атрибуттай холбоотой элементийг харуулах"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Энэ хүрээг зарын хүрээ гэж тодорхойлсон"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "бүтээсэн загварчлалын хуудас"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "CSS-н бүх өөрчлөлтийг хуулах"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Бүх мэдэгдлийг хуулах"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "шалгагчаар"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "CSS-н бүх өөрчлөлтийг хуулах"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Бүх мэдэгдлийг JS-р хуулах"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Хандалт"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Аудитын үеэр дэлгэцийн эмуляцыг ашиглах"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Мобайл эмуляц ашиглах"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Пакетыг дахин эрэмбэлэх"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "хувь"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Профайл нэр"
   },
@@ -8802,7 +8826,7 @@
     "message": "Хэрэглэгчийн захиалгат агент оруулах"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Сүлжээний нөхцөлийг харуулсан"
+    "message": "Сүлжээний нөхцөлийг харуулсан."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Сүлжээний удаашруулалт"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Алсын хаягийн хязгаар"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Хүсэлтийн толгой хэсэг"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Хариу үйлдлийн толгой хэсэг"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Дараах хэлбэрээр хадгалах…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Файлыг дискт хадгалж чадсангүй."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Дарах фолдер сонгох"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Үзэх илэрхийллийг сэргээх"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Үзэх илэрхийллийг устгасан"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} хугарлын цэгт хүрэх"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Дэлгэрэнгүй"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Хэмжээс"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Үргэлжлэх хугацаа"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Нэмэлт мэдээлэл авах"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Байршил"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Мессеж"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (дэд)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} цуглуулсан"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}-н {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "CSS сонгогчийн тохирлын нарийвчилсан статистикийг цуглуулахын тулд \"{PH1}\"-г сонгоно уу."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (өөрөө)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Скрипт"
@@ -14682,19 +14694,19 @@
     "message": "Тохируулах"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Талбарын өгөгдөл дуудахыг тохируулах"
+    "message": "Талбарын хэмжигдэхүүнийг дуудахыг тохируулна уу"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome-н UX тайланд энэ хуудасны хувьд бодит ертөнцийн хурдны өгөгдөл хангалтгүй байна."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "{PH1}-с талбарын хуримтлуулсан өгөгдлийг дуудсанаар дотоод хэмжилтийг тухайн сайт дээр бодит хэрэглэгчид юу мэдэрч байгаатай хамааруулан авч үзэхэд тань тусална."
+    "message": "{PH1}-с талбарын хуримтлуулсан хэмжигдэхүүнийг дуудсанаар дотоод хэмжилтийг тухайн сайт дээр бодит хэрэглэгчийн туршлагатай хамааруулан авч үзэхэд тань тусалдаг."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" нь хүчинтэй эх эсвэл URL биш байна."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Хөгжүүлэлтийн эхийг сайтын эцсийн хувилбарын эхтэйгээ хамааралтай талбарын өгөгдлийг автоматаар авах болгож тохируулна уу."
+    "message": "Хөгжүүлэлтийн эхийг сайтын эцсийн хувилбарын эхтэйгээ хамааралтай талбарын хэмжигдэхүүнийг автоматаар авах болгож тохируулна уу."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Шинэ"
@@ -14703,7 +14715,7 @@
     "message": "Ок"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Доорх URL-д талбарын өгөгдлийг үргэлж харуулах"
+    "message": "Доорх URL-д талбарын хэмжигдэхүүнийг үргэлж харуулах"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Татгалзах"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools нээлттэй үед таны зочилсон URL-г талбарын өгөгдлийг асуухын тулд Google рүү илгээх болно. Эдгээр хүсэлт нь таны Google бүртгэлтэй холбоогүй болно."
+    "message": "DevTools-г нээлттэй үед таны зочилсон URL-г талбарын хэмжигдэхүүнийг асуухын тулд Google рүү илгээнэ. Эдгээр хүсэлтийг таны Google бүртгэлтэй холбодоггүй."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Скриптийн URL-д зориулж энгийн илэрхийллийн дүрэм нэмэх"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Харилцан үйлдэл, бүдүүвчийн шилжилтийн логийн хэсэг"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Талбарын өгөгдөл"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Талбарын хэмжигдэхүүн"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP-н харилцан үйлдэл нь харилцан үйлдлийн саатлын 98 дахь перцентильд байна."
@@ -14856,10 +14868,10 @@
     "message": "Дотоодын болон талбарын хэмжигдэхүүнүүд"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Дотоод, талбарын өгөгдлийн талаар нэмэлт мэдээлэл авах"
+    "message": "Дотоод, талбарын хэмжигдэхүүний талаар нэмэлт мэдээлэл авах"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Дотоод хэмжигдэхүүнийг таны сүлжээний холболт, төхөөрөмжийг ашиглан одоогийн хуудаснаас авдаг. Талбарын өгөгдлийг өөр олон сүлжээний холболт, төхөөрөмжийг ашиглаж буй бодит хэрэглэгчид хэмждэг."
+    "message": "Дотоод хэмжигдэхүүнийг таны сүлжээний холболт, төхөөрөмжийг ашиглан одоогийн хуудаснаас авдаг. Талбарын хэмжигдэхүүнийг олон өөр өөр сүлжээний холболт, төхөөрөмжийг ашиглан бодит хэрэглэгч хэмждэг."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Дотоод хэмжигдэхүүнүүд"
@@ -14922,10 +14934,10 @@
     "message": "Хамгийн муу бүдүүвчийн шилжилтийн кластер луу очно уу."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Төхөөрөмжийн төрлийн талбарын өгөгдлийг харуулах: {PH1}"
+    "message": "Төхөөрөмжийн төрөлд зориулж талбарын хэмжигдэхүүн харуулах: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1}-н талбарын өгөгдлийг харуулах"
+    "message": "{PH1}-н талбарын хэмжигдэхүүнийг харуулах"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP-н харилцан үйлдэл рүү очно уу."
@@ -15033,13 +15045,13 @@
     "message": "Таны дотоод {PH1}-н утга болох {PH2} сайн байгаа хэдий ч хэрэглэгчдийн туршлагаас тань нэлээд сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} сайн байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} сайн байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} сайн байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын хэмжигдэхүүний 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} муу байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} сайн байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын хэмжигдэхүүний 75 перцентиль буюу {PH1}-н утга болох {PH3} муу байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Таны дотоод {PH1}-н утга болох {PH2} сайн байгаа бөгөөд таны хэрэглэгчдийн туршлагатай төстэй байна."
@@ -15054,13 +15066,13 @@
     "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай хэдий ч хэрэглэгчдийн туршлагаас тань нэлээд сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH3}-н {PH1} утга сайн байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн талбарын өгөгдлийн 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн талбарын хэмжигдэхүүний 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} муу байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2}-г сайжруулах шаардлагатай бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын хэмжигдэхүүний 75 перцентиль буюу {PH1}-н утга болох {PH3} муу байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Таны дотоод {PH2}-н {PH1} утгыг сайжруулах шаардлагатай бөгөөд таны хэрэглэгчдийн туршлагатай төстэй байна."
@@ -15075,13 +15087,13 @@
     "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа хэдий ч хэрэглэгчдийн туршлагаас тань нэлээд сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH3}-н {PH1} утга сайн байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 перцентиль буюу {PH1}-н утга болох {PH3} сайн байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын өгөгдлийн 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Гэсэн хэдий ч талбарын хэмжигдэхүүний 75 дахь перцентиль буюу {PH1}-н утга болох {PH3}-г сайжруулах шаардлагатай байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн ч талбарын өгөгдлийн 75 перцентиль буюу {PH3}-н {PH1} утга муу байна."
+    "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд үүнийг бодит хэрэглэгчдийн {PH1}-н туршлагын {PH4}-тай адилаар үнэлсэн байна. Түүнчлэн талбарын хэмжигдэхүүний 75 перцентиль буюу {PH3}-н {PH1} утга муу байна."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Таны дотоод {PH1}-н утга болох {PH2} муу байгаа бөгөөд таны хэрэглэгчдийн туршлагатай төстэй байна."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools-г {PH1} руу сэлгэх"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Шургуулгын чиглэлийг сэлгэх"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Нэмэх"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1}-н дэлгэцийн агшин - өмнөх хүсэлтийг үзэхийн тулд сонгоно уу."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Тэмдэглэгээг устгах"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Дууны замыг тохируулах"

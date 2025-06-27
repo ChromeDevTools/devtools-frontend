@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "ไม่ต้องจำลองประเภทสื่อ CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "ไม่ต้องจำลองการปรับขนาดข้อความระบบปฏิบัติการ"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ไม่ต่อขยายเส้นตารางกริด"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "จำลองภาวะตาบอดสีเขียว (มองไม่เห็นสีเขียว)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "จำลองการปรับขนาดข้อความระบบปฏิบัติการ"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "จำลองภาวะตาบอดสีแดง (มองไม่เห็นสีแดง)"
@@ -732,6 +738,30 @@
     "message": "การบล็อกคำขอจากเครือข่าย"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "ไม่มีการจำลอง"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ค่าเริ่มต้น)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "ไม่มีการจำลอง"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "บังคับใช้ประเภทสื่อสำหรับการทดสอบรูปแบบการพิมพ์และหน้าจอ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "บังคับใช้การจำลองการปรับขนาดข้อความระบบปฏิบัติการ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "บังคับใช้การจำลองภาวะบกพร่องในการมองเห็น"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "สลับลิ้นชัก"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "สลับการวางแนวลิ้นชัก"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "เลิกตรึงเป็นหน้าต่างแยก"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "คำขอทรัพยากรที่ URL มีทั้งอักขระ \\(n|r|t) แบบช่องว่างซึ่งนำออกไปแล้วและมีอักขระน้อยกว่า (<) ถูกบล็อก โปรดนำบรรทัดใหม่ออกและเข้ารหัสอักขระที่น้อยกว่าจากที่ต่างๆ อย่างเช่นค่าแอตทริบิวต์ขององค์ประกอบเพื่อโหลดทรัพยากรเหล่านี้"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "การตรวจหาการเข้ารหัสข้อความ ISO-2022-JP โดยอัตโนมัติเลิกใช้งานแล้วและจะปิดใช้ในเร็วๆ นี้ โปรดระบุการเข้ารหัสข้อความในส่วนหัวประเภทเนื้อหาหรือใช้เมตาแท็ก (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() เลิกใช้งานแล้ว โปรดใช้ Navigation Timing 2 ซึ่งเป็น API แบบมาตรฐานแทน"
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit ไม่สำเร็จ: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ข้อมูลในช่องได้รับการกำหนดค่าสำหรับ URL อื่นที่ไม่ใช่หน้าปัจจุบัน"
+    "message": "เมตริกภาคสนามได้รับการกำหนดค่าสำหรับ URL อื่นที่ไม่ใช่หน้าปัจจุบัน"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "อัตราส่วนพิกเซลของอุปกรณ์ต้องเป็นตัวเลขหรือว่างเปล่า"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "บันทึกเป็น…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "บันทึกไฟล์ไปยังดิสก์ไม่สำเร็จ"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "บันทึกรูปภาพ"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "สาเหตุหลักๆ ของการเปลี่ยนแปลงเลย์เอาต์"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "รูปภาพที่ไม่มีขนาด"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "คลัสเตอร์ที่แย่ที่สุด"
@@ -1839,7 +1875,7 @@
     "message": "มีการเปลี่ยนเส้นทาง (เปลี่ยนเส้นทาง {PH1} +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "เซิร์ฟเวอร์ตอบสนองช้า (สังเกต {PH1}) "
+    "message": "เซิร์ฟเวอร์ตอบสนองช้า (สังเกต {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "ไม่ได้ใช้การบีบอัด"
@@ -1848,7 +1884,7 @@
     "message": "หลีกเลี่ยงการเปลี่ยนเส้นทาง"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "เซิร์ฟเวอร์ตอบสนองเร็ว (สังเกต {PH1}) "
+    "message": "เซิร์ฟเวอร์ตอบสนองเร็ว (สังเกต {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "ใช้การบีบอัดข้อความ"
@@ -2070,7 +2106,7 @@
     "message": "[หลีกเลี่ยงการเชนคำขอที่สำคัญ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)โดยลดความยาวของเชน ลดขนาดการดาวน์โหลดของทรัพยากร หรือเลื่อนเวลาการดาวน์โหลดทรัพยากรที่ไม่จำเป็นเพื่อปรับปรุงการโหลดหน้าเว็บ"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "เพิ่มคำแนะนำ[การเชื่อมต่อล่วงหน้า](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ไปยังต้นทางที่สำคัญที่สุด แต่พยายามใช้ให้น้อยกว่า 4"
+    "message": "เพิ่มคำแนะนำ[การเชื่อมต่อล่วงหน้า](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/)ไปยังต้นทางที่สำคัญที่สุด แต่พยายามใช้ไม่เกิน 4"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "ตัวเลือกการเชื่อมต่อล่วงหน้า"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "การโต้ตอบด้วยการแตะอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)หากวิวพอร์ตไม่เหมาะกับอุปกรณ์เคลื่อนที่"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "การหน่วงเวลาการแตะบนมือถือ"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "เพิ่มประสิทธิภาพวิวพอร์ตสำหรับอุปกรณ์เคลื่อนที่"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "หากต้องการใช้ฟีเจอร์นี้ ให้ตั้งค่ากำหนดภาษาเป็นภาษาอังกฤษในการตั้งค่าเครื่องมือสำหรับนักพัฒนาเว็บ"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "คุณยังใช้พรอมต์ที่แนะนำข้างต้นเพื่อเริ่มการสนทนาได้ด้วย"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "ดูข้อมูลเกี่ยวกับ AI ในเครื่องมือสำหรับนักพัฒนาเว็บ"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "ยุบ"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "ล้างการจัดเก็บออบเจ็กต์ \"{PH1}\" ใช่ไหม"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "ลบฐานข้อมูล \"{PH1}\" ใช่ไหม"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "คีย์"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "ระบบจะนําข้อมูลที่อยู่ในการจัดเก็บออบเจ็กต์ที่เลือกออก"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "การเก็บออบเจ็กต์"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "เฟรมนี้ระบุเป็นเฟรมรูทของโฆษณา"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "กฎรายการตัวกรองสคริปต์รูท"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "บริบทที่ปลอดภัย"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (จากการแมปแหล่งที่มา)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "แท็บการเปลี่ยนแปลงไม่แสดงการเปลี่ยนแปลงข้อมูลไบนารี"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "ในหน้านี้ คุณสามารถติดตามการเปลี่ยนแปลงโค้ดที่ทำในเครื่องมือสำหรับนักพัฒนาเว็บได้"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "คัดลอก"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ยังไม่มีการเปลี่ยนแปลง"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ไม่มีความแตกต่างของข้อความ"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{การลบ # รายการ (-)}other{การลบ # รายการ (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{การแทรก # รายการ (+)}other{การแทรก # รายการ (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "การเปลี่ยนแปลง"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "คัดลอกการเปลี่ยนแปลงทั้งหมดจากไฟล์ปัจจุบัน"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "เปลี่ยนการเปลี่ยนแปลงทั้งหมดกลับเป็นไฟล์ปัจจุบัน"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "แสดงการเปลี่ยนแปลง"
@@ -5715,7 +5745,7 @@
     "message": "แสดงเฉพาะข้อความจากบริบทปัจจุบัน (top, iframe, worker, ส่วนขยาย)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "ลบล้างโดยแถบด้านข้างของตัวกรอง"
+    "message": "ระดับบันทึกจะควบคุมโดยแถบด้านข้างคอนโซล"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "เก็บบันทึก"
@@ -6612,16 +6642,16 @@
     "message": "เลื่อนจนมองเห็น"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "แสดงคำสั่งสำหรับเป้าหมาย"
+    "message": "แสดงองค์ประกอบที่เกี่ยวข้องกับแอตทริบิวต์ commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "แสดงรายละเอียด iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "แสดงเป้าหมายความสนใจ"
+    "message": "แสดงองค์ประกอบที่เกี่ยวข้องกับแอตทริบิวต์ interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "แสดงเป้าหมายป๊อปอัป"
+    "message": "แสดงองค์ประกอบที่เกี่ยวข้องกับแอตทริบิวต์ popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "เฟรมนี้ได้รับการระบุว่าเป็นเฟรมของโฆษณา"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "สไตล์ชีตที่สร้างขึ้น"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "คัดลอกประกาศทั้งหมด"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ผ่านเครื่องมือตรวจสอบ"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "คัดลอกประกาศทั้งหมดเป็น JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "การช่วยเหลือพิเศษ"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ใช้การจำลองเดสก์ท็อปในระหว่างที่ตรวจสอบ"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "ใช้การจำลองอุปกรณ์เคลื่อนที่"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "การจัดเรียงแพ็กเก็ตใหม่"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "เปอร์เซ็นต์"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "ชื่อโปรไฟล์"
   },
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "พื้นที่ของที่อยู่ระยะไกล"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "ส่วนหัวของคำขอ"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ส่วนหัวการตอบกลับ"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "บันทึกเป็น…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "บันทึกไฟล์ไปยังดิสก์ไม่สำเร็จ"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "เลือกโฟลเดอร์สำหรับการลบล้าง"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "รีเฟรชนิพจน์การดู"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "ลบนิพจน์การดูแล้ว"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "พบเบรกพอยท์{PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "รายละเอียด"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "ขนาด"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ระยะเวลา"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "ตำแหน่ง"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "ข้อความ"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ย่อย)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "รวบรวมแล้ว {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} จาก {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "เลือก \"{PH1}\" เพื่อรวบรวมสถิติการจับคู่ตัวเลือก CSS โดยละเอียด"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (กิจกรรมเดียว)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "สคริปต์"
@@ -14682,19 +14694,19 @@
     "message": "กำหนดค่า"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "กำหนดค่าการดึงข้อมูลภาคสนาม"
+    "message": "กำหนดค่าการดึงข้อมูลเมตริกภาคสนาม"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "รายงาน Chrome UX ไม่มีข้อมูลความเร็วตามจริงที่เพียงพอสำหรับหน้านี้"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "ดึงข้อมูลภาคสนามที่รวบรวมจาก{PH1} เพื่อช่วยคุณปรับการวัดผลในเครื่องให้สอดคล้องกับบริบทประสบการณ์ของผู้ใช้จริงในเว็บไซต์"
+    "message": "ดึงเมตริกภาคสนามที่รวบรวมจาก{PH1} เพื่อช่วยคุณปรับการวัดผลในเครื่องให้สอดคล้องกับบริบทประสบการณ์ของผู้ใช้จริงในเว็บไซต์"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" ไม่ใช่ต้นทางหรือ URL ที่ถูกต้อง"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "ตั้งค่าต้นทางการพัฒนาเพื่อดูข้อมูลภาคสนามที่เกี่ยวข้องสำหรับต้นทางการใช้งานจริงโดยอัตโนมัติ"
+    "message": "ตั้งค่าต้นทางการพัฒนาเพื่อดูเมตริกภาคสนามที่เกี่ยวข้องสำหรับต้นทางการใช้งานจริงโดยอัตโนมัติ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "ใหม่"
@@ -14703,7 +14715,7 @@
     "message": "ตกลง"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "แสดงข้อมูลภาคสนามสำหรับ URL ด้านล่างเสมอ"
+    "message": "แสดงเมตริกภาคสนามสำหรับ URL ด้านล่างเสมอ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "เลือกไม่ใช้"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "เมื่อเปิดเครื่องมือสำหรับนักพัฒนาเว็บ ระบบจะส่ง URL ที่คุณเข้าชมไปยัง Google เพื่อค้นหาข้อมูลภาคสนาม คำขอเหล่านี้ไม่ได้เชื่อมโยงกับบัญชี Google ของคุณ"
+    "message": "เมื่อเปิดเครื่องมือสำหรับนักพัฒนาเว็บ ระบบจะส่ง URL ที่คุณเข้าชมไปยัง Google เพื่อค้นหาเมตริกภาคสนาม คำขอเหล่านี้ไม่ได้เชื่อมโยงกับบัญชี Google ของคุณ"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "เพิ่มกฎนิพจน์ทั่วไปสำหรับ URL ของสคริปต์"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ส่วนบันทึกการโต้ตอบและการเปลี่ยนแปลงเลย์เอาต์"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ข้อมูลในฟิลด์"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "เมตริกภาคสนาม"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "การโต้ตอบ INP มีค่าความล่าช้าในการโต้ตอบ 98%"
@@ -14856,10 +14868,10 @@
     "message": "เมตริกในเครื่องและจากข้อมูลภาคสนาม"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "ดูข้อมูลเพิ่มเติมเกี่ยวกับข้อมูลในเครื่องและข้อมูลภาคสนาม"
+    "message": "ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริกในเครื่องและข้อมูลภาคสนาม"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "ระบบจะบันทึกเมตริกในเครื่องจากหน้าเว็บปัจจุบันโดยใช้การเชื่อมต่อเครือข่ายและอุปกรณ์ของคุณ ข้อมูลภาคสนามวัดโดยผู้ใช้จริงโดยใช้การเชื่อมต่อเครือข่ายและอุปกรณ์ต่างๆ มากมาย"
+    "message": "ระบบจะบันทึกเมตริกในเครื่องจากหน้าเว็บปัจจุบันโดยใช้การเชื่อมต่อเครือข่ายและอุปกรณ์ของคุณ วัดเมตริกภาคสนามโดยผู้ใช้จริงโดยใช้การเชื่อมต่อเครือข่ายและอุปกรณ์ต่างๆ"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "เมตริกในเครื่อง"
@@ -14922,10 +14934,10 @@
     "message": "ไปที่คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ที่แย่ที่สุด"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "แสดงข้อมูลภาคสนามสำหรับประเภทอุปกรณ์: {PH1}"
+    "message": "แสดงเมตริกภาคสนามสำหรับประเภทอุปกรณ์: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "แสดงข้อมูลภาคสนามสำหรับ {PH1}"
+    "message": "แสดงเมตริกภาคสนามสำหรับ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "ไปที่การโต้ตอบ INP"
@@ -15033,13 +15045,13 @@
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็ว แต่เร็วกว่ามากเมื่อเทียบกับประสบการณ์ของผู้ใช้"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าเร็วและอยู่ในระดับที่ใกล้เคียงกับประสบการณ์ของผู้ใช้"
@@ -15054,13 +15066,13 @@
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุง แต่เร็วกว่ามากเมื่อเทียบกับประสบการณ์ของผู้ใช้"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ ข้อมูลภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ เมตริกภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณต้องได้รับการปรับปรุงและอยู่ในระดับที่ใกล้เคียงกับประสบการณ์ของผู้ใช้"
@@ -15075,13 +15087,13 @@
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้า แต่เร็วกว่ามากเมื่อเทียบกับประสบการณ์ของผู้ใช้"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่เร็ว"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม ข้อมูลภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง อย่างไรก็ตาม เมตริกภาคสนามยังพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งต้องได้รับการปรับปรุง"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ ข้อมูลภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
+    "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับเดียวกับ {PH4} ของประสบการณ์การใช้งาน {PH1} ของผู้ใช้จริง นอกจากนี้ เมตริกภาคสนามพบว่าผู้ใช้ {PH1} 75% ใช้เวลา {PH3} ซึ่งอยู่ในเกณฑ์ที่ช้า"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "ค่า {PH1} ที่ {PH2} ในเครื่องของคุณถือว่าช้าและอยู่ในระดับที่ใกล้เคียงกับประสบการณ์ของผู้ใช้"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "เปลี่ยนเครื่องมือสำหรับนักพัฒนาเว็บเป็น {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "สลับการวางแนวลิ้นชัก"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "เพิ่ม"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "ภาพหน้าจอสำหรับ {PH1} - เลือกเพื่อดูคำขอก่อนหน้า"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "ลบคำอธิบายประกอบ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "กำหนดค่าการติดตาม"

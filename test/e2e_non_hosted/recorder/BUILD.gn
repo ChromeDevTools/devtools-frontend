@@ -5,7 +5,12 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("recorder") {
-  sources = [ "ui_test.ts" ]
+  sources = [
+    "export_test.ts",
+    "recorder_test.ts",
+    "replay_test.ts",
+    "ui_test.ts",
+  ]
   deps = [
     "../../e2e/helpers",
     "../shared",

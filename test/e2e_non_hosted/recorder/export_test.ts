@@ -5,37 +5,23 @@
 import {assert} from 'chai';
 
 import {
-  getBrowserAndPages,
-  waitForAria,
-  waitForFunction,
-} from '../../../test/shared/helper.js';
-import {
   createAndStartRecording,
   enableAndOpenRecorderPanel,
+  record,
   stopRecording,
-} from '../helpers/recorder-helpers.js';
+} from '../../e2e/helpers/recorder-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 describe('Recorder', function() {
   if (this.timeout() !== 0) {
     this.timeout(40000);
   }
 
-  async function record() {
-    const {target, frontend} = getBrowserAndPages();
-    await target.bringToFront();
-    await frontend.bringToFront();
-    await frontend.waitForSelector('pierce/.settings');
-    await target.bringToFront();
-    const element = await target.waitForSelector('a[href="recorder2.html"]');
-    await element?.click();
-    await frontend.bringToFront();
-  }
-
   describe('Export', () => {
-    beforeEach(async () => {
-      const {frontend} = getBrowserAndPages();
-      // Mock the extension integration part and provide a test impl using RecorderPluginManager.
-      await frontend.evaluate(`
+    // Mock the extension integration part and provide a test impl using RecorderPluginManager.
+    async function createExtension(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+      await devToolsPage.evaluate(`
         (async function () {
           const Extensions = await import('./models/extensions/extensions.js');
           const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
@@ -55,11 +41,11 @@ describe('Recorder', function() {
           })
         })();
       `);
-      await enableAndOpenRecorderPanel('recorder/recorder.html');
-      await createAndStartRecording('Test');
-      await record();
-      await stopRecording();
-    });
+      await enableAndOpenRecorderPanel('recorder/recorder.html', devToolsPage, inspectedPage);
+      await createAndStartRecording('Test', undefined, devToolsPage);
+      await record(devToolsPage, inspectedPage);
+      await stopRecording(devToolsPage);
+    }
 
     const tests = [
       ['JSON', 'Test.json', '"type": "click"'],
@@ -70,12 +56,12 @@ describe('Recorder', function() {
     ];
 
     for (const [button, filename, expectedSubstring] of tests) {
-      it(`should ${button.toLowerCase()}`, async () => {
-        const {frontend} = getBrowserAndPages();
-        const exportButton = await waitForAria('Export recording');
+      it(`should ${button.toLowerCase()}`, async ({inspectedPage, devToolsPage}) => {
+        await createExtension(devToolsPage, inspectedPage);
+        const exportButton = await devToolsPage.waitForAria('Export recording');
         await exportButton.click();
-        const exportMenuItem = await waitForAria(button);
-        await frontend.evaluate(`
+        const exportMenuItem = await devToolsPage.waitForAria(button);
+        await devToolsPage.evaluate(`
           window.showSaveFilePicker = (opts) => {
             window.__suggestedFilename = opts.suggestedName;
             return {
@@ -94,10 +80,10 @@ describe('Recorder', function() {
           }
         `);
         await exportMenuItem.click();
-        const suggestedName = await waitForFunction(async () => {
-          return await frontend.evaluate('window.__suggestedFilename');
+        const suggestedName = await devToolsPage.waitForFunction(async () => {
+          return await devToolsPage.evaluate('window.__suggestedFilename');
         });
-        const content = (await frontend.evaluate(
+        const content = (await devToolsPage.evaluate(
                             'window.__writtenFile',
                             )) as string;
         assert.strictEqual(suggestedName, filename);

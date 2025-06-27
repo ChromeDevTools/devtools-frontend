@@ -40,6 +40,10 @@ export class InspectedPage extends PageWrapper {
   domain(host = 'localhost') {
     return `https://${host}:${this.serverPort}`;
   }
+
+  getOopifResourcesPath() {
+    return this.getResourcesPath('devtools.oopif.test');
+  }
 }
 
 export async function setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {

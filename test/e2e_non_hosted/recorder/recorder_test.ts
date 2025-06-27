@@ -3,17 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type {Page} from 'puppeteer-core';
 
 import type {StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
-import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type {RecorderActions} from '../../../front_end/panels/recorder/recorder-actions/recorder-actions.js';
 import {
   assertNotNullOrUndefined,
-  getBrowserAndPages,
-  renderCoordinatorQueueEmpty,
-  waitFor,
-  waitForAria,
-  waitForFunction,
 } from '../../../test/shared/helper.js';
 import {
   changeNetworkConditions,
@@ -23,28 +18,36 @@ import {
   onRecorderAttachedToTarget,
   openRecorderPanel,
   processAndVerifyBaseRecording,
-  raf,
   startOrStopRecordingShortcut,
   startRecording,
   startRecordingViaShortcut,
   stopRecording,
-} from '../helpers/recorder-helpers.js';
+} from '../../e2e/helpers/recorder-helpers.js';
 
 describe('Recorder', function() {
-  it('should capture the initial page as the url of the first section', async () => {
-    await startRecording('recorder/recorder.html');
-    const recording = await stopRecording();
+  it('should capture the initial page as the url of the first section', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {steps: []});
   });
 
-  it('should capture clicks on buttons', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should capture clicks on buttons', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#test');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#test');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -66,27 +69,31 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture multiple clicks with duration', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should capture multiple clicks with duration', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
+    await inspectedPage.bringToFront();
 
-    const element = await target.waitForSelector('#test');
+    const element = await inspectedPage.waitForSelector('#test');
 
     const point = await element!.clickablePoint();
-    await target.mouse.move(point.x, point.y);
+    await inspectedPage.page.mouse.move(point.x, point.y);
 
-    await target.mouse.down();
+    await inspectedPage.page.mouse.down();
     await new Promise(resolve => setTimeout(resolve, 350));
-    await target.mouse.up();
+    await inspectedPage.page.mouse.up();
 
-    await target.mouse.down();
+    await inspectedPage.page.mouse.down();
     await new Promise(resolve => setTimeout(resolve, 350));
-    await target.mouse.up();
+    await inspectedPage.page.mouse.up();
 
-    const recording = await stopRecording();
-    const steps = (recording as UserFlow).steps.slice(2);
+    const recording = await stopRecording(devToolsPage);
+    const steps = recording.steps.slice(2);
     assert.lengthOf(steps, 2);
     for (const step of steps) {
       assert.strictEqual(step.type, 'click');
@@ -94,19 +101,23 @@ describe('Recorder', function() {
     }
   });
 
-  it('should capture non-primary clicks and double clicks', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should capture non-primary clicks and double clicks', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#mouse-button', {button: 'middle'});
-    await target.click('#mouse-button', {button: 'right'});
-    await target.click('#mouse-button', {button: 'forward' as 'left'});
-    await target.click('#mouse-button', {button: 'back' as 'left'});
-    await target.click('#mouse-button', {clickCount: 1});
-    await target.click('#mouse-button', {clickCount: 2});
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#mouse-button', {button: 'middle'});
+    await inspectedPage.page.click('#mouse-button', {button: 'right'});
+    await inspectedPage.page.click('#mouse-button', {button: 'forward' as 'left'});
+    await inspectedPage.page.click('#mouse-button', {button: 'back' as 'left'});
+    await inspectedPage.page.click('#mouse-button', {clickCount: 1});
+    await inspectedPage.page.click('#mouse-button', {clickCount: 2});
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {
       steps: [
         {
@@ -172,16 +183,15 @@ describe('Recorder', function() {
     });
   });
 
-  it('should capture clicks on input buttons', async () => {
-    await startRecording('recorder/input.html');
+  it('should capture clicks on input buttons', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#reset');
-    await target.click('#submit');
-    await target.click('#button');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#reset');
+    await inspectedPage.page.click('#submit');
+    await inspectedPage.page.click('#button');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -221,16 +231,20 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture clicks on buttons with custom selector attribute', async () => {
-    await startRecording('recorder/recorder.html', {
-      selectorAttribute: 'data-devtools-test',
-    });
+  it('should capture clicks on buttons with custom selector attribute', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        {
+          selectorAttribute: 'data-devtools-test',
+        },
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#selector-attribute');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#selector-attribute');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -251,15 +265,19 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture Enter key presses on buttons', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should capture Enter key presses on buttons', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    const button = await target.waitForSelector('#test');
+    await inspectedPage.bringToFront();
+    const button = await inspectedPage.waitForSelector('#test');
     await button?.press('Enter');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -279,14 +297,13 @@ describe('Recorder', function() {
     );
   });
 
-  it('should not capture synthetic events', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should not capture synthetic events', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#synthetic');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#synthetic');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -305,20 +322,19 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture implicit form submissions', async () => {
-    await startRecording('recorder/form.html');
+  it('should capture implicit form submissions', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/form.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#name');
-    await target.type('#name', 'test');
-    await target.keyboard.down('Enter');
-    await target.waitForFunction(() => {
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#name');
+    await inspectedPage.page.type('#name', 'test');
+    await inspectedPage.page.keyboard.down('Enter');
+    await inspectedPage.page.waitForFunction(async () => {
       return window.location.href.endsWith('form.html?name=test');
     });
-    await target.keyboard.up('Enter');
+    await inspectedPage.page.keyboard.up('Enter');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/form.html',
@@ -366,63 +382,77 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture clicks on submit buttons inside of forms as click steps', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should capture clicks on submit buttons inside of forms as click steps',
+     async ({inspectedPage, devToolsPage}) => {
+       await startRecording(
+           'recorder/recorder.html',
+           undefined,
+           devToolsPage,
+           inspectedPage,
+       );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#form-button');
+       await inspectedPage.bringToFront();
+       await inspectedPage.page.click('#form-button');
 
-    const recording = await stopRecording();
-    assert.deepEqual(
-        processAndVerifyBaseRecording(recording),
-        {
-          steps: [{
-            type: 'click',
-            target: 'main',
-            selectors: [
-              ['aria/Form Button'],
-              ['#form-button'],
-              ['xpath///*[@id="form-button"]'],
-              ['pierce/#form-button'],
-              ['text/Form Button'],
-            ]
-          }]
-        },
-    );
-  });
+       const recording = await stopRecording(devToolsPage);
+       assert.deepEqual(
+           processAndVerifyBaseRecording(recording),
+           {
+             steps: [{
+               type: 'click',
+               target: 'main',
+               selectors: [
+                 ['aria/Form Button'],
+                 ['#form-button'],
+                 ['xpath///*[@id="form-button"]'],
+                 ['pierce/#form-button'],
+                 ['text/Form Button'],
+               ]
+             }]
+           },
+       );
+     });
 
-  it('should build an ARIA selector for the parent element that is interactive', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should build an ARIA selector for the parent element that is interactive',
+     async ({inspectedPage, devToolsPage}) => {
+       await startRecording(
+           'recorder/recorder.html',
+           undefined,
+           devToolsPage,
+           inspectedPage,
+       );
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#span');
+       await inspectedPage.bringToFront();
+       await inspectedPage.page.click('#span');
 
-    const recording = await stopRecording();
-    assert.deepEqual(processAndVerifyBaseRecording(recording), {
-      steps: [{
-        type: 'click',
-        target: 'main',
-        selectors: [
-          ['aria/Hello World', 'aria/[role="generic"]'],
-          ['#span'],
-          ['xpath///*[@id="span"]'],
-          ['pierce/#span'],
-        ]
-      }]
-    });
-  });
+       const recording = await stopRecording(devToolsPage);
+       assert.deepEqual(processAndVerifyBaseRecording(recording), {
+         steps: [{
+           type: 'click',
+           target: 'main',
+           selectors: [
+             ['aria/Hello World', 'aria/[role="generic"]'],
+             ['#span'],
+             ['xpath///*[@id="span"]'],
+             ['pierce/#span'],
+           ]
+         }]
+       });
+     });
 
   it('should fall back to a css selector if an element does not have an accessible and interactive parent',
-     async () => {
-       await startRecording('recorder/recorder.html');
+     async ({devToolsPage, inspectedPage}) => {
+       await startRecording(
+           'recorder/recorder.html',
+           undefined,
+           devToolsPage,
+           inspectedPage,
+       );
 
-       const {target} = getBrowserAndPages();
-       await target.bringToFront();
-       await target.click('#span2');
+       await inspectedPage.bringToFront();
+       await inspectedPage.page.click('#span2');
 
-       const recording = await stopRecording();
+       const recording = await stopRecording(devToolsPage);
        assert.deepEqual(
            processAndVerifyBaseRecording(recording),
            {
@@ -439,64 +469,63 @@ describe('Recorder', function() {
        );
      });
 
-  it('should create an aria selector even if the element is within a shadow root', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should create an aria selector even if the element is within a shadow root',
+     async ({inspectedPage, devToolsPage}) => {
+       await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('pierce/#inner-span');
+       await inspectedPage.bringToFront();
+       await inspectedPage.page.click('pierce/#inner-span');
 
-    const recording = await stopRecording();
-    assert.deepEqual(
-        processAndVerifyBaseRecording(recording),
-        {
-          steps: [{
-            type: 'click',
-            target: 'main',
-            selectors: [
-              ['#shadow-root > span', '#inner-span'],
-              ['pierce/#inner-span'],
-            ],
-          }]
-        },
-    );
-  });
+       const recording = await stopRecording(devToolsPage);
+       assert.deepEqual(
+           processAndVerifyBaseRecording(recording),
+           {
+             steps: [{
+               type: 'click',
+               target: 'main',
+               selectors: [
+                 ['#shadow-root > span', '#inner-span'],
+                 ['pierce/#inner-span'],
+               ],
+             }]
+           },
+       );
+     });
 
-  it('should record clicks on shadow DOM elements with slots containing text nodes only', async () => {
-    await startRecording('recorder/shadow-text-node.html');
+  it('should record clicks on shadow DOM elements with slots containing text nodes only',
+     async ({inspectedPage, devToolsPage}) => {
+       await startRecording('recorder/shadow-text-node.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('custom-button');
+       await inspectedPage.bringToFront();
+       await inspectedPage.page.click('custom-button');
 
-    const recording = await stopRecording();
-    assert.deepEqual(
-        processAndVerifyBaseRecording(recording, {
-          resource: 'recorder/shadow-text-node.html',
-        }),
-        {
-          steps: [{
-            type: 'click',
-            target: 'main',
-            selectors: [
-              ['custom-button'],
-              ['xpath//html/body/custom-button'],
-              ['pierce/custom-button'],
-            ]
-          }]
-        },
-    );
-  });
+       const recording = await stopRecording(devToolsPage);
+       assert.deepEqual(
+           processAndVerifyBaseRecording(recording, {
+             resource: 'recorder/shadow-text-node.html',
+           }),
+           {
+             steps: [{
+               type: 'click',
+               target: 'main',
+               selectors: [
+                 ['custom-button'],
+                 ['xpath//html/body/custom-button'],
+                 ['pierce/custom-button'],
+               ]
+             }]
+           },
+       );
+     });
 
-  it('should record interactions with elements within iframes', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should record interactions with elements within iframes', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.mainFrame().childFrames()[0].click('#in-iframe');
-    await target.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.mainFrame().childFrames()[0].click('#in-iframe');
+    await inspectedPage.page.mainFrame().childFrames()[0].childFrames()[0].click('aria/Inner iframe button');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -530,27 +559,26 @@ describe('Recorder', function() {
     );
   });
 
-  it('should wait for navigations in the generated scripts', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should wait for navigations in the generated scripts', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('aria/Page 2');
-    await target.waitForFunction(() => {
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('aria/Page 2');
+    await inspectedPage.page.waitForFunction(() => {
       return window.location.href.endsWith('recorder2.html');
     });
-    await target.waitForSelector('aria/Back to Page 1');
-    await waitForFunction(async () => {
-      const recording = await getCurrentRecording();
-      return (recording as {steps: unknown[]}).steps.length >= 3;
+    await inspectedPage.waitForSelector('aria/Back to Page 1');
+    await devToolsPage.waitForFunction(async () => {
+      const recording = await getCurrentRecording(devToolsPage);
+      return recording.steps.length >= 3;
     });
-    await target.bringToFront();
-    await target.click('aria/Back to Page 1');
-    await target.waitForFunction(() => {
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('aria/Back to Page 1');
+    await inspectedPage.page.waitForFunction(async () => {
       return window.location.href.endsWith('recorder.html');
     });
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {
       steps: [
         {
@@ -589,22 +617,26 @@ describe('Recorder', function() {
     });
   });
 
-  it('should also record network conditions', async () => {
-    await startRecording('recorder/recorder.html', {
-      networkCondition: '3G',
-    });
+  it('should also record network conditions', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        {
+          networkCondition: '3G',
+        },
+        devToolsPage,
+        inspectedPage,
+    );
 
-    const {frontend, target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#test');
-    await frontend.bringToFront();
-    await changeNetworkConditions('Slow 4G');
-    await target.bringToFront();
-    await target.click('#test');
-    await frontend.bringToFront();
-    await openRecorderPanel();
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#test');
+    await devToolsPage.bringToFront();
+    await changeNetworkConditions('Slow 4G', devToolsPage);
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#test');
+    await devToolsPage.bringToFront();
+    await openRecorderPanel(devToolsPage);
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           expectCommon: false,
@@ -669,22 +701,21 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture keyboard events on inputs', async () => {
-    await startRecording('recorder/input.html');
+  it('should capture keyboard events on inputs', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.keyboard.press('Tab');
-    await target.keyboard.type('1');
-    await target.keyboard.press('Tab');
-    await target.keyboard.type('2');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.keyboard.press('Tab');
+    await inspectedPage.page.keyboard.type('1');
+    await inspectedPage.page.keyboard.press('Tab');
+    await inspectedPage.page.keyboard.type('2');
     // TODO(alexrudenko): for some reason the headless test does not flush the buffer
     // when recording is stopped.
-    await target.evaluate(
-        () => (document.querySelector('#two') as HTMLElement).blur(),
+    await inspectedPage.evaluate(
+        () => (document.activeElement as HTMLElement | null)?.blur(),
     );
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {resource: 'recorder/input.html'}),
         {
@@ -734,12 +765,11 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture keyboard events on non-text inputs', async () => {
-    await startRecording('recorder/input.html', {untrustedEvents: true});
+  it('should capture keyboard events on non-text inputs', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    const color = await target.waitForSelector('#color');
+    await inspectedPage.bringToFront();
+    const color = await inspectedPage.waitForSelector('#color');
     await color!.click();
 
     // Imitating an input event.
@@ -749,7 +779,7 @@ describe('Recorder', function() {
       element.dispatchEvent(new Event('input', {bubbles: true}));
     });
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -782,17 +812,16 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture navigation without change', async () => {
-    await startRecording('recorder/input.html');
+  it('should capture navigation without change', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.keyboard.press('Tab');
-    await target.keyboard.down('Shift');
-    await target.keyboard.press('Tab');
-    await target.keyboard.up('Shift');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.keyboard.press('Tab');
+    await inspectedPage.page.keyboard.down('Shift');
+    await inspectedPage.page.keyboard.press('Tab');
+    await inspectedPage.page.keyboard.up('Shift');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -834,23 +863,21 @@ describe('Recorder', function() {
     );
   });
 
-  it('should capture a change that causes navigation without blur or change', async () => {
-    await startRecording('recorder/programmatic-navigation-on-keydown.html');
+  it('should capture a change that causes navigation without blur or change', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/programmatic-navigation-on-keydown.html', undefined, devToolsPage, inspectedPage);
+    await inspectedPage.bringToFront();
+    await inspectedPage.waitForSelector('input');
+    await inspectedPage.page.keyboard.press('1');
+    await inspectedPage.page.keyboard.press('Enter', {delay: 50});
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.waitForSelector('input');
-    await target.keyboard.press('1');
-    await target.keyboard.press('Enter', {delay: 50});
-
-    await waitForFunction(async () => {
-      const controller = await getRecordingController();
+    await devToolsPage.waitForFunction(async () => {
+      const controller = await getRecordingController(devToolsPage);
       return await controller.evaluate(
           c => c.getCurrentRecordingForTesting()?.flow.steps.length === 5,
       );
     });
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/programmatic-navigation-on-keydown.html',
@@ -887,17 +914,16 @@ describe('Recorder', function() {
     );
   });
 
-  it('should associate events with right navigations', async () => {
-    await startRecording('recorder/multiple-navigations.html');
+  it('should associate events with right navigations', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/multiple-navigations.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('button');
-    await target.waitForFunction(() => {
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('button');
+    await inspectedPage.page.waitForFunction(async () => {
       return window.location.href.endsWith('input.html');
     });
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/multiple-navigations.html',
@@ -923,15 +949,14 @@ describe('Recorder', function() {
     );
   });
 
-  it('should work for select elements', async () => {
-    await startRecording('recorder/select.html', {untrustedEvents: true});
+  it('should work for select elements', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/select.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#select');
-    await target.select('#select', 'O2');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#select');
+    await inspectedPage.page.select('#select', 'O2');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/select.html',
@@ -964,14 +989,13 @@ describe('Recorder', function() {
     );
   });
 
-  it('should work for checkbox elements', async () => {
-    await startRecording('recorder/checkbox.html', {untrustedEvents: true});
+  it('should work for checkbox elements', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/checkbox.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#checkbox');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#checkbox');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/checkbox.html',
@@ -991,14 +1015,13 @@ describe('Recorder', function() {
     );
   });
 
-  it('should work for elements modified on mousedown', async () => {
-    await startRecording('recorder/input.html', {untrustedEvents: true});
+  it('should work for elements modified on mousedown', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-    await target.bringToFront();
-    await target.click('#to-be-modified');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#to-be-modified');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -1017,21 +1040,20 @@ describe('Recorder', function() {
     );
   });
 
-  it('should record OOPIF interactions', async () => {
-    const {target} = getBrowserAndPages();
-    await startRecording('recorder/oopif.html', {untrustedEvents: true});
+  it('should record OOPIF interactions', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/oopif.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    await target.bringToFront();
-    const frame = target.frames().find(frame => frame.url().endsWith('iframe1.html'));
+    await inspectedPage.bringToFront();
+    const frame = inspectedPage.page.frames().find(frame => frame.url().endsWith('iframe1.html'));
     const link = await frame!.waitForSelector('a');
-    const frame2Promise = target.waitForFrame(
+    const frame2Promise = inspectedPage.page.waitForFrame(
         frame => frame.url().endsWith('iframe2.html'),
     );
     await link!.click();
     const frame2 = await frame2Promise;
     await frame2?.waitForSelector('a');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording, {resource: 'recorder/oopif.html'}), {
       steps: [{
         type: 'click',
@@ -1052,54 +1074,52 @@ describe('Recorder', function() {
     });
   });
 
-  it('should capture and store screenshots for every section', async () => {
-    const {target} = getBrowserAndPages();
-    await startRecording('recorder/recorder.html');
-    await target.bringToFront();
-    await raf(target);
-    await stopRecording();
-    await waitFor('.section .screenshot');
+  it('should capture and store screenshots for every section', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
+    await inspectedPage.bringToFront();
+    await devToolsPage.raf();
+    await stopRecording(devToolsPage);
+    await devToolsPage.waitFor('.section .screenshot');
   });
 
-  it('should record interactions with popups', async () => {
-    await startRecording('recorder/recorder.html', {untrustedEvents: true});
+  it('should record interactions with popups', async ({inspectedPage, devToolsPage, browser}) => {
+    await startRecording('recorder/recorder.html', {untrustedEvents: true}, devToolsPage, inspectedPage);
 
-    const {target, browser} = getBrowserAndPages();
-    await target.bringToFront();
-    const openPopupButton = await target.waitForSelector('aria/Open Popup');
+    await inspectedPage.bringToFront();
+    const openPopupButton = await inspectedPage.waitForSelector('aria/Open Popup');
     // Popups are separate targets so Recorder is only able to learn about them
-    // after a while. To allow no-flaky testing, we need to synchronise with the
-    // frontend here.
-    const recorderHandledPopup = onRecorderAttachedToTarget();
+    // after a while. To allow no-flaky testing, we need to synchronies with the
+    // devToolsPage here.
+    const recorderHandledPopup = onRecorderAttachedToTarget(devToolsPage);
     await openPopupButton?.click();
-    await waitForFunction(async () => {
-      const controller = await getRecordingController();
+    await devToolsPage.waitForFunction(async () => {
+      const controller = await getRecordingController(devToolsPage);
       return await controller.evaluate(c => {
         const steps = c.getCurrentRecordingForTesting()?.flow.steps;
         return steps?.length === 3 && steps[1].assertedEvents?.length === 1;
       });
     });
 
-    const popupTarget = await browser.waitForTarget(
+    const popupTarget = await browser.browser.waitForTarget(
         target => target.url().endsWith('popup.html'),
     );
-    const popupPage = await popupTarget.page();
-    await popupPage?.bringToFront();
+    const popupPage = (await popupTarget.page()) as Page;
+    await popupPage.bringToFront();
 
     await recorderHandledPopup;
-    const buttonInPopup = await popupPage?.waitForSelector(
+    const buttonInPopup = await popupPage.waitForSelector(
         'aria/Button in Popup',
     );
-    await buttonInPopup?.click();
-    await waitForFunction(async () => {
-      const controller = await getRecordingController();
+    await buttonInPopup!.click();
+    await devToolsPage.bringToFront();
+    await devToolsPage.waitForFunction(async () => {
+      const controller = await getRecordingController(devToolsPage);
       return await controller.evaluate(
           c => c.getCurrentRecordingForTesting()?.flow.steps.length === 4,
       );
     });
-    await popupPage?.close();
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording),
         {
@@ -1131,18 +1151,16 @@ describe('Recorder', function() {
     );
   });
 
-  it('should break out shifts in text controls', async () => {
-    await startRecording('recorder/input.html');
+  it('should break out shifts in text controls', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.keyboard.press('Tab');
+    await inspectedPage.page.keyboard.type('1');
+    await inspectedPage.page.keyboard.press('Shift');
+    await inspectedPage.page.keyboard.type('d');
 
-    await target.bringToFront();
-    await target.keyboard.press('Tab');
-    await target.keyboard.type('1');
-    await target.keyboard.press('Shift');
-    await target.keyboard.type('d');
-
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -1193,22 +1211,20 @@ describe('Recorder', function() {
         });
   });
 
-  it('should work with contiguous inputs', async () => {
-    await startRecording('recorder/input.html');
+  it('should work with contiguous inputs', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
-
-    await target.bringToFront();
+    await inspectedPage.bringToFront();
 
     // Focus the first input in the contiguous line of inputs.
-    await target.waitForSelector('#contiguous-field-1');
-    await target.focus('#contiguous-field-1');
+    await inspectedPage.waitForSelector('#contiguous-field-1');
+    await inspectedPage.page.focus('#contiguous-field-1');
 
     // This should type into `#contiguous-field-1` and `#contiguous-field-2` due
     // to the in-page script.
-    await target.keyboard.type('somethingworks');
+    await inspectedPage.page.keyboard.type('somethingworks');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/input.html',
@@ -1240,16 +1256,14 @@ describe('Recorder', function() {
     );
   });
 
-  it('should work with shadow inputs', async () => {
-    await startRecording('recorder/shadow-input.html');
+  it('should work with shadow inputs', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/shadow-input.html', undefined, devToolsPage, inspectedPage);
 
-    const {target} = getBrowserAndPages();
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('custom-input');
+    await inspectedPage.page.keyboard.type('works');
 
-    await target.bringToFront();
-    await target.click('custom-input');
-    await target.keyboard.type('works');
-
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           resource: 'recorder/shadow-input.html',
@@ -1277,14 +1291,11 @@ describe('Recorder', function() {
         });
   });
 
-  it('should edit while recording', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should edit while recording', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target, frontend} = getBrowserAndPages();
-    await frontend.bringToFront();
-
-    const steps = await waitForFunction(async () => {
-      const steps = await frontend.$$('pierce/devtools-step-view');
+    const steps = await devToolsPage.waitForFunction(async () => {
+      const steps = await devToolsPage.$$('devtools-step-view');
       return steps.length === 3 ? steps : undefined;
     });
     const lastStep = steps.pop();
@@ -1295,13 +1306,13 @@ describe('Recorder', function() {
 
     await lastStep.click({button: 'right'});
 
-    const removeStep = await waitForAria('Remove step[role="menuitem"]');
+    const removeStep = await devToolsPage.waitForAria('Remove step[role="menuitem"]');
     await removeStep.click();
 
-    await target.bringToFront();
-    await target.click('#test');
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#test');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(
         processAndVerifyBaseRecording(recording, {
           expectCommon: false,
@@ -1334,17 +1345,15 @@ describe('Recorder', function() {
     );
   });
 
-  it('should edit the type while recording', async () => {
-    await startRecording('recorder/recorder.html');
+  it('should edit the type while recording', async ({inspectedPage, devToolsPage}) => {
+    await startRecording('recorder/recorder.html', undefined, devToolsPage, inspectedPage);
 
-    const {target, frontend} = getBrowserAndPages();
+    await inspectedPage.bringToFront();
+    await inspectedPage.page.click('#test');
 
-    await target.bringToFront();
-    await target.click('#test');
-
-    await frontend.bringToFront();
-    const steps = await waitForFunction(async () => {
-      const steps = await frontend.$$('pierce/devtools-step-view');
+    await devToolsPage.bringToFront();
+    const steps = await devToolsPage.waitForFunction(async () => {
+      const steps = await devToolsPage.$$('devtools-step-view');
       return steps.length === 5 ? steps : undefined;
     });
     const step = steps.pop();
@@ -1364,8 +1373,8 @@ describe('Recorder', function() {
       });
     });
 
-    await frontend.keyboard.type('emulateNetworkConditions');
-    await frontend.keyboard.press('Enter');
+    await devToolsPage.page.keyboard.type('emulateNetworkConditions');
+    await devToolsPage.page.keyboard.press('Enter');
 
     assert.deepEqual(await eventPromise, {
       download: 1000,
@@ -1374,7 +1383,7 @@ describe('Recorder', function() {
       upload: 1000,
     });
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {
       steps: [{
         type: 'emulateNetworkConditions',
@@ -1385,39 +1394,33 @@ describe('Recorder', function() {
     });
   });
 
-  it('should add an assertion through the button', async () => {
-    await startRecording('recorder/recorder.html');
-
-    const {frontend} = getBrowserAndPages();
-    await frontend.bringToFront();
+  it('should add an assertion through the button', async ({inspectedPage, devToolsPage}) => {
+    await startRecording(
+        'recorder/recorder.html',
+        undefined,
+        devToolsPage,
+        inspectedPage,
+    );
 
     // Find the button.
-    const button = await waitForFunction(async () => {
-      return await frontend.$('pierce/.add-assertion-button');
-    });
-    if (!button) {
-      throw new Error('Add assertion button not found.');
-    }
+    const button = await devToolsPage.waitFor('.add-assertion-button');
 
     // Add an assertion.
     await button.click();
-    await renderCoordinatorQueueEmpty();
+    await devToolsPage.renderCoordinatorQueueEmpty();
 
     // Get the latest step.
-    const step = await frontend.$('pierce/.section:last-child devtools-step-view:last-of-type');
-    if (!step) {
-      throw new Error('Could not find step.');
-    }
+    const step = await devToolsPage.waitFor('.section:last-child devtools-step-view:last-of-type');
 
     // Check that it's expanded.
-    if (!(await step.$('pierce/devtools-timeline-section.expanded'))) {
+    if (!(await step.waitForSelector('pierce/devtools-timeline-section.expanded'))) {
       throw new Error('Last step is not open.');
     }
 
     // Check that it's the correct step.
     assert.strictEqual(await step.$eval('pierce/.main-title', element => element.textContent), 'Wait for element');
 
-    const recording = await stopRecording();
+    const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {
       steps: [{
         type: 'waitForElement',
@@ -1429,9 +1432,9 @@ describe('Recorder', function() {
   });
 
   describe('Shortcuts', () => {
-    it('should not open create a new recording while recording', async () => {
-      await startRecordingViaShortcut('recorder/recorder.html');
-      const controller = await getRecordingController();
+    it('should not open create a new recording while recording', async ({inspectedPage, devToolsPage}) => {
+      await startRecordingViaShortcut('recorder/recorder.html', devToolsPage, inspectedPage);
+      const controller = await getRecordingController(devToolsPage);
       await controller.evaluate(element => {
         return element.handleActions(
             'chrome-recorder.create-recording' as RecorderActions.CREATE_RECORDING,
@@ -1443,19 +1446,19 @@ describe('Recorder', function() {
 
       assert.notStrictEqual(page, 'CreateRecordingPage');
 
-      await stopRecording();
+      await stopRecording(devToolsPage);
     });
 
-    it('should start with keyboard shortcut while on the create page', async () => {
-      await fillCreateRecordingForm('recorder/recorder.html');
-      await startOrStopRecordingShortcut();
-      const recording = (await stopRecording()) as UserFlow;
+    it('should start with keyboard shortcut while on the create page', async ({inspectedPage, devToolsPage}) => {
+      await fillCreateRecordingForm('recorder/recorder.html', devToolsPage, inspectedPage);
+      await startOrStopRecordingShortcut('devToolsPage', devToolsPage, inspectedPage);
+      const recording = await stopRecording(devToolsPage);
       assert.deepEqual(processAndVerifyBaseRecording(recording), {steps: []});
     });
 
-    it('should stop with keyboard shortcut without recording it', async () => {
-      await startRecordingViaShortcut('recorder/recorder.html');
-      const recording = (await startOrStopRecordingShortcut()) as UserFlow;
+    it('should stop with keyboard shortcut without recording it', async ({inspectedPage, devToolsPage}) => {
+      await startRecordingViaShortcut('recorder/recorder.html', devToolsPage, inspectedPage);
+      const recording = await startOrStopRecordingShortcut('devToolsPage', devToolsPage, inspectedPage);
       assert.deepEqual(
           processAndVerifyBaseRecording({
             ...recording,
@@ -1465,17 +1468,23 @@ describe('Recorder', function() {
       );
     });
 
-    it('should stop recording with shortcut on the target', async () => {
-      await startRecording('recorder/recorder.html');
+    it('should stop recording with shortcut on the target', async ({inspectedPage, devToolsPage}) => {
+      await startRecording(
+          'recorder/recorder.html',
+          undefined,
+          devToolsPage,
+          inspectedPage,
+      );
 
-      const {target} = getBrowserAndPages();
-      await target.bringToFront();
-      await target.keyboard.down('e');
-      await target.keyboard.up('e');
+      await inspectedPage.bringToFront();
+      await inspectedPage.page.keyboard.down('e');
+      await inspectedPage.page.keyboard.up('e');
 
-      const recording = (await startOrStopRecordingShortcut(
-                            'inspectedPage',
-                            )) as UserFlow;
+      const recording = await startOrStopRecordingShortcut(
+          'inspectedPage',
+          devToolsPage,
+          inspectedPage,
+      );
       assert.deepEqual(processAndVerifyBaseRecording(recording), {
         steps: [
           {

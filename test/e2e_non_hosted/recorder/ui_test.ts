@@ -14,6 +14,7 @@ import {
   enableAndOpenRecorderPanel,
   getCurrentRecording,
   processAndVerifyBaseRecording,
+  record,
   stopRecording,
   toggleCodeView,
 } from '../../e2e/helpers/recorder-helpers.js';
@@ -29,22 +30,17 @@ async function openRecorderAndStartRecording(
 }
 
 describe('Recorder', function() {
+  if (this.timeout()) {
+    // Test are slow on Windows
+    this.timeout(20_000);
+  }
+
   async function assertStepList(expectedStepList: string[], devToolsPage: DevToolsPage) {
     const actualStepList = await devToolsPage.page.$$eval(
         'pierce/.step:not(.is-start-of-group) .action .main-title',
         actions => actions.map(e => (e as HTMLElement).innerText),
     );
     assert.deepEqual(actualStepList, expectedStepList);
-  }
-
-  async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
-    await inspectedPage.bringToFront();
-    await devToolsPage.bringToFront();
-    await devToolsPage.page.waitForSelector('pierce/.settings');
-    await inspectedPage.bringToFront();
-    const element = await inspectedPage.waitForSelector('a[href="recorder2.html"]');
-    await element?.click();
-    await devToolsPage.bringToFront();
   }
 
   describe('UI', () => {

@@ -10,8 +10,9 @@ import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 import {
   platform,
   selectOption,
-} from '../../shared/helper.js';
-import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
+} from '../../../test/shared/helper.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 
@@ -19,17 +20,26 @@ const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller' as const;
 const TEST_RECORDING_NAME = 'New Recording';
 const ControlOrMeta = platform === 'mac' ? 'Meta' : 'Control';
 
-export async function getRecordingController(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+  await inspectedPage.bringToFront();
+  await devToolsPage.bringToFront();
+  await devToolsPage.page.waitForSelector('pierce/.settings');
+  await inspectedPage.bringToFront();
+  const element = await inspectedPage.waitForSelector('a[href="recorder2.html"]');
+  await element?.click();
+  await devToolsPage.bringToFront();
+}
+
+export async function getRecordingController(devToolsPage: DevToolsPage) {
   return await devToolsPage.waitFor(
       RECORDER_CONTROLLER_TAG_NAME,
   );
 }
 
-export async function onRecordingStateChanged(devToolsPage = getBrowserAndPagesWrappers().devToolsPage):
-    Promise<unknown> {
+export async function onRecordingStateChanged(devToolsPage: DevToolsPage): Promise<UserFlow> {
   const view = await getRecordingController(devToolsPage);
   return await view.evaluate(el => {
-    return new Promise(resolve => {
+    return new Promise<UserFlow>(resolve => {
       el.addEventListener(
           'recordingstatechanged',
           (event: Event) => resolve(
@@ -41,8 +51,7 @@ export async function onRecordingStateChanged(devToolsPage = getBrowserAndPagesW
   });
 }
 
-export async function onRecorderAttachedToTarget(devToolsPage = getBrowserAndPagesWrappers().devToolsPage):
-    Promise<unknown> {
+export async function onRecorderAttachedToTarget(devToolsPage: DevToolsPage): Promise<unknown> {
   return await devToolsPage.evaluate(() => {
     return new Promise(resolve => {
       window.addEventListener('recorderAttachedToTarget', resolve, {
@@ -52,7 +61,7 @@ export async function onRecorderAttachedToTarget(devToolsPage = getBrowserAndPag
   });
 }
 
-export async function onReplayFinished(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<unknown> {
+export async function onReplayFinished(devToolsPage: DevToolsPage): Promise<unknown> {
   const view = await getRecordingController(devToolsPage);
   return await view.evaluate(el => {
     return new Promise(resolve => {
@@ -61,7 +70,7 @@ export async function onReplayFinished(devToolsPage = getBrowserAndPagesWrappers
   });
 }
 
-export async function enableUntrustedEventMode(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function enableUntrustedEventMode(devToolsPage: DevToolsPage) {
   await devToolsPage.evaluate(`(async () => {
     // TODO: have an explicit UI setting or perhaps a special event to configure this
     // instead of having a global setting.
@@ -71,19 +80,15 @@ export async function enableUntrustedEventMode(devToolsPage = getBrowserAndPages
 }
 
 export async function enableAndOpenRecorderPanel(
-    path: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
-    inspectedPage = getBrowserAndPagesWrappers().inspectedPage
-
-) {
+    path: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await inspectedPage.goToResource(path);
-  await openCommandMenu(devToolsPage);
-  await devToolsPage.typeText('Show Recorder');
-  await devToolsPage.page.keyboard.press('Enter');
-  await devToolsPage.waitFor(RECORDER_CONTROLLER_TAG_NAME);
+  await openRecorderPanel(devToolsPage);
 }
 
-async function createRecording(
-    name: string, selectorAttribute?: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+async function createRecording(name: string, selectorAttribute?: string, devToolsPage?: DevToolsPage) {
+  if (!devToolsPage) {
+    throw new Error('DevToolsPage was not provided');
+  }
   const newRecordingButton = await devToolsPage.waitForAria('Create recording');
   await newRecordingButton.click();
   const input = await devToolsPage.waitForAria('RECORDING NAME');
@@ -96,8 +101,10 @@ async function createRecording(
   }
 }
 
-export async function createAndStartRecording(
-    name?: string, selectorAttribute?: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function createAndStartRecording(name?: string, selectorAttribute?: string, devToolsPage?: DevToolsPage) {
+  if (!devToolsPage) {
+    throw new Error('DevToolsPage was not provided');
+  }
   await createRecording(name ?? TEST_RECORDING_NAME, selectorAttribute, devToolsPage);
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await devToolsPage.click('devtools-control-button');
@@ -105,17 +112,19 @@ export async function createAndStartRecording(
   await onRecordingStarted;
 }
 
-export async function changeNetworkConditions(
-    condition: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.page.waitForSelector('pierce/#tab-network');
-  await devToolsPage.click('pierce/#tab-network');
+export async function changeNetworkConditions(condition: string, devToolsPage: DevToolsPage) {
+  await openCommandMenu(devToolsPage);
+  await devToolsPage.typeText('Show Network');
+  await devToolsPage.page.keyboard.press('Enter');
   await devToolsPage.page.waitForSelector('pierce/select[aria-label="Throttling"]');
   await devToolsPage.page.select('pierce/select[aria-label="Throttling"]', condition);
 }
 
-export async function openRecorderPanel(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  await devToolsPage.click('[aria-label="Recorder"]');
-  await devToolsPage.waitFor('devtools-recording-view');
+export async function openRecorderPanel(devToolsPage: DevToolsPage) {
+  await openCommandMenu(devToolsPage);
+  await devToolsPage.typeText('Show Recorder');
+  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.waitFor(RECORDER_CONTROLLER_TAG_NAME);
 }
 
 interface StartRecordingOptions {
@@ -130,20 +139,22 @@ export async function startRecording(
       networkCondition: '',
       untrustedEvents: false,
     },
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
+
 ) {
   await devToolsPage.bringToFront();
   if (options.networkCondition) {
-    await changeNetworkConditions(options.networkCondition);
+    await changeNetworkConditions(options.networkCondition, devToolsPage);
   }
-  await enableAndOpenRecorderPanel(path);
+  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
   if (options.untrustedEvents) {
-    await enableUntrustedEventMode();
+    await enableUntrustedEventMode(devToolsPage);
   }
-  await createAndStartRecording(TEST_RECORDING_NAME, options.selectorAttribute);
+  await createAndStartRecording(TEST_RECORDING_NAME, options.selectorAttribute, devToolsPage);
 }
 
-export async function stopRecording(devToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<unknown> {
+export async function stopRecording(devToolsPage: DevToolsPage): Promise<UserFlow> {
   await devToolsPage.bringToFront();
   await raf(devToolsPage.page);
   const onRecordingStopped = onRecordingStateChanged(devToolsPage);
@@ -230,15 +241,14 @@ export const processAndVerifyBaseRecording = (
   return parsed;
 };
 
-async function setCode(flow: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+async function setCode(flow: string, devToolsPage: DevToolsPage) {
   const view = await getRecordingController(devToolsPage);
   await view.evaluate((el, flow) => {
     el.dispatchEvent(new CustomEvent('setrecording', {detail: flow}));
   }, flow);
 }
 
-export async function clickSelectButtonItem(
-    itemLabel: string, root: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function clickSelectButtonItem(itemLabel: string, root: string, devToolsPage: DevToolsPage) {
   const selectMenu = await devToolsPage.waitFor(root);
   const selectMenuButton = await devToolsPage.waitFor(
       'select',
@@ -253,25 +263,29 @@ export async function clickSelectButtonItem(
 export async function setupRecorderWithScript(
     script: UserFlow,
     path = 'recorder/recorder.html',
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
     ): Promise<void> {
-  await enableAndOpenRecorderPanel(path);
-  await createAndStartRecording(script.title);
-  await stopRecording();
-  await setCode(JSON.stringify(script));
+  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
+  await createAndStartRecording(script.title, undefined, devToolsPage);
+  await stopRecording(devToolsPage);
+  await setCode(JSON.stringify(script), devToolsPage);
 }
 
 export async function setupRecorderWithScriptAndReplay(
     script: UserFlow,
     path = 'recorder/recorder.html',
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
     ): Promise<void> {
-  await setupRecorderWithScript(script, path);
-  const onceFinished = onReplayFinished();
-  await clickSelectButtonItem('Normal (Default)', 'devtools-replay-section');
+  await setupRecorderWithScript(script, path, devToolsPage, inspectedPage);
+  const onceFinished = onReplayFinished(devToolsPage);
+  await clickSelectButtonItem('Normal (Default)', 'devtools-replay-section', devToolsPage);
   await onceFinished;
 }
 
 export async function getCurrentRecording(
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    devToolsPage: DevToolsPage,
     ): Promise<UserFlow> {
   await devToolsPage.bringToFront();
   const controller = await devToolsPage.$(RECORDER_CONTROLLER_TAG_NAME);
@@ -283,11 +297,11 @@ export async function getCurrentRecording(
 
 export async function startOrStopRecordingShortcut(
     execute: 'inspectedPage'|'devToolsPage' = 'devToolsPage',
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
-    inspectedPage = getBrowserAndPagesWrappers().inspectedPage,
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
 ) {
   const executeOn = execute === 'devToolsPage' ? devToolsPage.page : inspectedPage.page;
-  const onRecordingStarted = onRecordingStateChanged();
+  const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await executeOn.bringToFront();
   await executeOn.keyboard.down(ControlOrMeta);
   await executeOn.keyboard.down('e');
@@ -298,18 +312,26 @@ export async function startOrStopRecordingShortcut(
   return await onRecordingStarted;
 }
 
-export async function fillCreateRecordingForm(path: string) {
-  await enableAndOpenRecorderPanel(path);
-  await createRecording(TEST_RECORDING_NAME);
+export async function fillCreateRecordingForm(
+    path: string,
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
+) {
+  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
+  await createRecording(TEST_RECORDING_NAME, undefined, devToolsPage);
 }
 
-export async function startRecordingViaShortcut(path: string) {
-  await enableAndOpenRecorderPanel(path);
-  await startOrStopRecordingShortcut();
+export async function startRecordingViaShortcut(
+    path: string,
+    devToolsPage: DevToolsPage,
+    inspectedPage: InspectedPage,
+) {
+  await enableAndOpenRecorderPanel(path, devToolsPage, inspectedPage);
+  await startOrStopRecordingShortcut('devToolsPage', devToolsPage, inspectedPage);
 }
 
 export async function replayShortcut(
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    devToolsPage: DevToolsPage,
 ) {
   await devToolsPage.bringToFront();
   await devToolsPage.page.keyboard.down(ControlOrMeta);
@@ -319,7 +341,7 @@ export async function replayShortcut(
 }
 
 export async function toggleCodeView(
-    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    devToolsPage: DevToolsPage,
 ) {
   await devToolsPage.bringToFront();
   await devToolsPage.page.keyboard.down(ControlOrMeta);

@@ -522,7 +522,8 @@ export class StylePropertiesSection {
 
     let focusNext: HTMLElement|null = null;
     const focusable =
-        Array.from((this.propertiesTreeOutline.shadowRoot.querySelectorAll('[tabindex]') as NodeListOf<HTMLElement>));
+        Array.from((this.propertiesTreeOutline.shadowRoot.querySelectorAll('[tabindex]') as NodeListOf<HTMLElement>))
+            .filter(e => e.checkVisibility());
 
     if (focusable.length === 0) {
       return;

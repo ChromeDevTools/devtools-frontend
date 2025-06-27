@@ -10,7 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
@@ -112,9 +112,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
     const property = addProperty(name, value, longhandProperties);
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, property.ownerStyle, 0, null, null);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesPane: stylesSidebarPane,
-      section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+      section,
       matchedStyles,
       property,
       isShorthand: longhandProperties.length > 0,
@@ -252,8 +254,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         assert.exists(colorMixSwatch);
         renderElementIntoDOM(stylePropertyTreeElement.valueElement as HTMLElement);
 
-        const tooltip: Tooltips.Tooltip.Tooltip|null|undefined =
-            stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+        const tooltip: Tooltips.Tooltip.Tooltip|null|undefined = stylePropertyTreeElement.valueElement?.querySelector(
+            'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])');
         assert.exists(tooltip);
         tooltip.showPopover();
         assert.strictEqual(tooltip.textContent, '#ff8000');
@@ -267,7 +269,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         assert.exists(colorMixSwatch);
         renderElementIntoDOM(stylePropertyTreeElement.valueElement as HTMLElement);
 
-        const tooltip = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+        const tooltip = stylePropertyTreeElement.valueElement?.querySelector(
+                            'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])') as HTMLElement |
+            null | undefined;
         tooltip?.showPopover();
         assert.strictEqual(tooltip?.textContent, 'color(srgb 1 0.24 0.17)');
       });
@@ -330,7 +334,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       });
 
       it('shows a value tracing tooltip on the var function', async () => {
-        updateHostConfig({devToolsCssValueTracing: {enabled: true}});
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, yellow, green)');
         stylePropertyTreeElement.updateTitle();
         assert.exists(stylePropertyTreeElement.valueElement);
@@ -803,7 +806,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('shows a value tracing tooltip on the var function', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       const stylePropertyTreeElement = getTreeElement('color', 'var(--blue)');
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
@@ -904,7 +906,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('shows a value tracing tooltip on color functions', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       for (const property of ['rgb(255 0 0)', 'color(srgb 0.5 0.5 0.5)', 'oklch(from purple calc(l * 2) c h)']) {
         const stylePropertyTreeElement = getTreeElement('color', property);
         stylePropertyTreeElement.updateTitle();
@@ -924,14 +925,14 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement = getTreeElement('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
       stylePropertyTreeElement.updateTitle();
 
-      const tooltips = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-tooltip');
+      const tooltips = stylePropertyTreeElement.valueElement?.querySelectorAll(
+          'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])');
       assert.exists(tooltips);
       assert.lengthOf(tooltips, 3);
       assert.deepEqual(Array.from(tooltips).map(tooltip => tooltip.textContent), ['1.000', '0.047', '0.047']);
     });
 
     it('evaluates relative color channels during tracing', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       setMockConnectionResponseHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) =>
@@ -1927,7 +1928,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('uses the right longhand name in length shorthands inside of substitutions during tracing', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       const cssModel = stylesSidebarPane.cssModel();
       assert.exists(cssModel);
       const resolveValuesStub = sinon.stub(cssModel, 'resolveValues').callsFake((name, nodeId, ...values) => {
@@ -1971,15 +1971,14 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       sinon.assert.calledOnce(strikeOutSpy);
       await strikeOutSpy.returnValues[0];
-      const args = stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span > span') as
-          NodeListOf<HTMLSpanElement>;
+      const args = stylePropertyTreeElement.valueElement?.querySelectorAll(
+                       ':scope > span > span:not(.tracing-anchor)') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
       assert.deepEqual(
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [true, false, true]);
     });
 
     it('shows a value tracing tooltip on the calc function', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       for (const property of ['calc(1px + 2px)', 'min(1px, 2px)', 'max(3px, 1px)']) {
         const stylePropertyTreeElement = getTreeElement('width', property);
         stylePropertyTreeElement.updateTitle();
@@ -1994,7 +1993,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('shows the original text during tracing when evaluation fails', async () => {
-      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
       setMockConnectionResponseHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) => ({results: request.values.map(() => '')}));
@@ -2134,7 +2132,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     const openTooltipPromise1 = new Promise<void>(r => openTooltipStub.callsFake(r));
     const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, blue)');
     stylePropertyTreeElement.updateTitle();
-    const tooltip = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+    const tooltip = stylePropertyTreeElement.valueElement?.querySelector(
+                        'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])') as Tooltips.Tooltip.Tooltip |
+        null | undefined;
     assert.exists(tooltip);
     renderElementIntoDOM(tooltip);
     tooltip.showTooltip();
@@ -2143,7 +2143,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
     const openTooltipPromise2 = new Promise<void>(r => openTooltipStub.callsFake(r));
     stylePropertyTreeElement.updateTitle();
-    const tooltip2 = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+    const tooltip2 =
+        stylePropertyTreeElement.valueElement?.querySelector(
+            'devtools-tooltip:not([jslogcontext="elements.css-value-trace"])') as Tooltips.Tooltip.Tooltip |
+        null | undefined;
     assert.exists(tooltip2);
     renderElementIntoDOM(tooltip2);
     await openTooltipPromise2;

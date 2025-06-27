@@ -2305,7 +2305,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   getTracingTooltip(
       functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>, context: RenderingContext): Lit.TemplateResult {
-    if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled || context.tracing || !context.property) {
+    if (context.tracing || !context.property) {
       return html`${functionName}`;
     }
     const text = context.ast.text(node);
@@ -2365,12 +2365,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const tooltipKeyCount = this.#tooltipKeyCounts.get(key) ?? 0;
     this.#tooltipKeyCounts.set(key, tooltipKeyCount + 1);
     const propertyNameForCounting = this.getLonghand()?.name ?? this.name;
-    const ownIndex = this.treeOutline?.rootElement().children().indexOf(this) ?? -1;
-    const propertyCount = this.treeOutline?.rootElement().children().reduce<number>(
-        (value, element, index) => index < ownIndex && element instanceof StylePropertyTreeElement &&
-                element.name === propertyNameForCounting ?
-            value + 1 :
-            value,
+    const ownIndex = this.style.allProperties().indexOf(this.property);
+    const propertyCount = this.style.allProperties().reduce<number>(
+        (value, property, index) =>
+            index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value + 1 :
+                                                                                                             value,
         0);
     return `swatch-tooltip-${sectionId}-${this.name}-${propertyCount}-${key}-${tooltipKeyCount}`;
   }

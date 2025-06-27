@@ -204,7 +204,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                              sidebar-initial-size="400"
                              sidebar-visibility=${input.sidebarVisible ? 'visible' : 'hidden'}
                              @change=${input.onSplitChange}>
-          <div slot="main" class="vbox">
+          <div slot="main" class="vbox protocol-monitor-main">
             <devtools-toolbar class="protocol-monitor-toolbar"
                                jslog=${VisualLogging.toolbar('top')}>
                <devtools-button title=${i18nString(UIStrings.record)}

@@ -2377,11 +2377,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             // Draw a rectangle over the event, starting at the X value of the
             // event's start time + the startDuration of the candy striping.
             const barXStart = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
-
-            // If a custom end time was passed in, that is when we stop striping, else we stripe until the very end of the entry.
-            const stripingEndTime = decoration.endAtTime ? Trace.Helpers.Timing.microToMilli(decoration.endAtTime) :
-                                                           entryStartTime + duration;
-            const barXEnd = this.timeToPositionClipped(stripingEndTime);
+            // We stripe until the very end of the entry.
+            const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
             this.#drawEventRect(context, timelineData, entryIndex, {
               startX: barXStart,
               width: barXEnd - barXStart,
@@ -4103,12 +4100,9 @@ export const enum FlameChartDecorationType {
  **/
 export type FlameChartDecoration = {
   type: FlameChartDecorationType.CANDY,
-  // We often only want to highlight problem parts of events, so this time sets
-  // the minimum time at which the candystriping will start. If you want to
-  // candystripe the entire event, set this to 0.
+  /** Relative to entry's ts. We often only want to highlight problem parts of events, so this time sets the minimum
+   * time at which the candystriping will start. If you want to candystripe the entire event, set this to 0. */
   startAtTime: Trace.Types.Timing.Micro,
-  // Optionally set the end time for the striping. If this is not provided, the entire entry will be striped.
-  endAtTime?: Trace.Types.Timing.Micro,
 }|{
   type: FlameChartDecorationType.WARNING_TRIANGLE,
   customStartTime?: Trace.Types.Timing.Micro,

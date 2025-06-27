@@ -94,7 +94,7 @@ describe('Navigation', function() {
     // 1 refresh after auditing to reset state
     assert.strictEqual(numNavigations, 5);
 
-    assert.strictEqual(lhr.lighthouseVersion, '12.6.1');
+    assert.strictEqual(lhr.lighthouseVersion, '12.7.0');
     assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
     assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
@@ -145,6 +145,9 @@ describe('Navigation', function() {
     assert.strictEqual(selectedTabText, 'Performance');
 
     await navigateToLighthouseTab();
+
+    // TODO: currently the "LighthouseReportRenderer.linkifyNodeDetails" doesn't run for swappable sections.
+    await reportEl.$eval('.lh-button-insight-toggle', el => (el as HTMLElement).click());
 
     // Test element link behavior
     const lcpElementAudit = await waitForElementWithTextContent('Largest Contentful Paint element', reportEl);

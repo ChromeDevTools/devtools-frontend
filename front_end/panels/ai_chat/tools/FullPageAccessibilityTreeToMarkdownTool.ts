@@ -53,14 +53,6 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     properties: {},
   };
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   private getSystemPrompt(): string {
     return `You are an expert Markdown tool. 
@@ -86,15 +78,15 @@ export class FullPageAccessibilityTreeToMarkdownTool implements Tool<Record<stri
     if (!apiKey) {
       return { error: 'API key not configured.' };
     }
-    const modelName = AIChatPanel.getNanoModel();
+    const { model, provider } = AIChatPanel.getNanoModelWithProvider();
 
     const prompt = `Accessibility Tree:\n\n\`\`\`\n${accessibilityTreeString}\n\`\`\``;
 
     try {
       const llm = LLMClient.getInstance();
       const llmResponse = await llm.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: this.getSystemPrompt() },
           { role: 'user', content: prompt }

@@ -5,6 +5,7 @@
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -34,7 +35,7 @@ const {html} = Lit;
 export interface ModelOption {
   value: string;
   label: string;
-  type: 'openai' | 'litellm';
+  type: 'openai' | 'litellm' | 'groq' | 'openrouter';
 }
 
 // Add model options constant - these are the default OpenAI models
@@ -107,6 +108,10 @@ const UIStrings = {
    * @description Run evaluation tests
    */
   runEvaluationTests: 'Run Evaluation Tests',
+  /**
+   * @description Bookmark current page
+   */
+  bookmarkPage: 'Bookmark Page',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/ui/AIChatPanel.ts', UIStrings);
@@ -119,6 +124,7 @@ interface ToolbarViewInput {
   onHelpClick: () => void;
   onSettingsClick: () => void;
   onEvaluationTestClick: () => void;
+  onBookmarkClick: () => void;
   isDeleteHistoryButtonVisible: boolean;
   isCenteredView: boolean;
 }
@@ -166,6 +172,13 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${input.onEvaluationTestClick}></devtools-button>
         <devtools-button
+          title=${i18nString(UIStrings.bookmarkPage)}
+          aria-label=${i18nString(UIStrings.bookmarkPage)}
+          .iconName=${'download'}
+          .jslogContext=${'ai-chat.bookmark-page'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onBookmarkClick}></devtools-button>
+        <devtools-button
           title=${i18nString(UIStrings.settings)}
           aria-label=${i18nString(UIStrings.settings)}
           .iconName=${'gear'}
@@ -212,13 +225,41 @@ export class AIChatPanel extends UI.Panel.Panel {
     const instance = AIChatPanel.instance();
     return instance.#nanoModel || instance.#miniModel || instance.#selectedModel;
   }
+
+  static getNanoModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
+    const modelName = AIChatPanel.getNanoModel();
+    const allModelOptions = AIChatPanel.getModelOptions();
+    const modelOption = allModelOptions.find(option => option.value === modelName);
+    
+    return {
+      model: modelName,
+      provider: (modelOption?.type as 'openai' | 'litellm' | 'groq' | 'openrouter') || 'openai'
+    };
+  }
+
+  static getMiniModelWithProvider(): { model: string, provider: 'openai' | 'litellm' | 'groq' | 'openrouter' } {
+    const modelName = AIChatPanel.getMiniModel();
+    const allModelOptions = AIChatPanel.getModelOptions();
+    const modelOption = allModelOptions.find(option => option.value === modelName);
+    
+    return {
+      model: modelName,
+      provider: (modelOption?.type as 'openai' | 'litellm' | 'groq' | 'openrouter') || 'openai'
+    };
+  }
+
+  static getProviderForModel(modelName: string): 'openai' | 'litellm' | 'groq' | 'openrouter' {
+    const allModelOptions = AIChatPanel.getModelOptions();
+    const modelOption = allModelOptions.find(option => option.value === modelName);
+    return (modelOption?.type as 'openai' | 'litellm' | 'groq' | 'openrouter') || 'openai';
+  }
   
   /**
    * Gets all model options or filters by provider
    * @param provider Optional provider to filter by
    * @returns Array of model options
    */
-  static getModelOptions(provider?: 'openai' | 'litellm'): ModelOption[] {
+  static getModelOptions(provider?: 'openai' | 'litellm' | 'groq' | 'openrouter'): ModelOption[] {
     // Try to get from all_model_options first (comprehensive list)
     const allModelOptionsStr = localStorage.getItem('ai_chat_all_model_options');
     if (allModelOptionsStr) {
@@ -242,30 +283,58 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
   
   /**
-   * Updates model options with new LiteLLM models
-   * @param litellmModels Models fetched from LiteLLM
+   * Updates model options with new provider models
+   * @param providerModels Models fetched from any provider (LiteLLM, Groq, etc.)
    * @param hadWildcard Whether LiteLLM returned a wildcard model
    * @returns Updated model options
    */
-  static updateModelOptions(litellmModels: ModelOption[] = [], hadWildcard = false): ModelOption[] {
+  static updateModelOptions(providerModels: ModelOption[] = [], hadWildcard = false): ModelOption[] {
     // Get the selected provider (for context, but we store all models regardless)
     const selectedProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
     
-    // Get existing custom models (if any)
-    const savedCustomModels = JSON.parse(localStorage.getItem('ai_chat_custom_models') || '[]');
+    // Get existing models from localStorage
+    const existingAllModels = JSON.parse(localStorage.getItem('ai_chat_all_model_options') || '[]');
     
-    // Transform custom models to ModelOption format
+    // Get existing custom models (if any) - these are for LiteLLM only
+    const savedCustomModels = JSON.parse(localStorage.getItem('ai_chat_custom_models') || '[]');
     const customModels = savedCustomModels.map((model: string) => ({
       value: model,
       label: `LiteLLM: ${model}`,
       type: 'litellm' as const
     }));
     
-    // Create the comprehensive model list with all models from both providers
+    // Separate existing models by provider type
+    const existingOpenAIModels = existingAllModels.filter((m: ModelOption) => m.type === 'openai');
+    const existingLiteLLMModels = existingAllModels.filter((m: ModelOption) => m.type === 'litellm');
+    const existingGroqModels = existingAllModels.filter((m: ModelOption) => m.type === 'groq');
+    const existingOpenRouterModels = existingAllModels.filter((m: ModelOption) => m.type === 'openrouter');
+    
+    // Update models based on what type of models we're adding
+    let updatedOpenAIModels = existingOpenAIModels.length > 0 ? existingOpenAIModels : DEFAULT_OPENAI_MODELS;
+    let updatedLiteLLMModels = existingLiteLLMModels;
+    let updatedGroqModels = existingGroqModels;
+    let updatedOpenRouterModels = existingOpenRouterModels;
+    
+    // Replace models for the provider type we're updating
+    if (providerModels.length > 0) {
+      const firstModelType = providerModels[0].type;
+      if (firstModelType === 'litellm') {
+        updatedLiteLLMModels = [...customModels, ...providerModels];
+      } else if (firstModelType === 'groq') {
+        updatedGroqModels = providerModels;
+      } else if (firstModelType === 'openrouter') {
+        updatedOpenRouterModels = providerModels;
+      } else if (firstModelType === 'openai') {
+        updatedOpenAIModels = providerModels;
+      }
+    }
+    
+    // Create the comprehensive model list with all models from all providers
     const allModels = [
-      ...DEFAULT_OPENAI_MODELS,  // Always include default OpenAI models
-      ...customModels,          // Include custom LiteLLM models
-      ...litellmModels          // Include fetched LiteLLM models
+      ...updatedOpenAIModels,
+      ...updatedLiteLLMModels,
+      ...updatedGroqModels,
+      ...updatedOpenRouterModels
     ];
     
     // Save the comprehensive list to localStorage
@@ -274,13 +343,35 @@ export class AIChatPanel extends UI.Panel.Panel {
     // For backwards compatibility, also update the MODEL_OPTIONS variable
     // based on the currently selected provider
     if (selectedProvider === 'openai') {
-      MODEL_OPTIONS = DEFAULT_OPENAI_MODELS;
+      MODEL_OPTIONS = updatedOpenAIModels;
+    } else if (selectedProvider === 'groq') {
+      MODEL_OPTIONS = updatedGroqModels;
+      
+      // Add placeholder if no Groq models available
+      if (MODEL_OPTIONS.length === 0) {
+        MODEL_OPTIONS.push({
+          value: '_placeholder_no_models',
+          label: 'Groq: Please configure API key in settings',
+          type: 'groq' as const
+        });
+      }
+    } else if (selectedProvider === 'openrouter') {
+      MODEL_OPTIONS = updatedOpenRouterModels;
+      
+      // Add placeholder if no OpenRouter models available
+      if (MODEL_OPTIONS.length === 0) {
+        MODEL_OPTIONS.push({
+          value: '_placeholder_no_models',
+          label: 'OpenRouter: Please configure API key in settings',
+          type: 'openrouter' as const
+        });
+      }
     } else {
       // For LiteLLM provider, include custom models and fetched models
-      MODEL_OPTIONS = [...customModels, ...litellmModels];
+      MODEL_OPTIONS = updatedLiteLLMModels;
       
       // Add placeholder if needed for LiteLLM when we have no models
-      if (hadWildcard && litellmModels.length === 0 && customModels.length === 0) {
+      if (hadWildcard && MODEL_OPTIONS.length === 0) {
         MODEL_OPTIONS.push({
           value: '_placeholder_add_custom',
           label: 'LiteLLM: Please add custom models in settings',
@@ -294,9 +385,10 @@ export class AIChatPanel extends UI.Panel.Panel {
     
     logger.info('Updated model options:', {
       provider: selectedProvider,
-      openaiModels: DEFAULT_OPENAI_MODELS.length,
-      customModels: customModels.length,
-      litellmModels: litellmModels.length,
+      openaiModels: updatedOpenAIModels.length,
+      litellmModels: updatedLiteLLMModels.length,
+      groqModels: updatedGroqModels.length,
+      openrouterModels: updatedOpenRouterModels.length,
       totalModelOptions: MODEL_OPTIONS.length,
       allModelsLength: allModels.length
     });
@@ -310,7 +402,7 @@ export class AIChatPanel extends UI.Panel.Panel {
    * @param modelType Type of the model ('openai' or 'litellm')
    * @returns Updated model options
    */
-  static addCustomModelOption(modelName: string, modelType: 'openai' | 'litellm' = 'litellm'): ModelOption[] {
+  static addCustomModelOption(modelName: string, modelType: 'openai' | 'litellm' | 'groq' | 'openrouter' = 'litellm'): ModelOption[] {
     // Get existing custom models
     const savedCustomModels = JSON.parse(localStorage.getItem('ai_chat_custom_models') || '[]');
     
@@ -327,7 +419,10 @@ export class AIChatPanel extends UI.Panel.Panel {
     // Create the model option object
     const newOption: ModelOption = {
       value: modelName,
-      label: modelType === 'litellm' ? `LiteLLM: ${modelName}` : `OpenAI: ${modelName}`,
+      label: modelType === 'litellm' ? `LiteLLM: ${modelName}` : 
+             modelType === 'groq' ? `Groq: ${modelName}` : 
+             modelType === 'openrouter' ? `OpenRouter: ${modelName}` :
+             `OpenAI: ${modelName}`,
       type: modelType
     };
     
@@ -341,7 +436,8 @@ export class AIChatPanel extends UI.Panel.Panel {
     // Update MODEL_OPTIONS for backwards compatibility if provider matches
     const currentProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
     if ((currentProvider === 'openai' && modelType === 'openai') || 
-        (currentProvider === 'litellm' && modelType === 'litellm')) {
+        (currentProvider === 'litellm' && modelType === 'litellm') ||
+        (currentProvider === 'groq' && modelType === 'groq')) {
       MODEL_OPTIONS = [...MODEL_OPTIONS, newOption];
       localStorage.setItem('ai_chat_model_options', JSON.stringify(MODEL_OPTIONS));
     }
@@ -638,6 +734,57 @@ export class AIChatPanel extends UI.Panel.Panel {
   }
 
   /**
+   * Refreshes Groq models from the API
+   */
+  async #refreshGroqModels(): Promise<void> {
+    try {
+      const groqApiKey = localStorage.getItem('ai_chat_groq_api_key');
+      
+      if (!groqApiKey) {
+        logger.info('No Groq API key configured, skipping model refresh');
+        return;
+      }
+      
+      const { models: groqModels } = await this.#fetchGroqModels(groqApiKey);
+      this.#updateModelOptions(groqModels, false);
+      
+      // Update MODEL_OPTIONS to reflect the fetched models
+      this.performUpdate();
+    } catch (error) {
+      logger.error('Failed to refresh Groq models:', error);
+      // Clear Groq models on error
+      AIChatPanel.updateModelOptions([], false);
+      this.performUpdate();
+    }
+  }
+
+  /**
+   * Fetches Groq models from the API
+   * @param apiKey API key to use for the request
+   * @returns Object containing models
+   */
+  async #fetchGroqModels(apiKey: string): Promise<{models: ModelOption[]}> {
+    try {
+      // Fetch models from Groq
+      const models = await LLMClient.fetchGroqModels(apiKey);
+
+      // Transform the models to the format we need
+      const groqModels = models.map(model => ({
+        value: model.id,
+        label: `Groq: ${model.id}`,
+        type: 'groq' as const
+      }));
+
+      logger.info(`Fetched ${groqModels.length} Groq models`);
+      return { models: groqModels };
+    } catch (error) {
+      logger.error('Failed to fetch Groq models:', error);
+      // Return empty array on error
+      return { models: [] };
+    }
+  }
+
+  /**
    * Determines the status of the selected model
    * @param modelValue The model value to check
    * @returns Object with isLiteLLM and isPlaceholder flags
@@ -659,7 +806,10 @@ export class AIChatPanel extends UI.Panel.Panel {
     
     return {
       isLiteLLM: Boolean(modelOption?.type === 'litellm'),
-      isPlaceholder: Boolean(modelOption?.value === '_placeholder_add_custom'),
+      isPlaceholder: Boolean(
+        modelOption?.value === '_placeholder_add_custom' || 
+        modelOption?.value === '_placeholder_no_models'
+      ),
     };
   }
 
@@ -717,7 +867,7 @@ export class AIChatPanel extends UI.Panel.Panel {
   
   /**
    * Checks if required credentials are available based on provider
-   * @param provider The selected provider ('openai' or 'litellm')
+   * @param provider The selected provider ('openai', 'litellm', or 'groq')
    * @param isLiteLLM Whether the selected model is a LiteLLM model
    * @returns Object with canProceed flag and apiKey
    */
@@ -740,6 +890,16 @@ export class AIChatPanel extends UI.Panel.Panel {
         logger.info("LiteLLM endpoint configured but no API key provided. Some models may still work.");
       } else {
         logger.info(`LiteLLM configured with endpoint ${liteLLMEndpoint} and API key is ${apiKey ? 'provided' : 'missing'}`);
+      }
+    } else if (provider === 'groq') {
+      // For Groq: API key is required
+      apiKey = localStorage.getItem('ai_chat_groq_api_key');
+      canProceed = Boolean(apiKey);
+      
+      if (!canProceed) {
+        logger.info("Groq selected but no API key configured. Messages disabled.");
+      } else {
+        logger.info("Groq configured with API key.");
       }
     } else {
       // For OpenAI: API key is required
@@ -783,6 +943,8 @@ export class AIChatPanel extends UI.Panel.Panel {
       return i18nString(UIStrings.inputPlaceholder);
     } else if (selectedProvider === 'litellm') {
       return i18nString(UIStrings.missingLiteLLMEndpoint);
+    } else if (selectedProvider === 'groq') {
+      return 'Groq API key required. Please add API key in Settings.';
     } else {
       return i18nString(UIStrings.missingOpenAIKey);
     }
@@ -924,12 +1086,17 @@ export class AIChatPanel extends UI.Panel.Panel {
   #addCredentialErrorMessage(): void {
     const selectedProvider = localStorage.getItem(PROVIDER_SELECTION_KEY) || 'openai';
     
+    let errorText = 'OpenAI API key is missing. Please add API key in Settings.';
+    if (selectedProvider === 'litellm') {
+      errorText = 'LiteLLM endpoint is not configured. Please add endpoint in Settings.';
+    } else if (selectedProvider === 'groq') {
+      errorText = 'Groq API key is missing. Please add API key in Settings.';
+    }
+    
     const errorMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
       action: 'final',
-      error: selectedProvider === 'litellm' ? 
-        'LiteLLM endpoint is not configured. Please add endpoint in Settings.' : 
-        'OpenAI API key is missing. Please add API key in Settings.',
+      error: errorText,
       isFinalAnswer: true,
     };
     this.#messages.push(errorMessage as ChatMessage);
@@ -999,6 +1166,7 @@ export class AIChatPanel extends UI.Panel.Panel {
       onHelpClick: this.#onHelpClick.bind(this),
       onSettingsClick: this.#onSettingsClick.bind(this),
       onEvaluationTestClick: this.#onEvaluationTestClick.bind(this),
+      onBookmarkClick: this.#onBookmarkClick.bind(this),
       isDeleteHistoryButtonVisible: this.#messages.length > 1,
       isCenteredView,
     }), this.#toolbarContainer, { host: this });
@@ -1101,6 +1269,97 @@ export class AIChatPanel extends UI.Panel.Panel {
   #onEvaluationTestClick(): void {
     EvaluationDialog.show();
   }
+
+  /**
+   * Handles the bookmark button click event and bookmarks the current page
+   */
+  async #onBookmarkClick(): Promise<void> {
+    try {
+      // Import the BookmarkStoreTool dynamically
+      const { BookmarkStoreTool } = await import('../tools/BookmarkStoreTool.js');
+      const bookmarkTool = new BookmarkStoreTool();
+
+      // Get current page title for better user feedback
+      const currentPageTitle = await this.#getCurrentPageTitle();
+      
+      // Execute the bookmark tool
+      const result = await bookmarkTool.execute({
+        reasoning: 'User clicked bookmark button to save current page',
+        includeFullContent: true
+      });
+
+      if (result.success) {
+        // Add success message to chat
+        this.#messages.push({
+          entity: ChatMessageEntity.MODEL,
+          action: 'final',
+          answer: result.message || `Successfully bookmarked "${result.title || currentPageTitle}"`,
+          isFinalAnswer: true,
+        });
+        this.performUpdate();
+        logger.info('Page bookmarked successfully', { url: result.url, title: result.title });
+      } else {
+        // Add error message to chat
+        this.#messages.push({
+          entity: ChatMessageEntity.MODEL,
+          action: 'final',
+          answer: `Failed to bookmark page: ${result.error}`,
+          isFinalAnswer: true,
+        });
+        this.performUpdate();
+        logger.error('Failed to bookmark page', { error: result.error });
+      }
+    } catch (error: any) {
+      logger.error('Error in bookmark click handler', { error: error.message });
+      this.#messages.push({
+        entity: ChatMessageEntity.MODEL,
+        action: 'final',
+        answer: `Error bookmarking page: ${error.message}`,
+        isFinalAnswer: true,
+      });
+      this.performUpdate();
+    }
+  }
+
+  /**
+   * Get current page title for user feedback
+   */
+  async #getCurrentPageTitle(): Promise<string> {
+    try {
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (!target) return 'Current Page';
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      if (!runtimeModel) return 'Current Page';
+
+      const executionContext = runtimeModel.defaultExecutionContext();
+      if (!executionContext) return 'Current Page';
+
+      const result = await executionContext.evaluate(
+        {
+          expression: 'document.title',
+          objectGroup: 'temp',
+          includeCommandLineAPI: false,
+          silent: true,
+          returnByValue: true,
+          generatePreview: false
+        },
+        /* userGesture */ false,
+        /* awaitPromise */ false
+      );
+
+      if ('error' in result) {
+        return 'Current Page';
+      }
+
+      if (result.object && result.object.value) {
+        return result.object.value;
+      }
+    } catch (error) {
+      logger.warn('Failed to get current page title', { error });
+    }
+    return 'Current Page';
+  }
   
   /**
    * Handles changes made in the settings dialog
@@ -1124,6 +1383,14 @@ export class AIChatPanel extends UI.Panel.Panel {
       
       // Then refresh LiteLLM models
       await this.#refreshLiteLLMModels();
+    } else if (newProvider === 'groq') {
+      // For Groq, update model options and refresh models if API key exists
+      this.#updateModelOptions([], false);
+      
+      const groqApiKey = localStorage.getItem('ai_chat_groq_api_key');
+      if (groqApiKey) {
+        await this.#refreshGroqModels();
+      }
     } else {
       // For OpenAI, just update model options with empty LiteLLM models
       this.#updateModelOptions([], false);

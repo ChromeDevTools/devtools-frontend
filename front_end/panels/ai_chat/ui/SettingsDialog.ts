@@ -14,7 +14,7 @@ const logger = createLogger('SettingsDialog');
 interface ModelOption {
   value: string;
   label: string;
-  type: 'openai' | 'litellm';
+  type: 'openai' | 'litellm' | 'groq' | 'openrouter';
 }
 
 // Local storage keys
@@ -23,7 +23,15 @@ const MINI_MODEL_STORAGE_KEY = 'ai_chat_mini_model';
 const NANO_MODEL_STORAGE_KEY = 'ai_chat_nano_model';
 const LITELLM_ENDPOINT_KEY = 'ai_chat_litellm_endpoint';
 const LITELLM_API_KEY_STORAGE_KEY = 'ai_chat_litellm_api_key';
+const GROQ_API_KEY_STORAGE_KEY = 'ai_chat_groq_api_key';
+const OPENROUTER_API_KEY_STORAGE_KEY = 'ai_chat_openrouter_api_key';
 const PROVIDER_SELECTION_KEY = 'ai_chat_provider';
+// Vector DB configuration keys - Milvus format
+const MILVUS_ENDPOINT_KEY = 'ai_chat_milvus_endpoint';
+const MILVUS_USERNAME_KEY = 'ai_chat_milvus_username';
+const MILVUS_PASSWORD_KEY = 'ai_chat_milvus_password';
+const MILVUS_COLLECTION_KEY = 'ai_chat_milvus_collection';
+const MILVUS_OPENAI_KEY = 'ai_chat_milvus_openai_key';
 
 // UI Strings
 const UIStrings = {
@@ -48,6 +56,14 @@ const UIStrings = {
    */
   litellmProvider: 'LiteLLM',
   /**
+   *@description Groq provider option
+   */
+  groqProvider: 'Groq',
+  /**
+   *@description OpenRouter provider option
+   */
+  openrouterProvider: 'OpenRouter',
+  /**
    *@description LiteLLM API Key label
    */
   liteLLMApiKey: 'LiteLLM API Key',
@@ -63,6 +79,30 @@ const UIStrings = {
    *@description LiteLLM endpoint hint
    */
   litellmEndpointHint: 'Enter the URL for your LiteLLM server (e.g., http://localhost:4000 or https://your-litellm-server.com)',
+  /**
+   *@description Groq API Key label
+   */
+  groqApiKeyLabel: 'Groq API Key',
+  /**
+   *@description Groq API Key hint
+   */
+  groqApiKeyHint: 'Your Groq API key for authentication',
+  /**
+   *@description Fetch Groq models button text
+   */
+  fetchGroqModelsButton: 'Fetch Groq Models',
+  /**
+   *@description OpenRouter API Key label
+   */
+  openrouterApiKeyLabel: 'OpenRouter API Key',
+  /**
+   *@description OpenRouter API Key hint
+   */
+  openrouterApiKeyHint: 'Your OpenRouter API key for authentication',
+  /**
+   *@description Fetch OpenRouter models button text
+   */
+  fetchOpenRouterModelsButton: 'Fetch OpenRouter Models',
   /**
    *@description OpenAI API Key label
    */
@@ -164,6 +204,66 @@ const UIStrings = {
    */
   importantNotice: 'Important Notice',
   /**
+   *@description Milvus DB section label
+   */
+  vectorDBLabel: 'Milvus Vector Database (Bookmarks)',
+  /**
+   *@description Milvus endpoint label
+   */
+  vectorDBEndpoint: 'Milvus Endpoint',
+  /**
+   *@description Milvus endpoint hint
+   */
+  vectorDBEndpointHint: 'Enter the URL for your Milvus server (e.g., http://localhost:19530 or https://your-milvus.com)',
+  /**
+   *@description Milvus username label
+   */
+  vectorDBApiKey: 'Milvus Username',
+  /**
+   *@description Milvus username hint
+   */
+  vectorDBApiKeyHint: 'For self-hosted: username (default: root). For Milvus Cloud: leave as root',
+  /**
+   *@description Vector DB collection label
+   */
+  vectorDBCollection: 'Collection Name',
+  /**
+   *@description Vector DB collection hint
+   */
+  vectorDBCollectionHint: 'Name of the collection to store bookmarks (default: bookmarks)',
+  /**
+   *@description Milvus password/token label
+   */
+  milvusPassword: 'Password/API Token',
+  /**
+   *@description Milvus password/token hint
+   */
+  milvusPasswordHint: 'For self-hosted: password (default: Milvus). For Milvus Cloud: API token directly',
+  /**
+   *@description OpenAI API key for embeddings label
+   */
+  milvusOpenAIKey: 'OpenAI API Key (for embeddings)',
+  /**
+   *@description OpenAI API key for embeddings hint
+   */
+  milvusOpenAIKeyHint: 'Required for generating embeddings using OpenAI text-embedding-3-small model',
+  /**
+   *@description Test vector DB connection button
+   */
+  testVectorDBConnection: 'Test Connection',
+  /**
+   *@description Vector DB connection testing status
+   */
+  testingVectorDBConnection: 'Testing connection...',
+  /**
+   *@description Vector DB connection success message
+   */
+  vectorDBConnectionSuccess: 'Vector DB connection successful!',
+  /**
+   *@description Vector DB connection failed message
+   */
+  vectorDBConnectionFailed: 'Vector DB connection failed',
+  /**
    *@description Tracing section title
    */
   tracingSection: 'Tracing Configuration',
@@ -214,6 +314,10 @@ export class SettingsDialog {
   static #openaiNanoModelSelect: HTMLSelectElement | null = null;
   static #litellmMiniModelSelect: HTMLSelectElement | null = null;
   static #litellmNanoModelSelect: HTMLSelectElement | null = null;
+  static #groqMiniModelSelect: HTMLSelectElement | null = null;
+  static #groqNanoModelSelect: HTMLSelectElement | null = null;
+  static #openrouterMiniModelSelect: HTMLSelectElement | null = null;
+  static #openrouterNanoModelSelect: HTMLSelectElement | null = null;
   
   static async show(
     selectedModel: string,
@@ -222,8 +326,8 @@ export class SettingsDialog {
     onSettingsSaved: () => void,
     fetchLiteLLMModels: (apiKey: string|null, endpoint?: string) => Promise<{models: ModelOption[], hadWildcard: boolean}>,
     updateModelOptions: (litellmModels: ModelOption[], hadWildcard?: boolean) => void,
-    getModelOptions: (provider?: 'openai' | 'litellm') => ModelOption[],
-    addCustomModelOption: (modelName: string, modelType?: 'openai' | 'litellm') => ModelOption[],
+    getModelOptions: (provider?: 'openai' | 'litellm' | 'groq' | 'openrouter') => ModelOption[],
+    addCustomModelOption: (modelName: string, modelType?: 'openai' | 'litellm' | 'groq' | 'openrouter') => ModelOption[],
     removeCustomModelOption: (modelName: string) => ModelOption[],
   ): Promise<void> {
     logger.debug('SettingsDialog.show - Initial parameters:');
@@ -311,6 +415,18 @@ export class SettingsDialog {
     litellmOption.selected = currentProvider === 'litellm';
     providerSelect.appendChild(litellmOption);
     
+    const groqOption = document.createElement('option');
+    groqOption.value = 'groq';
+    groqOption.textContent = i18nString(UIStrings.groqProvider);
+    groqOption.selected = currentProvider === 'groq';
+    providerSelect.appendChild(groqOption);
+    
+    const openrouterOption = document.createElement('option');
+    openrouterOption.value = 'openrouter';
+    openrouterOption.textContent = i18nString(UIStrings.openrouterProvider);
+    openrouterOption.selected = currentProvider === 'openrouter';
+    providerSelect.appendChild(openrouterOption);
+    
     // Create provider-specific content containers
     const openaiContent = document.createElement('div');
     openaiContent.className = 'provider-content openai-content';
@@ -322,6 +438,16 @@ export class SettingsDialog {
     litellmContent.style.display = currentProvider === 'litellm' ? 'block' : 'none';
     contentDiv.appendChild(litellmContent);
     
+    const groqContent = document.createElement('div');
+    groqContent.className = 'provider-content groq-content';
+    groqContent.style.display = currentProvider === 'groq' ? 'block' : 'none';
+    contentDiv.appendChild(groqContent);
+    
+    const openrouterContent = document.createElement('div');
+    openrouterContent.className = 'provider-content openrouter-content';
+    openrouterContent.style.display = currentProvider === 'openrouter' ? 'block' : 'none';
+    contentDiv.appendChild(openrouterContent);
+    
     // Event listener for provider change
     providerSelect.addEventListener('change', async () => {
       const selectedProvider = providerSelect.value;
@@ -329,6 +455,8 @@ export class SettingsDialog {
       // Toggle visibility of provider content
       openaiContent.style.display = selectedProvider === 'openai' ? 'block' : 'none';
       litellmContent.style.display = selectedProvider === 'litellm' ? 'block' : 'none';
+      groqContent.style.display = selectedProvider === 'groq' ? 'block' : 'none';
+      openrouterContent.style.display = selectedProvider === 'openrouter' ? 'block' : 'none';
       
       logger.debug(`Provider changed to: ${selectedProvider}`);
 
@@ -347,10 +475,48 @@ export class SettingsDialog {
             logger.error('Failed to fetch LiteLLM models after provider change:', error);
           }
         }
+      } else if (selectedProvider === 'groq') {
+        // If switching to Groq, fetch models if API key is configured
+        const groqApiKey = groqApiKeyInput.value.trim() || localStorage.getItem('ai_chat_groq_api_key') || '';
+        
+        if (groqApiKey) {
+          try {
+            logger.debug('Fetching Groq models after provider change...');
+            const groqModels = await LLMClient.fetchGroqModels(groqApiKey);
+            const modelOptions: ModelOption[] = groqModels.map(model => ({
+              value: model.id,
+              label: model.id,
+              type: 'groq' as const
+            }));
+            updateModelOptions(modelOptions, false);
+            logger.debug('Successfully refreshed Groq models after provider change');
+          } catch (error) {
+            logger.error('Failed to fetch Groq models after provider change:', error);
+          }
+        }
+      } else if (selectedProvider === 'openrouter') {
+        // If switching to OpenRouter, fetch models if API key is configured
+        const openrouterApiKey = openrouterApiKeyInput.value.trim() || localStorage.getItem('ai_chat_openrouter_api_key') || '';
+        
+        if (openrouterApiKey) {
+          try {
+            logger.debug('Fetching OpenRouter models after provider change...');
+            const openrouterModels = await LLMClient.fetchOpenRouterModels(openrouterApiKey);
+            const modelOptions: ModelOption[] = openrouterModels.map(model => ({
+              value: model.id,
+              label: model.name || model.id,
+              type: 'openrouter' as const
+            }));
+            updateModelOptions(modelOptions, false);
+            logger.debug('Successfully refreshed OpenRouter models after provider change');
+          } catch (error) {
+            logger.error('Failed to fetch OpenRouter models after provider change:', error);
+          }
+        }
       }
 
       // Get model options filtered by the selected provider
-      const availableModels = getModelOptions(selectedProvider as 'openai' | 'litellm');
+      const availableModels = getModelOptions(selectedProvider as 'openai' | 'litellm' | 'groq' | 'openrouter');
       logger.debug(`Available models for ${selectedProvider}:`, availableModels);
       logger.debug(`Current miniModel: ${miniModel}, nanoModel: ${nanoModel}`);
 
@@ -358,9 +524,15 @@ export class SettingsDialog {
       if (selectedProvider === 'openai') {
         // Use our reusable function to update OpenAI model selectors
         updateOpenAIModelSelectors();
-      } else {
+      } else if (selectedProvider === 'litellm') {
         // Make sure LiteLLM selectors are updated
         updateLiteLLMModelSelectors();
+      } else if (selectedProvider === 'groq') {
+        // Update Groq selectors
+        updateGroqModelSelectors();
+      } else if (selectedProvider === 'openrouter') {
+        // Update OpenRouter selectors
+        updateOpenRouterModelSelectors();
       }
     });
     
@@ -992,6 +1164,506 @@ export class SettingsDialog {
     // Initialize LiteLLM model selectors
     updateLiteLLMModelSelectors();
     
+    // Setup Groq content
+    const groqSettingsSection = document.createElement('div');
+    groqSettingsSection.className = 'settings-section';
+    groqContent.appendChild(groqSettingsSection);
+    
+    // Groq API Key
+    const groqApiKeyLabel = document.createElement('div');
+    groqApiKeyLabel.className = 'settings-label';
+    groqApiKeyLabel.textContent = i18nString(UIStrings.groqApiKeyLabel);
+    groqSettingsSection.appendChild(groqApiKeyLabel);
+    
+    const groqApiKeyHint = document.createElement('div');
+    groqApiKeyHint.className = 'settings-hint';
+    groqApiKeyHint.textContent = i18nString(UIStrings.groqApiKeyHint);
+    groqSettingsSection.appendChild(groqApiKeyHint);
+    
+    const settingsSavedGroqApiKey = localStorage.getItem(GROQ_API_KEY_STORAGE_KEY) || '';
+    const groqApiKeyInput = document.createElement('input');
+    groqApiKeyInput.className = 'settings-input groq-api-key-input';
+    groqApiKeyInput.type = 'password';
+    groqApiKeyInput.placeholder = 'Enter your Groq API key';
+    groqApiKeyInput.value = settingsSavedGroqApiKey;
+    groqSettingsSection.appendChild(groqApiKeyInput);
+    
+    // Fetch Groq models button
+    const groqFetchButtonContainer = document.createElement('div');
+    groqFetchButtonContainer.className = 'fetch-button-container';
+    groqSettingsSection.appendChild(groqFetchButtonContainer);
+    
+    const fetchGroqModelsButton = document.createElement('button');
+    fetchGroqModelsButton.className = 'settings-button';
+    fetchGroqModelsButton.setAttribute('type', 'button');
+    fetchGroqModelsButton.textContent = i18nString(UIStrings.fetchGroqModelsButton);
+    fetchGroqModelsButton.disabled = !groqApiKeyInput.value.trim();
+    groqFetchButtonContainer.appendChild(fetchGroqModelsButton);
+    
+    const fetchGroqModelsStatus = document.createElement('div');
+    fetchGroqModelsStatus.className = 'settings-status';
+    fetchGroqModelsStatus.style.display = 'none';
+    groqFetchButtonContainer.appendChild(fetchGroqModelsStatus);
+    
+    // Update button state when API key changes
+    groqApiKeyInput.addEventListener('input', () => {
+      fetchGroqModelsButton.disabled = !groqApiKeyInput.value.trim();
+    });
+    
+    // Function to update Groq model selectors
+    function updateGroqModelSelectors() {
+      logger.debug('Updating Groq model selectors');
+      
+      // Get the latest model options filtered for Groq provider
+      const groqModels = getModelOptions('groq');
+      logger.debug('Groq models from getModelOptions:', groqModels);
+
+      // Clear any existing model selectors
+      const existingSelectors = groqContent.querySelectorAll('.model-selection-section');
+      existingSelectors.forEach(selector => selector.remove());
+      
+      // Create a new model selection section
+      const groqModelSection = document.createElement('div');
+      groqModelSection.className = 'settings-section model-selection-section';
+      groqContent.appendChild(groqModelSection);
+      
+      const groqModelSectionTitle = document.createElement('h3');
+      groqModelSectionTitle.className = 'settings-subtitle';
+      groqModelSectionTitle.textContent = 'Model Size Selection';
+      groqModelSection.appendChild(groqModelSectionTitle);
+      
+      logger.debug(`Current miniModel: ${miniModel}, nanoModel: ${nanoModel}`);
+      
+      // Create Groq Mini Model selection and store reference
+      SettingsDialog.#groqMiniModelSelect = createModelSelector(
+        groqModelSection,
+        i18nString(UIStrings.miniModelLabel),
+        i18nString(UIStrings.miniModelDescription),
+        'groq-mini-model-select',
+        groqModels,
+        miniModel,
+        i18nString(UIStrings.defaultMiniOption),
+        undefined // No focus handler needed for Groq
+      );
+      
+      logger.debug('Created Groq Mini Model Select:', SettingsDialog.#groqMiniModelSelect);
+      
+      // Create Groq Nano Model selection and store reference
+      SettingsDialog.#groqNanoModelSelect = createModelSelector(
+        groqModelSection,
+        i18nString(UIStrings.nanoModelLabel),
+        i18nString(UIStrings.nanoModelDescription),
+        'groq-nano-model-select',
+        groqModels,
+        nanoModel,
+        i18nString(UIStrings.defaultNanoOption),
+        undefined // No focus handler needed for Groq
+      );
+      
+      logger.debug('Created Groq Nano Model Select:', SettingsDialog.#groqNanoModelSelect);
+    }
+    
+    // Add click handler for fetch Groq models button
+    fetchGroqModelsButton.addEventListener('click', async () => {
+      fetchGroqModelsButton.disabled = true;
+      fetchGroqModelsStatus.textContent = i18nString(UIStrings.fetchingModels);
+      fetchGroqModelsStatus.style.display = 'block';
+      fetchGroqModelsStatus.style.backgroundColor = 'var(--color-accent-blue-background)';
+      fetchGroqModelsStatus.style.color = 'var(--color-accent-blue)';
+
+      try {
+        const groqApiKey = groqApiKeyInput.value.trim();
+        
+        // Fetch Groq models using LLMClient static method
+        const groqModels = await LLMClient.fetchGroqModels(groqApiKey);
+        
+        // Convert Groq models to ModelOption format
+        const modelOptions: ModelOption[] = groqModels.map(model => ({
+          value: model.id,
+          label: model.id,
+          type: 'groq' as const
+        }));
+        
+        // Update model options with fetched Groq models
+        updateModelOptions(modelOptions, false);
+        
+        // Get all Groq models including any custom ones
+        const allGroqModels = getModelOptions('groq');
+        const actualModelCount = groqModels.length;
+        
+        // Refresh existing model selectors with new options if they exist
+        if (SettingsDialog.#groqMiniModelSelect) {
+          refreshModelSelectOptions(SettingsDialog.#groqMiniModelSelect, allGroqModels, miniModel);
+        }
+        if (SettingsDialog.#groqNanoModelSelect) {
+          refreshModelSelectOptions(SettingsDialog.#groqNanoModelSelect, allGroqModels, nanoModel);
+        }
+
+        fetchGroqModelsStatus.textContent = i18nString(UIStrings.fetchedModels, {PH1: actualModelCount});
+        fetchGroqModelsStatus.style.backgroundColor = 'var(--color-accent-green-background)';
+        fetchGroqModelsStatus.style.color = 'var(--color-accent-green)';
+        
+        // Update Groq model selections
+        updateGroqModelSelectors();
+        
+      } catch (error) {
+        logger.error('Failed to fetch Groq models:', error);
+        fetchGroqModelsStatus.textContent = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        fetchGroqModelsStatus.style.backgroundColor = 'var(--color-accent-red-background)';
+        fetchGroqModelsStatus.style.color = 'var(--color-accent-red)';
+      } finally {
+        fetchGroqModelsButton.disabled = !groqApiKeyInput.value.trim();
+        setTimeout(() => {
+          fetchGroqModelsStatus.style.display = 'none';
+        }, 3000);
+      }
+    });
+    
+    // Initialize Groq model selectors
+    updateGroqModelSelectors();
+    
+    // Setup OpenRouter content
+    const openrouterSettingsSection = document.createElement('div');
+    openrouterSettingsSection.className = 'settings-section';
+    openrouterContent.appendChild(openrouterSettingsSection);
+    
+    // OpenRouter API Key
+    const openrouterApiKeyLabel = document.createElement('div');
+    openrouterApiKeyLabel.className = 'settings-label';
+    openrouterApiKeyLabel.textContent = i18nString(UIStrings.openrouterApiKeyLabel);
+    openrouterSettingsSection.appendChild(openrouterApiKeyLabel);
+    
+    const openrouterApiKeyHint = document.createElement('div');
+    openrouterApiKeyHint.className = 'settings-hint';
+    openrouterApiKeyHint.textContent = i18nString(UIStrings.openrouterApiKeyHint);
+    openrouterSettingsSection.appendChild(openrouterApiKeyHint);
+    
+    const settingsSavedOpenRouterApiKey = localStorage.getItem(OPENROUTER_API_KEY_STORAGE_KEY) || '';
+    const openrouterApiKeyInput = document.createElement('input');
+    openrouterApiKeyInput.className = 'settings-input openrouter-api-key-input';
+    openrouterApiKeyInput.type = 'password';
+    openrouterApiKeyInput.placeholder = 'Enter your OpenRouter API key';
+    openrouterApiKeyInput.value = settingsSavedOpenRouterApiKey;
+    openrouterSettingsSection.appendChild(openrouterApiKeyInput);
+    
+    // Fetch OpenRouter models button
+    const openrouterFetchButtonContainer = document.createElement('div');
+    openrouterFetchButtonContainer.className = 'fetch-button-container';
+    openrouterSettingsSection.appendChild(openrouterFetchButtonContainer);
+    
+    const fetchOpenRouterModelsButton = document.createElement('button');
+    fetchOpenRouterModelsButton.className = 'settings-button';
+    fetchOpenRouterModelsButton.setAttribute('type', 'button');
+    fetchOpenRouterModelsButton.textContent = i18nString(UIStrings.fetchOpenRouterModelsButton);
+    fetchOpenRouterModelsButton.disabled = !openrouterApiKeyInput.value.trim();
+    openrouterFetchButtonContainer.appendChild(fetchOpenRouterModelsButton);
+    
+    const fetchOpenRouterModelsStatus = document.createElement('div');
+    fetchOpenRouterModelsStatus.className = 'settings-status';
+    fetchOpenRouterModelsStatus.style.display = 'none';
+    openrouterFetchButtonContainer.appendChild(fetchOpenRouterModelsStatus);
+    
+    // Update button state when API key changes
+    openrouterApiKeyInput.addEventListener('input', () => {
+      fetchOpenRouterModelsButton.disabled = !openrouterApiKeyInput.value.trim();
+    });
+    
+    // Function to update OpenRouter model selectors
+    function updateOpenRouterModelSelectors() {
+      logger.debug('Updating OpenRouter model selectors');
+      
+      // Get the latest model options filtered for OpenRouter provider
+      const openrouterModels = getModelOptions('openrouter');
+      logger.debug('OpenRouter models from getModelOptions:', openrouterModels);
+
+      // Clear any existing model selectors
+      const existingSelectors = openrouterContent.querySelectorAll('.model-selection-section');
+      existingSelectors.forEach(selector => selector.remove());
+      
+      // Create a new model selection section
+      const openrouterModelSection = document.createElement('div');
+      openrouterModelSection.className = 'model-selection-section';
+      openrouterContent.appendChild(openrouterModelSection);
+      
+      // Create Mini Model selection for OpenRouter and store reference
+      SettingsDialog.#openrouterMiniModelSelect = createModelSelector(
+        openrouterModelSection,
+        i18nString(UIStrings.miniModelLabel),
+        i18nString(UIStrings.miniModelDescription),
+        'openrouter-mini-model-select',
+        openrouterModels,
+        miniModel,
+        i18nString(UIStrings.defaultMiniOption),
+        undefined // No focus handler needed for OpenRouter
+      );
+      
+      // Create Nano Model selection for OpenRouter and store reference
+      SettingsDialog.#openrouterNanoModelSelect = createModelSelector(
+        openrouterModelSection,
+        i18nString(UIStrings.nanoModelLabel),
+        i18nString(UIStrings.nanoModelDescription),
+        'openrouter-nano-model-select',
+        openrouterModels,
+        nanoModel,
+        i18nString(UIStrings.defaultNanoOption),
+        undefined // No focus handler needed for OpenRouter
+      );
+    }
+    
+    // Add click handler for fetch OpenRouter models button
+    fetchOpenRouterModelsButton.addEventListener('click', async () => {
+      fetchOpenRouterModelsButton.disabled = true;
+      fetchOpenRouterModelsStatus.textContent = i18nString(UIStrings.fetchingModels);
+      fetchOpenRouterModelsStatus.style.display = 'block';
+      fetchOpenRouterModelsStatus.style.backgroundColor = 'var(--color-accent-blue-background)';
+      fetchOpenRouterModelsStatus.style.color = 'var(--color-accent-blue)';
+
+      try {
+        const openrouterApiKey = openrouterApiKeyInput.value.trim();
+        
+        // Fetch OpenRouter models using LLMClient static method
+        const openrouterModels = await LLMClient.fetchOpenRouterModels(openrouterApiKey);
+        
+        // Convert OpenRouter models to ModelOption format
+        const modelOptions: ModelOption[] = openrouterModels.map(model => ({
+          value: model.id,
+          label: model.name || model.id,
+          type: 'openrouter' as const
+        }));
+        
+        // Update model options with fetched OpenRouter models
+        updateModelOptions(modelOptions, false);
+        
+        const actualModelCount = openrouterModels.length;
+        
+        // Update the model selectors with the new models
+        updateOpenRouterModelSelectors();
+        
+        // Update status to show success
+        fetchOpenRouterModelsStatus.textContent = i18nString(UIStrings.fetchedModels, {PH1: actualModelCount});
+        fetchOpenRouterModelsStatus.style.backgroundColor = 'var(--color-accent-green-background)';
+        fetchOpenRouterModelsStatus.style.color = 'var(--color-accent-green)';
+        
+        logger.debug(`Successfully fetched ${actualModelCount} OpenRouter models`);
+      } catch (error) {
+        logger.error('Error fetching OpenRouter models:', error);
+        fetchOpenRouterModelsStatus.textContent = `Error: ${error instanceof Error ? error.message : 'Unknown error'}`;
+        fetchOpenRouterModelsStatus.style.backgroundColor = 'var(--color-accent-red-background)';
+        fetchOpenRouterModelsStatus.style.color = 'var(--color-accent-red)';
+      } finally {
+        fetchOpenRouterModelsButton.disabled = false;
+        
+        // Hide status message after 3 seconds
+        setTimeout(() => {
+          fetchOpenRouterModelsStatus.style.display = 'none';
+        }, 3000);
+      }
+    });
+    
+    // Initialize OpenRouter model selectors
+    updateOpenRouterModelSelectors();
+    
+    // Add Vector DB configuration section
+    const vectorDBSection = document.createElement('div');
+    vectorDBSection.classList.add('settings-section');
+    contentDiv.appendChild(vectorDBSection);
+    
+    const vectorDBTitle = document.createElement('h3');
+    vectorDBTitle.textContent = i18nString(UIStrings.vectorDBLabel);
+    vectorDBTitle.classList.add('settings-subtitle');
+    vectorDBSection.appendChild(vectorDBTitle);
+    
+    // Vector DB Endpoint
+    const vectorDBEndpointDiv = document.createElement('div');
+    vectorDBEndpointDiv.classList.add('settings-field');
+    vectorDBSection.appendChild(vectorDBEndpointDiv);
+    
+    const vectorDBEndpointLabel = document.createElement('label');
+    vectorDBEndpointLabel.textContent = i18nString(UIStrings.vectorDBEndpoint);
+    vectorDBEndpointLabel.classList.add('settings-label');
+    vectorDBEndpointDiv.appendChild(vectorDBEndpointLabel);
+    
+    const vectorDBEndpointHint = document.createElement('div');
+    vectorDBEndpointHint.textContent = i18nString(UIStrings.vectorDBEndpointHint);
+    vectorDBEndpointHint.classList.add('settings-hint');
+    vectorDBEndpointDiv.appendChild(vectorDBEndpointHint);
+    
+    const vectorDBEndpointInput = document.createElement('input');
+    vectorDBEndpointInput.classList.add('settings-input');
+    vectorDBEndpointInput.type = 'text';
+    vectorDBEndpointInput.placeholder = 'http://localhost:19530';
+    vectorDBEndpointInput.value = localStorage.getItem(MILVUS_ENDPOINT_KEY) || '';
+    vectorDBEndpointDiv.appendChild(vectorDBEndpointInput);
+    
+    // Vector DB API Key
+    const vectorDBApiKeyDiv = document.createElement('div');
+    vectorDBApiKeyDiv.classList.add('settings-field');
+    vectorDBSection.appendChild(vectorDBApiKeyDiv);
+    
+    const vectorDBApiKeyLabel = document.createElement('label');
+    vectorDBApiKeyLabel.textContent = i18nString(UIStrings.vectorDBApiKey);
+    vectorDBApiKeyLabel.classList.add('settings-label');
+    vectorDBApiKeyDiv.appendChild(vectorDBApiKeyLabel);
+    
+    const vectorDBApiKeyHint = document.createElement('div');
+    vectorDBApiKeyHint.textContent = i18nString(UIStrings.vectorDBApiKeyHint);
+    vectorDBApiKeyHint.classList.add('settings-hint');
+    vectorDBApiKeyDiv.appendChild(vectorDBApiKeyHint);
+    
+    const vectorDBApiKeyInput = document.createElement('input');
+    vectorDBApiKeyInput.classList.add('settings-input');
+    vectorDBApiKeyInput.type = 'text';
+    vectorDBApiKeyInput.placeholder = 'root';
+    vectorDBApiKeyInput.value = localStorage.getItem(MILVUS_USERNAME_KEY) || 'root';
+    vectorDBApiKeyDiv.appendChild(vectorDBApiKeyInput);
+    
+    // Milvus Password
+    const milvusPasswordDiv = document.createElement('div');
+    milvusPasswordDiv.classList.add('settings-field');
+    vectorDBSection.appendChild(milvusPasswordDiv);
+    
+    const milvusPasswordLabel = document.createElement('label');
+    milvusPasswordLabel.textContent = i18nString(UIStrings.milvusPassword);
+    milvusPasswordLabel.classList.add('settings-label');
+    milvusPasswordDiv.appendChild(milvusPasswordLabel);
+    
+    const milvusPasswordHint = document.createElement('div');
+    milvusPasswordHint.textContent = i18nString(UIStrings.milvusPasswordHint);
+    milvusPasswordHint.classList.add('settings-hint');
+    milvusPasswordDiv.appendChild(milvusPasswordHint);
+    
+    const milvusPasswordInput = document.createElement('input');
+    milvusPasswordInput.classList.add('settings-input');
+    milvusPasswordInput.type = 'password';
+    milvusPasswordInput.placeholder = 'Milvus (self-hosted) or API token (cloud)';
+    milvusPasswordInput.value = localStorage.getItem(MILVUS_PASSWORD_KEY) || 'Milvus';
+    milvusPasswordDiv.appendChild(milvusPasswordInput);
+    
+    // OpenAI API Key for embeddings
+    const milvusOpenAIDiv = document.createElement('div');
+    milvusOpenAIDiv.classList.add('settings-field');
+    vectorDBSection.appendChild(milvusOpenAIDiv);
+    
+    const milvusOpenAILabel = document.createElement('label');
+    milvusOpenAILabel.textContent = i18nString(UIStrings.milvusOpenAIKey);
+    milvusOpenAILabel.classList.add('settings-label');
+    milvusOpenAIDiv.appendChild(milvusOpenAILabel);
+    
+    const milvusOpenAIHint = document.createElement('div');
+    milvusOpenAIHint.textContent = i18nString(UIStrings.milvusOpenAIKeyHint);
+    milvusOpenAIHint.classList.add('settings-hint');
+    milvusOpenAIDiv.appendChild(milvusOpenAIHint);
+    
+    const milvusOpenAIInput = document.createElement('input');
+    milvusOpenAIInput.classList.add('settings-input');
+    milvusOpenAIInput.type = 'password';
+    milvusOpenAIInput.placeholder = 'sk-...';
+    milvusOpenAIInput.value = localStorage.getItem(MILVUS_OPENAI_KEY) || '';
+    milvusOpenAIDiv.appendChild(milvusOpenAIInput);
+    
+    // Vector DB Collection Name
+    const vectorDBCollectionDiv = document.createElement('div');
+    vectorDBCollectionDiv.classList.add('settings-field');
+    vectorDBSection.appendChild(vectorDBCollectionDiv);
+    
+    const vectorDBCollectionLabel = document.createElement('label');
+    vectorDBCollectionLabel.textContent = i18nString(UIStrings.vectorDBCollection);
+    vectorDBCollectionLabel.classList.add('settings-label');
+    vectorDBCollectionDiv.appendChild(vectorDBCollectionLabel);
+    
+    const vectorDBCollectionHint = document.createElement('div');
+    vectorDBCollectionHint.textContent = i18nString(UIStrings.vectorDBCollectionHint);
+    vectorDBCollectionHint.classList.add('settings-hint');
+    vectorDBCollectionDiv.appendChild(vectorDBCollectionHint);
+    
+    const vectorDBCollectionInput = document.createElement('input');
+    vectorDBCollectionInput.classList.add('settings-input');
+    vectorDBCollectionInput.type = 'text';
+    vectorDBCollectionInput.placeholder = 'bookmarks';
+    vectorDBCollectionInput.value = localStorage.getItem(MILVUS_COLLECTION_KEY) || 'bookmarks';
+    vectorDBCollectionDiv.appendChild(vectorDBCollectionInput);
+    
+    // Test Vector DB Connection Button
+    const vectorDBTestDiv = document.createElement('div');
+    vectorDBTestDiv.classList.add('settings-field', 'test-connection-field');
+    vectorDBSection.appendChild(vectorDBTestDiv);
+    
+    const vectorDBTestButton = document.createElement('button');
+    vectorDBTestButton.classList.add('settings-button', 'test-button');
+    vectorDBTestButton.setAttribute('type', 'button');
+    vectorDBTestButton.textContent = i18nString(UIStrings.testVectorDBConnection);
+    vectorDBTestDiv.appendChild(vectorDBTestButton);
+    
+    const vectorDBTestStatus = document.createElement('div');
+    vectorDBTestStatus.classList.add('settings-status');
+    vectorDBTestStatus.style.display = 'none';
+    vectorDBTestDiv.appendChild(vectorDBTestStatus);
+    
+    // Save Vector DB settings on input change
+    const saveVectorDBSettings = () => {
+      localStorage.setItem(MILVUS_ENDPOINT_KEY, vectorDBEndpointInput.value);
+      localStorage.setItem(MILVUS_USERNAME_KEY, vectorDBApiKeyInput.value);
+      localStorage.setItem(MILVUS_PASSWORD_KEY, milvusPasswordInput.value);
+      localStorage.setItem(MILVUS_COLLECTION_KEY, vectorDBCollectionInput.value);
+      localStorage.setItem(MILVUS_OPENAI_KEY, milvusOpenAIInput.value);
+    };
+    
+    vectorDBEndpointInput.addEventListener('input', saveVectorDBSettings);
+    vectorDBApiKeyInput.addEventListener('input', saveVectorDBSettings);
+    milvusPasswordInput.addEventListener('input', saveVectorDBSettings);
+    vectorDBCollectionInput.addEventListener('input', saveVectorDBSettings);
+    milvusOpenAIInput.addEventListener('input', saveVectorDBSettings);
+    
+    // Test Vector DB connection
+    vectorDBTestButton.addEventListener('click', async () => {
+      const endpoint = vectorDBEndpointInput.value.trim();
+      
+      if (!endpoint) {
+        vectorDBTestStatus.textContent = 'Please enter an endpoint URL';
+        vectorDBTestStatus.style.color = 'var(--color-accent-red)';
+        vectorDBTestStatus.style.display = 'block';
+        setTimeout(() => {
+          vectorDBTestStatus.style.display = 'none';
+        }, 3000);
+        return;
+      }
+      
+      vectorDBTestButton.disabled = true;
+      vectorDBTestStatus.textContent = i18nString(UIStrings.testingVectorDBConnection);
+      vectorDBTestStatus.style.color = 'var(--color-text-secondary)';
+      vectorDBTestStatus.style.display = 'block';
+      
+      try {
+        // Import and test the Vector DB client
+        const { VectorDBClient } = await import('../tools/VectorDBClient.js');
+        const vectorClient = new VectorDBClient({
+          endpoint,
+          username: vectorDBApiKeyInput.value || 'root',
+          password: milvusPasswordInput.value || 'Milvus',
+          collection: vectorDBCollectionInput.value || 'bookmarks',
+          openaiApiKey: milvusOpenAIInput.value || undefined
+        });
+        
+        const testResult = await vectorClient.testConnection();
+        
+        if (testResult.success) {
+          vectorDBTestStatus.textContent = i18nString(UIStrings.vectorDBConnectionSuccess);
+          vectorDBTestStatus.style.color = 'var(--color-accent-green)';
+        } else {
+          vectorDBTestStatus.textContent = `${i18nString(UIStrings.vectorDBConnectionFailed)}: ${testResult.error}`;
+          vectorDBTestStatus.style.color = 'var(--color-accent-red)';
+        }
+      } catch (error: any) {
+        vectorDBTestStatus.textContent = `${i18nString(UIStrings.vectorDBConnectionFailed)}: ${error.message}`;
+        vectorDBTestStatus.style.color = 'var(--color-accent-red)';
+      } finally {
+        vectorDBTestButton.disabled = false;
+        setTimeout(() => {
+          vectorDBTestStatus.style.display = 'none';
+        }, 5000);
+      }
+    });
+    
     // Add disclaimer section
     const disclaimerSection = document.createElement('div');
     disclaimerSection.classList.add('settings-section', 'disclaimer-section');
@@ -1085,6 +1757,22 @@ export class SettingsDialog {
         localStorage.removeItem(LITELLM_ENDPOINT_KEY);
       }
       
+      // Save or remove Groq API key
+      const groqApiKeyValue = groqApiKeyInput.value.trim();
+      if (groqApiKeyValue) {
+        localStorage.setItem(GROQ_API_KEY_STORAGE_KEY, groqApiKeyValue);
+      } else {
+        localStorage.removeItem(GROQ_API_KEY_STORAGE_KEY);
+      }
+      
+      // Save or remove OpenRouter API key
+      const openrouterApiKeyValue = openrouterApiKeyInput.value.trim();
+      if (openrouterApiKeyValue) {
+        localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, openrouterApiKeyValue);
+      } else {
+        localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
+      }
+      
       // Determine which mini/nano model selectors to use based on current provider
       let miniModelValue = '';
       let nanoModelValue = '';
@@ -1097,13 +1785,29 @@ export class SettingsDialog {
         if (SettingsDialog.#openaiNanoModelSelect) {
           nanoModelValue = SettingsDialog.#openaiNanoModelSelect.value;
         }
-      } else {
+      } else if (selectedProvider === 'litellm') {
         // Get values from LiteLLM selectors
         if (SettingsDialog.#litellmMiniModelSelect) {
           miniModelValue = SettingsDialog.#litellmMiniModelSelect.value;
         }
         if (SettingsDialog.#litellmNanoModelSelect) {
           nanoModelValue = SettingsDialog.#litellmNanoModelSelect.value;
+        }
+      } else if (selectedProvider === 'groq') {
+        // Get values from Groq selectors
+        if (SettingsDialog.#groqMiniModelSelect) {
+          miniModelValue = SettingsDialog.#groqMiniModelSelect.value;
+        }
+        if (SettingsDialog.#groqNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#groqNanoModelSelect.value;
+        }
+      } else if (selectedProvider === 'openrouter') {
+        // Get values from OpenRouter selectors
+        if (SettingsDialog.#openrouterMiniModelSelect) {
+          miniModelValue = SettingsDialog.#openrouterMiniModelSelect.value;
+        }
+        if (SettingsDialog.#openrouterNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#openrouterNanoModelSelect.value;
         }
       }
       

@@ -261,9 +261,19 @@ export interface AccessibilityTreeResult {
  * Type for perform action result
  */
 export interface PerformActionResult {
-  success: boolean;
-  message: string;
-  xpath?: string;
+  xpath: string;
+  pageChange: {
+    hasChanges: boolean;
+    summary: string;
+    added: string[];
+    removed: string[];
+    modified: string[];
+    hasMore: {
+      added: boolean;
+      removed: boolean;
+      modified: boolean;
+    };
+  };
 }
 
 /**
@@ -286,6 +296,18 @@ export interface ObjectiveDrivenActionResult {
   totalLength: number;
   truncated: boolean;
   metadata?: { url: string, title: string };
+  treeDiff?: {
+    hasChanges: boolean;
+    summary: string;
+    added: string[];
+    removed: string[];
+    modified: string[];
+    hasMore: {
+      added: boolean;
+      removed: boolean;
+      modified: boolean;
+    };
+  } | null;
 }
 
 /**
@@ -679,6 +701,15 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       const metadata = metadataEval.result.value as { url: string, title: string };
       logger.info('Metadata fetched:', metadata);
 
+      // *** Add 404 detection heuristic ***
+      const is404Result = await this.check404Status(target, metadata);
+      if (is404Result.is404) {
+        return {
+          error: `Page not found (404): ${is404Result.reason}`,
+        };
+      }
+      // ************************************
+
       // *** Add verification: Compare intended URL with final URL ***
       const intendedUrl = args.url;
       const finalUrl = metadata.url;
@@ -735,6 +766,89 @@ export class NavigateURLTool implements Tool<{ url: string, reasoning: string },
       return { error: `Failed to navigate to URL: ${error.message}` };
     }
   }
+
+  private async check404Status(target: SDK.Target.Target, metadata: { url: string, title: string }): Promise<{ is404: boolean, reason?: string }> {
+    try {
+      // Basic heuristic checks first
+      const title = metadata.title.toLowerCase();
+      const url = metadata.url.toLowerCase();
+      
+      // Common 404 indicators in title
+      const titleIndicators = [
+        '404', 'not found', 'page not found', 'file not found',
+        'error 404', '404 error', 'page cannot be found',
+        'the page you requested was not found', 'page does not exist'
+      ];
+      
+      const hasTitle404 = titleIndicators.some(indicator => title.includes(indicator));
+      
+      // If obvious 404 indicators, get page content for LLM confirmation
+      if (hasTitle404) {
+        logger.info('Potential 404 detected in title, getting page content for LLM confirmation');
+        
+        // Get accessibility tree for better semantic analysis
+        const treeResult = await Utils.getAccessibilityTree(target);
+        const pageContent = treeResult.simplified;
+        const is404Confirmed = await this.confirmWith404LLM(metadata.url, metadata.title, pageContent);
+        
+        if (is404Confirmed) {
+          return { 
+            is404: true, 
+            reason: 'Page content indicates this is a 404 error page' 
+          };
+        }
+      }
+      
+      return { is404: false };
+    } catch (error: any) {
+      logger.error('Error checking 404 status:', error);
+      return { is404: false };
+    }
+  }
+
+  private async confirmWith404LLM(url: string, title: string, content: string): Promise<boolean> {
+    try {
+      const agentService = AgentService.getInstance();
+      const apiKey = agentService.getApiKey();
+      
+      if (!apiKey) {
+        logger.warn('No API key available for 404 confirmation');
+        return false;
+      }
+
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      const llm = LLMClient.getInstance();
+      
+      const systemPrompt = `You are analyzing web page content to determine if it represents a 404 "Page Not Found" error page.
+Return ONLY "true" if this is definitely a 404 error page, or "false" if it's a legitimate page with content.`;
+
+      const userPrompt = `Analyze this page and determine if it's a 404 error page:
+
+URL: ${url}
+Title: ${title}
+Content (first 1000 chars): ${content.substring(0, 1000)}
+
+Is this a 404 error page? Answer only "true" or "false".`;
+
+      const response = await llm.call({
+        provider,
+        model,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.1,
+      });
+
+      const result = response.text?.trim().toLowerCase();
+      return result === 'true';
+      
+    } catch (error: any) {
+      logger.error('Error confirming 404 with LLM:', error);
+      return false;
+    }
+  }
+
 
   schema = {
     type: 'object',
@@ -1690,9 +1804,49 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
         actionArgsArray = args.args;
       }
 
+      // --- Capture tree state before action ---
+      let treeBeforeAction = '';
+      let treeAfterAction = '';
+      let treeDiff: { hasChanges: boolean; added: string[]; removed: string[]; modified: string[]; summary: string; } | null = null;
+
+      try {
+        const beforeTreeResult = await Utils.getAccessibilityTree(target);
+        treeBeforeAction = beforeTreeResult.simplified;
+        logger.debug('Captured accessibility tree before action');
+      } catch (error) {
+        logger.warn('Failed to capture tree before action:', error);
+      }
+
       // --- Perform Action (Do this BEFORE verification) ---
       logger.info(`Executing Utils.performAction('${method}', args: ${JSON.stringify(actionArgsArray)}, xpath: '${xpath}', iframeNodeId: '${iframeNodeId || 'none'}')`);
       await Utils.performAction(target, method, actionArgsArray, xpath, iframeNodeId);
+
+      // --- Wait for DOM to stabilize after action ---
+      await this.waitForDOMStability(target, method, isLikelyNavigationElement);
+
+      // --- Capture tree state after action and generate diff ---
+      try {
+        if (treeBeforeAction) {
+          const afterTreeResult = await Utils.getAccessibilityTree(target);
+          treeAfterAction = afterTreeResult.simplified;
+          
+          // Generate tree diff
+          treeDiff = this.getTreeDiff(treeBeforeAction, treeAfterAction);
+          
+          logger.info(`Tree diff after ${method}:`, treeDiff.summary);
+          if (treeDiff.hasChanges) {
+            logger.debug('Tree changes:', {
+              added: treeDiff.added.slice(0, 3),
+              removed: treeDiff.removed.slice(0, 3),
+              modified: treeDiff.modified.slice(0, 3)
+            });
+          } else {
+            logger.warn(`No tree changes detected after ${method} - action may have failed or had no visible effect`);
+          }
+        }
+      } catch (error) {
+        logger.warn('Failed to capture tree after action:', error);
+      }
 
       // --- Post-action verification ONLY for fill/type ---
       let verificationMessage = '';
@@ -1781,11 +1935,27 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
         }
       }
 
-      logger.info('Success result message:', message);
       return {
-        success: true,
-        message,
         xpath,
+        pageChange: treeDiff ? {
+          hasChanges: treeDiff.hasChanges,
+          summary: treeDiff.summary,
+          added: treeDiff.added.slice(0, 5),
+          removed: treeDiff.removed.slice(0, 5),
+          modified: treeDiff.modified.slice(0, 5),
+          hasMore: {
+            added: treeDiff.added.length > 5,
+            removed: treeDiff.removed.length > 5,
+            modified: treeDiff.modified.length > 5
+          }
+        } : {
+          hasChanges: false,
+          summary: "No changes detected",
+          added: [],
+          removed: [],
+          modified: [],
+          hasMore: { added: false, removed: false, modified: false }
+        },
       };
     } catch (error: unknown) {
       logger.info('Error during execution:', error instanceof Error ? error.message : String(error));
@@ -1844,14 +2014,460 @@ export class PerformActionTool implements Tool<{ method: string, nodeId: number 
     },
     required: ['method', 'nodeId', 'reasoning']
   };
+
+  // DOM stability waiting method
+  private async waitForDOMStability(target: SDK.Target.Target, method: string, isLikelyNavigationElement: boolean): Promise<void> {
+    const maxWaitTime = isLikelyNavigationElement ? 5000 : 2000; // 5s for navigation, 2s for other actions
+    const startTime = Date.now();
+    
+    logger.debug(`Waiting for DOM stability after ${method} (max ${maxWaitTime}ms)`);
+    
+    try {
+      // For navigation elements, wait for document ready state
+      if (isLikelyNavigationElement) {
+        await this.waitForDocumentReady(target, maxWaitTime);
+      }
+      
+      // Wait for DOM mutations to settle using polling approach
+      await this.waitForDOMMutationStability(target, maxWaitTime - (Date.now() - startTime));
+      
+    } catch (error) {
+      logger.warn('Error waiting for DOM stability:', error);
+      // Fallback to minimal wait
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  }
+
+  private async waitForDocumentReady(target: SDK.Target.Target, maxWaitTime: number): Promise<void> {
+    const startTime = Date.now();
+    const pollInterval = 100;
+    
+    while (Date.now() - startTime < maxWaitTime) {
+      try {
+        const readyStateResult = await target.runtimeAgent().invoke_evaluate({
+          expression: 'document.readyState',
+          returnByValue: true,
+        });
+        
+        if (!readyStateResult.exceptionDetails && readyStateResult.result.value === 'complete') {
+          logger.debug('Document ready state is complete');
+          return;
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+      } catch (error) {
+        logger.warn('Error checking document ready state:', error);
+        break;
+      }
+    }
+  }
+
+  private async waitForDOMMutationStability(target: SDK.Target.Target, maxWaitTime: number): Promise<void> {
+    const startTime = Date.now();
+    const stabilityWindow = 800; // Longer stability window for complex content
+    const pollInterval = 100;
+    let lastTreeHash = '';
+    let lastChangeTime = startTime;
+    let consecutiveStableChecks = 0;
+    const requiredStableChecks = 3;
+    
+    while (Date.now() - startTime < maxWaitTime) {
+      try {
+        // Generic DOM stability detection
+        const currentTreeResult = await target.runtimeAgent().invoke_evaluate({
+          expression: `
+            (() => {
+              // Comprehensive DOM fingerprint
+              const elements = document.querySelectorAll('*');
+              let hash = elements.length.toString();
+              
+              // Track structural changes
+              const body = document.body;
+              if (body) {
+                hash += '|body:' + body.children.length;
+                hash += '|text:' + (body.textContent || '').length;
+              }
+              
+              // Generic loading indicators
+              const loadingSelectors = [
+                '[aria-busy="true"]', '[data-loading]', '[class*="loading"]', 
+                '[class*="spinner"]', '[class*="progress"]', '.loading'
+              ];
+              const loadingElements = document.querySelectorAll(loadingSelectors.join(', '));
+              hash += '|loading:' + loadingElements.length;
+              
+              // Check for images still loading
+              const images = document.querySelectorAll('img[src]');
+              let loadedImages = 0;
+              for (const img of images) {
+                if (img.complete && img.naturalHeight !== 0) loadedImages++;
+              }
+              hash += '|imgs:' + loadedImages + '/' + images.length;
+              
+              // Check for dynamic content containers
+              const dynamicContainers = document.querySelectorAll(
+                '[data-testid], [data-component], [data-async], [data-reactroot], ' +
+                '[ng-app], [ng-controller], [v-app], [data-vue]'
+              );
+              hash += '|dynamic:' + dynamicContainers.length;
+              
+              // Network/fetch activity detection
+              const busyElements = document.querySelectorAll('[aria-busy="true"], [data-fetching="true"]');
+              hash += '|busy:' + busyElements.length;
+              
+              return hash;
+            })()
+          `,
+          returnByValue: true,
+        });
+        
+        if (!currentTreeResult.exceptionDetails && currentTreeResult.result.value) {
+          const currentHash = currentTreeResult.result.value as string;
+          
+          if (currentHash !== lastTreeHash) {
+            lastTreeHash = currentHash;
+            lastChangeTime = Date.now();
+            consecutiveStableChecks = 0;
+          } else {
+            consecutiveStableChecks++;
+            if (consecutiveStableChecks >= requiredStableChecks && 
+                Date.now() - lastChangeTime >= stabilityWindow) {
+              logger.debug(`DOM stable for ${stabilityWindow}ms with ${consecutiveStableChecks} consecutive stable checks`);
+              return;
+            }
+          }
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
+      } catch (error) {
+        logger.warn('Error checking DOM stability:', error);
+        break;
+      }
+    }
+    
+    logger.debug('DOM stability wait timeout reached');
+  }
+
+  // Tree diff methods for action verification
+  private getTreeDiff(before: string, after: string): { hasChanges: boolean; added: string[]; removed: string[]; modified: string[]; summary: string; } {
+    if (before === after) {
+      return {
+        hasChanges: false,
+        added: [],
+        removed: [],
+        modified: [],
+        summary: "No changes detected in page structure"
+      };
+    }
+    
+    const beforeLines = before.split('\n').filter(line => line.trim());
+    const afterLines = after.split('\n').filter(line => line.trim());
+    
+    const lcs = this.findLCS(beforeLines, afterLines);
+    
+    const added: string[] = [];
+    const removed: string[] = [];
+    const modified: string[] = [];
+    
+    afterLines.forEach(line => {
+      if (!lcs.includes(line)) {
+        added.push(line);
+      }
+    });
+    
+    beforeLines.forEach(line => {
+      if (!lcs.includes(line)) {
+        removed.push(line);
+      }
+    });
+    
+    this.findModifications(beforeLines, afterLines, added, removed, modified);
+    
+    const summary = `${added.length} added, ${removed.length} removed, ${modified.length} modified`;
+    
+    return {
+      hasChanges: true,
+      added,
+      removed,
+      modified,
+      summary
+    };
+  }
+
+  private findLCS(a: string[], b: string[]): string[] {
+    const m = a.length;
+    const n = b.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (a[i - 1] === b[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+        } else {
+          dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+    }
+    
+    const lcs: string[] = [];
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+      if (a[i - 1] === b[j - 1]) {
+        lcs.unshift(a[i - 1]);
+        i--;
+        j--;
+      } else if (dp[i - 1][j] > dp[i][j - 1]) {
+        i--;
+      } else {
+        j--;
+      }
+    }
+    
+    return lcs;
+  }
+
+  private findModifications(
+    before: string[], 
+    after: string[], 
+    added: string[], 
+    removed: string[], 
+    modified: string[]
+  ): void {
+    for (const removedLine of [...removed]) {
+      for (const addedLine of [...added]) {
+        if (this.areSimilar(removedLine, addedLine)) {
+          modified.push(`${removedLine} → ${addedLine}`);
+          const addedIndex = added.indexOf(addedLine);
+          const removedIndex = removed.indexOf(removedLine);
+          if (addedIndex > -1) added.splice(addedIndex, 1);
+          if (removedIndex > -1) removed.splice(removedIndex, 1);
+          break;
+        }
+      }
+    }
+  }
+
+  private areSimilar(line1: string, line2: string): boolean {
+    const nodePattern = /\[(\d+)\]\s+(\w+)/;
+    const match1 = line1.match(nodePattern);
+    const match2 = line2.match(nodePattern);
+    
+    if (match1 && match2) {
+      return match1[2] === match2[2] && match1[1] !== match2[1];
+    }
+    
+    const similarity = this.calculateSimilarity(line1, line2);
+    return similarity > 0.7;
+  }
+
+  private calculateSimilarity(str1: string, str2: string): number {
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const maxLen = Math.max(len1, len2);
+    
+    if (maxLen === 0) return 1;
+    
+    const distance = this.editDistance(str1, str2);
+    return 1 - (distance / maxLen);
+  }
+
+  private editDistance(str1: string, str2: string): number {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (str1[i - 1] === str2[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1];
+        } else {
+          dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+        }
+      }
+    }
+    
+    return dp[m][n];
+  }
 }
 
 /**
  * NEW TOOL: ObjectiveDrivenActionTool
  */
+// Tree diff interfaces for ObjectiveDrivenActionTool
+interface TreeDiffResult {
+  hasChanges: boolean;
+  added: string[];
+  removed: string[];
+  modified: string[];
+  summary: string;
+}
+
 export class ObjectiveDrivenActionTool implements Tool<{ objective: string, offset?: number, chunkSize?: number, maxRetries?: number }, ObjectiveDrivenActionResult | ErrorResult> {
   name = 'objective_driven_action';
   description = 'Analyzes the page\'s accessibility tree to fulfill a delegated action objective. Performs actions (e.g., click, fill) using accessibility IDs. Identifies the best element to interact with based on the context and objectives. Acts as a specialized sub-agent with retries.';
+
+  // Tree diff methods
+  private getTreeDiff(before: string, after: string): TreeDiffResult {
+    if (before === after) {
+      return {
+        hasChanges: false,
+        added: [],
+        removed: [],
+        modified: [],
+        summary: "No changes detected in page structure"
+      };
+    }
+    
+    const beforeLines = before.split('\n').filter(line => line.trim());
+    const afterLines = after.split('\n').filter(line => line.trim());
+    
+    // Simple Myers-inspired diff using LCS (Longest Common Subsequence)
+    const lcs = this.findLCS(beforeLines, afterLines);
+    
+    // Find added and removed lines
+    const added: string[] = [];
+    const removed: string[] = [];
+    const modified: string[] = [];
+    
+    // Lines in 'after' but not in LCS are added
+    afterLines.forEach(line => {
+      if (!lcs.includes(line)) {
+        added.push(line);
+      }
+    });
+    
+    // Lines in 'before' but not in LCS are removed
+    beforeLines.forEach(line => {
+      if (!lcs.includes(line)) {
+        removed.push(line);
+      }
+    });
+    
+    // Detect modifications (similar lines that changed)
+    this.findModifications(beforeLines, afterLines, added, removed, modified);
+    
+    const summary = `${added.length} added, ${removed.length} removed, ${modified.length} modified`;
+    
+    return {
+      hasChanges: true,
+      added,
+      removed,
+      modified,
+      summary
+    };
+  }
+
+  // Simple LCS implementation for diff
+  private findLCS(a: string[], b: string[]): string[] {
+    const m = a.length;
+    const n = b.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    // Build LCS table
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (a[i - 1] === b[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+        } else {
+          dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+      }
+    }
+    
+    // Reconstruct LCS
+    const lcs: string[] = [];
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+      if (a[i - 1] === b[j - 1]) {
+        lcs.unshift(a[i - 1]);
+        i--;
+        j--;
+      } else if (dp[i - 1][j] > dp[i][j - 1]) {
+        i--;
+      } else {
+        j--;
+      }
+    }
+    
+    return lcs;
+  }
+
+  // Detect modifications (lines that are similar but changed)
+  private findModifications(
+    before: string[], 
+    after: string[], 
+    added: string[], 
+    removed: string[], 
+    modified: string[]
+  ): void {
+    // Look for similar lines that might be modifications
+    for (const removedLine of removed) {
+      for (const addedLine of added) {
+        if (this.areSimilar(removedLine, addedLine)) {
+          modified.push(`${removedLine} → ${addedLine}`);
+          // Remove from added/removed since they're modifications
+          const addedIndex = added.indexOf(addedLine);
+          const removedIndex = removed.indexOf(removedLine);
+          if (addedIndex > -1) added.splice(addedIndex, 1);
+          if (removedIndex > -1) removed.splice(removedIndex, 1);
+          break;
+        }
+      }
+    }
+  }
+
+  // Simple similarity check for accessibility tree lines
+  private areSimilar(line1: string, line2: string): boolean {
+    // Extract node type and check if they're the same element with different content
+    const nodePattern = /\[(\d+)\]\s+(\w+)/;
+    const match1 = line1.match(nodePattern);
+    const match2 = line2.match(nodePattern);
+    
+    if (match1 && match2) {
+      // Same element type but different content might be a modification
+      return match1[2] === match2[2] && match1[1] !== match2[1];
+    }
+    
+    // Fallback: check if lines are 70% similar
+    const similarity = this.calculateSimilarity(line1, line2);
+    return similarity > 0.7;
+  }
+
+  private calculateSimilarity(str1: string, str2: string): number {
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const maxLen = Math.max(len1, len2);
+    
+    if (maxLen === 0) return 1;
+    
+    // Simple edit distance calculation
+    const distance = this.editDistance(str1, str2);
+    return 1 - (distance / maxLen);
+  }
+
+  private editDistance(str1: string, str2: string): number {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+    
+    for (let i = 0; i <= m; i++) dp[i][0] = i;
+    for (let j = 0; j <= n; j++) dp[0][j] = j;
+    
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (str1[i - 1] === str2[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1];
+        } else {
+          dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+        }
+      }
+    }
+    
+    return dp[m][n];
+  }
 
   // Create system prompt for ObjectiveDrivenActionTool
   private getSystemPrompt(): string {
@@ -1875,14 +2491,6 @@ Important guidelines:
 - Choose the most semantically appropriate element when multiple options exist.`;
   }
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   async execute(args: { objective: string, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<ObjectiveDrivenActionResult | ErrorResult> {
     await createToolTracingObservation(this.name, args);
@@ -1892,7 +2500,7 @@ Important guidelines:
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const modelNameForAction = AIChatPanel.getMiniModel();
+    const { model: modelNameForAction, provider: providerForAction } = AIChatPanel.getMiniModelWithProvider();
 
     if (!apiKey) {return { error: 'API key not configured.' };}
     if (typeof objective !== 'string' || objective.trim() === '') {
@@ -1951,7 +2559,7 @@ Important guidelines:
         // Use LLMClient with function call support
         const llm = LLMClient.getInstance();
         const llmResponse = await llm.call({
-          provider: this.detectProvider(modelNameForAction),
+          provider: providerForAction,
           model: modelNameForAction,
           messages: [
             { role: 'system', content: this.getSystemPrompt() },
@@ -1996,6 +2604,22 @@ Important guidelines:
         const actionNodeId = accessibilityNodeId as Protocol.DOM.NodeId;
         logger.info(`ObjectiveDrivenActionTool: Performing action '${actionMethod}' on potentially incorrect NodeID ${actionNodeId}...`);
 
+        // --- Capture tree state before action ---
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        let treeBeforeAction = '';
+        let treeAfterAction = '';
+        let treeDiff: TreeDiffResult | null = null;
+
+        try {
+          if (target) {
+            const beforeTreeResult = await Utils.getAccessibilityTree(target);
+            treeBeforeAction = beforeTreeResult.simplified;
+            logger.debug('Captured accessibility tree before action');
+          }
+        } catch (error) {
+          logger.warn('Failed to capture tree before action:', error);
+        }
+
         const performResult = await performActionTool.execute({
           method: actionMethod,
           nodeId: actionNodeId,
@@ -2006,6 +2630,31 @@ Important guidelines:
           // Throw error to be caught by the loop's catch block
           throw new Error(`Action Error (NodeID ${actionNodeId}): ${performResult.error}`);
         }
+
+        // --- Capture tree state after action and generate diff ---
+        try {
+          if (target && treeBeforeAction) {
+            const afterTreeResult = await Utils.getAccessibilityTree(target);
+            treeAfterAction = afterTreeResult.simplified;
+            
+            // Generate tree diff
+            treeDiff = this.getTreeDiff(treeBeforeAction, treeAfterAction);
+            
+            logger.info(`Tree diff after ${actionMethod}:`, treeDiff.summary);
+            if (treeDiff.hasChanges) {
+              logger.debug('Tree changes:', {
+                added: treeDiff.added.slice(0, 3),
+                removed: treeDiff.removed.slice(0, 3),
+                modified: treeDiff.modified.slice(0, 3)
+              });
+            } else {
+              logger.warn(`No tree changes detected after ${actionMethod} - action may have failed or had no visible effect`);
+            }
+          }
+        } catch (error) {
+          logger.warn('Failed to capture tree after action:', error);
+        }
+
         logger.info('ObjectiveDrivenActionTool: Action successful (but may have affected unexpected element).');
 
         // Fetch page metadata
@@ -2019,10 +2668,9 @@ Important guidelines:
           metadata = metadataEval.result.value as { url: string, title: string };
         }
 
-        // --- Success (potentially misleading) ---
         return {
           success: true,
-          message: `Successfully executed action for objective "${objective}" (Simplified Flow). ${performResult.message}. NOTE: Action was based on accessibility ID, verification advised.`,
+          message: `Successfully executed action for objective "${objective}"`,
           finalAction: { method: actionMethod, nodeId: actionNodeId, args: actionArgs },
           method: actionMethod,
           nodeId: actionNodeId,
@@ -2031,6 +2679,18 @@ Important guidelines:
           totalLength: accessibilityTreeString.length,
           truncated: accessibilityTreeString.length > offset + chunkSize,
           metadata,
+          treeDiff: treeDiff ? {
+            hasChanges: treeDiff.hasChanges,
+            summary: treeDiff.summary,
+            added: treeDiff.added.slice(0, 5),
+            removed: treeDiff.removed.slice(0, 5),
+            modified: treeDiff.modified.slice(0, 5),
+            hasMore: {
+              added: treeDiff.added.length > 5,
+              removed: treeDiff.removed.length > 5,
+              modified: treeDiff.modified.length > 5
+            }
+          } : null,
         };
 
       } catch (error) {
@@ -2768,14 +3428,6 @@ CRITICAL:
     return value === undefined || value === null || value === '';
   }
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   async execute(args: { objective: string, schema: Record<string, unknown>, offset?: number, chunkSize?: number, maxRetries?: number }): Promise<SchemaBasedDataExtractionResult | ErrorResult> {
     await createToolTracingObservation(this.name, args);
@@ -2785,7 +3437,7 @@ CRITICAL:
 
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
-    const modelNameForExtraction = AIChatPanel.getMiniModel();
+    const { model: modelNameForExtraction, provider: providerForExtraction } = AIChatPanel.getMiniModelWithProvider();
 
     if (!apiKey) {
       return { error: 'API key not configured.' };
@@ -2837,7 +3489,7 @@ Extract NodeIDs according to the provided objective and schema, then return a st
         // Use LLMClient to call the LLM
         const llm = LLMClient.getInstance();
         const llmResponse = await llm.call({
-          provider: this.detectProvider(modelNameForExtraction),
+          provider: providerForExtraction,
           model: modelNameForExtraction,
           messages: [
             { role: 'system', content: this.getSystemPrompt() },

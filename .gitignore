@@ -57,4 +57,4 @@ test/perf/.generated
 
 # Dependencies
 node_modules/
-*/.idea/
+**/.idea/

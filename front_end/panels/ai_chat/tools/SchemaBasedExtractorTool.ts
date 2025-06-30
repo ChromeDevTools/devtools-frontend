@@ -63,14 +63,6 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
     required: ['schema', 'reasoning']
   };
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   /**
    * Execute the schema-based extraction
@@ -481,11 +473,11 @@ CRITICAL:
 Only output the JSON object with real data from the accessibility tree.`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
       const llmResponse = await llm.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: extractionPrompt }
@@ -549,11 +541,11 @@ Return only the refined JSON object.
 Do not add any conversational text or explanations or thinking tags.`;
 
     try {
-      const modelName = AIChatPanel.getNanoModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
       const llmResponse = await llm.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: refinePrompt }
@@ -645,11 +637,11 @@ Describe the type of page/content that was analyzed.
 Return ONLY a valid JSON object conforming to the required metadata schema.`;
 
     try {
-      const modelName = AIChatPanel.getNanoModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
       const llmResponse = await llm.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: metadataPrompt }
@@ -781,12 +773,12 @@ Do not add any conversational text or explanations or thinking tags.
 `;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llmClient = LLMClient.getInstance();
       
       const llmResponse = await llmClient.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: 'You are a JSON processor that extracts numeric node IDs.' },
           { role: 'user', content: nodeIdExtractionPrompt }
@@ -847,8 +839,8 @@ Do not add any conversational text or explanations or thinking tags.
 
       const llmClient2 = LLMClient.getInstance();
       const llmUrlResponse = await llmClient2.call({
-        provider: this.detectProvider(modelName),
-        model: modelName,
+        provider,
+        model,
         messages: [
           { role: 'system', content: 'You are an expert data transformation assistant.' },
           { role: 'user', content: urlReplacementPrompt }

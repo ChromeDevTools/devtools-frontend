@@ -5,7 +5,6 @@
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
 import { LLMClient } from '../LLM/LLMClient.js';
-import type { LLMProvider } from '../LLM/LLMTypes.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
@@ -79,21 +78,6 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
       // Don't fail tool execution due to tracing errors
       console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
     }
-  }
-
-  /**
-   * Helper method to detect provider from model name
-   */
-  private detectProvider(modelName: string): LLMProvider {
-    // OpenAI patterns
-    if (modelName.startsWith('gpt-') || 
-        modelName.startsWith('o1-') ||
-        modelName.startsWith('o4-')) {
-      return 'openai';
-    }
-    
-    // Everything else goes to LiteLLM
-    return 'litellm';
   }
 
   schema = {
@@ -210,13 +194,12 @@ Return a JSON array of requirement statements. Example format:
 ["Requirement 1", "Requirement 2", ...]`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
-      const provider = this.detectProvider(modelName);
       
       const response = await llm.call({
         provider,
-        model: modelName,
+        model,
         messages: [
           { role: 'user', content: userPrompt }
         ],
@@ -304,13 +287,12 @@ Return a JSON object evaluating the plan against the requirements using this sch
 ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
-      const provider = this.detectProvider(modelName);
       
       const response = await llm.call({
         provider,
-        model: modelName,
+        model,
         messages: [
           { role: 'user', content: userPrompt }
         ],
@@ -365,13 +347,12 @@ Provide clear, actionable feedback focused on helping improve the final response
 Be concise, specific, and constructive.`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
       const llm = LLMClient.getInstance();
-      const provider = this.detectProvider(modelName);
       
       const response = await llm.call({
         provider,
-        model: modelName,
+        model,
         messages: [
           { role: 'user', content: userPrompt }
         ],

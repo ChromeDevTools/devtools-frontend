@@ -6,6 +6,7 @@ import { enhancePromptWithPageContext } from '../core/PageInfoManager.js';
 import { LLMClient } from '../LLM/LLMClient.js';
 import type { LLMResponse, ParsedLLMAction, LLMMessage, LLMProvider } from '../LLM/LLMTypes.js';
 import type { Tool } from '../tools/Tools.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
 import { createLogger } from '../core/Logger.js';
 import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
@@ -104,14 +105,6 @@ export class AgentRunner {
     return llmMessages;
   }
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private static detectProvider(modelName: string): LLMProvider {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as LLMProvider;
-  }
 
   // Helper function to execute the handoff logic (to avoid duplication)
   private static async executeHandoff(
@@ -317,7 +310,7 @@ export class AgentRunner {
         logger.info('${agentName} Calling LLM with ${messages.length} messages');
         
         const llm = LLMClient.getInstance();
-        const provider = AgentRunner.detectProvider(modelName);
+        const provider = AIChatPanel.getProviderForModel(modelName);
         const llmMessages = AgentRunner.convertToLLMMessages(messages);
         
         llmResponse = await llm.call({

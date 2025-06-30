@@ -9,6 +9,7 @@ import { ErrorHandlingUtils } from '../../utils/ErrorHandlingUtils.js';
 import { PromptTemplates } from '../../utils/PromptTemplates.js';
 import { ResponseParsingUtils } from '../../utils/ResponseParsingUtils.js';
 import type { ScreenshotData, VisionMessage, TextContent, ImageContent } from '../../utils/EvaluationTypes.js';
+import { AIChatPanel } from '../../../ui/AIChatPanel.js';
 
 const logger = createLogger('LLMEvaluator');
 
@@ -25,14 +26,6 @@ export class LLMEvaluator {
     this.defaultModel = defaultModel;
   }
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   /**
    * Evaluate tool output using an LLM judge (supports both text and vision)
@@ -95,7 +88,7 @@ export class LLMEvaluator {
       try {
         const llm = LLMClient.getInstance();
         const llmResponse = await llm.call({
-          provider: this.detectProvider(model),
+          provider: AIChatPanel.getProviderForModel(model),
           model: model,
           messages: [
             { role: 'system', content: PromptTemplates.buildSystemPrompt({ hasVision: false }) },

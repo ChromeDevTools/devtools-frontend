@@ -91,6 +91,8 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     const openaiKey = localStorage.getItem('ai_chat_api_key') || '';
     const litellmKey = localStorage.getItem('ai_chat_litellm_api_key') || '';
     const litellmEndpoint = localStorage.getItem('ai_chat_litellm_endpoint') || '';
+    const groqKey = localStorage.getItem('ai_chat_groq_api_key') || '';
+    const openrouterKey = localStorage.getItem('ai_chat_openrouter_api_key') || '';
     
     const providers = [];
     
@@ -111,10 +113,31 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       });
     }
     
+    // Add Groq if it's the selected provider and has an API key
+    if (provider === 'groq' && groqKey) {
+      providers.push({ 
+        provider: 'groq' as const, 
+        apiKey: groqKey 
+      });
+    }
+    
+    // Add OpenRouter if it's the selected provider and has an API key
+    if (provider === 'openrouter' && openrouterKey) {
+      providers.push({ 
+        provider: 'openrouter' as const, 
+        apiKey: openrouterKey 
+      });
+    }
+    
     if (providers.length === 0) {
-      const errorMessage = provider === 'openai' 
-        ? 'OpenAI API key is required for this configuration'
-        : 'LiteLLM endpoint is required for this configuration';
+      let errorMessage = 'OpenAI API key is required for this configuration';
+      if (provider === 'litellm') {
+        errorMessage = 'LiteLLM endpoint is required for this configuration';
+      } else if (provider === 'groq') {
+        errorMessage = 'Groq API key is required for this configuration';
+      } else if (provider === 'openrouter') {
+        errorMessage = 'OpenRouter API key is required for this configuration';
+      }
       throw new Error(errorMessage);
     }
     
@@ -142,7 +165,15 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       // If API key is required but not provided, throw error
       if (requiresApiKey && !apiKey) {
         const provider = localStorage.getItem('ai_chat_provider') || 'openai';
-        throw new Error(`${provider === 'openai' ? 'OpenAI' : 'LiteLLM'} API key is required for this configuration`);
+        let providerName = 'OpenAI';
+        if (provider === 'litellm') {
+          providerName = 'LiteLLM';
+        } else if (provider === 'groq') {
+          providerName = 'Groq';
+        } else if (provider === 'openrouter') {
+          providerName = 'OpenRouter';
+        }
+        throw new Error(`${providerName} API key is required for this configuration`);
       }
 
       // Will throw error if OpenAI model is used without API key
@@ -507,6 +538,16 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
       
       // OpenAI provider always requires an API key
       if (selectedProvider === 'openai') {
+        return true;
+      }
+      
+      // Groq provider always requires an API key
+      if (selectedProvider === 'groq') {
+        return true;
+      }
+      
+      // OpenRouter provider always requires an API key
+      if (selectedProvider === 'openrouter') {
         return true;
       }
       

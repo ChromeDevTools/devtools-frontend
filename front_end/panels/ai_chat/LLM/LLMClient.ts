@@ -6,6 +6,8 @@ import type { LLMMessage, LLMResponse, LLMCallOptions, LLMProvider, ModelInfo } 
 import { LLMProviderRegistry } from './LLMProviderRegistry.js';
 import { OpenAIProvider } from './OpenAIProvider.js';
 import { LiteLLMProvider } from './LiteLLMProvider.js';
+import { GroqProvider } from './GroqProvider.js';
+import { OpenRouterProvider } from './OpenRouterProvider.js';
 import { LLMResponseParser } from './LLMResponseParser.js';
 import { createLogger } from '../core/Logger.js';
 
@@ -82,6 +84,12 @@ export class LLMClient {
               providerConfig.apiKey,
               providerConfig.providerURL
             );
+            break;
+          case 'groq':
+            providerInstance = new GroqProvider(providerConfig.apiKey);
+            break;
+          case 'openrouter':
+            providerInstance = new OpenRouterProvider(providerConfig.apiKey);
             break;
           default:
             logger.warn(`Unknown provider type: ${providerConfig.provider}`);
@@ -294,6 +302,40 @@ export class LLMClient {
    */
   static async testLiteLLMConnection(apiKey: string | null, modelName: string, baseUrl?: string): Promise<{success: boolean, message: string}> {
     const provider = new LiteLLMProvider(apiKey, baseUrl);
+    return provider.testConnection(modelName);
+  }
+
+  /**
+   * Static method to fetch models from Groq API (for UI use without initialization)
+   */
+  static async fetchGroqModels(apiKey: string): Promise<any[]> {
+    const provider = new GroqProvider(apiKey);
+    const models = await provider.fetchModels();
+    return models;
+  }
+
+  /**
+   * Static method to test Groq connection (for UI use without initialization)
+   */
+  static async testGroqConnection(apiKey: string, modelName: string): Promise<{success: boolean, message: string}> {
+    const provider = new GroqProvider(apiKey);
+    return provider.testConnection(modelName);
+  }
+
+  /**
+   * Static method to fetch models from OpenRouter API (for UI use without initialization)
+   */
+  static async fetchOpenRouterModels(apiKey: string): Promise<any[]> {
+    const provider = new OpenRouterProvider(apiKey);
+    const models = await provider.fetchModels();
+    return models;
+  }
+
+  /**
+   * Static method to test OpenRouter connection (for UI use without initialization)
+   */
+  static async testOpenRouterConnection(apiKey: string, modelName: string): Promise<{success: boolean, message: string}> {
+    const provider = new OpenRouterProvider(apiKey);
     return provider.testConnection(modelName);
   }
 

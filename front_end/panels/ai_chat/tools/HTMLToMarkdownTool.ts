@@ -81,14 +81,6 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
     required: ['reasoning']
   };
 
-  /**
-   * Helper function to detect provider from user's settings
-   */
-  private detectProvider(modelName: string): 'openai' | 'litellm' {
-    // Respect user's provider selection from settings
-    const selectedProvider = localStorage.getItem('ai_chat_provider') || 'openai';
-    return selectedProvider as 'openai' | 'litellm';
-  }
 
   /**
    * Execute the HTML to Markdown extraction
@@ -356,11 +348,11 @@ ${instruction}
     markdownContent: string,
   }> {
     // Call LLM using the unified client
-    const modelName = AIChatPanel.getNanoModel();
+    const { model, provider } = AIChatPanel.getNanoModelWithProvider();
     const llm = LLMClient.getInstance();
     const llmResponse = await llm.call({
-      provider: this.detectProvider(modelName),
-      model: modelName,
+      provider,
+      model,
       messages: [
         { role: 'system', content: params.systemPrompt },
         { role: 'user', content: params.userPrompt }

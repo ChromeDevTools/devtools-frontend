@@ -12,6 +12,43 @@ import * as Models from './models.js';
 
 describe('RecordingPlayer', () => {
   let recordingPlayer: Models.RecordingPlayer.RecordingPlayer;
+  /**
+   * Create a promise that resolve once the Stop event is emitted
+   * And return a new Promise that awaits the Stop event
+   * Useful when dealing with breakpoints
+   */
+  function createStopEvent(
+      recordingPlayer: Models.RecordingPlayer.RecordingPlayer,
+      stopTimes = 1,
+  ) {
+    const stopEvent: {promise: Promise<void>} = {promise: Promise.resolve()};
+
+    function createPromise() {
+      return new Promise<void>(resolve => {
+        recordingPlayer.addEventListener(
+            Models.RecordingPlayer.Events.STOP,
+            () => {
+              // setTimeout is needed to insure that the checks are ran
+              // on the next tick
+              setTimeout(() => {
+                resolve();
+              }, 0);
+            },
+            {once: true},
+        );
+      });
+    }
+
+    stopEvent.promise = createPromise().then(() => {
+      const time = stopTimes - 1;
+      if (time > 0) {
+        stopEvent.promise = createPromise();
+      } else {
+        stopEvent.promise = Promise.reject(new Error('Unexpected call to stopPromise'));
+      }
+    });
+    return stopEvent;
+  }
 
   beforeEach(() => {
     installMocksForTargetManager();
@@ -69,21 +106,14 @@ describe('RecordingPlayer', () => {
       const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
         resolve();
       });
-      const stopEventPromise = new Promise<void>(resolve => {
-        recordingPlayer.addEventListener(
-            Models.RecordingPlayer.Events.STOP,
-            () => {
-              resolve();
-            },
-        );
-      });
+      const stopEvent = createStopEvent(recordingPlayer);
       recordingPlayer.addEventListener(
           Models.RecordingPlayer.Events.STEP,
           stepEventHandlerStub,
       );
 
       void recordingPlayer.play();
-      await stopEventPromise;
+      await stopEvent.promise;
 
       assert.lengthOf(stepEventHandlerStub.getCalls(), 2);
     });
@@ -107,34 +137,18 @@ describe('RecordingPlayer', () => {
       const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
         resolve();
       });
-      let stopEventPromise = new Promise<void>(resolve => {
-        recordingPlayer.addEventListener(
-            Models.RecordingPlayer.Events.STOP,
-            () => {
-              resolve();
-              stopEventPromise = new Promise<void>(nextResolve => {
-                recordingPlayer.addEventListener(
-                    Models.RecordingPlayer.Events.STOP,
-                    () => {
-                      nextResolve();
-                    },
-                    {once: true},
-                );
-              });
-            },
-            {once: true},
-        );
-      });
+      const stopEvent = createStopEvent(recordingPlayer, 2);
       recordingPlayer.addEventListener(
           Models.RecordingPlayer.Events.STEP,
           stepEventHandlerStub,
       );
 
       void recordingPlayer.play();
-      await stopEventPromise;
+      await stopEvent.promise;
       assert.lengthOf(stepEventHandlerStub.getCalls(), 2);
       recordingPlayer.stepOver();
-      await stopEventPromise;
+
+      await stopEvent.promise;
 
       assert.lengthOf(stepEventHandlerStub.getCalls(), 3);
     });
@@ -159,34 +173,17 @@ describe('RecordingPlayer', () => {
       const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
         resolve();
       });
-      let stopEventPromise = new Promise<void>(resolve => {
-        recordingPlayer.addEventListener(
-            Models.RecordingPlayer.Events.STOP,
-            () => {
-              resolve();
-              stopEventPromise = new Promise<void>(nextResolve => {
-                recordingPlayer.addEventListener(
-                    Models.RecordingPlayer.Events.STOP,
-                    () => {
-                      nextResolve();
-                    },
-                    {once: true},
-                );
-              });
-            },
-            {once: true},
-        );
-      });
+      const stopEvent = createStopEvent(recordingPlayer, 2);
       recordingPlayer.addEventListener(
           Models.RecordingPlayer.Events.STEP,
           stepEventHandlerStub,
       );
 
       void recordingPlayer.play();
-      await stopEventPromise;
+      await stopEvent.promise;
       assert.lengthOf(stepEventHandlerStub.getCalls(), 2);
       recordingPlayer.continue();
-      await stopEventPromise;
+      await stopEvent.promise;
 
       assert.lengthOf(stepEventHandlerStub.getCalls(), 4);
     });
@@ -211,24 +208,7 @@ describe('RecordingPlayer', () => {
       const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
         resolve();
       });
-      let stopEventPromise = new Promise<void>(resolve => {
-        recordingPlayer.addEventListener(
-            Models.RecordingPlayer.Events.STOP,
-            () => {
-              resolve();
-              stopEventPromise = new Promise<void>(nextResolve => {
-                recordingPlayer.addEventListener(
-                    Models.RecordingPlayer.Events.STOP,
-                    () => {
-                      nextResolve();
-                    },
-                    {once: true},
-                );
-              });
-            },
-            {once: true},
-        );
-      });
+      const stopEvent = createStopEvent(recordingPlayer);
       const doneEventPromise = new Promise<void>(resolve => {
         recordingPlayer.addEventListener(
             Models.RecordingPlayer.Events.DONE,
@@ -244,7 +224,7 @@ describe('RecordingPlayer', () => {
       );
 
       void recordingPlayer.play();
-      await stopEventPromise;
+      await stopEvent.promise;
       assert.lengthOf(stepEventHandlerStub.getCalls(), 2);
       recordingPlayer.continue();
       await doneEventPromise;

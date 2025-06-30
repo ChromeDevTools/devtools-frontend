@@ -1633,6 +1633,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
+  /**
+   * Handles an external request using the given prompt and uses the
+   * conversation type to use the correct agent. Note that the `selector` param
+   * is contextual; for styling it is a literal CSS selector, but for
+   * Performance Insights it is the name of the Insight that forms the
+   * context of the conversation.
+   */
   async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
       Promise<{response: string, devToolsLogs: object[]}> {
     try {
@@ -1650,6 +1657,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       switch (conversationType) {
         case AiAssistanceModel.ConversationType.STYLING:
           return await this.handleExternalStylingRequest(prompt, selector);
+        case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
+          if (!selector) {
+            throw new Error('The insightTitle parameter is required for debugging a Performance Insight.');
+          }
+          return await this.handleExternalPerformanceInsightsRequest(prompt, selector);
         default:
           throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
       }
@@ -1660,6 +1672,48 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       error.stack = '';
       throw error;
     }
+  }
+
+  async handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
+      Promise<{response: string, devToolsLogs: object[]}> {
+    const insightsAgent = this.#createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+    const externalConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(insightsAgent),
+        [],
+        insightsAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    this.#historicalConversations.push(externalConversation);
+
+    const timelinePanel = TimelinePanel.TimelinePanel.TimelinePanel.instance();
+
+    const insightOrError = await TimelinePanel.ExternalRequests.getInsightToDebug(
+        timelinePanel.model,
+        insightTitle,
+    );
+    if ('error' in insightOrError) {
+      return {
+        response: insightOrError.error,
+        devToolsLogs: [],
+      };
+    }
+
+    const selectedContext = createPerfInsightContext(insightOrError.insight);
+    const runner = insightsAgent.run(prompt, {selected: selectedContext});
+
+    const devToolsLogs: object[] = [];
+    for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
+        return {response: data.text, devToolsLogs};
+      }
+    }
+    throw new Error('Something went wrong. No answer was generated.');
   }
 
   async handleExternalStylingRequest(prompt: string, selector = 'body'):

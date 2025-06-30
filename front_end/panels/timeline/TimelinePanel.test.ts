@@ -314,13 +314,12 @@ describeWithEnvironment('TimelinePanel', function() {
     }
   });
 
-  describe('handleExternalRequest', () => {
+  describe('handleExternalRecordRequest', () => {
     it('returns information on the insights found in the recording', async function() {
       const uiView = UI.ViewManager.ViewManager.instance({forceNew: true});
       sinon.stub(uiView, 'showView');
 
       const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
-      // const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       await timeline.loadingComplete(events, null, null);
 
       sinon.stub(timeline, 'recordReload').callsFake(() => {

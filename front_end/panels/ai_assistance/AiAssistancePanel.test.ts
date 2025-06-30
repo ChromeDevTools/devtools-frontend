@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
@@ -25,6 +26,7 @@ import {
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Elements from '../elements/elements.js';
@@ -40,7 +42,11 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('AI Assistance Panel', () => {
   beforeEach(() => {
-    registerNoopActions(['elements.toggle-element-search']);
+    registerNoopActions([
+      'elements.toggle-element-search', 'timeline.record-reload', 'timeline.toggle-recording', 'timeline.show-history',
+      'components.collect-garbage'
+    ]);
+
     UI.Context.Context.instance().setFlavor(Elements.ElementsPanel.ElementsPanel, null);
     UI.Context.Context.instance().setFlavor(Network.NetworkPanel.NetworkPanel, null);
     UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
@@ -1748,7 +1754,23 @@ STOP`,
       }
     });
 
-    it('throws an error for performance-insight assistance requests', async () => {
+    it('handles performance insight requests with an insight title', async function() {
+      const {panel} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[{explanation}]]),
+      });
+
+      // Create a timeline panel that has a trace imported with insights.
+      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+      const traceModel = Trace.TraceModel.Model.createWithAllHandlers();
+      await traceModel.parse(events);
+      Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: false, traceModel});
+
+      const response = await panel.handleExternalRequest(
+          'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT, 'LCP breakdown');
+      assert.strictEqual(response.response, explanation);
+    });
+
+    it('errors for performance insight requests with no insightTitle', async () => {
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
@@ -1757,10 +1779,7 @@ STOP`,
             'Please help me debug this problem', AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
         assert.fail('Expected `handleExternalRequest` to throw');
       } catch (err) {
-        assert.strictEqual(
-            err.message,
-            `Debugging with an agent of type '${
-                AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT}' is not implemented yet.`);
+        assert.strictEqual(err.message, 'The insightTitle parameter is required for debugging a Performance Insight.');
       }
     });
   });

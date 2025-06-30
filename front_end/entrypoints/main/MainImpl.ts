@@ -1026,6 +1026,9 @@ type ExternalRequestInput = {
   args: {prompt: string, selector: string},
 }|{
   kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
+}|{
+  kind: 'PERFORMANCE_ANALYZE_INSIGHT',
+  args: {insightTitle: string, prompt: string},
 };
 
 interface ExternalRequestResponse {
@@ -1038,6 +1041,13 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
     case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
       const TimelinePanel = await import('../../panels/timeline/timeline.js');
       return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+    }
+    case 'PERFORMANCE_ANALYZE_INSIGHT': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest(
+          input.args.prompt, AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT, input.args.insightTitle);
     }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');

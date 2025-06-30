@@ -1860,6 +1860,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/timeline/EventsSerializer.js",
   "front_end/panels/timeline/EventsTimelineTreeView.js",
   "front_end/panels/timeline/ExtensionTrackAppender.js",
+  "front_end/panels/timeline/ExternalRequests.js",
   "front_end/panels/timeline/FreshRecording.js",
   "front_end/panels/timeline/GPUTrackAppender.js",
   "front_end/panels/timeline/Initiators.js",

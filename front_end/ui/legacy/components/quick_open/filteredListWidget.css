@@ -111,6 +111,7 @@ devtools-text-prompt {
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--sys-color-on-surface-subtle);
+  padding-left: var(--sys-size-3);
   display: flex;
   white-space: pre;
 }

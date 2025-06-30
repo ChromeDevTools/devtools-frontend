@@ -6403,6 +6403,11 @@ export namespace Emulation {
     mobile: boolean;
     bitness?: string;
     wow64?: boolean;
+    /**
+     * Used to specify User Agent form-factor values.
+     * See https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors
+     */
+    formFactors?: string[];
   }
 
   /**
@@ -9769,6 +9774,11 @@ export namespace Network {
      */
     outerResponse: Response;
     /**
+     * Whether network response for the signed exchange was accompanied by
+     * extra headers.
+     */
+    hasExtraInfo: boolean;
+    /**
      * Information about the signed exchange header.
      */
     header?: SignedExchangeHeader;
@@ -12261,6 +12271,7 @@ export namespace Page {
     JoinAdInterestGroup = 'join-ad-interest-group',
     KeyboardMap = 'keyboard-map',
     LanguageDetector = 'language-detector',
+    LanguageModel = 'language-model',
     LocalFonts = 'local-fonts',
     LocalNetworkAccess = 'local-network-access',
     Magnetometer = 'magnetometer',
@@ -16161,6 +16172,14 @@ export namespace Storage {
     /**
      * If result is `sent`, populated with net/HTTP status.
      */
+    netError?: integer;
+    netErrorName?: string;
+    httpStatusCode?: integer;
+  }
+
+  export interface AttributionReportingVerboseDebugReportSentEvent {
+    url: string;
+    body?: any[];
     netError?: integer;
     netErrorName?: string;
     httpStatusCode?: integer;

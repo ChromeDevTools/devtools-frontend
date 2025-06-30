@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS ಮಾಧ್ಯಮ ಪ್ರಕಾರವನ್ನು ಅನುಕರಿಸಬೇಡಿ"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS ಪಠ್ಯ ಪ್ರಮಾಣದ ಅನುಕರಣೆ ಮಾಡಬೇಡಿ"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ಗ್ರಿಡ್ ಸಾಲುಗಳನ್ನು ವಿಸ್ತರಿಸಬೇಡಿ"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ಡ್ಯುಟೆರನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ (ಹಸಿರು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS ಪಠ್ಯ ಪ್ರಮಾಣದ ಅನುಕರಣೆ ಮಾಡಿ"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ಪ್ರೋಟನೋಪಿಯವನ್ನು ಅನುಕರಿಸಿ (ಕೆಂಪು ಬಣ್ಣವನ್ನು ಗುರುತಿಸಲು ಸಾಧ್ಯವಾಗದಿರುವುದು)"
@@ -732,7 +738,31 @@
     "message": "ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿ ನಿರ್ಬಂಧಿಸುವಿಕೆ"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "ಅನುಕರಿಸಬೇಡಿ"
+    "message": "ಅನುಕರಣೆ ಇಲ್ಲ"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ಡೀಫಾಲ್ಟ್)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
+    "message": "ಅನುಕರಣೆ ಇಲ್ಲ"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "ವಿನಾಯಿತಿಗಳು ಎದುರಾದಾಗ ವಿರಾಮಗೊಳಿಸಿ"
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "ಮುದ್ರಣ ಹಾಗೂ ಸ್ಕ್ರೀನ್ ಶೈಲಿಗಳನ್ನು ಪರೀಕ್ಷಿಸುವುದಕ್ಕಾಗಿ ಮಾಧ್ಯಮ ಪ್ರಕಾರವನ್ನು ಒತ್ತಾಯಪಡಿಸುತ್ತದೆ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS ಪಠ್ಯ ಮಾಪಕ ಅನುಕರಣೆಯನ್ನು ಒತ್ತಾಯಿಸುತ್ತದೆ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "ದೃಷ್ಟಿ ನ್ಯೂನತೆ ಅನುಕರಿಸುವಿಕೆಯನ್ನು ಒತ್ತಾಯಪಡಿಸುತ್ತದೆ"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "ಡ್ರಾಯರ್ ಟಾಗಲ್ ಮಾಡಿ"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "ಡ್ರಾಯರ್ ಓರಿಯಂಟೇಶನ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "ಪ್ರತ್ಯೇಕ ವಿಂಡೋದಲ್ಲಿ ಅನ್‌ಡಾಕ್ ಮಾಡಿ"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "ತೆಗೆದುಹಾಕಲಾದ ವೈಟ್‌ಸ್ಪೇಸ್ \\(n|r|t) ಅಕ್ಷರಗಳು ಮತ್ತು ಕಡಿಮೆ ಅಕ್ಷರಗಳೆರಡನ್ನು (<) ಹೊಂದಿರುವ URL ಗಳ ರಿಸೋರ್ಸ್ ವಿನಂತಿಗಳನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಈ ರಿಸೋರ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಹೊಸ ಸಾಲುಗಳನ್ನು ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಅಂಶ ಗುಣಲಕ್ಷಣದ ಮೌಲ್ಯಗಳಂತಹ ಸ್ಥಳಗಳಿಂದ ಕಡಿಮೆ ಅಕ್ಷರಗಳನ್ನು ಎನ್‌ಕೋಡ್ ಮಾಡಿ."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP ಅಕ್ಷರ ಗುಂಪಿನ ಸ್ವಯಂ-ಪತ್ತೆಹಚ್ಚುವಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಮುಂದಿನ ದಿನಗಳಲ್ಲಿ ಅದನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಕಂಟೆಂಟ್‌ ಪ್ರಕಾರದ ಹೆಡರ್‌ನಲ್ಲಿ ಅಥವಾ ಮೆಟಾ ಟ್ಯಾಗ್ ಬಳಸಿ (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding) ಅಕ್ಷರ ಗುಂಪನ್ನು ನಿರ್ದಿಷ್ಟಪಡಿಸಿ."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ, ಬದಲಿಗೆ ಸ್ಟ್ಯಾಂಡರ್ಡ್ API ಬಳಸಿ: ನ್ಯಾವಿಗೇಶನ್ ಟೈಮಿಂಗ್ 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit ವಿಫಲವಾಗಿದೆ: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "ಫೀಲ್ಡ್ ಡೇಟಾವನ್ನು ಪ್ರಸ್ತುತ ಪುಟದ ಬದಲಾಗಿ ಬೇರೆ URL ಗೆ ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿದೆ."
+    "message": "ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಪ್ರಸ್ತುತ ಪುಟದ ಬದಲಾಗಿ ಬೇರೆ URL ಗೆ ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿದೆ."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "ಸಾಧನದ ಪಿಕ್ಸೆಲ್ ಅನುಪಾತವು ಒಂದು ಸಂಖ್ಯೆಯಾಗಿರಬೇಕು ಅಥವಾ ಖಾಲಿ ಇರಬೇಕು."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "ಈ ರೀತಿ ಸೇವ್ ಮಾಡಿ…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ಫೈಲ್ ಅನ್ನು ಡಿಸ್ಕ್‌ನಲ್ಲಿ ಸೇವ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ಚಿತ್ರ ಉಳಿಸಿ"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "ಟಾಪ್ ಲೇಔಟ್ ಶಿಫ್ಟ್ ಕಲ್‍ಪ್ರಿಟ್‍ಗಳು"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "ಗಾತ್ರವಿರದ ಚಿತ್ರಗಳು"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "ಅತ್ಯಂತ ಕಳಪೆ ಕ್ಲಸ್ಟರ್"
@@ -1839,7 +1875,7 @@
     "message": "ರೀಡೈರೆಕ್ಟ್‌ಗಳನ್ನು ಹೊಂದಿತ್ತು ({PH1} ರೀಡೈರೆಕ್ಟ್‌ಗಳು, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "ಸರ್ವರ್ ನಿಧಾನವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸಿತು (ಗಮನಿಸಿರುವುದು {PH1}) "
+    "message": "ಸರ್ವರ್ ನಿಧಾನವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸಿತು (ಗಮನಿಸಿರುವುದು {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "ಯಾವುದೇ ಕಂಪ್ರೆಶನ್ ಅನ್ನು ಅನ್ವಯಿಸಿಲ್ಲ"
@@ -1848,7 +1884,7 @@
     "message": "ರೀಡೈರೆಕ್ಟ್‌ಗಳನ್ನು ತಪ್ಪಿಸಿ"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "ಸರ್ವರ್ ತ್ವರಿತವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ (ಗಮನಿಸಿರುವುದು {PH1}) "
+    "message": "ಸರ್ವರ್ ತ್ವರಿತವಾಗಿ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತದೆ (ಗಮನಿಸಿರುವುದು {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "ಪಠ್ಯ ಕಂಪ್ರೆಶನ್ ಅನ್ನು ಅನ್ವಯಿಸುತ್ತದೆ"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "ಮೊಬೈಲ್‌ನ ವ್ಯೂವ್‍ಪೋರ್ಟ್ ಅನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡದಿದ್ದರೆ ಟ್ಯಾಪ್ ಸಂವಹನಗಳು [300 ಮಿ.ಸೆಗಳವರೆಗೆ ವಿಳಂಬವಾಗಬಹುದು](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "ಮೊಬೈಲ್ ಟ್ಯಾಪ್ ತಡವಾಗಿದೆ"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "ಮೊಬೈಲ್‌ನ ವ್ಯೂವ್‍ಪೋರ್ಟ್ ಅನ್ನು ಆಪ್ಟಿಮೈಸ್ ಮಾಡಿ"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ಈ ಫೀಚರ್ ಅನ್ನು ಬಳಸಲು, DevTools ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ನಿಮ್ಮ ಭಾಷೆಯ ಆದ್ಯತೆಯನ್ನು ಇಂಗ್ಲಿಷ್‌ಗೆ ಸೆಟ್‌ ಮಾಡಿ."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "ನಿಮ್ಮ ಸಂಭಾಷಣೆಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ಮೇಲೆ ಸೂಚಿಸಲಾದ ಪ್ರಾಂಪ್ಟ್‌ಗಳಲ್ಲಿ ಒಂದನ್ನು ಸಹ ನೀವು ಬಳಸಬಹುದು"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools ನಲ್ಲಿ AI ಕುರಿತು ತಿಳಿಯಿರಿ"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "ಕುಗ್ಗಿಸಿ"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" ಆಬ್ಜೆಕ್ಟ್ ಸ್ಟೋರ್ ಅನ್ನು ತೆರವುಗೊಳಿಸಬೇಕೆ?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" ಡೇಟಾಬೇಸ್ ಅನ್ನು ಅಳಿಸಬೇಕೆ?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "ಕೀ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "ಆಯ್ಕೆಮಾಡಿದ ಆಬ್ಜೆಕ್ಟ್ ಸಂಗ್ರಹದಲ್ಲಿರುವ ಡೇಟಾವನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ಆಬ್ಜೆಕ್ಟ್ ಸ್ಟೋರ್‌ಗಳು"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ಈ ಫ್ರೇಮ್ ಅನ್ನು ಜಾಹೀರಾತೊಂದರ ಮೂಲ ಫ್ರೇಮ್ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "ರೂಟ್ ಸ್ಕ್ರಿಪ್ಟ್ ಫಿಲ್ಟರ್‌ಲಿಸ್ಟ್ ನಿಯಮ"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "ಸುರಕ್ಷಿತ ಸನ್ನಿವೇಶ"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ಸೋರ್ಸ್-ಮ್ಯಾಪ್‌ನಿಂದ)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "ಬದಲಾವಣೆಗಳ ಟ್ಯಾಬ್ ಬೈನರಿ ಡೇಟಾ ಬದಲಾವಣೆಗಳನ್ನು ತೋರಿಸುವುದಿಲ್ಲ"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "ಈ ಪುಟದಲ್ಲಿ ನೀವು DevTools ನಲ್ಲಿ ಮಾಡಿದ ಕೋಡ್ ಬದಲಾವಣೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಬಹುದು."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "ಕಾಪಿ ಮಾಡಿ"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ಇನ್ನೂ ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಲ್ಲ"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ಯಾವುದೇ ಪಠ್ಯ ವ್ಯತ್ಯಾಸ ಲಭ್ಯವಿಲ್ಲ"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# ಅಳಿಸುವಿಕೆ (-)}one{# ಅಳಿಸುವಿಕೆಗಳು (-)}other{# ಅಳಿಸುವಿಕೆಗಳು (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# ಸೇರಿಸುವಿಕೆ (+)}one{# ಸೇರಿಸುವಿಕೆಗಳು (+)}other{# ಸೇರಿಸುವಿಕೆಗಳು (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "ಬದಲಾವಣೆಗಳು"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "ಪ್ರಸ್ತುತ ಫೈಲ್‌ನಿಂದ ಎಲ್ಲಾ ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "ಪ್ರಸ್ತುತ ಫೈಲ್‌ನಲ್ಲಿನ ಎಲ್ಲಾ ಬದಲಾವಣೆಗಳನ್ನು ಪೂರ್ವಸ್ಥಿತಿಗೆ ಮರಳಿಸಿ"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "ಬದಲಾವಣೆಗಳನ್ನು ತೋರಿಸಿ"
@@ -5646,7 +5676,7 @@
     "message": "ಕನ್ಸೋಲ್ ಅನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
-    "message": "ಗೋಚರಿಸುವ ಶೈಲಿಯ ಆಯ್ಕೆಯನ್ನು ನಕಲಿಸಿ"
+    "message": "ಗೋಚರಿಸುವ ಶೈಲಿಯ ಆಯ್ಕೆಯನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/console/ConsoleView.ts | customLevels": {
     "message": "ಕಸ್ಟಮ್ ಮಟ್ಟಗಳು"
@@ -5715,7 +5745,7 @@
     "message": "ಪ್ರಸ್ತುತ ಸಂದರ್ಭದಿಂದ ಸಂದೇಶಗಳನ್ನು ಮಾತ್ರ ತೋರಿಸಿ (top, iframe, worker, ವಿಸ್ತರಣೆ)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "ಫಿಲ್ಟರ್ ಸೈಡ್‌ಬಾರ್‌ನ ಮೂಲಕ ಓವರ್‌ರೈಡ್ ಮಾಡಲಾಗಿದೆ"
+    "message": "ಲಾಗ್ ಹಂತಗಳನ್ನು ಕನ್ಸೋಲ್ ಸೈಡ್‌ಬಾರ್ ಮೂಲಕ ನಿಯಂತ್ರಿಸಲಾಗುತ್ತದೆ."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "ಲಾಗ್ ಅನ್ನು ಸಂರಕ್ಷಿಸಿ"
@@ -6267,7 +6297,7 @@
     "message": "CSS ಅವಲೋಕನವನ್ನು ತೋರಿಸಿ"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | copyInitiatorUrl": {
-    "message": "ಇನಿಶಿಯೇಟರ್ URL ಅನ್ನು ನಕಲಿಸಿ"
+    "message": "ಇನಿಶಿಯೇಟರ್ URL ಅನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | copyUrl": {
     "message": "URL ಅನ್ನು ಕಾಪಿ ಮಾಡಿ"
@@ -6528,28 +6558,28 @@
     "message": "ಅಧೀನ ಗುಂಪುಗಳನ್ನು ಕುಗ್ಗಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "ನಕಲಿಸಿ"
+    "message": "ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyElement": {
-    "message": "ಘಟಕವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಘಟಕವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyFullXpath": {
-    "message": "ಸಂಪೂರ್ಣ XPath ನಕಲಿಸಿ"
+    "message": "ಸಂಪೂರ್ಣ XPath ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyJsPath": {
-    "message": "JS ಪಾಥ್ ನಕಲಿಸಿ"
+    "message": "JS ಪಾಥ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyOuterhtml": {
-    "message": "outerHTML ನಕಲಿಸಿ"
+    "message": "outerHTML ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copySelector": {
-    "message": "selector ನಕಲಿಸಿ"
+    "message": "selector ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyStyles": {
-    "message": "ಶೈಲಿಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಶೈಲಿಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | copyXpath": {
-    "message": "XPath ನಕಲಿಸಿ"
+    "message": "XPath ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | cut": {
     "message": "ಕತ್ತರಿಸಿ"
@@ -6612,16 +6642,16 @@
     "message": "ವೀಕ್ಷಿಸಲು ಸಾಧ್ಯವಾಗುವ ಹಾಗೆ ಸ್ಕ್ರಾಲ್ ಮಾಡಿ"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "ಟಾರ್ಗೆಟ್‌ಗೆ ಕಮಾಂಡ್ ಅನ್ನು ತೋರಿಸಿ"
+    "message": "commandfor ಆ್ಯಟ್ರಿಬ್ಯೂಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಎಲಿಮೆಂಟ್ ಅನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe ವಿವರಗಳನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "ಆಸಕ್ತಿಯ ಗುರಿಯನ್ನು ತೋರಿಸಿ"
+    "message": "interesttarget ಆ್ಯಟ್ರಿಬ್ಯೂಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಎಲಿಮೆಂಟ್ ಅನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "ಪಾಪೋವರ್ ಟಾರ್ಗೆಟ್ ಅನ್ನು ತೋರಿಸಿ"
+    "message": "popovertarget ಆ್ಯಟ್ರಿಬ್ಯೂಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಎಲಿಮೆಂಟ್ ಅನ್ನು ತೋರಿಸಿ"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ಈ ಫ್ರೇಮ್ ಅನ್ನು ಜಾಹೀರಾತು ಫ್ರೇಮ್ ಎಂಬುದಾಗಿ ಗುರುತಿಸಲಾಗಿದೆ"
@@ -6725,17 +6755,14 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ರಚಿಸಲಾದ ಸ್ಟೈಲ್‌ಶೀಟ್"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
-    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertiesSection.ts | copyRule": {
-    "message": "ರೂಲ್ ನಕಲಿಸಿ"
+    "message": "ರೂಲ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertiesSection.ts | copySelector": {
-    "message": "selector ನಕಲಿಸಿ"
+    "message": "selector ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS ಸೆಲೆಕ್ಟರ್"
@@ -6764,29 +6791,26 @@
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಮೂಲಕ"
   },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
-  },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
-    "message": "JS ನಂತೆ ಎಲ್ಲಾ ಘೋಷಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "JS ನಂತೆ ಎಲ್ಲಾ ಘೋಷಣೆಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllDeclarations": {
-    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಎಲ್ಲಾ ಡಿಕ್ಲರೇಶನ್‌ಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyCssDeclarationAsJs": {
-    "message": "JS ನಂತೆ ಘೋಷಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "JS ನಂತೆ ಘೋಷಣೆಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyDeclaration": {
-    "message": "ಡಿಕ್ಲರೇಶನ್ ನಕಲಿಸಿ"
+    "message": "ಡಿಕ್ಲರೇಶನ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyProperty": {
-    "message": "ಪ್ರಾಪರ್ಟಿಯನ್ನು ನಕಲಿಸಿ"
+    "message": "ಪ್ರಾಪರ್ಟಿಯನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyRule": {
-    "message": "ರೂಲ್ ನಕಲಿಸಿ"
+    "message": "ರೂಲ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyValue": {
-    "message": "ಮೌಲ್ಯವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಮೌಲ್ಯವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
     "message": "flexbox ಎಡಿಟರ್ ಅನ್ನು ತೆರೆಯಿರಿ"
@@ -6939,7 +6963,7 @@
     "message": "ಕ್ಷೇತ್ರದ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ"
   },
   "panels/elements/elements-meta.ts | copyStyles": {
-    "message": "ಶೈಲಿಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಶೈಲಿಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/elements/elements-meta.ts | duplicateElement": {
     "message": "ನಕಲಿ ಘಟಕ"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ಅಕ್ಸೆಸಿಬಿಲಿಟಿ"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ಆಡಿಟ್ ಮಾಡುವಾಗ ಡೆಸ್ಕ್‌ಟಾಪ್ ಅನುಕರಣೆಯನ್ನು ಅನ್ವಯಿಸಿ"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "ಮೊಬೈಲ್ ಎಮ್ಯುಲೇಶನ್ ಅನ್ನು ಅನ್ವಯಿಸಿ"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "ಪ್ಯಾಕೆಟ್ ಮರುಕ್ರಮಗೊಳಿಸುವಿಕೆ"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "ಶೇಕಡಾ"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "ಪ್ರೊಫೈಲ್ ಹೆಸರು"
   },
@@ -8709,16 +8733,16 @@
     "message": "UTF-8 ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಲಾಗಿದೆ"
   },
   "panels/network/BinaryResourceView.ts | copyAsBase": {
-    "message": "Base64 ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "Base64 ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/BinaryResourceView.ts | copyAsHex": {
-    "message": "Hex ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "Hex ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/BinaryResourceView.ts | copyAsUtf": {
-    "message": "UTF-8 ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "UTF-8 ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/BinaryResourceView.ts | copyToClipboard": {
-    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
+    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/BinaryResourceView.ts | hexViewer": {
     "message": "Hex ವೀಕ್ಷಕ"
@@ -8760,7 +8784,7 @@
     "message": "ಎಲ್ಲವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "panels/network/EventSourceMessagesView.ts | copyMessage": {
-    "message": "ಸಂದೇಶವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಸಂದೇಶವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/EventSourceMessagesView.ts | data": {
     "message": "ಡೇಟಾ"
@@ -8802,7 +8826,7 @@
     "message": "ಕಸ್ಟಮ್ ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಅನ್ನು ನಮೂದಿಸಿ"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "ನೆಟ್‌ವರ್ಕ್ ಪರಿಸ್ಥಿತಿಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ"
+    "message": "ನೆಟ್‌ವರ್ಕ್ ಪರಿಸ್ಥಿತಿಗಳನ್ನು ತೋರಿಸಲಾಗಿದೆ."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಥ್ರಾಟಲಿಂಗ್"
@@ -9075,7 +9099,7 @@
     "message": "ಬ್ರೌಸರ್ ಕುಕೀಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
   "panels/network/NetworkLogView.ts | copy": {
-    "message": "ನಕಲಿಸಿ"
+    "message": "ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAllAsCurl": {
     "message": "ಎಲ್ಲವನ್ನೂ cURL ನಂತೆ ಕಾಪಿ ಮಾಡಿ"
@@ -9132,34 +9156,34 @@
     "message": "ಎಲ್ಲಾ URL ಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsCurl": {
-    "message": "cURL ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "cURL ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsCurlBash": {
-    "message": "cURL (bash) ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "cURL (bash) ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsCurlCmd": {
-    "message": "cURL (cmd) ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "cURL (cmd) ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsFetch": {
-    "message": "fetch ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "fetch ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsNodejsFetch": {
     "message": "fetch (Node.js) ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyAsPowershell": {
-    "message": "PowerShell ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ನಕಲಿಸಿ"
+    "message": "PowerShell ಫಾರ್ಮ್ಯಾಟ್‌ನಲ್ಲಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyRequestHeaders": {
-    "message": "ವಿನಂತಿ ಶಿರೋಲೇಖಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ವಿನಂತಿ ಶಿರೋಲೇಖಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyResponse": {
-    "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ನಕಲಿಸಿ"
+    "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyResponseHeaders": {
-    "message": "ಪ್ರತಿಕ್ರಿಯೆಯ ಹೆಡರ್‌ಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಪ್ರತಿಕ್ರಿಯೆಯ ಹೆಡರ್‌ಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyStacktrace": {
-    "message": "ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್ ನಕಲಿಸಿ"
+    "message": "ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/network/NetworkLogView.ts | copyURL": {
     "message": "URL ಅನ್ನು ಕಾಪಿ ಮಾಡಿ"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "ರಿಮೋಟ್ ವಿಳಾಸ ಸ್ಥಳ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "ಹೆಡರ್‌ಗಳನ್ನು ವಿನಂತಿಸಿ"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳು"
@@ -10953,7 +10980,7 @@
     "message": "ಮುಂದುವರಿಸಿ"
   },
   "panels/recorder/RecorderController.ts | copyShortcut": {
-    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅಥವಾ ಆಯ್ಕೆಮಾಡಿದ ಹಂತವನ್ನು ನಕಲಿಸಿ"
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅಥವಾ ಆಯ್ಕೆಮಾಡಿದ ಹಂತವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
@@ -11238,7 +11265,7 @@
     "message": "ಮುಚ್ಚಿ"
   },
   "panels/recorder/components/StepView.ts | copyAs": {
-    "message": "ಈ ರೀತಿ ನಕಲಿಸಿ"
+    "message": "ಈ ರೀತಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/recorder/components/StepView.ts | customStepTitle": {
     "message": "ಕಸ್ಟಮ್ ಹಂತ"
@@ -12690,7 +12717,7 @@
     "message": "ಕಾಲ್ ಸ್ಟ್ಯಾಕ್"
   },
   "panels/sources/CallStackSidebarPane.ts | copyStackTrace": {
-    "message": "ಸ್ಟ್ಯಾಕ್‌ಟ್ರೇಸ್ ನಕಲಿಸಿ"
+    "message": "ಸ್ಟ್ಯಾಕ್‌ಟ್ರೇಸ್ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/CallStackSidebarPane.ts | debugFileNotFound": {
     "message": "ಡೀಬಗ್ ಫೈಲ್ \"{PH1}\" ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "ಈ ರೀತಿ ಸೇವ್ ಮಾಡಿ…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ಫೈಲ್ ಅನ್ನು ಡಿಸ್ಕ್‌ನಲ್ಲಿ ಸೇವ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ಓವರ್‌ರೈಡ್‌ಗಳಿಗಾಗಿ ಫೋಲ್ಡರ್ ಆಯ್ಕೆ ಮಾಡಿ"
   },
@@ -13137,16 +13167,16 @@
     "message": "ಇಲ್ಲಿಗೆ ಮುಂದುವರೆಯಿರಿ"
   },
   "panels/sources/SourcesPanel.ts | copyS": {
-    "message": "{PH1}ನಕಲಿಸಿ"
+    "message": "{PH1}ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | copyStringAsJSLiteral": {
-    "message": "ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು JavaScript ಲಿಟರಲ್ ಎಂಬುದಾಗಿ ನಕಲಿಸಿ"
+    "message": "ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು JavaScript ಲಿಟರಲ್ ಎಂಬುದಾಗಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | copyStringAsJSONLiteral": {
-    "message": "ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು JSON ಲಿಟರಲ್ ಎಂಬುದಾಗಿ ನಕಲಿಸಿ"
+    "message": "ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು JSON ಲಿಟರಲ್ ಎಂಬುದಾಗಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | copyStringContents": {
-    "message": "ಸ್ಟ್ರಿಂಗ್ ವಿಷಯಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "ಸ್ಟ್ರಿಂಗ್ ವಿಷಯಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/SourcesPanel.ts | debuggerHidden": {
     "message": "ಡೀಬಗರ್ ಸೈಡ್‌ಬಾರ್ ಮರೆಮಾಡಲಾಗಿದೆ"
@@ -13245,7 +13275,7 @@
     "message": "ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಸೇರಿಸಿ"
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | copyValue": {
-    "message": "ಮೌಲ್ಯವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಮೌಲ್ಯವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | deleteAllWatchExpressions": {
     "message": "ಎಲ್ಲಾ ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳನ್ನು ಅಳಿಸಿ"
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "ವಾಚ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಅನ್ನು ಅಳಿಸಲಾಗಿದೆ"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಹಿಟ್"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "ವಿವರಗಳು"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "ಆಯಾಮಗಳು"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ಅವಧಿ"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "ಸ್ಥಳ"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "ಸಂದೇಶ"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ಚಿಲ್ಡ್ರನ್)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} ಸಂಗ್ರಹಿಸಲಾಗಿದೆ"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} ರಲ್ಲಿ {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "ವಿವರವಾದ CSS ಸೆಲೆಕ್ಟರ್ ಹೊಂದಾಣಿಕೆಯ ಅಂಕಿಅಂಶಗಳನ್ನು ಸಂಗ್ರಹಿಸಲು \"{PH1}\" ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ಸ್ವಯಂ)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "ಸ್ಕ್ರಿಪ್ಟ್"
@@ -14682,19 +14694,19 @@
     "message": "ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ಫೀಲ್ಡ್‌ ಡೇಟಾ ಪಡೆಯುವಿಕೆಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
+    "message": "ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್ಸ್ ಪಡೆಯುವಿಕೆಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "ಈ ಪುಟಕ್ಕಾಗಿ Chrome UX ವರದಿಯು ಸಾಕಷ್ಟು ನೈಜ-ಪ್ರಪಂಚದ ವೇಗದ ಡೇಟಾವನ್ನು ಹೊಂದಿಲ್ಲ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "{PH1} ನಿಂದ ಅಗ್ರಿಗೇಟೆಡ್ ಫೀಲ್ಡ್ ಡೇಟಾವನ್ನು ಪಡೆದುಕೊಳ್ಳುವುದರಿಂದ ನಿಮ್ಮ ಸೈಟ್‌ನಲ್ಲಿ ಬಳಕೆದಾರರು ಏನನ್ನು ಅನುಭವಿಸುತ್ತಿದ್ದಾರೆ ಎಂಬುದರ ಆಧಾರದ ಮೇಲೆ ಸ್ಥಳೀಯ ಮಾಪನವನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಇದು ನಿಮಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ."
+    "message": "{PH1} ನಿಂದ ಅಗ್ರಿಗೇಟೆಡ್ ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳುವುದರಿಂದ ನಿಮ್ಮ ಸೈಟ್‌ನಲ್ಲಿ ಬಳಕೆದಾರರು ಏನನ್ನು ಅನುಭವಿಸುತ್ತಿದ್ದಾರೆ ಎಂಬುದರ ಆಧಾರದ ಮೇಲೆ ಸ್ಥಳೀಯ ಮಾಪನವನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಇದು ನಿಮಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" ಮಾನ್ಯವಾದ ಮೂಲ ಅಥವಾ URL ಅಲ್ಲ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "ಅದರ ಉತ್ಪಾದನಾ ಮೂಲಕ್ಕೆ ಸೂಕ್ತವಾದ ಫೀಲ್ಡ್‌ ಡೇಟಾವನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪಡೆಯಲು ಅಭಿವೃದ್ಧಿ ಮೂಲವನ್ನು ಸೆಟ್‌ ಮಾಡಿ."
+    "message": "ಅದರ ಉತ್ಪಾದನಾ ಮೂಲಕ್ಕೆ ಸೂಕ್ತವಾದ ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪಡೆಯಲು, ಅಭಿವೃದ್ಧಿ ಮೂಲವನ್ನು ಸೆಟ್‌ ಮಾಡಿ."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "ಹೊಸತು"
@@ -14703,7 +14715,7 @@
     "message": "ಸರಿ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "ಕೆಳಗಿನ URL ಗಾಗಿ ಯಾವಾಗಲೂ ಫೀಲ್ಡ್‌ ಡೇಟಾವನ್ನು ತೋರಿಸಿ"
+    "message": "ಕೆಳಗಿನ URL ಗಾಗಿ ಯಾವಾಗಲೂ ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ಹೊರಗುಳಿಯಲು ಆಯ್ಕೆಮಾಡಿ"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools ತೆರೆದಿರುವಾಗ, ನೀವು ಭೇಟಿ ನೀಡುವ URL ಗಳನ್ನು ಫೀಲ್ಡ್ ಡೇಟಾವನ್ನು ಪ್ರಶ್ನಿಸಲು Google ಗೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. ಈ ವಿನಂತಿಗಳು ನಿಮ್ಮ Google ಖಾತೆಗೆ ಸಂಬಂಧಿಸಿಲ್ಲ."
+    "message": "DevTools ತೆರೆದಿರುವಾಗ, ನೀವು ಭೇಟಿ ನೀಡುವ URL ಗಳನ್ನು ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಪ್ರಶ್ನಿಸಲು Google ಗೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. ಈ ವಿನಂತಿಗಳು ನಿಮ್ಮ Google ಖಾತೆಗೆ ಸಂಬಂಧಿಸಿಲ್ಲ."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "ಸ್ಕ್ರಿಪ್ಟ್‌ನ URL ಗೆ ರೆಗ್ಯುಲರ್‌ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ ನಿಯಮವನ್ನು ಸೇರಿಸಿ"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ಸಂವಹನ ಮತ್ತು ಲೇಔಟ್ ಶಿಫ್ಟ್ ಲಾಗ್‌ಗಳ ವಿಭಾಗ"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ಫೀಲ್ಡ್‌ ಡೇಟಾ"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳು"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP ಸಂವಹನವು 98ನೇ ಶೇಕಡಾವಾರು ಸಂವಹನದ ವಿಳಂಬವಾಗಿದೆ."
@@ -14856,10 +14868,10 @@
     "message": "ಸ್ಥಳೀಯ ಮತ್ತು ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳು"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "ಸ್ಥಳೀಯ ಮತ್ತು ಫೀಲ್ಡ್‌ ಡೇಟಾದ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+    "message": "ಸ್ಥಳೀಯ ಮತ್ತು ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "ಸ್ಥಳೀಯ ಮೆಟ್ರಿಕ್ಸ್‌ ಅನ್ನು ನಿಮ್ಮ ನೆಟ್‌ವರ್ಕ್ ಕನೆಕ್ಷನ್‌ ಮತ್ತು ಸಾಧನವನ್ನು ಬಳಸಿಕೊಂಡು ಪ್ರಸ್ತುತ ಪುಟದಿಂದ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಲಾಗಿದೆ. ಅನೇಕ ವಿಭಿನ್ನ ನೆಟ್‌ವರ್ಕ್ ಕನೆಕ್ಷನ್‌ಗಳು ಮತ್ತು ಸಾಧನಗಳನ್ನು ಬಳಸಿಕೊಂಡು ನೈಜ ಬಳಕೆದಾರರಿಂದ ಫೀಲ್ಡ್‌ ಡೇಟಾ ಅನ್ನು ಅಳೆಯಲಾಗುತ್ತದೆ."
+    "message": "ನಿಮ್ಮ ನೆಟ್‌ವರ್ಕ್ ಕನೆಕ್ಷನ್ ಮತ್ತು ಸಾಧನವನ್ನು ಬಳಸಿಕೊಂಡು ಪ್ರಸ್ತುತ ಪುಟದಿಂದ ಸ್ಥಳೀಯ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಲಾಗುತ್ತದೆ. ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ಅನೇಕ ವಿಭಿನ್ನ ನೆಟ್‌ವರ್ಕ್ ಕನೆಕ್ಷನ್‌ಗಳು ಮತ್ತು ಸಾಧನಗಳನ್ನು ಬಳಸಿಕೊಂಡು ನೈಜ ಬಳಕೆದಾರರು ಮಾಪನ ಮಾಡುತ್ತಾರೆ."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "ಸ್ಥಳೀಯ ಮೆಟ್ರಿಕ್‌ಗಳು"
@@ -14922,10 +14934,10 @@
     "message": "ತೀರಾ ಕಳಪೆ ಲೇಔಟ್ ಶಿಫ್ಟ್ ಕ್ಲಸ್ಟರ್‌ಗೆ ಹೋಗಿ."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "ಸಾಧನದ ಪ್ರಕಾರಕ್ಕಾಗಿ ಫೀಲ್ಡ್‌ ಡೇಟಾವನ್ನು ತೋರಿಸಿ: {PH1}"
+    "message": "ಸಾಧನದ ಪ್ರಕಾರಕ್ಕಾಗಿ ಫೀಲ್ಡ್‌ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ತೋರಿಸಿ: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "ಫೀಲ್ಡ್‌ ಡೇಟಾವನ್ನು {PH1} ಗೆ ತೋರಿಸಿ"
+    "message": "{PH1} ಗೆ ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP ಸಂವಹನಕ್ಕೆ ಹೋಗಿ."
@@ -15033,13 +15045,13 @@
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ, ಆದರೆ ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವಕ್ಕಿಂತ ಗಣನೀಯವಾಗಿ ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಅದಲ್ಲದೆ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಅದಲ್ಲದೆ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಉತ್ತಮವಾಗಿದೆ, ಮತ್ತು ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವವನ್ನು ಹೋಲುತ್ತದೆ."
@@ -15054,13 +15066,13 @@
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ, ಆದರೆ ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವಕ್ಕಿಂತ ಗಣನೀಯವಾಗಿ ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಅದಲ್ಲದೆ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕ್ಕೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಅದಲ್ಲದೆ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕ್ಕೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ಅದರ ರೇಟಿಂಗ್ {PH4} ನೈಜ ಬಳಕೆದಾರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾಗಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ ಮತ್ತು ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವವನ್ನು ಹೋಲುತ್ತದೆ."
@@ -15075,13 +15087,13 @@
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ, ಆದರೆ ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವಗಳಿಗಿಂತ ಗಣನೀಯವಾಗಿ ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಉತ್ತಮವಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಆದರೂ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಗೆ ಸುಧಾರಣೆಯ ಅಗತ್ಯವಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಅದಲದೆ, ಫೀಲ್ಡ್ ಡೇಟಾ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
+    "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ ಮತ್ತು {PH4} ನೈಜ ಬಳಕೆದಾರರ {PH1} ಅನುಭವಗಳಿಗೆ ಸಮಾನವಾದ ರೇಟಿಂಗ್ ಅನ್ನು ಹೊಂದಿದೆ. ಅದಲದೆ, ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳ 75ನೇ ಶೇಕಡಾ {PH1} ಮೌಲ್ಯ {PH3} ಕಳಪೆಯಾಗಿದೆ."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "ನಿಮ್ಮ ಸ್ಥಳೀಯ {PH1} ಮೌಲ್ಯ {PH2} ಕಳಪೆಯಾಗಿದೆ, ಮತ್ತು ನಿಮ್ಮ ಬಳಕೆದಾರರ ಅನುಭವವನ್ನು ಹೋಲುತ್ತದೆ."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools ಅನ್ನು {PH1} ಭಾಷೆಗೆ ಬದಲಾಯಿಸಿ"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "ಡ್ರಾಯರ್ ಓರಿಯಂಟೇಶನ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "ಸೇರಿಸಿ"
   },
@@ -16398,10 +16413,10 @@
     "message": "ಮುಚ್ಚಿ"
   },
   "ui/legacy/UIUtils.ts | copyFileName": {
-    "message": "ಫೈಲ್ ಹೆಸರನ್ನು ನಕಲಿಸಿ"
+    "message": "ಫೈಲ್ ಹೆಸರನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/UIUtils.ts | copyLinkAddress": {
-    "message": "ಲಿಂಕ್ ವಿಳಾಸವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಲಿಂಕ್ ವಿಳಾಸವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/UIUtils.ts | ok": {
     "message": "ಸರಿ"
@@ -16497,7 +16512,7 @@
     "message": "ಬಣ್ಣ {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | copyColorToClipboard": {
-    "message": "ಬಣ್ಣವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
+    "message": "ಬಣ್ಣವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | hex": {
     "message": "HEX"
@@ -16716,13 +16731,13 @@
     "message": "ಅಧೀನ ಗುಂಪುಗಳನ್ನು ಕುಗ್ಗಿಸಿ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copy": {
-    "message": "ನಕಲಿಸಿ"
+    "message": "ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
-    "message": "ಗುಣಲಕ್ಷಣ ಪಥವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಗುಣಲಕ್ಷಣ ಪಥವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyValue": {
-    "message": "ಮೌಲ್ಯವನ್ನು ನಕಲಿಸಿ"
+    "message": "ಮೌಲ್ಯವನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | dots": {
     "message": "(...)"
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} ಗಾಗಿ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ - ಹಿಂದಿನ ವಿನಂತಿಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಆಯ್ಕೆಮಾಡಿ."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "ಟಿಪ್ಪಣಿಗಳನ್ನು ಅಳಿಸಿ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ಟ್ರ್ಯಾಕ್‌ಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
@@ -16920,10 +16932,10 @@
     "message": "{PH1} ನಿಂದ ಫಾಂಟ್‌ನ ಪೂರ್ವವೀಕ್ಷಣೆ"
   },
   "ui/legacy/components/source_frame/ImageView.ts | copyImageAsDataUri": {
-    "message": "ಚಿತ್ರವನ್ನು ಡೇಟಾ URI ಎಂಬುದಾಗಿ ನಕಲಿಸಿ"
+    "message": "ಚಿತ್ರವನ್ನು ಡೇಟಾ URI ಎಂಬುದಾಗಿ ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/source_frame/ImageView.ts | copyImageUrl": {
-    "message": "ಚಿತ್ರದ URL ಅನ್ನು ನಕಲಿಸಿ"
+    "message": "ಚಿತ್ರದ URL ಅನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/legacy/components/source_frame/ImageView.ts | dD": {
     "message": "{PH1} × {PH2}"

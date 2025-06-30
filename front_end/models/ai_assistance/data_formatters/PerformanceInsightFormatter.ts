@@ -91,6 +91,10 @@ export class PerformanceInsightFormatter {
     return parts.join('\n');
   }
 
+  insightIsSupported(): boolean {
+    return this.#description().length > 0;
+  }
+
   formatInsight(): string {
     const {title} = this.#insight;
     return `## Insight Title: ${title}
@@ -106,9 +110,9 @@ ${this.#links()}`;
   }
 
   #details(): string {
-    if (Trace.Insights.Models.LCPPhases.isLCPPhases(this.#insight)) {
-      const {phases, lcpMs} = this.#insight;
-      if (!lcpMs) {
+    if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(this.#insight)) {
+      const {subparts, lcpMs} = this.#insight;
+      if (!lcpMs || !subparts) {
         return '';
       }
 
@@ -116,24 +120,14 @@ ${this.#links()}`;
       // Image based has TTFB, Load delay, Load time and Render delay
       // Note that we expect every trace + LCP to have TTFB + Render delay, but
       // very old traces are missing the data, so we have to code defensively
-      // in case the phases are not present.
+      // in case the subparts are not present.
       const phaseBulletPoints: Array<{name: string, value: string, percentage: string}> = [];
-      if (phases?.ttfb) {
-        const percentage = (phases.ttfb / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Time to first byte', value: formatMilli(phases.ttfb), percentage});
-      }
-      if (phases?.loadDelay) {
-        const percentage = (phases.loadDelay / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Resource load delay', value: formatMilli(phases.loadDelay), percentage});
-      }
-      if (phases?.loadTime) {
-        const percentage = (phases.loadTime / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Resource load duration', value: formatMilli(phases.loadTime), percentage});
-      }
-      if (phases?.renderDelay) {
-        const percentage = (phases.renderDelay / lcpMs * 100).toFixed(1);
-        phaseBulletPoints.push({name: 'Element render delay', value: formatMilli(phases.renderDelay), percentage});
-      }
+
+      Object.values(subparts).forEach((subpart: Trace.Insights.Models.LCPBreakdown.Subpart) => {
+        const phaseMilli = Trace.Helpers.Timing.microToMilli(subpart.range);
+        const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
+        phaseBulletPoints.push({name: subpart.label, value: formatMilli(phaseMilli), percentage});
+      });
 
       return `${this.#lcpMetricSharedContext()}
 
@@ -216,7 +210,7 @@ The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
     }
 
-    if (Trace.Insights.Models.InteractionToNextPaint.isINP(this.#insight)) {
+    if (Trace.Insights.Models.INPBreakdown.isINPBreakdown(this.#insight)) {
       const event = this.#insight.longestInteractionEvent;
       if (!event) {
         return '';
@@ -279,7 +273,7 @@ ${shiftsFormatted.join('\n')}`;
         return '';
       case 'ImageDelivery':
         return '';
-      case 'InteractionToNextPaint':
+      case 'INPBreakdown':
         return `- https://web.dev/articles/inp
 - https://web.dev/explore/how-to-optimize-inp
 - https://web.dev/articles/optimize-long-tasks
@@ -287,7 +281,7 @@ ${shiftsFormatted.join('\n')}`;
       case 'LCPDiscovery':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      case 'LCPPhases':
+      case 'LCPBreakdown':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
       case 'NetworkDependencyTree':
@@ -332,7 +326,7 @@ ${shiftsFormatted.join('\n')}`;
         return '';
       case 'ImageDelivery':
         return '';
-      case 'InteractionToNextPaint':
+      case 'INPBreakdown':
         return `Interaction to Next Paint (INP) is a metric that tracks the responsiveness of the page when the user interacts with it. INP is a Core Web Vital and the thresholds for how we categorize a score are:
 - Good: 200 milliseconds or less.
 - Needs improvement: more than 200 milliseconds and 500 milliseconds or less.
@@ -351,7 +345,7 @@ The sum of these three phases is the total latency. It is important to optimize 
 3. The resource was not lazy loaded as this can delay the browser loading the resource.
 
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.`;
-      case 'LCPPhases':
+      case 'LCPBreakdown':
         return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.';
       case 'NetworkDependencyTree':
         return '';
@@ -386,8 +380,10 @@ export class TraceEventFormatter {
 
     const potentialRootCauses: string[] = [];
     if (rootCauses) {
-      rootCauses.iframeIds.forEach(id => potentialRootCauses.push(`An iframe (id: ${id} was injected into the page)`));
-      rootCauses.fontRequests.forEach(req => {
+      rootCauses.iframes.forEach(
+          iframe => potentialRootCauses.push(
+              `An iframe (id: ${iframe.frame}, url: ${iframe.url ?? 'unknown'} was injected into the page)`));
+      rootCauses.webFonts.forEach(req => {
         potentialRootCauses.push(`A font that was loaded over the network (${req.args.data.url}).`);
       });
       // TODO(b/413285103): use the nice strings for non-composited animations.

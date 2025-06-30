@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Չէմուլացնել CSS մեդիա տեսակը"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Չէմուլացնել OS-ի տեքստի մասշտաբը"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Չընդլայնել ցանցագրերը"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Էմուլացնել դեյտերանոպիա (առանց կանաչի)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Էմուլացնել OS-ի տեքստի մասշտաբը"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Էմուլացնել պրոտանոպիա (առանց կարմիրի)"
@@ -732,6 +738,30 @@
     "message": "Ցանցային հարցումների արգելափակում"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Էմուլյացիա չկա"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (կանխադրված)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Էմուլյացիա չկա"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Գործարկում է տպման և էկրանի ոճերի փորձարկումը"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Գործարկում է OS-ի տեքստի մասշտաբի էմուլյացիան"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Գործարկում է տեսողության արատի էմուլյացիան"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Ցույց տալ/թաքցնել դարակը"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Միացնել/անջատել դարակի դիրքը"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Առանձնացնել այլ պատուհանում"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Ռեսուրսների հարցումները, որոնց URL-ները պարունակում են հեռացված բացատի նշաններ (\\(n|r|t)) և փոքրի նշաններ (<), արգելափակվում են։ Այս ռեսուրսները բեռնելու համար հեռացրեք նոր տողի նշանները և կոդավորեք փոքրի նշանը URL-ի այնպիսի տեղերում, որտեղ, օրինակ, նշվում են հատկանիշների արժեքներ։"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP նիշերի հավաքածուի ավտոմատ հայտնաբերումն այլևս չի աջակցվում և շուտով կանջատվի։ Նիշերի հավաքածուն կարող եք նշել «Բովանդակության տեսակ» վերնագրում կամ մետաթեգի միջոցով (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)։"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Այս API-ը (chrome.loadTimes()) այլևս չի աջակցվում։ Դրա փոխարեն օգտագործեք ստանդարտ API՝ Navigation Timing 2։"
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit-ը ձախողվեց՝ {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Դաշտի տվյալները կազմաձևված են այլ URL-ի, այլ ոչ թե ընթացիկ էջի համար։"
+    "message": "Դաշտային ցուցանիշները կազմաձևված են այլ URL-ի, այլ ոչ թե ընթացիկ էջի համար։"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Սարքի բարձրության և լայնության պիքսելների հարաբերությունը պետք է թիվ լինի, կամ դաշտը թողեք դատարկ"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Պահել որպես…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Չհաջողվեց ֆայլը պահել սկավառակում։"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Պահել պատկերը"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Դասավորության շեղումների գլխավոր պատճառները"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Չնշված չափսերով պատկերներ"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Ամենավատ կլաստերը"
@@ -1839,7 +1875,7 @@
     "message": "Եղել են վերաուղղորդումներ ({PH1} վերաուղղորդում +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Սերվերը դանդաղ է արձագանքել (փաստացի արագությունը՝ {PH1}) "
+    "message": "Սերվերը դանդաղ է արձագանքել (փաստացի արագությունը՝ {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Սեղմում չի կիրառվել"
@@ -1848,7 +1884,7 @@
     "message": "Խուսափում է վերաուղղորդումներից"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Սերվերը արագ է արձագանքել (փաստացի արագությունը՝ {PH1}) "
+    "message": "Սերվերը արագ է արձագանքել (փաստացի արագությունը՝ {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Կիրառում է տեքստի սեղմում"
@@ -2070,7 +2106,7 @@
     "message": "[Խուսափեք կրիտիկական հարցումների շղթաներից](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)՝ կրճատելով շղթաների երկարությունը, նվազեցնելով ռեսուրսների ներբեռնման չափսը կամ հետաձգելով ոչ անհրաժեշտ ռեսուրսների ներբեռնումը, որպեսզի էջի բեռնումը բարելավվի։"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Ավելացրեք [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) հուշումներն ամենակարևոր աղբյուրների համար, սակայն փորձեք օգտագործել մինչև 4-ը։"
+    "message": "Ավելացրեք [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) հուշումներն ամենակարևոր աղբյուրների համար, սակայն փորձեք օգտագործել ոչ ավել քան 4-ը։"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Նախնական միացման տաբերակներ"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Եթե բջջային սարքերի համար դիտման շրջանն օպտիմալացված չէ, էկրանին հպելիս հնարավոր է [մինչև 300 մվ տևողությամբ հապաղում](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)։"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Հպման հապաղում բջջային սարքում"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Օպտիմալացնել դիտման շրջանը բջջային սարքերի համար"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Այս գործառույթից օգտվելու համար ծրագրավորողի գործիքների կարգավորումներում ընտրեք անգլերենը"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Զրույց նաև կարող եք սկսել՝ օգտվելով վերոնշյալ առաջարկվող հարցումներից"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Իմանալ ավելին ԱԲ-ի մասին ծրագրավորողի գործիքներում"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Ծալել"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Մաքրե՞լ «{PH1}» օբյեկտի պահոցը"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Ջնջե՞լ «{PH1}» տվյալների շտեմարանը։"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Բանալի"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Ընտրված օբյեկտի պահոցում եղած տվյալները կհեռացվեն։"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Օբյեկտների պահոցներ"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Սա գովազդային հայտարարություններից մեկի բազային շրջանակն է"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Արմատային սկրիպտի զտիչների ցանկի կանոն"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Անվտանգ համատեքստ"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (աղբյուրի քարտեզից)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "«Փոփոխություններ» ներդիրում չեն ցուցադրվում բինար տվյալների փոփոխությունները"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Այս էջում դուք կարող եք հետևել կոդի փոփոխություններին, որոնք կատարվել են ծրագրավորողի գործիքների միջոցով։"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Պատճենել"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Դեռևս փոփոխություններ չկան"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Տեքստային տարբերություններ չկան"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# ջնջում (-)}one{# ջնջում (-)}other{# ջնջում (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# զետեղում (+)}one{# զետեղում (+)}other{# զետեղում (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Պատճենվեց սեղմատախտակին"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Փոփոխություններ"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Պատճենել բոլոր փոփոխություններն ընթացիկ ֆայլից"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Չեղարկել բոլոր փոփոխություններն ընթացիկ ֆայլում"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Ցույց տալ «Փոփոխությունները»"
@@ -5715,7 +5745,7 @@
     "message": "Ցույց տալ միայն հաղորդագրություններ ընթացիկ համատեքստից (top, iframe, worker, ընդլայնում)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Վրագրված է զտիչների կողագոտու կողմից"
+    "message": "Մատյան վարելու մակարդակները կառավարվում են վահանակի կողագոտու միջոցով։"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Պահպանել մատյանը"
@@ -6612,16 +6642,16 @@
     "message": "Ոլորել դեպի տեսանելի դաշտ"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Ցույց տալ թիրախի հրամանը"
+    "message": "Ցույց տալ commandfor հատկանիշի հետ կապված տարրը"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Ցուցադրել մանրամասները՝ iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Ցույց տալ հետաքրքրությունների թիրախը"
+    "message": "Ցույց տալ interesttarget հատկանիշի հետ կապված տարրը"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Ցույց տալ ելնող պատուհանի թիրախը"
+    "message": "Ցույց տալ popovertarget հատկանիշի հետ կապված տարրը"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Այս շրջանակը ճանաչվել է որպես գովազդային"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "ոճերի ստեղված աղյուսակ"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Պատճենել բոլոր հայտարարագրերը"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "քննիչի միջոցով"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Պատճենել CSS-ի բոլոր փոփոխությունները"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Պատճենել բոլոր հայտարարագրերը որպես JS"
@@ -7056,7 +7080,7 @@
     "message": "Սարքի տեսակը"
   },
   "panels/emulation/DeviceModeToolbar.ts | dimensions": {
-    "message": "Չափերը"
+    "message": "Չափեր"
   },
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Փոփոխել…"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Հատուկ գործառույթներ"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Ստուգման ընթացքում կիրառել համակարգչի էմուլյացիան"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Կիրառել շարժական սարքերի էմուլյացիա"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Փաթեթների վերադասավորում"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "տոկոս"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Պրոֆիլի անուն"
   },
@@ -8802,7 +8826,7 @@
     "message": "Նշեք այլ user agent"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Ցուցադրված են ցանցի աշխատանքի պայմանները"
+    "message": "Ցուցադրված են ցանցի աշխատանքի պայմանները։"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Ցանցի թողունակության սահմանափակում"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Հեռակա հասցեագոտի"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Վերնագրերի հարցում"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Պատասխանների գլխագրեր"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Պահել որպես…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Չհաջողվեց ֆայլը պահել սկավառակում։"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Ընտրել պանակ վերասահմանումների համար"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Թարմացնել վերահսկիչ արժեքի արտահայտությունները"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Վերահսկիչ արժեքի արտահայտությունը ջնջվել է"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Հասել է կանգի կետին․ {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Մանրամասներ"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Չափեր"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Տևողություն"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Իմանալ ավելին"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Տեղադրություն"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Հաղորդագրություն"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ենթատարրեր)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Հավաքվել է {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}՝ {PH2}-ից"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}՝ {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Ընտրեք «{PH1}»՝ CSS ընտրիչների համընկնումների մասին մանրամասն վիճակագրություն հավաքելու համար։"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (մեկ գործողություն)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Սկրիպտ"
@@ -14682,19 +14694,19 @@
     "message": "Կազմաձևել"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Կարգավորել դաշտերի տվյալների բեռնումը"
+    "message": "Դաշտային ցուցանիշների բեռնման կազմաձևում"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome-ի օգտագործման հարմարավետության մասին հաշվետվությունը չունի այս էջերի բեռնման իրական արագության վերաբերյալ բավականաչափ տվյալներ։"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Բեռնեք ագրեգացված տվյալները {PH1}-ից՝ տեսնելու, թե ինչպես են տեղական չափումներն ու ձեր կայքի իրական օգտատերերի ընկալումը համադրվում։"
+    "message": "Բեռնեք ագրեգացված ցուցանիշները {PH1}-ից՝ տեսնելու, թե ինչպես են տեղական չափումներն ու ձեր կայքի իրական օգտատերերի ընկալումը համադրվում։"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "«{PH1}» տիրույթը վավեր աղբյուր կամ URL չէ։"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Կարգավորեք մշակման աղբյուր՝ ավտոմատ կերպով ստանալու համապատասխան դաշտային տվյալներ դրա արտադրության աղբյուրի համար։"
+    "message": "Կարգավորեք մշակման աղբյուր՝ ավտոմատ կերպով ստանալու համապատասխան դաշտային ցուցանիշներ դրա արտադրության աղբյուրի համար։"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Նոր"
@@ -14703,7 +14715,7 @@
     "message": "Եղավ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Միշտ ցույց տալ դաշտային տվյալները ստորև նշված URL-ի համար"
+    "message": "Միշտ ցույց տալ դաշտային ցուցանիշները ստորև նշված URL-ի համար"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Անջատել"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Երբ ծրագրավորողի գործիքները բացված են, ձեր այցելած էջերի URL-ները կուղարկվեն Google-ին՝ դաշտերի տվյալների հարցման համար։ Այս հարցումները կապված չեն ձեր Google հաշվի հետ։"
+    "message": "Երբ ծրագրավորողի գործիքները բացված են, ձեր այցելած էջերի URL-ները կուղարկվեն Google-ին՝ դաշտային ցուցանիշների հարցման համար։ Այս հարցումները կապված չեն ձեր Google հաշվի հետ։"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Կանոնավոր արտահայտության կանոն ավելացնել սկրիպտի URL-ի համար"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Փոխազդեցության և դասավորության շեղումների մատյանների բաժին"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Դաշտի տվյալներ"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Դաշտային ցուցանիշներ"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP-ի փոխազդեցությունը փոխազդեցությունների հետաձգումների 98-րդ պրոցենտիլում է։"
@@ -14856,10 +14868,10 @@
     "message": "Տեղական և դաշտային ցուցանիշներ"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Իմանալ ավելին տեղական և դաշտային տվյալների մասին"
+    "message": "Իմանալ ավելին տեղական և դաշտային ցուցանիշների մասին"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Տեղական ցուցանիշները վերցված են ընթացիկ էջից ձեր կապի և սարքի միջոցով։ Դաշտային տվյալները չափվում են իրական օգտատերերի կողմից՝ մի քանի տարբեր կապերի և սարքերի օգտագործմամբ։"
+    "message": "Տեղական ցուցանիշները վերցված են ընթացիկ էջից ձեր կապի և սարքի միջոցով։ Դաշտային ցուցանիշները չափվում են իրական օգտատերերի կողմից՝ մի քանի տարբեր կապերի և սարքերի օգտագործմամբ։"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Տեղական ցուցանիշներ"
@@ -14922,10 +14934,10 @@
     "message": "Անցնել դասավորության շեղման ամենավատ կլաստերին։"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Ցույց տալ դաշտային տվյալները հետևյալ տեսակի սարքերի համար՝ {PH1}"
+    "message": "Ցույց տալ դաշտային ցուցանիշները հետևյալ տեսակի սարքերի համար՝ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Ցույց տալ դաշտային տվյալներ {PH1} տիրույթի համար"
+    "message": "Ցույց տալ դաշտային ցուցանիշներ {PH1} տիրույթի համար"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Անցնել INP փոխազդեցությանը։"
@@ -15033,13 +15045,13 @@
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարձր է և զգալիորեն ավելի լավն է, քան ձեր օգտատերերի ընկալումը։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Բացի այդ՝ դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Բացի այդ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց բարձր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարձր է և նման է ձեր օգտատերերի ընկալմանը։"
@@ -15054,13 +15066,13 @@
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և զգալիորեն ավելի լավն է, քան ձեր օգտատերերի ընկալումը։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) բարելավման կարիք ունի և նման է ձեր օգտատերերի ընկալմանը։"
@@ -15075,13 +15087,13 @@
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) ցածր է, սակայն զգալիորեն ավելի լավն է, քան ձեր օգտատերերի ընկալումը։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարձր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Այդուհանդերձ, դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) բարելավման կարիք ունի։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Բացի այդ՝ դաշտային տվյալների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
+    "message": "Ձեր տեղական {PH1} ցուցանիշը չափազանց ցածր է ({PH2}) և ունի նույն գնահատականը, ինչ իրական օգտատերերի {PH1} ընկալման {PH4}-ը։ Բացի այդ՝ դաշտային ցուցանիշների 75-րդ պրոցենտիլի {PH1} ցուցանիշը ({PH3}) ցածր է։"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Ձեր տեղական {PH1} ցուցանիշը ({PH2}) ցածր է և նման է ձեր օգտատերերի ընկալմանը։"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools-ի լեզուն դարձնել {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Միացնել/անջատել դարակի դիրքը"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Ավելացնել"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Սքրինշոթ {PH1}-ի համար․ ընտրեք՝ նախորդ հարցումները տեսնելու համար։"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Ջնջել ծանոթագրությունները"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Կազմաձևել տարբերակների տեսակները"

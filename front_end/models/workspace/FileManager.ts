@@ -31,10 +31,11 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
 
 let fileManagerInstance: FileManager|null;
 
-interface SaveCallbackParam {
+export interface SaveCallbackParam {
   fileSystemPath?: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
 }
 
@@ -65,13 +66,14 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    */
   save(
       url: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString,
-      content: string,
+      contentData: TextUtils.ContentData.ContentData,
       forceSaveAs: boolean,
-      isBase64: boolean,
       ): Promise<SaveCallbackParam|null> {
     // Remove this url from the saved URLs while it is being saved.
     const result = new Promise<SaveCallbackParam|null>(resolve => this.#saveCallbacks.set(url, resolve));
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs, isBase64);
+    const {isTextContent} = contentData;
+    const content = isTextContent ? contentData.text : contentData.base64;
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.save(url, content, forceSaveAs, !isTextContent);
     return result;
   }
 

@@ -122,3 +122,11 @@ ts_library("unittests") {
     "./testing",
   ]
 }
+
+generated_file("test_inputs") {
+  outputs = [ "$target_gen_dir/tests.txt" ]
+  data_keys = [ "tests" ]
+  rebase = target_gen_dir
+
+  deps = [ ":unittests" ]
+}

@@ -105,10 +105,6 @@ const UIStrings = {
    */
   copyAllDeclarations: 'Copy all declarations',
   /**
-   *@description  A context menu item in Styles panel to copy all the CSS changes
-   */
-  copyAllCSSChanges: 'Copy all CSS changes',
-  /**
    *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
    */
   cssSelector: '`CSS` selector',
@@ -526,7 +522,8 @@ export class StylePropertiesSection {
 
     let focusNext: HTMLElement|null = null;
     const focusable =
-        Array.from((this.propertiesTreeOutline.shadowRoot.querySelectorAll('[tabindex]') as NodeListOf<HTMLElement>));
+        Array.from((this.propertiesTreeOutline.shadowRoot.querySelectorAll('[tabindex]') as NodeListOf<HTMLElement>))
+            .filter(e => e.checkVisibility());
 
     if (focusable.length === 0) {
       return;
@@ -1415,11 +1412,6 @@ export class StylePropertiesSection {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     }, {jslogContext: 'copy-all-declarations'});
 
-    // TODO(changhaohan): conditionally add this item only when there are changes to copy
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyAllCSSChanges), async () => {
-      const allChanges = await this.parentPane.getFormattedChanges();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-    }, {jslogContext: 'copy-all-css-changes'});
     void contextMenu.show();
   }
 

@@ -586,10 +586,16 @@ const ARRAY_LOAD_THRESHOLD = 100;
 
 const maxRenderableStringLength = 10000;
 
+export interface TreeOutlineOptions {
+  readOnly?: boolean;
+}
+
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-  constructor() {
+  readonly editable: boolean;
+  constructor(options?: TreeOutlineOptions|null) {
     super();
     this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
+    this.editable = !(options?.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');
   }
@@ -1149,7 +1155,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private startEditing(): void {
-    const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
+    const treeOutline = (this.treeOutline as ObjectPropertiesSectionsTreeOutline | null);
     if (this.prompt || !treeOutline || !treeOutline.editable || this.readOnly) {
       return;
     }

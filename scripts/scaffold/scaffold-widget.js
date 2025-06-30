@@ -144,7 +144,7 @@ function main() {
     // Paths for build system (relative, forward slashes)
     const grdTsPath = path.join(componentDestPath, `${pascalCaseName}.js`).replace(/\\/g, '/');
     const grdCssPath = path.join(componentDestPath, `${camelCaseName}.css.js`).replace(/\\/g, '/');
-    console.log('1. Update \'grd_files_debug_sources\' in \'devtools_grd_files.gni\':');
+    console.log('1. Update \'grd_files_unbundled_sources\' in \'devtools_grd_files.gni\':');
     console.log('   Add the following generated JavaScript files:');
     console.log(`     "${grdTsPath}",`);
     console.log(`     "${grdCssPath}",`);

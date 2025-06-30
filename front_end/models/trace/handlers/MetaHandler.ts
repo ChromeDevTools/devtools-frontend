@@ -71,13 +71,14 @@ const eventPhasesOfInterestForTraceBounds = new Set([
 // - TracingStartedInPage
 // - TracingStartedInBrowser
 // - TracingSessionIdForWorker
+// - CpuProfile
 // These are all events which indicate this is a Chrome browser trace.
 let traceIsGeneric = true;
 const CHROME_WEB_TRACE_EVENTS = new Set([
   Types.Events.Name.TRACING_STARTED_IN_PAGE,
   Types.Events.Name.TRACING_SESSION_ID_FOR_WORKER,
   Types.Events.Name.TRACING_STARTED_IN_BROWSER,
-
+  Types.Events.Name.CPU_PROFILE,
 ]);
 
 export function reset(): void {

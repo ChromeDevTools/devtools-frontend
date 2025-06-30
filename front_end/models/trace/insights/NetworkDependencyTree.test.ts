@@ -24,11 +24,11 @@ describeWithEnvironment('NetworkDependencyTree', function() {
   });
 
   it('calculates network dependency tree', () => {
-    // The network dependency tree in this trace is
+    // The network dependency tree in this trace is, |app.js| took longer than |app.css|, so |app.js| will be first.
     // | .../index.html (ts:566777570990, dur:5005590)
     // |
-    // | | .../app.css (ts:566782573909, dur:7205)
     // | | .../app.js (ts:566782574106, dur:11790)
+    // | | .../app.css (ts:566782573909, dur:7205)
     assert.lengthOf(insight.rootNodes, 1);
 
     const root = insight.rootNodes[0];
@@ -37,12 +37,12 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.lengthOf(root.children, 2);
 
     const [child0, child1] = insight.rootNodes[0].children;
-    assert.strictEqual(child0.request.args.data.url, 'http://localhost:8787/lcp-iframes/app.css');
+    assert.strictEqual(child0.request.args.data.url, 'http://localhost:8787/lcp-iframes/app.js');
     assert.strictEqual(
         child0.timeFromInitialRequest,
         Trace.Types.Timing.Micro(child0.request.ts + child0.request.dur - root.request.ts));
     assert.lengthOf(child0.children, 0);
-    assert.strictEqual(child1.request.args.data.url, 'http://localhost:8787/lcp-iframes/app.js');
+    assert.strictEqual(child1.request.args.data.url, 'http://localhost:8787/lcp-iframes/app.css');
     assert.strictEqual(
         child1.timeFromInitialRequest,
         Trace.Types.Timing.Micro(child1.request.ts + child1.request.dur - root.request.ts));
@@ -50,22 +50,22 @@ describeWithEnvironment('NetworkDependencyTree', function() {
   });
 
   it('Calculate the max critical path latency', () => {
-    // The chain |index.html(root) -> app.js(child1)| is the longest
+    // The chain |index.html(root) -> app.js(child0)| is the longest
     const root = insight.rootNodes[0];
-    const child1 = root.children[1];
+    const child0 = root.children[0];
     assert.strictEqual(
-        insight.maxTime, Trace.Types.Timing.Micro(child1.request.ts + child1.request.dur - root.request.ts));
+        insight.maxTime, Trace.Types.Timing.Micro(child0.request.ts + child0.request.dur - root.request.ts));
   });
 
   it('Marks the longest network dependency chain', () => {
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
-    // The chain |index.html(root) -> app.js(child1)| is the longest
+    // The chain |index.html(root) -> app.js(child0)| is the longest
     assert.isTrue(root.isLongest);
-    assert.isTrue(child1.isLongest);
+    assert.isTrue(child0.isLongest);
     // The |app.css| is not in the longest chain
-    assert.isNotTrue(child0.isLongest);
+    assert.isNotTrue(child1.isLongest);
   });
 
   it('Store the all parents and children events for all requests', () => {
@@ -74,14 +74,14 @@ describeWithEnvironment('NetworkDependencyTree', function() {
 
     // There are three chains from Lantern:
     //   |index.html(root)|
-    //   |index.html(root) -> app.css(child0)|
-    //   |index.html(root) -> app.js(child1)|
+    //   |index.html(root) -> app.js(child0)|
+    //   |index.html(root) -> app.css(child1)|
     // Both child0 and child1 are related to the root
-    assert.deepEqual([...root.relatedRequests], [root.request, child0.request, child1.request]);
+    assert.sameDeepMembers([...root.relatedRequests], [root.request, child0.request, child1.request]);
     // Only root and child0 are related to the child0
-    assert.deepEqual([...child0.relatedRequests], [root.request, child0.request]);
+    assert.sameDeepMembers([...child0.relatedRequests], [root.request, child0.request]);
     // Only root and child1 are related to the child1
-    assert.deepEqual([...child1.relatedRequests], [root.request, child1.request]);
+    assert.sameDeepMembers([...child1.relatedRequests], [root.request, child1.request]);
   });
 
   it('Fail the audit when there at least one chain with at least two requests', () => {
@@ -110,7 +110,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     const relatedEvents = insight.relatedEvents as RelatedEventsMap;
 
     // There are a few chains, let test the first chain
-    // |web.dev -> /css -> 4UasrENHsx...UvQ.woff2|
+    // |web.dev -> /css -> KFO7CnqEu9…UBA.woff2|
     const root = insight.rootNodes[0];
     const child0 = root.children[0];
     const child00 = child0.children[0];
@@ -130,7 +130,7 @@ describe('generatePreconnectedOrigins', () => {
     const mockParsedTrace = {
       NetworkRequests: {
         linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
-        byTime: [] as Trace.Types.Events.SyntheticNetworkRequest[],
+        byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       },
     } as Trace.Handlers.Types.ParsedTrace;
 
@@ -341,6 +341,17 @@ describe('generatePreconnectedOrigins', () => {
           result, [{url: 'https://example.com', headerText: '<https://example.com>; rel="preconnect"; crossorigin'}]);
     });
 
+    it('should parse a preconnect link with comma in urls', () => {
+      const linkHeader =
+          '<https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry>; rel="preconnect"';
+      const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);
+      assert.deepEqual(
+          result, [{
+            url: 'https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry',
+            headerText: '<https://imaginary.url.notreal/segment;foo=bar;baz/item?name=What,+me+worry>; rel="preconnect"'
+          }]);
+    });
+
     it('should ignore links with other rel values', () => {
       const linkHeader = '<https://example.com>; rel="preload"';
       const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);
@@ -373,6 +384,7 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
     NetworkRequests: {
       eventToInitiator: new Map<Trace.Types.Events.SyntheticNetworkRequest, Trace.Types.Events.Event>(),
       byTime: [] as Trace.Types.Events.SyntheticNetworkRequest[],
+      byId: new Map<string, Trace.Types.Events.SyntheticNetworkRequest>(),
       linkPreconnectEvents: [] as Trace.Types.Events.LinkPreconnect[],
     },
   } as Trace.Handlers.Types.ParsedTrace;
@@ -434,8 +446,10 @@ describeWithEnvironment('generatePreconnectCandidates', () => {
   beforeEach(() => {
     mockParsedTrace.NetworkRequests.eventToInitiator.clear();
     mockParsedTrace.NetworkRequests.byTime.length = 0;
+    mockParsedTrace.NetworkRequests.byId.clear();
     mockParsedTrace.NetworkRequests.linkPreconnectEvents.length = 0;
     mockParsedTrace.NetworkRequests.byTime.push(mainRequest);
+    mockParsedTrace.NetworkRequests.byId.set(mainRequest.args.data.requestId, mainRequest);
   });
 
   it('generates preconnect results for valid requests', () => {

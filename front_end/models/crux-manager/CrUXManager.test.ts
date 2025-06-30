@@ -381,7 +381,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
-      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field metrics are configured for a different URL than the current page.']);
       sinon.assert.callCount(getFieldDataMock, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/override');
     });
@@ -398,7 +398,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
-      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field metrics are configured for a different URL than the current page.']);
       sinon.assert.callCount(getFieldDataMock, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/inspected');
     });
@@ -417,7 +417,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
-      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field metrics are configured for a different URL than the current page.']);
       sinon.assert.callCount(getFieldDataMock, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://google.com');
     });

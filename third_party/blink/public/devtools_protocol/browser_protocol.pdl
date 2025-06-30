@@ -4489,6 +4489,9 @@ domain Emulation
       boolean mobile
       optional string bitness
       optional boolean wow64
+      # Used to specify User Agent form-factor values.
+      # See https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors
+      optional array of string formFactors
 
   # Used to specify sensor types to emulate.
   # See https://w3c.github.io/sensors/#automation for more information.
@@ -6919,6 +6922,9 @@ domain Network
     properties
       # The outer response of signed HTTP exchange which was received from network.
       Response outerResponse
+      # Whether network response for the signed exchange was accompanied by
+      # extra headers.
+      boolean hasExtraInfo
       # Information about the signed exchange header.
       optional SignedExchangeHeader header
       # Security details for the signed exchange header.
@@ -8641,6 +8647,7 @@ domain Page
       join-ad-interest-group
       keyboard-map
       language-detector
+      language-model
       local-fonts
       local-network-access
       magnetometer
@@ -11534,6 +11541,14 @@ experimental domain Storage
       optional string netErrorName
       optional integer httpStatusCode
 
+  experimental event attributionReportingVerboseDebugReportSent
+    parameters
+      string url
+      optional array of object body
+      optional integer netError
+      optional string netErrorName
+      optional integer httpStatusCode
+
   # A single Related Website Set object.
   experimental type RelatedWebsiteSet extends object
     properties
@@ -13414,15 +13429,30 @@ experimental domain PWA
       integer badgeCount
       array of FileHandler fileHandlers
 
-  # Installs the given manifest identity, optionally using the given install_url
-  # or IWA bundle location.
+  # Installs the given manifest identity, optionally using the given installUrlOrBundleUrl
   #
-  # TODO(crbug.com/337872319) Support IWA to meet the following specific
-  # requirement.
-  # IWA-specific install description: If the manifest_id is isolated-app://,
-  # install_url_or_bundle_url is required, and can be either an http(s) URL or
-  # file:// URL pointing to a signed web bundle (.swbn). The .swbn file's
-  # signing key must correspond to manifest_id. If Chrome is not in IWA dev
+  # IWA-specific install description:
+  # manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId
+  #
+  # File installation mode:
+  # The installUrlOrBundleUrl can be either file:// or http(s):// pointing
+  # to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to
+  # The .swbn file's signing key.
+  #
+  # Dev proxy installation mode:
+  # installUrlOrBundleUrl must be http(s):// that serves dev mode IWA.
+  # web_package::SignedWebBundleId must be of type dev proxy.
+  #
+  # The advantage of dev proxy mode is that all changes to IWA
+  # automatically will be reflected in the running app without
+  # reinstallation.
+  #
+  # To generate bundle id for proxy mode:
+  # 1. Generate 32 random bytes.
+  # 2. Add a specific suffix 0x00 at the end.
+  # 3. Encode the entire sequence using Base32 without padding.
+  #
+  # If Chrome is not in IWA dev
   # mode, the installation will fail, regardless of the state of the allowlist.
   command install
     parameters

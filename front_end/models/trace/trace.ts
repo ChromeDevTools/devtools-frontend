@@ -10,7 +10,6 @@ import * as Lantern from './lantern/lantern.js';
 import * as LanternComputationData from './LanternComputationData.js';
 import * as TraceModel from './ModelImpl.js';
 import * as Processor from './Processor.js';
-import * as TracingManager from './TracingManager.js';
 import * as Types from './types/types.js';
 
 export {
@@ -22,6 +21,5 @@ export {
   LanternComputationData,
   Processor,
   TraceModel,
-  TracingManager,
   Types,
 };

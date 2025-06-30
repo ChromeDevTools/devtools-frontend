@@ -305,6 +305,10 @@ export class ViewManager {
     return widgetForView.get(view) || null;
   }
 
+  hasView(viewId: string): boolean {
+    return this.views.has(viewId);
+  }
+
   async showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
     const view = this.views.get(viewId);
     if (!view) {
@@ -644,7 +648,6 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     const moreTabsButton = new ToolbarMenuButton(
         this.appendTabsToMenu.bind(this), /* isIconDropdown */ true, undefined, 'more-tabs', 'dots-vertical');
     this.tabbedPaneInternal.leftToolbar().appendToolbarItem(moreTabsButton);
-    this.tabbedPaneInternal.disableOverflowMenu();
     return moreTabsButton;
   }
 

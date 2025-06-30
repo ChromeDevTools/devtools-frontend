@@ -40,28 +40,48 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 79,
-  header: 'What\'s new in DevTools 138 Beta',
+  version: 80,
+  header: 'What\'s new in DevTools 139',
   markdownLinks: [
     {
-      key: 'crbug1',
-      link: 'https://issues.chromium.org/issues/420862341',
+      key: 'reliable-devtools',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-139/#reliable-devtools',
     },
     {
-      key: 'crbug2',
-      link: 'https://issues.chromium.org/issues/420862838',
+      key: 'multimodal-input',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-139/#multimodal-input',
     },
     {
-      key: 'crbug3',
-      link: 'https://issues.chromium.org/issues/420870269',
+      key: 'from-elements',
+      link: 'https://developer.chrome.com/docs/devtools/ai-assistance/styling#from_the_elements_panel',
+    },
+    {
+      key: 'element-context',
+      link: 'https://developer.chrome.com/docs/devtools/ai-assistance/styling#conversation_context',
+    },
+    {
+      key: 'devtools-io',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137',
+    },
+    {
+      key: 'ai-styling',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-styling',
+    },
+    {
+      key: 'ai-insights',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-insights',
+    },
+    {
+      key: 'ai-annotations',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-137#ai-annotations',
     },
   ],
   videoLinks: [
     {
-      description: 'See past highlights from Chrome 137',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-137' as Platform.DevToolsPath.UrlString,
+      description: 'See past highlights from Chrome 138',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-138' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://issues.chromium.org/hotlists/7004254',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-139/',
 };

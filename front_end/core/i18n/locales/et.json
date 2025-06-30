@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ära emuleeri CSS-i meediatüüpi"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Ära emuleeri OS-i teksti mastaapi"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ära pikenda ruudustiku ridu"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Deuteranoopia (roheliseta) emuleerimine"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuleeri OS-i teksti mastaap"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Protanoopia (punaseta) emuleerimine"
@@ -732,6 +738,30 @@
     "message": "Võrgutaotluse blokeerimine"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Emuleerimine puudub"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (vaikeseade)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Emuleerimine puudub"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Jõustab meedia tüübi printimis- ja ekraanistiilide testimiseks"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Jõustab OS-i teksti mastaabi emuleerimise"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Jõustab nägemispuude emuleerimise"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Sahtli sisse-/väljalülitamine"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Lülita sahtli suunda"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Doki lahti ja ava eraldi aknas"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Ressursside taotlused, mille URL-id sisaldasid nii eemaldatud tühimärgiga \\(n|r|t) tähemärke kui ka vähem-kui-tähemärke (<), on blokeeritud. Nende ressursside laadimiseks eemaldage uue rea tähemärgid ja kodeerige vähem-kui-tähemärgid kohtadest, nagu elementide atribuutide väärtused."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP märgistiku automaatse tuvastamise tugi on katkestatud ja see keelatakse lähitulevikus. Täpsustage märgistikku sisutüübi päises või metamärgendi abil (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "API chrome.loadTimes() tugi on katkestatud. Kasutage selle asemel standardset API-t: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit ebaõnnestus: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Välja andmed on konfigureeritud praegusest lehest erineva URL-i jaoks."
+    "message": "Välimõõdikud on seadistatud praegusest lehest erineva URL-i jaoks."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Seadme pikslite suhe peab olema arvväärtus või tühi."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Salvesta nimega…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Faili ei saanud kettale salvestada."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Salvesta pilt"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Paigutuse nihete peamised põhjused"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Määramata suurusega pildid"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Suuruseta pildielement"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Halvim klaster"
@@ -1839,7 +1875,7 @@
     "message": "Esines ümbersuunamisi ({PH1} ümbersuunamist, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Server vastas aeglaselt (täheldatud {PH1}) "
+    "message": "Server vastas aeglaselt (täheldatud {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Tihendamist pole rakendatud"
@@ -1848,7 +1884,7 @@
     "message": "Vältige ümbersuunamisi"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Server reageerib kiiresti (täheldatud {PH1}) "
+    "message": "Server reageerib kiiresti (täheldatud {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Rakendab teksti tihendamise"
@@ -2070,7 +2106,7 @@
     "message": "[Vältige kriitiliste taotluste aheldamist](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains), vähendades ahelate pikkust ja ressursside allalaadimismahtu või lükates edasi tarbetute ressursside allalaadimist, et lehe laadimist täiustada."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Lisage [eelühenduse](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) vihjed oma kõige tähtsamatele andmeallikatele, kuid proovige kasutada vähem kui 4."
+    "message": "Lisage [eelühenduse](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) vihjed oma kõige tähtsamatele andmeallikatele, kuid proovige kasutada kuni 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Looge kandidaatidega eelühendus"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Kui vaateväli pole mobiili jaoks optimeeritud, võivad puudutusinteraktsioonid [viibida kuni 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Mobiilseadme puudutuse viivitus"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Mobiili vaatevälja optimeerimine"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Selle funktsiooni kasutamiseks määrake arendaja tööriistade seadetes keele-eelistuseks inglise keel."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Vestluse alustamiseks võite kasutada ka ühte eespool olevatest soovitatud viipadest."
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Lisateave AI kohta DevToolsis"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Ahenda"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Kas tühjendada objektisalv „{PH1}“?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Kas soovite andmebaasi „{PH1}“ kustutada?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Võti"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Valitud objektisalves sisalduvad andmed eemaldatakse."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektisalved"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "See raam on määratud reklaami juurraamiks"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Juurskripti filtriloendi reegel"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Turvaline kontekst"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (lähtekoodi kaardist)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Muudatuste vahekaart ei näita binaarandmete muudatusi"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Sellel lehel saate jälgida arendaja tööriistades tehtud koodimuudatusi."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopeeri"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Muudatusi pole veel"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Erinevusi tekstis ei ole"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# kustutamine (-)}other{# kustutamist (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# sisestus (+)}other{# sisestust (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Lõikelauale kopeeritud"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Muudatused"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopeeri kõik praeguses failis tehtud muudatused"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Võta kõik praeguse faili muudatused tagasi"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Kuva muudatused"
@@ -5715,7 +5745,7 @@
     "message": "Kuva ainult praeguse konteksti sõnumid (top, iframe, worker, laiendus)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Filtri külgribaga alistatud"
+    "message": "Logitasemeid juhitakse konsooli külgribaga."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Säilita logi"
@@ -6612,16 +6642,16 @@
     "message": "Keri vaatesse"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Kuva sihtmärgi käsk"
+    "message": "Kuva atribuudiga commandfor seotud element"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Kuva üksuse iframe üksikasjad"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Kuva sihthuvi"
+    "message": "Kuva atribuudiga interesttarget seotud element"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Kuva hõljuva elemendi sihtmärk"
+    "message": "Kuva atribuudiga popovertarget seotud element"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "See raam tuvastati reklaamiraamina"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "koostatud stiilileht"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopeeri kõik CSS-i muudatused"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopeeri kõik deklaratsioonid"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "inspektori kaudu"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopeeri kõik CSS-i muudatused"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopeeri kõik deklaratsioonid JS-ina"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Juurdepääsetavus"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Rakenda auditeerimise ajal lauaarvuti emuleerimine"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Rakenda mobiilseadme emuleerimine"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Paketi järjestuse muutmine"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "protsent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profiili nimi"
   },
@@ -8802,7 +8826,7 @@
     "message": "Sisestage kohandatud kasutaja-agent"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Kuvatakse võrgu tingimusi"
+    "message": "Kuvatud on võrgu tingimused."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Võrgu piiramine"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Kaugaadressiruum"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Taotluste päised"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Vastuste päised"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Salvesta nimega…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Faili ei saanud kettale salvestada."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Valige alistamiste jaoks kaust"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Värskenda vaatamisavaldisi"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Vaatamisavaldis on kustutatud"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} – jõuti katkestuspunktini"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Üksikasjad"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Mõõtmed"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Kestus"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Lisateave"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Asukoht"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Sõnum"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (alamad)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Koguti {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Valige „{PH1}“, et koguda üksikasjalikku CSS-i valija vastendamise statistikat."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ise)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skript"
@@ -14682,19 +14694,19 @@
     "message": "Seadista"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Väliandmete toomise seadistamine"
+    "message": "Välimõõdikute toomise seadistamine"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Reportis ei ole selle lehe kohta piisavalt tõelisi kiirusandmeid."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Saate allikast {PH1} tuua koondatud väljaandmed, mis aitavad luua kohalike mõõtmiste jaoks konteksti, kuna teate, mida reaalsed kasutajad saidil kogevad."
+    "message": "Saate allikast {PH1} tuua koondatud välimõõdikud mis aitavad luua kohalike mõõtmiste jaoks konteksti, kuna teate, mida reaalsed kasutajad saidil kogevad."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "„{PH1}“ ei ole kehtiv lähtekoht või URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Määrake arendusversiooni lähtekoht, et saada tootmisversiooni lähtekoha kohta automaatselt asjakohaseid välja andmeid."
+    "message": "Määrake arendusversiooni lähtekoht, et saada tootmisversiooni lähtekoha kohta automaatselt asjakohaseid välimõõdikuid."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Uus"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Kuva alloleva URL-i kohta alati välja andmed"
+    "message": "Kuva alloleva URL-i kohta alati välimõõdikud"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Loobu"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Kui arendaja tööriistad on avatud, saadetakse teie külastatud URL-id väliandmete päringu tegemiseks Google'ile. Neid taotlusi ei seota teie Google'i kontoga."
+    "message": "Kui arendaja tööriistad on avatud, saadetakse teie külastatud URL-id välimõõdikute päringu tegemiseks Google'ile. Neid taotlusi ei seota teie Google'i kontoga."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Regulaaravaldise reegli lisamine skripti URL-i jaoks"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Interaktsiooni ja küljenduse nihke logide jaotis"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Välja andmed"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Välimõõdikud"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP interaktsioon on interaktsiooni viivituste 98. protsentiili juures."
@@ -14856,10 +14868,10 @@
     "message": "Kohalikud ja välja mõõdikud"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Lisateave kohalike ja välja andmete kohta"
+    "message": "Lisateave kohalike ja välimõõdikute kohta"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Kohalikud mõõdikud jäädvustatakse praeguselt lehelt, kasutades teie võrguühendust ja seadet. Välja andmeid mõõdavad reaalsed kasutajad, kes kasutavad paljusid eri võrguühendusi ja seadmeid."
+    "message": "Kohalikud mõõdikud jäädvustatakse praeguselt lehelt, kasutades teie võrguühendust ja seadet. Välimõõdikuid mõõdavad reaalsed kasutajad erinevaid võrguühendusi ja seadmeid kasutades."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Kohalikud mõõdikud"
@@ -14922,10 +14934,10 @@
     "message": "Minge halvima küljenduse nihkeklastrisse."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Kuva välja andmed seadme tüübi kohta: {PH1}"
+    "message": "Kuva välimõõdikud seadme tüübi kohta: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Kuva saidi {PH1} välja andmed"
+    "message": "Kuva saidi {PH1} välimõõdikud"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Avage INP interaktsiooni leht."
@@ -15033,13 +15045,13 @@
     "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea, kuid see on oluliselt parem kui teie kasutajate kogemus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks on välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} hea."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks on välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} hea."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} vajab siiski täiustust."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} vajab siiski täiustust."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski kehv."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on hea ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski kehv."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Teie kohalik mõõdiku {PH1} väärtus {PH2} on hea ja sarnane teie kasutajate kogemusega."
@@ -15054,13 +15066,13 @@
     "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist, aga see on oluliselt parem kui teie kasutajate kogemus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski hea."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski hea."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks vajab välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} täiustust."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks vajab välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} täiustust."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski kehv."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja see on hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski kehv."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} vajab täiustamist ja on sarnane teie kasutajate kogemusega."
@@ -15075,13 +15087,13 @@
     "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv, kuid see on oluliselt parem kui teie kasutajate kogemus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski hea."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} on siiski hea."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} vajab siiski täiustust."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} vajab siiski täiustust."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks on välja andmete 75-protsentiili mõõdiku {PH1} väärtus {PH3} kehv."
+    "message": "Teie kohaliku mõõdiku {PH1} väärtus {PH2} on kehv ja hinnanguliselt võrdne {PH4} reaalsete kasutajate mõõdiku {PH1} kogemusega. Lisaks on välimõõdikute 75-protsentiili mõõdiku {PH1} väärtus {PH3} kehv."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Teie kohalik mõõdiku {PH1} väärtus {PH2} on kehv ja sarnane teie kasutajate kogemusega."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Lülita DevTools {PH1} keelele"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Lülita sahtli suunda"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Lisa"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Üksuse {PH1} ekraanipilt – valige eelnevate päringute vaatamiseks."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Kustuta ülekatted"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Radade seadistamine"

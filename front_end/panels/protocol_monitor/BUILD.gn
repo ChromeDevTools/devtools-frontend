@@ -81,6 +81,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../models/text_utils:bundle",
     "../../testing",
   ]
 }

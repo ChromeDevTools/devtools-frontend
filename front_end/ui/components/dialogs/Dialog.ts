@@ -99,6 +99,12 @@ interface DialogData {
    * Specifies a context for the visual element.
    */
   jslogContext: string;
+  /**
+   * By default the dialog will close if any mutations to the DOM outside of it
+   * are detected. By setting this selector, any mutations on elements that
+   * match the selector will not cause the dialog to close.
+   */
+  expectedMutationsSelector?: string;
 }
 
 type DialogAnchor = HTMLElement|DOMRect|DOMPoint;
@@ -131,7 +137,18 @@ export class Dialog extends HTMLElement {
   #dialogClientRect = new DOMRect(0, 0, 0, 0);
   #bestVerticalPositionInternal: DialogVerticalPosition|null = null;
   #bestHorizontalAlignment: DialogHorizontalAlignment|null = null;
-  readonly #devtoolsMutationObserver = new MutationObserver(this.#forceDialogCloseInDevToolsBound);
+  readonly #devtoolsMutationObserver = new MutationObserver(mutations => {
+    if (this.#props.expectedMutationsSelector) {
+      const allExcluded = mutations.every(mutation => {
+        return mutation.target instanceof Element &&
+            mutation.target.matches(this.#props.expectedMutationsSelector ?? '');
+      });
+      if (allExcluded) {
+        return;
+      }
+    }
+    this.#forceDialogCloseInDevToolsBound();
+  });
   readonly #dialogResizeObserver = new ResizeObserver(this.#updateDialogBounds.bind(this));
   #devToolsBoundingElement = this.windowBoundsService.getDevToolsBoundingElement();
 
@@ -148,6 +165,14 @@ export class Dialog extends HTMLElement {
   set origin(origin: DialogOrigin) {
     this.#props.origin = origin;
     this.#onStateChange();
+  }
+
+  set expectedMutationsSelector(mutationSelector: string) {
+    this.#props.expectedMutationsSelector = mutationSelector;
+  }
+
+  get expectedMutationsSelector(): string|undefined {
+    return this.#props.expectedMutationsSelector;
   }
 
   get position(): DialogVerticalPosition {

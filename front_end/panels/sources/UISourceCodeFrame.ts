@@ -230,6 +230,11 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
     if (this.#uiSourceCode.project().isServiceProject()) {
       return false;
     }
+    if (this.#uiSourceCode.contentType().isFromSourceMap()) {
+      // Original Scripts/StyleSheets from source maps can only be edited when mapped via workspace.
+      // That case is handled above by the `binding` check on `PersistenceImpl`.
+      return false;
+    }
     if (this.#uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().active()) {
       return true;
@@ -703,7 +708,7 @@ class MessageWidget extends CodeMirror.WidgetType {
     const issue = this.messages.find(m => m.level() === Workspace.UISourceCode.Message.Level.ISSUE);
     if (issue) {
       const issueIcon = wrap.appendChild(new IconButton.Icon.Icon());
-      issueIcon.data = getIconDataForLevel(Workspace.UISourceCode.Message.Level.ISSUE);
+      issueIcon.data = getIconDataForMessage(issue);
       issueIcon.classList.add('cm-messageIcon-issue');
       issueIcon.addEventListener('click', () => (issue.clickHandler() || Math.min)());
     }

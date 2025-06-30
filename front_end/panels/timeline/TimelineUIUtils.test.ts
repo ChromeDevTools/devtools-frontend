@@ -15,7 +15,12 @@ import {
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  deinitializeGlobalVars,
+  expectConsoleLogs,
+  initializeGlobalVars
+} from '../../testing/EnvironmentHelpers.js';
 import {
   clearMockConnectionResponseHandler,
   describeWithMockConnection,
@@ -75,24 +80,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
   afterEach(() => {
     clearMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend');
-  });
-
-  it('creates top frame location text for function calls', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isFunctionCall);
-    assert.isOk(functionCallEvent);
-    assert.strictEqual(
-        'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:11:43',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(functionCallEvent, parsedTrace));
-  });
-
-  it('creates top frame location text as a fallback', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const timerInstallEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isTimerInstall);
-    assert.isOk(timerInstallEvent);
-    assert.strictEqual(
-        'https://web.dev/js/index-7b6f3de4.js:96:533',
-        await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(timerInstallEvent, parsedTrace));
   });
 
   describe('script location as an URL', function() {
@@ -242,6 +229,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   describe('mapping to authored function name when recording is fresh', function() {
+    expectConsoleLogs({
+      error: ['Error: No LanguageSelector instance exists yet.'],
+    });
     it('maps to the authored name and script of a profile call', async function() {
       const {script} = await loadBasicSourceMapExample(target);
       // Ideally we would get a column number we can use from the source
@@ -336,6 +326,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   });
   describe('adjusting timestamps for events and navigations', function() {
+    expectConsoleLogs({
+      error: ['Error: No LanguageSelector instance exists yet.'],
+    });
     it('adjusts the time for a DCL event after a navigation', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
@@ -800,6 +793,41 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: 'This is a child task',
             },
             {title: 'Tip', value: 'Do something about it'},
+          ],
+      );
+    });
+
+    it('can handle an extension entry having a `null` value', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+      const extensionEntry =
+          parsedTrace.ExtensionTraceData.extensionTrackData[1].entriesByTrack['An Extension Track'][0];
+
+      if (!extensionEntry) {
+        throw new Error('Could not find extension entry.');
+      }
+
+      const mutableEntry: Trace.Types.Extensions.SyntheticExtensionEntry = {
+        ...extensionEntry,
+        args: {
+          ...extensionEntry.args,
+          // Note: we do not support this, but bad values can come in via mistakes in user code.
+          properties: [['key', null]]
+        }
+      };
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          mutableEntry,
+          new Components.Linkifier.Linkifier(),
+          false,
+          null,
+      );
+      const rowData = getRowDataForDetailsElement(details).slice(0, 3);
+      assert.deepEqual(
+          rowData,
+          [
+            {title: 'Duration', value: '1.00\xA0s'},
+            {title: 'key', value: 'null'},
           ],
       );
     });

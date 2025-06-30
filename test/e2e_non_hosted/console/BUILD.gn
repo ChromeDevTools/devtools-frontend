@@ -7,6 +7,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 ts_e2e_library("console") {
   sources = [
     "console-eval-global_test.ts",
+    "console-time_test.ts",
     "dom-warnings_test.ts",
     "filter_test.ts",
     "search_test.ts",

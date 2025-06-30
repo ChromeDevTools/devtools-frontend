@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
   registerNoopActions,
@@ -165,5 +165,184 @@ describeWithEnvironment('TimelinePanel', function() {
         timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
     assert.exists(annotationsAfterToggle);
     assert.isAbove(annotationsAfterToggle.length, 0);
+  });
+
+  it('clears out AI related contexts when the user presses "Clear"', async () => {
+    const context = UI.Context.Context.instance();
+    const {AICallTree, InsightAIContext} = Timeline.Utils;
+
+    const callTree = sinon.createStubInstance(AICallTree.AICallTree);
+    const insight = sinon.createStubInstance(InsightAIContext.ActiveInsight);
+    context.setFlavor(AICallTree.AICallTree, callTree);
+    context.setFlavor(InsightAIContext.ActiveInsight, insight);
+
+    const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
+    assert.isOk(clearButton);
+    dispatchClickEvent(clearButton);
+
+    assert.isNull(context.flavor(AICallTree.AICallTree));
+    assert.isNull(context.flavor(InsightAIContext.ActiveInsight));
+  });
+
+  it('saves visual track config metadata to disk if the user has modified it', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+
+    const FAKE_METADATA: Trace.Types.File.PersistedTraceVisualConfig = {
+      main: [{hidden: true, expanded: false, originalIndex: 0, visualIndex: 0}],
+      network: [{hidden: false, expanded: false, originalIndex: 0, visualIndex: 0}],
+    };
+
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return FAKE_METADATA;
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    const closeSpy = sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: true,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+    sinon.assert.calledOnce(closeSpy);
+
+    const [fileName, traceAsString] = saveSpy.getCall(0).args;
+    // Matches Trace-20250613T132120.json
+    assert.match(fileName, /Trace-[\d|T]+\.json$/);
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
+    assert.deepEqual(parsedData.metadata.visualTrackConfig, FAKE_METADATA);
+  });
+
+  it('does not save visual track config if the user does not save with modifications', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+
+    const FAKE_METADATA: Trace.Types.File.PersistedTraceVisualConfig = {
+      main: [{hidden: true, expanded: false, originalIndex: 0, visualIndex: 0}],
+      network: [{hidden: false, expanded: false, originalIndex: 0, visualIndex: 0}],
+    };
+
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return FAKE_METADATA;
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: false,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsString] = saveSpy.getCall(0).args;
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
+    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+  });
+
+  it('does not save visual track config if the user has not made any', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+
+    const flameChartView = timeline.getFlameChart();
+    sinon.stub(flameChartView, 'getPersistedConfigMetadata').callsFake(() => {
+      return {main: null, network: null};
+    });
+
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: true,
+    });
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsString] = saveSpy.getCall(0).args;
+
+    // easier to assert on the data if we parse it back
+    const parsedData = JSON.parse(traceAsString.text) as Trace.Types.File.TraceFile;
+    assert.isUndefined(parsedData.metadata.visualTrackConfig);
+  });
+
+  it('includes the trace metadata when saving to a file', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
+    const metadata = await TraceLoader.metadata(this, 'web-dev-with-commit.json.gz');
+    await timeline.loadingComplete(events, null, metadata);
+    const fileManager = Workspace.FileManager.FileManager.instance();
+    const saveSpy = sinon.stub(fileManager, 'save').callsFake((): Promise<Workspace.FileManager.SaveCallbackParam> => {
+      return Promise.resolve({});
+    });
+    sinon.stub(fileManager, 'close');
+
+    await timeline.saveToFile({
+      savingEnhancedTrace: false,
+      addModifications: false,
+    });
+
+    sinon.assert.calledOnce(saveSpy);
+
+    const [, traceAsContentData] = saveSpy.getCall(0).args;
+
+    // Assert that each value in the metadata of the JSON matches the metadata in memory.
+    // We can't do a simple deepEqual() on the two objects as the in-memory
+    // contains values that are `undefined` which do not exist in the JSON
+    // version.
+    const parsedData = JSON.parse(traceAsContentData.text) as Trace.Types.File.TraceFile;
+    for (const k in parsedData) {
+      const key = k as keyof Trace.Types.File.MetaData;
+      assert.deepEqual(parsedData.metadata[key], metadata[key]);
+    }
+  });
+
+  describe('handleExternalRequest', () => {
+    it('returns information on the insights found in the recording', async function() {
+      const uiView = UI.ViewManager.ViewManager.instance({forceNew: true});
+      sinon.stub(uiView, 'showView');
+
+      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
+      // const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      await timeline.loadingComplete(events, null, null);
+
+      sinon.stub(timeline, 'recordReload').callsFake(() => {
+        timeline.dispatchEventToListeners(Timeline.TimelinePanel.Events.RECORDING_COMPLETED, {traceIndex: 0});
+      });
+
+      const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+      assert.include(response, 'Insights from this recording');
+      const EXPECTED_INSIGHT_TITLES = [
+        'LCP breakdown',
+        'LCP request discovery',
+        'Render blocking requests',
+        'Document request latency',
+      ];
+      for (const title of EXPECTED_INSIGHT_TITLES) {
+        assert.include(response, title);
+      }
+
+      assert.include(response, `- Time to first byte: 7.94 ms (6.1% of total LCP time)
+- Resource load delay: 33.16 ms (25.7% of total LCP time)
+- Resource load duration: 14.70 ms (11.4% of total LCP time)
+- Element render delay: 73.41 ms (56.8% of total LCP time)`);
+    });
   });
 });

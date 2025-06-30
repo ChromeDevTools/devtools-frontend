@@ -15,7 +15,7 @@ import * as Timeline from '../panels/timeline/timeline.js';
 import * as UI from '../ui/legacy/legacy.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
-import {cleanTestDOM, setupTestDOM} from './DOMHelpers.js';
+import {cleanTestDOM, raf, setupTestDOM} from './DOMHelpers.js';
 import {createFakeSetting, resetHostConfig} from './EnvironmentHelpers.js';
 import {
   checkForPendingActivity,
@@ -30,6 +30,19 @@ document.head.append(style);
 document.documentElement.classList.add('platform-screenshot-test');
 
 const documentBodyElements = new Set<Element>();
+
+// Warm-up fonts to be readily available.
+before(async () => {
+  const div = document.createElement('div');
+  div.style.fontFamily = 'roboto';
+  // Some latin characters to trigger the latin font file to be loaded.
+  // Additional non-lating characters can be included if needed.
+  div.innerText = 'abc';
+  // eslint-disable-next-line rulesdir/no-document-body-mutation
+  document.body.append(div);
+  await document.fonts.ready;
+  div.remove();
+});
 
 beforeEach(async () => {
   resetHostConfig();
@@ -60,15 +73,31 @@ beforeEach(async () => {
 /**
  * If a widget creates a glass pane, it can get orphaned and not cleaned up correctly.
  */
-function removeGlassPanes() {
+async function removeGlassPanes() {
   for (const pane of document.body.querySelectorAll('[data-devtools-glass-pane]')) {
     document.body.removeChild(pane);
   }
+  await raf();
+}
+/**
+ * If a text editor is created we create a special parent for the tooltip
+ * This does not get cleared after render, but it's internals do.
+ * So we need to manually remove it
+ */
+async function removeTextEditorTooltip() {
+  // Found in front_end/ui/components/text_editor/config.ts
+  for (const pane of document.body.querySelectorAll('.editor-tooltip-host')) {
+    document.body.removeChild(pane);
+  }
+  await raf();
 }
 
 afterEach(async function() {
   await cleanTestDOM();
-  removeGlassPanes();
+
+  await removeGlassPanes();
+  await removeTextEditorTooltip();
+
   UI.ARIAUtils.removeAlertElement(document.body);
 
   for (const child of document.body.children) {

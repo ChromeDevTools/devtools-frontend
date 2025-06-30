@@ -117,7 +117,7 @@ export class SidebarWidget extends UI.Widget.VBox {
 
     this.#tabbedPane.setTabEnabled(
         SidebarTabs.INSIGHTS,
-        insights !== null,
+        insights !== null && insights.size > 0,
     );
   }
 

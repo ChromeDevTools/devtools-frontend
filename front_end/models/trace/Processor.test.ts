@@ -246,7 +246,7 @@ describeWithEnvironment('TraceProcessor', function() {
   describe('insights', () => {
     it('returns a single group of insights even if no navigations', async function() {
       const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
-      const file = await TraceLoader.rawEvents(this, 'basic.json.gz');
+      const file = await TraceLoader.rawEvents(this, 'nested-interactions.json.gz');
 
       await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
@@ -284,9 +284,9 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       const insights = Array.from(processor.insights.values());
-      assert.lengthOf(insights, 2);
-      assert.instanceOf(insights[1].model.RenderBlocking, Error, 'RenderBlocking did not throw an error');
-      assert.strictEqual(insights[1].model.RenderBlocking.message, 'forced error');
+      assert.lengthOf(insights, 1);
+      assert.instanceOf(insights[0].model.RenderBlocking, Error, 'RenderBlocking did not throw an error');
+      assert.strictEqual(insights[0].model.RenderBlocking.message, 'forced error');
     });
 
     it('returns insights for a navigation', async function() {
@@ -299,7 +299,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepEqual([...processor.insights.keys()], [
-        Trace.Types.Events.NO_NAVIGATION,
+        // excluded NO_NAVIGATION set, as it was trivial
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
 
@@ -307,12 +307,8 @@ describeWithEnvironment('TraceProcessor', function() {
       if (insights[0].model.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
-      if (insights[1].model.RenderBlocking instanceof Error) {
-        throw new Error('RenderBlocking threw an error');
-      }
 
-      assert.lengthOf(insights[0].model.RenderBlocking.renderBlockingRequests, 0);
-      assert.lengthOf(insights[1].model.RenderBlocking.renderBlockingRequests, 2);
+      assert.lengthOf(insights[0].model.RenderBlocking.renderBlockingRequests, 2);
     });
 
     it('returns insights for multiple navigations', async function() {
@@ -374,6 +370,7 @@ describeWithEnvironment('TraceProcessor', function() {
         // It's been sorted already ... but let's add some fake estimated savings and re-sort to
         // better test the sorting.
         insightSet.model.CLSCulprits.metricSavings = {CLS: 0.07};
+        insightSet.model.Viewport.metricSavings = {INP: Trace.Types.Timing.Milli(300)};
         processor.sortInsightSet(insightSet, metadata ?? null);
 
         return Object.keys(insightSet.model);
@@ -385,8 +382,8 @@ describeWithEnvironment('TraceProcessor', function() {
         'Viewport',
         'Cache',
         'ImageDelivery',
-        'InteractionToNextPaint',
-        'LCPPhases',
+        'INPBreakdown',
+        'LCPBreakdown',
         'LCPDiscovery',
         'RenderBlocking',
         'NetworkDependencyTree',
@@ -408,8 +405,8 @@ describeWithEnvironment('TraceProcessor', function() {
         'CLSCulprits',
         'Cache',
         'ImageDelivery',
-        'InteractionToNextPaint',
-        'LCPPhases',
+        'INPBreakdown',
+        'LCPBreakdown',
         'LCPDiscovery',
         'RenderBlocking',
         'NetworkDependencyTree',

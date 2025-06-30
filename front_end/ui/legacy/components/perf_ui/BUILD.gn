@@ -48,6 +48,7 @@ devtools_module("perf_ui") {
     "../../../../models/bindings:bundle",
     "../../../../models/cpu_profile:bundle",
     "../../../../models/workspace:bundle",
+    "../../../../services/trace_bounds:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/theme_support:bundle",

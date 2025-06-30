@@ -9,6 +9,7 @@ import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {waitForMany} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
+import {openCommandMenu} from './quick_open-helpers.js';
 import {
   expectVeEvents,
   veChange,
@@ -52,15 +53,13 @@ export async function navigateToPerformanceTab(
     await inspectedPage.goToResource(`performance/${testResource}.html`);
   }
 
-  // Click on the tab.
-  await devToolsPage.click('#tab-timeline');
+  // Open the tab.
+  await openCommandMenu(devToolsPage);
+  await devToolsPage.typeText('Performance');
+  await devToolsPage.page.keyboard.press('Enter');
 
   // Make sure the landing page is shown.
   await devToolsPage.waitFor('.timeline-landing-page');
-  await devToolsPage.timeout(100);
-  await expectVeEvents(
-      [veClick('Toolbar: main > PanelTabHeader: timeline'), veImpressionForPerformancePanel()], undefined,
-      devToolsPage);
 }
 
 export async function openCaptureSettings(
@@ -87,13 +86,12 @@ export async function openCaptureSettings(
 export async function searchForComponent(
     searchEntry: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.waitFor('devtools-performance-timeline-summary');
-  await devToolsPage.timeout(100);
   await devToolsPage.summonSearchBox();
   await devToolsPage.waitFor('.search-bar');
   await devToolsPage.page.keyboard.type(searchEntry);
-  await devToolsPage.timeout(100);
+  await devToolsPage.timeout(300);
   await devToolsPage.page.keyboard.press('Tab');
-  await devToolsPage.timeout(100);
+  await devToolsPage.timeout(300);
   await expectVeEvents(
       [
         veKeyDown(''),
@@ -320,7 +318,7 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
 export async function navigateToSelectorStatsTab(
     devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(SELECTOR_STATS_SELECTOR);
-  await devToolsPage.timeout(100);
+  await devToolsPage.waitFor('#tab-selector-stats.selected');
   await expectVeEvents(
       [
         veClick('Toolbar: sidebar > PanelTabHeader: selector-stats'),

@@ -41,7 +41,6 @@ describe('SaveFileFormatter', () => {
         modifications: undefined,  // Undefined values are removed within JSON.stringify
         networkThrottling: '4',
         cpuThrottling: 1,
-        hardwareConcurrency: 1,
         enhancedTraceVersion: 1,
       };
       const formatted = Array.from(Timeline.SaveFileFormatter.traceJsonGenerator(events, metadata)).join('');
@@ -51,8 +50,7 @@ describe('SaveFileFormatter', () => {
   "source": "DevTools",
   "startTime": "1234",
   "networkThrottling": "4",
-  "cpuThrottling": 1,
-  "hardwareConcurrency": 1
+  "cpuThrottling": 1
 },
 "traceEvents": [
   {"name":"event_one","tid":0,"pid":0,"ts":0,"cat":"test","ph":"M"},

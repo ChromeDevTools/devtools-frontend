@@ -4,7 +4,9 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
@@ -19,10 +21,10 @@ describeWithMockConnection('WebAuthn pane', () => {
     Webauthn = await import('./webauthn.js');
   });
 
-  it('disables the large blob checkbox if resident key is disabled', () => {
+  it('disables the large blob checkbox if resident key is disabled', async () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-    const largeBlob = panel.largeBlobCheckbox;
-    const residentKeys = panel.residentKeyCheckbox;
+    const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+    const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
     if (!largeBlob || !residentKeys) {
       assert.fail('Required checkbox not found');
@@ -33,6 +35,7 @@ describeWithMockConnection('WebAuthn pane', () => {
     // unchecked.
     residentKeys.checked = false;
     residentKeys.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
     assert.isTrue(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
 
@@ -40,17 +43,20 @@ describeWithMockConnection('WebAuthn pane', () => {
     // checked.
     residentKeys.checked = true;
     residentKeys.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
     assert.isFalse(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
 
     // Manually check large blob.
     largeBlob.checked = true;
-    assert.isTrue(largeBlob.checked);
+    largeBlob.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
 
     // Disabling resident keys should reset large blob to disabled and
     // unchecked.
     residentKeys.checked = false;
     residentKeys.dispatchEvent(new Event('change'));
+    await panel.updateComplete;
     assert.isTrue(largeBlob.disabled);
     assert.isFalse(largeBlob.checked);
   });
@@ -70,42 +76,50 @@ describeWithMockConnection('WebAuthn pane', () => {
     });
 
     it('adds an authenticator with large blob option', async () => {
-      const largeBlob = panel.largeBlobCheckbox;
-      const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
         return;
       }
       residentKeys.checked = true;
+      residentKeys.dispatchEvent(new Event('change'));
       largeBlob.checked = true;
+      largeBlob.dispatchEvent(new Event('change'));
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
-      if (inScope) {
-        const options = addAuthenticator.firstCall.firstArg;
-        assert.isTrue(options.hasLargeBlob);
-        assert.isTrue(options.hasResidentKey);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
+      if (!inScope) {
+        return;
       }
+      await expectCalled(addAuthenticator);
+      const options = addAuthenticator.firstCall.firstArg;
+      assert.isTrue(options.hasLargeBlob);
+      assert.isTrue(options.hasResidentKey);
     });
 
     it('adds an authenticator without the large blob option', async () => {
-      const largeBlob = panel.largeBlobCheckbox;
-      const residentKeys = panel.residentKeyCheckbox;
+      const largeBlob = panel.contentElement.querySelector<HTMLInputElement>('#large-blob');
+      const residentKeys = panel.contentElement.querySelector<HTMLInputElement>('#resident-key');
 
       if (!largeBlob || !residentKeys) {
         assert.fail('Required checkbox not found');
         return;
       }
       residentKeys.checked = true;
+      residentKeys.dispatchEvent(new Event('change'));
       largeBlob.checked = false;
+      largeBlob.dispatchEvent(new Event('change'));
 
       const addAuthenticator = sinon.stub(model, 'addAuthenticator');
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
+      if (!inScope) {
+        return;
+      }
+      await expectCalled(addAuthenticator);
       if (inScope) {
         const options = addAuthenticator.firstCall.firstArg;
         assert.isFalse(options.hasLargeBlob);
@@ -118,12 +132,13 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
+
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Verify a data grid appeared with a single row to show there is no data.
       const dataGrid = panel.dataGrids.get(authenticatorId);
@@ -163,8 +178,8 @@ describeWithMockConnection('WebAuthn pane', () => {
       emptyNode = dataGrid.rootNode().children[0];
       assert.isOk(emptyNode);
       assert.deepEqual(emptyNode.data, {});
-      await new Promise(resolve => setTimeout(resolve, 0));
-      sinon.assert.called(removeCredential);
+      await panel.updateComplete;
+      await expectCalled(removeCredential);
 
       assert.strictEqual(removeCredential.firstCall.firstArg, authenticatorId);
       assert.strictEqual(removeCredential.firstCall.lastArg, credential.credentialId);
@@ -175,12 +190,12 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Add a credential.
       const credential = {
@@ -268,12 +283,12 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an authenticator.
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // Add a credential.
       const credential = {
@@ -318,7 +333,7 @@ describeWithMockConnection('WebAuthn pane', () => {
     it('disables "internal" if an internal authenticator exists', async () => {
       const authenticatorId = 'authenticator-1' as Protocol.WebAuthn.AuthenticatorId;
       let panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-      let transport = panel.transportSelect;
+      let transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
       if (!transport) {
         assert.fail('Transport select is not present');
       }
@@ -334,13 +349,14 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Add an internal authenticator.
       transport.selectedIndex = internalTransportIndex;
+      transport.dispatchEvent(new Event('change'));
       const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
-      panel.addAuthenticatorButton?.click();
-      await new Promise(resolve => setTimeout(resolve, 0));
-      assert.strictEqual(addAuthenticator.called, inScope);
+      panel.contentElement.querySelector<HTMLElement>('#add-authenticator')?.click();
+      await panel.updateComplete;
       if (!inScope) {
         return;
       }
+      await expectCalled(addAuthenticator);
 
       // The "internal" option should have been disabled, and another option selected.
       assert.notEqual(transport.selectedIndex, internalTransportIndex);
@@ -348,7 +364,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Restoring the authenticator when loading the panel again should also cause "internal" to be disabled.
       panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
-      transport = panel.transportSelect;
+      transport = panel.contentElement.querySelector<HTMLSelectElement>('#transport');
       if (!transport) {
         assert.fail('Transport select is not present');
       }
@@ -356,6 +372,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Removing the internal authenticator should re-enable the option.
       panel.removeAuthenticator(authenticatorId);
+      await panel.updateComplete;
       assert.isFalse(transport.options[internalTransportIndex].disabled);
     });
   };
@@ -365,6 +382,7 @@ describeWithMockConnection('WebAuthn pane', () => {
 
   it('shows the placeholder', () => {
     const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
+    renderElementIntoDOM(panel);
     assert.exists(panel.contentElement.querySelector('.empty-state'));
     assert.deepEqual(panel.contentElement.querySelector('.empty-state-header')?.textContent, 'No authenticator set up');
     assert.deepEqual(

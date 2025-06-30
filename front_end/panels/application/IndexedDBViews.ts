@@ -75,6 +75,17 @@ const UIStrings = {
    */
   databaseWillBeRemoved: 'The selected database and contained data will be removed.',
   /**
+   * @description Title of the confirmation dialog in the IndexedDB tab of the Application panel
+   *              that the user is about to clear an object store and this cannot be undone.
+   * @example {table1} PH1
+   */
+  confirmClearObjectStore: 'Clear "{PH1}" object store?',
+  /**
+   * @description Description in the confirmation dialog in the IndexedDB tab of the Application
+   *              panel that the user is about to clear an object store and this cannot be undone.
+   */
+  objectStoreWillBeCleared: 'The data contained in the selected object store will be removed.',
+  /**
    *@description Text in Indexed DBViews of the Application panel
    */
   idb: 'IDB',
@@ -600,12 +611,18 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   private async clearButtonClicked(): Promise<void> {
-    this.clearButton.setEnabled(false);
-    this.clearingObjectStore = true;
-    await this.model.clearObjectStore(this.databaseId, this.objectStore.name);
-    this.clearingObjectStore = false;
-    this.clearButton.setEnabled(true);
-    this.updateData(true);
+    const ok = await UI.UIUtils.ConfirmDialog.show(
+        i18nString(UIStrings.objectStoreWillBeCleared),
+        i18nString(UIStrings.confirmClearObjectStore, {PH1: this.objectStore.name}), this.element,
+        {jslogContext: 'clear-object-store-confirmation'});
+    if (ok) {
+      this.clearButton.setEnabled(false);
+      this.clearingObjectStore = true;
+      await this.model.clearObjectStore(this.databaseId, this.objectStore.name);
+      this.clearingObjectStore = false;
+      this.clearButton.setEnabled(true);
+      this.updateData(true);
+    }
   }
 
   markNeedsRefresh(): void {

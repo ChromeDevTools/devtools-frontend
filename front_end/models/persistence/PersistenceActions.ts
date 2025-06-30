@@ -9,7 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
@@ -48,6 +48,11 @@ const UIStrings = {
   overrideSourceMappedFileExplanation: '‘{PH1}’ is a source mapped file and cannot be overridden.',
   /**
    * @description An error message shown in the DevTools console after the user clicked "Save as" in
+   * the context menu of a page resource.
+   */
+  saveFailed: 'Failed to save file to disk.',
+  /**
+   * @description An error message shown in the DevTools console after the user clicked "Save as" in
    * the context menu of a WebAssembly file.
    */
   saveWasmFailed: 'Unable to save WASM module to disk. Most likely the module is too large.',
@@ -66,22 +71,27 @@ export class ContextMenuProvider implements
         (contentProvider).commitWorkingCopy();
       }
       const url = contentProvider.contentURL();
-      let content: TextUtils.ContentProvider.DeferredContent;
+      let contentData: TextUtils.ContentData.ContentData;
       const maybeScript = getScript(contentProvider);
       if (maybeScript?.isWasm()) {
         try {
-          const byteCode = await maybeScript.getWasmBytecode();
-          const base64 = await Common.Base64.encode(byteCode);
-          content = {isEncoded: true, content: base64};
+          const base64 = await maybeScript.getWasmBytecode().then(Common.Base64.encode);
+          contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'application/wasm');
         } catch (e) {
           console.error(`Unable to convert WASM byte code for ${url} to base64. Not saving to disk`, e.stack);
           Common.Console.Console.instance().error(i18nString(UIStrings.saveWasmFailed), /* show=*/ false);
           return;
         }
       } else {
-        content = await contentProvider.requestContent();
+        const contentDataOrError = await contentProvider.requestContentData();
+        if (TextUtils.ContentData.ContentData.isError(contentDataOrError)) {
+          console.error(`Failed to retrieve content for ${url}: ${contentDataOrError}`);
+          Common.Console.Console.instance().error(i18nString(UIStrings.saveFailed), /* show=*/ false);
+          return;
+        }
+        contentData = contentDataOrError;
       }
-      await Workspace.FileManager.FileManager.instance().save(url, content.content ?? '', true, content.isEncoded);
+      await Workspace.FileManager.FileManager.instance().save(url, contentData, /* forceSaveAs=*/ true);
       Workspace.FileManager.FileManager.instance().close(url);
     }
 

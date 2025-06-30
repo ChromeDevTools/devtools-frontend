@@ -25,8 +25,8 @@ Migrating a track consists of taking the code in the data provider corresponding
 
     After adding the test file, you can run `npm run auto-screenshotstest` to generate the screenshot locally to check before submitting.
 
-    Or you can upload to the Gerrit and after the screenshot tests fails, run `./scripts/tools/update_goldens_v2.py` to update the screenshots.
-    See [update_goldens_v2.py](../../../scripts/tools/update_goldens_v2.py) for more information.
+    Or you can upload to the Gerrit and after the screenshot tests fails, run `./scripts/tools/update_goldens.py` to update the screenshots.
+    See [update_goldens.py](../../../scripts/tools/update_goldens.py) for more information.
 
 1. Add missing related functionality to the new engine (not always needed).
 

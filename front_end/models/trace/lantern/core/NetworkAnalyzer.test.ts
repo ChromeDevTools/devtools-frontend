@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {expectConsoleLogs} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
@@ -505,6 +506,9 @@ describe('NetworkAnalyzer', () => {
   });
 
   describe('#resolveRedirects', function() {
+    expectConsoleLogs({
+      error: ['Error: missing metric scores for specified navigation'],
+    });
     it('should resolve to the same document when no redirect', async () => {
       const requests = await createRequests(this, trace);
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/');

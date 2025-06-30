@@ -132,6 +132,10 @@ const UIStrings = {
    *@description Label for a button which opens a file picker.
    */
   selectFolder: 'Select folder',
+  /**
+   *@description Text that appears when hover the toggle orientation button
+   */
+  toggleDrawerOrientation: 'Toggle drawer orientation',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -152,6 +156,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   private reloadRequiredInfobar?: Infobar;
   #selectOverrideFolderInfobar?: Infobar;
   #resizeObserver: ResizeObserver;
+  #toggleOrientationButton: ToolbarButton;
 
   constructor() {
     super();
@@ -176,12 +181,18 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     const moreTabsButton = this.drawerTabbedLocation.enableMoreTabsButton();
     moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
-    this.drawerTabbedPane.setMinimumSize(0, 27);
+    this.setDrawerMinimumSize();
     this.drawerTabbedPane.element.classList.add('drawer-tabbed-pane');
     this.drawerTabbedPane.element.setAttribute('jslog', `${VisualLogging.drawer()}`);
     const closeDrawerButton = new ToolbarButton(i18nString(UIStrings.closeDrawer), 'cross');
     closeDrawerButton.element.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
     closeDrawerButton.addEventListener(ToolbarButton.Events.CLICK, this.closeDrawer, this);
+    this.#toggleOrientationButton = new ToolbarButton(
+        i18nString(UIStrings.toggleDrawerOrientation),
+        this.drawerSplitWidget.isVertical() ? 'dock-bottom' : 'dock-right');
+    this.#toggleOrientationButton.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
+    this.#toggleOrientationButton.element.setAttribute('jslogcontext', 'toggle-drawer-orientation');
+    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, this.toggleDrawerOrientation, this);
     this.drawerTabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId), this);
@@ -197,6 +208,9 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.drawerSplitWidget.installResizer(this.drawerTabbedPane.headerElement());
     this.drawerSplitWidget.setSidebarWidget(this.drawerTabbedPane);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
+      this.drawerTabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
+    }
     this.drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this.drawerTabbedPane.headerElement().setAttribute('jslog', `${VisualLogging.toolbar('drawer').track({
                                                          drag: true,
@@ -244,6 +258,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       this.tabbedPane.setAutoSelectFirstItemOnShow(false);
     }
     this.drawerSplitWidget.setMainWidget(this.tabbedPane);
+    this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
 
     this.keyDownBound = this.keyDown.bind(this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
@@ -416,6 +431,24 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
     this.emitDrawerChangeEvent(false);
     ARIAUtils.alert(i18nString(UIStrings.drawerHidden));
+  }
+
+  toggleDrawerOrientation(): void {
+    const drawerWillBeVertical = !this.drawerSplitWidget.isVertical();
+    this.#toggleOrientationButton.setGlyph(drawerWillBeVertical ? 'dock-bottom' : 'dock-right');
+    this.drawerSplitWidget.setVertical(drawerWillBeVertical);
+    this.setDrawerMinimumSize();
+  }
+
+  setDrawerMinimumSize(): void {
+    const drawerIsVertical = this.drawerSplitWidget.isVertical();
+    if (drawerIsVertical) {
+      // Set minimum size when the drawer is vertical to ensure the buttons will always be
+      // visible during resizing.
+      this.drawerTabbedPane.setMinimumSize(100, 27);
+    } else {
+      this.drawerTabbedPane.setMinimumSize(0, 27);
+    }
   }
 
   setDrawerMinimized(minimized: boolean): void {
@@ -683,6 +716,11 @@ export class ActionDelegate implements ActionDelegateInterface {
             focus: true,
             hasTargetDrawer: false,
           });
+        }
+        return true;
+      case 'main.toggle-drawer-orientation':
+        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.VERTICAL_DRAWER)) {
+          InspectorView.instance().toggleDrawerOrientation();
         }
         return true;
       case 'main.next-tab':

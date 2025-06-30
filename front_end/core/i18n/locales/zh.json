@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "不模拟 CSS 媒体类型"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "不模拟操作系统文本缩放"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "不延长网格线"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "模拟绿色盲（无法感知绿色）"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "模拟操作系统文本缩放"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "模拟红色盲（无法感知红色）"
@@ -732,6 +738,30 @@
     "message": "屏蔽网络请求"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "无模拟"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100%（默认）"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "无模拟"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "强制采用测试打印和屏幕样式的媒体类型"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "强制模拟操作系统文本缩放"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "强制模拟视觉缺陷"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "显示/隐藏抽屉栏"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "切换抽屉式导航栏方向"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "取消停靠至单独的窗口"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "如果对应的网址同时包含已移除的空白字符 \\(n|r|t) 和小于字符 (<)，资源请求会被屏蔽。请从元素属性值等位置移除换行符并编码小于字符，以便加载这些资源。"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP 字符集的自动检测功能已被弃用，并将在不久的将来停用。请在“内容类型”标头中或通过使用元标记 (https://developer.mozilla.org/zh-CN/docs/Glossary/Character_encoding) 指定字符集。"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() 已被弃用，请改用标准化 API：Navigation Timing 2。"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "另存为…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "未能将文件保存到磁盘。"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "保存图片"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "导致布局偏移的首要原因"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "未设置尺寸的图片"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "最糟糕的集群"
@@ -1839,7 +1875,7 @@
     "message": "有重定向 ({PH1} 次重定向，+{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "服务器响应缓慢（观察结果：{PH1}） "
+    "message": "服务器响应缓慢（观察结果：{PH1}）"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "未应用任何压缩"
@@ -1848,7 +1884,7 @@
     "message": "避免重定向"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "服务器响应迅速（观察结果：{PH1}） "
+    "message": "服务器响应迅速（观察结果：{PH1}）"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "应用文本压缩"
@@ -2070,7 +2106,7 @@
     "message": "[避免链接关键请求](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)，方法是缩短链长、缩减资源的下载文件大小，或者推迟下载不必要的资源，从而提高网页加载速度。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "为最重要的源添加 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但请尽量少于 4 个。"
+    "message": "为最重要的源添加 [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) 提示，但请尽量不要超过 4 个。"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "预连接候选项"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "如果视口未针对移动设备进行优化，点按互动可能会[延迟最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "移动设备点按延迟"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "针对移动设备优化视口"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "如需使用此功能，请在开发者工具设置中将语言偏好设置为英语。"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "您也可以使用上面建议的提示之一来开始对话"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "了解开发者工具中的 AI 功能"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "收起"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "要清除“{PH1}”对象存储区吗？"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "要删除“{PH1}”数据库吗？"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "键"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "系统将移除所选对象存储区中包含的数据。"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "对象存储区"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "此框架已被识别为广告的根框架"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "根脚本过滤列表规则"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "安全上下文"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1}（来自来源映射）"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "“更改”标签页不显示二进制数据更改"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "在此页面上，您可以跟踪开发者工具中所做的代码更改。"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "复制"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "尚无任何更改"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "没有文本差异"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# 行删除代码 (-)}other{# 行删除代码 (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# 行插入代码 (+)}other{# 行插入代码 (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "已复制到剪贴板"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "变更"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "复制当前文件中的所有更改"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "还原对当前文件所做的所有更改"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "显示“更改”工具"
@@ -5715,7 +5745,7 @@
     "message": "仅显示来自当前上下文（top、iframe、worker、扩展程序）的消息"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "已被过滤器边栏覆盖"
+    "message": "日志级别由控制台边栏控制。"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "保留日志"
@@ -6612,16 +6642,16 @@
     "message": "滚动到视野范围内"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "显示 commandfor 目标"
+    "message": "显示与 commandfor 属性相关联的元素"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "显示 iframe 详细信息"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "显示兴趣目标"
+    "message": "显示与 interesttarget 属性相关联的元素"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "显示弹出式窗口目标"
+    "message": "显示与 popovertarget 属性相关联的元素"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "此框架被确定为广告框架"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "构造的样式表"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "复制所有 CSS 更改"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "复制所有声明"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "通过检查器"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "复制所有 CSS 更改"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "以 JS 格式复制所有声明"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "无障碍功能"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "在审核期间应用桌面设备模拟"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "应用移动设备模拟"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "数据包重新排序"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "百分比"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "性能分析报告名称"
   },
@@ -8802,7 +8826,7 @@
     "message": "输入自定义用户代理"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "已显示“网络状况”面板"
+    "message": "已显示“网络状况”面板。"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "网络节流"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "远程地址空间"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "请求标头"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "响应标头"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "另存为…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "未能将文件保存到磁盘。"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "选择放置替换项的文件夹"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "刷新监视表达式"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "已删除监视表达式"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "遇到{PH1}断点"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "详细信息"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "尺寸"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "时长"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "了解详情"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "位置"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "消息"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1}（子级）"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "已回收 {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}：{PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "（{PH1}、{PH2}）"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "选择“{PH1}”可收集详细的 CSS 选择器匹配统计信息。"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1}（自身）"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "脚本"
@@ -14682,19 +14694,19 @@
     "message": "配置"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "配置现场数据提取"
+    "message": "配置真实用户数据提取"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome 用户体验报告中与此网页相关的实际速度数据不够多。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "从 {PH1}中提取汇总的现场数据，以帮助您根据用户在网站上的实际体验来分析本地测量数据。"
+    "message": "从 {PH1}中提取汇总的真实用户数据，帮助您根据用户在网站上的实际体验来分析本地测量数据。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "“{PH1}”不是有效的源或网址。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "设置开发源即可自动获取其生产环境源的相关现场数据。"
+    "message": "设置开发源即可自动获取其生产环境源的相关真实用户数据。"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "新增"
@@ -14703,7 +14715,7 @@
     "message": "确定"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "始终显示以下网址的现场数据"
+    "message": "始终显示以下网址的真实用户数据"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "停用"
@@ -14718,7 +14730,7 @@
     "message": "网址"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "当开发者工具处于打开状态时，系统会将您访问的网址发送给 Google，以便查询现场数据。这些请求未与您的 Google 账号相关联。"
+    "message": "当开发者工具处于打开状态时，系统会将您访问的网址发送给 Google，以便查询真实用户数据。这些请求未与您的 Google 账号相关联。"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "为脚本的网址添加正则表达式规则"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "“互动和布局偏移日志”部分"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "现场数据"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "真实用户数据"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP 互动处于互动延迟的第 98 百分位数。"
@@ -14856,10 +14868,10 @@
     "message": "本地和现场指标"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "详细了解本地数据和现场数据"
+    "message": "详细了解本地数据和真实用户数据"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "系统会使用您的网络连接和设备从当前网页中捕获本地指标。现场数据是根据真实用户使用多种不同的网络连接和设备测量获得的。"
+    "message": "系统会使用您的网络连接和设备从当前网页中捕获本地指标。真实用户数据是根据真实用户使用多种不同的网络连接和设备测量获得的。"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "本地指标"
@@ -14922,10 +14934,10 @@
     "message": "前往“最糟糕的布局偏移集群”。"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "显示“{PH1}”设备类型的现场数据"
+    "message": "显示“{PH1}”设备类型的真实用户数据"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "显示 {PH1} 的现场数据"
+    "message": "显示 {PH1} 的真实用户数据"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "查看 INP 互动指标。"
@@ -15033,13 +15045,13 @@
     "message": "您本地的 {PH1} 值为 {PH2}，表现良好，远高于实际的用户体验。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现良好，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "您本地的 {PH1} 值为 {PH2}，表现良好，与实际的用户体验类似。"
@@ -15054,13 +15066,13 @@
     "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，但远高于实际的用户体验。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
+    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
+    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
+    "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "您本地的 {PH1} 值为 {PH2}，仍需提升，而且与实际的用户体验类似。"
@@ -15075,13 +15087,13 @@
     "message": "您本地的 {PH1} 值为 {PH2}，表现较差，但远高于实际的用户体验。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现良好。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。但是，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，仍需提升。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，现场数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
+    "message": "您本地的 {PH1} 值为 {PH2}，表现较差，并与 {PH4} 的实际用户 {PH1} 体验评分相同。此外，真实用户数据中 {PH1} 值的第 75 百分位数为 {PH3}，表现较差。"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "您本地的 {PH1} 值为 {PH2}，表现较差，与实际的用户体验类似。"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "将 DevTools 切换为{PH1}版"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "切换抽屉式导航栏方向"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "添加"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1}的屏幕截图 - 选择即可查看先前的请求。"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "删除注释"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "配置跟踪记录"

@@ -1152,6 +1152,25 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
 describe('NetworkDispatcher', () => {
   const requestWillBeSentEvent = {requestId: 'mockId', request: {url: 'example.com'}} as
       Protocol.Network.RequestWillBeSentEvent;
+  const responseReceivedEvent = {
+    requestId: 'mockId',
+    loaderId: 'mockLoaderId',
+    frameId: 'mockFrameId',
+    timestamp: 581734.083213,
+    type: Protocol.Network.ResourceType.Document,
+    response: {
+      url: 'example.com',
+      status: 200,
+      statusText: '',
+      mimeType: 'text/html',
+      connectionReused: true,
+      connectionId: 12345,
+      encodedDataLength: 100,
+      securityState: 'secure',
+    } as Protocol.Network.Response,
+    hasExtraInfo: true,
+  } as Protocol.Network.ResponseReceivedEvent;
+
   const loadingFinishedEvent = {requestId: 'mockId', timestamp: 42, encodedDataLength: 42} as
       Protocol.Network.LoadingFinishedEvent;
   describeWithEnvironment('request', () => {
@@ -1197,9 +1216,83 @@ describe('NetworkDispatcher', () => {
 
       networkDispatcher.clearRequests();
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
+      networkDispatcher.responseReceived(responseReceivedEvent);
       assert.exists(networkDispatcher.requestForId('mockId'));
       assert.deepEqual(
           networkDispatcher.requestForId('mockId')?.requestHeaders(), [{name: 'Header-From-Extra-Info', value: 'foo'}]);
+    });
+
+    it('handles redirect chains with mixed presence of raw headers', () => {
+      const hop1RequestWillBeSent = {requestId: 'mockId', request: {url: 'http://example.com'}} as
+          Protocol.Network.RequestWillBeSentEvent;
+      const hop2RequestWillBeSent = {
+        requestId: 'mockId',
+        request: {url: 'https://example.com'},
+        redirectHasExtraInfo: false,
+        redirectResponse: {
+          url: 'http://example.com',
+          status: 307,
+          statusText: 'Temporary redirect',
+          headers: {
+            Location: 'https://example.com',
+          },
+        } as unknown as Protocol.Network.Response,
+      } as Protocol.Network.RequestWillBeSentEvent;
+      const responseExtraInfo = {
+        requestId: 'mockId' as Protocol.Network.RequestId,
+        blockedCookies: [],
+        headers: {},
+        resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+        statusCode: 200,
+        headersText: 'HTTP/1.1 200 OK\r\n'
+      } as Protocol.Network.ResponseReceivedExtraInfoEvent;
+
+      networkDispatcher.requestWillBeSent(hop1RequestWillBeSent);
+      networkDispatcher.requestWillBeSent(hop2RequestWillBeSent);
+
+      networkDispatcher.responseReceived(responseReceivedEvent);
+      networkDispatcher.responseReceivedExtraInfo(responseExtraInfo);
+
+      const originalResqest = networkDispatcher.requestForURL(urlString`http://example.com`);
+      assert.exists(originalResqest);
+      assert.strictEqual(originalResqest.statusCode, 307);
+      assert.strictEqual(originalResqest.statusText, 'Temporary redirect');
+
+      const redirectedRequest = networkDispatcher.requestForURL(urlString`https://example.com`);
+      assert.exists(redirectedRequest);
+      assert.strictEqual(redirectedRequest.statusCode, 200);
+      assert.strictEqual(redirectedRequest.statusText, 'OK');
+    });
+
+    it('raw headers are processed when response fails', () => {
+      networkDispatcher.requestWillBeSent(
+          {requestId: 'mockId', request: {url: 'http://example.com'}} as Protocol.Network.RequestWillBeSentEvent);
+
+      const responseExtraInfo = {
+        requestId: 'mockId' as Protocol.Network.RequestId,
+        blockedCookies: [],
+        headers: {},
+        resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+        statusCode: 200,
+        headersText: 'HTTP/1.1 200 OK\r\n'
+      } as Protocol.Network.ResponseReceivedExtraInfoEvent;
+      networkDispatcher.responseReceivedExtraInfo(responseExtraInfo);
+
+      const request = networkDispatcher.requestForId('mockId');
+      assert.exists(request);
+      assert.strictEqual(request.statusCode, 0);
+
+      networkDispatcher.loadingFailed({
+        requestId: 'mockId' as Protocol.Network.RequestId,
+        timestamp: 2345,
+        type: Protocol.Network.ResourceType.Document,
+        errorText: 'net::ERR_FAILED',
+        canceled: false,
+        corsErrorStatus: {corsError: Protocol.Network.CorsError.MissingAllowOriginHeader, failedParameter: ''},
+      });
+
+      assert.strictEqual(request.statusCode, 200);
+      assert.strictEqual(request.statusText, 'OK');
     });
 
     it('response headers are overwritten by request interception', () => {
@@ -1213,24 +1306,9 @@ describe('NetworkDispatcher', () => {
         statusCode: 200,
       } as Protocol.Network.ResponseReceivedExtraInfoEvent;
       const mockResponseReceivedEventWithHeaders = (headers: Protocol.Network.Headers) => {
-        return {
-          requestId: 'mockId',
-          loaderId: 'mockLoaderId',
-          frameId: 'mockFrameId',
-          timestamp: 581734.083213,
-          type: Protocol.Network.ResourceType.Document,
-          response: {
-            url: 'example.com',
-            status: 200,
-            statusText: '',
-            headers,
-            mimeType: 'text/html',
-            connectionReused: true,
-            connectionId: 12345,
-            encodedDataLength: 100,
-            securityState: 'secure',
-          } as Protocol.Network.Response,
-        } as Protocol.Network.ResponseReceivedEvent;
+        const event = structuredClone(responseReceivedEvent) as Protocol.Network.ResponseReceivedEvent;
+        event.response.headers = headers;
+        return event;
       };
 
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
@@ -1263,6 +1341,7 @@ describe('NetworkDispatcher', () => {
 
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
       networkDispatcher.responseReceivedExtraInfo(responseReceivedExtraInfoEvent);
+      networkDispatcher.responseReceived(responseReceivedEvent);
 
       assert.deepEqual(networkDispatcher.requestForId('mockId')?.responseHeaders, [
         {name: 'test-header', value: 'first'},

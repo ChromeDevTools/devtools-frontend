@@ -1,12 +1,10 @@
-### Preconnected origins in 'Network dependency tree' insight
-The 'Network dependency tree' insight now shows you a list of used or unused preconnected origins and preconnect candidates, if any.
+### [A more reliable and productive Chrome DevTools](reliable-devtools)
+In Chrome 139, DevTools prioritized product excellence and developer experience. We tackled numerous known issues, including some years-old ones, and also made improvements to newer features. Behind the scenes, we enhanced our test coverage and migrated tests to more robust foundations.
 
-[Send feedback](crbug1)
-### Server response and redirection times in 'Document request latency' insight
-The 'Document request latency' insight now shows you server response time and, if any, redirection time.
+We hope you will experience these numerous subtle fixes across various panels, making your daily debugging and development workflows smoother, more reliable, and more productive.
 
-[Send feedback](crbug2)
-### Geolocation accuracy parameter in Sensors
-The Sensors panel now lets you set accuracy in geolocation emulation, so you can test the handling of different levels of GPS accuracy.
+### [Upload images in AI assistance for styling](multimodal-input)
+To provide additional visual context to your prompts, you can now upload arbitrary images in the AI assistance panel when you [start your conversation from the Elements panel](from-elements) with a [DOM element selected as context](element-context).
 
-[Send feedback](crbug3)
+### [Check out the highlights from I/O](devtools-io)
+Check out the features we announced at Google I/O 2025, including features with Gemini integration: [modify and save CSS changes to your workspace](ai-styling), [ask about performance insights](ai-insights), [annotate performance findings](ai-annotations), and more.

@@ -5,7 +5,10 @@
 import("//build/config/devtools.gni")
 
 declare_args() {
-  devtools_dcheck_always_on = is_debug
+  # Whether we bundle module entrypoints into a single file or not.
+  # The arg is declared here and not in "devtools_entrypoint.gni" because various
+  # templates need to read it, as it affects the "grd_files" metadata field.
+  devtools_bundle = true
 }
 
 # Introduce a new variable to make sure that string

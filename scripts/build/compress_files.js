@@ -17,8 +17,13 @@ async function readTextFile(filename) {
   return pfs.readFile(filename, 'utf8');
 }
 
-function fileExists(filename) {
-  return fs.existsSync(filename);
+async function fileExists(filename) {
+  try {
+    await pfs.access(filename);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function writeTextFile(filename, data) {
@@ -61,10 +66,10 @@ async function brotli(sourceData, compressedFilename) {
 async function compressFile(filename) {
   const compressedFilename = filename + '.compressed';
   const hashFilename = filename + '.hash';
-  const prevHash = fileExists(hashFilename) ? await readTextFile(hashFilename) : '';
+  const prevHash = await fileExists(hashFilename) ? await readTextFile(hashFilename) : '';
   const sourceData = await readBinaryFile(filename);
   const currHash = sha1(sourceData);
-  if (prevHash !== currHash) {
+  if (prevHash !== currHash || !await fileExists(compressedFilename)) {
     await writeTextFile(hashFilename, currHash);
     await brotli(sourceData, compressedFilename);
   }

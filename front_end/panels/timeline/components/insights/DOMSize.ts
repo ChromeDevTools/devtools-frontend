@@ -6,14 +6,17 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import './Table.js';
 import './NodeLink.js';
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
+import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {eventRef} from './EventRef.js';
 import type * as NodeLink from './NodeLink.js';
-import type {TableData} from './Table.js';
+import type {TableData, TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
 
@@ -88,6 +91,36 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
     // clang-format on
   }
 
+  #renderLargeUpdatesTable(): Lit.LitTemplate|null {
+    if (!this.model || !this.model.largeUpdates.length) {
+      return null;
+    }
+
+    const rows: TableDataRow[] = this.model.largeUpdates.map(update => {
+      return {
+        values: [eventRef(update.event, {text: update.label}), i18n.TimeUtilities.millisToString(update.duration)],
+        overlays: [{
+          type: 'ENTRY_OUTLINE',
+          entry: update.event,
+          outlineReason: 'INFO',
+        }],
+      };
+    });
+
+    // clang-format off
+    return html`<div class="insight-section">
+      <div class="insight-description">${md(i18nString(UIStrings.topUpdatesDescription))}</div>
+      <devtools-performance-table
+        .data=${{
+          insight: this,
+          headers: ['', i18nString(UIStrings.duration)],
+          rows,
+        } as TableData}>
+      </devtools-performance-table>
+    </div>`;
+    // clang-format on
+  }
+
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;
@@ -113,6 +146,7 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
       </devtools-performance-table>
     </div>
     ${this.#renderNodeTable(domStatsData)}
+    ${this.#renderLargeUpdatesTable()}
     `;
     // clang-format on
   }

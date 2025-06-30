@@ -330,10 +330,6 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return [...this.#aggregatedIssuesByKey.values(), ...this.#hiddenAggregatedIssuesByKey.values()];
   }
 
-  hiddenAggregatedIssues(): Iterable<AggregatedIssue> {
-    return this.#hiddenAggregatedIssuesByKey.values();
-  }
-
   aggregatedIssueCodes(): Set<AggregationKey> {
     return new Set([...this.#aggregatedIssuesByKey.keys(), ...this.#hiddenAggregatedIssuesByKey.keys()]);
   }

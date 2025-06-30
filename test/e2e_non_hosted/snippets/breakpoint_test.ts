@@ -27,7 +27,7 @@ describe('Snippets subpane', () => {
     assert.deepEqual(await getOpenSources(devToolsPage), [snippetName]);
 
     await addBreakpointForLine(2, devToolsPage);
-    let decorators = await getBreakpointDecorators(false, devToolsPage);
+    let decorators = await getBreakpointDecorators(false, 1, devToolsPage);
     assert.deepEqual(decorators, [2]);
 
     await devToolsPage.click('[aria-label="Run snippet"]');
@@ -38,7 +38,7 @@ describe('Snippets subpane', () => {
     await executionLineHighlighted(devToolsPage);
 
     // The breakpoint is still visible
-    decorators = await getBreakpointDecorators(false, devToolsPage);
+    decorators = await getBreakpointDecorators(false, 1, devToolsPage);
     assert.deepEqual(decorators, [2]);
     assert.deepEqual(await getOpenSources(devToolsPage), [snippetName]);
 

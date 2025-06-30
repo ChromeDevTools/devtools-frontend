@@ -366,7 +366,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
         }
         break;
       case 'Escape':
-        if (this.isSuggestBoxVisible()) {
+        if (this.isSuggestBoxVisible() || this.currentSuggestion) {
           this.clearAutocomplete();
           handled = true;
         }
@@ -470,6 +470,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     if (beforeText !== this.textWithCurrentSuggestion()) {
       this.dispatchEventToListeners(Events.TEXT_CHANGED);
     }
+    this.currentSuggestion = null;
   }
 
   private onBlur(): void {

@@ -6,8 +6,7 @@
 
 2. Add respective entries to `.gni` files.
    - Update the `devtools_image_files` list in `config/gni/devtools_image_files.gni`.
-   - Update the `grd_files_release_sources` list in `config/gni/devtools_grd_files.gni`.
+   - Update the `grd_files_bundled_sources` list in `config/gni/devtools_grd_files.gni`.
 
 3. Use Icon component in the DevTools front-end:
    - Visit https://docs.google.com/document/d/1EA--IokG6YW51y7unS8dIKUx6EtyjETT0uglmvIpfsg for more information on that.
-

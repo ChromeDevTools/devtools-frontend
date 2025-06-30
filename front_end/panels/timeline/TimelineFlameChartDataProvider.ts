@@ -50,6 +50,7 @@ import {
   selectionsEqual,
   type TimelineSelection,
 } from './TimelineSelection.js';
+import {buildPersistedConfig, keyForTraceConfig} from './TrackConfiguration.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -146,6 +147,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * have to recalculate. This is reset when the trace changes.
    */
   #initiatorsCache = new Map<number, PerfUI.FlameChart.FlameChartInitiatorData[]>();
+  #persistedGroupConfigSetting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>|null = null;
 
   constructor() {
     super();
@@ -186,6 +188,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     Common.Settings.Settings.instance()
         .moduleSetting('skip-anonymous-scripts')
         .addChangeListener(this.#onIgnoreListChanged.bind(this));
+  }
+
+  handleTrackConfigurationChange(groups: readonly PerfUI.FlameChart.Group[], indexesInVisualOrder: number[]): void {
+    if (!this.#persistedGroupConfigSetting) {
+      return;
+    }
+    if (!this.parsedTrace) {
+      return;
+    }
+    const persistedDataForTrace = buildPersistedConfig(groups, indexesInVisualOrder);
+    const traceKey = keyForTraceConfig(this.parsedTrace);
+
+    const setting = this.#persistedGroupConfigSetting.get();
+    setting[traceKey] = persistedDataForTrace;
+    this.#persistedGroupConfigSetting.set(setting);
+  }
+
+  setPersistedGroupConfigSetting(setting: Common.Settings.Setting<PerfUI.FlameChart.PersistedConfigPerTrace>): void {
+    this.#persistedGroupConfigSetting = setting;
   }
 
   hasTrackConfigurationMode(): boolean {
@@ -331,23 +352,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #onIgnoreListChanged(): void {
     this.timelineData(/* rebuild= */ true);
     this.dispatchEventToListeners(Events.DATA_CHANGED);
-  }
-
-  entryHasAnnotations(entryIndex: number): boolean {
-    const event = this.eventByIndex(entryIndex);
-    if (!event) {
-      return false;
-    }
-    const annotations = ModificationsManager.activeManager()?.annotationsForEntry(event);
-    return annotations ? annotations.length > 0 : false;
-  }
-
-  deleteAnnotationsForEntry(entryIndex: number): void {
-    const event = this.eventByIndex(entryIndex);
-    if (!event) {
-      return;
-    }
-    ModificationsManager.activeManager()?.deleteEntryAnnotations(event);
   }
 
   modifyTree(action: PerfUI.FlameChart.FilterAction, entryIndex: number): void {
@@ -538,6 +542,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           threadAppender => threadAppender.setHeaderAppended(false));
     }
   }
+
   /**
    * Reset all data other than the UI elements.
    * This should be called when
@@ -1212,7 +1217,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // If the index is -1 and the selection is a TraceEvent, it might be
     // the case that this Entry is hidden by the Context Menu action.
     // Try revealing the entry and getting the index again.
-    if (index > -1) {
+    if (index === -1) {
       if (this.timelineDataInternal?.selectedGroup) {
         ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(selection.event);
         this.timelineData(true);

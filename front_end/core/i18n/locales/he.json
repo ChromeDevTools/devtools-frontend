@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "אין לבצע אמולציה של סוג מדיה של CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "לא ליצור אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "אין להאריך קווי רשת"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "אמולציה של עיוורון לירוק (ללא ירוק)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "אמולציה של קנה המידה של הטקסט במערכת ההפעלה"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "אמולציה של עיוורון לאדום (ללא אדום)"
@@ -732,6 +738,30 @@
     "message": "חסימה של בקשות רשת"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "ללא אמולציה"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "‫100% (ברירת מחדל)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "ללא אמולציה"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "מאלצת סוג מדיה לצורך בדיקת סגנונות של הדפסה ומסך"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "אילוץ אמולציה של קנה מידה לטקסט במערכת ההפעלה"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "מאלצת אמולציה של לקות ראייה"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "החלפת המצב של חלונית ההזזה"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "הפעלה או השבתה של כיוון חלונית ההזזה"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "ביטול ההצמדה ופתיחת חלון נפרד"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "בקשות למשאבים שכתובות ה-URL שלהן מכילות גם תווי \\(n|r|t) של רווח לבן מחוק וגם תווי 'פחות מ-' (<) חסומות. כדי לטעון את המשאבים האלה, יש להסיר תווי 'פחות מ-' מקודדים ושורות חדשות ממקומות כמו ערכי מאפיינים של רכיבים."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "הזיהוי האוטומטי של מערכת התווים ISO-2022-JP הוצא משימוש, והוא יושבת בקרוב. צריך לפרט את מערכת התווים בכותרת \"סוג תוכן\" או באמצעות מטא תג (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "האפשרות chrome.loadTimes() הוצאה משימוש. במקומה יש להשתמש ב-API הסטנדרטי: תזמון ניווט 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit נכשל: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "נתוני השדה מוגדרים לכתובת URL שונה מזו של הדף הנוכחי."
+    "message": "כתובת ה-URL של המדדים מהשטח שונה מזו של הדף הנוכחי."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "יש להזין מספר בשדה של יחס הפיקסלים במכשיר, או להשאיר אותו ריק."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "שמירה בשם…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "הניסיון לשמור את הקובץ בדיסק נכשל."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "שמירת תמונה"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "הגורמים המובילים לשינוי הפריסה"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "תמונות ללא גודל"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "האשכול הגרוע ביותר"
@@ -1839,7 +1875,7 @@
     "message": "היו הפניות אוטומטיות ({PH1} הפניות אוטומטיות, ‎+{PH2}‎)"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "השרת הגיב באיטיות ({PH1} נצפו) "
+    "message": "השרת הגיב באיטיות (הערך שנמדד הוא {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "לא הוחלה דחיסת נתונים"
@@ -1848,7 +1884,7 @@
     "message": "בקשת המסמך לא מבצעת הפניות לכתובות אחרות"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "השרת מגיב במהירות ({PH1} נצפו) "
+    "message": "השרת מגיב במהירות (הערך שנמדד הוא {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "החלת דחיסת טקסט"
@@ -2070,7 +2106,7 @@
     "message": "[כדאי להימנע משרשראות של בקשות קריטיות](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains). מומלץ לקצר את השרשראות, להקטין את גודל ההורדה של משאבים או לעכב את ההורדה של משאבים לא נחוצים כדי לשפר את מהירות טעינת הדף."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "אפשר להוסיף רמזים [לקישורים מקדימים](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) למקורות החשובים ביותר, אבל כדאי להשתמש בפחות מ-4."
+    "message": "אפשר להוסיף רמזים [לקישורים מקדימים](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) למקורות החשובים ביותר, אבל כדאי להשתמש ב-4 רמזים לכל היותר."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "מקורות מתאימים לקישור מקדים"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "יכול להיות שאינטראקציות של לחיצה [יעוכבו בעד 300 אלפיות השנייה](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) אם אזור התצוגה לא עבר אופטימיזציה לנייד."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "עיכוב בלחיצה על הנייד"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "אופטימיזציה של אזור התצוגה לנייד"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "כדי להשתמש בתכונה הזו, צריך להגדיר את העדפת השפה לאנגלית בהגדרות של כלי הפיתוח."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "אפשר גם להשתמש באחת מההנחיות המוצעות למעלה כדי להתחיל את השיחה"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "מידע נוסף על AI בכלי הפיתוח"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "כיווץ"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "להסיר את מאגר האובייקטים של \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "למחוק את מסד הנתונים \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "מפתח"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "הנתונים שכלולים במאגר האובייקטים שנבחר יוסרו."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "מאגרי אובייקטים"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "המערכת זיהתה שהמסגרת הזו היא מסגרת ברמה בסיסית של מודעה"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "כלל של רשימת המסננים של סקריפט השורש"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "הקשר מאובטח"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ממפת המקור)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "בכרטיסיית השינויים לא מוצגים שינויים בנתונים הבינאריים"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "בדף הזה אפשר לעקוב אחרי שינויים בקוד שבוצעו בכלי הפיתוח."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "העתקה"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "אין עדיין שינויים"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "אין הבדלים זמינים בטקסט"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{פעולת מחיקה אחת (-)}one{# פעולות מחיקה (-)}two{# פעולות מחיקה (-)}other{# פעולות מחיקה (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{הוספה אחת (+)}one{# הוספות (+)}two{# הוספות (+)}other{# הוספות (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "בוצעה העתקה ללוח"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "שינויים"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "העתקת כל השינויים מהקובץ הנוכחי"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "ביטול כל השינויים כדי לחזור לקובץ הנוכחי"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "הצגת הכלי 'שינויים'"
@@ -5715,7 +5745,7 @@
     "message": "הצגת הודעות מההקשר הנוכחי בלבד (top, iframe, worker, תוסף)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "בוטלה על ידי סרגל הצד של המסנן"
+    "message": "אפשר לשלוט על הרישום ביומן באמצעות סרגל הצד של המסוף."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "שמירת יומן הרישום"
@@ -6612,16 +6642,16 @@
     "message": "גלילה עד שהתוכן יהיה גלוי לעין"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "הצגת פקודה ליעד"
+    "message": "הצגת הרכיב שמשויך למאפיין commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "הצגת הפרטים של iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "הצגת טירגוט לפי תחומי עניין"
+    "message": "הצגת הרכיב שמשויך למאפיין interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "הצגת היעד של החלון הקופץ"
+    "message": "הצגת הרכיב שמשויך למאפיין popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "המסגרת זוהתה כמסגרת של מודעה"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "גיליון סגנונות שנוצר"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "העתקה של כל שינויי ה-CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "העתקת כל ההצהרות (declarations)"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "דרך הכלי לבדיקה"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "העתקה של כל שינויי ה-CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "העתקת כל ההצהרות כ-JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "נגישות"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "החלת אמולציה למחשב במהלך הביקורת"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "החלת אמולציה בניידים"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "סידור מחדש של מנות"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "אחוז"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "שם פרופיל"
   },
@@ -8802,7 +8826,7 @@
     "message": "יש להזין סוכן משתמש בהתאמה אישית"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "תנאי הרשת מוצגים"
+    "message": "תנאי הרשת מוצגים."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "הגבלת רוחב פס"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "שטח כתובות מרוחקות"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "כותרות הבקשה"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "כותרות תגובה"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "שמירה בשם…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "הניסיון לשמור את הקובץ בדיסק נכשל."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "יש לבחור תיקייה לשינויים מברירת המחדל"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "רענון של ביטויי מעקב"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "ביטוי השעון נמחק"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "הגעה לנקודת עצירה (breakpoint): {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "פרטים"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "מידות"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "משך"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "מידע נוסף"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "מיקום"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "הודעה"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "(צאצאים) {PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "(נאספו: {PH1})"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "‫{PH1} מתוך {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "כדי לאסוף נתונים סטטיסטיים מפורטים לגבי התאמות של סלקטור ב-CSS, בוחרים באפשרות '{PH1}'."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (עצמי)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "סקריפט"
@@ -14682,19 +14694,19 @@
     "message": "הגדרה"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "הגדרת אחזור של נתוני השדות"
+    "message": "הגדרת האחזור של המדדים מהשטח"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "הדוח על חוויית המשתמש ב-Chrome‏ (CrUX) לא מכיל מספיק נתוני מהירות בפועל לדף הזה."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "שליפה של נתוני שטח מצטברים מ{PH1} כדי להציג מדידות מקומיות בהקשר של החוויה של משתמשים אמיתיים באתר."
+    "message": "שליפה של מדדי שטח מצטברים מה{PH1} כדי להציג מדידות מקומיות בהקשר של החוויה של משתמשים אמיתיים באתר."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "הכתובת \"{PH1}\" היא לא כתובת URL או מקור תקינים."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "אפשר להגדיר מקור פיתוח כדי לקבל באופן אוטומטי נתונים רלוונטיים מהשטח של מקור הייצור."
+    "message": "אפשר להגדיר מקור פיתוח כדי לקבל באופן אוטומטי מדדים רלוונטיים מהשטח של מקור הייצור."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "חדש"
@@ -14703,7 +14715,7 @@
     "message": "אישור"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "יש להציג תמיד נתונים מהשטח לגבי כתובת ה-URL הבאה"
+    "message": "צריך להציג תמיד נתונים מהשטח לגבי כתובת ה-URL הבאה"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ביטול ההסכמה"
@@ -14718,7 +14730,7 @@
     "message": "כתובת URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "כשכלי הפיתוח פתוחים, כתובות ה-URL שמבקרים בהן יישלחו אל Google לביצוע שאילתות על נתוני השדות. הבקשות האלה לא משויכות לחשבון שלך ב-Google."
+    "message": "כשכלי הפיתוח פתוחים, כתובות ה-URL שמבקרים בהן יישלחו אל Google לביצוע שאילתות על המדדים מהשטח. הבקשות האלה לא משויכות לחשבון שלך ב-Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "הוספת כלל של ביטוי רגולרי לכתובת ה-URL של הסקריפט"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "קטע של יומני אינטראקציה ושינוי פריסה"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "נתוני השדה"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "מדדים מהשטח"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "מהירות התגובה לאינטראקציה באתר (INP) מחושבת על סמך האחוזון ה-98 של עיכובים באינטראקציה."
@@ -14856,10 +14868,10 @@
     "message": "מדדים מקומיים ומדדים בשטח"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "מידע נוסף על נתונים מקומיים ונתוני שדה"
+    "message": "מידע נוסף על מדדים מקומיים ומדדים מהשטח"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "המדדים המקומיים מתועדים מהדף הנוכחי באמצעות החיבור לרשת והמכשיר. נתוני השטח נמדדים על ידי משתמשים אמיתיים שמשתמשים בהרבה חיבורי רשת ומכשירים שונים."
+    "message": "המדדים המקומיים מתועדים מהדף הנוכחי באמצעות החיבור לרשת והמכשיר. מדדי השטח נמדדים על ידי משתמשים אמיתיים שמשתמשים בהרבה חיבורי רשת ומכשירים שונים."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "מדדים מקומיים"
@@ -14922,10 +14934,10 @@
     "message": "מעבר לאשכול שינוי הפריסה הגרוע ביותר."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "הצגת נתונים מהשטח לפי סוג המכשיר: {PH1}"
+    "message": "הצגת המדדים מהשטח לפי סוג המכשיר: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "הצגת נתונים מהשטח של {PH1}"
+    "message": "הצגת המדדים מהשטח לגבי {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "מעבר אל INP (מהירות התגובה לאינטראקציה באתר)."
@@ -15033,13 +15045,13 @@
     "message": "האיכות של ערך {PH2} המקומי של {PH1} היא טובה, והיא טובה משמעותית מחוויית המשתמשים שלך."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא טובה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. בנוסף, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} הוא טוב."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה טובה והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. בנוסף, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה טובה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא טובה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} טעון שיפור."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה טובה והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. עם זאת, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה שצריך לשפר."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא טובה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} גרוע."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה טובה והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. עם זאת, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה גרועה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "האיכות של ערך {PH2} המקומי של {PH1} טובה, והיא זהה לחוויית המשתמשים שלך."
@@ -15054,13 +15066,13 @@
     "message": "האיכות של ערך {PH1} המקומי שלך של {PH2} טעונה שיפור, אבל היא טובה משמעותית מחוויית המשתמשים שלך."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "האיכות של ערך {PH1} המקומי של {PH2} טעונה שיפור ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} הוא טוב."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה שצריך לשפר, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. עם זאת, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה טובה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "האיכות של ערך {PH1} המקומי של {PH2} טעונה שיפור ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. בנוסף, צריך לשפר את נתוני השטח באחוזון ה-75 {PH1}, כשהערך {PH3} צריך שיפור."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה שצריך לשפר, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. בנוסף, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה שצריך לשפר."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "האיכות של ערך {PH1} המקומי של {PH2} טעונה שיפור ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} גרוע."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה שצריך לשפר, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. בנוסף, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה גרועה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "האיכות של ערך {PH2} המקומי של {PH1} טעונה שיפור, והיא זהה לחוויית המשתמשים שלך."
@@ -15075,13 +15087,13 @@
     "message": "האיכות של ערך {PH2} המקומי של {PH1} גרועה, אבל היא טובה משמעותית מחוויית המשתמשים שלך."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא גרועה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} הוא טוב."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה גרועה, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. עם זאת, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה טובה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא גרועה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. עם זאת, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} טעון שיפור."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה גרועה, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. בנוסף, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה שצריך לשפר."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "האיכות של ערך {PH2} המקומי של {PH1} היא גרועה, ובעלת דירוג זהה ל-{PH4} מהחוויות של משתמשים אמיתיים ב-{PH1}. בנוסף, הערך של נתוני השטח באחוזון ה-75 {PH1} של {PH3} גרוע."
+    "message": "ערך {PH1} המקומי הוא {PH2}: זו תוצאה גרועה, והיא דומה ל-{PH1} אצל {PH4} מהמשתמשים האמיתיים. בנוסף, המדדים מהשטח מצביעים על ערך {PH1} של {PH3} באחוזון ה-75, וזו תוצאה גרועה."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "האיכות של ערך {PH2} המקומי של {PH1} גרועה, והיא זהה לחוויית המשתמשים שלך."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "החלפת השפה של כלי הפיתוח ל{PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "הפעלה או השבתה של כיוון חלונית ההזזה"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "הוספה"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "צילומי מסך עבור {PH1} – יש לבחור כדי לצפות בבקשות הקודמות."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "מחיקת ההערות"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "הגדרת מסלולים"

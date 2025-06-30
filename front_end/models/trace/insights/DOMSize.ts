@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
@@ -49,6 +50,25 @@ export const UIStrings = {
    * @description Label for a value representing the maximum number of child elements of any parent element on the page.
    */
   maxChildren: 'Most children',
+  /**
+   * @description Text for a section.
+   */
+  topUpdatesDescription:
+      'These are the largest layout and style recalculation events. Their performance impact may be reduced by making the DOM simpler.',
+  /**
+   *@description Label used for a time duration.
+   */
+  duration: 'Duration',
+  /**
+   * @description Message displayed in a table detailing how big a layout (rendering) is.
+   * @example {134} PH1
+   */
+  largeLayout: 'Layout ({PH1} objects)',
+  /**
+   * @description Message displayed in a table detailing how big a style recalculation (rendering) is.
+   * @example {134} PH1
+   */
+  largeStyleRecalc: 'Style recalculation ({PH1} elements)',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DOMSize.ts', UIStrings);
@@ -65,6 +85,8 @@ const STYLE_RECALC_ELEMENTS_THRESHOLD = 300;
 export type DOMSizeInsightModel = InsightModel<typeof UIStrings, {
   largeLayoutUpdates: Types.Events.Layout[],
   largeStyleRecalcs: Types.Events.UpdateLayoutTree[],
+  largeUpdates: Array<
+      {label: Common.UIString.LocalizedString, duration: Types.Timing.Milli, size: number, event: Types.Events.Event}>,
   maxDOMStats?: Types.Events.DOMStats,
 }>;
 
@@ -76,7 +98,7 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    state: relatedEvents.length > 0 ? 'fail' : 'pass',
+    state: relatedEvents.length > 0 ? 'informative' : 'pass',
     ...partialModel,
     relatedEvents,
   };
@@ -148,6 +170,21 @@ export function generateInsight(
     }
   }
 
+  const largeUpdates: DOMSizeInsightModel['largeUpdates'] = [
+    ...largeLayoutUpdates.map(event => {
+      const duration = (event.dur / 1000) as Types.Timing.Milli;
+      const size = event.args.beginData.dirtyObjects;
+      const label = i18nString(UIStrings.largeLayout, {PH1: size});
+      return {label, duration, size, event};
+    }),
+    ...largeStyleRecalcs.map(event => {
+      const duration = (event.dur / 1000) as Types.Timing.Milli;
+      const size = event.args.elementCount;
+      const label = i18nString(UIStrings.largeStyleRecalc, {PH1: size});
+      return {label, duration, size, event};
+    }),
+  ].sort((a, b) => b.duration - a.duration).slice(0, 5);
+
   const domStatsEvents = parsedTrace.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
   let maxDOMStats: Types.Events.DOMStats|undefined;
   for (const domStats of domStatsEvents) {
@@ -167,6 +204,7 @@ export function generateInsight(
   return finalize({
     largeLayoutUpdates,
     largeStyleRecalcs,
+    largeUpdates,
     maxDOMStats,
   });
 }

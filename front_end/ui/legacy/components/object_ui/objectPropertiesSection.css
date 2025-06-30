@@ -13,12 +13,14 @@
   color: var(--sys-color-on-surface);
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
 }
 
 .object-properties-section li {
   user-select: text;
 
   &::before {
+    flex-shrink: 0;
     margin-right: 2px;
   }
 }
@@ -60,7 +62,6 @@
 }
 
 .name-and-value {
-  overflow: hidden;
   line-height: 16px;
   display: flex;
   white-space: nowrap;

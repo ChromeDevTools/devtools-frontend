@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
@@ -177,16 +178,20 @@ export class ConsolePin {
   private committedExpression: string;
   private hovered: boolean;
   private lastNode: SDK.RemoteObject.RemoteObject|null;
-  private deletePinIcon: UI.UIUtils.DevToolsCloseButton;
+  private deletePinIcon: Buttons.Button.Button;
 
   constructor(expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void) {
-    this.deletePinIcon = document.createElement('dt-close-button');
+    this.deletePinIcon = new Buttons.Button.Button();
+    this.deletePinIcon
+        .data = {variant: Buttons.Button.Variant.ICON, iconName: 'cross', size: Buttons.Button.Size.MICRO};
     this.deletePinIcon.classList.add('close-button');
-    this.deletePinIcon.setTabbable(true);
+    this.deletePinIcon.setAttribute('jslog', `${VisualLogging.close().track({click: true})}`);
+    this.deletePinIcon.tabIndex = 0;
+
     if (expression.length) {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
+      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: expression}));
     } else {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
+      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
     }
     self.onInvokeElement(this.deletePinIcon, event => {
       pinPane.removePin(this);
@@ -281,7 +286,8 @@ export class ConsolePin {
             }
             // User should be able to tab out of edit field after auto complete is done
             view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
-            this.focusOut();
+            this.editor.blur();
+            this.deletePinIcon.focus();
             return true;
           },
         },
@@ -305,9 +311,10 @@ export class ConsolePin {
     this.committedExpression = trimmedText;
     this.pinPane.savePins();
     if (this.committedExpression.length) {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
+      UI.ARIAUtils.setLabel(
+          this.deletePinIcon, i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
     } else {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
+      UI.ARIAUtils.setLabel(this.deletePinIcon, i18nString(UIStrings.removeBlankExpression));
     }
     editor.dispatch({
       selection: {anchor: trimmedText.length},

@@ -14,9 +14,9 @@ import * as FontDisplay from './FontDisplay.js';
 import * as ForcedReflow from './ForcedReflow.js';
 import * as Helpers from './Helpers.js';
 import * as ImageDelivery from './ImageDelivery.js';
-import * as InteractionToNextPaint from './InteractionToNextPaint.js';
+import * as INPBreakdown from './INPBreakdown.js';
+import * as LCPBreakdown from './LCPBreakdown.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
-import * as LCPPhases from './LCPPhases.js';
 import * as LegacyJavaScript from './LegacyJavaScript.js';
 import * as ModernHTTP from './ModernHTTP.js';
 import * as NetworkDependencyTree from './NetworkDependencyTree.js';
@@ -42,9 +42,9 @@ export {
   ForcedReflow,
   Helpers,
   ImageDelivery,
-  InteractionToNextPaint,
+  INPBreakdown,
+  LCPBreakdown,
   LCPDiscovery,
-  LCPPhases,
   LegacyJavaScript,
   ModernHTTP,
   NetworkDependencyTree,

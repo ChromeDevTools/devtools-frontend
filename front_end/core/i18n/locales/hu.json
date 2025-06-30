@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Ne emuláljon CSS-médiatípust"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Ne emulálja az operációs rendszer szövegméretezését"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Ne legyenek kiterjesztve a rácsvonalak"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Deuteranópia emulálása (nincs zöld)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Operációs rendszer szövegméretének emulálása"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Protanópia emulálása (nincs piros)"
@@ -732,6 +738,30 @@
     "message": "Hálózati kérés letiltása"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Emuláció nélkül"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (alapértelmezett)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Emuláció nélkül"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Médiatípus kényszerítése nyomtatási és képernyőstílusok tesztelésére"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Operációs rendszer szövegméretezési emulációjának kényszerítése"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Látászavar emulálásának kényszerítése"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Fiók be-/kikapcsolása"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Fióktájolás váltása"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Dokkolás feloldása külön ablakban"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Le vannak tiltva azok az erőforráskérések, amelyek esetében az URL-ek eltávolított \\(n|r|t) térközkaraktereket és kisebb mint karaktereket (<) is tartalmaznak. Az ilyen erőforrások betöltése érdekében távolítsa el az „új sor” jelöléseket, és kódolja a kisebb mint karaktereket az olyan helyeken, mint az elemek attribútumértékei."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Az ISO-2022-JP karakterkészlet automatikus észlelése elavult, és a közeljövőben letiltásra kerül. Adja meg a karakterkészletet a Tartalomtípus fejlécben vagy egy metacímke használatával (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Az chrome.loadTimes() függvényt megszüntettük. Használja helyette a szabványosított Navigation Timing 2 API-t."
@@ -1437,7 +1470,7 @@
     "message": "A(z) LiveEdit nem sikerült: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "A mezőadatok az aktuális oldaltól eltérő URL-re vannak konfigurálva."
+    "message": "A mezőmutatók az aktuális oldaltól eltérő URL-re vannak konfigurálva."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Az eszköz képpontarányának számnak vagy üres mezőnek kell lennie."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Mentés másként…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Nem sikerült menteni a fájlt a lemezre."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Kép mentése"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Az elrendezésmozgás legfontosabb okai"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Nem méretezett képek"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Legrosszabb klaszter"
@@ -1839,7 +1875,7 @@
     "message": "Voltak átirányítások ({PH1} átirányítás, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "A szerver lassan válaszolt ({PH1} észlelve) "
+    "message": "A szerver lassan válaszolt ({PH1} észlelve)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Nincs alkalmazva tömörítés"
@@ -1848,7 +1884,7 @@
     "message": "Elkerüli az átirányításokat"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "A szerver gyorsan válaszol ({PH1} észlelve) "
+    "message": "A szerver gyorsan válaszol ({PH1} észlelve)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Szövegtömörítés alkalmazva"
@@ -2070,7 +2106,7 @@
     "message": "[Kerülje a kritikus kérések láncba fűzését](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) a láncok hosszának csökkentésével, a letöltött források méretének csökkentésével, vagy a felesleges források letöltésének késleltetésével, hogy javuljon az oldalbetöltés."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Adjon meg [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) tippeket a legfontosabb eredethelyekhez, de próbáljon meg négynél kevesebbet használni."
+    "message": "Adjon meg [preconnect](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) tippeket a legfontosabb eredethelyekhez, de próbáljon meg négynél többet használni."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Előzetes kapcsolódás jelöltjei"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Ha a megjelenítési terület nincs optimalizálva mobilra, akkor a koppintási műveleteknél [akár 300 ms késés is jelentkezhet](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Mobilos koppintás késleltetése"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "A megjelenítési terület mobilra való optimalizálása"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "A funkció használatához állítsa angolra a DevTools beállításaiban található nyelvi beállításokat."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "A fenti javasolt utasítások egyikét is használhatja a beszélgetés megkezdéséhez"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "További információ a DevToolsban használható AI-ról"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Összecsukás"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Törli a(z) „{PH1}” objektumtárat?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Törli a(z) „{PH1}” adatbázist?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Kulcs"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "A kiválasztott objektumtárban tárolt adatokat a rendszer eltávolítja."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektumtárhelyek"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "A keret egy hirdetés gyökérkereteként azonosítva"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Gyökérszkript szűrőlistaszabálya"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Biztonságos környezet"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (forrás-hozzárendelésből)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "A Módosítások lapon nem jelennek meg a bináris adatok módosításai"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Ezen az oldalon nyomon követheti a DevToolsban végzett kódmódosításokat."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Másolás"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Még nincsenek módosítások"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Nem áll rendelkezésre szöveges különbség"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# törlés (-)}other{# törlés (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# beszúrás (+)}other{# beszúrás (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Vágólapra másolva"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Módosítások"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Az összes módosítás másolása a jelenlegi fájlból"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Minden módosítás visszaállítása az aktuális fájlba"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Módosítások megjelenítése"
@@ -5715,7 +5745,7 @@
     "message": "Csak az aktuális kontextusból mutasson üzeneteket (top, iframe, worker, bővítmény)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Szűrő oldalsáv által felülírva"
+    "message": "A naplószinteket a konzol oldalsávja szabályozza."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Napló megőrzése"
@@ -6612,16 +6642,16 @@
     "message": "Görgetés a megjelenítési területre"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "A commandfor attribútum céljának megjelenítése"
+    "message": "A(z) commandfor attribútumhoz társított elem megjelenítése"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "A(z) iframe részleteinek megjelenítése"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Érdeklődési cél megjelenítése"
+    "message": "A(z) interesttarget attribútumhoz társított elem megjelenítése"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Előugró ablak céljának megjelenítése"
+    "message": "A(z) popovertarget attribútumhoz társított elem megjelenítése"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Ez a keret hirdetéskeretként lett azonosítva"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "szerkesztett stíluslap"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Összes CSS-módosítás másolása"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Az összes deklaráció másolása"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "a vizsgálón keresztül"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Összes CSS-módosítás másolása"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Az összes deklaráció másolása JavaScriptként"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Kisegítő lehetőségek"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Asztali emuláció alkalmazása auditálás során"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Mobilemuláció alkalmazása"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Csomagok átrendezése"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "százalék"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profil neve"
   },
@@ -8802,7 +8826,7 @@
     "message": "Adjon meg egy egyéni felhasználói ügynököt"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "A hálózati állapotok láthatók"
+    "message": "A hálózati állapotok láthatók."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Sávszélesség-korlátozás"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Távoli címtér"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Kérelem fejlécei"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Válaszfejlécek"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Mentés másként…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Nem sikerült menteni a fájlt a lemezre."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Válasszon mappát a felülírásokhoz"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Figyelendő kifejezések frissítése"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Figyelendő kifejezés törölve"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} törésponttalálat"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Részletek"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Méretek"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Időtartam"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "További információ"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Hely"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Üzenet"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (alárendelt)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} begyűjtve"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}/{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Válassza a(z) „{PH1}” lehetőséget a részletes CSS-választóval egyező statisztikák gyűjtéséhez."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (saját)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Szkript"
@@ -14682,19 +14694,19 @@
     "message": "Konfigurálás"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Mezőadatok lekérésének konfigurálása"
+    "message": "Mezőmutatók lekérésének konfigurálása"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "A Chrome UX Report nem rendelkezik elegendő valós sebességadattal erre az oldalra vonatkozóan."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Lekérheti az összesített mezőadatokat innen: {PH1}, így a helyi méréseket a webhelyen a valódi felhasználók által tapasztalt élménnyel is kontextusba helyezheti."
+    "message": "Lekérheti az összesített mezőmutatókat innen: {PH1}, így a helyi méréseket a webhelyen a valódi felhasználók által tapasztalt élménnyel is kontextusba helyezheti."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "A(z) „{PH1}” nem érvényes forrás vagy URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Beállíthat egy fejlesztési eredetet, hogy automatikusan megkapja a releváns mezőadatokat a hozzá tartozó éles verzió eredetéhez."
+    "message": "Beállíthat egy fejlesztési eredetet, hogy automatikusan megkapja a releváns mezőmutatókat a hozzá tartozó éles verzió eredetéhez."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Új"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Mindig mutassa az alábbi URL mezőadatait"
+    "message": "Mindig mutassa az alábbi URL mezőmutatóit"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Leiratkozás"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Ha a DevTools meg van nyitva, a böngésző elküldi a felkeresett URL-eket a Google-nak a mezőadatok lekérdezése céljából. Ezek a kérelmek nincsenek összekapcsolva az Ön Google-fiókjával."
+    "message": "Ha a DevTools meg van nyitva, a böngésző elküldi a felkeresett URL-eket a Google-nak a mezőmutatók lekérdezése céljából. Ezek a kérelmek nincsenek összekapcsolva az Ön Google-fiókjával."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Adjon meg egy reguláriskifejezés-szabályt a szkript URL-jéhez"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Az interakciós és elrendezésmozgás-napló szakasza"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Mezőadatok"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Mezőmutatók"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Az INP-interakció az interakciókésések 98. percentilise."
@@ -14856,10 +14868,10 @@
     "message": "Helyi és mezőmutatók"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "További információ a helyi és a valós adatokról"
+    "message": "További információ a helyi és a valós mutatókról"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "A helyi mutatók az aktuális oldalról lettek rögzítve a saját hálózati kapcsolat és eszköz használatával. A valós adatok mérésére számos különböző hálózati kapcsolatot és eszközt használó valódi felhasználók alapján kerül sor."
+    "message": "A helyi mutatók az aktuális oldalról lettek rögzítve a saját hálózati kapcsolat és eszköz használatával. A mezőmutatók mérését valódi felhasználók végzik számos különböző hálózati kapcsolat és eszköz használatával."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Helyi mutatók"
@@ -14922,10 +14934,10 @@
     "message": "Ugrás a legrosszabb elrendezésmozgási klaszterhez."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Eszköztípushoz tartozó mezőadatok megjelenítése: {PH1}"
+    "message": "Eszköztípushoz tartozó mezőmutatók megjelenítése: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} mezőadatainak megjelenítése"
+    "message": "{PH1} mezőmutatóinak megjelenítése"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Ugrás az INP-interakcióra."
@@ -15033,13 +15045,13 @@
     "message": "A helyi {PH1} értéke ({PH2}) jó, és jelentősen jobb, mint a felhasználói élmény."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. Ezenkívül a mezőadatok 75. percentilisének {PH1} értéke ({PH3}) jó."
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. Ezenkívül a mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) jó."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban javításra szorul."
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban javításra szorul."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban gyenge."
+    "message": "A helyi {PH1} értéke ({PH2}) jó, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban gyenge."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "A helyi {PH1} értéke ({PH2}) jó, és hasonló a felhasználói élményéhez."
@@ -15054,13 +15066,13 @@
     "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, de jelentősen jobb, mint a felhasználói élmény."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban jó."
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban jó."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. Ezenkívül a mezőadatok 75. percentilisének {PH1} értéke ({PH3}) javításra szorul."
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. Ezenkívül a mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) javításra szorul."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban gyenge."
+    "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, az értékelése pedig a valós felhasználói {PH1} élmény {PH4}-ával egyezik meg. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban gyenge."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "A helyi {PH1} értéke ({PH2}) javításra szorul, és hasonló a felhasználói élményéhez."
@@ -15075,13 +15087,13 @@
     "message": "A helyi {PH1} értéke ({PH2}) gyenge, de jelentősen jobb, mint a felhasználói élmény."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban jó."
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban jó."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőadatok 75. percentilisének {PH1} értéke ({PH3}) azonban javításra szorul."
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. A mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) azonban javításra szorul."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. Ezenkívül a mezőadatok 75. percentilisének {PH1} értéke ({PH3}) gyenge."
+    "message": "A helyi {PH1} értéke ({PH2}) gyenge, az értékelése pedig megegyezik a valós felhasználói {PH1} élmény {PH4}-ával. Ezenkívül a mezőmutatók 75. percentilisének {PH1} értéke ({PH3}) gyenge."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "A helyi {PH1} értéke ({PH2}) gyenge, és hasonló a felhasználói élményéhez."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools váltása erre: {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Fióktájolás váltása"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Hozzáadás"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Képernyőkép ({PH1}) – válassza ki a megelőző kérések megjelenítéséhez."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Annotációk törlése"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Csatornák konfigurálása"

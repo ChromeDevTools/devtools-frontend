@@ -33,3 +33,8 @@ span.ax-internal-role {
 .source-order-checkbox {
   margin: 2px 2px 2px 5px;
 }
+
+.info-message-overflow {
+  overflow-x: hidden;
+  white-space: normal;
+}

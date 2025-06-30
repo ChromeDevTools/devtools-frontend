@@ -5,6 +5,8 @@ declare var Q: {
         _componentCache: Map<any, any>;
         rootEl: any;
         _swappableSections: WeakMap<object, any>;
+        _onSwap: () => void;
+        _onSwapHook: () => void;
         createElement(e: any, t: any): any;
         createElementNS(e: any, t: any, n: any): any;
         createSVGElement(e: any, t: any): any;
@@ -86,6 +88,7 @@ declare var ne: {
             highlightEl: any;
             _updateStickyHeader(): void;
         };
+        _tablesHandledFor3p: WeakSet<object>;
         onMediaQueryChange(e: any): void;
         initFeatures(e: any): void;
         json: any;

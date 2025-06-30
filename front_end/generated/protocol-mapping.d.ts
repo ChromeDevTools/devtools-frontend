@@ -585,6 +585,7 @@ export namespace ProtocolMapping {
     'Storage.attributionReportingSourceRegistered': [Protocol.Storage.AttributionReportingSourceRegisteredEvent];
     'Storage.attributionReportingTriggerRegistered': [Protocol.Storage.AttributionReportingTriggerRegisteredEvent];
     'Storage.attributionReportingReportSent': [Protocol.Storage.AttributionReportingReportSentEvent];
+    'Storage.attributionReportingVerboseDebugReportSent': [Protocol.Storage.AttributionReportingVerboseDebugReportSentEvent];
     /**
      * Issued when attached to target because of auto-attach or `attachToTarget` command.
      */
@@ -4710,15 +4711,30 @@ export namespace ProtocolMapping {
       returnType: Protocol.PWA.GetOsAppStateResponse;
     };
     /**
-     * Installs the given manifest identity, optionally using the given install_url
-     * or IWA bundle location.
+     * Installs the given manifest identity, optionally using the given installUrlOrBundleUrl
      *
-     * TODO(crbug.com/337872319) Support IWA to meet the following specific
-     * requirement.
-     * IWA-specific install description: If the manifest_id is isolated-app://,
-     * install_url_or_bundle_url is required, and can be either an http(s) URL or
-     * file:// URL pointing to a signed web bundle (.swbn). The .swbn file's
-     * signing key must correspond to manifest_id. If Chrome is not in IWA dev
+     * IWA-specific install description:
+     * manifestId corresponds to isolated-app:// + web_package::SignedWebBundleId
+     *
+     * File installation mode:
+     * The installUrlOrBundleUrl can be either file:// or http(s):// pointing
+     * to a signed web bundle (.swbn). In this case SignedWebBundleId must correspond to
+     * The .swbn file's signing key.
+     *
+     * Dev proxy installation mode:
+     * installUrlOrBundleUrl must be http(s):// that serves dev mode IWA.
+     * web_package::SignedWebBundleId must be of type dev proxy.
+     *
+     * The advantage of dev proxy mode is that all changes to IWA
+     * automatically will be reflected in the running app without
+     * reinstallation.
+     *
+     * To generate bundle id for proxy mode:
+     * 1. Generate 32 random bytes.
+     * 2. Add a specific suffix 0x00 at the end.
+     * 3. Encode the entire sequence using Base32 without padding.
+     *
+     * If Chrome is not in IWA dev
      * mode, the installation will fail, regardless of the state of the allowlist.
      */
     'PWA.install': {

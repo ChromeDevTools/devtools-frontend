@@ -429,11 +429,11 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
       return;
     }
 
-    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || (event.key === 'Tab' && event.shiftKey)) {
       if (this.keyFocusNextBit(element, true /* selectPrevious */)) {
         event.consume(true);
       }
-    } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+    } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey)) {
       if (this.keyFocusNextBit(element, false /* selectPrevious */)) {
         event.consume(true);
       }
@@ -443,10 +443,15 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
   }
 
   private keyFocusNextBit(target: HTMLElement, selectPrevious: boolean): boolean {
-    const index = this.typeFilterElements.indexOf(target);
+    let index = this.typeFilterElements.indexOf(target);
+
     if (index === -1) {
-      return false;
+      index = this.typeFilterElements.findIndex(el => el.classList.contains('selected'));
+      if (index === -1) {
+        index = selectPrevious ? this.typeFilterElements.length : -1;
+      }
     }
+
     const nextIndex = selectPrevious ? index - 1 : index + 1;
     if (nextIndex < 0 || nextIndex >= this.typeFilterElements.length) {
       return false;

@@ -803,6 +803,13 @@
       valid_type: "bool",
     },
 
+    // Whether the property can be applied to ::permission-icon elements.
+    // See https://github.com/WICG/PEPC/blob/main/explainer.md#locking-the-pepc-style
+    valid_for_permission_icon: {
+      default: false,
+      valid_type: "bool",
+    },
+
     // - valid_for_position_try: true
     //
     // Whether the property can be used in a @position-try rule
@@ -3165,6 +3172,7 @@
       // so we turn off incremental style for all them all.
       supports_incremental_style: false,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       invalidate: ["layout", "paint"],
     },
     {
@@ -3211,6 +3219,7 @@
       style_builder_custom_functions: ["value"],
       valid_for_highlight_legacy: true,
       valid_for_highlight: true,
+      valid_for_permission_icon: true,
       invalidate: ["paint"],
     },
     {
@@ -3491,7 +3500,7 @@
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
       style_builder_template_args: {
-        type: "GridTemplateColumns",
+        type: "Column",
       },
       keywords: ["none"],
       typedom_types: ["Keyword"],
@@ -3509,7 +3518,7 @@
       type_name: "ComputedGridTrackList",
       style_builder_template: "grid",
       style_builder_template_args: {
-        type: "GridTemplateRows",
+        type: "Row",
       },
       keywords: ["none"],
       typedom_types: ["Keyword"],
@@ -3534,6 +3543,7 @@
       supports_incremental_style: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
@@ -3553,7 +3563,7 @@
     },
     {
       name: "interest-target-delay",
-      runtime_flag: "HTMLInterestTargetAttribute",
+      runtime_flag: "CSSInterestDelayShorthand",
       longhands: [
         "interest-target-show-delay", "interest-target-hide-delay"
       ],
@@ -3755,9 +3765,14 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
       inherited: true,
-      converter: "ConvertSpacing",
       keywords: ["normal"],
-      typedom_types: ["Keyword", "Length"],
+      field_group: "inherited",
+      field_template: "<length>",
+      default_value: "Length::Fixed()",
+      getter: "SpecifiedLetterSpacing",
+      converter: "ConvertLetterSpacing",
+      computed_style_custom_functions: ["getter"],
+      typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
       valid_for_marker: true,
@@ -3896,6 +3911,7 @@
       },
       supports_incremental_style: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["margin", "out-of-flow", "scroll-anchor"],
       anchor_mode: "width",
@@ -3920,6 +3936,7 @@
       },
       supports_incremental_style: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["margin", "out-of-flow", "scroll-anchor"],
       anchor_mode: "width",
@@ -4007,21 +4024,6 @@
       invalidate: ["paint"],
     },
     {
-      name: "masonry-auto-tracks",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_track_list.h"],
-      default_value: "NGGridTrackList(GridTrackSize(Length::Auto()))",
-      type_name: "NGGridTrackList",
-      converter: "ConvertGridTrackSizeList",
-      keywords: ["auto", "min-content", "max-content"],
-      typedom_types: ["Keyword", "Length", "Percentage", "Flex"],
-      separator: " ",
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
       name: "masonry-direction",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "*",
@@ -4055,50 +4057,6 @@
       converter: "ConvertItemTolerance",
       typedom_types: ["Length", "Percentage"],
       keywords: ["normal"],
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-template-tracks",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
-      layout_dependent: true,
-      field_group: "misc->masonry",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/computed_grid_track_list.h"],
-      default_value: "ComputedGridTrackList::DefaultMasonryTrackList()",
-      type_name: "ComputedGridTrackList",
-      style_builder_template: "grid",
-      style_builder_template_args: {
-        type: "MasonryTemplateTracks",
-      },
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-track-end",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_position.h"],
-      default_value: "GridPosition()",
-      type_name: "GridPosition",
-      keywords: ["auto"],
-      typedom_types: ["Keyword"],
-      converter: "ConvertGridPosition",
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
-      name: "masonry-track-start",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/grid_position.h"],
-      default_value: "GridPosition()",
-      type_name: "GridPosition",
-      keywords: ["auto"],
-      typedom_types: ["Keyword"],
-      converter: "ConvertGridPosition",
       invalidate: ["layout", "paint"],
       runtime_flag: "CSSMasonryLayout",
     },
@@ -4140,6 +4098,7 @@
       supports_incremental_style: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
@@ -4162,6 +4121,7 @@
       supports_incremental_style: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
@@ -4183,6 +4143,7 @@
       supports_incremental_style: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
@@ -4204,6 +4165,7 @@
       supports_incremental_style: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
@@ -5512,6 +5474,7 @@
       style_builder_custom_functions: ["value"],
       valid_for_highlight_legacy: true,
       valid_for_highlight: true,
+      valid_for_permission_icon: true,
       invalidate: ["paint", "stroke"],
     },
     {
@@ -5616,6 +5579,7 @@
       typedom_types: ["Length", "Percentage"],
       valid_for_highlight_legacy: true,
       valid_for_highlight: true,
+      valid_for_permission_icon: true,
       invalidate: ["layout", "paint"],
       affected_by_zoom: true,
     },
@@ -6175,6 +6139,7 @@
       valid_for_first_letter: true,
       valid_for_first_line: true,
       valid_for_page_context: true,
+      valid_for_permission_element: true,
     },
     {
       name: "view-timeline-axis",
@@ -6566,7 +6531,7 @@
     {
       name: "row-rule-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "ColorIncludingFallback"],
-      interpolable: true,
+      interpolable: false,
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h",
@@ -6807,6 +6772,7 @@
     },
     {
       name: "mask-mode",
+      keywords: ["alpha", "luminance", "match-source"],
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "mask_layer",
       style_builder_template_args: {
@@ -6827,6 +6793,7 @@
     },
     {
       name: "mask-composite",
+      keywords: ["add", "subtract", "intersect", "exclude"],
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "mask_layer",
       style_builder_template_args: {
@@ -7282,6 +7249,7 @@
       valid_for_position_try: true,
       affected_by_zoom: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
       invalidate: ["layout", "scroll-anchor"],
     },
@@ -7312,7 +7280,7 @@
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
       inherited: true,
-      converter: "ConvertSpacing",
+      converter: "ConvertWordSpacing",
       keywords: ["normal"],
       typedom_types: ["normal"],
       typedom_types: ["Keyword", "Length"],
@@ -7447,6 +7415,7 @@
       valid_for_first_letter: true,
       valid_for_position_try: true,
       valid_for_permission_element: true,
+      valid_for_permission_icon: true,
       valid_for_page_context: true,
     },
     {
@@ -8433,6 +8402,78 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },
     {
+      name: "corner-top-shape",
+      longhands: [
+        "corner-top-left-shape", "corner-top-right-shape"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-right-shape",
+      longhands: [
+        "corner-top-right-shape", "corner-bottom-right-shape"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-bottom-shape",
+      longhands: [
+        "corner-bottom-left-shape", "corner-bottom-right-shape"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-left-shape",
+      longhands: [
+        "corner-top-left-shape", "corner-bottom-left-shape"
+      ],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-block-start-shape",
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      longhands: ["corner-start-start-shape", "corner-start-end-shape"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-block-end-shape",
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      longhands: ["corner-end-start-shape", "corner-end-end-shape"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-inline-start-shape",
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      longhands: ["corner-start-start-shape", "corner-end-start-shape"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corner-inline-end-shape",
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      longhands: ["corner-start-end-shape", "corner-end-end-shape"],
+      runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
       name: "corner-shape",
       longhands: [
         "corner-top-left-shape", "corner-top-right-shape",
@@ -8440,6 +8481,20 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       runtime_flag: "CSSCornerShape",
+      valid_for_permission_element: true,
+      valid_for_page_context: true,
+    },
+    {
+      name: "corners",
+      longhands: [
+        "border-top-left-radius", "corner-top-left-shape",
+        "border-top-right-radius", "corner-top-right-shape",
+        "border-bottom-right-radius", "corner-bottom-right-shape",
+        "border-bottom-left-radius", "corner-bottom-left-shape"
+      ],
+      keywords: ["normal"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSCornersShorthand",
       valid_for_permission_element: true,
       valid_for_page_context: true,
     },
@@ -8578,6 +8633,7 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      valid_for_permission_icon: true,
     },
     {
       name: "margin-block",
@@ -8607,26 +8663,12 @@
       runtime_flag: "CSSMasonryLayout",
     },
     {
-      name: "masonry-track",
-      longhands: ["masonry-track-start", "masonry-track-end"],
-      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      runtime_flag: "CSSMasonryLayout",
-    },
-    {
       name: "offset",
       longhands: [
         "offset-position", "offset-path", "offset-distance", "offset-rotate",
         "offset-anchor"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-    },
-    {
-      // This shorthand is used for testing with origin trial intergration only.
-      // It should never be web-exposed.
-      name: "origin-trial-test-shorthand",
-      longhands: ["origin-trial-test-property"],
-      property_methods: ["ParseShorthand"],
-      runtime_flag: "OriginTrialsSampleAPI",
     },
     {
       name: "outline",

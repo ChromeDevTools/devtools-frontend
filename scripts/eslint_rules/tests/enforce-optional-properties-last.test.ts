@@ -31,7 +31,7 @@ new RuleTester().run('optional-properties-last', rule, {
       // As a TSInterfaceDeclaration it's top-level properties are not linted.
       // But that's fine as clang-format doesn't touch it.
       code: `
-export interface LCPPhases {
+export interface LCPBreakdown {
   /**
    * The time between when the user initiates loading the page until when
    * the browser receives the first byte of the html response.

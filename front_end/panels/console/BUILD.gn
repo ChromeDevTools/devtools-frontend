@@ -114,6 +114,7 @@ ts_library("unittests") {
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
+    "../../models/text_utils:bundle",
     "../../testing",
     "../../ui/legacy/components/utils:bundle",
   ]

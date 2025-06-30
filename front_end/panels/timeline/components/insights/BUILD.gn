@@ -29,10 +29,10 @@ devtools_module("insights") {
     "FontDisplay.ts",
     "ForcedReflow.ts",
     "Helpers.ts",
+    "INPBreakdown.ts",
     "ImageDelivery.ts",
-    "InteractionToNextPaint.ts",
+    "LCPBreakdown.ts",
     "LCPDiscovery.ts",
-    "LCPPhases.ts",
     "LegacyJavaScript.ts",
     "ModernHTTP.ts",
     "NetworkDependencyTree.ts",
@@ -83,7 +83,9 @@ ts_library("unittests") {
   sources = [
     "BaseInsightComponent.test.ts",
     "CLSCulprits.test.ts",
-    "InteractionToNextPaint.test.ts",
+    "INPBreakdown.test.ts",
+    "NetworkDependencyTree.test.ts",
+    "NodeLink.test.ts",
     "Table.test.ts",
   ]
 

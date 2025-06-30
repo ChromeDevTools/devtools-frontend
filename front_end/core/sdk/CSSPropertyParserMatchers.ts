@@ -999,6 +999,9 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
     }
 
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    if (valueNodes.length === 0) {
+      return null;
+    }
     parseNodes(valueNodes);
     lines.push(curLine);
     const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);

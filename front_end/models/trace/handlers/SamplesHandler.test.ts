@@ -88,7 +88,7 @@ describeWithEnvironment('SamplesHandler', function() {
         ): Trace.Types.Events.ProfileChunk {
       return {
         cat: '',
-        name: 'ProfileChunk',
+        name: Trace.Types.Events.Name.PROFILE_CHUNK,
         ph: Trace.Types.Events.Phase.SAMPLE,
         pid,
         tid: Trace.Types.Events.ThreadID(0),
@@ -119,7 +119,7 @@ describeWithEnvironment('SamplesHandler', function() {
       const E = 4;
       const root = 9;
       const mockProfileEvent: Trace.Types.Events.Profile = {
-        name: 'Profile',
+        name: Trace.Types.Events.Name.PROFILE,
         id,
         args: {data: {startTime: Trace.Types.Timing.Micro(0)}},
         cat: '',
@@ -255,8 +255,7 @@ describeWithEnvironment('SamplesHandler', function() {
       assert.strictEqual(profileById.size, 1);
       const cpuProfileData = profileById.values().next().value as Trace.Handlers.ModelHandlers.Samples.ProfileData;
       const cpuProfile = cpuProfileData.rawProfile;
-      assert.deepEqual(
-          Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines', 'traceIds']);
+      assert.deepEqual(Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines']);
       assert.lengthOf(cpuProfile.nodes, 153);
       assert.strictEqual(cpuProfile.startTime, 287510826176);
       assert.strictEqual(cpuProfile.endTime, 287510847633);

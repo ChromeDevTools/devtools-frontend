@@ -6,6 +6,7 @@
 import './CSSAngleEditor.js';
 import './CSSAngleSwatch.js';
 
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Lit from '../../../lit/lit.js';
 
 import cssAngleStyles from './cssAngle.css.js';
@@ -60,7 +61,6 @@ const DefaultAngle = {
 };
 
 export class CSSAngle extends HTMLElement {
-  private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = DefaultAngle;
   private displayedAngle: Angle = DefaultAngle;
   private propertyValue = '';
@@ -96,10 +96,10 @@ export class CSSAngle extends HTMLElement {
     }
 
     if (!this.angleElement) {
-      this.angleElement = this.shadow.querySelector<HTMLElement>('.css-angle');
+      this.angleElement = this.querySelector<HTMLElement>('.css-angle');
     }
     if (!this.swatchElement) {
-      this.swatchElement = this.shadow.querySelector<HTMLElement>('devtools-css-angle-swatch');
+      this.swatchElement = this.querySelector<HTMLElement>('devtools-css-angle-swatch');
     }
     if (!this.angleElement || !this.swatchElement) {
       return;
@@ -182,7 +182,7 @@ export class CSSAngle extends HTMLElement {
     }
   }
 
-  private onMiniIconClick(event: MouseEvent): void {
+  private onMiniIconClick(event: MouseEvent|KeyboardEvent): void {
     event.stopPropagation();
     if (event.shiftKey && !this.popoverOpen) {
       this.displayNextUnit();
@@ -198,6 +198,10 @@ export class CSSAngle extends HTMLElement {
 
   private onKeydown(event: KeyboardEvent): void {
     if (!this.popoverOpen) {
+      if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+        this.onMiniIconClick(event);
+        event.preventDefault();
+      }
       return;
     }
 
@@ -238,7 +242,9 @@ export class CSSAngle extends HTMLElement {
         </div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
-    `, this.shadow, {host: this});
+    `, this, {
+      host: this,
+    });
     // clang-format on
   }
 

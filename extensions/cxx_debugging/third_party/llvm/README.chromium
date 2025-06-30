@@ -8,6 +8,8 @@ License: Apache 2.0 with LLVM Exceptions
 License File: src/LICENSE.TXT
 Shipped: no
 Security Critical: yes
+Mitigated: CVE-2024-31852
+CVE-2024-31852: The CVE affects codegen in the ARM backend. The extension doesn't codegen and in particular not for ARM.
 Description: The llvm project is a toolkit for the construction of compilers and assorted tools. Contained within is lldb, a debugger for the C language family.
 
 In the DevTools C++ debugging extension, lldb is used as a library to ingest DWARF debug symbols and resolve queries against these symbols, like source line resolution or listing of variables. The library is shipped with the extension, it is not shipped with chrome.

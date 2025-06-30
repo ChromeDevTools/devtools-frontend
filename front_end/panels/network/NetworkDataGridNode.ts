@@ -45,7 +45,6 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -1346,13 +1345,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.PARSER: {
-        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(initiator.url);
-        const displayName = uiSourceCode?.displayName();
-        const text = displayName !== undefined && initiator.lineNumber !== undefined ?
-            `${displayName}:${initiator.lineNumber}` :
-            undefined;
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
-          text,
           lineNumber: initiator.lineNumber,
           columnNumber: initiator.columnNumber,
           userMetric: this.#getLinkifierMetric(),
@@ -1380,7 +1373,7 @@ export class NetworkRequestNode extends NetworkNode {
       case SDK.NetworkRequest.InitiatorType.SCRIPT: {
         const target = SDK.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
         const linkifier = this.parentView().linkifier();
-        if (initiator.stack) {
+        if (initiator.stack?.callFrames.length) {
           this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
         } else {
           this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(

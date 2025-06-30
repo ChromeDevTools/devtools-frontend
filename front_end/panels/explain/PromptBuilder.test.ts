@@ -15,10 +15,7 @@ import {
 } from '../../testing/ConsoleHelpers.js';
 import {createTarget, describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {
-  createContentProviderUISourceCode,
-  createFakeScriptMapping,
-} from '../../testing/UISourceCodeHelpers.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 
 import * as Explain from './explain.js';
 
@@ -211,15 +208,16 @@ export const y = "";
 
   describeWithMockConnection('buildPrompt', () => {
     let target: SDK.Target.Target;
-    let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+    let backend: MockProtocolBackend;
 
     beforeEach(() => {
       target = createTarget();
       const targetManager = target.targetManager();
       const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
           {forceNew: true, resourceMapping, targetManager});
+      backend = new MockProtocolBackend();
     });
 
     const PROMPT_PREFIX = 'Please explain the following console error or warning:';
@@ -250,9 +248,12 @@ export const y = "";
 
     it('builds a prompt with related code', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const SCRIPT_ID = '1' as Protocol.Runtime.ScriptId;
       const LINE_NUMBER = 42;
       const URL = urlString`http://example.com/script.js`;
+      const RELATED_CODE = `${'\n'.repeat(LINE_NUMBER)}console.error('kaboom!')`;
+      const script = await backend.addScript(target, {url: URL, content: RELATED_CODE}, null);
+
+      const SCRIPT_ID = script.scriptId;
       const stackTrace = createStackTrace([
         `${SCRIPT_ID}::userNestedFunction::${URL}::${LINE_NUMBER}::15`,
         `${SCRIPT_ID}::userFunction::http://example.com/script.js::10::2`,
@@ -262,13 +263,9 @@ export const y = "";
         type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
         stackTrace,
       };
-      const RELATED_CODE = `${'\n'.repeat(LINE_NUMBER)}console.error('kaboom!')`;
-      const {uiSourceCode, project} =
-          createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
+
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(debuggerModel);
-      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
-      debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, /* level */ null, ERROR_MESSAGE,
@@ -291,16 +288,16 @@ export const y = "";
 
       assert.deepEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'relatedCode', value: RELATED_CODE.trim()}]);
-
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
 
     it('builds a prompt with related code and stacktrace', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const SCRIPT_ID = '1' as Protocol.Runtime.ScriptId;
       const LINE_NUMBER = 42;
       const URL = urlString`http://example.com/script.js`;
+      const RELATED_CODE = `${'\n'.repeat(LINE_NUMBER)}console.error('kaboom!')`;
+      const script = await backend.addScript(target, {url: URL, content: RELATED_CODE}, null);
+
+      const SCRIPT_ID = script.scriptId;
       const stackTrace = createStackTrace([
         `${SCRIPT_ID}::userNestedFunction::${URL}::${LINE_NUMBER}::15`,
         `${SCRIPT_ID}::userFunction::http://example.com/script.js::10::2`,
@@ -312,13 +309,8 @@ export const y = "";
         type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
         stackTrace,
       };
-      const RELATED_CODE = `${'\n'.repeat(LINE_NUMBER)}console.error('kaboom!')`;
-      const {uiSourceCode, project} =
-          createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(debuggerModel);
-      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
-      debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
@@ -346,8 +338,6 @@ export const y = "";
         {type: 'relatedCode', value: RELATED_CODE.trim()},
       ]);
 
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
 
     it('trims a very long network request', async () => {
@@ -437,9 +427,12 @@ export const y = "";
 
     it('trims a very long stack trace', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      const SCRIPT_ID = '1' as Protocol.Runtime.ScriptId;
       const LINE_NUMBER = 0;
       const URL = urlString`${`http://example.com/${'a'.repeat(100)}.js`}`;
+      const RELATED_CODE = 'console.error(\'kaboom!\')';
+      const script = await backend.addScript(target, {url: URL, content: RELATED_CODE}, null);
+
+      const SCRIPT_ID = script.scriptId;
       const STACK_FRAME = `${SCRIPT_ID}::userNestedFunction::${URL}::${LINE_NUMBER}::15`;
       const stackTrace = createStackTrace(Array(80).fill(STACK_FRAME));
       const STACK_TRACE = 'userNestedFunction @ \n'.repeat(45).trim();
@@ -447,13 +440,9 @@ export const y = "";
         type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
         stackTrace,
       };
-      const RELATED_CODE = 'console.error(\'kaboom!\')';
-      const {uiSourceCode, project} =
-          createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
+
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.isNotNull(debuggerModel);
-      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
-      debuggerWorkspaceBinding.addSourceMapping(mapping);
       const ERROR_MESSAGE = 'kaboom!';
       const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
@@ -480,9 +469,6 @@ export const y = "";
         {type: 'stacktrace', value: STACK_TRACE},
         {type: 'relatedCode', value: RELATED_CODE.trim()},
       ]);
-
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
 
     it('builds a prompt with related request', async () => {

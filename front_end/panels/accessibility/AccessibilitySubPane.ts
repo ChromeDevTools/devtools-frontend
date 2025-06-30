@@ -34,8 +34,8 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
   }
 
   createInfo(textContent: string, className?: string): Element {
-    const classNameOrDefault = className || 'gray-info-message';
-    const info = this.element.createChild('div', classNameOrDefault);
+    const info = this.element.createChild('div', className || 'gray-info-message');
+    info.classList.add('info-message-overflow');
     info.textContent = textContent;
     return info;
   }

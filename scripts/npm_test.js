@@ -42,7 +42,7 @@ function main() {
         'Ensure you have built a release version of `chrome` or use ' +
         '`--target=Debug`.');
   }
-  const outDir = path.resolve(RELEASE_PATH, '..');
+  const outDir = path.resolve(RELEASE_PATH);
 
   runTests(outDir, IS_DEBUG_ENABLED);
 }

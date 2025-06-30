@@ -243,7 +243,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   #handleTreeExpand = (event: KeyboardEvent): void => {
     if (event.code === 'Space' || event.code === 'Enter' || event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
-      event.stopPropagation();
+      event.consume(true);
       this.#handleTreeClick(event.code);
     }
   };
@@ -771,36 +771,22 @@ export class UserAgentClientHintsForm extends HTMLElement {
       <style>${Input.checkboxStyles}</style>
       <style>${userAgentClientHintsFormStyles}</style>
       <section class="root">
-        <div
-          class="tree-title"
-          role="button"
-          @click=${this.#handleTreeClick}
-          tabindex=${this.#isFormDisabled ? '-1' : '0'}
-          @keydown=${this.#handleTreeExpand}
-          aria-expanded=${this.#isFormOpened}
-          aria-controls="form-container"
-          aria-disabled=${this.#isFormDisabled}
-          aria-label=${i18nString(UIStrings.title)}
-          jslog=${VisualLogging.toggleSubpane().track({click: true})}
-        >
-          <devtools-icon
-            class=${this.#isFormOpened ? 'rotate-icon' : ''}
-            .data=${{
-              color: 'var(--icon-default)',
-              iconName: 'triangle-right',
-              width: '14px',
-            }}
-          ></devtools-icon>
-          ${i18nString(UIStrings.title)}
-          <devtools-icon
-            .data=${{
-              color: 'var(--icon-default)',
-              iconName: 'info',
-              width: '16px',
-            }}
-            title=${i18nString(UIStrings.userAgentClientHintsInfo)}
-            class='info-icon'
-          ></devtools-icon>
+        <div class="tree-title">
+          <div
+            role=button
+            @click=${this.#handleTreeClick}
+            tabindex=${this.#isFormDisabled ? '-1' : '0'}
+            @keydown=${this.#handleTreeExpand}
+            aria-expanded=${this.#isFormOpened}
+            aria-controls=form-container
+            aria-disabled=${this.#isFormDisabled}
+            aria-label=${i18nString(UIStrings.title)}
+            jslog=${VisualLogging.toggleSubpane().track({click: true})}>
+            <devtools-icon name=triangle-right></devtools-icon>
+            <devtools-icon name=triangle-down></devtools-icon>
+            ${i18nString(UIStrings.title)}
+          </div>
+          <devtools-icon class=info-icon name=info title=${i18nString(UIStrings.userAgentClientHintsInfo)}></devtools-icon>
           <x-link
            tabindex=${this.#isFormDisabled ? '-1' : '0'}
            href="https://web.dev/user-agent-client-hints/"

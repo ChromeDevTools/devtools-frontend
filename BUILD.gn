@@ -89,9 +89,9 @@ action("assert_third_party_readmes") {
 }
 
 _expected_grd_files = []
-_expected_grd_files += grd_files_release_sources
-if (is_debug) {
-  _expected_grd_files += grd_files_debug_sources
+_expected_grd_files += grd_files_bundled_sources
+if (!devtools_bundle) {
+  _expected_grd_files += grd_files_unbundled_sources
 }
 
 generated_file("expected_grd_files") {

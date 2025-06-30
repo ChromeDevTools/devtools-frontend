@@ -319,6 +319,7 @@ export const enum ExperimentName {
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_COMPILED_SOURCES = 'timeline-compiled-sources',
   TIMELINE_EXPERIMENTAL_INSIGHTS = 'timeline-experimental-insights',
+  VERTICAL_DRAWER = 'vertical-drawer',
   // Adding or removing an entry from this enum?
   // You will need to update:
   // 1. REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts (to create this experiment in the test env)
@@ -428,10 +429,6 @@ export interface HostConfigThirdPartyCookieControls {
   managedBlockThirdPartyCookies: string|boolean;
 }
 
-interface CSSValueTracing {
-  enabled: boolean;
-}
-
 interface AiGeneratedTimelineLabels {
   enabled: boolean;
 }
@@ -469,7 +466,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies,
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
-  devToolsCssValueTracing: CSSValueTracing,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
 }>;
 

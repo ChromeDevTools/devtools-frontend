@@ -11,7 +11,7 @@ for (let index = 0; index < BASE64_CHARS.length; ++index) {
 /**
  * Decodes Base64-encoded data from a string without performing any kind of checking.
  */
-export function decode(input: string): ArrayBuffer {
+export function decode(input: string): Uint8Array<ArrayBuffer> {
   let bytesLength = ((input.length * 3) / 4) >>> 0;
   if (input.charCodeAt(input.length - 2) === 0x3d /* '=' */) {
     bytesLength -= 2;
@@ -29,10 +29,10 @@ export function decode(input: string): ArrayBuffer {
     bytes[offset++] = ((b & 0x0f) << 4) | (c >> 2);
     bytes[offset++] = ((c & 0x03) << 6) | (d & 0x3f);
   }
-  return bytes.buffer;
+  return bytes;
 }
 
-export function encode(input: ArrayBuffer|Blob): Promise<string> {
+export function encode(input: BlobPart): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('failed to convert to base64'));

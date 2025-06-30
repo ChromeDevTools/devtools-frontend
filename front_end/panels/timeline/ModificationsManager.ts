@@ -15,7 +15,8 @@ import type * as Overlays from './overlays/overlays.js';
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
 
-export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry'|'EnterLabelEditState';
+export type UpdateAction =
+    'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry'|'EnterLabelEditState'|'LabelBringForward';
 
 // Event dispatched after an annotation was added, removed or updated.
 // The event argument is the Overlay that needs to be created,removed
@@ -163,29 +164,6 @@ export class ModificationsManager extends EventTarget {
     return newOverlay;
   }
 
-  annotationsForEntry(entry: Trace.Types.Events.Event): Trace.Types.File.Annotation[] {
-    const annotationsForEntry = [];
-
-    for (const [annotation] of this.#overlayForAnnotation.entries()) {
-      if (annotation.type === 'ENTRY_LABEL' && annotation.entry === entry) {
-        annotationsForEntry.push(annotation);
-      } else if (
-          annotation.type === 'ENTRIES_LINK' && (annotation.entryFrom === entry || annotation.entryTo === entry)) {
-        annotationsForEntry.push(annotation);
-      }
-    }
-
-    return annotationsForEntry;
-  }
-
-  // Deletes all annotations associated with an entry
-  deleteEntryAnnotations(entry: Trace.Types.Events.Event): void {
-    const annotationsForEntry = this.annotationsForEntry(entry);
-    annotationsForEntry.forEach(annotation => {
-      this.removeAnnotation(annotation);
-    });
-  }
-
   linkAnnotationBetweenEntriesExists(entryFrom: Trace.Types.Events.Event, entryTo: Trace.Types.Events.Event): boolean {
     for (const annotation of this.#overlayForAnnotation.keys()) {
       if (annotation.type === 'ENTRIES_LINK' &&
@@ -205,6 +183,13 @@ export class ModificationsManager extends EventTarget {
     }
 
     return null;
+  }
+
+  bringEntryLabelForwardIfExists(entry: Trace.Types.Events.Event): void {
+    const overlay = this.#findLabelOverlayForEntry(entry);
+    if (overlay?.type === 'ENTRY_LABEL') {
+      this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'LabelBringForward'));
+    }
   }
 
   #createOverlayFromAnnotation(annotation: Trace.Types.File.Annotation): Overlays.Overlays.EntryLabel

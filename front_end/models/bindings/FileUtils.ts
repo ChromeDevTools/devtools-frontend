@@ -30,6 +30,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 export interface ChunkedReader {
@@ -223,8 +224,8 @@ export class FileOutputStream implements Common.StringOutputStream.OutputStream 
     this.#closed = false;
     this.#writeCallbacks = [];
     this.#fileName = fileName;
-    const saveResponse =
-        await Workspace.FileManager.FileManager.instance().save(this.#fileName, '', true, false /* isBase64 */);
+    const saveResponse = await Workspace.FileManager.FileManager.instance().save(
+        this.#fileName, TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, /* forceSaveAs=*/ true);
     if (saveResponse) {
       Workspace.FileManager.FileManager.instance().addEventListener(
           Workspace.FileManager.Events.APPENDED_TO_URL, this.onAppendDone, this);

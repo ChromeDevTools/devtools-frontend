@@ -19,7 +19,7 @@ describe('Revealing insights in RPP', function() {
     await reloadAndRecord(devToolsPage);
 
     await devToolsPage.click('aria/Show sidebar');
-    await devToolsPage.click('aria/View details for LCP by phase insight.');
+    await devToolsPage.click('aria/View details for LCP breakdown insight.');
 
     // Ensure that the LCP timespan breakdown is showing.
     await devToolsPage.waitFor('.overlay-type-TIMESPAN_BREAKDOWN');

@@ -178,7 +178,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         return element;
       }
 
-      if (value === '' || (name !== 'position' && value === '0px')) {
+      if (value === '' || (name !== 'position' && value === 'unset')) {
         value = '\u2012';
       } else if (name === 'position' && value === 'auto') {
         value = '\u2012';
@@ -447,9 +447,9 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       return this.editingCancelled(element, context);
     }  // nothing changed, so cancel
 
-    if (context.box !== 'position' && (!userInput || userInput === '\u2012')) {
-      userInput = '0px';
-    } else if (context.box === 'position' && (!userInput || userInput === '\u2012')) {
+    if (context.box !== 'position' && (!userInput || userInput === '\u2012' || userInput === '-')) {
+      userInput = 'unset';
+    } else if (context.box === 'position' && (!userInput || userInput === '\u2012' || userInput === '-')) {
       userInput = 'auto';
     }
 
@@ -489,7 +489,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     const allProperties = this.inlineStyle.allProperties();
     for (let i = 0; i < allProperties.length; ++i) {
       const property = allProperties[i];
-      if (property.name !== context.styleProperty || !property.activeInStyle()) {
+      if (property.name !== context.styleProperty || (property.parsedOk && !property.activeInStyle())) {
         continue;
       }
 

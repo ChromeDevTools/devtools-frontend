@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -314,58 +315,47 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     assert.deepEqual(results[0], {index: 147, startTimeMilli: 122411041.395, provider: 'main'});
   });
 
-  it('delete annotations associated with an event', async function() {
+  it('persists track configurations to the setting if it is provided with one', async function() {
+    const {Settings} = Common.Settings;
+    const setting =
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     dataProvider.setModel(parsedTrace, entityMapper);
-    const entryIndex = 0;
-    const eventToFindAssociatedEntriesFor = dataProvider.eventByIndex(entryIndex);
-    const event = dataProvider.eventByIndex(1);
-    assert.exists(eventToFindAssociatedEntriesFor);
-    assert.exists(event);
+    dataProvider.setPersistedGroupConfigSetting(setting);
 
-    // This label annotation should be deleted
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry: eventToFindAssociatedEntriesFor,
-      label: 'label',
-    });
+    let groups = dataProvider.timelineData().groups;
 
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry: event,
-      label: 'label',
-    });
+    // To save the size of the assertion, let's only care about the first 3 groups.
+    groups = groups.slice(0, 3);
+    // Move the first group to the end.
+    const newVisualOrder = [1, 2, 0];
 
-    dataProvider.deleteAnnotationsForEntry(entryIndex);
-    // Make sure one of the annotations was deleted
-    assert.deepEqual(Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations().length, 1);
-  });
+    dataProvider.handleTrackConfigurationChange(groups, newVisualOrder);
 
-  it('correctly identifies if an event has annotations', async function() {
-    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
-    dataProvider.setModel(parsedTrace, entityMapper);
-    const eventIndex = 0;
-    const event = dataProvider.eventByIndex(eventIndex);
-    assert.exists(event);
-
-    // Create a label for an event
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry: event,
-      label: 'label',
-    });
-
-    // Made sure the event has annotations
-    assert.isTrue(dataProvider.entryHasAnnotations(eventIndex));
-
-    // Delete annotations for the event
-    dataProvider.deleteAnnotationsForEntry(eventIndex);
-
-    // Made sure the event does not have annotations
-    assert.isFalse(dataProvider.entryHasAnnotations(eventIndex));
+    const newSetting = setting.get();
+    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
+    assert.deepEqual(newSetting[traceKey], [
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 0,
+        visualIndex: 2,
+      },
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 1,
+        visualIndex: 0,
+      },
+      {
+        expanded: false,
+        hidden: false,
+        originalIndex: 2,
+        visualIndex: 1,
+      }
+    ]);
   });
 });

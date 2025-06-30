@@ -19,7 +19,7 @@ import {
   assertNotNullOrUndefined,
 } from '../../shared/helper.js';
 
-const BREAKPOINT_VIEW_COMPONENT = 'devtools-breakpoint-view';
+const BREAKPOINT_VIEW_COMPONENT = '#devtools-breakpoint-view';
 const FIRST_BREAKPOINT_ITEM_SELECTOR = '[data-first-breakpoint]';
 const BREAKPOINT_ITEM_SELECTOR = '.breakpoint-item';
 const LOCATION_SELECTOR = '.location';

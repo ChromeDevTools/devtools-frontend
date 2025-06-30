@@ -389,11 +389,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     // associated, whereas all active targets have one such pool. This ensures
     // that the fallbackAnchor is only ever used when the target was disposed.
     const pool = this.locationPoolByTarget.get(target);
-    if (!pool) {
-      console.assert(target.isDisposed());
+    if (!pool || target.isDisposed()) {
       return fallbackAnchor;
     }
-    console.assert(!target.isDisposed());
 
     // All targets that can report stack traces also have a debugger model.
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;

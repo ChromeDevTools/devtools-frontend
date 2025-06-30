@@ -82,6 +82,7 @@ devtools_module("network") {
     "../../panels/search:bundle",
     "../../panels/sources:bundle",
     "../../panels/utils:bundle",
+    "../../services/tracing:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/expandable_list:bundle",

@@ -104,7 +104,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
 
     this.contentElement.classList.add('paint-profiler-overview');
     this.canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
-    this.progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
+    this.progressBanner = this.contentElement.createChild('div', 'empty-state hidden');
     this.progressBanner.textContent = i18nString(UIStrings.profiling);
     this.pieChart = new PerfUI.PieChart.PieChart();
     this.populatePieChart(0, []);

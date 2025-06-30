@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Usiige aina ya maudhui ya CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Usiige ukubwa wa maandishi ya mfumo wa uendeshaji"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Usiongeze mistari ya gridi"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Iga tatizo la kutotambua rangi nyekundu na kijani (hakuna rangi ya kijani)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Kuiga ukubwa wa maandishi ya mfumo wa uendeshaji"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Iga tatizo la kutotambua rangi nyekundu (hakuna rangi nyekundu)"
@@ -732,6 +738,30 @@
     "message": "Kuzuia maombi ya mtandao"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Hakuna uigaji"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "Asilimia 100 (chaguomsingi)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "Asilimia 115"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "Asilimia 130"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "Asilimia 150"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "Asilimia 180"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "Asilimia 200"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "Asilimia 85"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Hakuna uigaji"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Hulazimisha aina ya maudhui ya kujaribu miundo ya kuchapisha na skrini"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Hulazimisha uigaji wa ukubwa wa maandishi ya mfumo wa uendeshaji"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Hulazimisha uigaji wa tatizo la kuona"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Onyesha au ufiche droo"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Geuza mkao wa droo"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Pachua katika dirisha tofauti"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Maombi ya nyenzo ambazo URL zake zilikuwa na herufi za nafasi nyeupe zilizoondolewa \\(n|r|t) pamoja na herufi zisizopaswa kuzidi (<) yamezuiwa. Tafadhali ondoa mistari mipya na usimbe herufi zisizopaswa kuzidi kwenye sehemu kama thamani ya sifa za vipengee ili kupakia nyenzo hizi."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Utambuzi wa kiotomatiki wa misimbo ya herufi ya ISO-2022-JP umeacha kutumika na utazimwa hivi karibuni. Tafadhali bainisha misimbo ya herufi katika kijajuu cha Aina ya Maudhui au kwa kutumia meta tagi (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() imeacha kuendesha huduma, badala yake tumia API ya kawaida: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit haijafaulu: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Data halisi iliyowekewa mipangilio ni ya URL tofauti na ukurasa wa sasa."
+    "message": "Data ya watumiaji halisi imewekewa mipangilio ya URL tofauti na ukurasa wa sasa."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Ni lazima uwiano wa pikseli wa kifaa uwe namba au usijazwe."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Hifadhi ikiwa…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Imeshindwa kuhifadhi faili kwenye diski."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Hifadhi picha"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Visababishi maarufu vya mabadiliko ya muundo"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Picha Zisizo na Ukubwa Mahususi"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Kikundi kibaya zaidi"
@@ -1839,7 +1875,7 @@
     "message": "Lilielekezwa kwingine (elekeza kwingine mara {PH1}, pamoja na{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Seva imejibu polepole (imebainisha {PH1}) "
+    "message": "Seva imejibu polepole (imebainisha {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Haijabanwa"
@@ -1848,7 +1884,7 @@
     "message": "Huepuka matukio ya kuelekeza kwingine"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Seva hujibu haraka (imebainissha {PH1}) "
+    "message": "Seva hujibu haraka (imebainissha {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Matini yamebanwa"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Mitagusano ya kugusa inaweza [kucheleweshwa kwa hadi milisekunde 300](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ikiwa sehemu ya kutazamia haijaboreshwa kwenye simu."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Ucheleweshaji wa kugusa simu"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Kuboresha sehemu ya kutazamia kwenye simu"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Ili utumie kipengele hiki, weka mapendeleo yako ya lugha yawe Kiingereza katika mipangilio ya Zana za Wasanidi Programu."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Unaweza pia kutumia mojawapo ya vidokezo vilivyopendekezwa hapo juu ili uanzishe mazungumzo"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Pata maelezo kuhusu AI katika Zana za Wasanidi Programu"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Kunja"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Ungependa kufuta hifadhi ya kipengee ya \"{PH1}?\""
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Ungependa kufuta hifadhidata ya \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Ufunguo"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Data iliyo kwenye hifadhi mahususi ya kipengee itaondolewa."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Hifadhi za vipengee"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Fremu hii imetambuliwa kama fremu ya msingi ya tangazo"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Amri ya Kuchuja Orodha Kuu ya Hati"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Muktadha Salama"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (kutoka ramani chanzo)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Kichupo cha mabadiliko hakionyeshi mabadiliko ya data ya mfumo wa jozi"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Kwenye ukurasa huu unaweza kufuatilia mabadiliko ya msimbo yaliyofanyika kwenye Zana za Wasanidi Programu."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Nakili"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Bado hakuna mabadiliko"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Hakuna utofauti wa maandishi"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{Tukio # la ufutaji (-)}other{Matukio # ya ufutaji (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{Mstari # wa msimbo ulioongezwa (+)}other{Mistari # ya msimbo iliyoongezwa (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Yamenakiliwa kwenye ubao wa kunakili"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Mabadiliko"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Nakili mabadiliko yote kutoka kwenye faili ya sasa"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Batilisha mabadiliko yote kwenye faili ya sasa"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Onyesha Mabadiliko"
@@ -5715,7 +5745,7 @@
     "message": "Onyesha ujumbe kutoka kwenye muktadha wa sasa tu (top, iframe, worker, kiendelezi)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Imebatilishwa na utepe wa vichujio"
+    "message": "Viwango vya kumbukumbu vinadhibitiwa na utepe wa dashibodi."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Hifadhi kumbukumbu"
@@ -6612,16 +6642,16 @@
     "message": "Sogeza hadi yaonekane"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Onyesha amri ya ulengaji"
+    "message": "Onyesha kipengele kinachohusishwa na sifa ya commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Onyesha maelezo ya iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Onyesha ulengaji wa kundi lenye upendeleo maalum"
+    "message": "Onyesha kipengele kinachohusishwa na sifa ya interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Onyesha kidirisha cha kipengele kinacholengwa"
+    "message": "Onyesha kipengele kinachohusishwa na sifa ya popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Fremu hii imetambuliwa kama fremu ya tangazo"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "laha ya muundo iliyowekwa muundo"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Nakili mabadiliko yote ya CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Nakili taarifa zote"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "kupitia kwenye kikaguzi"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Nakili mabadiliko yote ya CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Nakili taarifa zote katika muundo wa JavaScript"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Ufikivu"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Tumia uigaji wa kompyuta ya mezani wakati wa ukaguzi"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Weka uigaji wa vifaa vya mkononi"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Kupanga Pakiti Upya"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "asilimia"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Jina la Wasifu"
   },
@@ -8802,7 +8826,7 @@
     "message": "Weka ala maalum ya mtumiaji"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Hali za mtandao zimeonyeshwa"
+    "message": "Hali za mtandao zinaonyeshwa."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Kubana mtandao"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Huduma ya Kufikia Anwani Mbalimbali Kutoka Mbali"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Vichwa vya Maombi"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Vichwa vya Jibu"
@@ -12057,7 +12084,7 @@
     "message": "Lugha"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "Eneo"
+    "message": "Mahali"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "Maelezo ya mahali hayapatikani"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Hifadhi ikiwa…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Imeshindwa kuhifadhi faili kwenye diski."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Chagua folda ya mipangilio ya ubatilishaji"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Pakia upya vilinganishi vya kutazama utatuzi"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Kifuatiliaji cha utatuzi kimefutwa"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Imefikia sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi ya {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Maelezo"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Vipimo"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Muda"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Pata maelezo zaidi"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Eneo"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Ujumbe"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (tegemezi)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Imekusanya {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} kati ya {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Chagua \"{PH1}\" ili ukusanye takwimu zinazolingana za kina za kiteuzi cha Huduma ya Ulinganishaji wa Bei (CSS)."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (muda wa shughuli mahususi)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Hati"
@@ -14682,19 +14694,19 @@
     "message": "Weka mipangilio"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Kuweka mipangilio ya ukusanyaji wa data ya sehemu"
+    "message": "Kuweka mipangilio ya ukusanyaji wa data ya vipimo vya watumiaji halisi"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Ripoti ya Chrome UX haina data ya kutosha ya ukurasa huu wa vipimo vya kasi katika hali halisi."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Kusanya data ya nyanjani iliyojumuishwa kutoka kwenye {PH1} ili ikusaidie kuweka muktadha wa vipimo vya vifaa vyako ukitumia data ya hali ya utumiaji ya wanaotembelea tovuti katika hali halisi."
+    "message": "Kusanya data ya watumiaji halisi iliyojumlishwa kutoka kwenye {PH1} ili ikusaidie kuweka muktadha wa vipimo vya vifaa vyako ukitumia data ya hali ya utumiaji ya wanaotembelea tovuti katika hali halisi."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" si URL wala chanzo halisi."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Weka chanzo cha usanidi kipate kiotomatiki data ya nyanjani inayofaa kwa matumizi ya chanzo cha uchapishaji."
+    "message": "Weka chanzo cha usanidi ili kipate kiotomatiki data ya data ya watumiaji halisi inayofaa kwa matumizi ya chanzo cha uchapishaji."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Mpya"
@@ -14703,7 +14715,7 @@
     "message": "Sawa"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Onyesha data ya nyanjani ya URL iliyo hapa chini kila wakati"
+    "message": "Onyesha data ya watumiaji halisi wa URL iliyo hapa chini kila wakati"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Jiondoe"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools inapofunguliwa, URL unazotembelea zitatumwa kwa Google ili kupata data za sehemu. Maombi haya hayahusishwi na Akaunti yako ya Google."
+    "message": "DevTools inapofunguliwa, URL unazotembelea zitatumwa kwa Google ili kupata data ya matumiaji halisi. Maombi haya hayahusishwi na Akaunti yako ya Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Weka kanuni ya kauli ya kawaida kwenye URL ya hati"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Sehemu ya kumbukumbu ya mabadiliko ya muundo na mitagusano"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Data kutoka kwenye vyanzo"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Data ya watumiaji halisi"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Mtagusano wa INP uko katika asilimia 98 ya hali ya kuchelewa kwa mtagusano."
@@ -14856,10 +14868,10 @@
     "message": "Vipimo vya vifaa vyako na vya nyanjani"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Pata maelezo zaidi kuhusu data iliyo kwenye mazingira ya wasanidi programu na ya nyanjani"
+    "message": "Pata maelezo zaidi kuhusu data ya watumiaji halisi"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Vipimo katika mazingira ya wasanidi programu hutolewa kwenye ukurasa wa sasa kwa kutumia muunganisho wa mtandao na kifaa chako. Data ya nyanjani hupimwa na watumiaji halisi kwa kutumia miunganisho ya mtandao na vifaa mbalimbali."
+    "message": "Vipimo katika mazingira ya wasanidi programu hutolewa kwenye ukurasa wa sasa kwa kutumia muunganisho wa mtandao na kifaa chako. Data ya watumiaji halisi hupimwa na watumiaji halisi kupitia vifaa na miunganisho mingi tofauti ya mitandao."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Vipimo vya vifaa vyako"
@@ -14922,10 +14934,10 @@
     "message": "Nenda kwenye kikundi kibaya zaidi cha mabadiliko ya muundo."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Onyesha data ya nyanjani ya aina ya kifaa: {PH1}"
+    "message": "Onyesha data ya watumiaji halisi ya aina ya kifaa: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Onyesha data ya nyanjani ya {PH1}"
+    "message": "Onyesha data ya watumiaji halisi ya {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Nenda kwenye mtagusano wa INP."
@@ -15033,13 +15045,13 @@
     "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na ni sawa na hali ya utumiaji ya wanaotembelea tovuti yako."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani ya {PH3} ni nzuri."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imekadiriwa sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi {PH3} ni nzuri."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani ambayo ni {PH3} inahitaji kuboreshwa."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imekadiriwa sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi ambayo ni {PH3} inahitaji kuboreshwa."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani, ambayo ni {PH3} ni mbovu."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na imekadiriwa sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi, ambayo ni {PH3} ni duni."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni nzuri na ni sawa na hali ya utumiaji ya wanaotembelea tovuti yako."
@@ -15054,13 +15066,13 @@
     "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa, lakini ni nzuri kuliko hali ya utumiaji ya wanaotembelea tovuti yako."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani, ambayo ni {PH3} ni nzuri."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi ambayo ni {PH3} ni nzuri."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} katika asilimia 75 ya data ya nyanjani, ambayo ni {PH3} inahitaji kuboreshwa."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} katika asilimia 75 ya data ya watumiaji halisi, ambayo ni {PH3} inahitaji kuboreshwa."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani, ambayo ni {PH3} ni mbovu."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi, ambayo ni {PH3} ni duni."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako inahitaji kuboreshwa na ni sawa na hali ya utumiaji ya wanaotembelea tovuti yako."
@@ -15075,13 +15087,13 @@
     "message": "Thamani ya {PH1} ya kifaa chako ya {PH2} ni duni, lakini ni mbaya zaidi kuliko hali ya utumiaji ya wanaotembelea tovuti yako."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani, ambayo ni {PH3} ni nzuri."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi ambayo ni {PH3} ni nzuri."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya nyanjani ambayo ni {PH3} inahitaji kuboreshwa."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Hata hivyo, thamani ya {PH1} ya asilimia 75 ya data ya watumiaji halisi ambayo ni {PH3} inahitaji kuboreshwa."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} katika asilimia 75 ya data ya nyanjani, ambayo ni {PH3} ni duni."
+    "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na imepewa ukadiriaji sawa na {PH4} ya hali za utumiaji za {PH1} za wanaotembelea tovuti yako. Pia, thamani ya {PH1} katika asilimia 75 ya data ya watumiaji halisi, ambayo ni {PH3} ni duni."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Thamani ya {PH1} ya {PH2} ya kifaa chako ni duni na ni sawa na hali ya utumiaji ya wanaotembelea tovuti yako."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Badilisha DevTools zitumie {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Geuza mkao wa droo"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Ongeza"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Picha ya skrini ya {PH1} - chagua ili uone maombi yaliyotangulia."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Futa vidokezo"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Weka mipangilio ya vikundi"

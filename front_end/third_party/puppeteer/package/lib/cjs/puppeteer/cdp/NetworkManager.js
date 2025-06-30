@@ -12,6 +12,8 @@ const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const disposable_js_1 = require("../util/disposable.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const Connection_js_1 = require("./Connection.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
@@ -58,14 +60,22 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
                 return handler.bind(this)(client, arg);
             });
         }
-        await Promise.all([
-            client.send('Network.enable'),
-            this.#applyExtraHTTPHeaders(client),
-            this.#applyNetworkConditions(client),
-            this.#applyProtocolCacheDisabled(client),
-            this.#applyProtocolRequestInterception(client),
-            this.#applyUserAgent(client),
-        ]);
+        try {
+            await Promise.all([
+                client.send('Network.enable'),
+                this.#applyExtraHTTPHeaders(client),
+                this.#applyNetworkConditions(client),
+                this.#applyProtocolCacheDisabled(client),
+                this.#applyProtocolRequestInterception(client),
+                this.#applyUserAgent(client),
+            ]);
+        }
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
+        }
     }
     async #removeClient(client) {
         this.#clients.get(client)?.dispose();
@@ -93,9 +103,17 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (this.#extraHTTPHeaders === undefined) {
             return;
         }
-        await client.send('Network.setExtraHTTPHeaders', {
-            headers: this.#extraHTTPHeaders,
-        });
+        try {
+            await client.send('Network.setExtraHTTPHeaders', {
+                headers: this.#extraHTTPHeaders,
+            });
+        }
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
+        }
     }
     extraHTTPHeaders() {
         return Object.assign({}, this.#extraHTTPHeaders);
@@ -144,12 +162,20 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (this.#emulatedNetworkConditions === undefined) {
             return;
         }
-        await client.send('Network.emulateNetworkConditions', {
-            offline: this.#emulatedNetworkConditions.offline,
-            latency: this.#emulatedNetworkConditions.latency,
-            uploadThroughput: this.#emulatedNetworkConditions.upload,
-            downloadThroughput: this.#emulatedNetworkConditions.download,
-        });
+        try {
+            await client.send('Network.emulateNetworkConditions', {
+                offline: this.#emulatedNetworkConditions.offline,
+                latency: this.#emulatedNetworkConditions.latency,
+                uploadThroughput: this.#emulatedNetworkConditions.upload,
+                downloadThroughput: this.#emulatedNetworkConditions.download,
+            });
+        }
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
+        }
     }
     async setUserAgent(userAgent, userAgentMetadata) {
         this.#userAgent = userAgent;
@@ -160,10 +186,18 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (this.#userAgent === undefined) {
             return;
         }
-        await client.send('Network.setUserAgentOverride', {
-            userAgent: this.#userAgent,
-            userAgentMetadata: this.#userAgentMetadata,
-        });
+        try {
+            await client.send('Network.setUserAgentOverride', {
+                userAgent: this.#userAgent,
+                userAgentMetadata: this.#userAgentMetadata,
+            });
+        }
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
+        }
     }
     async setCacheEnabled(enabled) {
         this.#userCacheDisabled = !enabled;
@@ -182,29 +216,45 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (this.#userCacheDisabled === undefined) {
             this.#userCacheDisabled = false;
         }
-        if (this.#protocolRequestInterceptionEnabled) {
-            await Promise.all([
-                this.#applyProtocolCacheDisabled(client),
-                client.send('Fetch.enable', {
-                    handleAuthRequests: true,
-                    patterns: [{ urlPattern: '*' }],
-                }),
-            ]);
+        try {
+            if (this.#protocolRequestInterceptionEnabled) {
+                await Promise.all([
+                    this.#applyProtocolCacheDisabled(client),
+                    client.send('Fetch.enable', {
+                        handleAuthRequests: true,
+                        patterns: [{ urlPattern: '*' }],
+                    }),
+                ]);
+            }
+            else {
+                await Promise.all([
+                    this.#applyProtocolCacheDisabled(client),
+                    client.send('Fetch.disable'),
+                ]);
+            }
         }
-        else {
-            await Promise.all([
-                this.#applyProtocolCacheDisabled(client),
-                client.send('Fetch.disable'),
-            ]);
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
         }
     }
     async #applyProtocolCacheDisabled(client) {
         if (this.#userCacheDisabled === undefined) {
             return;
         }
-        await client.send('Network.setCacheDisabled', {
-            cacheDisabled: this.#userCacheDisabled,
-        });
+        try {
+            await client.send('Network.setCacheDisabled', {
+                cacheDisabled: this.#userCacheDisabled,
+            });
+        }
+        catch (error) {
+            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+                return;
+            }
+            throw error;
+        }
     }
     #onRequestWillBeSent(client, event) {
         // Request interception doesn't happen for data URLs with Network Service.

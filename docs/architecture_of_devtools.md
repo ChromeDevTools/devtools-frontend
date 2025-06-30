@@ -333,15 +333,15 @@ Now, the new panel is allowed to add a dependency edge on `models/workspace_diff
 
 # DevTools GRD integration
 
-To bundle DevTools with Chromium, DevTools builds its GRD file that will be consumed by [GRIT].
-The GRD file lists all required files that should be loaded either in Debug or Release mode.
-All files that should be bundled are listed in `config/gni/devtools_grd_files.gni`.
-If a file should be present in debug and release mode, add the file to `grd_files_release_sources`.
-If a file should only be present in debug mode, add the file to `grd_files_debug_sources`.
+To ship DevTools with Chromium, DevTools builds its GRD file that will be consumed by [GRIT].
+The GRD file lists all required files that should be loaded either in "bundled" or "unbundled" mode.
+All files that should be shipped are listed in `config/gni/devtools_grd_files.gni`.
+If a file should be present in "bundled" and "unbundled" mode, add the file to `grd_files_bundled_sources`.
+If a file should only be present in "unbundled" mode, add the file to `grd_files_unbundled_sources`.
 
 Note that `devtools_module` and `devtools_entrypoint` automatically take care of this for you.
-Any file included in `devtools_module` is only present in the Debug GRD file.
-Any file included as entrypoint of `devtools_entrypoint` is present in both the Release and Debug GRD file.
+Any file included in `devtools_module` is only present in the "unbundled" GRD file.
+Any file included as entrypoint of `devtools_entrypoint` is present in both the "bundled" and "unbundled" GRD file.
 
 There are additional actions that can add files to the GRD file, for example images or Markdown files.
 To allow for any action to define any relevant GRD file inclusions, DevTools uses [GN `metadata` definitions].
@@ -376,7 +376,7 @@ node_action("generate_css_vars") {
 ```
 
 The GN metadata is traversed in `/BUILD.gn` and is written to a JSON file in `:input_grd_files`.
-The JSON file is compared to the contents of `:expected_grd_files` which takes the `grd_files_release_sources` and `grd_files_debug_sources` (only in Debug mode) files as input.
+The JSON file is compared to the contents of `:expected_grd_files` which takes the `grd_files_bundled_sources` and `grd_files_unbundled_sources` (only in "unbundled" mode) files as input.
 
 If the collected input files matches the expected listed GRD files, the GRD files is written to a GRD file by `:generate_devtools_grd`.
 The GRD file is placed in `gen/third_party/devtools-frontend/src/front_end/` in Chromium.

@@ -13,28 +13,15 @@ import {
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {getQuotaUsage, waitForQuotaUsage} from './application-helpers.js';
+import {openCommandMenu} from './quick_open-helpers.js';
 
 export async function navigateToLighthouseTab(
     path?: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
     inspectedPage = getBrowserAndPagesWrappers().inspectedPage): Promise<ElementHandle<Element>> {
-  let lighthouseTabButton = await devToolsPage.$('#tab-lighthouse');
-
-  // Lighthouse tab can be hidden if the frontend is in a dockable state.
-  if (!lighthouseTabButton) {
-    await devToolsPage.clickMoreTabsButton();
-    lighthouseTabButton = await devToolsPage.waitForElementWithTextContent('Lighthouse');
-  }
-
-  // TODO(b/388183157): Investigate why a single click doesn't open the tab properly sometimes
-  const interval = setInterval(() => {
-    void lighthouseTabButton.click();
-  }, 500);
-
-  try {
-    await devToolsPage.waitFor('.view-container > .lighthouse');
-  } finally {
-    clearInterval(interval);
-  }
+  await openCommandMenu(devToolsPage);
+  await devToolsPage.typeText('Lighthouse');
+  await devToolsPage.page.keyboard.press('Enter');
+  await devToolsPage.waitFor('.view-container > .lighthouse');
 
   if (path) {
     await inspectedPage.bringToFront();

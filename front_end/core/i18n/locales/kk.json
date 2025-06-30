@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS мультимедиа түрін эмуляцияламау"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Операциялық жүйе мәтінінің масштабын эмуляцияламау"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Тор сызықтарын кеңейтпеу"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Дейтеранопия эмуляциясы (жасыл түссіз)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Операциялық жүйе мәтінінің масштабын эмуляциялау"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Протанопия эмуляциясы (қызыл түссіз)"
@@ -732,7 +738,31 @@
     "message": "Желі сұрауын блоктау"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "Эмуляция жоқ"
+    "message": "Эмуляциясыз"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (әдепкі)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
+    "message": "Эмуляциясыз"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "Ерекше жағдайларда кідірту"
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Басып шығару және экран стильдерін сынау үшін мультимедиа түрін күштеп іске қосады."
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Операциялық жүйе мәтінінің масштабын эмуляциялауға мәжбүрлейді"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Нашар көру эмуляциясын күштеп іске қосады"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Тартпаны ауыстыру"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Тартпа бағытын ауыстыру"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Бөлек терезеге алып тастау"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "URL мекенжайларында \\(n|r|t) өшірілген бос орын таңбаларынан тұратын ресурс сұраулары да, кіші таңбалар (<) да бөгеледі. Бұл ресурстарды жүктеу үшін элемент төлсипатының мәндері сияқты кіші таңбаларды кодтап, жаңа жолдарды өшіріңіз."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP таңбалар жиынын автоматты түрде анықтау функциясы қолданыстан шықты және ол жақын уақыттарда өшіріледі. Контент түрінің жоғарғы деректемесінде немесе метатэгті (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding) қолданып, таңбалар жиынын көрсетіңіз."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() қолданыстан шығарылды, оның орнына стандартталған API-ды пайдаланыңыз: навигация уақыты 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit орындалмады: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Өріс деректері қазіргі беттен басқа URL мекенжайы үшін конфигурацияланған."
+    "message": "Нақты пайдаланушы деректері қазіргі беттен басқа URL мекенжайы үшін конфигурацияланған."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Құрылғының пиксель арақатынасы нөмірмен көрсетілуі немесе бос болуы керек."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Басқаша сақтау…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Файл дискіге сақталмады."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Кескінді сақтау"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Ең өзекті формат өзгерісінің себептері"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Өлшемсіз суреттер"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Ең нашар кластер"
@@ -1839,7 +1875,7 @@
     "message": "Басқа жаққа бағыттау әрекеттері болды ({PH1} басқа жаққа бағыттау, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Сервер баяу жауап берді (анықталған уақыт: {PH1}) "
+    "message": "Сервер баяу жауап берді (анықталған уақыт: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Сығылмады."
@@ -1848,7 +1884,7 @@
     "message": "Басқа жаққа бағыттауға жол бермейді."
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Сервер жылдам жауап береді (анықталған уақыт: {PH1}) "
+    "message": "Сервер жылдам жауап береді (анықталған уақыт: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Мәтінді сығады."
@@ -2070,7 +2106,7 @@
     "message": "Беттің жүктелуін жақсарту үшін тізбектерді қысқарту, ресурстардың жүктеп алынатын өлшемін азайту немесе қажетсіз ресурстарды жүктеп алуды кейінге қалдыру арқылы [маңызды сұраулар тізбегінің құрылуына жол бермеңіз](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Ең маңызды дереккөздерге [алдын ала байланыстыру](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) тұспалдарын қосыңыз. Бірақ 4-тен азын пайдалануға тырысыңыз."
+    "message": "Ең маңызды дереккөздерге [алдын ала байланыстыру](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) тұспалдарын қосыңыз. Бірақ 4-тен асырмай пайдалануға тырысыңыз."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Нұсқаларды алдын ала байланыстыру"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Қарау терезесі мобильдік құрылғы үшін оңтайландырылмаса, түрту әрекеттері [300 мс-қа дейін кідіруі](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) мүмкін."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Мобильдік құрылғыны түрту кідірісі"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Мобильдік құрылғыға арналған қарау терезесін оңтайландыру"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Бұл функцияны пайдалану үшін әзірлеуші құралдарының параметрлерінде тілді ағылшын тіліне орнатыңыз."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Әңгімені бастау үшін жоғарыда ұсынылған нұсқаулардың бірін пайдалануға да болады"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Әзірлеуші құралдарындағы жасанды интеллект туралы ақпарат"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Жию"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" нысан қоймасын тазалау қажет пе?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" дерекқорын жою қажет пе?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Кілт"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Таңдалған нысан қоймасындағы деректер өшіріледі."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Нысан қоймалары"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Бұл кадр жарнаманың негізгі кадры болып анықталды."
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Түбірлік скриптінің сүзгілер тізімінің ережесі"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Қауіпсіз контекст"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (бастапқы картадан)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "\"Өзгерістер\" қойындысында екілік деректердің өзгерістері көрсетілмейді"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Бұл бетте әзірлеуші құралдарымен жасалған код өзгерістерін бақылауға болады."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Көшіру"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Әзірге өзгеріс енгізілмеді"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Мәтіндік айырмашылық жоқ"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# жою (-)}other{# жою (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# енгізу (+)}other{# енгізу (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Буферге көшірілді"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Өзгерістер"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Қазір ашық тұрған файлдағы барлық өзгеріс дерегін көшіру"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Осы файлға енгізілген барлық өзгерістерді қайтару"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Өзгерістерді көрсету"
@@ -5715,7 +5745,7 @@
     "message": "Тек осы контекст хабарларын көрсету (top, iframe, worker, кеңейтімі)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Сүзгінің жылжыту жолағы арқылы қайта анықталды"
+    "message": "Журнал деңгейлері консольдің жылжыту жолағы арқылы басқарылады."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Журналды сақтау"
@@ -6612,16 +6642,16 @@
     "message": "Көрініске айналдыру"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Мақсатқа арналған пәрменді көрсету"
+    "message": "commandfor төлсипатымен байланысты элементті көрсету"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe мәліметтерін көрсету"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Қызығушылыққа сәйкес мақсатты аудиторияны көрсету"
+    "message": "interesttarget төлсипатымен байланысты элементті көрсету"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Қалқымалы терезе мақсатын көрсету"
+    "message": "popovertarget төлсипатымен байланысты элементті көрсету"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Бұл кадр жарнама кадры ретінде анықталды"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "құрастырылған стильдер кестесі"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Барлық CSS өзгерісі дерегін көшіру"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Барлық мәлімдемені көшіру"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "инспектор арқылы"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Барлық CSS өзгерісі дерегін көшіру"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Барлық мәлімдемені JS ретінде көшіру"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Арнайы мүмкіндіктер"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Тексеру барысында компьютерлік эмуляция қолдану"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Мобильдік эмуляция қолдану"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Жинақты қайта реттеу"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "пайыз"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Профиль атауы"
   },
@@ -9329,6 +9353,9 @@
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Қашықтағы мекенжай орны"
   },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Тақырыптарды сұрау"
+  },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Жауап тақырыптары"
   },
@@ -9978,7 +10005,7 @@
     "message": "Қашықтағы мекенжай"
   },
   "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "Тақырыптарды сұрау"
+    "message": "Сұрау тақырыптары"
   },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "Сұрау әдісі"
@@ -12057,7 +12084,7 @@
     "message": "Тіл"
   },
   "panels/sensors/SensorsView.ts | location": {
-    "message": "Орын"
+    "message": "Локация"
   },
   "panels/sensors/SensorsView.ts | locationUnavailable": {
     "message": "Орналасқан жері белгісіз"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Басқаша сақтау…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Файл дискіге сақталмады."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Қайта анықталған мәндер үшін қалтаны таңдау"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Мәндер өрнектерін жаңарту"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Бақылау өрнегі жойылды"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} тоқтату нүктесін басу"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Мәліметтер"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Өлшемдер"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Ұзақтық"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Толық ақпарат"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Орын"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Хабар"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (туынды элементтер)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} жиналды"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "CSS таңдау құралының жан-жақты сәйкестендіру статистикасын жинау үшін \"{PH1}\" опциясын таңдаңыз."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (өзіндік)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Скрипт"
@@ -14682,19 +14694,19 @@
     "message": "Конфигурациялау"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Өріс деректерін алу әрекетін конфигурациялау"
+    "message": "Нақты пайдаланушы деректерін алу әрекетін конфигурациялау"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX есебінде бұл бетке арналған шынайы жылдамдық деректері жеткіліксіз."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Жергілікті өлшемдерді нақты пайдаланушы сайттан көретін өлшемдермен сәйкестендіру үшін {PH1} ішінен жиынтық өріс деректерін алу."
+    "message": "Жергілікті өлшемдерді нақты пайдаланушы сайттан көретін өлшемдермен сәйкестендіру үшін {PH1} ішінен жиынтықталған нақты пайдаланушы деректері алынады."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" жарамды дереккөз немесе URL емес."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Әзірлеу дереккөзін өзінің өндірістің дереккөзіне қатысты өріс деректерін автоматты түрде алатындай орнату."
+    "message": "Әзірлеу дереккөзін өзінің өндірістің дереккөзіне қатысты нақты пайдаланушы деректерін автоматты түрде алатындай орнатуға болады."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Жаңа"
@@ -14703,7 +14715,7 @@
     "message": "Жарайды"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Төмендегі URL мекенжайына арналған өріс деректерін үнемі көрсету"
+    "message": "Төмендегі URL мекенжайына арналған нақты пайдаланушы деректерін үнемі көрсету"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Бас тарту"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Әзірлеуші құралдары ашық болған кезде, өріс деректерін сұрау үшін сіз кіретін URL мекенжайлары Google-ға жіберіледі. Бұл сұраулар Google аккаунтыңызбен байланыстырылмайды."
+    "message": "Әзірлеуші құралдары ашық болған кезде, нақты пайдаланушы деректерін сұрау үшін сіз кіретін URL мекенжайлары Google-ға жіберіледі. Бұл сұраулар Google аккаунтыңызбен байланыстырылмайды."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Скриптінің URL мекенжайы үшін тұрақты өрнек ережесін қосу"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Әрекеттестік және формат өзгерісі журналдарының бөлімі"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Өріс деректері"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Нақты пайдаланушы деректері"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP әрекеттестігі әрекеттестік кідірістерінің 98-процентилінде."
@@ -14856,10 +14868,10 @@
     "message": "Жергілікті және өрістік көрсеткіштер"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Жергілікті және өріс деректері туралы толық ақпарат"
+    "message": "Жергілікті және нақты пайдаланушы деректері туралы толық ақпарат"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Жергілікті көрсеткіштер желі байланысы және құрылғы арқылы қазіргі беттен алынады. Өріс деректерін нақты пайдаланушылар көптеген әртүрлі желі байланысы мен құрылғы арқылы өлшейді."
+    "message": "Нақты пайдаланушы деректері желі байланысы және құрылғы арқылы қазіргі беттен алынады. Деректерді нақты пайдаланушылар әртүрлі желі байланыстары мен құрылғылар көмегімен өлшейді."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Жергілікті көрсеткіштер"
@@ -14922,10 +14934,10 @@
     "message": "Ең нашар макет өзгерісі кластеріне өтіңіз."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Келесі құрылғы түрі үшін өріс деректерін көрсету: {PH1}"
+    "message": "Келесі құрылғы түрі үшін нақты пайдаланушы деректерін көрсету: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} үшін өріс деректерін көрсету"
+    "message": "{PH1} үшін нақты пайдаланушы деректерін көрсету"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP әрекеттестігіне өту."
@@ -15033,13 +15045,13 @@
     "message": "Жергілікті {PH1}/{PH2} мәні жақсы, бірақ пайдаланушы тәжірибесімен салыстырғанда айтарлықтай жақсы."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні жақсы және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Оған қоса өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні жақсы."
+    "message": "Жергілікті {PH2} {PH1} мәні жақсы және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Оған қоса нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні жақсы."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні жақсы және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәнін жақсарту қажет."
+    "message": "Жергілікті {PH2} {PH1} мәні жақсы және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәнін жақсарту қажет."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні жақсы және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні нашар."
+    "message": "Жергілікті {PH2} {PH1} мәні жақсы және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні нашар."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Жергілікті {PH1}/{PH2} мәні жақсы және пайдаланушы тәжірибесімен бірдей."
@@ -15054,13 +15066,13 @@
     "message": "Жергілікті {PH1}/{PH2} мәнін жақсарту қажет және пайдаланушы тәжірибесімен салыстырғанда айтарлықтай жоғары деңгейде."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні жақсы."
+    "message": "Жергілікті {PH2} {PH1} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні жақсы."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Онымен қоса өріс деректерінің 75-процентилінің {PH1}/{PH3} мәнін жақсарту қажет."
+    "message": "Жергілікті {PH2} {PH1} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Онымен қоса нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәнін жақсарту қажет."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні нашар."
+    "message": "Жергілікті {PH2} {PH1} мәнін жақсарту қажет және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні нашар."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Жергілікті {PH1}/{PH2} мәнін жақсарту қажет және ол пайдаланушы тәжірибесімен бірдей."
@@ -15075,13 +15087,13 @@
     "message": "Жергілікті {PH1}/{PH2} мәні нашар, бірақ пайдаланушы тәжірибесімен салыстырғанда айтарлықтай жақсы."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні нашар және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні жақсы."
+    "message": "Жергілікті {PH2} {PH1} мәні нашар және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні жақсы."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні нашар және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Алайда өріс деректерінің 75-процентилінің {PH1}/{PH3} мәнін жақсарту қажет."
+    "message": "Жергілікті {PH2} {PH1} мәні нашар және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Алайда нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәнін жақсарту қажет."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Жергілікті {PH1}/{PH2} мәні нашар және {PH4}/{PH1} нақты пайдаланушы тәжірибесі сияқты бағаланады. Оған қоса өріс деректерінің 75-процентилінің {PH1}/{PH3} мәні нашар."
+    "message": "Жергілікті {PH2} {PH1} мәні нашар және ол нақты пайдаланушылардың {PH1} қолдану тәжірибесі үшін {PH4} мәнімен бірдей бағаланады. Оған қоса нақты пайдаланушы деректерінің 75-процентилінің {PH3} {PH1} мәні нашар."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Жергілікті {PH1}/{PH2} мәні нашар және пайдаланушы тәжірибесімен бірдей."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools-ды мына тілге ауыстыру: {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Тартпа бағытын ауыстыру"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Қосу"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} арналған скриншот – оны таңдап, алдыңғы сұрауларды көріңіз."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Аннотацияларды жою"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Тректерді конфигурациялау"

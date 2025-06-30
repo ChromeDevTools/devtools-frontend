@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS media type அம்சத்தைச் செயல்படுத்தாதே"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS டெக்ஸ்ட் ஸ்கேலை எமுலேட் செய்யாதே"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "கட்டங்களை விரிவாக்க வேண்டாம்"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "டியூடெரோனோபியாவை (பச்சை இல்லாதது) செயல்படுத்துதல்"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS டெக்ஸ்ட் ஸ்கேலை எமுலேட் செய்தல்"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ப்ரோடனோபியாவை (சிவப்பு இல்லாதது) செயல்படுத்து"
@@ -732,7 +738,31 @@
     "message": "நெட்வொர்க் கோரிக்கையைத் தடுத்தல்"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
-    "message": "எதையும் இயக்காதே"
+    "message": "எமுலேஷன் செய்யாதே"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (இயல்பு)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
+    "message": "எமுலேஷன் செய்யாதே"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
     "message": "எக்ஸெப்ஷன்களின்போது இடைநிறுத்து"
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "பிரிண்ட், திரை ஆகிய ஸ்டைல்களைச் சோதனை செய்வதற்கான மீடியா வகையை இயக்கும்"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS டெக்ஸ்ட் ஸ்கேல் எமுலேஷனைச் செயல்படுத்தும்"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "பார்வைக் குறைபாட்டிற்கான மாதிரி இயக்கத்தை இயக்கும்"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "டிராயரைத் திறக்கும்"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "டிராயர் திசையமைப்பை இயக்கும் அல்லது முடக்கும்"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "தனி சாளரத்தில் காட்டு"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "அகற்றப்பட்ட இடைவெளி \\(n|r|t) எழுத்துகள், ‘குறைவைக்’ குறிக்கும் எழுத்துகள் (<) ஆகிய இரண்டும் இருக்கும் URLகளின் ஆதாரக் கோரிக்கைகள் தடுக்கப்பட்டுள்ளன. இந்த ஆதாரங்களை ஏற்ற, நியூலைன்களை அகற்றி ‘குறைவைக்’ குறிக்கும் எழுத்துகளை எலிமெண்ட் ஆட்ரிபியூட் மதிப்புகள் போன்ற இடங்களில் இருந்து என்கோடிங் செய்யவும்."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP எழுத்து அமைப்பைத் தானாகக் கண்டறிதல் நிறுத்தப்பட்டது, இது கூடிய விரைவில் முடக்கப்படும். Content-Type தலைப்பிலோ மேலதிகத் தகவலை பயன்படுத்தியோ எழுத்து அமைப்பைக் குறிப்பிடவும் (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() செயல்பாடு நிறுத்தப்பட்டது, இதற்குப் பதிலாகப் பின்வரும் நிலையான APIயைப் பயன்படுத்தவும்: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit செய்ய முடியவில்லை: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "தற்போதைய தளத்திற்கு இல்லாமல் வேறொரு URLலுக்குப் புலத் தரவு உள்ளமைக்கப்பட்டுள்ளது."
+    "message": "தற்போதைய தளத்திற்கு இல்லாமல் வேறொரு URLலுக்குப் புல அளவீடுகள் உள்ளமைக்கப்பட்டுள்ளன."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "சாதனத்தின் பிக்சல் விகித மதிப்பு எண்ணாகவோ காலியாகவோ இருக்க வேண்டும்."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "இப்படிச் சேமி…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ஃபைலை டிஸ்க்கில் சேமிக்க முடியவில்லை."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "படத்தைச் சேமி"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "லே-அவுட் ஷிஃப்ட்டுக்கான முக்கியமான காரணங்கள்"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "அளவு குறிப்பிடப்படாத படங்கள்"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "மோசமான கிளஸ்டர்"
@@ -1839,7 +1875,7 @@
     "message": "திசைதிருப்புதல்கள் இருந்தன ({PH1} திசைதிருப்புதல்கள், +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "சேவையகம் மெதுவாகப் பதிலளித்தது (கண்டறியப்பட்டது {PH1}) "
+    "message": "சேவையகம் மெதுவாகப் பதிலளித்தது (கண்டறியப்பட்டது {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "சுருக்குதல் பயன்படுத்தப்படவில்லை"
@@ -1848,7 +1884,7 @@
     "message": "திசைதிருப்புதல்களைத் தவிர்க்கும்"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "சேவையகம் வேகமாகப் பதிலளித்தது (கண்டறியப்பட்டது {PH1}) "
+    "message": "சேவையகம் வேகமாகப் பதிலளித்தது (கண்டறியப்பட்டது {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "வார்த்தைச் சுருக்குதலைப் பயன்படுத்துகிறது"
@@ -2070,7 +2106,7 @@
     "message": "செயின்களின் நீளத்தைக் குறைத்தல், ஆதாரங்களின் பதிவிறக்க அளவைக் குறைத்தல், பக்கம் ஏற்றப்படுவதன் வேகத்தை அதிகரிக்க தேவையற்ற ஆதாரங்களைப் பதிவிறக்குவதைத் தவிர்த்தல் போன்றவற்றின் மூலம் [முக்கியக் கோரிக்கைகளின் செயினிங்கைத் தவிர்க்கலாம்](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "உங்களின் மிகவும் முக்கியமான ஆரிஜின்களுடன் [முன்னிணைப்புக்](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) குறிப்புகளைச் சேர்க்கவும், ஆனால் 4க்கும் குறைவாகப் பயன்படுத்தவும்."
+    "message": "உங்களின் மிகவும் முக்கியமான ஆரிஜின்களுடன் [முன்னிணைப்புக்](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) குறிப்புகளைச் சேர்க்கவும், ஆனால் 4க்கும் அதிகமாகப் பயன்படுத்தவும்."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "முன்னிணைப்புக்கான ஆரிஜின்கள்"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "காட்சிப் பகுதி மொபைலுக்கு ஏற்றவாறு மேம்படுத்தப்படவில்லை என்றால் தட்டுதல் செயல்பாடுகள் [300 மிவி வரை தாமதம் ஆகக்கூடும்](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "மொபைல் தட்டல் தாமதம்"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "காட்சிப் பகுதியை மொபைலுக்கு ஏற்றதாக மேம்படுத்துதல்"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "இந்த அம்சத்தைப் பயன்படுத்த, டெவெலப்பர் கருவிகள் அமைப்புகளில் உங்களின் விருப்ப மொழியை ஆங்கிலம் என்று அமைத்திடுங்கள்."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "உங்கள் உரையாடலைத் தொடங்க மேலே பரிந்துரைக்கப்பட்டுள்ள ப்ராம்ப்ட்டுகளில் ஏதேனும் ஒன்றையும் பயன்படுத்தலாம்"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "டெவெலப்பர் கருவிகளில் AI குறித்துத் தெரிந்துகொள்ளுங்கள்"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "சுருக்கு"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" ஆப்ஜெக்ட் சேமிப்பை அழிக்கவா?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" தரவுத்தளத்தை நீக்கவா?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "குறியீடு"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "தேர்ந்தெடுத்த ஆப்ஜெக்ட் சேமிப்பில் இருந்த தரவு அகற்றப்படும்."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ஆப்ஜெக்ட் சேமிப்பு"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ஒரு விளம்பரத்தின் மூல ஃபிரேமாக இந்த ஃபிரேம் அடையாளம் காணப்பட்டுள்ளது"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "ரூட் ஸ்கிரிப்ட் ஃபில்டர்லிஸ்ட் விதி"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "பாதுகாப்பான காண்டெக்ஸ்ட்"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (சோர்ஸ் மேப்பில் இருந்து)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "'மாற்றங்கள் பக்கம்' பைனரி தரவு மாற்றங்களைக் காட்டாது"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "டெவெலப்பர் கருவிகளில் செய்யப்பட்ட குறியீட்டு மாற்றங்களை இந்தப் பக்கத்தில் கண்காணிக்கலாம்."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "நகலெடு"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "தற்போது மாற்றங்கள் எதுவுமில்லை"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "வார்த்தை வித்தியாசம் எதுவுமில்லை"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# நீக்குதல் (-)}other{# நீக்குதல்கள் (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# செருகுதல் (+)}other{# செருகுதல்கள் (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "மாற்றங்கள்"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "தற்போதைய ஃபைலில் செய்யப்பட்ட மாற்றங்கள் அனைத்தையும் நகலெடுக்கும்"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "தற்போதைய ஃபைலில் செய்த எல்லா மாற்றங்களையும் ரத்துசெய்து பழையபடி மாற்றும்"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "மாற்றங்களைக் காட்டு"
@@ -5715,7 +5745,7 @@
     "message": "தற்போதைய உள்ளடக்கத்தில் இருந்து மட்டும் மெசேஜ்களைக் காட்டும் (top, iframe, worker, நீட்டிப்பு)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "வடிகட்டி பக்கப்பட்டி மூலம் மாற்றப்பட்டுள்ளது"
+    "message": "கன்சோல் பக்கப்பட்டி மூலம் பதிவின் நிலைகள் கட்டுப்படுத்தப்படுகின்றன."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "பதிவைச் சேமி"
@@ -6612,16 +6642,16 @@
     "message": "காட்டப்படும் வரை நகர்த்துக"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor இலக்கைக் காட்டும்"
+    "message": "commandfor பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe விவரங்களைக் காட்டு"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "தேவையான எலிமெண்ட்டைக் காட்டும்"
+    "message": "interesttarget பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "பாப்ஓவர் இலக்கைக் காட்டும்"
+    "message": "popovertarget பண்புக்கூறுடன் தொடர்புடைய எலிமெண்ட்டைக் காட்டும்"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "இந்த ஃபிரேம் விளம்பர ஃபிரேமாக அடையாளம் காணப்பட்டுள்ளது"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "அமைக்கப்பட்ட ஸ்டைல்ஷீட்"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடு"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "அறிவிப்புகள் அனைத்தையும் நகலெடு"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "கண்காணிப்புக் கருவி மூலம்"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடு"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "வரையறைகள் அனைத்தையும் JS ஆக நகலெடு"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "மாற்றுத்திறன் வசதி"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "தணிக்கையின்போது டெஸ்க்டாப் எமுலேஷனைப் பயன்படுத்து"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "மொபைல் மாதிரி இயக்கத்தைப் பயன்படுத்து"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "பாக்கெட் மறுவரிசைப்படுத்தல்"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "சதவீதம்"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "சுயவிவரப் பெயர்"
   },
@@ -8802,7 +8826,7 @@
     "message": "பிரத்தியேகமான பயனர் ஏஜெண்ட்டை உள்ளிடுக"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "நெட்வொர்க் நிலைகள் காட்டப்படுகின்றன"
+    "message": "நெட்வொர்க் நிலைகள் காட்டப்படுகின்றன."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "நெட்வொர்க் த்ராட்லிங்"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "தொலைநிலை முகவரி இடம்"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "கோரிக்கைத் தலைப்புகள்"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "பதிலளிப்புத் தலைப்புகள்"
@@ -11943,7 +11970,7 @@
     "message": "துல்லியத்தன்மையின் மதிப்பு எண்ணாக இருக்க வேண்டும்"
   },
   "panels/sensors/LocationsSettingsTab.ts | accuracyMustBeGreaterThanOrEqual": {
-    "message": "துல்லியத்தன்மை {PH1}ஐ விட அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
+    "message": "துல்லியத்தன்மை {PH1}க்கு அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "இருப்பிடத்தைச் சேர்"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "இப்படிச் சேமி…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ஃபைலை டிஸ்க்கில் சேமிக்க முடியவில்லை."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "மீறிச் செயல்பட, ஃபோல்டர்களைத் தேர்ந்தெடுக்கவும்"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "வாட்ச் எக்ஸ்ப்ரெஷன்களைப் புதுப்பிக்கும்"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "வாட்ச் எக்ஸ்ப்ரெஷன் நீக்கப்பட்டது"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} பிரேக்பாயிண்ட் ஹிட்"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "விவரங்கள்"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "பரிமாணங்கள்"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "கால அளவு"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "மேலும் அறிக"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "இருப்பிடம்"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "மெசேஜ்"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (உபநிலை)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} சேகரிக்கப்பட்டது"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "CSS தேர்வியுடன் பொருந்தும் விரிவான புள்ளிவிவரங்களைச் சேகரிக்க \"{PH1}\" ஐத் தேர்ந்தெடுக்கவும்."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (சுய நேரம்)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "ஸ்கிரிப்ட்"
@@ -14682,19 +14694,19 @@
     "message": "உள்ளமை"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "புலத் தரவு பெறுவதை உள்ளமைத்தல்"
+    "message": "புல அளவீடுகளைப் பெறுவதை உள்ளமைத்தல்"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Reportடில் இந்தப் பக்கத்தின் வேகம் குறித்த போதுமான நிகழ்நேரத் தரவு இல்லை."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "ஒருங்கிணைக்கப்பட்ட அசல் தரவை {PH1} இல் இருந்து பெறும். இதன் மூலம் தளத்தில் அசல் பயனர் அனுபவத்தின் அளவீடுகளை, ஆய்வக அளவீடுகளுடன் ஒப்பிட்டுப் புரிந்துகொள்ளலாம்."
+    "message": "ஒருங்கிணைக்கப்பட்ட புல அளவீடுகளை {PH1} இல் இருந்து பெறும். இதன் மூலம் தளத்தில் அசல் பயனர் அனுபவத்தின் அளவீடுகளை, ஆய்வக அளவீடுகளுடன் ஒப்பிட்டுப் புரிந்துகொள்ளலாம்."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" என்பது தவறான ஆரிஜின் அல்லது URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "தொடர்புடைய அசல் தரவைத் தானாகப் பெற, புரொடக்ஷன் ஆரிஜினுக்கான டெவெலப்மெண்ட் ஆரிஜினை அமைக்கலாம்."
+    "message": "தொடர்புடைய புல அளவீடுகளைத் தானாகப் பெற, புரொடக்ஷன் ஆரிஜினுக்கான டெவெலப்மெண்ட் ஆரிஜினை அமைக்கலாம்."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "புதிது"
@@ -14703,7 +14715,7 @@
     "message": "சரி"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "கீழேயுள்ள URLலுக்கான அசல் தரவை எப்போதும் காட்டு"
+    "message": "கீழேயுள்ள URLலுக்கான புல அளவீடுகளை எப்போதும் காட்டு"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "வேண்டாம்"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "டெவெலப்பர் கருவிகள் திறந்திருக்கும்போது, நீங்கள் பார்வையிடும் URLகள் புலத் தரவை வினவுவதற்காக Googleளுக்கு அனுப்பப்படும். இந்தக் கோரிக்கைகள் உங்கள் Google கணக்குடன் தொடர்புபடுத்தப்படாது."
+    "message": "டெவெலப்பர் கருவிகள் திறந்திருக்கும்போது, நீங்கள் பார்வையிடும் URLகள் புல அளவீடுகளை வினவுவதற்காக Googleளுக்கு அனுப்பப்படும். இந்தக் கோரிக்கைகள் உங்கள் Google கணக்குடன் தொடர்புபடுத்தப்படாது."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "ஸ்கிரிப்ட்டின் URLலுக்கான ரெகுலர் எக்ஸ்ப்ரெஷன் விதியைச் சேர்க்கலாம்"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "இன்டராக்ஷன் மற்றும் லே-அவுட் ஷிஃப்ட் பதிவுகள் பிரிவு"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "புலத் தரவு"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "புல அளவீடுகள்"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "இன்டராக்ஷன் தாமதங்களின் 98வது சதமானத்தில் INP இன்டராக்ஷன் உள்ளது."
@@ -14856,10 +14868,10 @@
     "message": "லோக்கல் மற்றும் அசல் அளவீடுகள்"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "லோக்கல் மற்றும் ஃபீல்டு தரவு குறித்து மேலும் தெரிந்துகொள்ளுங்கள்"
+    "message": "லோக்கல் மற்றும் புல அளவீடுகள் குறித்து மேலும் தெரிந்துகொள்ளுங்கள்"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "உங்கள் நெட்வொர்க் இணைப்பு, சாதனம் ஆகியவற்றைப் பயன்படுத்தி தற்போதைய பக்கத்தில் இருந்து லோக்கல் அளவீடுகள் எடுக்கப்படுகின்றன. வெவ்வேறு நெட்வொர்க் இணைப்புகளையும் சாதனங்களையும் பயன்படுத்தி அசல் பயனர்களால் ஃபீல்டு தரவு கணக்கிடப்படுகிறது."
+    "message": "உங்கள் நெட்வொர்க் இணைப்பு, சாதனம் ஆகியவற்றைப் பயன்படுத்தி தற்போதைய பக்கத்தில் இருந்து லோக்கல் அளவீடுகள் எடுக்கப்படுகின்றன. வெவ்வேறு நெட்வொர்க் இணைப்புகளையும் சாதனங்களையும் பயன்படுத்தி அசல் பயனர்களால் புல அளவீடுகள் கணக்கிடப்படுகிறது."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "லோக்கல் அளவீடுகள்"
@@ -14922,10 +14934,10 @@
     "message": "மோசமான லே-அவுட் ஷிஃப்ட் கிளஸ்டருக்குச் செல்லும்."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "இந்தச் சாதன வகைக்கான அசல் தரவைக் காட்டு: {PH1}"
+    "message": "இந்தச் சாதன வகைக்கான புல அளவீடுகளைக் காட்டு: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} இணைப்பிற்கான அசல் தரவைக் காட்டு"
+    "message": "{PH1} இணைப்பிற்கான புல அளவீடுகளைக் காட்டு"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP இன்டராக்ஷனுக்குச் செல்லும்."
@@ -15033,13 +15045,13 @@
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} நன்றாக உள்ளது. ஆனால், இது உங்கள் பயனரின் அனுபவத்தைவிட குறிப்பிடத்தக்க வகையில் சிறப்பாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} நன்றாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} நன்றாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} சிறப்பாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2}சிறப்பாக உள்ளது. இது, உங்கள் பயனர்களின் அனுபவத்தைப் போன்றே உள்ளது."
@@ -15054,13 +15066,13 @@
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். ஆனால், இது உங்கள் பயரின் அனுபவத்தைவிட குறிப்பிடத்தக்க வகையில் சிறப்பாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} சிறப்பாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} சிறப்பாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} ஐ மேம்படுத்த வேண்டும். இது, உங்கள் பயனர்களின் அனுபவத்தைப் போன்றே உள்ளது."
@@ -15075,13 +15087,13 @@
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. ஆனால், இது உங்கள் பயனரின் அனுபவத்தைவிட குறிப்பிடத்தக்க வகையில் சிறப்பாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர்{PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} சிறப்பாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} சிறப்பாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர்{PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. இருப்பினும், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} ஐ மேம்படுத்த வேண்டும்."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர்{PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், அசல் தரவின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
+    "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, அசல் பயனர் {PH1} அனுபவங்களின் {PH4} போன்றதாகவே வகைப்படுத்தப்பட்டுள்ளது. அத்துடன், புல அளவீடுகளின் 75வது சதமானம் {PH1} மதிப்பு {PH3} மோசமாக உள்ளது."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "உங்கள் லோக்கல் {PH1} மதிப்பு {PH2} மோசமாக உள்ளது. இது, உங்கள் பயனர்களின் அனுபவத்தைப் போன்றே உள்ளது."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "டெவெலப்பர் கருவிகளை {PH1} மொழிக்கு மாற்று"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "டிராயர் திசையமைப்பை இயக்கும் அல்லது முடக்கும்"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "சேர்"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1}க்கான ஸ்கிரீன்ஷாட் - முந்தைய கோரிக்கைகளைப் பார்க்க தேர்ந்தெடுக்கவும்."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "குறிப்புகளை நீக்கு"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "டிராக்குகளை உள்ளமை"

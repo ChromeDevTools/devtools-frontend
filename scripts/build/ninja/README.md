@@ -161,13 +161,13 @@ If you are adding a new file to the codebase, you must update this file else you
 
 ### Entrypoints
 
-All entrypoints are listed in `grd_files_release_sources` specified in `/config/gni/devtools_grd_files.gni`. If you create a new module and thus a new entrypoint, you must add it to this list.
+All entrypoints are listed in `grd_files_bundled_sources` specified in `/config/gni/devtools_grd_files.gni`. If you create a new module and thus a new entrypoint, you must add it to this list.
 
 > Rule: in both release and debug builds, entrypoints are always included in the GRD file.
 
 ### Module implementation files
 
-All implementation files for components are listed in `grd_files_debug_sources` specified in `/config/gni/devtools_grd_files.gni`. If you create a new file within a module, you must add it to this list.
+All implementation files for components are listed in `grd_files_unbundled_sources` specified in `/config/gni/devtools_grd_files.gni`. If you create a new file within a module, you must add it to this list.
 
 > Rule: the implementation files are only present in the GRD file in a debug build, because the release build bundles all files into the respective entrypoint.
 
@@ -188,4 +188,3 @@ Since GN has no notion of a "root" folder for DevTools, computation of sub-folde
 Additionally, GN is a [timestamp-based build system](https://gn.googlesource.com/gn/+/master/docs/reference.md#target-declarations-action_declare-a-target-that-runs-a-script-a-single-time-outputs) when checking for correctness.
 This means that you want to avoid writing to the file system if the content stays the same.
 For Node scripts, use the `writeIfChanged` function from [write-if-changed.js](./write-if-changed.js) to integrate nicely with GN.
-

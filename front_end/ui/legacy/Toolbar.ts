@@ -1284,6 +1284,9 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
    * 2. When the value of the select is changed, triggering a change to the setting.
    */
 
+  /**
+   * Runs when the DevTools setting is changed
+   */
   private onDevToolsSettingChanged(): void {
     if (this.muteSettingListener) {
       return;
@@ -1306,20 +1309,27 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
     this.muteSettingListener = true;
     this.setting.set(option.value);
     this.muteSettingListener = false;
+    // Because we mute the DevTools setting change listener, we need to
+    // manually update the title here.
+    this.setTitle(option.label);
   }
 }
 
 export class ToolbarCheckbox extends ToolbarItem<void> {
+  #checkboxLabel: CheckboxLabel;
   constructor(
       text: Common.UIString.LocalizedString, tooltip?: Common.UIString.LocalizedString,
       listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
-    super(CheckboxLabel.create(text, undefined, undefined, jslogContext));
+    const checkboxLabel = CheckboxLabel.create(text, undefined, undefined, jslogContext);
+    super(checkboxLabel);
     if (tooltip) {
       Tooltip.install(this.element, tooltip);
     }
     if (listener) {
       this.element.addEventListener('click', listener, false);
     }
+
+    this.#checkboxLabel = checkboxLabel;
   }
 
   checked(): boolean {
@@ -1337,6 +1347,14 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 
   setIndeterminate(indeterminate: boolean): void {
     (this.element as CheckboxLabel).indeterminate = indeterminate;
+  }
+
+  /**
+   * Sets the user visible text shown alongside the checkbox.
+   * If you want to update the title/aria-label, use setTitle.
+   */
+  setLabelText(content: Common.UIString.LocalizedString): void {
+    this.#checkboxLabel.setLabelText(content);
   }
 }
 
@@ -1382,5 +1400,6 @@ export const enum ToolbarItemLocation {
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-toolbar': Toolbar;
+    'devtools-toolbar-input': ToolbarInputElement;
   }
 }

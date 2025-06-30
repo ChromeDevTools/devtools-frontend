@@ -465,6 +465,18 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     }
   }
 
+  override createCells(element: Element): void {
+    const configCells = [...this.#configElement.querySelectorAll('td')];
+    const hasCollspan = configCells.some(cell => cell.hasAttribute('colspan'));
+    if (!hasCollspan) {
+      super.createCells(element);
+    } else {
+      for (const cell of configCells) {
+        element.appendChild(cell.cloneNode(true));
+      }
+    }
+  }
+
   override createCell(columnId: string): HTMLElement {
     const index = this.#dataGridElement.columns.findIndex(({id}) => id === columnId);
     if (this.#dataGridElement.columns[index].dataType === DataType.BOOLEAN) {

@@ -170,6 +170,14 @@ export class EmulationModel extends SDKModel<void> {
       void this.emulateVisionDeficiency(visionDeficiencySetting.get());
     }
 
+    const osTextScaleSetting = Common.Settings.Settings.instance().moduleSetting('emulated-os-text-scale');
+    osTextScaleSetting.addChangeListener(() => {
+      void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
+    });
+    if (osTextScaleSetting.get()) {
+      void this.emulateOSTextScale(parseFloat(osTextScaleSetting.get()) || undefined);
+    }
+
     const localFontsDisabledSetting = Common.Settings.Settings.instance().moduleSetting('local-fonts-disabled');
     localFontsDisabledSetting.addChangeListener(() => this.setLocalFontsDisabled(localFontsDisabledSetting.get()));
     if (localFontsDisabledSetting.get()) {
@@ -344,6 +352,10 @@ export class EmulationModel extends SDKModel<void> {
   private async emulateVisionDeficiency(type: Protocol.Emulation.SetEmulatedVisionDeficiencyRequestType):
       Promise<void> {
     await this.#emulationAgent.invoke_setEmulatedVisionDeficiency({type});
+  }
+
+  private async emulateOSTextScale(scale: number|undefined): Promise<void> {
+    await this.#emulationAgent.invoke_setEmulatedOSTextScale({scale: scale || undefined});
   }
 
   private setLocalFontsDisabled(disabled: boolean): void {

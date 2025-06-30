@@ -550,12 +550,8 @@ export const generatedProperties = [
    "mask-repeat",
    "mask-size",
    "mask-type",
-   "masonry-auto-tracks",
    "masonry-direction",
    "masonry-fill",
-   "masonry-template-tracks",
-   "masonry-track-end",
-   "masonry-track-start",
    "math-depth",
    "math-shift",
    "math-style",
@@ -1870,6 +1866,20 @@ export const generatedProperties = [
   "name": "content-visibility"
  },
  {
+  "longhands": [
+   "corner-end-start-shape",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-block-end-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-start-shape",
+   "corner-start-end-shape"
+  ],
+  "name": "corner-block-start-shape"
+ },
+ {
   "keywords": [
    "notch",
    "scoop",
@@ -1892,10 +1902,45 @@ export const generatedProperties = [
   "name": "corner-bottom-right-shape"
  },
  {
+  "longhands": [
+   "corner-bottom-left-shape",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-bottom-shape"
+ },
+ {
   "name": "corner-end-end-shape"
  },
  {
   "name": "corner-end-start-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-end-shape",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-inline-end-shape"
+ },
+ {
+  "longhands": [
+   "corner-start-start-shape",
+   "corner-end-start-shape"
+  ],
+  "name": "corner-inline-start-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-left-shape",
+   "corner-bottom-left-shape"
+  ],
+  "name": "corner-left-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-right-shape",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-right-shape"
  },
  {
   "longhands": [
@@ -1933,6 +1978,29 @@ export const generatedProperties = [
    "square"
   ],
   "name": "corner-top-right-shape"
+ },
+ {
+  "longhands": [
+   "corner-top-left-shape",
+   "corner-top-right-shape"
+  ],
+  "name": "corner-top-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-left-radius",
+   "corner-top-left-shape",
+   "border-top-right-radius",
+   "corner-top-right-shape",
+   "border-bottom-right-radius",
+   "corner-bottom-right-shape",
+   "border-bottom-left-radius",
+   "corner-bottom-left-shape"
+  ],
+  "name": "corners"
  },
  {
   "keywords": [
@@ -2938,12 +3006,23 @@ export const generatedProperties = [
   "name": "mask-clip"
  },
  {
+  "keywords": [
+   "add",
+   "subtract",
+   "intersect",
+   "exclude"
+  ],
   "name": "mask-composite"
  },
  {
   "name": "mask-image"
  },
  {
+  "keywords": [
+   "alpha",
+   "luminance",
+   "match-source"
+  ],
   "name": "mask-mode"
  },
  {
@@ -2971,14 +3050,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
-   "min-content",
-   "max-content"
-  ],
-  "name": "masonry-auto-tracks"
- },
- {
-  "keywords": [
    "row",
    "row-reverse",
    "column",
@@ -2999,28 +3070,6 @@ export const generatedProperties = [
    "masonry-fill"
   ],
   "name": "masonry-flow"
- },
- {
-  "name": "masonry-template-tracks"
- },
- {
-  "longhands": [
-   "masonry-track-start",
-   "masonry-track-end"
-  ],
-  "name": "masonry-track"
- },
- {
-  "keywords": [
-   "auto"
-  ],
-  "name": "masonry-track-end"
- },
- {
-  "keywords": [
-   "auto"
-  ],
-  "name": "masonry-track-start"
  },
  {
   "inherited": true,
@@ -3176,12 +3225,6 @@ export const generatedProperties = [
    "none"
   ],
   "name": "origin-trial-test-property"
- },
- {
-  "longhands": [
-   "origin-trial-test-property"
-  ],
-  "name": "origin-trial-test-shorthand"
  },
  {
   "inherited": true,
@@ -5348,6 +5391,11 @@ export const generatedPropertyValues = {
    "square"
   ]
  },
+ "corners": {
+  "values": [
+   "normal"
+  ]
+ },
  "counter-increment": {
   "values": [
    "none"
@@ -5950,17 +5998,25 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "mask-composite": {
+  "values": [
+   "add",
+   "subtract",
+   "intersect",
+   "exclude"
+  ]
+ },
+ "mask-mode": {
+  "values": [
+   "alpha",
+   "luminance",
+   "match-source"
+  ]
+ },
  "mask-type": {
   "values": [
    "luminance",
    "alpha"
-  ]
- },
- "masonry-auto-tracks": {
-  "values": [
-   "auto",
-   "min-content",
-   "max-content"
   ]
  },
  "masonry-direction": {
@@ -5975,16 +6031,6 @@ export const generatedPropertyValues = {
   "values": [
    "normal",
    "reverse"
-  ]
- },
- "masonry-track-end": {
-  "values": [
-   "auto"
-  ]
- },
- "masonry-track-start": {
-  "values": [
-   "auto"
   ]
  },
  "math-shift": {

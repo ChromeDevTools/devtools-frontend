@@ -1448,7 +1448,7 @@ export class RecorderController extends LitElement {
               }
             ></devtools-button>
             <div class="feedback">
-              <x-link class="x-link" href=${
+              <x-link class="x-link" title=${i18nString(UIStrings.sendFeedback)} href=${
                 FEEDBACK_URL
               } jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
             </div>

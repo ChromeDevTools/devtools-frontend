@@ -67,6 +67,14 @@ Contains a trace from a site with a large DOM. It also happens to have many flow
 
 Trace containing a cross-origin navigation where DOM size events from the pre-navigation page are emitted _after_ the navigation event.
 
+### dpr.json.gz
+
+Mobile emulated trace, DPR 1.75, host DPR 2.0.
+
+https://misc-hoten.surge.sh/display-dpr/
+
+https://b.corp.google.com/issues/416580500#comment4
+
 ### dupe-js.json.gz
 
 A bunch of bundles with the exact same content: https://dupe-modules-lh-2.surge.sh/
@@ -193,6 +201,12 @@ used to make sure we filter out events in iFrames (such as MarkDOMContent).
 ### multiple-top-level-renderers.json.gz
 
 A trace containing multiple top level renderers.
+
+### nytimes-bad-mobile-viewport.json.gz
+
+Trace of a site with a non-mobile optimized viewport, plus some click/tap interactions.
+
+crbug.com/371566378#comment3
 
 ### over-20-invalidations-per-event.json.gz
 

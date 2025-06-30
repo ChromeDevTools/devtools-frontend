@@ -563,6 +563,8 @@ export default defineConfig([
           importName: 'Trace',
         },
       ],
+
+      'rulesdir/validate-timing-types': 'error',
     },
   },
   {
@@ -696,7 +698,6 @@ export default defineConfig([
       'rulesdir/no-assert-equal-boolean-null-undefined': 'error',
       'rulesdir/no-imperative-dom-api': 'off',
       'rulesdir/no-lit-render-outside-of-view': 'off',
-      'rulesdir/no-screenshot-test-outside-perf-panel': 'error',
       'rulesdir/prefer-assert-instance-of': 'error',
       'rulesdir/prefer-assert-is-ok': 'error',
       'rulesdir/prefer-assert-length-of': 'error',
@@ -798,15 +799,17 @@ export default defineConfig([
     },
   },
   {
-    name: 'Traces import rule',
-    files: ['front_end/models/trace/handlers/**/*.ts'],
+    name: 'No SDK in models/trace',
+    files: ['front_end/models/trace/**/*.ts'],
+    ignores: ['front_end/models/trace/**/*.test.ts'],
     rules: {
       'rulesdir/no-imports-in-directory': [
         'error',
         {
-          bannedImportPaths: [
-            join(import.meta.dirname, 'front_end', 'core', 'sdk', 'sdk.js'),
-          ],
+          bannedImportPaths: [{
+            bannedPath: join(import.meta.dirname, 'front_end', 'core', 'sdk', 'sdk.js'),
+            allowTypeImports: true,
+          }],
         },
       ],
     },

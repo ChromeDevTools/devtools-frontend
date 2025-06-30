@@ -186,20 +186,6 @@ describe('Button', () => {
     assert.isFalse(innerButton.classList.contains('small'));
   });
 
-  it('prevents only "keydown" events for Enter and Space to bubble up', () => {
-    const button = renderButton({variant: Buttons.Button.Variant.PRIMARY});
-    const onKeydown = sinon.spy();
-    button.addEventListener('keydown', onKeydown);
-
-    const innerButton = button.shadowRoot!.querySelector('button') as HTMLButtonElement;
-    dispatchKeyDownEvent(innerButton, {bubbles: true, composed: true, key: 'Enter'});
-    dispatchKeyDownEvent(innerButton, {bubbles: true, composed: true, key: ' '});
-    dispatchKeyDownEvent(innerButton, {bubbles: true, composed: true, key: 'x'});
-
-    sinon.assert.calledOnce(onKeydown);
-    assert.strictEqual(onKeydown.getCall(0).args[0].key, 'x');
-  });
-
   it('devtools-button width should not expand its content\'s width', () => {
     const button = new Buttons.Button.Button();
     button.data = {variant: Buttons.Button.Variant.PRIMARY};

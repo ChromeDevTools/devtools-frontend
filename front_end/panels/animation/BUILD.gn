@@ -9,16 +9,12 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [
-    "animationScreenshotPopover.css",
-    "animationTimeline.css",
-  ]
+  sources = [ "animationTimeline.css" ]
 }
 
 devtools_module("animation") {
   sources = [
     "AnimationGroupPreviewUI.ts",
-    "AnimationScreenshotPopover.ts",
     "AnimationTimeline.ts",
     "AnimationUI.ts",
   ]

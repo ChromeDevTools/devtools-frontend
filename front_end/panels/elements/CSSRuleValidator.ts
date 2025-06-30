@@ -433,7 +433,6 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
       'row-gap',
       'grid-gap',
       'grid-column-gap',
-      'grid-column-end',
       'grid-row-gap',
     ]);
   }

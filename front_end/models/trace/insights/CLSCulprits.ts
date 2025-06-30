@@ -48,17 +48,17 @@ export const UIStrings = {
    */
   injectedIframe: 'Injected iframe',
   /**
-   * @description Text for a culprit type of Font request.
+   * @description Text for a culprit type of web font request.
    */
-  fontRequest: 'Font request',
+  webFont: 'Web font',
   /**
    * @description Text for a culprit type of Animation.
    */
   animation: 'Animation',
   /**
-   * @description Text for a culprit type of Unsized images.
+   * @description Text for a culprit type of Unsized image.
    */
-  unsizedImages: 'Unsized Images',
+  unsizedImage: 'Unsized image element',
   /**
    * @description Text status when there were no layout shifts detected.
    */
@@ -78,7 +78,7 @@ export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
   clusters: Types.Events.SyntheticLayoutShiftCluster[],
   worstCluster: Types.Events.SyntheticLayoutShiftCluster | undefined,
   /** The top 3 shift root causes for each cluster. */
-  topCulpritsByCluster: Map<Types.Events.SyntheticLayoutShiftCluster, Platform.UIString.LocalizedString[]>,
+  topCulpritsByCluster: Map<Types.Events.SyntheticLayoutShiftCluster, LayoutShiftItem[]>,
 }>;
 
 export const enum AnimationFailureReasons {
@@ -102,6 +102,24 @@ export const enum AnimationFailureReasons {
   AFFECTS_IMPORTANT_PROPERTY = 'AFFECTS_IMPORTANT_PROPERTY',
   SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY = 'SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY',
 }
+
+export const enum LayoutShiftType {
+  WEB_FONT = 0,
+  IFRAMES = 1,
+  ANIMATIONS = 2,
+  UNSIZED_IMAGE = 3,
+}
+
+export type LayoutShiftItem = {
+  type: LayoutShiftType.UNSIZED_IMAGE,
+  description: Platform.UIString.LocalizedString,
+  url: string,
+  backendNodeId: Protocol.DOM.BackendNodeId,
+  frame: string,
+}|{
+  type: Exclude<LayoutShiftType, LayoutShiftType.UNSIZED_IMAGE>,
+  description: Platform.UIString.LocalizedString,
+};
 
 export interface NoncompositedAnimationFailure {
   /**
@@ -218,9 +236,14 @@ export interface UnsizedImage {
   paintImageEvent: Types.Events.PaintImage;
 }
 
+export interface IframeRootCause {
+  frame: string;
+  url?: string;
+}
+
 export interface LayoutShiftRootCausesData {
-  iframeIds: string[];
-  fontRequests: Types.Events.SyntheticNetworkRequest[];
+  iframes: IframeRootCause[];
+  webFonts: Types.Events.SyntheticNetworkRequest[];
   nonCompositedAnimations: NoncompositedAnimationFailure[];
   unsizedImages: UnsizedImage[];
 }
@@ -364,6 +387,7 @@ function getNextEvent(sourceEvents: Types.Events.Event[], targetEvent: Types.Eve
  * and within this prePaint event a layout shift(s) occurs.
  */
 function getIframeRootCauses(
+    parsedTrace: Handlers.Types.ParsedTrace,
     iframeCreatedEvents: readonly Types.Events.RenderFrameImplCreateChildFrame[],
     prePaintEvents: Types.Events.PrePaint[],
     shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
@@ -394,7 +418,15 @@ function getIframeRootCauses(
         return e.ts >= iframeEvent.ts && e.ts <= maxIframe;
       });
       if (domEvent?.args.frame) {
-        rootCausesForShift.iframeIds.push(domEvent.args.frame);
+        const frame = domEvent.args.frame;
+
+        let url;
+        const processes = parsedTrace.Meta.rendererProcessesByFrame.get(frame);
+        if (processes && processes.size > 0) {
+          url = [...processes.values()][0]?.[0].frame.url;
+        }
+
+        rootCausesForShift.iframes.push({frame, url});
       }
     }
   }
@@ -481,7 +513,7 @@ function getFontRootCauses(
       if (!rootCausesForShift) {
         throw new Error('Unaccounted shift');
       }
-      rootCausesForShift.fontRequests.push(req);
+      rootCausesForShift.webFonts.push(req);
     }
   }
   return rootCausesByShift;
@@ -492,10 +524,9 @@ function getFontRootCauses(
  */
 function getTopCulprits(
     cluster: Types.Events.SyntheticLayoutShiftCluster,
-    culpritsByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>):
-    Platform.UIString.LocalizedString[] {
+    culpritsByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>): LayoutShiftItem[] {
   const MAX_TOP_CULPRITS = 3;
-  const causes: Platform.UIString.LocalizedString[] = [];
+  const causes: LayoutShiftItem[] = [];
 
   const shifts = cluster.events;
   for (const shift of shifts) {
@@ -504,22 +535,28 @@ function getTopCulprits(
       continue;
     }
 
-    const fontReq = culprits.fontRequests;
-    const iframes = culprits.iframeIds;
+    const fontReq = culprits.webFonts;
+    const iframes = culprits.iframes;
     const animations = culprits.nonCompositedAnimations;
     const unsizedImages = culprits.unsizedImages;
 
     for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push(i18nString(UIStrings.fontRequest));
+      causes.push({type: LayoutShiftType.WEB_FONT, description: i18nString(UIStrings.webFont)});
     }
     for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push(i18nString(UIStrings.injectedIframe));
+      causes.push({type: LayoutShiftType.IFRAMES, description: i18nString(UIStrings.injectedIframe)});
     }
     for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push(i18nString(UIStrings.animation));
+      causes.push({type: LayoutShiftType.ANIMATIONS, description: i18nString(UIStrings.animation)});
     }
     for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
-      causes.push(i18nString(UIStrings.unsizedImages));
+      causes.push({
+        type: LayoutShiftType.UNSIZED_IMAGE,
+        description: i18nString(UIStrings.unsizedImage),
+        url: unsizedImages[i].paintImageEvent.args.data.url || '',
+        backendNodeId: unsizedImages[i].backendNodeId,
+        frame: unsizedImages[i].paintImageEvent.args.data.frame || '',
+      });
     }
 
     if (causes.length >= MAX_TOP_CULPRITS) {
@@ -576,11 +613,11 @@ export function generateInsight(
   const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
 
   for (const shift of layoutShifts) {
-    rootCausesByShift.set(shift, {iframeIds: [], fontRequests: [], nonCompositedAnimations: [], unsizedImages: []});
+    rootCausesByShift.set(shift, {iframes: [], webFonts: [], nonCompositedAnimations: [], unsizedImages: []});
   }
 
   // Populate root causes for rootCausesByShift.
-  getIframeRootCauses(iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift, domLoadingEvents);
+  getIframeRootCauses(parsedTrace, iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift, domLoadingEvents);
   getFontRootCauses(networkRequests, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
   getUnsizedImageRootCauses(unsizedImageEvents, paintImageEvents, shiftsByPrePaint, rootCausesByShift);
   const animationFailures =
@@ -591,7 +628,7 @@ export function generateInsight(
     relatedEvents.push(worstCluster);
   }
 
-  const topCulpritsByCluster = new Map<Types.Events.SyntheticLayoutShiftCluster, Platform.UIString.LocalizedString[]>();
+  const topCulpritsByCluster = new Map<Types.Events.SyntheticLayoutShiftCluster, LayoutShiftItem[]>();
   for (const cluster of clusters) {
     topCulpritsByCluster.set(cluster, getTopCulprits(cluster, rootCausesByShift));
   }

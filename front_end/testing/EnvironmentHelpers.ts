@@ -128,6 +128,7 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
   Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
+  Root.Runtime.ExperimentName.VERTICAL_DRAWER,
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {
@@ -188,6 +189,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulated-vision-deficiency', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulated-os-text-scale', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulate-auto-dark-mode', '', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'local-fonts-disabled', false),
@@ -460,10 +463,6 @@ export function createFakeRegExpSetting(name: string, defaultValue: string): Com
   return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 
-export function enableFeatureForTest(feature: string): void {
-  Root.Runtime.experiments.enableForTest(feature);
-}
-
 export function setupActionRegistry() {
   before(function() {
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
@@ -480,6 +479,7 @@ export function setupActionRegistry() {
   });
 }
 
+// This needs to be invoked within a describe block, rather than within an it() block.
 export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}) {
   const {error, warn, log} = console;
   before(() => {

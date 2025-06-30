@@ -195,8 +195,7 @@ export function generateInsight(
     return finalize({});
   }
 
-  const documentRequest =
-      parsedTrace.NetworkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
+  const documentRequest = parsedTrace.NetworkRequests.byId.get(context.navigationId);
   if (!documentRequest) {
     return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }

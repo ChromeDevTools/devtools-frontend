@@ -404,14 +404,19 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   }
 
   #maybeRenderSourcesLinkForURL(): Lit.LitTemplate {
-    if (!this.#frame || this.#frame.unreachableUrl()) {
+    const frame = this.#frame;
+    if (!frame || frame.unreachableUrl()) {
       return Lit.nothing;
     }
-    const sourceCode = this.#uiSourceCodeForFrame(this.#frame);
     return renderIconLink(
         'label',
         i18nString(UIStrings.clickToOpenInSourcesPanel),
-        () => Common.Revealer.reveal(sourceCode),
+        async () => {
+          const sourceCode = this.#uiSourceCodeForFrame(frame);
+          if (sourceCode) {
+            await Common.Revealer.reveal(sourceCode);
+          }
+        },
         'reveal-in-sources',
     );
   }

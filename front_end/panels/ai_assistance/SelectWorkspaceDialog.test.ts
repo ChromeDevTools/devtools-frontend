@@ -5,7 +5,7 @@
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createTestFilesystem, setupAutomaticFileSystem} from '../../testing/AiAssistanceHelpers.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM, setColorScheme} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -52,6 +52,49 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
 
     return {view, component, onProjectSelected, hideDialogSpy, project};
   }
+
+  describe('screenshots', () => {
+    function renderViewForScreenshots() {
+      const noop = () => {};
+      const target = document.createElement('div');
+      target.style.maxWidth = '420px';
+      target.style.maxHeight = '600px';
+      target.style.padding = '12px';
+      renderElementIntoDOM(target);
+      AiAssistance.SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW(
+          {
+            folders: [
+              {
+                name: 'workspace-project',
+                path: 'workspace-project',
+              },
+              {
+                name: 'another-project',
+                path: 'another-project',
+              }
+            ],
+            selectedIndex: 0,
+            showAutomaticWorkspaceNudge: false,
+            onProjectSelected: noop,
+            onSelectButtonClick: noop,
+            onCancelButtonClick: noop,
+            onAddFolderButtonClick: noop,
+            onListItemKeyDown: noop,
+          },
+          undefined, target);
+    }
+
+    it('should render correctly in light mode', async () => {
+      renderViewForScreenshots();
+      await assertScreenshot('ai_assistance/select-workspace-dialog-light-default.png');
+    });
+
+    it('should render correctly in dark mode', async () => {
+      setColorScheme('dark');
+      renderViewForScreenshots();
+      await assertScreenshot('ai_assistance/select-workspace-dialog-dark-default.png');
+    });
+  });
 
   it('selects a project', async () => {
     const {view, onProjectSelected, hideDialogSpy, project} = await createComponent();

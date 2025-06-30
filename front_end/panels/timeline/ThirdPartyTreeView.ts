@@ -9,6 +9,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
 import * as Utils from './utils/utils.js';
 
@@ -50,6 +51,20 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
      * For 3P table, we don't use this feature.
      */
     this.dataGrid.expandNodesWhenArrowing = false;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.registerRequiredCSS(thirdPartyTreeViewStyles);
+  }
+
+  override setModelWithEvents(
+      selectedEvents: Trace.Types.Events.Event[]|null, parsedTrace?: Trace.Handlers.Types.ParsedTrace|null,
+      entityMappings?: Utils.EntityMapper.EntityMapper|null): void {
+    super.setModelWithEvents(selectedEvents, parsedTrace, entityMappings);
+
+    const hasEvents = Boolean(selectedEvents && selectedEvents.length > 0);
+    this.element.classList.toggle('empty-table', !hasEvents);
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {

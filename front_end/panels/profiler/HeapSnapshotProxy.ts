@@ -246,10 +246,6 @@ export class HeapSnapshotProxyObject {
     this.worker.disposeObject(this.objectId);
   }
 
-  disposeWorker(): void {
-    this.worker.dispose();
-  }
-
   callFactoryMethod<T extends Object>(methodName: string, proxyConstructor: new(...arg1: any[]) => T, ...args: any[]):
       T {
     return this.worker.callFactoryMethod(null, String(this.objectId), methodName, proxyConstructor, [], ...args);

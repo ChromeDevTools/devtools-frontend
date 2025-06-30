@@ -51,13 +51,13 @@ describe('parsing comments', () => {
     const input = `
       Prompt: Is the contrast between the text and the background sufficient?
       Explanation: The text on this element has low contrast which is not sufficient for accessibility
-      Insight: LCP by phase
+      Insight: LCP breakdown
     `;
     const result = parseComment(input);
     assert.deepEqual(result, {
       prompt: 'Is the contrast between the text and the background sufficient?',
       explanation: 'The text on this element has low contrast which is not sufficient for accessibility',
-      insight: 'LCP by phase'
+      insight: 'LCP breakdown'
     });
   });
 

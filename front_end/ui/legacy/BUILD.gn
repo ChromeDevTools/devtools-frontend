@@ -156,6 +156,7 @@ devtools_entrypoint("bundle") {
     "../components/markdown_view:*",
     "../components/request_link_icon:unittests",
     "../components/snackbars:*",
+    "../components/tooltips:*",
     "./*",
 
     # Required for x-link

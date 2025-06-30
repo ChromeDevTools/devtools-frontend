@@ -269,8 +269,5 @@ generated_file("test_inputs") {
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
-  deps = [
-    ":unittests",
-    "../inspector_overlay:unittests",
-  ]
+  deps = [ ":unittests" ]
 }

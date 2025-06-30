@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Emulera inte CSS-medietyp"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Emulera inte skaländring för operativsystemets text"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Utöka inte rutnätsrader"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulera deuteranopi (inget grönt)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emulera skaländring för operativsystemets text"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emulera protanopi (inget rött)"
@@ -732,6 +738,30 @@
     "message": "Blockering av nätverksbegäranden"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Ingen emulering"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100 % (standard)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85 %"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Ingen emulering"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Tvingar medietyp för test av utskrifts- och skärmformat"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Tvingar fram emulering av skaländring för operativsystemets text"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Tvingar fram emulering av synnedsättning"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Aktivera/inaktivera utdragbar panel"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Växla placering för utdragbar panel"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Koppla från till separat fönster"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Resursförfrågningar vars webbadresser innehöll både de borttagna blankstegstecknen \\(n|r|t) och mindre än-tecknen (<) blockeras. Ta bort radbrytningstecken och koda mindre än-tecken från t.ex. värden för elementattribut om du vill läsa in dessa resurser."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Automatisk identifiering av teckenuppsättningen ISO-2022-JP har fasats ut och inaktiveras inom kort. Ange teckenuppsättningen i rubriken för innehållstyp eller med en metatagg (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() är utfasad. Använd det standardiserade API:et Navigation Timing 2 i stället."
@@ -1437,7 +1470,7 @@
     "message": "Det gick inte att utföra LiveEdit: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Fältdata har konfigurerats för en annan webbadress än den aktuella sidan."
+    "message": "Fältmätvärden har konfigurerats för en annan webbadress än den aktuella sidan."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Enhetens pixelmått måste vara ett tal eller lämnas tomt"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Spara som …"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Det gick inte att spara filen på disken."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Spara bild"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "De vanligaste orsakerna till layoutförskjutningar"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Bilder utan angiven storlek"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Sämsta klustret"
@@ -1839,7 +1875,7 @@
     "message": "Innehöll omdirigeringar ({PH1} omdirigeringar, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Servern svarade långsamt ({PH1} har observerats) "
+    "message": "Servern svarade långsamt ({PH1} har observerats)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Ingen komprimering har tillämpats"
@@ -1848,7 +1884,7 @@
     "message": "Undviker omdirigeringar"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Servern svarar snabbt ({PH1} har observerats) "
+    "message": "Servern svarar snabbt ({PH1} har observerats)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Tillämpar textkomprimering"
@@ -2070,7 +2106,7 @@
     "message": "[Undvik att kedjekoppla kritiska begäranden](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) genom att göra kedjorna kortare, minska storleken på resurser som laddas ned eller skjut upp nedladdningen av onödiga resurser för att förbättra sidhämtningstiden."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Lägg till signaler för [föranslutning](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) för dina viktigaste ursprung, men försök att använda färre än fyra."
+    "message": "Lägg till signaler för [föranslutning](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) för dina viktigaste ursprung, men försök att använda högst fyra stycken."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Kandidater för föranslutning"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Tryckinteraktioner kan [fördröjas med upp till 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) om visningsområdet inte är optimerat för mobila enheter."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Fördröjning vid tryck på mobil"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimera visningsområde för mobila enheter"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Om du vill använda den här funktionen uppdaterar du språkinställningen till engelska i inställningarna för Verktyg för programmerare."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Du kan även starta konversationen med en av de föreslagna promptarna ovan"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Läs mer om AI i Verktyg för programmerare"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Komprimera"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Vill du rensa objektlagringen {PH1}?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Vill du radera databasen {PH1}?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Nyckel"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Datan i den valda objektlagringen tas bort."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektlager"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Den här ramen har identifierats som rotramen för en annons"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Filterlisteregel för rotskript"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Säker kontext"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (från källkarta)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Ändringsfliken visar inte ändringar av binär data"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "På den här sidan kan du spåra kodändringar som görs i Verktyg för programmerare."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopiera"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Inga ändringar ännu"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Ingen textuell skillnad är tillgänglig"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# borttagning (–)}other{# borttagningar (–)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# infogning (+)}other{# infogningar (+),}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopierades till urklipp"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Ändringar"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopiera alla ändringar i den aktuella filen"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Återställ alla ändringar till den aktuella filen"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Visa ändringar"
@@ -5715,7 +5745,7 @@
     "message": "Visa endast meddelanden från den aktuella kontexten (top, iframe, worker, tillägg)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Åsidosatt av filtersidofält"
+    "message": "Loggnivåerna styrs av konsolens sidofält."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Spara logg"
@@ -6612,16 +6642,16 @@
     "message": "Scrolla in i visningsområdet"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Visa kommando för mål"
+    "message": "Visa det element som är kopplat till commandfor-attributet"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Visa information om iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Visa intressemål"
+    "message": "Visa det element som är kopplat till interesttarget-attributet"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Visa mål för popup"
+    "message": "Visa det element som är kopplat till popovertarget-attributet"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Denna bildruta har identifierats som en annonsbildruta"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "konstruerad formatmall"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopiera alla CSS-ändringar"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopiera alla deklarationer"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "via granskningsverktyget"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopiera alla CSS-ändringar"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiera alla deklarationer som JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Tillgänglighet"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Tillämpa datoremulering under granskning"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Tillämpa mobilemulering"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Ordna om paket"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "procent"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Profilnamn"
   },
@@ -8802,7 +8826,7 @@
     "message": "Ange en anpassad användaragent"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Nätverksförhållanden visas"
+    "message": "Nätverksförhållanden visas."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Nätverksbegränsning"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Utrymme för fjärradress"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Sidhuvuden för begäran"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Svarshuvuden"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Spara som …"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Det gick inte att spara filen på disken."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Välj mapp för åsidosättningar"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Uppdatera bevakningsuttryck"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Bevakningsuttrycket har raderats"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} träffade brytpunkt"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Information"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Mått"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Längd"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Läs mer"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Plats"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Meddelande"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (underordnade)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} har hämtats"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} av {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Välj {PH1} för att samla in detaljerad matchningsstatistik för CSS-väljare."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (egen)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skript"
@@ -14682,19 +14694,19 @@
     "message": "Konfigurera"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Konfigurera hämtning av fältdata"
+    "message": "Konfigurera hämtning av fältmätvärden"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report innehåller inte tillräckligt med verklig hastighetsdata för den här sidan."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Hämta sammanställd fältdata från {PH1} så att du kan göra innehållsbaserade lokala mätningar utifrån verkliga användares upplevelse på webbplatsen."
+    "message": "Hämta sammanställda fältmätvärden från {PH1} så att du kan göra innehållsbaserade lokala mätningar utifrån verkliga användares upplevelse på webbplatsen."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "{PH1} är inte ett giltigt ursprung eller en giltig webbadress."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Ange en utvecklingskälla så du automatiskt får relevant fältdata för produktionskällan."
+    "message": "Ange en utvecklingskälla så du automatiskt får relevanta fältmätvärden för produktionskällan."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Ny"
@@ -14703,7 +14715,7 @@
     "message": "OK"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Visa alltid fältdata för webbadressen nedan"
+    "message": "Visa alltid fältmätvärden för webbadressen nedan"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Välj bort"
@@ -14718,7 +14730,7 @@
     "message": "Webbadress"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "När Verktyg för programmerare är öppna skickas webbadresserna du besöker till Google för att söka efter fältdata. Dessa begäranden är inte kopplade till ditt Google-konto."
+    "message": "När Verktyg för programmerare är öppet skickas webbadresserna du besöker till Google för att söka efter fältmätvärden. Dessa begäranden är inte kopplade till ditt Google-konto."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Lägg till en regel med reguljärt uttryck för skriptets webbadress"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Avsnitt med loggar över interaktioner och layoutförskjutningar"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Fältdata"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Fältmätvärden"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP-interaktionen är i den 98:e percentilen av interaktionsfördröjningar."
@@ -14856,10 +14868,10 @@
     "message": "Lokala mätvärden och fältmätvärden"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Läs mer om lokal data och fältdata"
+    "message": "Läs mer om lokala mätvärden och fältmätvärden"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Lokala mätvärden samlas in från den aktuella sidan via din nätverksanslutning och enhet. Fältdata mäts av verkliga användare som använder många olika nätverksanslutningar och enheter."
+    "message": "Lokala mätvärden samlas in från den aktuella sidan via din nätverksanslutning och enhet. Fältmätvärden mäts av verkliga användare som använder många olika nätverksanslutningar och enheter."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Lokala mätvärden"
@@ -14922,10 +14934,10 @@
     "message": "Gå till klustret med den sämsta layoutförskjutningen."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Visa fältdata för enhetstyp: {PH1}"
+    "message": "Visa fältmätvärden för enhetstyp: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Visa fältdata för {PH1}"
+    "message": "Visa fältmätvärden för {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Öppna INP-interaktionen."
@@ -15033,13 +15045,13 @@
     "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det är betydligt bättre än användarnas upplevelse."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. Dessutom är {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen nra."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. Dessutom är {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen nra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen behöver dock förbättras."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen behöver dock förbättras."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen är dåligt."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen är dåligt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Ditt lokala {PH1}-värde på {PH2} är bra. Det liknar användarnas upplevelse."
@@ -15054,13 +15066,13 @@
     "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras, men det är betydligt bättre än användarnas upplevelse."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen är dock bra."
+    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen är dock bra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen behöver dessutom förbättras."
+    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen behöver dessutom förbättras."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen är dåligt."
+    "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen är dåligt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Ditt lokala {PH1}-värde på {PH2} behöver förbättras. Det liknar användarnas upplevelse."
@@ -15075,13 +15087,13 @@
     "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt, men det är betydligt bättre än användarnas upplevelse."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen är dock bra."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen är dock bra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen behöver dock förbättras."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen behöver dock förbättras."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. Dessutom är {PH1}-värdet på {PH3} för fältdatan i den 75:e percentilen dåligt."
+    "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det har samma betyg som {PH4} av verkliga användares {PH1}-upplevelser. Dessutom är {PH1}-värdet på {PH3} för fältmätvärden i den 75:e percentilen dåligt."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Ditt lokala {PH1}-värde på {PH2} är dåligt. Det liknar användarnas upplevelse."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Byt till {PH1} i Verktyg för programmerare"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Växla placering för utdragbar panel"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Lägg till"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Skärmbild för {PH1} – välj för att visa föregående förfrågningar."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Ta bort kommentarer"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurera spår"

@@ -263,3 +263,81 @@ Note: because this approach uses `SyntheticProfileCalls`, which are built from C
 [v8::Debugger::AsyncTaskScheduled]: https://source.chromium.org/chromium/chromium/src/+/main:v8/src/inspector/v8-debugger.cc;l=1214;drc=ed6ca45bf1ee83042ee0d325fed822302e331e09)
 [v8::Debugger::AsyncTaskRun]: https://source.chromium.org/chromium/chromium/src/+/main:v8/src/inspector/v8-debugger.cc;l=1252;drc=ed6ca45bf1ee83042ee0d325fed822302e331e09)[AsyncJSCallsHandler](../../models/trace/handlers/AsyncJSCallsHandler.ts
 [AsyncJSCallsHandler]: ../../models/trace/handlers/AsyncJSCallsHandler.ts
+
+## Track configuration
+
+We allow the user to edit the visual status and order of tracks in the main flame chart. Initially when we shipped this feature it was not persisted, meaning that if you refreshed or imported another trace, your configuration was lost. This was changed in crrev.com/c/6632596 which added persisting of the track configuration into memory, and added these docs too :)
+
+### How tracks get rendered
+
+Tracks on the timeline are called `Groups` in the code (`PerfUI.FlameChart.Group`). These get constructed in the data providers and pushed onto the `groups` array.
+
+The key thing to note is that **once the groups are created, their order in code does not change**. Even if the user moves Group 1 to the end visually, in the `timelineData.groups` array, it will still be in its original position. The original order is dictated by us in code based on the track appenders and the weights we give them.
+
+The order in which the groups are _drawn_ is determined in the `FlameChart` component. To track the visual order, we use a tree structure. This structure allows us to track the order of groups, including nested groups (side-note: users are not able to re-order nested groups, only top-level ones). This tree **does represent the visual order and is updated as the user modifies the UI**.
+
+If we have the following:
+
+- Group 1
+- Group 2
+  - Group 2.1
+  - Group 2.2
+- Group 3
+
+Then the tree will look like this (we create a fake root node):
+
+```
+       ===Root===
+      /    |    \
+     /     |     \
+    /      |      \
+Group 1  Group 2  Group 3
+           / \
+          /   \
+     Group 2.1 Group 2.2
+```
+
+If the user re-orders the UI to put `Group 3` first then it will look like this:
+
+```
+       ===Root===
+      /    |    \
+     /     |     \
+    /      |      \
+Group 3  Group 2  Group 1
+           / \
+          /   \
+     Group 2.1 Group 2.2
+```
+
+If a user hides a group, it remains in the tree, but is marked as `hidden`.
+
+When rendering, we walk through this tree in DFS to determine the visual order of the groups. If we have 3 groups numbered 1-3, and the user re-orders them to be 3, 1, 2, then our visual order would be represented as `[2, 0, 1]`. This is because we take the original `groups` array (which **does not change at all**), and map the indexes to the array showing their visual position. Read `[2, 0, 1]` as saying "The group originally at index 2 is now at index 0", and so on.
+
+## Persisting this state
+
+We persist the order of the groups and for each group its `hidden` and `expanded` state:
+
+```
+{
+  originalIndex: 0,
+  visualIndex: 2,
+  hidden: false,
+  expanded: true
+}
+```
+
+When the user makes any visual change to the UI, which happens in `FlameChart.ts`, we notify the data provider of that change. It can then choose to persist this data anywhere it likes. In our case, we persist into a DevTools setting which is persisted globally (e.g. it survives restarts).
+
+Because the user can import/record multiple traces over time, we cannot just persist the array of group states, because then we would mistakenly apply it to other traces. To avoid this we persist the list of groups under a key. The key is the `min` time for each trace (e.g. the time the trace started). This is not guaranteed to be unique, but it is pretty likely to be, given that it is monotonic and microsecond precision.
+
+So, what actually gets stored into the setting is:
+
+```
+{
+  12345: [{...group state as above...}],
+  56789: [{...group state as above...}],
+}
+```
+
+When a trace is recorded / imported, we look to read any persisted configuration from disk before applying it.

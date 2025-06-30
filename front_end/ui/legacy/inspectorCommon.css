@@ -260,8 +260,8 @@ input[type='radio'] {
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
 
-  &:focus {
-    box-shadow: var(--legacy-focus-ring-active-shadow);
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 }
 
@@ -504,25 +504,6 @@ select option {
 
 dt-icon-label {
   flex: none;
-}
-
-.full-widget-dimmed-banner a {
-  color: inherit;
-}
-
-.full-widget-dimmed-banner {
-  color: var(--sys-color-token-subtle);
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 20px;
-  position: absolute;
-  inset: 0;
-  font-size: 13px;
-  overflow: auto;
-  z-index: 500;
 }
 
 .dot::before {

@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "የሲኤስኤስ ሚዲያ ዓይነትን አታስመስል"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "የሥርዓተ ክወና ጽሑፍ ልኬትን አታስመስል"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "የፍርግርግ መስመሮችን አያራዝሙ"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ዲውትራኖፒያን (ምንም አረንጓዴ የለም) ያስመስሉ"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "የሥርዓተ ክወና ጽሑፍ ልኬትን አስመስለው"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "ፕሮታኖፒያን (ምንም ቀይ የለም) ያስመስሉ"
@@ -732,6 +738,30 @@
     "message": "የአውታረ መረብ ጥያቄን ማገድ"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "ምንም ማስመሰል የለም"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ነባሪ)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "ምንም ማስመሰል የለም"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "የህትመት እና ማያ ገፅ ቅጦችን ለመሞከር የሚዲያ ዓይነትን ያስገድዳል"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "የሥርዓተ ክወና ጽሑፍ ልኬት ማስመሰልን ያስገድዳል"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "የእይታ ማነስ ማስመሰልን ያስገድዳል"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "መሳቢያውን ቀያይር"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "የመሳቢያውን አቅጣጫ ቀያይር"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "ወደ የተለየ መስኮት ይንቀሉ"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "ዩአርኤሎቻቸው ሁለቱንም የተወገዱ እልፍ አርጌ \\(n|r|t) ቁምፊዎች እና ከቁምፊዎች ያነሱ (<) ያካተቱ የንብረት ጥያቄዎች ታግደዋል። እባክዎ አዳዲስ መስመሮችን ያስወግዱ እንዲሁም እነዚህን ንብረቶች ለመጫን ከቁምፊዎች ያነሱ ቁምፊዎችን እንደ መሰረታዊ ነገር መገለጫ ባህሪ ዋጋዎች በኮድ ያስቀምጡ።"
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "የISO-2022-JP ቁምፊ ስብስብ የራስ-ሰር ማወቂያ ተቋርጧል እና ወደፊት በቅርብ ጊዜ ይሰናከላል። እባክዎ በይዘት ዓይነት ራስጌ ውስጥ ወይም ሜታ መለያ ስም በመጠቀም ቁምፊ ስብስብ ይለዩ (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)።"
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() ተቋርጧል፣ በምትኩ ደረጃውን የጠበቀ ኤፒአይ ይጠቀሙ፦ የአሰሳ ጊዜ 2።"
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit አልተሳካም፦ {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "የመስክ ውሂብ የተዋቀረው ከአሁኑ ገፅ ለተለየ ዩአርኤል ነው።"
+    "message": "የመስክ መለኪያዎች የተዋቀረው ከአሁኑ ገፅ ለተለየ ዩአርኤል ነው።"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "የመሣሪያ ፒክሴል ውርድ ወይም ባዶ መሆነ አለበት።"
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "አስቀምጥ እንደ…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ፋይሉን ወደ ዲስክ ማስቀመጥ አልተሳካም።"
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ምስል አስቀምጥ"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "ከፍተኛ የአቀማመጥ መቀያየር ጥፋተኞች"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "መጠን የሌላቸው ምስሎች"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "በጣም መጥፎ ስብስብ"
@@ -1839,7 +1875,7 @@
     "message": "አቅጣጫ ማዞሮች ነበሩት ({PH1} አቅጣጫ ማዞሮች፣ +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "አገልጋይ ቀስ ብሎ ምላሽ ሰጥቷል (የተስተዋለ {PH1}) "
+    "message": "አገልጋይ ቀስ ብሎ ምላሽ ሰጥቷል (የተስተዋለ {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "ምንም እመቃ አልተተገበረም"
@@ -1848,7 +1884,7 @@
     "message": "ማዞርን ያስቀራል"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "አገልጋይ በፍጥነት ምላሽ ይሰጣል (የተስተዋለ {PH1}) "
+    "message": "አገልጋይ በፍጥነት ምላሽ ይሰጣል (የተስተዋለ {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "የጽሁፍ እመቃ ይተገበራል"
@@ -2070,7 +2106,7 @@
     "message": "የትስስሮች ርዝማኔን በመቀነስ፣ የመርጃዎች የውርድ መጠንን በመቀነስ ወይም አላስፈላጊ መርጃዎች ማውረድን ለሌላ ጊዜ በማሳለፍ የገፅ ጭነትን ለማሻሻል [ወሳኝ ጥያቄዎችን ማስተሳሰርን ያስቀሩ](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)።"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "በጣም አስፈላጊ በሆኑት መነሻዎችዎ ላይ [አስቀድሞ ማገናኘት](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ፍንጮችን ያክሉ፣ ነገር ግን ከ4 ያነሰ ለመጠቀም ይሞክሩ።"
+    "message": "በጣም አስፈላጊ በሆኑት መነሻዎችዎ ላይ [አስቀድሞ ማገናኘት](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ፍንጮችን ያክሉ፣ ነገር ግን ከ4 በላይ ለመጠቀም ይሞክሩ።"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "አስቀድሞ የማገናኘት እጩዎች"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "መመልከቻው ለሞባይል ካልተባ መታ የማድረግ መስተጋብሮች [እስከ 300 ሚሰ ድረስ ሊዘገዩ](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ይችላሉ።"
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "የሞባይል መታ ማድረግ መዘግየት"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "መመልከቻን ለሞባይል ያትቡ"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ይህን ባህሪ ለመጠቀም DevTools ቅንብሮች ውስጥ የቋንቋ ምርጫዎን ወደ እንግሊዝኛ ያቀናብሩ።"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "እንዲሁም ውይይትዎን ለመጀመር ከላይ ከተጠቆሙ ጥያቄዎች አንዱን መጠቀም ይችላሉ"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools ውስጥ ስለ ሰው ሠራሽ አስተውሎት ይወቁ"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "ሰብስብ"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "«{PH1}» የነገር ማከማቻ ይጽዳ?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "«{PH1}» የውሂብ ጎታ ይሰረዝ?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "ቁልፍ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "በተመረጠው ዕቃ መደብር ውስጥ ያለው ውሂብ ይወገዳል።"
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "የነገር መደብሮች"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ይህ ክፈፍ እንደ አንድ የማስታወቂያ ስር ክፈፍ ተለይቷል"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "የስር ስክሪፕት ማጣሪያ ዝርዝር ደንብ"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "ደህንነቱ የተጠበቀ ዓውድ"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (ከምንጭ ካርታ)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "የለውጦች ትሩ የሁለትዮሽ ውሂብ ለውጦችን አያሳይም"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "DevTools ውስጥ የተደረጉ የኮድ ለውጦችን በዚህ ገፅ ላይ መከታተል ይችላሉ።"
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "ቅዳ"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "እስካሁም ምንም ለውጦች የሉም"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ምንም የጽሑፍ ልዩነት አይገኝም"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# ስረዛ (-)}one{# ስረዛዎች (-)}other{# ስረዛዎች (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# ማስገባት (+)}one{# ማስገባቶች (+)}other{# ማስገባቶች (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "ለውጦች"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "ሁሉንም ለውጦች ከአሁኑ ፋይል ቅዳ"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "ሁሉንም ለውጦች ወደ የአሁኑ ፋይል አድህር"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "ለውጦችን አሳይ"
@@ -5715,7 +5745,7 @@
     "message": "ከአሁኑ አውድ (top፣ iframe፣ worker፣ ቅጥያ) የመጡ መልዕክቶችን ብቻ አሳይ"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "በማጣሪያ የጎን አሞሌ ተሽሯል"
+    "message": "የምዝግብ ማስታወሻ ደረጃዎች ቁጥጥር የሚደረግባቸው በኮንሶል የጎን አሞሌ ነው።"
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "የማቆየት ምዝግብ ማስታወሻ"
@@ -6612,16 +6642,16 @@
     "message": "ወደ ዕይታ ሸብልል"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "ለማነጣጠር ትዕዛዝን አሳይ"
+    "message": "ከcommandfor ባህሪ ጋር የተጎዳኘውን አካል አሳይ"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "የiframe ዝርዝሮችን አሳይ"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "የፍላጎት ዒላማን አሳይ"
+    "message": "ከinteresttarget ባህሪ ጋር የተጎዳኘውን አካል አሳይ"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "የበላይ ብቅ-ባይ ዒላማን አሳይ"
+    "message": "ከpopovertarget ባህሪ ጋር የተጎዳኘውን አካል አሳይ"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ይህ ክፈፍ እንደ የማስታወቂያ ክፈፍ ተለይቷል"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "የተገነባ የቅጥ ሉህ"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "ሁሉንም የሲኤስኤስ ለውጦች ቅዳ"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "ሁሉንም መግለጫዎች ይቅዱ"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "በመርማሪ በኩል"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "ሁሉንም የሲኤስኤስ ለውጦች ቅዳ"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "ሁሉንም መግለጫዎች እንደ JS ይቅዱ"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ተደራሽነት"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "በኦዲት ወቅት የዴስክቶፕ ማስመሰልን ይተግብሩ"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "ሞባይል ማስመሰልን ተግብር"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "ፓኬትን ዳግም በመደርደር ላይ"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "መቶኛ"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "የመገለጫ ስም"
   },
@@ -8802,7 +8826,7 @@
     "message": "ብጁ የተጤቃሚ ወኪል ያስገቡ"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "የአውታረ መረብ ሁኔታዎች ታይተዋል"
+    "message": "የአውታረ መረብ ሁኔታዎች ታይተዋል።"
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "አውታረ መረብን ማፈን"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "የርቀት አድራሻ ቦታ"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "የጥያቄ ራስጌዎች"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "የምላሽ ራስጌዎች"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "አስቀምጥ እንደ…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ፋይሉን ወደ ዲስክ ማስቀመጥ አልተሳካም።"
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "ለመሻሮች አቃፊን ይምረጡ"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "የሰዓት መግለጫዎችን ዓድስ"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "የምልከታ አገላለጽ ተሰርዟል።"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} መግቻ ቦታ ምት"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "ዝርዝሮች"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "ልኬቶች"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "የቆይታ ጊዜ"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "የበለጠ ለመረዳት"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "አካባቢ"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "መልዕክት"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ሕፃናት)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} ተሰብስቧል"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} ከ{PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}፦ {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}፣ {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "ዝርዝር የሲኤስኤስ መራጭ ተዛማጅ ስታቲስቲክስን ለመሰብሰብ «{PH1}» የሚለውን ይምረጡ።"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (ራስ)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "ስክሪፕት"
@@ -14682,19 +14694,19 @@
     "message": "አዋቅር"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "የመስክ ውሂብ ማምጣትን ያዋቅሩ"
+    "message": "የመስክ መለኪያዎች ማምጣትን ያዋቅሩ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "የChrome የተጠቃሚ ተሞክሮ ሪፖርት ለዚህ ገፅ በቂ የሆነ የእውነተኛ ዓለም ፍጥነት ውሂብ የለውም።"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "በገፁ ላይ እውነተኛ ተጠቃሚዎች በጣቢያው ላይ በሚያጋጥሟቸው ሁኔታ ላይ የአካባቢ መለኪያዎችን እርስዎ ዓውዳዊ እንዲያደርጉ ለማገዝ የተዋሃደ የመስክ ውሂብን ከ{PH1} ላይ ያምጡ።"
+    "message": "በገፁ ላይ እውነተኛ ተጠቃሚዎች በጣቢያው ላይ በሚያጋጥሟቸው ሁኔታ ላይ የአካባቢ መለኪያዎችን ለእርስዎ ዓውዳዊ እንዲያደርጉ ለማገዝ የተዋሃዱ የመስክ መለኪያዎችን ከ{PH1} ላይ ያምጡ።"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "«{PH1}» ትክክለኛ መነሻ ወይም ዩአርኤል አይደለም።"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "በራስ ሰር ለምርት መነሻው አግባብ የመስክ ውሂብ ለማግኘት የገንቢ መነሻ ያቀናብሩ።"
+    "message": "በራስ ሰር ለምርት መነሻው አግባብ የመስክ መለኪያዎች ለማግኘት የገንቢ መነሻ ያቀናብሩ።"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "አዲስ"
@@ -14703,7 +14715,7 @@
     "message": "እሺ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "ከታች ላለው ዩአርኤል ሁሌም የመስክ ውሂብ ያሳዩ"
+    "message": "ከታች ላለው ዩአርኤል ሁሌም የመስክ መለኪያዎች አሳይ"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "መርጠው ይውጡ"
@@ -14718,7 +14730,7 @@
     "message": "ዩአርኤል"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools ሲከፈት እርስዎ የሚጎበኟቸው ዩአርኤሎች የመስክ ውሂብ ለመጠየቅ ወደ Google ይላካሉ። እነዚህ ጥያቄዎች ከGoogle መለያዎ ጋር የተሳሰሩ አይደሉም።"
+    "message": "DevTools ሲከፈት እርስዎ የሚጎበኟቸው ዩአርኤሎች የመስክ መለኪያዎች ለመጠየቅ ወደ Google ይላካሉ። እነዚህ ጥያቄዎች ከGoogle መለያዎ ጋር የተሳሰሩ አይደሉም።"
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "ለስክሪፕቱ ዩአርኤል የሬጉላር ኤክስፕሬሽን ደንብ ያክሉ"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "መስተጋብሮች እና የአቀማመጥ መቀያየሪያ ምዝግብ ማስታወሻዎች ክፍል"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "የመስክ ውሂብ"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "የመስክ መለኪያዎች"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP መስተጋብር በመስተጋብር መዘግየቶች 98ኛ መቶኛ ላይ ነው።"
@@ -14859,7 +14871,7 @@
     "message": "ስለ አካባቢያዊ እና የመስክ ውሂብ የበለጠ ይወቁ"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "አካባቢያዊ መለኪያዎች የእርስዎን የአውታረ መረብ ግንኙነት እና መሣሪያ በመጠቀም ከአሁኑ ገፅ ላይ ይገኛሉ። የመስክ ውሂብ ብዙ የተለያዩ የአውታረ መረብ ግንኙነት እና መሣሪያዎችን በሚጠቀሙ የእውነተኛ ተጠቃሚዎች ይለካል።"
+    "message": "አካባቢያዊ መለኪያዎች የእርስዎን የአውታረ መረብ ግንኙነት እና መሣሪያ በመጠቀም ከአሁኑ ገፅ ላይ ይገኛሉ። የመስክ መለኪያዎች የሚለካው ብዙ የተለያዩ የአውታረ መረብ ግንኙነቶችን እና መሳሪያዎችን በመጠቀም በእውነተኛ ተጠቃሚዎች ነው።"
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "የአካባቢ መለኪያዎች"
@@ -14922,10 +14934,10 @@
     "message": "ወደ በጣም መጥፎ የአቀማመጥ መቀያየሪያ ስብስብ ሂድ።"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "ለመሣሪያ ዓይነት የመስክ ውሂብን አሳይ፦ {PH1}"
+    "message": "ለመሣሪያ ዓይነት የመስክ መለኪያዎችን አሳይ፦ {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "ለ{PH1} የመስክ ውሂብ አሳይ"
+    "message": "ለ{PH1} የመስክ መለኪያዎችን አሳይ"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "ወደ INP መስተጋብር ሂድ"
@@ -15033,13 +15045,13 @@
     "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው ነገር ግን ከእርስዎ የተጠቃሚዎች ተሞክሮ ጉልህ በሆነ መልኩ የተሻለ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ጥሩ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "የአካባቢዎ {PH1} የ{PH2} እሴት ጥሩ ነው እና ከተጠቃሚዎ ተሞክሮ ጋር ተመሳሳይ ነው።"
@@ -15054,13 +15066,13 @@
     "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት ነገር ግን ከእርስዎ የተጠቃሚ ተሞክሮ በላይ ጉልህ በሆነ መልኩ የተሻለ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
+    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
+    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
+    "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከ{PH4} የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "የአካባቢዎ {PH1} የ{PH2} እሴት መሻሻል አለበት እና ከተጠቃሚዎ ተሞክሮ ጋር ተመሳሳይ ነው።"
@@ -15075,13 +15087,13 @@
     "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው ነገር ግን ከእርስዎ የተጠቃሚዎች ተሞክሮ ጉልህ በሆነ መልኩ የተሻለ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ጥሩ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። ነገር ግን የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት መሻሻል አለበት።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ ውሂብ 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
+    "message": "የእርስዎ አካባቢ {PH1} የ{PH2} እሴት ደካማ ነው እና የእውነተኛ ተጠቃሚ {PH1} ተሞክሮዎች {PH4} ጋር አንድ ዓይነት ደረጃ አለው። በተጨማሪ የመስክ መለኪያዎች 75ኛ መቶኛ {PH1} የ{PH3} እሴት ደካማ ነው።"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "የአካባቢዎ {PH1} የ{PH2} እሴት ደካማ ነው እና ከተጠቃሚዎ ተሞክሮ ጋር ተመሳሳይ ነው።"
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevToolsን ወደ {PH1} ይቀይሩ"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "የመሳቢያውን አቅጣጫ ቀያይር"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "አክል"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "ቅጽበታዊ ገፅ ዕይታ ለ{PH1} - ቀዳሚ ጥያቄዎችን ለመመልከት ይምረጡ።"
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "ማብራሪያዎችን ሰርዝ"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ትራኮችን አዋቅር"

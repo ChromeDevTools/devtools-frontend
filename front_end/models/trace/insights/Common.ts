@@ -43,7 +43,7 @@ export function getInsight<InsightName extends keyof InsightModels>(
 
 export function getLCP(insights: TraceInsightSets|null, key: string|null):
     {value: Types.Timing.Micro, event: Types.Events.LargestContentfulPaintCandidate}|null {
-  const insight = getInsight(InsightKeys.LCP_PHASES, insights, key);
+  const insight = getInsight(InsightKeys.LCP_BREAKDOWN, insights, key);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;
   }
@@ -54,7 +54,7 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
 
 export function getINP(insights: TraceInsightSets|null, key: string|null):
     {value: Types.Timing.Micro, event: Types.Events.SyntheticInteractionPair}|null {
-  const insight = getInsight(InsightKeys.INTERACTION_TO_NEXT_PAINT, insights, key);
+  const insight = getInsight(InsightKeys.INP_BREAKDOWN, insights, key);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
   }
@@ -109,7 +109,7 @@ export interface CrUXFieldMetricResults {
   lcp: CrUXFieldMetricTimingResult|null;
   inp: CrUXFieldMetricTimingResult|null;
   cls: CrUXFieldMetricNumberResult|null;
-  lcpPhases: {
+  lcpBreakdown: {
     ttfb: CrUXFieldMetricTimingResult|null,
     loadDelay: CrUXFieldMetricTimingResult|null,
     loadDuration: CrUXFieldMetricTimingResult|null,
@@ -182,7 +182,7 @@ export function getFieldMetricsForInsightSet(
     lcp: getMetricTimingResult(pageResult, 'largest_contentful_paint', scope),
     inp: getMetricTimingResult(pageResult, 'interaction_to_next_paint', scope),
     cls: getMetricResult(pageResult, 'cumulative_layout_shift', scope),
-    lcpPhases: {
+    lcpBreakdown: {
       ttfb: getMetricTimingResult(pageResult, 'largest_contentful_paint_image_time_to_first_byte', scope),
       loadDelay: getMetricTimingResult(pageResult, 'largest_contentful_paint_image_resource_load_delay', scope),
       loadDuration: getMetricTimingResult(pageResult, 'largest_contentful_paint_image_resource_load_duration', scope),

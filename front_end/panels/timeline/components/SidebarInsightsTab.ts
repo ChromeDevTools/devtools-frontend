@@ -5,9 +5,6 @@
 
 import './SidebarSingleInsightSet.js';
 
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -20,22 +17,6 @@ import sidebarInsightsTabStyles from './sidebarInsightsTab.css.js';
 import type {SidebarSingleInsightSet, SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = Lit;
-
-const FEEDBACK_URL = 'https://crbug.com/371170842' as Platform.DevToolsPath.UrlString;
-
-const UIStrings = {
-  /**
-   *@description text show in feedback button
-   */
-  feedbackButton: 'Feedback',
-  /**
-   *@description text show in feedback tooltip
-   */
-  feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
-} as const;
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarInsightsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -50,7 +31,7 @@ export class SidebarInsightsTab extends HTMLElement {
    * beginning of the trace up to the first navigation.
    * You can only have one of these open at any time, and we track it via this ID.
    */
-  #insightSetKey: string|null = null;
+  #selectedInsightSetKey: string|null = null;
 
   // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
 
@@ -59,7 +40,7 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#parsedTrace = data;
-    this.#insightSetKey = null;
+    this.#selectedInsightSetKey = null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
@@ -69,7 +50,7 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#traceMetadata = data;
-    this.#insightSetKey = null;
+    this.#selectedInsightSetKey = null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
@@ -79,23 +60,14 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
 
-    this.#insights = data;
-    this.#insightSetKey = null;
-    if (!this.#insights || !this.#parsedTrace) {
+    this.#selectedInsightSetKey = null;
+    if (!data || !this.#parsedTrace) {
       return;
     }
 
-    // Select by default the first non-trivial insight set:
-    // - greater than 5s in duration
-    // - or, has a navigation
-    // In practice this means selecting either the first or the second insight set.
-    const trivialThreshold = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(5000));
-    const insightSets = [...this.#insights.values()];
-    this.#insightSetKey =
-        insightSets.find(insightSet => insightSet.navigation || insightSet.bounds.range > trivialThreshold)?.id
-        // If everything is "trivial", just select the first one.
-        ?? insightSets[0]?.id ?? null;
-
+    this.#insights = new Map(data);
+    /** Select the first set. Filtering out trivial sets was done back in {@link Trace.Processor.#computeInsightsForInitialTracePeriod} */
+    this.#selectedInsightSetKey = [...this.#insights.keys()].at(0) ?? null;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -111,15 +83,15 @@ export class SidebarInsightsTab extends HTMLElement {
     // be activated by clicking on a insight chip in the Summary panel, which may require opening
     // a different insight set.
     if (this.#activeInsight) {
-      this.#insightSetKey = this.#activeInsight.insightSetKey;
+      this.#selectedInsightSetKey = this.#activeInsight.insightSetKey;
     }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #insightSetToggled(id: string): void {
-    this.#insightSetKey = this.#insightSetKey === id ? null : id;
+    this.#selectedInsightSetKey = this.#selectedInsightSetKey === id ? null : id;
     // Update the active insight set.
-    if (this.#insightSetKey !== this.#activeInsight?.insightSetKey) {
+    if (this.#selectedInsightSetKey !== this.#activeInsight?.insightSetKey) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
     }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -132,10 +104,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #insightSetUnhovered(): void {
     this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
-  }
-
-  #onFeedbackClick(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(FEEDBACK_URL);
   }
 
   #onZoomClick(event: Event, id: string): void {
@@ -230,16 +198,16 @@ export class SidebarInsightsTab extends HTMLElement {
 
           if (hasMultipleInsightSets) {
             return html`<details
-              ?open=${id === this.#insightSetKey}
+              ?open=${id === this.#selectedInsightSetKey}
             >
               <summary
                 @click=${() => this.#insightSetToggled(id)}
                 @mouseenter=${() => this.#insightSetHovered(id)}
                 @mouseleave=${() => this.#insightSetUnhovered()}
                 title=${url.href}>
-                ${this.#renderDropdownIcon(id === this.#insightSetKey)}
+                ${this.#renderDropdownIcon(id === this.#selectedInsightSetKey)}
                 <span>${labels[index]}</span>
-                <span class='zoom-button' @click=${(event: Event) => this.#onZoomClick(event, id)}>${this.#renderZoomButton(id === this.#insightSetKey)}</span>
+                <span class='zoom-button' @click=${(event: Event) => this.#onZoomClick(event, id)}>${this.#renderZoomButton(id === this.#selectedInsightSetKey)}</span>
               </summary>
               ${contents}
             </details>`;
@@ -247,14 +215,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
           return contents;
         })}
-      </div>
-
-      <div class="feedback-wrapper">
-        <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'experiment'} @click=${this.#onFeedbackClick}>
-          ${i18nString(UIStrings.feedbackButton)}
-        </devtools-button>
-
-        <p class="tooltip">${i18nString(UIStrings.feedbackTooltip)}</p>
       </div>
     `;
     // clang-format on

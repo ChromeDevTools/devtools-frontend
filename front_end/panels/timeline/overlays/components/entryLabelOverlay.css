@@ -50,6 +50,18 @@
   }
 }
 
+.delete-button {
+  display: flex;
+  pointer-events: auto;
+  position: absolute;
+  right: 0;
+  top: -5px;
+  border-radius: 50%;
+  padding: 0;
+  border: none;
+  background: var(--color-background-inverted);
+}
+
 .ai-label-loading,
 .ai-label-error {
   gap: var(--sys-size-6);

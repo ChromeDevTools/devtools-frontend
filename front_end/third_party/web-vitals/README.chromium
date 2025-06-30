@@ -11,6 +11,17 @@ Shipped: yes
 Description:
 Essential metrics for a healthy site.
 
+## Bumping.
+
 ```bash
 ./front_end/third_party/web-vitals/rebuild.sh
+
+# Also, consider commenting out roll script to just recompile without a bump, however this will reset some edits 2,3 listed below.
 ```
+
+## DevTools edits to web-vitals
+
+1. There's a sed edit in the rebuild.sh to expose `attributeINP`. That'll continue in v5 but be harder to do.
+2. Some lines are manually commented out in `attribution/onINP.js`'s `saveInteractionTarget`.  b/376777343 Unknown if needed in v5.
+3. Some lines are added in `onHidden.js` to resolve a memory leak. Not needed in v5. b/425309898#comment4
+4. (Not part of package, but..) There's a hack to clear `interactionTargetElement` in our own web-vitals-injected that won't be necessary in v5.

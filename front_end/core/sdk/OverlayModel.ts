@@ -463,10 +463,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     this.#sourceOrderModeActiveInternal = isActive;
   }
 
-  sourceOrderModeActive(): boolean {
-    return this.#sourceOrderModeActiveInternal;
-  }
-
   private delayedHideHighlight(delay: number): void {
     if (this.#hideHighlightTimeout === null) {
       this.#hideHighlightTimeout = window.setTimeout(() => this.highlightInOverlay({clear: true}), delay);

@@ -169,42 +169,6 @@ export class DevToolsPage extends PageWrapper {
     await this.drainTaskQueue();
   }
 
-  async pressKey(key: puppeteer.KeyInput, modifiers?: {control?: boolean, alt?: boolean, shift?: boolean}) {
-    if (modifiers) {
-      if (modifiers.control) {
-        if (platform === 'mac') {
-          // Use command key on mac
-          await this.page.keyboard.down('Meta');
-        } else {
-          await this.page.keyboard.down('Control');
-        }
-      }
-      if (modifiers.alt) {
-        await this.page.keyboard.down('Alt');
-      }
-      if (modifiers.shift) {
-        await this.page.keyboard.down('Shift');
-      }
-    }
-    await this.page.keyboard.press(key);
-    if (modifiers) {
-      if (modifiers.shift) {
-        await this.page.keyboard.up('Shift');
-      }
-      if (modifiers.alt) {
-        await this.page.keyboard.up('Alt');
-      }
-      if (modifiers.control) {
-        if (platform === 'mac') {
-          // Use command key on mac
-          await this.page.keyboard.up('Meta');
-        } else {
-          await this.page.keyboard.up('Control');
-        }
-      }
-    }
-  }
-
   async click(selector: string, options?: ClickOptions) {
     return await this.performActionOnSelector(
         selector,
@@ -679,6 +643,12 @@ async function setDevToolsExperiments(devToolsPage: DevToolsPage, experiments: s
   }, experiments);
 }
 
+async function disableAnimations(devToolsPage: DevToolsPage) {
+  const session = await devToolsPage.page.createCDPSession();
+  await session.send('Animation.enable');
+  await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
+}
+
 /**
  * @internal This should not be use outside setup
  */
@@ -701,6 +671,7 @@ export async function setupDevToolsPage(context: puppeteer.BrowserContext, setti
   const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();
   await Promise.all([
+    disableAnimations(devToolsPage),
     setDevToolsSettings(devToolsPage, settings.devToolsSettings),
     setDevToolsExperiments(devToolsPage, settings.enabledDevToolsExperiments),
   ]);

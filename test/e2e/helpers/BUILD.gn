@@ -26,6 +26,7 @@ node_ts_library("helpers") {
     "network-helpers.ts",
     "performance-helpers.ts",
     "quick_open-helpers.ts",
+    "recorder-helpers.ts",
     "security-helpers.ts",
     "settings-helpers.ts",
     "settings-shortcuts-helpers.ts",
@@ -36,6 +37,7 @@ node_ts_library("helpers") {
 
   deps = [
     "../../../extension-api",
+    "../../../front_end/panels/recorder:bundle",
     "../../e2e_non_hosted/shared",
     "../../shared",
   ]

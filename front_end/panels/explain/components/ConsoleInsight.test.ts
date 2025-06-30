@@ -23,6 +23,10 @@ describeWithEnvironment('ConsoleInsight', () => {
       background-color: aqua;
     `;
 
+  beforeEach(() => {
+    sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').callsFake(async () => {});
+  });
+
   afterEach(() => {
     component?.remove();
     Common.Settings.settingForTest('console-insights-enabled').set(true);

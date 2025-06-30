@@ -1214,6 +1214,69 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert.isTrue(view.input.isTextInputDisabled);
            assert.strictEqual(view.input.inputPlaceholder, 'Select an element to ask a question');
          });
+
+      it('shows the right placeholder for the performance agent when the user has no trace', async () => {
+        updateHostConfig({
+          devToolsAiAssistancePerformanceAgent: {
+            enabled: true,
+          },
+        });
+        UI.Context.Context.instance().setFlavor(
+            Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
+        Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+        const {panel, view} =
+            await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+        panel.handleAction('drjones.performance-panel-context');
+
+        assert.isNull((await view.nextInput).selectedContext);
+        assert.isTrue(view.input.isTextInputDisabled);
+        assert.strictEqual(
+            view.input.inputPlaceholder, 'Record a performance trace and select an item to ask a question');
+      });
+
+      it('shows the right placeholder for the performance agent when the user has a trace but no selected item',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+             },
+           });
+
+           const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+           timelinePanel.hasActiveTrace.callsFake(() => true);
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const {panel, view} =
+               await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+           panel.handleAction('drjones.performance-panel-context');
+
+           assert.isNull((await view.nextInput).selectedContext);
+           assert.isTrue(view.input.isTextInputDisabled);
+           assert.strictEqual(view.input.inputPlaceholder, 'Select an item to ask a question');
+         });
+
+      it('shows the right placeholder for the performance agent when the user has a trace and a selected item',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+             },
+           });
+
+           const timelinePanel = sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel);
+           timelinePanel.hasActiveTrace.callsFake(() => true);
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
+
+           const fakeCallTree = sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree);
+           UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, fakeCallTree);
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const {panel, view} =
+               await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+           panel.handleAction('drjones.performance-panel-context');
+
+           assert.isFalse(view.input.isTextInputDisabled);
+           assert.strictEqual(view.input.inputPlaceholder, 'Ask a question about the selected item and its call tree');
+         });
     });
 
     it('should disable the send button when the input is empty', async () => {
@@ -1416,6 +1479,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('handleExternalRequest', () => {
     const explanation = 'I need more information';
+    let evaluateStub: sinon.SinonStub;
+    let callFunctionOnStub: sinon.SinonStub;
 
     beforeEach(() => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
@@ -1424,6 +1489,22 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
+
+      const target = createTarget();
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      runtimeModel.executionContextCreated({
+        id: 1 as Protocol.Runtime.ExecutionContextId,
+        origin: urlString`http://www.example.com`,
+        name: 'name',
+        uniqueId: 'uniqueId',
+      });
+      const executionContext = runtimeModel.defaultExecutionContext();
+      assert.isNotNull(executionContext);
+      evaluateStub = sinon.stub().returns({object: {objectId: 'some-id'}});
+      executionContext.evaluate = evaluateStub;
+      callFunctionOnStub = sinon.stub().returns({object: {}});
+      executionContext.callFunctionOn = callFunctionOnStub;
     });
 
     it('can be blocked by a setting', async () => {
@@ -1489,22 +1570,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('handles styling assistance requests which contain a selector', async () => {
-      const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
-      runtimeModel.executionContextCreated({
-        id: 1 as Protocol.Runtime.ExecutionContextId,
-        origin: urlString`http://www.example.com`,
-        name: 'name',
-        uniqueId: 'uniqueId',
-      });
-      const executionContext = runtimeModel.defaultExecutionContext();
-      assert.isNotNull(executionContext);
-      const evaluateStub = sinon.stub().returns({object: {objectId: 'some-id'}});
-      executionContext.evaluate = evaluateStub;
-      const callFunctionOnStub = sinon.stub().returns({object: {}});
-      executionContext.callFunctionOn = callFunctionOnStub;
-
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
@@ -1589,7 +1654,6 @@ STOP`,
         },
       ] as AiAssistancePanel.Step[];
 
-      createTarget();
       await createNetworkPanelForMockConnection();
       updateHostConfig({
         devToolsFreestyler: {

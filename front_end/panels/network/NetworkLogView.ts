@@ -484,7 +484,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<Record<string, boolean>>;
   private readonly networkShowOptionsToGenerateHarWithSensitiveData: Common.Settings.Setting<boolean>;
-  private rawRowHeight: number;
   private readonly progressBarContainer: Element;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private rowHeightInternal: number;
@@ -542,16 +541,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
         'network.show-options-to-generate-har-with-sensitive-data', false);
 
-    this.rawRowHeight = 0;
     this.progressBarContainer = progressBarContainer;
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
 
     function updateRowHeight(this: NetworkLogView): void {
-      this.rawRowHeight = Boolean(this.networkLogLargeRowsSetting.get()) ? 41 : 21;
-      this.rowHeightInternal = this.computeRowHeight();
+      this.rowHeightInternal = Boolean(this.networkLogLargeRowsSetting.get()) ? 41 : 21;
     }
-    this.rawRowHeight = 0;
     this.rowHeightInternal = 0;
     updateRowHeight.call(this);
 
@@ -657,10 +653,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
-  }
-
-  getMoreFiltersDropdown(): MoreFiltersDropDownUI|undefined {
-    return this.moreFiltersDropDownUI;
   }
 
   private updateGroupByFrame(): void {
@@ -926,10 +918,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const groupLookup = groupKey ? this.groupLookups.get(groupKey) || null : null;
     this.activeGroupLookup = groupLookup;
     this.invalidateAllItems();
-  }
-
-  private computeRowHeight(): number {
-    return this.rawRowHeight;
   }
 
   nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null {
@@ -1379,10 +1367,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   override willHide(): void {
     this.columnsInternal.willHide();
-  }
-
-  override onResize(): void {
-    this.rowHeightInternal = this.computeRowHeight();
   }
 
   flatNodesList(): NetworkNode[] {

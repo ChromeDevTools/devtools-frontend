@@ -12,7 +12,6 @@ devtools_module("trace") {
     "LanternComputationData.ts",
     "ModelImpl.ts",
     "Processor.ts",
-    "TracingManager.ts",
   ]
 
   deps = [
@@ -72,7 +71,6 @@ ts_library("unittests") {
   sources = [
     "ModelImpl.test.ts",
     "Processor.test.ts",
-    "TracingManager.test.ts",
   ]
 
   deps = [

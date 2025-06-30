@@ -6,32 +6,15 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("./node.gni")
 import("./vars.gni")
 
-declare_args() {
-  # If this is enabled, devtools build uses esbuild instead of rollup.js to
-  # bundle JavaScript files.
-  devtools_fast_bundle = devtools_skip_typecheck
-
-  # If this is enabled, we will emit source maps for the entrypoint bundles.
-  # Since we only bundle release builds, this flag can't be used with
-  # is_debug = true.
-  # Note that this flag works regardless of the devtools_skip_typecheck or
-  # devtools_fast_bundle GN arg. Both rollup.js or ESBuild will emit source
-  # maps if this flag is set.
-  devtools_release_sourcemaps = false
-}
-
-assert(!(devtools_fast_bundle && is_official_build),
-       "Official build should not bundle with esbuild")
-
-# Release source map implies release build.
-assert(!devtools_release_sourcemaps || !is_debug,
-       "Release source maps can only be enabled for release builds")
-
 template("bundle") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a bundle target")
 
-  if (devtools_fast_bundle) {
+  _fast_bundle = is_debug || devtools_skip_typecheck
+  assert(!is_official_build || !_fast_bundle,
+         "Fast bundling is disallowed for official builds.")
+
+  if (_fast_bundle) {
     node_action(target_name) {
       script = "scripts/build/esbuild.js"
       forward_variables_from(invoker,
@@ -57,11 +40,8 @@ template("bundle") {
       args = [
         rebase_path(invoker.entrypoint, root_build_dir),
         rebase_path(invoker.output_file_location, root_build_dir),
+        "--configSourcemaps"
       ]
-
-      if (devtools_release_sourcemaps) {
-        args += [ "--configSourcemaps" ]
-      }
 
       outputs = [ invoker.output_file_location ]
     }
@@ -96,11 +76,8 @@ template("bundle") {
         rebase_path(invoker.entrypoint, root_build_dir),
         "--file",
         rebase_path(invoker.output_file_location, root_build_dir),
+        "--configSourcemaps",
       ]
-
-      if (devtools_release_sourcemaps) {
-        args += [ "--configSourcemaps" ]
-      }
 
       outputs = [ invoker.output_file_location ]
     }

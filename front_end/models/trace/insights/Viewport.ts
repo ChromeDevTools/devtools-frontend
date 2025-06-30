@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Handlers from '../handlers/handlers.js';
+import * as Platform from '../../../core/platform/platform.js';
+import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
@@ -24,6 +25,10 @@ export const UIStrings = {
    */
   description:
       'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.',
+  /**
+   * @description Text for a label describing the portion of an interaction event that was delayed due to a bad mobile viewport.
+   */
+  mobileTapDelayLabel: 'Mobile tap delay',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Viewport.ts', UIStrings);
@@ -32,6 +37,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export type ViewportInsightModel = InsightModel<typeof UIStrings, {
   mobileOptimized: boolean | null,
   viewportEvent?: Types.Events.ParseMetaViewport,
+  longPointerInteractions?: Types.Events.SyntheticInteractionPair[],
 }>;
 
 function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): ViewportInsightModel {
@@ -81,10 +87,22 @@ export function generateInsight(
   // Returns true only if all events are mobile optimized.
   for (const event of compositorEvents) {
     if (!event.args.is_mobile_optimized) {
+      // Grab all the pointer events with at least 50ms of input delay.
+      const longPointerInteractions = [...parsedTrace.UserInteractions.interactionsOverThreshold.values()].filter(
+          interaction => Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(interaction) === 'POINTER' &&
+              interaction.inputDelay >= 50_000);
+
+      // The actual impact varies between 0 and 300.
+      // Using inputDelay as the closest thing we have for measuring this, though inputDelay may be high for other reasons.
+      // b/371566378#comment8
+      const inputDelay = Math.max(0, ...longPointerInteractions.map(interaction => interaction.inputDelay)) / 1000;
+      const inpMetricSavings = Platform.NumberUtilities.clamp(inputDelay, 0, 300);
+
       return finalize({
         mobileOptimized: false,
         viewportEvent,
-        metricSavings: {INP: 300 as Types.Timing.Milli},
+        longPointerInteractions,
+        metricSavings: {INP: inpMetricSavings as Types.Timing.Milli},
       });
     }
   }

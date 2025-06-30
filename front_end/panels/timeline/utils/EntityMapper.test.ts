@@ -4,6 +4,7 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {getAllNetworkRequestsByHost} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Utils from './utils.js';
@@ -50,11 +51,11 @@ describeWithEnvironment('EntityMapper', function() {
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
       // Check entities for network requests.
-      const reqs = parsedTrace.NetworkRequests.byOrigin.get('www.paulirish.com')?.all ?? [];
+      const reqs = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'www.paulirish.com');
       let gotEntity = mapper.entityForEvent(reqs[0]);
       assert.deepEqual(gotEntity?.name, 'paulirish.com');
 
-      const gstatic = parsedTrace.NetworkRequests.byOrigin.get('fonts.gstatic.com')?.all ?? [];
+      const gstatic = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'fonts.gstatic.com');
       gotEntity = mapper.entityForEvent(gstatic[0]);
       assert.deepEqual(gotEntity?.name, 'Google Fonts');
     });
@@ -76,7 +77,7 @@ describeWithEnvironment('EntityMapper', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
       const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
 
-      const reqs = parsedTrace.NetworkRequests.byOrigin.get('www.paulirish.com')?.all ?? [];
+      const reqs = getAllNetworkRequestsByHost(parsedTrace.NetworkRequests.byTime, 'www.paulirish.com');
       const entity = mapper.entityForEvent(reqs[0]);
       assert.exists(entity);
       assert.deepEqual(entity.name, 'paulirish.com');

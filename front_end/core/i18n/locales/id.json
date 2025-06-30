@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Jangan mengemulasi jenis media CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Jangan emulasi skala teks OS"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Jangan luaskan garis petak"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulasikan deuteranopia (tanpa warna hijau)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emulasi skala teks OS"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emulasikan protanopia (tanpa warna merah)"
@@ -732,6 +738,30 @@
     "message": "Pemblokiran permintaan jaringan"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Tidak ada emulasi"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (default)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Tidak ada emulasi"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Memaksa jenis media untuk menguji gaya cetak dan layar"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Memaksa emulasi skala teks OS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Memaksa emulasi kekurangan daya penglihatan"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Alihkan panel samping"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Alihkan orientasi panel samping"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Lepaskan kaitan ke jendela terpisah"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Permintaan resource yang URL-nya berisi karakter \\(n|r|t) spasi kosong yang dihapus dan karakter kurang dari (<) akan diblokir. Hapus baris baru dan enkode karakter kurang dari, dari tempat seperti nilai atribut elemen untuk memuat resource ini."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Deteksi otomatis himpunan karakter ISO-2022-JP tidak digunakan lagi dan akan dinonaktifkan dalam waktu dekat. Harap tentukan himpunan karakter di header Jenis Konten atau dengan menggunakan tag meta (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() tidak digunakan lagi. Sebagai gantinya, gunakan API standar: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit gagal: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Data kolom dikonfigurasi untuk URL yang berbeda dari halaman saat ini."
+    "message": "Metrik kolom dikonfigurasi untuk URL yang berbeda dari halaman saat ini."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Rasio piksel perangkat harus berupa angka atau kosong."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Simpan sebagai…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Gagal menyimpan file ke disk."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Simpan gambar"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Penyebab utama perubahan tata letak"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Gambar Tidak Berukuran"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Unsized image element"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Cluster terburuk"
@@ -1839,7 +1875,7 @@
     "message": "Memiliki pengalihan ({PH1} pengalihan, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Server merespons dengan lambat ({PH1} dalam pengamatan) "
+    "message": "Server merespons dengan lambat ({PH1} dalam pengamatan)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Tidak ada kompresi yang diterapkan"
@@ -1848,7 +1884,7 @@
     "message": "Menghindari pengalihan"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Server merespons dengan cepat ({PH1} dalam pengamatan) "
+    "message": "Server merespons dengan cepat ({PH1} dalam pengamatan)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Menerapkan kompresi teks"
@@ -2070,7 +2106,7 @@
     "message": "[Hindari perantaian permintaan penting](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) dengan mengurangi panjang rantai, mengurangi ukuran download resource, atau menunda download resource yang tidak penting untuk mempercepat pemuatan halaman."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Tambahkan petunjuk [prakoneksi](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ke origin yang paling penting, tapi usahakan untuk menggunakan kurang dari 4 petunjuk."
+    "message": "Tambahkan petunjuk [prakoneksi](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ke origin yang paling penting, tetapi usahakan untuk menggunakan tidak lebih dari 4 petunjuk."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Kandidat prakoneksi"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Interaksi ketuk mungkin [tertunda hingga 300 md](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) jika area tampilan tidak dioptimalkan untuk seluler."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Penundaan ketuk di perangkat seluler"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Mengoptimalkan area tampilan untuk seluler"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Untuk menggunakan fitur ini, setel preferensi bahasa Anda ke bahasa Inggris di setelan DevTools."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Anda juga dapat menggunakan salah satu saran perintah di atas untuk memulai percakapan"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Pelajari AI di DevTools"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Ciutkan"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Hapus penyimpanan objek \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Hapus database \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Kunci"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Data yang ada di penyimpanan objek terpilih akan dihapus."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Penyimpanan objek"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Frame ini telah diidentifikasi sebagai frame root dari sebuah iklan"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Aturan Daftar Filter Skrip Root"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Konteks Aman"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (dari peta sumber)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Tab perubahan tidak menampilkan perubahan data biner"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Di halaman ini, Anda dapat melacak perubahan kode yang dilakukan dalam DevTools."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Salin"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Belum ada perubahan"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Perbedaan teks tidak tersedia"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# penghapusan (-)}other{# penghapusan (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# penyisipan (+)}other{# penyisipan (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Disalin ke papan klip"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Perubahan"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Salin semua perubahan dari file saat ini"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Kembalikan semua perubahan ke file saat ini"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Tampilkan Perubahan"
@@ -5715,7 +5745,7 @@
     "message": "Hanya menampilkan pesan dari konteks saat ini (top, iframe, worker, ekstensi)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Digantikan oleh sidebar filter"
+    "message": "Level log dikontrol melalui sidebar konsol."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Pertahankan log"
@@ -6612,16 +6642,16 @@
     "message": "Scroll ke tampilan"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Tampilkan perintah untuk target"
+    "message": "Tampilkan elemen yang terkait dengan atribut commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Tampilkan detail iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Tampilkan target minat"
+    "message": "Tampilkan elemen yang terkait dengan atribut interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Tampilkan target popover"
+    "message": "Tampilkan elemen yang terkait dengan atribut popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Frame ini diidentifikasi sebagai frame iklan"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "stylesheet yang dikonstruksi"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Salin semua perubahan CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Salin semua deklarasi"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "melalui pemeriksa"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Salin semua perubahan CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Salin semua deklarasi sebagai JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Aksesibilitas"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Terapkan emulasi desktop selama proses audit"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Terapkan emulasi perangkat seluler"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Pengurutan Ulang Paket"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "persen"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Nama Profil"
   },
@@ -8802,7 +8826,7 @@
     "message": "Masukkan agen pengguna khusus"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Kondisi jaringan ditampilkan"
+    "message": "Kondisi jaringan ditampilkan."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Throttling jaringan"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Ruang Alamat Jarak Jauh"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Header Permintaan"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Header Respons"
@@ -10260,7 +10287,7 @@
     "message": "Profil {PH1}"
   },
   "panels/profiler/HeapProfileView.ts | recordMemoryAllocations": {
-    "message": "Memperkirakan alokasi memori dengan mengambil sampel operasi lama dengan overhead minimal dan mendapatkan rincian menurut stack eksekusi JavaScript"
+    "message": "Memperkirakan alokasi memori dengan mengambil sampel operasi lama dengan overhead minimal dan mendapatkan perincian menurut stack eksekusi JavaScript"
   },
   "panels/profiler/HeapProfileView.ts | recording": {
     "message": "Merekam…"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Simpan sebagai…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Gagal menyimpan file ke disk."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pilih folder untuk penggantian"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Muat ulang ekspresi watch"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Ekspresi smartwatch dihapus"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "Hit titik henti sementara {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Detail"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Dimensi"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durasi"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Pelajari lebih lanjut"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Lokasi"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Pesan"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (turunan)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} terkumpul"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} dari {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Pilih \"{PH1}\" untuk mengumpulkan statistik pencocokan pemilih CSS yang mendetail."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (self)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skrip"
@@ -14682,19 +14694,19 @@
     "message": "Konfigurasi"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Mengonfigurasi pengambilan data kolom"
+    "message": "Mengonfigurasi pengambilan metrik kolom"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report tidak memiliki cukup data kecepatan yang sebenarnya untuk halaman ini."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Ambil data kolom gabungan dari {PH1} untuk membantu Anda melakukan kontekstualisasi pada pengukuran lokal dengan pengalaman pengguna yang sebenarnya di situs."
+    "message": "Ambil metrik kolom gabungan dari {PH1} untuk membantu Anda melakukan kontekstualisasi pada pengukuran lokal dengan pengalaman pengguna yang sebenarnya di situs."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" bukan origin atau URL yang valid."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Tetapkan origin pengembangan agar otomatis mendapatkan data kolom yang relevan untuk origin produksinya."
+    "message": "Tetapkan origin pengembangan agar otomatis mendapatkan metrik kolom yang relevan untuk origin produksinya."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Baru"
@@ -14703,7 +14715,7 @@
     "message": "Oke"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Selalu tampilkan data kolom untuk URL di bawah"
+    "message": "Selalu tampilkan metrik kolom untuk URL di bawah"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Nonaktifkan"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Saat DevTools dibuka, URL yang Anda kunjungi akan dikirim ke Google untuk membuat kueri data kolom. Permintaan ini tidak dikaitkan dengan Akun Google Anda."
+    "message": "Saat DevTools dibuka, URL yang Anda kunjungi akan dikirim ke Google untuk membuat kueri metrik kolom. Permintaan ini tidak dikaitkan dengan Akun Google Anda."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Tambahkan aturan ekspresi reguler untuk URL skrip"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Bagian log interaksi dan perubahan tata letak"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Data kolom"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Metrik kolom"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "Interaksi INP berada pada persentil ke-98 dari penundaan interaksi."
@@ -14856,10 +14868,10 @@
     "message": "Metrik lapangan dan lokal"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Pelajari lebih lanjut data lokal dan kolom"
+    "message": "Pelajari lebih lanjut metrik lokal dan kolom"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Metrik lokal diambil dari halaman saat ini menggunakan perangkat dan koneksi jaringan Anda. Data kolom diukur oleh pengguna sebenarnya menggunakan berbagai koneksi jaringan dan perangkat."
+    "message": "Metrik lokal diambil dari halaman saat ini menggunakan perangkat dan koneksi jaringan Anda. Metrik kolom diukur dari pengguna sebenarnya yang menggunakan berbagai koneksi jaringan dan perangkat."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Metrik lokal"
@@ -14922,10 +14934,10 @@
     "message": "Buka cluster perubahan tata letak terburuk."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Tampilkan data kolom untuk jenis perangkat: {PH1}"
+    "message": "Tampilkan metrik kolom untuk jenis perangkat: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Tampilkan data kolom untuk {PH1}"
+    "message": "Tampilkan metrik kolom untuk {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Buka interaksi INP."
@@ -15033,13 +15045,13 @@
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus, tetapi jauh lebih baik daripada pengalaman pengguna Anda."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk bagus."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai persentil {PH1} ke-75 metrik lapangan sebesar {PH3} termasuk bagus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} perlu ditingkatkan."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} perlu ditingkatkan."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk buruk."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} termasuk buruk."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} bagus, dan serupa dengan pengalaman pengguna Anda."
@@ -15054,13 +15066,13 @@
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan, tetapi jauh lebih baik daripada pengalaman pengguna Anda."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk bagus."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} termasuk bagus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} perlu ditingkatkan."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} perlu ditingkatkan."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk buruk."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} termasuk buruk."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} perlu ditingkatkan, dan serupa dengan pengalaman pengguna Anda."
@@ -15075,13 +15087,13 @@
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk, tetapi jauh lebih baik daripada pengalaman pengguna Anda."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk bagus."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} termasuk bagus."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} perlu ditingkatkan."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Namun, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} perlu ditingkatkan."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai {PH1} persentil ke-75 data lapangan sebesar {PH3} termasuk buruk."
+    "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk dan dinilai sama dengan {PH4} pengalaman {PH1} pengguna sebenarnya. Selain itu, nilai {PH1} persentil ke-75 metrik lapangan sebesar {PH3} termasuk buruk."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Nilai {PH1} lokal Anda sebesar {PH2} buruk, dan serupa dengan pengalaman pengguna Anda."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Alihkan DevTools ke bahasa {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Alihkan orientasi panel samping"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Tambahkan"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot untuk {PH1} - pilih untuk melihat permintaan sebelumnya."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Menghapus anotasi"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfigurasi jalur"

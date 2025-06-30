@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Non emulare il tipo multimediale del CSS"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Non emulare la scala del testo del sistema operativo"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Non estendere linee della griglia"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emula deuteranopia (no verde)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emula la scala del testo del sistema operativo"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emula protanopia (no rosso)"
@@ -732,6 +738,30 @@
     "message": "Blocco richieste di rete"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Nessuna emulazione"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (valore predefinito)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Nessuna emulazione"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Forza il tipo multimediale per testare gli stili di stampa e schermo"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Forza l'emulazione della scala del testo del sistema operativo"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Forza emulazione dei difetti alla vista"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Attiva/disattiva riquadro a scomparsa"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Attiva/disattiva orientamento del riquadro a scomparsa"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Sgancia in una finestra separata"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Le richieste di risorse i cui URL contenevano sia caratteri \\(n|r|t) con spazi vuoti rimossi sia caratteri con un numero inferiore (<) sono bloccati. Rimuovi i ritorni a capo e codifica i caratteri con un numero inferiore da posizioni come valori dell'attributo dell'elemento per caricare queste risorse."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Il rilevamento automatico del set di caratteri ISO-2022-JP è deprecato e verrà disattivato a breve. Specifica l'insieme di caratteri nell'intestazione Tipo di contenuto o utilizzando un meta tag (https://developer.mozilla.org/it/docs/Glossario/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "L'elemento chrome.loadTimes() è deprecato, utilizza invece l'API standardizzata: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit non riuscita: {PH1}."
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "I dati del campo sono configurati per un URL diverso dalla pagina attuale."
+    "message": "Le metriche sul campo sono configurate per un URL diverso dalla pagina attuale."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Il valore per il rapporto pixel del dispositivo deve essere un numero o vuoto."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Salva come…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Impossibile salvare il file sul disco."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Salva immagine"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Principali responsabili delle variazioni del layout"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Immagini senza dimensioni impostate"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Elemento immagine senza dimensioni"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Cluster peggiore"
@@ -1839,7 +1875,7 @@
     "message": "Con reindirizzamenti (Reindirizzamenti: {PH1}, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Il server ha risposto lentamente (tempo rilevato: {PH1}) "
+    "message": "Il server ha risposto lentamente (tempo rilevato: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Nessuna compressione applicata"
@@ -1848,7 +1884,7 @@
     "message": "Evita i reindirizzamenti"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Il server risponde rapidamente (tempo rilevato: {PH1}) "
+    "message": "Il server risponde rapidamente (tempo rilevato: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Applica la compressione del testo"
@@ -2070,7 +2106,7 @@
     "message": "[Evita di concatenare le richieste fondamentali](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) riducendo la lunghezza delle catene e le dimensioni del download delle risorse oppure rimandando il download delle risorse non necessarie per velocizzare il caricamento pagina."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Aggiungi hint di [precollegamento](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) alle origini più importanti, ma cerca di non usarne più di 4."
+    "message": "Aggiungi hint di [precollegamento](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) alle origini più importanti, ma cerca usarne al massimo 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Candidati per il precollegamento"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Le interazioni con i tocchi potrebbero essere [ritardate fino a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) se l'area visibile non è ottimizzata per i dispositivi mobili."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Ritardo tocco mobile"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Ottimizza l'area visibile per i dispositivi mobili"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Per utilizzare questa funzionalità, imposta la preferenza della lingua su Inglese nelle Impostazioni di DevTools."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Puoi anche usare uno dei prompt suggeriti sopra per iniziare la conversazione"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Scopri di più sull'AI in DevTools"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Comprimi"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Vuoi cancellare l'archivio di oggetti \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Eliminare il database \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Chiave"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "I dati contenuti nell'archivio di oggetti selezionato verranno rimossi."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Archiviazioni di oggetti"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Questo frame è stato identificato come frame principale di un annuncio"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Regola di filtraggio dell'elenco per lo script radice"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Contesto sicuro"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (dalla mappa di origine)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "La scheda Modifiche non mostra le modifiche ai dati binari"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "In questa pagina puoi monitorare le modifiche al codice apportate in DevTools."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Copia"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Ancora nessuna modifica"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Nessuna differenza testuale disponibile"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# eliminazione (-)}other{# eliminazioni (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# inserimento (+)}other{# inserimenti (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Copiato negli appunti"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Modifiche"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Copia tutte le modifiche dal file corrente"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Ripristina tutte le modifiche al file corrente"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Mostra le modifiche"
@@ -5715,7 +5745,7 @@
     "message": "Mostra solo i messaggi del contesto corrente (top, iframe, worker, estensione)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Override eseguito dalla barra laterale dei filtri"
+    "message": "I livelli di log sono controllati dalla barra laterale della console."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Conserva log"
@@ -6612,16 +6642,16 @@
     "message": "Scorri finché l'elemento diventa visibile"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Mostra comando per il target"
+    "message": "Mostra l'elemento associato all'attributo commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Mostra dettagli iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Mostra target di interesse"
+    "message": "Mostra l'elemento associato all'attributo interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Mostra target popover"
+    "message": "Mostra l'elemento associato all'attributo popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Questo frame è stato identificato come frame di un annuncio"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "foglio di stile costruito"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Copia tutte le modifiche CSS"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Copia tutte le dichiarazioni"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "tramite controllo"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Copia tutte le modifiche CSS"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Copia tutte le dichiarazioni come JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accessibilità"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Applica l'emulazione del computer durante il controllo"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Applica emulazione per dispositivi mobili"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Riordinamento pacchetti"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "percento"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Nome profilo"
   },
@@ -8802,7 +8826,7 @@
     "message": "Inserisci uno user agent personalizzato"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "È mostrato il riquadro Condizioni di rete"
+    "message": "È mostrato il riquadro Condizioni di rete."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Limitazione della larghezza di banda della rete"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Spazio indirizzo remoto"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Intestazioni delle richieste"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Intestazioni della risposta"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Salva come…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Impossibile salvare il file sul disco."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Seleziona cartella per gli override"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Aggiorna espressioni di controllo"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Espressione di controllo eliminata"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "hit punto di interruzione {PH1}"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Dettagli"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Dimensioni"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Durata"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Scopri di più"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Località"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Messaggio"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (secondari)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} raccolti"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} di {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Seleziona \"{PH1}\" per raccogliere statistiche dettagliate sulla corrispondenza del selettore CSS."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (singola attività)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Script"
@@ -14682,19 +14694,19 @@
     "message": "Configura"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Configura il recupero dei dati dei campi"
+    "message": "Configura il recupero delle metriche sul campo"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Nel Chrome UX Report non sono presenti dati sufficienti sulla velocità effettiva per questa pagina."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Recupera i dati sul campo aggregati del {PH1} per contestualizzare le misurazioni locali con l'esperienza utente reale sul sito."
+    "message": "Recupera le metriche sul campo aggregate del {PH1} per contestualizzare le misurazioni locali con l'esperienza utente reale sul sito."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" non è un URL o un'origine valida."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Imposta un'origine di sviluppo per ottenere automaticamente i dati dei campi pertinenti per la relativa origine di produzione."
+    "message": "Imposta un'origine di sviluppo per ottenere automaticamente le metriche sui campo pertinenti per la relativa origine di produzione."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Nuovo"
@@ -14703,7 +14715,7 @@
     "message": "Ok"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Mostra sempre i dati dei campi per l'URL di seguito"
+    "message": "Mostra sempre le metriche dei campi per l'URL di seguito"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Disattiva"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Quando DevTools è aperto, gli URL visitati verranno inviati a Google per interrogare i dati dei campi. Queste richieste non sono associate al tuo Account Google."
+    "message": "Quando DevTools è aperto, gli URL visitati verranno inviati a Google per interrogare le metriche sul campo. Queste richieste non sono associate al tuo Account Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Aggiungi una regola con espressioni regolari per l'URL dello script"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Sezione di log su interazioni e variazioni del layout"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Dati reali"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Metriche sul campo"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "L'interazione INP si trova al 98° percentile dei ritardi di interazione."
@@ -14856,10 +14868,10 @@
     "message": "Metriche locali e sul campo"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Scopri di più sui dati locali e sul campo"
+    "message": "Scopri di più sulle metriche locali e sul campo"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Le metriche locali vengono acquisite dalla pagina corrente utilizzando la connessione di rete e il dispositivo. I dati reali vengono misurati in base agli utenti reali che utilizzano molte connessioni di rete e dispositivi diversi."
+    "message": "Le metriche locali vengono acquisite dalla pagina corrente utilizzando la connessione di rete e il dispositivo. Le metriche sul campo vengono misurate in base agli utenti reali che utilizzano più connessioni di rete e dispositivi diversi."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Metriche locali"
@@ -14922,10 +14934,10 @@
     "message": "Vai al cluster peggiore per variazione del layout."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Mostra dati sul campo per il tipo di dispositivo: {PH1}"
+    "message": "Mostra metriche sul campo per il tipo di dispositivo: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Mostra i dati sul campo per {PH1}"
+    "message": "Mostra le metriche sul campo per {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Vai all'interazione INP."
@@ -15033,13 +15045,13 @@
     "message": "Il valore locale {PH2} di {PH1} è buono, ma è significativamente migliore dell'esperienza utente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è buono."
+    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è buono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH1} del 75° percentile dei dati sul campo di {PH3} richiede miglioramenti."
+    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH1} del 75° percentile delle metriche sul campo di {PH3} richiede miglioramenti."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è scadente."
+    "message": "Il valore locale {PH1} di {PH2} è buono e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è scadente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Il valore locale {PH2} di {PH1} è buono e simile all'esperienza utente."
@@ -15054,13 +15066,13 @@
     "message": "Il valore locale {PH1} di {PH2} deve essere migliorato, ma è nettamente migliore dell'esperienza utente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è buono."
+    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è buono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH1} del 75° percentile dei dati sul campo di {PH3} richiede miglioramenti."
+    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH1} del 75° percentile delle metriche sul campo di {PH3} richiede miglioramenti."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è scadente."
+    "message": "Il valore locale {PH1} di {PH2} deve essere migliorato e ha la stessa valutazione ({PH4}) delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è scadente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Il valore locale {PH1} di {PH2} deve essere migliorato ed è simile all'esperienza utente."
@@ -15075,13 +15087,13 @@
     "message": "Il valore locale {PH2} di {PH1} è scadente, ma è significativamente migliore dell'esperienza utente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è buono."
+    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è buono."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH1} del 75° percentile dei dati sul campo di {PH3} richiede miglioramenti."
+    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Tuttavia, il valore {PH1} del 75° percentile delle metriche sul campo di {PH3} richiede miglioramenti."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH3} del 75° percentile dei dati sul campo di {PH1} è scadente."
+    "message": "Il valore locale {PH1} di {PH2} è scadente e ha la stessa valutazione di {PH4} delle esperienze {PH1} degli utenti reali. Inoltre, il valore {PH3} del 75° percentile delle metriche sul campo di {PH1} è scadente."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Il valore locale {PH2} di {PH1} è scadente e simile all'esperienza utente."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Passa alla lingua {PH1} per DevTools"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Attiva/disattiva orientamento del riquadro a scomparsa"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Aggiungi"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Screenshot per {PH1}. Seleziona per visualizzare le richieste precedenti."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Elimina annotazioni"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Configura tracce"

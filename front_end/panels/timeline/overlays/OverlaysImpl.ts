@@ -657,6 +657,16 @@ export class Overlays extends EventTarget {
     }
   }
 
+  bringLabelForward(overlay: EntryLabel): void {
+    // Before bringing the element forward, remove the 'bring-forward' class from all the other elements
+    for (const element of this.#overlaysToElements.values()) {
+      element?.classList.remove('bring-forward');
+    }
+
+    const element = this.#overlaysToElements.get(overlay);
+    element?.classList.add('bring-forward');
+  }
+
   /**
    * @returns the list of overlays associated with a given entry.
    */
@@ -1293,6 +1303,7 @@ export class Overlays extends EventTarget {
       return null;
     }
     const entryWrapper = component.entryHighlightWrapper();
+    const inputField = component.shadowRoot?.querySelector<HTMLElement>('.input-field');
 
     if (!entryWrapper) {
       return null;
@@ -1305,8 +1316,11 @@ export class Overlays extends EventTarget {
       return null;
     }
 
+    // Use the actual inputfield height to position the overlay, with a default value in case the element has not yet been rendered.
+    const inputFieldHeight = inputField?.offsetHeight ?? 25;
     // Position the start of label overlay at the start of the entry + length of connector + length of the label element
-    element.style.top = `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT}px`;
+    element.style.top =
+        `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT - inputFieldHeight}px`;
     element.style.left = `${x}px`;
     element.style.width = `${entryWidth}px`;
 
@@ -1570,7 +1584,7 @@ export class Overlays extends EventTarget {
               const event = e as Components.EntryLabelOverlay.LabelAnnotationsConsentDialogVisibilityChange;
               this.dispatchEvent(new ConsentDialogVisibilityChange(event.isVisible));
             });
-        component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
+        component.addEventListener(Components.EntryLabelOverlay.EntryLabelRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
         });
         component.addEventListener(Components.EntryLabelOverlay.EntryLabelChangeEvent.eventName, event => {

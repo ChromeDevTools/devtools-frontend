@@ -288,6 +288,7 @@ export class MainImpl {
     Root.Runtime.experiments.register('sampling-heap-profiler-timeline', 'Sampling heap profiler timeline', true);
     Root.Runtime.experiments.register(
         'show-option-tp-expose-internals-in-heap-snapshot', 'Show option to expose internals in heap snapshots');
+    Root.Runtime.experiments.register('vertical-drawer', 'Enable vertical drawer configuration');
 
     // Timeline
     Root.Runtime.experiments.register(
@@ -1019,3 +1020,34 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     return false;
   }
 }
+
+type ExternalRequestInput = {
+  kind: 'LIVE_STYLE_DEBUGGER',
+  args: {prompt: string, selector: string},
+}|{
+  kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
+};
+
+interface ExternalRequestResponse {
+  response: string;
+  devToolsLogs: object[];
+}
+
+export async function handleExternalRequest(input: ExternalRequestInput): Promise<ExternalRequestResponse> {
+  switch (input.kind) {
+    case 'PERFORMANCE_RELOAD_GATHER_INSIGHTS': {
+      const TimelinePanel = await import('../../panels/timeline/timeline.js');
+      return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+    }
+    case 'LIVE_STYLE_DEBUGGER': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest(
+          input.args.prompt, AiAssistanceModel.ConversationType.STYLING, input.args.selector);
+    }
+  }
+}
+
+// @ts-expect-error
+globalThis.handleExternalRequest = handleExternalRequest;

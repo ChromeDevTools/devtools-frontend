@@ -439,7 +439,6 @@ const EnumeratedHistogram = {
   SyncSetting: 'DevTools.SyncSetting',
   SwatchActivated: 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged: 'DevTools.AnimationPlaybackRateChanged',
-  AnimationPointDragged: 'DevTools.AnimationPointDragged',
   // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
 };
 

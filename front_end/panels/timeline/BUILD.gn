@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/ninja/node.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
@@ -21,7 +22,7 @@ node_action("generate_easter_egg_file") {
 
   outputs = [ "$target_gen_dir/EasterEgg.js" ]
   data = outputs
-  if (is_debug) {
+  if (!devtools_bundle) {
     metadata = {
       grd_files = outputs
     }
@@ -39,6 +40,7 @@ devtools_pre_built("easter-egg") {
 
 generate_css("css_files") {
   sources = [
+    "thirdPartyTreeView.css",
     "timelineFlameChartView.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",
@@ -73,6 +75,7 @@ devtools_module("timeline") {
     "LayoutShiftsTrackAppender.ts",
     "ModificationsManager.ts",
     "NetworkTrackAppender.ts",
+    "RecordingMetadata.ts",
     "SaveFileFormatter.ts",
     "StatusDialog.ts",
     "TargetForEvent.ts",
@@ -97,6 +100,7 @@ devtools_module("timeline") {
     "TimelineUIUtils.ts",
     "TimingsTrackAppender.ts",
     "TracingLayerTree.ts",
+    "TrackConfiguration.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
   ]
@@ -109,6 +113,7 @@ devtools_module("timeline") {
     "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
     "../../models/source_map_scopes:bundle",
+    "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/coverage:bundle",
@@ -116,13 +121,14 @@ devtools_module("timeline") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/profiler:bundle",
     "../../services/trace_bounds:bundle",
+    "../../services/tracing:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/code_highlighter:bundle",  # trace event highlighting
     "../../ui/components/copy_to_clipboard:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/linkifier:bundle",
     "../../ui/components/menus:bundle",
-    "../../ui/components/panel_feedback:bundle",
+    "../../ui/components/snackbars:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
@@ -152,6 +158,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
     "../../panels/ai_assistance/*",
+    "../../services/tracing/*",
     "../../testing",
     "../../testing/*",
     "../../ui/components/docs/performance_panel/*",
@@ -187,11 +194,13 @@ ts_library("unittests") {
   sources = [
     "AnnotationHelpers.test.ts",
     "Breadcrumbs.test.ts",
+    "CountersGraph.test.ts",
     "EntriesFilter.test.ts",
     "EventsSerializer.test.ts",
     "FreshRecording.test.ts",
     "Initiators.test.ts",
     "ModificationsManager.test.ts",
+    "RecordingMetadata.test.ts",
     "SaveFileFormatter.test.ts",
     "ThirdPartyTreeView.test.ts",
     "TimelineController.test.ts",
@@ -207,6 +216,7 @@ ts_library("unittests") {
     "TimelineSelection.test.ts",
     "TimelineTreeView.test.ts",
     "TimelineUIUtils.test.ts",
+    "TrackConfiguration.test.ts",
   ]
 
   deps = [

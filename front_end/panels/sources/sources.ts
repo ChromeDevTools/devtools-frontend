@@ -5,6 +5,8 @@
 import * as AddSourceMapURLDialog from './AddSourceMapURLDialog.js';
 import * as AiWarningInfobarPlugin from './AiWarningInfobarPlugin.js';
 import * as BreakpointEditDialog from './BreakpointEditDialog.js';
+import * as BreakpointsView from './BreakpointsView.js';
+import * as BreakpointsViewUtils from './BreakpointsViewUtils.js';
 import * as CallStackSidebarPane from './CallStackSidebarPane.js';
 import * as CategorizedBreakpointL10n from './CategorizedBreakpointL10n.js';
 import * as CoveragePlugin from './CoveragePlugin.js';
@@ -37,6 +39,8 @@ export {
   AddSourceMapURLDialog,
   AiWarningInfobarPlugin,
   BreakpointEditDialog,
+  BreakpointsView,
+  BreakpointsViewUtils,
   CallStackSidebarPane,
   CategorizedBreakpointL10n,
   CoveragePlugin,

@@ -146,4 +146,33 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
     assert.exists(element);
     sinon.assert.calledOnceWithExactly(highlightSpy, element);
   });
+
+  it('highlights longhand properties of a shorthand property', async () => {
+    const {stylesSidebarPane, matchedStyles} = await setupStylesPane();
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+    const shorthandProperty =
+        new SDK.CSSProperty.CSSProperty(style, 0, 'background', 'red', true, false, true, false, '', undefined);
+    const longhandProperty =
+        new SDK.CSSProperty.CSSProperty(style, 1, 'background-color', 'red', true, false, true, false, '', undefined);
+    sinon.stub(shorthandProperty, 'getLonghandProperties').returns([longhandProperty]);
+
+    style.leadingProperties.returns([shorthandProperty]);
+    style.allProperties.returns([shorthandProperty, longhandProperty]);
+
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, style, 0, null, null);
+    sinon.stub(stylesSidebarPane, 'allSections').returns([section]);
+
+    const highlighter = new Elements.StylePropertyHighlighter.StylePropertyHighlighter(stylesSidebarPane);
+    const highlightSpy = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    await highlighter.highlightProperty(longhandProperty);
+
+    // Assert that the shorthand is expanded and the longhand is highlighted.
+    const shorthandTreeElement =
+        section.propertiesTreeOutline.firstChild() as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+    const longhandTreeElement =
+        shorthandTreeElement.childAt(0) as Elements.StylePropertyTreeElement.StylePropertyTreeElement;
+    assert.isTrue(shorthandTreeElement.expanded, 'Shorthand property should be expanded');
+    sinon.assert.calledOnceWithExactly(highlightSpy, longhandTreeElement.listItemElement);
+  });
 });

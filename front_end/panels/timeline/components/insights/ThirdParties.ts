@@ -67,8 +67,8 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     }),
     createAggregatedTableRow:
         remaining => {
-          const totalMainThreadTime = remaining.reduce<Trace.Types.Timing.Milli>(
-              (acc, summary) => Trace.Types.Timing.Milli(acc + summary.mainThreadTime), Trace.Types.Timing.Milli(0));
+          const totalMainThreadTime =
+              remaining.reduce((acc, summary) => acc + summary.mainThreadTime, 0) as Trace.Types.Timing.Milli;
           return {
             values: [renderOthersLabel(remaining.length), i18n.TimeUtilities.millisToString(totalMainThreadTime)],
             overlays: remaining.flatMap(summary => this.#createOverlaysForSummary(summary) ?? []),

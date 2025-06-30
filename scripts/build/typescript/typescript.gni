@@ -244,7 +244,7 @@ template("ts_library") {
                              ])
     }
 
-    if (is_debug) {
+    if (!devtools_bundle) {
       metadata.grd_files = _javascript_implementation_files
     }
   }

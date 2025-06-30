@@ -5,12 +5,10 @@
 
 import '../../../../ui/components/markdown_view/markdown_view.js';
 
-import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Root from '../../../../core/root/root.js';
-import type * as Protocol from '../../../../generated/protocol.js';
 import type {InsightModel} from '../../../../models/trace/insights/types.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -59,7 +57,7 @@ const UIStrings = {
   estimatedSavingsTimingAndBytesAria: 'Estimated savings for this insight: {PH1} and {PH2} transfer size',
   /**
    * @description Used for screen-readers as a label on the button to expand an insight to view details
-   * @example {LCP by phase} PH1
+   * @example {LCP breakdown} PH1
    */
   viewDetails: 'View details for {PH1} insight.',
 } as const;
@@ -340,23 +338,6 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     }
 
     return null;
-  }
-
-  protected renderNode(backendNodeId: Protocol.DOM.BackendNodeId, fallbackText?: string): Lit.LitTemplate {
-    const fallback = fallbackText ?? Lit.nothing;
-    if (!this.#parsedTrace) {
-      return html`${fallback}`;
-    }
-
-    const domNodePromise =
-        Trace.Extras.FetchNodes.domNodeForBackendNodeID(this.#parsedTrace, backendNodeId).then((node): unknown => {
-          if (!node) {
-            return fallback;
-          }
-          return Common.Linkifier.Linkifier.linkify(node);
-        });
-
-    return html`${Lit.Directives.until(domNodePromise, fallback)}`;
   }
 
   #askAIButtonClick(): void {

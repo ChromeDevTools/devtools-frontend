@@ -95,10 +95,6 @@ const UIStrings = {
    */
   copyAllDeclarations: 'Copy all declarations',
   /**
-   *@description  A context menu item in Styles panel to copy all the CSS changes
-   */
-  copyAllCSSChanges: 'Copy all CSS changes',
-  /**
    *@description A context menu item in Styles panel to view the computed CSS property value.
    */
   viewComputedValue: 'View computed value',
@@ -2278,6 +2274,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
     const container = document.createElement('span');
     const exclamationElement = container.createChild('span');
+    exclamationElement.tabIndex = -1;
     exclamationElement.classList.add('exclamation-mark');
     const invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
         i18nString(UIStrings.invalidPropertyValue) :
@@ -2308,7 +2305,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   getTracingTooltip(
       functionName: string, node: CodeMirror.SyntaxNode, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>, context: RenderingContext): Lit.TemplateResult {
-    if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled || context.tracing || !context.property) {
+    if (context.tracing || !context.property) {
       return html`${functionName}`;
     }
     const text = context.ast.text(node);
@@ -2368,12 +2365,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const tooltipKeyCount = this.#tooltipKeyCounts.get(key) ?? 0;
     this.#tooltipKeyCounts.set(key, tooltipKeyCount + 1);
     const propertyNameForCounting = this.getLonghand()?.name ?? this.name;
-    const ownIndex = this.treeOutline?.rootElement().children().indexOf(this) ?? -1;
-    const propertyCount = this.treeOutline?.rootElement().children().reduce<number>(
-        (value, element, index) => index < ownIndex && element instanceof StylePropertyTreeElement &&
-                element.name === propertyNameForCounting ?
-            value + 1 :
-            value,
+    const ownIndex = this.style.allProperties().indexOf(this.property);
+    const propertyCount = this.style.allProperties().reduce<number>(
+        (value, property, index) =>
+            index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value + 1 :
+                                                                                                             value,
         0);
     return `swatch-tooltip-${sectionId}-${this.name}-${propertyCount}-${key}-${tooltipKeyCount}`;
   }
@@ -2410,6 +2406,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const hintIcon = new IconButton.Icon.Icon();
         hintIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '14px', height: '14px'};
         hintIcon.classList.add('hint');
+        hintIcon.tabIndex = -1;
         wrapper.append(hintIcon);
         this.listItemElement.append(wrapper);
         this.listItemElement.classList.add('inactive-property');
@@ -2537,12 +2534,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     contextMenu.clipboardSection().appendItem(
         i18nString(UIStrings.copyAllCssDeclarationsAsJs), this.copyAllCssDeclarationAsJs.bind(this),
         {jslogContext: 'copy-all-css-declarations-as-js'});
-
-    // TODO(changhaohan): conditionally add this item only when there are changes to copy
-    contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyAllCSSChanges), async () => {
-      const allChanges = await this.parentPane().getFormattedChanges();
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-    }, {jslogContext: 'copy-all-css-changes'});
 
     contextMenu.footerSection().appendItem(i18nString(UIStrings.viewComputedValue), () => {
       void this.viewComputedValue();

@@ -90,86 +90,86 @@ const UIStrings = {
    */
   poorSummarized: 'Your local {PH1} value of {PH2} is poor.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   goodGoodDetailedCompare:
-      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} value of {PH3} is good.',
+      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field metrics 75th percentile {PH1} value of {PH3} is good.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   goodNeedsImprovementDetailedCompare:
-      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} needs improvement.',
+      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} needs improvement.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   goodPoorDetailedCompare:
-      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} is poor.',
+      'Your local {PH1} value of {PH2} is good and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} is poor.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   needsImprovementGoodDetailedCompare:
-      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} is good.',
+      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} is good.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   needsImprovementNeedsImprovementDetailedCompare:
-      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} value of {PH3} needs improvement.',
+      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field metrics 75th percentile {PH1} value of {PH3} needs improvement.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   needsImprovementPoorDetailedCompare:
-      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} is poor.',
+      'Your local {PH1} value of {PH2} needs improvement and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} is poor.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   poorGoodDetailedCompare:
-      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} is good.',
+      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} is good.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   poorNeedsImprovementDetailedCompare:
-      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field data 75th percentile {PH1} value of {PH3} needs improvement.',
+      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. However, the field metrics 75th percentile {PH1} value of {PH3} needs improvement.',
   /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field metrics" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3
    * @example {40%} PH4
    */
   poorPoorDetailedCompare:
-      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} value of {PH3} is poor.',
+      'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field metrics 75th percentile {PH1} value of {PH3} is poor.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCompareStrings.ts', UIStrings);

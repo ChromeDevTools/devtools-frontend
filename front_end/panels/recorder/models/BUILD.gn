@@ -50,7 +50,6 @@ devtools_entrypoint("bundle") {
     ":*",
     "../*",
     "../../../../test/e2e/recorder/*",
-    "../../../../test/interactions/panels/recorder/*",
     "../../../ui/components/docs/*",
     "../../../ui/components/docs/recorder_injected/*",
     "../../entrypoints/main/*",

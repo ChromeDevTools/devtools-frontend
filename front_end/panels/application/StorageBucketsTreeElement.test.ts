@@ -5,10 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  createTarget,
-  stubNoopSettings,
-} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, expectConsoleLogs, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -120,6 +117,10 @@ describeWithMockConnection('StorageBucketsTreeElement', function() {
     sinon.assert.callCount(appendChildSpy, getNonDefaultBuckets().length);
 
     panel.detach();
+  });
+
+  expectConsoleLogs({
+    error: ['Error: No LanguageSelector instance exists yet.'],
   });
 
   it('shows view on select', async () => {

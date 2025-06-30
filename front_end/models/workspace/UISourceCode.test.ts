@@ -71,6 +71,15 @@ describe('UISourceCode', () => {
     assert.strictEqual(result, 'test'.repeat(30) + '?isTest=true');
   });
 
+  it('can return display name if URI is not decodable', async () => {
+    const url = 'https://cdn.example.com/%CE%B1%AA%E1%BC%E1%B2%E1%AB%CE%B1%E1%A7%E1_600x600.png';
+    const sutObject = setupMockedUISourceCode(url);
+
+    const result = sutObject.sut.displayName(true);
+
+    assert.strictEqual(result, '%CE%B1%AA%E1%BC%E1%B2%E1%AB%CE%B1%E1%A7%E1_600x600.png');
+  });
+
   it('can request project metadata', async () => {
     const sutObject = setupMockedUISourceCode();
     sutObject.projectStub.requestMetadata.resolves(null);

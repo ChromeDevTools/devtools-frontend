@@ -47,7 +47,6 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../test/interactions/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
     "../../ui/components/docs/console_insight/*",

@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "Nemoj emulirati vrstu CSS medija"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "Nemojte emulirati OS razmjer teksta"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "Nemoj produživati linije mreže"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulirajte deuteranopiju (odsustvo zelene)"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "Emuliraj OS razmjer teksta"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "Emulirajte protanopiju (odsustvo crvene)"
@@ -732,6 +738,30 @@
     "message": "Blokiranje mrežnih zahtjeva"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "Nema emulacije"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (zadano)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "Nema emulacije"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Nameće vrstu medijskog sadržaja za testiranje stilova za štampanje i ekran"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "Nameće emulaciju OS razmjera teksta"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "Nameće emuliranje poteškoća s vidom"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "Aktiviraj/deaktiviraj panel"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "Uključi/isključi orijentaciju panela"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "Odvoji u zaseban prozor"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Zahtjevi za resurse čiji URL-ovi sadržavaju i uklonjene znakove razmaka \\(n|r|t) i znakove \"manje od\" (<) su blokirani. Uklonite nove redove i kodirajte znakove \"manje od\" s mjesta kao što su vrijednosti atributa elementa da učitate te resurse."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "Automatsko otkrivanje skupa znakova prema standardu ISO-2022-JP je zastarjelo i onemogućit će se u bliskoj budućnosti. Navedite skup znakova u zaglavlju Vrsta sadržaja ili korištenje metaoznake (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding)."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "Metoda chrome.loadTimes() je zastarjela. Umjesto toga koristite standardizirani API: Navigation Timing 2."
@@ -1437,7 +1470,7 @@
     "message": "Funkcija LiveEdit nije uspjela: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Terenski podaci se konfiguriraju za URL koji se razlikuje od trenutne stranice."
+    "message": "Pokazatelji polja se konfiguriraju za URL koji se razlikuje od trenutne stranice."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Omjer piksela uređaja mora biti broj ili prazna vrijednost."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Pohranjivanje kao…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "Pohranjivanje na disk nije uspjelo."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Sačuvaj sliku"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "Glavni faktori koji su izazvali pomjeranje rasporeda"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "Slike bez veličine"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "Element slike bez veličine"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "Najgori skup"
@@ -1839,7 +1875,7 @@
     "message": "Ima preusmjeravanja ({PH1} preusmjeravanje/a i {PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "Server reagira sporo (uočeno: {PH1}) "
+    "message": "Server reagira sporo (uočeno: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "Nije primijenjena kompresija"
@@ -1848,7 +1884,7 @@
     "message": "Izbjegava preusmjeravanja"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "Server reagira brzo (uočeno: {PH1}) "
+    "message": "Server reagira brzo (uočeno: {PH1})"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Primjenjuje kompresiju teksta"
@@ -2070,7 +2106,7 @@
     "message": "[Izbjegavajte lančano povezivanje kritičnih zahtjeva](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) skraćivanjem dužine lanaca, smanjenjem veličine resursa za preuzimanje ili odgodom preuzimanja resursa koji nisu nužni da poboljšate učitavanje stranice."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "Dodajte savjete za [povezivanje unaprijed](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) za svoje najvažnije izvore, ali pokušajte koristiti manje od 4."
+    "message": "Dodajte savjete za [povezivanje unaprijed](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) za svoje najvažnije izvore, ali pokušajte koristiti ne više od 4."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "Kandidati za povezivanje unaprijed"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "Interakcije dodira će možda [kasniti do 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ako okvir prikaza nije optimiziran za mobilni uređaj."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "Kašnjenje funkcije dodira na mobilnom uređaju"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "Optimiziraj okvir prikaza za mobilni uređaj"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Da koristite ovu funkciju, podesite postavke jezika na engleski u postavkama alata za programere."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "Također možete upotrijebiti jedan od prethodno predloženih upita da započnete razgovor"
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Saznajte više o AI-ju u alatima za programere"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Suzi"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "Izbrisati pohranu objekta \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "Izbrisati bazu podataka \"{PH1}\"?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "Ključ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "Podaci koji se nalaze u odabranoj pohrani objekta će se ukloniti."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Trgovine predmeta"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "Ovaj okvir je prepoznat kao temeljni okvir oglasa"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "Pravilo filtriranja liste korijenske skripte"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "Sigurni kontekst"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (iz mape izvora)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "Kartica Promjene ne prikazuje promjene binarnih podataka"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "Na ovoj stranici možete pratiti promjene koda izvršene putem alata za programere."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "Kopiraj"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "Još uvijek nema promjena"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "Nema dostupnih razlika u tekstu"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# brisanje (-)}one{# brisanje (-)}few{# brisanja (-)}other{# brisanja (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# umetanje (+)}one{# umetanje (+)}few{# umetanja (+)}other{# umetanja (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "Kopirano je u međumemoriju"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Izmjene"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "Kopiranje svih izmjena iz trenutnog fajla"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "Vraćanje svih promjena u trenutnom fajlu"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "Prikaži Promjene"
@@ -5715,7 +5745,7 @@
     "message": "Prikaži samo poruke iz trenutnog konteksta (top, iframe, worker, ekstenzija)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Zamijenjeno bočnom trakom filtera"
+    "message": "Nivoima zapisnika upravlja bočna traka konzole."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Zadrži zapisnik"
@@ -6612,16 +6642,16 @@
     "message": "Kližite dok ne postane vidljivo"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "Prikaz komande za cilj"
+    "message": "Prikaz elementa povezanog s atributom commandfor"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Prikaži detalje za: iframe"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "Prikaz cilja interesovanja"
+    "message": "Prikaz elementa povezanog s atributom interesttarget"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "Prikaz cilja skočnog prozora"
+    "message": "Prikaz elementa povezanog s atributom popovertarget"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "Ovaj okvir je identificiran kao okvir oglasa"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "izgrađeni listovi stilova"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "Kopiraj sve izmjene usluge poređenja cijena (Comparison Shopping Service, CSS)"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "Kopiraj sve deklaracije"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "putem alata za pregled"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "Kopiraj sve izmjene usluge poređenja cijena (Comparison Shopping Service, CSS)"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "Kopiraj sve deklaracije kao JS"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Pristupačnost"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "Primijeni emulaciju računara tokom revizije"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "Primijeni emulaciju za mobilne uređaje"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "Promjena rasporeda paketa"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "posto"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "Naziv profila"
   },
@@ -8802,7 +8826,7 @@
     "message": "Unesite prilagođenog korisničkog agenta"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "Prikazani su uslovi mreže"
+    "message": "Prikazani su uslovi mreže."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "Redukcija mreže"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "Prostor za daljinsku adresu"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "Zaglavlja zahtjeva"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "Zaglavlja odgovora"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "Pohranjivanje kao…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "Pohranjivanje na disk nije uspjelo."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Izaberite folder za zaobilaženja"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Osvježite izraze koji se prate"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "Izraz za praćenje je izbrisan"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} kontakt s prijelomnom tačkom"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "Detalji"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "Dimenzije"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "Trajanje"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "Saznajte više"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "Lokacija"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Poruka"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (podelement)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "Prikupljeno je {PH1}"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} od {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "Odaberite \"{PH1}\" da prikupljate statistiku podudaranja birača CSS-a."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (sama stavka)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "Skripta"
@@ -14682,19 +14694,19 @@
     "message": "Konfigurirajte"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "Konfigurirajte dohvatanje podataka polja"
+    "message": "Konfigurirajte dohvatanje pokazatelja polja"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UX Report ne sadržava dovoljno stvarnih podataka o brzini za ovu stranicu."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "Dohvatite objedinjene terenske podatke iz izvještaja {PH1} radi lakše kontekstualizacije lokalnih mjerenja u odnosu na ono što stvarni korisnici iskuse na web lokaciji."
+    "message": "Dohvatite objedinjene pokazatelje polja iz izvještaja {PH1} radi lakše kontekstualizacije lokalnih mjerenja u odnosu na ono što stvarni korisnici iskuse na web lokaciji."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" nije važeće porijeklo ili URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "Postavite porijeklo verzije u razvoju da automatski dobijate relevantne terenske podatke za porijeklo proizvodne verzije."
+    "message": "Postavite porijeklo verzije u razvoju da automatski dobijate relevantne pokazatelje polja za porijeklo proizvodne verzije."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "Novo"
@@ -14703,7 +14715,7 @@
     "message": "Uredu"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "Uvijek prikazuj terenske podatke za URL u nastavku"
+    "message": "Uvijek prikazuj pokazatelje polja za URL u nastavku"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "Isključi"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Kada su alati za programere otvoreni, URL-ovi koje posjećujete će se slati Googleu radi upita o podacima polja. Ti zahtjevi se ne povezuju s Google računom."
+    "message": "Kada su alati za programere otvoreni, URL-ovi koje posjećujete će se slati Googleu radi upita o pokazateljima polja. Ti zahtjevi se ne povezuju s Google računom."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Dodavanje pravila uobičajenog izraza za URL skripte"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "Odjeljak zapisnika o interakciji i pomjeranjima rasporeda"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "Podaci polja"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "Pokazatelji polja"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP interakcija je na 98. postotku odgoda interakcije."
@@ -14856,10 +14868,10 @@
     "message": "Lokalni i terenski pokazatelji"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "Saznajte više o lokalnim i terenskim podacima"
+    "message": "Saznajte više o lokalnim pokazateljima i pokazateljima polja"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Lokalni pokazatelji se bilježe s trenutne stranice pomoću mrežne veze i uređaja. Terenske podatke mjere stvarni korisnici pomoću mnogih različitih mrežnih veza i uređaja."
+    "message": "Lokalni pokazatelji se bilježe s trenutne stranice pomoću mrežne veze i uređaja. Pokazatelje polja mjere stvarni korisnici pomoću mnogih različitih mrežnih veza i uređaja."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Lokalni pokazatelji"
@@ -14922,10 +14934,10 @@
     "message": "Idite u najgori skup pomjeranja rasporeda."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "Prikaži terenske podatke za vrstu uređaja: {PH1}"
+    "message": "Prikaži pokazatelje polja za vrstu uređaja: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "Prikaži terenske podatke za {PH1}"
+    "message": "Prikaži pokazatelje polja za {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Idite na INP interakciju."
@@ -15033,13 +15045,13 @@
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i znatno bolja od iskustva vaših korisnika."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, vrijednost 75. postotka podataka polja {PH1} od {PH3} je dobra."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je dobra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} treba poboljšati."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} treba poboljšati."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} je loša."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je loša."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je dobra i slična iskustvu vaših korisnika."
@@ -15054,13 +15066,13 @@
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, ali je znatno bolja od iskustva vaših korisnika."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} je dobra."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je dobra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, treba poboljšati vrijednost 75. postotka podataka polja {PH1} od {PH3}."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, treba poboljšati vrijednost 75. postotka pokazatelja polja {PH1} od {PH3}."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} je loša."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a ocijenjena je jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je loša."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} treba poboljšati, a slična je iskustvu vaših korisnika."
@@ -15075,13 +15087,13 @@
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša, ali je znatno bolja od iskustva vaših korisnika."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} je dobra."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je dobra."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka podataka polja {PH1} od {PH3} treba poboljšati."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Međutim, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} treba poboljšati."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, vrijednost 75. postotka podataka polja {PH1} od {PH3} je loša."
+    "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i ocijenjena jednako kao {PH4} iskustva stvarnih korisnika s lokalnim okruženjem {PH1}. Dodatno, vrijednost 75. postotka pokazatelja polja {PH1} od {PH3} je loša."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "Vrijednost lokalnog okruženja {PH1} od {PH2} je loša i slična iskustvu vaših korisnika."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "Prebacite DevTools na {PH1}"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "Uključivanje/isključivanje orijentacije panela"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "Dodaj"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Snimak ekrana za {PH1} – odaberite da pregledate prethodne zahtjeve."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "Izbriši bilješke"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Konfiguriraj zapise"

@@ -137,8 +137,9 @@ export class StartView extends UI.Widget.Widget {
     if (runtimeSetting.learnMore) {
       const link = UI.XLink.XLink.create(
           runtimeSetting.learnMore, i18nString(UIStrings.learnMore), 'lighthouse-learn-more', undefined, 'learn-more');
-      link.style.margin = '5px';
-      control.element.appendChild(link);
+      link.style.paddingLeft = '5px';
+      link.style.display = 'inline-flex';
+      toolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(link));
     }
   }
 

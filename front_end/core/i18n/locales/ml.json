@@ -617,6 +617,9 @@
   "core/sdk/sdk-meta.ts | doNotEmulateCssMediaType": {
     "message": "CSS മീഡിയാ തരം അനുകരിക്കരുത്"
   },
+  "core/sdk/sdk-meta.ts | doNotEmulateOsTextScale": {
+    "message": "OS ടെക്സ്റ്റ് സ്കെയിൽ അനുകരിക്കരുത്"
+  },
   "core/sdk/sdk-meta.ts | doNotExtendGridLines": {
     "message": "ഗ്രിഡ് ലൈനുകൾ വിപുലീകരിക്കരുത്"
   },
@@ -667,6 +670,9 @@
   },
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "ഡ്യൂട്ടെറാനോപ്പിയ (പച്ച നിറമില്ല) അനുകരിക്കുക"
+  },
+  "core/sdk/sdk-meta.ts | emulateOsTextScale": {
+    "message": "OS ടെക്സ്റ്റ് സ്കെയിൽ അനുകരിക്കുക"
   },
   "core/sdk/sdk-meta.ts | emulateProtanopia": {
     "message": "പ്രോട്ടാനോപ്പിയ (ചുവപ്പ് നിറമില്ല) അനുകരിക്കുക"
@@ -732,6 +738,30 @@
     "message": "നെറ്റ്‌വർക്ക് അഭ്യർത്ഥന ബ്ലോക്ക് ചെയ്യൽ"
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
+    "message": "അനുകരണമൊന്നുമില്ല"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
+    "message": "100% (ഡിഫോൾട്ട്)"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation115": {
+    "message": "115%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation130": {
+    "message": "130%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation150": {
+    "message": "150%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation180": {
+    "message": "180%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation200": {
+    "message": "200%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulation85": {
+    "message": "85%"
+  },
+  "core/sdk/sdk-meta.ts | osTextScaleEmulationNone": {
     "message": "അനുകരണമൊന്നുമില്ല"
   },
   "core/sdk/sdk-meta.ts | pauseOnExceptions": {
@@ -862,6 +892,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "പ്രിന്റ്, സ്‌ക്രീൻ സ്റ്റൈലുകൾ പരിശോധിക്കാൻ മീഡിയാ തരം നിർബന്ധിക്കുന്നു"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesOsTextScaleEmulation": {
+    "message": "OS ടെക്സ്റ്റ് സ്കെയിൽ അനുകരണം നിർബ്ബന്ധിതമായി പ്രവർത്തിപ്പിക്കുന്നു"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesVisionDeficiencyEmulation": {
     "message": "കാഴ്ചക്കുറവുകൾ അനുകരിക്കൽ നിർബന്ധമാക്കുന്നു"
@@ -1133,6 +1166,9 @@
   "entrypoints/main/main-meta.ts | toggleDrawer": {
     "message": "ഡ്രോയർ മാറ്റുക"
   },
+  "entrypoints/main/main-meta.ts | toggleDrawerOrientation": {
+    "message": "ഡ്രോയർ ഓറിയന്റേഷൻ ടോഗിൾ ചെയ്യുക"
+  },
   "entrypoints/main/main-meta.ts | undockIntoSeparateWindow": {
     "message": "മറ്റൊരു വിൻഡോയിലേക്ക് അൺഡോക്ക് ചെയ്യുക"
   },
@@ -1210,9 +1246,6 @@
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "നീക്കം ചെയ്ത വൈറ്റ്‌സ്പെയ്‌സ് \\(n|r|t) പ്രതീകങ്ങളും ലെസ് ദാൻ പ്രതീകങ്ങളും (<) ഉള്ള URL-കൾ അടങ്ങിയ ഉറവിട അഭ്യർത്ഥനകൾ ബ്ലോക്ക് ചെയ്യുന്നു. ഈ ഉറവിടങ്ങൾ ലോഡ് ചെയ്യാൻ, എലമന്റ് ആട്രിബ്യൂട്ട് മൂല്യങ്ങൾ പോലുള്ള സ്ഥലങ്ങളിൽ നിന്ന് ന്യൂലൈനുകൾ നീക്കം ചെയ്ത്, ലെസ് ദാൻ പ്രതീകങ്ങൾ എൻകോഡ് ചെയ്യുക."
-  },
-  "generated/Deprecation.ts | CharsetAutoDetectionISO2022JP": {
-    "message": "ISO-2022-JP പ്രതീക ഗണത്തിന്റെ സ്വയമേവയുള്ള കണ്ടെത്തൽ ഒഴിവാക്കിയിരിക്കുന്നു, സമീപഭാവിയിൽ ഇത് പ്രവർത്തനരഹിതമാക്കും. ഉള്ളടക്ക തര തലക്കെട്ടിലോ മെറ്റാ ടാഗ് ഉപയോഗിച്ചോ (https://developer.mozilla.org/en-US/docs/Glossary/Character_encoding) പ്രതീക സെറ്റ് വ്യക്തമാക്കുക."
   },
   "generated/Deprecation.ts | ChromeLoadTimesConnectionInfo": {
     "message": "chrome.loadTimes() അവസാനിപ്പിച്ചു, പകരം ഏകീകൃത API ഉപയോഗിക്കുക: നാവിഗേഷൻ ടൈമിംഗ് 2."
@@ -1437,7 +1470,7 @@
     "message": "LiveEdit പരാജയപ്പെട്ടു: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "നിലവിലെ പേജിൽ നിന്ന് വ്യത്യസ്തമായ URL-നായി ഫീൽഡ് ഡാറ്റ കോൺഫിഗർ ചെയ്‌തിരിക്കുന്നു."
+    "message": "നിലവിലെ പേജിൽ നിന്ന് വ്യത്യസ്തമായ URL-നായി ഫീൽഡ് മെട്രിക്സ് കോൺഫിഗർ ചെയ്‌തിരിക്കുന്നു."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "ഉപകരണ പിക്‌സൽ അനുപാതം ഒരു സംഖ്യ അല്ലെങ്കിൽ ശൂന്യം ആയിരിക്കണം."
@@ -1691,6 +1724,9 @@
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
   },
+  "models/persistence/PersistenceActions.ts | saveFailed": {
+    "message": "ഡിസ്ക്കിലേക്ക് ഫയൽ സംരക്ഷിക്കാനായില്ല."
+  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ചിത്രം സംരക്ഷിക്കുക"
   },
@@ -1781,8 +1817,8 @@
   "models/trace/insights/CLSCulprits.ts | topCulprits": {
     "message": "മുൻനിര ലേഔട്ട് ഷിഫ്റ്റ് കൾപ്രിറ്റുകൾ"
   },
-  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "പ്രത്യേക അളവുകളില്ലാത്ത ചിത്രങ്ങൾ"
+  "models/trace/insights/CLSCulprits.ts | unsizedImage": {
+    "message": "വലിപ്പം വ്യക്തമാക്കാത്ത ചിത്ര ഘടകം"
   },
   "models/trace/insights/CLSCulprits.ts | worstCluster": {
     "message": "മോശം ക്ലസ്‌റ്റർ"
@@ -1839,7 +1875,7 @@
     "message": "റീഡയറക്റ്റുകൾ ഉണ്ടായിരുന്നു ({PH1} റീഡയറക്റ്റുകൾ, +{PH2})"
   },
   "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "സെർവർ സാവധാനമാണ് പ്രതികരിച്ചത് ({PH1} നിരീക്ഷിച്ചത്) "
+    "message": "സെർവർ സാവധാനമാണ് പ്രതികരിച്ചത് ({PH1} നിരീക്ഷിച്ചത്)"
   },
   "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
     "message": "കംപ്രഷനുകളൊന്നും പ്രയോഗിച്ചിട്ടില്ല"
@@ -1848,7 +1884,7 @@
     "message": "റീഡയറക്റ്റുകൾ ഒഴിവാക്കുന്നു"
   },
   "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "സെർവർ വേഗത്തിൽ പ്രതികരിക്കുന്നു ({PH1} നിരീക്ഷിച്ചത്) "
+    "message": "സെർവർ വേഗത്തിൽ പ്രതികരിക്കുന്നു ({PH1} നിരീക്ഷിച്ചത്)"
   },
   "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "ടെക്‌സ്റ്റ് കംപ്രഷൻ ബാധകമാക്കുന്നു"
@@ -2070,7 +2106,7 @@
     "message": "അഭ്യർത്ഥന നൽകുന്നത് കുറയ്ക്കുക, ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വലുപ്പം കുറയ്ക്കുക, പേജ് ലോഡ് ചെയ്യുന്നത് മെച്ചപ്പെടുത്താൻ, അത്യാവശ്യമല്ലാത്ത ഉറവിടങ്ങളുടെ ഡൗൺലോഡ് വൈകിപ്പിക്കൽ എന്നിവ വഴി [നിരവധി നിർണ്ണായക അഭ്യർത്ഥനകൾ തുടർച്ചയായി നൽകുന്നത് ഒഴിവാക്കുക](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)"
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableDescription": {
-    "message": "നിങ്ങളുടെ ഏറ്റവും പ്രധാനപ്പെട്ട ഉറവിടങ്ങളിൽ [പ്രീകണക്റ്റ്](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ഹിന്റുകൾ ചേർക്കുക, എന്നാൽ 4-ൽ താഴെ മാത്രം ഉപയോഗിക്കാൻ ശ്രമിക്കുക."
+    "message": "നിങ്ങളുടെ ഏറ്റവും പ്രധാനപ്പെട്ട ഒറിജിനുകളിൽ [പ്രീകണക്റ്റ്](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) ഹിന്റുകൾ ചേർക്കുക, എന്നാൽ 4 അല്ലെങ്കിൽ അതിൽ താഴെ മാത്രം ഉപയോഗിക്കാൻ ശ്രമിക്കുക."
   },
   "models/trace/insights/NetworkDependencyTree.ts | estSavingTableTitle": {
     "message": "പ്രീകണക്റ്റ് കാൻഡിഡേറ്റുകൾ"
@@ -2164,6 +2200,9 @@
   },
   "models/trace/insights/Viewport.ts | description": {
     "message": "മൊബൈലിനായി വ്യൂപോർട്ട് ഒപ്റ്റിമൈസ് ചെയ്തിട്ടില്ലെങ്കിൽ, ടാപ്പ് ഇടപഴകലുകൾ [300 ms വരെ വൈകിയേക്കാം](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | mobileTapDelayLabel": {
+    "message": "മൊബൈൽ ടാപ്പ് വൈകൽ"
   },
   "models/trace/insights/Viewport.ts | title": {
     "message": "മൊബൈലിനായി വ്യൂപോർട്ട് ഒപ്റ്റിമൈസ് ചെയ്യൂ"
@@ -2650,6 +2689,9 @@
   },
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "ഈ ഫീച്ചർ ഉപയോഗിക്കുന്നതിന്, DevTools ക്രമീകരണത്തിൽ നിങ്ങളുടെ ഭാഷാ മുൻഗണന ഇംഗ്ലീഷ് ആയി സജ്ജീകരിക്കുക."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputTextAriaDescription": {
+    "message": "നിങ്ങളുടെ സംഭാഷണം ആരംഭിക്കുന്നതിന്, മുകളിൽ നിർദ്ദേശിച്ചിരിക്കുന്ന പ്രോംപ്റ്റുകളിൽ ഒന്ന് ഉപയോഗിക്കാനും കഴിയും."
   },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "DevTools-ൽ AI-യെ കുറിച്ച് അറിയുക"
@@ -3275,6 +3317,9 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "ചുരുക്കുക"
   },
+  "panels/application/IndexedDBViews.ts | confirmClearObjectStore": {
+    "message": "\"{PH1}\" ഒബ്ജക്റ്റ് സ്റ്റോർ മായ്ക്കണോ?"
+  },
   "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
     "message": "\"{PH1}\" ഡാറ്റാബേസ് ഇല്ലാതാക്കണോ?"
   },
@@ -3310,6 +3355,9 @@
   },
   "panels/application/IndexedDBViews.ts | keyString": {
     "message": "കീ"
+  },
+  "panels/application/IndexedDBViews.ts | objectStoreWillBeCleared": {
+    "message": "തിരഞ്ഞെടുത്ത ഒബ്ജക്റ്റ് സ്റ്റോറിൽ അടങ്ങിയിട്ടുള്ള ഡാറ്റ നീക്കം ചെയ്യും."
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ഒബ്‌ജക്‌റ്റ് സ്‌റ്റോറുകൾ"
@@ -4351,6 +4399,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | rootDescription": {
     "message": "ഈ ഫ്രെയിം ഒരു പരസ്യത്തിന്റെ റൂട്ട് ഫ്രെയിം ആണെന്ന് തിരിച്ചറിഞ്ഞു"
+  },
+  "panels/application/components/FrameDetailsView.ts | rootScriptFilterlistRule": {
+    "message": "റൂട്ട് സ്ക്രിപ്റ്റ് ഫിൽട്ടർലിസ്റ്റ് നിയമം"
   },
   "panels/application/components/FrameDetailsView.ts | secureContext": {
     "message": "സുരക്ഷിത സന്ദർഭം"
@@ -5507,26 +5558,11 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (സോഴ്‌സ് മാപ്പിൽ നിന്ന്)"
   },
-  "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "'മാറ്റങ്ങൾ' ടാബ്, ബൈനറി ഡാറ്റാ മാറ്റങ്ങൾ കാണിക്കുന്നില്ല"
-  },
   "panels/changes/ChangesView.ts | changesViewDescription": {
     "message": "ഈ പേജിൽ, DevTools-ന് ഉള്ളിൽ വരുത്തിയ കോഡ് മാറ്റങ്ങൾ നിങ്ങൾക്ക് ട്രാക്ക് ചെയ്യാം."
   },
-  "panels/changes/ChangesView.ts | copy": {
-    "message": "പകർത്തുക"
-  },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "ഇതുവരെ മാറ്റങ്ങളൊന്നുമില്ല"
-  },
-  "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "ടെക്സ്റ്റ് സംബന്ധമായ വ്യത്യാസമൊന്നുമില്ല"
-  },
-  "panels/changes/ChangesView.ts | sDeletions": {
-    "message": "{n,plural, =1{# ഇല്ലാതാക്കൽ (-)}other{# ഇല്ലാതാക്കലുകൾ (-)}}"
-  },
-  "panels/changes/ChangesView.ts | sInsertions": {
-    "message": "{n,plural, =1{# ചേർക്കൽ (+)}other{# ചേർക്കലുകൾ (+)}}"
   },
   "panels/changes/CombinedDiffView.ts | copied": {
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
@@ -5536,12 +5572,6 @@
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "മാറ്റങ്ങൾ"
-  },
-  "panels/changes/changes-meta.ts | copyAllChangesFromCurrentFile": {
-    "message": "നിലവിലെ ഫയലിലെ എല്ലാ മാറ്റങ്ങളും പകർത്തുക"
-  },
-  "panels/changes/changes-meta.ts | revertAllChangesToCurrentFile": {
-    "message": "നിലവിലെ ഫയലിൽ വരുത്തിയ എല്ലാ മാറ്റങ്ങളും പുനഃസ്ഥാപിക്കുക"
   },
   "panels/changes/changes-meta.ts | showChanges": {
     "message": "മാറ്റങ്ങൾ കാണിക്കുക"
@@ -5715,7 +5745,7 @@
     "message": "നിലവിലെ സന്ദർഭത്തിൽ നിന്നുള്ള സന്ദേശങ്ങൾ മാത്രം കാണിക്കുക (top, iframe, worker, വിപുലീകരണം)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "ഫിൽട്ടർ സൈഡ്‌ബാർ ഉപയോഗിച്ച് അസാധുവാക്കി"
+    "message": "കൺസോൾ സൈഡ്ബാറുകളാണ് ലോഗ് ലെവലുകൾ നിയന്ത്രിക്കുന്നത്."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "ലോഗ് സംരക്ഷിക്കുക"
@@ -6612,16 +6642,16 @@
     "message": "കാണാൻ സ്ക്രോൾ ചെയ്യുക"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "ടാർഗറ്റിനായുള്ള കമാൻഡ് കാണിക്കുക"
+    "message": "commandfor ആട്രിബ്യൂട്ടുമായി ബന്ധപ്പെട്ട ഘടകം കാണിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "iframe വിശദാംശങ്ങൾ കാണിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "താൽപ്പര്യ ലക്ഷ്യം കാണിക്കുക"
+    "message": "interesttarget ആട്രിബ്യൂട്ടുമായി ബന്ധപ്പെട്ട ഘടകം കാണിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "പോപ്പ്ഓവർ ടാർഗറ്റ് കാണിക്കുക"
+    "message": "popovertarget ആട്രിബ്യൂട്ടുമായി ബന്ധപ്പെട്ട ഘടകം കാണിക്കുക"
   },
   "panels/elements/ElementsTreeElement.ts | thisFrameWasIdentifiedAsAnAd": {
     "message": "ഈ ഫ്രെയിം ഒരു പരസ്യ ഫ്രെയിം ആണെന്ന് തിരിച്ചറിഞ്ഞു"
@@ -6725,9 +6755,6 @@
   "panels/elements/StylePropertiesSection.ts | constructedStylesheet": {
     "message": "കൺസ്ട്രക്ട് ചെയ്ത സ്റ്റൈൽ ഷീറ്റ്"
   },
-  "panels/elements/StylePropertiesSection.ts | copyAllCSSChanges": {
-    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
-  },
   "panels/elements/StylePropertiesSection.ts | copyAllDeclarations": {
     "message": "എല്ലാ പ്രസ്താവനകളും പകർത്തുക"
   },
@@ -6763,9 +6790,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | viaInspector": {
     "message": "ഇൻസ്‌പെക്‌ടർ വഴി"
-  },
-  "panels/elements/StylePropertyTreeElement.ts | copyAllCSSChanges": {
-    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
   },
   "panels/elements/StylePropertyTreeElement.ts | copyAllCssDeclarationsAsJs": {
     "message": "എല്ലാ പ്രസ്‌താവനകളും JS ആയി പകർത്തുക"
@@ -7919,6 +7943,9 @@
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ഉപയോഗസഹായി"
   },
+  "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
+    "message": "ഓഡിറ്റ് ചെയ്യുമ്പോൾ ഡെസ്ക്ടോപ്പ് അനുകരണം പ്രയോഗിക്കുക"
+  },
   "panels/lighthouse/LighthouseController.ts | applyMobileEmulation": {
     "message": "മൊബൈൽ അനുകരണം ബാധകമാക്കുക"
   },
@@ -8654,9 +8681,6 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | packetReordering": {
     "message": "പാക്കറ്റ് പുനഃക്രമീകരണം"
   },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | percent": {
-    "message": "ശതമാനം"
-  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileName": {
     "message": "പ്രൊഫൈലിന്റെ പേര്"
   },
@@ -8802,7 +8826,7 @@
     "message": "ഇഷ്ടാനുസൃത ഉപയോക്തൃ-ഏജന്‍റ് നൽകുക"
   },
   "panels/network/NetworkConfigView.ts | networkConditionsPanelShown": {
-    "message": "നെറ്റ്‌വർക്ക് അവസ്ഥകൾ കാണിക്കുന്നു"
+    "message": "നെറ്റ്‌വർക്ക് അവസ്ഥകൾ കാണിക്കുന്നു."
   },
   "panels/network/NetworkConfigView.ts | networkThrottling": {
     "message": "നെറ്റ്‌വർക്ക് ത്രോട്ടിലിംഗ്"
@@ -9328,6 +9352,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | remoteAddressSpace": {
     "message": "റിമോട്ട് വിലാസ സ്‌പെയ്‌സ്"
+  },
+  "panels/network/NetworkLogViewColumns.ts | requestHeaders": {
+    "message": "ഹെഡറുകൾ അഭ്യർത്ഥിക്കുക"
   },
   "panels/network/NetworkLogViewColumns.ts | responseHeaders": {
     "message": "പ്രതികരണ ഹെഡറുകൾ"
@@ -9978,7 +10005,7 @@
     "message": "വിദൂര വിലാസം"
   },
   "panels/network/components/RequestHeadersView.ts | requestHeaders": {
-    "message": "ഹെഡറുകൾ അഭ്യർത്ഥിക്കുക"
+    "message": "ഹെഡ്ഡറുകൾ അഭ്യർത്ഥിക്കുക"
   },
   "panels/network/components/RequestHeadersView.ts | requestMethod": {
     "message": "അഭ്യർത്ഥനാ രീതി"
@@ -13130,6 +13157,9 @@
   "panels/sources/SourcesNavigator.ts | saveAs": {
     "message": "ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
   },
+  "panels/sources/SourcesNavigator.ts | saveAsFailed": {
+    "message": "ഡിസ്ക്കിലേക്ക് ഫയൽ സംരക്ഷിക്കാനായില്ല."
+  },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "അസാധുവാക്കലുകൾക്കായി ഫോൾഡർ തിരഞ്ഞെടുക്കുക"
   },
@@ -13261,6 +13291,9 @@
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "വാച്ച് എക്‌സ്‌പ്രഷനുകൾ റീഫ്രഷ് ചെയ്യുക"
+  },
+  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
+    "message": "വാച്ച് എക്‌സ്പ്രഷൻ ഇല്ലാതാക്കി"
   },
   "panels/sources/components/BreakpointsView.ts | breakpointHit": {
     "message": "{PH1} ബ്രേക്ക്‌പോയിന്റ് ഹിറ്റ്"
@@ -14342,9 +14375,6 @@
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "വിശദാംശങ്ങൾ"
   },
-  "panels/timeline/TimelineUIUtils.ts | dimensions": {
-    "message": "ഡയമെൻഷനുകൾ"
-  },
   "panels/timeline/TimelineUIUtils.ts | duration": {
     "message": "ദൈർഘ്യം"
   },
@@ -14417,9 +14447,6 @@
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
     "message": "കൂടുതലറിയുക"
   },
-  "panels/timeline/TimelineUIUtils.ts | location": {
-    "message": "ലൊക്കേഷൻ"
-  },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "സന്ദേശം"
   },
@@ -14483,32 +14510,17 @@
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (ചൈൽഡ് എലമെന്റുകൾ)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCollected": {
-    "message": "{PH1} ശേഖരിച്ചു"
-  },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}-ൽ {PH1} എണ്ണം"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
-  "panels/timeline/TimelineUIUtils.ts | sSCurlyBrackets": {
-    "message": "({PH1}, {PH2})"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSDimensions": {
-    "message": "{PH1} × {PH2}"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSSquareBrackets": {
-    "message": "{PH1} [{PH2}…]"
-  },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
     "message": "വിശദമായ CSS സെലക്‌ടറുമായി പൊരുത്തപ്പെടുന്ന സ്ഥിതിവിവരക്കണക്കുകൾ ശേഖരിക്കാൻ \"{PH1}\" തിരഞ്ഞെടുക്കുക."
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (സെൽഫ്)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sSs": {
-    "message": "{PH1} [{PH2}…{PH3}]"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "സ്ക്രിപ്റ്റ്"
@@ -14682,19 +14694,19 @@
     "message": "കോൺഫിഗർ ചെയ്യുക"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
-    "message": "ഫീൽഡ് ഡാറ്റ ലഭ്യമാക്കുന്നത് കോൺഫിഗർ ചെയ്യുക"
+    "message": "ഫീൽഡ് മെട്രിക്സ് ലഭ്യമാക്കുന്നത് കോൺഫിഗർ ചെയ്യുക"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "ഈ പേജിന് മതിയായ യഥാർത്ഥ സ്‌പീഡ് ഡാറ്റ Chrome UX Report-ന് ഇല്ല."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
-    "message": "സൈറ്റിലെ യഥാർത്ഥ ഉപയോക്തൃ അനുഭവം ഉപയോഗിച്ച് പ്രാദേശിക അളവുകളുടെ പശ്ചാത്തലം വ്യക്തമാക്കാൻ നിങ്ങളെ സഹായിക്കുന്നതിന് {PH1} എന്നതിൽ നിന്ന് സംഗ്രഹിച്ച ഫീൽഡ് ഡാറ്റ ലഭ്യമാക്കുക."
+    "message": "സൈറ്റിലെ യഥാർത്ഥ ഉപയോക്തൃ അനുഭവം ഉപയോഗിച്ച് ലോക്കൽ അളവുകളുടെ പശ്ചാത്തലം വ്യക്തമാക്കാൻ നിങ്ങളെ സഹായിക്കുന്നതിന് {PH1} എന്നതിൽ നിന്ന് സംഗ്രഹിച്ച ഫീൽഡ് മെട്രിക്സ് ലഭ്യമാക്കുക."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
     "message": "\"{PH1}\" സാധുതയുള്ള ഒരു ഒറിജിൻ അല്ലെങ്കിൽ URL അല്ല."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
-    "message": "ഡെവലപ്മെന്റ് ഒറിജിന്റെ പ്രൊഡക്ഷൻ ഒറിജിനുള്ള പ്രസക്തമായ ഫീൽഡ് ഡാറ്റ സ്വയമേവ ലഭിക്കുന്നതിന് ഒരു ഡെവലപ്മെന്റ് ഒറിജിൻ സജ്ജീകരിക്കുക."
+    "message": "ഡെവലപ്മെന്റ് ഒറിജിന്റെ പ്രൊഡക്ഷൻ ഒറിജിനുള്ള പ്രസക്തമായ ഫീൽഡ് മെട്രിക്സ് സ്വയമേവ ലഭിക്കുന്നതിന് ഒരു ഡെവലപ്മെന്റ് ഒറിജിൻ സജ്ജീകരിക്കുക."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | new": {
     "message": "പുതിയത്"
@@ -14703,7 +14715,7 @@
     "message": "ശരി"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | onlyFetchFieldData": {
-    "message": "താഴെയുള്ള URL-നുള്ള ഫീൽഡ് ഡാറ്റ എപ്പോഴും കാണിക്കുക"
+    "message": "താഴെയുള്ള URL-നുള്ള ഫീൽഡ് മെട്രിക്സ് എപ്പോഴും കാണിക്കുക"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | optOut": {
     "message": "ഒഴിവാക്കുക"
@@ -14718,7 +14730,7 @@
     "message": "URL"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "DevTools തുറന്നിരിക്കുമ്പോൾ നിങ്ങൾ സന്ദർശിക്കുന്ന URL-കൾ ഫീൽഡ് ഡാറ്റ അന്വേഷിക്കുന്നതിനായി Google-ലേക്ക് അയയ്ക്കും. ഈ അഭ്യർത്ഥനകളെ നിങ്ങളുടെ Google Account-മായി ബന്ധിപ്പിക്കില്ല."
+    "message": "DevTools തുറന്നിരിക്കുമ്പോൾ നിങ്ങൾ സന്ദർശിക്കുന്ന URL-കൾ ഫീൽഡ് മെട്രിക്സ് അന്വേഷിക്കുന്നതിനായി Google-ലേക്ക് അയയ്ക്കും. ഈ അഭ്യർത്ഥനകളെ നിങ്ങളുടെ Google Account-മായി ബന്ധിപ്പിക്കില്ല."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "സ്ക്രിപ്റ്റിന്റെ URL-നായി ഒരു റെഗുലർ എക്‌സ്‌പ്രഷൻ നയം ചേർക്കുക"
@@ -14825,8 +14837,8 @@
   "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
     "message": "ഇടപഴകലും ലേഔട്ട് ഷിഫ്‌റ്റുകളും ലോഗ് ചെയ്യുന്ന വിഭാഗം"
   },
-  "panels/timeline/components/LiveMetricsView.ts | fieldData": {
-    "message": "ഫീൽഡ് ഡാറ്റ"
+  "panels/timeline/components/LiveMetricsView.ts | fieldMetricsTitle": {
+    "message": "ഫീൽഡ് മെട്രിക്സ്"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP ഇടപഴകൽ, ഇടപഴകൽ കാലതാമസത്തിന്റെ 98-ാം ശതമാനത്തിലാണ്."
@@ -14856,10 +14868,10 @@
     "message": "ലോക്കൽ, ഫീൽഡ് മെട്രിക്കുകൾ"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
-    "message": "പ്രാദേശിക, ഫീൽഡ് ഡാറ്റയെ കുറിച്ച് കൂടുതലറിയുക"
+    "message": "ലോക്കൽ, ഫീൽഡ് മെട്രിക്സിനെ കുറിച്ച് കൂടുതലറിയുക"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "നിങ്ങളുടെ നെറ്റ്‌വർക്ക് കണക്ഷനും ഉപകരണവും ഉപയോഗിച്ച് നിലവിലെ പേജിൽ നിന്നാണ് പ്രാദേശിക മെട്രിക്കുകൾ ക്യാപ്‌ചർ ചെയ്യുന്നത്. വ്യത്യസ്‌ത നെറ്റ്‌വർക്ക് കണക്ഷനുകളും ഉപകരണങ്ങളും ഉപയോഗിക്കുന്ന യഥാർത്ഥ ഉപയോക്താക്കളാണ് ഫീൽഡ് ഡാറ്റ അളക്കുന്നത്."
+    "message": "നിങ്ങളുടെ നെറ്റ്‌വർക്ക് കണക്ഷനും ഉപകരണവും ഉപയോഗിച്ച്, നിലവിലെ പേജിൽ നിന്ന് ലോക്കൽ മെട്രിക്സ് ക്യാപ്‌ചർ ചെയ്യുന്നു. നിരവധി വ്യത്യസ്ത നെറ്റ്‌വര്‍ക്ക് കണക്ഷനുകളും ഉപകരണങ്ങളും ഉപയോഗിക്കുന്ന യഥാർത്ഥ ഉപയോക്താക്കൾക്ക് അനുസരിച്ചാണ് ഫീൽഡ് മെട്രിക്സ് അളക്കുന്നത്."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "ലോക്കൽ മെട്രിക്കുകൾ"
@@ -14922,10 +14934,10 @@
     "message": "ഏറ്റവും മോശം ലേഔട്ട് ഷിഫ്റ്റ് ക്ലസ്റ്ററിലേക്ക് പോകുക."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
-    "message": "ഉപകരണ തരത്തിനായുള്ള ഫീൽഡ് ഡാറ്റ കാണിക്കുക: {PH1}"
+    "message": "ഉപകരണ തരത്തിനായുള്ള ഫീൽഡ് മെട്രിക്സ് കാണിക്കുക: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
-    "message": "{PH1} എന്നതിനുള്ള ഫീൽഡ് ഡാറ്റ കാണിക്കുക"
+    "message": "{PH1} എന്നതിനുള്ള ഫീൽഡ് മെട്രിക്സ് കാണിക്കുക"
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INP ഇടപഴകലിലേക്ക് പോകുക."
@@ -15033,13 +15045,13 @@
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, എന്നാൽ നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തേക്കാൾ മികച്ചതാണത്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} നല്ലതാണ്, കൂടാതെ അത് നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തിന് സമാനമാണ്."
@@ -15054,13 +15066,13 @@
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, എന്നാൽ നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തേക്കാൾ മികച്ചതാണത്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്, കൂടാതെ അത് നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തിന് സമാനമാണ്."
@@ -15075,13 +15087,13 @@
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, എന്നാൽ നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തേക്കാൾ മികച്ചതാണത്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} നല്ലതാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. എന്നിരുന്നാലും, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മെച്ചപ്പെടുത്തേണ്ടതുണ്ട്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് ഡാറ്റ 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
+    "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ യഥാർത്ഥ ഉപയോക്തൃ {PH1} അനുഭവങ്ങളുടെ {PH4} തന്നെയായി അത് റേറ്റ് ചെയ്തിരിക്കുന്നു. കൂടാതെ, ഫീൽഡ് മെട്രിക്സ് 75-ാം പെർസന്റയ്ൽ {PH1} മൂല്യമായ {PH3} മോശമാണ്."
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
     "message": "നിങ്ങളുടെ ലോക്കൽ {PH1} മൂല്യമായ {PH2} മോശമാണ്, കൂടാതെ അത് നിങ്ങളുടെ ഉപയോക്താക്കളുടെ അനുഭവത്തിന് സമാനമാണ്."
@@ -16226,6 +16238,9 @@
   "ui/legacy/InspectorView.ts | setToSpecificLanguage": {
     "message": "DevTools {PH1} ഭാഷയിലേക്ക് മാറ്റുക"
   },
+  "ui/legacy/InspectorView.ts | toggleDrawerOrientation": {
+    "message": "ഡ്രോയർ ഓറിയന്റേഷൻ ടോഗിൾ ചെയ്യുക"
+  },
   "ui/legacy/ListWidget.ts | addString": {
     "message": "ചേർക്കുക"
   },
@@ -16792,9 +16807,6 @@
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1} എന്നതിനുള്ള സ്ക്രീന്‍ഷോട്ട് - മുമ്പത്തെ അഭ്യർത്ഥനകൾ കാണാൻ തിരഞ്ഞെടുക്കുക."
-  },
-  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
-    "message": "കുറിപ്പുകൾ ഇല്ലാതാക്കുക"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "ട്രാക്കുകൾ കോൺഫിഗർ ചെയ്യൂ"

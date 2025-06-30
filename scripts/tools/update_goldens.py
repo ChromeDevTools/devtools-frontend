@@ -2,38 +2,40 @@
 # Copyright 2023 The DevTools Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
-"""This tool aims to assist you with screenshot changes.
+"""The purpose of this CLI tool is to help you manage changes to screenshots in
+tests across multiple platforms.
 
-Whenever your changes impact the screenshots in the Interaction tests you will
-need to update (or add) those screenshots for all the supported platforms.
+For more information, see test/README.md.
 
-Assuming that you committed your current changes and uploaded the CL, you will
-first need to trigger a group of special builders that will try to detect any
-such screenshot changes. Use:
-\x1b[32m  update_goldens.py trigger  \x1b[0m
-for that.
+If you've made changes that impact the screenshots, you'll need to update them
+for all supported platforms. Assuming you've committed your changes and
+uploaded the CL, you'll need to trigger a dry run in Gerrit or execute the
+command:
+\x1b[32m git cl try \x1b[0m
 
-After you wait for those builders to finish you will want to get the proposed
-changes on your development environment. Simply run:
-\x1b[32m  update_goldens.py update  \x1b[0m
-If there are still builders that did not finish you will be notified and asked
-to wait a little longer.
+After waiting for the dry run to complete, you can execute the command:
+\x1b[32m update_goldens.py \x1b[0m
 
-Finally inspect the screenshot changes that are now present (if any) on your
-development machine. If they look as expected add, commit and upload. You
-should not get any additional screenshot changes if you repeat the steps above,
-provided you did not perform any additional changes in the code.
+Any failing test will generate updated screenshots, which will be downloaded and
+applied to your local change. Inspect the status of your working copy for any
+such screenshot updates. If you have new screenshots and they look as expected,
+add, commit, and upload the changes. If you repeat the steps above without
+making any additional changes to the code, you should not have any more
+screenshot tests failing.
 """
 
 import argparse
 import json
 import os
 import re
-import tempfile
 import time
+import shutil
+import ssl
 import subprocess
 import sys
+import urllib.request
 
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class ProjectConfig:
     def __init__(self,
@@ -56,7 +58,7 @@ TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.normpath(os.path.join(TOOLS_DIR, '..', '..'))
 DEPOT_TOOLS_DIR = os.path.join(BASE_DIR, 'third_party', 'depot_tools')
 VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython3')
-GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'interactions', 'goldens')
+GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'goldens')
 
 WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
     'running.\nBuilders in progress:\n  %s\n'
@@ -81,84 +83,142 @@ INFO_PATCHES_APPLIED = 'Patches containing screenshot updates were ' \
     'applied to your local repo.\n To quickly see what is new just run "git ' \
     'status".'
 
-
 def main(project_config, *args):
     parser = build_parser()
     options = parser.parse_args(*args)
-    if not options.command:
-        parser.print_help()
-        sys.exit(1)
-    options.func(project_config, options)
+    update(project_config, options)
 
 
 def build_parser():
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter, epilog=__doc__)
-    sp = parser.add_subparsers(dest='command')
 
-    trigger_help = 'Triggers screenshot builders for the current patchset.'
-    trigger_parser = sp.add_parser('trigger',
-                                   description=trigger_help,
-                                   help=trigger_help)
-    trigger_parser.add_argument(
-        '--ignore-triggered',
-        action='store_true',
-        help='Ignore any existing results or triggered builders on the '
-        'current patch.')
-    trigger_parser.set_defaults(func=trigger)
-
-    update_help = 'Downloads the screenshots from the builders and applies ' \
-        'them locally.'
-    update_parser = sp.add_parser('update',
-                                  description=update_help,
-                                  help=update_help)
-    mutually_exclusive = update_parser.add_mutually_exclusive_group()
-    mutually_exclusive.add_argument(
-        '--patchset',
-        help='The patchset number from where to download screenshot changes. '
-        'If not provided it defaults to the latest patchset.')
-    update_parser.add_argument(
-        '--ignore-failed',
-        action='store_true',
-        help='Ignore results comming from failed builders.')
-    mutually_exclusive.add_argument(
-        '--retry',
-        action='store_true',
-        help='Re-trigger failed builders (when dealing with flakes).')
-    update_parser.add_argument('--wait-sec', type=int,
+    parser.add_argument('--wait-sec', type=int,
         help='Wait and retry update every specified number of seconds. ' \
             'Minimum value is 30s to avoid overwhelming Gerrit.')
-    update_parser.set_defaults(func=update)
-
-    help_help = 'Show help.'
-    help_parser = sp.add_parser('help', description=help_help, help=help_help)
-    help_parser.add_argument('name',
-                             nargs='?',
-                             help='Command to show help for')
-    help_parser.set_defaults(func=get_help(parser, sp))
-
+    parser.set_defaults(func=update)
     parser.add_argument('--verbose',
                         action='store_true',
                         help='Show more debugging info')
 
+    #Deprecated options. These are no longer used, but are kept here
+    #to avoid breaking existing scripts."""
+    parser.add_argument('--patchset',
+                        help='Deprecated. Not used by this tool.')
+    parser.add_argument('--ignore-failed',
+                        help='Deprecated. Not used by this tool.')
+    parser.add_argument('--retry', help='Deprecated. Not used by this tool.')
+
     return parser
-
-
-def trigger(project_config, options):
-    check_results_exist(project_config, options.ignore_triggered)
-    trigger_screenshots(project_config, options.verbose)
-
 
 def update(project_config, options):
     test_clean_git()
-    test_gcs_connectivity(project_config)
     wait_sec = options.wait_sec
     if wait_sec:
         wait_sec = max(wait_sec, 30)
-    apply_patch_to_local(project_config, options.patchset, wait_sec,
-                         options.ignore_failed, options.retry, options.verbose)
+    query_rdb_for_screenshots(project_config, options.patchset, wait_sec,
+                              options.ignore_failed, options.retry,
+                              options.verbose)
 
+
+def query_rdb_for_screenshots(project_config, patchset, wait_sec,
+                              ignore_failed, retry, verbose):
+    """Download and apply the patches from the builders."""
+    results = screenshot_results(project_config, patchset)
+    check_not_empty(results)
+    check_all_platforms(project_config, results)
+    retry, should_wait = check_all_success(project_config, results, wait_sec,
+                                           ignore_failed, retry)
+    if retry:
+        # Avoiding to force the user to run a 'trigger' command
+        trigger_screenshots(project_config, retry)
+        sys.exit(0)
+    if not should_wait:
+        download_generated_imgs(results)
+        print(INFO_PATCHES_APPLIED)
+        sys.exit(0)
+    print(f'Waiting {wait_sec} seconds ...')
+    time.sleep(wait_sec)
+    query_rdb_for_screenshots(project_config, patchset, wait_sec,
+                              ignore_failed, retry, verbose)
+
+
+def download_generated_imgs(try_results):
+    for _, try_result in try_results.items():
+        if try_result['status'] == 'FAILURE':
+            unexpected_results = get_unexpected_results(try_result['id'])
+            for result in unexpected_results['testResults']:
+                result = get_result_with_tags(result['name'])
+                screenshot_path = get_screenshot_path(result)
+                if not screenshot_path:
+                    continue
+                artifacts = list_artifacts(result['name'])
+                for artifact in artifacts['artifacts']:
+                    if artifact['artifactId'] in ['actual_image', 'generated']:
+                        download_individual_screenshot(screenshot_path,
+                                                       artifact['fetchUrl'])
+
+
+def get_unexpected_results(invocation_suffix):
+    invocation_id = f'build-{invocation_suffix}'
+    return _rdb_rpc(
+        'QueryTestResults', {
+            "invocations": [f'invocations/{invocation_id}'],
+            "predicate": {
+                "excludeExonerated": True,
+                "expectancy": "VARIANTS_WITH_ONLY_UNEXPECTED_RESULTS",
+            }
+        })
+
+
+def get_result_with_tags(name):
+    return _rdb_rpc('GetTestResult', {"name": name})
+
+
+def list_artifacts(name):
+    return _rdb_rpc('ListArtifacts', {
+        "parent": name,
+    })
+
+
+def download_individual_screenshot(screenshot_path, fetchUrl):
+    with urllib.request.urlopen(fetchUrl) as response:
+        os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)
+        with open(screenshot_path, 'w+b') as screenshot_file:
+            shutil.copyfileobj(response, screenshot_file)
+
+
+def _rdb_rpc(service, request_payload):
+    results_command = ['rdb', 'rpc', 'luci.resultdb.v1.ResultDB']
+    results_command.append(service)
+    p = subprocess.Popen(results_command,
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE,
+                         text=True)
+
+    stdout, stderr = p.communicate(json.dumps(request_payload))
+    if p.returncode != 0:
+        # rdb doesn't return unique status codes for different errors, so we have to
+        # just match on the output.
+        if 'interactive login is required' in stderr:
+            print("Authentication is required to fetch test metadata.\n" +
+                  "Please run:\n\trdb auth-login\nand try again")
+        else:
+            print(f'rdb rpc {service} failed with: {stderr}')
+        sys.exit(1)
+
+    return json.loads(stdout)
+
+
+def get_screenshot_path(individual_result):
+    for tag in individual_result['tags']:
+        if tag['key'] == 'run_phase' and tag['value'] != 'default':
+            return None
+        if tag['key'] == 'screenshot_path':
+            return tag['value'].replace('\\', '/')
+    return None
 
 def get_help(parser, subparsers):
     def _help(options):
@@ -201,43 +261,6 @@ def test_clean_git():
         print(stdout.decode('utf-8'))
         print(WARNING_GIT_DIRTY)
         sys.exit(0)
-
-
-def test_gcs_connectivity(project_config):
-    """Test if gcloud needs to be configured for current user."""
-    process = subprocess.Popen(gcstorage_cmd('ls', project_config.gs_root),
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    _, stderr = process.communicate()
-    if process.returncode != 0:
-        print(stderr.decode('utf-8'), '\n')
-        print(WARNING_GCS_CONNECTIVITY)
-        sys.exit(0)
-
-
-def apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
-                         retry, verbose):
-    """Download and apply the patches from the builders."""
-    results = screenshot_results(project_config, patchset)
-    check_not_empty(results)
-    check_all_platforms(project_config, results)
-    retry, should_wait = check_all_success(project_config, results, wait_sec,
-                                           ignore_failed, retry)
-    if retry:
-        # Avoiding to force the user to run a 'trigger' command
-        trigger_screenshots(project_config, retry)
-        sys.exit(0)
-    if not should_wait:
-        with tempfile.TemporaryDirectory() as patch_dir:
-            patches = download_patches(project_config, results, patch_dir,
-                                       verbose)
-            git_apply_patch(patches, verbose)
-        print(INFO_PATCHES_APPLIED)
-        sys.exit(0)
-    print(f'Waiting {wait_sec} seconds ...')
-    time.sleep(wait_sec)
-    apply_patch_to_local(project_config, patchset, wait_sec, ignore_failed,
-                         retry, verbose)
 
 
 def screenshot_results(project_config, patchset=None):
@@ -314,7 +337,7 @@ def check_not_empty(results):
     if results:
         return
     print('No screenshot test results found! ' +
-          'Make sure to run `update_goldens.py trigger` first.')
+          'Make sure to run CQ against your change first.')
     sys.exit(1)
 
 
@@ -384,48 +407,6 @@ def builder_status(results, builders):
     return '\n  '.join(f'{b}: {results[b]["status"]}' for b in builders)
 
 
-def download_patches(project_config, results, destination_dir, verbose):
-    """Interact with GS and retrieve the patches. Since we have build results
-    from successfull screenshot builds we know that they uploaded patches in
-    the expected location in the cloud.
-    """
-    patches = []
-    for builder, result in results.items():
-        gs_path = [
-            project_config.gs_folder, builder,
-            str(result['cl']),
-            str(result['patch']), 'screenshot.patch'
-        ]
-        gs_location = '/'.join(gs_path)
-        patch_platform = builder.split('_')[-2]
-        local_path = os.path.join(destination_dir, patch_platform + '.patch')
-        if verbose:
-            print('Downloading patch file from: ' + gs_location)
-        run_command(gcstorage_cmd('cp', gs_location, local_path), verbose)
-        patches.append(local_path)
-    return patches
-
-
-def git_apply_patch(patches, verbose):
-    """Apply downloaded patches to the local repo."""
-    screenshot_patches = [p for p in patches if check_patch(p)]
-    if screenshot_patches:
-        run_command(
-            ['git', 'apply', *screenshot_patches], verbose,
-            'Unable to apply this patch. Maybe run "git clean" before retry.')
-    else:
-        print('No other changes found.')
-        sys.exit(0)
-
-
-def check_patch(patch):
-    """Check if a particular patch file is empty."""
-    if os.stat(patch).st_size == 0:
-        print('Ignoring empty patch:%s\n' % patch)
-        return False
-    return True
-
-
 def run_command(command, verbose, message=None):
     """Run command and deal with return code and output from the subprocess"""
     process = subprocess.Popen(command,
@@ -444,14 +425,8 @@ def run_command(command, verbose, message=None):
         sys.exit(1)
 
 
-def gcstorage_cmd(*args):
-    return ["gcloud", "storage"] + list(args)
-
-
 if __name__ == '__main__':
-    print(
-        "Deprecation warning: this script is deprecated and will be removed.\n"
-        "Please use `update_goldens_v2.py` instead.\n"
-        "Make sure you familiarize yourself with the new script via "
-        "`update_goldens_v2.py --help.`\n"
-        "Note: removal pending deprecation in other projects.")
+    main(
+        ProjectConfig(platforms=['linux'],
+                      builder_prefix='dtf',
+                      ignore_failed_builders=True), sys.argv[1:])

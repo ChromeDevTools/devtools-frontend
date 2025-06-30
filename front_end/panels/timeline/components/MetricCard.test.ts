@@ -456,7 +456,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
           compareText!.textContent,
-          'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field data 75th percentile LCP value of 1.00 s is good.',
+          'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. Additionally, the field metrics 75th percentile LCP value of 1.00 s is good.',
       );
     });
 
@@ -475,7 +475,7 @@ describeWithMockConnection('MetricCard', () => {
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
           compareText!.textContent,
-          'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. However, the field data 75th percentile LCP value of 5.00 s is poor.',
+          'Your local LCP value of 0.10 s is good and is rated the same as 50% of real-user LCP experiences. However, the field metrics 75th percentile LCP value of 5.00 s is poor.',
       );
     });
 

@@ -113,22 +113,6 @@ const UIStrings = {
    */
   other: 'Contact third-party site for more info',
   /**
-   *@description String representing the GitHubResource insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
-   */
-  gitHubResourceInsightTypeString: 'Github',
-  /**
-   *@description String representing the GracePeriod insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
-   */
-  gracePeriodInsightTypeString: 'Grace Period',
-  /**
-   *@description String representing the GitHubResource insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
-   */
-  heuristicsInisightTypeString: 'Heuristics',
-  /**
-   *@description String representing a null insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
-   */
-  otherInsightTypeString: 'Other',
-  /**
    *@description String representing the Advertising cookie type. Used to format 'ad' category from the Third Party Web dataset.
    */
   adCookieTypeString: 'Advertising',
@@ -440,23 +424,6 @@ export class CookieReportView extends UI.Widget.VBox {
         return i18nString(UIStrings.allowedByException);
       case IssuesManager.CookieIssue.CookieStatus.ALLOWED:
         return i18nString(UIStrings.allowed);
-    }
-  }
-
-  static getInsightTypeString(insight?: Protocol.Audits.CookieIssueInsight): string {
-    if (!insight) {
-      return i18nString(UIStrings.otherInsightTypeString);
-    }
-
-    switch (insight.type) {
-      case Protocol.Audits.InsightType.GitHubResource:
-        return i18nString(UIStrings.gitHubResourceInsightTypeString);
-      case Protocol.Audits.InsightType.GracePeriod:
-        return i18nString(UIStrings.gracePeriodInsightTypeString);
-      case Protocol.Audits.InsightType.Heuristics:
-        return i18nString(UIStrings.heuristicsInisightTypeString);
-      default:
-        return i18nString(UIStrings.otherInsightTypeString);
     }
   }
 

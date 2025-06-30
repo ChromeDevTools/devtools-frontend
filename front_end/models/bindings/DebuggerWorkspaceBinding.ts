@@ -22,15 +22,12 @@ let debuggerWorkspaceBindingInstance: DebuggerWorkspaceBinding|undefined;
 
 export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly resourceMapping: ResourceMapping;
-  readonly #sourceMappings: DebuggerSourceMapping[];
   readonly #debuggerModelToData: Map<SDK.DebuggerModel.DebuggerModel, ModelData>;
   readonly #liveLocationPromises: Set<Promise<void|Location|StackTraceTopFrameLocation|null>>;
   readonly pluginManager: DebuggerLanguagePluginManager;
 
   private constructor(resourceMapping: ResourceMapping, targetManager: SDK.TargetManager.TargetManager) {
     this.resourceMapping = resourceMapping;
-
-    this.#sourceMappings = [];
 
     this.#debuggerModelToData = new Map();
     targetManager.addModelListener(
@@ -73,17 +70,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   static removeInstance(): void {
     debuggerWorkspaceBindingInstance = undefined;
-  }
-
-  addSourceMapping(sourceMapping: DebuggerSourceMapping): void {
-    this.#sourceMappings.push(sourceMapping);
-  }
-
-  removeSourceMapping(sourceMapping: DebuggerSourceMapping): void {
-    const index = this.#sourceMappings.indexOf(sourceMapping);
-    if (index !== -1) {
-      this.#sourceMappings.splice(index, 1);
-    }
   }
 
   private async computeAutoStepRanges(mode: SDK.DebuggerModel.StepMode, callFrame: SDK.DebuggerModel.CallFrame):
@@ -219,12 +205,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
 
   async rawLocationToUILocation(rawLocation: SDK.DebuggerModel.Location):
       Promise<Workspace.UISourceCode.UILocation|null> {
-    for (const sourceMapping of this.#sourceMappings) {
-      const uiLocation = sourceMapping.rawLocationToUILocation(rawLocation);
-      if (uiLocation) {
-        return uiLocation;
-      }
-    }
     const uiLocation = await this.pluginManager.rawLocationToUILocation(rawLocation);
     if (uiLocation) {
       return uiLocation;
@@ -282,12 +262,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   async uiLocationToRawLocations(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
       columnNumber?: number): Promise<SDK.DebuggerModel.Location[]> {
-    for (const sourceMapping of this.#sourceMappings) {
-      const locations = sourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
-      if (locations.length) {
-        return locations;
-      }
-    }
     const locations = await this.pluginManager.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
     if (locations) {
       return locations;
@@ -324,12 +298,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
   async uiLocationRangeToRawLocationRanges(
       uiSourceCode: Workspace.UISourceCode.UISourceCode,
       textRange: TextUtils.TextRange.TextRange): Promise<SDK.DebuggerModel.LocationRange[]> {
-    for (const sourceMapping of this.#sourceMappings) {
-      const ranges = sourceMapping.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
-      if (ranges) {
-        return ranges;
-      }
-    }
     const ranges = await this.pluginManager.uiLocationRangeToRawLocationRanges(uiSourceCode, textRange);
     if (ranges) {
       return ranges;

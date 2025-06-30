@@ -103,8 +103,6 @@ export interface BrowserSettings {
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {
   // LINT.IfChange(features)
   enabledBlinkFeatures: [
-    'Portals',
-    'PortalsCrossOrigin',
     'PartitionedCookies',
     'SharedStorageAPI',
     'FencedFrames',

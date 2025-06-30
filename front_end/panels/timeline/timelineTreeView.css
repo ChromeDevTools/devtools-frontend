@@ -42,6 +42,19 @@
   position: relative;
 }
 
+.timeline-tree-view .data-grid td.activity-column {
+  padding-left: 0;
+
+  &::before {
+    mask-position: center;
+    mask-repeat: no-repeat;
+    width: var(--sys-size-9);
+    height: 18px;
+    margin: 0 calc(-1 * var(--sys-size-2)) 0 0;
+    top: 0;
+  }
+}
+
 .timeline-tree-view .data-grid div.background-bar-text {
   position: relative;
   z-index: 1;
@@ -121,10 +134,6 @@
 .timeline-tree-view .data-grid .selected .background-bar {
   background-color: var(--app-color-selected-progress-bar);
   border-bottom: 1px solid var(--app-border-selected-progress-bar);
-}
-
-.timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {
-  background-color: inherit;
 }
 
 .timeline-tree-view .data-grid thead {

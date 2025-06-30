@@ -30,10 +30,10 @@ template("devtools_entrypoint") {
 
   _is_web_worker = defined(invoker.is_web_worker) && invoker.is_web_worker
 
-  # In debug mode, the entrypoint is kept as-is. This means we only
-  # need to compile with TypeScript, which means it will fetch all
+  # If we don't bundle, the entrypoint is kept as-is. This means we only
+  # need to compile with TypeScript/esbuild, which means it will fetch all
   # of its files as separate network requests.
-  if (is_debug) {
+  if (!devtools_bundle) {
     _ts_library_target_name = _entrypoint_target_name + "-typescript"
 
     ts_library(_ts_library_target_name) {
@@ -47,7 +47,7 @@ template("devtools_entrypoint") {
 
     _devtools_entrypoint_deps += [ ":$_ts_library_target_name" ]
   } else {
-    # In release mode, we are running Rollup and thus bundle all
+    # Otherwise, we are running Rollup and thus bundle all
     # files in the (sub-)folder(s) into 1 file.
     #
     # To make sure that the build system can handle the Rollup

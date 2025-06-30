@@ -21,18 +21,18 @@ import {
 } from '../ai_assistance.js';
 
 const FAKE_LCP_MODEL = {
-  insightKey: Trace.Insights.Types.InsightKeys.LCP_PHASES,
+  insightKey: Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN,
   strings: {},
-  title: 'LCP by phase' as Common.UIString.LocalizedString,
+  title: 'LCP breakdown' as Common.UIString.LocalizedString,
   description: 'some description' as Common.UIString.LocalizedString,
   category: Trace.Insights.Types.InsightCategory.ALL,
   state: 'fail',
   frameId: '123',
 } as const;
 const FAKE_INP_MODEL = {
-  insightKey: Trace.Insights.Types.InsightKeys.INTERACTION_TO_NEXT_PAINT,
+  insightKey: Trace.Insights.Types.InsightKeys.INP_BREAKDOWN,
   strings: {},
-  title: 'INP by phase' as Common.UIString.LocalizedString,
+  title: 'INP breakdown' as Common.UIString.LocalizedString,
   description: 'some description' as Common.UIString.LocalizedString,
   category: Trace.Insights.Types.InsightCategory.ALL,
   state: 'fail',
@@ -47,8 +47,8 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(insights);
     const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-    const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
-    const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+    const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
+    const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
     const context = new InsightContext(activeInsight);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
@@ -56,7 +56,7 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
   it('outputs the right title for the selected insight', async () => {
     const mockInsight = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_PARSED_TRACE);
     const context = new InsightContext(mockInsight);
-    assert.strictEqual(context.getTitle(), 'Insight: LCP by phase');
+    assert.strictEqual(context.getTitle(), 'Insight: LCP breakdown');
   });
 
   // See b/405054694 for context on why we do this.
@@ -129,9 +129,9 @@ code
         },
         {
           type: ResponseType.CONTEXT,
-          title: 'Analyzing insight: LCP by phase',
+          title: 'Analyzing insight: LCP breakdown',
           details: [
-            {title: 'LCP by phase', text: expectedDetailText},
+            {title: 'LCP breakdown', text: expectedDetailText},
           ],
         },
         {
@@ -194,9 +194,9 @@ Help me understand?`;
       const firstQuery = await agent.enhanceQuery('Q1', context1);
       const secondQuery = await agent.enhanceQuery('Q2', context1);
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
-      assert.include(firstQuery, '## Insight Title: LCP by phase');
+      assert.include(firstQuery, '## Insight Title: LCP breakdown');
       assert.notInclude(secondQuery, '## Insight Title');
-      assert.include(thirdQuery, '## Insight Title: INP by phase');
+      assert.include(thirdQuery, '## Insight Title: INP breakdown');
     });
   });
 
@@ -206,13 +206,13 @@ Help me understand?`;
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -253,10 +253,12 @@ Help me understand?`;
     });
 
     it('can call getNetworkRequestDetail to get detail about a single request', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAINetworkRequestDetailResponseSize');
+
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const requestUrl = 'https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css';
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient([
@@ -264,7 +266,7 @@ Help me understand?`;
           [{explanation: 'done'}]
         ])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -278,6 +280,9 @@ Help me understand?`;
       const expectedRequestOutput = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       const expectedOutput = JSON.stringify({request: expectedRequestOutput});
 
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestOutput);
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
       assert.exists(action);
       assert.deepEqual(action, {
         type: 'action' as ActionResponse['type'],
@@ -288,15 +293,17 @@ Help me understand?`;
     });
 
     it('calls getMainThreadActivity', async function() {
+      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
+
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient(
             [[{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}], [{explanation: 'done'}]])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -307,8 +314,12 @@ Help me understand?`;
       const action = responses.find(response => response.type === ResponseType.ACTION);
       assert.exists(action);
 
-      const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpPhases, parsedTrace);
+      const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpBreakdown, parsedTrace);
       assert.isOk(expectedTree);
+
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedTree.serialize());
+      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
+
       const expectedOutput = JSON.stringify({activity: expectedTree.serialize()});
 
       assert.deepEqual(action, {
@@ -323,13 +334,13 @@ Help me understand?`;
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
 
       // Make the first query to trigger the getNetworkActivitySummary function
@@ -366,12 +377,12 @@ Help me understand?`;
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient(
             [[{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}], [{explanation: 'done'}]])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
 
       // Make the first query to trigger the getMainThreadActivity function
@@ -387,7 +398,7 @@ Help me understand?`;
       const mainThreadActivityFact = Array.from(agent.currentFacts()).at(0);
       assert.exists(mainThreadActivityFact);
 
-      const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpPhases, parsedTrace);
+      const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpBreakdown, parsedTrace);
       assert.isOk(expectedTree);
       assert.include(mainThreadActivityFact.text, expectedTree.serialize());
 
@@ -401,15 +412,15 @@ Help me understand?`;
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const renderBlocking = getInsightOrError('RenderBlocking', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}],
         ])
       });
-      const lcpPhasesActiveInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
-      const lcpContext = new InsightContext(lcpPhasesActiveInsight);
+      const lcpBreakdownActiveInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
+      const lcpContext = new InsightContext(lcpBreakdownActiveInsight);
       const renderBlockingActiveInsight = new TimelineUtils.InsightAIContext.ActiveInsight(renderBlocking, parsedTrace);
       const renderBlockingContext = new InsightContext(renderBlockingActiveInsight);
 
@@ -427,14 +438,14 @@ Help me understand?`;
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
-      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
       const agent = new PerformanceInsightsAgent({
         aidaClient: mockAidaClient([
           [{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}],
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, parsedTrace);
       const context = new InsightContext(activeInsight);
       // First query to populate the function calls
       await Array.fromAsync(agent.run('test 1', {selected: context}));

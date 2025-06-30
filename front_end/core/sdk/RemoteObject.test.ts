@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 
 import * as SDK from './sdk.js';
 
@@ -405,6 +405,28 @@ describe('RemoteObjectProperty', () => {
       assert.isFalse(property.match({includeNullOrUndefinedValues: true, regex: /bar/}));
       assert.isTrue(property.match({includeNullOrUndefinedValues: true, regex: /foo/}));
     });
+  });
+});
+
+describeWithMockConnection('ScopeRemoteObject', () => {
+  it('preserves writability of properties', async () => {
+    setMockConnectionResponseHandler(
+        'Runtime.getProperties', () => ({
+                                   result: [
+                                     {name: 'a', configurable: true, enumerable: true, writable: true},
+                                     {name: 'b', configurable: true, enumerable: true, writable: true},
+                                     {name: 'c', configurable: true, enumerable: true, writable: true}
+                                   ]
+                                 }));
+    const target = createTarget();
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
+    const scopeRef = new SDK.RemoteObject.ScopeRef(0, '0' as Protocol.Debugger.CallFrameId);
+
+    const remoteObject = new SDK.RemoteObject.ScopeRemoteObject(
+        runtimeModel, '0' as Protocol.Runtime.RemoteObjectId, scopeRef, Protocol.Runtime.RemoteObjectType.String,
+        undefined, 'value');
+    const properties = await remoteObject.getAllProperties(false, false);
+    assert.deepEqual(properties.properties?.map(p => p.writable), [true, true, true]);
   });
 });
 

@@ -17,6 +17,7 @@ devtools_module("tooltip") {
 
   deps = [
     "../../../services/window_bounds:bundle",
+    "../../../ui/legacy:bundle",
     "../../../ui/visual_logging:bundle",
     "../../lit:bundle",
   ]

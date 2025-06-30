@@ -19,17 +19,14 @@ import {
   drainFrontendTaskQueue,
   getBrowserAndPages,
   getPendingEvents,
-  getTestServerPort,
   platform,
   pressKey,
   setCheckBox,
   step,
-  timeout,
   typeText,
   waitFor,
   waitForAria,
   waitForFunction,
-  waitForFunctionWithTries,
   waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
@@ -80,14 +77,16 @@ export async function toggleDebuggerSidebar(frontend: puppeteer.Page) {
 
 export async function getLineNumberElement(
     lineNumber: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
-  for (let i = 0; i < visibleLines.length; i++) {
-    const lineValue = await visibleLines[i].evaluate(node => node.textContent);
-    if (lineValue === `${lineNumber}`) {
-      return visibleLines[i];
+  return await devToolsPage.waitForFunction(async () => {
+    const visibleLines = await devToolsPage.$$(CODE_LINE_SELECTOR);
+    for (let i = 0; i < visibleLines.length; i++) {
+      const lineValue = await visibleLines[i].evaluate(node => (node as HTMLElement).innerText);
+      if (lineValue === `${lineNumber}`) {
+        return visibleLines[i];
+      }
     }
-  }
-  return null;
+    return null;
+  });
 }
 
 export async function doubleClickSourceTreeItem(
@@ -253,13 +252,14 @@ export async function addBreakpointForLine(
   await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
 }
 
-export async function removeBreakpointForLine(index: number|string) {
-  const breakpointLine = await getLineNumberElement(index);
+export async function removeBreakpointForLine(
+    index: number|string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assertNotNullOrUndefined(breakpointLine);
 
-  await waitForFunction(async () => await isBreakpointSet(index));
-  await clickElement(breakpointLine);
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
+  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
+  await devToolsPage.clickElement(breakpointLine);
+  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
 }
 
 export async function addLogpointForLine(index: number, condition: string) {
@@ -335,9 +335,9 @@ export async function checkBreakpointDidNotActivate() {
 }
 
 export async function getBreakpointDecorators(
-    disabledOnly = false, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    disabledOnly = false, expected = 0, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `.cm-breakpoint${disabledOnly ? '-disabled' : ''}`;
-  const breakpointDecorators = await devToolsPage.$$(selector);
+  const breakpointDecorators = await devToolsPage.waitForMany(selector, expected);
   return await Promise.all(
       breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
@@ -385,7 +385,8 @@ export async function switchToCallFrame(index: number) {
 }
 
 export async function retrieveTopCallFrameScriptLocation(
-    script: string, target: puppeteer.Page, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    script: string, target: puppeteer.Page|InspectedPage,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The script will run into a breakpoint, which means that it will not actually
   // finish the evaluation, until we continue executing.
   // Thus, we have to await it at a later point, while stepping through the code.
@@ -418,12 +419,12 @@ export async function retrieveTopCallFrameWithoutResuming(
   return scriptLocation;
 }
 
-export async function waitForStackTopMatch(matcher: RegExp) {
+export async function waitForStackTopMatch(matcher: RegExp, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The call stack is updated asynchronously, so let us wait until we see the correct one
   // (or report the last one we have seen before timeout).
   let stepLocation = '<no call stack>';
-  await waitForFunctionWithTries(async () => {
-    stepLocation = await retrieveTopCallFrameWithoutResuming() ?? '<invalid>';
+  await devToolsPage.waitForFunctionWithTries(async () => {
+    stepLocation = await retrieveTopCallFrameWithoutResuming(devToolsPage) ?? '<invalid>';
     return stepLocation?.match(matcher);
   }, {tries: 10});
   return stepLocation;
@@ -551,9 +552,10 @@ export interface NestedFileSelector {
 }
 
 export function createSelectorsForWorkerFile(
-    workerName: string, folderName: string, fileName: string, workerIndex = 1): NestedFileSelector {
+    workerName: string, folderName: string, fileName: string, workerIndex = 1,
+    inspectedPage: InspectedPage = getBrowserAndPagesWrappers().inspectedPage): NestedFileSelector {
   const rootSelector = new Array(workerIndex).fill(`[aria-label="${workerName}, worker"]`).join(' ~ ');
-  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:${getTestServerPort()}, domain"]`;
+  const domainSelector = `${rootSelector} + ol > [aria-label="localhost:${inspectedPage.serverPort}, domain"]`;
   const folderSelector = `${domainSelector} + ol > [aria-label^="${folderName}, "]`;
   const fileSelector = `${folderSelector} + ol > [aria-label="${fileName}, file"]`;
 
@@ -648,11 +650,12 @@ export async function stepOut() {
   await waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function openNestedWorkerFile(selectors: NestedFileSelector) {
-  await expandFileTree(selectors);
+export async function openNestedWorkerFile(
+    selectors: NestedFileSelector, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await expandFileTree(selectors, devToolsPage);
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(50);
-  await click(selectors.fileSelector);
+  await devToolsPage.timeout(50);
+  await devToolsPage.click(selectors.fileSelector);
 }
 
 export async function inspectMemory(variableName: string) {
@@ -874,8 +877,9 @@ export async function retrieveCodeMirrorEditorContent(
       node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
-export async function waitForLines(lineCount: number): Promise<void> {
-  await waitFor(new Array(lineCount).fill('.cm-line').join(' ~ '));
+export async function waitForLines(
+    lineCount: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
+  await devToolsPage.waitFor(new Array(lineCount).fill('.cm-line').join(' ~ '));
 }
 
 export async function isPrettyPrinted(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):

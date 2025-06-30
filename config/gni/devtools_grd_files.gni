@@ -3,13 +3,13 @@
 # found in the LICENSE file.
 
 # This represents all the files expected to be be in the GRD. The file
-# has two lists, one for files expected for the Release build
-# (is_debug=false), and another for the Debug build (is_debug=true).
+# has two lists, one for files expected for the "bundled" build
+# (devtools_bundle=true), and another for the "unbundled" build (devtools_bundle=false).
 # The two lists are checked for overlap, and an error thrown if there is
 # any. In the root BUILD.gn these lists are used to ensure that no files
 # are missed from the GRD.
 
-grd_files_release_sources = [
+grd_files_bundled_sources = [
   "front_end/Images/3d-center.svg",
   "front_end/Images/3d-pan.svg",
   "front_end/Images/3d-rotate.svg",
@@ -869,7 +869,7 @@ grd_files_release_sources = [
   "front_end/worker_app.html",
 ]
 
-grd_files_debug_sources = [
+grd_files_unbundled_sources = [
   "front_end/core/common/App.js",
   "front_end/core/common/AppProvider.js",
   "front_end/core/common/Base64.js",
@@ -1187,11 +1187,8 @@ grd_files_debug_sources = [
   "front_end/models/trace/LanternComputationData.js",
   "front_end/models/trace/ModelImpl.js",
   "front_end/models/trace/Processor.js",
-  "front_end/models/trace/TracingManager.js",
-  "front_end/models/trace/extras/FetchNodes.js",
   "front_end/models/trace/extras/FilmStrip.js",
   "front_end/models/trace/extras/MainThreadActivity.js",
-  "front_end/models/trace/extras/Metadata.js",
   "front_end/models/trace/extras/ScriptDuplication.js",
   "front_end/models/trace/extras/StackTraceForEvent.js",
   "front_end/models/trace/extras/ThirdParties.js",
@@ -1246,10 +1243,10 @@ grd_files_debug_sources = [
   "front_end/models/trace/insights/DuplicatedJavaScript.js",
   "front_end/models/trace/insights/FontDisplay.js",
   "front_end/models/trace/insights/ForcedReflow.js",
+  "front_end/models/trace/insights/INPBreakdown.js",
   "front_end/models/trace/insights/ImageDelivery.js",
-  "front_end/models/trace/insights/InteractionToNextPaint.js",
+  "front_end/models/trace/insights/LCPBreakdown.js",
   "front_end/models/trace/insights/LCPDiscovery.js",
-  "front_end/models/trace/insights/LCPPhases.js",
   "front_end/models/trace/insights/LegacyJavaScript.js",
   "front_end/models/trace/insights/Models.js",
   "front_end/models/trace/insights/ModernHTTP.js",
@@ -1315,10 +1312,8 @@ grd_files_debug_sources = [
   "front_end/panels/ai_assistance/components/userActionRow.css.js",
   "front_end/panels/ai_assistance/selectWorkspaceDialog.css.js",
   "front_end/panels/animation/AnimationGroupPreviewUI.js",
-  "front_end/panels/animation/AnimationScreenshotPopover.js",
   "front_end/panels/animation/AnimationTimeline.js",
   "front_end/panels/animation/AnimationUI.js",
-  "front_end/panels/animation/animationScreenshotPopover.css.js",
   "front_end/panels/animation/animationTimeline.css.js",
   "front_end/panels/application/AppManifestView.js",
   "front_end/panels/application/ApplicationPanelSidebar.js",
@@ -1499,6 +1494,7 @@ grd_files_debug_sources = [
   "front_end/panels/elements/ImagePreviewPopover.js",
   "front_end/panels/elements/InspectElementModeController.js",
   "front_end/panels/elements/LayersWidget.js",
+  "front_end/panels/elements/LayoutPane.js",
   "front_end/panels/elements/MarkerDecorator.js",
   "front_end/panels/elements/MetricsSidebarPane.js",
   "front_end/panels/elements/NodeStackTraceWidget.js",
@@ -1529,8 +1525,6 @@ grd_files_debug_sources = [
   "front_end/panels/elements/components/ElementsBreadcrumbsUtils.js",
   "front_end/panels/elements/components/ElementsTreeExpandButton.js",
   "front_end/panels/elements/components/Helper.js",
-  "front_end/panels/elements/components/LayoutPane.js",
-  "front_end/panels/elements/components/LayoutPaneUtils.js",
   "front_end/panels/elements/components/QueryContainer.js",
   "front_end/panels/elements/components/StylePropertyEditor.js",
   "front_end/panels/elements/components/accessibilityTreeNode.css.js",
@@ -1542,7 +1536,6 @@ grd_files_debug_sources = [
   "front_end/panels/elements/components/cssVariableValueView.css.js",
   "front_end/panels/elements/components/elementsBreadcrumbs.css.js",
   "front_end/panels/elements/components/elementsTreeExpandButton.css.js",
-  "front_end/panels/elements/components/layoutPane.css.js",
   "front_end/panels/elements/components/queryContainer.css.js",
   "front_end/panels/elements/components/stylePropertyEditor.css.js",
   "front_end/panels/elements/computedStyleSidebarPane.css.js",
@@ -1552,6 +1545,7 @@ grd_files_debug_sources = [
   "front_end/panels/elements/elementsPanel.css.js",
   "front_end/panels/elements/elementsTreeOutline.css.js",
   "front_end/panels/elements/layersWidget.css.js",
+  "front_end/panels/elements/layoutPane.css.js",
   "front_end/panels/elements/metricsSidebarPane.css.js",
   "front_end/panels/elements/nodeStackTraceWidget.css.js",
   "front_end/panels/elements/platformFontsWidget.css.js",
@@ -1879,6 +1873,8 @@ grd_files_debug_sources = [
   "front_end/panels/sources/AddSourceMapURLDialog.js",
   "front_end/panels/sources/AiWarningInfobarPlugin.js",
   "front_end/panels/sources/BreakpointEditDialog.js",
+  "front_end/panels/sources/BreakpointsView.js",
+  "front_end/panels/sources/BreakpointsViewUtils.js",
   "front_end/panels/sources/CSSPlugin.js",
   "front_end/panels/sources/CallStackSidebarPane.js",
   "front_end/panels/sources/CategorizedBreakpointL10n.js",
@@ -1908,12 +1904,10 @@ grd_files_debug_sources = [
   "front_end/panels/sources/UISourceCodeFrame.js",
   "front_end/panels/sources/WatchExpressionsSidebarPane.js",
   "front_end/panels/sources/breakpointEditDialog.css.js",
+  "front_end/panels/sources/breakpointsView.css.js",
   "front_end/panels/sources/callStackSidebarPane.css.js",
-  "front_end/panels/sources/components/BreakpointsView.js",
-  "front_end/panels/sources/components/BreakpointsViewUtils.js",
   "front_end/panels/sources/components/HeadersView.css.js",
   "front_end/panels/sources/components/HeadersView.js",
-  "front_end/panels/sources/components/breakpointsView.css.js",
   "front_end/panels/sources/debuggerPausedMessage.css.js",
   "front_end/panels/sources/dialog.css.js",
   "front_end/panels/sources/navigatorTree.css.js",
@@ -1945,6 +1939,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/LayoutShiftsTrackAppender.js",
   "front_end/panels/timeline/ModificationsManager.js",
   "front_end/panels/timeline/NetworkTrackAppender.js",
+  "front_end/panels/timeline/RecordingMetadata.js",
   "front_end/panels/timeline/SaveFileFormatter.js",
   "front_end/panels/timeline/StatusDialog.js",
   "front_end/panels/timeline/TargetForEvent.js",
@@ -1969,6 +1964,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/TimelineUIUtils.js",
   "front_end/panels/timeline/TimingsTrackAppender.js",
   "front_end/panels/timeline/TracingLayerTree.js",
+  "front_end/panels/timeline/TrackConfiguration.js",
   "front_end/panels/timeline/UIDevtoolsController.js",
   "front_end/panels/timeline/UIDevtoolsUtils.js",
   "front_end/panels/timeline/components/Breadcrumbs.js",
@@ -2008,10 +2004,10 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/insights/FontDisplay.js",
   "front_end/panels/timeline/components/insights/ForcedReflow.js",
   "front_end/panels/timeline/components/insights/Helpers.js",
+  "front_end/panels/timeline/components/insights/INPBreakdown.js",
   "front_end/panels/timeline/components/insights/ImageDelivery.js",
-  "front_end/panels/timeline/components/insights/InteractionToNextPaint.js",
+  "front_end/panels/timeline/components/insights/LCPBreakdown.js",
   "front_end/panels/timeline/components/insights/LCPDiscovery.js",
-  "front_end/panels/timeline/components/insights/LCPPhases.js",
   "front_end/panels/timeline/components/insights/LegacyJavaScript.js",
   "front_end/panels/timeline/components/insights/ModernHTTP.js",
   "front_end/panels/timeline/components/insights/NetworkDependencyTree.js",
@@ -2052,6 +2048,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/overlays/components/entryLabelOverlay.css.js",
   "front_end/panels/timeline/overlays/components/timeRangeOverlay.css.js",
   "front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js",
+  "front_end/panels/timeline/thirdPartyTreeView.css.js",
   "front_end/panels/timeline/timelineFlameChartView.css.js",
   "front_end/panels/timeline/timelineFlamechartPopover.css.js",
   "front_end/panels/timeline/timelineHistoryManager.css.js",
@@ -2064,6 +2061,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/utils/AICallTree.js",
   "front_end/panels/timeline/utils/EntityMapper.js",
   "front_end/panels/timeline/utils/EntryName.js",
+  "front_end/panels/timeline/utils/EntryNodes.js",
   "front_end/panels/timeline/utils/EntryStyles.js",
   "front_end/panels/timeline/utils/Helpers.js",
   "front_end/panels/timeline/utils/IgnoreList.js",
@@ -2092,6 +2090,7 @@ grd_files_debug_sources = [
   "front_end/services/puppeteer/PuppeteerConnection.js",
   "front_end/services/trace_bounds/TraceBounds.js",
   "front_end/services/tracing/PerformanceTracing.js",
+  "front_end/services/tracing/TracingManager.js",
   "front_end/services/window_bounds/WindowBoundsService.js",
   "front_end/third_party/acorn/package/dist/acorn.mjs",
   "front_end/third_party/chromium/client-variations/ClientVariations.js",
@@ -2660,12 +2659,12 @@ grd_files_debug_sources = [
 ]
 
 # Confirm that there is no overlap between the two lists.
-_grd_files_release_sources =
-    filter_exclude(grd_files_release_sources, grd_files_debug_sources)
-assert(_grd_files_release_sources == grd_files_release_sources,
-       "Debug and Release file lists overlap")
+_grd_files_bundled_sources =
+    filter_exclude(grd_files_bundled_sources, grd_files_unbundled_sources)
+assert(_grd_files_bundled_sources == grd_files_bundled_sources,
+       "Bundled and Bundled file lists overlap")
 
-_grd_files_debug_sources =
-    filter_exclude(grd_files_debug_sources, grd_files_release_sources)
-assert(_grd_files_debug_sources == grd_files_debug_sources,
-       "Debug and Release file lists overlap")
+_grd_files_unbundled_sources =
+    filter_exclude(grd_files_unbundled_sources, grd_files_bundled_sources)
+assert(_grd_files_unbundled_sources == grd_files_unbundled_sources,
+       "Bundled and Bundled file lists overlap")

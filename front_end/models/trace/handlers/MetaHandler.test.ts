@@ -309,6 +309,7 @@ describe('MetaHandler', function() {
       }],
     ]);
   });
+
   it('handles multiple renderers from navigations where a process handled multiple URLs ', async function() {
     let traceEvents: readonly Trace.Types.Events.Event[];
     try {
@@ -515,6 +516,17 @@ describe('MetaHandler', function() {
   it('marks a web trace as being not generic', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     for (const event of events) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    assert.isFalse(Trace.Handlers.ModelHandlers.Meta.data().traceIsGeneric);
+  });
+
+  it('marks a cpu profile as being not generic', async function() {
+    const profile = await TraceLoader.rawCPUProfile(this, 'basic.cpuprofile.gz');
+    const contents = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
+        profile, Trace.Types.Events.ThreadID(1));
+    for (const event of contents.traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
     await Trace.Handlers.ModelHandlers.Meta.finalize();

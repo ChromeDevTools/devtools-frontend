@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
+import type * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Timeline from './timeline.js';
 
@@ -219,63 +221,35 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(results[0], {index: 8, startTimeMilli: 122411056.533, provider: 'network'});
   });
 
-  it('delete annotations associated with an event', async function() {
+  it('persists track configurations to the setting if it is provided with one', async function() {
+    const {Settings} = Common.Settings;
+    const setting =
+        Settings.instance().createSetting<PerfUi.FlameChart.PersistedConfigPerTrace>('persist-flame-config', {});
+
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     dataProvider.setModel(parsedTrace, entityMapper);
-    const entryIndex = 0;
-    const eventToFindAssociatedEntriesFor = dataProvider.eventByIndex(entryIndex);
-    const event = dataProvider.eventByIndex(1);
-    assert.exists(eventToFindAssociatedEntriesFor);
-    assert.exists(event);
+    dataProvider.setPersistedGroupConfigSetting(setting);
 
-    // This link annotation should be deleted
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRIES_LINK',
-      entryFrom: eventToFindAssociatedEntriesFor,
-      entryTo: event,
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-    });
+    const groups = dataProvider.timelineData().groups;
+    assert.lengthOf(groups, 1);
+    assert.isUndefined(groups[0].expanded);
 
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRY_LABEL',
-      entry: event,
-      label: 'label',
-    });
+    // Pretend the user has expanded the group
+    groups[0].expanded = true;
+    dataProvider.handleTrackConfigurationChange(groups, [0]);
 
-    dataProvider.deleteAnnotationsForEntry(entryIndex);
-    // Make sure one of the annotations was deleted
-    assert.deepEqual(Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations().length, 1);
-  });
-
-  it('correctly identifies if an event has annotations', async function() {
-    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
-    dataProvider.setModel(parsedTrace, entityMapper);
-    const eventIndex = 0;
-    const event = dataProvider.eventByIndex(eventIndex);
-    const event2 = dataProvider.eventByIndex(1);
-    assert.exists(event);
-    assert.exists(event2);
-
-    // Create a link between events
-    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
-      type: 'ENTRIES_LINK',
-      entryFrom: event,
-      entryTo: event2,
-      state: Trace.Types.File.EntriesLinkState.CONNECTED,
-    });
-
-    // Made sure the event has annotations
-    assert.isTrue(dataProvider.entryHasAnnotations(eventIndex));
-
-    // Delete annotations for the event
-    dataProvider.deleteAnnotationsForEntry(eventIndex);
-
-    // Made sure the event does not have annotations
-    assert.isFalse(dataProvider.entryHasAnnotations(eventIndex));
+    const newSetting = setting.get();
+    const traceKey = Timeline.TrackConfiguration.keyForTraceConfig(parsedTrace);
+    assert.deepEqual(newSetting[traceKey], [
+      {
+        expanded: true,
+        hidden: false,
+        originalIndex: 0,
+        visualIndex: 0,
+      },
+    ]);
   });
 });
 

@@ -31,13 +31,17 @@
   border: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-base);
 
+  header:focus-visible {
+    outline: none;
+  }
+
   &.closed {
     background-color: var(--sys-color-surface3);
     border: none;
 
     &:focus-within {
       /* Ensure that if the user tabs to a closed insight, we outline it so they know it's focused. */
-      outline: var(--sys-size-1) solid var(--sys-color-primary);
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
   }
 

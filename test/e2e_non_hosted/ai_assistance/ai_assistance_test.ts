@@ -634,9 +634,7 @@ STOP`,
   });
 
   for (const code of ['const data = {}', 'throw new Error("test")', 'const data = {;']) {
-    // Flaky on Mac.
-    it.skipOnPlatforms(
-        ['mac'], `[crbug.com/416405022]: should not trigger a side-effect for "${code}"`,
+    it(`should not trigger a side-effect for "${code}"`,
         async ({devToolsPage, inspectedPage}) => {
           await runAiAssistance(devToolsPage, inspectedPage, {
             query: 'Change the fontSize for this element to blue',

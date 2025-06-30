@@ -4,11 +4,12 @@
 
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
-  setMockConnectionResponseHandler,
+  dispatchEvent,
+  setMockConnectionResponseHandler
 } from '../../testing/MockConnection.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
@@ -47,6 +48,21 @@ describeWithMockConnection('ElementsPanel', () => {
                                                             }],
                                                           },
                                                         }));
+    setMockConnectionResponseHandler('DOM.copyTo', () => {
+      dispatchEvent(target, 'DOM.childNodeInserted', {
+        parentNodeId: 4,
+        previousNodeId: 6,
+        node: {
+          nodeId: 7,
+          parentId: 4,
+          backendNodeId: 8,
+          nodeType: Node.ELEMENT_NODE,
+          nodeName: 'BODY',
+          childNodeCount: 1,
+        }
+      });
+      return {nodeId: 7};
+    });
   });
 
   const createsTreeOutlines = (inScope: boolean) => () => {
@@ -138,6 +154,57 @@ describeWithMockConnection('ElementsPanel', () => {
 
     await selectedTreeElement.remove();
     assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+
+    panel.detach();
+  });
+
+  it('duplicating a hidden node results in a hidden copy', async () => {
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
+    const model = target.model(SDK.DOMModel.DOMModel);
+    assert.exists(model);
+    await model.requestDocument();
+
+    const panel = Elements.ElementsPanel.ElementsPanel.instance({forceNew: true});
+    panel.markAsRoot();
+    renderElementIntoDOM(panel);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+
+    const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(model);
+    assert.exists(treeOutline);
+    const selectedNode = treeOutline.selectedDOMNode();
+    assert.exists(selectedNode);
+    const selectedTreeElement = treeOutline.findTreeElement(selectedNode);
+    assert.exists(selectedTreeElement);
+    assert.isTrue(selectedTreeElement.expanded);
+
+    assert.strictEqual(selectedNode.nodeName(), 'BODY');
+
+    assert.isFalse(treeOutline.isToggledToHidden(selectedNode));
+
+    const mockResolveToObject = sinon.mock().twice().returns({callFunction: () => {}, release: () => {}});
+    selectedNode.resolveToObject = mockResolveToObject;
+
+    // Mock out a few things in the UI that's not necessary for this test.
+    const insertChildElement = sinon.mock().atLeast(1).returns(undefined);
+    treeOutline.insertChildElement = insertChildElement;
+    const animateOnDOMUpdate = sinon.mock().atLeast(1).returns(undefined);
+    Elements.ElementsTreeElement.ElementsTreeElement.animateOnDOMUpdate = animateOnDOMUpdate;
+    const stylesSidebarPaneUpdate = sinon.mock().atLeast(1).returns(undefined);
+    panel.stylesWidget.doUpdate = stylesSidebarPaneUpdate;
+
+    await treeOutline.toggleHideElement(selectedNode);
+    assert.isTrue(treeOutline.isToggledToHidden(selectedNode));
+
+    treeOutline.duplicateNode(selectedNode);
+    await raf();
+
+    const copiedNode = selectedNode.nextSibling;
+    assert.exists(copiedNode);
+    assert.strictEqual(copiedNode.nodeName(), 'BODY');
+    assert.isTrue(copiedNode !== null && treeOutline.isToggledToHidden(copiedNode));
+
+    treeOutline.runPendingUpdates();
 
     panel.detach();
   });

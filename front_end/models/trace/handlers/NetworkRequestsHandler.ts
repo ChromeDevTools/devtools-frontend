@@ -51,11 +51,6 @@ const linkPreconnectEvents: Types.Events.LinkPreconnect[] = [];
 
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
-  byOrigin: Map<string, {
-    renderBlocking: Types.Events.SyntheticNetworkRequest[],
-    nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
-    all: Types.Events.SyntheticNetworkRequest[],
-  }>;
   byTime: Types.Events.SyntheticNetworkRequest[];
   eventToInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
   webSocket: WebSocketTraceData[];
@@ -65,11 +60,6 @@ interface NetworkRequestData {
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
 const requestsById = new Map<string, Types.Events.SyntheticNetworkRequest>();
-const requestsByOrigin = new Map<string, {
-  renderBlocking: Types.Events.SyntheticNetworkRequest[],
-  nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
-  all: Types.Events.SyntheticNetworkRequest[],
-}>();
 const requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
 
 const networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
@@ -121,7 +111,6 @@ function firstPositiveValueInList(entries: Array<number|null>): number {
 
 export function reset(): void {
   requestsById.clear();
-  requestsByOrigin.clear();
   requestMap.clear();
   requestsByTime.length = 0;
   networkRequestEventByInitiatorUrl.clear();
@@ -252,6 +241,27 @@ export async function finalize(): Promise<void> {
       continue;
     }
 
+    /**
+     * LR loses transfer size information, but passes it in the 'X-TotalFetchedSize' header.
+     * 'X-TotalFetchedSize' is the canonical transfer size in LR.
+     *
+     * In Lightrider, due to instrumentation limitations, our values for encodedDataLength are bogus
+     * and not valid. However the resource's true encodedDataLength/transferSize is shared via a
+     * special response header, X-TotalFetchedSize. In this situation, we read this value from
+     * responseReceived, use it for the transferSize and ignore the original encodedDataLength values.
+     */
+    // @ts-expect-error
+    const isLightrider = globalThis.isLightrider;
+    if (isLightrider && request.resourceFinish && request.receiveResponse?.args.data.headers) {
+      const lrSizeHeader = request.receiveResponse.args.data.headers.find(h => h.name === 'X-TotalFetchedSize');
+      if (lrSizeHeader) {
+        const size = parseFloat(lrSizeHeader.value);
+        if (!isNaN(size)) {
+          request.resourceFinish.args.data.encodedDataLength = size;
+        }
+      }
+    }
+
     // If a ResourceFinish event with an encoded data length is received,
     // then the resource was not cached; it was fetched before it was
     // requested, e.g. because it was pushed in this navigation.
@@ -273,7 +283,51 @@ export async function finalize(): Promise<void> {
     const isMemoryCached = request.resourceMarkAsCached !== undefined;
     // If a request has `resourceMarkAsCached` field, the `timing` field is not correct.
     // So let's discard it and override to 0 (which will be handled in later logic if timing field is undefined).
-    const timing = isMemoryCached ? undefined : request.receiveResponse?.args.data.timing;
+    let timing = isMemoryCached ? undefined : request.receiveResponse?.args.data.timing;
+
+    /**
+     * LR gets additional, accurate timing information from its underlying fetch infrastructure.  This
+     * is passed in via X-Headers similar to 'X-TotalFetchedSize'.
+     *
+     * See `_updateTimingsForLightrider` in Lighthouse for more detail.
+     */
+    if (isLightrider && request.receiveResponse?.args.data.headers) {
+      timing = {
+        requestTime: Helpers.Timing.microToSeconds(request.sendRequests.at(0)?.ts ?? 0 as Types.Timing.Micro),
+        connectEnd: 0 as Types.Timing.Milli,
+        connectStart: 0 as Types.Timing.Milli,
+        dnsEnd: 0 as Types.Timing.Milli,
+        dnsStart: 0 as Types.Timing.Milli,
+        proxyEnd: 0 as Types.Timing.Milli,
+        proxyStart: 0 as Types.Timing.Milli,
+        pushEnd: 0 as Types.Timing.Milli,
+        pushStart: 0 as Types.Timing.Milli,
+        receiveHeadersEnd: 0 as Types.Timing.Milli,
+        receiveHeadersStart: 0 as Types.Timing.Milli,
+        sendEnd: 0 as Types.Timing.Milli,
+        sendStart: 0 as Types.Timing.Milli,
+        sslEnd: 0 as Types.Timing.Milli,
+        sslStart: 0 as Types.Timing.Milli,
+        workerReady: 0 as Types.Timing.Milli,
+        workerStart: 0 as Types.Timing.Milli,
+
+        ...timing,
+      };
+
+      const TCPMsHeader = request.receiveResponse.args.data.headers.find(h => h.name === 'X-TCPMs');
+      const TCPMs = TCPMsHeader ? Math.max(0, parseInt(TCPMsHeader.value, 10)) : 0;
+
+      if (request.receiveResponse.args.data.protocol.startsWith('h3')) {
+        timing.connectStart = 0 as Types.Timing.Milli;
+        timing.connectEnd = TCPMs as Types.Timing.Milli;
+      } else {
+        timing.connectStart = 0 as Types.Timing.Milli;
+        timing.sslStart = TCPMs / 2 as Types.Timing.Milli;
+        timing.connectEnd = TCPMs as Types.Timing.Milli;
+        timing.sslEnd = TCPMs as Types.Timing.Milli;
+      }
+    }
+
     // If a non-cached response has no |timing|, we ignore it. An example of this is chrome://new-page / about:blank.
     if (request.receiveResponse && !timing && !isMemoryCached) {
       continue;
@@ -480,25 +534,8 @@ export async function finalize(): Promise<void> {
           tid: finalSendRequest.tid,
         });
 
-    const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, parsedUrl.host, () => {
-      return {
-        renderBlocking: [],
-        nonRenderBlocking: [],
-        all: [],
-      };
-    });
-
-    // For ease of rendering we sometimes want to differentiate between
-    // render-blocking and non-render-blocking, so we divide the data here.
-    if (!Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(networkEvent)) {
-      requests.nonRenderBlocking.push(networkEvent);
-    } else {
-      requests.renderBlocking.push(networkEvent);
-    }
-
     // However, there are also times where we just want to loop through all
     // the captured requests, so here we store all of them together.
-    requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
 
@@ -524,13 +561,13 @@ export async function finalize(): Promise<void> {
       }
     }
   }
+
   finalizeWebSocketData();
 }
 
 export function data(): NetworkRequestData {
   return {
     byId: requestsById,
-    byOrigin: requestsByOrigin,
     byTime: requestsByTime,
     eventToInitiator: eventToInitiatorMap,
     webSocket: [...webSocketData.values()],

@@ -3,12 +3,15 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import categorizedBreakpointsSidebarPaneStyles from './categorizedBreakpointsSidebarPane.css.js';
 
@@ -126,6 +129,62 @@ const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/CategorizedBre
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
+const {html, render} = Lit;
+
+interface ViewInput {
+  onFilterChanged: (ev: CustomEvent<string|null>) => void;
+}
+
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
+  render(
+      // clang-format off
+    html`
+    <devtools-toolbar jslog=${VisualLogging.toolbar()}>
+      <devtools-toolbar-input
+        type="filter"
+        @change=${input.onFilterChanged}
+        style="flex: 1;"
+        ></devtools-toolbar-input>
+    </devtools-toolbar>`,
+      // clang-format on
+      target, {host: input});
+};
+
+export class FilterToolbar extends Common.ObjectWrapper.eventMixin<FilterToolbar.EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) {
+  readonly #view: View;
+  #filterText: string|null = null;
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(false, false, element);
+    this.#view = view;
+
+    this.performUpdate();
+  }
+
+  get filterText(): string|null {
+    return this.#filterText;
+  }
+
+  override performUpdate(): void {
+    const input: ViewInput = {
+      onFilterChanged: e => {
+        this.#filterText = e.detail;
+        this.dispatchEventToListeners(FilterToolbar.Events.FILTER_CHANGED, e.detail);
+      },
+    };
+    this.#view(input, {}, this.contentElement);
+  }
+}
+
+export namespace FilterToolbar {
+  export enum Events {FILTER_CHANGED = 'filter-changed'}
+  export interface EventTypes {
+    [Events.FILTER_CHANGED]: string|null;
+  }
+}
+
 export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   readonly #categoriesTreeOutline: UI.TreeOutline.TreeOutlineInShadow;
   readonly #viewId: string;
@@ -133,10 +192,16 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
   readonly #categories: Map<SDK.CategorizedBreakpoint.Category, Item>;
   readonly #breakpoints: Map<SDK.CategorizedBreakpoint.CategorizedBreakpoint, Item>;
   #highlightedElement?: HTMLLIElement;
+  #sortedCategories: SDK.CategorizedBreakpoint.Category[];
+  protected readonly filterToolbar: FilterToolbar;
+  #expandedForFilter = new Set<SDK.CategorizedBreakpoint.Category>();
   constructor(
       breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], viewId: string,
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
     super(true);
+    this.filterToolbar = new FilterToolbar();
+    this.filterToolbar.addEventListener(FilterToolbar.Events.FILTER_CHANGED, this.#onFilterChanged.bind(this));
+    this.filterToolbar.show(this.contentElement);
     this.#categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.#categoriesTreeOutline.registerRequiredCSS(categorizedBreakpointsSidebarPaneStyles);
 
@@ -146,17 +211,17 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     this.#detailsPausedReason = detailsPausedReason;
 
     const categories = new Set(breakpoints.map(bp => bp.category()));
-    const sortedCategories = [...categories].sort((a, b) => {
+    this.#sortedCategories = [...categories].sort((a, b) => {
       const categoryA = getLocalizedCategory(a);
       const categoryB = getLocalizedCategory(b);
       return categoryA.localeCompare(categoryB, i18n.DevToolsLocale.DevToolsLocale.instance().locale);
     });
     this.#categories = new Map();
-    for (const category of sortedCategories) {
+    for (const category of this.#sortedCategories) {
       this.createCategory(category);
     }
-    if (sortedCategories.length > 0) {
-      const firstCategory = this.#categories.get(sortedCategories[0]);
+    if (this.#sortedCategories.length > 0) {
+      const firstCategory = this.#categories.get(this.#sortedCategories[0]);
       if (firstCategory) {
         firstCategory.element.select();
       }
@@ -172,6 +237,8 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DebuggerModel.DebuggerModel, SDK.DebuggerModel.Events.DebuggerResumed, this.update, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, this.update, this);
+
+    this.populate();
   }
 
   get categories(): Map<SDK.CategorizedBreakpoint.Category, Item> {
@@ -180,6 +247,10 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
 
   get breakpoints(): Map<SDK.CategorizedBreakpoint.CategorizedBreakpoint, Item> {
     return this.#breakpoints;
+  }
+
+  protected get treeOutline(): UI.TreeOutline.TreeOutline {
+    return this.#categoriesTreeOutline;
   }
 
   override focus(): void {
@@ -212,9 +283,8 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     });
 
     UI.ARIAUtils.setChecked(treeElement.listItemElement, false);
-    this.#categoriesTreeOutline.appendChild(treeElement);
 
-    this.#categories.set(name, {element: treeElement, checkbox: labelNode});
+    this.#categories.set(name, {element: treeElement, checkbox: labelNode, category: name});
   }
 
   protected createBreakpoint(breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint): void {
@@ -240,10 +310,8 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     treeElement.listItemElement.createChild('div', 'breakpoint-hit-marker');
     const category = this.#categories.get(breakpoint.category());
     if (category) {
-      category.element.appendChild(treeElement);
+      this.#breakpoints.set(breakpoint, {element: treeElement, checkbox: labelNode, category: category.category});
     }
-    // Better to return that to produce a side-effect
-    this.#breakpoints.set(breakpoint, {element: treeElement, checkbox: labelNode});
   }
 
   protected getBreakpointFromPausedDetails(_details: SDK.DebuggerModel.DebuggerPausedDetails):
@@ -273,12 +341,54 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     const category = this.#categories.get(breakpoint.category());
     if (category) {
       category.element.expand();
+      this.#expandedForFilter.delete(category.category);
     }
     const matchingBreakpoint = this.#breakpoints.get(breakpoint);
     if (matchingBreakpoint) {
       this.#highlightedElement = matchingBreakpoint.element.listItemElement;
       UI.ARIAUtils.setDescription(this.#highlightedElement, i18nString(UIStrings.breakpointHit));
       this.#highlightedElement.classList.add('breakpoint-hit');
+    }
+
+    this.populate(this.filterToolbar.filterText);
+  }
+
+  #onFilterChanged(e: Common.EventTarget.EventTargetEvent<string|null>): void {
+    this.populate(e.data);
+  }
+
+  protected populate(filterText: string|null = null): void {
+    this.#categoriesTreeOutline.removeChildren();
+    for (const category of this.#sortedCategories) {
+      this.categories.get(category)?.element.removeChildren();
+    }
+    const nonEmptyCategories = new Set<SDK.CategorizedBreakpoint.Category>();
+    for (const [breakpoint, item] of this.#breakpoints) {
+      if (!filterText || breakpoint.name.match(filterText) ||
+          item.element.listItemElement === this.#highlightedElement) {
+        const categoryItem = this.categories.get(breakpoint.category());
+        if (!categoryItem) {
+          continue;
+        }
+        if (!nonEmptyCategories.has(breakpoint.category())) {
+          nonEmptyCategories.add(breakpoint.category());
+        }
+        categoryItem.element.appendChild(item.element);
+      }
+    }
+
+    for (const category of this.#sortedCategories) {
+      if (nonEmptyCategories.has(category)) {
+        const treeElement = (this.categories.get(category) as Item).element;
+        this.#categoriesTreeOutline.appendChild(treeElement);
+        if (filterText && !treeElement.expanded) {
+          this.#expandedForFilter.add(category);
+          treeElement.expand();
+        } else if (!filterText && this.#expandedForFilter.has(category)) {
+          this.#expandedForFilter.delete(category);
+          treeElement.collapse();
+        }
+      }
     }
   }
 
@@ -346,6 +456,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
 export interface Item {
   element: UI.TreeOutline.TreeElement;
   checkbox: UI.UIUtils.CheckboxLabel;
+  category: SDK.CategorizedBreakpoint.Category;
 }
 
 const LOCALIZED_CATEGORIES: Record<SDK.CategorizedBreakpoint.Category, () => Platform.UIString.LocalizedString> = {

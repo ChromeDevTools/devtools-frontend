@@ -199,6 +199,17 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.includeThirdPartyCookiesSetting =
         Common.Settings.Settings.instance().createSetting('clear-storage-include-third-party-cookies', false);
 
+    const clearButtonSection = this.reportView.appendSection('', 'clear-storage-button').appendRow();
+    this.clearButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.clearSiteData), this.clear.bind(this), {jslogContext: 'storage.clear-site-data'});
+    this.clearButton.id = 'storage-view-clear-button';
+    clearButtonSection.appendChild(this.clearButton);
+
+    const includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
+        i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting);
+    includeThirdPartyCookiesCheckbox.classList.add('include-third-party-cookies');
+    clearButtonSection.appendChild(includeThirdPartyCookiesCheckbox);
+
     const quota = this.reportView.appendSection(i18nString(UIStrings.usage));
     quota.element.setAttribute('jslog', `${VisualLogging.section('usage')}`);
     this.quotaRow = quota.appendSelectableRow();
@@ -242,17 +253,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     const errorMessageRow = quota.appendRow();
     this.quotaOverrideErrorMessage = errorMessageRow.createChild('div', 'quota-override-error');
-
-    const clearButtonSection = this.reportView.appendSection('', 'clear-storage-button').appendRow();
-    this.clearButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.clearSiteData), this.clear.bind(this), {jslogContext: 'storage.clear-site-data'});
-    this.clearButton.id = 'storage-view-clear-button';
-    clearButtonSection.appendChild(this.clearButton);
-
-    const includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting);
-    includeThirdPartyCookiesCheckbox.classList.add('include-third-party-cookies');
-    clearButtonSection.appendChild(includeThirdPartyCookiesCheckbox);
 
     const application = this.reportView.appendSection(i18nString(UIStrings.application));
     application.element.setAttribute('jslog', `${VisualLogging.section('application')}`);

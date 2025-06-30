@@ -371,6 +371,11 @@ export class JavaScriptFormatter {
         return 'sts';
       }
       return 't';
+    } else if (nodeType === 'MemberExpression') {
+      if (node.object.type === 'Literal' && typeof (node.object.value) === 'number') {
+        return 'st';
+      }
+      return 't';
     }
     return AT.keyword(token) && !AT.keyword(token, 'this') ? 'ts' : 't';
   }

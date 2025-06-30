@@ -3,10 +3,7 @@
 // found in the LICENSE file.
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
-import {
-  click,
-  waitFor,
-} from '../../shared/helper.js';
+import {setCheckBox} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 export async function openPanelViaMoreTools(panelTitle: string, frontend?: DevToolsPage) {
@@ -89,10 +86,6 @@ export const setIgnoreListPattern =
 
 export const toggleIgnoreListing = async (enable: boolean) => {
   await openSettingsTab('Ignore list');
-  const enabledPattern = '.ignore-list-settings:not(.ignore-listing-disabled)';
-  const disabledPattern = '.ignore-list-settings.ignore-listing-disabled';
-  await waitFor(enable ? disabledPattern : enabledPattern);
-  await click('[title="Enable ignore listing"]');
-  await waitFor(enable ? enabledPattern : disabledPattern);
+  await setCheckBox('[title="Enable ignore listing"]', enable);
   await closeSettings();
 };

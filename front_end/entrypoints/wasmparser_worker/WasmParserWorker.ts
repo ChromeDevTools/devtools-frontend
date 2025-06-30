@@ -40,7 +40,7 @@ export function dissambleWASM(
     const dataBuffer = Common.Base64.decode(params.content);
 
     let parser: WasmParser.WasmParser.BinaryReader = new WasmParser.WasmParser.BinaryReader();
-    parser.setData(dataBuffer, 0, dataBuffer.byteLength);
+    parser.setData(dataBuffer.buffer, 0, dataBuffer.byteLength);
     const nameGenerator = new WasmParser.WasmDis.DevToolsNameGenerator();
     nameGenerator.read(parser);
 

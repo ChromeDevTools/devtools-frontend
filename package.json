@@ -30,7 +30,7 @@
     "rdb": "rdb stream -new -realm chromium:public --",
     "start": "vpython3 third_party/node/node.py --output scripts/run_start.mjs",
     "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",
-    "watch": "vpython3 third_party/node/node.py --output scripts/watch_build.js",
+    "watch": "npm run build -- --watch",
     "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"
   },
   "devDependencies": {

@@ -284,7 +284,7 @@ async function computeBuildTargetsForFiles(target, filenames) {
       filenames = filenames.map(filename => path.join('third_party', 'devtools-frontend', 'src', filename));
     }
     const gnArgs = await gnArgsForTarget(target);
-    if (gnArgs.get('is_debug') === 'true') {
+    if (gnArgs.get('devtools_bundle') === 'false') {
       try {
         const gnRefs = (await Promise.all(filenames.map(filename => gnRefsForTarget(target, filename)))).flat();
         if (gnRefs.length) {

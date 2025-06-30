@@ -2864,6 +2864,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   static async handleExternalRecordRequest(): Promise<{response: string, devToolsLogs: object[]}> {
+    void VisualLogging.logFunctionCall('timeline.record-reload', 'external');
     Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
 
     const panelInstance = TimelinePanel.instance();

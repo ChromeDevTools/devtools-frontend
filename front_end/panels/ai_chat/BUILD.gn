@@ -77,6 +77,9 @@ devtools_module("ai_chat") {
     "common/log.ts",
     "common/context.ts",
     "common/page.ts",
+    "tracing/TracingProvider.ts",
+    "tracing/LangfuseProvider.ts",
+    "tracing/TracingConfig.ts",
   ]
 
   deps = [
@@ -158,6 +161,9 @@ _ai_chat_sources = [
     "common/log.ts",
     "common/context.ts",
     "common/page.ts",
+    "tracing/TracingProvider.ts",
+    "tracing/LangfuseProvider.ts",
+    "tracing/TracingConfig.ts",
 ]
 
 # Construct the expected JS output paths for the metadata

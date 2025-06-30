@@ -53,6 +53,34 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
   name = 'critique_tool';
   description = 'Evaluates if finalresponse satisfies the user\'s requirements and provides feedback if needed.';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   /**
    * Helper method to detect provider from model name
    */
@@ -91,6 +119,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
    * Execute the critique agent
    */
   async execute(args: CritiqueToolArgs): Promise<CritiqueToolResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.debug('Executing with args', args);
     const { userInput, finalResponse, reasoning } = args;
     const agentService = AgentService.getInstance();

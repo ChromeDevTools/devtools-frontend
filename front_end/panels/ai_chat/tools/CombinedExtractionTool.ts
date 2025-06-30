@@ -51,6 +51,34 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
   name = 'navigate_url_and_extraction';
   description = 'Navigates to a URL and optionally extracts structured data based on a schema and/or converts the page content to Markdown.';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   schema = {
     type: 'object',
     properties: {
@@ -78,6 +106,7 @@ export class CombinedExtractionTool implements Tool<CombinedExtractionArgs, Comb
    * Execute the combined extraction
    */
   async execute(args: CombinedExtractionArgs): Promise<CombinedExtractionResult | ErrorResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.info('Executing with args', { args });
     const { url, schema, markdownResponse, reasoning, extractionInstruction } = args;
     const agentService = AgentService.getInstance();

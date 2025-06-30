@@ -18,6 +18,8 @@ import { createLogger } from './Logger.js';
 import {type AgentState, createInitialState, createUserMessage} from './State.js';
 import type {CompiledGraph} from './Types.js';
 import { LLMClient } from '../LLM/LLMClient.js';
+import { createTracingProvider } from '../tracing/TracingConfig.js';
+import type { TracingProvider } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('AgentService');
 
@@ -41,9 +43,15 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   #apiKey: string|null = null;
   #isInitialized = false;
   #runningGraphStatePromise?: AsyncGenerator<AgentState, AgentState, void>;
+  #tracingProvider!: TracingProvider;
+  #sessionId: string;
 
   constructor() {
     super();
+    
+    // Initialize tracing
+    this.#sessionId = this.generateSessionId();
+    this.#initializeTracing();
 
     // Initialize with a welcome message
     this.#state = createInitialState();
@@ -175,6 +183,46 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
   }
 
   /**
+   * Generate a unique session ID
+   */
+  private generateSessionId(): string {
+    return `session-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  }
+
+  /**
+   * Generate a unique trace ID
+   */
+  private generateTraceId(): string {
+    return `trace-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+  }
+
+  /**
+   * Initialize or reinitialize the tracing provider
+   */
+  async #initializeTracing(): Promise<void> {
+    this.#tracingProvider = createTracingProvider();
+    
+    try {
+      await this.#tracingProvider.initialize();
+      await this.#tracingProvider.createSession(this.#sessionId, {
+        source: 'devtools-ai-chat',
+        startTime: new Date().toISOString()
+      });
+      logger.info('Tracing initialized successfully');
+    } catch (error) {
+      logger.error('Failed to initialize tracing', error);
+    }
+  }
+
+  /**
+   * Refresh the tracing provider (called when configuration changes)
+   */
+  async refreshTracingProvider(): Promise<void> {
+    logger.info('Refreshing tracing provider due to configuration change');
+    await this.#initializeTracing();
+  }
+
+  /**
    * Sends a message to the AI agent
    */
   async sendMessage(text: string, imageInput?: ImageInputData, selectedAgentType?: string | null): Promise<ChatMessage> {
@@ -202,17 +250,87 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
     const currentPageUrl = await this.#getCurrentPageUrl();
     const currentPageTitle = await this.#getCurrentPageTitle();
 
+    // Create trace for this interaction
+    const traceId = this.generateTraceId();
+    logger.debug('Creating trace for user message', {
+      traceId,
+      sessionId: this.#sessionId,
+      tracingEnabled: this.#tracingProvider.isEnabled()
+    });
+    
+    await this.#tracingProvider.createTrace(
+      traceId,
+      this.#sessionId,
+      'User Message',
+      { text, imageInput },
+      {
+        selectedAgentType,
+        currentPageUrl,
+        currentPageTitle
+      },
+      undefined, // userId
+      [selectedAgentType || 'default'].filter(Boolean)
+    );
+
+    console.warn('Trace created for user message', {
+      traceId,
+      sessionId: this.#sessionId,
+      selectedAgentType,
+      currentPageUrl,
+      currentPageTitle,
+      messageCount: this.#state.messages.length
+    });
+
+    // Create user input event
+    await this.#tracingProvider.createObservation({
+      id: `event-user-input-${Date.now()}`,
+      name: 'User Input Received',
+      type: 'event',
+      startTime: new Date(),
+      input: { 
+        text, 
+        hasImage: !!imageInput,
+        messageLength: text.length,
+        currentUrl: currentPageUrl
+      },
+      metadata: {
+        selectedAgentType,
+        currentPageUrl,
+        currentPageTitle,
+        messageCount: this.#state.messages.length
+      }
+    }, traceId);
+
     try {
       // Create initial state for this run
       const state: AgentState = {
         messages: this.#state.messages,
-        context: {},
+        context: {
+          tracingContext: {
+            sessionId: this.#sessionId,
+            traceId,
+            parentObservationId: undefined
+          }
+        },
         selectedAgentType: selectedAgentType ?? null, // Set the agent type for this run
         currentPageUrl,
         currentPageTitle,
       };
 
+      console.warn('Going to invoke graph', {
+        traceId,
+        sessionId: this.#sessionId,
+        currentPageUrl,
+        currentPageTitle,
+        messageCount: this.#state.messages.length
+      });
+
       // Run the agent graph on the state
+      console.warn('[AGENT SERVICE DEBUG] About to invoke graph with state:', {
+        traceId,
+        messagesCount: state.messages.length,
+        hasTracingContext: !!state.context?.tracingContext
+      });
       this.#runningGraphStatePromise = this.#graph?.invoke(state);
 
       // Wait for the result
@@ -235,6 +353,30 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
           throw new Error('No state returned from agent. Please try again.');
       }
 
+      // Create success completion event
+      await this.#tracingProvider.createObservation({
+        id: `event-completion-${Date.now()}`,
+        name: 'Agent Response Complete',
+        type: 'event',
+        startTime: new Date(),
+        output: {
+          messageType: finalMessage.entity,
+          action: 'action' in finalMessage ? finalMessage.action : 'unknown',
+          isFinalAnswer: 'isFinalAnswer' in finalMessage ? finalMessage.isFinalAnswer : false
+        },
+        metadata: {
+          totalMessages: this.#state.messages.length,
+          responseType: 'success'
+        }
+      }, traceId);
+
+      // Finalize trace with the final output
+      await this.#tracingProvider.finalizeTrace(
+        traceId,
+        finalMessage,
+        { status: 'success' }
+      );
+
       // Return the most recent message (could be final answer, tool call, or error)
       return finalMessage;
 
@@ -255,6 +397,26 @@ export class AgentService extends Common.ObjectWrapper.ObjectWrapper<{
 
       // Notify listeners of message update
       this.dispatchEventToListeners(Events.MESSAGES_CHANGED, [...this.#state.messages]);
+
+      // Create error completion event
+      await this.#tracingProvider.createObservation({
+        id: `event-error-${Date.now()}`,
+        name: 'Agent Error',
+        type: 'event',
+        startTime: new Date(),
+        error: error instanceof Error ? error.message : String(error),
+        metadata: {
+          totalMessages: this.#state.messages.length,
+          responseType: 'error'
+        }
+      }, traceId);
+
+      // Finalize trace with error
+      await this.#tracingProvider.finalizeTrace(
+        traceId,
+        errorMessage,
+        { status: 'error', error: error instanceof Error ? error.message : String(error) }
+      );
 
       return errorMessage;
     }

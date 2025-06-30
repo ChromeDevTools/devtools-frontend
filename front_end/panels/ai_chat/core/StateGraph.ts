@@ -4,23 +4,27 @@
 
 import { createLogger } from './Logger.js';
 import type { Runnable } from './Types.js';
+import { createTracingProvider } from '../tracing/TracingConfig.js';
+import type { TracingProvider } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('StateGraph');
 
 // Special marker for graph termination in conditional edges
 const END_NODE_MARKER = '__end__';
 
-export class StateGraph<TState> {
+export class StateGraph<TState extends { context?: { tracingContext?: any }, messages?: any[] }> {
   private nodes: Map<string, Runnable<TState, TState>>;
   private conditionalEdges: Map<string, { condition: (state: TState) => string, targetMap: Map<string, string> }>;
   private entryPoint: string;
   private name: string;
+  private tracingProvider: TracingProvider;
 
   constructor(config: { name: string }) {
     this.nodes = new Map();
     this.conditionalEdges = new Map();
     this.entryPoint = 'start';
     this.name = config.name;
+    this.tracingProvider = createTracingProvider();
   }
 
   addNode(name: string, node: Runnable<TState, TState>): void {
@@ -46,6 +50,9 @@ export class StateGraph<TState> {
   }
 
   async *invoke(state: TState): AsyncGenerator<TState, TState, void> {
+    logger.debug(`Starting graph execution from entry point: ${this.entryPoint}`);
+    console.warn(`Graph "${this.name}" started with entry point "${this.entryPoint}"`);
+
     let currentState = state;
     let currentNodeName = this.entryPoint;
     let step = 0;
@@ -59,13 +66,85 @@ export class StateGraph<TState> {
         continue;
       }
 
+      // Create span for node execution
+      const tracingContext = currentState.context?.tracingContext;
+      let spanId: string | undefined;
+      const spanStartTime = new Date();
+
+      if (tracingContext?.traceId) {
+        spanId = `span-${currentNodeName}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        
+        // Create a start event for the node
+        await this.tracingProvider.createObservation({
+          id: `event-start-${currentNodeName}-${Date.now()}`,
+          name: `Start Node: ${currentNodeName}`,
+          type: 'event',
+          startTime: spanStartTime,
+          parentObservationId: tracingContext.parentObservationId,
+          input: {
+            nodeType: currentNodeName,
+            graphName: this.name,
+            step,
+            messagesCount: currentState.messages?.length || 0
+          },
+          metadata: {
+            nodeType: currentNodeName,
+            graphName: this.name,
+            step,
+            phase: 'start'
+          }
+        }, tracingContext.traceId);
+      }
+
       try {
         // Invoke the *node* which is still a Promise-based Runnable
         currentState = await node.invoke(currentState);
+        
+        // Create completion event for the node
+        if (spanId && tracingContext?.traceId) {
+          await this.tracingProvider.createObservation({
+            id: `event-complete-${currentNodeName}-${Date.now()}`,
+            name: `Complete Node: ${currentNodeName}`,
+            type: 'event',
+            startTime: new Date(),
+            parentObservationId: tracingContext.parentObservationId,
+            output: { 
+              success: true,
+              duration: Date.now() - spanStartTime.getTime(),
+              messagesAfter: currentState.messages?.length || 0
+            },
+            metadata: {
+              nodeType: currentNodeName,
+              graphName: this.name,
+              step,
+              phase: 'complete'
+            }
+          }, tracingContext.traceId);
+        }
+
         // Yield the current state after node invocation
         yield currentState;
       } catch (error) {
         logger.error(`Error invoking node "${currentNodeName}":`, error);
+        
+        // Create error event for the node
+        if (spanId && tracingContext?.traceId) {
+          await this.tracingProvider.createObservation({
+            id: `event-error-${currentNodeName}-${Date.now()}`,
+            name: `Error Node: ${currentNodeName}`,
+            type: 'event',
+            startTime: new Date(),
+            parentObservationId: tracingContext.parentObservationId,
+            error: error instanceof Error ? error.message : String(error),
+            metadata: {
+              nodeType: currentNodeName,
+              graphName: this.name,
+              step,
+              phase: 'error'
+            }
+          }, tracingContext.traceId);
+        }
+
         currentNodeName = END_NODE_MARKER;
         break;
       }

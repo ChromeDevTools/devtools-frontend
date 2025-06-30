@@ -167,6 +167,49 @@ export class LLMRetryManager {
   }
 
   /**
+   * Creates a tracing observation for retry attempts and errors
+   */
+  private async createRetryTracingObservation(
+    error: Error, 
+    errorType: LLMErrorType, 
+    attempt: number, 
+    willRetry: boolean, 
+    context?: string
+  ): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const tracingContext = getCurrentTracingContext();
+      if (tracingContext) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `error-retry-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: willRetry ? `LLM Error - Retry Attempt ${attempt}` : `LLM Error - Final Failure`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            errorType,
+            errorMessage: error.message,
+            attempt,
+            willRetry,
+            context: context || 'unknown_operation'
+          },
+          error: willRetry ? undefined : error.message, // Only mark as error if not retrying
+          metadata: {
+            errorType,
+            attempt,
+            willRetry,
+            retryable: LLMErrorClassifier.shouldRetry(errorType),
+            operation: context
+          }
+        }, tracingContext.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail the main operation due to tracing errors
+      logger.debug('Failed to create retry tracing observation:', tracingError);
+    }
+  }
+
+  /**
    * Execute an operation with retry logic
    */
   async executeWithRetry<T>(
@@ -209,6 +252,10 @@ export class LLMRetryManager {
           if (this.config.enableLogging) {
             logger.info(`Not retrying ${errorType} error`);
           }
+          
+          // Create tracing observation for non-retryable error
+          await this.createRetryTracingObservation(lastError, errorType, attempt, false, options.context);
+          
           throw lastError;
         }
 
@@ -220,6 +267,10 @@ export class LLMRetryManager {
           if (this.config.enableLogging) {
             logger.error(`Max retries (${retryConfig.maxRetries}) exceeded for ${errorType}`);
           }
+          
+          // Create tracing observation for max retries exceeded
+          await this.createRetryTracingObservation(lastError, errorType, attempt, false, options.context);
+          
           throw lastError;
         }
 
@@ -228,6 +279,10 @@ export class LLMRetryManager {
           if (this.config.enableLogging) {
             logger.error(`Total retry time limit (${this.config.maxTotalTimeMs}ms) exceeded`);
           }
+          
+          // Create tracing observation for timeout
+          await this.createRetryTracingObservation(lastError, errorType, attempt, false, options.context);
+          
           throw lastError;
         }
 
@@ -237,6 +292,9 @@ export class LLMRetryManager {
         if (this.config.enableLogging) {
           logger.warn(`Retrying after ${delayMs}ms (attempt ${attempt + 1}/${retryConfig.maxRetries + 1}) for ${errorType}`);
         }
+
+        // Create tracing observation for retry attempt
+        await this.createRetryTracingObservation(lastError, errorType, attempt, true, options.context);
 
         // Call retry callback if provided
         if (this.onRetry) {

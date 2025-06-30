@@ -51,6 +51,12 @@ export interface DevToolsContext {
   needsFollowUp?: boolean;
   // Counter for tracking the number of intermediate steps in the current chain
   intermediateStepsCount?: number;
+  // Tracing context for distributed tracing
+  tracingContext?: {
+    sessionId: string;
+    traceId: string;
+    parentObservationId?: string;
+  };
 }
 
 /**

@@ -72,7 +72,9 @@ export class GenericToolEvaluator {
 
         // 2. Execute the tool with the input - wrapped with error handling
         const toolResult = await ErrorHandlingUtils.withErrorHandling(
-          async () => await tool.execute(testCase.input),
+          async () => {
+            return await tool.execute(testCase.input);
+          },
           (error) => ({ error: ErrorHandlingUtils.formatUserFriendlyError(error, 'Tool execution failed') }),
           logger,
           `GenericToolEvaluator.toolExecution:${testCase.tool}`

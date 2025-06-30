@@ -75,8 +75,43 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
   /**
    * Execute the schema-based extraction
    */
+  /**
+   * Helper function to create tracing observation for tool execution
+   */
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   async execute(args: SchemaExtractionArgs): Promise<SchemaExtractionResult> {
     logger.debug('Executing with args', args);
+    
+    // Add tracing observation
+    await this.createToolTracingObservation(this.name, args);
+    
     const { schema, instruction, reasoning } = args;
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();

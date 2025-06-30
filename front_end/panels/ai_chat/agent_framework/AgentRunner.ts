@@ -8,6 +8,8 @@ import type { LLMResponse, ParsedLLMAction, LLMMessage, LLMProvider } from '../L
 import type { Tool } from '../tools/Tools.js';
 import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
 import { createLogger } from '../core/Logger.js';
+import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
+import type { TracingProvider } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('AgentRunner');
 
@@ -353,6 +355,51 @@ export class AgentRunner {
         if (parsedAction.type === 'tool_call') {
           const { name: toolName, args: toolArgs } = parsedAction;
           const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
+          
+          // Create tool-call event observation using current tracing context
+          const tracingContext = getCurrentTracingContext();
+          logger.info(`AgentRunner tool call with tracing context:`, { 
+            hasTracingContext: !!tracingContext, 
+            traceId: tracingContext?.traceId,
+            toolName,
+            agentName 
+          });
+          console.log(`[TRACING DEBUG] AgentRunner tool call with tracing context:`, { 
+            hasTracingContext: !!tracingContext, 
+            traceId: tracingContext?.traceId,
+            toolName,
+            agentName 
+          });
+          
+          if (tracingContext?.traceId) {
+            const tracingProvider = createTracingProvider();
+            try {
+              await tracingProvider.createObservation({
+                id: `event-tool-call-runner-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                name: `Tool Call (AgentRunner): ${toolName}`,
+                type: 'event',
+                startTime: new Date(),
+                parentObservationId: tracingContext.parentObservationId,
+                input: {
+                  toolName,
+                  toolArgs,
+                  toolCallId,
+                  agentName,
+                  reasoning: llmResponse.reasoning?.summary
+                },
+                metadata: {
+                  executingAgent: agentName,
+                  toolCallId,
+                  phase: 'tool_call_decision',
+                  iteration,
+                  source: 'AgentRunner'
+                }
+              }, tracingContext.traceId);
+            } catch (tracingError) {
+              logger.warn('Failed to create tool-call tracing observation:', tracingError);
+            }
+          }
+          
           newModelMessage = {
             entity: ChatMessageEntity.MODEL,
             action: 'tool',

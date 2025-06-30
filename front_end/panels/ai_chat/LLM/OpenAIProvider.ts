@@ -253,6 +253,39 @@ export class OpenAIProvider extends LLMBaseProvider {
   }
 
   /**
+   * Creates a tracing observation for API errors
+   */
+  private async createErrorTracingObservation(error: Error, payloadBody: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `error-openai-api-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: 'OpenAI API Error',
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            model: payloadBody.model,
+            endpoint: OpenAIProvider.API_ENDPOINT,
+            requestSize: JSON.stringify(payloadBody).length
+          },
+          error: error.message,
+          metadata: {
+            provider: 'openai',
+            errorType: 'api_error',
+            hasApiKey: !!this.apiKey
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail the main operation due to tracing errors
+      logger.debug('Failed to create error tracing observation:', tracingError);
+    }
+  }
+
+  /**
    * Makes a request to the OpenAI Responses API
    */
   private async makeAPIRequest(payloadBody: any): Promise<any> {
@@ -269,7 +302,12 @@ export class OpenAIProvider extends LLMBaseProvider {
       if (!response.ok) {
         const errorData = await response.json();
         logger.error('OpenAI API error:', errorData);
-        throw new Error(`OpenAI API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
+        const error = new Error(`OpenAI API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
+        
+        // Create tracing observation for API errors
+        await this.createErrorTracingObservation(error, payloadBody);
+        
+        throw error;
       }
 
       const data = await response.json();
@@ -282,6 +320,12 @@ export class OpenAIProvider extends LLMBaseProvider {
       return data;
     } catch (error) {
       logger.error('OpenAI API request failed:', error);
+      
+      // Create tracing observation for network/fetch errors
+      if (error instanceof Error) {
+        await this.createErrorTracingObservation(error, payloadBody);
+      }
+      
       throw error;
     }
   }

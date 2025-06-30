@@ -468,7 +468,8 @@ function modifiedHexValue(hexString: string, event: Event): string|null {
   return resultString;
 }
 
-export function modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number): number|null {
+export function modifiedFloatNumber(
+    number: number, event: Event, modifierMultiplier?: number, range?: {min?: number, max?: number}): number|null {
   const direction = getValueModificationDirection(event);
   if (!direction) {
     return null;
@@ -499,7 +500,13 @@ export function modifiedFloatNumber(number: number, event: Event, modifierMultip
 
   // Make the new number and constrain it to a precision of 6, this matches numbers the engine returns.
   // Use the Number constructor to forget the fixed precision, so 1.100000 will print as 1.1.
-  const result = Number((number + delta).toFixed(6));
+  let result = Number((number + delta).toFixed(6));
+  if (range?.min !== undefined) {
+    result = Math.max(result, range.min);
+  }
+  if (range?.max !== undefined) {
+    result = Math.min(result, range.max);
+  }
   if (!String(result).match(numberRegex)) {
     return null;
   }
@@ -508,7 +515,8 @@ export function modifiedFloatNumber(number: number, event: Event, modifierMultip
 
 export function createReplacementString(
     wordString: string, event: Event,
-    customNumberHandler?: ((arg0: string, arg1: number, arg2: string) => string)): string|null {
+    customNumberHandler?: ((prefix: string, number: number, suffix: string) => string),
+    stepping?: {step?: number, range?: {min?: number, max?: number}}): string|null {
   let prefix;
   let suffix;
   let number;
@@ -526,7 +534,7 @@ export function createReplacementString(
     if (matches?.length) {
       prefix = matches[1];
       suffix = matches[3];
-      number = modifiedFloatNumber(parseFloat(matches[2]), event);
+      number = modifiedFloatNumber(parseFloat(matches[2]), event, stepping?.step, stepping?.range);
       if (number !== null) {
         replacementString =
             customNumberHandler ? customNumberHandler(prefix, number, suffix) : prefix + number + suffix;

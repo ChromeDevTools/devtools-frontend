@@ -1069,7 +1069,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.innerSetColor(color, '', undefined /* colorName */, undefined /* colorFormat */, ChangeSource.Other);
   }
 
-  private get color(): Common.Color.Color {
+  get color(): Common.Color.Color {
     if (this.colorInternal) {
       return this.colorInternal;
     }
@@ -1306,9 +1306,28 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     event.preventDefault();
   }
 
+  #getValueSteppingForInput(element: HTMLInputElement): {step: number, range: {min: number, max: number}}|undefined {
+    const channel = this.color.channels[this.textValues.indexOf(element)];
+    switch (channel) {
+      case Common.Color.ColorChannel.R:
+      case Common.Color.ColorChannel.G:
+      case Common.Color.ColorChannel.B:
+        return this.color instanceof Common.Color.ColorFunction ? {step: .01, range: {min: 0, max: 1}} :
+                                                                  {step: 1, range: {min: 0, max: 255}};
+      case Common.Color.ColorChannel.ALPHA:
+      case Common.Color.ColorChannel.X:
+      case Common.Color.ColorChannel.Y:
+      case Common.Color.ColorChannel.Z:
+        return {step: .01, range: {min: 0, max: 1}};
+      default:
+        return undefined;
+    }
+  }
+
   private inputChanged(event: Event): void {
     const inputElement = event.currentTarget as HTMLInputElement;
-    const newValue = UI.UIUtils.createReplacementString(inputElement.value, event);
+    const newValue = UI.UIUtils.createReplacementString(
+        inputElement.value, event, undefined, this.#getValueSteppingForInput(inputElement));
     if (newValue) {
       inputElement.value = newValue;
       inputElement.selectionStart = 0;

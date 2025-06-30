@@ -426,38 +426,22 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
   }
 }
 
-export const enum RelativeColorChannel {
-  A = 'a',
-  ALPHA = 'alpha',
-  B = 'b',
-  C = 'c',
-  G = 'g',
-  H = 'h',
-  L = 'l',
-  R = 'r',
-  S = 's',
-  W = 'w',
-  X = 'x',
-  Y = 'y',
-  Z = 'z',
-}
-
-function isRelativeColorChannelName(channel: string): channel is RelativeColorChannel {
-  const maybeChannel = channel as RelativeColorChannel;
+function isRelativeColorChannelName(channel: string): channel is Common.Color.ColorChannel {
+  const maybeChannel = channel as Common.Color.ColorChannel;
   switch (maybeChannel) {
-    case RelativeColorChannel.A:
-    case RelativeColorChannel.ALPHA:
-    case RelativeColorChannel.B:
-    case RelativeColorChannel.C:
-    case RelativeColorChannel.G:
-    case RelativeColorChannel.H:
-    case RelativeColorChannel.L:
-    case RelativeColorChannel.R:
-    case RelativeColorChannel.S:
-    case RelativeColorChannel.W:
-    case RelativeColorChannel.X:
-    case RelativeColorChannel.Y:
-    case RelativeColorChannel.Z:
+    case Common.Color.ColorChannel.A:
+    case Common.Color.ColorChannel.ALPHA:
+    case Common.Color.ColorChannel.B:
+    case Common.Color.ColorChannel.C:
+    case Common.Color.ColorChannel.G:
+    case Common.Color.ColorChannel.H:
+    case Common.Color.ColorChannel.L:
+    case Common.Color.ColorChannel.R:
+    case Common.Color.ColorChannel.S:
+    case Common.Color.ColorChannel.W:
+    case Common.Color.ColorChannel.X:
+    case Common.Color.ColorChannel.Y:
+    case Common.Color.ColorChannel.Z:
       return true;
   }
   // This assignment catches missed values in the switch above.
@@ -466,37 +450,37 @@ function isRelativeColorChannelName(channel: string): channel is RelativeColorCh
 }
 
 export class RelativeColorChannelMatch implements Match {
-  constructor(readonly text: RelativeColorChannel, readonly node: CodeMirror.SyntaxNode) {
+  constructor(readonly text: Common.Color.ColorChannel, readonly node: CodeMirror.SyntaxNode) {
   }
 
   getColorChannelValue(relativeColor: RelativeColor): number|null {
     const color = Common.Color.parse(relativeColor.baseColor.text)?.as(relativeColor.colorSpace);
     if (color instanceof Common.Color.ColorFunction) {
       switch (this.text) {
-        case RelativeColorChannel.R:
+        case Common.Color.ColorChannel.R:
           return color.isXYZ() ? null : color.p0;
-        case RelativeColorChannel.G:
+        case Common.Color.ColorChannel.G:
           return color.isXYZ() ? null : color.p1;
-        case RelativeColorChannel.B:
+        case Common.Color.ColorChannel.B:
           return color.isXYZ() ? null : color.p2;
-        case RelativeColorChannel.X:
+        case Common.Color.ColorChannel.X:
           return color.isXYZ() ? color.p0 : null;
-        case RelativeColorChannel.Y:
+        case Common.Color.ColorChannel.Y:
           return color.isXYZ() ? color.p1 : null;
-        case RelativeColorChannel.Z:
+        case Common.Color.ColorChannel.Z:
           return color.isXYZ() ? color.p2 : null;
-        case RelativeColorChannel.ALPHA:
+        case Common.Color.ColorChannel.ALPHA:
           return color.alpha;
       }
     } else if (color instanceof Common.Color.Legacy) {
       switch (this.text) {
-        case RelativeColorChannel.R:
+        case Common.Color.ColorChannel.R:
           return color.rgba()[0];
-        case RelativeColorChannel.G:
+        case Common.Color.ColorChannel.G:
           return color.rgba()[1];
-        case RelativeColorChannel.B:
+        case Common.Color.ColorChannel.B:
           return color.rgba()[2];
-        case RelativeColorChannel.ALPHA:
+        case Common.Color.ColorChannel.ALPHA:
           return color.rgba()[3];
       }
     } else if (color && this.text in color) {

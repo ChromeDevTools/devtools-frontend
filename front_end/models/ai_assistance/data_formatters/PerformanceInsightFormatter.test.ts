@@ -22,6 +22,9 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 
       assert.isOk(insight.lcpRequest);
 
+      const lcpRequestFormatted = TraceEventFormatter.networkRequest(
+          insight.lcpRequest, parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
+
       const expected = `## Insight Title: LCP breakdown
 
 ## Insight Summary:
@@ -30,6 +33,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
 The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
+${lcpRequestFormatted}
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
@@ -148,6 +152,8 @@ Here is a list of the network requests that were render blocking on this page an
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
+      const lcpRequestFormatted = TraceEventFormatter.networkRequest(
+          insight.lcpRequest, parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
 
       const expected = `## Insight Title: LCP request discovery
 
@@ -162,6 +168,7 @@ It is important that all of these checks pass to minimize the delay between the 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
 The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
+${lcpRequestFormatted}
 
 The result of the checks for this insight are:
 - fetchpriority=high should be applied: FAILED

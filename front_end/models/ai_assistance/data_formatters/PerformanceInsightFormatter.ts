@@ -84,6 +84,9 @@ export class PerformanceInsightFormatter {
     ];
     if (lcpRequest) {
       parts.push(`The LCP resource was fetched from \`${lcpRequest.args.data.url}\`.`);
+      const request = TraceEventFormatter.networkRequest(
+          lcpRequest, this.#parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
+      parts.push(request);
     } else {
       parts.push('The LCP is text based and was not fetched from the network.');
     }

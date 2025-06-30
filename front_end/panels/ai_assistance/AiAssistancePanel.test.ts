@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
@@ -1479,8 +1478,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('handleExternalRequest', () => {
     const explanation = 'I need more information';
-    let evaluateStub: sinon.SinonStub;
-    let callFunctionOnStub: sinon.SinonStub;
+    let performSearchStub: sinon.SinonStub;
 
     beforeEach(() => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
@@ -1491,20 +1489,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       const target = createTarget();
-      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-      assert.exists(runtimeModel);
-      runtimeModel.executionContextCreated({
-        id: 1 as Protocol.Runtime.ExecutionContextId,
-        origin: urlString`http://www.example.com`,
-        name: 'name',
-        uniqueId: 'uniqueId',
-      });
-      const executionContext = runtimeModel.defaultExecutionContext();
-      assert.isNotNull(executionContext);
-      evaluateStub = sinon.stub().returns({object: {objectId: 'some-id'}});
-      executionContext.evaluate = evaluateStub;
-      callFunctionOnStub = sinon.stub().returns({object: {}});
-      executionContext.callFunctionOn = callFunctionOnStub;
+      performSearchStub = sinon.stub(target.domAgent(), 'invoke_performSearch')
+                              .resolves({searchId: 'uniqueId', resultCount: 0, getError: () => undefined});
     });
 
     it('can be blocked by a setting', async () => {
@@ -1576,9 +1562,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const response = await panel.handleExternalRequest(
           'Please help me debug this problem', AiAssistanceModel.ConversationType.STYLING, 'h1');
       assert.strictEqual(response.response, explanation);
-      sinon.assert.calledOnce(evaluateStub);
-      sinon.assert.calledOnce(callFunctionOnStub);
-      assert.strictEqual(callFunctionOnStub.getCall(0).args[0].arguments[1].value, 'h1');
+      sinon.assert.calledOnce(performSearchStub);
+      assert.strictEqual(performSearchStub.getCall(0).args[0].query, 'h1');
     });
 
     it('throws an error if no answer could be generated', async () => {

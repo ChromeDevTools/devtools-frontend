@@ -439,42 +439,25 @@ function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiA
   throw new Error('Provided agent does not have a corresponding conversation type');
 }
 
-// TODO(crbug.com/416134018): Add piercing of shadow roots and handling of child frames
-async function inspectElementBySelector(selector: string): Promise<void> {
-  const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-  const runtimeModel = primaryPageTarget?.model(SDK.RuntimeModel.RuntimeModel);
-  const executionContext = runtimeModel?.defaultExecutionContext();
-  if (!executionContext) {
-    throw new Error('Could not find execution context for executing code');
+async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.DOMNode|null> {
+  const whitespaceTrimmedQuery = selector.trim();
+  if (!whitespaceTrimmedQuery.length) {
+    return null;
   }
 
-  // `inspect()` is not available in `callFunctionOn()`, but it is in `evaluate()`.
-  // We therefore get a reference to `inspect()` via `evaluate()` and then pass
-  // this reference as an argument to `callFunctionOn()`.
-  const inspectReference = await executionContext.evaluate(
-      {
-        expression: 'window.inspect',
-        includeCommandLineAPI: true,
-        returnByValue: false,
-      },
-      /* userGesture */ false,
-      /* awaitPromise */ false,
-  );
-  if ('error' in inspectReference || inspectReference.exceptionDetails) {
-    throw new Error('Cannot find \'window.inspect\'');
-  }
+  const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get();
+  const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
 
-  const inspectResult = await executionContext.callFunctionOn({
-    functionDeclaration: 'async function (inspect, selector) { return inspect(document.querySelector(selector)); }',
-    arguments: [{objectId: inspectReference.object.objectId}, {value: selector}],
-    userGesture: false,
-    awaitPromise: true,
-    returnByValue: false,
-  });
-  if ('error' in inspectResult || inspectResult.exceptionDetails ||
-      SDK.RemoteObject.RemoteObject.isNullOrUndefined(inspectResult.object)) {
-    throw new Error(`Could not find an element matching the '${selector}' selector. Please try a different selector.`);
+  const performSearchPromises =
+      domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
+  const resultCounts = await Promise.all(performSearchPromises);
+
+  // If the selector matches multiple times, this returns the first match.
+  const index = resultCounts.findIndex(value => value > 0);
+  if (index >= 0) {
+    return await domModels[index].searchResult(0);
   }
+  return null;
 }
 
 let panelInstance: AiAssistancePanel;
@@ -1691,11 +1674,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     this.#historicalConversations.push(externalConversation);
 
-    await inspectElementBySelector(selector);
+    const node = await inspectElementBySelector(selector);
+    if (node) {
+      await node.setAsInspectedNode();
+    }
     const runner = stylingAgent.run(
         prompt,
         {
-          selected: this.#getConversationContext(externalConversation),
+          selected: createNodeContext(node),
         },
     );
     const devToolsLogs: object[] = [];

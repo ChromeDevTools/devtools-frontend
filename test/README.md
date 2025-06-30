@@ -12,7 +12,6 @@ The `devtools-frontend` repository contains a variety of test suites, check
 out the individual guides below:
 
 * [Unit Testing Guide](./unit/README.md)
-* [Interactions Testing Guide](./interactions/README.md)
 * [E2E Testing Guide](./e2e/README.md)
 * [Performance Testing Guide](./perf/README.md)
 
@@ -162,4 +161,3 @@ affected() {
 }
 
 ```
-

@@ -1,3 +1,14 @@
+Name: Dependencies sourced from the upstream `chromium` repository
+URL: https://source.chromium.org/chromium/chromium/src/+/main:components/variations/proto/devtools/
+Revision: 7a28f476f92c67dbcf4202ca1579f2aeaece62a4
+Update Mechanism: Manual (crbug.com/428069060)
+License: BSD-3-Clause
+License File: LICENSE
+Shipped: yes
+Security Critical: yes
+License Android Compatible: yes
+
+Description:
 This subdirectory is reserved for dependencies that are part of the upstream `chromium` repository.
 
 To update these dependencies, run this from the root of the `devtools-frontend` repository:
@@ -5,3 +16,6 @@ To update these dependencies, run this from the root of the `devtools-frontend` 
 ```sh
 scripts/deps/roll_deps.py /path/to/chromium/src .
 ```
+
+Local Modifications:
+None

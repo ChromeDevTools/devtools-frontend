@@ -831,8 +831,8 @@ export class CSSMatchedStyles {
     return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
   }
 
-  resolveProperty(name: string, startingPoint: CSSStyleDeclaration): CSSProperty|null {
-    return this.#styleToDOMCascade.get(startingPoint)?.resolveProperty(name, startingPoint) ?? null;
+  resolveProperty(name: string, ownerStyle: CSSStyleDeclaration): CSSProperty|null {
+    return this.#styleToDOMCascade.get(ownerStyle)?.resolveProperty(name, ownerStyle) ?? null;
   }
 
   resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): CSSValueSource|null {
@@ -1059,15 +1059,6 @@ function* forEach<T>(array: T[], startAfter?: T): Generator<T> {
   }
 }
 
-function* forEachInclusive<T>(array: T[], startAt?: T): Generator<T> {
-  if (startAt === undefined || array.includes(startAt)) {
-    if (startAt !== undefined) {
-      yield startAt;
-    }
-    yield* forEach(array, startAt);
-  }
-}
-
 class DOMInheritanceCascade {
   readonly #propertiesState = new Map<CSSProperty, PropertyState>();
   readonly #availableCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|null>>();
@@ -1116,20 +1107,20 @@ class DOMInheritanceCascade {
     return null;
   }
 
-  resolveProperty(name: string, startAt: CSSStyleDeclaration): CSSProperty|null {
-    const cascade = this.#styleToNodeCascade.get(startAt);
+  resolveProperty(name: string, ownerStyle: CSSStyleDeclaration): CSSProperty|null {
+    const cascade = this.#styleToNodeCascade.get(ownerStyle);
     if (!cascade) {
       return null;
     }
 
-    for (const style of forEachInclusive(cascade.styles, startAt)) {
+    for (const style of cascade.styles) {
       const candidate = style.allProperties().findLast(candidate => candidate.name === name);
       if (candidate) {
         return candidate;
       }
     }
 
-    return this.#findPropertyInParentCascadeIfInherited({name, ownerStyle: startAt});
+    return this.#findPropertyInParentCascadeIfInherited({name, ownerStyle});
   }
 
   #findPropertyInParentCascade(property: {name: string, ownerStyle: CSSStyleDeclaration}): CSSProperty|null {

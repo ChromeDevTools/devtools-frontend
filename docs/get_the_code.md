@@ -193,7 +193,7 @@ npm start -- -u
 Just like with Chrome itself, you can also control the set of enabled and disabled features using
 
 ```bash
-npm start -- --enable-features=DevToolsAutomaticFileSystems
+npm start -- --enable-features=DevToolsWellKnown
 npm start -- --disable-features=DevToolsWellKnown --enable-features=DevToolsFreestyler:multimodal/true
 ```
 

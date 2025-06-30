@@ -31,7 +31,6 @@ describe('Persistence', () => {
       const {AutomaticFileSystemManager} = Persistence.AutomaticFileSystemManager;
       const root = '/path/to/bar' as Platform.DevToolsPath.RawPathString;
       const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
-      const hostConfig = {devToolsAutomaticFileSystems: {enabled: true}};
 
       afterEach(() => {
         AutomaticFileSystemManager.removeInstance();
@@ -42,7 +41,6 @@ describe('Persistence', () => {
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -50,26 +48,11 @@ describe('Persistence', () => {
         assert.isNull(manager.automaticFileSystem);
       });
 
-      it('doesn\'t listen to project settings changes when `devToolsAutomaticFileSystems` is off', () => {
-        const hostConfig = {devToolsAutomaticFileSystems: {enabled: false}};
-        const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
-
-        AutomaticFileSystemManager.instance({
-          forceNew: true,
-          hostConfig,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
-
-        sinon.assert.notCalled(projectSettingsModel.addEventListener);
-      });
-
       it('listens to FileSystemRemoved events', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
 
         const automaticFileSystemManager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -85,7 +68,6 @@ describe('Persistence', () => {
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -101,7 +83,6 @@ describe('Persistence', () => {
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -119,7 +100,6 @@ describe('Persistence', () => {
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -136,7 +116,6 @@ describe('Persistence', () => {
             createStubInstances('available', {workspace: {root, uuid}});
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -164,7 +143,6 @@ describe('Persistence', () => {
             createStubInstances('available', {workspace: {root, uuid}});
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -186,7 +164,6 @@ describe('Persistence', () => {
             createStubInstances('available', {workspace: {root, uuid}});
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -203,26 +180,11 @@ describe('Persistence', () => {
         assert.deepEqual(manager.automaticFileSystem, {root, uuid, state: 'disconnected'});
       });
 
-      it('reports unavailable when `devToolsAutomaticFileSystems` is off', () => {
-        const hostConfig = {devToolsAutomaticFileSystems: {enabled: false}};
-        const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
-
-        const manager = AutomaticFileSystemManager.instance({
-          forceNew: true,
-          hostConfig,
-          inspectorFrontendHost,
-          projectSettingsModel,
-        });
-
-        assert.strictEqual(manager.availability, 'unavailable');
-      });
-
       it('reports available when project settings are available', () => {
         const {inspectorFrontendHost, projectSettingsModel} = createStubInstances('available', {});
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });
@@ -235,7 +197,6 @@ describe('Persistence', () => {
 
         const manager = AutomaticFileSystemManager.instance({
           forceNew: true,
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
         });

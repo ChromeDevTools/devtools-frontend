@@ -225,7 +225,6 @@ export const setupAutomaticFileSystem = (options: {hasFileSystem: boolean} = {
 }): void => {
   const root = '/path/to/my-automatic-file-system';
   const uuid = '549bbf9b-48b2-4af7-aebd-d3ba68993094';
-  const hostConfig = {devToolsAutomaticFileSystems: {enabled: true}};
   const inspectorFrontendHost = sinon.createStubInstance(Host.InspectorFrontendHost.InspectorFrontendHostStub);
   inspectorFrontendHost.events = sinon.createStubInstance(Common.ObjectWrapper.ObjectWrapper);
   const projectSettingsModel = sinon.createStubInstance(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
@@ -234,7 +233,6 @@ export const setupAutomaticFileSystem = (options: {hasFileSystem: boolean} = {
 
   const manager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
     forceNew: true,
-    hostConfig,
     inspectorFrontendHost,
     projectSettingsModel,
   });

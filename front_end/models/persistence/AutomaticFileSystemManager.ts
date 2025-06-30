@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
 import * as ProjectSettings from '../project_settings/project_settings.js';
 
 /**
@@ -68,23 +67,20 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
    * @internal
    */
   private constructor(
-      hostConfig: Root.Runtime.HostConfig,
       inspectorFrontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI,
       projectSettingsModel: ProjectSettings.ProjectSettingsModel.ProjectSettingsModel) {
     super();
     this.#automaticFileSystem = null;
     this.#inspectorFrontendHost = inspectorFrontendHost;
     this.#projectSettingsModel = projectSettingsModel;
-    if (hostConfig.devToolsAutomaticFileSystems?.enabled) {
-      this.#inspectorFrontendHost.events.addEventListener(
-          Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
-      this.#projectSettingsModel.addEventListener(
-          ProjectSettings.ProjectSettingsModel.Events.AVAILABILITY_CHANGED, this.#availabilityChanged, this);
-      this.#availabilityChanged({data: this.#projectSettingsModel.availability});
-      this.#projectSettingsModel.addEventListener(
-          ProjectSettings.ProjectSettingsModel.Events.PROJECT_SETTINGS_CHANGED, this.#projectSettingsChanged, this);
-      this.#projectSettingsChanged({data: this.#projectSettingsModel.projectSettings});
-    }
+    this.#inspectorFrontendHost.events.addEventListener(
+        Host.InspectorFrontendHostAPI.Events.FileSystemRemoved, this.#fileSystemRemoved, this);
+    this.#projectSettingsModel.addEventListener(
+        ProjectSettings.ProjectSettingsModel.Events.AVAILABILITY_CHANGED, this.#availabilityChanged, this);
+    this.#availabilityChanged({data: this.#projectSettingsModel.availability});
+    this.#projectSettingsModel.addEventListener(
+        ProjectSettings.ProjectSettingsModel.Events.PROJECT_SETTINGS_CHANGED, this.#projectSettingsChanged, this);
+    this.#projectSettingsChanged({data: this.#projectSettingsModel.projectSettings});
   }
 
   /**
@@ -92,21 +88,18 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
    *
    * @returns the singleton.
    */
-  static instance({forceNew, hostConfig, inspectorFrontendHost, projectSettingsModel}: {
+  static instance({forceNew, inspectorFrontendHost, projectSettingsModel}: {
     forceNew: boolean|null,
-    hostConfig: Root.Runtime.HostConfig|null,
     inspectorFrontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI|null,
     projectSettingsModel: ProjectSettings.ProjectSettingsModel.ProjectSettingsModel|null,
-  } = {forceNew: false, hostConfig: null, inspectorFrontendHost: null, projectSettingsModel: null}):
-      AutomaticFileSystemManager {
+  } = {forceNew: false, inspectorFrontendHost: null, projectSettingsModel: null}): AutomaticFileSystemManager {
     if (!automaticFileSystemManagerInstance || forceNew) {
-      if (!hostConfig || !inspectorFrontendHost || !projectSettingsModel) {
+      if (!inspectorFrontendHost || !projectSettingsModel) {
         throw new Error(
             'Unable to create AutomaticFileSystemManager: ' +
-            'hostConfig, inspectorFrontendHost, and projectSettingsModel must be provided');
+            'inspectorFrontendHost, and projectSettingsModel must be provided');
       }
       automaticFileSystemManagerInstance = new AutomaticFileSystemManager(
-          hostConfig,
           inspectorFrontendHost,
           projectSettingsModel,
       );

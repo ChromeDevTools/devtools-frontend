@@ -4,7 +4,7 @@
 
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
@@ -52,6 +52,34 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
   name = 'critique_tool';
   description = 'Evaluates if finalresponse satisfies the user\'s requirements and provides feedback if needed.';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   schema = {
     type: 'object',
     properties: {
@@ -75,6 +103,7 @@ export class CritiqueTool implements Tool<CritiqueToolArgs, CritiqueToolResult> 
    * Execute the critique agent
    */
   async execute(args: CritiqueToolArgs): Promise<CritiqueToolResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.debug('Executing with args', args);
     const { userInput, finalResponse, reasoning } = args;
     const agentService = AgentService.getInstance();
@@ -165,20 +194,25 @@ Return a JSON array of requirement statements. Example format:
 ["Requirement 1", "Requirement 2", ...]`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.1 }
-      );
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      const llm = LLMClient.getInstance();
+      
+      const response = await llm.call({
+        provider,
+        model,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.1,
+      });
 
-      if (!response) {
+      if (!response.text) {
         return { success: false, requirements: [], error: 'No response received' };
       }
 
       // Parse the JSON array from the response
-      const requirementsMatch = response.match(/\[(.*)\]/s);
+      const requirementsMatch = response.text.match(/\[(.*)\]/s);
       if (!requirementsMatch) {
         return { success: false, requirements: [], error: 'Failed to parse requirements' };
       }
@@ -253,20 +287,25 @@ Return a JSON object evaluating the plan against the requirements using this sch
 ${JSON.stringify(evaluationSchema, null, 2)}`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.1 }
-      );
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      const llm = LLMClient.getInstance();
+      
+      const response = await llm.call({
+        provider,
+        model,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.1,
+      });
 
-      if (!response) {
+      if (!response.text) {
         return { success: false, error: 'No response received' };
       }
 
       // Extract JSON object from the response
-      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      const jsonMatch = response.text.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         return { success: false, error: 'Failed to parse evaluation criteria' };
       }
@@ -308,15 +347,20 @@ Provide clear, actionable feedback focused on helping improve the final response
 Be concise, specific, and constructive.`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
-      const response = await UnifiedLLMClient.callLLM(
-        apiKey,
-        modelName,
-        userPrompt,
-        { systemPrompt, temperature: 0.7 }
-      );
+      const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+      const llm = LLMClient.getInstance();
+      
+      const response = await llm.call({
+        provider,
+        model,
+        messages: [
+          { role: 'user', content: userPrompt }
+        ],
+        systemPrompt,
+        temperature: 0.7,
+      });
 
-      return response || 'The plan does not meet all requirements, but no specific feedback could be generated.';
+      return response.text || 'The plan does not meet all requirements, but no specific feedback could be generated.';
     } catch (error: any) {
       logger.error('Error generating feedback', error);
       return 'Failed to generate detailed feedback, but the plan does not meet all requirements.';

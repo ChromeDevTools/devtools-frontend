@@ -47,6 +47,34 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
   name = 'fetcher_tool';
   description = 'Navigates to URLs, extracts and cleans the main content, returning markdown for each source';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   schema = {
     type: 'object',
     properties: {
@@ -72,6 +100,7 @@ export class FetcherTool implements Tool<FetcherToolArgs, FetcherToolResult> {
    * Execute the fetcher agent to process multiple URLs
    */
   async execute(args: FetcherToolArgs): Promise<FetcherToolResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.info('Executing with args', { args });
     const { urls, reasoning } = args;
 

@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { UnifiedLLMClient } from '../../../core/UnifiedLLMClient.js';
+import { LLMClient } from '../../../LLM/LLMClient.js';
 import type { TestCase, LLMJudgeResult, ValidationConfig } from '../types.js';
 import { createLogger } from '../../../core/Logger.js';
 import { ErrorHandlingUtils } from '../../utils/ErrorHandlingUtils.js';
 import { PromptTemplates } from '../../utils/PromptTemplates.js';
 import { ResponseParsingUtils } from '../../utils/ResponseParsingUtils.js';
 import type { ScreenshotData, VisionMessage, TextContent, ImageContent } from '../../utils/EvaluationTypes.js';
+import { AIChatPanel } from '../../../ui/AIChatPanel.js';
 
 const logger = createLogger('LLMEvaluator');
 
@@ -24,6 +25,7 @@ export class LLMEvaluator {
     this.apiKey = apiKey;
     this.defaultModel = defaultModel;
   }
+
 
   /**
    * Evaluate tool output using an LLM judge (supports both text and vision)
@@ -84,16 +86,18 @@ export class LLMEvaluator {
     
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        const response = await UnifiedLLMClient.callLLM(
-          this.apiKey,
-          model,
-          prompt,
-          {
-            systemPrompt: PromptTemplates.buildSystemPrompt({ hasVision: false }),
-            temperature: llmConfig.temperature ?? 0,
-            responseFormat: { type: 'json_object' },
-          }
-        );
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider: AIChatPanel.getProviderForModel(model),
+          model: model,
+          messages: [
+            { role: 'system', content: PromptTemplates.buildSystemPrompt({ hasVision: false }) },
+            { role: 'user', content: prompt }
+          ],
+          systemPrompt: PromptTemplates.buildSystemPrompt({ hasVision: false }),
+          temperature: llmConfig.temperature ?? 0
+        });
+        const response = llmResponse.text || '';
 
         // Clean response before parsing
         const cleanedResponse = ResponseParsingUtils.cleanResponseText(response);

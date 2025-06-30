@@ -3,10 +3,14 @@
 // found in the LICENSE file.
 
 import { enhancePromptWithPageContext } from '../core/PageInfoManager.js';
-import { UnifiedLLMClient, type UnifiedLLMResponse, type ParsedLLMAction } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
+import type { LLMResponse, ParsedLLMAction, LLMMessage, LLMProvider } from '../LLM/LLMTypes.js';
 import type { Tool } from '../tools/Tools.js';
+import { AIChatPanel } from '../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage, type ModelChatMessage, type ToolResultMessage } from '../ui/ChatView.js';
 import { createLogger } from '../core/Logger.js';
+import { createTracingProvider, getCurrentTracingContext } from '../tracing/TracingConfig.js';
+import type { TracingProvider } from '../tracing/TracingProvider.js';
 
 const logger = createLogger('AgentRunner');
 
@@ -47,6 +51,61 @@ function isConfigurableAgentResult(obj: any): obj is ConfigurableAgentResult {
  * Runs the core agent execution loop
  */
 export class AgentRunner {
+  /**
+   * Helper function to convert ChatMessage[] to LLMMessage[]
+   */
+  private static convertToLLMMessages(messages: ChatMessage[]): LLMMessage[] {
+    const llmMessages: LLMMessage[] = [];
+    
+    for (const msg of messages) {
+      if (msg.entity === ChatMessageEntity.USER) {
+        // User message
+        if ('text' in msg) {
+          llmMessages.push({
+            role: 'user',
+            content: msg.text,
+          });
+        }
+      } else if (msg.entity === ChatMessageEntity.MODEL) {
+        // Model message
+        const modelMsg = msg as ModelChatMessage;
+        if (modelMsg.action === 'final' && modelMsg.answer) {
+          llmMessages.push({
+            role: 'assistant',
+            content: modelMsg.answer,
+          });
+        } else if (modelMsg.action === 'tool' && modelMsg.toolCallId) {
+          // Tool call message
+          llmMessages.push({
+            role: 'assistant',
+            content: undefined,
+            tool_calls: [{
+              id: modelMsg.toolCallId,
+              type: 'function',
+              function: {
+                name: modelMsg.toolName || '',
+                arguments: JSON.stringify(modelMsg.toolArgs || {}),
+              }
+            }],
+          });
+        }
+      } else if (msg.entity === ChatMessageEntity.TOOL_RESULT) {
+        // Tool result message
+        const toolResult = msg as ToolResultMessage;
+        if (toolResult.toolCallId && toolResult.resultText) {
+          llmMessages.push({
+            role: 'tool',
+            content: toolResult.resultText,
+            tool_call_id: toolResult.toolCallId,
+          });
+        }
+      }
+    }
+    
+    return llmMessages;
+  }
+
+
   // Helper function to execute the handoff logic (to avoid duplication)
   private static async executeHandoff(
     currentMessages: ChatMessage[],
@@ -246,19 +305,22 @@ export class AgentRunner {
       // This includes updating the accessibility tree inside enhancePromptWithPageContext
       const currentSystemPrompt = await enhancePromptWithPageContext(systemPrompt + iterationInfo);
 
-      let llmResponse: UnifiedLLMResponse;
+      let llmResponse: LLMResponse;
       try {
         logger.info('${agentName} Calling LLM with ${messages.length} messages');
-        llmResponse = await UnifiedLLMClient.callLLMWithMessages(
-          apiKey,
-          modelName,
-          messages,
-          {
-            tools: toolSchemas,
-            systemPrompt: currentSystemPrompt,
-            temperature: temperature ?? 0,
-          }
-        );
+        
+        const llm = LLMClient.getInstance();
+        const provider = AIChatPanel.getProviderForModel(modelName);
+        const llmMessages = AgentRunner.convertToLLMMessages(messages);
+        
+        llmResponse = await llm.call({
+          provider,
+          model: modelName,
+          messages: llmMessages,
+          systemPrompt: currentSystemPrompt,
+          tools: toolSchemas,
+          temperature: temperature ?? 0,
+        });
       } catch (error: any) {
         logger.error(`${agentName} LLM call failed:`, error);
         const errorMsg = `LLM call failed: ${error.message || String(error)}`;
@@ -276,7 +338,8 @@ export class AgentRunner {
       }
 
       // Parse LLM response
-      const parsedAction = UnifiedLLMClient.parseResponse(llmResponse);
+      const llm = LLMClient.getInstance();
+      const parsedAction = llm.parseResponse(llmResponse);
 
       // Process parsed action
       try {
@@ -285,6 +348,51 @@ export class AgentRunner {
         if (parsedAction.type === 'tool_call') {
           const { name: toolName, args: toolArgs } = parsedAction;
           const toolCallId = crypto.randomUUID(); // Generate unique ID for OpenAI format
+          
+          // Create tool-call event observation using current tracing context
+          const tracingContext = getCurrentTracingContext();
+          logger.info(`AgentRunner tool call with tracing context:`, { 
+            hasTracingContext: !!tracingContext, 
+            traceId: tracingContext?.traceId,
+            toolName,
+            agentName 
+          });
+          console.log(`[TRACING DEBUG] AgentRunner tool call with tracing context:`, { 
+            hasTracingContext: !!tracingContext, 
+            traceId: tracingContext?.traceId,
+            toolName,
+            agentName 
+          });
+          
+          if (tracingContext?.traceId) {
+            const tracingProvider = createTracingProvider();
+            try {
+              await tracingProvider.createObservation({
+                id: `event-tool-call-runner-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                name: `Tool Call (AgentRunner): ${toolName}`,
+                type: 'event',
+                startTime: new Date(),
+                parentObservationId: tracingContext.parentObservationId,
+                input: {
+                  toolName,
+                  toolArgs,
+                  toolCallId,
+                  agentName,
+                  reasoning: llmResponse.reasoning?.summary
+                },
+                metadata: {
+                  executingAgent: agentName,
+                  toolCallId,
+                  phase: 'tool_call_decision',
+                  iteration,
+                  source: 'AgentRunner'
+                }
+              }, tracingContext.traceId);
+            } catch (tracingError) {
+              logger.warn('Failed to create tool-call tracing observation:', tracingError);
+            }
+          }
+          
           newModelMessage = {
             entity: ChatMessageEntity.MODEL,
             action: 'tool',

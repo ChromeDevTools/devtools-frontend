@@ -7,7 +7,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Utils from '../common/utils.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import { waitForPageLoad, type Tool } from './Tools.js';
@@ -38,6 +38,34 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
   name = 'html_to_markdown';
   description = 'Extracts the main article content from a webpage and converts it to well-formatted Markdown, removing ads, navigation, and other distracting elements.';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   schema = {
     type: 'object',
     properties: {
@@ -53,10 +81,12 @@ export class HTMLToMarkdownTool implements Tool<HTMLToMarkdownArgs, HTMLToMarkdo
     required: ['reasoning']
   };
 
+
   /**
    * Execute the HTML to Markdown extraction
    */
   async execute(args: HTMLToMarkdownArgs): Promise<HTMLToMarkdownResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.info('Executing with args', { args });
     const { instruction } = args;
     const agentService = AgentService.getInstance();
@@ -318,15 +348,19 @@ ${instruction}
     markdownContent: string,
   }> {
     // Call LLM using the unified client
-    const response = await UnifiedLLMClient.callLLM(
-      params.apiKey,
-      AIChatPanel.getNanoModel(),
-      params.userPrompt,
-      {
-        systemPrompt: params.systemPrompt,
-        temperature: 0.2, // Lower temperature for more deterministic results
-      }
-    );
+    const { model, provider } = AIChatPanel.getNanoModelWithProvider();
+    const llm = LLMClient.getInstance();
+    const llmResponse = await llm.call({
+      provider,
+      model,
+      messages: [
+        { role: 'system', content: params.systemPrompt },
+        { role: 'user', content: params.userPrompt }
+      ],
+      systemPrompt: params.systemPrompt,
+      temperature: 0.2 // Lower temperature for more deterministic results
+    });
+    const response = llmResponse.text;
 
     // Process the response - UnifiedLLMClient returns string directly
     const markdownContent = response || '';

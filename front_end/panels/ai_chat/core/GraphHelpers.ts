@@ -13,63 +13,6 @@ import { NodeType } from './Types.js';
 
 const logger = createLogger('GraphHelpers');
 
-// DEPRECATED: ChatPromptFormatter
-// This class was used to concatenate messages into a single string for older LLM APIs.
-// Now we use the message-based approach with UnifiedLLMClient for proper conversation handling.
-// Kept for backward compatibility but should not be used in new code.
-export class ChatPromptFormatter {
-  format(values: { messages: ChatMessage[] }): string {
-    logger.warn('ChatPromptFormatter is deprecated. Use message-based approach with UnifiedLLMClient instead.');
-    const messageHistory = values.messages || [];
-    const formattedParts: string[] = [];
-
-    // Find the last GetAccessibilityTreeTool result, if any
-    let lastAccessibilityTreeIndex = -1;
-    for (let i = messageHistory.length - 1; i >= 0; i--) {
-      const message = messageHistory[i];
-      if (message.entity === ChatMessageEntity.TOOL_RESULT &&
-        message.toolName === 'get_accessibility_tree') {
-        lastAccessibilityTreeIndex = i;
-        break;
-      }
-    }
-
-    for (let i = 0; i < messageHistory.length; i++) {
-      const message = messageHistory[i];
-      switch (message.entity) {
-        case ChatMessageEntity.USER:
-          if (message.text) {
-            formattedParts.push(`user: ${message.text}`);
-          }
-          break;
-        case ChatMessageEntity.MODEL:
-          // Format model message based on its action
-          if (message.action === 'tool') {
-            // Represent tool call in natural language instead of JSON to avoid LLM confusion
-            formattedParts.push(`assistant: Used tool "${message.toolName || 'unknown'}" to ${message.reasoning || 'perform an action'}.`);
-          } else if (message.answer) {
-            // Represent final answer - now just using plain markdown text
-            formattedParts.push(`assistant: ${message.answer}`);
-          }
-          break;
-        case ChatMessageEntity.TOOL_RESULT:
-          // For GetAccessibilityTreeTool, only include the most recent result
-          if (message.toolName === 'get_accessibility_tree' && i !== lastAccessibilityTreeIndex) {
-            // Skip older accessibility tree results
-            const resultPrefix = message.isError ? `tool_error[${message.toolName}]` : `tool_result[${message.toolName}]`;
-            formattedParts.push(`${resultPrefix}: Hidden to save on tokens`);
-            continue;
-          }
-
-          // Represent tool results clearly
-          const resultPrefix = message.isError ? `tool_error[${message.toolName}]` : `tool_result[${message.toolName}]`;
-          formattedParts.push(`${resultPrefix}: ${message.resultText}`);
-          break;
-      }
-    }
-    return formattedParts.join('\n\n');
-  }
-}
 
 // Replace createSystemPrompt with this version
 export function createSystemPrompt(state: AgentState): string {

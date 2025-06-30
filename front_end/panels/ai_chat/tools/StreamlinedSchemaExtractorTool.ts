@@ -8,7 +8,7 @@ import * as Utils from '../common/utils.js';
 import type { AccessibilityNode } from '../common/context.js';
 import { AgentService } from '../core/AgentService.js';
 import { createLogger } from '../core/Logger.js';
-import { UnifiedLLMClient } from '../core/UnifiedLLMClient.js';
+import { LLMClient } from '../LLM/LLMClient.js';
 import { AIChatPanel } from '../ui/AIChatPanel.js';
 
 import type { Tool } from './Tools.js';
@@ -39,6 +39,34 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
   description = `Tool for extracting structured data from web pages using JSON schema.
   - Returns: { success, data, error (if any) }`;
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   private readonly MAX_URL_RETRIES = 4;
   private readonly MAX_JSON_RETRIES = 2;
   private readonly RETRY_DELAY_MS = 10000; // 10 second delay between retries
@@ -62,7 +90,9 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
     required: ['schema', 'instruction']
   };
 
+
   async execute(args: StreamlinedSchemaExtractionArgs): Promise<StreamlinedExtractionResult> {
+    await this.createToolTracingObservation(this.name, args);
     try {
       const context = await this.setupExecution(args);
       if (context.success !== true) {
@@ -236,13 +266,19 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
           extractionPrompt += `\n\nIMPORTANT: Previous attempt ${attempt - 1} failed due to invalid JSON. Please ensure you return ONLY valid JSON that can be parsed. Do not hallucinate any data - only extract what actually exists in the tree.`;
         }
 
-        const modelName = AIChatPanel.getMiniModel();
-        const result = await UnifiedLLMClient.callLLM(
-          apiKey, 
-          modelName, 
-          extractionPrompt, 
-          { systemPrompt, temperature: 0.1, strictJsonMode: true }
-        );
+        const { model, provider } = AIChatPanel.getMiniModelWithProvider();
+        const llm = LLMClient.getInstance();
+        const llmResponse = await llm.call({
+          provider,
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: extractionPrompt }
+          ],
+          systemPrompt: systemPrompt,
+          temperature: 0.1
+        });
+        const result = llmResponse.text;
         
         logger.debug(`JSON extraction successful on attempt ${attempt}`);
         return result;
@@ -356,13 +392,19 @@ Extract data according to the schema. For URL fields, return different nodeId nu
 CRITICAL: Only use nodeIds that you can actually see in the accessibility tree above. Do not invent, guess, or make up any nodeIds.`;
 
     try {
-      const modelName = AIChatPanel.getMiniModel();
-      const result = await UnifiedLLMClient.callLLM(
-        apiKey, 
-        modelName, 
-        extractionPrompt, 
-        { systemPrompt, temperature: 0.1, strictJsonMode: true }
-      );
+      const { model, provider } = AIChatPanel.getMiniModelWithProvider();
+      const llm = LLMClient.getInstance();
+      const llmResponse = await llm.call({
+        provider,
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: extractionPrompt }
+        ],
+        systemPrompt: systemPrompt,
+        temperature: 0.1
+      });
+      const result = llmResponse.text;
       
       return result;
     } catch (error) {

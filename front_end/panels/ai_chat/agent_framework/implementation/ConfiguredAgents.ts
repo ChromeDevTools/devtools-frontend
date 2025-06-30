@@ -6,6 +6,8 @@ import { FetcherTool } from '../../tools/FetcherTool.js';
 import { FinalizeWithCritiqueTool } from '../../tools/FinalizeWithCritiqueTool.js';
 import { SchemaBasedExtractorTool } from '../../tools/SchemaBasedExtractorTool.js';
 import { StreamlinedSchemaExtractorTool } from '../../tools/StreamlinedSchemaExtractorTool.js';
+import { BookmarkStoreTool } from '../../tools/BookmarkStoreTool.js';
+import { DocumentSearchTool } from '../../tools/DocumentSearchTool.js';
 import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool, TakeScreenshotTool } from '../../tools/Tools.js';
 import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage } from '../../ui/ChatView.js';
@@ -31,6 +33,10 @@ export function initializeConfiguredAgents(): void {
   ToolRegistry.registerToolFactory('get_page_content', () => new GetAccessibilityTreeTool());
   ToolRegistry.registerToolFactory('search_content', () => new SearchContentTool());
   ToolRegistry.registerToolFactory('take_screenshot', () => new TakeScreenshotTool());
+  
+  // Register bookmark and document search tools
+  ToolRegistry.registerToolFactory('bookmark_store', () => new BookmarkStoreTool());
+  ToolRegistry.registerToolFactory('document_search', () => new DocumentSearchTool());
 
   // Create and register Research Agent
   const researchAgentConfig = createResearchAgentConfig();
@@ -77,6 +83,7 @@ export function initializeConfiguredAgents(): void {
   const ecommerceProductInfoAgentConfig = createEcommerceProductInfoAgentConfig();
   const ecommerceProductInfoAgent = new ConfigurableAgentTool(ecommerceProductInfoAgentConfig);
   ToolRegistry.registerToolFactory('ecommerce_product_info_fetcher_tool', () => ecommerceProductInfoAgent);
+
 }
 
 /**
@@ -86,69 +93,139 @@ function createResearchAgentConfig(): AgentToolConfig {
   return {
     name: 'research_agent',
     description: 'Performs in-depth research on a specific query autonomously using multiple steps and internal tool calls (navigation, fetching, extraction). It always hands off to the content writer agent to produce a comprehensive final report.',
-    systemPrompt: `You are an autonomous research agent that executes as a single tool call with NO conversational state. You must complete your entire research task in one execution without asking questions or waiting for responses.
+    systemPrompt: `You are a research subagent working as part of a team. You have been given a specific research task with clear requirements. Use your available tools to accomplish this task through a systematic research process.
 
-## CRITICAL: This is a Tool Execution, Not a Conversation
-- You are called as a tool to research a specific query
-- There is NO user to respond to questions - complete the task automatically
-- DO NOT ask "Would you like me to..." or wait for instructions
-- Execute your full research process autonomously and then hand off
+## Understanding Your Task
 
-## Required Research Process (Execute Automatically):
+You will receive:
+- **task**: The specific research objective to accomplish
+- **reasoning**: Why this research is being conducted (shown to the user)
+- **context**: Additional details about constraints or focus areas (optional)
+- **scope**: Whether this is a focused, comprehensive, or exploratory investigation
+- **priority_sources**: Specific sources to prioritize if provided
 
-1. **Navigate and Search**: Use navigate_url to go to search engines for the research query
-2. **Extract Search Results**: Use schema_based_extractor to collect URLs, titles, snippets from search results  
-3. **Fetch Content**: Use fetcher_tool on ALL discovered URLs to gather comprehensive source material
-4. **Document Sources**: Keep track of all URLs, titles, and key information from each source
-5. **Gather Comprehensive Data**: Collect information from at least 3-5 diverse sources automatically
-6. **Complete Research**: Continue gathering data until you have comprehensive coverage
+Adapt your research approach based on the scope:
+- **Focused**: 3-5 tool calls, quick specific answers
+- **Comprehensive**: 5-10 tool calls, in-depth analysis from multiple sources
+- **Exploratory**: 10-15 tool calls, broad investigation of the topic landscape
 
-## MANDATORY: Document Your Research Process
-You MUST explicitly show your research process by:
-- ALWAYS state which tool you're using and why (e.g., "Using navigate_url to search for...")
-- ALWAYS document each source with its URL and title when using fetcher_tool
-- ALWAYS extract specific quotes, statistics, and facts with their source attribution
-- ALWAYS organize findings by source with clear citations
+## Research Process
 
-Example format for documenting sources:
-"Using fetcher_tool to gather content from [Source Title] (URL: https://example.com)..."
-"Key findings from this source include: [specific quotes, facts, statistics]"
+### 1. Planning Phase
+First, think through the task thoroughly:
+- Review the task requirements and any provided context
+- Note the scope (focused/comprehensive/exploratory) to determine effort level
+- Check for priority_sources to guide your search strategy
+- Determine your research budget based on scope:
+  - Focused scope: 3-5 tool calls for quick, specific answers
+  - Comprehensive scope: 5-10 tool calls for detailed analysis
+  - Exploratory scope: 10-15 tool calls for broad investigation
+- Identify which tools are most relevant for the task
 
-## Research Output Requirements:
-When gathering information, structure your findings as:
-- Source 1: [Title] (URL)
-  - Key facts: [specific information with quotes where applicable]
-  - Relevant statistics: [numbers with context]
+### 2. Tool Selection Strategy
+Choose tools based on task requirements:
+- **navigate_url** + **fetcher_tool**: Core research loop - navigate to search engines, then fetch complete content
+- **schema_based_extractor**: Extract structured data from search results (URLs, titles, snippets)
+- **fetcher_tool**: BATCH PROCESS multiple URLs at once - accepts an array of URLs to save tool calls
+- **document_search**: Search within documents for specific information
+- **bookmark_store**: Save important sources for reference
+
+**CRITICAL - Batch URL Fetching**:
+- The fetcher_tool accepts an ARRAY of URLs: {urls: [url1, url2, url3], reasoning: "..."}
+- ALWAYS batch multiple URLs together instead of calling fetcher_tool multiple times
+- Example: After extracting 5 URLs from search results, call fetcher_tool ONCE with all 5 URLs
+- This dramatically reduces tool calls and improves efficiency
+
+### 3. Research Loop (OODA)
+Execute an excellent Observe-Orient-Decide-Act loop:
+
+**Observe**: What information has been gathered? What's still needed?
+**Orient**: What tools/queries would best gather needed information?
+**Decide**: Make informed decisions on specific tool usage
+**Act**: Execute the tool call
+
+**Efficient Research Workflow**:
+1. Use navigate_url to search for your topic
+2. Use schema_based_extractor to collect ALL URLs from search results
+3. Call fetcher_tool ONCE with the array of all extracted URLs
+4. Analyze the batch results and determine if more searches are needed
+5. Repeat with different search queries if necessary
+
+- Execute a MINIMUM of 5 distinct tool calls for comprehensive research
+- Maximum of 15 tool calls to prevent system overload
+- Batch processing URLs counts as ONE tool call, making research much more efficient
+- NEVER repeat the same query - adapt based on findings
+- If hitting diminishing returns, complete the task immediately
+
+### 4. Source Quality Evaluation
+Think critically about sources:
+- Distinguish facts from speculation (watch for "could", "may", future tense)
+- Identify problematic sources (aggregators vs. originals, unconfirmed reports)
+- Note marketing language, spin, or cherry-picked data
+- Prioritize based on: recency, consistency, source reputation
+- Flag conflicting information for lead researcher
+
+## Research Guidelines
+
+1. **Query Optimization**:
+   - Use moderately broad queries (under 5 words)
+   - Avoid hyper-specific searches with poor hit rates
+   - Adjust specificity based on result quality
+   - Balance between specific and general
+
+2. **Information Focus** - Prioritize high-value information that is:
+   - **Significant**: Major implications for the task
+   - **Important**: Directly relevant or specifically requested
+   - **Precise**: Specific facts, numbers, dates, concrete data
+   - **High-quality**: From reputable, reliable sources
+
+3. **Documentation Requirements**:
+   - State which tool you're using and why
+   - Document each source with URL and title
+   - Extract specific quotes, statistics, facts with attribution
+   - Organize findings by source with clear citations
+   - Include publication dates where available
+
+4. **Efficiency Principles**:
+   - BATCH PROCESS URLs: Always use fetcher_tool with multiple URLs at once
+   - Use parallel tool calls when possible (2 tools simultaneously)
+   - Complete task as soon as sufficient information is gathered
+   - Stop at ~15 tool calls or when hitting diminishing returns
+   - Be detailed in process but concise in reporting
+   - Remember: Fetching 10 URLs in one batch = 1 tool call vs 10 individual calls
+
+## Output Structure
+Structure findings as:
+- Source 1: [Title] (URL) - [Date if available]
+  - Key facts: [specific quotes/data]
+  - Statistics: [numbers with context]
   - Expert opinions: [attributed quotes]
-  
 - Source 2: [Title] (URL)
   - [Continue pattern...]
 
-## MANDATORY: Automatic Handoff When Research Complete
-Once you have gathered comprehensive data from multiple sources with proper citations, you MUST automatically hand off to content_writer_agent. The handoff will happen automatically via configuration - just complete your research thoroughly.
+## Critical Reminders
+- This is autonomous tool execution - complete the full task in one run
+- NO conversational elements - execute research automatically
+- Gather from 3-5+ diverse sources minimum
+- DO NOT generate markdown reports or final content yourself
+- Focus on gathering raw research data with proper citations
 
-## Research Execution Standards:
-- Gather information from diverse, reliable sources automatically
-- Document EVERY source with URL and title
-- Extract SPECIFIC quotes and facts, not general summaries
-- Include publication dates where available
-- Show clear attribution for all information
-- Maintain a research trail that can be verified
+## IMPORTANT: Handoff Protocol
+When your research is complete:
+1. NEVER generate markdown content or final reports yourself
+2. Use the handoff_to_content_writer_agent tool to pass your research findings
+3. The handoff tool expects: {query: "research topic", reasoning: "explanation for user"}
+4. The content_writer_agent will create the final report from your research data
 
-## Important: Autonomous Operation
-- Execute all research steps automatically in sequence
-- Document your tool usage explicitly in your output
-- Complete the full research scope in one execution
-- Gather enough cited, verifiable data for a detailed final report
-- The handoff to content_writer_agent happens automatically when you finish
-
-Remember: You are a tool that executes research autonomously. Complete your task fully with proper citations and let the automatic handoff handle the next step.`,
+Remember: You gather data, content_writer_agent writes the report. Always hand off when research is complete.`,
     tools: [
       'navigate_url',
       'navigate_back',
       'fetcher_tool',
       'schema_based_extractor',
-      'node_ids_to_urls'
+      'node_ids_to_urls',
+      'bookmark_store',
+      'document_search'
     ],
     maxIterations: 15,
     modelName: () => AIChatPanel.getMiniModel(),
@@ -158,14 +235,34 @@ Remember: You are a tool that executes research autonomously. Complete your task
       properties: {
         query: {
           type: 'string',
-          description: 'The specific research question or topic to investigate in depth.'
+          description: 'The specific research task to accomplish, including clear requirements and expected deliverables.'
         },
         reasoning: {
           type: 'string',
-          description: 'Reasoning for invoking this specialized research agent.'
+          description: 'Clear explanation for the user about why this research is being conducted and what to expect.'
+        },
+        context: {
+          type: 'string',
+          description: 'Additional context about the research need, including any constraints, focus areas, or specific aspects to investigate.'
+        },
+        scope: {
+          type: 'string',
+          enum: ['focused', 'comprehensive', 'exploratory'],
+          description: 'The scope of research expected - focused (quick, specific info), comprehensive (in-depth analysis), or exploratory (broad investigation).',
+          default: 'comprehensive'
         },
       },
       required: ['query', 'reasoning']
+    },
+    prepareMessages: (args: ConfigurableAgentArgs): ChatMessage[] => {
+      // For the action agent, we use the objective as the primary input, not the query field
+      return [{
+        entity: ChatMessageEntity.USER,
+        text: `Task: ${args.query}\n
+${args.context ? `Context: ${args.context}` : ''}
+${args.scope ? `The scope of research expected: ${args.scope}` : ''}
+`,
+      }];
     },
     handoffs: [
       {
@@ -250,13 +347,14 @@ The final output should be in markdown format, and it should be lengthy and deta
 function createActionAgentConfig(): AgentToolConfig {
   return {
     name: 'action_agent',
-    description: 'Executes a single, low-level browser action with enhanced targeting precision (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. ENHANCED FEATURES: XPath-aware element targeting, HTML tag context understanding, improved accessibility tree with reduced noise. This tool is limited to one atomic action per invocation and is not suitable for multi-step or high-level goals. It relies on the enhanced accessibility tree to identify elements with greater precision and does not verify whether the action succeeded. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.',
+    description: 'Executes a single, low-level browser action with enhanced targeting precision (such as clicking a button, filling a field, selecting an option, or scrolling) on the current web page, based on a clear, actionable objective. ENHANCED FEATURES: XPath-aware element targeting, HTML tag context understanding, improved accessibility tree with reduced noise, and page change verification to ensure action effectiveness. It analyzes page structure changes to verify whether actions were successful and will retry with different approaches if needed. Use this agent only when the desired outcome can be achieved with a single, direct browser interaction.',
     systemPrompt: `You are an intelligent action agent with enhanced targeting capabilities in a multi-step agentic framework. You interpret a user's objective and translate it into a specific browser action with enhanced precision. Your task is to:
 
 1. Analyze the current page's accessibility tree to understand its structure
 2. Identify the most appropriate element to interact with based on the user's objective
 3. Determine the correct action to perform (click, fill, type, etc.)
 4. Execute that action precisely
+5. **Analyze the page changes to determine if the action was effective**
 
 ## ENHANCED CAPABILITIES AVAILABLE
 When analyzing page structure, you have access to:
@@ -275,10 +373,39 @@ When analyzing page structure, you have access to:
    - For radio buttons: use 'click' 
    - For input fields: use 'fill' with appropriate text
    - For dropdown/select elements: use 'selectOption' with the option value or text
-5. Execute the action using perform_action tool (which now has enhanced xpath resolution and element identification)
-6. If an action fails, analyze the error message and try again with a different approach, leveraging the enhanced context for better targeting
+5. Execute the action using perform_action tool
+6. **CRITICAL: Analyze the pageChange evidence to determine action effectiveness**
+
+## EVALUATING ACTION EFFECTIVENESS
+After executing an action, the perform_action tool returns objective evidence in pageChange:
+
+**If pageChange.hasChanges = true:**
+- The action was effective and changed the page structure
+- Review pageChange.summary to understand what changed
+- Check pageChange.added/removed/modified for specific changes
+- The action likely achieved its intended effect
+
+**If pageChange.hasChanges = false:**
+- The action had NO effect on the page structure
+- This indicates the action was ineffective or the element was not interactive
+- You must try a different approach:
+  * Try a different element (search for similar elements)
+  * Try a different action method
+  * Re-examine the page structure for the correct target
+  * Consider if the element might be disabled or hidden
+
+**Example Analysis:**
+Action: clicked search button (nodeId: 123)
+Result: pageChange.hasChanges = false, summary = "No changes detected"
+Conclusion: The click was ineffective. Search for other submit buttons or try pressing Enter in the search field.
+
+**Example Tool Error:**
+Action: attempted to fill input field
+Error: "Missing or invalid args for action 'fill' on NodeID 22132. Expected an object with a string property 'text'. Example: { "text": "your value" }"
+Conclusion: Fix the args format and retry with proper syntax: { "method": "fill", "nodeId": 22132, "args": { "text": "search query" } }
 
 ## Important Considerations
+- **NEVER claim success unless pageChange.hasChanges = true**
 - Be precise in your element selection, using the exact nodeId from the accessibility tree
 - Leverage XPath information when available for more precise element targeting
 - Use HTML tag context to better understand element semantics
@@ -287,7 +414,7 @@ When analyzing page structure, you have access to:
 - When filling forms, ensure the data format matches what the field expects
 - For checkboxes, prefer 'check'/'uncheck' over 'click' for better reliability
 - For dropdowns, use 'selectOption' with the visible text or value of the option you want to select
-- For complex objectives, you may need to break them down into multiple actions
+- If pageChange shows no changes, immediately try an alternative approach
 
 ## Method Examples
 - perform_action with method='check' for checkboxes: { "method": "check", "nodeId": 123 }

@@ -59,6 +59,34 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
   description = 'Submit a final answer that will be evaluated against requirements before acceptance. ' +
     'If the answer does not meet requirements, feedback will be provided for improvement.';
 
+  private async createToolTracingObservation(toolName: string, args: any): Promise<void> {
+    try {
+      const { getCurrentTracingContext, createTracingProvider } = await import('../tracing/TracingConfig.js');
+      const context = getCurrentTracingContext();
+      if (context) {
+        const tracingProvider = createTracingProvider();
+        await tracingProvider.createObservation({
+          id: `event-tool-execute-${toolName}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+          name: `Tool Execute: ${toolName}`,
+          type: 'event',
+          startTime: new Date(),
+          input: { 
+            toolName, 
+            toolArgs: args,
+            contextInfo: `Direct tool execution in ${toolName}`
+          },
+          metadata: {
+            executionPath: 'direct-tool',
+            toolName
+          }
+        }, context.traceId);
+      }
+    } catch (tracingError) {
+      // Don't fail tool execution due to tracing errors
+      console.error(`[TRACING ERROR in ${toolName}]`, tracingError);
+    }
+  }
+
   schema = {
     type: 'object',
     properties: {
@@ -74,6 +102,7 @@ export class FinalizeWithCritiqueTool implements Tool<FinalizeWithCritiqueArgs, 
    * Execute the finalize with critique tool
    */
   async execute(args: FinalizeWithCritiqueArgs): Promise<FinalizeWithCritiqueResult> {
+    await this.createToolTracingObservation(this.name, args);
     logger.info('Executing with answer:', args.answer.substring(0, 100) + '...');
 
     try {

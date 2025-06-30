@@ -48,6 +48,9 @@ esbuild
       sourcemap: useSourceMaps,
     })
     .catch(err => {
-      console.error('failed to run esbuild:', err);
+      console.error('Failed to run esbuild:', err);
+      console.error(
+          '\nIf error includes `Host version "X" does not match binary version "Y", you need to run `gclient sync`',
+      );
       process.exit(1);
     });

@@ -69,12 +69,19 @@ type ExtendedState = Awaited<ReturnType<typeof StateProvider.instance.getState>>
 
 export class InstrumentedTestFunction {
   /**
+   * We track the initial timeouts for each context if we reset it back
+   * Mocha check timing of the full executed function and fails
+   * the test.
+   * https://github.com/mochajs/mocha/blob/main/lib/runnable.js#L307
+   */
+  static timeoutByContext = new WeakMap<Mocha.Context, number>();
+  /**
    * We track the initial timeouts for each functions because mocha
    * does not reset test timeout for retries.
    */
   static timeoutByTestFunction = new WeakMap<Mocha.AsyncFunc, number>();
 
-  abortController = new AbortController();
+  #abortController = new AbortController();
   state: ExtendedState|undefined;
   fn: Mocha.AsyncFunc;
   label: string;
@@ -89,8 +96,8 @@ export class InstrumentedTestFunction {
   }
 
   async #executeTest(context: Mocha.Context) {
-    AsyncScope.abortSignal = this.abortController.signal;
-    this.state = this.suite ? await StateProvider.instance.getState(this.suite) : undefined;
+    AsyncScope.abortSignal = this.#abortController.signal;
+
     if (this.state) {
       // eslint-disable-next-line no-debugger
       debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
@@ -133,48 +140,55 @@ export class InstrumentedTestFunction {
     return err;
   }
 
-  async #timeoutHandler(context: Mocha.Context) {
-    this.abortController.abort();
-    const err = this.#buildErrorFromTimedoutScopeStacks(context);
-    return await finalizeTestError(this.state, err);
-  }
-
-  #calculateTimeoutValue(context: Mocha.Context) {
-    this.originalContextTimeout = context.timeout();
+  #setupTimeout(context: Mocha.Context) {
+    this.originalContextTimeout = InstrumentedTestFunction.timeoutByContext.get(context) ?? context.timeout();
     this.actualTimeout = InstrumentedTestFunction.timeoutByTestFunction.get(this.fn) ?? this.originalContextTimeout;
+    InstrumentedTestFunction.timeoutByContext.set(context, this.originalContextTimeout);
     InstrumentedTestFunction.timeoutByTestFunction.set(this.fn, this.actualTimeout);
+    // Disable mocha test timeout.
+    // This way we rely only on our timeouts
+    context.timeout(0);
   }
 
   async #executeWithTimeout(context: Mocha.Context) {
-    this.#calculateTimeoutValue(context);
-    // Disable mocha test timeout.
-    context.timeout(0);
+    // This needs to be the first thing we do
+    // Else we may hit Mocha's timeouts
+    this.#setupTimeout(context);
+    // Get the state before starting the test timeouts
+    this.state = this.suite ? await StateProvider.instance.getState(this.suite) : undefined;
 
-    let timeout: NodeJS.Timeout|undefined = undefined;
+    let cleanupTimeoutPromise: (() => void)|undefined = undefined;
     let timeoutPromise: Promise<never>|undefined = undefined;
+
+    const executionPromise = this.#executeTest(context);
+
     if (this.actualTimeout !== 0) {
       timeoutPromise = new Promise<never>((_, reject) => {
-        timeout = setTimeout(async () => {
-          reject(await this.#timeoutHandler(context));
+        const timeout = setTimeout(async () => {
+          reject(this.#buildErrorFromTimedoutScopeStacks(context));
         }, this.actualTimeout);
+        cleanupTimeoutPromise = () => {
+          clearTimeout(timeout);
+          // Don't keep the Promise as pending
+          reject();
+        };
       });
     }
-    const executionPromise = this.#executeTest(context).catch(async err => {
-      clearTimeout(timeout);
-      // Suppress errors after the test was aborted.
-      if (this.abortController.signal.aborted) {
-        return;
-      }
-      throw await finalizeTestError(this.state, err);
-    });
-
     const racePromise = timeoutPromise ? Promise.race([executionPromise, timeoutPromise]) : executionPromise;
 
-    return await racePromise.finally(async () => {
-      clearTimeout(timeout);
-      await this.#clearState();
-      context.timeout(this.originalContextTimeout);
-    });
+    return await racePromise
+        .then(
+            () => {
+              this.#abortController.abort();
+            },
+            async err => {
+              this.#abortController.abort();
+              throw await finalizeTestError(this.state, err);
+            })
+        .finally(async () => {
+          cleanupTimeoutPromise?.();
+          await this.#clearState();
+        });
   }
 
   static instrument(fn: Mocha.AsyncFunc, label: string, suite?: Mocha.Suite) {

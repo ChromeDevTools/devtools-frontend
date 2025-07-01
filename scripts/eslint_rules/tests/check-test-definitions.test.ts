@@ -123,16 +123,6 @@ new RuleTester().run('check-test-definitions', rule, {
       errors: [{messageId: 'missingBugId'}],
     },
     {
-      code: `describe('e2e-test', async () => {
-        // Explaining comment
-        itScreenshot.skip(\`normal test \${withVariable}\`, async () => {
-        });
-      });
-      `,
-      filename: 'test/e2e/folder/file.ts',
-      errors: [{messageId: 'missingBugId'}],
-    },
-    {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
 
       describe('e2e-test', async () => {

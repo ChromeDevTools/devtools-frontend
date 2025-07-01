@@ -681,15 +681,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
       UI.ARIAUtils.markAsButton(colorElement);
       UI.ARIAUtils.setLabel(colorElement, i18nString(UIStrings.colorS, {PH1: palette.colors[i]}));
       colorElement.tabIndex = -1;
-      colorElement.addEventListener(
-          'mousedown',
-          this.paletteColorSelected.bind(
-              this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
-      colorElement.addEventListener(
-          'focus',
-          this.paletteColorSelected.bind(
-              this, palette.colors[i], palette.colorNames[i], Boolean(palette.matchUserFormat)));
-      colorElement.addEventListener('keydown', this.onPaletteColorKeydown.bind(this, i));
+      colorElement.addEventListener('mousedown', this.onPaletteColorKeydown.bind(this, palette, i));
+      colorElement.addEventListener('keydown', this.onPaletteColorKeydown.bind(this, palette, i));
       if (palette.mutable) {
         colorElementToMutable.set(colorElement, true);
         colorElementToColor.set(colorElement, palette.colors[i]);
@@ -761,9 +754,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         UI.ARIAUtils.markAsButton(shadeElement);
         UI.ARIAUtils.setLabel(shadeElement, i18nString(UIStrings.colorS, {PH1: shades[i]}));
         shadeElement.tabIndex = -1;
-        shadeElement.addEventListener('mousedown', this.paletteColorSelected.bind(this, shades[i], shades[i], false));
-        shadeElement.addEventListener('focus', this.paletteColorSelected.bind(this, shades[i], shades[i], false));
-        shadeElement.addEventListener('keydown', this.onShadeColorKeydown.bind(this, colorElement));
+        shadeElement.addEventListener('mousedown', this.onShadeColorKeydown.bind(this, shades[i], colorElement));
+        shadeElement.addEventListener('keydown', this.onShadeColorKeydown.bind(this, shades[i], colorElement));
         this.shadesContainer.appendChild(shadeElement);
       }
     }
@@ -959,19 +951,21 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.dispatchEventToListeners(Events.SIZE_CHANGED);
   }
 
-  private paletteColorSelected(colorText: string, colorName: string|undefined, matchUserFormat: boolean): void {
-    const color = Common.Color.parse(colorText);
-    if (!color) {
+  private onPaletteColorKeydown(palette: Palette, colorIndex: number, event: KeyboardEvent|MouseEvent): void {
+    if (event instanceof MouseEvent || Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      const colorText = palette.colors[colorIndex];
+      const colorName = palette.colorNames[colorIndex];
+      const color = Common.Color.parse(colorText);
+      if (color) {
+        this.innerSetColor(
+            color, colorText, colorName, palette.matchUserFormat ? this.colorFormat : color.format(),
+            ChangeSource.Other);
+      }
+      // Continue bubbling so that the color picker will close and submit the selected color.
       return;
     }
-    this.innerSetColor(
-        color, colorText, colorName, matchUserFormat ? this.colorFormat : color.format(), ChangeSource.Other);
-  }
-
-  private onPaletteColorKeydown(colorIndex: number, event: Event): void {
-    const keyboardEvent = event as KeyboardEvent;
     let nextColorIndex;
-    switch (keyboardEvent.key) {
+    switch (event.key) {
       case 'ArrowLeft':
         nextColorIndex = colorIndex - 1;
         break;
@@ -991,7 +985,15 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     }
   }
 
-  private onShadeColorKeydown(colorElement: HTMLElement, event: KeyboardEvent): void {
+  private onShadeColorKeydown(shade: string, colorElement: HTMLElement, event: MouseEvent|KeyboardEvent): void {
+    if (event instanceof MouseEvent || Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      const color = Common.Color.parse(shade);
+      if (color) {
+        this.innerSetColor(color, shade, shade, color.format(), ChangeSource.Other);
+      }
+      // Continue bubbling so that the color picker will close and submit the selected color.
+      return;
+    }
     const target = event.target as HTMLElement;
     if (Platform.KeyboardUtilities.isEscKey(event) || event.key === 'Tab') {
       colorElement.focus();

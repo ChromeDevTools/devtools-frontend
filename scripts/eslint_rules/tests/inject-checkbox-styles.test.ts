@@ -52,6 +52,29 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
     },
     {
+      code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
+import * as Lit from '../../lit/lit.js';
+import * as Input from '../input/input.js';
+
+
+export class SettingCheckbox extends HTMLElement {
+  static readonly litTagName = Lit.literal\`setting-checkbox\`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+
+  #render(): void {
+    Lit.render(
+        Lit.html\`
+      <style>\${Input.checkboxStyles}</style>
+      <p>
+        <label>
+          <input type="checkbox" />
+        </label>
+      </p>\`, this.#shadow, {host: this});
+  }
+}`,
+      filename: 'front_end/ui/components/settings/SettingsCheckbox.ts',
+    },
+    {
       code: `import * as Input from '../input/input.js';
       export class Test extends HTMLElement {
         private readonly shadow = this.attachShadow({mode: 'open'});
@@ -132,6 +155,18 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/datagrid/datagrid.ts',
       errors: [{messageId: 'missingCheckboxStylesImport'}],
     },
+    {
+      code: `import * as NotInputStyles from '../../wrong-import-path/input/input.js';
+      export class Test extends HTMLElement {
+        private readonly shadow = this.attachShadow({mode: 'open'});
+
+        render() {
+          Lit.render(Lit.html\`<style>\${NotInputStyles.NotCheckboxStyles}</style><input type="checkbox" />\`, this.shadow, {host:this});
+        }
+      }`,
+      filename: 'front_end/ui/components/datagrid/datagrid.ts',
+      errors: [{messageId: 'missingCheckboxStylesImport'}],
+    },
 
     // No adopting of the styles.
     {
@@ -161,6 +196,20 @@ export class SettingCheckbox extends HTMLElement {
 
         render() {
           Lit.render(Lit.html\`<input type="checkbox" />\`, this.shadow, {host:this});
+        }
+      }`,
+      filename: 'front_end/ui/components/datagrid/datagrid.ts',
+      errors: [{messageId: 'missingCheckboxStylesAdoption'}],
+    },
+    {
+      code: `import * as Input from '../input/input.js';
+      import {fooStyles} from './who-knows.js';
+
+      export class Test extends HTMLElement {
+        private readonly shadow = this.attachShadow({mode: 'open'});
+
+        render() {
+          Lit.render(Lit.html\`<style>\${fooStyles}</style><input type="checkbox" />\`, this.shadow, {host:this});
         }
       }`,
       filename: 'front_end/ui/components/datagrid/datagrid.ts',

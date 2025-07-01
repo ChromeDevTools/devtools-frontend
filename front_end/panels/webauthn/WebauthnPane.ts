@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable rulesdir/no-imperative-dom-api, rulesdir/inject-checkbox-styles */
 
 import '../../ui/legacy/legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid.js';
@@ -13,6 +12,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -185,11 +185,13 @@ function renderCredentialsDataGrid(
             <td>${credential.signCount}</td>
             <td>
               <devtools-button .variant=${Buttons.Button.Variant.OUTLINED}
+                  part="action-button"
                   @click=${() => onExport(credential)}
                   .jslogContext=${'webauthn.export-credential'}>
                 ${i18nString(UIStrings.export)}
               </devtools-button>
               <devtools-button .variant=${Buttons.Button.Variant.OUTLINED}
+                  part="action-button"
                   @click=${() => onRemove(credential.credentialId)}
                   .jslogContext=${'webauthn.remove-credential'}>
                 ${i18nString(UIStrings.remove)}
@@ -232,184 +234,300 @@ interface Authenticator {
   credentials: Protocol.WebAuthn.Credential[];
 }
 
-export class WebauthnPaneImpl extends UI.Widget.VBox implements
-    SDK.TargetManager.SDKModelObserver<SDK.WebAuthnModel.WebAuthnModel> {
-  #renderToolbar(): Lit.TemplateResult {
-    const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
-    // clang-format off
-    return html`
-      <div class="webauthn-toolbar-container" jslog=${VisualLogging.toolbar()} role="toolbar">
-        <devtools-toolbar class="webauthn-toolbar" role="presentation">
-          <devtools-checkbox title=${enableCheckboxTitle}
-              @click=${this.#handleCheckboxToggle.bind(this)}
-              .jslogContext=${'virtual-authenticators'}
-              ${ref(e => { this.#enableCheckbox = e as HTMLInputElement; })}>
-            ${enableCheckboxTitle}
-          </devtools-checkbox>
-        </devtools-toolbar>
-      </div>`;
-    // clang-format on
-  }
+interface Authenticator {
+  name: string;
+  options: Protocol.WebAuthn.VirtualAuthenticatorOptions;
+  credentials: Protocol.WebAuthn.Credential[];
+}
 
-  #renderLearnMoreView(): Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <devtools-widget class="learn-more" .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
-          header: i18nString(UIStrings.noAuthenticator),
-          text: i18nString(UIStrings.useWebauthnForPhishingresistant),
-          link: WEB_AUTHN_EXPLANATION_URL})}>
-      </devtools-widget>`;
-    // clang-format on
-  }
+interface ViewInput {
+  enabled: boolean;
+  onToggleEnabled: () => void;
+  authenticators: Map<Protocol.WebAuthn.AuthenticatorId, Authenticator>;
+  activeAuthenticatorId: Protocol.WebAuthn.AuthenticatorId|null;
+  editingAuthenticatorId: Protocol.WebAuthn.AuthenticatorId|null;
+  newAuthenticatorOptions: Protocol.WebAuthn.VirtualAuthenticatorOptions;
+  internalTransportAvailable: boolean;
+  updateNewAuthenticatorOptions: (change: Partial<Protocol.WebAuthn.VirtualAuthenticatorOptions>) => void;
+  addAuthenticator: () => void;
+  onActivateAuthenticator: (id: Protocol.WebAuthn.AuthenticatorId) => void;
+  onEditName: (id: Protocol.WebAuthn.AuthenticatorId) => void;
+  onSaveName: (id: Protocol.WebAuthn.AuthenticatorId, name: string) => void;
+  onRemoveAuthenticator: (id: Protocol.WebAuthn.AuthenticatorId) => void;
+  onExportCredential: (credential: Protocol.WebAuthn.Credential) => void;
+  onRemoveCredential: (id: Protocol.WebAuthn.AuthenticatorId, credentialId: string) => void;
+}
 
-  #renderNewAuthenticatorSection(): Lit.TemplateResult {
-    const options = this.#newAuthenticatorOptions;
-    const isCtap2 = options.protocol === Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
-    // clang-format off
-    return html`
-      <div class="new-authenticator-container">
-        <label class="new-authenticator-title">
-          ${i18nString(UIStrings.newAuthenticator)}
-        </label>
-        <div class="new-authenticator-form" jslog=${VisualLogging.section('new-authenticator')}>
-          <div class="authenticator-option">
-            <label class="authenticator-option-label" for="protocol">
-              ${i18nString(UIStrings.protocol)}
-            </label>
-            <select id="protocol" jslog=${VisualLogging.dropDown('protocol').track({change: true})}
-                value=${options.protocol}
-                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({protocol:
-                    (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorProtocol})}>
-              ${Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
+interface ViewOutput {
+  revealSection: Map<string, () => void>;
+}
+
+type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function renderToolbar(enabled: boolean, onToggle: () => void): Lit.TemplateResult {
+  const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
+  // clang-format off
+  return html`
+    <div class="webauthn-toolbar-container" jslog=${VisualLogging.toolbar()} role="toolbar">
+      <devtools-toolbar class="webauthn-toolbar" role="presentation">
+        <devtools-checkbox title=${enableCheckboxTitle}
+            @click=${onToggle}
+            .jslogContext=${'virtual-authenticators'}
+            .checked=${enabled}>
+          ${enableCheckboxTitle}
+        </devtools-checkbox>
+      </devtools-toolbar>
+    </div>`;
+  // clang-format on
+}
+
+function renderLearnMoreView(): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <devtools-widget class="learn-more" .widgetConfig=${widgetConfig(UI.EmptyWidget.EmptyWidget, {
+        header: i18nString(UIStrings.noAuthenticator),
+        text: i18nString(UIStrings.useWebauthnForPhishingresistant),
+        link: WEB_AUTHN_EXPLANATION_URL})}>
+    </devtools-widget>`;
+  // clang-format on
+}
+
+function renderNewAuthenticatorSection(
+    options: Protocol.WebAuthn.VirtualAuthenticatorOptions, internalTransportAvailable: boolean,
+    onUpdate: (change: Partial<Protocol.WebAuthn.VirtualAuthenticatorOptions>) => void,
+    onAdd: () => void): Lit.TemplateResult {
+  const isCtap2 = options.protocol === Protocol.WebAuthn.AuthenticatorProtocol.Ctap2;
+  // clang-format off
+  return html`
+    <div class="new-authenticator-container">
+      <label class="new-authenticator-title">
+        ${i18nString(UIStrings.newAuthenticator)}
+      </label>
+      <div class="new-authenticator-form" jslog=${VisualLogging.section('new-authenticator')}>
+        <div class="authenticator-option">
+          <label class="authenticator-option-label" for="protocol">
+            ${i18nString(UIStrings.protocol)}
+          </label>
+          <select id="protocol" jslog=${VisualLogging.dropDown('protocol').track({change: true})}
+              value=${options.protocol}
+              @change=${(e:Event) => onUpdate({protocol: (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorProtocol})}>
+            ${Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().map(option => html`
+              <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}>
+                ${option}
+              </option>`)}
+          </select>
+        </div>
+        <div class="authenticator-option">
+          <label for="transport" class="authenticator-option-label">
+            ${i18nString(UIStrings.transport)}
+          </label>
+          <select id="transport"
+              value=${options.transport}
+              jslog=${VisualLogging.dropDown('transport').track({change: true})}
+              @change=${(e: Event) => onUpdate({transport: (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorTransport})}>
+            ${[
+              Protocol.WebAuthn.AuthenticatorTransport.Usb,
+              Protocol.WebAuthn.AuthenticatorTransport.Ble,
+              Protocol.WebAuthn.AuthenticatorTransport.Nfc,
+                ...(isCtap2 ? [Protocol.WebAuthn.AuthenticatorTransport.Internal] : [])
+            ].map(option => html`
                 <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}
-                        .selected=${options.protocol === option}>
+                        .selected=${options.transport === option}
+                        .disabled=${!internalTransportAvailable
+                            &&  option === Protocol.WebAuthn.AuthenticatorTransport.Internal}>
                   ${option}
-                </option>`)}
-            </select>
-          </div>
-          <div class="authenticator-option">
-            <label for="transport" class="authenticator-option-label">
-              ${i18nString(UIStrings.transport)}
-            </label>
-            <select id="transport"
-                value=${options.transport}
-                jslog=${VisualLogging.dropDown('transport').track({change: true})}
-                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({transport:
-                    (e.target as HTMLSelectElement).value as Protocol.WebAuthn.AuthenticatorTransport})}>
-              ${[
-                Protocol.WebAuthn.AuthenticatorTransport.Usb,
-                Protocol.WebAuthn.AuthenticatorTransport.Ble,
-                Protocol.WebAuthn.AuthenticatorTransport.Nfc,
-                  ...(isCtap2 ? [Protocol.WebAuthn.AuthenticatorTransport.Internal] : [])
-              ].map(option => html`
-                  <option value=${option} jslog=${VisualLogging.item(option).track({click: true})}
-                      .selected=${options.transport === option}
-                      .disabled=${this.#hasInternalAuthenticator
-                          && option === Protocol.WebAuthn.AuthenticatorTransport.Internal}>
-                    ${option}
-                  </option>`)
-              }
-            </select>
-          </div>
-          <div class="authenticator-option">
-            <label for="resident-key" class="authenticator-option-label">
-              ${i18nString(UIStrings.supportsResidentKeys)}
-            </label>
-            <input id="resident-key" class="authenticator-option-checkbox" type="checkbox"
-                jslog=${VisualLogging.toggle('resident-key').track({change: true})}
-                @change=${(e:Event) => this.#updateNewAuthenticatorSectionOptions({hasResidentKey:
-                    (e.target as HTMLInputElement).checked})}
-                .checked=${Boolean(options.hasResidentKey && isCtap2)} .disabled=${!isCtap2}>
-          </div>
-          <div class="authenticator-option">
-            <label for="user-verification" class="authenticator-option-label">
-              ${i18nString(UIStrings.supportsUserVerification)}
-            </label>
-            <input id="user-verification" class="authenticator-option-checkbox" type="checkbox"
-                jslog=${VisualLogging.toggle('user-verification').track({change: true})}
-                @change=${(e: Event) => this.#updateNewAuthenticatorSectionOptions({hasUserVerification:
-                    (e.target as HTMLInputElement).checked})}
-                .checked=${Boolean(options.hasUserVerification && isCtap2)} .disabled=${!isCtap2}>
-          </div>
-          <div class="authenticator-option">
-            <label for="large-blob" class="authenticator-option-label">
-              ${i18nString(UIStrings.supportsLargeBlob)}
-            </label>
-            <input id="large-blob" class="authenticator-option-checkbox" type="checkbox"
-                jslog=${VisualLogging.toggle('large-blob').track({change: true})}
-                @change=${(e: Event) => this.#updateNewAuthenticatorSectionOptions({hasLargeBlob:
-                    (e.target as HTMLInputElement).checked})}
-                .checked=${Boolean(options.hasLargeBlob && isCtap2 && options.hasResidentKey)}
-                .disabled=${!options.hasResidentKey || !isCtap2}>
-          </div>
-          <div class="authenticator-option">
-            <div class="authenticator-option-label"></div>
-            <devtools-button @click=${this.#handleAddAuthenticatorButton}
-                id="add-authenticator"
-                .jslogContext=${'webauthn.add-authenticator'}
-                .variant=${Buttons.Button.Variant.OUTLINED}>
-              ${i18nString(UIStrings.add)}
-            </devtools-button>
-          </div>
+                </option>`)
+            }
+          </select>
         </div>
-      </div>`;
-    // clang-format on
-  }
-
-  #renderAuthenticatorSection(authenticatorId: Protocol.WebAuthn.AuthenticatorId, authenticator: Authenticator):
-      Lit.TemplateResult {
-    const active = this.#activeAuthId === authenticatorId;
-    const editing = this.#editingAuthId === authenticatorId;
-    // clang-format off
-    return html`
-      <div class="authenticator-section" data-authenticator-id=${authenticatorId}
-          jslog=${VisualLogging.section('authenticator')}>
-        <div class="authenticator-section-header">
-          <div class="authenticator-section-title" role="heading" aria-level="2">
-            <devtools-toolbar class="edit-name-toolbar">
-              <devtools-button title=${i18nString(UIStrings.editName)}
-                  class=${classMap({hidden: editing})}
-                  @click=${() => this.#handleEditNameButton(authenticatorId)}
-                  .iconName=${'edit'} .variant=${Buttons.Button.Variant.TOOLBAR}
-                  .jslogContext=${'edit-name'}></devtools-button>
-              <devtools-button title=${i18nString(UIStrings.saveName)}
-                  @click=${(e: Event) => this.#handleSaveNameButton(authenticatorId,  ((e.target as HTMLElement).parentElement?.nextSibling as HTMLInputElement).value)}
-                  .iconName=${'checkmark'} .variant=${Buttons.Button.Variant.TOOLBAR}
-                  class=${classMap({hidden: !editing})}
-                  .jslogContext=${'save-name'}></devtools-button>
-            </devtools-toolbar>
-            <input class="authenticator-name-field"
-                placeholder=${i18nString(UIStrings.enterNewName)}
-                jslog=${VisualLogging.textField('name').track({keydown: 'Enter', change: true})}
-                value=${i18nString(UIStrings.authenticatorS, {PH1: authenticator.name})} ?disabled=${!editing}
-                ${ref(e => { if(e instanceof HTMLInputElement && editing) { e.focus(); } })}
-                @focusout=${(e: Event) => this.#handleSaveNameButton(authenticatorId, (e.target as HTMLInputElement).value)}
-                @keydown=${(event: KeyboardEvent) => {
-                  if (event.key === 'Enter') {
-                    this.#handleSaveNameButton(authenticatorId, (event.target as HTMLInputElement).value);
-                  }
-                }}>
-          </div>
-          <div class="active-button-container">
-            <label title=${i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticator.name})}>
-              <input type="radio" .checked=${active} @change=${(e:Event) => { if ((e.target as HTMLInputElement).checked) { void this.#setActiveAuthenticator(authenticatorId); }}}
-                    jslog=${VisualLogging.toggle('webauthn.active-authenticator').track({change: true})}>
-              ${i18nString(UIStrings.active)}
-            </label>
-          </div>
-          <button class="text-button" @click=${() => this.removeAuthenticator(authenticatorId)}
-              jslog=${VisualLogging.action('webauthn.remove-authenticator').track({click: true})}>
-            ${i18nString(UIStrings.remove)}
-          </button>
+        <div class="authenticator-option">
+          <label for="resident-key" class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsResidentKeys)}
+          </label>
+          <input id="resident-key" class="authenticator-option-checkbox" type="checkbox"
+              jslog=${VisualLogging.toggle('resident-key').track({change: true})}
+              @change=${(e:Event) => onUpdate({hasResidentKey: (e.target as HTMLInputElement).checked})}
+              .checked=${Boolean(options.hasResidentKey && isCtap2)} .disabled=${!isCtap2}>
         </div>
-        ${this.#renderAuthenticatorFields(authenticatorId, authenticator.options)}
-        <div class="credentials-title">${i18nString(UIStrings.credentials)}</div>
-        ${renderCredentialsDataGrid(authenticatorId, authenticator.credentials, this.#exportCredential, this.#removeCredential.bind(this, authenticatorId))}
-        <div class="divider"></div>
-      </div>`;
-    // clang-format on
-  }
+        <div class="authenticator-option">
+          <label for="user-verification" class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsUserVerification)}
+          </label>
+          <input id="user-verification" class="authenticator-option-checkbox" type="checkbox"
+              jslog=${VisualLogging.toggle('user-verification').track({change: true})}
+              @change=${(e: Event) => onUpdate({hasUserVerification: (e.target as HTMLInputElement).checked})}
+              .checked=${Boolean(options.hasUserVerification && isCtap2)}
+              .disabled=${!isCtap2}>
+        </div>
+        <div class="authenticator-option">
+          <label for="large-blob" class="authenticator-option-label">
+            ${i18nString(UIStrings.supportsLargeBlob)}
+          </label>
+          <input id="large-blob" class="authenticator-option-checkbox" type="checkbox"
+              jslog=${VisualLogging.toggle('large-blob').track({change: true})}
+              @change=${(e: Event) => onUpdate({hasLargeBlob: (e.target as HTMLInputElement).checked})}
+              .checked=${Boolean(options.hasLargeBlob && isCtap2 && options.hasResidentKey)}
+              .disabled=${!options.hasResidentKey || !isCtap2}>
+        </div>
+        <div class="authenticator-option">
+          <div class="authenticator-option-label"></div>
+          <devtools-button @click=${onAdd}
+              id="add-authenticator"
+              .jslogContext=${'webauthn.add-authenticator'}
+              .variant=${Buttons.Button.Variant.OUTLINED}>
+            ${i18nString(UIStrings.add)}
+          </devtools-button>
+        </div>
+      </div>
+    </div>`;
+}
 
+function renderAuthenticatorSection(
+    authenticatorId: Protocol.WebAuthn.AuthenticatorId,
+    authenticator: Authenticator,  active: boolean, editing: boolean,
+    onActivate: () => void, onEditName: () => void, onSaveName: (name: string) => void, onRemove: () => void,
+    onExportCredential : (credential: Protocol.WebAuthn.Credential) => void,
+    onRemoveCredential : (credentialId: string) => void,
+    output: ViewOutput): Lit.TemplateResult {
+  function revealSection(section: Element|undefined): void {
+    if (!section) {
+      return;
+    }
+    const mediaQueryList = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const prefersReducedMotion = mediaQueryList.matches;
+    section.scrollIntoView({block: 'nearest', behavior: prefersReducedMotion ? 'auto' : 'smooth'});
+  }
+  // clang-format off
+  return html`
+    <div class="authenticator-section" data-authenticator-id=${authenticatorId}
+         jslog=${VisualLogging.section('authenticator')}
+          ${ref(e => { output.revealSection.set(authenticatorId, revealSection.bind(null, e));})}>
+      <div class="authenticator-section-header">
+        <div class="authenticator-section-title" role="heading" aria-level="2">
+          <devtools-toolbar class="edit-name-toolbar">
+            <devtools-button title=${i18nString(UIStrings.editName)}
+                class=${classMap({hidden: editing})}
+                @click=${onEditName}
+                .iconName=${'edit'} .variant=${Buttons.Button.Variant.TOOLBAR}
+                .jslogContext=${'edit-name'}></devtools-button>
+            <devtools-button title=${i18nString(UIStrings.saveName)}
+                @click=${(e: Event) => onSaveName(((e.target as HTMLElement).parentElement?.nextSibling as HTMLInputElement).value)}
+                .iconName=${'checkmark'} .variant=${Buttons.Button.Variant.TOOLBAR}
+                class=${classMap({hidden: !editing})}
+                .jslogContext=${'save-name'}></devtools-button>
+          </devtools-toolbar>
+          <input class="authenticator-name-field"
+              placeholder=${i18nString(UIStrings.enterNewName)}
+              jslog=${VisualLogging.textField('name').track({keydown: 'Enter', change: true})}
+              value=${i18nString(UIStrings.authenticatorS, {PH1: authenticator.name})} .disabled=${!editing}
+              ${ref(e => { if(e instanceof HTMLInputElement && editing) { e.focus(); } })}
+              @focusout=${(e: Event) => onSaveName((e.target as HTMLInputElement).value)}
+              @keydown=${(event: KeyboardEvent) => {
+                if (event.key === 'Enter') {
+                  onSaveName((event.target as HTMLInputElement).value);
+                }
+              }}>
+        </div>
+        <div class="active-button-container">
+          <label title=${i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticator.name})}>
+            <input type="radio" .checked=${active} @change=${(e:Event) => { if ((e.target as HTMLInputElement).checked) { onActivate(); }}}
+                  jslog=${VisualLogging.toggle('webauthn.active-authenticator').track({change: true})}>
+            ${i18nString(UIStrings.active)}
+          </label>
+        </div>
+        <button class="text-button" @click=${onRemove}
+            jslog=${VisualLogging.action('webauthn.remove-authenticator').track({click: true})}>
+          ${i18nString(UIStrings.remove)}
+        </button>
+      </div>
+      ${renderAuthenticatorFields(authenticatorId, authenticator.options)}
+      <div class="credentials-title">${i18nString(UIStrings.credentials)}</div>
+      ${renderCredentialsDataGrid(authenticatorId, authenticator.credentials, onExportCredential, onRemoveCredential)}
+      <div class="divider"></div>
+    </div>`;
+  // clang-format on
+}
+
+/**
+ * Creates the fields describing the authenticator in the front end.
+ */
+function renderAuthenticatorFields(
+    authenticatorId: string, options: Protocol.WebAuthn.VirtualAuthenticatorOptions): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <div class="authenticator-fields">
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">${i18nString(UIStrings.uuid)}</label>
+        <div class="authenticator-field-value">${authenticatorId}</div>
+      </div>
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">${i18nString(UIStrings.protocol)}</label>
+        <div class="authenticator-field-value">${options.protocol}</div>
+      </div>
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">${i18nString(UIStrings.transport)}</label>
+        <div class="authenticator-field-value">${options.transport}</div>
+      </div>
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">
+          ${i18nString(UIStrings.supportsResidentKeys)}
+        </label>
+        <div class="authenticator-field-value">
+          ${options.hasResidentKey ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+        </div>
+      </div>
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">
+          ${i18nString(UIStrings.supportsLargeBlob)}
+        </label>
+        <div class="authenticator-field-value">
+          ${options.hasLargeBlob ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+        </div>
+      </div>
+      <div class="authenticator-field">
+        <label class="authenticator-option-label">
+          ${i18nString(UIStrings.supportsUserVerification)}
+        </label>
+        <div class="authenticator-field-value">
+          ${options.hasUserVerification ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
+        </div>
+      </div>
+    </div>`;
+  // clang-format on
+}
+
+export const DEFAULT_VIEW: ViewFunction = (input, output, target) => {
+  // clang-format off
+  render(html`
+    <style>${Input.checkboxStyles}</style>
+    <style>${webauthnPaneStyles}</style>
+    <div class="webauthn-pane flex-auto ${classMap({enabled: input.enabled})}">
+      ${renderToolbar(input.enabled, input.onToggleEnabled)}
+      <div class="authenticators-view">
+         ${repeat([...input.authenticators.entries()],
+                  ([id]) => id,
+                  ([id, authenticator]) => renderAuthenticatorSection(
+                      id, authenticator,
+                      input.activeAuthenticatorId === id,
+                      input.editingAuthenticatorId === id,
+                      input.onActivateAuthenticator.bind(input, id),
+                      input.onEditName.bind(input, id),
+                      input.onSaveName.bind(input, id),
+                      input.onRemoveAuthenticator.bind(input, id),
+                      input.onExportCredential,
+                      input.onRemoveCredential.bind(input, id),
+                      output))}
+      </div>
+      ${renderLearnMoreView()}
+      ${renderNewAuthenticatorSection(
+          input.newAuthenticatorOptions, input.internalTransportAvailable,  input.updateNewAuthenticatorOptions, input.addAuthenticator)}
+    </div>`,
+    target, {host: input});
+  // clang-format on
+};
+
+export class WebauthnPaneImpl extends UI.Panel.Panel implements
+    SDK.TargetManager.SDKModelObserver<SDK.WebAuthnModel.WebAuthnModel> {
   async #addAuthenticator(options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
       Promise<Protocol.WebAuthn.AuthenticatorId> {
     if (!this.#model) {
@@ -435,59 +553,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     return authenticatorId;
   }
 
-  /**
-   * Creates the fields describing the authenticator in the front end.
-   */
-  #renderAuthenticatorFields(authenticatorId: string, options: Protocol.WebAuthn.VirtualAuthenticatorOptions):
-      Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <div class="authenticator-fields">
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">${i18nString(UIStrings.uuid)}</label>
-          <div class="authenticator-field-value">${authenticatorId}</div>
-        </div>
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">${i18nString(UIStrings.protocol)}</label>
-          <div class="authenticator-field-value">${options.protocol}</div>
-        </div>
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">${i18nString(UIStrings.transport)}</label>
-          <div class="authenticator-field-value">${options.transport}</div>
-        </div>
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">
-            ${i18nString(UIStrings.supportsResidentKeys)}
-          </label>
-          <div class="authenticator-field-value">
-            ${options.hasResidentKey ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-          </div>
-        </div>
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">
-            ${i18nString(UIStrings.supportsLargeBlob)}
-          </label>
-          <div class="authenticator-field-value">
-            ${options.hasLargeBlob ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-          </div>
-        </div>
-        <div class="authenticator-field">
-          <label class="authenticator-option-label">
-            ${i18nString(UIStrings.supportsUserVerification)}
-          </label>
-          <div class="authenticator-field-value">
-            ${options.hasUserVerification ? i18nString(UIStrings.yes) : i18nString(UIStrings.no)}
-          </div>
-        </div>
-      </div>`;
-    // clang-format on
-  }
-
   #activeAuthId: Protocol.WebAuthn.AuthenticatorId|null = null;
   #editingAuthId: Protocol.WebAuthn.AuthenticatorId|null = null;
   #hasBeenEnabled = false;
   readonly #authenticators = new Map<Protocol.WebAuthn.AuthenticatorId, Authenticator>();
-  #enableCheckbox!: HTMLInputElement;
+  #enabled = false;
   readonly #availableAuthenticatorSetting: Common.Settings.Setting<AvailableAuthenticatorOptions[]>;
   #model?: SDK.WebAuthnModel.WebAuthnModel;
   #newAuthenticatorOptions: Protocol.WebAuthn.VirtualAuthenticatorOptions = {
@@ -501,16 +571,17 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   };
   #hasInternalAuthenticator = false;
   #isEnabling?: Promise<void>;
+  #view: ViewFunction;
+  #viewOutput: ViewOutput = {
+    revealSection: new Map(),
+  };
 
-  constructor() {
-    super(true);
-    this.registerRequiredCSS(webauthnPaneStyles);
+  constructor(view = DEFAULT_VIEW) {
+    super('webauthn');
 
-    this.element.setAttribute('jslog', `${VisualLogging.panel('webauthn').track({resize: true})}`);
+    this.#view = view;
 
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this, {scoped: true});
-
-    this.contentElement.classList.add('webauthn-pane');
 
     this.#availableAuthenticatorSetting =
         Common.Settings.Settings.instance().createSetting<AvailableAuthenticatorOptions[]>(
@@ -518,24 +589,27 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#updateInternalTransportAvailability();
 
     this.performUpdate();
-    this.#updateVisibility(false);
   }
 
   override performUpdate(): void {
-    // eslint-disable-next-line rulesdir/no-lit-render-outside-of-view
-    render(
-        [
-          this.#renderToolbar(),
-          html`
-          <div class="authenticators-view">
-            ${
-              repeat(
-                  [...this.#authenticators.entries()], ([id]) => id,
-                  ([id, authenticator]) => this.#renderAuthenticatorSection(id, authenticator))}
-          </div>`,
-          this.#renderLearnMoreView(), this.#renderNewAuthenticatorSection()
-        ],
-        this.contentElement, {host: this});
+    const viewInput = {
+      enabled: this.#enabled,
+      onToggleEnabled: this.#handleCheckboxToggle.bind(this),
+      authenticators: this.#authenticators,
+      activeAuthenticatorId: this.#activeAuthId,
+      editingAuthenticatorId: this.#editingAuthId,
+      newAuthenticatorOptions: this.#newAuthenticatorOptions,
+      internalTransportAvailable: !this.#hasInternalAuthenticator,
+      updateNewAuthenticatorOptions: this.#updateNewAuthenticatorSectionOptions.bind(this),
+      addAuthenticator: this.#handleAddAuthenticatorButton.bind(this),
+      onActivateAuthenticator: this.#setActiveAuthenticator.bind(this),
+      onEditName: this.#handleEditNameButton.bind(this),
+      onSaveName: this.#handleSaveNameButton.bind(this),
+      onRemoveAuthenticator: this.removeAuthenticator.bind(this),
+      onExportCredential: this.#exportCredential.bind(this),
+      onRemoveCredential: this.#removeCredential.bind(this),
+    };
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   modelAdded(model: SDK.WebAuthnModel.WebAuthnModel): void {
@@ -574,9 +648,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   override async ownerViewDisposed(): Promise<void> {
-    if (this.#enableCheckbox) {
-      this.#enableCheckbox.checked = false;
-    }
+    this.#enabled = false;
     await this.#setVirtualAuthEnvEnabled(false);
   }
 
@@ -644,23 +716,19 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         this.#removeAuthenticatorSections();
       }
 
-      this.#updateVisibility(enable);
       this.#isEnabling = undefined;
+      this.#enabled = enable;
       this.requestUpdate();
       resolve();
     });
-  }
-
-  #updateVisibility(enabled: boolean): void {
-    this.contentElement.classList.toggle('enabled', enabled);
   }
 
   #removeAuthenticatorSections(): void {
     this.#authenticators.clear();
   }
 
-  #handleCheckboxToggle(e: MouseEvent): void {
-    void this.#setVirtualAuthEnvEnabled((e.target as HTMLInputElement).checked);
+  #handleCheckboxToggle(): void {
+    void this.#setVirtualAuthEnvEnabled(!this.#enabled);
   }
 
   #updateNewAuthenticatorSectionOptions(change: Partial<Protocol.WebAuthn.VirtualAuthenticatorOptions>): void {
@@ -689,13 +757,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
           availableAuthenticators.map(a => ({...a, active: a.authenticatorId === authenticatorId})));
       this.#updateInternalTransportAvailability();
       await this.updateComplete;
-      const section = this.contentElement.querySelector(`[data-authenticator-id="${authenticatorId}"]`);
-      if (!section) {
-        return;
-      }
-      const mediaQueryList = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const prefersReducedMotion = mediaQueryList.matches;
-      section.scrollIntoView({block: 'start', behavior: prefersReducedMotion ? 'auto' : 'smooth'});
+      this.#viewOutput.revealSection.get(authenticatorId)?.();
     }
   }
 
@@ -706,6 +768,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     }
     pem += PRIVATE_KEY_FOOTER;
 
+    /* eslint-disable-next-line rulesdir/no-imperative-dom-api */
     const link = document.createElement('a');
     link.download = i18nString(UIStrings.privateKeypem);
     link.href = 'data:application/x-pem-file,' + encodeURIComponent(pem);

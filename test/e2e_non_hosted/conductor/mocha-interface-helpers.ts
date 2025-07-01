@@ -96,6 +96,7 @@ export class InstrumentedTestFunction {
   }
 
   async #executeTest(context: Mocha.Context) {
+    this.#abortController = new AbortController();
     AsyncScope.abortSignal = this.#abortController.signal;
 
     if (this.state) {

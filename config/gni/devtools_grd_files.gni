@@ -2375,6 +2375,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/components/text_editor/ExecutionPositionHighlighter.js",
   "front_end/ui/components/text_editor/TextEditor.js",
   "front_end/ui/components/text_editor/TextEditorHistory.js",
+  "front_end/ui/components/text_editor/textEditor.css.js",
   "front_end/ui/components/text_editor/config.js",
   "front_end/ui/components/text_editor/cursor_tooltip.js",
   "front_end/ui/components/text_editor/javascript.js",

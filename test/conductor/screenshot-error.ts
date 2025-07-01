@@ -69,17 +69,17 @@ export class ScreenshotError extends Error {
   }
 
   /**
-   * Creates a ScreenshotError an unexpected error occurs. Screenshots were
-   * taken for both the target and the frontend.
+   * Creates a ScreenshotError when an unexpected error occurs. Screenshots are
+   * taken for both the inspected page and the DevTools page.
    */
-  static fromBase64Images(error: Error, targetScreenshot?: string, frontendScreenshot?: string) {
-    if (!targetScreenshot || !frontendScreenshot) {
+  static fromBase64Images(error: Error, inspectedPageScreenshot?: string, devToolsPageScreenshot?: string) {
+    if (!inspectedPageScreenshot || !devToolsPageScreenshot) {
       console.error('No artifacts to save.');
       return error;
     }
     const screenshots = {
-      target: {filePath: this.saveArtifact(targetScreenshot)},
-      frontend: {filePath: this.saveArtifact(frontendScreenshot)},
+      inspectedPage: {filePath: this.saveArtifact(inspectedPageScreenshot)},
+      devToolsPage: {filePath: this.saveArtifact(devToolsPageScreenshot)},
     };
     return new ScreenshotError(screenshots, undefined, error);
   }
@@ -99,8 +99,8 @@ export class ScreenshotError extends Error {
     } else {
       // TODO(liviurau): embed images once Milo supports it
       const message = (this.message + '\n\n' + this.stack).slice(0, ScreenshotError.SUMMARY_LENGTH_CUTOFF);
-      summary = '<pre>' + message + '</pre><p>Unexpected error. See target and frontend screenshots ' +
-          'below.</p>';
+      summary =
+          '<pre>' + message + '</pre><p>Unexpected error. See inspected and DevTools pages screenshots below.</p>';
     }
     return summary;
   }

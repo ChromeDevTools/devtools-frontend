@@ -268,7 +268,14 @@ export abstract class AiAgent<T> {
    * historical conversations.
    */
   #origin?: string;
-  #context?: ConversationContext<T>;
+
+  /**
+   * `context` does not change during `AiAgent.run()`, ensuring that calls to JS
+   * have the correct `context`. We don't want element selection by the user to
+   * change the `context` during an `AiAgent.run()`.
+   */
+  protected context?: ConversationContext<T>;
+
   #id: string = crypto.randomUUID();
   #history: Host.AidaClient.Content[] = [];
 
@@ -418,13 +425,14 @@ export abstract class AiAgent<T> {
           multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
 
-    // First context set on the agent determines its origin from now on.
-    if (options.selected && this.#origin === undefined && options.selected) {
-      this.#origin = options.selected.getOrigin();
-    }
-    // Remember if the context that is set.
-    if (options.selected && !this.#context) {
-      this.#context = options.selected;
+    if (options.selected) {
+      // First context set on the agent determines its origin from now on.
+      if (this.#origin === undefined) {
+        this.#origin = options.selected.getOrigin();
+      }
+      if (options.selected.isOriginAllowed(this.#origin)) {
+        this.context = options.selected;
+      }
     }
 
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);

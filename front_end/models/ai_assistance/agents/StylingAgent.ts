@@ -182,16 +182,20 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS: Record<MultimodalInputType, string> = {
 };
 
 async function executeJsCode(
-    functionDeclaration: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
-  const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-  const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
+    functionDeclaration: string,
+    {throwOnSideEffect, contextNode}: {throwOnSideEffect: boolean, contextNode: SDK.DOMModel.DOMNode|null}):
+    Promise<string> {
+  if (!contextNode) {
+    throw new Error('Cannot execute JavaScript because of missing context node');
+  }
+  const target = contextNode.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
 
   if (!target) {
     throw new Error('Target is not found for executing code');
   }
 
   const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-  const frameId = selectedNode?.frameId() ?? resourceTreeModel?.mainFrame?.id;
+  const frameId = contextNode.frameId() ?? resourceTreeModel?.mainFrame?.id;
 
   if (!frameId) {
     throw new Error('Main frame is not found for executing code');
@@ -211,19 +215,12 @@ async function executeJsCode(
     return formatError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
   }
 
-  const result = await executionContext.evaluate(
-      {
-        expression: '$0',
-        returnByValue: false,
-        includeCommandLineAPI: true,
-      },
-      false, false);
-
-  if ('error' in result) {
-    return formatError('Cannot find $0');
+  const remoteObject = await contextNode.resolveToObject(undefined, executionContextId);
+  if (!remoteObject) {
+    throw new Error('Cannot execute JavaScript because remote object cannot be resolved');
   }
 
-  return await EvaluateAction.execute(functionDeclaration, [result.object], executionContext, {throwOnSideEffect});
+  return await EvaluateAction.execute(functionDeclaration, [remoteObject], executionContext, {throwOnSideEffect});
 }
 
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
@@ -640,7 +637,7 @@ const data = {
       const result = await Promise.race([
         this.#execJs(
             functionDeclaration,
-            {throwOnSideEffect},
+            {throwOnSideEffect, contextNode: this.context?.getItem() || null},
             ),
         new Promise<never>((_, reject) => {
           setTimeout(

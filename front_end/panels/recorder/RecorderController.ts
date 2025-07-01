@@ -245,6 +245,8 @@ export class RecorderController extends LitElement {
   #selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
       'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
+  #recordingView?: Components.RecordingView.RecordingView;
+
   constructor() {
     super();
 
@@ -856,8 +858,7 @@ export class RecorderController extends LitElement {
             throw new Error('No current recording found');
           }
           this.#setCurrentRecording(await this.#storage.updateRecording(this.currentRecording.storageName, data));
-          const recordingView = this.shadowRoot?.querySelector('devtools-recording-view');
-          recordingView?.scrollToBottom();
+          this.#recordingView?.scrollToBottom();
 
           await takeScreenshot(this.currentRecording);
         });
@@ -984,8 +985,9 @@ export class RecorderController extends LitElement {
         {keepBreakpoints: true, updateSession: true});
     Host.userMetrics.recordingAssertion(Host.UserMetrics.RecordingAssertion.ASSERTION_ADDED);
     await this.updateComplete;
-    this.renderRoot.querySelector('devtools-recording-view')
-        ?.shadowRoot?.querySelector('.section:last-child devtools-step-view:last-of-type')
+    // FIXME: call a method on the recording view widget.
+    await this.#recordingView?.updateComplete;
+    this.#recordingView?.contentElement?.querySelector('.section:last-child devtools-step-view:last-of-type')
         ?.shadowRoot?.querySelector<HTMLElement>('.action')
         ?.click();
   }
@@ -1036,12 +1038,14 @@ export class RecorderController extends LitElement {
   }
 
   #onAddBreakpoint = (event: AddBreakpointEvent): void => {
+    this.#stepBreakpointIndexes = structuredClone(this.#stepBreakpointIndexes);
     this.#stepBreakpointIndexes.add(event.index);
     this.recordingPlayer?.updateBreakpointIndexes(this.#stepBreakpointIndexes);
     this.requestUpdate();
   };
 
   #onRemoveBreakpoint = (event: RemoveBreakpointEvent): void => {
+    this.#stepBreakpointIndexes = structuredClone(this.#stepBreakpointIndexes);
     this.#stepBreakpointIndexes.delete(event.index);
     this.recordingPlayer?.updateBreakpointIndexes(this.#stepBreakpointIndexes);
     this.requestUpdate();
@@ -1084,10 +1088,7 @@ export class RecorderController extends LitElement {
         return;
 
       case Actions.RecorderActions.TOGGLE_CODE_VIEW: {
-        const view = this.renderRoot.querySelector('devtools-recording-view');
-        if (view) {
-          view.showCodeToggle();
-        }
+        this.#recordingView?.showCodeToggle();
         return;
       }
     }
@@ -1190,16 +1191,16 @@ export class RecorderController extends LitElement {
   #renderRecordingPage(): Lit.TemplateResult {
     // clang-format off
     return html`
-      <devtools-recording-view
-        .data=${
-          {
-            recording: this.currentRecording?.flow,
+      <devtools-widget
+          class="recording-view"
+          .widgetConfig=${UI.Widget.widgetConfig(Components.RecordingView.RecordingView, {
+            recording: this.currentRecording?.flow ?? {title: '', steps: []},
             replayState: this.#replayState,
             isRecording: this.isRecording,
             recordingTogglingInProgress: this.isToggling,
             currentStep: this.currentStep,
             currentError: this.recordingError,
-            sections: this.sections,
+            sections: this.sections ?? [],
             settings: this.settings,
             recorderSettings: this.#recorderSettings,
             lastReplayResult: this.lastReplayResult,
@@ -1209,27 +1210,27 @@ export class RecorderController extends LitElement {
             extensionConverters: this.extensionConverters,
             replayExtensions: this.replayExtensions,
             extensionDescriptor: this.viewDescriptor,
-          } as Components.RecordingView.RecordingViewData
-        }
-        @networkconditionschanged=${this.#onNetworkConditionsChanged}
-        @timeoutchanged=${this.#onTimeoutChanged}
-        @requestselectorattribute=${(
-          event: Controllers.SelectorPicker.RequestSelectorAttributeEvent,
-        ) => {
-          event.send(this.currentRecording?.flow.selectorAttribute);
-        }}
-        @recordingfinished=${this.#onRecordingFinished}
-        @stepchanged=${this.#handleRecordingChanged.bind(this)}
-        @recordingtitlechanged=${this.#handleRecordingTitleChanged.bind(this)}
-        @addstep=${this.#handleStepAdded.bind(this)}
-        @removestep=${this.#handleStepRemoved.bind(this)}
-        @addbreakpoint=${this.#onAddBreakpoint}
-        @removebreakpoint=${this.#onRemoveBreakpoint}
-        @playrecording=${this.#onPlayRecording}
-        @abortreplay=${this.#onAbortReplay}
-        @recorderextensionviewclosed=${this.#onExtensionViewClosed}
-        @addassertion=${this.#handleAddAssertionEvent}
-      ></devtools-recording-view>
+          })}
+          @networkconditionschanged=${this.#onNetworkConditionsChanged}
+          @timeoutchanged=${this.#onTimeoutChanged}
+          @requestselectorattribute=${(
+            event: Controllers.SelectorPicker.RequestSelectorAttributeEvent,
+          ) => {
+            event.send(this.currentRecording?.flow.selectorAttribute);
+          }}
+          @recordingfinished=${this.#onRecordingFinished}
+          @stepchanged=${this.#handleRecordingChanged.bind(this)}
+          @recordingtitlechanged=${this.#handleRecordingTitleChanged.bind(this)}
+          @addstep=${this.#handleStepAdded.bind(this)}
+          @removestep=${this.#handleStepRemoved.bind(this)}
+          @addbreakpoint=${this.#onAddBreakpoint.bind(this)}
+          @removebreakpoint=${this.#onRemoveBreakpoint.bind(this)}
+          @playrecording=${this.#onPlayRecording.bind(this)}
+          @abortreplay=${this.#onAbortReplay.bind(this)}
+          @recorderextensionviewclosed=${this.#onExtensionViewClosed.bind(this)}
+          @addassertion=${this.#handleAddAssertionEvent.bind(this)}
+          ${UI.Widget.widgetRef(Components.RecordingView.RecordingView, widget => {this.#recordingView = widget;})}
+        ></devtools-widget>
     `;
     // clang-format on
   }
@@ -1291,6 +1292,7 @@ export class RecorderController extends LitElement {
     ];
 
     return html`
+        <style>${UI.inspectorCommonStyles}</style>
         <style>${recorderControllerStyles}</style>
         <div class="wrapper">
           <div class="header" jslog=${VisualLogging.toolbar()}>

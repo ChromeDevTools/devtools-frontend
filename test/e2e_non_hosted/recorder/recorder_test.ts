@@ -1403,10 +1403,8 @@ describe('Recorder', function() {
     );
 
     // Find the button.
-    const button = await devToolsPage.waitFor('.add-assertion-button');
+    await devToolsPage.click('.add-assertion-button');
 
-    // Add an assertion.
-    await button.click();
     await devToolsPage.renderCoordinatorQueueEmpty();
 
     // Get the latest step.

@@ -1099,11 +1099,11 @@
       runtime_flag: "AnimationTrigger",
     },
     {
-      name: "animation-trigger-type",
+      name: "animation-trigger-behavior",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       style_builder_template: "animation",
       style_builder_template_args: {
-        attribute: "TriggerType",
+        attribute: "TriggerBehavior",
       },
       keywords: ["once", "repeat", "alternate", "state"],
       typedom_types: ["Keyword"],
@@ -2251,6 +2251,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       invalidate: ["border-width", "border-visual"],
+      affected_by_zoom: true,
     },
     {
       name: "border-collapse",
@@ -2404,6 +2405,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       invalidate: ["border-width", "border-visual"],
+      affected_by_zoom: true,
     },
     {
       name: "border-right-color",
@@ -2476,6 +2478,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       invalidate: ["border-width", "border-visual"],
+      affected_by_zoom: true,
     },
     {
       name: "border-top-color",
@@ -2593,6 +2596,24 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       invalidate: ["border-width", "border-visual"],
+      affected_by_zoom: true,
+    },
+    {
+      name: "border-shape",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSBorderShape",
+      interpolable: true,
+      compositable: true,
+      field_group: "*",
+      field_template: "external",
+      include_paths: ["third_party/blink/renderer/core/style/style_border_shape.h"],
+      wrapper_pointer_name: "Member",
+      default_value: "nullptr",
+      type_name: "StyleBorderShape",
+      converter: "ConvertBorderShape",
+      keywords: ["none"],
+      typedom_types: ["Keyword"],
+      invalidate: ["border-visual", "paint", "visual-overflow"],
     },
     {
       name: "bottom",
@@ -2614,6 +2635,7 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["inset", "out-of-flow", "scroll-anchor"],
+      affected_by_zoom: true,
     },
     {
       name: "box-decoration-break",
@@ -3386,8 +3408,8 @@
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/grid_track_list.h"],
-      default_value: "NGGridTrackList(GridTrackSize(Length::Auto()))",
-      type_name: "NGGridTrackList",
+      default_value: "GridTrackList(GridTrackSize(Length::Auto()))",
+      type_name: "GridTrackList",
       converter: "ConvertGridTrackSizeList",
       keywords: ["auto", "min-content", "max-content"],
       typedom_types: ["Keyword", "Length", "Percentage", "Flex"],
@@ -3414,8 +3436,8 @@
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/grid_track_list.h"],
-      default_value: "NGGridTrackList(GridTrackSize(Length::Auto()))",
-      type_name: "NGGridTrackList",
+      default_value: "GridTrackList(GridTrackSize(Length::Auto()))",
+      type_name: "GridTrackList",
       converter: "ConvertGridTrackSizeList",
       keywords: ["auto", "min-content", "max-content"],
       typedom_types: ["Keyword", "Length", "Percentage", "Flex"],
@@ -3562,17 +3584,17 @@
       invalidate: ["layout", "paint"],
     },
     {
-      name: "interest-target-delay",
+      name: "interest-delay",
       runtime_flag: "CSSInterestDelayShorthand",
       longhands: [
-        "interest-target-show-delay", "interest-target-hide-delay"
+        "interest-show-delay", "interest-hide-delay"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       supports_incremental_style: true,
     },
     {
-      name: "interest-target-show-delay",
-      runtime_flag: "HTMLInterestTargetAttribute",
+      name: "interest-show-delay",
+      runtime_flag: "HTMLInterestForAttribute",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "primitive",
@@ -3584,8 +3606,8 @@
       supports_incremental_style: true,
     },
     {
-      name: "interest-target-hide-delay",
-      runtime_flag: "HTMLInterestTargetAttribute",
+      name: "interest-hide-delay",
+      runtime_flag: "HTMLInterestForAttribute",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
       field_template: "primitive",
@@ -3759,6 +3781,7 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["inset", "out-of-flow", "scroll-anchor"],
+      affected_by_zoom: true,
     },
     {
       name: "letter-spacing",
@@ -4911,6 +4934,7 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["inset", "out-of-flow", "scroll-anchor"],
+      affected_by_zoom: true,
     },
     {
       name: "r",
@@ -5978,6 +6002,7 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["inset", "out-of-flow", "scroll-anchor"],
+      affected_by_zoom: true,
     },
     {
       name: "overlay",
@@ -8094,7 +8119,7 @@
     {
       name: "animation-trigger",
       longhands: [
-        "animation-trigger-timeline", "animation-trigger-type",
+        "animation-trigger-timeline", "animation-trigger-behavior",
         "animation-trigger-range-start", "animation-trigger-range-end",
         "animation-trigger-exit-range-start",
         "animation-trigger-exit-range-end",

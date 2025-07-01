@@ -9874,7 +9874,7 @@ export namespace Network {
   }
 
   export const enum IPAddressSpace {
-    Local = 'Local',
+    Loopback = 'Loopback',
     Private = 'Private',
     Public = 'Public',
     Unknown = 'Unknown',
@@ -13113,6 +13113,7 @@ export namespace Page {
     BroadcastChannel = 'BroadcastChannel',
     WebXR = 'WebXR',
     SharedWorker = 'SharedWorker',
+    SharedWorkerMessage = 'SharedWorkerMessage',
     WebLocks = 'WebLocks',
     WebHID = 'WebHID',
     WebShare = 'WebShare',

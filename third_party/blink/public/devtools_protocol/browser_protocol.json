@@ -14762,7 +14762,7 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
-                        "Local",
+                        "Loopback",
                         "Private",
                         "Public",
                         "Unknown"
@@ -19646,6 +19646,7 @@
                         "BroadcastChannel",
                         "WebXR",
                         "SharedWorker",
+                        "SharedWorkerMessage",
                         "WebLocks",
                         "WebHID",
                         "WebShare",

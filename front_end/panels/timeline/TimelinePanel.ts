@@ -867,6 +867,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
       case 'LANDING_PAGE': {
         this.#removeStatusPane();
         this.#showLandingPage();
+        this.updateMiniMap();
         this.dispatchEventToListeners(Events.IS_VIEWING_TRACE, false);
 
         // Whilst we don't reset this, we hide it, mainly so the user cannot
@@ -1567,6 +1568,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private updateMiniMap(): void {
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
+      this.#minimapComponent.setData(null);
       return;
     }
 

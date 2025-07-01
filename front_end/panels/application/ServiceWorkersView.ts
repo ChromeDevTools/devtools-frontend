@@ -140,10 +140,6 @@ const UIStrings = {
   /**
    *@description Text in Service Workers View of the Application panel
    */
-  inspect: 'Inspect',
-  /**
-   *@description Text in Service Workers View of the Application panel
-   */
   startString: 'Start',
   /**
    * @description Text in Service Workers View of the Application panel. Service workers have
@@ -585,14 +581,6 @@ export class Section {
     void this.throttler.schedule(this.update.bind(this));
   }
 
-  private targetForVersionId(versionId: string): SDK.Target.Target|null {
-    const version = this.manager.findVersion(versionId);
-    if (!version?.targetId) {
-      return null;
-    }
-    return SDK.TargetManager.TargetManager.instance().targetById(version.targetId);
-  }
-
   private addVersion(versionsStack: Element, icon: string, label: string): Element {
     const installingEntry = versionsStack.createChild('div', 'service-worker-version');
     installingEntry.createChild('div', icon);
@@ -682,12 +670,6 @@ export class Section {
         const stopButton = UI.UIUtils.createTextButton(
             i18nString(UIStrings.stopString), this.stopButtonClicked.bind(this, active.id), {jslogContext: 'stop'});
         activeEntry.appendChild(stopButton);
-        if (!this.targetForVersionId(active.id)) {
-          const inspectButton = UI.UIUtils.createTextButton(
-              i18nString(UIStrings.inspect), this.inspectButtonClicked.bind(this, active.id),
-              {jslogContext: 'inspect'});
-          activeEntry.appendChild(inspectButton);
-        }
       } else if (active.isStartable()) {
         const startButton = UI.UIUtils.createTextButton(
             i18nString(UIStrings.startString), this.startButtonClicked.bind(this), {jslogContext: 'start'});
@@ -715,14 +697,6 @@ export class Section {
         waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
             i18nString(UIStrings.receivedS, {PH1: new Date(waiting.scriptResponseTime * 1000).toLocaleString()});
       }
-      if (!this.targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting())) {
-        const inspectButton = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.inspect), this.inspectButtonClicked.bind(this, waiting.id), {
-              title: i18nString(UIStrings.inspect),
-              jslogContext: 'waiting-entry-inspect',
-            });
-        waitingEntry.appendChild(inspectButton);
-      }
     }
     if (installing) {
       const installingEntry = this.addVersion(
@@ -732,14 +706,6 @@ export class Section {
         installingEntry.createChild('div', 'service-worker-subtitle').textContent = i18nString(UIStrings.receivedS, {
           PH1: new Date(installing.scriptResponseTime * 1000).toLocaleString(),
         });
-      }
-      if (!this.targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting())) {
-        const inspectButton = UI.UIUtils.createTextButton(
-            i18nString(UIStrings.inspect), this.inspectButtonClicked.bind(this, installing.id), {
-              title: i18nString(UIStrings.inspect),
-              jslogContext: 'installing-entry-inspect',
-            });
-        installingEntry.appendChild(inspectButton);
       }
     }
 
@@ -880,10 +846,6 @@ export class Section {
 
   private stopButtonClicked(versionId: string): void {
     void this.manager.stopWorker(versionId);
-  }
-
-  private inspectButtonClicked(versionId: string): void {
-    void this.manager.inspectWorker(versionId);
   }
 
   private wrapWidget(container: Element): Element {

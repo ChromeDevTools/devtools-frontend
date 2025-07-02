@@ -8,8 +8,12 @@ jobs:
   auto-close:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
       - name: Close Pull
         # See https://cli.github.com/manual/gh_pr_close
-        run: gh pr close --comment "Auto-closing the pull request because we do not accept PRs via the GitHub mirror. See README.md on how to contribute to DevTools." --delete-branch "1"
+        run: gh pr close --comment "Auto-closing the pull request because we do not accept PRs via the GitHub mirror. See README.md on how to contribute to DevTools."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

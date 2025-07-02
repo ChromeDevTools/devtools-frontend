@@ -1,0 +1,15 @@
+name: Auto-close PRs
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  auto-close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close Pull
+        # See https://cli.github.com/manual/gh_pr_close
+        run: gh pr close --comment "Auto-closing the pull request because we do not accept PRs via the GitHub mirror. See README.md on how to contribute to DevTools." --delete-branch "1"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

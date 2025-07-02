@@ -112,10 +112,23 @@ function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: s
   function createTest(title: string, itBodyFn?: Mocha.AsyncFunc) {
     const test = new Mocha.Test(
         title,
-        suite.isPending() || !itBodyFn ? undefined : InstrumentedTestFunction.instrument(itBodyFn, 'test', suite));
+        suite.isPending() || !itBodyFn ? undefined : InstrumentedTestFunction.instrument(itBodyFn, 'test', suite),
+    );
     test.file = file;
-    suite.addTest(test);
-    return test;
+
+    // Creates a proxy that changes the duration to return
+    // our own timing.
+    const proxyTest = new Proxy(test, {
+      get(target, property, receiver) {
+        if (property === 'duration' && target.realDuration) {
+          return Reflect.get(target, 'realDuration', receiver) ?? Reflect.get(target, property, receiver);
+        }
+        return Reflect.get(target, property, receiver);
+      },
+    });
+
+    suite.addTest(proxyTest);
+    return proxyTest;
   }
 
   // Regular mocha it returns the test instance.

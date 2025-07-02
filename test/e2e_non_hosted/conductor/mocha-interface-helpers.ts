@@ -103,10 +103,15 @@ export class InstrumentedTestFunction {
       // eslint-disable-next-line no-debugger
       debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
     }
+    const start = performance.now();
     const testResult =
         await (this.state === undefined ?
                    this.fn.call(context) :
                    (this.fn as unknown as E2E.TestAsyncCallbackWithState).call(undefined, this.state.state));
+
+    if (context.test) {
+      (context.test as Mocha.Test).realDuration = Math.ceil(performance.now() - start);
+    }
     dumpCollectedErrors();
     return testResult;
   }

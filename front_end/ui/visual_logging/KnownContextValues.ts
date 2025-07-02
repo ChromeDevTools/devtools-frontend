@@ -3691,6 +3691,7 @@ export const knownContextValues = new Set([
   'timeline.insight-ask-ai.lcp-by-phase',
   'timeline.insight-ask-ai.lcp-discovery',
   'timeline.insight-ask-ai.long-critical-network-tree',
+  'timeline.insight-ask-ai.modern-http',
   'timeline.insight-ask-ai.render-blocking-requests',
   'timeline.insight-ask-ai.slow-css-selector',
   'timeline.insight-ask-ai.third-parties',

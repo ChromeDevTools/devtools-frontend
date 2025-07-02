@@ -57,7 +57,13 @@ Once it's working, it's a good idea to manually experiment with the new Insight 
 
 ## Debugging tips
 
-To test the AI code, you must be running DevTools in a branded Chrome (e.g. official Chrome Canary) and be signed in. So you cannot use the `npm start` script in this repo to run against Chrome for Testing. You'll want to run Canary but point at your local DevTools:
+To test the AI code, you must be running DevTools in a branded Chrome (e.g. official Chrome Canary) and be signed in. You can use the `npm start` with a canary flag in this repository to run against Chromium, or by running Chrome Canary and pointing it to your local DevTools.":
+
+```
+npm start -- --browser=canary
+```
+
+or
 
 ```
 /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --custom-devtools-frontend=file://$(realpath out/Fast/gen/front_end)

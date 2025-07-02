@@ -194,7 +194,10 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
       case 'Viewport':
         return [{title: 'How do I make sure my page is optimized for mobile viewing?'}];
       case 'ModernHTTP':
-        return [{title: 'Is my site being served using the recommended HTTP best practices?'}];
+        return [
+          {title: 'Is my site being served using the recommended HTTP best practices?'},
+          {title: 'Which resources are not using a modern HTTP protocol?'},
+        ];
       case 'LegacyJavaScript':
         return [{title: 'Is my site polyfilling modern JavaScript features?'}];
       default:

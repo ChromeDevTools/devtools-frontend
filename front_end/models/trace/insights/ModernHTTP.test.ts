@@ -7,7 +7,7 @@ import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing
 import * as Trace from '../trace.js';
 
 import * as ModernHTTP from './ModernHTTP.js';
-const {determineNonHttp2Resources} = ModernHTTP;
+const {determineHttp1Requests: determineNonHttp2Resources} = ModernHTTP;
 
 describeWithEnvironment('Cache', function() {
   describe('determineNonHttp2Resources', () => {
@@ -328,7 +328,7 @@ describeWithEnvironment('Cache', function() {
     const {data, insights} = await processTrace(this, 'http1.1.json.gz');
     const insight =
         getInsightOrError('ModernHTTP', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
-    assert.deepEqual(insight.requests.map(r => r.args.data.url), [
+    assert.deepEqual(insight.http1Requests.map(r => r.args.data.url), [
       'https://ads.jetpackdigital.com/sites/_uploads/1742278386bg_opt_640x350-avif.avif',
       'https://ads.jetpackdigital.com/sites/_uploads/1583540859Play.png',
       'https://ads.jetpackdigital.com/sites/_uploads/1583540859Muted.png',

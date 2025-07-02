@@ -21,6 +21,10 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-modern-http`;
   override internalName = 'modern-http';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   mapToRow(req: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
     return {values: [eventRef(req), req.args.data.protocol], overlays: [this.#createOverlayForRequest(req)]};
   }
@@ -37,7 +41,7 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    return this.model?.requests.map(req => this.#createOverlayForRequest(req)) ?? [];
+    return this.model?.http1Requests.map(req => this.#createOverlayForRequest(req)) ?? [];
   }
 
   override renderContent(): Lit.LitTemplate {
@@ -45,7 +49,7 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
       return Lit.nothing;
     }
 
-    const rows = createLimitedRows(this.model.requests, this);
+    const rows = createLimitedRows(this.model.http1Requests, this);
 
     if (!rows.length) {
       return html`<div class="insight-section">${i18nString(UIStrings.noOldProtocolRequests)}</div>`;

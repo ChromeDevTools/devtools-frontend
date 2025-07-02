@@ -256,6 +256,18 @@ Layout shifts in this cluster:
 ${shiftsFormatted.join('\n')}`;
     }
 
+    if (Trace.Insights.Models.ModernHTTP.isModernHTTP(this.#insight)) {
+      const requestSummary = this.#insight.http1Requests.map(
+          request => TraceEventFormatter.networkRequest(request, this.#parsedTrace, {verbose: true}));
+
+      if (requestSummary.length === 0) {
+        return 'There are no requests that were served over a legacy HTTP protocol.';
+      }
+
+      return `Here is a list of the network requests that were served over a legacy HTTP protocol:
+${requestSummary.join('\n')}`;
+    }
+
     return '';
   }
 
@@ -301,7 +313,7 @@ ${shiftsFormatted.join('\n')}`;
       case 'Cache':
         return '';
       case 'ModernHTTP':
-        return '';
+        return '- https://developer.chrome.com/docs/lighthouse/best-practices/uses-http2';
       case 'LegacyJavaScript':
         return '';
     }
@@ -363,7 +375,14 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'Cache':
         return '';
       case 'ModernHTTP':
-        return '';
+        return `Modern HTTP protocols, such as HTTP/2, are more efficient than older versions like HTTP/1.1 because they allow for multiple requests and responses to be sent over a single network connection, significantly improving page load performance by reducing latency and overhead. This insight identifies requests that can be upgraded to a modern HTTP protocol.
+
+We apply a conservative approach when flagging HTTP/1.1 usage. This insight will only flag requests that meet all of the following criteria:
+1.  Were served over HTTP/1.1 or an earlier protocol.
+2.  Originate from an origin that serves at least 6 static asset requests, as the benefits of multiplexing are less significant with fewer requests.
+3.  Are not served from 'localhost' or coming from a third-party source, where developers have no control over the server's protocol.
+
+To pass this insight, ensure your server supports and prioritizes a modern HTTP protocol (like HTTP/2) for static assets, especially when serving a substantial number of them.`;
       case 'LegacyJavaScript':
         return '';
     }
@@ -425,8 +444,17 @@ ${rootCauseText}`;
   static networkRequest(
       request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       options: NetworkRequestFormatOptions): string {
-    const {url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData} =
-        request.args.data;
+    const {
+      url,
+      statusCode,
+      initialPriority,
+      priority,
+      fromServiceWorker,
+      mimeType,
+      responseHeaders,
+      syntheticData,
+      protocol
+    } = request.args.data;
 
     const titlePrefix = `## ${options.customTitle ?? 'Network request'}`;
 
@@ -491,6 +519,7 @@ Durations:
 Redirects:${redirects.length ? '\n' + redirects.join('\n') : ' no redirects'}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
+Protocol: ${protocol}
 ${priorityLines.join('\n')}
 Render blocking: ${renderBlocking ? 'Yes' : 'No'}
 From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}

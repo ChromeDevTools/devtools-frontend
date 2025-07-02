@@ -578,11 +578,10 @@ export class Category extends HTMLElement {
             </div>
             <div class="hide-when-closed">
               ${this.#checked !== undefined ? html`
-                <label>
-                  <input type="checkbox" .checked=${this.#checked} @change=${this.#onCheckboxToggle}
+                <devtools-checkbox .checked=${this.#checked} @change=${this.#onCheckboxToggle}
                          jslog=${VisualLogging.toggle('raw-headers').track({change: true})}>
                   ${i18nString(UIStrings.raw)}
-                </label>` : Lit.nothing}
+              </devtools-checkbox>` : Lit.nothing}
             </div>
             <div class="hide-when-closed">${this.#additionalContent}</div>
           </div>

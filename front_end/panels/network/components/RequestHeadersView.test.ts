@@ -31,6 +31,7 @@ import {
   resetRecordedMetrics,
 } from '../../../testing/UserMetricsHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as NetworkForward from '../forward/forward.js';
 
 import * as NetworkComponents from './components.js';
@@ -526,9 +527,11 @@ describeWithEnvironment('RequestHeadersView\'s Category', () => {
     component.addEventListener(NetworkComponents.RequestHeadersView.ToggleRawHeadersEvent.eventName, () => {
       eventCounter += 1;
     });
-    const checkbox = getElementWithinComponent(component, 'input', HTMLInputElement);
+    const checkbox = getElementWithinComponent(component, 'devtools-checkbox', UI.UIUtils.CheckboxLabel);
+    const inputElement = checkbox.shadowRoot?.querySelector('input');
+    assert.exists(inputElement);
 
-    dispatchClickEvent(checkbox);
+    dispatchClickEvent(inputElement);
     assert.strictEqual(eventCounter, 1);
   });
 });

@@ -9,7 +9,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -203,7 +202,7 @@ interface ViewInput {
   onColorChange(element: LayoutElement, e: Event): unknown;
   onMouseLeave(element: LayoutElement, e: MouseEvent): unknown;
   onMouseEnter(element: LayoutElement, e: MouseEvent): unknown;
-  onElementToggle(element: LayoutElement, e: InputEvent): unknown;
+  onElementToggle(element: LayoutElement, e: Event): unknown;
   onBooleanSettingChange(setting: BooleanSetting, e: Event): unknown;
   enumSettings: EnumSetting[];
   booleanSettings: BooleanSetting[];
@@ -232,15 +231,14 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   const renderElement = (element: LayoutElement): Lit.LitTemplate => html`<div
           class="element"
           jslog=${VisualLogging.item()}>
-        <label data-element="true" class="checkbox-label">
-          <input
-            data-input="true"
-            type="checkbox"
-            .checked=${element.enabled}
-            @change=${(e: InputEvent) => input.onElementToggle(element, e)}
-            jslog=${VisualLogging.toggle().track({
+        <devtools-checkbox
+          data-element="true"
+          class="checkbox-label"
+          .checked=${element.enabled}
+          @change=${(e: Event) => input.onElementToggle(element, e)}
+          jslog=${VisualLogging.toggle().track({
     click: true
-  })} />
+  })}>
           <span
               class="node-text-container"
               data-label="true"
@@ -251,7 +249,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   }
   }></devtools-node-text>
           </span>
-        </label>
+        </devtools-checkbox>
         <label
             @keyup=${onColorLabelKeyUp}
             @keydown=${onColorLabelKeyDown}
@@ -285,7 +283,6 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
       <div style="min-width: min-content;" jslog=${VisualLogging.pane('layout').track({resize: true})}>
-        <style>${Input.checkboxStyles}</style>
         <style>${layoutPaneStyles}</style>
         <style>${UI.inspectorCommonStyles}</style>
         <details open>
@@ -315,18 +312,15 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             </div>
             <div class="checkbox-settings">
               ${input.booleanSettings.map(setting =>
-                  html`<label
-                          data-boolean-setting="true"
-                          class="checkbox-label"
-                          title=${setting.title}
-                          jslog=${VisualLogging.toggle().track({click: true}).context(setting.name)}>
-                      <input
-                          data-input="true"
-                          type="checkbox"
-                          .checked=${setting.value}
-                          @change=${(e: Event) => input.onBooleanSettingChange(setting, e)} />
-                      <span data-label="true">${setting.title}</span>
-                    </label>`)}
+                  html`<devtools-checkbox
+                      data-boolean-setting="true"
+                      class="checkbox-label"
+                      title=${setting.title}
+                      .checked=${setting.value}
+                      @change=${(e: Event) => input.onBooleanSettingChange(setting, e)}
+                      jslog=${VisualLogging.toggle().track({click: true}).context(setting.name)}>
+                    ${setting.title}
+                  </devtools-checkbox>`)}
             </div>
           </div>
           ${input.gridElements ?
@@ -558,9 +552,9 @@ export class LayoutPane extends UI.Widget.Widget {
     return this.#settings.filter(isBooleanSetting);
   }
 
-  #onBooleanSettingChange(setting: BooleanSetting, event: HTMLInputElementEvent): void {
+  #onBooleanSettingChange(setting: BooleanSetting, event: Event): void {
     event.preventDefault();
-    this.onSettingChanged(setting.name, event.target.checked);
+    this.onSettingChanged(setting.name, (event.target as UI.UIUtils.CheckboxLabel).checked);
   }
 
   #onEnumSettingChange(setting: EnumSetting, event: HTMLInputElementEvent): void {
@@ -568,9 +562,9 @@ export class LayoutPane extends UI.Widget.Widget {
     this.onSettingChanged(setting.name, event.target.value);
   }
 
-  #onElementToggle(element: LayoutElement, event: HTMLInputElementEvent): void {
+  #onElementToggle(element: LayoutElement, event: Event): void {
     event.preventDefault();
-    element.toggle(event.target.checked);
+    element.toggle((event.target as UI.UIUtils.CheckboxLabel).checked);
   }
 
   #onElementClick(element: LayoutElement, event: MouseEvent): void {

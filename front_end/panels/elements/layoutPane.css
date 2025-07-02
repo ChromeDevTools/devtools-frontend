@@ -49,45 +49,19 @@
   gap: 5px;
 }
 
-.checkbox-label {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  min-width: 40px;
-  width: fit-content;
-}
-
-.checkbox-settings .checkbox-label {
+.checkbox-settings devtools-checkbox {
   margin-bottom: 8px;
 }
 
-.checkbox-settings .checkbox-label:last-child {
+.checkbox-settings devtools-checkbox:last-child {
   margin-bottom: 0;
 }
 
-.checkbox-label input {
+devtools-checkbox {
+  /* Allows label text to get ellipsed */
+  flex-shrink: unset;
   margin: 0 6px 0 0;
   padding: 0;
-  flex: none;
-}
-
-.checkbox-label:hover input::after {
-  content: '';
-  height: var(--sys-size-11);
-  width: var(--sys-size-11);
-  border-radius: var(--sys-shape-corner-full);
-  position: absolute;
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
-
-.checkbox-label input:focus {
-  outline: auto 5px -webkit-focus-ring-color;
-}
-
-.checkbox-label > span {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 
 .select-settings {

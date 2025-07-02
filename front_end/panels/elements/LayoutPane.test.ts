@@ -10,6 +10,7 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
@@ -59,17 +60,20 @@ describeWithMockConnection('LayoutPane', () => {
     const component = await renderComponent();
     assert.deepEqual(
         queryLabels(component.contentElement, '[data-enum-setting]'), [{label: 'Enum setting title', input: 'SELECT'}]);
-    assert.deepEqual(
-        queryLabels(component.contentElement, '[data-boolean-setting]'),
-        [{label: 'Boolean setting title', input: 'INPUT'}, {label: '', input: 'INPUT'}, {label: '', input: 'INPUT'}]);
+    const checkboxesTitles =
+        Array.from(component.contentElement.querySelectorAll('[data-boolean-setting]')).map(checkbox => {
+          assert.instanceOf(checkbox, UI.UIUtils.CheckboxLabel);
+          return checkbox.title;
+        });
+    assert.deepEqual(checkboxesTitles, ['Boolean setting title', '', '']);
   });
 
   it('stores a setting when changed', async () => {
     const component = await renderComponent();
 
     assert.isTrue(Common.Settings.Settings.instance().moduleSetting('show-grid-track-sizes').get());
-    const input = component.contentElement.querySelector('[data-boolean-setting] [data-input]');
-    assert.instanceOf(input, HTMLInputElement);
+    const input = component.contentElement.querySelector('[data-boolean-setting]');
+    assert.instanceOf(input, UI.UIUtils.CheckboxLabel);
 
     input.click();
 
@@ -109,7 +113,7 @@ describeWithMockConnection('LayoutPane', () => {
 
     const component = await renderComponent();
 
-    assert.lengthOf(queryLabels(component.contentElement, '[data-element]'), 3);
+    assert.lengthOf(component.contentElement.querySelectorAll('[data-element]'), 3);
   });
 
   it('renders flex elements', async () => {
@@ -128,7 +132,7 @@ describeWithMockConnection('LayoutPane', () => {
 
     const component = await renderComponent();
 
-    assert.lengthOf(queryLabels(component.contentElement, '[data-element]'), 3);
+    assert.lengthOf(component.contentElement.querySelectorAll('[data-element]'), 3);
   });
 
   it('send an event when an element overlay is toggled', async () => {
@@ -140,8 +144,8 @@ describeWithMockConnection('LayoutPane', () => {
 
     const component = await renderComponent();
 
-    const input = component.contentElement.querySelector('[data-element] [data-input]');
-    assert.instanceOf(input, HTMLInputElement);
+    const input = component.contentElement.querySelector('[data-element]');
+    assert.instanceOf(input, UI.UIUtils.CheckboxLabel);
     input.click();
     assert.isTrue(highlightGrid.calledOnceWith(ID_1));
   });

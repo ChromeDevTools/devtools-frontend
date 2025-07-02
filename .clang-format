@@ -8,3 +8,4 @@ AllowShortBlocksOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 ReflowComments: false
 JavaScriptWrapImports: true
+

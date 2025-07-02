@@ -16,6 +16,8 @@ jobs:
             .github
       - name: Close open pull requests
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           PRS=$(gh pr list --state=open --repo=ChromeDevTools/devtools-frontend --json number --jq '.[].number')
           for PR in $PRS; do

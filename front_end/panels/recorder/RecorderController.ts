@@ -477,11 +477,11 @@ export class RecorderController extends LitElement {
     if (this.viewDescriptor) {
       this.viewDescriptor = undefined;
     }
-    if (event.data.extension) {
-      return await this.#onPlayViaExtension(event.data.extension);
+    if (event.extension) {
+      return await this.#onPlayViaExtension(event.extension);
     }
     Host.userMetrics.recordingReplayStarted(
-        event.data.targetPanel !== Components.RecordingView.TargetPanel.DEFAULT ?
+        event.targetPanel !== Components.RecordingView.TargetPanel.DEFAULT ?
             Host.UserMetrics.RecordingReplayStarted.REPLAY_WITH_PERFORMANCE_TRACING :
             Host.UserMetrics.RecordingReplayStarted.REPLAY_ONLY);
     this.#replayState.isPlaying = true;
@@ -494,9 +494,9 @@ export class RecorderController extends LitElement {
     await this.#disableDeviceModeIfEnabled();
 
     this.recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
-        this.currentRecording.flow, {speed: event.data.speed, breakpointIndexes: this.#stepBreakpointIndexes});
+        this.currentRecording.flow, {speed: event.speed, breakpointIndexes: this.#stepBreakpointIndexes});
 
-    const withPerformanceTrace = event.data.targetPanel === Components.RecordingView.TargetPanel.PERFORMANCE_PANEL;
+    const withPerformanceTrace = event.targetPanel === Components.RecordingView.TargetPanel.PERFORMANCE_PANEL;
     const sectionsWithScreenshot = new Set();
     this.recordingPlayer.addEventListener(Models.RecordingPlayer.Events.STEP, async ({data: {step, resolve}}) => {
       this.currentStep = step;
@@ -565,7 +565,7 @@ export class RecorderController extends LitElement {
     });
 
     let performanceTracing = null;
-    switch (event.data?.targetPanel) {
+    switch (event.targetPanel) {
       case Components.RecordingView.TargetPanel.PERFORMANCE_PANEL:
         performanceTracing = new Tracing.PerformanceTracing.PerformanceTracing(this.#getMainTarget(), {
           tracingBufferUsage(): void{},
@@ -590,8 +590,8 @@ export class RecorderController extends LitElement {
       const events = await eventsPromise;
       this.#replayState.isPlaying = false;
       this.recordingPlayer = undefined;
-      await UI.InspectorView.InspectorView.instance().showPanel(event.data?.targetPanel as string);
-      if (event.data?.targetPanel === Components.RecordingView.TargetPanel.PERFORMANCE_PANEL) {
+      await UI.InspectorView.InspectorView.instance().showPanel(event.targetPanel as string);
+      if (event.targetPanel === Components.RecordingView.TargetPanel.PERFORMANCE_PANEL) {
         // Note: this is not passing any metadata to the Performance panel.
         const trace = new SDK.TraceObject.TraceObject(events as Trace.Types.Events.Event[]);
         void Common.Revealer.reveal(trace);
@@ -700,12 +700,12 @@ export class RecorderController extends LitElement {
         {keepBreakpoints: true, updateSession: true});
   }
 
-  async #handleRecordingTitleChanged(event: Components.RecordingView.RecordingTitleChangedEvent): Promise<void> {
+  async #handleRecordingTitleChanged(title: string): Promise<void> {
     if (!this.currentRecording) {
       throw new Error('Current recording expected to be defined.');
     }
 
-    const flow = {...this.currentRecording.flow, title: event.title};
+    const flow = {...this.currentRecording.flow, title};
     this.#setCurrentRecording(await this.#storage.updateRecording(this.currentRecording.storageName, flow));
   }
 
@@ -737,7 +737,7 @@ export class RecorderController extends LitElement {
         {keepBreakpoints: true, updateSession: true});
   }
 
-  async #onNetworkConditionsChanged(event: Components.RecordingView.NetworkConditionsChanged): Promise<void> {
+  async #onNetworkConditionsChanged(data?: SDK.NetworkManager.Conditions): Promise<void> {
     if (!this.currentRecording) {
       throw new Error('Current recording expected to be defined.');
     }
@@ -751,7 +751,7 @@ export class RecorderController extends LitElement {
       }
       return step.type === 'emulateNetworkConditions';
     });
-    if (!event.data) {
+    if (!data) {
       // Delete step if present.
       if (emulateNetworkConditionsIdx !== -1) {
         this.currentRecording.flow.steps.splice(emulateNetworkConditionsIdx, 1);
@@ -761,24 +761,24 @@ export class RecorderController extends LitElement {
       this.currentRecording.flow.steps.splice(
           0, 0,
           Models.SchemaUtils.createEmulateNetworkConditionsStep(
-              {download: event.data.download, upload: event.data.upload, latency: event.data.latency}));
+              {download: data.download, upload: data.upload, latency: data.latency}));
     } else {
       // Update existing step.
       const step =
           this.currentRecording.flow.steps[emulateNetworkConditionsIdx] as Models.Schema.EmulateNetworkConditionsStep;
-      step.download = event.data.download;
-      step.upload = event.data.upload;
-      step.latency = event.data.latency;
+      step.download = data.download;
+      step.upload = data.upload;
+      step.latency = data.latency;
     }
     this.#setCurrentRecording(
         await this.#storage.updateRecording(this.currentRecording.storageName, this.currentRecording.flow));
   }
 
-  async #onTimeoutChanged(event: Components.RecordingView.TimeoutChanged): Promise<void> {
+  async #onTimeoutChanged(timeout?: number): Promise<void> {
     if (!this.currentRecording) {
       throw new Error('Current recording expected to be defined.');
     }
-    this.currentRecording.flow.timeout = event.data;
+    this.currentRecording.flow.timeout = timeout;
     this.#setCurrentRecording(
         await this.#storage.updateRecording(this.currentRecording.storageName, this.currentRecording.flow));
   }
@@ -1033,8 +1033,8 @@ export class RecorderController extends LitElement {
 
   async #onPlayRecordingByName(event: Components.RecordingListView.PlayRecordingEvent): Promise<void> {
     await this.#onRecordingSelected(event);
-    await this.#onPlayRecording(new Components.RecordingView.PlayRecordingEvent(
-        {targetPanel: Components.RecordingView.TargetPanel.DEFAULT, speed: this.#recorderSettings.speed}));
+    await this.#onPlayRecording(
+        {targetPanel: Components.RecordingView.TargetPanel.DEFAULT, speed: this.#recorderSettings.speed});
   }
 
   #onAddBreakpoint = (event: AddBreakpointEvent): void => {
@@ -1083,8 +1083,8 @@ export class RecorderController extends LitElement {
         return;
 
       case Actions.RecorderActions.REPLAY_RECORDING:
-        void this.#onPlayRecording(new Components.RecordingView.PlayRecordingEvent(
-            {targetPanel: Components.RecordingView.TargetPanel.DEFAULT, speed: this.#recorderSettings.speed}));
+        void this.#onPlayRecording(
+            {targetPanel: Components.RecordingView.TargetPanel.DEFAULT, speed: this.#recorderSettings.speed});
         return;
 
       case Actions.RecorderActions.TOGGLE_CODE_VIEW: {
@@ -1210,25 +1210,25 @@ export class RecorderController extends LitElement {
             extensionConverters: this.extensionConverters,
             replayExtensions: this.replayExtensions,
             extensionDescriptor: this.viewDescriptor,
+            recordingFinished: this.#onRecordingFinished.bind(this),
+            addAssertion: this.#handleAddAssertionEvent.bind(this),
+            abortReplay: this.#onAbortReplay.bind(this),
+            playRecording: this.#onPlayRecording.bind(this),
+            networkConditionsChanged: this.#onNetworkConditionsChanged.bind(this),
+            timeoutChanged: this.#onTimeoutChanged.bind(this),
+            titleChanged: this.#handleRecordingTitleChanged.bind(this),
           })}
-          @networkconditionschanged=${this.#onNetworkConditionsChanged}
-          @timeoutchanged=${this.#onTimeoutChanged}
           @requestselectorattribute=${(
             event: Controllers.SelectorPicker.RequestSelectorAttributeEvent,
           ) => {
             event.send(this.currentRecording?.flow.selectorAttribute);
           }}
-          @recordingfinished=${this.#onRecordingFinished}
           @stepchanged=${this.#handleRecordingChanged.bind(this)}
-          @recordingtitlechanged=${this.#handleRecordingTitleChanged.bind(this)}
           @addstep=${this.#handleStepAdded.bind(this)}
           @removestep=${this.#handleStepRemoved.bind(this)}
           @addbreakpoint=${this.#onAddBreakpoint.bind(this)}
           @removebreakpoint=${this.#onRemoveBreakpoint.bind(this)}
-          @playrecording=${this.#onPlayRecording.bind(this)}
-          @abortreplay=${this.#onAbortReplay.bind(this)}
           @recorderextensionviewclosed=${this.#onExtensionViewClosed.bind(this)}
-          @addassertion=${this.#handleAddAssertionEvent.bind(this)}
           ${UI.Widget.widgetRef(Components.RecordingView.RecordingView, widget => {this.#recordingView = widget;})}
         ></devtools-widget>
     `;

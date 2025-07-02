@@ -159,92 +159,15 @@ export interface ReplayState {
   isPausedOnBreakpoint: boolean;  // Replay is in progress and is in stopped state
 }
 
-export class RecordingFinishedEvent extends Event {
-  static readonly eventName = 'recordingfinished';
-
-  constructor() {
-    super(RecordingFinishedEvent.eventName, {composed: true, bubbles: true});
-  }
-}
-
 export const enum TargetPanel {
   PERFORMANCE_PANEL = 'timeline',
   DEFAULT = 'chrome-recorder',
 }
 
-interface PlayRecordingEventData {
+export interface PlayRecordingEvent {
   targetPanel: TargetPanel;
   speed: PlayRecordingSpeed;
   extension?: Extensions.ExtensionManager.Extension;
-}
-
-// FIXME(b/407941153): pass functions to RecordingView instead of relying on events.
-export class PlayRecordingEvent extends Event {
-  static readonly eventName = 'playrecording';
-  readonly data: PlayRecordingEventData;
-  constructor(
-      data: PlayRecordingEventData = {
-        targetPanel: TargetPanel.DEFAULT,
-        speed: PlayRecordingSpeed.NORMAL,
-      },
-  ) {
-    super(PlayRecordingEvent.eventName, {composed: true, bubbles: true});
-    this.data = data;
-  }
-}
-
-export class AbortReplayEvent extends Event {
-  static readonly eventName = 'abortreplay';
-  constructor() {
-    super(AbortReplayEvent.eventName, {composed: true, bubbles: true});
-  }
-}
-
-export class RecordingChangedEvent extends Event {
-  static readonly eventName = 'recordingchanged';
-  data: {currentStep: Models.Schema.Step, newStep: Models.Schema.Step};
-  constructor(currentStep: Models.Schema.Step, newStep: Models.Schema.Step) {
-    super(RecordingChangedEvent.eventName, {composed: true, bubbles: true});
-    this.data = {currentStep, newStep};
-  }
-}
-
-export class AddAssertionEvent extends Event {
-  static readonly eventName = 'addassertion';
-  constructor() {
-    super(AddAssertionEvent.eventName, {composed: true, bubbles: true});
-  }
-}
-
-export class RecordingTitleChangedEvent extends Event {
-  static readonly eventName = 'recordingtitlechanged';
-  title: string;
-
-  constructor(title: string) {
-    super(RecordingTitleChangedEvent.eventName, {composed: true, bubbles: true});
-    this.title = title;
-  }
-}
-
-export class NetworkConditionsChanged extends Event {
-  static readonly eventName = 'networkconditionschanged';
-  data?: SDK.NetworkManager.Conditions;
-  constructor(data?: SDK.NetworkManager.Conditions) {
-    super(NetworkConditionsChanged.eventName, {
-      composed: true,
-      bubbles: true,
-    });
-    this.data = data;
-  }
-}
-
-export class TimeoutChanged extends Event {
-  static readonly eventName = 'timeoutchanged';
-  data?: number;
-  constructor(data?: number) {
-    super(TimeoutChanged.eventName, {composed: true, bubbles: true});
-    this.data = data;
-  }
 }
 
 const networkConditionPresets = [
@@ -587,8 +510,8 @@ function renderScreenshot(
 function renderReplayOrAbortButton(input: ViewInput): Lit.LitTemplate {
   if (input.replayState.isPlaying) {
     return html`
-        <devtools-button .jslogContext=${'abort-replay'} @click=${
-        input.handleAbortReplay} .iconName=${'pause'} .variant=${Buttons.Button.Variant.OUTLINED}>
+        <devtools-button .jslogContext=${'abort-replay'} @click=${input.onAbortReplay} .iconName=${'pause'} .variant=${
+        Buttons.Button.Variant.OUTLINED}>
           ${i18nString(UIStrings.cancelReplay)}
         </devtools-button>`;
   }
@@ -606,7 +529,7 @@ function renderReplayOrAbortButton(input: ViewInput): Lit.LitTemplate {
           } as ReplaySectionData
         }
         .disabled=${input.replayState.isPlaying}
-        @startreplay=${input.handleTogglePlaying}
+        @startreplay=${input.onTogglePlaying}
         >
       </devtools-replay-section>`;
   // clang-format on
@@ -680,7 +603,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                       <devtools-step-view
                       @click=${input.onStepClick}
                       @mouseover=${input.onStepHover}
-                      @copystep=${input.onCopyStepEvent}
+                      @copystep=${input.onCopyStep}
                       .data=${
                         {
                           step,
@@ -716,7 +639,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
                         jslogContext: 'add-assertion',
                       } as Buttons.Button.ButtonData
                     }
-                    @click=${input.dispatchAddAssertionEvent}
+                    @click=${input.onAddAssertion}
                   >${i18nString(UIStrings.addAssertion)}</devtools-button>` : undefined}
                   ${
                     input.isRecording && i === input.sections.length - 1
@@ -732,7 +655,7 @@ function renderSections(input: ViewInput): Lit.LitTemplate {
       )}
       </div>
     `;
-  // clang-format on
+    // clang-format on
 }
 
 function renderHeader(input: ViewInput): Lit.LitTemplate {
@@ -786,7 +709,7 @@ function renderHeader(input: ViewInput): Lit.LitTemplate {
         !input.isRecording && input.replayAllowed
           ? html`<div class="actions">
               <devtools-button
-                @click=${input.handleMeasurePerformanceClickEvent}
+                @click=${input.onMeasurePerformanceClick}
                 .data=${
                   {
                     disabled: input.replayState.isPlaying,
@@ -833,15 +756,15 @@ interface ViewInput {
   settings: Models.RecordingSettings.RecordingSettings|null;
   showCodeView: boolean;
 
-  dispatchAddAssertionEvent: () => void;
-  dispatchRecordingFinished: () => void;
+  onAddAssertion: () => void;
+  onRecordingFinished: () => void;
   getSectionState: (section: Models.Section.Section) => State;
   getStepState: (step: Models.Schema.Step) => State;
-  handleAbortReplay: () => void;
-  handleMeasurePerformanceClickEvent: (event: Event) => void;
-  handleTogglePlaying: (event: StartReplayEvent) => void;
+  onAbortReplay: () => void;
+  onMeasurePerformanceClick: (event: Event) => void;
+  onTogglePlaying: (event: StartReplayEvent) => void;
   onCodeFormatChange: (event: Menus.SelectMenu.SelectMenuItemSelectedEvent) => void;
-  onCopyStepEvent: (event: CopyStepEvent) => void;
+  onCopyStep: (event: CopyStepEvent) => void;
   onEditTitleButtonClick: (event: Event) => void;
   onNetworkConditionsChange: (event: Event) => void;
   onReplaySettingsKeydown: (event: Event) => void;
@@ -893,7 +816,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           <div class="controls">
             <devtools-control-button
               jslog=${VisualLogging.toggle('toggle-recording').track({click: true})}
-              @click=${input.dispatchRecordingFinished}
+              @click=${input.onRecordingFinished}
               .disabled=${input.recordingTogglingInProgress}
               .shape=${'square'}
               .label=${footerButtonTitle}
@@ -932,6 +855,14 @@ export class RecordingView extends UI.Widget.Widget {
   extensionConverters: readonly Converters.Converter.Converter[] = [];
   replayExtensions?: Extensions.ExtensionManager.Extension[];
   extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
+
+  addAssertion?: () => void;
+  abortReplay?: () => void;
+  recordingFinished?: () => void;
+  playRecording?: (event: PlayRecordingEvent) => void;
+  networkConditionsChanged?: (data?: SDK.NetworkManager.Conditions) => void;
+  timeoutChanged?: (timeout?: number) => void;
+  titleChanged?: (title: string) => void;
 
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
   get recorderSettings(): Models.RecorderSettings.RecorderSettings|undefined {
@@ -1004,29 +935,27 @@ export class RecordingView extends UI.Widget.Widget {
           settings: this.settings ?? null,
           showCodeView: this.#showCodeView,
 
-          dispatchAddAssertionEvent: () => {
-            this.contentElement.dispatchEvent(new AddAssertionEvent());
+          onAddAssertion: () => {
+            this.addAssertion?.();
           },
-          dispatchRecordingFinished: () => {
-            this.contentElement.dispatchEvent(new RecordingFinishedEvent());
+          onRecordingFinished: () => {
+            this.recordingFinished?.();
           },
           getSectionState: this.#getSectionState.bind(this),
           getStepState: this.#getStepState.bind(this),
-          handleAbortReplay: () => {
-            this.contentElement.dispatchEvent(new AbortReplayEvent());
+          onAbortReplay: () => {
+            this.abortReplay?.();
           },
-          handleMeasurePerformanceClickEvent: this.#handleMeasurePerformanceClickEvent.bind(this),
-          handleTogglePlaying: (event: StartReplayEvent) => {
-            this.contentElement.dispatchEvent(
-                new PlayRecordingEvent({
-                  targetPanel: TargetPanel.DEFAULT,
-                  speed: event.speed,
-                  extension: event.extension,
-                }),
-            );
+          onMeasurePerformanceClick: this.#handleMeasurePerformanceClickEvent.bind(this),
+          onTogglePlaying: (event: StartReplayEvent) => {
+            this.playRecording?.({
+              targetPanel: TargetPanel.DEFAULT,
+              speed: event.speed,
+              extension: event.extension,
+            });
           },
           onCodeFormatChange: this.#onCodeFormatChange.bind(this),
-          onCopyStepEvent: this.#onCopyStepEvent.bind(this),
+          onCopyStep: this.#onCopyStepEvent.bind(this),
           onEditTitleButtonClick: this.#onEditTitleButtonClick.bind(this),
           onNetworkConditionsChange: this.#onNetworkConditionsChange.bind(this),
           onReplaySettingsKeydown: this.#onReplaySettingsKeydown.bind(this),
@@ -1165,10 +1094,8 @@ export class RecordingView extends UI.Widget.Widget {
       const preset = networkConditionPresets.find(
           preset => preset.i18nTitleKey === throttlingMenu.value,
       );
-      this.contentElement.dispatchEvent(
-          new NetworkConditionsChanged(
-              preset?.i18nTitleKey === SDK.NetworkManager.NoThrottlingConditions.i18nTitleKey ? undefined : preset,
-              ),
+      this.networkConditionsChanged?.(
+          preset?.i18nTitleKey === SDK.NetworkManager.NoThrottlingConditions.i18nTitleKey ? undefined : preset,
       );
     }
   }
@@ -1179,7 +1106,7 @@ export class RecordingView extends UI.Widget.Widget {
       target.reportValidity();
       return;
     }
-    this.contentElement.dispatchEvent(new TimeoutChanged(Number(target.value)));
+    this.timeoutChanged?.(Number(target.value));
   }
 
   #onTitleBlur = (event: Event): void => {
@@ -1190,7 +1117,7 @@ export class RecordingView extends UI.Widget.Widget {
       this.performUpdate();
       return;
     }
-    this.contentElement.dispatchEvent(new RecordingTitleChangedEvent(title));
+    this.titleChanged?.(title);
   };
 
   #onTitleInputKeyDown = (event: KeyboardEvent): void => {
@@ -1264,12 +1191,10 @@ export class RecordingView extends UI.Widget.Widget {
   #handleMeasurePerformanceClickEvent(event: Event): void {
     event.stopPropagation();
 
-    this.contentElement.dispatchEvent(
-        new PlayRecordingEvent({
-          targetPanel: TargetPanel.PERFORMANCE_PANEL,
-          speed: PlayRecordingSpeed.NORMAL,
-        }),
-    );
+    this.playRecording?.({
+      targetPanel: TargetPanel.PERFORMANCE_PANEL,
+      speed: PlayRecordingSpeed.NORMAL,
+    });
   }
 
   showCodeToggle = (): void => {

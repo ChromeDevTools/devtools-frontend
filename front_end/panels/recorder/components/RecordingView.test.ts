@@ -72,8 +72,7 @@ describeWithEnvironment('RecordingView', () => {
       ranges: [{anchor: 0, head: 0}],
       main: 0,
     });
-
-    // FIXME(b/407941153): needs to be updated once we do not rely on events.
+    // FIXME(b/407941153): TextEditor needs to be updated to render declaratively.
     // view.input.onStepHover();
     // assert.deepEqual(input.editorState?.selection.toJSON(), {
     //   ranges: [{anchor: 34, head: 68}],
@@ -113,54 +112,53 @@ describeWithEnvironment('RecordingView', () => {
     assert.strictEqual(JSON.stringify(userFlow, null, 2) + '\n', text);
   });
 
-  it('should copy a step to clipboard via copy event',
-     async () => {
-         // FIXME(b/407941153): uncomment this test when migrating away from events.
+  it('should copy a step to clipboard via copy event', async () => {
+    const [view] = await createView();
+    view.input.onStepClick({
+      target: {
+        step,
+      },
+      stopPropagation: sinon.stub(),
+    } as unknown as MouseEvent);
 
-         // const [view] = await createView();
-         // view.input.onStepClick();
+    const clipboardData = new DataTransfer();
+    const isCalled = sinon.promise();
+    const copyText = sinon
+                         .stub(
+                             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+                             'copyText',
+                             )
+                         .callsFake(() => {
+                           void isCalled.resolve(true);
+                         });
+    const event = new ClipboardEvent('copy', {clipboardData, bubbles: true});
 
-         // const clipboardData = new DataTransfer();
-         // const isCalled = sinon.promise();
-         // const copyText = sinon
-         //                      .stub(
-         //                          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-         //                          'copyText',
-         //                          )
-         //                      .callsFake(() => {
-         //                        void isCalled.resolve(true);
-         //                      });
-         // const event = new ClipboardEvent('copy', {clipboardData, bubbles: true});
+    document.body.dispatchEvent(event);
 
-         // document.body.dispatchEvent(event);
+    await isCalled;
 
-         // await isCalled;
+    sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
+  });
 
-         // sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
-     });
+  it('should copy a step to clipboard via custom event', async () => {
+    const [view] = await createView();
+    const isCalled = sinon.promise();
+    const copyText = sinon
+                         .stub(
+                             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+                             'copyText',
+                             )
+                         .callsFake(() => {
+                           void isCalled.resolve(true);
+                         });
+    const event = new Components.StepView.CopyStepEvent(step);
 
-  it('should copy a step to clipboard via custom event',
-     async () => {
-         // FIXME(b/407941153): uncomment this test when migrating away from events.
+    view.input.onCopyStep(event);
 
-         // const [view] = await createView();
-         // const isCalled = sinon.promise();
-         // const copyText = sinon
-         //                      .stub(
-         //                          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
-         //                          'copyText',
-         //                          )
-         //                      .callsFake(() => {
-         //                        void isCalled.resolve(true);
-         //                      });
-         // const event = new Components.StepView.CopyStepEvent(step);
+    await isCalled;
 
-         // dispatchOnStep(view, event);
-
-         // await isCalled;
-
-         // sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
-     });
+    sinon.assert.calledWith(copyText, JSON.stringify(step, null, 2) + '\n');
+  });
 
   it('should show code and change preferred copy method', async () => {
     const [view] = await createView();

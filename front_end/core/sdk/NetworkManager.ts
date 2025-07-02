@@ -176,8 +176,10 @@ export class NetworkManager extends SDKModel<EventTypes> {
       this.cookieControlFlagsSettingChanged();
     }
 
-    void this.#networkAgent.invoke_enable(
-        {maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH, reportDirectSocketTraffic: true});
+    void this.#networkAgent.invoke_enable({
+      maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH,
+      reportDirectSocketTraffic: true,
+    });
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});
 
     this.#bypassServiceWorkerSetting =
@@ -1571,13 +1573,13 @@ let multiTargetNetworkManagerInstance: MultitargetNetworkManager|null;
 
 export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrapper<MultitargetNetworkManager.EventTypes>
     implements SDKModelObserver<NetworkManager> {
-  #userAgentOverrideInternal = '';
+  #userAgentOverride = '';
   #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null;
   #customAcceptedEncodings: Protocol.Network.ContentEncoding[]|null = null;
   readonly #networkAgents = new Set<ProtocolProxyApi.NetworkApi>();
   readonly #fetchAgents = new Set<ProtocolProxyApi.FetchApi>();
   readonly inflightMainResourceRequests = new Map<string, NetworkRequest>();
-  #networkConditionsInternal: Conditions = NoThrottlingConditions;
+  #networkConditions: Conditions = NoThrottlingConditions;
   #updatingInterceptionPatternsPromise: Promise<void>|null = null;
   readonly #blockingEnabledSetting =
       Common.Settings.Settings.instance().moduleSetting<boolean>('request-blocking-enabled');
@@ -1698,16 +1700,16 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   isThrottling(): boolean {
-    return this.#networkConditionsInternal.download >= 0 || this.#networkConditionsInternal.upload >= 0 ||
-        this.#networkConditionsInternal.latency > 0;
+    return this.#networkConditions.download >= 0 || this.#networkConditions.upload >= 0 ||
+        this.#networkConditions.latency > 0;
   }
 
   isOffline(): boolean {
-    return !this.#networkConditionsInternal.download && !this.#networkConditionsInternal.upload;
+    return !this.#networkConditions.download && !this.#networkConditions.upload;
   }
 
   setNetworkConditions(conditions: Conditions): void {
-    this.#networkConditionsInternal = conditions;
+    this.#networkConditions = conditions;
     for (const agent of this.#networkAgents) {
       this.updateNetworkConditions(agent);
     }
@@ -1715,11 +1717,11 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   networkConditions(): Conditions {
-    return this.#networkConditionsInternal;
+    return this.#networkConditions;
   }
 
   private updateNetworkConditions(networkAgent: ProtocolProxyApi.NetworkApi): void {
-    const conditions = this.#networkConditionsInternal;
+    const conditions = this.#networkConditions;
     if (!this.isThrottling()) {
       void networkAgent.invoke_emulateNetworkConditions({
         offline: false,
@@ -1749,7 +1751,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   currentUserAgent(): string {
-    return this.#customUserAgent ? this.#customUserAgent : this.#userAgentOverrideInternal;
+    return this.#customUserAgent ? this.#customUserAgent : this.#userAgentOverride;
   }
 
   private updateUserAgentOverride(): void {
@@ -1761,8 +1763,8 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   setUserAgentOverride(userAgent: string, userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null): void {
-    const uaChanged = (this.#userAgentOverrideInternal !== userAgent);
-    this.#userAgentOverrideInternal = userAgent;
+    const uaChanged = (this.#userAgentOverride !== userAgent);
+    this.#userAgentOverride = userAgent;
     if (!this.#customUserAgent) {
       this.#userAgentMetadataOverride = userAgentMetadataOverride;
       this.updateUserAgentOverride();
@@ -1975,7 +1977,7 @@ export namespace MultitargetNetworkManager {
 
 export class InterceptedRequest {
   readonly #fetchAgent: ProtocolProxyApi.FetchApi;
-  #hasRespondedInternal: boolean;
+  #hasResponded = false;
   request: Protocol.Network.Request;
   resourceType: Protocol.Network.ResourceType;
   responseStatusCode: number|undefined;
@@ -1993,7 +1995,6 @@ export class InterceptedRequest {
       responseHeaders?: Protocol.Fetch.HeaderEntry[],
   ) {
     this.#fetchAgent = fetchAgent;
-    this.#hasRespondedInternal = false;
     this.request = request;
     this.resourceType = resourceType;
     this.responseStatusCode = responseStatusCode;
@@ -2003,7 +2004,7 @@ export class InterceptedRequest {
   }
 
   hasResponded(): boolean {
-    return this.#hasRespondedInternal;
+    return this.#hasResponded;
   }
 
   static mergeSetCookieHeaders(
@@ -2067,7 +2068,7 @@ export class InterceptedRequest {
   async continueRequestWithContent(
       contentBlob: Blob, encoded: boolean, responseHeaders: Protocol.Fetch.HeaderEntry[],
       isBodyOverridden: boolean): Promise<void> {
-    this.#hasRespondedInternal = true;
+    this.#hasResponded = true;
     const body = encoded ? await contentBlob.text() : await Common.Base64.encode(contentBlob).catch(err => {
       console.error(err);
       return '';
@@ -2089,8 +2090,8 @@ export class InterceptedRequest {
   }
 
   continueRequestWithoutChange(): void {
-    console.assert(!this.#hasRespondedInternal);
-    this.#hasRespondedInternal = true;
+    console.assert(!this.#hasResponded);
+    this.#hasResponded = true;
     void this.#fetchAgent.invoke_continueRequest({requestId: this.requestId});
   }
 
@@ -2112,7 +2113,7 @@ export class InterceptedRequest {
 
   /**
    * Tries to determine the MIME type and charset for this intercepted request.
-   * Looks at the interecepted response headers first (for Content-Type header), then
+   * Looks at the intercepted response headers first (for Content-Type header), then
    * checks the `NetworkRequest` if we have one.
    */
   getMimeTypeAndCharset(): {mimeType: string|null, charset: string|null} {
@@ -2134,25 +2135,14 @@ export class InterceptedRequest {
  * same requestId due to redirects.
  */
 class ExtraInfoBuilder {
-  readonly #requests: NetworkRequest[];
-  #responseExtraInfoFlag: Array<boolean|null>;
-  #requestExtraInfos: Array<ExtraRequestInfo|null>;
-  #responseExtraInfos: Array<ExtraResponseInfo|null>;
-  #responseEarlyHintsHeaders: NameValue[];
-  #finishedInternal: boolean;
-  #webBundleInfo: WebBundleInfo|null;
-  #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null;
-
-  constructor() {
-    this.#requests = [];
-    this.#responseExtraInfoFlag = [];
-    this.#requestExtraInfos = [];
-    this.#responseEarlyHintsHeaders = [];
-    this.#responseExtraInfos = [];
-    this.#finishedInternal = false;
-    this.#webBundleInfo = null;
-    this.#webBundleInnerRequestInfo = null;
-  }
+  readonly #requests: NetworkRequest[] = [];
+  #responseExtraInfoFlag: Array<boolean|null> = [];
+  #requestExtraInfos: Array<ExtraRequestInfo|null> = [];
+  #responseExtraInfos: Array<ExtraResponseInfo|null> = [];
+  #responseEarlyHintsHeaders: NameValue[] = [];
+  #finished = false;
+  #webBundleInfo: WebBundleInfo|null = null;
+  #webBundleInnerRequestInfo: WebBundleInnerRequestInfo|null = null;
 
   addRequest(req: NetworkRequest): void {
     this.#requests.push(req);
@@ -2200,7 +2190,7 @@ class ExtraInfoBuilder {
   }
 
   finished(): void {
-    this.#finishedInternal = true;
+    this.#finished = true;
     // We may have missed responseReceived event in case of failure.
     // That said, the ExtraInfo events still may be here, so mark them
     // as present. Event if they are not, this is harmless.
@@ -2217,7 +2207,7 @@ class ExtraInfoBuilder {
   }
 
   isFinished(): boolean {
-    return this.#finishedInternal;
+    return this.#finished;
   }
 
   private sync(index: number): void {
@@ -2249,14 +2239,14 @@ class ExtraInfoBuilder {
   }
 
   finalRequest(): NetworkRequest|null {
-    if (!this.#finishedInternal) {
+    if (!this.#finished) {
       return null;
     }
     return this.#requests[this.#requests.length - 1] || null;
   }
 
   private updateFinalRequest(): void {
-    if (!this.#finishedInternal) {
+    if (!this.#finished) {
       return;
     }
     const finalRequest = this.finalRequest();

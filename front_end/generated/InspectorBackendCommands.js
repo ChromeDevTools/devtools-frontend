@@ -822,7 +822,7 @@ inspectorBackend.registerType("Network.LoadNetworkResourceOptions", [{"name": "d
 inspectorBackend.registerEnum("Overlay.LineStylePattern", {Dashed: "dashed", Dotted: "dotted"});
 inspectorBackend.registerEnum("Overlay.ContrastAlgorithm", {Aa: "aa", Aaa: "aaa", Apca: "apca"});
 inspectorBackend.registerEnum("Overlay.ColorFormat", {Rgb: "rgb", Hsl: "hsl", Hwb: "hwb", Hex: "hex"});
-inspectorBackend.registerEnum("Overlay.InspectMode", {SearchForNode: "searchForNode", SearchForUAShadowDOM: "searchForUAShadowDOM", CaptureAreaScreenshot: "captureAreaScreenshot", ShowDistances: "showDistances", None: "none"});
+inspectorBackend.registerEnum("Overlay.InspectMode", {SearchForNode: "searchForNode", SearchForUAShadowDOM: "searchForUAShadowDOM", CaptureAreaScreenshot: "captureAreaScreenshot", None: "none"});
 inspectorBackend.registerEvent("Overlay.inspectNodeRequested", ["backendNodeId"]);
 inspectorBackend.registerEvent("Overlay.nodeHighlightRequested", ["nodeId"]);
 inspectorBackend.registerEvent("Overlay.screenshotRequested", ["viewport"]);
@@ -1084,7 +1084,6 @@ inspectorBackend.registerCommand("ServiceWorker.disable", [], [], "");
 inspectorBackend.registerCommand("ServiceWorker.dispatchSyncEvent", [{"name": "origin", "type": "string", "optional": false, "description": "", "typeRef": null}, {"name": "registrationId", "type": "string", "optional": false, "description": "", "typeRef": "ServiceWorker.RegistrationID"}, {"name": "tag", "type": "string", "optional": false, "description": "", "typeRef": null}, {"name": "lastChance", "type": "boolean", "optional": false, "description": "", "typeRef": null}], [], "");
 inspectorBackend.registerCommand("ServiceWorker.dispatchPeriodicSyncEvent", [{"name": "origin", "type": "string", "optional": false, "description": "", "typeRef": null}, {"name": "registrationId", "type": "string", "optional": false, "description": "", "typeRef": "ServiceWorker.RegistrationID"}, {"name": "tag", "type": "string", "optional": false, "description": "", "typeRef": null}], [], "");
 inspectorBackend.registerCommand("ServiceWorker.enable", [], [], "");
-inspectorBackend.registerCommand("ServiceWorker.inspectWorker", [{"name": "versionId", "type": "string", "optional": false, "description": "", "typeRef": null}], [], "");
 inspectorBackend.registerCommand("ServiceWorker.setForceUpdateOnPageLoad", [{"name": "forceUpdateOnPageLoad", "type": "boolean", "optional": false, "description": "", "typeRef": null}], [], "");
 inspectorBackend.registerCommand("ServiceWorker.skipWaiting", [{"name": "scopeURL", "type": "string", "optional": false, "description": "", "typeRef": null}], [], "");
 inspectorBackend.registerCommand("ServiceWorker.startWorker", [{"name": "scopeURL", "type": "string", "optional": false, "description": "", "typeRef": null}], [], "");

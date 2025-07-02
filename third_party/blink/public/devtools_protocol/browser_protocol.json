@@ -17610,7 +17610,6 @@
                         "searchForNode",
                         "searchForUAShadowDOM",
                         "captureAreaScreenshot",
-                        "showDistances",
                         "none"
                     ]
                 }
@@ -22507,15 +22506,6 @@
                 },
                 {
                     "name": "enable"
-                },
-                {
-                    "name": "inspectWorker",
-                    "parameters": [
-                        {
-                            "name": "versionId",
-                            "type": "string"
-                        }
-                    ]
                 },
                 {
                     "name": "setForceUpdateOnPageLoad",

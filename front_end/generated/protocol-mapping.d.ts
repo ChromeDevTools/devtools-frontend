@@ -3912,10 +3912,6 @@ export namespace ProtocolMapping {
       paramsType: [];
       returnType: void;
     };
-    'ServiceWorker.inspectWorker': {
-      paramsType: [Protocol.ServiceWorker.InspectWorkerRequest];
-      returnType: void;
-    };
     'ServiceWorker.setForceUpdateOnPageLoad': {
       paramsType: [Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest];
       returnType: void;

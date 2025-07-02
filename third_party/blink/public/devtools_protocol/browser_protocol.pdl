@@ -8253,7 +8253,6 @@ experimental domain Overlay
       searchForNode
       searchForUAShadowDOM
       captureAreaScreenshot
-      showDistances
       none
 
   # Disables domain notifications.
@@ -10638,10 +10637,6 @@ experimental domain ServiceWorker
       string tag
 
   command enable
-
-  command inspectWorker
-    parameters
-      string versionId
 
   command setForceUpdateOnPageLoad
     parameters

@@ -11789,7 +11789,6 @@ export namespace Overlay {
     SearchForNode = 'searchForNode',
     SearchForUAShadowDOM = 'searchForUAShadowDOM',
     CaptureAreaScreenshot = 'captureAreaScreenshot',
-    ShowDistances = 'showDistances',
     None = 'none',
   }
 
@@ -15000,10 +14999,6 @@ export namespace ServiceWorker {
     origin: string;
     registrationId: RegistrationID;
     tag: string;
-  }
-
-  export interface InspectWorkerRequest {
-    versionId: string;
   }
 
   export interface SetForceUpdateOnPageLoadRequest {

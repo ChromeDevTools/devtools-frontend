@@ -40,7 +40,7 @@ export class SyntheticEventsManager {
 
   static registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
     try {
-      return SyntheticEventsManager.getActiveManager().registerSyntheticEvent(syntheticEvent);
+      return SyntheticEventsManager.getActiveManager().#registerSyntheticEvent(syntheticEvent);
     } catch {
       // If no active manager has been initialized, we assume the trace engine is
       // not running as part of the Performance panel. In this case we don't
@@ -59,7 +59,7 @@ export class SyntheticEventsManager {
    * be created with this method to ensure they are registered and made
    * available to load events using serialized keys.
    */
-  registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
+  #registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
     const rawIndex = this.#rawTraceEvents.indexOf(syntheticEvent.rawSourceEvent);
     if (rawIndex < 0) {
       throw new Error('Attempted to register a synthetic event paired to an unknown raw event.');

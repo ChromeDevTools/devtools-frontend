@@ -118,7 +118,7 @@ export function extractConsoleAPIExtensionEntries(): void {
         ph: Types.Events.Phase.COMPLETE,
       };
       const extensionEntry =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionTrackEntry>(unregisteredExtensionEntry);
       extensionTrackEntries.push(extensionEntry);
       continue;
@@ -137,8 +137,8 @@ export function extractConsoleAPIExtensionEntries(): void {
       rawSourceEvent: currentTimeStamp
     };
     const syntheticTimeStamp =
-        Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
-            .registerSyntheticEvent<Types.Events.SyntheticConsoleTimeStamp>(unregisteredSyntheticTimeStamp);
+        Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticConsoleTimeStamp>(
+            unregisteredSyntheticTimeStamp);
     syntheticConsoleEntriesForTimingsTrack.push(syntheticTimeStamp);
   }
 }
@@ -196,7 +196,7 @@ export function extractPerformanceAPIExtensionEntries(
 
     if (Types.Extensions.isExtensionPayloadMarker(extensionPayload)) {
       const extensionMarker =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionMarker>(
                   extensionSyntheticEntry as Omit<Types.Extensions.SyntheticExtensionMarker, '_tag'>);
       extensionMarkers.push(extensionMarker);
@@ -205,7 +205,7 @@ export function extractPerformanceAPIExtensionEntries(
 
     if (Types.Extensions.isExtensionPayloadTrackEntry(extensionSyntheticEntry.args)) {
       const extensionTrackEntry =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionTrackEntry>(
                   extensionSyntheticEntry as Omit<Types.Extensions.SyntheticExtensionTrackEntry, '_tag'>);
       extensionTrackEntries.push(extensionTrackEntry);

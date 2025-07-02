@@ -400,7 +400,7 @@ function renderSettings({
   // clang-format on
 }
 
-function renderTimelineArea(input: ViewInput): Lit.LitTemplate {
+function renderTimelineArea(input: ViewInput, output: ViewOutput): Lit.LitTemplate {
   if (input.extensionDescriptor) {
     // clang-format off
       return html`
@@ -469,7 +469,7 @@ function renderTimelineArea(input: ViewInput): Lit.LitTemplate {
                 jslog=${VisualLogging.close().track({click: true})}
               ></devtools-button>
             </div>
-            ${renderTextEditor(input)}`
+            ${renderTextEditor(input, output)}`
             : Lit.nothing}
           </div>
         </devtools-split-view>
@@ -478,16 +478,44 @@ function renderTimelineArea(input: ViewInput): Lit.LitTemplate {
   // clang-format on
 }
 
-function renderTextEditor(input: ViewInput): Lit.TemplateResult {
+function renderTextEditor(input: ViewInput, output: ViewOutput): Lit.TemplateResult {
   if (!input.editorState) {
     throw new Error('Unexpected: trying to render the text editor without editorState');
   }
+
   // clang-format off
-    return html`
-      <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
-        <devtools-text-editor .state=${input.editorState}></devtools-text-editor>
-      </div>
-    `;
+  return html`
+    <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
+      <devtools-text-editor .state=${input.editorState} ${Lit.Directives.ref((editor: Element | undefined) => {
+        if (!editor || !(editor instanceof TextEditor.TextEditor.TextEditor)) {
+          return;
+        }
+        output.highlightLinesInEditor = (line: number, length: number, scroll = false) => {
+          const cm = editor.editor;
+          let selection = editor.createSelection(
+              {lineNumber: line + length, columnNumber: 0},
+              {lineNumber: line, columnNumber: 0},
+          );
+          const lastLine = editor.state.doc.lineAt(selection.main.anchor);
+          selection = editor.createSelection(
+              {lineNumber: line + length - 1, columnNumber: lastLine.length + 1},
+              {lineNumber: line, columnNumber: 0},
+          );
+
+          cm.dispatch({
+            selection,
+            effects: scroll ?
+                [
+                  CodeMirror.EditorView.scrollIntoView(selection.main, {
+                    y: 'nearest',
+                  }),
+                ] :
+                undefined,
+          });
+        };
+      })}></devtools-text-editor>
+    </div>
+  `;
   // clang-format on
 }
 
@@ -779,7 +807,9 @@ interface ViewInput {
   showCodeToggle: () => void;
 }
 
-type ViewOutput = unknown;
+export interface ViewOutput {
+  highlightLinesInEditor?: (line: number, length: number, scroll?: boolean) => void;
+}
 
 export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   const classNames = {
@@ -810,7 +840,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
               input.extensionDescriptor
             }></devtools-recorder-extension-view>` : html`
           ${renderSettings(input)}
-          ${renderTimelineArea(input)}
+          ${renderTimelineArea(input, output)}
         `}
         ${input.isRecording ? html`<div class="footer">
           <div class="controls">
@@ -895,6 +925,7 @@ export class RecordingView extends UI.Widget.Widget {
 
   #onCopyBound = this.#onCopy.bind(this);
   #view: typeof DEFAULT_VIEW;
+  #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW) {
     super(true, false, element);
@@ -969,7 +1000,7 @@ export class RecordingView extends UI.Widget.Widget {
           onWrapperClick: this.#onWrapperClick.bind(this),
           showCodeToggle: this.showCodeToggle.bind(this),
         },
-        {}, this.contentElement);
+        this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {
@@ -1251,40 +1282,10 @@ export class RecordingView extends UI.Widget.Widget {
       return;
     }
 
-    const editor =
-        this.contentElement.querySelector('devtools-text-editor') as | TextEditor.TextEditor.TextEditor | undefined;
-    if (!editor) {
-      return;
-    }
-
-    const cm = editor.editor;
-    if (!cm) {
-      return;
-    }
-
     const line = this.#sourceMap[stepIndex * 2];
     const length = this.#sourceMap[stepIndex * 2 + 1];
 
-    let selection = editor.createSelection(
-        {lineNumber: line + length, columnNumber: 0},
-        {lineNumber: line, columnNumber: 0},
-    );
-    const lastLine = editor.state.doc.lineAt(selection.main.anchor);
-    selection = editor.createSelection(
-        {lineNumber: line + length - 1, columnNumber: lastLine.length + 1},
-        {lineNumber: line, columnNumber: 0},
-    );
-
-    cm.dispatch({
-      selection,
-      effects: scroll ?
-          [
-            CodeMirror.EditorView.scrollIntoView(selection.main, {
-              y: 'nearest',
-            }),
-          ] :
-          undefined,
-    });
+    this.#viewOutput.highlightLinesInEditor?.(line, length, scroll);
   };
 
   #onCodeFormatChange = (event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void => {

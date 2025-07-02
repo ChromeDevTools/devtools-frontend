@@ -33,9 +33,9 @@ describeWithEnvironment('RecordingView', () => {
     }
   });
 
-  async function createView(): Promise<
+  async function createView(output?: Components.RecordingView.ViewOutput): Promise<
       [ViewFunctionStub<typeof Components.RecordingView.RecordingView>, Components.RecordingView.RecordingView]> {
-    const view = createViewFunctionStub(Components.RecordingView.RecordingView);
+    const view = createViewFunctionStub(Components.RecordingView.RecordingView, output);
     // recorderSettingsMock.preferredCopyFormat = Models.ConverterIds.ConverterIds.JSON;
     const component = new Components.RecordingView.RecordingView(undefined, view);
     Object.assign(component, {
@@ -65,19 +65,26 @@ describeWithEnvironment('RecordingView', () => {
   }
 
   it('should show code and highlight on hover', async () => {
-    const [view] = await createView();
+    const output = {
+      highlightLinesInEditor: sinon.stub(),
+    };
+    const [view] = await createView(output);
     view.input.showCodeToggle();
     const input = await view.nextInput;
     assert.deepEqual(input.editorState?.selection.toJSON(), {
       ranges: [{anchor: 0, head: 0}],
       main: 0,
     });
-    // FIXME(b/407941153): TextEditor needs to be updated to render declaratively.
-    // view.input.onStepHover();
-    // assert.deepEqual(input.editorState?.selection.toJSON(), {
-    //   ranges: [{anchor: 34, head: 68}],
-    //   main: 0,
-    // });
+    const highlightCalled = expectCall(output.highlightLinesInEditor);
+    view.input.onStepHover({
+      target: {
+        step,
+      },
+    } as unknown as MouseEvent);
+    const [line, length, scroll] = await highlightCalled;
+    assert.strictEqual(line, 3);
+    assert.strictEqual(length, 3);
+    assert.isFalse(scroll);
   });
 
   it('should close code view', async () => {

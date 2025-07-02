@@ -754,21 +754,23 @@ export const shiftClickColorSwatch = async (
       undefined, devToolsPage);
 };
 
-export const getElementStyleFontEditorButton = async () => {
-  const section = await waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
-  const result = await $(FONT_EDITOR_SELECTOR, section);
-  await expectVeEvents([veImpressionsUnder(
-      'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])]);
+export const getElementStyleFontEditorButton = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const section = await devToolsPage.waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
+  const result = await devToolsPage.$(FONT_EDITOR_SELECTOR, section);
+  await expectVeEvents(
+      [veImpressionsUnder(
+          'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])],
+      undefined, devToolsPage);
   return result;
 };
 
-export const getFontEditorButtons = async () => {
-  const buttons = await $$(FONT_EDITOR_SELECTOR);
+export const getFontEditorButtons = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const buttons = await devToolsPage.$$(FONT_EDITOR_SELECTOR);
   return buttons;
 };
 
-export const getHiddenFontEditorButtons = async () => {
-  const buttons = await $$(HIDDEN_FONT_EDITOR_SELECTOR);
+export const getHiddenFontEditorButtons = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const buttons = await devToolsPage.$$(HIDDEN_FONT_EDITOR_SELECTOR);
   return buttons;
 };
 

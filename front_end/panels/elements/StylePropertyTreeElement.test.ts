@@ -192,8 +192,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const colorSwatches =
             Array.from(stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch') || []);
         assert.exists(colorMixSwatch);
-        assert.exists(colorSwatches.find(colorSwatch => colorSwatch.innerText === 'red'));
-        assert.exists(colorSwatches.find(colorSwatch => colorSwatch.innerText === 'blue'));
+        assert.exists(colorSwatches.find(colorSwatch => colorSwatch.nextElementSibling?.textContent === 'red'));
+        assert.exists(colorSwatches.find(colorSwatch => colorSwatch.nextElementSibling?.textContent === 'blue'));
       });
 
       it('should show color mix swatch when color-mix is used with a known variable as color', () => {
@@ -327,7 +327,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         const colorSwatch = valueElement.querySelector('devtools-color-swatch');
         assert.exists(colorSwatch);
-        const setColorTextCall = spyCall(colorSwatch, 'setColorText');
+        const setColorTextCall = spyCall(colorSwatch, 'setColor');
 
         assert.isTrue(await context.runAsyncEvaluations());
         assert.strictEqual((await setColorTextCall).args[0].asString(), '#808080');
@@ -476,7 +476,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
     const newColor = swatch.getColor()?.as(Common.Color.Format.LAB);
     assert.isOk(newColor);
-    swatch.setColorText(newColor);
+    swatch.dispatchEvent(new InlineEditor.ColorSwatch.ColorFormatChangedEvent(newColor));
     assert.deepEqual(stylePropertyTreeElement.renderedPropertyText(), `color: ${expectedColorString}`);
 
     sinon.assert.alwaysCalledWith(applyStyleTextStub, `color: ${expectedColorString}`, false);
@@ -953,9 +953,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const {evaluations} = view.args[0][0];
 
-      assert.deepEqual(
-          evaluations.flat().map(args => args?.textContent).flat(),
-          ['rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)', 'rgb(from #ff0c0c 0.5 0.047 0.047)', '#800c0c']);
+      assert.deepEqual(evaluations.flat().map(args => args?.textContent).flat(), [
+        '', 'rgb(from #ff0c0c calc(1.000 / 2) 0.047 0.047)', '', 'rgb(from #ff0c0c 0.5 0.047 0.047)', '', '#800c0c'
+      ]);
     });
   });
 
@@ -1659,17 +1659,16 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         sinon.assert.calledOnceWithExactly(
             resolvePropertySpy, 'color-scheme', stylePropertyTreeElement.property.ownerStyle);
 
-        const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
-        assert.exists(swatch);
         assert.exists(stylePropertyTreeElement.valueElement);
+        const swatches = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-swatch');
+        assert.exists(swatches);
+        assert.lengthOf(swatches, 3);
+        const [swatch, light, dark] = swatches;
         renderElementIntoDOM(stylePropertyTreeElement.valueElement);
-        assert.strictEqual(swatch?.innerText, lightDark);
+        assert.strictEqual((swatch?.nextElementSibling as HTMLElement | null)?.innerText, lightDark);
         const activeColor = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? lightText : darkText;
         assert.strictEqual(
             swatch.getColor()?.getAuthoredText(), mockVariableMap[variableName(activeColor)] ?? activeColor);
-        const [light, dark] = swatch.querySelectorAll('devtools-color-swatch');
-        assert.exists(light);
-        assert.exists(dark);
         const active = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? light : dark;
         const inactive = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? dark : light;
         assert.isTrue(inactive.parentElement?.classList.contains('inactive-value'));
@@ -1701,9 +1700,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(swatches);
       assert.lengthOf(swatches, 3);
       assert.isNull(swatches[0].getColor());
-      assert.strictEqual(swatches[0].innerText, 'light-dark(red, blue)');
-      assert.strictEqual(swatches[1].innerText, 'red');
-      assert.strictEqual(swatches[2].innerText, 'blue');
+      assert.strictEqual(swatches[0].nextElementSibling?.textContent, 'light-dark(red, blue)');
+      assert.strictEqual(swatches[1].nextElementSibling?.textContent, 'red');
+      assert.strictEqual(swatches[2].nextElementSibling?.textContent, 'blue');
     });
 
     it('renders light-dark without color-scheme correctly', async () => {
@@ -1719,9 +1718,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(swatches);
       assert.lengthOf(swatches, 3);
       assert.strictEqual(swatches[0].getText(), 'red');
-      assert.strictEqual(swatches[0].innerText, 'light-dark(red, blue)');
-      assert.strictEqual(swatches[1].innerText, 'red');
-      assert.strictEqual(swatches[2].innerText, 'blue');
+      assert.strictEqual(swatches[0].nextElementSibling?.textContent, 'light-dark(red, blue)');
+      assert.strictEqual(swatches[1].nextElementSibling?.textContent, 'red');
+      assert.strictEqual(swatches[2].nextElementSibling?.textContent, 'blue');
     });
 
     it('renders light-dark with undefined vars correctly', async () => {
@@ -1736,7 +1735,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch');
       assert.exists(swatches);
       assert.lengthOf(swatches, 1);
-      assert.strictEqual(swatches[0].innerText, 'red');
+      assert.strictEqual(swatches[0].nextElementSibling?.textContent, 'red');
       assert.strictEqual(swatches[0].parentElement?.style.textDecoration, '');
     });
 
@@ -1751,11 +1750,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         stylePropertyTreeElement.updateTitle();
         await Promise.all(colorSchemeSpy.returnValues);
 
-        const outerSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
-        assert.exists(outerSwatch);
-        const innerSwatches = outerSwatch.querySelectorAll('devtools-color-swatch');
-        assert.lengthOf(innerSwatches, 2);
-        const [lightSwatch, darkSwatch] = innerSwatches;
+        const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-color-swatch');
+        assert.exists(swatches);
+        assert.lengthOf(swatches, 3);
+        const [outerSwatch, lightSwatch, darkSwatch] = swatches;
         const newLightColor = Common.Color.parse('white') as Common.Color.Color;
         const newDarkColor = Common.Color.parse('black') as Common.Color.Color;
         lightSwatch.setColor(newLightColor);

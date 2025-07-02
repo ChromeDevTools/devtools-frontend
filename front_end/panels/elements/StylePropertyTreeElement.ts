@@ -226,7 +226,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
         SDK.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
       const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
-        return [new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, swatch)];
+        return [new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, swatch), swatch];
       }
     }
 
@@ -323,7 +323,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           }));
     }
 
-    return [colorSwatch];
+    return [colorSwatch, varSwatch];
   }
 
   #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {
@@ -474,11 +474,17 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
     if (match.node.name === 'CallExpression' && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const displayColor = color.as(((color.alpha ?? 1) !== 1) ? Common.Color.Format.HEXA : Common.Color.Format.HEX);
+        const colorText = document.createElement('span');
+        colorText.textContent = displayColor.asString();
         const swatch =
             new ColorRenderer(this.#stylesPane, null)
-                .renderColorSwatch(displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor));
+                .renderColorSwatch(
+                    displayColor.isGamutClipped() ? color : (displayColor.nickname() ?? displayColor), colorText);
+        swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
+          colorText.textContent = ev.data.color.asString();
+        });
         context.addControl('color', swatch);
-        return {placeholder: [swatch]};
+        return {placeholder: [swatch, colorText]};
       });
       if (evaluation) {
         return evaluation;
@@ -509,10 +515,10 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
         });
       }
     }
-    return [swatch];
+    return [swatch, valueChild];
   }
 
-  renderColorSwatch(color: Common.Color.Color|undefined, valueChild?: Node): InlineEditor.ColorSwatch.ColorSwatch {
+  renderColorSwatch(color: Common.Color.Color|undefined, valueChild: Node): InlineEditor.ColorSwatch.ColorSwatch {
     const editable = this.#treeElement?.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
     const tooltip = editable ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
@@ -523,17 +529,14 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
       swatch.renderColor(color);
     }
 
-    if (!valueChild) {
-      valueChild = swatch.createChild('span');
-      if (color) {
-        valueChild.textContent = color.getAuthoredText() ?? color.asString();
-      }
-    }
-    swatch.appendChild(valueChild);
-
     if (this.#treeElement?.editable()) {
       const treeElement = this.#treeElement;
       const onColorChanged = (): void => {
+        void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
+      };
+
+      const onColorFormatChanged = (e: InlineEditor.ColorSwatch.ColorFormatChangedEvent): void => {
+        valueChild.textContent = e.data.color.getAuthoredText() ?? e.data.color.asString();
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       };
 
@@ -541,11 +544,13 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.COLOR);
       });
       swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
+      swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
 
       const swatchIcon =
           new ColorSwatchPopoverIcon(treeElement, treeElement.parentPane().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.COLOR_CHANGED, ev => {
-        swatch.setColorText(ev.data);
+        valueChild.textContent = ev.data.getAuthoredText() ?? ev.data.asString();
+        swatch.setColor(ev.data);
       });
       if (treeElement.property.name === 'color') {
         void this.#addColorContrastInfo(swatchIcon);
@@ -607,7 +612,7 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
     context.addControl('color', colorSwatch);
     void this.applyColorScheme(match, context, colorSwatch, light, dark, lightControls, darkControls);
 
-    return [colorSwatch];
+    return [colorSwatch, content];
   }
 
   async applyColorScheme(
@@ -739,20 +744,25 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     if (nodeId !== undefined && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
         const initialColor = Common.Color.parse('#000') as Common.Color.Color;
-        const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor);
+        const colorText = document.createElement('span');
+        colorText.textContent = initialColor.asString();
+        const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor, colorText);
+        swatch.addEventListener(InlineEditor.ColorSwatch.ColorChangedEvent.eventName, ev => {
+          colorText.textContent = ev.data.color.asString();
+        });
         context.addControl('color', swatch);
         const asyncEvalCallback = async(): Promise<boolean> => {
           const results = await this.#pane.cssModel()?.resolveValues(undefined, nodeId, colorMixText);
           if (results) {
             const color = Common.Color.parse(results[0]);
             if (color) {
-              swatch.setColorText(color.as(Common.Color.Format.HEXA));
+              swatch.setColor(color.as(Common.Color.Format.HEXA));
               return true;
             }
           }
           return false;
         };
-        return {placeholder: [swatch], asyncEvalCallback};
+        return {placeholder: [swatch, colorText], asyncEvalCallback};
       });
       if (evaluation) {
         return evaluation;

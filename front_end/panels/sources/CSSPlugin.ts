@@ -172,6 +172,12 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
       this.#text = insert;
       this.#color = swatch.getColor() as Common.Color.Color;
     });
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, event => {
+      const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
+      view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
+      this.#text = insert;
+      this.#color = swatch.getColor() as Common.Color.Color;
+    });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
       event.consume(true);
       view.dispatch({

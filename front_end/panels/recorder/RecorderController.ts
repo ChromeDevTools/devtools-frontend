@@ -410,7 +410,13 @@ export class RecorderController extends LitElement {
                      SDK.NetworkManager.Slow4GConditions, SDK.NetworkManager.Fast4GConditions]) {
           // Using i18nTitleKey as a title here because we only want to compare the parameters of the network conditions.
           if (SDK.NetworkManager.networkConditionsEqual(
-                  {...preset, title: preset.i18nTitleKey || ''}, {...step, title: preset.i18nTitleKey || ''})) {
+                  {...preset, title: preset.i18nTitleKey || ''},
+                  // The key below is not used, but we need it to satisfy TS.
+                  {
+                    ...step,
+                    title: preset.i18nTitleKey || '',
+                    key: `step_${i}_recorder_key` as SDK.NetworkManager.UserDefinedThrottlingConditionKey
+                  })) {
             settings.networkConditionsSettings.title = preset.title instanceof Function ? preset.title() : preset.title;
             settings.networkConditionsSettings.i18nTitleKey = preset.i18nTitleKey;
           }

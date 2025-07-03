@@ -76,7 +76,7 @@ export async function openCaptureSettings(
               veImpression('Toggle', 'timeline-capture-layers-and-pictures'),
               veImpression('Toggle', 'timeline-capture-selector-stats'),
               veImpression('DropDown', 'cpu-throttling'),
-              veImpression('DropDown', 'preferred-network-condition'),
+              veImpression('DropDown', 'active-network-condition-key'),
               veImpression('Toggle', 'timeline-show-extension-data'),
             ]),
       ],

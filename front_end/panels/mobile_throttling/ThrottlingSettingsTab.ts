@@ -433,12 +433,28 @@ export class CPUThrottlingCard {
   }
 }
 
+function extractCustomSettingIndex(key: SDK.NetworkManager.UserDefinedThrottlingConditionKey): number {
+  const match = key.match(/USER_CUSTOM_SETTING_(\d+)/);
+  if (match?.[1]) {
+    return parseInt(match[1], 10);
+  }
+  return 0;
+}
+
 export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
-  private readonly customSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
+  private readonly customUserConditions: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   private editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
   private cpuThrottlingCard: CPUThrottlingCard;
+  /**
+   * We store how many custom conditions the user has defined when we load up
+   * DevTools. This is because when the user creates a new one, we need to
+   * generate a unique key. We take this value, increment it, and use that as part of the unique key.
+   * This means that we are resilient to the user adding & then deleting a
+   * profile; we always use this counter which is only ever incremented.
+   */
+  #customUserConditionsCount: number;
 
   constructor() {
     super(true);
@@ -473,8 +489,26 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     this.list.show(container);
     container.appendChild(addButton);
 
-    this.customSetting = Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
-    this.customSetting.addChangeListener(this.conditionsUpdated, this);
+    this.customUserConditions = SDK.NetworkManager.customUserNetworkConditionsSetting();
+    this.customUserConditions.addChangeListener(this.conditionsUpdated, this);
+
+    const customConditions = this.customUserConditions.get();
+    // We need to parse out the current max condition key index. If the last
+    // one added is USER_CUSTOM_SETTING_9, then we need to set the
+    // customUserConditionsCount property to 9, so that the next item added
+    // gets index 10.
+    // Because we always increment the index and append it to the list, we
+    // know that the last item in the list will have the largest custom key
+    // index, hence why we can just pluck the last item rather than search for
+    // the one with the largest index.
+    const lastCondition = customConditions.at(-1);
+    const key = lastCondition?.key;
+    if (key && SDK.NetworkManager.keyIsCustomUser(key)) {
+      const maxIndex = extractCustomSettingIndex(key);
+      this.#customUserConditionsCount = maxIndex;
+    } else {
+      this.#customUserConditionsCount = 0;
+    }
   }
 
   override wasShown(): void {
@@ -491,7 +525,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   private conditionsUpdated(): void {
     this.list.clear();
 
-    const conditions = this.customSetting.get();
+    const conditions = this.customUserConditions.get();
     for (let i = 0; i < conditions.length; ++i) {
       this.list.appendItem(conditions[i], true);
     }
@@ -500,9 +534,16 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   }
 
   private addButtonClicked(): void {
-    this.list.addNewItem(
-        this.customSetting.get().length,
-        {title: () => '', download: -1, upload: -1, latency: 0, packetLoss: 0, packetReordering: false});
+    this.#customUserConditionsCount++;
+    this.list.addNewItem(this.customUserConditions.get().length, {
+      key: `USER_CUSTOM_SETTING_${this.#customUserConditionsCount}`,
+      title: () => '',
+      download: -1,
+      upload: -1,
+      latency: 0,
+      packetLoss: 0,
+      packetReordering: false
+    });
   }
 
   renderItem(conditions: SDK.NetworkManager.Conditions, _editable: boolean): Element {
@@ -532,9 +573,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   }
 
   removeItemRequested(_item: SDK.NetworkManager.Conditions, index: number): void {
-    const list = this.customSetting.get();
+    const list = this.customUserConditions.get();
     list.splice(index, 1);
-    this.customSetting.set(list);
+    this.customUserConditions.set(list);
   }
 
   retrieveOptionsTitle(conditions: SDK.NetworkManager.Conditions): string {
@@ -560,12 +601,12 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     const packetReordering = (editor.control('packetReordering') as HTMLInputElement).checked;
     conditions.packetReordering = packetReordering;
 
-    const list = this.customSetting.get();
+    const list = this.customUserConditions.get();
     if (isNew) {
       list.push(conditions);
     }
 
-    this.customSetting.set(list);
+    this.customUserConditions.set(list);
   }
 
   beginEdit(conditions: SDK.NetworkManager.Conditions): UI.ListWidget.Editor<SDK.NetworkManager.Conditions> {

@@ -36,7 +36,6 @@ import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
-import type {Serializer} from '../common/Settings.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
@@ -151,11 +150,31 @@ const CONNECTION_TYPES = new Map([
   ['wimax', Protocol.Network.ConnectionType.Wimax],
 ]);
 
+/**
+ * We store two settings to disk to persist network throttling.
+ * 1. The custom conditions that the user has defined.
+ * 2. The active `key` that applies the correct current preset.
+ * The reason the setting creation functions are defined here is because they are referred
+ * to in multiple places, and this ensures we don't have accidental typos which
+ * mean extra settings get mistakenly created.
+ */
+export function customUserNetworkConditionsSetting(): Common.Settings.Setting<Conditions[]> {
+  return Common.Settings.Settings.instance().moduleSetting<Conditions[]>('custom-network-conditions');
+}
+
+export function activeNetworkThrottlingKeySetting(): Common.Settings.Setting<ThrottlingConditionKey> {
+  return Common.Settings.Settings.instance().createSetting(
+      'active-network-condition-key', PredefinedThrottlingConditionKey.NO_THROTTLING);
+}
+
 export class NetworkManager extends SDKModel<EventTypes> {
   readonly dispatcher: NetworkDispatcher;
   readonly fetchDispatcher: FetchDispatcher;
   readonly #networkAgent: ProtocolProxyApi.NetworkApi;
   readonly #bypassServiceWorkerSetting: Common.Settings.Setting<boolean>;
+
+  readonly activeNetworkThrottlingKey: Common.Settings.Setting<ThrottlingConditionKey> =
+      activeNetworkThrottlingKeySetting();
 
   constructor(target: Target) {
     super(target);
@@ -463,6 +482,7 @@ export interface EventTypes {
  */
 
 export const NoThrottlingConditions: Conditions = {
+  key: PredefinedThrottlingConditionKey.NO_THROTTLING,
   title: i18nLazyString(UIStrings.noThrottling),
   i18nTitleKey: UIStrings.noThrottling,
   download: -1,
@@ -471,6 +491,7 @@ export const NoThrottlingConditions: Conditions = {
 };
 
 export const OfflineConditions: Conditions = {
+  key: PredefinedThrottlingConditionKey.OFFLINE,
   title: i18nLazyString(UIStrings.offline),
   i18nTitleKey: UIStrings.offline,
   download: 0,
@@ -480,6 +501,7 @@ export const OfflineConditions: Conditions = {
 
 const slow3GTargetLatency = 400;
 export const Slow3GConditions: Conditions = {
+  key: PredefinedThrottlingConditionKey.SPEED_3G,
   title: i18nLazyString(UIStrings.slowG),
   i18nTitleKey: UIStrings.slowG,
   // ~500Kbps down
@@ -495,6 +517,7 @@ export const Slow3GConditions: Conditions = {
 // 2024 to align with LH (crbug.com/342406608).
 const slow4GTargetLatency = 150;
 export const Slow4GConditions: Conditions = {
+  key: PredefinedThrottlingConditionKey.SPEED_SLOW_4G,
   title: i18nLazyString(UIStrings.fastG),
   i18nTitleKey: UIStrings.fastG,
   // ~1.6 Mbps down
@@ -508,6 +531,7 @@ export const Slow4GConditions: Conditions = {
 
 const fast4GTargetLatency = 60;
 export const Fast4GConditions: Conditions = {
+  key: PredefinedThrottlingConditionKey.SPEED_FAST_4G,
   title: i18nLazyString(UIStrings.fast4G),
   i18nTitleKey: UIStrings.fast4G,
   // 9 Mbps down
@@ -2258,35 +2282,6 @@ class ExtraInfoBuilder {
 
 SDKModel.register(NetworkManager, {capabilities: Capability.NETWORK, autostart: true});
 
-export class ConditionsSerializer implements Serializer<Conditions, Conditions> {
-  stringify(value: unknown): string {
-    const conditions = value as Conditions;
-    try {
-      return JSON.stringify({
-        ...conditions,
-        title: typeof conditions.title === 'function' ? conditions.title() : conditions.title,
-      });
-
-    } catch {
-      // See: crbug.com/420384038
-      // A rename of the i18n strings means that if a user has an old version and we try to parse it, it errors.
-      // In this case, we catch that and just fall back to the default, no
-      // throttling condition. It's not ideal, but it means we don't break the
-      // user's DevTools. We have also landed a migration (see common/Settings.ts) to upgrade users.
-      return new ConditionsSerializer().stringify(NoThrottlingConditions);
-    }
-  }
-
-  parse(serialized: string): Conditions {
-    const parsed = JSON.parse(serialized);
-    return {
-      ...parsed,
-      // eslint-disable-next-line rulesdir/l10n-i18nString-call-only-with-uistrings
-      title: parsed.i18nTitleKey ? i18nLazyString(parsed.i18nTitleKey) : parsed.title,
-    };
-  }
-}
-
 export function networkConditionsEqual(first: Conditions, second: Conditions): boolean {
   // Caution: titles might be different function instances, which produce
   // the same value.
@@ -2295,12 +2290,59 @@ export function networkConditionsEqual(first: Conditions, second: Conditions): b
   // locally.
   const firstTitle = first.i18nTitleKey || (typeof first.title === 'function' ? first.title() : first.title);
   const secondTitle = second.i18nTitleKey || (typeof second.title === 'function' ? second.title() : second.title);
+
   return second.download === first.download && second.upload === first.upload && second.latency === first.latency &&
       first.packetLoss === second.packetLoss && first.packetQueueLength === second.packetQueueLength &&
       first.packetReordering === second.packetReordering && secondTitle === firstTitle;
 }
 
+/**
+ * IMPORTANT: this key is used as the value that is persisted so we remember
+ * the user's throttling settings
+ *
+ * This means that it is very important that;
+ * 1. Each Conditions that is defined must have a unique key.
+ * 2. The keys & values DO NOT CHANGE for a particular condition, else we might break
+ *    DevTools when restoring a user's persisted setting.
+ *
+ * If you do want to change them, you need to handle that in a migration, but
+ * please talk to jacktfranklin@ first.
+ */
+export const enum PredefinedThrottlingConditionKey {
+  NO_THROTTLING = 'NO_THROTTLING',
+  OFFLINE = 'OFFLINE',
+  SPEED_3G = 'SPEED_3G',
+  SPEED_SLOW_4G = 'SPEED_SLOW_4G',
+  SPEED_FAST_4G = 'SPEED_FAST_4G',
+}
+
+export type UserDefinedThrottlingConditionKey = `USER_CUSTOM_SETTING_${number}`;
+export type ThrottlingConditionKey = PredefinedThrottlingConditionKey|UserDefinedThrottlingConditionKey;
+
+export const THROTTLING_CONDITIONS_LOOKUP: ReadonlyMap<PredefinedThrottlingConditionKey, Conditions> = new Map([
+  [PredefinedThrottlingConditionKey.NO_THROTTLING, NoThrottlingConditions],
+  [PredefinedThrottlingConditionKey.OFFLINE, OfflineConditions],
+  [PredefinedThrottlingConditionKey.SPEED_3G, Slow3GConditions],
+  [PredefinedThrottlingConditionKey.SPEED_SLOW_4G, Slow4GConditions],
+  [PredefinedThrottlingConditionKey.SPEED_FAST_4G, Fast4GConditions]
+]);
+
+function keyIsPredefined(key: ThrottlingConditionKey): key is PredefinedThrottlingConditionKey {
+  return !key.startsWith('USER_CUSTOM_SETTING_');
+}
+export function keyIsCustomUser(key: ThrottlingConditionKey): key is UserDefinedThrottlingConditionKey {
+  return key.startsWith('USER_CUSTOM_SETTING_');
+}
+
+export function getPredefinedCondition(key: ThrottlingConditionKey): Conditions|null {
+  if (!keyIsPredefined(key)) {
+    return null;
+  }
+  return THROTTLING_CONDITIONS_LOOKUP.get(key) ?? null;
+}
+
 export interface Conditions {
+  readonly key: ThrottlingConditionKey;
   download: number;
   upload: number;
   latency: number;
@@ -2314,10 +2356,13 @@ export interface Conditions {
   // doubles as both part of group of fields which (loosely) uniquely
   // identify instances, as well as the literal string displayed in the
   // UI, which leads to complications around persistance.
+  // TODO(crbug.com/422682525): make this just a function because we use lazy string everywhere.
   title: string|(() => string);
   // Instances may be serialized to local storage, so localized titles
   // should not be irrecoverably baked, just in case the string changes
   // (or the user switches locales).
+  // TODO(crbug.com/422682525): get rid of this, there is no need to store on
+  // the condition now we do not rely on it to reload a setting from disk.
   i18nTitleKey?: string;
   /**
    * RTT values are multiplied by adjustment factors to make DevTools' emulation more accurate.

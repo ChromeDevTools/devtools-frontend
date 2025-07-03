@@ -21,33 +21,6 @@ const LONG_URL_PART =
     'LoremIpsumDolorSitAmetConsecteturAdipiscingElitPhasellusVitaeOrciInAugueCondimentumTinciduntUtEgetDolorQuisqueEfficiturUltricesTinciduntVivamusVelitPurusCommodoQuisErosSitAmetTemporMalesuadaNislNullamTtempusVulputateAugueEgetScelerisqueLacusVestibulumNon/index.html';
 
 describeWithMockConnection('NetworkManager', () => {
-  describe('ConditionsSerializer', () => {
-    it('can serialize a condition', async () => {
-      const serializer = new SDK.NetworkManager.ConditionsSerializer();
-      const string = serializer.stringify(SDK.NetworkManager.Fast4GConditions);
-      assert.deepEqual(string, JSON.stringify({
-        title: 'Fast 4G',
-        i18nTitleKey: 'Fast 4G',
-        download: 1012500,
-        upload: 168750,
-        latency: 165,
-        targetLatency: 60
-      }));
-    });
-
-    it('falls back to the "No throttling" if parsing a condition goes wrong', async () => {
-      const serializer = new SDK.NetworkManager.ConditionsSerializer();
-      const broken = {
-        ...SDK.NetworkManager.Fast4GConditions,
-        title: () => {
-          throw new Error('emulate a broken title i18n lookup');
-        }
-      };
-      const string = serializer.stringify(broken);
-      assert.deepEqual(string, serializer.stringify(SDK.NetworkManager.NoThrottlingConditions));
-    });
-  });
-
   describe('Direct TCP socket handling', () => {
     it('on CDP created event creates request ', () => {
       const networkManager = new SDK.NetworkManager.NetworkManager(createTarget());

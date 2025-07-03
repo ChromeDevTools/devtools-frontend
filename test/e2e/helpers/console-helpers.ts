@@ -439,13 +439,15 @@ export function checkCommandResultFunction(offset = 0) {
   };
 }
 
-export async function getLastConsoleStacktrace(offset = 0) {
-  return (await getStructuredConsoleMessages()).at(-1 - offset)?.stackPreview as string;
+export async function getLastConsoleStacktrace(offset = 0, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  return (await getStructuredConsoleMessages(devToolsPage)).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(command: string, expected: string, leastMessages = 1, offset = 0) {
-  await typeIntoConsoleAndWaitForResult(command, leastMessages);
-  await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
+export async function checkCommandStacktrace(
+    command: string, expected: string, leastMessages = 1, offset = 0,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await typeIntoConsoleAndWaitForResult(command, leastMessages, undefined, devToolsPage);
+  await unifyLogVM(await getLastConsoleStacktrace(offset, devToolsPage), expected);
 }
 
 function veImpressionForConsoleMessage() {

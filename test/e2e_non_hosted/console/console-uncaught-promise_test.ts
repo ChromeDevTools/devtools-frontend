@@ -4,18 +4,17 @@
 
 import {assert} from 'chai';
 
-import {getTestServerPort, goToResource} from '../../shared/helper.js';
 import {
   checkCommandStacktrace,
   getCurrentConsoleMessages,
   navigateToConsoleTab,
   typeIntoConsoleAndWaitForResult,
-} from '../helpers/console-helpers.js';
+} from '../../e2e/helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  it('is able to log uncaught promise rejections into console', async () => {
-    await goToResource('../resources/console/console-uncaught-promise.html');
-    await navigateToConsoleTab();
+  it('is able to log uncaught promise rejections into console', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('../resources/console/console-uncaught-promise.html');
+    await navigateToConsoleTab(devToolsPage);
 
     await checkCommandStacktrace(
         'await promiseTest1();',
@@ -24,6 +23,8 @@ describe('The Console Tab', () => {
         (anonymous) @ VM26:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -33,6 +34,8 @@ describe('The Console Tab', () => {
         (anonymous) @ VM44:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -45,6 +48,8 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM66:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -54,6 +59,8 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM86:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -63,6 +70,8 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM104:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -72,6 +81,8 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM122:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -81,6 +92,8 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM138:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
     await checkCommandStacktrace(
@@ -90,10 +103,12 @@ describe('The Console Tab', () => {
         (anonymous)	@	VM150:1
       `,
         2,
+        0,
+        devToolsPage,
     );
 
-    await typeIntoConsoleAndWaitForResult('await promiseTest9();', 3);
-    const lastMessages = (await getCurrentConsoleMessages()).slice(-2);
+    await typeIntoConsoleAndWaitForResult('await promiseTest9();', 3, undefined, devToolsPage);
+    const lastMessages = (await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage)).slice(-2);
     assert.include(
         lastMessages,
         'A bad HTTP response code (404) was received when fetching the script.',
@@ -101,9 +116,10 @@ describe('The Console Tab', () => {
     );
     assert.include(
         lastMessages,
-        `Uncaught (in promise) TypeError: Failed to register a ServiceWorker for scope (\'https://localhost:${
-            getTestServerPort()}/test/e2e/resources/console/\') with script (\'https://localhost:${
-            getTestServerPort()}/test/e2e/resources/console/404\'): A bad HTTP response code (404) was received when fetching the script.`,
+        `Uncaught (in promise) TypeError: Failed to register a ServiceWorker for scope ('https://localhost:${
+            inspectedPage.serverPort}/test/e2e/resources/console/') with script ('https://localhost:${
+            inspectedPage
+                .serverPort}/test/e2e/resources/console/404'): A bad HTTP response code (404) was received when fetching the script.`,
         'Error message was not displayed correctly for promiseTest9',
     );
   });

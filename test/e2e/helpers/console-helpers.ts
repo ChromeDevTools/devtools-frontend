@@ -411,9 +411,11 @@ export async function waitForIssueButtonLabel(expectedLabel: string) {
   });
 }
 
-export async function clickOnContextMenu(selectorForNode: string, jslogContext: string) {
-  await click(selectorForNode, {clickOptions: {button: 'right'}});
-  const menuItem = await waitFor(`[jslog*="context: ${jslogContext}"]`);
+export async function clickOnContextMenu(
+    selectorForNode: string, jslogContext: string,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(selectorForNode, {clickOptions: {button: 'right'}});
+  const menuItem = await devToolsPage.waitFor(`[jslog*="context: ${jslogContext}"]`);
   await menuItem.click();
   const isObject = ['copy-object', 'expand-recursively'].includes(jslogContext);
   await expectVeEvents(
@@ -423,7 +425,7 @@ export async function clickOnContextMenu(selectorForNode: string, jslogContext: 
         veClick(`Menu > Action: ${jslogContext}`),
         veResize('Menu'),
       ],
-      `${await veRoot()} > Item: console-message`);
+      `${await veRoot(devToolsPage)} > Item: console-message`, devToolsPage);
 }
 
 /**

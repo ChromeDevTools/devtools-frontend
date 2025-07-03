@@ -390,6 +390,13 @@ export interface HostConfigAiAssistanceFileAgent {
   userTier: string;
 }
 
+export interface HostConfigAiCodeCompletion {
+  modelId: string;
+  temperature: number;
+  enabled: boolean;
+  userTier: string;
+}
+
 export interface HostConfigVeLogging {
   enabled: boolean;
   testing: boolean;

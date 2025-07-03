@@ -1,5 +1,9 @@
 name: Auto-close PRs
 
+permissions:
+  pull-requests: write
+  issues: write
+
 on:
   schedule:
     # Run everyday at: https://crontab.guru/#0_6_*_*_*.

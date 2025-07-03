@@ -221,7 +221,16 @@ class ScriptsMochaTests extends Tests {
   override run(tests: PathPair[]) {
     return super.run(
         tests.map(test => ScriptPathPair.getFromPair(test)),
-        ['--experimental-strip-types', '--no-warnings=ExperimentalWarning', MOCHA_BIN_PATH, '--extension=ts,js'],
+        [
+          '--experimental-strip-types',
+          '--no-warnings=ExperimentalWarning',
+          MOCHA_BIN_PATH,
+          // Some test require spinning up a TypeScript
+          // typechecking service which take some time on
+          // the first test. We set 2 x Default(2000)
+          '--timeout=4000',
+          '--extension=ts,js',
+        ],
     );
   }
 

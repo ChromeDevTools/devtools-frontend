@@ -11,6 +11,7 @@ ts_e2e_library("console") {
     "console-fetch-logging_test.ts",
     "console-live-expressions_test.ts",
     "console-time_test.ts",
+    "console-trusted-types_test.ts",
     "dom-warnings_test.ts",
     "filter_test.ts",
     "search_test.ts",

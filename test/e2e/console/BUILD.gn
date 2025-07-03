@@ -25,7 +25,6 @@ node_ts_library("console") {
     "console-repl-mode_test.ts",
     "console-stack-trace_test.ts",
     "console-truncate-long-messages_test.ts",
-    "console-trusted-types_test.ts",
     "console-uncaught-promise_test.ts",
     "issues-toolbar_test.ts",
   ]

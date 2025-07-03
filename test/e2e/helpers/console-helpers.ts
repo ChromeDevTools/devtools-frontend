@@ -7,9 +7,7 @@ import {assert} from 'chai';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  $,
   click,
-  getBrowserAndPages,
   goToResource,
   waitFor,
   waitForFunction
@@ -272,43 +270,44 @@ export async function showVerboseMessages(devToolsPage = getBrowserAndPagesWrapp
       `${await veRoot(devToolsPage)} > Toolbar > DropDown: log-level`, devToolsPage);
 }
 
-export async function typeIntoConsole(message: string) {
-  const {frontend} = getBrowserAndPages();
+export async function typeIntoConsole(message: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const asyncScope = new AsyncScope();
-  const consoleElement = await waitFor(CONSOLE_PROMPT_SELECTOR, undefined, asyncScope);
+  const consoleElement = await devToolsPage.waitFor(CONSOLE_PROMPT_SELECTOR, undefined, asyncScope);
   await consoleElement.click();
-  await consoleElement.type(message);
+  await devToolsPage.typeText(message);
   // Wait for autocomplete text to catch up.
-  const line = await waitFor('[aria-label="Console prompt"]', consoleElement, asyncScope);
-  const autocomplete = await $(CONSOLE_TOOLTIP_SELECTOR);
+  const line = await devToolsPage.waitFor('[aria-label="Console prompt"]', consoleElement, asyncScope);
+  const autocomplete = await devToolsPage.$(CONSOLE_TOOLTIP_SELECTOR);
   // The autocomplete element doesn't exist until the first autocomplete suggestion
   // is actually given.
 
   // Sometimes the autocomplete suggests `assert` when typing `console.clear()` which made a test flake.
   // The following checks if there is any autocomplete text and dismisses it by pressing escape.
   if (autocomplete && await autocomplete.evaluate(e => e.textContent)) {
-    void consoleElement.press('Escape');
+    await devToolsPage.pressKey('Escape');
   }
   await asyncScope.exec(
-      () =>
-          frontend.waitForFunction((msg: string, ln: Element) => ln.textContent === msg, {timeout: 0}, message, line));
-  await consoleElement.press('Enter');
+      () => devToolsPage.page.waitForFunction(
+          (msg: string, ln: Element) => ln.textContent === msg, {timeout: 0}, message, line));
+  await devToolsPage.pressKey('Enter');
 }
 
 export async function typeIntoConsoleAndWaitForResult(
-    message: string, leastExpectedMessages = 1, selector = Level.All) {
-  const {frontend} = getBrowserAndPages();
+    message: string, leastExpectedMessages = 1, selector = Level.All,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Get the current number of console results so we can check we increased it.
-  const originalLength = await frontend.evaluate(selector => {
+  const originalLength = await devToolsPage.evaluate(selector => {
     return document.querySelectorAll(selector).length;
   }, selector);
 
-  await typeIntoConsole(message);
+  await typeIntoConsole(message, devToolsPage);
 
   await new AsyncScope().exec(
-      () => frontend.waitForFunction((originalLength: number, leastExpectedMessages: number, selector: string) => {
-        return document.querySelectorAll(selector).length >= originalLength + leastExpectedMessages;
-      }, {timeout: 0}, originalLength, leastExpectedMessages, selector));
+      () => devToolsPage.page.waitForFunction(
+          (originalLength: number, leastExpectedMessages: number, selector: string) => {
+            return document.querySelectorAll(selector).length >= originalLength + leastExpectedMessages;
+          },
+          {timeout: 0}, originalLength, leastExpectedMessages, selector));
 }
 
 export async function unifyLogVM(actualLog: string, expectedLog: string) {
@@ -384,16 +383,16 @@ export async function toggleShowCorsErrors() {
       await veRoot());
 }
 
-export async function toggleShowLogXmlHttpRequests() {
-  await click(CONSOLE_SETTINGS_SELECTOR);
-  await click(LOG_XML_HTTP_REQUESTS_SELECTOR);
+export async function toggleShowLogXmlHttpRequests(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
+  await devToolsPage.click(LOG_XML_HTTP_REQUESTS_SELECTOR);
   await expectVeEvents(
       [
         veClick('Toolbar > ToggleSubpane: console-settings'),
         ...veImpressionsForConsoleSettings(),
         veChange('Toggle: monitoring-xhr-enabled'),
       ],
-      await veRoot());
+      await veRoot(devToolsPage), devToolsPage);
 }
 
 async function getIssueButtonLabel(): Promise<string|null> {

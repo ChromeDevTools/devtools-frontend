@@ -5,6 +5,7 @@
     "module": "NodeNext",
     "target": "ESNext",
     "outDir": "ignored",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "erasableSyntaxOnly": true
   }
 }

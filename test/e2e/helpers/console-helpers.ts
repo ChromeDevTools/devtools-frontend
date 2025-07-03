@@ -8,7 +8,6 @@ import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   click,
-  goToResource,
   waitFor,
   waitForFunction
 } from '../../shared/helper.js';
@@ -129,14 +128,17 @@ export async function waitForLastConsoleMessageToHaveContent(
   await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
 }
 
-export async function getConsoleMessages(testName: string, withAnchor = false, callback?: () => Promise<void>) {
+export async function getConsoleMessages(
+    testName: string, withAnchor = false, callback?: () => Promise<void>,
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage,
+    inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
   // Ensure Console is loaded before the page is loaded to avoid a race condition.
-  await navigateToConsoleTab();
+  await navigateToConsoleTab(devToolsPage);
 
   // Have the target load the page.
-  await goToResource(`console/${testName}.html`);
+  await inspectedPage.goToResource(`console/${testName}.html`);
 
-  return await getCurrentConsoleMessages(withAnchor, Level.All, callback);
+  return await getCurrentConsoleMessages(withAnchor, Level.All, callback, devToolsPage);
 }
 
 export async function getCurrentConsoleMessages(
@@ -353,10 +355,12 @@ export async function selectConsoleSidebarItem(itemPosition = SidebarItem.Info) 
   await click(itemSelector, {root: sidebar});
 }
 
-export async function waitForConsoleInfoMessageAndClickOnLink() {
-  const consoleMessage = await waitFor('div.console-group-messages .console-info-level span.source-code');
-  await click('button.devtools-link', {root: consoleMessage});
-  await expectVeEvents([veClick('Item: console-message > Link: script-location')], await veRoot());
+export async function waitForConsoleInfoMessageAndClickOnLink(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const consoleMessage = await devToolsPage.waitFor('div.console-group-messages .console-info-level span.source-code');
+  await devToolsPage.click('button.devtools-link', {root: consoleMessage});
+  await expectVeEvents(
+      [veClick('Item: console-message > Link: script-location')], await veRoot(devToolsPage), devToolsPage);
 }
 
 export async function turnOffHistoryAutocomplete() {

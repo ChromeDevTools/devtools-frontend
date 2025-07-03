@@ -14,7 +14,6 @@ import {
   $$,
   assertNotNullOrUndefined,
   click,
-  clickElement,
   clickMoreTabsButton,
   drainFrontendTaskQueue,
   getBrowserAndPages,
@@ -262,24 +261,24 @@ export async function removeBreakpointForLine(
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
 }
 
-export async function addLogpointForLine(index: number, condition: string) {
-  const {frontend} = getBrowserAndPages();
-  const breakpointLine = await getLineNumberElement(index);
+export async function addLogpointForLine(
+    index: number, condition: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const breakpointLine = await getLineNumberElement(index, devToolsPage);
   assertNotNullOrUndefined(breakpointLine);
 
-  await waitForFunction(async () => !(await isBreakpointSet(index)));
-  await clickElement(breakpointLine, {clickOptions: {button: 'right'}});
+  await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
+  await devToolsPage.clickElement(breakpointLine, {clickOptions: {button: 'right'}});
 
-  await click('aria/Add logpoint…');
+  await devToolsPage.click('aria/Add logpoint…');
 
-  const editDialog = await waitFor('.sources-edit-breakpoint-dialog');
-  const conditionEditor = await waitForAria('Code editor', editDialog);
+  const editDialog = await devToolsPage.waitFor('.sources-edit-breakpoint-dialog');
+  const conditionEditor = await devToolsPage.waitForAria('Code editor', editDialog);
   await conditionEditor.focus();
 
-  await typeText(condition);
-  await frontend.keyboard.press('Enter');
+  await devToolsPage.typeText(condition);
+  await devToolsPage.pressKey('Enter');
 
-  await waitForFunction(async () => await isBreakpointSet(index));
+  await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
 }
 
 export async function isBreakpointSet(

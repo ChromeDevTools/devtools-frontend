@@ -3,24 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer-core';
 
-import {
-  $,
-  $$,
-  activeElement,
-  activeElementAccessibleName,
-  activeElementTextContent,
-  assertNotNullOrUndefined,
-  click,
-  getBrowserAndPages,
-  replacePuppeteerUrl,
-  tabBackward,
-  tabForward,
-  waitFor,
-  waitForElementWithTextContent,
-  waitForFunction,
-} from '../../shared/helper.js';
 import {
   CONSOLE_ALL_MESSAGES_SELECTOR,
   focusConsolePrompt,
@@ -32,11 +15,16 @@ import {
   typeIntoConsoleAndWaitForResult,
   waitForConsoleInfoMessageAndClickOnLink,
   waitForLastConsoleMessageToHaveContent,
-} from '../helpers/console-helpers.js';
+} from '../../e2e/helpers/console-helpers.js';
 import {
   addLogpointForLine,
   openSourceCodeEditorForFile,
-} from '../helpers/sources-helpers.js';
+} from '../../e2e/helpers/sources-helpers.js';
+import {
+  assertNotNullOrUndefined,
+  replacePuppeteerUrl,
+} from '../../shared/helper.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 /* eslint-disable no-console */
 
@@ -256,13 +244,12 @@ describe('The Console Tab', () => {
   ];
 
   for (const test of tests) {
-    it(test.description, async () => {
-      const {target} = getBrowserAndPages();
-      await navigateToConsoleTab();
-      await showVerboseMessages();
-      await target.evaluate(test.evaluate);
-      const actualMessages = await waitForFunction(async () => {
-        const messages = await getStructuredConsoleMessages();
+    it(test.description, async ({devToolsPage, inspectedPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await showVerboseMessages(devToolsPage);
+      await inspectedPage.evaluate(test.evaluate);
+      const actualMessages = await devToolsPage.waitForFunction(async () => {
+        const messages = await getStructuredConsoleMessages(devToolsPage);
         return messages.length === test.expectedMessages.length ? messages : undefined;
       });
       for (const message of actualMessages) {
@@ -278,54 +265,52 @@ describe('The Console Tab', () => {
   }
 
   describe('keyboard navigation', () => {
-    it('can navigate between individual messages', async () => {
-      const {frontend} = getBrowserAndPages();
-      await getConsoleMessages('focus-interaction');
-      await focusConsolePrompt();
+    it('can navigate between individual messages', async ({devToolsPage, inspectedPage}) => {
+      await getConsoleMessages('focus-interaction', undefined, undefined, devToolsPage, inspectedPage);
+      await focusConsolePrompt(devToolsPage);
 
-      await tabBackward();
-      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9');
+      await devToolsPage.tabBackward();
+      assert.strictEqual(await devToolsPage.activeElementTextContent(), 'focus-interaction.html:9');
 
-      await frontend.keyboard.press('ArrowUp');
-      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9 Third message');
+      await devToolsPage.pressKey('ArrowUp');
+      assert.strictEqual(await devToolsPage.activeElementTextContent(), 'focus-interaction.html:9 Third message');
 
-      await frontend.keyboard.press('ArrowUp');
-      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:8');
+      await devToolsPage.pressKey('ArrowUp');
+      assert.strictEqual(await devToolsPage.activeElementTextContent(), 'focus-interaction.html:8');
 
-      await frontend.keyboard.press('ArrowDown');
-      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9 Third message');
+      await devToolsPage.pressKey('ArrowDown');
+      assert.strictEqual(await devToolsPage.activeElementTextContent(), 'focus-interaction.html:9 Third message');
 
-      await tabBackward();  // Focus should now be on the console settings, e.g. out of the list of console messages
-      assert.strictEqual(await activeElementAccessibleName(), 'Console settings');
+      await devToolsPage
+          .tabBackward();  // Focus should now be on the console settings, e.g. out of the list of console messages
+      assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console settings');
 
-      await tabForward();  // Focus is now back to the list, selecting the last message source URL
-      assert.strictEqual(await activeElementTextContent(), 'focus-interaction.html:9');
+      await devToolsPage.tabForward();  // Focus is now back to the list, selecting the last message source URL
+      assert.strictEqual(await devToolsPage.activeElementTextContent(), 'focus-interaction.html:9');
 
-      await tabForward();
-      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+      await devToolsPage.tabForward();
+      assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
     });
 
-    it('should not lose focus on prompt when logging and scrolling', async () => {
-      const {target, frontend} = getBrowserAndPages();
+    it('should not lose focus on prompt when logging and scrolling', async ({inspectedPage, devToolsPage}) => {
+      await getConsoleMessages('focus-interaction', undefined, undefined, devToolsPage, inspectedPage);
+      await focusConsolePrompt(devToolsPage);
 
-      await getConsoleMessages('focus-interaction');
-      await focusConsolePrompt();
-
-      await target.evaluate(() => {
+      await inspectedPage.evaluate(() => {
         console.log('New message');
       });
-      await waitForLastConsoleMessageToHaveContent('New message');
-      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+      await waitForLastConsoleMessageToHaveContent('New message', devToolsPage);
+      assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
 
-      await target.evaluate(() => {
+      await inspectedPage.evaluate(() => {
         for (let i = 0; i < 100; i++) {
           console.log(`Message ${i}`);
         }
       });
-      await waitForLastConsoleMessageToHaveContent('Message 99');
-      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+      await waitForLastConsoleMessageToHaveContent('Message 99', devToolsPage);
+      assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
 
-      const consolePrompt = await activeElement();
+      const consolePrompt = await devToolsPage.activeElement();
       const wrappingBox = await consolePrompt.boundingBox();
       if (!wrappingBox) {
         throw new Error('Can\'t compute bounding box of console prompt.');
@@ -333,17 +318,17 @@ describe('The Console Tab', () => {
 
       // +20 to move from the top left point so we are definitely scrolling
       // within the container
-      await frontend.mouse.move(wrappingBox.x + 20, wrappingBox.y + 5);
-      await frontend.mouse.wheel({deltaY: -500});
+      await devToolsPage.page.mouse.move(wrappingBox.x + 20, wrappingBox.y + 5);
+      await devToolsPage.page.mouse.wheel({deltaY: -500});
 
-      assert.strictEqual(await activeElementAccessibleName(), 'Console prompt');
+      assert.strictEqual(await devToolsPage.activeElementAccessibleName(), 'Console prompt');
     });
   });
 
   describe('Console log message formatters', () => {
     async function getConsoleMessageTextChunksWithStyle(
-        frontend: puppeteer.Page, styles: Array<keyof CSSStyleDeclaration> = []): Promise<string[][][]> {
-      return await frontend.evaluate((selector, styles) => {
+        devToolsPage: DevToolsPage, styles: Array<keyof CSSStyleDeclaration> = []): Promise<string[][][]> {
+      return await devToolsPage.evaluate((selector, styles) => {
         return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
           // For all nodes, extract text.
           const result = [node.textContent as string];
@@ -356,52 +341,49 @@ describe('The Console Tab', () => {
       }, CONSOLE_ALL_MESSAGES_SELECTOR, styles);
     }
 
-    async function waitForConsoleMessages(count: number): Promise<void> {
-      await waitForFunction(async () => {
-        const messages = await getCurrentConsoleMessages();
+    async function waitForConsoleMessages(count: number, devToolsPage: DevToolsPage): Promise<void> {
+      await devToolsPage.waitForFunction(async () => {
+        const messages = await getCurrentConsoleMessages(false, undefined, undefined, devToolsPage);
         return messages.length === count ? messages : null;
       });
     }
 
-    it('expand primitive formatters', async () => {
-      const {frontend, target} = getBrowserAndPages();
-      await navigateToConsoleTab();
-      await target.evaluate(() => {
+    it('expand primitive formatters', async ({devToolsPage, inspectedPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await inspectedPage.evaluate(() => {
         console.log('--%s--', 'text');
         console.log('--%s--', '%s%i', 'u', 2);
         console.log('Number %i', 42);
         console.log('Float %f', 1.5);
       });
 
-      await waitForConsoleMessages(4);
-      const texts = await getConsoleMessageTextChunksWithStyle(frontend);
+      await waitForConsoleMessages(4, devToolsPage);
+      const texts = await getConsoleMessageTextChunksWithStyle(devToolsPage);
       assert.deepEqual(texts, [[['--text--']], [['--u2--']], [['Number 42']], [['Float 1.5']]]);
     });
 
-    it('expand %c formatter with color style', async () => {
-      const {frontend, target} = getBrowserAndPages();
-      await navigateToConsoleTab();
-      await target.evaluate(() => console.log('PRE%cRED%cBLUE', 'color:red', 'color:blue'));
+    it('expand %c formatter with color style', async ({devToolsPage, inspectedPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await inspectedPage.evaluate(() => console.log('PRE%cRED%cBLUE', 'color:red', 'color:blue'));
 
-      await waitForConsoleMessages(1);
+      await waitForConsoleMessages(1, devToolsPage);
 
       // Extract the text and color.
-      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['color']);
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(devToolsPage, ['color']);
       assert.deepEqual(textsAndStyles, [[['PRE', ''], ['RED', 'red'], ['BLUE', 'blue']]]);
     });
 
-    it('expand %c formatter with background image in data URL', async () => {
-      const {frontend, target} = getBrowserAndPages();
-      await navigateToConsoleTab();
-      await target.evaluate(
+    it('expand %c formatter with background image in data URL', async ({devToolsPage, inspectedPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await inspectedPage.evaluate(
           () => console.log(
               'PRE%cBG',
               'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAF0lEQVR42mM4Awb/wYCBYg6EgghRzAEAWDWBGQVyKPMAAAAASUVORK5CYII=);'));
 
-      await waitForConsoleMessages(1);
+      await waitForConsoleMessages(1, devToolsPage);
 
       // Check that the 'BG' text has the background image set.
-      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(devToolsPage, ['backgroundImage']);
       assert.lengthOf(textsAndStyles, 1);
       const message = textsAndStyles[0];
       assert.lengthOf(message, 2);
@@ -410,117 +392,118 @@ describe('The Console Tab', () => {
       assert.include(textWithBackground[1], 'data:image/png;base64');
     });
 
-    it('filter out %c formatter if background image is remote URL', async () => {
-      const {frontend, target} = getBrowserAndPages();
-      await navigateToConsoleTab();
-      await target.evaluate(() => console.log('PRE%cBG', 'background-image: url(http://localhost/image.png)'));
+    it('filter out %c formatter if background image is remote URL', async ({devToolsPage, inspectedPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await inspectedPage.evaluate(() => console.log('PRE%cBG', 'background-image: url(http://localhost/image.png)'));
 
-      await waitForConsoleMessages(1);
+      await waitForConsoleMessages(1, devToolsPage);
 
-      // Check that the 'BG' text has no bakcground image.
-      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
+      // Check that the 'BG' text has no background image.
+      const textsAndStyles = await getConsoleMessageTextChunksWithStyle(devToolsPage, ['backgroundImage']);
       assert.deepEqual(textsAndStyles, [[['PRE', ''], ['BG', '']]]);
     });
   });
 
   describe('message anchor', () => {
-    it('opens the breakpoint edit dialog for logpoint messages', async () => {
-      const {target} = getBrowserAndPages();
-      await openSourceCodeEditorForFile('logpoint.js', 'logpoint.html');
-      await addLogpointForLine(3, 'x');
-      await target.evaluate('triggerLogpoint(42)');
+    it('opens the breakpoint edit dialog for logpoint messages', async ({devToolsPage, inspectedPage}) => {
+      await openSourceCodeEditorForFile('logpoint.js', 'logpoint.html', devToolsPage, inspectedPage);
+      await addLogpointForLine(3, 'x', devToolsPage);
+      await inspectedPage.evaluate('triggerLogpoint(42)');
 
-      await navigateToConsoleTab();
-      await waitForConsoleInfoMessageAndClickOnLink();
+      await navigateToConsoleTab(devToolsPage);
+      await waitForConsoleInfoMessageAndClickOnLink(devToolsPage);
 
-      await waitFor('.sources-edit-breakpoint-dialog');
+      await devToolsPage.waitFor('.sources-edit-breakpoint-dialog');
     });
   });
 
   describe('for memory objects', () => {
     const MEMORY_ICON_SELECTOR = '[aria-label="Open in Memory inspector panel"]';
 
-    it('shows one memory icon to open memory inspector for ArrayBuffers (description)', async () => {
-      await navigateToConsoleTab();
-      await typeIntoConsoleAndWaitForResult('new ArrayBuffer(10)');
+    it('shows one memory icon to open memory inspector for ArrayBuffers (description)', async ({devToolsPage}) => {
+      await navigateToConsoleTab(devToolsPage);
+      await typeIntoConsoleAndWaitForResult('new ArrayBuffer(10)', 1, undefined, devToolsPage);
 
       // We expect one memory icon directly next to the description.
-      let memoryIcons = await $$(MEMORY_ICON_SELECTOR);
+      let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
       assert.lengthOf(memoryIcons, 1);
 
       // Expand the object, and wait until it has completely expanded and the last property is shown.
-      await click('.console-object');
-      await waitForElementWithTextContent('[[ArrayBufferData]]');
+      await devToolsPage.click('.console-object');
+      await devToolsPage.waitForElementWithTextContent('[[ArrayBufferData]]');
 
       // We still expect only to see one memory icon.
-      memoryIcons = await $$(MEMORY_ICON_SELECTOR);
+      memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
       assert.lengthOf(memoryIcons, 1);
     });
 
-    it('shows two memory icons to open memory inspector for a TypedArray (description, buffer)', async () => {
-      await navigateToConsoleTab();
-      await typeIntoConsoleAndWaitForResult('new Uint8Array(10)');
+    it('shows two memory icons to open memory inspector for a TypedArray (description, buffer)',
+       async ({devToolsPage}) => {
+         await navigateToConsoleTab(devToolsPage);
+         await typeIntoConsoleAndWaitForResult('new Uint8Array(10)', 1, undefined, devToolsPage);
 
-      // We expect one memory icon directly next to the description.
-      let memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 1);
+         // We expect one memory icon directly next to the description.
+         let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 1);
 
-      // Expand the object, and wait until it has completely expanded and the last property is shown.
-      await click('.console-object');
-      await waitForElementWithTextContent('[[Prototype]]');
+         // Expand the object, and wait until it has completely expanded and the last property is shown.
+         await devToolsPage.click('.console-object');
+         await devToolsPage.waitForElementWithTextContent('[[Prototype]]');
 
-      // We expect to see in total two memory icons: one for the buffer, one next to the description.
-      memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 2);
+         // We expect to see in total two memory icons: one for the buffer, one next to the description.
+         memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 2);
 
-      // Confirm that the second memory icon is next to the `buffer`.
-      const arrayBufferProperty = await waitFor('.object-value-arraybuffer');
-      const arrayBufferMemoryIcon = await $(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-      assertNotNullOrUndefined(arrayBufferMemoryIcon);
-    });
+         // Confirm that the second memory icon is next to the `buffer`.
+         const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
+         const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
+         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+       });
 
-    it('shows two memory icons to open memory inspector for a DataView (description, buffer)', async () => {
-      await navigateToConsoleTab();
-      await typeIntoConsoleAndWaitForResult('new DataView(new Uint8Array(10).buffer)');
+    it('shows two memory icons to open memory inspector for a DataView (description, buffer)',
+       async ({devToolsPage}) => {
+         await navigateToConsoleTab(devToolsPage);
+         await typeIntoConsoleAndWaitForResult('new DataView(new Uint8Array(10).buffer)', 1, undefined, devToolsPage);
 
-      // We expect one memory icon directly next to the description.
-      let memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 1);
+         // We expect one memory icon directly next to the description.
+         let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 1);
 
-      // Expand the object, and wait until it has completely expanded and the last property is shown.
-      await click('.console-object');
-      await waitForElementWithTextContent('[[Prototype]]');
+         // Expand the object, and wait until it has completely expanded and the last property is shown.
+         await devToolsPage.click('.console-object');
+         await devToolsPage.waitForElementWithTextContent('[[Prototype]]');
 
-      // We expect to see in total two memory icons: one for the buffer, one next to the description.
-      memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 2);
+         // We expect to see in total two memory icons: one for the buffer, one next to the description.
+         memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 2);
 
-      // Confirm that the second memory icon is next to the `buffer`.
-      const arrayBufferProperty = await waitFor('.object-value-arraybuffer');
-      const arrayBufferMemoryIcon = await $(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-      assertNotNullOrUndefined(arrayBufferMemoryIcon);
-    });
+         // Confirm that the second memory icon is next to the `buffer`.
+         const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
+         const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
+         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+       });
 
-    it('shows two memory icons to open memory inspector for WebAssembly memory (description, buffer)', async () => {
-      await navigateToConsoleTab();
-      await typeIntoConsoleAndWaitForResult('new WebAssembly.Memory({initial: 10})');
+    it('shows two memory icons to open memory inspector for WebAssembly memory (description, buffer)',
+       async ({devToolsPage}) => {
+         await navigateToConsoleTab(devToolsPage);
+         await typeIntoConsoleAndWaitForResult('new WebAssembly.Memory({initial: 10})', 1, undefined, devToolsPage);
 
-      // We expect one memory icon directly next to the description.
-      let memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 1);
+         // We expect one memory icon directly next to the description.
+         let memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 1);
 
-      // Expand the object, and wait until it has completely expanded and the last property is shown.
-      await click('.console-object');
-      await waitForElementWithTextContent('[[Prototype]]');
+         // Expand the object, and wait until it has completely expanded and the last property is shown.
+         await devToolsPage.click('.console-object');
+         await devToolsPage.waitForElementWithTextContent('[[Prototype]]');
 
-      // We expect to see in total two memory icons: one for the buffer, one next to the description.
-      memoryIcons = await $$(MEMORY_ICON_SELECTOR);
-      assert.lengthOf(memoryIcons, 2);
+         // We expect to see in total two memory icons: one for the buffer, one next to the description.
+         memoryIcons = await devToolsPage.$$(MEMORY_ICON_SELECTOR);
+         assert.lengthOf(memoryIcons, 2);
 
-      // Confirm that the second memory icon is next to the `buffer`.
-      const arrayBufferProperty = await waitFor('.object-value-arraybuffer');
-      const arrayBufferMemoryIcon = await $(MEMORY_ICON_SELECTOR, arrayBufferProperty);
-      assertNotNullOrUndefined(arrayBufferMemoryIcon);
-    });
+         // Confirm that the second memory icon is next to the `buffer`.
+         const arrayBufferProperty = await devToolsPage.waitFor('.object-value-arraybuffer');
+         const arrayBufferMemoryIcon = await devToolsPage.$(MEMORY_ICON_SELECTOR, arrayBufferProperty);
+         assertNotNullOrUndefined(arrayBufferMemoryIcon);
+       });
   });
 });

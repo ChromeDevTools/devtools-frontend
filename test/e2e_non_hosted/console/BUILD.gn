@@ -12,6 +12,7 @@ ts_e2e_library("console") {
     "console-expand-recursively_test.ts",
     "console-fetch-logging_test.ts",
     "console-live-expressions_test.ts",
+    "console-log_test.ts",
     "console-time_test.ts",
     "console-trusted-types_test.ts",
     "console-uncaught-promise_test.ts",

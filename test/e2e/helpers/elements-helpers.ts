@@ -402,8 +402,9 @@ export const getAllPropertiesFromComputedPane = async (devToolsPage?: DevToolsPa
       .filter(prop => !!prop);
 };
 
-export const getPropertyFromComputedPane = async (name: string) => {
-  const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
+export const getPropertyFromComputedPane =
+    async (name: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const properties = await devToolsPage.$$(COMPUTED_PROPERTY_SELECTOR);
   for (const property of properties) {
     const matchingProperty = await property.evaluate((node, name) => {
       const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
@@ -731,8 +732,10 @@ export const getColorSwatch = async (
   return swatches[index];
 };
 
-export const getColorSwatchColor = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
-  const swatch = await getColorSwatch(parent, index);
+export const getColorSwatchColor = async (
+    parent: puppeteer.ElementHandle<Element>, index: number,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const swatch = await getColorSwatch(parent, index, devToolsPage);
   return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
 };
 

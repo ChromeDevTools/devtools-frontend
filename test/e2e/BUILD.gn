@@ -22,7 +22,6 @@ node_ts_library("tests") {
     "emulation",
     "extensions",
     "host",
-    "inline_editor",
     "issues",
     "lighthouse",
     "memory",

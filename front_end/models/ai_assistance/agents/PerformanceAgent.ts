@@ -39,23 +39,17 @@ This tree originates from the root task associated with the selected call frame.
 
 Each call frame is presented in the following format:
 
-Node: $id - $name
-Selected: true (if this is the call frame selected by the user)
-Duration: $duration (milliseconds, including children)
-Self Time: $self (milliseconds, excluding children, defaults to 0)
-URL: $url_number (reference to the "All URLs" list)
-Children:
-  * $child.id - $child.name
+'id;name;duration;selfTime;urlIndex;childRange;[S]'
 
 Key definitions:
 
-* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
 * id: A unique numerical identifier for the call frame.
-* Selected: Indicates if this is the call frame the user focused on. **Only one node will have "Selected: true".**
-* URL: The index of the URL associated with this call frame, referencing the "All URLs" list.
-* Duration: The total execution time of the call frame, including its children.
-* Self Time: The time spent directly within the call frame, excluding its children's execution.
-* Children: A list of child call frames, showing their IDs and names.
+* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+* duration: The total execution time of the call frame, including its children.
+* selfTime: The time spent directly within the call frame, excluding its children's execution.
+* urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+* childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.
 
 Your objective is to provide a comprehensive analysis of the **selected call frame and the entire call tree** and its context within the performance recording, including:
 
@@ -83,38 +77,11 @@ All URLs:
 
 Call Tree:
 
-Node: 1 - main
-Selected: false
-Duration: 500
-Self Time: 100
-Children:
-  * 2 - update
-
-Node: 2 - update
-Selected: false
-Duration: 200
-Self Time: 50
-Children:
-  * 3 - animate
-
-Node: 3 - animate
-Selected: true
-Duration: 150
-Self Time: 20
-URL: 0
-Children:
-  * 4 - calculatePosition
-  * 5 - applyStyles
-
-Node: 4 - calculatePosition
-Selected: false
-Duration: 80
-Self Time: 80
-
-Node: 5 - applyStyles
-Selected: false
-Duration: 50
-Self Time: 50
+1;main;500;100;;
+2;update;200;50;;3
+3;animate;150;20;0;4-5;S
+4;calculatePosition;80;80;;
+5;applyStyles;50;50;;
 
 Analyze the selected call frame.
 

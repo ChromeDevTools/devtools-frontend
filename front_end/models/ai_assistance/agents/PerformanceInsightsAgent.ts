@@ -381,23 +381,17 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
 The tree is represented as a call frame with a root task and a series of children.
 The format of each callframe is:
 
-    Node: $id – $name
-    Selected: true
-    dur: $duration
-    self: $self
-    URL #: $url_number
-    Children:
-      * $child.id – $child.name
+  'id;name;duration;selfTime;urlIndex;childRange;[S]'
 
 The fields are:
 
-* name:  A short string naming the callframe (e.g. 'Evaluate Script' or the JS function name 'InitializeApp')
-* id:  A numerical identifier for the callframe
-* Selected:  Set to true if this callframe is the one the user selected.
-* url_number:  The number of the URL referenced in the "All URLs" list
-* dur:  The total duration of the callframe (includes time spent in its descendants), in milliseconds.
-* self:  The self duration of the callframe (excludes time spent in its descendants), in milliseconds. If omitted, assume the value is 0.
-* children:  An list of child callframes, each denoted by their id and name`,
+* id: A unique numerical identifier for the call frame.
+* name: A concise string describing the call frame (e.g., 'Evaluate Script', 'render', 'fetchData').
+* duration: The total execution time of the call frame, including its children.
+* selfTime: The time spent directly within the call frame, excluding its children's execution.
+* urlIndex: Index referencing the "All URLs" list. Empty if no specific script URL is associated.
+* childRange: Specifies the direct children of this node using their IDs. If empty ('' or 'S' at the end), the node has no children. If a single number (e.g., '4'), the node has one child with that ID. If in the format 'firstId-lastId' (e.g., '4-5'), it indicates a consecutive range of child IDs from 'firstId' to 'lastId', inclusive.
+* S: **Optional marker.** The letter 'S' appears at the end of the line **only** for the single call frame selected by the user.`,
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',

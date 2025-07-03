@@ -110,21 +110,9 @@ describeWithEnvironment('AIQueries', () => {
     // interaction = Node 3 below.
     const expectedToContain = `# Call tree:
 
-Node: 1 – Task
-dur: 1.1
-self: 0.2
-Children:
-  * 2 – Event: keydown
-
-Node: 2 – Event: keydown
-dur: 1
-self: 1
-
-Node: 3 – Task
-dur: 143.2
-self: 0.1
-Children:
-  * 4 – Event: keypress`;
+1;Task;1.1;0.2;;3
+2;Task;143.2;0.1;;4
+3;Event: keydown;1;1;;`;
     assert.include(activity.serialize(), expectedToContain);
   });
 });

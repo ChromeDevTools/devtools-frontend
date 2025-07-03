@@ -14,20 +14,24 @@ log1("1topGroup: log1()"); // from console-filter.html
 log2("2topGroup: log2()"); // from log-source.js
 log1("3topGroup: log1()"); // from console-filter.html
 
-console.group("enter outerGroup");
+console.group("enterGroup outerGroup");
 log1("1outerGroup: log1()"); // from console-filter.html
 log2("2outerGroup: log2()"); // from log-source.js
 
-console.group("enter innerGroup1");
+console.group("enterGroup innerGroup1");
 log1("1innerGroup1: log1()"); // from console-filter.html
 log2("2innerGroup1: log2()"); // from log-source.js
 console.groupEnd();
 
-console.group("enter innerGroup2");
+console.group("enterGroup innerGroup2");
 log1("1innerGroup2: log1()"); // from console-filter.html
 log2("2innerGroup2: log2()"); // from log-source.js
 console.groupEnd();
 
+console.groupEnd();
+
+console.groupCollapsed("enterCollapsedGroup collapsedGroup");
+console.error("1collapsedGroup: error");
 console.groupEnd();
 
 log1("4topGroup: log1()"); // from console-filter.html

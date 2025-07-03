@@ -48,11 +48,21 @@ export const AUTOCOMPLETE_FROM_HISTORY_SELECTOR = '[title="Autocomplete from his
 export const SHOW_CORS_ERRORS_SELECTOR = '[title="Show CORS errors in console"]';
 export const LOG_XML_HTTP_REQUESTS_SELECTOR = '[title="Log XMLHttpRequests"]';
 export const CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR = '[aria-label^="Create live expression"]';
+export const CONSOLE_SIDEBAR_SELECTOR = 'div[slot="sidebar"]';
 
 export const Level = {
   All: CONSOLE_ALL_MESSAGES_SELECTOR,
   Info: CONSOLE_INFO_MESSAGES_SELECTOR,
   Error: CONSOLE_ERROR_MESSAGES_SELECTOR,
+};
+
+export const SidebarItem = {
+  Messages: 1,
+  UserMessages: 2,
+  Errors: 3,
+  Warnings: 4,
+  Info: 5,
+  Verbose: 6,
 };
 
 export async function deleteConsoleMessagesFilter(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -92,6 +102,19 @@ export async function waitForConsoleMessagesToBeNonEmpty(
         await Promise.all(messages.map(message => message.evaluate(message => message.textContent || '')));
     return textContents.every(text => text !== '');
   });
+  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
+}
+
+export async function waitForExactConsoleMessageCount(
+    expectedCount: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const messageCount = await devToolsPage.waitForFunction(async () => {
+    const selected = await devToolsPage.$$(CONSOLE_ALL_MESSAGES_SELECTOR);
+    const messageTexts =
+        await Promise.all(selected.map(message => message.evaluate(message => message.textContent || '')));
+    const validMessages = messageTexts.filter(text => text !== '');
+    return validMessages.length;
+  });
+  assert.strictEqual(messageCount, expectedCount);
   await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
 }
 
@@ -312,6 +335,22 @@ export async function navigateToConsoleTab(devToolsPage?: DevToolsPage) {
   await devToolsPage.click(CONSOLE_TAB_SELECTOR);
   await devToolsPage.waitFor(CONSOLE_PROMPT_SELECTOR);
   await expectVeEvents([veImpressionForConsolePanel()], undefined, devToolsPage);
+}
+
+export async function openConsoleSidebar() {
+  await click('[aria-label="Show console sidebar"]');
+  await waitFor(CONSOLE_SIDEBAR_SELECTOR);
+}
+
+export async function closeConsoleSidebar() {
+  await click('[aria-label="Hide console sidebar"]');
+}
+
+export async function selectConsoleSidebarItem(itemPosition = SidebarItem.Info) {
+  const sidebar = await waitFor(CONSOLE_SIDEBAR_SELECTOR);
+  const itemSelector = `[role="tree"]>[role="treeitem"]:nth-of-type(${itemPosition})`;
+
+  await click(itemSelector, {root: sidebar});
 }
 
 export async function waitForConsoleInfoMessageAndClickOnLink() {

@@ -7,13 +7,19 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages, step} from '../../shared/helper.js';
 import {
+  closeConsoleSidebar,
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,
   deleteConsoleMessagesFilter,
   filterConsoleMessages,
   getConsoleMessages,
   getCurrentConsoleMessages,
+  Level,
+  openConsoleSidebar,
+  selectConsoleSidebarItem,
+  SidebarItem,
   toggleShowCorsErrors,
   waitForConsoleMessagesToBeNonEmpty,
+  waitForExactConsoleMessageCount,
 } from '../helpers/console-helpers.js';
 
 type MessageCheck = (msg: string) => boolean;
@@ -69,20 +75,21 @@ describe('The Console Tab', () => {
         'console-filter.html:10 1topGroup: log1()',
         'log-source.js:6 2topGroup: log2()',
         'console-filter.html:10 3topGroup: log1()',
-        'console-filter.html:17 enter outerGroup',
+        'console-filter.html:17 enterGroup outerGroup',
         'console-filter.html:10 1outerGroup: log1()',
         'log-source.js:6 2outerGroup: log2()',
-        'console-filter.html:21 enter innerGroup1',
+        'console-filter.html:21 enterGroup innerGroup1',
         'console-filter.html:10 1innerGroup1: log1()',
         'log-source.js:6 2innerGroup1: log2()',
-        'console-filter.html:26 enter innerGroup2',
+        'console-filter.html:26 enterGroup innerGroup2',
         'console-filter.html:10 1innerGroup2: log1()',
         'log-source.js:6 2innerGroup2: log2()',
+        'console-filter.html:33 enterCollapsedGroup collapsedGroup',
         'console-filter.html:10 4topGroup: log1()',
         'log-source.js:6 5topGroup: log2()',
-        'console-filter.html:38 Hello 1',
-        'console-filter.html:39 Hello 2',
-        'console-filter.html:42 end',
+        'console-filter.html:42 Hello 1',
+        'console-filter.html:43 Hello 2',
+        'console-filter.html:46 end',
       ]);
     });
   });
@@ -108,7 +115,7 @@ describe('The Console Tab', () => {
     for (const urlToExclude of uniqueUrls) {
       const filter = createUrlFilter(urlToExclude);
       const expectedMessageFilter: MessageCheck = msg => {
-        if (msg.includes('enter')) {
+        if (msg.includes('enterGroup')) {
           return true;
         }
         // When we exclude "log-source.js", all groups match,
@@ -148,7 +155,7 @@ describe('The Console Tab', () => {
     for (const urlToKeep of uniqueUrls) {
       const filter = urlToKeep;
       const expectedMessageFilter: MessageCheck = msg => {
-        if (msg.includes('enter')) {
+        if (msg.includes('enterGroup')) {
           return true;
         }
         // When we include from any of the two URLs, all groups match.
@@ -174,7 +181,7 @@ describe('The Console Tab', () => {
   });
 
   it('can apply text filter matching outer group title', async () => {
-    const filter = 'enter outerGroup';
+    const filter = 'enterGroup outerGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
       if (msg.includes('outerGroup')) {
@@ -189,11 +196,11 @@ describe('The Console Tab', () => {
   });
 
   it('can apply text filter matching inner group title', async () => {
-    const filter = 'enter innerGroup1';
+    const filter = 'enterGroup innerGroup1';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
       // In addition, the group titles of parent groups should be shown.
-      if (msg.includes('enter outerGroup')) {
+      if (msg.includes('enterGroup outerGroup')) {
         return true;
       }
       if (msg.includes('innerGroup1')) {
@@ -208,7 +215,7 @@ describe('The Console Tab', () => {
     const filter = '1outerGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
-      if (msg.includes('enter outerGroup')) {
+      if (msg.includes('enterGroup outerGroup')) {
         return true;
       }
       if (msg.includes('1outerGroup')) {
@@ -224,13 +231,38 @@ describe('The Console Tab', () => {
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
       // In addition, the group titles of parent groups should be shown.
-      if (msg.includes('enter outerGroup')) {
+      if (msg.includes('enterGroup outerGroup')) {
         return true;
       }
-      if (msg.includes('enter innerGroup1')) {
+      if (msg.includes('enterGroup innerGroup1')) {
         return true;
       }
       if (msg.includes('1innerGroup1')) {
+        return true;
+      }
+      return false;
+    };
+    await testMessageFilter(filter, expectedMessageFilter);
+  });
+
+  it('can apply text filter matching collapsed group title', async () => {
+    const filter = 'enterCollapsedGroup collapsedGroup';
+    const expectedMessageFilter: MessageCheck = msg => {
+      // The matched group is collapsed, so only the group title will be shown.
+      if (msg.includes('enterCollapsedGroup collapsedGroup')) {
+        return true;
+      }
+      return false;
+    };
+    await testMessageFilter(filter, expectedMessageFilter);
+  });
+
+  it('can apply text filter matching collapsed group content', async () => {
+    const filter = '1collapsedGroup';
+    const expectedMessageFilter: MessageCheck = msg => {
+      // The matched content is within a collapsed group, so only the group
+      // title will be shown.
+      if (msg.includes('enterCollapsedGroup collapsedGroup')) {
         return true;
       }
       return false;
@@ -271,6 +303,34 @@ describe('The Console Tab', () => {
       return /[2-3]top/.test(msg);
     };
     await testMessageFilter(filter, expectedMessageFilter);
+  });
+
+  it('can filter by selecting console sidebar items', async () => {
+    const withAnchor = true;
+    const allMessages = Level.All;
+
+    const initialMessages: string[] =
+        await getConsoleMessages('console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18));
+
+    await openConsoleSidebar();
+
+    // Verify only verbose messages are shown.
+    await selectConsoleSidebarItem(SidebarItem.Verbose);
+    const verboseMessages =
+        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForExactConsoleMessageCount(1));
+    assert.deepEqual(verboseMessages, ['console-filter.html:45 verbose debug message']);
+
+    // Verify that groups containing matches are shown.
+    await selectConsoleSidebarItem(SidebarItem.Errors);
+    const errorMessages =
+        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForExactConsoleMessageCount(1));
+    assert.deepEqual(errorMessages, ['console-filter.html:33 enterCollapsedGroup collapsedGroup']);
+
+    // Verify that closing the sidebar reverts any filtering.
+    await closeConsoleSidebar();
+    const messagesAfterClose =
+        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18));
+    assert.deepEqual(messagesAfterClose, initialMessages);
   });
 
   it('can exclude CORS error messages', async () => {

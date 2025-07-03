@@ -76,14 +76,11 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
       };
     }
 
-    const describe = withAugmentedTitle(suiteImplementation.create);
+    const describe = withAugmentedTitle(suiteImplementation.create.bind(suiteImplementation));
     // @ts-expect-error Custom interface.
-    describe.only = withAugmentedTitle(suiteImplementation.only);
+    describe.only = withAugmentedTitle(suiteImplementation.only.bind(suiteImplementation));
     // @ts-expect-error Custom interface.
-    describe.skip = withAugmentedTitle(function(opts: CreateOptions) {
-      opts.pending = true;
-      return suiteImplementation.create(opts);
-    });
+    describe.skip = withAugmentedTitle(suiteImplementation.skip.bind(suiteImplementation));
     return describe;
   }
 }

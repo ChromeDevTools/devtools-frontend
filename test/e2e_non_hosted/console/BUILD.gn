@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("console") {
   sources = [
+    "command-line-api_test.ts",
     "console-eval-fake_test.ts",
     "console-eval-global_test.ts",
     "console-expand-recursively_test.ts",

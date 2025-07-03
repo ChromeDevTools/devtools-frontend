@@ -175,8 +175,8 @@ export async function getCurrentConsoleMessages(
   }, selector);
 }
 
-export async function getLastConsoleMessages(offset = 0) {
-  return (await getCurrentConsoleMessages()).at(-1 - offset);
+export async function getLastConsoleMessages(offset = 0, devToolsPage?: DevToolsPage) {
+  return (await getCurrentConsoleMessages(false, Level.All, undefined, devToolsPage)).at(-1 - offset);
 }
 
 export async function maybeGetCurrentConsoleMessages(
@@ -433,9 +433,10 @@ export async function clickOnContextMenu(
  * bottom (checks last message by default)
  */
 export function checkCommandResultFunction(offset = 0) {
-  return async function(command: string, expected: string, message?: string) {
-    await typeIntoConsoleAndWaitForResult(command);
-    assert.strictEqual(await getLastConsoleMessages(offset), expected, message);
+  return async function(
+      command: string, expected: string, message?: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+    await typeIntoConsoleAndWaitForResult(command, 1, undefined, devToolsPage);
+    assert.strictEqual(await getLastConsoleMessages(offset, devToolsPage), expected, message);
   };
 }
 

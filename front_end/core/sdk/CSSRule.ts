@@ -277,7 +277,8 @@ export class CSSKeyframesRule {
   readonly #keyframesInternal: CSSKeyframeRule[];
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframesRule) {
     this.#animationName = new CSSValue(payload.animationName);
-    this.#keyframesInternal = payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule));
+    this.#keyframesInternal =
+        payload.keyframes.map(keyframeRule => new CSSKeyframeRule(cssModel, keyframeRule, this.#animationName.text));
   }
 
   name(): CSSValue {
@@ -291,9 +292,15 @@ export class CSSKeyframesRule {
 
 export class CSSKeyframeRule extends CSSRule {
   #keyText!: CSSValue;
-  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframeRule) {
+  #parentRuleName: string;
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSKeyframeRule, parentRuleName: string) {
     super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
     this.reinitializeKey(payload.keyText);
+    this.#parentRuleName = parentRuleName;
+  }
+
+  parentRuleName(): string {
+    return this.#parentRuleName;
   }
 
   key(): CSSValue {

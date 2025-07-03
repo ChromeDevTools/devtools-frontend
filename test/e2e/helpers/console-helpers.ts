@@ -245,7 +245,8 @@ export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) 
   }, CONSOLE_MESSAGE_WRAPPER_SELECTOR);
 }
 
-export async function focusConsolePrompt(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+export async function focusConsolePrompt(devToolsPage?: DevToolsPage) {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   await devToolsPage.click(CONSOLE_PROMPT_SELECTOR);
   await devToolsPage.waitFor('[aria-label="Console prompt"]');
 }

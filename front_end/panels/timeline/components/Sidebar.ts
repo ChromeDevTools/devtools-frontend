@@ -182,16 +182,13 @@ class AnnotationsView extends UI.Widget.VBox {
   constructor() {
     super();
     this.element.classList.add('sidebar-annotations');
-    this.element.appendChild(this.#component);
+    this.#component.show(this.element);
   }
 
   setAnnotations(
       annotations: Trace.Types.File.Annotation[],
       annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
-    // The component will only re-render when set the annotations, so we should
-    // set the `annotationEntryToColorMap` first.
-    this.#component.annotationEntryToColorMap = annotationEntryToColorMap;
-    this.#component.annotations = annotations;
+    this.#component.setData({annotations, annotationEntryToColorMap});
   }
 
   /**

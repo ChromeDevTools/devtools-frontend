@@ -3,30 +3,26 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../../models/trace/trace.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
 
+async function renderAnnotationsTab(
+    annotations: Trace.Types.File.Annotation[], annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>):
+    Promise<TimelineComponents.SidebarAnnotationsTab.SidebarAnnotationsTab> {
+  const component = new TimelineComponents.SidebarAnnotationsTab.SidebarAnnotationsTab();
+
+  component.setData({annotations, annotationEntryToColorMap});
+  await RenderCoordinator.done();
+  await component.updateComplete;
+  return component;
+}
+
 describeWithEnvironment('SidebarAnnotationsTab', () => {
-  const {SidebarAnnotationsTab} = TimelineComponents.SidebarAnnotationsTab;
-  it('renders annotations tab in the sidebar', async () => {
-    const component = new SidebarAnnotationsTab();
-    renderElementIntoDOM(component);
-
-    await RenderCoordinator.done();
-
-    assert.isNotNull(component.shadowRoot);
-    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
-    assert.isNotNull(annotationsWrapperElement);
-  });
-
   it('renders annotations list in the sidebar', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     // Create Entry Label annotations
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -56,26 +52,22 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       [entryLabelAnnotation2.entry, '#fc039d'],
     ]);
 
-    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation];
-    component.annotationEntryToColorMap = colorsMap;
+    const component = await renderAnnotationsTab(
+        [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation], colorsMap);
 
-    assert.isNotNull(component.shadowRoot);
-
-    await RenderCoordinator.done();
-
-    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    const annotationsWrapperElement = component.contentElement.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
 
-    const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.bin-icon');
+    const deleteButton = component.contentElement.querySelector<HTMLElement>('.bin-icon');
     assert.isNotNull(deleteButton);
 
     // Ensure annotations identifiers and labels are rendered for all 3 annotations -
     // 2 entry labels and 1 labelled time range
     const annotationEntryIdentifierElements =
-        component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+        component.contentElement.querySelectorAll<HTMLElement>('.annotation-identifier');
     assert.lengthOf(annotationEntryIdentifierElements, 3);
 
-    const annotationEntryLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
+    const annotationEntryLabelElements = component.contentElement.querySelectorAll<HTMLElement>('.label');
     assert.lengthOf(annotationEntryIdentifierElements, 3);
 
     assert.strictEqual(annotationEntryLabelElements[0].innerText, 'Entry Label 1');
@@ -86,20 +78,16 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
   });
 
   it('gives the delete button accessible labels', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
       type: 'ENTRY_LABEL',
       entry: defaultTraceEvents[0],
       label: 'Entry Label 1',
     };
-    component.annotations = [entryLabelAnnotation];
-    assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done();
+    const component = await renderAnnotationsTab([entryLabelAnnotation], new Map());
 
-    const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.delete-button');
+    const deleteButton = component.contentElement.querySelector<HTMLElement>('.delete-button');
     assert.isNotNull(deleteButton);
     assert.strictEqual(
         deleteButton.getAttribute('aria-label'),
@@ -117,26 +105,18 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       entry: event,
       label: 'hello world',
     };
-    const component = new SidebarAnnotationsTab();
-    renderElementIntoDOM(component);
-    component.annotations = [annotation];
-    await RenderCoordinator.done();
+    const component = await renderAnnotationsTab([annotation], new Map());
 
-    assert.isNotNull(component.shadowRoot);
+    assert.isNotNull(component.contentElement);
 
-    const label = component.shadowRoot.querySelector<HTMLElement>('.annotation-identifier');
+    const label = component.contentElement.querySelector<HTMLElement>('.annotation-identifier');
     assert.strictEqual(label?.innerText, 'private-aggregation-test.js (shared-storage-demo-content-producer.web.app)');
   });
 
   it('dispatches RemoveAnnotation Events when delete annotation button is clicked', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     let removeAnnotationEventFired = false;
-    component.addEventListener('removeannotation', () => {
-      removeAnnotationEventFired = true;
-    });
 
     // Create Entry Label annotation
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -145,11 +125,14 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       label: 'Entry Label 1',
     };
 
-    component.annotations = [entryLabelAnnotation];
-    await RenderCoordinator.done();
-    assert.isNotNull(component.shadowRoot);
+    const component = await renderAnnotationsTab([entryLabelAnnotation], new Map());
+    component.element.addEventListener('removeannotation', () => {
+      removeAnnotationEventFired = true;
+    });
 
-    const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.delete-button');
+    assert.isNotNull(component.contentElement);
+
+    const deleteButton = component.contentElement.querySelector<HTMLElement>('.delete-button');
     assert.isNotNull(deleteButton);
     // Make sure the remove annotation event is not fired before clicking the button
     assert.isFalse(removeAnnotationEventFired);
@@ -159,9 +142,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
   });
 
   it('updates annotations list in the sidebar when a new list is passed in', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     // Create Entry Label Annotation
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -176,18 +157,16 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       label: 'Entry Label 2',
     };
 
-    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2];
-    assert.isNotNull(component.shadowRoot);
+    const component = await renderAnnotationsTab([entryLabelAnnotation, entryLabelAnnotation2], new Map());
 
-    await RenderCoordinator.done();
-
-    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    const annotationsWrapperElement = component.contentElement.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
 
     // Ensure there are 2 labels and their entry identifiers and labels and rendered
-    const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+    const annotationIdentifierElements =
+        component.contentElement.querySelectorAll<HTMLElement>('.annotation-identifier');
     assert.lengthOf(annotationIdentifierElements, 2);
-    let annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
+    let annotationLabelElements = component.contentElement.querySelectorAll<HTMLElement>('.label');
     assert.lengthOf(annotationIdentifierElements, 2);
 
     assert.strictEqual(annotationLabelElements[0].innerText, 'Entry Label 1');
@@ -207,10 +186,14 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       label: 'Labelled Time Range',
     };
 
-    component.annotations = [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation];
+    component.setData({
+      annotations: [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation],
+      annotationEntryToColorMap: new Map()
+    });
     await RenderCoordinator.done();
+    await component.updateComplete;
 
-    annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
+    annotationLabelElements = component.contentElement.querySelectorAll<HTMLElement>('.label');
 
     // Ensure the labels changed to new ones and a labbel range was added
     assert.lengthOf(annotationLabelElements, 3);
@@ -220,9 +203,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
   });
 
   it('does not display multiple not started annotations for one entry', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     // Create Empty Entry Label Annotation (considered not started)
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -238,23 +219,19 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       state: Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED,
     };
 
-    component.annotations = [entryLabelAnnotation, entriesLink];
-    assert.isNotNull(component.shadowRoot);
+    const component = await renderAnnotationsTab([entryLabelAnnotation, entriesLink], new Map());
 
-    await RenderCoordinator.done();
-
-    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    const annotationsWrapperElement = component.contentElement.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
 
     // Ensure there is only one annotation displayed
-    const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+    const annotationIdentifierElements =
+        component.contentElement.querySelectorAll<HTMLElement>('.annotation-identifier');
     assert.lengthOf(annotationIdentifierElements, 1);
   });
 
   it('displays multiple not started annotations if they are not different entries', async function() {
-    const component = new SidebarAnnotationsTab();
     const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
-    renderElementIntoDOM(component);
 
     // Create Empty Entry Label Annotation (considered not started)
     const entryLabelAnnotation: Trace.Types.File.Annotation = {
@@ -271,16 +248,14 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
       state: Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED,
     };
 
-    component.annotations = [entryLabelAnnotation, entriesLink];
-    assert.isNotNull(component.shadowRoot);
+    const component = await renderAnnotationsTab([entryLabelAnnotation, entriesLink], new Map());
 
-    await RenderCoordinator.done();
-
-    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    const annotationsWrapperElement = component.contentElement.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
 
     // Ensure both annotations are displayed
-    const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+    const annotationIdentifierElements =
+        component.contentElement.querySelectorAll<HTMLElement>('.annotation-identifier');
     assert.lengthOf(annotationIdentifierElements, 2);
   });
 });

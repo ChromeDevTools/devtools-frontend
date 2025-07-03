@@ -38,6 +38,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as SrgbOverlay from '../../../components/srgb_overlay/srgb_overlay.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -1540,8 +1541,8 @@ export class PaletteGenerator {
   }
 
   private async processStylesheet(stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void> {
-    let text: string = (await stylesheet.requestContent()).content || '';
-    text = text.toLowerCase();
+    const contentDataOrError = await stylesheet.requestContentData();
+    const text = TextUtils.ContentData.ContentData.textOr(contentDataOrError, '').toLowerCase();
     const regexResult = text.matchAll(/((?:rgb|hsl|hwb)a?\([^)]+\)|#[0-9a-f]{6}|#[0-9a-f]{3})/g);
     for (const {0: c, index} of regexResult) {
       // Check whether the match occured in a property value and not in a property name or a selector by verifying

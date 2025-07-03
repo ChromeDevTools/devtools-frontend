@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {
   createTarget,
   describeWithEnvironment,
@@ -89,7 +90,9 @@ describeWithMockConnection('PaletteGenerator', () => {
     body: {color: #0f0;}
     #00f: {}
     `;
-    stylesheet.requestContent.resolves({content, isEncoded: false});
+    stylesheet.requestContentData.resolves(new TextUtils.ContentData.ContentData(
+        content,
+        /* isBase64=*/ false, 'text/css'));
 
     const palette = await new Promise<ColorPicker.Spectrum.Palette>(r => new ColorPicker.Spectrum.PaletteGenerator(r));
 

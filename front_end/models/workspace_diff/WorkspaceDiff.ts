@@ -144,7 +144,8 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 
     const contentsPromise = Promise.all([
       this.requestOriginalContentForUISourceCode(uiSourceCode),
-      uiSourceCode.requestContent().then(deferredContent => deferredContent.content),
+      uiSourceCode.requestContentData().then(
+          contentDataOrError => TextUtils.ContentData.ContentData.textOr(contentDataOrError, null))
     ]);
 
     this.loadingUISourceCodes.set(uiSourceCode, contentsPromise);
@@ -265,7 +266,11 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
 
     let current = this.#uiSourceCode.workingCopy();
     if (!current && !this.#uiSourceCode.contentLoaded()) {
-      current = ((await this.#uiSourceCode.requestContent()).content as string);
+      const contentDataOrError = await this.#uiSourceCode.requestContentData();
+      if (TextUtils.ContentData.ContentData.isError(contentDataOrError)) {
+        return null;
+      }
+      current = contentDataOrError.text;
     }
 
     if (current.length > 1024 * 1024) {

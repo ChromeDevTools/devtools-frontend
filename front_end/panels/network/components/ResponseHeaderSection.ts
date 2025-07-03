@@ -12,6 +12,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
+import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Sources from '../../../panels/sources/sources.js';
@@ -273,9 +274,9 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
       return;
     }
     try {
-      const deferredContent = await this.#uiSourceCode.requestContent();
-      this.#overrides =
-          JSON.parse(deferredContent.content || '[]') as Persistence.NetworkPersistenceManager.HeaderOverride[];
+      const contentData =
+          await this.#uiSourceCode.requestContentData().then(TextUtils.ContentData.ContentData.contentDataOrEmpty);
+      this.#overrides = JSON.parse(contentData.text || '[]') as Persistence.NetworkPersistenceManager.HeaderOverride[];
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw new Error('Type mismatch after parsing');
       }

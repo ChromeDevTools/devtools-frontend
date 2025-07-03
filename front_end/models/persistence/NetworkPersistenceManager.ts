@@ -528,7 +528,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   async #getHeaderOverridesFromUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       Promise<HeaderOverride[]> {
-    const content = (await uiSourceCode.requestContent()).content || '[]';
+    const contentData =
+        await uiSourceCode.requestContentData().then(TextUtils.ContentData.ContentData.contentDataOrEmpty);
+    const content = contentData.text || '[]';
     let headerOverrides: HeaderOverride[] = [];
     try {
       headerOverrides = JSON.parse(content) as HeaderOverride[];

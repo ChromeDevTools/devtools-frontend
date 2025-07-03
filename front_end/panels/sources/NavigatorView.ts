@@ -38,6 +38,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -1191,7 +1192,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       uiSourceCodeToCopy?: Workspace.UISourceCode.UISourceCode): Promise<void> {
     let content = '';
     if (uiSourceCodeToCopy) {
-      content = (await uiSourceCodeToCopy.requestContent()).content || '';
+      const contentDataOrError = await uiSourceCodeToCopy.requestContentData();
+      content = TextUtils.ContentData.ContentData.textOr(contentDataOrError, '');
     }
     const uiSourceCode = await project.createFile(path, null, content);
     if (!uiSourceCode) {

@@ -1236,8 +1236,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       return;
     }
 
-    const text = (await styleSheetHeader.requestContent()).content || '';
-    const lines = text.split('\n');
+    const contentDataOrError = await styleSheetHeader.requestContentData();
+    const lines = TextUtils.ContentData.ContentData.textOr(contentDataOrError, '').split('\n');
     const range = TextUtils.TextRange.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
 
     if (this.sectionBlocks && this.sectionBlocks.length > 0) {

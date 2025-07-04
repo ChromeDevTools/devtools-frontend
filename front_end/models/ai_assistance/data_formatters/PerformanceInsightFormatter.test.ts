@@ -460,5 +460,18 @@ Response headers
 
       assert.strictEqual(output, expected);
     });
+
+    it('getNetworkRequestsNewFormat correctly formats network requests', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      const requests = parsedTrace.NetworkRequests.byTime;
+      const output = TraceEventFormatter.getNetworkRequestsNewFormat(requests, parsedTrace);
+      const expected =
+          `allUrls = [0: http://localhost:3000/redirect3, 1: http://localhost:3000/, 2: http://localhost:3000/redirect1, 3: http://localhost:3000/redirect2]
+
+0;3.04\xA0ms;1,529.47\xA0ms;3,532.63\xA0ms;3,537.75\xA0ms;3,534.71\xA0ms;0.13\xA0ms;5.12\xA0ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;false;;[[1|3.04\xA0ms|512.02\xA0ms],[2|515.06\xA0ms|505.67\xA0ms],[3|1,020.73\xA0ms|507.09\xA0ms]];[chunked,timeout=5,Tue, 11 Mar 2025 10:19:12 GMT,text/html,keep-alive]`;
+
+      assert.strictEqual(output, expected);
+    });
+
   });
 });

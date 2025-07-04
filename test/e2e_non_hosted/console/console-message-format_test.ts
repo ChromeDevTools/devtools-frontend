@@ -8,11 +8,12 @@ import {
   getConsoleMessages,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
-} from '../helpers/console-helpers.js';
+} from '../../e2e/helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  it('shows BigInts formatted', async () => {
-    const messages = await getConsoleMessages('big-int', false, () => waitForConsoleMessagesToBeNonEmpty(5));
+  it('shows BigInts formatted', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'big-int', false, () => waitForConsoleMessagesToBeNonEmpty(5, devToolsPage), devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       '1n',
@@ -23,8 +24,10 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('shows uncaught promises', async () => {
-    const messages = await getConsoleMessages('uncaught-promise', false, () => waitForConsoleMessagesToBeNonEmpty(2));
+  it('shows uncaught promises', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'uncaught-promise', false, () => waitForConsoleMessagesToBeNonEmpty(2, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       `Uncaught (in promise) Error: err1
@@ -37,8 +40,10 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('shows structured objects', async () => {
-    const messages = await getConsoleMessages('structured-objects', false, () => waitForConsoleMessagesToBeNonEmpty(9));
+  it('shows structured objects', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'structured-objects', false, () => waitForConsoleMessagesToBeNonEmpty(9, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       '{}',
@@ -53,8 +58,9 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('escapes and substitutes correctly', async () => {
-    const messages = await getConsoleMessages('escaping', false, () => waitForConsoleMessagesToBeNonEmpty(9));
+  it('escapes and substitutes correctly', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'escaping', false, () => waitForConsoleMessagesToBeNonEmpty(9, devToolsPage), devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       'Test for zero "0" in formatter',
@@ -69,8 +75,9 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('shows built-in objects', async () => {
-    const messages = await getConsoleMessages('built-ins', false, () => waitForConsoleMessagesToBeNonEmpty(29));
+  it('shows built-in objects', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'built-ins', false, () => waitForConsoleMessagesToBeNonEmpty(29, devToolsPage), devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       '/^url\\(\\s*(?:(?:\"(?:[^\\\\\\\"]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\"|\'(?:[^\\\\\\\']|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*\')|(?:[!#$%&*-~\\w]|(?:\\\\[\\da-f]{1,6}\\s?|\\.))*)\\s*\\)/i',
@@ -105,8 +112,9 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('shows primitives', async () => {
-    const messages = await getConsoleMessages('primitives', false, () => waitForConsoleMessagesToBeNonEmpty(15));
+  it('shows primitives', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'primitives', false, () => waitForConsoleMessagesToBeNonEmpty(15, devToolsPage), devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       'null',
@@ -129,8 +137,9 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can handle prototype fields', async () => {
-    const messages = await getConsoleMessages('prototypes', false, () => waitForConsoleMessagesToBeNonEmpty(13));
+  it('can handle prototype fields', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'prototypes', false, () => waitForConsoleMessagesToBeNonEmpty(13, devToolsPage), devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       '{enumerableProp: 4, __underscoreEnumerableProp__: 5, __underscoreNonEnumerableProp: 2, abc: 3, getFoo: ƒ,\xA0…}',
@@ -149,8 +158,8 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can show DOM interactions', async () => {
-    const messages = await getConsoleMessages('dom-interactions');
+  it('can show DOM interactions', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages('dom-interactions', undefined, undefined, devToolsPage, inspectedPage);
 
     try {
       // Note depending on whether we got a remote object or not we have
@@ -189,9 +198,10 @@ describe('The Console Tab', () => {
     }
   });
 
-  it('can handle sourceURLs in exceptions', async () => {
-    const messages =
-        await getConsoleMessages('source-url-exceptions', false, () => waitForConsoleMessagesToBeNonEmpty(1));
+  it('can handle sourceURLs in exceptions', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'source-url-exceptions', false, () => waitForConsoleMessagesToBeNonEmpty(1, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       `Uncaught ReferenceError: FAIL is not defined
@@ -200,9 +210,10 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can handle repeated messages from data URLs in exceptions', async () => {
-    const messages =
-        await getConsoleMessages('data-url-exceptions', false, () => waitForConsoleMessagesToBeNonEmpty(1));
+  it('can handle repeated messages from data URLs in exceptions', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'data-url-exceptions', false, () => waitForConsoleMessagesToBeNonEmpty(1, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       'msg',  // 5 times from eval script, collapsed
@@ -217,8 +228,10 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can show stackoverflow exceptions', async () => {
-    const messages = await getConsoleMessages('stack-overflow', false, () => waitForConsoleMessagesToBeNonEmpty(1));
+  it('can show stackoverflow exceptions', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'stack-overflow', false, () => waitForConsoleMessagesToBeNonEmpty(1, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       `Uncaught RangeError: Maximum call stack size exceeded
@@ -235,8 +248,10 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can show document.write messages', async () => {
-    const messages = await getConsoleMessages('document-write', false, () => waitForConsoleMessagesToBeNonEmpty(2));
+  it('can show document.write messages', async ({devToolsPage, inspectedPage}) => {
+    const messages = await getConsoleMessages(
+        'document-write', false, () => waitForConsoleMessagesToBeNonEmpty(2, devToolsPage), devToolsPage,
+        inspectedPage);
 
     assert.deepEqual(messages, [
       'script element',
@@ -244,11 +259,11 @@ describe('The Console Tab', () => {
     ]);
   });
 
-  it('can show verbose promise unhandledrejections', async () => {
+  it('can show verbose promise unhandledrejections', async ({devToolsPage, inspectedPage}) => {
     const messages = await getConsoleMessages('onunhandledrejection', false, async () => {
-      await waitForConsoleMessagesToBeNonEmpty(4);
-      await showVerboseMessages();
-    });
+      await waitForConsoleMessagesToBeNonEmpty(4, devToolsPage);
+      await showVerboseMessages(devToolsPage);
+    }, devToolsPage, inspectedPage);
 
     assert.deepEqual(messages, [
       'onunhandledrejection1',
@@ -261,9 +276,10 @@ describe('The Console Tab', () => {
   });
 
   describe('shows messages from before', () => {
-    it('iframe removal', async () => {
-      const messages =
-          await getConsoleMessages('navigation/after-removal', false, () => waitForConsoleMessagesToBeNonEmpty(3));
+    it('iframe removal', async ({devToolsPage, inspectedPage}) => {
+      const messages = await getConsoleMessages(
+          'navigation/after-removal', false, () => waitForConsoleMessagesToBeNonEmpty(3, devToolsPage), devToolsPage,
+          inspectedPage);
 
       assert.deepEqual(messages, [
         'A message with first argument string Second argument which should not be discarded',
@@ -272,9 +288,10 @@ describe('The Console Tab', () => {
       ]);
     });
 
-    it('and after iframe navigation', async () => {
-      const messages =
-          await getConsoleMessages('navigation/after-navigation', false, () => waitForConsoleMessagesToBeNonEmpty(4));
+    it('and after iframe navigation', async ({devToolsPage, inspectedPage}) => {
+      const messages = await getConsoleMessages(
+          'navigation/after-navigation', false, () => waitForConsoleMessagesToBeNonEmpty(4, devToolsPage), devToolsPage,
+          inspectedPage);
 
       assert.deepEqual(messages, [
         'A message with first argument string Second argument which should not be discarded',

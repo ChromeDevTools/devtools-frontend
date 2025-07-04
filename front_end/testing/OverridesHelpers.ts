@@ -62,7 +62,6 @@ export async function createWorkspaceProject(
     const fileUrl = networkPersistenceManager.fileUrlFromNetworkUrl(url, true);
 
     uiSourceCodes.set(fileUrl, {
-      requestContent: () => Promise.resolve({content: file.content}),
       requestContentData: () =>
           Promise.resolve(new TextUtils.ContentData.ContentData(file.content, /* isBase64=*/ false, 'text/plain')),
       url: () => fileUrl,

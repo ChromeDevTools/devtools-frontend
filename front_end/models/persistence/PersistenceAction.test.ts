@@ -37,7 +37,6 @@ describeWithLocale('ContextMenuProvider', () => {
       contentURL: () => urlString`https://example.com/sample.webp`,
       contentType: () => Common.ResourceType.resourceTypes
                              .Document,  // Navigating a tab to an image will result in a document type for images.
-      requestContent: () => Promise.resolve({isEncoded: true, content: contentData.base64}),
       requestContentData: () => Promise.resolve(contentData),
       searchInContent: () => assert.fail('Not implemented'),
     };

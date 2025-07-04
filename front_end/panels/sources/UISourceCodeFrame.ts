@@ -146,7 +146,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   setUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
-    const loaded = uiSourceCode.contentLoaded() ? Promise.resolve() : uiSourceCode.requestContent();
+    const loaded = uiSourceCode.contentLoaded() ? Promise.resolve() : uiSourceCode.requestContentData();
     const startUISourceCode = this.#uiSourceCode;
     loaded.then(async () => {
       if (this.#uiSourceCode !== startUISourceCode) {

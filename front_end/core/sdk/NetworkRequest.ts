@@ -1424,10 +1424,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#resourceTypeInternal;
   }
 
-  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestContentData());
-  }
-
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
     if (!this.#contentDataProvider) {

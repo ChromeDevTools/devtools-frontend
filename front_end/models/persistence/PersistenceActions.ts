@@ -97,7 +97,8 @@ export class ContextMenuProvider implements
 
     async function saveImage(): Promise<void> {
       const targetObject = contentProvider as SDK.Resource.Resource;
-      const content = (await targetObject.requestContent()).content || '';
+      const contentDataOrError = await targetObject.requestContentData();
+      const content = TextUtils.ContentData.ContentData.textOr(contentDataOrError, '');
       /* eslint-disable-next-line rulesdir/no-imperative-dom-api */
       const link = document.createElement('a');
       link.download = targetObject.displayName;

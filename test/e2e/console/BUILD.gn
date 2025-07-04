@@ -8,7 +8,6 @@ node_ts_library("console") {
   sources = [
     "alert-toString-exception_test.ts",
     "console-autocomplete_test.ts",
-    "console-clear_test.ts",
     "console-context-menu_test.ts",
     "console-context-selector_test.ts",
     "console-ignore-list_test.ts",

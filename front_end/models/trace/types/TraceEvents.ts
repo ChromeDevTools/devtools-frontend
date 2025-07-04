@@ -740,6 +740,8 @@ export interface LargestContentfulPaintCandidate extends Mark {
       nodeId: Protocol.DOM.BackendNodeId,
       loadingAttr: string,
       type?: string,
+      // Landed in Chromium M140: crrev.com/c/6702010
+      nodeName?: string,
     },
   };
 }

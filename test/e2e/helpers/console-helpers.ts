@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  click,
   waitFor,
   waitForFunction
 } from '../../shared/helper.js';
@@ -348,16 +347,16 @@ export async function waitForConsoleInfoMessageAndClickOnLink(
       [veClick('Item: console-message > Link: script-location')], await veRoot(devToolsPage), devToolsPage);
 }
 
-export async function turnOffHistoryAutocomplete() {
-  await click(CONSOLE_SETTINGS_SELECTOR);
-  await click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
+export async function turnOffHistoryAutocomplete(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
+  await devToolsPage.click(AUTOCOMPLETE_FROM_HISTORY_SELECTOR);
   await expectVeEvents(
       [
         veClick('Toolbar > ToggleSubpane: console-settings'),
         ...veImpressionsForConsoleSettings(),
         veChange('Toggle: console-history-autocomplete'),
       ],
-      await veRoot());
+      await veRoot(devToolsPage), devToolsPage);
 }
 
 export async function toggleShowCorsErrors(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

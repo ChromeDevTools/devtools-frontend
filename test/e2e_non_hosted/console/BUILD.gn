@@ -16,6 +16,7 @@ ts_e2e_library("console") {
     "console-expand-recursively_test.ts",
     "console-fetch-logging_test.ts",
     "console-filter_test.ts",
+    "console-last-result_test.ts",
     "console-live-expressions_test.ts",
     "console-log_test.ts",
     "console-stack-trace_test.ts",

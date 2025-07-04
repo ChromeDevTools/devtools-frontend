@@ -101,17 +101,24 @@ export class PerformanceInsightFormatter {
     return this.#description().length > 0;
   }
 
-  formatInsight(): string {
-    const {title} = this.#insight;
-    return `## Insight Title: ${title}
+  /**
+   * Formats and outputs the insight's data.
+   * Pass `{headingLevel: X}` to determine what heading level to use for the
+   * titles in the markdown output. The default is 2 (##).
+   */
+  formatInsight(opts: {headingLevel: number} = {headingLevel: 2}): string {
+    const header = '#'.repeat(opts.headingLevel);
 
-## Insight Summary:
+    const {title} = this.#insight;
+    return `${header} Insight Title: ${title}
+
+${header} Insight Summary:
 ${this.#description()}
 
-## Detailed analysis:
+${header} Detailed analysis:
 ${this.#details()}
 
-## External resources:
+${header} External resources:
 ${this.#links()}`;
   }
 

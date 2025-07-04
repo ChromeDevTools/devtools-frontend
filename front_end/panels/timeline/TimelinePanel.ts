@@ -2907,13 +2907,14 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         };
       }
 
-      let responseText = '';
+      let responseTextForNonPassedInsights = '';
+      // We still return info on the passed insights, but we put it at the
+      // bottom of the response under a heading.
+      let responseTextForPassedInsights = '';
+
       for (const modelName in insightsForNav.model) {
         const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
         const data = insightsForNav.model[model];
-        if (data.state === 'pass') {
-          continue;
-        }
         const activeInsight = new Utils.InsightAIContext.ActiveInsight(
             data,
             parsedTrace,
@@ -2926,10 +2927,30 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
           continue;
         }
 
-        responseText += `${formatter.formatInsight()}\n\n`;
+        const formatted = formatter.formatInsight({headingLevel: 3});
+
+        if (data.state === 'pass') {
+          responseTextForPassedInsights += `${formatted}\n\n`;
+          continue;
+        } else {
+          responseTextForNonPassedInsights += `${formatted}\n\n`;
+        }
       }
+
+      const finalText = `# Trace recording results
+
+## Non-passing insights:
+
+These insights highlight potential problems and opportunities to improve performance.
+${responseTextForNonPassedInsights}
+
+## Passing insights:
+
+These insights are passing, which means they are not considered to highlight considerable performance problems.
+${responseTextForPassedInsights}`;
+
       return {
-        response: `Insights from this recording:\n${responseText}`,
+        response: finalText,
         devToolsLogs: [],
       };
     }

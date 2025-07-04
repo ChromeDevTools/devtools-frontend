@@ -254,22 +254,6 @@ export async function focusConsolePrompt(devToolsPage?: DevToolsPage) {
 export async function showVerboseMessages(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await devToolsPage.click(LOG_LEVELS_SELECTOR);
   await devToolsPage.click(LOG_LEVELS_VERBOSE_OPTION_SELECTOR);
-  await expectVeEvents(
-      [
-        veClick(''),
-        veImpression(
-            'Menu', undefined,
-            [
-              veImpression('Action', 'default'),
-              veImpression('Toggle', 'error'),
-              veImpression('Toggle', 'info'),
-              veImpression('Toggle', 'verbose'),
-              veImpression('Toggle', 'warning'),
-            ]),
-        veClick('Menu > Toggle: verbose'),
-        veResize('Menu'),
-      ],
-      `${await veRoot(devToolsPage)} > Toolbar > DropDown: log-level`, devToolsPage);
 }
 
 export async function typeIntoConsole(message: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

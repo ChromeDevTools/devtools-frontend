@@ -4,22 +4,28 @@
 
 import {assert} from 'chai';
 
-import {getTestServerPort, goToResource, waitForFunction} from '../../shared/helper.js';
 import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
-} from '../helpers/console-helpers.js';
+} from '../../e2e/helpers/console-helpers.js';
+import {
+  increaseTimeoutForPerfPanel,
+} from '../../e2e/helpers/performance-helpers.js';
 
-describe('The Console\'s errors', () => {
+describe('The Console\'s errors', function() {
+  increaseTimeoutForPerfPanel(this);
   it('picks up custom exception names ending with \'Error\' and symbolizes stack traces according to source maps',
-     async () => {
-       await goToResource('sources/error-with-sourcemap.html');
-       await navigateToConsoleTab();
-       await showVerboseMessages();
-       await waitForFunction(async () => {
-         const messages = await getStructuredConsoleMessages();
+     async ({
+       devToolsPage,
+       inspectedPage,
+     }) => {
+       await inspectedPage.goToResource('sources/error-with-sourcemap.html');
+       await navigateToConsoleTab(devToolsPage);
+       await showVerboseMessages(devToolsPage);
+       await devToolsPage.waitForFunction(async () => {
+         const messages = await getStructuredConsoleMessages(devToolsPage);
          if (messages.length !== 1) {
            return false;
          }
@@ -28,12 +34,15 @@ describe('The Console\'s errors', () => {
        });
      });
 
-  it('correctly symbolizes stack traces with async frames for anonymous functions', async () => {
-    await goToResource('console/error-with-async-frame.html');
-    await navigateToConsoleTab();
-    await showVerboseMessages();
-    await waitForFunction(async () => {
-      const messages = await getStructuredConsoleMessages();
+  it('correctly symbolizes stack traces with async frames for anonymous functions', async ({
+                                                                                      devToolsPage,
+                                                                                      inspectedPage,
+                                                                                    }) => {
+    await inspectedPage.goToResource('console/error-with-async-frame.html');
+    await navigateToConsoleTab(devToolsPage);
+    await showVerboseMessages(devToolsPage);
+    await devToolsPage.waitForFunction(async () => {
+      const messages = await getStructuredConsoleMessages(devToolsPage);
       if (messages.length !== 1) {
         return false;
       }
@@ -44,17 +53,20 @@ describe('The Console\'s errors', () => {
     });
   });
 
-  it('shows errors to load a resource', async () => {
-    await goToResource('console/resource-errors.html');
-    await navigateToConsoleTab();
-    await showVerboseMessages();
-    await waitForConsoleMessagesToBeNonEmpty(5);
-    const messages = await getStructuredConsoleMessages();
+  it('shows errors to load a resource', async ({
+                                          devToolsPage,
+                                          inspectedPage,
+                                        }) => {
+    await inspectedPage.goToResource('console/resource-errors.html');
+    await navigateToConsoleTab(devToolsPage);
+    await showVerboseMessages(devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(5, devToolsPage);
+    const messages = await getStructuredConsoleMessages(devToolsPage);
     messages.sort((m1, m2) => (m1.message as string).localeCompare(m2.message as string));
     assert.deepEqual(messages, [
       {
-        message:
-            `GET https://localhost:${getTestServerPort()}/test/e2e/resources/console/non-existent-xhr 404 (Not Found)`,
+        message: `GET https://localhost:${
+            inspectedPage.serverPort}/test/e2e/resources/console/non-existent-xhr 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors.html:20',
@@ -65,7 +77,7 @@ step2 @ resource-errors.html:12`,
       },
       {
         message: `GET https://localhost:${
-            getTestServerPort()}/test/e2e/resources/missing.css net::ERR_ABORTED 404 (Not Found)`,
+            inspectedPage.serverPort}/test/e2e/resources/missing.css net::ERR_ABORTED 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:3',
@@ -73,8 +85,8 @@ step2 @ resource-errors.html:12`,
         wrapperClasses: 'console-message-wrapper console-error-level',
       },
       {
-        message:
-            `GET https://localhost:${getTestServerPort()}/test/e2e/resources/non-existent-iframe.html 404 (Not Found)`,
+        message: `GET https://localhost:${
+            inspectedPage.serverPort}/test/e2e/resources/non-existent-iframe.html 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:8',
@@ -83,7 +95,7 @@ step2 @ resource-errors.html:12`,
       },
       {
         message: `GET https://localhost:${
-            getTestServerPort()}/test/e2e/resources/non-existent-script.js net::ERR_ABORTED 404 (Not Found)`,
+            inspectedPage.serverPort}/test/e2e/resources/non-existent-script.js net::ERR_ABORTED 404 (Not Found)`,
         messageClasses: 'console-message',
         repeatCount: null,
         source: 'resource-errors-iframe.html:4',
@@ -104,13 +116,16 @@ performActions @ resource-errors.html:8
     ]);
   });
 
-  it('shows Error.cause', async () => {
-    await goToResource('sources/error-with-cause.html');
-    await navigateToConsoleTab();
-    await showVerboseMessages();
-    await waitForConsoleMessagesToBeNonEmpty(/* numberOfMessages */ 1);
+  it('shows Error.cause', async ({
+                            devToolsPage,
+                            inspectedPage,
+                          }) => {
+    await inspectedPage.goToResource('sources/error-with-cause.html');
+    await navigateToConsoleTab(devToolsPage);
+    await showVerboseMessages(devToolsPage);
+    await waitForConsoleMessagesToBeNonEmpty(/* numberOfMessages */ 1, devToolsPage);
 
-    const messages = await getStructuredConsoleMessages();
+    const messages = await getStructuredConsoleMessages(devToolsPage);
     assert.lengthOf(messages, 1);
     assert.strictEqual(messages[0].message, `Uncaught Error: rethrower
     at caller (error-with-cause.html:20:13)

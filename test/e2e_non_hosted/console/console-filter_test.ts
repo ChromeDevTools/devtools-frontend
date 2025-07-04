@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {getBrowserAndPages, step} from '../../shared/helper.js';
 import {
   closeConsoleSidebar,
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,
@@ -20,7 +19,12 @@ import {
   toggleShowCorsErrors,
   waitForConsoleMessagesToBeNonEmpty,
   waitForExactConsoleMessageCount,
-} from '../helpers/console-helpers.js';
+} from '../../e2e/helpers/console-helpers.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
+import {
+  step,
+} from '../../shared/helper.js';
 
 type MessageCheck = (msg: string) => boolean;
 
@@ -42,20 +46,23 @@ function getExpectedMessages(unfilteredMessages: string[], filter: MessageCheck)
   });
 }
 
-async function testMessageFilter(filter: string, expectedMessageFilter: MessageCheck) {
+async function testMessageFilter(
+    filter: string, expectedMessageFilter: MessageCheck, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   let unfilteredMessages: string[];
   const showMessagesWithAnchor = true;
 
   await step('navigate to console-filter.html and get console messages', async () => {
-    unfilteredMessages = await getConsoleMessages('console-filter', showMessagesWithAnchor);
+    unfilteredMessages =
+        await getConsoleMessages('console-filter', showMessagesWithAnchor, undefined, devToolsPage, inspectedPage);
   });
 
   await step(`filter to only show messages containing '${filter}'`, async () => {
-    await filterConsoleMessages(filter);
+    await filterConsoleMessages(filter, devToolsPage);
   });
 
   await step('check that messages are correctly filtered', async () => {
-    const filteredMessages = await getCurrentConsoleMessages(showMessagesWithAnchor);
+    const filteredMessages =
+        await getCurrentConsoleMessages(showMessagesWithAnchor, undefined, undefined, devToolsPage);
     const expectedMessages = getExpectedMessages(unfilteredMessages, expectedMessageFilter);
     assert.isNotEmpty(filteredMessages);
     assert.deepEqual(filteredMessages, expectedMessages);
@@ -63,11 +70,11 @@ async function testMessageFilter(filter: string, expectedMessageFilter: MessageC
 }
 
 describe('The Console Tab', () => {
-  it('shows logged messages', async () => {
+  it('shows logged messages', async ({devToolsPage, inspectedPage}) => {
     let messages: string[];
     const withAnchor = true;
     await step('navigate to console-filter.html and get console messages', async () => {
-      messages = await getConsoleMessages('console-filter', withAnchor);
+      messages = await getConsoleMessages('console-filter', withAnchor, undefined, devToolsPage, inspectedPage);
     });
 
     await step('check that all console messages appear', async () => {
@@ -94,17 +101,16 @@ describe('The Console Tab', () => {
     });
   });
 
-  it('can exclude messages from a source url', async () => {
-    const {frontend} = getBrowserAndPages();
+  it('can exclude messages from a source url', async ({devToolsPage, inspectedPage}) => {
     let sourceUrls: string[];
     let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
-      await getConsoleMessages('console-filter');
+      await getConsoleMessages('console-filter', undefined, undefined, devToolsPage, inspectedPage);
     });
 
     await step('collect source urls from all messages', async () => {
-      sourceUrls = await collectSourceUrlsFromConsoleOutput(frontend);
+      sourceUrls = await collectSourceUrlsFromConsoleOutput(devToolsPage.page);
     });
 
     await step('find unique urls', async () => {
@@ -126,25 +132,24 @@ describe('The Console Tab', () => {
         }
         return msg.indexOf(urlToExclude) === -1;
       };
-      await testMessageFilter(filter, expectedMessageFilter);
+      await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
 
       await step(`remove filter '${filter}'`, async () => {
-        await deleteConsoleMessagesFilter();
+        await deleteConsoleMessagesFilter(devToolsPage);
       });
     }
   });
 
-  it('can include messages from a given source url', async () => {
-    const {frontend} = getBrowserAndPages();
+  it('can include messages from a given source url', async ({devToolsPage, inspectedPage}) => {
     let sourceUrls: string[];
     let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
-      await getConsoleMessages('console-filter');
+      await getConsoleMessages('console-filter', undefined, undefined, devToolsPage, inspectedPage);
     });
 
     await step('collect source urls from all messages', async () => {
-      sourceUrls = await collectSourceUrlsFromConsoleOutput(frontend);
+      sourceUrls = await collectSourceUrlsFromConsoleOutput(devToolsPage.page);
     });
 
     await step('find unique urls', async () => {
@@ -165,22 +170,22 @@ describe('The Console Tab', () => {
         }
         return msg.indexOf(urlToKeep) !== -1;
       };
-      await testMessageFilter(filter, expectedMessageFilter);
+      await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
 
       await step(`remove filter '${filter}'`, async () => {
-        await deleteConsoleMessagesFilter();
+        await deleteConsoleMessagesFilter(devToolsPage);
       });
     }
   });
 
-  it('can apply empty filter', async () => {
+  it('can apply empty filter', async ({devToolsPage, inspectedPage}) => {
     const filter = '';
 
     const expectedMessageFilter: MessageCheck = _ => true;
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching outer group title', async () => {
+  it('can apply text filter matching outer group title', async ({devToolsPage, inspectedPage}) => {
     const filter = 'enterGroup outerGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
@@ -192,10 +197,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching inner group title', async () => {
+  it('can apply text filter matching inner group title', async ({devToolsPage, inspectedPage}) => {
     const filter = 'enterGroup innerGroup1';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
@@ -208,10 +213,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching outer group content', async () => {
+  it('can apply text filter matching outer group content', async ({devToolsPage, inspectedPage}) => {
     const filter = '1outerGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
@@ -223,10 +228,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching inner group content', async () => {
+  it('can apply text filter matching inner group content', async ({devToolsPage, inspectedPage}) => {
     const filter = '1innerGroup1';
     const expectedMessageFilter: MessageCheck = msg => {
       // If the group title matches, all of its content should be shown.
@@ -242,10 +247,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching collapsed group title', async () => {
+  it('can apply text filter matching collapsed group title', async ({devToolsPage, inspectedPage}) => {
     const filter = 'enterCollapsedGroup collapsedGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // The matched group is collapsed, so only the group title will be shown.
@@ -254,10 +259,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching collapsed group content', async () => {
+  it('can apply text filter matching collapsed group content', async ({devToolsPage, inspectedPage}) => {
     const filter = '1collapsedGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // The matched content is within a collapsed group, so only the group
@@ -267,10 +272,10 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply text filter matching non-grouped content', async () => {
+  it('can apply text filter matching non-grouped content', async ({devToolsPage, inspectedPage}) => {
     const filter = 'topGroup';
     const expectedMessageFilter: MessageCheck = msg => {
       // No grouped content is shown.
@@ -279,66 +284,68 @@ describe('The Console Tab', () => {
       }
       return false;
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply start/end line regex filter', async () => {
+  it('can apply start/end line regex filter', async ({devToolsPage, inspectedPage}) => {
     const filter = '/^Hello\\s\\d$/';
     const expectedMessageFilter: MessageCheck = msg => {
       return /^console-filter\.html:\d{2}\sHello\s\d$/.test(msg);
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply context filter', async () => {
+  it('can apply context filter', async ({devToolsPage, inspectedPage}) => {
     const expectedMessageFilter: MessageCheck = msg => {
       return msg.indexOf('Hello') !== -1;
     };
-    await testMessageFilter('context:context', expectedMessageFilter);
+    await testMessageFilter('context:context', expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can apply multi text filter', async () => {
+  it('can apply multi text filter', async ({devToolsPage, inspectedPage}) => {
     const filter = 'Group /[2-3]top/';
     const expectedMessageFilter: MessageCheck = msg => {
       return /[2-3]top/.test(msg);
     };
-    await testMessageFilter(filter, expectedMessageFilter);
+    await testMessageFilter(filter, expectedMessageFilter, devToolsPage, inspectedPage);
   });
 
-  it('can filter by selecting console sidebar items', async () => {
+  it('can filter by selecting console sidebar items', async ({devToolsPage, inspectedPage}) => {
     const withAnchor = true;
     const allMessages = Level.All;
 
-    const initialMessages: string[] =
-        await getConsoleMessages('console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18));
+    const initialMessages: string[] = await getConsoleMessages(
+        'console-filter', withAnchor, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage,
+        inspectedPage);
 
-    await openConsoleSidebar();
+    await openConsoleSidebar(devToolsPage);
 
     // Verify only verbose messages are shown.
-    await selectConsoleSidebarItem(SidebarItem.Verbose);
-    const verboseMessages =
-        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForExactConsoleMessageCount(1));
+    await selectConsoleSidebarItem(devToolsPage, SidebarItem.Verbose);
+    const verboseMessages = await getCurrentConsoleMessages(
+        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
     assert.deepEqual(verboseMessages, ['console-filter.html:45 verbose debug message']);
 
     // Verify that groups containing matches are shown.
-    await selectConsoleSidebarItem(SidebarItem.Errors);
-    const errorMessages =
-        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForExactConsoleMessageCount(1));
+    await selectConsoleSidebarItem(devToolsPage, SidebarItem.Errors);
+    const errorMessages = await getCurrentConsoleMessages(
+        withAnchor, allMessages, () => waitForExactConsoleMessageCount(1, devToolsPage), devToolsPage);
     assert.deepEqual(errorMessages, ['console-filter.html:33 enterCollapsedGroup collapsedGroup']);
 
     // Verify that closing the sidebar reverts any filtering.
-    await closeConsoleSidebar();
-    const messagesAfterClose =
-        await getCurrentConsoleMessages(withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18));
+    await closeConsoleSidebar(devToolsPage);
+    const messagesAfterClose = await getCurrentConsoleMessages(
+        withAnchor, allMessages, () => waitForConsoleMessagesToBeNonEmpty(18, devToolsPage), devToolsPage);
     assert.deepEqual(messagesAfterClose, initialMessages);
   });
 
-  it('can exclude CORS error messages', async () => {
+  it('can exclude CORS error messages', async ({devToolsPage, inspectedPage}) => {
     const CORS_DETAILED_ERROR_PATTERN =
         /Access to fetch at 'https:.*' from origin 'https:.*' has been blocked by CORS policy: .*/;
     const NETWORK_ERROR_PATTERN = /GET https:.* net::ERR_FAILED/;
     const JS_ERROR_PATTERN = /Uncaught \(in promise\) TypeError: Failed to fetch.*/;
-    const allMessages = await getConsoleMessages('cors-issue', false, () => waitForConsoleMessagesToBeNonEmpty(6));
+    const allMessages = await getConsoleMessages(
+        'cors-issue', false, () => waitForConsoleMessagesToBeNonEmpty(6, devToolsPage), devToolsPage, inspectedPage);
     allMessages.sort();
     assert.lengthOf(allMessages, 6);
     assert.match(allMessages[0], CORS_DETAILED_ERROR_PATTERN);
@@ -348,8 +355,8 @@ describe('The Console Tab', () => {
     assert.match(allMessages[4], JS_ERROR_PATTERN);
     assert.match(allMessages[5], JS_ERROR_PATTERN);
 
-    await toggleShowCorsErrors();
-    const filteredMessages = await getCurrentConsoleMessages();
+    await toggleShowCorsErrors(devToolsPage);
+    const filteredMessages = await getCurrentConsoleMessages(undefined, undefined, undefined, devToolsPage);
     assert.lengthOf(filteredMessages, 2);
     for (const message of filteredMessages) {
       assert.match(message, JS_ERROR_PATTERN);

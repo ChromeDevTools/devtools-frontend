@@ -14,6 +14,7 @@ ts_e2e_library("console") {
     "console-eval-global_test.ts",
     "console-expand-recursively_test.ts",
     "console-fetch-logging_test.ts",
+    "console-filter_test.ts",
     "console-live-expressions_test.ts",
     "console-log_test.ts",
     "console-message-format_test.ts",

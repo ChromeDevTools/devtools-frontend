@@ -323,20 +323,21 @@ export async function navigateToConsoleTab(devToolsPage?: DevToolsPage) {
   await expectVeEvents([veImpressionForConsolePanel()], undefined, devToolsPage);
 }
 
-export async function openConsoleSidebar() {
-  await click('[aria-label="Show console sidebar"]');
-  await waitFor(CONSOLE_SIDEBAR_SELECTOR);
+export async function openConsoleSidebar(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('[aria-label="Show console sidebar"]');
+  await devToolsPage.waitFor(CONSOLE_SIDEBAR_SELECTOR);
 }
 
-export async function closeConsoleSidebar() {
-  await click('[aria-label="Hide console sidebar"]');
+export async function closeConsoleSidebar(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('[aria-label="Hide console sidebar"]');
 }
 
-export async function selectConsoleSidebarItem(itemPosition = SidebarItem.Info) {
-  const sidebar = await waitFor(CONSOLE_SIDEBAR_SELECTOR);
+export async function selectConsoleSidebarItem(
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage, itemPosition = SidebarItem.Info) {
+  const sidebar = await devToolsPage.waitFor(CONSOLE_SIDEBAR_SELECTOR);
   const itemSelector = `[role="tree"]>[role="treeitem"]:nth-of-type(${itemPosition})`;
 
-  await click(itemSelector, {root: sidebar});
+  await devToolsPage.click(itemSelector, {root: sidebar});
 }
 
 export async function waitForConsoleInfoMessageAndClickOnLink(
@@ -359,16 +360,16 @@ export async function turnOffHistoryAutocomplete() {
       await veRoot());
 }
 
-export async function toggleShowCorsErrors() {
-  await click(CONSOLE_SETTINGS_SELECTOR);
-  await click(SHOW_CORS_ERRORS_SELECTOR);
+export async function toggleShowCorsErrors(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(CONSOLE_SETTINGS_SELECTOR);
+  await devToolsPage.click(SHOW_CORS_ERRORS_SELECTOR);
   await expectVeEvents(
       [
         veClick('Toolbar > ToggleSubpane: console-settings'),
         ...veImpressionsForConsoleSettings(),
         veChange('Toggle: console-shows-cors-errors'),
       ],
-      await veRoot());
+      await veRoot(devToolsPage), devToolsPage);
 }
 
 export async function toggleShowLogXmlHttpRequests(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

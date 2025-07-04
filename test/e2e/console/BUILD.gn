@@ -14,7 +14,6 @@ node_ts_library("console") {
     "console-insight_test.ts",
     "console-last-result_test.ts",
     "console-repl-mode_test.ts",
-    "console-stack-trace_test.ts",
     "issues-toolbar_test.ts",
   ]
 

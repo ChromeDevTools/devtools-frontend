@@ -212,20 +212,18 @@ export async function getTargetViewport(inspectedPage = getBrowserAndPagesWrappe
                                       }));
 }
 
-export async function getServiceWorkerCount() {
-  const {target} = await getBrowserAndPages();
-  return await target.evaluate(async () => {
+export async function getServiceWorkerCount(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  return await inspectedPage.evaluate(async () => {
     return (await navigator.serviceWorker.getRegistrations()).length;
   });
 }
 
-export async function registerServiceWorker() {
-  const {target} = getBrowserAndPages();
-  await target.evaluate(async () => {
+export async function registerServiceWorker(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await inspectedPage.evaluate(async () => {
     // @ts-expect-error Custom function added to global scope.
     await window.registerServiceWorker();
   });
-  assert.strictEqual(await getServiceWorkerCount(), 1);
+  assert.strictEqual(await getServiceWorkerCount(inspectedPage), 1);
 }
 
 export async function interceptNextFileSave(): Promise<() => Promise<string>> {

@@ -6,6 +6,7 @@
 
 :host {
   --tooltip-viewport-distance: var(--sys-size-5);
+
   /* Reset the browser's default styles for [popover] elements. */
   margin: 0;
   background: none;
@@ -18,8 +19,11 @@
   visibility: hidden;
 
   & .container {
-    max-width: 100%;
     width: max-content;
+    max-width: calc(var(--devtools-window-width) - 2 * (
+      /* host margin */ var(--tooltip-viewport-distance) +
+      /* container horizontal padding */ var(--sys-size-8) +
+      /* container margin */ var(--sys-size-3)));
     margin: var(--sys-size-2);
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-inverse-on-surface);
@@ -36,16 +40,15 @@
   position: absolute;
 
   & .container {
-    max-width: calc(var(--devtools-window-width) - 2 * (
-                                 /* host margin */ var(--tooltip-viewport-distance) +
-                                 /* container horizontal padding */ var(--sys-size-8) +
-                                 /* container margin */ var(--sys-size-3)));
     margin-inline: 0;
     margin-block: var(--sys-size-3);
     color: var(--sys-color-on-surface);
     background-color: var(--sys-color-base-container-elevated);
     border-radius: var(--sys-shape-corner-small);
-    padding: var(--sys-size-6) var(--sys-size-8);
     overflow: auto;
+
+    &.large-padding {
+      padding: var(--sys-size-6) var(--sys-size-8);
+    }
   }
 }

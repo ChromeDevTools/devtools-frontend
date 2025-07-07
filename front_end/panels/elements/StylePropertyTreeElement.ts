@@ -301,11 +301,16 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
            </devtools-link-swatch>
            ${renderedFallback?.nodes.length ? html`, ${renderedFallback.nodes}` : nothing})
         </span>
-          ${tooltipId ? html`
-            <devtools-tooltip variant=rich id=${tooltipId} jslogContext=elements.css-var>
-              ${tooltipContents}
-            </devtools-tooltip>` : ''}`,
-        varSwatch);
+        ${tooltipId ? html`
+          <devtools-tooltip
+            id=${tooltipId}
+            variant=rich
+            jslogContext=elements.css-var
+          >
+            ${tooltipContents}
+          </devtools-tooltip>
+        ` : ''}
+    `, varSwatch);
     // clang-format on
 
     const color = computedValue && Common.Color.parse(computedValue);
@@ -2182,6 +2187,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: this.nameElement,
         variant: 'rich',
+        padding: 'large',
         id: tooltipId,
         jslogContext: 'elements.css-property-doc',
       });
@@ -2297,10 +2303,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
       const tooltipId = this.getTooltipId('property-warning');
-      exclamationElement.setAttribute('aria-details', tooltipId);
+      exclamationElement.setAttribute('aria-describedby', tooltipId);
       const tooltip = new Tooltips.Tooltip.Tooltip({
         anchor: exclamationElement,
-        variant: 'rich',
+        variant: 'simple',
         id: tooltipId,
         jslogContext: 'elements.invalid-property-decl-popover'
       });
@@ -2427,7 +2433,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const tooltipId = this.getTooltipId('css-hint');
         hintIcon.setAttribute('aria-details', tooltipId);
         const tooltip = new Tooltips.Tooltip.Tooltip(
-            {anchor: hintIcon, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-hint'});
+            {anchor: hintIcon, variant: 'rich', padding: 'large', id: tooltipId, jslogContext: 'elements.css-hint'});
         tooltip.appendChild(new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint));
         this.listItemElement.appendChild(tooltip);
         break;

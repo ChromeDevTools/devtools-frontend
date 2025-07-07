@@ -522,7 +522,8 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       thought: string,
       code: string,
     }>('executeJavaScript', {
-      description: `This function allows you to run JavaScript code on the inspected page.
+      description:
+          `This function allows you to run JavaScript code on the inspected page to access the element styles and page content.
 Call this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.`,
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -546,17 +547,101 @@ Call this function to gather additional information or modify the page state. Ca
 
 For example, the code to return basic styles:
 
+\`\`\`
 const styles = window.getComputedStyle($0);
 const data = {
+    display: styles['display'],
+    visibility: styles['visibility'],
+    position: styles['position'],
+    left: styles['right'],
+    top: styles['top'],
+    width: styles['width'],
+    height: styles['height'],
+    zIndex: styles['z-index']
+};
+\`\`\`
+
+For example, the code to change element styles:
+
+\`\`\`
+await setElementStyles($0, {
+  color: 'blue',
+});
+\`\`\`
+
+For example, the code to get current and parent styles at once:
+
+\`\`\`
+const styles = window.getComputedStyle($0);
+const parentStyles = window.getComputedStyle($0.parentElement);
+const data = {
+    currentElementStyles: {
+      display: styles['display'],
+      visibility: styles['visibility'],
+      position: styles['position'],
+      left: styles['right'],
+      top: styles['top'],
+      width: styles['width'],
+      height: styles['height'],
+      zIndex: styles['z-index'],
+    },
+    parentElementStyles: {
+      display: parentStyles['display'],
+      visibility: parentStyles['visibility'],
+      position: parentStyles['position'],
+      left: parentStyles['right'],
+      top: parentStyles['top'],
+      width: parentStyles['width'],
+      height: parentStyles['height'],
+      zIndex: parentStyles['z-index'],
+    },
+};
+\`\`\`
+
+For example, the code to get check siblings and overlapping elements:
+
+\`\`\`
+const computedStyles = window.getComputedStyle($0);
+const parentComputedStyles = window.getComputedStyle($0.parentElement);
+const data = {
+  numberOfChildren: $0.children.length,
+  numberOfSiblings: $0.parentElement.children.length,
+  hasPreviousSibling: !!$0.previousElementSibling,
+  hasNextSibling: !!$0.nextElementSibling,
+  elementStyles: {
     display: computedStyles['display'],
     visibility: computedStyles['visibility'],
     position: computedStyles['position'],
-    left: computedStyles['right'],
-    top: computedStyles['top'],
-    width: computedStyles['width'],
-    height: computedStyles['height'],
+    clipPath: computedStyles['clip-path'],
     zIndex: computedStyles['z-index']
+  },
+  parentStyles: {
+    display: parentComputedStyles['display'],
+    visibility: parentComputedStyles['visibility'],
+    position: parentComputedStyles['position'],
+    clipPath: parentComputedStyles['clip-path'],
+    zIndex: parentComputedStyles['z-index']
+  },
+  overlappingElements: Array.from(document.querySelectorAll('*'))
+    .filter(el => {
+      const rect = el.getBoundingClientRect();
+      const popupRect = $0.getBoundingClientRect();
+      return (
+        el !== $0 &&
+        rect.left < popupRect.right &&
+        rect.right > popupRect.left &&
+        rect.top < popupRect.bottom &&
+        rect.bottom > popupRect.top
+      );
+    })
+    .map(el => ({
+      tagName: el.tagName,
+      id: el.id,
+      className: el.className,
+      zIndex: window.getComputedStyle(el)['z-index']
+    }))
 };
+\`\`\`
 `,
           },
           thought: {
@@ -858,9 +943,10 @@ const data = {
 }
 
 /* clang-format off */
-const preambleFunctionCalling = `You are the most advanced CSS debugging assistant integrated into Chrome DevTools.
+const preambleFunctionCalling = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
+First, examine the provided context, then use the functions to gather additional context and resolve the user request.
 
 # Considerations
 
@@ -872,9 +958,8 @@ The user selected a DOM element in the browser's DevTools and sends a query abou
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * When answering, always consider MULTIPLE possible solutions.
 * Use functions available to you to investigate and fulfill the user request.
-* ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. INCLUDE possible fixes withing suggestions.
-* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about debugging web pages."
-* **CRITICAL** You are a CSS debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.`;
+* ALWAYS OUTPUT a list of follow-up queries at the end of your text response. The format is SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line. You're also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.
+* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.`;
 /* clang-format on */
 
 export class StylingAgentWithFunctionCalling extends StylingAgent {

@@ -162,7 +162,11 @@ const API = {
 
     function serializeFunctionResponse(functionResponse) {
       if (functionResponse.response.result) {
-        functionResponse = JSON.parse(functionResponse.response.result);
+        try {
+          functionResponse = JSON.parse(functionResponse.response.result);
+        } catch {
+          functionResponse = functionResponse.response.result;
+        }
       }
       return JSON.stringify(functionResponse, null, 2);
     }

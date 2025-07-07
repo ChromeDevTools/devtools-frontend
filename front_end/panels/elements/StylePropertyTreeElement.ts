@@ -1799,7 +1799,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       if (!isGrid) {
         continue;
       }
-      const getNames = (propertyName: string, astNodeName: string): string[] => {
+      const getNames = (propertyName: string, predicate: (node: CodeMirror.SyntaxNode) => boolean): string[] => {
         const propertyValue = style?.get(propertyName);
         if (!propertyValue) {
           return [];
@@ -1808,18 +1808,19 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (!ast) {
           return [];
         }
-        return SDK.CSSPropertyParser.TreeSearch.findAll(ast, node => node.name === astNodeName)
-            .map(node => ast.text(node));
+        return SDK.CSSPropertyParser.TreeSearch.findAll(ast, predicate).map(node => ast.text(node));
       };
       if (SDK.CSSMetadata.cssMetadata().isGridAreaNameAwareProperty(this.name)) {
         return new Set(
-            getNames('grid-template-areas', 'StringLiteral')
+            getNames('grid-template-areas', node => node.name === 'StringLiteral')
                 ?.flatMap(row => row.substring(1, row.length - 1).split(/\s+/).filter(cell => !cell.match(/^\.*$/))));
       }
       if (SDK.CSSMetadata.cssMetadata().isGridColumnNameAwareProperty(this.name)) {
-        return new Set(getNames('grid-template-columns', 'LineName'));
+        return new Set(getNames(
+            'grid-template-columns', node => node.name === 'ValueName' && node.parent?.name === 'BracketedValue'));
       }
-      return new Set(getNames('grid-template-rows', 'LineName'));
+      return new Set(
+          getNames('grid-template-rows', node => node.name === 'ValueName' && node.parent?.name === 'BracketedValue'));
     }
     return new Set();
   }

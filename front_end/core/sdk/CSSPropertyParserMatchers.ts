@@ -679,7 +679,7 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
       return null;
     }
 
-    if (parentNode.name === 'CallExpression' && node.name === 'Callee' && text.startsWith('--')) {
+    if (parentNode.name === 'CallExpression' && node.name === 'VariableName') {
       return new LinkableNameMatch(text, node, LinkableNameProperties.FUNCTION);
     }
 
@@ -941,7 +941,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
             continue;
           }
           if ((varNodes[0].name === 'StringLiteral' && !hasLeadingLineNames) ||
-              (varNodes[0].name === 'LineNames' && !needClosingLineNames)) {
+              (varNodes[0].name === 'BracketedValue' && !needClosingLineNames)) {
             // The variable value either starts with a string, or with a line name that belongs to a new row;
             // therefore we start a new line with the variable.
             lines.push(curLine);
@@ -965,7 +965,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
           }
           needClosingLineNames = true;
           hasLeadingLineNames = false;
-        } else if (curNode.name === 'LineNames') {
+        } else if (curNode.name === 'BracketedValue') {
           if (!varParsingMode) {
             if (needClosingLineNames) {
               curLine.push(curNode);

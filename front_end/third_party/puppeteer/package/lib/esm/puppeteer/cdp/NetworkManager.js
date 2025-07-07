@@ -41,12 +41,14 @@ export class NetworkManager extends EventEmitter {
         [CDPSessionEvent.Disconnected, this.#removeClient],
     ];
     #clients = new Map();
-    constructor(frameManager) {
+    #networkEnabled = true;
+    constructor(frameManager, networkEnabled) {
         super();
         this.#frameManager = frameManager;
+        this.#networkEnabled = networkEnabled ?? true;
     }
     async addClient(client) {
-        if (this.#clients.has(client)) {
+        if (!this.#networkEnabled || this.#clients.has(client)) {
             return;
         }
         const subscriptions = new DisposableStack();

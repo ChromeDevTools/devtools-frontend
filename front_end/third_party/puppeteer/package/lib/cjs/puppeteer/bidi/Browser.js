@@ -104,9 +104,15 @@ let BidiBrowser = (() => {
                     'goog:prerenderingDisabled': true,
                 },
             });
-            await session.subscribe(session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
+            await session.subscribe((session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
                 ? BidiBrowser.subscribeModules
-                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]);
+                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]).filter(module => {
+                if (!opts.networkEnabled) {
+                    return (module !== 'network' &&
+                        module !== 'goog:cdp.Network.requestWillBeSent');
+                }
+                return true;
+            }));
             const browser = new BidiBrowser(session.browser, opts);
             browser.#initialize();
             return browser;
@@ -121,6 +127,7 @@ let BidiBrowser = (() => {
         #browserContexts = new WeakMap();
         #target = new Target_js_1.BidiBrowserTarget(this);
         #cdpConnection;
+        #networkEnabled;
         constructor(browserCore, opts) {
             super();
             this.#process = opts.process;
@@ -128,6 +135,7 @@ let BidiBrowser = (() => {
             this.#browserCore = browserCore;
             this.#defaultViewport = opts.defaultViewport;
             this.#cdpConnection = opts.cdpConnection;
+            this.#networkEnabled = opts.networkEnabled;
         }
         #initialize() {
             // Initializing existing contexts.
@@ -254,6 +262,9 @@ let BidiBrowser = (() => {
             return {
                 pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
             };
+        }
+        isNetworkEnabled() {
+            return this.#networkEnabled;
         }
     };
 })();

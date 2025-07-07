@@ -388,6 +388,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * @experimental
      */
     abstract get debugInfo(): DebugInfo;
+
 }
 
 /**
@@ -1011,6 +1012,15 @@ export declare interface ConnectOptions {
      * @defaultValue `false`
      */
     acceptInsecureCerts?: boolean;
+    /**
+     * Experimental setting to disable monitoring network events by default. When
+     * set to `false`, parts of Puppeteer that depend on network events would not
+     * work such as HTTPRequest and HTTPResponse.
+     *
+     * @experimental
+     * @defaultValue `true`
+     */
+    networkEnabled?: boolean;
     /**
      * Sets the viewport for each page.
      *

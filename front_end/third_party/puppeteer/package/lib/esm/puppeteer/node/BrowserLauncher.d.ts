@@ -73,6 +73,7 @@ export declare abstract class BrowserLauncher {
     protected createBiDiOverCdpBrowser(browserProcess: ReturnType<typeof launch>, connection: Connection, closeCallback: BrowserCloseCallback, opts: {
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
+        networkEnabled: boolean;
     }): Promise<Browser>;
     /**
      * @internal
@@ -83,6 +84,7 @@ export declare abstract class BrowserLauncher {
         slowMo: number;
         defaultViewport: Viewport | null;
         acceptInsecureCerts?: boolean;
+        networkEnabled?: boolean;
     }): Promise<Browser>;
     /**
      * @internal

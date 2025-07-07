@@ -59,7 +59,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         super();
         this.#client = client;
         this.#page = page;
-        this.#networkManager = new NetworkManager_js_1.NetworkManager(this);
+        this.#networkManager = new NetworkManager_js_1.NetworkManager(this, page.browser().isNetworkEnabled());
         this.#timeoutSettings = timeoutSettings;
         this.setupEventListeners(this.#client);
         client.once(CDPSession_js_1.CDPSessionEvent.Disconnected, () => {

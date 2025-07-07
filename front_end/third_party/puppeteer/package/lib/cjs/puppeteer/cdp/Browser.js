@@ -16,8 +16,8 @@ const TargetManager_js_1 = require("./TargetManager.js");
  */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -34,9 +34,11 @@ class CdpBrowser extends Browser_js_1.Browser {
     #isPageTargetCallback;
     #defaultContext;
     #contexts = new Map();
+    #networkEnabled = true;
     #targetManager;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
         super();
+        this.#networkEnabled = networkEnabled;
         this.#defaultViewport = defaultViewport;
         this.#process = process;
         this.#connection = connection;
@@ -247,6 +249,9 @@ class CdpBrowser extends Browser_js_1.Browser {
         return {
             pendingProtocolErrors: this.#connection.getPendingProtocolErrors(),
         };
+    }
+    isNetworkEnabled() {
+        return this.#networkEnabled;
     }
 }
 exports.CdpBrowser = CdpBrowser;

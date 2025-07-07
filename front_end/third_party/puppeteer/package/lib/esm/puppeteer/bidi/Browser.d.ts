@@ -25,6 +25,7 @@ export interface BidiBrowserOptions {
     defaultViewport: Viewport | null;
     acceptInsecureCerts?: boolean;
     capabilities?: SupportedWebDriverCapabilities;
+    networkEnabled: boolean;
 }
 /**
  * @internal
@@ -55,5 +56,6 @@ export declare class BidiBrowser extends Browser {
     target(): BidiBrowserTarget;
     disconnect(): Promise<void>;
     get debugInfo(): DebugInfo;
+    isNetworkEnabled(): boolean;
 }
 //# sourceMappingURL=Browser.d.ts.map

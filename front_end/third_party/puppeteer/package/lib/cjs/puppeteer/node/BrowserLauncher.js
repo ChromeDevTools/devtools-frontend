@@ -72,7 +72,7 @@ class BrowserLauncher {
         return this.#browser;
     }
     async launch(options = {}) {
-        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
+        const { dumpio = false, enableExtensions = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocolTimeout, } = options;
         let { protocol } = options;
         // Default to 'webDriverBiDi' for Firefox.
         if (this.#browser === 'firefox' && protocol === undefined) {
@@ -128,6 +128,7 @@ class BrowserLauncher {
                     slowMo,
                     defaultViewport,
                     acceptInsecureCerts,
+                    networkEnabled,
                 });
             }
             else {
@@ -149,10 +150,11 @@ class BrowserLauncher {
                     browser = await this.createBiDiOverCdpBrowser(browserProcess, cdpConnection, browserCloseCallback, {
                         defaultViewport,
                         acceptInsecureCerts,
+                        networkEnabled,
                     });
                 }
                 else {
-                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
+                    browser = await Browser_js_1.CdpBrowser._create(cdpConnection, [], acceptInsecureCerts, defaultViewport, downloadBehavior, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter, undefined, undefined, networkEnabled);
                 }
             }
         }
@@ -245,6 +247,7 @@ class BrowserLauncher {
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
             acceptInsecureCerts: opts.acceptInsecureCerts,
+            networkEnabled: opts.networkEnabled,
         });
     }
     /**
@@ -261,6 +264,7 @@ class BrowserLauncher {
             process: browserProcess.nodeProcess,
             defaultViewport: opts.defaultViewport,
             acceptInsecureCerts: opts.acceptInsecureCerts,
+            networkEnabled: opts.networkEnabled ?? true,
         });
     }
     /**

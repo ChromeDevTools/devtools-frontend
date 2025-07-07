@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Extras from '../extras/extras.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
+import type * as Types from '../types/types.js';
 
 import {estimateCompressionRatioForScript, metricSavingsForWastedBytes} from './Common.js';
 import {
@@ -110,5 +111,15 @@ export function generateInsight(
     mainDocumentUrl: context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
     wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
+  });
+}
+
+export function createOverlays(model: DuplicatedJavaScriptInsightModel): Types.Overlays.Overlay[] {
+  return model.scriptsWithDuplication.map(script => script.request).filter(e => !!e).map(request => {
+    return {
+      type: 'ENTRY_OUTLINE',
+      entry: request,
+      outlineReason: 'ERROR',
+    };
   });
 }

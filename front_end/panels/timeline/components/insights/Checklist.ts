@@ -13,7 +13,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import checklistStyles from './checklist.css.js';
 
@@ -44,7 +43,7 @@ export interface ChecklistData {
 
 export interface TableDataRow {
   values: Array<number|string|Lit.LitTemplate>;
-  overlays?: Overlays.Overlays.TimelineOverlay[];
+  overlays?: Trace.Types.Overlays.Overlay[];
 }
 
 export class Checklist extends HTMLElement {

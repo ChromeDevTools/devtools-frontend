@@ -12,7 +12,6 @@ import type {
   LegacyJavaScriptInsightModel, PatternMatchResult} from '../../../../models/trace/insights/LegacyJavaScript.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {scriptRef} from './ScriptRef.js';
@@ -28,21 +27,6 @@ export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsig
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.FCP ?? null;
-  }
-
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    const requests = [...this.model.legacyJavaScriptResults.keys()].map(script => script.request).filter(e => !!e);
-    return requests.map(request => {
-      return {
-        type: 'ENTRY_OUTLINE',
-        entry: request,
-        outlineReason: 'ERROR',
-      };
-    });
   }
 
   async #revealLocation(script: Trace.Handlers.ModelHandlers.Scripts.Script, match: PatternMatchResult): Promise<void> {
@@ -73,7 +57,7 @@ export class LegacyJavaScript extends BaseInsightComponent<LegacyJavaScriptInsig
 
     const rows: TableDataRow[] =
         [...this.model.legacyJavaScriptResults.entries()].slice(0, 10).map(([script, result]) => {
-          const overlays: Overlays.Overlays.TimelineOverlay[] = [];
+          const overlays: Trace.Types.Overlays.Overlay[] = [];
           if (script.request) {
             overlays.push({
               type: 'ENTRY_OUTLINE',

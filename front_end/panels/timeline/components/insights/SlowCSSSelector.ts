@@ -13,7 +13,6 @@ import type {SlowCSSSelectorInsightModel} from '../../../../models/trace/insight
 import * as Trace from '../../../../models/trace/trace.js';
 import type * as Linkifier from '../../../../ui/components/linkifier/linkifier.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
@@ -26,10 +25,6 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;
   override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
-
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    return [];
-  }
 
   private async toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
       Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {

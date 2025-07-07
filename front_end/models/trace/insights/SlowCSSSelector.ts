@@ -149,3 +149,7 @@ export function generateInsight(
     topMatchAttempts: sortByMatchAttempts.slice(0, 3),
   });
 }
+
+export function createOverlays(_: SlowCSSSelectorInsightModel): Types.Overlays.Overlay[] {
+  return [];
+}

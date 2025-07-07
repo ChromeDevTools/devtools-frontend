@@ -151,9 +151,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   // 'EntryTo' selection still needs to be updated.
   #linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation|null = null;
 
-  #currentInsightOverlays: Overlays.Overlays.TimelineOverlay[] = [];
+  #currentInsightOverlays: Trace.Types.Overlays.Overlay[] = [];
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
-  #markers: Overlays.Overlays.TimingsMarker[] = [];
+  #markers: Trace.Types.Overlays.TimingsMarker[] = [];
 
   #tooltipElement = document.createElement('div');
 
@@ -670,7 +670,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
             event.name === Trace.Types.Events.Name.MARK_LOAD);
 
     this.#sortMarkersForPreferredVisualOrder(markers);
-    const overlayByTs = new Map<Trace.Types.Timing.Micro, Overlays.Overlays.TimingsMarker>();
+    const overlayByTs = new Map<Trace.Types.Timing.Micro, Trace.Types.Overlays.TimingsMarker>();
     markers.forEach(marker => {
       const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           marker,
@@ -688,7 +688,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         }
       }
       if (!matchingOverlay) {
-        const overlay: Overlays.Overlays.TimingsMarker = {
+        const overlay: Trace.Types.Overlays.TimingsMarker = {
           type: 'TIMINGS_MARKER',
           entries: [marker],
           entryToFieldResult: new Map(),
@@ -697,7 +697,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         overlayByTs.set(marker.ts, overlay);
       }
     });
-    const markerOverlays: Overlays.Overlays.TimingsMarker[] = [...overlayByTs.values()];
+    const markerOverlays: Trace.Types.Overlays.TimingsMarker[] = [...overlayByTs.values()];
     this.#markers = markerOverlays;
     if (this.#markers.length === 0) {
       return;
@@ -707,8 +707,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.bulkAddOverlays(this.#markers);
   }
 
-  setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
-      void {
+  setOverlays(overlays: Trace.Types.Overlays.Overlay[], options: Overlays.Overlays.TimelineOverlaySetOptions): void {
     this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
     this.#currentInsightOverlays = overlays;
@@ -1559,20 +1558,20 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   /**
    * Used to create multiple overlays at once without triggering a redraw for each one.
    */
-  bulkAddOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+  bulkAddOverlays(overlays: Trace.Types.Overlays.Overlay[]): void {
     for (const overlay of overlays) {
       this.#overlays.add(overlay);
     }
     void this.#overlays.update();
   }
 
-  addOverlay<T extends Overlays.Overlays.TimelineOverlay>(newOverlay: T): T {
+  addOverlay<T extends Trace.Types.Overlays.Overlay>(newOverlay: T): T {
     const overlay = this.#overlays.add(newOverlay);
     void this.#overlays.update();
     return overlay;
   }
 
-  bulkRemoveOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+  bulkRemoveOverlays(overlays: Trace.Types.Overlays.Overlay[]): void {
     if (!overlays.length) {
       return;
     }
@@ -1583,21 +1582,21 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     void this.#overlays.update();
   }
 
-  removeOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
+  removeOverlay(removedOverlay: Trace.Types.Overlays.Overlay): void {
     this.#overlays.remove(removedOverlay);
     void this.#overlays.update();
   }
 
-  updateExistingOverlay<T extends Overlays.Overlays.TimelineOverlay>(existingOverlay: T, newData: Partial<T>): void {
+  updateExistingOverlay<T extends Trace.Types.Overlays.Overlay>(existingOverlay: T, newData: Partial<T>): void {
     this.#overlays.updateExisting(existingOverlay, newData);
     void this.#overlays.update();
   }
 
-  enterLabelEditMode(overlay: Overlays.Overlays.EntryLabel): void {
+  enterLabelEditMode(overlay: Trace.Types.Overlays.EntryLabel): void {
     this.#overlays.enterLabelEditMode(overlay);
   }
 
-  bringLabelForward(overlay: Overlays.Overlays.EntryLabel): void {
+  bringLabelForward(overlay: Trace.Types.Overlays.EntryLabel): void {
     this.#overlays.bringLabelForward(overlay);
   }
 

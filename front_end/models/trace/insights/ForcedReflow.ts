@@ -192,3 +192,24 @@ export function generateInsight(
     aggregatedBottomUpData: [...bottomUpDataMap.values()],
   });
 }
+
+export function createOverlays(model: ForcedReflowInsightModel): Types.Overlays.Overlay[] {
+  if (!model.topLevelFunctionCallData) {
+    return [];
+  }
+
+  const allBottomUpEvents = [...model.aggregatedBottomUpData.values().flatMap(data => data.relatedEvents)];
+  return [
+    ...createOverlayForEvents(model.topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
+    ...createOverlayForEvents(allBottomUpEvents),
+  ];
+}
+
+export function createOverlayForEvents(
+    events: Types.Events.Event[], outlineReason: 'ERROR'|'INFO' = 'ERROR'): Types.Overlays.Overlay[] {
+  return events.map(e => ({
+                      type: 'ENTRY_OUTLINE',
+                      entry: e,
+                      outlineReason,
+                    }));
+}

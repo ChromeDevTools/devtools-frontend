@@ -7,13 +7,12 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import type {ImageDeliveryInsightModel} from '../../../../models/trace/insights/ImageDelivery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
 import {createLimitedRows, renderOthersLabel, type TableDataRow} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.ImageDelivery;
+const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.ImageDelivery;
 
 const {html} = Lit;
 
@@ -21,34 +20,17 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-image-delivery`;
   override internalName = 'image-delivery';
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    const {optimizableImages} = this.model;
-    return optimizableImages.map(image => this.#createOverlayForRequest(image.request));
-  }
-
-  #createOverlayForRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Overlays.Overlays.EntryOutline {
-    return {
-      type: 'ENTRY_OUTLINE',
-      entry: request,
-      outlineReason: 'ERROR',
-    };
-  }
-
   mapToRow(image: Trace.Insights.Models.ImageDelivery.OptimizableImage): TableDataRow {
     return {
       values: [imageRef(image.request)],
-      overlays: [this.#createOverlayForRequest(image.request)],
+      overlays: [createOverlayForRequest(image.request)],
     };
   }
 
   createAggregatedTableRow(remaining: Trace.Insights.Models.ImageDelivery.OptimizableImage[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length)],
-      overlays: remaining.map(r => this.#createOverlayForRequest(r.request)),
+      overlays: remaining.map(r => createOverlayForRequest(r.request)),
     };
   }
 

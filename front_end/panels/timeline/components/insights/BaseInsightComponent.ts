@@ -100,7 +100,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     selectedRowEl: null,
     selectionIsSticky: false,
   };
-  #initialOverlays: Overlays.Overlays.TimelineOverlay[]|null = null;
+  #initialOverlays: Trace.Types.Overlays.Overlay[]|null = null;
 
   protected scheduleRender(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
@@ -234,7 +234,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
    * This enables the hover/click table interactions.
    */
   toggleTemporaryOverlays(
-      overlays: Overlays.Overlays.TimelineOverlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
+      overlays: Trace.Types.Overlays.Overlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
     if (!this.#selected) {
       return;
     }
@@ -248,7 +248,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays, options));
   }
 
-  getInitialOverlays(): Overlays.Overlays.TimelineOverlay[] {
+  getInitialOverlays(): Trace.Types.Overlays.Overlay[] {
     if (this.#initialOverlays) {
       return this.#initialOverlays;
     }
@@ -257,7 +257,9 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     return this.#initialOverlays;
   }
 
-  protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
+  protected createOverlays(): Trace.Types.Overlays.Overlay[] {
+    return this.model?.createOverlays?.() ?? [];
+  }
 
   protected abstract renderContent(): Lit.LitTemplate;
 

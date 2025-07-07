@@ -8,7 +8,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {CLSCulpritsInsightModel} from '../../../../models/trace/insights/CLSCulprits.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
@@ -26,27 +25,22 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     return true;
   }
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const clustersByScore =
-        this.model?.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];
-    const worstCluster = clustersByScore[0];
-    if (!worstCluster) {
+  override createOverlays(): Trace.Types.Overlays.Overlay[] {
+    if (!this.model) {
       return [];
     }
 
-    const range = Trace.Types.Timing.Micro(worstCluster.dur ?? 0);
-    const max = Trace.Types.Timing.Micro(worstCluster.ts + range);
+    const overlays = this.model.createOverlays?.();
+    if (!overlays) {
+      return [];
+    }
 
-    const label = html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
-    return [{
-      type: 'TIMESPAN_BREAKDOWN',
-      sections: [
-        {bounds: {min: worstCluster.ts, range, max}, label, showDuration: false},
-      ],
-      // This allows for the overlay to sit over the layout shift.
-      entry: worstCluster.events[0],
-      renderLocation: 'ABOVE_EVENT',
-    }];
+    const timespanOverlaySection = overlays.find(overlay => overlay.type === 'TIMESPAN_BREAKDOWN')?.sections[0];
+    if (timespanOverlaySection) {
+      timespanOverlaySection.label = html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
+    }
+
+    return overlays;
   }
 
   #clickEvent(event: Trace.Types.Events.Event): void {

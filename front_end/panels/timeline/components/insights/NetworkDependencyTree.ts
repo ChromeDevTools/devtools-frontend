@@ -12,7 +12,6 @@ import type {
   '../../../../models/trace/insights/NetworkDependencyTree.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
@@ -34,19 +33,9 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
   #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
   #countOfChains = 0;
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    getAllOverlays(this.model.rootNodes, overlays);
-
-    return overlays;
-  }
-
-  #createOverlayForChain(requests: Set<Trace.Types.Events.SyntheticNetworkRequest>): Overlays.Overlays.EntryOutline[] {
-    const overlays: Overlays.Overlays.EntryOutline[] = [];
+  #createOverlayForChain(requests: Set<Trace.Types.Events.SyntheticNetworkRequest>):
+      Trace.Types.Overlays.EntryOutline[] {
+    const overlays: Trace.Types.Overlays.EntryOutline[] = [];
     requests.forEach(entry => overlays.push({
       type: 'ENTRY_OUTLINE',
       entry,
@@ -316,17 +305,6 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
       ${this.#renderEstSavingTable()}
     `;
   }
-}
-
-function getAllOverlays(nodes: CriticalRequestNode[], overlays: Overlays.Overlays.TimelineOverlay[]): void {
-  nodes.forEach(node => {
-    overlays.push({
-      type: 'ENTRY_OUTLINE',
-      entry: node.request,
-      outlineReason: 'ERROR',
-    });
-    getAllOverlays(node.children, overlays);
-  });
 }
 
 declare global {

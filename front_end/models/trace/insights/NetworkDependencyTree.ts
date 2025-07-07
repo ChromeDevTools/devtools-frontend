@@ -691,3 +691,21 @@ export function generateInsight(
     preconnectCandidates,
   });
 }
+
+export function createOverlays(model: NetworkDependencyTreeInsightModel): Types.Overlays.Overlay[] {
+  function walk(nodes: CriticalRequestNode[], overlays: Types.Overlays.Overlay[]): void {
+    nodes.forEach(node => {
+      overlays.push({
+        type: 'ENTRY_OUTLINE',
+        entry: node.request,
+        outlineReason: 'ERROR',
+      });
+      walk(node.children, overlays);
+    });
+  }
+
+  const overlays: Types.Overlays.Overlay[] = [];
+  walk(model.rootNodes, overlays);
+
+  return overlays;
+}

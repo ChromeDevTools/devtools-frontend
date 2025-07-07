@@ -208,3 +208,12 @@ export function generateInsight(
     maxDOMStats,
   });
 }
+
+export function createOverlays(model: DOMSizeInsightModel): Types.Overlays.Overlay[] {
+  const entries = [...model.largeStyleRecalcs, ...model.largeLayoutUpdates];
+  return entries.map(entry => ({
+                       type: 'ENTRY_OUTLINE',
+                       entry,
+                       outlineReason: 'ERROR',
+                     }));
+}

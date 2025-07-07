@@ -234,3 +234,22 @@ export function generateInsight(
     subparts: determineSubparts(context.navigation, docRequest, lcpEvent, lcpRequest) ?? undefined,
   });
 }
+
+export function createOverlays(model: LCPBreakdownInsightModel): Types.Overlays.Overlay[] {
+  if (!model.subparts || !model.lcpTs) {
+    return [];
+  }
+
+  const overlays: Types.Overlays.Overlay[] = [
+    {
+      type: 'TIMESPAN_BREAKDOWN',
+      sections: Object.values(model.subparts)
+                    .map((subpart: Subpart) => ({bounds: subpart, label: subpart.label, showDuration: true})),
+    },
+  ];
+  if (model.lcpRequest) {
+    overlays.push({type: 'ENTRY_OUTLINE', entry: model.lcpRequest, outlineReason: 'INFO'});
+  }
+
+  return overlays;
+}

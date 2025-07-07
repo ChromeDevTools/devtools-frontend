@@ -7,7 +7,6 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {microsecondsTraceWindow} from '../../testing/TraceHelpers.js';
 
-import type * as Overlays from './overlays/overlays.js';
 import * as Timeline from './timeline.js';
 
 const {
@@ -119,35 +118,35 @@ describe('AnnotationHelpers', () => {
     } as unknown as Trace.Types.Events.Event;
 
     it('returns text for an annotation being removed', () => {
-      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const overlay: Trace.Types.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'Remove');
       const text = ariaAnnouncementForModifiedEvent(event);
       assert.strictEqual(text, 'The entry label annotation has been removed');
     });
 
     it('returns text for entering the edit state on a label', () => {
-      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const overlay: Trace.Types.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'EnterLabelEditState');
       const text = ariaAnnouncementForModifiedEvent(event);
       assert.strictEqual(text, 'Editing the annotation label text');
     });
 
     it('returns text for an annotation being added', async () => {
-      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const overlay: Trace.Types.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'Add');
       const text = ariaAnnouncementForModifiedEvent(event);
       assert.strictEqual(text, 'The entry label annotation has been added');
     });
 
     it('does not return an announcement for new empty labels', async () => {
-      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: ''};
+      const overlay: Trace.Types.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: ''};
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'Add');
       const text = ariaAnnouncementForModifiedEvent(event);
       assert.isNull(text);
     });
 
     it('returns text for an annotation having its label updated', async () => {
-      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const overlay: Trace.Types.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'UpdateLabel');
       const text = ariaAnnouncementForModifiedEvent(event);
       assert.strictEqual(text, 'Label updated to Hello world');
@@ -158,7 +157,7 @@ describe('AnnotationHelpers', () => {
           .resetWithNewBounds(
               microsecondsTraceWindow(0, 10_000),
           );
-      const timeRange: Overlays.Overlays.TimeRangeLabel = {
+      const timeRange: Trace.Types.Overlays.TimeRangeLabel = {
         type: 'TIME_RANGE',
         bounds: microsecondsTraceWindow(0, 5_000),
         label: 'hello',
@@ -170,7 +169,7 @@ describe('AnnotationHelpers', () => {
     });
 
     it('returns text when an entries link has its entries connected', async () => {
-      const link: Overlays.Overlays.EntriesLink = {
+      const link: Trace.Types.Overlays.EntriesLink = {
         type: 'ENTRIES_LINK',
         state: Trace.Types.File.EntriesLinkState.CONNECTED,
         entryFrom: FAKE_ENTRY_1,

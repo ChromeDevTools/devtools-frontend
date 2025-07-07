@@ -6,12 +6,11 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {ThirdPartiesInsightModel} from '../../../../models/trace/insights/ThirdParties.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {createLimitedRows, renderOthersLabel, type RowLimitAggregator} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.ThirdParties;
+const {UIStrings, i18nString, createOverlaysForSummary} = Trace.Insights.Models.ThirdParties;
 
 const {html} = Lit;
 
@@ -21,49 +20,10 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-third-parties`;
   override internalName = 'third-parties';
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    const summaries = this.model.entitySummaries ?? [];
-    for (const summary of summaries) {
-      if (summary.entity === this.model.firstPartyEntity) {
-        continue;
-      }
-
-      const summaryOverlays = this.#createOverlaysForSummary(summary);
-      overlays.push(...summaryOverlays);
-    }
-    return overlays;
-  }
-
-  #createOverlaysForSummary(summary: Trace.Extras.ThirdParties.EntitySummary): Overlays.Overlays.TimelineOverlay[] {
-    const overlays = [];
-    for (const event of summary.relatedEvents) {
-      // The events found for a third party can be vast, as they gather every
-      // single main thread task along with everything else on the page. If the
-      // main thread is busy with large icicles, we can easily create tens of
-      // thousands of overlays. Therefore, only create overlays for events of at least 1ms.
-      if (event.dur === undefined || event.dur < 1_000) {
-        continue;
-      }
-
-      const overlay: Overlays.Overlays.TimelineOverlay = {
-        type: 'ENTRY_OUTLINE',
-        entry: event,
-        outlineReason: 'INFO',
-      };
-      overlays.push(overlay);
-    }
-    return overlays;
-  }
-
   #mainThreadTimeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {
     mapToRow: summary => ({
       values: [summary.entity.name, i18n.TimeUtilities.millisToString(summary.mainThreadTime)],
-      overlays: this.#createOverlaysForSummary(summary),
+      overlays: createOverlaysForSummary(summary),
     }),
     createAggregatedTableRow:
         remaining => {
@@ -71,7 +31,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
               remaining.reduce((acc, summary) => acc + summary.mainThreadTime, 0) as Trace.Types.Timing.Milli;
           return {
             values: [renderOthersLabel(remaining.length), i18n.TimeUtilities.millisToString(totalMainThreadTime)],
-            overlays: remaining.flatMap(summary => this.#createOverlaysForSummary(summary) ?? []),
+            overlays: remaining.flatMap(summary => createOverlaysForSummary(summary) ?? []),
           };
         },
   };
@@ -79,14 +39,14 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
   #transferSizeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.EntitySummary> = {
     mapToRow: summary => ({
       values: [summary.entity.name, i18n.ByteUtilities.formatBytesToKb(summary.transferSize)],
-      overlays: this.#createOverlaysForSummary(summary),
+      overlays: createOverlaysForSummary(summary),
     }),
     createAggregatedTableRow:
         remaining => {
           const totalBytes = remaining.reduce((acc, summary) => acc + summary.transferSize, 0);
           return {
             values: [renderOthersLabel(remaining.length), i18n.ByteUtilities.formatBytesToKb(totalBytes)],
-            overlays: remaining.flatMap(summary => this.#createOverlaysForSummary(summary) ?? []),
+            overlays: remaining.flatMap(summary => createOverlaysForSummary(summary) ?? []),
           };
         },
   };

@@ -10,7 +10,6 @@ import {describeWithEnvironment, updateHostConfig} from '../../../../testing/Env
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type {TimelineOverlay} from '../../overlays/OverlaysImpl.js';
 import * as Utils from '../../utils/utils.js';
 
 import * as Insights from './insights.js';
@@ -26,7 +25,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       return false;
     }
 
-    override createOverlays(): TimelineOverlay[] {
+    override createOverlays(): Trace.Types.Overlays.Overlay[] {
       return [];
     }
     override renderContent(): Lit.LitTemplate {
@@ -38,7 +37,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     override hasAskAiSupport() {
       return true;
     }
-    override createOverlays(): TimelineOverlay[] {
+    override createOverlays(): Trace.Types.Overlays.Overlay[] {
       return [];
     }
     override renderContent(): Lit.LitTemplate {
@@ -112,7 +111,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     function makeTestComponent(opts: {wastedBytes?: number, timeSavings?: number}) {
       class TestInsight extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
         override internalName = 'test-insight';
-        override createOverlays(): TimelineOverlay[] {
+        override createOverlays(): Trace.Types.Overlays.Overlay[] {
           return [];
         }
 

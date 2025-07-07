@@ -642,3 +642,28 @@ export function generateInsight(
     topCulpritsByCluster,
   });
 }
+
+export function createOverlays(model: CLSCulpritsInsightModel): Types.Overlays.Overlay[] {
+  const clustersByScore = model.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];
+  const worstCluster = clustersByScore[0];
+  if (!worstCluster) {
+    return [];
+  }
+
+  const range = Types.Timing.Micro(worstCluster.dur ?? 0);
+  const max = Types.Timing.Micro(worstCluster.ts + range);
+
+  return [{
+    type: 'TIMESPAN_BREAKDOWN',
+    sections: [
+      {
+        bounds: {min: worstCluster.ts, range, max},
+        label: i18nString(UIStrings.worstLayoutShiftCluster),
+        showDuration: false,
+      },
+    ],
+    // This allows for the overlay to sit over the layout shift.
+    entry: worstCluster.events[0],
+    renderLocation: 'ABOVE_EVENT',
+  }];
+}

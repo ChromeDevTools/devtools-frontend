@@ -46,11 +46,11 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ModernHTTP.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type UseModernHTTPInsightModel = InsightModel<typeof UIStrings, {
+export type ModernHTTPInsightModel = InsightModel<typeof UIStrings, {
   http1Requests: Types.Events.SyntheticNetworkRequest[],
 }>;
 
-export function isModernHTTP(model: InsightModel): model is UseModernHTTPInsightModel {
+export function isModernHTTP(model: InsightModel): model is ModernHTTPInsightModel {
   return model.insightKey === InsightKeys.MODERN_HTTP;
 }
 
@@ -214,7 +214,7 @@ function computeMetricSavings(
   };
 }
 
-function finalize(partialModel: PartialInsightModel<UseModernHTTPInsightModel>): UseModernHTTPInsightModel {
+function finalize(partialModel: PartialInsightModel<ModernHTTPInsightModel>): ModernHTTPInsightModel {
   return {
     insightKey: InsightKeys.MODERN_HTTP,
     strings: UIStrings,
@@ -228,7 +228,7 @@ function finalize(partialModel: PartialInsightModel<UseModernHTTPInsightModel>):
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): UseModernHTTPInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ModernHTTPInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
@@ -242,4 +242,16 @@ export function generateInsight(
     http1Requests,
     metricSavings: computeMetricSavings(http1Requests, context),
   });
+}
+
+export function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline {
+  return {
+    type: 'ENTRY_OUTLINE',
+    entry: request,
+    outlineReason: 'ERROR',
+  };
+}
+
+export function createOverlays(model: ModernHTTPInsightModel): Types.Overlays.Overlay[] {
+  return model.http1Requests.map(req => createOverlayForRequest(req)) ?? [];
 }

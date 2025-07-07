@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
+import type * as Types from '../types/types.js';
 
 import {
   InsightCategory,
@@ -110,4 +111,49 @@ export function generateInsight(
     longestInteractionEvent: normalizedInteractionEvents[0],
     highPercentileInteractionEvent: normalizedInteractionEvents[highPercentileIndex],
   });
+}
+
+/**
+ * If `subpart` is -1, then all subparts are included. Otherwise it's just that index.
+ **/
+export function createOverlaysForSubpart(
+    event: Types.Events.SyntheticInteractionPair, subpartIndex = -1): Types.Overlays.Overlay[] {
+  const p1 = Helpers.Timing.traceWindowFromMicroSeconds(
+      event.ts,
+      (event.ts + event.inputDelay) as Types.Timing.Micro,
+  );
+  const p2 = Helpers.Timing.traceWindowFromMicroSeconds(
+      p1.max,
+      (p1.max + event.mainThreadHandling) as Types.Timing.Micro,
+  );
+  const p3 = Helpers.Timing.traceWindowFromMicroSeconds(
+      p2.max,
+      (p2.max + event.presentationDelay) as Types.Timing.Micro,
+  );
+  let sections = [
+    {bounds: p1, label: i18nString(UIStrings.inputDelay), showDuration: true},
+    {bounds: p2, label: i18nString(UIStrings.processingDuration), showDuration: true},
+    {bounds: p3, label: i18nString(UIStrings.presentationDelay), showDuration: true},
+  ];
+  if (subpartIndex !== -1) {
+    sections = [sections[subpartIndex]];
+  }
+
+  return [
+    {
+      type: 'TIMESPAN_BREAKDOWN',
+      sections,
+      renderLocation: 'BELOW_EVENT',
+      entry: event,
+    },
+  ];
+}
+
+export function createOverlays(model: INPBreakdownInsightModel): Types.Overlays.Overlay[] {
+  const event = model.longestInteractionEvent;
+  if (!event) {
+    return [];
+  }
+
+  return createOverlaysForSubpart(event);
 }

@@ -140,9 +140,13 @@ export interface Sample extends Event {
 /**
  * A fake trace event created to support CDP.Profiler.Profiles in the
  * trace engine.
+ *
+ * Do not extend the SyntheticBased interface because this one doesn't have a raw trace event but a raw cpu profile.
+ * Also we won't manage this event through SyntheticEventsManager.
  */
-export interface SyntheticCpuProfile extends Instant, SyntheticBased<Phase.INSTANT> {
+export interface SyntheticCpuProfile extends Complete {
   name: Name.CPU_PROFILE;
+  id: ProfileID;
   args: Args&{
     data: ArgsData & {
       cpuProfile: Protocol.Profiler.Profile,

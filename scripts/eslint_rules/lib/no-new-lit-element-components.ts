@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import path from 'node:path';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 const allowedPaths = [
@@ -32,7 +34,8 @@ export default createRule({
           return;
         }
         // Existing components are still allowed.
-        if (allowedPaths.some(path => filename.startsWith(path))) {
+        // This needs to use includes if we resolve the full path
+        if (allowedPaths.some(allowedPath => path.normalize(filename).includes(path.normalize(allowedPath)))) {
           return;
         }
         context.report({

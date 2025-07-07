@@ -4779,6 +4779,10 @@ export namespace DOM {
      * JavaScript object id of the node wrapper.
      */
     objectId?: Runtime.RemoteObjectId;
+    /**
+     * Include all shadow roots. Equals to false if not specified.
+     */
+    includeShadowDOM?: boolean;
   }
 
   export interface GetOuterHTMLResponse extends ProtocolResponseWithError {

@@ -34,3 +34,8 @@ TODO(b/428881540): how is the infra code structured and what is where.
 ## Updating test commands in the infrastructure
 
 TODO(b/428881540): where are the test commands that infra invokes in the repo defined.
+
+## Determining if a change needs to run tests
+
+TODO(b/428881540): how to update the configuration so that some
+directories/file types do not trigger all testing bots in CQ.

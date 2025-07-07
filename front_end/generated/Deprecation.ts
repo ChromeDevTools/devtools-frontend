@@ -131,6 +131,10 @@ export const UIStrings = {
    */
   OverflowVisibleOnReplacedElement: "Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md.",
   /**
+   * @description Warning displayed to developers when they use a Flash Embed URLS to let them know that the browser will not automatically link to their equivalent HTML5 link.
+   */
+  OverrideFlashEmbedwithHTML: "Legacy flash video embed has been rewritten to HTML iframe. Flash is long gone, this rewriting hack is deprecated and may be removed in the future.",
+  /**
    * @description Warning displayed to developers when they use the PaymentInstruments API to let them know this API is deprecated.
    */
   PaymentInstruments: "`paymentManager.instruments` is deprecated. Please use just-in-time install for payment handlers instead.",
@@ -308,6 +312,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   "OverflowVisibleOnReplacedElement": {
     "chromeStatusFeature": 5137515594383360,
     "milestone": 108
+  },
+  "OverrideFlashEmbedwithHTML": {
+    "milestone": 140
   },
   "PaymentInstruments": {
     "chromeStatusFeature": 5099285054488576

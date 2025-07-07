@@ -7483,7 +7483,7 @@ export const NativeFunctions = [
   },
   {
     name: "drawElement",
-    signatures: [["element","x","y","?dwidth","?dheight"]]
+    signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
   },
   {
     name: "setHitTestRegions",

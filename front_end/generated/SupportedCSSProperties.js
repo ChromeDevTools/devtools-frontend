@@ -726,6 +726,13 @@ export const generatedProperties = [
    "text-wrap-mode",
    "text-wrap-style",
    "timeline-scope",
+   "timeline-trigger-behavior",
+   "timeline-trigger-exit-range-end",
+   "timeline-trigger-exit-range-start",
+   "timeline-trigger-name",
+   "timeline-trigger-range-end",
+   "timeline-trigger-range-start",
+   "timeline-trigger-timeline",
    "top",
    "touch-action",
    "transform",
@@ -4164,8 +4171,8 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
-   "normal",
-   "no-autospace"
+   "no-autospace",
+   "normal"
   ],
   "name": "text-autospace"
  },
@@ -4399,6 +4406,37 @@ export const generatedProperties = [
  },
  {
   "name": "timeline-scope"
+ },
+ {
+  "keywords": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
+  ],
+  "name": "timeline-trigger-behavior"
+ },
+ {
+  "name": "timeline-trigger-exit-range-end"
+ },
+ {
+  "name": "timeline-trigger-exit-range-start"
+ },
+ {
+  "name": "timeline-trigger-name"
+ },
+ {
+  "name": "timeline-trigger-range-end"
+ },
+ {
+  "name": "timeline-trigger-range-start"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "timeline-trigger-timeline"
  },
  {
   "keywords": [
@@ -6618,8 +6656,8 @@ export const generatedPropertyValues = {
  },
  "text-autospace": {
   "values": [
-   "normal",
-   "no-autospace"
+   "no-autospace",
+   "normal"
   ]
  },
  "text-box-trim": {
@@ -6753,6 +6791,20 @@ export const generatedPropertyValues = {
    "balance",
    "pretty",
    "stable"
+  ]
+ },
+ "timeline-trigger-behavior": {
+  "values": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
+  ]
+ },
+ "timeline-trigger-timeline": {
+  "values": [
+   "none",
+   "auto"
   ]
  },
  "top": {

@@ -771,7 +771,9 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       timestampEvents: [],
       measureTraceByTraceId: new Map(),
     },
-    LargestImagePaint: {lcpRequestByNavigationId: new Map()},
+    LargestImagePaint: {
+      lcpRequestByNavigationId: new Map(),
+    },
     LargestTextPaint: new Map(),
     AuctionWorklets: {
       worklets: new Map(),

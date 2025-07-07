@@ -10,8 +10,27 @@ import {PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance
 
 const {ActiveInsight} = TimelineUtils.InsightAIContext;
 
+/**
+ * Asserts two strings are equal, and logs the first differing line if not equal.
+ */
+function assertStringEquals(actual: string, expected: string): void {
+  if (actual !== expected) {
+    const actualLines = actual.split('\n');
+    const expectedLines = expected.split('\n');
+    for (let i = 0; i < Math.max(actualLines.length, expectedLines.length); i++) {
+      const actualLine = actualLines.at(i);
+      const expectedLine = expectedLines.at(i);
+      if (actualLine !== expectedLine) {
+        console.error(`First differing line:\nexpected: ${expectedLine}\nactual:   ${actualLine}`);
+        // Still compare the entire strings, so you can copy+paste the new result.
+        assert.strictEqual(actual, expected);
+      }
+    }
+  }
+}
+
 describeWithEnvironment('PerformanceInsightFormatter', () => {
-  describe('LCP by Phase', () => {
+  describe('LCP breakdown', () => {
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       assert.isOk(insights);
@@ -32,7 +51,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
-The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
+The LCP element is an image fetched from \`${insight.lcpRequest.args.data.url}\`.
 ${lcpRequestFormatted}
 
 We can break this time down into the 4 phases that combine to make the LCP time:
@@ -45,10 +64,10 @@ We can break this time down into the 4 phases that combine to make the LCP time:
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
 
-    it('formats correctly when the LCP is texted based and has no load delay or time phases', async function() {
+    it('formats correctly when the LCP is text based and has no load delay or time phases', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
@@ -63,7 +82,7 @@ This insight is used to analyze the time spent that contributed to the final LCP
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
-The LCP is text based and was not fetched from the network.
+The LCP element is text and was not fetched from the network.
 
 We can break this time down into the 2 phases that combine to make the LCP time:
 
@@ -73,7 +92,7 @@ We can break this time down into the 2 phases that combine to make the LCP time:
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -97,7 +116,7 @@ There are no network requests that are render blocking.
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
 
     it('serializes the correct details', async function() {
@@ -137,7 +156,7 @@ Here is a list of the network requests that were render blocking on this page an
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -158,7 +177,7 @@ Here is a list of the network requests that were render blocking on this page an
       const expected = `## Insight Title: LCP request discovery
 
 ## Insight Summary:
-This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
+This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if the LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
 1. Did the resource have \`fetchpriority=high\` applied?
 2. Was the resource discoverable in the initial document, rather than injected from a script or stylesheet?
 3. The resource was not lazy loaded as this can delay the browser loading the resource.
@@ -167,7 +186,7 @@ It is important that all of these checks pass to minimize the delay between the 
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
-The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
+The LCP element is an image fetched from \`${insight.lcpRequest.args.data.url}\`.
 ${lcpRequestFormatted}
 
 The result of the checks for this insight are:
@@ -178,7 +197,7 @@ The result of the checks for this insight are:
 ## External resources:
 - https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -205,7 +224,7 @@ This insight checks that the first request is responded to promptly. We use the 
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
-The LCP is text based and was not fetched from the network.
+The LCP element is text and was not fetched from the network.
 
 ${TraceEventFormatter.networkRequest(request, parsedTrace, {
         verbose: true,
@@ -220,7 +239,7 @@ The result of the checks for this insight are:
 ## External resources:
 - https://web.dev/articles/optimize-ttfb`;
 
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -274,7 +293,7 @@ Layout shifts in this cluster:
 - https://wdeb.dev/articles/cls
 - https://web.dev/articles/optimize-cls`;
 
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -315,7 +334,7 @@ The longest interaction on the page was a \`click\` which had a total duration o
 - https://web.dev/articles/optimize-long-tasks
 - https://web.dev/articles/avoid-large-complex-layouts-and-layout-thrashing`;
 
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
   });
 
@@ -444,7 +463,7 @@ Response headers
 - x-xss-protection: 0
 - expires: Thu, 07 Mar 2024 21:17:02 GMT`;
 
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
     it('formats network requests in non-verbose mode', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
@@ -458,7 +477,7 @@ Response headers
 - MIME type: text/css
 - This request was render blocking`;
 
-      assert.strictEqual(output, expected);
+      assertStringEquals(output, expected);
     });
 
     it('getNetworkRequestsNewFormat correctly formats network requests', async function() {

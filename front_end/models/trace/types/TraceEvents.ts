@@ -765,6 +765,8 @@ export interface LargestTextPaintCandidate extends Mark {
       candidateIndex: number,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       DOMNodeId: Protocol.DOM.BackendNodeId,
+      // Added in crbug.com/413284569
+      nodeName?: string,
     },
   };
 }

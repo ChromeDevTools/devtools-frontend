@@ -77,18 +77,21 @@ export class PerformanceInsightFormatter {
     if (!data) {
       return '';
     }
-    const {metricScore, lcpRequest} = data;
 
+    const {metricScore, lcpRequest, lcpEvent} = data;
+    const theLcpElement =
+        lcpEvent.args.data?.nodeName ? `The LCP element (${lcpEvent.args.data.nodeName})` : 'The LCP element';
     const parts: string[] = [
       `The Largest Contentful Paint (LCP) time for this navigation was ${formatMicroToMilli(metricScore.timing)}.`,
     ];
+
     if (lcpRequest) {
-      parts.push(`The LCP resource was fetched from \`${lcpRequest.args.data.url}\`.`);
+      parts.push(`${theLcpElement} is an image fetched from \`${lcpRequest.args.data.url}\`.`);
       const request = TraceEventFormatter.networkRequest(
           lcpRequest, this.#parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
       parts.push(request);
     } else {
-      parts.push('The LCP is text based and was not fetched from the network.');
+      parts.push(`${theLcpElement} is text and was not fetched from the network.`);
     }
 
     return parts.join('\n');
@@ -354,7 +357,7 @@ For a given slow interaction, we can break it down into 3 phases:
 
 The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.`;
       case 'LCPDiscovery':
-        return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
+        return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if the LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
 1. Did the resource have \`fetchpriority=high\` applied?
 2. Was the resource discoverable in the initial document, rather than injected from a script or stylesheet?
 3. The resource was not lazy loaded as this can delay the browser loading the resource.

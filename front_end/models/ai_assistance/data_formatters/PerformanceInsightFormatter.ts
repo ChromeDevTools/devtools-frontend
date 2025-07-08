@@ -14,7 +14,7 @@ function formatMilli(x: number|undefined): string {
   if (x === undefined) {
     return '';
   }
-  return i18n.TimeUtilities.preciseMillisToString(x, 2);
+  return i18n.TimeUtilities.preciseMillisToString(x, 2, /* separator */ ' ');
 }
 
 function formatMicroToMilli(x: number|undefined): string {

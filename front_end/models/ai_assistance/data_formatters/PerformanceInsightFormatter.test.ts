@@ -50,16 +50,16 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
 The LCP element is an image fetched from \`${insight.lcpRequest.args.data.url}\`.
 ${lcpRequestFormatted}
 
 We can break this time down into the 4 phases that combine to make the LCP time:
 
-- Time to first byte: 7.94 ms (6.1% of total LCP time)
-- Resource load delay: 33.16 ms (25.7% of total LCP time)
-- Resource load duration: 14.70 ms (11.4% of total LCP time)
-- Element render delay: 73.41 ms (56.8% of total LCP time)
+- Time to first byte: 7.94 ms (6.1% of total LCP time)
+- Resource load delay: 33.16 ms (25.7% of total LCP time)
+- Resource load duration: 14.70 ms (11.4% of total LCP time)
+- Element render delay: 73.41 ms (56.8% of total LCP time)
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -81,13 +81,13 @@ We can break this time down into the 4 phases that combine to make the LCP time:
 This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
 The LCP element is text and was not fetched from the network.
 
 We can break this time down into the 2 phases that combine to make the LCP time:
 
-- Time to first byte: 6.12 ms (5.7% of total LCP time)
-- Element render delay: 100.37 ms (94.3% of total LCP time)
+- Time to first byte: 6.12 ms (5.7% of total LCP time)
+- Element render delay: 100.37 ms (94.3% of total LCP time)
 
 ## External resources:
 - https://web.dev/articles/lcp
@@ -136,20 +136,20 @@ This insight identifies network requests that were render blocking. Render block
 Here is a list of the network requests that were render blocking on this page and their duration:
 
 ## Network request: https://code.jquery.com/jquery-3.7.1.js
-- Start time: 581.40 ms
-- Duration: 1,362.65 ms
+- Start time: 581.40 ms
+- Duration: 1,362.65 ms
 - MIME type: application/javascript
 - This request was render blocking
 
 ## Network request: http://localhost:8000/render-blocking-stylesheet.css
-- Start time: 581.60 ms
-- Duration: 611.56 ms
+- Start time: 581.60 ms
+- Duration: 611.56 ms
 - MIME type: text/css
 - This request was render blocking
 
 ## Network request: http://localhost:8000/render-blocking-script.js
-- Start time: 581.56 ms
-- Duration: 596.30 ms
+- Start time: 581.56 ms
+- Duration: 596.30 ms
 - MIME type: text/javascript
 - This request was render blocking
 
@@ -185,7 +185,7 @@ This insight analyzes the time taken to discover the LCP resource and request it
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
 The LCP element is an image fetched from \`${insight.lcpRequest.args.data.url}\`.
 ${lcpRequestFormatted}
 
@@ -223,7 +223,7 @@ This insight checks that the first request is responded to promptly. We use the 
 3. Was there compression applied to the response to minimize the transfer size?
 
 ## Detailed analysis:
-The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
 The LCP element is text and was not fetched from the network.
 
 ${TraceEventFormatter.networkRequest(request, parsedTrace, {
@@ -260,32 +260,32 @@ Cumulative Layout Shifts (CLS) is a measure of the largest burst of layout shift
 - Bad: over 0.25
 
 ## Detailed analysis:
-The worst layout shift cluster was the cluster that started at 471.76 ms and ended at 3,342.83 ms, with a duration of 2,871.07 ms.
+The worst layout shift cluster was the cluster that started at 471.76 ms and ended at 3,342.83 ms, with a duration of 2,871.07 ms.
 The score for this cluster is 0.7656.
 
 Layout shifts in this cluster:
 ### Layout shift 1:
-- Start time: 471.76 ms
+- Start time: 471.76 ms
 - Score: 0.0003
 - Potential root causes:
   - A font that was loaded over the network (https://fonts.gstatic.com/s/specialgothicexpandedone/v2/IurO6Zxk74-YaYk1r3HOet4g75ENmBxUmOK61tA0Iu5QmJF_.woff2).
 ### Layout shift 2:
-- Start time: 857.25 ms
+- Start time: 857.25 ms
 - Score: 0.0844
 - Potential root causes:
   - An iframe (id: 8AF3A9ADB81CA7B35302D07E0B591104, url: https://www.google.com/ was injected into the page)
 ### Layout shift 3:
-- Start time: 1,352.45 ms
+- Start time: 1,352.45 ms
 - Score: 0.0068
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 4:
-- Start time: 1,537.46 ms
+- Start time: 1,537.46 ms
 - Score: 0.3344
 - Potential root causes:
   - An unsized image (IMG) (url: http://localhost:8000/unsized-image.png).
 ### Layout shift 5:
-- Start time: 2,342.83 ms
+- Start time: 2,342.83 ms
 - Score: 0.3396
 - No potential root causes identified
 
@@ -322,11 +322,11 @@ For a given slow interaction, we can break it down into 3 phases:
 The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
 
 ## Detailed analysis:
-The longest interaction on the page was a \`click\` which had a total duration of \`979.97 ms\`. The timings of each of the three phases were:
+The longest interaction on the page was a \`click\` which had a total duration of \`979.97 ms\`. The timings of each of the three phases were:
 
-1. Input delay: 1.00 ms
-2. Processing duration: 977.00 ms
-3. Presentation delay: 1.97 ms.
+1. Input delay: 1.00 ms
+2. Processing duration: 977.00 ms
+3. Presentation delay: 1.97 ms.
 
 ## External resources:
 - https://web.dev/articles/inp
@@ -411,14 +411,14 @@ ${requestDetails}
       const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       assert.include(output, `Redirects:
 #### Redirect 1: http://localhost:3000/
-- Start time: 3.04 ms
-- Duration: 512.02 ms
+- Start time: 3.04 ms
+- Duration: 512.02 ms
 #### Redirect 2: http://localhost:3000/redirect1
-- Start time: 515.06 ms
-- Duration: 505.67 ms
+- Start time: 515.06 ms
+- Duration: 505.67 ms
 #### Redirect 3: http://localhost:3000/redirect2
-- Start time: 1,020.73 ms
-- Duration: 507.09 ms
+- Start time: 1,020.73 ms
+- Duration: 507.09 ms
 `);
     });
 
@@ -430,14 +430,14 @@ ${requestDetails}
       const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       const expected = `## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
-- Queued at: 37.62 ms
-- Request sent at: 41.71 ms
-- Download complete at: 48.04 ms
-- Main thread processing completed at: 51.55 ms
+- Queued at: 37.62 ms
+- Request sent at: 41.71 ms
+- Download complete at: 48.04 ms
+- Main thread processing completed at: 51.55 ms
 Durations:
-- Download time: 4.79 ms
-- Main thread processing time: 3.51 ms
-- Total duration: 13.93 ms
+- Download time: 4.79 ms
+- Main thread processing time: 3.51 ms
+- Total duration: 13.93 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Redirects: no redirects
 Status code: 200
@@ -472,8 +472,8 @@ Response headers
       assert.isOk(request);
       const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: false});
       const expected = `## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
-- Start time: 37.62 ms
-- Duration: 13.93 ms
+- Start time: 37.62 ms
+- Duration: 13.93 ms
 - MIME type: text/css
 - This request was render blocking`;
 
@@ -487,7 +487,7 @@ Response headers
       const expected =
           `allUrls = [0: http://localhost:3000/redirect3, 1: http://localhost:3000/, 2: http://localhost:3000/redirect1, 3: http://localhost:3000/redirect2]
 
-0;3.04\xA0ms;1,529.47\xA0ms;3,532.63\xA0ms;3,537.75\xA0ms;3,534.71\xA0ms;0.13\xA0ms;5.12\xA0ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;false;;[[1|3.04\xA0ms|512.02\xA0ms],[2|515.06\xA0ms|505.67\xA0ms],[3|1,020.73\xA0ms|507.09\xA0ms]];[chunked,timeout=5,Tue, 11 Mar 2025 10:19:12 GMT,text/html,keep-alive]`;
+0;3.04 ms;1,529.47 ms;3,532.63 ms;3,537.75 ms;3,534.71 ms;0.13 ms;5.12 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;false;;[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]];[chunked,timeout=5,Tue, 11 Mar 2025 10:19:12 GMT,text/html,keep-alive]`;
 
       assert.strictEqual(output, expected);
     });

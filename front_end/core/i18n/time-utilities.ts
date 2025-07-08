@@ -134,7 +134,7 @@ export function millisToString(ms: number, higherResolution?: boolean): string {
 
 const preciseMillisToStringFormattersCache = new Map<number, NumberFormatter>();
 
-export function preciseMillisToString(ms: number, precision = 0): string {
+export function preciseMillisToString(ms: number, precision = 0, separator?: string): string {
   let formatter = preciseMillisToStringFormattersCache.get(precision);
   if (!formatter) {
     formatter = defineFormatter({
@@ -146,7 +146,7 @@ export function preciseMillisToString(ms: number, precision = 0): string {
     });
     preciseMillisToStringFormattersCache.set(precision, formatter);
   }
-  return formatter.format(ms);
+  return formatter.format(ms, separator);
 }
 
 const preciseSecondsToStringFormattersCache = new Map<number, NumberFormatter>();

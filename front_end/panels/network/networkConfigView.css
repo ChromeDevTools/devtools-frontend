@@ -54,13 +54,20 @@
 }
 /* Network throttling */
 
-.network-config-throttling select {
-  width: 100%;
-  max-width: 250px;
-}
+.network-config-throttling {
+  select {
+    width: 100%;
+    max-width: 250px;
+  }
 
-.network-config-throttling > .network-config-title {
-  line-height: 24px;
+  .network-config-fields {
+    display: flex;
+    column-gap: var(--sys-size-5);
+  }
+
+  & > .network-config-title {
+    line-height: 24px;
+  }
 }
 /* User agent */
 

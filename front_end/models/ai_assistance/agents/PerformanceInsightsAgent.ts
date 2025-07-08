@@ -301,6 +301,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         const activeInsight = this.#insight.getItem();
         const requests = TimelineUtils.InsightAIContext.AIQueries.networkRequests(
             activeInsight.insight,
+            activeInsight.insightSetBounds,
             activeInsight.parsedTrace,
         );
         const formatted =
@@ -409,6 +410,7 @@ The fields are:
         const activeInsight = this.#insight.getItem();
         const tree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(
             activeInsight.insight,
+            activeInsight.insightSetBounds,
             activeInsight.parsedTrace,
         );
         if (!tree) {

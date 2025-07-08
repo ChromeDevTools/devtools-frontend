@@ -2917,6 +2917,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
         const data = insightsForNav.model[model];
         const activeInsight = new Utils.InsightAIContext.ActiveInsight(
             data,
+            insightsForNav.bounds,
             parsedTrace,
         );
         const formatter = new AiAssistanceModel.PerformanceInsightFormatter(activeInsight);

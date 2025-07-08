@@ -66,6 +66,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Ba
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface BaseInsightData {
+  /** The trace bounds for the insight set that contains this insight. */
   bounds: Trace.Types.Timing.TraceWindowMicro|null;
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
@@ -343,7 +344,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   }
 
   #askAIButtonClick(): void {
-    if (!this.#model || !this.#parsedTrace) {
+    if (!this.#model || !this.#parsedTrace || !this.data.bounds) {
       return;
     }
 
@@ -353,7 +354,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const context = new Utils.InsightAIContext.ActiveInsight(this.#model, this.#parsedTrace);
+    const context = new Utils.InsightAIContext.ActiveInsight(this.#model, this.data.bounds, this.#parsedTrace);
     UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, context);
 
     // Trigger the AI Assistance panel to open.

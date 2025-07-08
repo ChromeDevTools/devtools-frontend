@@ -51,6 +51,6 @@ export async function getInsightToDebug(model: Trace.TraceModel.Model, insightTi
   }
 
   const insight = insights.model[matchingInsightKey];
-  const activeInsight = new Utils.InsightAIContext.ActiveInsight(insight, parsedTrace);
+  const activeInsight = new Utils.InsightAIContext.ActiveInsight(insight, insights.bounds, parsedTrace);
   return {insight: activeInsight};
 }

@@ -222,6 +222,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       state: 'fail',
       frameId: '123',
     } as const;
+    const FAKE_INSIGHT_SET_BOUNDS =
+        Trace.Helpers.Timing.traceWindowFromMicroSeconds(0 as Trace.Types.Timing.Micro, 0 as Trace.Types.Timing.Micro);
     async function renderComponent({insightHasAISupport}: {insightHasAISupport: boolean}):
         Promise<TestInsightComponentNoAISupport|TestInsightComponentWithAISupport> {
       const component =
@@ -230,6 +232,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       component.model = FAKE_LCP_MODEL;
       // We don't need a real trace for these tests.
       component.parsedTrace = FAKE_PARSED_TRACE;
+      component.bounds = FAKE_INSIGHT_SET_BOUNDS;
       renderElementIntoDOM(component);
 
       await RenderCoordinator.done();

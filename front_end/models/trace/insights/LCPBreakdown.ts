@@ -114,12 +114,15 @@ function determineSubparts(
     lcpEvent: Types.Events.LargestContentfulPaintCandidate,
     lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPSubparts|null {
   const docReqTiming = docRequest.args.data.timing;
-  if (!docReqTiming) {
-    throw new Error('no timing for document request');
+
+  let firstDocByteTs;
+  if (docReqTiming) {
+    firstDocByteTs = Types.Timing.Micro(
+        Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
+        Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
+  } else {
+    firstDocByteTs = docRequest.ts;  // file:
   }
-  const firstDocByteTs = Types.Timing.Micro(
-      Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
-      Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
 
   const ttfb = Helpers.Timing.traceWindowFromMicroSeconds(nav.ts, firstDocByteTs) as Subpart;
   ttfb.label = i18nString(UIStrings.timeToFirstByte);

@@ -328,8 +328,15 @@ export async function finalize(): Promise<void> {
       }
     }
 
-    // If a non-cached response has no |timing|, we ignore it. An example of this is chrome://new-page / about:blank.
-    if (request.receiveResponse && !timing && !isMemoryCached) {
+    // TODO: consider allowing chrome / about.
+    const allowedProtocols = [
+      'blob:',
+      'file:',
+      'filesystem:',
+      'http:',
+      'https:',
+    ];
+    if (!allowedProtocols.some(p => firstSendRequest.args.data.url.startsWith(p))) {
       continue;
     }
 

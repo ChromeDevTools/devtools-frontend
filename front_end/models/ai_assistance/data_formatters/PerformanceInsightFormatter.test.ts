@@ -96,6 +96,27 @@ We can break this time down into the 2 phases that combine to make the LCP time:
     });
   });
 
+  it('formats correctly when the LCP image has nodeName', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dpr.json.gz');
+    assert.isOk(insights);
+    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
+
+    const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+    const output = formatter.formatInsight().split('Timings:')[0];
+    const expected = `## Insight Title: LCP breakdown
+
+## Insight Summary:
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
+
+## Detailed analysis:
+The Largest Contentful Paint (LCP) time for this navigation was 239.85 ms.
+The LCP element (IMG) is an image fetched from \`https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp\`.
+## LCP resource network request: https://creativetouchrotherham.co.uk/images/creative-touch-home/creative_touch_rotherham_homehero/creative_touch_rotherham_homehero_700.webp
+`;
+    assertStringEquals(output, expected);
+  });
+
   describe('Render blocking requests', () => {
     it('tells the LLM if there are no render blocking requests', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');

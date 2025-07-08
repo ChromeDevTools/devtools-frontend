@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("console") {
   sources = [
-    "alert-toString-exception_test.ts",
     "console-context-menu_test.ts",
     "console-context-selector_test.ts",
     "console-insight_test.ts",

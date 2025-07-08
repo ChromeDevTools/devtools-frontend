@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable rulesdir/no-imperative-dom-api */
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
@@ -9,14 +10,24 @@ import {type LoggingConfig, VisualElements} from './LoggingConfig.js';
 import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 let veDebuggingEnabled = false;
+let debugOverlay: HTMLElement|null = null;
 let debugPopover: HTMLElement|null = null;
 let highlightedElement: HTMLElement|null = null;
 const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
 let onInspect: ((query: string) => void)|undefined = undefined;
 
-export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string) => void): void {
-  veDebuggingEnabled = enabled;
-  if (enabled && !debugPopover) {
+function ensureDebugOverlay(): void {
+  if (!debugOverlay) {
+    debugOverlay = document.createElement('div');
+    debugOverlay.style.position = 'fixed';
+    debugOverlay.style.top = '0';
+    debugOverlay.style.left = '0';
+    debugOverlay.style.width = '100vw';
+    debugOverlay.style.height = '100vh';
+    debugOverlay.style.zIndex = '100000';
+    debugOverlay.style.pointerEvents = 'none';
+    document.body.appendChild(debugOverlay);
+
     debugPopover = document.createElement('div');
     debugPopover.classList.add('ve-debug');
     debugPopover.style.position = 'absolute';
@@ -24,13 +35,18 @@ export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string
     debugPopover.style.borderRadius = '2px';
     debugPopover.style.padding = '8px';
     debugPopover.style.boxShadow = 'var(--drop-shadow)';
-    debugPopover.style.zIndex = '100000';
-    document.body.appendChild(debugPopover);
+    debugOverlay.appendChild(debugPopover);
+  }
+}
+
+export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string) => void): void {
+  veDebuggingEnabled = enabled;
+  if (enabled) {
+    ensureDebugOverlay();
   }
   onInspect = inspect;
-  if (!enabled && highlightedElement) {
-    highlightedElement.style.backgroundColor = '';
-    highlightedElement.style.outline = '';
+  if (!enabled) {
+    highlightElement(null);
   }
 }
 
@@ -82,6 +98,32 @@ function showDebugPopover(content: string, rect?: DOMRect): void {
   }
 }
 
+function highlightElement(element: HTMLElement|null): void {
+  if (highlightedElement && debugOverlay) {
+    [...debugOverlay.children].forEach(e => {
+      if (e !== debugPopover) {
+        e.remove();
+      }
+    });
+    highlightedElement = null;
+  }
+  if (element) {
+    assertNotNullOrUndefined(debugOverlay);
+    const rect = element.getBoundingClientRect();
+    const highlight = document.createElement('div');
+    highlight.style.position = 'absolute';
+    highlight.style.top = `${rect.top}px`;
+    highlight.style.left = `${rect.left}px`;
+    highlight.style.width = `${rect.width}px`;
+    highlight.style.height = `${rect.height}px`;
+    highlight.style.background = 'rgb(71 140 222 / 50%)';
+    highlight.style.border = 'dashed 1px #7327C6';
+    highlight.style.pointerEvents = 'none';
+    debugOverlay.appendChild(highlight);
+    highlightedElement = element;
+  }
+}
+
 function processElementForDebugging(element: HTMLElement, loggingState: LoggingState): void {
   if (element.tagName === 'OPTION') {
     if (loggingState.parent?.selectOpen && debugPopover) {
@@ -90,8 +132,14 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
     }
   } else {
     element.addEventListener('mousedown', event => {
-      if (event.currentTarget === highlightedElement && onInspect && debugPopover && veDebuggingEnabled) {
-        onInspect(debugPopover.textContent || '');
+      if (event.currentTarget === highlightedElement && veDebuggingEnabled) {
+        event.stopImmediatePropagation();
+        event.preventDefault();
+      }
+    }, {capture: true});
+    element.addEventListener('click', event => {
+      if (event.currentTarget === highlightedElement && debugPopover && veDebuggingEnabled) {
+        onInspect?.(debugPopover.textContent || '');
         event.stopImmediatePropagation();
         event.preventDefault();
       }
@@ -100,13 +148,7 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
       if (!veDebuggingEnabled) {
         return;
       }
-      if (highlightedElement) {
-        highlightedElement.style.backgroundColor = '';
-        highlightedElement.style.outline = '';
-      }
-      element.style.backgroundColor = '#A7C3E4';
-      element.style.outline = 'dashed 1px #7327C6';
-      highlightedElement = element;
+      highlightElement(element);
       assertNotNullOrUndefined(debugPopover);
       const pathToRoot = [loggingState];
       let ancestor = loggingState.parent;

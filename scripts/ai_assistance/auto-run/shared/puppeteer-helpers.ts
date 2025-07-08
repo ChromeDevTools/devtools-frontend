@@ -41,6 +41,7 @@ export async function waitForElementToHaveHeight(
  * @param {string} inputSelector The CSS selector for the prompt input field.
  * @param {string} exampleId The ID of the current example, used for tagging results.
  * @param {boolean} isMultimodal Whether the current test target is multimodal (e.g., requires a screenshot).
+ * @param {boolean} randomize Whether to add a random suffix.
  * @param {(text: string) => void} commonLog A logging function.
  * @returns {Promise<IndividualPromptRequestResponse[]>} A promise that resolves to an array of prompt responses.
  */
@@ -50,6 +51,7 @@ export async function executePromptCycle(
     inputSelector: string,
     exampleId: string,
     isMultimodal: boolean,
+    randomize: boolean,
     commonLog: (text: string) => void,
     ): Promise<IndividualPromptRequestResponse[]> {
   commonLog(
@@ -62,7 +64,8 @@ export async function executePromptCycle(
 
   await devtoolsPage.locator(inputSelector).click();
   // Add randomness to bust cache
-  await devtoolsPage.locator(inputSelector).fill(`${query} ${`${(Math.random() * 1000)}`.split('.')[0]}`);
+  const suffix = randomize ? `${(Math.random() * 1000)}`.split('.')[0] : '';
+  await devtoolsPage.locator(inputSelector).fill(`${query}${suffix}`);
 
   const abort = new AbortController();
   const autoAcceptEvals = async (signal: AbortSignal) => {

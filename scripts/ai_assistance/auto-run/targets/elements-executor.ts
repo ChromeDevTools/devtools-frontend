@@ -37,6 +37,7 @@ export class ElementsExecutor implements TargetExecutor {
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
       exampleId: string,
+      randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
     const allResults: IndividualPromptRequestResponse[] = [];
@@ -50,6 +51,7 @@ export class ElementsExecutor implements TargetExecutor {
           inputSelector,
           exampleId,
           /* isMultimodal */ false,
+          randomize,
           commonLog,
       );
       allResults.push(...results);

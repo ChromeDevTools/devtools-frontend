@@ -46,6 +46,10 @@ const globalUserArgs =
           boolean: true,
           default: false,
         })
+        .option('randomize', {
+          boolean: true,
+          default: false,
+        })
         .option('test-target', {
           describe: 'Which panel do you want to run the examples against?',
           choices: ['elements', 'performance-main-thread', 'performance-insights', 'elements-multimodal', 'patching'] as
@@ -213,6 +217,7 @@ export class Example {
           this.#devtoolsPage,
           this.#preparationResult,
           this.id(),
+          globalUserArgs.randomize,
           (text: string) => this.log(text),
       );
 

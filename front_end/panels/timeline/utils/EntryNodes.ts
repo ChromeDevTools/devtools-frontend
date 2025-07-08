@@ -88,7 +88,7 @@ export async function relatedDOMNodesForEvent(
 /**
  * Takes a set of Protocol.DOM.BackendNodeId ids and will return a map of NodeId=>DOMNode.
  */
-async function domNodesForBackendIds(frameId: Protocol.Page.FrameId, nodeIds: Set<Protocol.DOM.BackendNodeId>):
+export async function domNodesForBackendIds(frameId: Protocol.Page.FrameId, nodeIds: Set<Protocol.DOM.BackendNodeId>):
     Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const domModel = target?.model(SDK.DOMModel.DOMModel);

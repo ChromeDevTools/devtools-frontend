@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getDataGridRows} from '../../e2e/helpers/datagrid-helpers.js';
+import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {
   enableCSSSelectorStats,
   increaseTimeoutForPerfPanel,
@@ -75,5 +75,30 @@ describe('The Performance panel', function() {
     const rows = await getDataGridRows(
         1 /* expectedNumberOfRows*/, undefined /* root*/, false /* matchExactNumberOfRows*/, devToolsPage);
     assert.isAtLeast(rows.length, 1, 'Selector stats table should contain at least one row');
+  });
+
+  it('CSS style invalidation results verification', async ({devToolsPage, inspectedPage}) => {
+    await navigateToPerformanceTab('selectorStats/css-style-invalidation', devToolsPage, inspectedPage);
+    await enableCSSSelectorStats(devToolsPage);
+    await startRecording(devToolsPage);
+
+    // click the 'add/remove article' button and 'toggle emphasis' button to trigger CSS style invalidation
+    inspectedPage.bringToFront();
+    const addRemoveArticleButton = await inspectedPage.waitForSelector('#addRemoveArticle');
+    await addRemoveArticleButton?.click();
+
+    const toggleEmphasisButton = await inspectedPage.waitForSelector('#toggleEmphasis');
+    await toggleEmphasisButton?.click();
+
+    devToolsPage.bringToFront();
+    await stopRecording(devToolsPage);
+
+    await navigateToSelectorStatsTab(devToolsPage);
+    const dataGrid = await getDataGrid(undefined /* root*/, devToolsPage);
+    const dataGridText = await getInnerTextOfDataGridCells(
+        dataGrid, 1 /* expectedNumberOfRows */, false /* matchExactNumberOfRows */, devToolsPage);
+
+    // the total number of CSS style invalidations
+    assert.strictEqual(dataGridText[0][1], '75');
   });
 });

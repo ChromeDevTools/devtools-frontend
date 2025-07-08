@@ -331,6 +331,7 @@ export async function navigateToSelectorStatsTab(
               veImpression('TableHeader', 'reject-percentage'),
               veImpression('TableHeader', 'selector'),
               veImpression('TableHeader', 'style-sheet-id'),
+              veImpression('TableHeader', 'invalidation-count'),
               veImpression('TableRow', undefined, [veImpression('TableCell', 'elapsed-us')]),
             ]),
       ],

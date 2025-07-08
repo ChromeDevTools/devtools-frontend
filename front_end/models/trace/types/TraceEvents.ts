@@ -1205,6 +1205,7 @@ export function isScheduleStyleInvalidationTracking(event: Event): event is Sche
 
 export const enum StyleRecalcInvalidationReason {
   ANIMATION = 'Animation',
+  RELATED_STYLE_RULE = 'Related style rule',
 }
 
 export interface StyleRecalcInvalidationTracking extends Instant {
@@ -1235,6 +1236,8 @@ export interface StyleInvalidatorInvalidationTracking extends Instant {
       subtree: boolean,
       nodeName?: string,
       extraData?: string,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      selectors?: Array<{selector: string, style_sheet_id: string}>,
     },
   };
 }
@@ -1289,6 +1292,9 @@ export interface ScheduleStyleRecalculation extends Instant {
   args: Args&{
     data: {
       frame: string,
+      reason?: StyleRecalcInvalidationReason,
+      subtree?: boolean,
+      nodeId?: Protocol.DOM.BackendNodeId,
     },
   };
 }
@@ -1871,17 +1877,19 @@ export function isDecodeImage(event: Event): event is DecodeImage {
   return event.name === Name.DECODE_IMAGE;
 }
 
+export const enum InvalidationEventType {
+  StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
+  StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
+}
+
 export interface SelectorTiming {
   'elapsed (us)': number;
-
   fast_reject_count: number;
-
   match_attempts: number;
   selector: string;
-
   style_sheet_id: string;
-
   match_count: number;
+  invalidation_count: number;
 }
 
 export enum SelectorTimingsKey {
@@ -1892,6 +1900,7 @@ export enum SelectorTimingsKey {
   MatchCount = 'match_count',
   Selector = 'selector',
   StyleSheetId = 'style_sheet_id',
+  InvalidationCount = 'invalidation_count',
 }
 
 export interface SelectorStats {

@@ -96,7 +96,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     const time = (us: Trace.Types.Timing.Micro): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
-    if (!this.model.topMatchAttempts.length && !this.model.topElapsedMs.length) {
+    if (!this.model.topSelectorMatchAttempts && !this.model.topSelectorElapsedMs) {
       return html`<div class="insight-section">${i18nString(UIStrings.enableSelectorData)}</div>`;
     }
 
@@ -108,9 +108,9 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
             insight: this,
             headers: [i18nString(UIStrings.total), ''],
             rows: [
-              {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)]},
               {values: [i18nString(UIStrings.matchAttempts), this.model.totalMatchAttempts]},
               {values: [i18nString(UIStrings.matchCount), this.model.totalMatchCount]},
+              {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)]},
             ],
           } as TableData}>
         </devtools-performance-table>
@@ -118,44 +118,37 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     `];
     // clang-format on
 
-    if (this.model.topElapsedMs.length) {
+    if (this.model.topSelectorElapsedMs) {
+      const selector = this.model.topSelectorElapsedMs;
       // clang-format off
       sections.push(html`
         <div class="insight-section">
           <devtools-performance-table
             .data=${{
               insight: this,
-              headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
-              rows: this.model.topElapsedMs.map(selector => {
-                return {
-                  values: [
-                  html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
-                  time(Trace.Types.Timing.Micro(selector['elapsed (us)']))],
-                };
-              }),
-            } as TableData}>
+              headers: [`${i18nString(UIStrings.topSelectorElapsedTime)}: ${time(Trace.Types.Timing.Micro(selector['elapsed (us)']))}`],
+              rows: [{
+                values: [html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`]}]
+            }} as TableData>
           </devtools-performance-table>
         </div>
       `);
       // clang-format on
     }
 
-    if (this.model.topMatchAttempts.length) {
+    if (this.model.topSelectorMatchAttempts) {
+      const selector = this.model.topSelectorMatchAttempts;
       // clang-format off
       sections.push(html`
         <div class="insight-section">
           <devtools-performance-table
             .data=${{
               insight: this,
-              headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
-              rows: this.model.topMatchAttempts.map(selector => {
-                return {
-                  values: [
-                  html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string,
-                  selector['match_attempts']],
-                };
-              }),
-            } as TableData}>
+              headers: [`${i18nString(UIStrings.topSelectorMatchAttempt)}: ${selector['match_attempts']}`],
+              rows: [{
+                  values: [html`${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string],
+              }]
+            }} as TableData}>
           </devtools-performance-table>
         </div>
       `);

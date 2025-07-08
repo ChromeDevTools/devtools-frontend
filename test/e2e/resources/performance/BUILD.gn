@@ -14,6 +14,7 @@ copy_to_gen("performance") {
     "frame-metrics/index.html",
     "interaction-tester.html",
     "lcp.png",
+    "selectorStats/css-style-invalidation.html",
     "selectorStats/page-with-style-perf-test.html",
     "selectorStats/page-with-style.css",
     "selectorStats/page-with-style.html",

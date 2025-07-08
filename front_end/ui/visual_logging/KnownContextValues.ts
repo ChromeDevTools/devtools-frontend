@@ -1857,6 +1857,7 @@ export const knownContextValues = new Set([
   'internet-explorer-9',
   'interpolate-size',
   'invalid',
+  'invalidation-count',
   'invert-filter',
   'is',
   'is-landscape',

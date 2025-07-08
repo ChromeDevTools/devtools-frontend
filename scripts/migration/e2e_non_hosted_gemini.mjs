@@ -41,7 +41,10 @@ Step by step instructions:
 
 8) After you are done with changes, run 'npm run test -- -t StrictTypes ${newTestFilePath}' to verify.
 9) Delete the original test file.
-10) Run 'git cl presubmit --upload --force'
+10) Commit the changes with the message 'Migrate ${oldTestFilePath}'
+11) Run 'git cl presubmit --upload'
+12) Run 'git cl upload -a -s -d -f -x ${issueNumber}' to upload the change.
+13) Fix any lint issues. You may have to re-commit if files changed. When re-committing, amend the initial commit to preserve the commit message.
 `;
 
 function runProcess(command, args, options) {
@@ -85,10 +88,7 @@ try {
     }
   );
 
-  console.log('Migration successful. Committing changes...');
-  execSync(`git add . && git commit -a -m "Migrate ${oldTestFilePath}"`, {cwd: worktreePath});
-  execSync(`git cl upload -a -s -d -f -x ${issueNumber}`, {cwd: worktreePath});
-
+  console.log('Migration successful.');
 } catch (error) {
   console.error('Migration failed:', error.message);
   process.exit(1);

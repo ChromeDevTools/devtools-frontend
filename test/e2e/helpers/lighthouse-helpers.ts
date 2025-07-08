@@ -102,8 +102,9 @@ export async function selectMode(
   await selectRadioOption(mode, 'lighthouse.mode', devToolsPage);
 }
 
-export async function selectDevice(device: 'mobile'|'desktop') {
-  await selectRadioOption(device, 'lighthouse.device-type');
+export async function selectDevice(
+    device: 'mobile'|'desktop', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await selectRadioOption(device, 'lighthouse.device-type', devToolsPage);
 }
 
 export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string) {
@@ -118,8 +119,9 @@ export async function setToolbarCheckboxWithText(enabled: boolean, textContext: 
   }, enabled);
 }
 
-export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools') {
-  const toolbarHandle = await waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
+export async function setThrottlingMethod(
+    throttlingMethod: 'simulate'|'devtools', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {
     const selectElem = toolbar.querySelector('select')!;
     const optionElem = selectElem.querySelector(`option[value="${throttlingMethod}"]`) as HTMLOptionElement;
@@ -167,12 +169,12 @@ export async function waitForStorageUsage(
   await devToolsPage.click('#tab-lighthouse');
 }
 
-export async function waitForTimespanStarted() {
-  await waitForElementWithTextContent('Timespan started');
+export async function waitForTimespanStarted(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForElementWithTextContent('Timespan started');
 }
 
-export async function endTimespan() {
-  const endTimespanBtn = await waitForElementWithTextContent('End timespan');
+export async function endTimespan(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const endTimespanBtn = await devToolsPage.waitForElementWithTextContent('End timespan');
   await endTimespanBtn.click();
 }
 

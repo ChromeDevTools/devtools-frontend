@@ -9,6 +9,7 @@ ts_e2e_library("lighthouse") {
     "devtools-settings_test.ts",
     "snapshot_test.ts",
     "start-view_test.ts",
+    "timespan_test.ts",
   ]
 
   deps = [

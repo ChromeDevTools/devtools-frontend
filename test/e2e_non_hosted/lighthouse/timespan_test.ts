@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {$textContent, getBrowserAndPages} from '../../shared/helper.js';
 import {
   clickStartButton,
   endTimespan,
@@ -18,10 +17,24 @@ import {
   setThrottlingMethod,
   waitForResult,
   waitForTimespanStarted,
-} from '../helpers/lighthouse-helpers.js';
+} from '../../e2e/helpers/lighthouse-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {InspectedPage} from '../shared/target-helper.js';
 
 // This test will fail (by default) in headful mode, as the target page never gets painted.
 // To resolve this when debugging, just make sure the target page is visible during the lighthouse run.
+
+function expectErrors() {
+  // https://github.com/GoogleChrome/lighthouse/issues/14572
+  expectError(/Request CacheStorage\.requestCacheNames failed/);
+
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
+  expectError(/Protocol Error: the message with wrong session id/);
+  expectError(/Protocol Error: the message with wrong session id/);
+  expectError(/Protocol Error: the message with wrong session id/);
+  expectError(/Protocol Error: the message with wrong session id/);
+  expectError(/Protocol Error: the message with wrong session id/);
+}
 
 describe('Timespan', function() {
   // The tests in this suite are particularly slow
@@ -29,52 +42,44 @@ describe('Timespan', function() {
     this.timeout(60_000);
   }
 
-  beforeEach(() => {
-    // https://github.com/GoogleChrome/lighthouse/issues/14572
-    expectError(/Request CacheStorage\.requestCacheNames failed/);
+  it('successfully returns a Lighthouse report for user interactions', async ({devToolsPage, inspectedPage}: {
+                                                                         devToolsPage: DevToolsPage,
+                                                                         inspectedPage: InspectedPage,
+                                                                       }) => {
+    expectErrors();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1357791
-    expectError(/Protocol Error: the message with wrong session id/);
-    expectError(/Protocol Error: the message with wrong session id/);
-    expectError(/Protocol Error: the message with wrong session id/);
-    expectError(/Protocol Error: the message with wrong session id/);
-    expectError(/Protocol Error: the message with wrong session id/);
-  });
-
-  it('successfully returns a Lighthouse report for user interactions', async () => {
-    await navigateToLighthouseTab('lighthouse/hello.html');
-    await registerServiceWorker();
+    await navigateToLighthouseTab('lighthouse/hello.html', devToolsPage, inspectedPage);
+    await registerServiceWorker(inspectedPage);
 
     // https://bugs.chromium.org/p/chromium/issues/detail?id=1364257
-    await selectDevice('desktop');
+    await selectDevice('desktop', devToolsPage);
 
-    await selectMode('timespan');
-    await setThrottlingMethod('simulate');
+    await selectMode('timespan', devToolsPage);
+    await setThrottlingMethod('simulate', devToolsPage);
 
     let numNavigations = 0;
-    const {target, frontend} = getBrowserAndPages();
-    target.on('framenavigated', () => ++numNavigations);
+    inspectedPage.page.on('framenavigated', () => ++numNavigations);
 
-    await clickStartButton();
-    await waitForTimespanStarted();
+    await clickStartButton(devToolsPage);
+    await waitForTimespanStarted(devToolsPage);
 
-    await target.bringToFront();
+    await inspectedPage.bringToFront();
 
-    await target.click('button');
-    await target.click('button');
-    await target.click('button');
+    await inspectedPage.page.click('button');
+    await inspectedPage.page.click('button');
+    await inspectedPage.page.click('button');
 
     // Wait for content to be painted so that the INP event gets emitted.
     // If we don't do this, `frontend.bringToFront()` can disable paints on the target page before INP is emitted.
-    await target.evaluate(() => {
+    await inspectedPage.evaluate(() => {
       return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     });
 
-    await frontend.bringToFront();
+    await devToolsPage.bringToFront();
 
-    await endTimespan();
+    await endTimespan(devToolsPage);
 
-    const {lhr, artifacts, reportEl} = await waitForResult();
+    const {lhr, artifacts, reportEl} = await waitForResult(devToolsPage, inspectedPage);
 
     assert.strictEqual(numNavigations, 0);
 
@@ -102,12 +107,12 @@ describe('Timespan', function() {
 
     // Trace was collected in timespan mode.
     // Timespan mode can only do DevTools throttling so the text will be "View Trace".
-    const viewTraceButton = await $textContent('View Trace', reportEl);
+    const viewTraceButton = await devToolsPage.$textContent('View Trace', reportEl);
     if (!viewTraceButton) {
       throw new Error('Could not find view trace button');
     }
 
     // Ensure service worker is not cleared in timespan mode.
-    assert.strictEqual(await getServiceWorkerCount(), 1);
+    assert.strictEqual(await getServiceWorkerCount(inspectedPage), 1);
   });
 });

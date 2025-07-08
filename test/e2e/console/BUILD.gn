@@ -10,7 +10,6 @@ node_ts_library("console") {
     "console-context-menu_test.ts",
     "console-context-selector_test.ts",
     "console-insight_test.ts",
-    "issues-toolbar_test.ts",
   ]
 
   deps = [

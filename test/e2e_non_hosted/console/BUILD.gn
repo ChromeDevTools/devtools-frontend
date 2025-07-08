@@ -30,6 +30,7 @@ ts_e2e_library("console") {
     "console-uncaught-promise_test.ts",
     "dom-warnings_test.ts",
     "filter_test.ts",
+    "issues-toolbar_test.ts",
     "search_test.ts",
   ]
 

@@ -7,8 +7,6 @@ import {assert} from 'chai';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  waitFor,
-  waitForFunction
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -383,18 +381,19 @@ export async function toggleShowLogXmlHttpRequests(devToolsPage = getBrowserAndP
       await veRoot(devToolsPage), devToolsPage);
 }
 
-async function getIssueButtonLabel(): Promise<string|null> {
-  const infobarButton = await waitFor('#console-issues-counter');
-  const iconButton = await waitFor('icon-button', infobarButton);
-  const titleElement = await waitFor('.icon-button-title', iconButton);
+async function getIssueButtonLabel(devToolsPage: DevToolsPage): Promise<string|null> {
+  const infobarButton = await devToolsPage.waitFor('#console-issues-counter');
+  const iconButton = await devToolsPage.waitFor('icon-button', infobarButton);
+  const titleElement = await devToolsPage.waitFor('.icon-button-title', iconButton);
   const infobarButtonText = await titleElement.evaluate(node => (node as HTMLElement).textContent);
-  await expectVeEvents([veImpression('Counter', 'issues')], `${await veRoot()} > Toolbar`);
+  await expectVeEvents([veImpression('Counter', 'issues')], `${await veRoot(devToolsPage)} > Toolbar`, devToolsPage);
   return infobarButtonText;
 }
 
-export async function waitForIssueButtonLabel(expectedLabel: string) {
-  await waitForFunction(async () => {
-    const label = await getIssueButtonLabel();
+export async function waitForIssueButtonLabel(
+    expectedLabel: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(async () => {
+    const label = await getIssueButtonLabel(devToolsPage);
     return expectedLabel === label;
   });
 }

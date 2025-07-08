@@ -197,9 +197,10 @@ describeWithEnvironment('AidaClient', () => {
     });
   });
 
-  async function getAllResults(provider: Host.AidaClient.AidaClient): Promise<Host.AidaClient.AidaResponse[]> {
+  async function getAllResults(provider: Host.AidaClient.AidaClient):
+      Promise<Host.AidaClient.DoConversationResponse[]> {
     const results = [];
-    for await (const result of provider.fetch(Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'))) {
+    for await (const result of provider.doConversation(Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'))) {
       results.push(result);
     }
     return results;

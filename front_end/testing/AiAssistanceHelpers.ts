@@ -25,11 +25,12 @@ import {
 import {createContentProviderUISourceCodes, createFileSystemUISourceCode} from './UISourceCodeHelpers.js';
 import {createViewFunctionStub} from './ViewFunctionHelpers.js';
 
-function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.AidaClient.AidaClient {
-  const fetchStub = sinon.stub();
+function createMockAidaClient(doConversation: Host.AidaClient.AidaClient['doConversation']):
+    Host.AidaClient.AidaClient {
+  const doConversationStub = sinon.stub();
   const registerClientEventStub = sinon.stub();
   return {
-    fetch: fetchStub.callsFake(fetch),
+    doConversation: doConversationStub.callsFake(doConversation),
     registerClientEvent: registerClientEventStub,
   };
 }
@@ -42,8 +43,8 @@ export const MockAidaFetchError = {
   fetchError: true,
 } as const;
 
-export type MockAidaResponse = Omit<Host.AidaClient.AidaResponse, 'completed'|'metadata'>&
-    {metadata?: Host.AidaClient.AidaResponseMetadata}|typeof MockAidaAbortError|typeof MockAidaFetchError;
+export type MockAidaResponse = Omit<Host.AidaClient.DoConversationResponse, 'completed'|'metadata'>&
+    {metadata?: Host.AidaClient.ResponseMetadata}|typeof MockAidaAbortError|typeof MockAidaFetchError;
 
 /**
  * Creates a mock AIDA client that responds using `data`.
@@ -55,7 +56,7 @@ export type MockAidaResponse = Omit<Host.AidaClient.AidaResponse, 'completed'|'m
 export function mockAidaClient(data: Array<[MockAidaResponse, ...MockAidaResponse[]]> = []):
     Host.AidaClient.AidaClient {
   let callId = 0;
-  async function* provideAnswer(_: Host.AidaClient.AidaRequest, options?: {signal?: AbortSignal}) {
+  async function* provideAnswer(_: Host.AidaClient.DoConversationRequest, options?: {signal?: AbortSignal}) {
     if (!data[callId]) {
       throw new Error('No data provided to the mock client');
     }

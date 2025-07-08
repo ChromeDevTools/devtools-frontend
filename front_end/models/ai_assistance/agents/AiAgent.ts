@@ -259,8 +259,8 @@ export abstract class AiAgent<T> {
    * Used in the debug mode and evals.
    */
   readonly #structuredLog: Array<{
-    request: Host.AidaClient.AidaRequest,
-    aidaResponse: Host.AidaClient.AidaResponse,
+    request: Host.AidaClient.DoConversationRequest,
+    aidaResponse: Host.AidaClient.DoConversationResponse,
   }> = [];
 
   /**
@@ -317,7 +317,7 @@ export abstract class AiAgent<T> {
 
   buildRequest(
       part: Host.AidaClient.Part|Host.AidaClient.Part[],
-      role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.AidaRequest {
+      role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest {
     const parts = Array.isArray(part) ? part : [part];
     const currentMessage: Host.AidaClient.Content = {
       parts,
@@ -339,7 +339,7 @@ export abstract class AiAgent<T> {
     const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
     const preamble = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
     const facts = Array.from(this.#facts);
-    const request: Host.AidaClient.AidaRequest = {
+    const request: Host.AidaClient.DoConversationRequest = {
       client: Host.AidaClient.CLIENT_NAME,
       current_message: currentMessage,
       preamble,
@@ -412,8 +412,8 @@ export abstract class AiAgent<T> {
    * function call.
    */
   protected functionCallEmulationEnabled = false;
-  protected emulateFunctionCall(_aidaResponse: Host.AidaClient.AidaResponse): Host.AidaClient.AidaFunctionCallResponse|
-      'no-function-call'|'wait-for-completion' {
+  protected emulateFunctionCall(_aidaResponse: Host.AidaClient.DoConversationResponse):
+      Host.AidaClient.AidaFunctionCallResponse|'no-function-call'|'wait-for-completion' {
     throw new Error('Unexpected emulateFunctionCall. Only StylingAgent implements function call emulation');
   }
 
@@ -673,12 +673,12 @@ export abstract class AiAgent<T> {
   }
 
   async *
-      #aidaFetch(request: Host.AidaClient.AidaRequest, options?: {signal?: AbortSignal}):
+      #aidaFetch(request: Host.AidaClient.DoConversationRequest, options?: {signal?: AbortSignal}):
           AsyncGenerator<AidaFetchResult, void, void> {
-    let aidaResponse: Host.AidaClient.AidaResponse|undefined = undefined;
+    let aidaResponse: Host.AidaClient.DoConversationResponse|undefined = undefined;
     let rpcId: Host.AidaClient.RpcGlobalId|undefined;
 
-    for await (aidaResponse of this.#aidaClient.fetch(request, options)) {
+    for await (aidaResponse of this.#aidaClient.doConversation(request, options)) {
       if (aidaResponse.functionCalls?.length) {
         debugLog('functionCalls.length', aidaResponse.functionCalls.length);
         yield {

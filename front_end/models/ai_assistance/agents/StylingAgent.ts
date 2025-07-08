@@ -674,7 +674,7 @@ const data = {
     void this.#changes.clear();
   }
 
-  protected override emulateFunctionCall(aidaResponse: Host.AidaClient.AidaResponse):
+  protected override emulateFunctionCall(aidaResponse: Host.AidaClient.DoConversationResponse):
       Host.AidaClient.AidaFunctionCallResponse|'no-function-call'|'wait-for-completion' {
     const parsed = this.parseTextResponse(aidaResponse.explanation);
     // If parsing detected an answer, it is a streaming text response.

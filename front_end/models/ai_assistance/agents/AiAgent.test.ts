@@ -332,7 +332,7 @@ describeWithEnvironment('AiAgent', () => {
       });
     });
 
-    it('should yield unknown error when aidaFetch does not return anything', async () => {
+    it('should yield unknown error when aida doConversation does not return anything', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient([]),
       });

@@ -165,7 +165,7 @@ export class CloseEvent extends Event {
 }
 
 type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'|'getSearchQuery'>;
-type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'fetch'|'registerClientEvent'>;
+type PublicAidaClient = Pick<Host.AidaClient.AidaClient, 'doConversation'|'registerClientEvent'>;
 
 function localizeType(sourceType: SourceType): string {
   switch (sourceType) {
@@ -211,7 +211,7 @@ type StateData = {
   completed: boolean,
   directCitationUrls: string[],
   timedOut?: boolean,
-}&Host.AidaClient.AidaResponse|{
+}&Host.AidaClient.DoConversationResponse|{
   type: State.ERROR,
   error: string,
 }|{
@@ -527,7 +527,7 @@ export class ConsoleInsight extends HTMLElement {
     await this.#generateInsight();
   }
 
-  #insertCitations(explanation: string, metadata: Host.AidaClient.AidaResponseMetadata):
+  #insertCitations(explanation: string, metadata: Host.AidaClient.ResponseMetadata):
       {explanationWithCitations: string, directCitationUrls: string[]} {
     const directCitationUrls: string[] = [];
     if (!this.#isSearchRagResponse(metadata) || !metadata.attributionMetadata) {
@@ -632,11 +632,11 @@ export class ConsoleInsight extends HTMLElement {
 
   async *
       #getInsight(): AsyncGenerator<
-          {sources: Source[], isPageReloadRecommended: boolean}&Host.AidaClient.AidaResponse, void, void> {
+          {sources: Source[], isPageReloadRecommended: boolean}&Host.AidaClient.DoConversationResponse, void, void> {
     const {prompt, sources, isPageReloadRecommended} = await this.#promptBuilder.buildPrompt();
     try {
-      for await (
-          const response of this.#aidaClient.fetch(Host.AidaClient.AidaClient.buildConsoleInsightsRequest(prompt))) {
+      for await (const response of this.#aidaClient.doConversation(
+          Host.AidaClient.AidaClient.buildConsoleInsightsRequest(prompt))) {
         yield {sources, isPageReloadRecommended, ...response};
       }
     } catch (err) {
@@ -761,7 +761,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #isSearchRagResponse(metadata: Host.AidaClient.AidaResponseMetadata): boolean {
+  #isSearchRagResponse(metadata: Host.AidaClient.ResponseMetadata): boolean {
     return Boolean(metadata.factualityMetadata?.facts.length);
   }
 

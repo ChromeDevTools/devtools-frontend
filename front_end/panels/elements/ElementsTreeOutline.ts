@@ -374,14 +374,14 @@ export class ElementsTreeOutline extends
     this.performCopyOrCut(isCut, targetNode);
   }
 
-  performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode|null): void {
+  performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode|null, includeShadowRoots = false): void {
     if (!node) {
       return;
     }
     if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
       return;
     }
-    void node.getOuterHTML().then(outerHTML => {
+    void node.getOuterHTML(includeShadowRoots).then(outerHTML => {
       if (outerHTML !== null) {
         CopyToClipboard.copyTextToClipboard(outerHTML);
       }

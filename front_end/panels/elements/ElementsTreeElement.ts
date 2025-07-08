@@ -855,12 +855,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           i18nString(UIStrings.copyFullXpath), this.copyFullXPath.bind(this), {jslogContext: 'copy-full-xpath'});
     }
 
-    if (!isShadowRoot) {
-      menuItem = copyMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal),
-          {jslogContext: 'copy-element'});
-      menuItem.setShortcut(createShortcut('C', modifier));
+    menuItem = copyMenu.clipboardSection().appendItem(
+        i18nString(UIStrings.copyElement),
+        treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal, true), {jslogContext: 'copy-element'});
+    menuItem.setShortcut(createShortcut('C', modifier));
 
+    if (!isShadowRoot) {
       // Duplicate element, disabled on root element and ShadowDOM.
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === '#document';
       menuItem = contextMenu.editSection().appendItem(

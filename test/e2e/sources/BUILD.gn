@@ -14,7 +14,6 @@ node_ts_library("sources") {
     "can-show-multiple-workers_test.ts",
     "debug-raw-wasm_test.ts",
     "header-overrides_test.ts",
-    "icon-row-bucket_test.ts",
     "ignore-list_test.ts",
     "live-edit-moving-breakpoint_test.ts",
     "navigator-view_test.ts",

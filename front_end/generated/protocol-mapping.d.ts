@@ -2494,6 +2494,13 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Emulation.SetDisabledImageTypesRequest];
       returnType: void;
     };
+    /**
+     * Override the value of navigator.connection.saveData
+     */
+    'Emulation.setDataSaverOverride': {
+      paramsType: [Protocol.Emulation.SetDataSaverOverrideRequest?];
+      returnType: void;
+    };
     'Emulation.setHardwareConcurrencyOverride': {
       paramsType: [Protocol.Emulation.SetHardwareConcurrencyOverrideRequest];
       returnType: void;

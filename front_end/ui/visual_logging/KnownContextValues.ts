@@ -3640,6 +3640,7 @@ export const knownContextValues = new Set([
   'timeline-status',
   'timeline-tree-current-thread',
   'timeline-tree-group-by',
+  'timeline-trigger',
   'timeline-trigger-behavior',
   'timeline-trigger-exit-range-end',
   'timeline-trigger-exit-range-start',

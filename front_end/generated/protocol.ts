@@ -6829,6 +6829,13 @@ export namespace Emulation {
     imageTypes: DisabledImageType[];
   }
 
+  export interface SetDataSaverOverrideRequest {
+    /**
+     * Override value. Omitting the parameter disables the override.
+     */
+    dataSaverEnabled?: boolean;
+  }
+
   export interface SetHardwareConcurrencyOverrideRequest {
     /**
      * Hardware concurrency to report

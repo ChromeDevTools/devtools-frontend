@@ -10499,6 +10499,19 @@
                     ]
                 },
                 {
+                    "name": "setDataSaverOverride",
+                    "description": "Override the value of navigator.connection.saveData",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "dataSaverEnabled",
+                            "description": "Override value. Omitting the parameter disables the override.",
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "setHardwareConcurrencyOverride",
                     "experimental": true,
                     "parameters": [

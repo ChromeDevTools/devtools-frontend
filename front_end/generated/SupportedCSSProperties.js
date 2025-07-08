@@ -4408,6 +4408,18 @@ export const generatedProperties = [
   "name": "timeline-scope"
  },
  {
+  "longhands": [
+   "timeline-trigger-name",
+   "timeline-trigger-timeline",
+   "timeline-trigger-behavior",
+   "timeline-trigger-range-start",
+   "timeline-trigger-range-end",
+   "timeline-trigger-exit-range-start",
+   "timeline-trigger-exit-range-end"
+  ],
+  "name": "timeline-trigger"
+ },
+ {
   "keywords": [
    "once",
    "repeat",

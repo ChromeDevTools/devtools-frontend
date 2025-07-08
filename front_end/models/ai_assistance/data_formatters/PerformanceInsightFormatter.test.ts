@@ -102,9 +102,10 @@ We can break this time down into the 2 phases that combine to make the LCP time:
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dpr.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const insightSet = getInsightSetOrError(insights, firstNav);
     const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
-    const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+    const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
     const output = formatter.formatInsight().split('Timings:')[0];
     const expected = `## Insight Title: LCP breakdown
 

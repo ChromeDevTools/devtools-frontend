@@ -12,7 +12,7 @@ import {getLoggingState, type LoggingState} from './LoggingState.js';
 let veDebuggingEnabled = false;
 let debugOverlay: HTMLElement|null = null;
 let debugPopover: HTMLElement|null = null;
-let highlightedElement: HTMLElement|null = null;
+const highlightedElements: HTMLElement[] = [];
 const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
 let onInspect: ((query: string) => void)|undefined = undefined;
 
@@ -53,7 +53,43 @@ export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string
 // @ts-expect-error
 globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
 
+let highlightedVeKey: string|null = null;
+
+export function setHighlightedVe(veKey: string|null): void {
+  ensureDebugOverlay();
+  highlightedVeKey = veKey;
+  highlightElement(null);
+}
+
+function maybeHighlightElement(element: HTMLElement, highlightedKey: string): void {
+  highlightedKey = highlightedKey.trim();
+  let state = getLoggingState(element);
+  let trailingVe = state?.config?.ve ? VisualElements[state?.config?.ve] : null;
+  while (state && highlightedKey) {
+    const currentKey = elementKey(state.config);
+    if (highlightedKey.endsWith(currentKey)) {
+      highlightedKey = highlightedKey.slice(0, -currentKey.length).trim();
+    } else if (trailingVe && highlightedKey.endsWith(trailingVe)) {
+      highlightedKey = highlightedKey.slice(0, -trailingVe.length).trim();
+      trailingVe = null;
+    } else {
+      break;
+    }
+    state = state.parent;
+    if (state && !highlightedKey.endsWith('>')) {
+      break;
+    }
+    highlightedKey = highlightedKey.slice(0, -1).trim();
+  }
+  if (!highlightedKey && !state) {
+    highlightElement(element, true);
+  }
+}
+
 export function processForDebugging(loggable: Loggable): void {
+  if (highlightedVeKey && loggable instanceof HTMLElement) {
+    maybeHighlightElement(loggable, highlightedVeKey);
+  }
   const loggingState = getLoggingState(loggable);
   if (!veDebuggingEnabled || !loggingState || loggingState.processedForDebugging) {
     return;
@@ -98,16 +134,16 @@ function showDebugPopover(content: string, rect?: DOMRect): void {
   }
 }
 
-function highlightElement(element: HTMLElement|null): void {
-  if (highlightedElement && debugOverlay) {
+function highlightElement(element: HTMLElement|null, allowMultiple = false): void {
+  if (highlightedElements.length > 0 && !allowMultiple && debugOverlay) {
     [...debugOverlay.children].forEach(e => {
       if (e !== debugPopover) {
         e.remove();
       }
     });
-    highlightedElement = null;
+    highlightedElements.length = 0;
   }
-  if (element) {
+  if (element && !highlightedElements.includes(element)) {
     assertNotNullOrUndefined(debugOverlay);
     const rect = element.getBoundingClientRect();
     const highlight = document.createElement('div');
@@ -120,7 +156,7 @@ function highlightElement(element: HTMLElement|null): void {
     highlight.style.border = 'dashed 1px #7327C6';
     highlight.style.pointerEvents = 'none';
     debugOverlay.appendChild(highlight);
-    highlightedElement = element;
+    highlightedElements.push(element);
   }
 }
 
@@ -132,13 +168,13 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
     }
   } else {
     element.addEventListener('mousedown', event => {
-      if (event.currentTarget === highlightedElement && veDebuggingEnabled) {
+      if (highlightedElements.length && debugPopover && veDebuggingEnabled) {
         event.stopImmediatePropagation();
         event.preventDefault();
       }
     }, {capture: true});
     element.addEventListener('click', event => {
-      if (event.currentTarget === highlightedElement && debugPopover && veDebuggingEnabled) {
+      if (highlightedElements.includes(event.currentTarget as HTMLElement) && debugPopover && veDebuggingEnabled) {
         onInspect?.(debugPopover.textContent || '');
         event.stopImmediatePropagation();
         event.preventDefault();

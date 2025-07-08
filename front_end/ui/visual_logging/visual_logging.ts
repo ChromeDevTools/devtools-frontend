@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Debugging from './Debugging.js';
 import type * as LoggableModule from './Loggable.js';
 import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingDriver from './LoggingDriver.js';
@@ -37,6 +38,13 @@ export async function isUnderInspection(origin?: string): Promise<boolean> {
     return false;
   }
   return [431010711, -1313957874, -1093325535].includes(context);
+}
+
+export function setHighlightedVe(veKey: string|null): void {
+  Debugging.setHighlightedVe(veKey);
+  if (veKey) {
+    void LoggingDriver.process();
+  }
 }
 
 /**

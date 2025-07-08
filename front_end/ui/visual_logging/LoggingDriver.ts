@@ -138,7 +138,7 @@ const viewportRectFor = (element: Element): DOMRect => {
   return viewportRect;
 };
 
-async function process(): Promise<void> {
+export async function process(): Promise<void> {
   if (document.hidden) {
     return;
   }

@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("issues") {
   sources = [
+    "group-by-kind_test.ts",
     "heavy-ad-issues_test.ts",
     "issue-links_test.ts",
     "issue-view-caching_test.ts",

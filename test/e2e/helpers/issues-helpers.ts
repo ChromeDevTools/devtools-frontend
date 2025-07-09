@@ -155,13 +155,14 @@ export async function expandCategory() {
   await waitFor(ISSUE);
 }
 
-export async function expandKind(classSelector: string) {
-  const kindElement = await waitFor(`${KIND}${classSelector}`);
+export async function expandKind(
+    classSelector: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const kindElement = await devToolsPage.waitFor(`${KIND}${classSelector}`);
   const isKindExpanded = await kindElement.evaluate(node => node.classList.contains('expanded'));
   if (!isKindExpanded) {
     await kindElement.click();
   }
-  await waitFor(ISSUE);
+  await devToolsPage.waitFor(ISSUE);
 }
 
 export async function expandIssue(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -257,8 +258,8 @@ export async function getGroupByCategoryChecked(
   return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
 }
 
-export async function getGroupByKindChecked() {
-  const categoryCheckbox = await waitFor(KIND_CHECKBOX);
+export async function getGroupByKindChecked(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const categoryCheckbox = await devToolsPage.waitFor(KIND_CHECKBOX);
   return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
 }
 
@@ -287,16 +288,16 @@ export async function toggleGroupByCategory() {
   }
 }
 
-export async function toggleGroupByKind() {
-  const wasChecked = await getGroupByKindChecked();
-  const kindCheckbox = await waitFor(KIND_CHECKBOX);
+export async function toggleGroupByKind(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const wasChecked = await getGroupByKindChecked(devToolsPage);
+  const kindCheckbox = await devToolsPage.waitFor(KIND_CHECKBOX);
 
   // Invoke `click()` directly on the checkbox to toggle while hidden.
   await kindCheckbox.evaluate(checkbox => (checkbox as HTMLInputElement).click());
 
   if (wasChecked) {
-    await waitFor(ISSUE);
+    await devToolsPage.waitFor(ISSUE);
   } else {
-    await waitFor(KIND);
+    await devToolsPage.waitFor(KIND);
   }
 }

@@ -16,7 +16,6 @@ node_ts_library("issues") {
     "deprecation-issues_test.ts",
     "expect-ct-issues_test.ts",
     "group-by-categories_test.ts",
-    "group-by-kind_test.ts",
     "hidden-issues-row_test.ts",
     "hide-issues-menu_test.ts",
     "issue-view-reparent_test.ts",

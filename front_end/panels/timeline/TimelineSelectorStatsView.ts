@@ -36,11 +36,11 @@ const UIStrings = {
   /**
    *@description Column name and percentage of slow mach non-matches computing a style rule
    */
-  rejectPercentage: '% of slow-path non-matches',
+  slowPathNonMatches: '% of slow-path non-matches',
   /**
    *@description Tooltip description '% of slow-path non-matches'
    */
-  rejectPercentageExplanation:
+  slowPathNonMatchesExplanation:
       'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\'t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.',
   /**
    *@description Column name for count of elements that the engine attempted to match against a style rule
@@ -165,8 +165,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
               ${i18nString(UIStrings.matchCount)}</span>
             </th>
             <th id=${SelectorTimingsKey.RejectPercentage} weight="1" sortable hideable align="right">
-              <span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
-            i18nString(UIStrings.rejectPercentage)}</span>
+              <span title=${i18nString(UIStrings.slowPathNonMatchesExplanation)}>${
+            i18nString(UIStrings.slowPathNonMatches)}</span>
             </th>
             <th id=${SelectorTimingsKey.Selector} weight="3" sortable hideable>
               <span title=${i18nString(UIStrings.selectorExplanation)}>
@@ -179,7 +179,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           </tr>
           ${input.timings.map(timing => {
           const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
-          const rejectPercentage = (nonMatches ? timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
+          const slowPathNonMatches =
+              (nonMatches ? 1.0 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
           const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
           const locations = timing.locations;
           const locationMessage = locations ? null :
@@ -194,8 +195,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             </td>
             <td>${timing[SelectorTimingsKey.MatchAttempts]}</td>
             <td>${timing[SelectorTimingsKey.MatchCount]}</td>
-            <td data-value=${rejectPercentage}>
-              ${rejectPercentage.toFixed(1)}
+            <td data-value=${slowPathNonMatches}>
+              ${slowPathNonMatches.toFixed(1)}
             </td>
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
@@ -229,12 +230,13 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       const tableData = [];
       const columnName = [
         i18nString(UIStrings.elapsed), i18nString(UIStrings.matchAttempts), i18nString(UIStrings.matchCount),
-        i18nString(UIStrings.rejectPercentage), i18nString(UIStrings.selector), i18nString(UIStrings.styleSheetId)
+        i18nString(UIStrings.slowPathNonMatches), i18nString(UIStrings.selector), i18nString(UIStrings.styleSheetId)
       ];
       tableData.push(columnName.join('\t'));
       for (const timing of this.#timings) {
         const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
-        const rejectPercentage = (nonMatches ? timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
+        const slowPathNonMatches =
+            (nonMatches ? 1.0 - timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 0) * 100;
         const styleSheetId = timing[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
         let linkData = '';
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -252,7 +254,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           timing[SelectorTimingsKey.Elapsed] / 1000.0,
           timing[SelectorTimingsKey.MatchAttempts],
           timing[SelectorTimingsKey.MatchCount],
-          rejectPercentage,
+          slowPathNonMatches,
           timing[SelectorTimingsKey.Selector],
           linkData,
         ].join('\t'));

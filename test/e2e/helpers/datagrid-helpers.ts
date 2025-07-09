@@ -29,6 +29,23 @@ export async function getDataGridRows(
   return await Promise.all(handlers.map(handler => devToolsPage.$$('td[jslog]:not(.hidden)', handler)));
 }
 
+export async function getDataGridColumnNames(
+    root?: ElementHandle<Node>,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<String[]> {
+  const columnNames: String[] = [];
+  const dataGrid = !root ? await devToolsPage.waitFor('devtools-data-grid') : root;
+
+  const columnNodes = await dataGrid.$$('pierce/[role="columnheader"]');
+  for (const column of columnNodes) {
+    const text = await column.evaluate(x => {
+      return (x as HTMLElement).innerText || '';
+    });
+    columnNames.push(text);
+  }
+
+  return columnNames;
+}
+
 export async function getDataGrid(root?: ElementHandle, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const dataGrid = await devToolsPage.waitFor('devtools-data-grid', root);
   if (!dataGrid) {

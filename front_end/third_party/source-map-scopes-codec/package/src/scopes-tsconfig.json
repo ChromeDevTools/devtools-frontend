@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [
+    "package/src/scopes.d.ts"
+  ]
+}

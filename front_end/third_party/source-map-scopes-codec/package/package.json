@@ -1,0 +1,14 @@
+{
+  "name": "@jsr/chrome-devtools__source-map-scopes-codec",
+  "version": "0.3.1",
+  "homepage": "https://jsr.io/@chrome-devtools/source-map-scopes-codec",
+  "type": "module",
+  "dependencies": {},
+  "exports": {
+    ".": {
+      "types": "./_dist/src/mod.d.ts",
+      "default": "./src/mod.js"
+    }
+  },
+  "_jsr_revision": 11
+}

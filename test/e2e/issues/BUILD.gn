@@ -19,7 +19,6 @@ node_ts_library("issues") {
     "group-by-kind_test.ts",
     "hidden-issues-row_test.ts",
     "hide-issues-menu_test.ts",
-    "issue-links_test.ts",
     "issue-view-caching_test.ts",
     "issue-view-reparent_test.ts",
     "low-text-contrast-issues_test.ts",

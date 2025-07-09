@@ -8,6 +8,7 @@ ts_e2e_library("issues") {
   sources = [
     "heavy-ad-issues_test.ts",
     "issue-links_test.ts",
+    "issue-view-caching_test.ts",
   ]
   deps = [
     "../../e2e/helpers",

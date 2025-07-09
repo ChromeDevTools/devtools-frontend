@@ -1297,8 +1297,13 @@ class DOMInheritanceCascade {
           }
 
           // Variable reference is not resolved, use the fallback.
-          if (match.fallback.length === 0 ||
-              match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
+          if (!match.fallback) {
+            return null;
+          }
+          if (match.fallback.length === 0) {
+            return '';
+          }
+          if (match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
             return null;
           }
           return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);

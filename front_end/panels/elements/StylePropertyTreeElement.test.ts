@@ -822,6 +822,14 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
     });
+
+    it('retains empty fallbacks', async () => {
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--blue,)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      assert.strictEqual(stylePropertyTreeElement.renderedPropertyText(), 'color: var(--blue, )');
+    });
   });
 
   describe('ColorRenderer', () => {

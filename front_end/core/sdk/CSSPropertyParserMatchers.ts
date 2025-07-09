@@ -31,7 +31,7 @@ export class BaseVariableMatch implements Match {
       readonly text: string,
       readonly node: CodeMirror.SyntaxNode,
       readonly name: string,
-      readonly fallback: CodeMirror.SyntaxNode[],
+      readonly fallback: CodeMirror.SyntaxNode[]|undefined,
       readonly matching: BottomUpTreeMatching,
       readonly computedTextCallback: (match: BaseVariableMatch, matching: BottomUpTreeMatching) => string | null,
   ) {
@@ -72,7 +72,7 @@ export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
       return null;
     }
 
-    let fallback: CodeMirror.SyntaxNode[] = [];
+    let fallback;
     if (fallbackOrRParenNodes.length > 1) {
       if (fallbackOrRParenNodes.shift()?.name !== ',') {
         return null;
@@ -81,9 +81,6 @@ export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
         return null;
       }
       fallback = fallbackOrRParenNodes;
-      if (fallback.length === 0) {
-        return null;
-      }
       if (fallback.some(n => n.name === ',')) {
         return null;
       }
@@ -104,7 +101,7 @@ export class VariableMatch extends BaseVariableMatch {
       text: string,
       node: CodeMirror.SyntaxNode,
       name: string,
-      fallback: CodeMirror.SyntaxNode[],
+      fallback: CodeMirror.SyntaxNode[]|undefined,
       matching: BottomUpTreeMatching,
       readonly matchedStyles: CSSMatchedStyles,
       readonly style: CSSStyleDeclaration,
@@ -117,8 +114,14 @@ export class VariableMatch extends BaseVariableMatch {
   }
 
   fallbackValue(): string|null {
-    if (this.fallback.length === 0 ||
-        this.matching.hasUnresolvedVarsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
+    // Fallback can be missing but it can be also be empty: var(--v,)
+    if (!this.fallback) {
+      return null;
+    }
+    if (this.fallback.length === 0) {
+      return '';
+    }
+    if (this.matching.hasUnresolvedVarsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
       return null;
     }
     return this.matching.getComputedTextRange(this.fallback[0], this.fallback[this.fallback.length - 1]);

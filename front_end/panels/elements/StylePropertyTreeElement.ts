@@ -274,12 +274,12 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
         return nodes;
       }
-      if (!declaration && match.fallback.length > 0) {
+      if (!declaration && match.fallback) {
         return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
       }
     }
 
-    const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
+    const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : undefined;
 
     const varCall =
         this.#treeElement?.getTracingTooltip('var', match.node, this.#matchedStyles, this.#computedStyles, context);
@@ -299,7 +299,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
               onLinkActivate,
             }}>
            </devtools-link-swatch>
-           ${renderedFallback?.nodes.length ? html`, ${renderedFallback.nodes}` : nothing})
+           ${renderedFallback ? html`, ${renderedFallback.nodes}` : nothing})
         </span>
         ${tooltipId ? html`
           <devtools-tooltip

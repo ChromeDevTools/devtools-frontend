@@ -7,13 +7,10 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  $$,
-  $textContent,
   click,
   clickElement,
   matchStringTable,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
@@ -38,37 +35,42 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu(root?: puppeteer.ElementHandle) {
-  return await waitFor(HIDE_ISSUES_MENU, root);
+export async function getHideIssuesMenu(
+    root?: puppeteer.ElementHandle, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  return await devToolsPage.waitFor(HIDE_ISSUES_MENU, root);
 }
 
 export async function navigateToIssuesTab(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await openPanelViaMoreTools('Issues', devToolsPage);
 }
 
-export async function getUnhideAllIssuesBtn() {
-  const btn = await waitFor(UNHIDE_ALL_ISSUES);
+export async function getUnhideAllIssuesBtn(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const btn = await devToolsPage.waitFor(UNHIDE_ALL_ISSUES);
   return btn;
 }
 
-export async function getHideIssuesMenuItem(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
-  const menuItem = await waitFor<HTMLElement>(`[aria-label="${HIDE_THIS_ISSUE}"]`);
+export async function getHideIssuesMenuItem(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  const menuItem = await devToolsPage.waitFor<HTMLElement>(`[aria-label="${HIDE_THIS_ISSUE}"]`);
   if (menuItem) {
     return menuItem;
   }
   return null;
 }
 
-export async function getUnhideIssuesMenuItem(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
-  return await waitFor(`[aria-label="${UNHIDE_THIS_ISSUE}"]`);
+export async function getUnhideIssuesMenuItem(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await devToolsPage.waitFor(`[aria-label="${UNHIDE_THIS_ISSUE}"]`);
 }
 
-export async function getHiddenIssuesRow(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
-  return await waitFor('.hidden-issues');
+export async function getHiddenIssuesRow(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await devToolsPage.waitFor('.hidden-issues');
 }
 
-export async function getHiddenIssuesRowBody(): Promise<puppeteer.ElementHandle<HTMLElement>|null> {
-  return await waitFor('.hidden-issues-body');
+export async function getHiddenIssuesRowBody(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<puppeteer.ElementHandle<HTMLElement>|null> {
+  return await devToolsPage.waitFor('.hidden-issues-body');
 }
 
 export async function assertCategoryName(categoryName: string) {
@@ -109,10 +111,11 @@ export async function getIssueByTitle(
 }
 
 // Works also if there are multiple issues.
-export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
+export async function getAndExpandSpecificIssueByTitle(
+    issueMessage: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
     Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
-  const issueMessageElement = await waitForFunction(async () => {
-    const issueElements = await $$(ISSUE_TITLE);
+  const issueMessageElement = await devToolsPage.waitForFunction(async () => {
+    const issueElements = await devToolsPage.$$(ISSUE_TITLE);
     for (const issueElement of issueElements) {
       const message = await issueElement.evaluate(issueElement => issueElement.textContent);
       if (message === issueMessage) {
@@ -126,9 +129,11 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
   return await getIssueByTitleElement(issueMessageElement);
 }
 
-export async function getIssueHeaderByTitle(issueMessage: string):
+export async function getIssueHeaderByTitle(
+    issueMessage: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
     Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
-  const issueMessageElement = await waitForFunction(async () => await $textContent(issueMessage) ?? undefined);
+  const issueMessageElement = await devToolsPage.waitForFunction(
+      async () => await devToolsPage.$textContent(issueMessage, undefined) ?? undefined);
   const header =
       await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
   if (header) {

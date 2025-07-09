@@ -106,7 +106,10 @@ export class SyntaxTree {
     return nodeText(node ?? this.tree, this.rule);
   }
 
-  textRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode): string {
+  textRange(from: CodeMirror.SyntaxNode|undefined, to: CodeMirror.SyntaxNode|undefined): string {
+    if (!from || !to) {
+      return '';
+    }
     return nodeTextRange(from, to, this.rule);
   }
 
@@ -277,8 +280,11 @@ export class BottomUpTreeMatching extends TreeWalker {
   }
 
   getComputedTextRange(
-      from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode,
+      from: CodeMirror.SyntaxNode|undefined, to: CodeMirror.SyntaxNode|undefined,
       substitutionHook?: (match: Match) => string | null): string {
+    if (!from || !to) {
+      return '';
+    }
     return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from, substitutionHook);
   }
 }
@@ -517,7 +523,7 @@ export namespace ASTUtils {
   }
 
   export function range(node: CodeMirror.SyntaxNode[]):
-      [CodeMirror.SyntaxNode, CodeMirror.SyntaxNode]|[undefined, undefined] {
+      [CodeMirror.SyntaxNode|undefined, CodeMirror.SyntaxNode|undefined] {
     return [node[0], node[node.length - 1]];
   }
 

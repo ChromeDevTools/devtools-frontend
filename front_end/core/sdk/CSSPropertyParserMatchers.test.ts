@@ -53,8 +53,8 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
       });
   sinon.stub(SDK.CSSPropertyParser.BottomUpTreeMatching.prototype, 'getComputedTextRange')
       .callsFake(function(
-          this: SDK.CSSPropertyParser.BottomUpTreeMatching, from: CodeMirror.SyntaxNode,
-          to: CodeMirror.SyntaxNode): string {
+          this: SDK.CSSPropertyParser.BottomUpTreeMatching, from: CodeMirror.SyntaxNode|undefined,
+          to: CodeMirror.SyntaxNode|undefined): string {
         injectChunk(this);
         return getComputedTextRange.call(this, from, to);
       });

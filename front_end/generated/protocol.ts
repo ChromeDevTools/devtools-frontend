@@ -2271,6 +2271,23 @@ export namespace Browser {
     bounds: Bounds;
   }
 
+  export interface SetContentsSizeRequest {
+    /**
+     * Browser window id.
+     */
+    windowId: WindowID;
+    /**
+     * The window contents width in DIP. Assumes current width if omitted.
+     * Must be specified if 'height' is omitted.
+     */
+    width?: integer;
+    /**
+     * The window contents height in DIP. Assumes current height if omitted.
+     * Must be specified if 'width' is omitted.
+     */
+    height?: integer;
+  }
+
   export interface SetDockTileRequest {
     badgeLabel?: string;
     /**

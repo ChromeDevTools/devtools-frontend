@@ -538,7 +538,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
 
   static #getOrAssignUrlIndex(urlIdToIndex: Map<string, number>, url: string): number {
     let index = urlIdToIndex.get(url);
-    if (index) {
+    if (index !== undefined) {
       return index;
     }
     index = urlIdToIndex.size;
@@ -550,19 +550,21 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
   static getNetworkRequestsNewFormat(
       requests: Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
     const urlIdToIndex = new Map<string, number>();
-    let allRequestsText = '';
-    requests.map(request => {
-      const urlIndex = TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
-      allRequestsText += this.networkRequestNewFormat(urlIndex, request, parsedTrace, urlIdToIndex);
-    });
+    const allRequestsText = requests
+                                .map(request => {
+                                  const urlIndex =
+                                      TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
+                                  return this.networkRequestNewFormat(urlIndex, request, parsedTrace, urlIdToIndex);
+                                })
+                                .join('\n');
 
     const urlsMapString = 'allUrls = ' +
         `[${
-                              Array.from(urlIdToIndex.keys())
-                                  .map(url => {
-                                    return `${urlIdToIndex.get(url)}: ${url}`;  // Removed the trailing comma here
+                              Array.from(urlIdToIndex.entries())
+                                  .map(([url, index]) => {
+                                    return `${index}: ${url}`;
                                   })
-                                  .join(', ')}]`;  // Explicitly join with a comma
+                                  .join(', ')}]`;
 
     return urlsMapString + '\n\n' + allRequestsText;
   }
@@ -598,7 +600,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
    * - `initiatorUrlIndex`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
    * - `redirects`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
    * `[redirectUrlIndex|startTime|duration]`, where: `redirectUrlIndex`: Numerical index for the redirect's URL. `startTime`: The start time of the redirect in milliseconds, relative to navigation start. `duration`: The duration of the redirect in milliseconds.
-   * - `responseHeaders`: A comma-separated list of values for specific, pre-defined response headers, enclosed in square brackets.
+   * - `responseHeaders`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
    * The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
    */
   static networkRequestNewFormat(
@@ -630,8 +632,13 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
     const mainThreadProcessingDuration = formatMicroToMilli(request.ts + request.dur - syntheticData.finishTime);
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request) ? 't' : 'f';
     const finalPriority = priority;
-    const headerValues = responseHeaders?.map(header => header.value).join(',');
-
+    const headerValues = responseHeaders
+                             ?.map(header => {
+                               const value =
+                                   NetworkRequestFormatter.allowHeader(header.name) ? header.value : '<redacted>';
+                               return `${header.name}: ${value}`;
+                             })
+                             .join('|');
     const redirects = request.args.data.redirects
                           .map(redirect => {
                             const urlIndex = TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, redirect.url);
@@ -661,10 +668,10 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
       finalPriority,
       renderBlocking,
       protocol,
-      fromServiceWorker,
+      fromServiceWorker ? 't' : 'f',
       initiatorUrlIndex,
       `[${redirects}]`,
-      `[${headerValues}]`,
+      `[${headerValues ?? ''}]`,
     ];
     return parts.join(';');
   }

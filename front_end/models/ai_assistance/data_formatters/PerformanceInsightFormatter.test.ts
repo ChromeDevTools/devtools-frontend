@@ -512,17 +512,83 @@ Response headers
       assertStringEquals(output, expected);
     });
 
-    it('getNetworkRequestsNewFormat correctly formats network requests', async function() {
+    it('getNetworkRequestsNewFormat correctly formats network requests for bad request latency trace', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
       const requests = parsedTrace.NetworkRequests.byTime;
       const output = TraceEventFormatter.getNetworkRequestsNewFormat(requests, parsedTrace);
-      const expected =
-          `allUrls = [0: http://localhost:3000/redirect3, 1: http://localhost:3000/, 2: http://localhost:3000/redirect1, 3: http://localhost:3000/redirect2]
+      const [urlMapString, requestData] = output.split('\n\n');
 
-0;3.04 ms;1,529.47 ms;3,532.63 ms;3,537.75 ms;3,534.71 ms;0.13 ms;5.12 ms;200;text/html;VeryHigh;VeryHigh;VeryHigh;f;http/1.1;false;;[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]];[chunked,timeout=5,Tue, 11 Mar 2025 10:19:12 GMT,text/html,keep-alive]`;
+      assert.strictEqual(
+          urlMapString,
+          'allUrls = [0: http://localhost:3000/redirect3, 1: http://localhost:3000/, 2: http://localhost:3000/redirect1, 3: http://localhost:3000/redirect2]');
 
-      assert.strictEqual(output, expected);
+      const parts = requestData.split(';');
+      // Join the last field because it is a list of headers that might contain a semicolon
+      const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
+
+      assert.strictEqual(fields[0], '0', 'urlIndex');
+      assert.strictEqual(fields[1], '3.04 ms', 'queuedTime');
+      assert.strictEqual(fields[2], '1,529.47 ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '3,532.63 ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '3,537.75 ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '3,534.71 ms', 'totalDuration');
+      assert.strictEqual(fields[6], '0.13 ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '5.12 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[8], '200', 'statusCode');
+      assert.strictEqual(fields[9], 'text/html', 'mimeType');
+      assert.strictEqual(fields[10], 'VeryHigh', 'priority');
+      assert.strictEqual(fields[11], 'VeryHigh', 'initialPriority');
+      assert.strictEqual(fields[12], 'VeryHigh', 'finalPriority');
+      assert.strictEqual(fields[13], 'f', 'renderBlocking');
+      assert.strictEqual(fields[14], 'http/1.1', 'protocol');
+      assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
+      assert.strictEqual(fields[16], '', 'initiatorUrlIndex');
+      assert.strictEqual(
+          fields[17], '[[1|3.04 ms|512.02 ms],[2|515.06 ms|505.67 ms],[3|1,020.73 ms|507.09 ms]]', 'redirects');
+      assert.strictEqual(
+          fields[18],
+          '[Transfer-Encoding: chunked|Keep-Alive: <redacted>|Date: Tue, 11 Mar 2025 10:19:12 GMT|Content-Type: text/html|Connection: keep-alive]',
+          'responseHeaders');
     });
 
+    it('getNetworkRequestsNewFormat correctly formats network requests for lcp-images trace', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const request = parsedTrace.NetworkRequests.byTime;
+      assert.isOk(request);
+      const output = TraceEventFormatter.getNetworkRequestsNewFormat(request, parsedTrace);
+
+      const [urlMapString, requestData] = output.split('\n\n');
+      assert.strictEqual(
+          urlMapString,
+          'allUrls = [0: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html, 1: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800, 2: https://chromedevtools.github.io/performance-stories/lcp-large-image/app.css, 3: https://via.placeholder.com/50.jpg, 4: https://via.placeholder.com/2000.jpg]');
+
+      const allRequests = requestData.split('\n');
+      const parts = allRequests[1].split(';');
+      // Join the last field because it is a list of headers that might contain a semicolon
+      const fields = [...parts.slice(0, 18), parts.slice(18).join(';')];
+
+      assert.strictEqual(fields[0], '1', 'urlIndex');
+      assert.strictEqual(fields[1], '37.62 ms', 'queuedTime');
+      assert.strictEqual(fields[2], '41.71 ms', 'requestSentTime');
+      assert.strictEqual(fields[3], '48.04 ms', 'downloadCompleteTime');
+      assert.strictEqual(fields[4], '51.55 ms', 'processingCompleteTime');
+      assert.strictEqual(fields[5], '13.93 ms', 'totalDuration');
+      assert.strictEqual(fields[6], '4.79 ms', 'downloadDuration');
+      assert.strictEqual(fields[7], '3.51 ms', 'mainThreadProcessingDuration');
+      assert.strictEqual(fields[8], '200', 'statusCode');
+      assert.strictEqual(fields[9], 'text/css', 'mimeType');
+      assert.strictEqual(fields[10], 'VeryHigh', 'priority');
+      assert.strictEqual(fields[11], 'VeryHigh', 'initialPriority');
+      assert.strictEqual(fields[12], 'VeryHigh', 'finalPriority');
+      assert.strictEqual(fields[13], 't', 'renderBlocking');
+      assert.strictEqual(fields[14], 'unknown', 'protocol');
+      assert.strictEqual(fields[15], 'f', 'fromServiceWorker');
+      assert.strictEqual(fields[16], '0', 'initiatorUrlIndex');
+      assert.strictEqual(fields[17], '[]', 'redirects');
+      assert.strictEqual(
+          fields[18],
+          '[date: Thu, 07 Mar 2024 21:17:02 GMT|content-encoding: gzip|x-content-type-options: nosniff|last-modified: Thu, 07 Mar 2024 21:17:02 GMT|server: ESF|cross-origin-opener-policy: <redacted>|x-frame-options: SAMEORIGIN|content-type: text/css; charset=utf-8|access-control-allow-origin: *|cache-control: private, max-age=86400, stale-while-revalidate=604800|cross-origin-resource-policy: <redacted>|timing-allow-origin: *|link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin|x-xss-protection: 0|expires: Thu, 07 Mar 2024 21:17:02 GMT]',
+          'headers');
+    });
   });
 });

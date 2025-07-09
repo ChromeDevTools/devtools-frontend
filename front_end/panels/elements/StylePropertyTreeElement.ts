@@ -2794,24 +2794,33 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private editingNameValueKeyPress(context: Context, event: Event): void {
-    function shouldCommitValueSemicolon(text: string, cursorPosition: number): boolean {
-      // FIXME: should this account for semicolons inside comments?
-      let openQuote = '';
-      for (let i = 0; i < cursorPosition; ++i) {
-        const ch = text[i];
-        if (ch === '\\' && openQuote !== '') {
-          ++i;
-        }  // skip next character inside string
-        else if (!openQuote && (ch === '"' || ch === '\'')) {
-          openQuote = ch;
-        } else if (openQuote === ch) {
-          openQuote = '';
-        }
+  static shouldCommitValueSemicolon(text: string, cursorPosition: number): boolean {
+    // FIXME: should this account for semicolons inside comments?
+    let openQuote = '';
+    const openParens: string[] = [];
+    for (let i = 0; i < cursorPosition; ++i) {
+      const ch = text[i];
+      if (ch === '\\' && openQuote !== '') {
+        ++i;
+      }  // skip next character inside string
+      else if (!openQuote && (ch === '"' || ch === '\'')) {
+        openQuote = ch;
+      } else if (ch === '[') {
+        openParens.push(']');
+      } else if (ch === '{') {
+        openParens.push('}');
+      } else if (ch === '(') {
+        openParens.push(')');
+      } else if (openQuote === ch) {
+        openQuote = '';
+      } else if (openParens.at(-1) === ch && !openQuote) {
+        openParens.pop();
       }
-      return !openQuote;
     }
+    return !openQuote && openParens.length === 0;
+  }
 
+  private editingNameValueKeyPress(context: Context, event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     const target = (keyboardEvent.target as HTMLElement);
     const keyChar = String.fromCharCode(keyboardEvent.charCode);
@@ -2819,7 +2828,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const isFieldInputTerminated =
         (context.isEditingName ? keyChar === ':' :
                                  keyChar === ';' && selectionLeftOffset !== null &&
-                 shouldCommitValueSemicolon(target.textContent || '', selectionLeftOffset));
+                 StylePropertyTreeElement.shouldCommitValueSemicolon(target.textContent || '', selectionLeftOffset));
     if (isFieldInputTerminated) {
       // Enter or colon (for name)/semicolon outside of string (for value).
       event.consume(true);

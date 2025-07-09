@@ -2191,4 +2191,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     assert.exists(stylePropertyTreeElement.nameElement.parentElement);
     assert.notExists(stylePropertyTreeElement.nameElement.parentElement.querySelector('devtools-tooltip'));
   });
+
+  it('correctly identifies when a semicolon terminates editing a property', () => {
+    const inputText = '" " ( ) [ ] { } { ( ) } { [ ( " ) " ) ] } { [ } ] } ( " ) " )';
+    const positions = '+--++--++--++--++------++----------------++--------++--------';
+    // + identifies a position in which a semicolon should terminate editing
+    for (let i = 0; i < inputText.length; i++) {
+      const shouldCommit =
+          Elements.StylePropertyTreeElement.StylePropertyTreeElement.shouldCommitValueSemicolon(inputText, i);
+      assert.strictEqual(shouldCommit, positions[i] === '+', `\n${inputText}\n${' '.repeat(i)}^`);
+    }
+  });
 });

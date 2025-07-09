@@ -17,6 +17,10 @@ export class BrowserWrapper {
     this.browser = b;
   }
 
+  get connected() {
+    return this.browser.connected;
+  }
+
   async createBrowserContext() {
     return await this.browser.createBrowserContext();
   }

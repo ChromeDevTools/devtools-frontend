@@ -49,7 +49,7 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
             mochaGlobals.describe = customDescribe(defaultImplementation.suite, '', thisSuite);
             // @ts-expect-error Custom interface.
             mochaGlobals.setup = function(suiteSettings: SuiteSettings) {
-              StateProvider.instance.registerSettingsCallback(thisSuite, suiteSettings);
+              StateProvider.instance.registerSuiteSettings(thisSuite, suiteSettings);
             };
             // @ts-expect-error Custom interface.
             mochaGlobals.it = customIt(defaultImplementation.test, thisSuite, thisSuite.file || '', mochaRoot);
@@ -67,7 +67,7 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
         });
 
         if (!suite.isPending()) {
-          suite.beforeAll(async function(this: Mocha.Context) {
+          suite.beforeEach(async function(this: Mocha.Context) {
             this.timeout(0);
             await StateProvider.instance.resolveBrowser(suite);
           });

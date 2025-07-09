@@ -11,12 +11,12 @@ import {TestConfig} from '../../conductor/test_config.js';
 
 import {StateProvider} from './state-provider.js';
 
-async function takeScreenshots(state: E2E.State): Promise<{target?: string, frontend?: string}> {
+async function takeScreenshots(state: E2E.State): Promise<{inspectedPage?: string, devToolsPage?: string}> {
   try {
     const {devToolsPage, inspectedPage} = state;
-    const targetScreenshot = await inspectedPage.screenshot();
-    const frontendScreenshot = await devToolsPage.screenshot();
-    return {target: targetScreenshot, frontend: frontendScreenshot};
+    const inspectedPageScreenshot = await inspectedPage.screenshot();
+    const devToolsPageScreenshot = await devToolsPage.screenshot();
+    return {inspectedPage: inspectedPageScreenshot, devToolsPage: devToolsPageScreenshot};
   } catch (err) {
     console.error('Error taking a screenshot', err);
     return {};
@@ -39,12 +39,17 @@ async function finalizeTestError(state: ExtendedState|undefined, error: Error): 
 }
 
 export async function screenshotError(state: E2E.State, error: Error) {
+  if (!state.browser.connected) {
+    console.error('Browser was disconnected, skipping screenshots');
+    return error;
+  }
+
   console.error('Taking screenshots for the error:', error);
   if (!TestConfig.debug) {
     try {
       const screenshotTimeout = 5_000;
       let timer: ReturnType<typeof setTimeout>;
-      const {target, frontend} = await Promise.race([
+      const {inspectedPage, devToolsPage} = await Promise.race([
         takeScreenshots(state).then(result => {
           clearTimeout(timer);
           return result;
@@ -53,10 +58,10 @@ export async function screenshotError(state: E2E.State, error: Error) {
           timer = setTimeout(resolve, screenshotTimeout);
         }).then(() => {
           console.error(`Could not take screenshots within ${screenshotTimeout}ms.`);
-          return {target: undefined, frontend: undefined};
+          return {inspectedPage: undefined, devToolsPage: undefined};
         }),
       ]);
-      return ScreenshotError.fromBase64Images(error, target, frontend);
+      return ScreenshotError.fromBase64Images(error, inspectedPage, devToolsPage);
     } catch (e) {
       console.error('Unexpected error saving screenshots', e);
       return e;
@@ -121,7 +126,9 @@ export class InstrumentedTestFunction {
     // including all error and timeout handling that still might rely
     // on the browserContext and pages.
     try {
-      await this.state?.browsingContext.close();
+      if (this.state?.state.browser.connected) {
+        await this.state?.browsingContext.close();
+      }
     } catch (e) {
       console.error('Unexpected error during cleanup', e);
     }

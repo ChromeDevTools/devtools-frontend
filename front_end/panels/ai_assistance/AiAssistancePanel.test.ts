@@ -716,6 +716,30 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const menuAfterDelete = openHistoryContextMenu(view.input, 'User question to Freestyler?');
       assert.isUndefined(menuAfterDelete.id);
     });
+
+    it('should clear the list of previous conversations when all history is deleted', async () => {
+      const {panel, view} = await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test');
+      await view.nextInput;
+
+      let {contextMenu} = openHistoryContextMenu(view.input, 'test');
+      assert.isDefined(findMenuItemWithLabel(contextMenu.defaultSection(), 'test'));
+      contextMenu.discard();
+
+      await AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
+
+      const newViewInput = await view.nextInput;
+      ({contextMenu} = openHistoryContextMenu(newViewInput, 'test'));
+
+      const defaultSectionItems = contextMenu.defaultSection().items;
+      assert.lengthOf(defaultSectionItems, 1, 'Default section should have one item');
+
+      const placeholderItem = defaultSectionItems[0];
+      assert.strictEqual(placeholderItem.buildDescriptor().label, 'No past conversations');
+      assert.isFalse(placeholderItem.isEnabled(), 'Placeholder item should be disabled');
+    });
+
   });
 
   describe('empty state', () => {

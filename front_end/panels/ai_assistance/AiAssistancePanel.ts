@@ -533,6 +533,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#toggleSearchElementAction =
           UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     }
+    AiAssistanceModel.AiHistoryStorage.instance().addEventListener(
+        AiAssistanceModel.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
   }
 
   #getChatUiState(): ChatViewState {
@@ -1247,7 +1249,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     contextMenu.footerSection().appendItem(
         i18nString(UIStrings.clearChatHistory),
         () => {
-          this.#clearHistory();
+          void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
         },
         {
           disabled: historyEmpty,
@@ -1255,9 +1257,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
   }
 
-  #clearHistory(): void {
+  #onHistoryDeleted(): void {
     this.#historicalConversations = [];
-    void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
     this.#updateConversationState();
   }
 

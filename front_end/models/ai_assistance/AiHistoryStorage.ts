@@ -129,13 +129,22 @@ let instance: AiHistoryStorage|null = null;
 
 const DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 
-export class AiHistoryStorage {
+export const enum Events {
+  HISTORY_DELETED = 'AiHistoryDeleted',
+}
+
+export interface EventTypes {
+  [Events.HISTORY_DELETED]: void;
+}
+
+export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #historySetting: Common.Settings.Setting<SerializedConversation[]>;
   #imageHistorySettings: Common.Settings.Setting<SerializedImage[]>;
   #mutex = new Common.Mutex.Mutex();
   #maxStorageSize: number;
 
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+    super();
     this.#historySetting = Common.Settings.Settings.instance().createSetting('ai-assistance-history-entries', []);
     this.#imageHistorySettings = Common.Settings.Settings.instance().createSetting(
         'ai-assistance-history-images',
@@ -229,6 +238,7 @@ export class AiHistoryStorage {
       this.#imageHistorySettings.set([]);
     } finally {
       release();
+      this.dispatchEventToListeners(Events.HISTORY_DELETED);
     }
   }
 

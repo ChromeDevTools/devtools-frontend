@@ -21,6 +21,7 @@ export interface MarkdownViewData {
   tokens: Marked.Marked.Token[];
   renderer?: MarkdownLitRenderer;
   animationEnabled?: boolean;
+  onOpenTableInViewer?: (markdownContent: string) => void;
 }
 
 export type CodeTokenWithCitation = Marked.Marked.Tokens.Generic&{
@@ -34,11 +35,33 @@ export class MarkdownView extends HTMLElement {
   #renderer = new MarkdownLitRenderer();
   #animationEnabled = false;
   #isAnimating = false;
+  #onOpenTableInViewer?: (markdownContent: string) => void;
+
+  connectedCallback(): void {
+    // Listen for table sort events to trigger re-render
+    this.addEventListener('table-sort-changed', this.#handleTableSortChanged.bind(this));
+  }
+
+  #handleTableSortChanged(): void {
+    console.log('[Table Sort] Event received in MarkdownView, triggering re-render');
+    // Re-render when table sort changes
+    this.#update();
+  }
 
   set data(data: MarkdownViewData) {
     this.#tokenData = data.tokens;
     if (data.renderer) {
       this.#renderer = data.renderer;
+    }
+
+    this.#onOpenTableInViewer = data.onOpenTableInViewer;
+    
+    // Pass the callback and instance to the renderer
+    if (this.#renderer && 'setTableViewerCallback' in this.#renderer) {
+      (this.#renderer as any).setTableViewerCallback(this.#onOpenTableInViewer);
+    }
+    if (this.#renderer && 'setMarkdownViewInstance' in this.#renderer) {
+      (this.#renderer as any).setMarkdownViewInstance(this);
     }
 
     if (data.animationEnabled) {
@@ -135,6 +158,9 @@ declare global {
  */
 export class MarkdownLitRenderer {
   #customClasses: Record<string, Set<string>> = {};
+  #tableViewerCallback?: (markdownContent: string) => void;
+  #tableSortState: Map<string, {columnIndex: number, direction: 'asc' | 'desc'}> = new Map();
+  #markdownViewInstance?: MarkdownView;
 
   addCustomClasses(customClasses: Record<Marked.Marked.Token['type'], string>): void {
     for (const [type, className] of Object.entries(customClasses)) {
@@ -143,6 +169,14 @@ export class MarkdownLitRenderer {
       }
       this.#customClasses[type].add(className);
     }
+  }
+  
+  setTableViewerCallback(callback?: (markdownContent: string) => void): void {
+    this.#tableViewerCallback = callback;
+  }
+  
+  setMarkdownViewInstance(instance: MarkdownView): void {
+    this.#markdownViewInstance = instance;
   }
 
   removeCustomClasses(customClasses: Record<Marked.Marked.Token['type'], string>): void {
@@ -222,6 +256,247 @@ export class MarkdownLitRenderer {
     // clang-format on
   }
 
+  renderTable(token: Marked.Marked.Tokens.Table): Lit.TemplateResult {
+    const customClass = this.customClassMapForToken('table');
+    const isLargeTable = this.isLargeTable(token);
+    const tableId = this.generateTableId(token);
+    const sortState = this.#tableSortState.get(tableId);
+    
+    console.log('[Table Sort] Rendering table', { tableId, sortState, hasSortState: !!sortState });
+    
+    // Get sorted or original rows
+    const rows = sortState ? this.sortTableData(token, sortState.columnIndex, sortState.direction) : token.rows;
+    
+    // Create a bound click handler
+    const handleClick = (index: number) => {
+      return (e: Event) => {
+        e.preventDefault();
+        this.handleColumnSort(tableId, index);
+      };
+    };
+    
+    const tableHtml = html`
+      <table class=${customClass} data-table-id=${tableId}>
+        <thead>
+          <tr>
+            ${token.header.map((cell, index) => html`
+              <th 
+                style=${this.getAlignmentStyle(token.align[index])}
+                class="sortable-header"
+                @click=${handleClick(index)}
+                title="Click to sort by ${cell.text}">
+                ${this.renderTableCellContent(cell)}
+                <span class="sort-indicator ${sortState?.columnIndex === index ? 'active' : ''}">
+                  ${sortState?.columnIndex === index ? 
+                    (sortState.direction === 'asc' ? ' ↑' : ' ↓') : 
+                    ' ↕'}
+                </span>
+              </th>
+            `)}
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map(row => html`
+            <tr>
+              ${row.map((cell, index) => html`
+                <td style=${this.getAlignmentStyle(token.align[index])}>
+                  ${this.renderTableCellContent(cell)}
+                </td>
+              `)}
+            </tr>
+          `)}
+        </tbody>
+      </table>
+    `;
+
+    return html`
+      <div class="table-container">
+        ${tableHtml}
+      </div>
+      ${isLargeTable ? html`
+        <div class="table-actions">
+          <span class="scroll-hint">← Scroll horizontally • Click headers to sort →</span>
+          <button 
+            class="view-document-btn"
+            @click=${() => this.openTableInViewer(token)}
+            title="Open table in full document viewer for better viewing">
+            📊 View Full Table
+          </button>
+        </div>
+      ` : ''}
+    `;
+  }
+
+  isLargeTable(token: Marked.Marked.Tokens.Table): boolean {
+    // Consider a table "large" if:
+    // 1. More than 4 columns
+    // 2. More than 10 rows
+    // 3. Any cell content is particularly long
+    const columnCount = token.header.length;
+    const rowCount = token.rows.length;
+    
+    if (columnCount > 4 || rowCount > 10) {
+      return true;
+    }
+    
+    // Check for long cell content
+    const allCells = [...token.header, ...token.rows.flat()];
+    const hasLongContent = allCells.some(cell => cell.text.length > 50);
+    
+    return hasLongContent;
+  }
+
+  openTableInViewer = (token: Marked.Marked.Tokens.Table): void => {
+    // Convert table back to markdown format for the document viewer
+    const markdownTable = this.convertTableToMarkdown(token);
+    
+    // Use the callback if available
+    if (this.#tableViewerCallback) {
+      this.#tableViewerCallback(markdownTable);
+    }
+  }
+
+  convertTableToMarkdown(token: Marked.Marked.Tokens.Table): string {
+    // Convert the table token back to markdown format
+    let markdown = '# Table Data\n\n';
+    
+    // Header row
+    const headerRow = '| ' + token.header.map(cell => cell.text).join(' | ') + ' |';
+    markdown += headerRow + '\n';
+    
+    // Separator row with alignment
+    const separatorRow = '|' + token.align.map(align => {
+      switch (align) {
+        case 'center': return ':---:';
+        case 'right': return '---:';
+        case 'left': return ':---';
+        default: return '---';
+      }
+    }).map(sep => ' ' + sep + ' ').join('|') + '|';
+    markdown += separatorRow + '\n';
+    
+    // Data rows
+    token.rows.forEach(row => {
+      const dataRow = '| ' + row.map(cell => cell.text).join(' | ') + ' |';
+      markdown += dataRow + '\n';
+    });
+    
+    return markdown;
+  }
+
+  renderTableCellContent(cell: Marked.Marked.Tokens.TableCell): Lit.TemplateResult {
+    // If the cell has tokens, render them; otherwise render the text directly
+    if (cell.tokens && cell.tokens.length > 0) {
+      return html`${cell.tokens.map(token => this.renderToken(token))}`;
+    }
+    return html`${this.unescape(cell.text)}`;
+  }
+
+  getAlignmentStyle(align: "center" | "left" | "right" | null): string {
+    switch (align) {
+      case 'center':
+        return 'text-align: center;';
+      case 'right':
+        return 'text-align: right;';
+      case 'left':
+        return 'text-align: left;';
+      default:
+        return '';
+    }
+  }
+
+  // Generate a unique ID for each table to track sorting state
+  generateTableId(token: Marked.Marked.Tokens.Table): string {
+    // Create a hash based on table structure for consistent ID
+    const content = token.header.map(h => h.text).join('|') + token.rows.map(r => r.map(c => c.text).join('|')).join('||');
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return `table-${Math.abs(hash).toString(16)}`;
+  }
+
+  // Sort table rows by column
+  sortTableData(token: Marked.Marked.Tokens.Table, columnIndex: number, direction: 'asc' | 'desc'): Marked.Marked.Tokens.TableCell[][] {
+    const sortedRows = [...token.rows];
+    
+    sortedRows.sort((a, b) => {
+      const aCell = a[columnIndex];
+      const bCell = b[columnIndex];
+      
+      if (!aCell || !bCell) return 0;
+      
+      const aText = aCell.text.trim();
+      const bText = bCell.text.trim();
+      
+      // Try to parse as numbers
+      const aNum = parseFloat(aText);
+      const bNum = parseFloat(bText);
+      
+      let comparison = 0;
+      
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        // Both are numbers
+        comparison = aNum - bNum;
+      } else {
+        // String comparison
+        comparison = aText.localeCompare(bText, undefined, { numeric: true, sensitivity: 'base' });
+      }
+      
+      return direction === 'asc' ? comparison : -comparison;
+    });
+    
+    return sortedRows;
+  }
+
+  // Handle column header click for sorting
+  handleColumnSort = (tableId: string, columnIndex: number): void => {
+    console.log('[Table Sort] Click handler called', { tableId, columnIndex });
+    
+    const currentSort = this.#tableSortState.get(tableId);
+    let newDirection: 'asc' | 'desc' = 'asc';
+    
+    if (currentSort && currentSort.columnIndex === columnIndex) {
+      // Toggle direction if clicking same column
+      newDirection = currentSort.direction === 'asc' ? 'desc' : 'asc';
+    }
+    
+    this.#tableSortState.set(tableId, { columnIndex, direction: newDirection });
+    console.log('[Table Sort] State updated', { tableId, columnIndex, direction: newDirection });
+    console.log('[Table Sort] Current state map:', this.#tableSortState);
+    
+    // Use the direct instance reference instead of DOM query
+    if (this.#markdownViewInstance) {
+      console.log('[Table Sort] Triggering re-render via direct instance');
+      this.#markdownViewInstance.dispatchEvent(new CustomEvent('table-sort-changed'));
+    } else {
+      console.log('[Table Sort] No markdown view instance available');
+    }
+  }
+
+
+  renderHorizontalRule(_token: Marked.Marked.Tokens.Hr): Lit.TemplateResult {
+    return html`<hr class=${this.customClassMapForToken('hr')}>`;
+  }
+
+  renderBlockquote(token: Marked.Marked.Tokens.Blockquote): Lit.TemplateResult {
+    return html`
+      <blockquote class=${this.customClassMapForToken('blockquote')}>
+        ${this.renderChildTokens(token)}
+      </blockquote>
+    `;
+  }
+
+  renderStrikethrough(token: Marked.Marked.Tokens.Del): Lit.TemplateResult {
+    return html`<del class=${this.customClassMapForToken('del')}>${this.renderChildTokens(token)}</del>`;
+  }
+
+  renderLineBreak(_token: Marked.Marked.Tokens.Br): Lit.TemplateResult {
+    return html`<br class=${this.customClassMapForToken('br')}>`;
+  }
+
   templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
     switch (token.type) {
       case 'paragraph':
@@ -262,6 +537,16 @@ export class MarkdownLitRenderer {
         return html`<strong class=${this.customClassMapForToken('strong')}>${this.renderText(token)}</strong>`;
       case 'em':
         return html`<em class=${this.customClassMapForToken('em')}>${this.renderText(token)}</em>`;
+      case 'table':
+        return this.renderTable(token);
+      case 'hr':
+        return this.renderHorizontalRule(token);
+      case 'blockquote':
+        return this.renderBlockquote(token);
+      case 'del':
+        return this.renderStrikethrough(token);
+      case 'br':
+        return this.renderLineBreak(token);
       default:
         return null;
     }

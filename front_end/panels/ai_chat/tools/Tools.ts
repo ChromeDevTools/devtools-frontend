@@ -227,7 +227,7 @@ export interface ScreenshotResult {
  */
 export interface AccessibilityTreeResult {
   simplified: string;
-  iframes: Array<{
+  iframes?: Array<{
     role: string,
     nodeId?: string,
     contentTree?: Array<{
@@ -1501,10 +1501,10 @@ export class GetAccessibilityTreeTool implements Tool<{ reasoning: string }, Acc
 
       return {
         simplified: treeResult.simplified,
-        iframes: treeResult.iframes,
+        // iframes: treeResult.iframes,
         idToUrl: treeResult.idToUrl,
-        xpathMap: treeResult.xpathMap,
-        tagNameMap: treeResult.tagNameMap,
+        // xpathMap: treeResult.xpathMap,
+        // tagNameMap: treeResult.tagNameMap,
       };
     } catch (error) {
       return { error: `Failed to get accessibility tree: ${String(error)}` };

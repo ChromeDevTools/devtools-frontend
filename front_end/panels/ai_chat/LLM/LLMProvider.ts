@@ -44,6 +44,18 @@ export interface LLMProviderInterface {
    * Test connection to a specific model (optional)
    */
   testConnection?(modelId: string): Promise<{success: boolean, message: string}>;
+  
+  /**
+   * Validate that required credentials are available for this provider
+   * @returns Object with validation result and user-friendly message
+   */
+  validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]};
+  
+  /**
+   * Get the storage keys this provider uses for credentials
+   * @returns Array of localStorage keys this provider needs
+   */
+  getCredentialStorageKeys(): {apiKey?: string, endpoint?: string, [key: string]: string | undefined};
 }
 
 /**
@@ -70,6 +82,10 @@ export abstract class LLMBaseProvider implements LLMProviderInterface {
   abstract getModels(): Promise<ModelInfo[]>;
   
   abstract parseResponse(response: LLMResponse): any;
+  
+  abstract validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]};
+  
+  abstract getCredentialStorageKeys(): {apiKey?: string, endpoint?: string, [key: string]: string | undefined};
   
   /**
    * Helper method to handle provider-specific errors

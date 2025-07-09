@@ -27,6 +27,7 @@ const GROQ_API_KEY_STORAGE_KEY = 'ai_chat_groq_api_key';
 const OPENROUTER_API_KEY_STORAGE_KEY = 'ai_chat_openrouter_api_key';
 const PROVIDER_SELECTION_KEY = 'ai_chat_provider';
 // Vector DB configuration keys - Milvus format
+const VECTOR_DB_ENABLED_KEY = 'ai_chat_vector_db_enabled';
 const MILVUS_ENDPOINT_KEY = 'ai_chat_milvus_endpoint';
 const MILVUS_USERNAME_KEY = 'ai_chat_milvus_username';
 const MILVUS_PASSWORD_KEY = 'ai_chat_milvus_password';
@@ -204,9 +205,17 @@ const UIStrings = {
    */
   importantNotice: 'Important Notice',
   /**
-   *@description Milvus DB section label
+   *@description Vector DB section label
    */
-  vectorDBLabel: 'Milvus Vector Database (Bookmarks)',
+  vectorDBLabel: 'Vector Database Configuration',
+  /**
+   *@description Vector DB enabled label
+   */
+  vectorDBEnabled: 'Enable Vector Database',
+  /**
+   *@description Vector DB enabled hint
+   */
+  vectorDBEnabledHint: 'Enable Vector Database for semantic search of websites',
   /**
    *@description Milvus endpoint label
    */
@@ -230,7 +239,7 @@ const UIStrings = {
   /**
    *@description Vector DB collection hint
    */
-  vectorDBCollectionHint: 'Name of the collection to store bookmarks (default: bookmarks)',
+  vectorDBCollectionHint: 'Name of the collection to store websites (default: bookmarks)',
   /**
    *@description Milvus password/token label
    */
@@ -307,6 +316,11 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/ui/SettingsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+// Helper function to check if Vector DB is enabled
+export function isVectorDBEnabled(): boolean {
+  return localStorage.getItem(VECTOR_DB_ENABLED_KEY) === 'true';
+}
 
 export class SettingsDialog {
   // Variables to store direct references to model selectors
@@ -1465,7 +1479,7 @@ export class SettingsDialog {
     
     // Add Vector DB configuration section
     const vectorDBSection = document.createElement('div');
-    vectorDBSection.classList.add('settings-section');
+    vectorDBSection.className = 'settings-section vector-db-section';
     contentDiv.appendChild(vectorDBSection);
     
     const vectorDBTitle = document.createElement('h3');
@@ -1473,10 +1487,39 @@ export class SettingsDialog {
     vectorDBTitle.classList.add('settings-subtitle');
     vectorDBSection.appendChild(vectorDBTitle);
     
+    // Vector DB enabled checkbox
+    const vectorDBEnabledContainer = document.createElement('div');
+    vectorDBEnabledContainer.className = 'tracing-enabled-container';
+    vectorDBSection.appendChild(vectorDBEnabledContainer);
+
+    const vectorDBEnabledCheckbox = document.createElement('input');
+    vectorDBEnabledCheckbox.type = 'checkbox';
+    vectorDBEnabledCheckbox.id = 'vector-db-enabled';
+    vectorDBEnabledCheckbox.className = 'tracing-checkbox';
+    vectorDBEnabledCheckbox.checked = localStorage.getItem(VECTOR_DB_ENABLED_KEY) === 'true';
+    vectorDBEnabledContainer.appendChild(vectorDBEnabledCheckbox);
+
+    const vectorDBEnabledLabel = document.createElement('label');
+    vectorDBEnabledLabel.htmlFor = 'vector-db-enabled';
+    vectorDBEnabledLabel.className = 'tracing-label';
+    vectorDBEnabledLabel.textContent = i18nString(UIStrings.vectorDBEnabled);
+    vectorDBEnabledContainer.appendChild(vectorDBEnabledLabel);
+
+    const vectorDBEnabledHint = document.createElement('div');
+    vectorDBEnabledHint.className = 'settings-hint';
+    vectorDBEnabledHint.textContent = i18nString(UIStrings.vectorDBEnabledHint);
+    vectorDBSection.appendChild(vectorDBEnabledHint);
+
+    // Vector DB configuration container (shown when enabled)
+    const vectorDBConfigContainer = document.createElement('div');
+    vectorDBConfigContainer.className = 'tracing-config-container';
+    vectorDBConfigContainer.style.display = vectorDBEnabledCheckbox.checked ? 'block' : 'none';
+    vectorDBSection.appendChild(vectorDBConfigContainer);
+    
     // Vector DB Endpoint
     const vectorDBEndpointDiv = document.createElement('div');
     vectorDBEndpointDiv.classList.add('settings-field');
-    vectorDBSection.appendChild(vectorDBEndpointDiv);
+    vectorDBConfigContainer.appendChild(vectorDBEndpointDiv);
     
     const vectorDBEndpointLabel = document.createElement('label');
     vectorDBEndpointLabel.textContent = i18nString(UIStrings.vectorDBEndpoint);
@@ -1498,7 +1541,7 @@ export class SettingsDialog {
     // Vector DB API Key
     const vectorDBApiKeyDiv = document.createElement('div');
     vectorDBApiKeyDiv.classList.add('settings-field');
-    vectorDBSection.appendChild(vectorDBApiKeyDiv);
+    vectorDBConfigContainer.appendChild(vectorDBApiKeyDiv);
     
     const vectorDBApiKeyLabel = document.createElement('label');
     vectorDBApiKeyLabel.textContent = i18nString(UIStrings.vectorDBApiKey);
@@ -1520,7 +1563,7 @@ export class SettingsDialog {
     // Milvus Password
     const milvusPasswordDiv = document.createElement('div');
     milvusPasswordDiv.classList.add('settings-field');
-    vectorDBSection.appendChild(milvusPasswordDiv);
+    vectorDBConfigContainer.appendChild(milvusPasswordDiv);
     
     const milvusPasswordLabel = document.createElement('label');
     milvusPasswordLabel.textContent = i18nString(UIStrings.milvusPassword);
@@ -1542,7 +1585,7 @@ export class SettingsDialog {
     // OpenAI API Key for embeddings
     const milvusOpenAIDiv = document.createElement('div');
     milvusOpenAIDiv.classList.add('settings-field');
-    vectorDBSection.appendChild(milvusOpenAIDiv);
+    vectorDBConfigContainer.appendChild(milvusOpenAIDiv);
     
     const milvusOpenAILabel = document.createElement('label');
     milvusOpenAILabel.textContent = i18nString(UIStrings.milvusOpenAIKey);
@@ -1564,7 +1607,7 @@ export class SettingsDialog {
     // Vector DB Collection Name
     const vectorDBCollectionDiv = document.createElement('div');
     vectorDBCollectionDiv.classList.add('settings-field');
-    vectorDBSection.appendChild(vectorDBCollectionDiv);
+    vectorDBConfigContainer.appendChild(vectorDBCollectionDiv);
     
     const vectorDBCollectionLabel = document.createElement('label');
     vectorDBCollectionLabel.textContent = i18nString(UIStrings.vectorDBCollection);
@@ -1586,7 +1629,7 @@ export class SettingsDialog {
     // Test Vector DB Connection Button
     const vectorDBTestDiv = document.createElement('div');
     vectorDBTestDiv.classList.add('settings-field', 'test-connection-field');
-    vectorDBSection.appendChild(vectorDBTestDiv);
+    vectorDBConfigContainer.appendChild(vectorDBTestDiv);
     
     const vectorDBTestButton = document.createElement('button');
     vectorDBTestButton.classList.add('settings-button', 'test-button');
@@ -1599,8 +1642,15 @@ export class SettingsDialog {
     vectorDBTestStatus.style.display = 'none';
     vectorDBTestDiv.appendChild(vectorDBTestStatus);
     
+    // Toggle vector DB config visibility
+    vectorDBEnabledCheckbox.addEventListener('change', () => {
+      vectorDBConfigContainer.style.display = vectorDBEnabledCheckbox.checked ? 'block' : 'none';
+      localStorage.setItem(VECTOR_DB_ENABLED_KEY, vectorDBEnabledCheckbox.checked.toString());
+    });
+    
     // Save Vector DB settings on input change
     const saveVectorDBSettings = () => {
+      localStorage.setItem(VECTOR_DB_ENABLED_KEY, vectorDBEnabledCheckbox.checked.toString());
       localStorage.setItem(MILVUS_ENDPOINT_KEY, vectorDBEndpointInput.value);
       localStorage.setItem(MILVUS_USERNAME_KEY, vectorDBApiKeyInput.value);
       localStorage.setItem(MILVUS_PASSWORD_KEY, milvusPasswordInput.value);
@@ -1664,187 +1714,6 @@ export class SettingsDialog {
       }
     });
     
-    // Add disclaimer section
-    const disclaimerSection = document.createElement('div');
-    disclaimerSection.classList.add('settings-section', 'disclaimer-section');
-    contentDiv.appendChild(disclaimerSection);
-    
-    const disclaimerTitle = document.createElement('h3');
-    disclaimerTitle.textContent = i18nString(UIStrings.importantNotice);
-    disclaimerTitle.classList.add('settings-subtitle');
-    disclaimerSection.appendChild(disclaimerTitle);
-
-    const disclaimerText = document.createElement('div');
-    disclaimerText.classList.add('settings-disclaimer');
-    disclaimerText.innerHTML = `
-      <p class="disclaimer-warning">
-        <strong>Alpha Version:</strong> This is an alpha version of the Browser Operator - AI Assistant feature.
-      </p>
-      <p class="disclaimer-note">
-        <strong>Data Sharing:</strong> When using this feature, your browser data and conversation content will be sent to the AI model for processing.
-      </p>
-      <p class="disclaimer-note">
-        <strong>Model Support:</strong> We currently support OpenAI models directly. And we support LiteLLM as a proxy to access 100+ other models.
-      </p>
-      <p class="disclaimer-footer">
-        By using this feature, you acknowledge that your data will be processed according to Model Provider's privacy policy and terms of service.
-      </p>
-    `;
-    disclaimerSection.appendChild(disclaimerText);
-    
-    // Button container
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'settings-footer';
-    contentDiv.appendChild(buttonContainer);
-    
-    // Status message for save operation
-    const saveStatusMessage = document.createElement('div');
-    saveStatusMessage.className = 'settings-status save-status';
-    saveStatusMessage.style.display = 'none';
-    saveStatusMessage.style.marginRight = 'auto'; // Push to left
-    buttonContainer.appendChild(saveStatusMessage);
-    
-    // Cancel button
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-    cancelButton.className = 'settings-button cancel-button';
-    cancelButton.setAttribute('type', 'button');
-    cancelButton.addEventListener('click', () => dialog.hide());
-    buttonContainer.appendChild(cancelButton);
-    
-    // Save button
-    const saveButton = document.createElement('button');
-    saveButton.textContent = 'Save';
-    saveButton.className = 'settings-button save-button';
-    saveButton.setAttribute('type', 'button');
-    buttonContainer.appendChild(saveButton);
-    
-    saveButton.addEventListener('click', async () => {
-      // Disable save button while saving
-      saveButton.disabled = true;
-      
-      // Show saving status
-      saveStatusMessage.textContent = 'Saving settings...';
-      saveStatusMessage.style.backgroundColor = 'var(--color-accent-blue-background)';
-      saveStatusMessage.style.color = 'var(--color-accent-blue)';
-      saveStatusMessage.style.display = 'block';
-      
-      // Save provider selection
-      const selectedProvider = providerSelect.value;
-      localStorage.setItem(PROVIDER_SELECTION_KEY, selectedProvider);
-      
-      // Save OpenAI API key
-      const newApiKey = settingsApiKeyInput.value.trim();
-      if (newApiKey) {
-        localStorage.setItem('ai_chat_api_key', newApiKey);
-      } else {
-        localStorage.removeItem('ai_chat_api_key');
-      }
-      
-      // Save or remove LiteLLM API key
-      const liteLLMApiKeyValue = litellmApiKeyInput.value.trim();
-      if (liteLLMApiKeyValue) {
-        localStorage.setItem(LITELLM_API_KEY_STORAGE_KEY, liteLLMApiKeyValue);
-      } else {
-        localStorage.removeItem(LITELLM_API_KEY_STORAGE_KEY);
-      }
-      
-      // Save or remove LiteLLM endpoint
-      const liteLLMEndpointValue = litellmEndpointInput.value.trim();
-      if (liteLLMEndpointValue) {
-        localStorage.setItem(LITELLM_ENDPOINT_KEY, liteLLMEndpointValue);
-      } else {
-        localStorage.removeItem(LITELLM_ENDPOINT_KEY);
-      }
-      
-      // Save or remove Groq API key
-      const groqApiKeyValue = groqApiKeyInput.value.trim();
-      if (groqApiKeyValue) {
-        localStorage.setItem(GROQ_API_KEY_STORAGE_KEY, groqApiKeyValue);
-      } else {
-        localStorage.removeItem(GROQ_API_KEY_STORAGE_KEY);
-      }
-      
-      // Save or remove OpenRouter API key
-      const openrouterApiKeyValue = openrouterApiKeyInput.value.trim();
-      if (openrouterApiKeyValue) {
-        localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, openrouterApiKeyValue);
-      } else {
-        localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
-      }
-      
-      // Determine which mini/nano model selectors to use based on current provider
-      let miniModelValue = '';
-      let nanoModelValue = '';
-      
-      if (selectedProvider === 'openai') {
-        // Get values from OpenAI selectors
-        if (SettingsDialog.#openaiMiniModelSelect) {
-          miniModelValue = SettingsDialog.#openaiMiniModelSelect.value;
-        }
-        if (SettingsDialog.#openaiNanoModelSelect) {
-          nanoModelValue = SettingsDialog.#openaiNanoModelSelect.value;
-        }
-      } else if (selectedProvider === 'litellm') {
-        // Get values from LiteLLM selectors
-        if (SettingsDialog.#litellmMiniModelSelect) {
-          miniModelValue = SettingsDialog.#litellmMiniModelSelect.value;
-        }
-        if (SettingsDialog.#litellmNanoModelSelect) {
-          nanoModelValue = SettingsDialog.#litellmNanoModelSelect.value;
-        }
-      } else if (selectedProvider === 'groq') {
-        // Get values from Groq selectors
-        if (SettingsDialog.#groqMiniModelSelect) {
-          miniModelValue = SettingsDialog.#groqMiniModelSelect.value;
-        }
-        if (SettingsDialog.#groqNanoModelSelect) {
-          nanoModelValue = SettingsDialog.#groqNanoModelSelect.value;
-        }
-      } else if (selectedProvider === 'openrouter') {
-        // Get values from OpenRouter selectors
-        if (SettingsDialog.#openrouterMiniModelSelect) {
-          miniModelValue = SettingsDialog.#openrouterMiniModelSelect.value;
-        }
-        if (SettingsDialog.#openrouterNanoModelSelect) {
-          nanoModelValue = SettingsDialog.#openrouterNanoModelSelect.value;
-        }
-      }
-      
-      // Save mini model if selected
-      logger.debug('Mini model value to save:', miniModelValue);
-      if (miniModelValue) {
-        localStorage.setItem(MINI_MODEL_STORAGE_KEY, miniModelValue);
-      } else {
-        localStorage.removeItem(MINI_MODEL_STORAGE_KEY);
-      }
-      
-      // Save nano model if selected 
-      logger.debug('Nano model value to save:', nanoModelValue);
-      if (nanoModelValue) {
-        localStorage.setItem(NANO_MODEL_STORAGE_KEY, nanoModelValue);
-      } else {
-        localStorage.removeItem(NANO_MODEL_STORAGE_KEY);
-      }
-      
-      logger.debug('Settings saved successfully');
-      logger.debug('Mini Model:', localStorage.getItem(MINI_MODEL_STORAGE_KEY));
-      logger.debug('Nano Model:', localStorage.getItem(NANO_MODEL_STORAGE_KEY));
-      logger.debug('Provider:', selectedProvider);
-      
-      // Set success message and notify parent
-      saveStatusMessage.textContent = 'Settings saved successfully';
-      saveStatusMessage.style.backgroundColor = 'var(--color-accent-green-background)';
-      saveStatusMessage.style.color = 'var(--color-accent-green)';
-      saveStatusMessage.style.display = 'block';
-      
-      onSettingsSaved();
-      
-      setTimeout(() => {
-        dialog.hide();
-      }, 1500);
-    });
-
     // Add tracing configuration section
     const tracingSection = document.createElement('div');
     tracingSection.className = 'settings-section tracing-section';
@@ -2017,10 +1886,170 @@ export class SettingsDialog {
         }, 5000);
       }
     });
+    
+    // Add disclaimer section
+    const disclaimerSection = document.createElement('div');
+    disclaimerSection.classList.add('settings-section', 'disclaimer-section');
+    contentDiv.appendChild(disclaimerSection);
+    
+    const disclaimerTitle = document.createElement('h3');
+    disclaimerTitle.textContent = i18nString(UIStrings.importantNotice);
+    disclaimerTitle.classList.add('settings-subtitle');
+    disclaimerSection.appendChild(disclaimerTitle);
 
-    // Save tracing configuration when main save button is clicked
-    const originalSaveHandler = saveButton.onclick;
-    saveButton.onclick = async (event) => {
+    const disclaimerText = document.createElement('div');
+    disclaimerText.classList.add('settings-disclaimer');
+    disclaimerText.innerHTML = `
+      <p class="disclaimer-warning">
+        <strong>Alpha Version:</strong> This is an alpha version of the Browser Operator - AI Assistant feature.
+      </p>
+      <p class="disclaimer-note">
+        <strong>Data Sharing:</strong> When using this feature, your browser data and conversation content will be sent to the AI model for processing.
+      </p>
+      <p class="disclaimer-note">
+        <strong>Model Support:</strong> We currently support OpenAI models directly. And we support LiteLLM as a proxy to access 100+ other models.
+      </p>
+      <p class="disclaimer-footer">
+        By using this feature, you acknowledge that your data will be processed according to Model Provider's privacy policy and terms of service.
+      </p>
+    `;
+    disclaimerSection.appendChild(disclaimerText);
+    
+    // Button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'settings-footer';
+    contentDiv.appendChild(buttonContainer);
+    
+    // Status message for save operation
+    const saveStatusMessage = document.createElement('div');
+    saveStatusMessage.className = 'settings-status save-status';
+    saveStatusMessage.style.display = 'none';
+    saveStatusMessage.style.marginRight = 'auto'; // Push to left
+    buttonContainer.appendChild(saveStatusMessage);
+    
+    // Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'settings-button cancel-button';
+    cancelButton.setAttribute('type', 'button');
+    cancelButton.addEventListener('click', () => dialog.hide());
+    buttonContainer.appendChild(cancelButton);
+    
+    // Save button
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Save';
+    saveButton.className = 'settings-button save-button';
+    saveButton.setAttribute('type', 'button');
+    buttonContainer.appendChild(saveButton);
+    
+    saveButton.addEventListener('click', async () => {
+      // Disable save button while saving
+      saveButton.disabled = true;
+      
+      // Show saving status
+      saveStatusMessage.textContent = 'Saving settings...';
+      saveStatusMessage.style.backgroundColor = 'var(--color-accent-blue-background)';
+      saveStatusMessage.style.color = 'var(--color-accent-blue)';
+      saveStatusMessage.style.display = 'block';
+      
+      // Save provider selection
+      const selectedProvider = providerSelect.value;
+      localStorage.setItem(PROVIDER_SELECTION_KEY, selectedProvider);
+      
+      // Save OpenAI API key
+      const newApiKey = settingsApiKeyInput.value.trim();
+      if (newApiKey) {
+        localStorage.setItem('ai_chat_api_key', newApiKey);
+      } else {
+        localStorage.removeItem('ai_chat_api_key');
+      }
+      
+      // Save or remove LiteLLM API key
+      const liteLLMApiKeyValue = litellmApiKeyInput.value.trim();
+      if (liteLLMApiKeyValue) {
+        localStorage.setItem(LITELLM_API_KEY_STORAGE_KEY, liteLLMApiKeyValue);
+      } else {
+        localStorage.removeItem(LITELLM_API_KEY_STORAGE_KEY);
+      }
+      
+      // Save or remove LiteLLM endpoint
+      const liteLLMEndpointValue = litellmEndpointInput.value.trim();
+      if (liteLLMEndpointValue) {
+        localStorage.setItem(LITELLM_ENDPOINT_KEY, liteLLMEndpointValue);
+      } else {
+        localStorage.removeItem(LITELLM_ENDPOINT_KEY);
+      }
+      
+      // Save or remove Groq API key
+      const groqApiKeyValue = groqApiKeyInput.value.trim();
+      if (groqApiKeyValue) {
+        localStorage.setItem(GROQ_API_KEY_STORAGE_KEY, groqApiKeyValue);
+      } else {
+        localStorage.removeItem(GROQ_API_KEY_STORAGE_KEY);
+      }
+      
+      // Save or remove OpenRouter API key
+      const openrouterApiKeyValue = openrouterApiKeyInput.value.trim();
+      if (openrouterApiKeyValue) {
+        localStorage.setItem(OPENROUTER_API_KEY_STORAGE_KEY, openrouterApiKeyValue);
+      } else {
+        localStorage.removeItem(OPENROUTER_API_KEY_STORAGE_KEY);
+      }
+      
+      // Determine which mini/nano model selectors to use based on current provider
+      let miniModelValue = '';
+      let nanoModelValue = '';
+      
+      if (selectedProvider === 'openai') {
+        // Get values from OpenAI selectors
+        if (SettingsDialog.#openaiMiniModelSelect) {
+          miniModelValue = SettingsDialog.#openaiMiniModelSelect.value;
+        }
+        if (SettingsDialog.#openaiNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#openaiNanoModelSelect.value;
+        }
+      } else if (selectedProvider === 'litellm') {
+        // Get values from LiteLLM selectors
+        if (SettingsDialog.#litellmMiniModelSelect) {
+          miniModelValue = SettingsDialog.#litellmMiniModelSelect.value;
+        }
+        if (SettingsDialog.#litellmNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#litellmNanoModelSelect.value;
+        }
+      } else if (selectedProvider === 'groq') {
+        // Get values from Groq selectors
+        if (SettingsDialog.#groqMiniModelSelect) {
+          miniModelValue = SettingsDialog.#groqMiniModelSelect.value;
+        }
+        if (SettingsDialog.#groqNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#groqNanoModelSelect.value;
+        }
+      } else if (selectedProvider === 'openrouter') {
+        // Get values from OpenRouter selectors
+        if (SettingsDialog.#openrouterMiniModelSelect) {
+          miniModelValue = SettingsDialog.#openrouterMiniModelSelect.value;
+        }
+        if (SettingsDialog.#openrouterNanoModelSelect) {
+          nanoModelValue = SettingsDialog.#openrouterNanoModelSelect.value;
+        }
+      }
+      
+      // Save mini model if selected
+      logger.debug('Mini model value to save:', miniModelValue);
+      if (miniModelValue) {
+        localStorage.setItem(MINI_MODEL_STORAGE_KEY, miniModelValue);
+      } else {
+        localStorage.removeItem(MINI_MODEL_STORAGE_KEY);
+      }
+      
+      // Save nano model if selected 
+      logger.debug('Nano model value to save:', nanoModelValue);
+      if (nanoModelValue) {
+        localStorage.setItem(NANO_MODEL_STORAGE_KEY, nanoModelValue);
+      } else {
+        localStorage.removeItem(NANO_MODEL_STORAGE_KEY);
+      }
+      
       // Save tracing configuration
       if (tracingEnabledCheckbox.checked) {
         const endpoint = endpointInput.value.trim();
@@ -2038,12 +2067,24 @@ export class SettingsDialog {
       } else {
         setTracingConfig({ provider: 'disabled' });
       }
-
-      // Call original save handler
-      if (originalSaveHandler) {
-        await originalSaveHandler.call(saveButton, event);
-      }
-    };
+      
+      logger.debug('Settings saved successfully');
+      logger.debug('Mini Model:', localStorage.getItem(MINI_MODEL_STORAGE_KEY));
+      logger.debug('Nano Model:', localStorage.getItem(NANO_MODEL_STORAGE_KEY));
+      logger.debug('Provider:', selectedProvider);
+      
+      // Set success message and notify parent
+      saveStatusMessage.textContent = 'Settings saved successfully';
+      saveStatusMessage.style.backgroundColor = 'var(--color-accent-green-background)';
+      saveStatusMessage.style.color = 'var(--color-accent-green)';
+      saveStatusMessage.style.display = 'block';
+      
+      onSettingsSaved();
+      
+      setTimeout(() => {
+        dialog.hide();
+      }, 1500);
+    });
     
     // Add styles
     const styleElement = document.createElement('style');
@@ -2361,6 +2402,13 @@ export class SettingsDialog {
       
       .clear-button {
         margin-top: 8px;
+      }
+      
+      /* Vector DB section styles */
+      .vector-db-section {
+        margin-top: 16px;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--color-details-hairline);
       }
       
       /* Tracing section styles */

@@ -12,8 +12,10 @@ import { schemaExtractorTests } from '../evaluation/test-cases/schema-extractor-
 import { streamlinedSchemaExtractorTests } from '../evaluation/test-cases/streamlined-schema-extractor-tests.js';
 import { researchAgentTests } from '../evaluation/test-cases/research-agent-tests.js';
 import { actionAgentTests } from '../evaluation/test-cases/action-agent-tests.js';
+import { webTaskAgentTests } from '../evaluation/test-cases/web-task-agent-tests.js';
 import type { TestResult } from '../evaluation/framework/types.js';
 import { createLogger } from '../core/Logger.js';
+import { AIChatPanel } from './AIChatPanel.js';
 
 const logger = createLogger('EvaluationDialog');
 
@@ -41,6 +43,10 @@ const AGENT_TEST_MAPPING: Record<string, { tests: any[], displayName: string }> 
   'action_agent': {
     tests: actionAgentTests,
     displayName: 'Action Agent'
+  },
+  'web_task_agent': {
+    tests: webTaskAgentTests,
+    displayName: 'Web Task Agent'
   },
   // Future agents can be added here:
   // 'vision_agent': { tests: visionAgentTests, displayName: 'Vision Agent' },
@@ -120,6 +126,14 @@ const UIStrings = {
    * @description Test logs header
    */
   testLogs: 'Test Logs',
+  /**
+   * @description Judge model selector label
+   */
+  judgeModel: 'Judge Model:',
+  /**
+   * @description Judge model tooltip
+   */
+  judgeModelTooltip: 'LLM model used to evaluate test results and provide scoring',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_chat/ui/EvaluationDialog.ts', UIStrings);
@@ -139,6 +153,7 @@ interface EvaluationDialogState {
   bottomPanelView: 'summary' | 'logs';
   testLogs: string[];
   toolType: string;
+  judgeModel: string;
 }
 
 export class EvaluationDialog {
@@ -154,6 +169,7 @@ export class EvaluationDialog {
     bottomPanelView: 'summary',
     testLogs: [],
     toolType: 'extract_schema',
+    judgeModel: 'gpt-4o-mini', // Default judge model
   };
   
   #evaluationRunner?: EvaluationRunner;
@@ -177,13 +193,13 @@ export class EvaluationDialog {
     
     // Initialize evaluation runners
     try {
-      this.#evaluationRunner = new EvaluationRunner();
+      this.#evaluationRunner = new EvaluationRunner(this.#state.judgeModel);
     } catch (error) {
       logger.error('Failed to initialize evaluation runner:', error);
     }
     
     try {
-      this.#agentEvaluationRunner = new VisionAgentEvaluationRunner(this.#state.visionEnabled);
+      this.#agentEvaluationRunner = new VisionAgentEvaluationRunner(this.#state.visionEnabled, this.#state.judgeModel);
     } catch (error) {
       logger.error('Failed to initialize agent evaluation runner:', error);
     }
@@ -669,9 +685,18 @@ export class EvaluationDialog {
     const header = document.createElement('div');
     header.className = 'eval-header';
 
+    const leftSection = document.createElement('div');
+    leftSection.style.cssText = 'display: flex; align-items: center; gap: 20px;';
+
     const title = document.createElement('h2');
     title.className = 'eval-title';
     title.textContent = i18nString(UIStrings.evaluationTests);
+
+    // Judge model selector
+    const judgeModelContainer = this.#renderJudgeModelSelector();
+
+    leftSection.appendChild(title);
+    leftSection.appendChild(judgeModelContainer);
 
     const status = document.createElement('div');
     status.className = 'eval-status';
@@ -712,9 +737,100 @@ export class EvaluationDialog {
       `;
     }
 
-    header.appendChild(title);
+    header.appendChild(leftSection);
     header.appendChild(status);
     return header;
+  }
+
+  #renderJudgeModelSelector(): HTMLElement {
+    const container = document.createElement('div');
+    container.style.cssText = 'display: flex; align-items: center; gap: 8px;';
+
+    const label = document.createElement('label');
+    label.textContent = i18nString(UIStrings.judgeModel);
+    label.title = i18nString(UIStrings.judgeModelTooltip);
+    label.style.cssText = 'font-size: 13px; color: var(--sys-color-on-surface-variant); font-weight: normal;';
+
+    const select = document.createElement('select');
+    select.style.cssText = `
+      padding: 4px 8px;
+      border: 1px solid var(--sys-color-outline);
+      border-radius: 4px;
+      background: var(--sys-color-surface);
+      color: var(--sys-color-on-surface);
+      font-size: 12px;
+      cursor: pointer;
+      min-width: 120px;
+    `;
+
+    // Get the currently selected model and its provider
+    const currentModel = AIChatPanel.instance().getSelectedModel();
+    const currentProvider = AIChatPanel.getProviderForModel(currentModel);
+    
+    // Get all model options but only show models from the same provider as the current model
+    const modelOptions = AIChatPanel.getModelOptions();
+    
+    // Filter models to only show those from the same provider
+    const filteredModels = modelOptions.filter(option => {
+      if (option.value.startsWith('_placeholder')) {
+        return false; // Skip placeholder options
+      }
+      const modelProvider = AIChatPanel.getProviderForModel(option.value);
+      return modelProvider === currentProvider;
+    });
+    
+    // If no models from current provider, use current model as fallback
+    if (filteredModels.length === 0) {
+      const fallbackOption = document.createElement('option');
+      fallbackOption.value = currentModel;
+      fallbackOption.textContent = `${currentModel} (${currentProvider})`;
+      fallbackOption.selected = true;
+      select.appendChild(fallbackOption);
+      this.#state.judgeModel = currentModel;
+    } else {
+      // Add filtered models to dropdown
+      filteredModels.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.textContent = `${option.label} (${currentProvider})`;
+        
+        if (option.value === this.#state.judgeModel) {
+          optionElement.selected = true;
+        }
+        
+        select.appendChild(optionElement);
+      });
+      
+      // If current judge model is not in filtered list, select first available
+      if (!filteredModels.find(m => m.value === this.#state.judgeModel)) {
+        this.#state.judgeModel = filteredModels[0].value;
+        select.value = this.#state.judgeModel;
+      }
+    }
+
+    // Handle judge model change
+    select.addEventListener('change', () => {
+      this.#state.judgeModel = select.value;
+      
+      // Reinitialize evaluation runners with new model
+      try {
+        this.#evaluationRunner = new EvaluationRunner(this.#state.judgeModel);
+      } catch (error) {
+        logger.error('Failed to reinitialize evaluation runner:', error);
+      }
+      
+      try {
+        this.#agentEvaluationRunner = new VisionAgentEvaluationRunner(this.#state.visionEnabled, this.#state.judgeModel);
+      } catch (error) {
+        logger.error('Failed to reinitialize agent evaluation runner:', error);
+      }
+      
+      this.#addLog(`Changed judge model to: ${select.value}`);
+    });
+
+    container.appendChild(label);
+    container.appendChild(select);
+    return container;
   }
 
   #renderContent(): HTMLElement {
@@ -1125,6 +1241,15 @@ export class EvaluationDialog {
       duration.textContent = `${result.duration}ms`;
       duration.style.cssText = 'white-space: nowrap; flex-shrink: 0;';
       details.appendChild(duration);
+
+      // Add tool usage stats if available
+      if (result.output?.toolUsageStats) {
+        const toolStats = document.createElement('span');
+        toolStats.textContent = `Tools: ${result.output.toolUsageStats.totalCalls}`;
+        toolStats.style.cssText = 'white-space: nowrap; flex-shrink: 0; color: #6f42c1;';
+        toolStats.title = `${result.output.toolUsageStats.uniqueTools} unique tools, ${result.output.toolUsageStats.iterations} iterations`;
+        details.appendChild(toolStats);
+      }
 
       if (result.validation?.llmJudge?.score !== undefined) {
         const score = document.createElement('span');

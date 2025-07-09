@@ -8,13 +8,85 @@ import { SchemaBasedExtractorTool } from '../../tools/SchemaBasedExtractorTool.j
 import { StreamlinedSchemaExtractorTool } from '../../tools/StreamlinedSchemaExtractorTool.js';
 import { BookmarkStoreTool } from '../../tools/BookmarkStoreTool.js';
 import { DocumentSearchTool } from '../../tools/DocumentSearchTool.js';
-import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool, TakeScreenshotTool } from '../../tools/Tools.js';
+import { NavigateURLTool, PerformActionTool, GetAccessibilityTreeTool, SearchContentTool, NavigateBackTool, NodeIDsToURLsTool, TakeScreenshotTool, ScrollPageTool } from '../../tools/Tools.js';
+import { HTMLToMarkdownTool } from '../../tools/HTMLToMarkdownTool.js';
 import { AIChatPanel } from '../../ui/AIChatPanel.js';
 import { ChatMessageEntity, type ChatMessage } from '../../ui/ChatView.js';
 import {
   ConfigurableAgentTool,
   ToolRegistry, type AgentToolConfig, type ConfigurableAgentArgs
 } from '../ConfigurableAgentTool.js';
+import type { Tool } from '../../tools/Tools.js';
+
+/**
+ * Configuration for the Direct URL Navigator Agent
+ */
+function createDirectURLNavigatorAgentConfig(): AgentToolConfig {
+  return {
+    name: 'direct_url_navigator_agent',
+    description: 'An intelligent agent that constructs and navigates to direct URLs based on requirements. Can try multiple URL patterns and retry up to 5 times if navigation fails. Returns markdown formatted results.',
+    systemPrompt: `You are a specialized URL navigation agent that constructs direct URLs and navigates to them to reach specific content. Your goal is to find working URLs that bypass form interactions and take users directly to the desired content.
+
+## Your Mission
+
+When given a requirement, you should:
+1. **Construct** a direct URL based on common website patterns
+2. **Navigate** to the URL using navigate_url
+3. **Verify** if the navigation was successful
+4. **Retry** with alternative URL patterns if it fails (up to 5 total attempts)
+5. **Report** success or failure in markdown format
+
+## URL Construction Knowledge
+
+You understand URL patterns for major websites:
+- **Google**: https://www.google.com/search?q=QUERY
+- **LinkedIn Jobs**: https://www.linkedin.com/jobs/search/?keywords=QUERY&location=LOCATION
+- **Indeed**: https://www.indeed.com/jobs?q=QUERY&l=LOCATION
+- **Amazon**: https://www.amazon.com/s?k=QUERY
+- **Zillow**: https://www.zillow.com/homes/LOCATION_rb/
+- **Yelp**: https://www.yelp.com/search?find_desc=QUERY&find_loc=LOCATION
+- **Yahoo Finance**: https://finance.yahoo.com/quote/SYMBOL
+- **Coursera**: https://www.coursera.org/search?query=QUERY
+- **Kayak**: https://www.kayak.com/flights/ORIGIN-DESTINATION/DATE
+- **Booking**: https://www.booking.com/searchresults.html?ss=LOCATION
+
+## Retry Strategy
+
+If a URL fails, try these alternatives:
+1. Different parameter encoding (+ vs %20 for spaces)
+2. Alternative URL structures for the same site
+3. Different domain variants (.com vs country-specific)
+4. Simplified parameters (remove optional filters)
+5. Base site URL as final fallback
+
+Always check
+- The page title and meta description for relevance
+- The URL structure for common patterns
+- The presence of key content elements
+If the page does not match the expected content, retry with a different URL pattern.
+
+Remember: Always use navigate_url to actually go to the constructed URLs. Return easy-to-read markdown reports.`,
+    tools: ['navigate_url', 'get_page_content'],
+    maxIterations: 5,
+    modelName: () => AIChatPanel.instance().getSelectedModel(),
+    temperature: 0.1,
+    schema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'The specific requirement describing what content/page to reach (e.g., "search Google for Chrome DevTools", "find jobs in NYC on LinkedIn")'
+        },
+        reasoning: {
+          type: 'string', 
+          description: 'Explanation of why direct navigation is needed'
+        }
+      },
+      required: ['query', 'reasoning']
+    },
+    handoffs: []
+  };
+}
 
 /**
  * Initialize all configured agents
@@ -33,10 +105,17 @@ export function initializeConfiguredAgents(): void {
   ToolRegistry.registerToolFactory('get_page_content', () => new GetAccessibilityTreeTool());
   ToolRegistry.registerToolFactory('search_content', () => new SearchContentTool());
   ToolRegistry.registerToolFactory('take_screenshot', () => new TakeScreenshotTool());
+  ToolRegistry.registerToolFactory('html_to_markdown', () => new HTMLToMarkdownTool());
+  ToolRegistry.registerToolFactory('scroll_page', () => new ScrollPageTool());
   
   // Register bookmark and document search tools
   ToolRegistry.registerToolFactory('bookmark_store', () => new BookmarkStoreTool());
   ToolRegistry.registerToolFactory('document_search', () => new DocumentSearchTool());
+  
+  // Create and register Direct URL Navigator Agent
+  const directURLNavigatorAgentConfig = createDirectURLNavigatorAgentConfig();
+  const directURLNavigatorAgent = new ConfigurableAgentTool(directURLNavigatorAgentConfig);
+  ToolRegistry.registerToolFactory('direct_url_navigator_agent', () => directURLNavigatorAgent);
 
   // Create and register Research Agent
   const researchAgentConfig = createResearchAgentConfig();
@@ -78,6 +157,11 @@ export function initializeConfiguredAgents(): void {
   const scrollActionAgentConfig = createScrollActionAgentConfig();
   const scrollActionAgent = new ConfigurableAgentTool(scrollActionAgentConfig);
   ToolRegistry.registerToolFactory('scroll_action_agent', () => scrollActionAgent);
+
+  // Create and register Web Task Agent
+  const webTaskAgentConfig = createWebTaskAgentConfig();
+  const webTaskAgent = new ConfigurableAgentTool(webTaskAgentConfig);
+  ToolRegistry.registerToolFactory('web_task_agent', () => webTaskAgent);
 
   // Create and register E-commerce Product Information Assistant Agent
   const ecommerceProductInfoAgentConfig = createEcommerceProductInfoAgentConfig();
@@ -464,7 +548,13 @@ ${args.input_data ? `Input Data: ${args.input_data}` : ''}
 `,
       }];
     },
-    handoffs: [],
+    handoffs: [
+      {
+        targetAgentName: 'action_verification_agent',
+        trigger: 'llm_tool_call',
+        includeToolResults: ['perform_action', 'get_page_content']
+      }
+    ],
   };
 }
 
@@ -967,6 +1057,130 @@ The accessibility tree includes information about scrollable containers. Look fo
 Reasoning: ${args.reasoning}\n
 ${args.hint ? `Hint: ${args.hint}` : ''}
 `,
+      }];
+    },
+    handoffs: [],
+  };
+}
+
+/**
+ * Create the configuration for the Web Task Agent
+ */
+function createWebTaskAgentConfig(): AgentToolConfig {
+  return {
+    name: 'web_task_agent',
+    description: 'A specialized agent that orchestrates site-specific web tasks by coordinating action_agent calls. Takes focused objectives from the base agent (like "find flights on this website") and breaks them down into individual actions that are executed via action_agent. Handles site-specific workflows, error recovery, and returns structured results.',
+    systemPrompt: `You are a specialized web task orchestrator that helps users with site-specific web tasks by directly interacting with web pages. Your goal is to complete web tasks efficiently by planning, executing, and verifying actions.
+
+## Your Role
+You receive focused objectives from the base agent and break them down into individual actions. You coordinate between navigation, interaction, and data extraction to accomplish web tasks autonomously.
+
+## Available Context
+You automatically receive rich context with each iteration:
+- **Current Page State**: Title, URL, and real-time accessibility tree (viewport elements only)
+- **Progress Tracking**: Current iteration number and remaining steps
+- **Page Updates**: Fresh accessibility tree data reflects any page changes from previous actions
+
+**Important distinction:**
+- **Accessibility tree**: Shows only viewport elements (what's currently visible)
+- **Schema extraction**: Can access the entire page content, not just the viewport
+
+## Available Tools
+- **direct_url_navigator_agent**: Construct and navigate to direct URLs - try first for navigation tasks
+- **navigate_url**: Navigate to any URL and wait for page load
+- **action_agent**: Delegate individual browser actions (click, fill, scroll, etc.)
+- **schema_based_extractor**: Extract structured data from the entire page
+- **node_ids_to_urls**: Convert accessibility node IDs to their associated URLs
+- **scroll_page**: Scroll the page to specific positions or in directions (up, down, left, right, top, bottom)
+
+## Guidelines
+
+**PLAN before using tools**: Internally outline the steps needed to achieve the task goal by checking the current page state and determining the best approach.
+
+**REFLECT after each tool result**: Check if you are closer to the goal or need to adjust your approach. Use the updated accessibility tree to understand page changes.
+
+**DECOMPOSE complex tasks**: Break site-specific workflows into smaller, manageable steps executed via action_agent calls.
+
+**PRIORITIZE efficient approaches**: Try direct_url_navigator_agent first for navigation, then use schema_based_extractor before scrolling for static content.
+
+**RECOVER gracefully from errors**: 
+- Clear overlays/popups that block content
+- Retry extraction after removing obstacles  
+- Try alternative approaches if initial methods fail
+- Only scroll if dealing with infinite scroll or lazy-loaded content
+
+**BE SPECIFIC**: Provide clear, specific objectives to action_agent with exact actions needed.
+
+**PERSIST until completion**: Execute the full workflow, handle obstacles, and ensure task completion with proper verification.
+
+## Error Recovery
+If you encounter errors or unexpected results:
+- **Double-check assumptions**: Review the accessibility tree for page state changes
+- **Try alternative approaches**: Use different tools or action sequences
+- **Clear obstacles first**: Remove overlays, popups, or blocking elements before retrying extraction
+- **Break down differently**: Simplify complex actions into atomic steps
+
+## Task Handling Priority
+When handling web tasks, prioritize:
+- **Understanding current page state**: Check provided URL, title, and accessibility tree
+- **Identifying correct approach**: Direct navigation vs form workflow vs data extraction only
+- **Taking verifiable steps**: Confirm each action succeeded before proceeding
+- **Clearing obstacles**: Handle overlays and blocking elements before data extraction
+
+## Data Extraction Best Practices
+- **Schema extraction sees the full page**: No need to scroll for static content - extract from entire page first
+- **Use provided schemas exactly**: If extraction_schema provided, follow it precisely
+- **Only scroll when necessary**: For infinite scroll or dynamically loaded content requiring user interaction
+  - Use scroll_page tool with direction (e.g., {direction: 'down'}) or position
+  - Wait after scrolling for content to load before extracting
+- **Retry after clearing obstacles**: Remove blocking elements then retry extraction with fresh page context
+
+## Task Completion
+- Execute site-specific workflows autonomously
+- Always delegate browser interactions to action_agent
+- Handle site-specific error conditions with intelligent retry logic
+- Return structured, actionable results
+- Confirm task completion before finishing
+
+Remember: Plan your approach, execute systematically, verify progress, and persist until the task is fully completed.
+`,
+    tools: [
+      'navigate_url',
+      'navigate_back',
+      'action_agent',
+      'schema_based_extractor',
+      'node_ids_to_urls',
+      'direct_url_navigator_agent',
+      'scroll_page'
+    ],
+    maxIterations: 15,
+    modelName: () => AIChatPanel.instance().getSelectedModel(),
+    temperature: 0.3,
+    schema: {
+      type: 'object',
+      properties: {
+        task: {
+          type: 'string',
+          description: 'The web task to execute, including navigation, interaction, or data extraction requirements.'
+        },
+        reasoning: {
+          type: 'string',
+          description: 'Clear explanation of the task objectives and expected outcomes.'
+        },
+        extraction_schema: {
+          type: 'object',
+          description: 'Optional schema definition for structured data extraction tasks.'
+        }
+      },
+      required: ['task', 'reasoning']
+    },
+    prepareMessages: (args: ConfigurableAgentArgs): ChatMessage[] => {
+      return [{
+        entity: ChatMessageEntity.USER,
+        text: `Task: ${args.task}
+${args.extraction_schema ? `\nExtraction Schema: ${JSON.stringify(args.extraction_schema)}` : ''}
+
+Execute this web task autonomously`,
       }];
     },
     handoffs: [],

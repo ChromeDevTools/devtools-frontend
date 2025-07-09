@@ -374,4 +374,45 @@ export class LiteLLMProvider extends LLMBaseProvider {
       };
     }
   }
+
+  /**
+   * Validate that required credentials are available for LiteLLM
+   */
+  validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]} {
+    const storageKeys = this.getCredentialStorageKeys();
+    const endpoint = localStorage.getItem(storageKeys.endpoint!);
+    const apiKey = localStorage.getItem(storageKeys.apiKey!) || localStorage.getItem('ai_chat_api_key');
+    
+    const missingItems: string[] = [];
+    
+    if (!endpoint) {
+      missingItems.push('Endpoint URL');
+    }
+    
+    if (missingItems.length > 0) {
+      return {
+        isValid: false,
+        message: `LiteLLM configuration incomplete. Missing: ${missingItems.join(', ')}. Please configure in Settings.`,
+        missingItems
+      };
+    }
+    
+    // Note: API key is optional for LiteLLM
+    return {
+      isValid: true,
+      message: apiKey ? 
+        'LiteLLM credentials are configured correctly.' : 
+        'LiteLLM endpoint configured. API key is optional but may be required for some models.'
+    };
+  }
+
+  /**
+   * Get the storage keys this provider uses for credentials
+   */
+  getCredentialStorageKeys(): {apiKey: string, endpoint: string} {
+    return {
+      apiKey: 'ai_chat_litellm_api_key',
+      endpoint: 'ai_chat_litellm_endpoint'
+    };
+  }
 }

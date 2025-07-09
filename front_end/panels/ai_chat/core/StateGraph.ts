@@ -6,6 +6,7 @@ import { createLogger } from './Logger.js';
 import type { Runnable } from './Types.js';
 import { createTracingProvider } from '../tracing/TracingConfig.js';
 import type { TracingProvider } from '../tracing/TracingProvider.js';
+import { ChatMessageEntity, type ModelChatMessage } from '../ui/ChatView.js';
 
 const logger = createLogger('StateGraph');
 
@@ -145,7 +146,21 @@ export class StateGraph<TState extends { context?: { tracingContext?: any }, mes
           }, tracingContext.traceId);
         }
 
+        // Add error message to state so UI can display it
+        if (currentState.messages) {
+          const errorMessage: ModelChatMessage = {
+            entity: ChatMessageEntity.MODEL,
+            action: 'final',
+            error: error instanceof Error ? error.message : String(error),
+            isFinalAnswer: true,
+          };
+          currentState.messages.push(errorMessage);
+        }
+
         currentNodeName = END_NODE_MARKER;
+        
+        // Yield the error state before terminating
+        yield currentState;
         break;
       }
 

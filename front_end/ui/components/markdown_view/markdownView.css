@@ -99,3 +99,280 @@ h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
   font: var(--sys-typescale-body4-bold);
   margin: var(--sys-size-1) 0 10px;
 }
+
+/* Horizontal rule styling */
+.message hr {
+  border: none;
+  border-top: 1px solid var(--sys-color-divider);
+  margin: var(--sys-size-4) 0;
+  background: none;
+  height: 0;
+}
+
+/* Blockquote styling */
+.message blockquote {
+  border-left: 4px solid var(--sys-color-primary);
+  margin: var(--sys-size-4) 0;
+  padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-4);
+  background-color: var(--sys-color-surface2);
+  border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
+  color: var(--sys-color-on-surface-subtle);
+  font-style: italic;
+}
+
+.message blockquote p {
+  margin: 0;
+}
+
+.message blockquote p:not(:last-child) {
+  margin-bottom: var(--sys-size-2);
+}
+
+/* Strikethrough styling */
+.message del {
+  text-decoration: line-through;
+  color: var(--sys-color-on-surface-subtle);
+  opacity: 0.7;
+}
+
+/* Line break styling */
+.message br {
+  line-height: inherit;
+}
+
+/* Table container with horizontal scroll */
+.message .table-container {
+  overflow-x: auto;
+  margin: var(--sys-size-4) 0 var(--sys-size-2) 0;
+  border-radius: var(--sys-size-2);
+  border: 1px solid var(--sys-color-divider);
+  background-color: var(--sys-color-surface1);
+  position: relative;
+  /* Show scrollbar on hover for better discoverability */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sys-color-outline) var(--sys-color-surface2);
+}
+
+.message .table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.message .table-container::-webkit-scrollbar-track {
+  background: var(--sys-color-surface2);
+  border-radius: var(--sys-size-1);
+}
+
+.message .table-container::-webkit-scrollbar-thumb {
+  background: var(--sys-color-outline);
+  border-radius: var(--sys-size-1);
+}
+
+.message .table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--sys-color-outline-variant);
+}
+
+/* Table styling */
+.message table {
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  width: 100%;
+  min-width: max-content; /* Allow table to grow beyond container for scrolling */
+  background-color: transparent;
+  border: none;
+}
+
+.message table th,
+.message table td {
+  padding: var(--sys-size-3) var(--sys-size-4);
+  text-align: left;
+  border-bottom: 1px solid var(--sys-color-divider);
+  color: var(--sys-color-on-surface);
+  user-select: text;
+  min-width: 80px; /* Ensure minimum readable column width */
+  white-space: nowrap; /* Prevent text wrapping for better horizontal scroll */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message table th {
+  background-color: var(--sys-color-surface3);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--sys-color-on-surface-subtle);
+  border-bottom: 2px solid var(--sys-color-divider);
+}
+
+/* Sortable header styling */
+.message table th.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.message table th.sortable-header:hover {
+  background-color: var(--sys-color-surface4);
+}
+
+.message table th.sortable-header:active {
+  background-color: var(--sys-color-surface2);
+}
+
+/* Sort indicator styling */
+.message table .sort-indicator {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-left: 4px;
+  transition: opacity 0.2s ease;
+  color: var(--sys-color-on-surface);
+}
+
+.message table .sort-indicator.active {
+  opacity: 1;
+  color: var(--sys-color-primary);
+  font-weight: bold;
+}
+
+.message table th.sortable-header:hover .sort-indicator {
+  opacity: 0.8;
+}
+
+.message table tr:last-child td {
+  border-bottom: none;
+}
+
+.message table tr:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+/* Table actions container */
+.message .table-actions {
+  margin-top: var(--sys-size-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--sys-color-divider-subtle);
+  padding-top: var(--sys-size-2);
+}
+
+.message .scroll-hint {
+  font-size: 11px;
+  color: var(--sys-color-on-surface-subtle);
+  font-style: italic;
+}
+
+/* Small table actions for non-large tables */
+.message .table-actions-small {
+  margin-top: var(--sys-size-2);
+  text-align: center;
+  padding-top: var(--sys-size-1);
+}
+
+.message .sort-hint {
+  font-size: 10px;
+  color: var(--sys-color-on-surface-subtle);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.message .view-document-btn {
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
+  border: none;
+  border-radius: var(--sys-size-2);
+  padding: var(--sys-size-2) var(--sys-size-4);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: var(--default-font-family);
+}
+
+.message .view-document-btn:hover {
+  background-color: var(--sys-color-primary-bright);
+}
+
+.message .view-document-btn:active {
+  background-color: var(--sys-color-primary-container);
+  color: var(--sys-color-on-primary-container);
+}
+
+/* Enhanced scroll indicators */
+.message .table-container::before,
+.message .table-container::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  width: 16px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Right shadow (when can scroll right) */
+.message .table-container::after {
+  right: 1px;
+  background: linear-gradient(to left, var(--sys-color-surface1) 0%, transparent 100%);
+}
+
+/* Left shadow (when can scroll left) */
+.message .table-container::before {
+  left: 1px;
+  background: linear-gradient(to right, var(--sys-color-surface1) 0%, transparent 100%);
+}
+
+/* Show indicators on hover or when scrollable */
+.message .table-container:hover::before,
+.message .table-container:hover::after {
+  opacity: 0.8;
+}
+
+/* JS will add these classes to show/hide shadows based on scroll position */
+.message .table-container.can-scroll-right::after {
+  opacity: 0.6;
+}
+
+.message .table-container.can-scroll-left::before {
+  opacity: 0.6;
+}
+
+/* Table responsiveness for narrow containers */
+@media (max-width: 600px) {
+  .message table {
+    font-size: 11px;
+  }
+  
+  .message table th,
+  .message table td {
+    padding: var(--sys-size-2) var(--sys-size-3);
+    min-width: 60px; /* Smaller minimum on mobile */
+  }
+  
+  .message .table-actions {
+    flex-direction: column;
+    gap: var(--sys-size-2);
+    align-items: stretch;
+  }
+  
+  .message .scroll-hint {
+    text-align: center;
+    font-size: 10px;
+  }
+  
+  .message .view-document-btn {
+    font-size: 11px;
+    padding: var(--sys-size-1) var(--sys-size-3);
+    align-self: center;
+  }
+  
+  .message .sort-hint {
+    font-size: 9px;
+  }
+  
+  .message table .sort-indicator {
+    font-size: 9px;
+    margin-left: 2px;
+  }
+}

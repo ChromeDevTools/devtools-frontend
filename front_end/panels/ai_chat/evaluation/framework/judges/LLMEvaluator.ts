@@ -21,9 +21,10 @@ export class LLMEvaluator {
   private apiKey: string;
   private defaultModel: string;
 
-  constructor(apiKey: string, defaultModel: string = 'gpt-4.1-mini') {
+  constructor(apiKey: string, defaultModel?: string) {
     this.apiKey = apiKey;
-    this.defaultModel = defaultModel;
+    // Use the user's selected mini model as default, which should be available
+    this.defaultModel = defaultModel || AIChatPanel.getMiniModel();
   }
 
 

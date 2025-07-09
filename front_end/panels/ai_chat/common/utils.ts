@@ -345,12 +345,21 @@ export async function buildHierarchicalTree(
 
   // First pass: Create nodes that are meaningful
   // We only keep nodes that either have a name or children to avoid cluttering the tree
+  let totalNodes = 0;
+  let filteredOutNodes = 0;
+  
   nodes.forEach(node => {
+    totalNodes++;
+    
     // Skip node if its ID is negative (e.g., "-1000002014")
-    if (!node.nodeId) { return; }
+    if (!node.nodeId) { 
+      filteredOutNodes++;
+      return; 
+    }
 
     const nodeIdValue = parseInt(node.nodeId, 10);
     if (nodeIdValue < 0) {
+      filteredOutNodes++;
       return;
     }
 
@@ -369,6 +378,7 @@ export async function buildHierarchicalTree(
 
     // Include nodes that are either named, have children, or are interactive
     if (!hasValidName && !hasChildren && !isInteractive) {
+      filteredOutNodes++;
       return;
     }
 
@@ -425,6 +435,9 @@ export async function buildHierarchicalTree(
       }
     }
   });
+
+  // Log filtering statistics  
+  logger.info(`Node filtering: ${totalNodes} total → ${totalNodes - filteredOutNodes} kept (${filteredOutNodes} filtered out)`);
 
   // Final pass: Build the root-level tree and clean up structural nodes
   const rootNodes = nodes
@@ -1486,20 +1499,62 @@ export async function getVisibleAccessibilityTree(
 
     // 9. Format Output
     // Explicitly use formatSimplifiedTree to create the string representation
-    const simplified = finalTree.map(node => formatSimplifiedTree(node)).join('\n');
+    let simplified = finalTree.map(node => formatSimplifiedTree(node)).join('\n');
     // Use console.log for debug message
     logger.info('Final Visible Tree (Simplified):\n', simplified);
 
-    // Find iframe nodes *among relevant nodes*
-    const iframeNodes = relevantAccessibilityNodes.filter(node => node.role === 'Iframe');
+    // Find ALL iframe nodes (not just visible ones) - important for sites like ANA Airlines
+    // where critical booking content may be in off-screen iframes
+    
+    // Convert all CDP nodes to AccessibilityNode format first (same as the existing conversion logic)
+    const allAccessibilityNodes = allCdpNodes.map((node: Protocol.Accessibility.AXNode): AccessibilityNode => {
+      const roleValue = node.role && typeof node.role === 'object' && 'value' in node.role
+        ? node.role.value
+        : '';
+      const nameValue = node.name && typeof node.name === 'object' && 'value' in node.name
+        ? node.name.value
+        : undefined;
+      const descriptionValue = node.description && typeof node.description === 'object' && 'value' in node.description
+        ? node.description.value
+        : undefined;
+      const valueValue = node.value && typeof node.value === 'object' && 'value' in node.value
+        ? node.value.value
+        : undefined;
+      const backendNodeId = typeof node.backendDOMNodeId === 'number'
+        ? node.backendDOMNodeId
+        : undefined;
 
-    // Fetch iframe content if available (consider if iframe content should also be filtered by visibility?)
-    // Current logic fetches full AX tree for the iframe
+      return {
+        role: roleValue,
+        name: nameValue,
+        description: descriptionValue,
+        value: valueValue,
+        nodeId: node.nodeId,
+        backendDOMNodeId: backendNodeId,
+        parentId: node.parentId,
+        childIds: node.childIds,
+      };
+    });
+    
+    // Now find ALL iframes from the converted nodes (matches existing logic)
+    const iframeNodes = allAccessibilityNodes.filter(node => node.role === 'Iframe');
+    
+    // Debug: Log iframe discovery and sample roles
+    const sampleRoles = allAccessibilityNodes
+      .map(node => node.role)
+      .filter((role, index, arr) => arr.indexOf(role) === index) // unique roles
+      .slice(0, 20); // limit output
+    logger.info(`Sample roles found: ${JSON.stringify(sampleRoles)}`);
+
+    // Log iframe discovery for debugging
+    const visibleIframeCount = relevantAccessibilityNodes.filter(node => node.role === 'Iframe').length;
+    logger.info(`Found ${iframeNodes.length} total iframes (${visibleIframeCount} were visible in viewport)`);
+
+    // Fetch iframe content for all discovered iframes
+    // Gets full accessibility tree for each iframe (not filtered by viewport)
     const iframesWithContent = await Promise.all(
       iframeNodes.map(async (node): Promise<AccessibilityNode | IFrameAccessibilityNode> => {
-        // ... (iframe content fetching logic remains largely the same) ...
-        // We might want to adapt the iframe fetching to also consider visibility within the iframe
-        // For now, keep the existing full-iframe-tree logic for simplicity
+        // Process iframe content using full accessibility tree for comprehensive extraction
         try {
           const domAgent = target.domAgent();
           if (!node.backendDOMNodeId) {
@@ -1579,7 +1634,19 @@ export async function getVisibleAccessibilityTree(
         })
         .filter(Boolean) as Array<{nodeId: string, role: string, backendDOMNodeId?: number, name?: string}>;
 
-    logger.info(`Got viewport accessibility tree. Initial nodes: ${allCdpNodes.length}, Visible backendIds: ${visibleBackendIds.size}, Relevant nodes (visible + ancestors): ${relevantNodeIds.size}, Final tree roots: ${finalTree.length}, Time: ${Date.now() - startTime}ms`);
+    logger.info(`Got viewport accessibility tree. Initial nodes: ${allCdpNodes.length}, Visible backendIds: ${visibleBackendIds.size}, Relevant nodes (visible + ancestors): ${relevantNodeIds.size}, Final tree roots: ${finalTree.length}, Total iframes: ${iframeNodes.length}, Time: ${Date.now() - startTime}ms`);
+
+    // Append iframe content to the simplified tree representation
+    if (iframesWithContent.length > 0) {
+      simplified += '\n\n--- IFRAME CONTENT ---\n';
+      iframesWithContent.forEach((iframe, index) => {
+        const iframeWithContent = iframe as IFrameAccessibilityNode;
+        if (iframeWithContent.contentSimplified) {
+          simplified += `\nIframe ${index + 1} (nodeId: ${iframe.nodeId}) content:\n`;
+          simplified += iframeWithContent.contentSimplified;
+        }
+      });
+    }
 
     // Return the tree result with the simplified property explicitly set
     return {

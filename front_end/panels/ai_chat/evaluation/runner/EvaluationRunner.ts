@@ -20,7 +20,7 @@ export class EvaluationRunner {
   private llmEvaluator: LLMEvaluator;
   private config: EvaluationConfig;
 
-  constructor() {
+  constructor(judgeModel?: string) {
     // Get API key from AgentService
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -29,10 +29,13 @@ export class EvaluationRunner {
       throw new Error('API key not configured. Please configure in AI Chat settings.');
     }
 
+    // Use provided judge model or default
+    const evaluationModel = judgeModel || 'gpt-4o-mini';
+
     this.config = {
-      extractionModel: 'gpt-4.1-mini',
+      extractionModel: evaluationModel,
       extractionApiKey: apiKey,
-      evaluationModel: 'gpt-4.1-mini',
+      evaluationModel: evaluationModel,
       evaluationApiKey: apiKey,
       maxConcurrency: 1,
       timeoutMs: TIMING_CONSTANTS.AGENT_TEST_SCHEMA_TIMEOUT,
@@ -142,6 +145,16 @@ export class EvaluationRunner {
     logger.debug(`Test: ${result.testId}`);
     logger.debug(`Status: ${result.status.toUpperCase()}`);
     logger.debug(`Duration: ${result.duration}ms`);
+    
+    // Show tool usage stats if available
+    if (result.output?.toolUsageStats) {
+      logger.debug(`Tool Calls: ${result.output.toolUsageStats.totalCalls}`);
+      logger.debug(`Unique Tools: ${result.output.toolUsageStats.uniqueTools}`);
+      logger.debug(`Iterations: ${result.output.toolUsageStats.iterations}`);
+      if (result.output.toolUsageStats.errorCount > 0) {
+        logger.debug(`Errors: ${result.output.toolUsageStats.errorCount}`);
+      }
+    }
     
     if (result.error) {
       logger.debug(`Error: ${result.error}`);

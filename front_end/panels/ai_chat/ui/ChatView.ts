@@ -111,7 +111,7 @@ function isDeepResearchContent(text: string): boolean {
 }
 
 // Function to render text as markdown
-function renderMarkdown(text: string, markdownRenderer: MarkdownRenderer): Lit.TemplateResult {
+function renderMarkdown(text: string, markdownRenderer: MarkdownRenderer, onOpenTableInViewer?: (markdownContent: string) => void): Lit.TemplateResult {
   let tokens: Marked.Marked.MarkedToken[] = [];
   try {
     tokens = Marked.Marked.lexer(text) as Marked.Marked.MarkedToken[];
@@ -130,7 +130,7 @@ function renderMarkdown(text: string, markdownRenderer: MarkdownRenderer): Lit.T
   }
 
   return html`<devtools-markdown-view
-    .data=${{tokens, renderer: markdownRenderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+    .data=${{tokens, renderer: markdownRenderer, onOpenTableInViewer} as MarkdownView.MarkdownView.MarkdownViewData}>
   </devtools-markdown-view>`;
 }
 
@@ -653,7 +653,7 @@ export class ChatView extends HTMLElement {
           return html`
             <div class="message user-message" >
               <div class="message-content">
-                <div class="message-text">${renderMarkdown(message.text || '', this.#markdownRenderer)}</div>
+                <div class="message-text">${renderMarkdown(message.text || '', this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
                 ${message.error ? html`<div class="message-error">${message.error}</div>` : Lit.nothing}
               </div>
             </div>
@@ -706,7 +706,7 @@ export class ChatView extends HTMLElement {
                     <div class="message-content">
                       ${modelMessage.answer ?
                         html`
-                          <div class="message-text">${renderMarkdown(modelMessage.answer, this.#markdownRenderer)}</div>
+                          <div class="message-text">${renderMarkdown(modelMessage.answer, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
                           ${isDeepResearch ? html`
                             <div class="deep-research-actions">
                               <button 
@@ -729,7 +729,7 @@ export class ChatView extends HTMLElement {
                           </summary>
                           <div class="reasoning-content">
                             ${modelMessage.reasoning.map(item => html`
-                              <div class="reasoning-item">${renderMarkdown(item, this.#markdownRenderer)}</div>
+                              <div class="reasoning-item">${renderMarkdown(item, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
                             `)}
                           </div>
                         </details>
@@ -758,7 +758,7 @@ export class ChatView extends HTMLElement {
               <!-- Reasoning (if any) displayed above the block -->
               ${toolReasoning ? html`
                 <div class="message-text reasoning-text" style="margin-bottom: 8px;">
-                  ${renderMarkdown(toolReasoning, this.#markdownRenderer)}
+                  ${renderMarkdown(toolReasoning, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}
                 </div>
               ` : Lit.nothing}
 
@@ -806,7 +806,7 @@ export class ChatView extends HTMLElement {
                         </summary>
                         <div class="reasoning-content">
                           ${modelMessage.reasoning.map(item => html`
-                            <div class="reasoning-item">${renderMarkdown(item, this.#markdownRenderer)}</div>
+                            <div class="reasoning-item">${renderMarkdown(item, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
                           `)}
                         </div>
                       </details>
@@ -1277,7 +1277,7 @@ export class ChatView extends HTMLElement {
     return html`
       <div class="message model-message final">
         <div class="message-content">
-          <div class="message-text">${renderMarkdown(structuredResponse.reasoning, this.#markdownRenderer)}</div>
+          <div class="message-text">${renderMarkdown(structuredResponse.reasoning, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}</div>
           
           ${aiState === 'pending' ? html`
             <!-- Loading state: Use existing loading element -->
@@ -1312,7 +1312,7 @@ export class ChatView extends HTMLElement {
                 <h3>Full Research Report</h3>
               </div>
               <div class="inline-report-content">
-                ${renderMarkdown(structuredResponse.markdownReport, this.#markdownRenderer)}
+                ${renderMarkdown(structuredResponse.markdownReport, this.#markdownRenderer, this.#openInAIAssistantViewer.bind(this))}
               </div>
             </div>
             <div class="deep-research-actions">
@@ -1368,8 +1368,8 @@ export class ChatView extends HTMLElement {
       throw new Error('No ResourceTreeModel found');
     }
 
-    // Navigate to ai-app://assistant
-    const url = 'ai-app://assistant' as Platform.DevToolsPath.UrlString;
+    // Navigate to browser-operator://assistant
+    const url = 'browser-operator://assistant' as Platform.DevToolsPath.UrlString;
     const navigationResult = await resourceTreeModel.navigate(url);
     
     if (navigationResult.errorText) {

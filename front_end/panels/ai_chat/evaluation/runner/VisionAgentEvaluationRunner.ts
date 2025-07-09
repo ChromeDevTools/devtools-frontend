@@ -44,7 +44,7 @@ export class VisionAgentEvaluationRunner {
   private config: EvaluationConfig;
   private globalVisionEnabled: boolean;
 
-  constructor(visionEnabled: boolean = false) {
+  constructor(visionEnabled: boolean = false, judgeModel?: string) {
     // Get API key from AgentService
     const agentService = AgentService.getInstance();
     const apiKey = agentService.getApiKey();
@@ -53,10 +53,13 @@ export class VisionAgentEvaluationRunner {
       throw new Error('API key not configured. Please configure in AI Chat settings.');
     }
 
+    // Use provided judge model or default
+    const evaluationModel = judgeModel || 'gpt-4o-mini';
+
     this.config = {
-      extractionModel: 'gpt-4.1-mini',
+      extractionModel: evaluationModel,
       extractionApiKey: apiKey,
-      evaluationModel: 'gpt-4.1-mini', 
+      evaluationModel: evaluationModel, 
       evaluationApiKey: apiKey,
       maxConcurrency: 1, // Agent tools should run sequentially
       timeoutMs: TIMING_CONSTANTS.AGENT_TEST_DEFAULT_TIMEOUT,
@@ -175,6 +178,20 @@ export class VisionAgentEvaluationRunner {
         }
       }
 
+      // Extract tool usage information
+      const conversationInfo = this.extractConversationInfo(agentResult.output);
+      
+      // Add tool usage info to the result
+      if (conversationInfo.toolsUsed.length > 0) {
+        logger.info(`🔧 Tool calls made: ${conversationInfo.toolsUsed.length}`);
+        logger.info(`🔧 Tools used: ${conversationInfo.toolsUsed.join(', ')}`);
+        
+        // Add to validation summary
+        if (agentResult.validation) {
+          agentResult.validation.summary += ` | Tools: ${conversationInfo.toolsUsed.length}`;
+        }
+      }
+
       // Add screenshot data to output if available
       if (beforeScreenshot || afterScreenshot) {
         agentResult.output = {
@@ -182,6 +199,18 @@ export class VisionAgentEvaluationRunner {
           screenshots: { before: beforeScreenshot, after: afterScreenshot }
         };
       }
+      
+      // Add tool usage stats to output for UI display
+      agentResult.output = {
+        ...agentResult.output,
+        toolUsageStats: {
+          totalCalls: conversationInfo.toolsUsed.length,
+          uniqueTools: [...new Set(conversationInfo.toolsUsed)].length,
+          toolsList: conversationInfo.toolsUsed,
+          iterations: conversationInfo.iterations,
+          errorCount: conversationInfo.errorCount
+        }
+      };
 
       return agentResult;
 

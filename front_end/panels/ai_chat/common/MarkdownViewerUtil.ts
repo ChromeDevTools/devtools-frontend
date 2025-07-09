@@ -31,8 +31,8 @@ export class MarkdownViewerUtil {
         throw new Error('No ResourceTreeModel found');
       }
 
-      // Navigate to ai-app://assistant
-      const url = 'ai-app://assistant' as Platform.DevToolsPath.UrlString;
+      // Navigate to browser-operator://assistant
+      const url = 'browser-operator://assistant' as Platform.DevToolsPath.UrlString;
       const navigationResult = await resourceTreeModel.navigate(url);
       
       if (navigationResult.errorText) {

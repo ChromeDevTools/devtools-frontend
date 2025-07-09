@@ -1628,3 +1628,35 @@ details[open] .tool-details-content {
 .inline-report-content::-webkit-scrollbar-thumb:hover {
   background: var(--sys-color-state-hover-on-subtle);
 }
+
+/* Custom positioning for bookmark snackbars */
+devtools-snackbar.bookmark-notification {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: unset !important;
+  left: 0 !important;
+  right: 0 !important;
+  max-width: none !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  z-index: 10000 !important;
+}
+
+devtools-snackbar.bookmark-notification .container {
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--sys-color-divider);
+  animation: slideInFromTop 200ms cubic-bezier(0, 0, 0.3, 1) !important;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0%;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 100%;
+  }
+}

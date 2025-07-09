@@ -665,6 +665,7 @@ grd_files_bundled_sources = [
   "front_end/panels/ai_chat/evaluation/test-cases/research-agent-tests.js",
   "front_end/panels/ai_chat/evaluation/test-cases/schema-extractor-tests.js",
   "front_end/panels/ai_chat/evaluation/test-cases/streamlined-schema-extractor-tests.js",
+  "front_end/panels/ai_chat/evaluation/test-cases/web-task-agent-tests.js",
   "front_end/panels/ai_chat/evaluation/utils/ErrorHandlingUtils.js",
   "front_end/panels/ai_chat/evaluation/utils/EvaluationTypes.js",
   "front_end/panels/ai_chat/evaluation/utils/PromptTemplates.js",

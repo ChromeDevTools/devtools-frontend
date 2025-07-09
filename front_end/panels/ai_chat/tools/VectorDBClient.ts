@@ -100,14 +100,20 @@ export class VectorDBClient {
    */
   async ensureCollection(): Promise<void> {
     try {
-      // Check if collection exists
-      const describeResponse = await this.makeRequest('GET', `/v2/vectordb/collections/describe`, {
-        collectionName: this.collectionName
+      // First try to list collections to check if it exists
+      const listResponse = await this.makeRequest('POST', '/v2/vectordb/collections/list', {
+        dbName: '_default'
       });
-
-      if (describeResponse.ok) {
-        logger.info('Collection already exists', { collection: this.collectionName });
-        return;
+      
+      if (listResponse.ok) {
+        const listData = await listResponse.json();
+        const collections = listData.data || [];
+        const collectionExists = collections.includes(this.collectionName);
+        
+        if (collectionExists) {
+          logger.info('Collection already exists', { collection: this.collectionName });
+          return;
+        }
       }
 
       // Create collection with bookmark schema

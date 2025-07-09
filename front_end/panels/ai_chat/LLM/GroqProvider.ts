@@ -427,4 +427,34 @@ export class GroqProvider extends LLMBaseProvider {
       };
     }
   }
+
+  /**
+   * Validate that required credentials are available for Groq
+   */
+  validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]} {
+    const storageKeys = this.getCredentialStorageKeys();
+    const apiKey = localStorage.getItem(storageKeys.apiKey!);
+    
+    if (!apiKey) {
+      return {
+        isValid: false,
+        message: 'Groq API key is required. Please add your API key in Settings.',
+        missingItems: ['API Key']
+      };
+    }
+    
+    return {
+      isValid: true,
+      message: 'Groq credentials are configured correctly.'
+    };
+  }
+
+  /**
+   * Get the storage keys this provider uses for credentials
+   */
+  getCredentialStorageKeys(): {apiKey: string} {
+    return {
+      apiKey: 'ai_chat_groq_api_key'
+    };
+  }
 }

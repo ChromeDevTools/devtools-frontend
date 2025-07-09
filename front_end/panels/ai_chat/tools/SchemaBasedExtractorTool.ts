@@ -42,7 +42,13 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
   - The tool uses the page's accessibility tree for robust extraction, including hidden or dynamic content.
   - The extraction process is multi-step: it first extracts data (using accessibility node IDs for URLs), then resolves those IDs to actual URLs, and finally provides metadata about extraction progress and completeness.
   - If a detailed or specific extraction is required, clarify it in the instruction.
-  - Returns: { success, data, error (if any), metadata }.`;
+  - Returns: { success, data, error (if any), metadata }.
+
+Schema Examples:
+• Single product: {"type": "object", "properties": {"name": {"type": "string"}, "price": {"type": "number"}, "url": {"type": "string", "format": "url"}}}
+• List of items: {"type": "object", "properties": {"items": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "link": {"type": "string", "format": "url"}}}}}}
+• Search results: {"type": "object", "properties": {"results": {"type": "array", "items": {"type": "object", "properties": {"title": {"type": "string"}, "snippet": {"type": "string"}, "url": {"type": "string", "format": "url"}}}}}}
+• News articles: {"type": "object", "properties": {"articles": {"type": "array", "items": {"type": "object", "properties": {"headline": {"type": "string"}, "author": {"type": "string"}, "publishDate": {"type": "string"}, "link": {"type": "string", "format": "url"}}}}}}`;
 
   schema = {
     type: 'object',
@@ -60,7 +66,7 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
         description: 'Reasoning about the extraction process displayed to the user'
       }
     },
-    required: ['schema', 'reasoning']
+    required: ['schema', 'instruction', 'reasoning']
   };
 
 
@@ -116,11 +122,12 @@ export class SchemaBasedExtractorTool implements Tool<SchemaExtractionArgs, Sche
       };
     }
 
+    // Enhanced schema validation with helpful error messages
     if (!schema) {
       return {
         success: false,
         data: null,
-        error: 'Schema is required'
+        error: 'Schema is required. Please provide a JSON Schema definition that describes the structure of data to extract. Example: {"type": "object", "properties": {"title": {"type": "string"}}}'
       };
     }
 

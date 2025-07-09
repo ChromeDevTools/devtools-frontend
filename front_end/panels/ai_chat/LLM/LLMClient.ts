@@ -339,4 +339,43 @@ export class LLMClient {
     return provider.testConnection(modelName);
   }
 
+  /**
+   * Static method to validate credentials for a specific provider
+   */
+  static validateProviderCredentials(providerType: string): {isValid: boolean, message: string, missingItems?: string[]} {
+    try {
+      // Create temporary provider instance for validation (no API key needed for validation)
+      let provider;
+      
+      switch (providerType) {
+        case 'openai':
+          provider = new OpenAIProvider('');
+          break;
+        case 'litellm':
+          provider = new LiteLLMProvider('', '');
+          break;
+        case 'groq':
+          provider = new GroqProvider('');
+          break;
+        case 'openrouter':
+          provider = new OpenRouterProvider('');
+          break;
+        default:
+          return {
+            isValid: false,
+            message: `Unknown provider type: ${providerType}`,
+            missingItems: ['Valid provider selection']
+          };
+      }
+      
+      return provider.validateCredentials();
+    } catch (error) {
+      return {
+        isValid: false,
+        message: `Failed to validate ${providerType} credentials: ${error instanceof Error ? error.message : String(error)}`,
+        missingItems: ['Provider configuration']
+      };
+    }
+  }
+
 }

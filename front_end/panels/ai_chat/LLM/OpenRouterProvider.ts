@@ -480,4 +480,34 @@ export class OpenRouterProvider extends LLMBaseProvider {
       };
     }
   }
+
+  /**
+   * Validate that required credentials are available for OpenRouter
+   */
+  validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]} {
+    const storageKeys = this.getCredentialStorageKeys();
+    const apiKey = localStorage.getItem(storageKeys.apiKey!);
+    
+    if (!apiKey) {
+      return {
+        isValid: false,
+        message: 'OpenRouter API key is required. Please add your API key in Settings.',
+        missingItems: ['API Key']
+      };
+    }
+    
+    return {
+      isValid: true,
+      message: 'OpenRouter credentials are configured correctly.'
+    };
+  }
+
+  /**
+   * Get the storage keys this provider uses for credentials
+   */
+  getCredentialStorageKeys(): {apiKey: string} {
+    return {
+      apiKey: 'ai_chat_openrouter_api_key'
+    };
+  }
 }

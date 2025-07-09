@@ -468,4 +468,34 @@ export class OpenAIProvider extends LLMBaseProvider {
   parseResponse(response: LLMResponse): ReturnType<typeof LLMResponseParser.parseResponse> {
     return LLMResponseParser.parseResponse(response);
   }
+
+  /**
+   * Validate that required credentials are available for OpenAI
+   */
+  validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]} {
+    const storageKeys = this.getCredentialStorageKeys();
+    const apiKey = localStorage.getItem(storageKeys.apiKey!);
+    
+    if (!apiKey) {
+      return {
+        isValid: false,
+        message: 'OpenAI API key is required. Please add your API key in Settings.',
+        missingItems: ['API Key']
+      };
+    }
+    
+    return {
+      isValid: true,
+      message: 'OpenAI credentials are configured correctly.'
+    };
+  }
+
+  /**
+   * Get the storage keys this provider uses for credentials
+   */
+  getCredentialStorageKeys(): {apiKey: string} {
+    return {
+      apiKey: 'ai_chat_api_key'
+    };
+  }
 }

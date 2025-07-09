@@ -489,7 +489,11 @@ def CheckNoUncheckedFiles(input_api, output_api):
 
 
 def _TextFilesOnlyFilter(file):
-    """Filters files based on prefixes and extensions that should not be treated as text files for the canned checks below."""
+    """Filter that yields only text files.
+
+    Filters files based on prefixes and extensions that should not be treated as
+    text files for the canned checks below.
+    """
     excluded_prefixes = [
         'node_modules',
         'third_party',
@@ -508,42 +512,22 @@ def _TextFilesOnlyFilter(file):
     return True
 
 
-def CheckChangeHasNoStrayWhitespace(input_api, output_api):
-    return input_api.canned_checks.CheckChangeHasNoStrayWhitespace(
-        input_api, output_api, source_file_filter=_TextFilesOnlyFilter)
-
-
 def CheckChangeHasNoCrAndHasOnlyOneEol(input_api, output_api):
     return input_api.canned_checks.CheckChangeHasNoCrAndHasOnlyOneEol(
         input_api, output_api, source_file_filter=_TextFilesOnlyFilter)
-
-
-def CheckForCommitObjects(input_api, output_api):
-    return input_api.canned_checks.CheckForCommitObjects(input_api, output_api)
-
-
-def CheckOwnersFormat(input_api, output_api):
-    return input_api.canned_checks.CheckOwnersFormat(input_api, output_api)
-
-
-def CheckOwners(input_api, output_api):
-    return input_api.canned_checks.CheckOwners(input_api, output_api)
 
 
 def CheckGenderNeutral(input_api, output_api):
     return input_api.canned_checks.CheckGenderNeutral(input_api, output_api)
 
 
-def CheckDoNotSubmitInFiles(input_api, output_api):
-    return input_api.canned_checks.CheckDoNotSubmitInFiles(
-        input_api, output_api)
-
-
-def CheckChangeHasDescriptionCommit(input_api, output_api):
-    return input_api.canned_checks.CheckChangeHasDescription(
-        input_api, output_api)
-
 
 def CheckAuthorizedAuthor(input_api, output_api):
     return input_api.canned_checks.CheckAuthorizedAuthor(
         input_api, output_api, bot_allowlist=[AUTOROLL_ACCOUNT])
+
+
+def CheckPanProjectChecksOnCommit(input_api, output_api):
+    return input_api.canned_checks.PanProjectChecks(input_api,
+                                                    output_api,
+                                                    maxlen=120)

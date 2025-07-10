@@ -982,21 +982,26 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         async(errorObj: SDK.RemoteObject.RemoteObject, includeCausedByPrefix: boolean): Promise<void> => {
       const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
       const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-      const errorElementType = includeCausedByPrefix ? 'div' : 'span';
-      let errorElement = this.tryFormatAsError(error.errorStack, details, errorElementType);
+      let errorElement = this.tryFormatAsError(error.errorStack, details);
       if (!errorElement) {
-        errorElement = document.createElement(errorElementType);
+        errorElement = document.createElement('span');
         errorElement.append(this.linkifyStringAsFragment(error.errorStack));
       }
+
       if (includeCausedByPrefix) {
-        errorElement.prepend('Caused by: ');
+        const causeElement = document.createElement('div');
+        causeElement.append('Caused by: ', errorElement);
+        result.appendChild(causeElement);
+      } else {
+        result.appendChild(errorElement);
       }
-      result.appendChild(errorElement);
 
       if (cause && cause.subtype === 'error') {
         await formatErrorStack(cause, /* includeCausedByPrefix */ true);
       } else if (cause && cause.type === 'string') {
-        result.append(`Caused by: ${cause.value}`);
+        const stringCauseElement = document.createElement('div');
+        stringCauseElement.append(`Caused by: ${cause.value}`);
+        result.append(stringCauseElement);
       }
     };
 
@@ -1741,9 +1746,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return scriptLocationLink;
   }
 
-  private tryFormatAsError(
-      string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails,
-      formattedResultType: 'div'|'span' = 'span'): HTMLElement|null {
+  private tryFormatAsError(string: string, exceptionDetails?: Protocol.Runtime.ExceptionDetails): HTMLElement|null {
     const runtimeModel = this.message.runtimeModel();
     if (!runtimeModel) {
       return null;
@@ -1763,7 +1766,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     const debuggerModel = runtimeModel.debuggerModel();
-    const formattedResult = document.createElement(formattedResultType);
+    const formattedResult = document.createElement('span');
 
     for (let i = 0; i < linkInfos.length; ++i) {
       const newline = i < linkInfos.length - 1 ? '\n' : '';

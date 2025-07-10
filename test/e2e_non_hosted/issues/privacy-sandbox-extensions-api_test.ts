@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,17 +9,14 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../helpers/issues-helpers.js';
+} from '../../e2e/helpers/issues-helpers.js';
+import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Privacy Sandbox Extensions API', () => {
-  beforeEach(async () => {
-    await goToResource('empty.html');
-  });
-
-  it('should report privacy sandbox extensions api deprecation issues', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should report privacy sandbox extensions api deprecation issues', async ({devToolsPage, inspectedPage}) => {
+    await inspectedPage.goToResource('empty.html');
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'DeprecationIssue',
         details: {
@@ -38,14 +34,14 @@ describe('Privacy Sandbox Extensions API', () => {
       window.addIssueForTest(issue);
     });
 
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Deprecated feature used');
+    await expandIssue(devToolsPage);
+    const issueElement = await getIssueByTitle('Deprecated feature used', devToolsPage);
     assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
+    const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label', devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [
       ['empty.html:2'],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 });

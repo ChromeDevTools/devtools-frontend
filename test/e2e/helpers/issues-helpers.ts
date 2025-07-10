@@ -79,8 +79,9 @@ export async function assertCategoryName(categoryName: string) {
   assert.strictEqual(selectedCategoryName, categoryName);
 }
 
-export async function assertIssueTitle(issueMessage: string) {
-  const issueMessageElement = await waitFor(ISSUE_TITLE);
+export async function assertIssueTitle(
+    issueMessage: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const issueMessageElement = await devToolsPage.waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
 }

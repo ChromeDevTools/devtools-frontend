@@ -29,6 +29,8 @@ Once you get approval from the existing committers, you'll be added to [chrome-d
 
 In the most unfavorable circumstances, the process could extend up to two weeks. Maintain your commitment to writing patches. Even in the uncommon instances where a nomination fails, the objection is frequently something specific to resolve, such as "more patches" or "not enough people are familiar with this person's work."
 
+Two-factor authentication is a requirement for adding your account as a committer. If you haven't done so already, you'll need to set up a security key on your account.
+
 # **Maintaining committer status**
 
 Maintaining committer status in the DevTools project is straightforward. Continue to contribute and help the project in meaningful ways. If you remain inactive for 12 consecutive months (absence of comments, uploads, and reviews), you will be notified via email about removal in 7 days and then automatically removed from the list. You may reapply for committer status without going through the full nomination process.

@@ -24,8 +24,7 @@ function dump() {
     logValue('res-brand-' + i + '-name', navigator.userAgentData.brands[i].brand);
     logValue('res-brand-' + i + '-version', navigator.userAgentData.brands[i].version);
   }
-  // (note that full-version-list is not in the NavigatorUAData type)
-  navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion']).then(finishDump);
+  navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'architecture', 'model', 'uaFullVersion', 'fullVersionList', 'formFactors']).then(finishDump);
 }
 
 function finishDump(uaDataValues) {
@@ -34,6 +33,15 @@ function finishDump(uaDataValues) {
   logValue('res-architecture', uaDataValues.architecture);
   logValue('res-model', uaDataValues.model);
   logValue('res-ua-full-version', uaDataValues.uaFullVersion);
+  logValue('res-num-full-version-list', uaDataValues.fullVersionList.length);
+  for (let i = 0; i < uaDataValues.fullVersionList.length; ++i) {
+    logValue('res-full-version-list-' + i  + '-name', uaDataValues.fullVersionList[i].brand);
+    logValue('res-full-version-list-' + i + '-version', uaDataValues.fullVersionList[i].version);
+  }
+  logValue('res-num-form-factors', uaDataValues.formFactors.length);
+  for (let i = 0; i < uaDataValues.formFactors.length; ++i) {
+    logValue('res-form-factors-' + i, uaDataValues.formFactors[i]);
+  }
 
   logValue('res-dump-done', true);
 }

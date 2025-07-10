@@ -64,6 +64,7 @@ describe('The Network Tab', function() {
           'model',
           'platform',
           'platformVersion',
+          'formFactors',
         ])),
       };
     };
@@ -133,6 +134,7 @@ describe('The Network Tab', function() {
         {brand: 'Google Chrome', version: majorVersion},
       ],
       uaFullVersion: `${majorVersion}.0.0.0`,
+      formFactors: ['Desktop'],
       platform: 'Android',
       platformVersion: '4.0.2',
       architecture: '',
@@ -146,6 +148,7 @@ describe('The Network Tab', function() {
         {brand: 'Google Chrome', version: majorVersion},
       ],
       uaFullVersion: `${majorVersion}.0.0.0`,
+      formFactors: ['Desktop'],
       platform: 'Windows',
       platformVersion: '10.0',
       architecture: 'x86',
@@ -156,6 +159,7 @@ describe('The Network Tab', function() {
       brands: [],
       mobile: false,
       uaFullVersion: '',
+      formFactors: [],
       platform: '',
       platformVersion: '',
       architecture: '',
@@ -267,6 +271,16 @@ describe('The Network Tab', function() {
 
     await tabForward();  // focus browser full version
     await typeText('99.99');
+
+    // Focus on form factors checkbox
+    for (let i = 0; i < 7; ++i) {
+      await tabForward();
+      // Enable form factors Desktop and XR
+      if (i === 0 || i === 4) {
+        await pressKey('Space');
+      }
+    }
+
     await tabForward();  // focus platform name
     await typeText('Test Platform');
     await tabForward();  // focus platform version
@@ -287,6 +301,7 @@ describe('The Network Tab', function() {
         {brand: 'Test Brand 3', version: '101'},
       ],
       uaFullVersion: '99.99',
+      formFactors: ['Desktop', 'XR'],
       platform: 'Test Platform',
       platformVersion: '10',
       architecture: 'Test Architecture',
@@ -319,6 +334,7 @@ describe('The Network Tab', function() {
         {brand: 'Test Brand 3', version: '101'},
       ],
       uaFullVersion: '99.99',
+      formFactors: ['Desktop', 'XR'],
       platform: 'Test Platform',
       platformVersion: '1011',
       architecture: 'Test Architecture',

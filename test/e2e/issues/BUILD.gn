@@ -7,7 +7,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 node_ts_library("issues") {
   sources = [
     "client-hint-issues_test.ts",
-    "cookie-attribute-exceeds-max-size-issues_test.ts",
     "cookie-deprecation-metadata-issues_test.ts",
     "cors-private-network-issues_test.ts",
     "deprecation-issues_test.ts",

@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("issues") {
   sources = [
+    "bounce-tracking-issues_test.ts",
     "cookie-domain-attribute-non-ascii_test.ts",
     "cors-issues_test.ts",
     "expect-ct-issues_test.ts",

@@ -106,6 +106,7 @@ export class HostsPolicy {
 }
 
 class RegisteredExtension {
+  openResourceScheme: null|string = null;
   constructor(readonly name: string, readonly hostsPolicy: HostsPolicy, readonly allowFileAccess: boolean) {
   }
 
@@ -116,6 +117,10 @@ class RegisteredExtension {
 
     if (!inspectedURL) {
       return false;
+    }
+
+    if (this.openResourceScheme && inspectedURL.startsWith(this.openResourceScheme)) {
+      return true;
     }
 
     if (!ExtensionServer.canInspectURL(inspectedURL)) {
@@ -817,11 +822,23 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!extension) {
       throw new Error('Received a message from an unregistered extension');
     }
+    if (message.urlScheme) {
+      extension.openResourceScheme = message.urlScheme;
+    }
+    const extensionOrigin = this.getExtensionOrigin(port);
     const {name} = extension;
+    const registration = {
+      title: name,
+      origin: extensionOrigin,
+      scheme: message.urlScheme,
+      handler: this.handleOpenURL.bind(this, port),
+      filter: (url: Platform.DevToolsPath.UrlString, schemes: Set<string>) =>
+          Components.Linkifier.Linkifier.shouldHandleOpenResource(extension.openResourceScheme, url, schemes),
+    };
     if (message.handlerPresent) {
-      Components.Linkifier.Linkifier.registerLinkHandler(name, this.handleOpenURL.bind(this, port));
+      Components.Linkifier.Linkifier.registerLinkHandler(registration);
     } else {
-      Components.Linkifier.Linkifier.unregisterLinkHandler(name);
+      Components.Linkifier.Linkifier.unregisterLinkHandler(registration);
     }
     return undefined;
   }
@@ -846,10 +863,25 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private handleOpenURL(
-      port: MessagePort, contentProvider: TextUtils.ContentProvider.ContentProvider, lineNumber: number): void {
-    if (this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
-      port.postMessage(
-          {command: 'open-resource', resource: this.makeResource(contentProvider), lineNumber: lineNumber + 1});
+      port: MessagePort, contentProviderOrUrl: TextUtils.ContentProvider.ContentProvider|string, lineNumber?: number,
+      columnNumber?: number): void {
+    let url: Platform.DevToolsPath.UrlString;
+    let resource: {url: string, type: string};
+    if (typeof contentProviderOrUrl !== 'string') {
+      url = contentProviderOrUrl.contentURL();
+      resource = this.makeResource(contentProviderOrUrl);
+    } else {
+      url = contentProviderOrUrl as Platform.DevToolsPath.UrlString;
+      resource = {url, type: Common.ResourceType.resourceTypes.Other.name()};
+    }
+
+    if (this.extensionAllowedOnURL(url, port)) {
+      port.postMessage({
+        command: 'open-resource',
+        resource,
+        lineNumber: lineNumber ? lineNumber + 1 : undefined,
+        columnNumber: columnNumber ? columnNumber + 1 : undefined,
+      });
     }
   }
 

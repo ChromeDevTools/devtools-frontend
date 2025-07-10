@@ -230,6 +230,7 @@ export namespace PrivateAPI {
   interface SetOpenResourceHandlerRequest {
     command: Commands.SetOpenResourceHandler;
     handlerPresent: boolean;
+    urlScheme?: string;
   }
   interface SetThemeChangeHandlerRequest {
     command: Commands.SetThemeChangeHandler;
@@ -473,7 +474,8 @@ namespace APIImpl {
 
   export interface Panels extends PublicAPI.Chrome.DevTools.Panels {
     get SearchAction(): Record<string, string>;
-    setOpenResourceHandler(callback?: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number) => unknown):
+    setOpenResourceHandler(
+        callback?: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number, columnNumber: number) => unknown):
         void;
     setThemeChangeHandler(callback?: (themeName: string) => unknown): void;
   }
@@ -693,15 +695,17 @@ self.injectedExtensionAPI = function(
     },
 
     setOpenResourceHandler: function(
-        callback: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number) => unknown): void {
+        callback: (resource: PublicAPI.Chrome.DevTools.Resource, lineNumber: number, columnNumber: number) => unknown,
+        urlScheme?: string): void {
       const hadHandler = extensionServer.hasHandler(PrivateAPI.Events.OpenResource);
 
       function callbackWrapper(message: unknown): void {
         // Allow the panel to show itself when handling the event.
         userAction = true;
         try {
-          const {resource, lineNumber} = message as {resource: APIImpl.ResourceData, lineNumber: number};
-          callback.call(null, new (Constructor(Resource))(resource), lineNumber);
+          const {resource, lineNumber, columnNumber} =
+              message as {resource: APIImpl.ResourceData, lineNumber: number, columnNumber: number};
+          callback.call(null, new (Constructor(Resource))(resource), lineNumber, columnNumber);
         } finally {
           userAction = false;
         }
@@ -716,7 +720,7 @@ self.injectedExtensionAPI = function(
       // Only send command if we either removed an existing handler or added handler and had none before.
       if (hadHandler === !callback) {
         extensionServer.sendRequest(
-            {command: PrivateAPI.Commands.SetOpenResourceHandler, handlerPresent: Boolean(callback)});
+            {command: PrivateAPI.Commands.SetOpenResourceHandler, handlerPresent: Boolean(callback), urlScheme});
       }
     },
 

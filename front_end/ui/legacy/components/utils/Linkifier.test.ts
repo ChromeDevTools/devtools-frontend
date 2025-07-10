@@ -370,6 +370,156 @@ describeWithMockConnection('Linkifier', () => {
       assert.isTrue(eventCallback.callCount >= 2);
     });
   });
+
+  describe('linkActions', () => {
+    const registrations: Components.Linkifier.LinkHandlerRegistration[] = [];
+
+    afterEach(() => {
+      for (const registration of registrations) {
+        Components.Linkifier.Linkifier.unregisterLinkHandler(registration);
+      }
+      registrations.length = 0;
+    });
+
+    function registerHandler(registration: Components.Linkifier.LinkHandlerRegistration): void {
+      Components.Linkifier.Linkifier.registerLinkHandler(registration);
+      registrations.push(registration);
+    }
+
+    it('returns no actions when no link handlers are registered', () => {
+      const url = urlString`foo-extension://node/1`;
+      const actions = Components.Linkifier.Linkifier.linkActions({
+        url,
+        icon: null,
+        enableDecorator: false,
+        uiLocation: null,
+        liveLocation: null,
+        lineNumber: null,
+        columnNumber: null,
+        inlineFrameIndex: 0,
+        revealable: null,
+        fallback: null
+      });
+      const openUsingActions = actions.filter(action => action.title.startsWith('Open using'));
+      assert.isEmpty(openUsingActions);
+    });
+
+    it('returns an action for a registered scheme-specific link handler', async () => {
+      const handler = sinon.spy();
+
+      registerHandler({
+        title: 'Handler for foo-extension',
+        origin: urlString`foo-extension:abcdefghijklmnop`,
+        scheme: urlString`foo-extension:`,
+        handler,
+        filter: (url, schemes) =>
+            Components.Linkifier.Linkifier.shouldHandleOpenResource(urlString`foo-extension:`, url, schemes),
+      });
+
+      const url = urlString`foo-extension://node/1`;
+      const actions = Components.Linkifier.Linkifier.linkActions({
+        url,
+        icon: null,
+        enableDecorator: false,
+        uiLocation: null,
+        liveLocation: null,
+        lineNumber: null,
+        columnNumber: null,
+        inlineFrameIndex: 0,
+        revealable: null,
+        fallback: null
+      });
+      const openUsingAction = actions.find(action => action.title === 'Open using Handler for foo-extension');
+      assert.exists(openUsingAction);
+      await openUsingAction?.handler();
+      sinon.assert.called(handler);
+    });
+
+    it('returns the right action for multiple link handler', async () => {
+      // Register a (global) handler for the global: origin.
+      registerHandler({
+        title: 'Global Handler',
+        origin: urlString`global:abcdefghijklmnop`,
+        scheme: undefined,
+        handler: () => {},
+        filter: (url, schemes) => Components.Linkifier.Linkifier.shouldHandleOpenResource(null, url, schemes),
+      });
+
+      // Register a scheme-specific handler for the foo-extension: origin.
+      registerHandler({
+        title: 'Handler for foo-extension',
+        origin: urlString`foo-extension:abcdefghijklmnop`,
+        scheme: urlString`foo-extension:`,
+        handler: () => {},
+        filter: (url, schemes) =>
+            Components.Linkifier.Linkifier.shouldHandleOpenResource(urlString`foo-extension:`, url, schemes),
+      });
+
+      {
+        // Ensure that the foo-extension is the main handler for foo-extension links, and that the
+        // global handler doesn't take precedent.
+        const url = urlString`foo-extension://node/1`;
+        const actions = Components.Linkifier.Linkifier.linkActions({
+          url,
+          icon: null,
+          enableDecorator: false,
+          uiLocation: null,
+          liveLocation: null,
+          lineNumber: null,
+          columnNumber: null,
+          inlineFrameIndex: 0,
+          revealable: null,
+          fallback: null
+        });
+        assert.lengthOf(actions, 3);  // Two fallback actions are always added.
+
+        const openUsingAction = actions.find(action => action.title === 'Open using Handler for foo-extension');
+        assert.exists(openUsingAction);
+      }
+
+      {
+        // Ensure that the Global handler handles its own links.
+        const url = urlString`global://node/1`;
+        const actions = Components.Linkifier.Linkifier.linkActions({
+          url,
+          icon: null,
+          enableDecorator: false,
+          uiLocation: null,
+          liveLocation: null,
+          lineNumber: null,
+          columnNumber: null,
+          inlineFrameIndex: 0,
+          revealable: null,
+          fallback: null
+        });
+        assert.lengthOf(actions, 3);  // One for our handler + 'Open in New Tab' and 'Copy link'.
+
+        const openUsingAction = actions.find(action => action.title === 'Open using Global Handler');
+        assert.exists(openUsingAction);
+      }
+
+      {
+        // Ensure that the Global handler handles all other links.
+        const url = urlString`http://www.example.com`;
+        const actions = Components.Linkifier.Linkifier.linkActions({
+          url,
+          icon: null,
+          enableDecorator: false,
+          uiLocation: null,
+          liveLocation: null,
+          lineNumber: null,
+          columnNumber: null,
+          inlineFrameIndex: 0,
+          revealable: null,
+          fallback: null
+        });
+        assert.lengthOf(actions, 3);  // One for our handler + 'Open in New Tab' and 'Copy link'.
+
+        const openUsingAction = actions.find(action => action.title === 'Open using Global Handler');
+        assert.exists(openUsingAction);
+      }
+    });
+  });
 });
 
 describeWithEnvironment('ContentProviderContextMenuProvider', () => {

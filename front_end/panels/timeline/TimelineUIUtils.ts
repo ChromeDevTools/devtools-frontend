@@ -869,6 +869,21 @@ export class TimelineUIUtils {
     }
   }
 
+  static maybeCreateLinkElement(link: Trace.Types.Extensions.ExtensionTrackEntryPayloadDeeplink): HTMLElement|null {
+    const protocol = URL.parse(link.url)?.protocol;
+    if (protocol && protocol.length > 0) {
+      const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(link.url);
+      if (splitResult) {
+        const {lineNumber, columnNumber} = splitResult;
+        const options = {text: link.url, lineNumber, columnNumber} as LegacyComponents.Linkifier.LinkifyURLOptions;
+        const linkElement = LegacyComponents.Linkifier.Linkifier.linkifyURL(link.url, (options));
+        return linkElement;
+      }
+    }
+
+    return null;
+  }
+
   static async buildTraceEventDetails(
       parsedTrace: Trace.Handlers.Types.ParsedTrace,
       event: Trace.Types.Events.Event,
@@ -990,7 +1005,17 @@ export class TimelineUIUtils {
     }
 
     if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
-      for (const [key, value] of event.args.properties || []) {
+      const additionalContext = 'additionalContext' in event.args ? event.args.additionalContext : null;
+      if (additionalContext) {
+        if (Boolean(Root.Runtime.hostConfig.devToolsDeepLinksViaExtensibilityApi?.enabled)) {
+          const linkElement = this.maybeCreateLinkElement(additionalContext);
+          if (linkElement) {
+            contentHelper.appendElementRow(additionalContext.description, linkElement);
+          }
+        }
+      }
+
+      for (const [key, value] of event.args.properties as Array<[string, string]>|| []) {
         contentHelper.appendTextRow(key, String(value));
       }
     }

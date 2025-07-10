@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
+
 import type {
   Args, ConsoleTimeStamp, Event, PerformanceMark, PerformanceMeasureBegin, Phase, SyntheticBased} from
   './TraceEvents.js';
@@ -37,6 +39,14 @@ export interface ExtensionDataPayloadBase {
 
 export type ExtensionDataPayload = ExtensionTrackEntryPayload|ExtensionMarkerPayload;
 
+export interface ExtensionTrackEntryPayloadDeeplink {
+  // The URL (deep-link) to show in the summary for the track.
+  url: Platform.DevToolsPath.UrlString;
+  // The label to show in front of the URL when the deep-link is shown in the
+  // graph.
+  description: string;
+}
+
 export interface ExtensionTrackEntryPayload extends ExtensionDataPayloadBase {
   // Typed as possibly undefined since when no data type is provided
   // the entry is defaulted to a track entry
@@ -51,6 +61,9 @@ export interface ExtensionTrackEntryPayload extends ExtensionDataPayloadBase {
   // same value in this property as well as the same value in the track
   // property.
   trackGroup?: string;
+  // Additional context (deep-link URL) that can be shown in the summary for the
+  // track.
+  additionalContext?: ExtensionTrackEntryPayloadDeeplink;
 }
 
 export interface ExtensionMarkerPayload extends ExtensionDataPayloadBase {
@@ -85,8 +98,16 @@ export function isExtensionPayloadTrackEntry(payload: {track?: string, dataType?
   return validEntryType && hasTrack;
 }
 
-export function isValidExtensionPayload(payload: {track?: string, dataType?: string}): payload is ExtensionDataPayload {
-  return isExtensionPayloadMarker(payload) || isExtensionPayloadTrackEntry(payload);
+export function isConsoleTimestampPayloadTrackEntry(payload: {description?: string, url?: string}):
+    payload is ExtensionTrackEntryPayloadDeeplink {
+  return payload.url !== undefined && payload.description !== undefined;
+}
+
+export function isValidExtensionPayload(
+    payload: {track?: string, dataType?: string, description?: string, url?: string}): payload is ExtensionDataPayload|
+    ExtensionTrackEntryPayloadDeeplink {
+  return isExtensionPayloadMarker(payload) || isExtensionPayloadTrackEntry(payload) ||
+      isConsoleTimestampPayloadTrackEntry(payload);
 }
 
 export function isSyntheticExtensionEntry(entry: Event): entry is SyntheticExtensionEntry {

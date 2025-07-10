@@ -214,14 +214,8 @@ export function extractPerformanceAPIExtensionEntries(
   }
 }
 
-export function extensionDataInPerformanceTiming(
-    timing: Types.Events.SyntheticUserTimingPair|Types.Events.PerformanceMark): Types.Extensions.ExtensionDataPayload|
-    null {
-  const timingDetail =
-      Types.Events.isPerformanceMark(timing) ? timing.args.data?.detail : timing.args.data.beginEvent.args.detail;
-  if (!timingDetail) {
-    return null;
-  }
+function parseDetail(timingDetail: string, key: string): Types.Extensions.ExtensionDataPayload|
+    Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
   try {
     // Attempt to parse the detail as an object that might be coming from a
     // DevTools Perf extension.
@@ -230,19 +224,41 @@ export function extensionDataInPerformanceTiming(
     // 2.Not be an object - in which case the `in` check will error.
     // If we hit either of these cases, we just ignore this mark and move on.
     const detailObj = JSON.parse(timingDetail);
-    if (!('devtools' in detailObj)) {
+    if (!(key in detailObj)) {
       return null;
     }
-    if (!Types.Extensions.isValidExtensionPayload(detailObj.devtools)) {
+    if (!Types.Extensions.isValidExtensionPayload(detailObj[key])) {
       return null;
     }
-    return detailObj.devtools;
+    return detailObj[key];
   } catch {
     // No need to worry about this error, just discard this event and don't
     // treat it as having any useful information for the purposes of extensions
     return null;
   }
 }
+
+function extensionPayloadForConsoleApi(timing: Types.Events.ConsoleTimeStamp):
+    Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
+  if (!timing.args.data || !('devtools' in timing.args.data)) {
+    return null;
+  }
+
+  return parseDetail(`{"additionalContext": ${timing.args.data.devtools} }`, 'additionalContext') as
+      Types.Extensions.ExtensionTrackEntryPayloadDeeplink;
+}
+
+export function extensionDataInPerformanceTiming(
+    timing: Types.Events.SyntheticUserTimingPair|Types.Events.PerformanceMark): Types.Extensions.ExtensionDataPayload|
+    null {
+  const timingDetail =
+      Types.Events.isPerformanceMark(timing) ? timing.args.data?.detail : timing.args.data.beginEvent.args.detail;
+  if (!timingDetail) {
+    return null;
+  }
+  return parseDetail(timingDetail, 'devtools') as Types.Extensions.ExtensionDataPayload;
+}
+
 /**
  * Extracts extension data from a `console.timeStamp` event.
  *
@@ -272,6 +288,13 @@ export function extensionDataInConsoleTimeStamp(timeStamp: Types.Events.ConsoleT
   if (trackName === '' || trackName === undefined) {
     return null;
   }
+
+  let additionalContext: Types.Extensions.ExtensionTrackEntryPayloadDeeplink|undefined;
+  const payload = extensionPayloadForConsoleApi(timeStamp);
+  if (payload) {
+    additionalContext = payload;
+  }
+
   return {
     // the color is defaulted to primary if it's value isn't one from
     // the defined palette (see ExtensionUI::extensionEntryColor) so
@@ -279,7 +302,8 @@ export function extensionDataInConsoleTimeStamp(timeStamp: Types.Events.ConsoleT
     color: String(timeStamp.args.data.color) as Types.Extensions.ExtensionTrackEntryPayload['color'],
     track: String(trackName),
     dataType: 'track-entry',
-    trackGroup: timeStamp.args.data.trackGroup !== undefined ? String(timeStamp.args.data.trackGroup) : undefined
+    trackGroup: timeStamp.args.data.trackGroup !== undefined ? String(timeStamp.args.data.trackGroup) : undefined,
+    additionalContext
   };
 }
 

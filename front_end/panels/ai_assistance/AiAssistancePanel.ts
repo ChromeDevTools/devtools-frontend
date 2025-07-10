@@ -7,7 +7,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -311,7 +311,8 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           aria-label=${i18nString(UIStrings.history)}
           .iconName=${'history'}
           .jslogContext=${'freestyler.history'}
-          .populateMenuCall=${input.populateHistoryMenu}></devtools-menu-button>`
+          .populateMenuCall=${input.populateHistoryMenu}
+        ></devtools-menu-button>`
           : Lit.nothing}
         ${input.showDeleteHistoryAction
           ? html`<devtools-button
@@ -458,6 +459,27 @@ async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.
     return await domModels[index].searchResult(0);
   }
   return null;
+}
+
+async function inspectNetworkRequestByUrl(selector: string): Promise<SDK.NetworkRequest.NetworkRequest|null> {
+  const networkManagers =
+      SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager, {scoped: true});
+
+  const results = networkManagers
+                      .map(networkManager => {
+                        let request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}`);
+                        if (!request && selector.at(-1) === '/') {
+                          request =
+                              networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector.slice(0, -1)}`);
+                        } else if (!request && selector.at(-1) !== '/') {
+                          request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}/`);
+                        }
+                        return request;
+                      })
+                      .filter(req => !!req);
+  const request = results.at(0);
+
+  return request ?? null;
 }
 
 let panelInstance: AiAssistancePanel;
@@ -1641,8 +1663,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
    * Performance Insights it is the name of the Insight that forms the
    * context of the conversation.
    */
-  async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
-      Promise<{response: string, devToolsLogs: object[]}> {
+  async handleExternalRequest(
+      prompt: string,
+      conversationType: AiAssistanceModel.ConversationType,
+      selector?: string,
+      ): Promise<{response: string, devToolsLogs: object[]}> {
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
       const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
@@ -1663,6 +1688,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             throw new Error('The insightTitle parameter is required for debugging a Performance Insight.');
           }
           return await this.handleExternalPerformanceInsightsRequest(prompt, selector);
+        case AiAssistanceModel.ConversationType.NETWORK:
+          if (!selector) {
+            throw new Error('The url is required for debugging a network request.');
+          }
+          return await this.handleExternalNetworkRequest(prompt, selector);
         default:
           throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
       }
@@ -1737,6 +1767,46 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         prompt,
         {
           selected: createNodeContext(node),
+        },
+    );
+    const devToolsLogs: object[] = [];
+    for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
+        data.confirm(true);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
+        return {response: data.text, devToolsLogs};
+      }
+    }
+    throw new Error('Something went wrong. No answer was generated.');
+  }
+
+  async handleExternalNetworkRequest(prompt: string, requestUrl: string):
+      Promise<{response: string, devToolsLogs: object[]}> {
+    const networkAgent =
+        this.#createAgent(AiAssistanceModel.ConversationType.NETWORK) as AiAssistanceModel.NetworkAgent;
+    const externalConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(networkAgent),
+        [],
+        networkAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    this.#historicalConversations.push(externalConversation);
+
+    const request = await inspectNetworkRequestByUrl(requestUrl);
+    if (!request) {
+      throw new Error(`Can't find request with the given selector ${requestUrl}`);
+    }
+    const runner = networkAgent.run(
+        prompt,
+        {
+          selected: createRequestContext(request),
         },
     );
     const devToolsLogs: object[] = [];

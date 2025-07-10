@@ -1032,6 +1032,9 @@ type ExternalRequestInput = {
 }|{
   kind: 'PERFORMANCE_ANALYZE_INSIGHT',
   args: {insightTitle: string, prompt: string},
+}|{
+  kind: 'NETWORK_DEBUGGER',
+  args: {requestUrl: string, prompt: string},
 };
 
 interface ExternalRequestResponse {
@@ -1051,6 +1054,13 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
       return await panelInstance.handleExternalRequest(
           input.args.prompt, AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT, input.args.insightTitle);
+    }
+    case 'NETWORK_DEBUGGER': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest(
+          input.args.prompt, AiAssistanceModel.ConversationType.NETWORK, input.args.requestUrl);
     }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');

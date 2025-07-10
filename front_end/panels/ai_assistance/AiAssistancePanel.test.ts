@@ -739,7 +739,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.strictEqual(placeholderItem.buildDescriptor().label, 'No past conversations');
       assert.isFalse(placeholderItem.isEnabled(), 'Placeholder item should be disabled');
     });
-
   });
 
   describe('empty state', () => {
@@ -1515,7 +1514,11 @@ describeWithMockConnection('AI Assistance Panel', () => {
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
+
         },
+        devToolsAiAssistanceNetworkAgent: {
+          enabled: true,
+        }
       });
 
       const target = createTarget();
@@ -1747,19 +1750,27 @@ STOP`,
       }
     });
 
-    it('throws an error for network assistance requests', async () => {
+    it('returns an explanation for network assistance requests', async () => {
+      await createNetworkPanelForMockConnection();
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });
-      try {
-        await panel.handleExternalRequest(
-            'Please help me debug this problem', AiAssistanceModel.ConversationType.NETWORK);
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(
-            err.message,
-            `Debugging with an agent of type '${AiAssistanceModel.ConversationType.NETWORK}' is not implemented yet.`);
-      }
+      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+
+      const request = createNetworkRequest();
+      const networkManager = sinon.createStubInstance(SDK.NetworkManager.NetworkManager, {
+        requestForURL: request,
+      });
+      sinon.stub(SDK.TargetManager.TargetManager.instance(), 'models').returns([networkManager]);
+
+      const response = await panel.handleExternalRequest(
+          'Please help me debug this problem',
+          AiAssistanceModel.ConversationType.NETWORK,
+          'https://localhost:8080/',
+      );
+      assert.strictEqual(response.response, explanation);
+      sinon.assert.calledOnceWithExactly(snackbarShowStub, {message: 'DevTools received an external request'});
     });
 
     it('throws an error for performance assistance requests', async () => {

@@ -6,12 +6,13 @@ plus a set of rollers to automate dependency updates.
 
 ## Overview of the code
 
-TODO(b/428881540): how is the infra code structured and what is where.
-
 The configuration for the DevTools infrastructure is in the
-`infra/config` branch. The recipes are located in the
+[`infra/config`](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config)
+branch. The recipes are located in the
 [`chromium/tools/build`](https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main)
 repository.
+
+[Luci-config app](https://config.luci.app) is consuming the configuration from infra/config. You can force refresh from the app. DevTools configuration is located [here](https://chrome-internal.googlesource.com/infradata/config/+/master/configs/luci-config/projects.cfg).
 
 ## Checking out the infra config branch
 
@@ -34,6 +35,24 @@ First, create a branch for the change and set upstream to the `infra/config`:
 git newbranch branch-name --upstream-current
 ```
 
+- `buckets/try.star`: configurations for default try-jobs for a CL.
+- `buckets/try-misc.star`: configurations for additional builders that
+  can be manually added to CLs in Gerrit or via `git cl try`.
+- `buckets/cpp_debugging_extension.star`: configurations for the C++
+  debugging extension tests.
+- `buckets/serving_app.star`: configurations for the DevTools server
+  app.
+- `buckets/ci.star`: configurations to run on the main branch after a CL
+  is submitted also known as CI or Waterfall builders.
+- `buckets/ci-hp.star`: configurations for the highly privileged
+builders that rolls dependencies.
+
+After you update a `.star` file, re-generate generated files using
+`lucicfg main.star`.
+
+These `.star` definitions roughly correspond to the CI console view
+https://ci.chromium.org/ui/p/devtools-frontend.
+
 Run `git cl upload`. Infra changes are submitted similar to the regular
 frontend CLs using `git cl upload`. After a review on Gerrit, the change
 will be merged into the infra branch.
@@ -49,23 +68,22 @@ https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main/recipes
 and upload a CL for
 [`chromium/tools/build`](https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main).
 
-- `buckets/try.star`: configurations for default try-jobs for a CL.
-- `buckets/try-misc.star`: configurations for additional builders that can be manually added to CLs in Gerrit or via `git cl try`.
-- `buckets/cpp_debugging_extension.star`: configurations for the C++ debugging extension tests.
-- `buckets/serving_app.star`: configurations for the DevTools server app.
-- `buckets/ci.star`: configurations to run on the main branch after a CL is submitted also known as CI or Waterfall builders.
-- `buckets/ci-hp.star`: configurations for the highly privileged builders that
-rolls dependencies.
-
-After you update a `.star` file, re-generate generated files using `lucicfg main.star`.
-
-These `.star` definitions roughly correspond to the CI console view https://ci.chromium.org/ui/p/devtools-frontend.
-
 ## Updating test commands in the infrastructure
 
-TODO(b/428881540): where are the test commands that infra invokes in the repo defined.
+The DevTools recipes are defined in
+[`chromium/tools/build`](https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main)
+repository. Once a change is made there, the recipes are packaged
+as a cipd package and the `infra/config` data defines how to fetch that
+cipd package. The recipes are bundled by
+https://ci.chromium.org/ui/p/chrome/builders/official.infra/recipe-bundler.
+
+DevTools recipes live at
+https://chromium.googlesource.com/chromium/tools/build/+/refs/heads/main/recipes/recipes/devtools/.
 
 ## Determining if a change needs to run tests
 
-TODO(b/428881540): how to update the configuration so that some
-directories/file types do not trigger all testing bots in CQ.
+The
+[`try.star`](https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/infra/config/buckets/try.star)
+file in the `infra/config` branch contains the logic that determines
+which builders are needed to verify a CQ. See `custom_locationsfilters`
+for the current logic.

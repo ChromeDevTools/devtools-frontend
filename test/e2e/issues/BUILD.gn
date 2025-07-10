@@ -12,7 +12,6 @@ node_ts_library("issues") {
     "cookie-deprecation-metadata-issues_test.ts",
     "cors-private-network-issues_test.ts",
     "deprecation-issues_test.ts",
-    "expect-ct-issues_test.ts",
     "group-by-categories_test.ts",
     "hidden-issues-row_test.ts",
     "issue-view-reparent_test.ts",

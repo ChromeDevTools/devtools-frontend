@@ -13,6 +13,7 @@ ts_e2e_library("issues") {
     "cors-issues_test.ts",
     "deprecation-issues_test.ts",
     "expect-ct-issues_test.ts",
+    "group-by-categories_test.ts",
     "group-by-kind_test.ts",
     "heavy-ad-issues_test.ts",
     "hide-issues-menu_test.ts",

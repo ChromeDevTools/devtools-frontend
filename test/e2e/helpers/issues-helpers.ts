@@ -7,7 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  click,
   clickElement,
   matchStringTable,
   waitFor,
@@ -73,8 +72,9 @@ export async function getHiddenIssuesRowBody(devToolsPage: DevToolsPage = getBro
   return await devToolsPage.waitFor('.hidden-issues-body');
 }
 
-export async function assertCategoryName(categoryName: string) {
-  const categoryNameElement = await waitFor(CATEGORY_NAME);
+export async function assertCategoryName(
+    categoryName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const categoryNameElement = await devToolsPage.waitFor(CATEGORY_NAME);
   const selectedCategoryName = await categoryNameElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedCategoryName, categoryName);
 }
@@ -150,15 +150,15 @@ export async function assertStatus(status: 'blocked'|'report-only') {
   assert.strictEqual(selectedIssueMessage, status);
 }
 
-export async function expandCategory() {
-  const categoryElement = await waitFor(CATEGORY);
+export async function expandCategory(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const categoryElement = await devToolsPage.waitFor(CATEGORY);
   const isCategoryExpanded = await categoryElement.evaluate(node => node.classList.contains('expanded'));
 
   if (!isCategoryExpanded) {
-    await click(CATEGORY);
+    await devToolsPage.click(CATEGORY);
   }
 
-  await waitFor(ISSUE);
+  await devToolsPage.waitFor(ISSUE);
 }
 
 export async function expandKind(
@@ -173,7 +173,7 @@ export async function expandKind(
 
 export async function expandIssue(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   if (await getGroupByCategoryChecked(devToolsPage)) {
-    await expandCategory();
+    await expandCategory(devToolsPage);
   }
 
   const issue = await devToolsPage.waitFor(ISSUE);
@@ -280,17 +280,17 @@ export async function revealViolatingSourcesLines(
   await sourcesLink.click();
 }
 
-export async function toggleGroupByCategory() {
-  const wasChecked = await getGroupByCategoryChecked();
-  const categoryCheckbox = await waitFor(CATEGORY_CHECKBOX);
+export async function toggleGroupByCategory(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const wasChecked = await getGroupByCategoryChecked(devToolsPage);
+  const categoryCheckbox = await devToolsPage.waitFor(CATEGORY_CHECKBOX);
 
   // Invoke `click()` directly on the checkbox to toggle while hidden.
   await categoryCheckbox.evaluate(checkbox => (checkbox as HTMLInputElement).click());
 
   if (wasChecked) {
-    await waitFor(ISSUE);
+    await devToolsPage.waitFor(ISSUE);
   } else {
-    await waitFor(CATEGORY);
+    await devToolsPage.waitFor(CATEGORY);
   }
 }
 

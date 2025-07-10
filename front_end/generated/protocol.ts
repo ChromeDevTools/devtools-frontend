@@ -12239,6 +12239,7 @@ export namespace Page {
     Accelerometer = 'accelerometer',
     AllScreensCapture = 'all-screens-capture',
     AmbientLightSensor = 'ambient-light-sensor',
+    AriaNotify = 'aria-notify',
     AttributionReporting = 'attribution-reporting',
     Autoplay = 'autoplay',
     Bluetooth = 'bluetooth',

@@ -1494,6 +1494,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     /**
      * Waits for the network to be idle.
      *
+     * @remarks The function will always wait at least the
+     * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+     *
      * @param options - Options to configure waiting behavior.
      * @returns A promise which resolves once the network is idle.
      */

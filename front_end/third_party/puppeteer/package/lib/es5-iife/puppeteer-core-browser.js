@@ -2194,6 +2194,29 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
     });
   }
 
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/distinctUntilChanged.js
+  function distinctUntilChanged(comparator, keySelector) {
+    if (keySelector === void 0) {
+      keySelector = identity;
+    }
+    comparator = comparator !== null && comparator !== void 0 ? comparator : defaultCompare;
+    return operate(function (source, subscriber) {
+      var previousKey;
+      var first2 = true;
+      source.subscribe(createOperatorSubscriber(subscriber, function (value) {
+        var currentKey = keySelector(value);
+        if (first2 || !comparator(previousKey, currentKey)) {
+          first2 = false;
+          previousKey = currentKey;
+          subscriber.next(value);
+        }
+      }));
+    });
+  }
+  function defaultCompare(a, b) {
+    return a === b;
+  }
+
   // ../../node_modules/rxjs/dist/esm5/internal/operators/throwIfEmpty.js
   function throwIfEmpty(errorFactory) {
     if (errorFactory === void 0) {
@@ -2928,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.12.0';
+  const packageVersion = '24.12.1';
 
   /**
    * @license
@@ -11143,6 +11166,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       /**
        * Waits for the network to be idle.
        *
+       * @remarks The function will always wait at least the
+       * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
+       *
        * @param options - Options to configure waiting behavior.
        * @returns A promise which resolves once the network is idle.
        */
@@ -11159,8 +11185,10 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           concurrency = 0,
           signal
         } = options;
-        return _classPrivateFieldGet(_inflight$, this).pipe(switchMap(inflight => {
-          if (inflight > concurrency) {
+        return _classPrivateFieldGet(_inflight$, this).pipe(map(inflight => {
+          return inflight > concurrency;
+        }), distinctUntilChanged(), switchMap(isInflightOverConcurrency => {
+          if (isInflightOverConcurrency) {
             return EMPTY;
           }
           return timer(idleTime);
@@ -24577,9 +24605,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '138.0.7204.92',
-    'chrome-headless-shell': '138.0.7204.92',
-    firefox: 'stable_140.0.2'
+    chrome: '138.0.7204.94',
+    'chrome-headless-shell': '138.0.7204.94',
+    firefox: 'stable_140.0.4'
   });
 
   /**

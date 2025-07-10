@@ -68,7 +68,10 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
+    "../../../generated",
+    "../../../models/issues_manager:bundle",
     "../../../testing",
     "../../../third_party/marked:bundle",
     "../../legacy:bundle",
@@ -76,4 +79,6 @@ ts_library("unittests") {
     "../icon_button:bundle",
     "../render_coordinator:bundle",
   ]
+
+  data_deps = [ "../../../models/issues_manager:descriptions" ]
 }

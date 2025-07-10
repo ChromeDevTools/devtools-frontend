@@ -181,6 +181,8 @@ module.exports = function(config: any) {
       {pattern: path.join(GEN_DIR, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.js.map'), served: true, included: false, watched: true},
+      {pattern: path.join(GEN_DIR, 'front_end/**/*.json'), served: true, included: false},
+      {pattern: path.join(GEN_DIR, 'front_end/**/*.md'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.mjs'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.mjs.map'), served: true, included: false},
       {pattern: path.join(SOURCE_ROOT, 'front_end/**/*.ts'), served: true, included: false, watched: false},

@@ -252,6 +252,10 @@ devtools_pre_built("descriptions") {
     sources += [ "descriptions/$file" ]
     data += [ "$target_gen_dir/descriptions/$file" ]
   }
+
+  write_file("$target_gen_dir/description_list.json",
+             devtools_issue_description_files,
+             "json")
 }
 
 devtools_entrypoint("bundle") {
@@ -273,6 +277,7 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/docs/issue_counter/*",
     "../../ui/components/issue_counter/*",
+    "../../ui/components/markdown_view/*",
     "../../ui/legacy/components/cookie_table/*",
   ]
 

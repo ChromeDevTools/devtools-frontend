@@ -1365,6 +1365,21 @@ export class CheckboxLabel extends HTMLElement {
     }
   }
 
+  override get ariaLabel(): string|null {
+    return this.#checkboxElement.ariaLabel;
+  }
+
+  override set ariaLabel(ariaLabel: string) {
+    this.setAttribute('aria-label', ariaLabel);
+  }
+
+  getLabelText(): string|null {
+    return this.#textElement.textContent;
+  }
+
+  setLabelText(content: string): void {
+    this.#textElement.textContent = content;
+  }
   get checked(): boolean {
     return this.#checkboxElement.checked;
   }

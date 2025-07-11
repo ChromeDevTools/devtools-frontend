@@ -687,7 +687,7 @@ UI.UIUtils.registerRenderer({
   },
   async loadRenderer() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsTreeOutline.Renderer.instance();
+    return Elements.ElementsTreeOutlineRenderer.Renderer.instance();
   },
 });
 

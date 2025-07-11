@@ -39,6 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -57,7 +58,7 @@ import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {type ElementsTreeOutline, MappedCharToEntity, type UpdateRecord} from './ElementsTreeOutline.js';
+import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
@@ -1427,7 +1428,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return tags.length === 1 ? null : tags[tags.length - 1];
   }
 
-  updateTitle(updateRecord?: UpdateRecord|null): void {
+  updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord|null): void {
     // If we are editing, return early to prevent canceling the edit.
     // After editing is committed updateTitle will be called.
     if (this.editing) {
@@ -1609,8 +1610,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private buildAttributeDOM(
-      parentElement: Element|DocumentFragment, name: string, value: string, updateRecord: UpdateRecord|null,
-      forceValue?: boolean, node?: SDK.DOMModel.DOMNode): HTMLElement {
+      parentElement: Element|DocumentFragment, name: string, value: string,
+      updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null, forceValue?: boolean,
+      node?: SDK.DOMModel.DOMNode): HTMLElement {
     const closingPunctuationRegex = /[\/;:\)\]\}]/g;
     let highlightIndex = 0;
     let highlightCount = 0;
@@ -1799,7 +1801,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   private buildTagDOM(
       parentElement: DocumentFragment, tagName: string, isClosingTag: boolean, isDistinctTreeElement: boolean,
-      updateRecord: UpdateRecord|null): void {
+      updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null): void {
     const node = this.nodeInternal;
     const classes = ['webkit-html-tag'];
     if (isClosingTag && isDistinctTreeElement) {
@@ -1838,7 +1840,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private nodeTitleInfo(updateRecord: UpdateRecord|null): DocumentFragment {
+  private nodeTitleInfo(updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null): DocumentFragment {
     const node = this.nodeInternal;
     const titleDOM = document.createDocumentFragment();
     const updateSearchHighlight = (): void => {

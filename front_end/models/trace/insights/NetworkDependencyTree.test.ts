@@ -376,6 +376,12 @@ describe('generatePreconnectedOrigins', () => {
       const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);
       assert.deepEqual(result, [{url: 'https://example.com', headerText: '<https://example.com>; rel="preconnect"'}]);
     });
+
+    it('should not loop infinitely on a malformed link part at the end', () => {
+      const linkHeader = '<https://a.com>; rel=preconnect, <https://b.com';
+      const result = Trace.Insights.Models.NetworkDependencyTree.handleLinkResponseHeader(linkHeader);
+      assert.deepEqual(result, [{url: 'https://a.com', headerText: '<https://a.com>; rel=preconnect'}]);
+    });
   });
 });
 

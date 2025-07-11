@@ -1894,6 +1894,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/timeline/TimelinePaintProfilerView.js",
   "front_end/panels/timeline/TimelinePanel.js",
   "front_end/panels/timeline/TimelineSelection.js",
+  "front_end/models/elements/ElementUpdateRecord.js",
   "front_end/panels/timeline/TimelineSelectorStatsView.js",
   "front_end/panels/timeline/TimelineTreeView.js",
   "front_end/panels/timeline/TimelineUIUtils.js",

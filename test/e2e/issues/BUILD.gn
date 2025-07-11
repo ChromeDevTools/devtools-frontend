@@ -11,7 +11,6 @@ node_ts_library("issues") {
     "low-text-contrast-issues_test.ts",
     "partitioning-blob-url-issues_test.ts",
     "quota-issues_test.ts",
-    "report-only_test.ts",
     "sab-issues_test.ts",
     "select-element-accessibility-issues_test.ts",
     "user-reidentification-issues_test.ts",

@@ -23,6 +23,7 @@ ts_e2e_library("issues") {
     "issue-view-reparent_test.ts",
     "privacy-sandbox-extensions-api_test.ts",
     "quirks-mode-issues_test.ts",
+    "report-only_test.ts",
   ]
   deps = [
     "../../e2e/helpers",

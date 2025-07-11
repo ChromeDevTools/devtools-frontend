@@ -124,7 +124,7 @@ export async function getAndExpandSpecificIssueByTitle(
     }
     return undefined;
   });
-  await devToolsPage.clickElement(issueMessageElement);
+  await issueMessageElement.click();
   await devToolsPage.waitFor('.message');
   return await getIssueByTitleElement(issueMessageElement);
 }

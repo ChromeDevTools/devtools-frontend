@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,17 +9,13 @@ import {
   getResourcesElement,
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
-} from '../helpers/issues-helpers.js';
+} from '../../e2e/helpers/issues-helpers.js';
+import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Cookie Deprecation Metadata issue', () => {
-  beforeEach(async () => {
-    await goToResource('empty.html');
-  });
-
-  it('should display correct information', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-    await frontend.evaluate(() => {
+  it('should display correct information', async ({devToolsPage}) => {
+    await navigateToIssuesTab(devToolsPage);
+    await devToolsPage.evaluate(() => {
       const issue = {
         code: 'CookieDeprecationMetadataIssue',
         details: {
@@ -48,15 +43,17 @@ describe('Cookie Deprecation Metadata issue', () => {
       // @ts-expect-error
       window.addIssueForTest(issue2);
     });
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Third-party websites are allowed to read cookies on this page');
+    await expandIssue(devToolsPage);
+    const issueElement =
+        await getIssueByTitle('Third-party websites are allowed to read cookies on this page', devToolsPage);
     assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('2 websites allowed to access cookies', issueElement);
-    await ensureResourceSectionIsExpanded(section);
+    const section =
+        await getResourcesElement('2 websites allowed to access cookies', issueElement, undefined, devToolsPage);
+    await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [
       ['example_1.test'],
       ['example_2.test (opt-out: 50% - learn more)'],
     ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+    await waitForTableFromResourceSectionContents(section.content, expectedTableRows, devToolsPage);
   });
 });

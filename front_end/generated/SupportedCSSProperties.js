@@ -3063,6 +3063,15 @@ export const generatedProperties = [
   "name": "mask-type"
  },
  {
+  "longhands": [
+   "grid-template-areas",
+   "grid-template-columns",
+   "masonry-direction",
+   "masonry-fill"
+  ],
+  "name": "masonry"
+ },
+ {
   "keywords": [
    "row",
    "row-reverse",

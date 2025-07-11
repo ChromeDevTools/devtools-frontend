@@ -6488,6 +6488,10 @@ export const NativeFunctions = [
     signatures: [["?data"]]
   },
   {
+    name: "pseudo",
+    signatures: [["type"]]
+  },
+  {
     name: "parseHTMLUnsafe",
     signatures: [["html","?options"]]
   },

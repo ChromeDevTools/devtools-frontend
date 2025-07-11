@@ -2363,6 +2363,7 @@ export const knownContextValues = new Set([
   'mask-repeat',
   'mask-size',
   'mask-type',
+  'masonry',
   'masonry-auto-tracks',
   'masonry-direction',
   'masonry-fill',

@@ -1052,24 +1052,35 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest(
-          input.args.prompt, AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT, input.args.insightTitle);
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
+        prompt: input.args.prompt,
+        insightTitle: input.args.insightTitle,
+      });
     }
     case 'NETWORK_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest(
-          input.args.prompt, AiAssistanceModel.ConversationType.NETWORK, input.args.requestUrl);
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.NETWORK,
+        prompt: input.args.prompt,
+        requestUrl: input.args.requestUrl,
+      });
     }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest(
-          input.args.prompt, AiAssistanceModel.ConversationType.STYLING, input.args.selector);
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.STYLING,
+        prompt: input.args.prompt,
+        selector: input.args.selector,
+      });
     }
   }
+  // @ts-expect-error
+  throw new Error(`Debugging with an agent of type '${input.kind}' is not implemented yet.`);
 }
 
 // @ts-expect-error

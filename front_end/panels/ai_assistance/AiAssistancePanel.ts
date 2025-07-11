@@ -220,6 +220,24 @@ const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
+interface ExternalStylingRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.STYLING;
+  prompt: string;
+  selector?: string;
+}
+
+interface ExternalNetworkRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.NETWORK;
+  prompt: string;
+  requestUrl: string;
+}
+
+interface ExternalPerformanceInsightsRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
+  prompt: string;
+  insightTitle: string;
+}
+
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
@@ -1664,9 +1682,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
    * context of the conversation.
    */
   async handleExternalRequest(
-      prompt: string,
-      conversationType: AiAssistanceModel.ConversationType,
-      selector?: string,
+      parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
+      ExternalPerformanceInsightsRequestParameters,
       ): Promise<{response: string, devToolsLogs: object[]}> {
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
@@ -1679,22 +1696,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         throw new Error(disabledReasons.join(' '));
       }
 
-      void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
-      switch (conversationType) {
+      void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
+      switch (parameters.conversationType) {
         case AiAssistanceModel.ConversationType.STYLING:
-          return await this.handleExternalStylingRequest(prompt, selector);
+          return await this.handleExternalStylingRequest(parameters.prompt, parameters.selector);
         case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
-          if (!selector) {
+          if (!parameters.insightTitle) {
             throw new Error('The insightTitle parameter is required for debugging a Performance Insight.');
           }
-          return await this.handleExternalPerformanceInsightsRequest(prompt, selector);
+          return await this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
         case AiAssistanceModel.ConversationType.NETWORK:
-          if (!selector) {
+          if (!parameters.requestUrl) {
             throw new Error('The url is required for debugging a network request.');
           }
-          return await this.handleExternalNetworkRequest(prompt, selector);
-        default:
-          throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
+          return await this.handleExternalNetworkRequest(parameters.prompt, parameters.requestUrl);
       }
     } catch (error) {
       // Puppeteer would append the stack trace to the error message. Callers of

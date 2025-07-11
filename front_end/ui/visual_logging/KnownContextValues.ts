@@ -2217,6 +2217,7 @@ export const knownContextValues = new Set([
   'lighthouse.audit.third-party-summary',
   'lighthouse.audit.total-blocking-time',
   'lighthouse.audit.total-byte-weight',
+  'lighthouse.audit.trusted-types-xss',
   'lighthouse.audit.unminified-css',
   'lighthouse.audit.unminified-javascript',
   'lighthouse.audit.unsized-images',

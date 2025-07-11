@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {execSync, spawn} from 'child_process';
+import path from 'path';
 
 const args = process.argv.slice(2);
 if (args.length !== 2) {
@@ -15,7 +16,8 @@ const newTestDirectory = newTestFilePath.substring(0, newTestFilePath.lastIndexO
 const issueNumber = args[1];
 const branch = `fix-${issueNumber}`;
 const worktreeBasePath = `/tmp/worktree-${branch}`;
-const worktreePath = `${worktreeBasePath}/devtools-frontend`;
+const localCheckoutName = path.basename(process.cwd());
+const worktreePath = `${worktreeBasePath}/${localCheckoutName}`;
 
 const prompt = `Migrate @${oldTestFilePath} to @${newTestFilePath}. ISSUENUMBER is ${issueNumber}.
 
@@ -70,6 +72,7 @@ function runProcess(command, args, options) {
   });
 }
 
+let exitCode = 0;
 try {
   execSync(`git branch -D ${branch} || true`);
   execSync(`gclient-new-workdir.py .. ${worktreeBasePath}`);
@@ -91,9 +94,9 @@ try {
   console.log('Migration successful.');
 } catch (error) {
   console.error('Migration failed:', error.message);
-  process.exit(1);
-
+  exitCode = 1;
 } finally {
   console.log('Cleaning up worktree...');
   execSync(`rm -rf ${worktreeBasePath}`);
+  process.exit(exitCode);
 }

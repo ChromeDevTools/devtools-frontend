@@ -32,7 +32,7 @@ branch.
 First, create a branch for the change and set upstream to the `infra/config`:
 
 ```bash
-git newbranch branch-name --upstream-current
+git new-branch branch-name --upstream-current
 ```
 
 - `buckets/try.star`: configurations for default try-jobs for a CL.

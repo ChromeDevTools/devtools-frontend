@@ -19,6 +19,7 @@ ts_e2e_library("sources") {
     "inline-scripts_test.ts",
     "inline-variable_test.ts",
     "link-to-correct-source-line_test.ts",
+    "live-edit-moving-breakpoint_test.ts",
     "pause-button_test.ts",
     "popover_test.ts",
     "restart-frame_test.ts",

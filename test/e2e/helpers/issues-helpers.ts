@@ -7,7 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  clickElement,
   matchStringTable,
   waitFor,
 } from '../../shared/helper.js';
@@ -125,8 +124,8 @@ export async function getAndExpandSpecificIssueByTitle(
     }
     return undefined;
   });
-  await clickElement(issueMessageElement);
-  await waitFor('.message');
+  await devToolsPage.clickElement(issueMessageElement);
+  await devToolsPage.waitFor('.message');
   return await getIssueByTitleElement(issueMessageElement);
 }
 

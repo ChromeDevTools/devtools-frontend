@@ -12,86 +12,22 @@
  * in this file to change frequently.
  */
 
+import type * as Codec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
+
 import {type SourceMapV3Object, TokenIterator} from './SourceMap.js';
 
-/**
- * A scope in the authored source.
- */
-export interface OriginalScope {
-  start: Position;
-  end: Position;
-
-  /**
-   * JavaScript-like languages are encouraged to use 'global', 'class', 'function' and 'block'.
-   * Other languages might require language-specific scope kinds, in which case we'll print the
-   * kind as-is.
-   */
-  kind?: string;
-  name?: string;
-  isStackFrame: boolean;
-  variables: string[];
-  children: OriginalScope[];
-  parent?: OriginalScope;
-}
-
-/**
- * A range (can be a scope) in the generated JavaScript.
- */
-export interface GeneratedRange {
-  start: Position;
-  end: Position;
-  originalScope?: OriginalScope;
-
-  /**
-   * Whether this generated range is an actual JavaScript function in the generated code.
-   */
-  isStackFrame: boolean;
-  /**
-   * Whether calls to this generated range should be hidden from stack traces even if
-   * this range has an `originalScope`.
-   */
-  isHidden: boolean;
-
-  /**
-   * If this `GeneratedRange` is the result of inlining `originalScope`, then `callsite`
-   * refers to where `originalScope` was called in the original ("authored") code.
-   */
-  callsite?: OriginalPosition;
-
-  /**
-   * Expressions that compute the values of the variables of this OriginalScope. The length
-   * of `values` must match the length of `originalScope.variables`.
-   *
-   * For each variable this can either be a single expression (valid for the full `GeneratedRange`),
-   * or an array of `BindingRange`s, e.g. if computing the value requires different expressions
-   * throughout the range or if the variable is only available in parts of the `GeneratedRange`.
-   *
-   * `undefined` denotes that the value of a variable is unavailble in the whole range.
-   * This can happen e.g. if the variable was optimized out and can't be recomputed.
-   */
-  values: Array<string|undefined|BindingRange[]>;
-  children: GeneratedRange[];
-}
-
-export interface BindingRange {
-  value?: string;
-  from: Position;
-  to: Position;
-}
-
-export interface Position {
-  line: number;
-  column: number;
-}
+export type OriginalScope = Codec.OriginalScope;
+export type GeneratedRange = Codec.GeneratedRange;
+export type Position = Codec.Position;
+// For compatibility with the old type.
+export type BindingRange = Codec.SubRangeBinding;
 
 /** @returns 0 if both positions are equal, a negative number if a < b and a positive number if a > b */
 export function comparePositions(a: Position, b: Position): number {
   return a.line - b.line || a.column - b.column;
 }
 
-export interface OriginalPosition extends Position {
-  sourceIndex: number;
-}
+export type OriginalPosition = Codec.OriginalPosition;
 
 interface OriginalScopeTree {
   readonly root: OriginalScope;
@@ -275,7 +211,7 @@ export function decodeGeneratedRanges(
         if (!originalScopeTrees[sourceIdx]) {
           throw new Error('Invalid source index!');
         }
-        range.callsite = {
+        range.callSite = {
           sourceIndex: sourceIdx,
           line,
           column,
@@ -310,7 +246,8 @@ function resolveBindings(
 
   range.values = bindingsForAllVars.map(bindings => {
     if (bindings.length === 1) {
-      return resolveName(bindings[0].nameIdx, names);
+      const value = resolveName(bindings[0].nameIdx, names);
+      return value ?? null;
     }
 
     const bindingRanges: BindingRange[] = bindings.map(binding => ({

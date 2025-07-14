@@ -66,9 +66,9 @@ export class SourceMapScopesInfo {
     for (let i = rangeChain.length - 1; i >= 0; --i) {
       const range = rangeChain[i];
 
-      if (range.callsite) {
+      if (range.callSite) {
         // Record the name and call-site if the range corresponds to an inlined function.
-        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callsite});
+        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callSite});
       }
       if (range.isStackFrame) {
         // We arrived at an actual generated JS function, don't go further.
@@ -152,7 +152,7 @@ export class SourceMapScopesInfo {
           return true;
         }
 
-        if ('values' in node && node.values.some(v => v !== undefined)) {
+        if ('values' in node && node.values.some(v => v !== null)) {
           return true;
         }
 
@@ -236,7 +236,7 @@ export class SourceMapScopesInfo {
     // Drop ranges in the chain until we reach our desired inlined range.
     for (let inlineIndex = 0; inlineIndex < callFrame.inlineFrameIndex;) {
       const range = rangeChain.pop();
-      if (range?.callsite) {
+      if (range?.callSite) {
         ++inlineIndex;
       }
     }

@@ -2804,7 +2804,8 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "normal"
+   "normal",
+   "infinite"
   ],
   "name": "item-tolerance"
  },
@@ -3843,11 +3844,6 @@ export const generatedProperties = [
   "name": "scroll-margin-top"
  },
  {
-  "keywords": [
-   "none",
-   "after",
-   "before"
-  ],
   "name": "scroll-marker-group"
  },
  {
@@ -5954,7 +5950,8 @@ export const generatedPropertyValues = {
  },
  "item-tolerance": {
   "values": [
-   "normal"
+   "normal",
+   "infinite"
   ]
  },
  "left": {
@@ -6486,13 +6483,6 @@ export const generatedPropertyValues = {
   "values": [
    "none",
    "nearest"
-  ]
- },
- "scroll-marker-group": {
-  "values": [
-   "none",
-   "after",
-   "before"
   ]
  },
  "scroll-padding-block-end": {

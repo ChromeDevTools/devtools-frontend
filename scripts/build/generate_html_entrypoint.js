@@ -9,10 +9,11 @@ const {hideBin} = require('yargs/helpers');
 
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
 
-const {template, outDirectory, entrypoints} = yargs(
-                                                  hideBin(process.argv),
-                                                  )
-                                                  .argv;
+const {
+  template,
+  outDirectory,
+  entrypoints,
+} = yargs(hideBin(process.argv)).parseSync();
 
 if (!template) {
   throw new Error(

@@ -27,7 +27,7 @@ const argv = yargs(hideBin(process.argv))
                    desc: 'The starting directory to run in.',
                  })
                  .strict()
-                 .argv;
+                 .parseSync();
 
 const startingDirectory = path.join(process.cwd(), argv.directory);
 

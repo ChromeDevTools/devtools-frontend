@@ -117,7 +117,7 @@ export async function getAndExpandSpecificIssueByTitle(
   const issueMessageElement = await devToolsPage.waitForFunction(async () => {
     const issueElements = await devToolsPage.$$(ISSUE_TITLE);
     for (const issueElement of issueElements) {
-      const message = await issueElement.evaluate(issueElement => issueElement.textContent);
+      const message = await issueElement.evaluate((issueElement: Element) => issueElement.textContent);
       if (message === issueMessage) {
         return issueElement;
       }
@@ -177,7 +177,7 @@ export async function expandIssue(devToolsPage: DevToolsPage = getBrowserAndPage
   }
 
   const issue = await devToolsPage.waitFor(ISSUE);
-  await devToolsPage.clickElement(issue);
+  await issue.click();
   await devToolsPage.waitFor('.message');
 }
 

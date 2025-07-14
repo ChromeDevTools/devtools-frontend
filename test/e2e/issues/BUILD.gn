@@ -9,7 +9,6 @@ node_ts_library("issues") {
     "cors-private-network-issues_test.ts",
     "hidden-issues-row_test.ts",
     "low-text-contrast-issues_test.ts",
-    "partitioning-blob-url-issues_test.ts",
     "quota-issues_test.ts",
     "user-reidentification-issues_test.ts",
   ]

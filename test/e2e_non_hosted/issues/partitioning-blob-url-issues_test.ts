@@ -4,49 +4,46 @@
 
 import {assert} from 'chai';
 
-import {$$, assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   expandIssue,
   getAndExpandSpecificIssueByTitle,
   getIssueByTitle,
   navigateToIssuesTab,
   RESOURCES_LABEL,
-} from '../helpers/issues-helpers.js';
+} from '../../e2e/helpers/issues-helpers.js';
+import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Partitioning Blob URL Issue', () => {
-  beforeEach(async () => {
-    await goToResource('empty.html');
-  });
+  it('should display the blocked fetching Blob URL and description based on partitioning info',
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('empty.html');
+       await navigateToIssuesTab(devToolsPage);
 
-  it('should display the blocked fetching Blob URL and description based on partitioning info', async () => {
-    await navigateToIssuesTab();
-    const {frontend} = getBrowserAndPages();
-
-    // Test case 1: BlockedCrossPartitionFetching
-    await frontend.evaluate(() => {
-      const issue = {
-        code: 'PartitioningBlobURLIssue',
-        details: {
-          partitioningBlobURLIssueDetails: {
-            url: 'blob:https://example.com/myblob1',
-            partitioningBlobURLInfo: 'BlockedCrossPartitionFetching',
-          },
-        },
-      };
-      // @ts-expect-error
-      window.addIssueForTest(issue);
-    });
-    const issueElement = await getAndExpandSpecificIssueByTitle('Fetching Partitioned Blob URL Issue');
-    assertNotNullOrUndefined(issueElement);
-  });
+       // Test case 1: BlockedCrossPartitionFetching
+       await devToolsPage.evaluate(() => {
+         const issue = {
+           code: 'PartitioningBlobURLIssue',
+           details: {
+             partitioningBlobURLIssueDetails: {
+               url: 'blob:https://example.com/myblob1',
+               partitioningBlobURLInfo: 'BlockedCrossPartitionFetching',
+             },
+           },
+         };
+         // @ts-expect-error
+         window.addIssueForTest(issue);
+       });
+       const issueElement = await getAndExpandSpecificIssueByTitle('Fetching Partitioned Blob URL Issue', devToolsPage);
+       assertNotNullOrUndefined(issueElement);
+     });
 
   it('should display the enforced noopener for navigation Blob URL and description based on partitioning info',
-     async () => {
-       await navigateToIssuesTab();
-       const {frontend} = getBrowserAndPages();
+     async ({devToolsPage, inspectedPage}) => {
+       await inspectedPage.goToResource('empty.html');
+       await navigateToIssuesTab(devToolsPage);
 
        // Test case 2: EnforceNoopenerForNavigation
-       await frontend.evaluate(() => {
+       await devToolsPage.evaluate(() => {
          const issue = {
            code: 'PartitioningBlobURLIssue',
            details: {
@@ -59,19 +56,21 @@ describe('Partitioning Blob URL Issue', () => {
          // @ts-expect-error
          window.addIssueForTest(issue);
        });
-       const issueElement = await getAndExpandSpecificIssueByTitle('Navigating Partitioned Blob URL Issue');
+       const issueElement =
+           await getAndExpandSpecificIssueByTitle('Navigating Partitioned Blob URL Issue', devToolsPage);
        assertNotNullOrUndefined(issueElement);
      });
 
-  it('partitioning blob resource view is hidden if there is no resource', async () => {
+  it('partitioning blob resource view is hidden if there is no resource', async ({devToolsPage, inspectedPage}) => {
     // Regression test for b/401184804
     // Trigger an issue for quirks mode
-    await goToResource('elements/quirks-mode.html');
-    await navigateToIssuesTab();
-    await expandIssue();
+    await inspectedPage.goToResource('elements/quirks-mode.html');
+    await navigateToIssuesTab(devToolsPage);
+    await expandIssue(devToolsPage);
     const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
-    const issueElement = await getIssueByTitle(issueTitle);
-    const childElements = await $$(RESOURCES_LABEL, issueElement);
+    const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
+    assertNotNullOrUndefined(issueElement);
+    const childElements = await devToolsPage.$$(RESOURCES_LABEL, issueElement);
     let foundBlobResourceElement = false;
     let foundQuirkyElement = false;
     for (const el of childElements) {

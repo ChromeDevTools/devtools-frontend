@@ -20,6 +20,10 @@ export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-modern-http`;
   override internalName = 'modern-http';
 
+  protected override hasAskAiSupport(): boolean {
+    return true;
+  }
+
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.LCP ?? null;
   }

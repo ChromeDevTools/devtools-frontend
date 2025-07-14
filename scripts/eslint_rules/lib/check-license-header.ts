@@ -149,8 +149,8 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
-    const filename = context.filename ?? context.getFilename();
+    const sourceCode = context.sourceCode;
+    const filename = context.filename;
     const fileName = filename;
     // Fix windows paths for exemptions
     const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');

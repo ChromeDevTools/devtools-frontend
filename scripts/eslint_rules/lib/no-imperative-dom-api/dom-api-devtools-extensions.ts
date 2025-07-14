@@ -7,13 +7,14 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier} from './ast.ts';
+import {type Context, isIdentifier} from './ast.ts';
 import type {DomFragment} from './dom-fragment.ts';
+
 type Node = TSESTree.Node;
 
 export const domApiDevtoolsExtensions = {
-  create: function(context) {
-    const sourceCode = context.getSourceCode();
+  create: function(context: Context) {
+    const sourceCode = context.sourceCode;
 
     return {
       methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: Node): boolean {

@@ -7,15 +7,16 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type CallExpression = TSESTree.CallExpression;
 type Node = TSESTree.Node;
 
 export const uiUtils = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
+
     return {
       CallExpression(node: CallExpression) {
         let func = isMemberExpression(

@@ -7,15 +7,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type CallExpression = TSESTree.CallExpression;
 type MemberExpression = TSESTree.MemberExpression;
 
 export const uiFragment = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       MemberExpression(node: MemberExpression) {
         if (isIdentifierChain(node, ['UI', 'Fragment', 'Fragment', 'build']) &&

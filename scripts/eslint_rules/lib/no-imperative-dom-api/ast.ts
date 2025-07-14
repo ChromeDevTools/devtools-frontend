@@ -6,7 +6,10 @@
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';
+import type {RuleContext} from '@typescript-eslint/utils/ts-eslint';
+
 type Node = TSESTree.Node;
+export type Context = RuleContext<'preferTemplateLiterals', []>;
 
 export function isIdentifier(node: Node, name: string|string[]): boolean {
   return node.type === 'Identifier' && (Array.isArray(name) ? name.includes(node.name) : node.name === name);

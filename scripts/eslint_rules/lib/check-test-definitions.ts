@@ -41,7 +41,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
     return {
       MemberExpression(node) {
         if (node.object.type !== 'Identifier' || node.property.type !== 'Identifier') {

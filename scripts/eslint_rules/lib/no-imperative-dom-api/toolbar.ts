@@ -7,14 +7,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
+type NewExpression = TSESTree.NewExpression;
 
 export const toolbar = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       getEvent(event: Node): string |
           null {
@@ -36,7 +37,7 @@ export const toolbar = {
         }
         return false;
       },
-      NewExpression(node) {
+      NewExpression(node: NewExpression) {
         const toolbarItem =
             isMemberExpression(node.callee, n => isIdentifierChain(n, ['UI', 'Toolbar']), n => n.type === 'Identifier');
         if (!toolbarItem) {

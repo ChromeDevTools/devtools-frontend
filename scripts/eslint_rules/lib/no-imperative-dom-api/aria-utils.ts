@@ -7,7 +7,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import type {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
@@ -15,7 +15,7 @@ type CallExpression = TSESTree.CallExpression;
 type Identifier = TSESTree.Identifier;
 
 export const ariaUtils = {
-  create(_) {
+  create(_context: Context) {
     return {
       functionCall(call: CallExpression, _firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean {
         const func = isMemberExpression(

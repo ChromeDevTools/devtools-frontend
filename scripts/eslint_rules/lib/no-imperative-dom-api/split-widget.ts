@@ -7,15 +7,16 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 type CallExpression = TSESTree.CallExpression;
 
 export const splitWidget = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
 
     function setVertical(domFragment: DomFragment, vertical: Node) {
       if (vertical.type === 'Literal' && vertical.value === true) {

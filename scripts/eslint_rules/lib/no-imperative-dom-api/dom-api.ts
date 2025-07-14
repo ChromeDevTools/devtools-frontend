@@ -7,15 +7,16 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isLiteral} from './ast.ts';
+import {type Context, isIdentifier, isLiteral} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type CallExpression = TSESTree.CallExpression;
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 
 export const domApi = {
-  create: function(context) {
-    const sourceCode = context.getSourceCode();
+  create: function(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
         if (isIdentifier(property, 'className')) {

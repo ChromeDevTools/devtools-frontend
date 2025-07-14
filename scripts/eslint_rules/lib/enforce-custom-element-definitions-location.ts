@@ -35,7 +35,7 @@ export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongF
   },
   defaultOptions: [{rootFrontendDirectory: ''}],
   create: function(context) {
-    const filename = context.filename ?? context.getFilename();
+    const filename = context.filename;
     const classDefiningFileName = path.resolve(filename);
 
     let frontEndDirectory = '';

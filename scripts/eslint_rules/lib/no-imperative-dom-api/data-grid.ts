@@ -7,15 +7,16 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 type CallExpression = TSESTree.CallExpression;
 
 export const dataGrid = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       methodCall(
           property: Identifier, firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment,

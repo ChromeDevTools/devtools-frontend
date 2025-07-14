@@ -63,7 +63,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
 
     const subrules: Subrule[] = [
       adorner.create(context),

@@ -7,14 +7,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 
 export const adorner = {
-  create(context) {
-    const sourceCode = context.getSourceCode();
+  create(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
         if (domFragment.tagName === 'devtools-adorner' && isIdentifier(property, 'data') &&

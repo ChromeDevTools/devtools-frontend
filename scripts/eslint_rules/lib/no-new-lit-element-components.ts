@@ -26,7 +26,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const filename = context.filename ?? context.getFilename();
+    const filename = context.filename;
     return {
       ClassDeclaration(node) {
         // Use `extends LitElement` as a signal.

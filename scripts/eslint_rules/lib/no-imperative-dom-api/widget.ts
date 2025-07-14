@@ -6,7 +6,7 @@
  */
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
 import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
 
@@ -17,8 +17,8 @@ type MemberExpression = TSESTree.MemberExpression;
 type AssignmentExpression = TSESTree.AssignmentExpression;
 
 export const widget = {
-  create: function(context) {
-    const sourceCode = context.getSourceCode();
+  create: function(context: Context) {
+    const sourceCode = context.sourceCode;
     return {
       methodCall(
           property: Identifier, firstArg: Node, secondArg: Node|undefined, domFragment: DomFragment,

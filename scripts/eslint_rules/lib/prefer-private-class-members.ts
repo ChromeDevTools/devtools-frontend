@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 export default createRule({
@@ -13,15 +15,20 @@ export default createRule({
       category: 'Possible Errors',
     },
     schema: [],  // no options
-    messages: {do_not_use_private: 'Use private properties (starting with `#`) rather than the `private` modifier.'},
+    messages: {
+      doNotUsePrivate: 'Use private properties (starting with `#`) rather than the `private` modifier.',
+    },
   },
   defaultOptions: [],
   create: function(context) {
-    function isTypeScriptPrivate(node) {
-      if (node.accessibility === 'private' && node.kind !== 'constructor') {
+    function isTypeScriptPrivate(node: TSESTree.MethodDefinition|TSESTree.PropertyDefinition) {
+      if (node.type === 'MethodDefinition' && node.kind === 'constructor') {
+        return;
+      }
+      if (node.accessibility === 'private') {
         context.report({
           node: node.key,
-          messageId: 'do_not_use_private',
+          messageId: 'doNotUsePrivate',
         });
       }
     }

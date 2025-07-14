@@ -45,7 +45,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       }
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{messageId: 'do_not_use_private'}],
+      errors: [{messageId: 'doNotUsePrivate'}],
     },
     {
       code: `class Foo {
@@ -53,7 +53,7 @@ new RuleTester().run('prefer-private-class-members', rule, {
       }
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{messageId: 'do_not_use_private'}],
+      errors: [{messageId: 'doNotUsePrivate'}],
     },
   ],
 });

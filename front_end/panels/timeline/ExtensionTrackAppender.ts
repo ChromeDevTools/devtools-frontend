@@ -17,10 +17,6 @@ import * as Extensions from './extensions/extensions.js';
 
 const UIStrings = {
   /**
-   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
-   */
-  customTrackDescription: 'This is a custom track added by a third party.',
-  /**
    * @description The name of a track, which is a horizontal division of the timeline, synonym with "swimlane".
    * @example {A track name} PH1
    */
@@ -65,7 +61,6 @@ export class ExtensionTrackAppender implements TrackAppender {
     const group = buildTrackHeader(
         jsLogContext, currentLevel, headerTitle, style,
         /* selectable= */ true, expanded);
-    group.description = i18nString(UIStrings.customTrackDescription);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 

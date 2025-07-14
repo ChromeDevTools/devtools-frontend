@@ -145,8 +145,9 @@ export const toggleAdornerSetting =
   await expectVeEvents([veClick(`Menu > Toggle: ${type}`)], undefined, devToolsPage);
 };
 
-export const waitForSelectedNodeToBeExpanded = async () => {
-  await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR}[aria-expanded="true"]`);
+export const waitForSelectedNodeToBeExpanded =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR}[aria-expanded="true"]`);
 };
 
 export const waitForAdornerOnSelectedNode =
@@ -1122,26 +1123,29 @@ export const getPropertiesWithHints = async () => {
   return propertiesWithHints;
 };
 
-export const summonAndWaitForSearchBox = async () => {
-  await summonSearchBox();
-  await waitFor(SEARCH_BOX_SELECTOR);
-  await expectVeEvents([
-    veKeyDown(''),
-    veImpressionsUnder('Panel: elements', [veImpression(
-                                              'Toolbar', 'search',
-                                              [
-                                                veImpression('Action: close-search'),
-                                                veImpression('Action: select-next'),
-                                                veImpression('Action: select-previous'),
-                                                veImpression('TextField: search'),
-                                              ])]),
-  ]);
+export const summonAndWaitForSearchBox =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await summonSearchBox(devToolsPage);
+  await devToolsPage.waitFor(SEARCH_BOX_SELECTOR);
+  await expectVeEvents(
+      [
+        veKeyDown(''),
+        veImpressionsUnder('Panel: elements', [veImpression(
+                                                  'Toolbar', 'search',
+                                                  [
+                                                    veImpression('Action: close-search'),
+                                                    veImpression('Action: select-next'),
+                                                    veImpression('Action: select-previous'),
+                                                    veImpression('TextField: search'),
+                                                  ])]),
+      ],
+      undefined, devToolsPage);
 };
 
-export const assertSearchResultMatchesText = async (text: string) => {
+export const assertSearchResultMatchesText = async (text: string, devToolsPage?: DevToolsPage) => {
   await waitForFunction(async () => {
-    return await getTextContent(SEARCH_RESULTS_MATCHES) === text;
-  });
+    return await getTextContent(SEARCH_RESULTS_MATCHES, undefined, devToolsPage) === text;
+  }, undefined, undefined, devToolsPage);
 };
 
 export const goToResourceAndWaitForStyleSection = async (

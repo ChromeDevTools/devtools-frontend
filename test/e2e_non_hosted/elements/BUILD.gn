@@ -15,7 +15,6 @@ ts_e2e_library("elements") {
     "grid-editor_test.ts",
     "pseudo-states_test.ts",
     "style-pane-properties_test.ts",
-    "switch-panels-while-editing-as-html_test.ts",
     "violating-element-and-attributes_test.ts",
   ]
   deps = [

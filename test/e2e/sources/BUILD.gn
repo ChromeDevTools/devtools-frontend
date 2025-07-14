@@ -21,7 +21,6 @@ node_ts_library("sources") {
     "snippets_test.ts",
     "syntax-highlighting_test.ts",
     "watch-expressions_test.ts",
-    "worker-relative-sourcemap_test.ts",
   ]
 
   deps = [

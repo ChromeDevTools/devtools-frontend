@@ -1069,7 +1069,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.recordingHint.detach();
       this.recordingHint = null;
     }
-    UI.ARIAUtils.alert(i18nString(UIStrings.networkDataAvailable));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkDataAvailable));
   }
 
   private setHidden(value: boolean): void {

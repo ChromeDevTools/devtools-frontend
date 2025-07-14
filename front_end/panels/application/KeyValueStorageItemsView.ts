@@ -294,7 +294,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     }
     this.performUpdate();
     this.#toolbar?.setCanDeleteSelected(Boolean(this.#selectedKey));
-    ARIAUtils.alert(i18nString(UIStrings.numberEntries, {PH1: this.#items.length}));
+    ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.numberEntries, {PH1: this.#items.length}));
   }
 
   deleteSelectedItem(): void {

@@ -98,7 +98,7 @@ afterEach(async function() {
   await removeGlassPanes();
   await removeTextEditorTooltip();
 
-  UI.ARIAUtils.removeAlertElement(document.body);
+  UI.ARIAUtils.LiveAnnouncer.removeAnnouncerElements(document.body);
 
   for (const child of document.body.children) {
     if (!documentBodyElements.has(child)) {

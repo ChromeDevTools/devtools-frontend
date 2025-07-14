@@ -34,7 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ActionDelegate} from './ActionRegistration.js';
-import {alert} from './ARIAUtils.js';
+import {LiveAnnouncer} from './ARIAUtils.js';
 import type {Context} from './Context.js';
 import {type Provider, ToolbarButton, type ToolbarItem} from './Toolbar.js';
 
@@ -175,9 +175,9 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   announceDockLocation(): void {
     if (this.dockSideInternal === DockState.UNDOCKED) {
-      alert(i18nString(UIStrings.devtoolsUndocked));
+      LiveAnnouncer.alert(i18nString(UIStrings.devtoolsUndocked));
     } else {
-      alert(i18nString(UIStrings.devToolsDockedTo, {PH1: this.dockSideInternal || ''}));
+      LiveAnnouncer.alert(i18nString(UIStrings.devToolsDockedTo, {PH1: this.dockSideInternal || ''}));
     }
   }
 }

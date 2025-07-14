@@ -14,6 +14,6 @@ export function copyTextToClipboard(text: string, alert?: string): void {
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
   // TODO: make alert required.
   if (alert) {
-    UI.ARIAUtils.alert(alert);
+    UI.ARIAUtils.LiveAnnouncer.alert(alert);
   }
 }

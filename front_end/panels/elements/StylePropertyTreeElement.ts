@@ -2728,7 +2728,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const invalidString = this.property.getInvalidStringForInvalidProperty();
     if (invalidString) {
-      UI.ARIAUtils.alert(invalidString);
+      UI.ARIAUtils.LiveAnnouncer.alert(invalidString);
     }
 
     const proxyElement = this.prompt.attachAndStartEditing(selectedElement, blurListener.bind(this, context));

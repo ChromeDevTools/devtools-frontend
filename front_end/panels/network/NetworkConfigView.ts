@@ -366,7 +366,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
   }
   override wasShown(): void {
     super.wasShown();
-    UI.ARIAUtils.alert(i18nString(UIStrings.networkConditionsPanelShown));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.networkConditionsPanelShown));
   }
 }
 

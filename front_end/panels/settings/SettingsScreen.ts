@@ -474,7 +474,7 @@ export class ExperimentsSettingsTab extends UI.Widget.VBox implements SettingsTa
     if (!stableExperiments.length && !unstableExperiments.length) {
       const warning = document.createElement('span');
       warning.textContent = i18nString(UIStrings.noResults);
-      UI.ARIAUtils.alert(warning.textContent);
+      UI.ARIAUtils.LiveAnnouncer.alert(warning.textContent);
       this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warning);
       this.containerElement.appendChild(this.#experimentsSection);
     }

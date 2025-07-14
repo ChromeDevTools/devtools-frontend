@@ -183,7 +183,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const patterns = this.manager.blockedPatterns();
     patterns.splice(index, 1);
     this.manager.setBlockedPatterns(patterns);
-    UI.ARIAUtils.alert(UIStrings.itemDeleted);
+    UI.ARIAUtils.LiveAnnouncer.alert(UIStrings.itemDeleted);
   }
 
   beginEdit(pattern: SDK.NetworkManager.BlockedPattern): UI.ListWidget.Editor<SDK.NetworkManager.BlockedPattern> {

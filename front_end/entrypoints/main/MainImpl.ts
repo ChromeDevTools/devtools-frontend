@@ -553,8 +553,8 @@ export class MainImpl {
       Timeline.TimelinePanel.LoadTimelineHandler.instance().handleQueryParam(value);
     }
 
-    // Initialize ARIAUtils.alert Element
-    UI.ARIAUtils.getOrCreateAlertElement();
+    // Initialize elements for the live announcer functionality for a11y.
+    UI.ARIAUtils.LiveAnnouncer.initializeAnnouncerElements();
     UI.DockController.DockController.instance().announceDockLocation();
 
     // Allow UI cycles to repaint prior to creating connection.

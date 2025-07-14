@@ -378,7 +378,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
       const accessibleText =
           expandText ? `${this.selectedNode.nodeAccessibleText}, ${expandText}` : this.selectedNode.nodeAccessibleText;
-      UI.ARIAUtils.alert(accessibleText);
+      UI.ARIAUtils.LiveAnnouncer.alert(accessibleText);
     }
   }
 
@@ -407,7 +407,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const items = i18nString(UIStrings.rowsS, {PH1: numberOfRows});
       accessibleText = i18nString(UIStrings.sSUseTheUpAndDownArrowKeysTo, {PH1: this.displayName, PH2: items});
     }
-    UI.ARIAUtils.alert(accessibleText);
+    UI.ARIAUtils.LiveAnnouncer.alert(accessibleText);
   }
 
   private innerAddColumn(column: ColumnDescriptor, position?: number): void {
@@ -1139,7 +1139,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       emptyData[column] = null;
     }
     this.creationNode = new CreationDataGridNode(emptyData, hasChildren);
-    UI.ARIAUtils.alert(i18nString(UIStrings.emptyRowCreated));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.emptyRowCreated));
     this.rootNode().appendChild(this.creationNode);
   }
 
@@ -1353,7 +1353,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     cell.classList.add(sortOrder);
     const ariaLabel = this.isSortOrderAscending() ? 'ascending' : 'descending';
     cell.setAttribute('aria-sort', ariaLabel);
-    UI.ARIAUtils.alert(i18nString(UIStrings.enterToSort, {PH1: ariaLabel || ''}));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.enterToSort, {PH1: ariaLabel || ''}));
 
     this.dispatchEventToListeners(Events.SORTING_CHANGED);
   }

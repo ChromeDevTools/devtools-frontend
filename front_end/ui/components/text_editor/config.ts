@@ -160,7 +160,7 @@ function announceSelectedCompletionInfo(view: CM.EditorView): void {
     PH3: CM.currentCompletions(view.state).length,
   });
 
-  UI.ARIAUtils.alert(ariaMessage);
+  UI.ARIAUtils.LiveAnnouncer.alert(ariaMessage);
 }
 
 export const autocompletion = new DynamicSetting<boolean>(

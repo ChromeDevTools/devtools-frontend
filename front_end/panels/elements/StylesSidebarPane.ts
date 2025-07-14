@@ -483,7 +483,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       if (this.lastFilterChange) {
         const stillTyping = Date.now() - this.lastFilterChange < FILTER_IDLE_PERIOD;
         if (!stillTyping) {
-          UI.ARIAUtils.alert(
+          UI.ARIAUtils.LiveAnnouncer.alert(
               this.visibleSections ? i18nString(UIStrings.visibleSelectors, {n: this.visibleSections}) :
                                      i18nString(UIStrings.noMatchingSelectorOrStyle));
         }

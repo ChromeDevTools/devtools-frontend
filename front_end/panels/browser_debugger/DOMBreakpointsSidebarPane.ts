@@ -422,10 +422,10 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider<SDK.DOMModel
       const labelString = label ? label() : '';
       if (domDebuggerModel.hasDOMBreakpoint(node, type)) {
         domDebuggerModel.removeDOMBreakpoint(node, type);
-        UI.ARIAUtils.alert(`${i18nString(UIStrings.breakpointRemoved)}: ${labelString}`);
+        UI.ARIAUtils.LiveAnnouncer.alert(`${i18nString(UIStrings.breakpointRemoved)}: ${labelString}`);
       } else {
         domDebuggerModel.setDOMBreakpoint(node, type);
-        UI.ARIAUtils.alert(`${i18nString(UIStrings.breakpointSet)}: ${labelString}`);
+        UI.ARIAUtils.LiveAnnouncer.alert(`${i18nString(UIStrings.breakpointSet)}: ${labelString}`);
       }
     }
 

@@ -386,7 +386,8 @@ export class SearchView extends UI.Widget.VBox {
     }
     this.searchFinished(finished);
     this.searchConfig = null;
-    UI.ARIAUtils.alert(this.searchMessageElement.textContent + ' ' + this.searchResultsMessageElement.textContent);
+    UI.ARIAUtils.LiveAnnouncer.alert(
+        this.searchMessageElement.textContent + ' ' + this.searchResultsMessageElement.textContent);
   }
 
   private innerStartSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {

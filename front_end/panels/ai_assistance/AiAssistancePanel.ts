@@ -1311,7 +1311,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#historicalConversations.filter(conversation => conversation !== this.#conversation);
     void AiAssistanceModel.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
-    UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
   }
 
   async #openConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {
@@ -1325,7 +1325,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #handleNewChatRequest(): void {
     this.#updateConversationState();
-    UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
   }
 
   async #handleTakeScreenshot(): Promise<void> {
@@ -1515,9 +1515,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           selected: context,
         },
         multimodalInput);
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
+    UI.ARIAUtils.LiveAnnouncer.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
+    UI.ARIAUtils.LiveAnnouncer.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
   async *

@@ -219,7 +219,7 @@ const DEFAULT_VIEW: View = (input, output, target) => {
     const target = event.target as HTMLLabelElement;
     const input = target.querySelector('input') as HTMLInputElement;
     input.click();
-    UI.ARIAUtils.alert(i18nString(UIStrings.colorPickerOpened));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.colorPickerOpened));
     event.preventDefault();
   };
   const onColorLabelKeyDown = (event: KeyboardEvent): void => {

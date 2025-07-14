@@ -1111,7 +1111,7 @@ export class ToolbarSettingToggle extends ToolbarToggle {
     this.setToggled(toggled);
     const toggleAnnouncement = toggled ? i18nString(UIStrings.pressed) : i18nString(UIStrings.notPressed);
     if (this.willAnnounceState) {
-      ARIAUtils.alert(toggleAnnouncement);
+      ARIAUtils.LiveAnnouncer.alert(toggleAnnouncement);
     }
     this.willAnnounceState = false;
     this.setTitle(this.defaultTitle);

@@ -442,7 +442,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private deleteWatchExpression(event: Event): void {
     event.consume(true);
-    UI.ARIAUtils.alert(i18nString(UIStrings.watchExpressionDeleted));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.watchExpressionDeleted));
     this.updateExpression(null);
   }
 

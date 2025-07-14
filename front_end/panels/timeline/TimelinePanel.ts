@@ -1953,7 +1953,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
    */
   #ariaDebouncer = Common.Debouncer.debounce(() => {
     if (this.#pendingAriaMessage) {
-      UI.ARIAUtils.alert(this.#pendingAriaMessage);
+      UI.ARIAUtils.LiveAnnouncer.alert(this.#pendingAriaMessage);
       this.#pendingAriaMessage = null;
     }
   }, 1_000);
@@ -1967,7 +1967,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // If the pending message is different, immediately announce the pending
     // message + then update the pending message to the new one.
     if (this.#pendingAriaMessage) {
-      UI.ARIAUtils.alert(this.#pendingAriaMessage);
+      UI.ARIAUtils.LiveAnnouncer.alert(this.#pendingAriaMessage);
     }
     this.#pendingAriaMessage = message;
     this.#ariaDebouncer();
@@ -2738,7 +2738,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   #announceSelectionToAria(oldSelection: TimelineSelection|null, newSelection: TimelineSelection|null): void {
     if (oldSelection !== null && newSelection === null) {
-      UI.ARIAUtils.alert(i18nString(UIStrings.selectionCleared));
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.selectionCleared));
     }
     if (newSelection === null) {
       return;
@@ -2758,11 +2758,11 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     // Announce the type of event that was selected (special casing frames.)
     if (Trace.Types.Events.isLegacyTimelineFrame(newSelection.event)) {
-      UI.ARIAUtils.alert(i18nString(UIStrings.frameSelected));
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.frameSelected));
       return;
     }
     const name = Utils.EntryName.nameForEntry(newSelection.event);
-    UI.ARIAUtils.alert(i18nString(UIStrings.eventSelected, {PH1: name}));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.eventSelected, {PH1: name}));
   }
 
   select(selection: TimelineSelection|null): void {

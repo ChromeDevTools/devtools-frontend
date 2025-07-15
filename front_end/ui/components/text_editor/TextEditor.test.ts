@@ -4,6 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -200,6 +201,70 @@ describeWithEnvironment('TextEditor', () => {
     });
   });
 
+  describe('AI auto completion', () => {
+    it('can dispatch an effect to set the AI auto complete suggestion', () => {
+      const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+      renderElementIntoDOM(editor);
+
+      const text = 'hello';
+      editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+      });
+
+      const actualSuggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
+      assertNotNullOrUndefined(actualSuggestion);
+      assert.strictEqual(actualSuggestion.text, text);
+      editor.remove();
+    });
+
+    it('keeps the AI suggestion if the typed text is a prefix of the suggestion', () => {
+      const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+      renderElementIntoDOM(editor);
+
+      editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+      });
+      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+
+      editor.dispatch({
+        changes: {from: 0, insert: 'he'},
+        selection: {anchor: 2},
+      });
+      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      editor.remove();
+    });
+
+    it('clears the AI auto complete suggestion if the typed text is not a prefix of the suggestion', () => {
+      const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+      renderElementIntoDOM(editor);
+
+      editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
+      });
+      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+
+      editor.dispatch({changes: {from: 0, insert: 'a'}, selection: {anchor: 1}});
+      assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      editor.remove();
+    });
+
+    it('can accept an AI auto complete suggestion', () => {
+      const editor = new TextEditor.TextEditor.TextEditor(makeState('', TextEditor.Config.aiAutoCompleteSuggestion));
+      renderElementIntoDOM(editor);
+      const text = 'hello';
+      editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(text),
+      });
+
+      const accepted = TextEditor.Config.acceptAiAutoCompleteSuggestion(editor.editor);
+      assert.isTrue(accepted);
+
+      assert.strictEqual(editor.state.doc.toString(), text);
+      assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      editor.remove();
+    });
+  });
+
   it('dispatching a transaction from a saved editor reference should not throw an error', () => {
     const textEditor = new TextEditor.TextEditor.TextEditor(makeState('one'));
     const editorViewA = textEditor.editor;
@@ -267,5 +332,6 @@ describeWithMockConnection('TextEditor autocompletion', () => {
     const result =
         await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
     assert.isNull(result);
+
   });
 });

@@ -283,8 +283,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   render(html`
       <div style="min-width: min-content;" jslog=${VisualLogging.pane('layout').track({resize: true})}>
-        <style>@scope to (devtools-widget) { ${layoutPaneStyles} }</style>
-        <style>@scope to (devtools-widget) { ${UI.inspectorCommonStyles} }</style>
+        <style>${UI.Widget.widgetScoped(layoutPaneStyles)}</style>
+        <style>${UI.Widget.widgetScoped(UI.inspectorCommonStyles)}</style>
         <details open>
           <summary class="header"
             @keydown=${input.onSummaryKeyDown}

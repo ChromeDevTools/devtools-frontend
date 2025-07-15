@@ -1505,6 +1505,80 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
+  describe('a11y announcements', () => {
+    let liveAnnouncerStatusStub: sinon.SinonStub;
+    beforeEach(() => {
+      liveAnnouncerStatusStub = sinon.stub(UI.ARIAUtils.LiveAnnouncer, 'status').returns();
+    });
+
+    it('should announce the context title from the agent as status', async () => {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.ResponseType.CONTEXT,
+          title: 'context-title',
+          details: [{title: 'mock', text: 'mock'}]
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      const {panel, view} = await createAiAssistancePanel();
+
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test');
+      await view.nextInput;
+
+      assert.isTrue(
+          liveAnnouncerStatusStub.calledWith('context-title'),
+          'Expected live announcer status to be called with the context title');
+    });
+
+    it('should announce answer loading when answer starts streaming as status', async () => {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.ResponseType.ANSWER,
+          text: 'streaming ans',
+          complete: false,
+        };
+
+        yield {
+          type: AiAssistanceModel.ResponseType.ANSWER,
+          text: 'streaming answer is not compl',
+          complete: false,
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      const {panel, view} = await createAiAssistancePanel();
+
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test');
+      await view.nextInput;
+
+      assert.isTrue(liveAnnouncerStatusStub.calledOnce, 'Expected live announcer status to be called only once');
+      assert.isTrue(
+          liveAnnouncerStatusStub.calledWith('Answer loading'),
+          'Expected live announcer status to be called with the text "Answer loading"');
+    });
+
+    it('should announce answer ready when answer completes streaming', async () => {
+      const stubbedResponses: AsyncGenerator<AiAssistanceModel.ResponseData> = (async function*() {
+        yield {
+          type: AiAssistanceModel.ResponseType.ANSWER,
+          text: 'streaming answer is not completed before but now it is complete',
+          complete: true,
+        };
+      })();
+      sinon.stub(AiAssistanceModel.StylingAgent.prototype, 'run').returns(stubbedResponses);
+      const {panel, view} = await createAiAssistancePanel();
+
+      panel.handleAction('freestyler.elements-floating-button');
+      (await view.nextInput).onTextSubmit('test');
+      await view.nextInput;
+
+      assert.isTrue(
+          liveAnnouncerStatusStub.calledWith('Answer ready'),
+          'Expected live announcer status to be called with the text "Answer loading"');
+    });
+  });
+
   describe('handleExternalRequest', () => {
     const explanation = 'I need more information';
     let performSearchStub: sinon.SinonStub;

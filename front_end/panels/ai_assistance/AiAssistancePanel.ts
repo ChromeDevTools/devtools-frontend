@@ -1515,9 +1515,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           selected: context,
         },
         multimodalInput);
-    UI.ARIAUtils.LiveAnnouncer.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
-    UI.ARIAUtils.LiveAnnouncer.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
   async *
@@ -1555,6 +1553,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       this.#isLoading = true;
+      let announcedAnswerLoading = false;
+      let announcedAnswerReady = false;
       for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
@@ -1663,6 +1663,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           if (data.type === AiAssistanceModel.ResponseType.CONTEXT ||
               data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
+          }
+
+          // Announce as status update to screen readers when:
+          // * Context is received (e.g. Analyzing the prompt)
+          // * Answer started streaming
+          // * Answer finished streaming
+          switch (data.type) {
+            case AiAssistanceModel.ResponseType.CONTEXT:
+              UI.ARIAUtils.LiveAnnouncer.status(data.title);
+              break;
+            case AiAssistanceModel.ResponseType.ANSWER: {
+              if (!data.complete && !announcedAnswerLoading) {
+                announcedAnswerLoading = true;
+                UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.answerLoading));
+              } else if (data.complete && !announcedAnswerReady) {
+                announcedAnswerReady = true;
+                UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.answerReady));
+              }
+            }
           }
         }
       }

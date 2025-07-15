@@ -60,6 +60,7 @@ devtools_entrypoint("bundle") {
     "../../panels/ai_assistance/*",
     "../../panels/settings/*",
     "../../panels/timeline/*",
+    "../ai_code_completion",
   ]
 
   visibility += devtools_models_visibility

@@ -326,7 +326,7 @@ export const enum AidaAccessPreconditions {
   SYNC_IS_PAUSED = 'sync-is-paused',
 }
 
-const enum AidaInferenceLanguage {
+export const enum AidaInferenceLanguage {
   CPP = 'CPP',
   PYTHON = 'PYTHON',
   KOTLIN = 'KOTLIN',

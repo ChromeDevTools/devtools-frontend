@@ -313,7 +313,7 @@ type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => 
 function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
   // clang-format off
   return html`
-    <div class="toolbar-container" role="toolbar" .jslogContext=${VisualLogging.toolbar()}>
+    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
       ${input.showChatActions
         ? html`<devtools-button

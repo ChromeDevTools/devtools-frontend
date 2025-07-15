@@ -57,14 +57,12 @@ export class Launcher {
     // CDP commands in e2e and interaction should not generally take
     // more than 20 seconds.
     const protocolTimeout = TestConfig.debug ? 0 : 20_000;
-    const envSlowMo = process.env['STRESS'] ? 50 : undefined;
     const executablePath = TestConfig.chromeBinary;
 
     const opts: puppeteer.LaunchOptions = {
       headless,
       executablePath,
       dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
-      slowMo: envSlowMo,
       protocolTimeout,
     };
 

@@ -103,5 +103,10 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         type: 'boolean',
         default: false,
         desc: 'Invert the grep/fgrep result',
+      })
+      .option('cpu-throttle', {
+        type: 'number',
+        default: 1,
+        desc: 'Throttle the CPU during tests. The number provided is the multiplier used.',
       });
 }

@@ -41,8 +41,6 @@ const headless = !TestConfig.debug || TestConfig.headless;
 // more than 20 seconds.
 const protocolTimeout = TestConfig.debug ? 0 : 20_000;
 
-const envSlowMo = process.env['STRESS'] ? 50 : undefined;
-const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
     ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
     0;
@@ -91,7 +89,6 @@ function launchChrome() {
     headless,
     executablePath,
     dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
-    slowMo: envSlowMo,
     protocolTimeout,
   };
 
@@ -199,13 +196,13 @@ async function delayPromisesIfRequired(page: puppeteer.Page): Promise<void> {
 }
 
 async function throttleCPUIfRequired(page: puppeteer.Page): Promise<void> {
-  if (envThrottleRate === 1) {
+  if (TestConfig.cpuThrottle === 1) {
     return;
   }
-  console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
+  console.log(`Throttling CPU: ${TestConfig.cpuThrottle}x slowdown`);
   const client = await page.createCDPSession();
   await client.send('Emulation.setCPUThrottlingRate', {
-    rate: envThrottleRate,
+    rate: TestConfig.cpuThrottle,
   });
   await client.detach();
 }

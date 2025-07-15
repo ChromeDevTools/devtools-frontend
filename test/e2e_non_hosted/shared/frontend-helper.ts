@@ -21,7 +21,6 @@ export interface ClickOptions {
   maxPixelsFromLeft?: number;
 }
 
-const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
     ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
     0;
@@ -58,14 +57,14 @@ export class DevToolsPage extends PageWrapper {
   }
 
   async throttleCPUIfRequired(): Promise<void> {
-    if (envThrottleRate === 1) {
+    if (TestConfig.cpuThrottle === 1) {
       return;
     }
     /* eslint-disable-next-line no-console */
-    console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
+    console.log(`Throttling CPU: ${TestConfig.cpuThrottle}x slowdown`);
     const client = await this.page.createCDPSession();
     await client.send('Emulation.setCPUThrottlingRate', {
-      rate: envThrottleRate,
+      rate: TestConfig.cpuThrottle,
     });
   }
 

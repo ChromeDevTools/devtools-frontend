@@ -171,7 +171,7 @@ describe('Navigation', function() {
     const waitForHtml = await interceptNextFileSave();
 
     // For some reason the CDP click command doesn't work here even if the tools menu is open.
-    await reportEl.$eval('a[data-action="save-html"]:not(.hidden)', saveHtmlEl => (saveHtmlEl as HTMLElement).click());
+    await reportEl.$eval('a[data-action="save-html"]:not(.hidden)', saveHtmlEl => saveHtmlEl.click());
 
     const htmlContent = await waitForHtml();
     const iframeHandle = await renderHtmlInIframe(htmlContent);

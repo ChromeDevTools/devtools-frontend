@@ -4,11 +4,11 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("settings") {
+ts_e2e_library("settings") {
   sources = [ "shortcut_settings_test.ts" ]
 
   deps = [
+    "../../e2e/helpers",
     "../../shared",
-    "../helpers",
   ]
 }

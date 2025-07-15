@@ -29,7 +29,6 @@ node_ts_library("tests") {
     "panels",
     "performance",
     "security",
-    "settings",
     "sources",
   ]
   sources = [ "mocharc.ts" ]

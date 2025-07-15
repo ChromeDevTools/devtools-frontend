@@ -43,6 +43,7 @@ exports.Request = void 0;
 const EventEmitter_js_1 = require("../../common/EventEmitter.js");
 const decorators_js_1 = require("../../util/decorators.js");
 const disposable_js_1 = require("../../util/disposable.js");
+const encoding_js_1 = require("../../util/encoding.js");
 /**
  * @internal
  */
@@ -62,7 +63,8 @@ let Request = (() => {
             request.#initialize();
             return request;
         }
-        #error = __runInitializers(this, _instanceExtraInitializers);
+        #responseContentPromise = (__runInitializers(this, _instanceExtraInitializers), null);
+        #error;
         #redirect;
         #response;
         #browsingContext;
@@ -207,6 +209,18 @@ let Request = (() => {
                 headers,
                 body,
             });
+        }
+        async getResponseContent() {
+            if (!this.#responseContentPromise) {
+                this.#responseContentPromise = (async () => {
+                    const data = await this.#session.send('network.getData', {
+                        dataType: "response" /* Bidi.Network.DataType.Response */,
+                        request: this.id,
+                    });
+                    return (0, encoding_js_1.stringToTypedArray)(data.result.bytes.value, data.result.bytes.type === 'base64');
+                })();
+            }
+            return await this.#responseContentPromise;
         }
         async continueWithAuth(parameters) {
             if (parameters.action === 'provideCredentials') {

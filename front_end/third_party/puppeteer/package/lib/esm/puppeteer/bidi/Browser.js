@@ -42,6 +42,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 import { Browser, } from '../api/Browser.js';
+import { ProtocolError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { bubble } from '../util/decorators.js';
@@ -110,6 +111,22 @@ let BidiBrowser = (() => {
                 }
                 return true;
             }));
+            try {
+                await session.send('network.addDataCollector', {
+                    dataTypes: ["response" /* Bidi.Network.DataType.Response */],
+                    // Buffer size of 20 MB is equivalent to the CDP:
+                    maxEncodedDataSize: 20 * 1000 * 1000, // 20 MB
+                });
+            }
+            catch (err) {
+                if (err instanceof ProtocolError) {
+                    // Ignore protocol errors, as the data collectors can be not implemented.
+                    debugError(err);
+                }
+                else {
+                    throw err;
+                }
+            }
             const browser = new BidiBrowser(session.browser, opts);
             browser.#initialize();
             return browser;
@@ -208,8 +225,8 @@ let BidiBrowser = (() => {
         process() {
             return this.#process ?? null;
         }
-        async createBrowserContext(_options) {
-            const userContext = await this.#browserCore.createUserContext();
+        async createBrowserContext(options = {}) {
+            const userContext = await this.#browserCore.createUserContext(options);
             return this.#createBrowserContext(userContext);
         }
         async version() {

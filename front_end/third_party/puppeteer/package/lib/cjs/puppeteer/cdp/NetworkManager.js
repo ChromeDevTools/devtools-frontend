@@ -50,6 +50,10 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this.#frameManager = frameManager;
         this.#networkEnabled = networkEnabled ?? true;
     }
+    #canIgnoreError(error) {
+        return ((0, ErrorLike_js_1.isErrorLike)(error) &&
+            ((0, Connection_js_1.isTargetClosedError)(error) || error.message.includes('Not supported')));
+    }
     async addClient(client) {
         if (!this.#networkEnabled || this.#clients.has(client)) {
             return;
@@ -73,7 +77,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             ]);
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -111,7 +115,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             });
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -173,7 +177,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             });
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -195,7 +199,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             });
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -236,7 +240,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             }
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -252,7 +256,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             });
         }
         catch (error) {
-            if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;

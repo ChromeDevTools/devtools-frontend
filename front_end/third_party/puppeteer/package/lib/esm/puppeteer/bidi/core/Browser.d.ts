@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import type { BrowserContextOptions } from '../../api/Browser.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { disposeSymbol } from '../../util/disposable.js';
 import type { BrowsingContext } from './BrowsingContext.js';
@@ -50,7 +51,7 @@ export declare class Browser extends EventEmitter<{
     addPreloadScript(functionDeclaration: string, options?: AddPreloadScriptOptions): Promise<string>;
     removeIntercept(intercept: Bidi.Network.Intercept): Promise<void>;
     removePreloadScript(script: string): Promise<void>;
-    createUserContext(): Promise<UserContext>;
+    createUserContext(options: BrowserContextOptions): Promise<UserContext>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
     [disposeSymbol](): void;

@@ -40,6 +40,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { inertIfDisposed } from '../../util/decorators.js';
 import { DisposableStack, disposeSymbol } from '../../util/disposable.js';
+import { stringToTypedArray } from '../../util/encoding.js';
 /**
  * @internal
  */
@@ -59,7 +60,8 @@ let Request = (() => {
             request.#initialize();
             return request;
         }
-        #error = __runInitializers(this, _instanceExtraInitializers);
+        #responseContentPromise = (__runInitializers(this, _instanceExtraInitializers), null);
+        #error;
         #redirect;
         #response;
         #browsingContext;
@@ -204,6 +206,18 @@ let Request = (() => {
                 headers,
                 body,
             });
+        }
+        async getResponseContent() {
+            if (!this.#responseContentPromise) {
+                this.#responseContentPromise = (async () => {
+                    const data = await this.#session.send('network.getData', {
+                        dataType: "response" /* Bidi.Network.DataType.Response */,
+                        request: this.id,
+                    });
+                    return stringToTypedArray(data.result.bytes.value, data.result.bytes.type === 'base64');
+                })();
+            }
+            return await this.#responseContentPromise;
         }
         async continueWithAuth(parameters) {
             if (parameters.action === 'provideCredentials') {

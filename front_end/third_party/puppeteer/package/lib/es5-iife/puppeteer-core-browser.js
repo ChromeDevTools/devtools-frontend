@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.12.1';
+  const packageVersion = '24.13.0';
 
   /**
    * @license
@@ -17511,7 +17511,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
       try {
         await Promise.all([client.send('Network.enable'), _assertClassBrand(_NetworkManager_brand, this, _applyExtraHTTPHeaders).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyNetworkConditions).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyProtocolRequestInterception).call(this, client), _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).call(this, client)]);
       } catch (error) {
-        if (isErrorLike(error) && isTargetClosedError(error)) {
+        if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
           return;
         }
         throw error;
@@ -17592,6 +17592,9 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  function _canIgnoreError(error) {
+    return isErrorLike(error) && (isTargetClosedError(error) || error.message.includes('Not supported'));
+  }
   async function _removeClient(client) {
     _classPrivateFieldGet(_clients, this).get(client)?.dispose();
     _classPrivateFieldGet(_clients, this).delete(client);
@@ -17605,7 +17608,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         headers: _classPrivateFieldGet(_extraHTTPHeaders, this)
       });
     } catch (error) {
-      if (isErrorLike(error) && isTargetClosedError(error)) {
+      if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
       }
       throw error;
@@ -17628,7 +17631,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         downloadThroughput: _classPrivateFieldGet(_emulatedNetworkConditions, this).download
       });
     } catch (error) {
-      if (isErrorLike(error) && isTargetClosedError(error)) {
+      if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
       }
       throw error;
@@ -17644,7 +17647,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this)
       });
     } catch (error) {
-      if (isErrorLike(error) && isTargetClosedError(error)) {
+      if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
       }
       throw error;
@@ -17666,7 +17669,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         await Promise.all([_assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).call(this, client), client.send('Fetch.disable')]);
       }
     } catch (error) {
-      if (isErrorLike(error) && isTargetClosedError(error)) {
+      if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
       }
       throw error;
@@ -17681,7 +17684,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
         cacheDisabled: _classPrivateFieldGet(_userCacheDisabled, this)
       });
     } catch (error) {
-      if (isErrorLike(error) && isTargetClosedError(error)) {
+      if (_assertClassBrand(_NetworkManager_brand, this, _canIgnoreError).call(this, error)) {
         return;
       }
       throw error;

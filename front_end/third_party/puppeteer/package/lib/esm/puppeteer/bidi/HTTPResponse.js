@@ -150,8 +150,8 @@ let BidiHTTPResponse = (() => {
             }
             return this.#securityDetails ?? null;
         }
-        content() {
-            throw new UnsupportedOperation();
+        async content() {
+            return await this.#request.getResponseContent();
         }
     };
 })();

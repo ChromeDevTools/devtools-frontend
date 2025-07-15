@@ -248,8 +248,18 @@ let Browser = (() => {
                 script,
             });
         }
-        async createUserContext() {
-            const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {});
+        async createUserContext(options) {
+            const proxyConfig = options.proxyServer === undefined
+                ? undefined
+                : {
+                    proxyType: 'manual',
+                    httpProxy: options.proxyServer,
+                    sslProxy: options.proxyServer,
+                    noProxy: options.proxyBypassList,
+                };
+            const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {
+                proxy: proxyConfig,
+            });
             return this.#createUserContext(context);
         }
         async installExtension(path) {

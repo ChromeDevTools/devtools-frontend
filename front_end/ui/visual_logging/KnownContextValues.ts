@@ -2761,6 +2761,7 @@ export const knownContextValues = new Set([
   'pointerover',
   'pointerrawupdate',
   'pointerup',
+  'popover',
   'popover-hide-delay',
   'popover-show-delay',
   'popstate',

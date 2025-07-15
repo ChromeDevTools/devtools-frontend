@@ -33,6 +33,7 @@ export enum RegisteredAdorners {
   REVEAL = 'reveal',
   MEDIA = 'media',
   SCROLL = 'scroll',
+  POPOVER = 'popover',
 }
 
 // This enum-like const object serves as the authoritative registry for all the
@@ -105,6 +106,13 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
         category: AdornerCategories.LAYOUT,
         enabledByDefault: true,
       };
+    case RegisteredAdorners.POPOVER: {
+      return {
+        name: 'popover',
+        category: AdornerCategories.LAYOUT,
+        enabledByDefault: true,
+      };
+    }
   }
 }
 

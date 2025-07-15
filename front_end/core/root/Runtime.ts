@@ -437,6 +437,10 @@ interface AiGeneratedTimelineLabels {
   enabled: boolean;
 }
 
+interface AllowPopoverForcing {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -471,6 +475,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
   devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
+  devToolsAllowPopoverForcing: AllowPopoverForcing,
 }>;
 
 /**

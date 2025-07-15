@@ -172,11 +172,11 @@ describe('User Metrics', () => {
   });
 
   it('dispatches events for view shown at launch', async () => {
-    await reloadDevTools({selectedPanel: {name: 'timeline'}});
+    await reloadDevTools({selectedPanel: {name: 'network'}});
 
     await assertHistogramEventsInclude([{
       actionName: 'DevTools.PanelShown',
-      actionCode: 5,  // Timeline.
+      actionCode: 3,  // Network.
     }]);
   });
 
@@ -367,17 +367,17 @@ describe('User Metrics', () => {
   it('tracks panel loading', async () => {
     // We specify the selected panel here because the default behavior is to go to the
     // elements panel, but this means we won't get the PanelLoaded event. Instead we
-    // request that the resetPages helper sets the timeline as the target panel, and
-    // we wait for the timeline in the test. This means, in turn, we get the PanelLoaded
+    // request that the resetPages helper sets the network as the target panel, and
+    // we wait for the network in the test. This means, in turn, we get the PanelLoaded
     // event.
-    await reloadDevTools({selectedPanel: {name: 'timeline'}});
+    await reloadDevTools({selectedPanel: {name: 'network'}});
     const {frontend} = getBrowserAndPages();
 
-    await waitFor('.timeline');
+    await waitFor('.network');
 
     const events = await retrieveRecordedPerformanceHistogramEvents(frontend);
 
-    assert.include(events.map(e => e.histogramName), 'DevTools.Launch.Timeline');
+    assert.include(events.map(e => e.histogramName), 'DevTools.Launch.Network');
   });
 
   it('records the selected language', async () => {

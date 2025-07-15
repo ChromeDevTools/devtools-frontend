@@ -509,7 +509,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.wrappable = true;
     this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
     this.panelRightToolbar.role = 'presentation';
-    if (!isNode) {
+    if (!isNode && this.hasPrimaryTarget()) {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();
     }
@@ -1032,15 +1032,30 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
+  /**
+   * Returns false if this was loaded in a standalone context such that recording is
+   * not possible, like an enhanced trace (which opens a new devtools window) or
+   * trace.cafe.
+   */
+  private hasPrimaryTarget(): boolean {
+    return Boolean(SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.sessionId);
+  }
+
   private populateToolbar(): void {
-    // Record
-    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
-    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.recordReloadAction));
+    const hasPrimaryTarget = this.hasPrimaryTarget();
+
+    if (hasPrimaryTarget || isNode) {
+      this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
+    }
+    if (hasPrimaryTarget) {
+      this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.recordReloadAction));
+    }
+
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'timeline.clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => this.onClearButton());
     this.panelToolbar.appendToolbarItem(this.clearButton);
 
-    // Load / SaveCLICK
+    // Load / Save
     this.loadButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.loadProfile), 'import', undefined, 'timeline.load-from-file');
     this.loadButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
@@ -1077,22 +1092,23 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.panelToolbar.appendToolbarItem(this.loadButton);
     this.panelToolbar.appendToolbarItem(this.saveButton);
 
-    // History
-    this.panelToolbar.appendSeparator();
-
-    if (!isNode) {
-      this.homeButton = new UI.Toolbar.ToolbarButton(
-          i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
-      this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        this.#changeView({mode: 'LANDING_PAGE'});
-        this.#historyManager.navigateToLandingPage();
-      });
-      this.panelToolbar.appendToolbarItem(this.homeButton);
+    if (hasPrimaryTarget) {
       this.panelToolbar.appendSeparator();
+
+      if (!isNode) {
+        this.homeButton = new UI.Toolbar.ToolbarButton(
+            i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
+        this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+          this.#changeView({mode: 'LANDING_PAGE'});
+          this.#historyManager.navigateToLandingPage();
+        });
+        this.panelToolbar.appendToolbarItem(this.homeButton);
+        this.panelToolbar.appendSeparator();
+      }
     }
 
+    // TODO(crbug.com/337909145): need to hide "Live metrics" option if !canRecord.
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
-    this.panelToolbar.appendSeparator();
 
     // View
     this.panelToolbar.appendSeparator();
@@ -1104,10 +1120,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
     this.showMemoryToolbarCheckbox =
         this.createSettingCheckbox(this.showMemorySetting, i18nString(UIStrings.showMemoryTimeline));
-    this.panelToolbar.appendToolbarItem(this.showMemoryToolbarCheckbox);
 
-    // GC
-    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
+    if (hasPrimaryTarget) {
+      // GC
+      this.panelToolbar.appendToolbarItem(this.showMemoryToolbarCheckbox);
+      this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
+    }
 
     // Ignore list setting
     this.panelToolbar.appendSeparator();
@@ -1129,7 +1147,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     // Settings
-    if (!isNode) {
+    if (!isNode && hasPrimaryTarget) {
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
@@ -1608,7 +1626,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private updateSettingsPaneVisibility(): void {
-    if (isNode) {
+    if (isNode || !this.hasPrimaryTarget()) {
       return;
     }
     if (this.showSettingsPaneSetting.get()) {
@@ -1882,20 +1900,26 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private updateTimelineControls(): void {
-    this.toggleRecordAction.setToggled(this.state === State.RECORDING);
-    this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
-    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.IDLE);
-    this.#historyManager.setEnabled(this.state === State.IDLE);
-    this.clearButton.setEnabled(this.state === State.IDLE);
-    this.panelToolbar.setEnabled(this.state !== State.LOADING);
-    this.panelRightToolbar.setEnabled(this.state !== State.LOADING);
-    this.dropTarget.setEnabled(this.state === State.IDLE);
-    this.loadButton.setEnabled(this.state === State.IDLE);
-    this.saveButton.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
-    this.homeButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
     if (this.#viewMode.mode === 'VIEWING_TRACE') {
       this.#addSidebarIconToToolbar();
     }
+
+    this.saveButton.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
+    this.#historyManager.setEnabled(this.state === State.IDLE);
+    this.clearButton.setEnabled(this.state === State.IDLE);
+    this.dropTarget.setEnabled(this.state === State.IDLE);
+    this.loadButton.setEnabled(this.state === State.IDLE);
+    this.toggleRecordAction.setToggled(this.state === State.RECORDING);
+    this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
+
+    if (!this.hasPrimaryTarget()) {
+      return;
+    }
+
+    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.IDLE);
+    this.panelToolbar.setEnabled(this.state !== State.LOADING);
+    this.panelRightToolbar.setEnabled(this.state !== State.LOADING);
+    this.homeButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
   }
 
   async toggleRecording(): Promise<void> {

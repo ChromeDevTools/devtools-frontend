@@ -213,7 +213,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
         this.#isSortOrderAscending = event.detail.ascending;
       },
       onCreate: (event: CustomEvent<{key: string, value: string}>) => {
-        this.#createCallback(event.detail.key, event.detail.value);
+        this.#createCallback(event.detail.key, event.detail.value || '');
       },
       onEdit:
           (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => {

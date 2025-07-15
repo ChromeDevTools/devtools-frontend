@@ -4,14 +4,11 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-// This file contains utility functions that are commonly needed in ESLint
-// rules. It does not contain any ESLint rules itself.
-
 /**
  * @param node - a TaggedTemplateExpression node from the AST of the parsed code.
  * @returns {boolean} - `true` if the code matches Lit.html`` or html``, and false otherwise.
  */
-export function isLitHtmlTemplateCall(node: TSESTree.Expression): boolean {
+export function isLitHtmlTemplateCall(node: TSESTree.Node): node is TSESTree.TaggedTemplateExpression {
   if (node.type !== 'TaggedTemplateExpression') {
     return false;
   }
@@ -38,7 +35,7 @@ export function isLitHtmlTemplateCall(node: TSESTree.Expression): boolean {
  * @param node - a CallExpression node from the AST of the parsed code.
  * @returns {boolean} - `true` if the code matches Lit.render() or render(), and false otherwise.
  */
-export function isLitHtmlRenderCall(node: TSESTree.Expression): boolean {
+export function isLitHtmlRenderCall(node: TSESTree.Node): node is TSESTree.CallExpression {
   if (node.type !== 'CallExpression') {
     return false;
   }
@@ -53,4 +50,24 @@ export function isLitHtmlRenderCall(node: TSESTree.Expression): boolean {
   }
 
   return callee.object.name === 'Lit' && callee.property.name === 'render';
+}
+
+/**
+ * Determines if a given AST function node matches the "view function" signature.
+ * A view function is expected to have three parameters, with names conventionally
+ * ending in 'input', 'output', and 'target'.
+ * @param node The function-like AST node to inspect.
+ * @returns True if the node is a view function, false otherwise.
+ */
+export function isViewFunction(node: TSESTree.Node): boolean {
+  if (!['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(node.type)) {
+    return false;
+  }
+  const functionNode =
+      node as TSESTree.FunctionDeclaration | TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression;
+  const paramNames =
+      functionNode.params.filter((p): p is TSESTree.Identifier => p.type === 'Identifier').map(param => param.name);
+
+  return paramNames.length === 3 && paramNames[0].toLowerCase().endsWith('input') &&
+      paramNames[1].toLowerCase().endsWith('output') && paramNames[2].toLowerCase().endsWith('target');
 }

@@ -973,6 +973,9 @@ export class StylingAgentWithFunctionCalling extends StylingAgent {
   override formatParsedAnswer({answer}: ParsedAnswer): string {
     return answer;
   }
+  override preambleFeatures(): string[] {
+    return ['function_calling'];
+  }
   override parseTextResponse(text: string): ParsedResponse {
     // We're returning an empty answer to denote the erroneous case.
     if (!text.trim()) {

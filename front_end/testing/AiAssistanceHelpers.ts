@@ -29,9 +29,11 @@ function createMockAidaClient(doConversation: Host.AidaClient.AidaClient['doConv
     Host.AidaClient.AidaClient {
   const doConversationStub = sinon.stub();
   const registerClientEventStub = sinon.stub();
+  const completeCodeStub = sinon.stub();
   return {
     doConversation: doConversationStub.callsFake(doConversation),
     registerClientEvent: registerClientEventStub,
+    completeCode: completeCodeStub,
   };
 }
 

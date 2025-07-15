@@ -38,6 +38,7 @@ import * as Root from '../root/root.js';
 
 import {
   type AidaClientResult,
+  type AidaCodeCompleteResult,
   type CanShowSurveyResult,
   type ChangeEvent,
   type ClickEvent,
@@ -530,6 +531,12 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   registerAidaClientEvent(_request: string, callback: (result: AidaClientResult) => void): void {
+    callback({
+      error: 'Not implemented',
+    });
+  }
+
+  aidaCodeComplete(_request: string, callback: (result: AidaCodeCompleteResult) => void): void {
     callback({
       error: 'Not implemented',
     });

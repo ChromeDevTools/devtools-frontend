@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
+import type {AidaClientResult, AidaCodeCompleteResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Role {
@@ -199,6 +199,42 @@ export interface DoConversationRequest {
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface CompleteCodeOptions {
+  temperature?: number;
+  model_id?: string;
+  inference_language?: AidaInferenceLanguage;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+export enum EditType {
+  // Unknown edit type
+  EDIT_TYPE_UNSPECIFIED = 0,
+  // User typed code/text into file
+  ADD = 1,
+  // User deleted code/text from file
+  DELETE = 2,
+  // User pasted into file (this includes smart paste)
+  PASTE = 3,
+  // User performs an undo action
+  UNDO = 4,
+  // User performs a redo action
+  REDO = 5,
+  // User accepted a completion from AIDA
+  ACCEPT_COMPLETION = 6,
+}
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface CompletionRequest {
+  client: string;
+  prefix: string;
+  suffix?: string;
+  options?: CompleteCodeOptions;
+  metadata: RequestMetadata;
+  last_user_action?: EditType;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
 /* eslint-disable @typescript-eslint/naming-convention  */
 export interface AidaDoConversationClientEvent {
   corresponding_aida_rpc_global_id: RpcGlobalId;
@@ -267,6 +303,18 @@ export interface DoConversationResponse {
   metadata: ResponseMetadata;
   functionCalls?: [AidaFunctionCallResponse, ...AidaFunctionCallResponse[]];
   completed: boolean;
+}
+
+export interface CompletionResponse {
+  generatedSamples: GenerationSample[];
+  metadata: ResponseMetadata;
+}
+
+export interface GenerationSample {
+  generationString: string;
+  score: number;
+  sampleId: number;
+  attributionMetadata?: AttributionMetadata;
 }
 
 export const enum AidaAccessPreconditions {
@@ -508,6 +556,53 @@ export class AidaClient {
     );
 
     return promise;
+  }
+
+  async completeCode(request: CompletionRequest): Promise<CompletionResponse|null> {
+    if (!InspectorFrontendHostInstance.aidaCodeComplete) {
+      throw new Error('aidaCodeComplete is not available');
+    }
+    const {promise, resolve} = Promise.withResolvers<AidaCodeCompleteResult>();
+    InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
+    const completeCodeResult = await promise;
+
+    if (completeCodeResult.error) {
+      throw new Error(`Cannot send request: ${completeCodeResult.error} ${completeCodeResult.detail || ''}`);
+    }
+    const response = completeCodeResult.response;
+    if (!response?.length) {
+      throw new Error('Empty response');
+    }
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(response);
+    } catch (error) {
+      throw new Error('Cannot parse response: ' + response, {cause: error});
+    }
+
+    const generatedSamples: GenerationSample[] = [];
+    let metadata: ResponseMetadata = {rpcGlobalId: 0};
+    if ('metadata' in parsedResponse) {
+      metadata = parsedResponse.metadata;
+    }
+
+    if ('generatedSamples' in parsedResponse) {
+      for (const generatedSample of parsedResponse.generatedSamples) {
+        const sample: GenerationSample = {
+          generationString: generatedSample.generationString,
+          score: generatedSample.score,
+          sampleId: generatedSample.sampleId,
+        };
+        if ('metadata' in generatedSample && 'attributionMetadata' in generatedSample.metadata) {
+          sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
+        }
+        generatedSamples.push(sample);
+      }
+    } else {
+      return null;
+    }
+
+    return {generatedSamples, metadata};
   }
 }
 

@@ -4,11 +4,10 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("throttling") {
+ts_e2e_library("throttling") {
   sources = [ "cpu_calibration_test.ts" ]
-
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../shared",
   ]
 }

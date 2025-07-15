@@ -22,12 +22,14 @@ describe('The Security Panel', function() {
     await securityTabDoesNotExist(devToolsPage);
   });
 
-  it('appears under More tools after being closed', async ({devToolsPage}) => {
-    await closeSecurityTab(devToolsPage);
-    await openSecurityPanelFromMoreTools(true, devToolsPage);
-    await devToolsPage.reload();
-    await securityTabExists(devToolsPage);
-  });
+  // Flaky on mac
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/422762924] appears under More tools after being closed', async ({devToolsPage}) => {
+        await closeSecurityTab(devToolsPage);
+        await openSecurityPanelFromMoreTools(true, devToolsPage);
+        await devToolsPage.reload();
+        await securityTabExists(devToolsPage);
+      });
 
   it('can be opened from command menu after being closed', async ({devToolsPage}) => {
     await closeSecurityTab(devToolsPage);

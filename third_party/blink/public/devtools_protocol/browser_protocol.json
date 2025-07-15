@@ -7892,6 +7892,33 @@
                             "$ref": "NodeId"
                         }
                     ]
+                },
+                {
+                    "name": "forceShowPopover",
+                    "description": "When enabling, this API force-opens the popover identified by nodeId\nand keeps it open until disabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the popover HTMLElement",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "enable",
+                            "description": "If true, opens the popover and keeps it open. If false, closes the\npopover if it was previously force-opened.",
+                            "type": "boolean"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodeIds",
+                            "description": "List of popovers that were closed in order to respect popover stacking order.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NodeId"
+                            }
+                        }
+                    ]
                 }
             ],
             "events": [

@@ -5262,6 +5262,25 @@ export namespace DOM {
     nodeId: NodeId;
   }
 
+  export interface ForceShowPopoverRequest {
+    /**
+     * Id of the popover HTMLElement
+     */
+    nodeId: NodeId;
+    /**
+     * If true, opens the popover and keeps it open. If false, closes the
+     * popover if it was previously force-opened.
+     */
+    enable: boolean;
+  }
+
+  export interface ForceShowPopoverResponse extends ProtocolResponseWithError {
+    /**
+     * List of popovers that were closed in order to respect popover stacking order.
+     */
+    nodeIds: NodeId[];
+  }
+
   /**
    * Fired when `Element`'s attribute is modified.
    */

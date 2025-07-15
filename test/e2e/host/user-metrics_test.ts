@@ -300,7 +300,7 @@ describe('User Metrics', () => {
     await click('[aria-label="Shortcuts"]');
     await waitFor('.keybinds-set-select');
 
-    const keybindSetSelect = await $('.keybinds-set-select select') as puppeteer.ElementHandle<HTMLSelectElement>;
+    const keybindSetSelect = await $('.keybinds-set-select select');
     await keybindSetSelect.select('vsCode');
 
     await assertHistogramEventsInclude([

@@ -55,7 +55,7 @@ describeWithEnvironment('DataGrid', () => {
   async function renderDataGrid(template: Lit.TemplateResult): Promise<HTMLElement> {
     render(template, container, {host: {}});
     await RenderCoordinator.done({waitForWork: true});
-    return container.querySelector('devtools-data-grid') as HTMLElement;
+    return container.querySelector('devtools-data-grid')!;
   }
 
   async function renderDataGridContent(template: Lit.TemplateResult): Promise<HTMLElement> {

@@ -14,7 +14,7 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 async function retrieveCodeMirrorEditorContent(devToolsPage: DevToolsPage): Promise<string[]> {
   const editor = await devToolsPage.waitFor('[aria-label="Code editor"]');
   return await editor.evaluate(
-      (node: Element) => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
+      node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }
 
 describe('Sources Tab', function() {

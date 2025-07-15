@@ -114,7 +114,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     const view = createFieldSettingsDialog();
     await RenderCoordinator.done();
 
-    const openButton = view.shadowRoot!.querySelector(OPEN_BUTTON_SELECTOR) as HTMLElement;
+    const openButton = view.shadowRoot!.querySelector(OPEN_BUTTON_SELECTOR)!;
     assert.strictEqual(openButton.innerText, 'Configure');
     openButton.click();
 

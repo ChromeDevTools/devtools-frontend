@@ -5,10 +5,9 @@
 import {assert} from 'chai';
 
 import {openSettingsTab} from '../../e2e/helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 describe('CPU Calibration', () => {
-  it('works', async ({devToolsPage}: {devToolsPage: DevToolsPage}) => {
+  it('works', async ({devToolsPage}) => {
     await openSettingsTab('Throttling', devToolsPage);
 
     assert.deepEqual(

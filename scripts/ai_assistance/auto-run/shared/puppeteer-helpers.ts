@@ -185,7 +185,7 @@ export async function loadPerformanceTrace(
   if (!canvas) {
     throw new Error('[Loading performance trace] Could not find flame chart canvas.');
   }
-  const canvasVisible = await waitForElementToHaveHeight(canvas as ElementHandle<HTMLElement>, 200);
+  const canvasVisible = await waitForElementToHaveHeight(canvas, 200);
   if (!canvasVisible) {
     throw new Error('[Loading performance trace] Flame chart canvas did not become visible (height > 200px).');
   }

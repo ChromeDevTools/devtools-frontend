@@ -13,7 +13,7 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 async function uploadTraceFile(devToolsPage: DevToolsPage, name: string) {
-  const uploadProfileHandle = await devToolsPage.waitFor<HTMLInputElement>('input[type=file]');
+  const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
   assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
   const testTrace = path.join(GEN_DIR, `test/e2e/resources/performance/timeline/${name}`);
   if (!fs.existsSync(testTrace)) {

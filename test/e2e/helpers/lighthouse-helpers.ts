@@ -254,10 +254,10 @@ export async function interceptNextFileSave(): Promise<() => Promise<string>> {
 export async function renderHtmlInIframe(html: string) {
   const {target} = getBrowserAndPages();
   return (await target.evaluateHandle(async html => {
-           const iframe = document.createElement('iframe');
-           iframe.srcdoc = html;
-           document.documentElement.append(iframe);
-           await new Promise(resolve => iframe.addEventListener('load', resolve));
-           return iframe.contentDocument;
-         }, html)).asElement() as ElementHandle<Document>;
+    const iframe = document.createElement('iframe');
+    iframe.srcdoc = html;
+    document.documentElement.append(iframe);
+    await new Promise(resolve => iframe.addEventListener('load', resolve));
+    return iframe.contentDocument!;
+  }, html));
 }

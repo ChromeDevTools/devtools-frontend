@@ -26,9 +26,8 @@ describe('hardwareConcurrency emulation on Sensors panel', () => {
     let concurrency = await waitForChangedConcurrency(undefined, devToolsPage, inspectedPage);
 
     // Wait for the checkbox to load
-    const toggle =
-        await devToolsPage.waitFor('input[title="Hardware concurrency"]') as puppeteer.ElementHandle<HTMLInputElement>;
-    await devToolsPage.waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
+    const toggle = await devToolsPage.waitFor('input[title="Hardware concurrency"]');
+    await devToolsPage.waitForFunction(() => toggle.evaluate(e => {
       if (e.disabled) {
         return false;
       }

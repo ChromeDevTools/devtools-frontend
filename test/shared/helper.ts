@@ -412,7 +412,7 @@ export const logOutstandingCDP = async () => {
 };
 
 export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectElement>, value: string) => {
-  await select.evaluate(async (node: HTMLSelectElement, _value: string) => {
+  await select.evaluate(async (node, _value) => {
     node.value = _value;
     const event = document.createEvent('HTMLEvents');
     event.initEvent('change', false, true);
@@ -437,7 +437,7 @@ export const getPendingEvents = function(_frontend: puppeteer.Page, eventType: s
 };
 
 export function prepareWaitForEvent(element: puppeteer.ElementHandle, eventType: string): Promise<void> {
-  return element.evaluate((element: Element, eventType: string) => {
+  return element.evaluate((element, eventType) => {
     window.__eventHandlers = window.__eventHandlers || new WeakMap();
 
     const eventHandlers = (() => {
@@ -464,7 +464,7 @@ export function prepareWaitForEvent(element: puppeteer.ElementHandle, eventType:
 }
 
 export function waitForEvent(element: puppeteer.ElementHandle, eventType: string): Promise<void> {
-  return element.evaluate((element: Element, eventType: string) => {
+  return element.evaluate((element, eventType) => {
     if (!('__eventHandlers' in window)) {
       throw new Error(`Event listener for '${eventType}' has not been installed.`);
     }

@@ -346,7 +346,7 @@ function setGeneratedFileAsGolden(golden: string, generated: string) {
 export async function waitForDialogAnimationEnd(root?: puppeteer.ElementHandle) {
   const ANIMATION_TIMEOUT = 2000;
   const dialog = await waitFor('dialog[open]', root);
-  const animationPromise = dialog.evaluate((dialog: Element) => {
+  const animationPromise = dialog.evaluate(dialog => {
     return new Promise<void>(resolve => {
       dialog.addEventListener('animationend', () => resolve(), {once: true});
     });

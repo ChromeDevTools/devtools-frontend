@@ -67,7 +67,7 @@ describe('The Performance panel', function() {
   async function setupPerformancePanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
     await navigateToPerformanceTab('wasm/profiling', devToolsPage, inspectedPage);
 
-    const uploadProfileHandle = await devToolsPage.waitFor<HTMLInputElement>('input[type=file]');
+    const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
     assert.isNotNull(uploadProfileHandle, 'unable to upload the performance profile');
     await uploadProfileHandle.uploadFile(
         path.join(GEN_DIR, 'test/e2e/resources/performance/wasm/mainWasm_profile.json'));

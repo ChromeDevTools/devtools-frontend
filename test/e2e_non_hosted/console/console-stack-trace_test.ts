@@ -44,7 +44,7 @@ describe('The Console Tab', () => {
     ];
 
     await devToolsPage.waitForFunction(async () => {
-      const stackTraceRows = await devToolsPage.evaluate((stack: Element) => {
+      const stackTraceRows = await devToolsPage.evaluate(stack => {
         return Array.from(stack.querySelectorAll('tr'))
             .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
       }, stack);
@@ -82,7 +82,7 @@ describe('The Console Tab', () => {
     ];
 
     await devToolsPage.waitForFunction(async () => {
-      const stackTraceRows = await devToolsPage.evaluate((stack: Element) => {
+      const stackTraceRows = await devToolsPage.evaluate(stack => {
         return Array.from(stack.querySelectorAll('tr'))
             .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
       }, stack);
@@ -114,7 +114,7 @@ describe('The Console Tab', () => {
     ];
 
     await devToolsPage.waitForFunction(async () => {
-      const stackTraceRows = await devToolsPage.evaluate((stack: Element) => {
+      const stackTraceRows = await devToolsPage.evaluate(stack => {
         return Array.from(stack.querySelectorAll('tr'))
             .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
       }, stack);

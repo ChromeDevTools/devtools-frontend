@@ -136,8 +136,7 @@ describe('Navigation', function() {
 
     // Test view trace button behavior
     // For some reason the CDP click command doesn't work here even if the tools menu is open.
-    await reportEl.$eval(
-        'a[data-action="view-unthrottled-trace"]:not(.hidden)', saveJsonEl => (saveJsonEl as HTMLElement).click());
+    await reportEl.$eval('a[data-action="view-unthrottled-trace"]:not(.hidden)', saveJsonEl => saveJsonEl.click());
     let selectedTab = await waitFor('.tabbed-pane-header-tab.selected[aria-label="Performance"]');
     let selectedTabText = await selectedTab.evaluate(selectedTabEl => {
       return selectedTabEl.textContent;
@@ -164,7 +163,7 @@ describe('Navigation', function() {
     const waitForJson = await interceptNextFileSave();
 
     // For some reason the CDP click command doesn't work here even if the tools menu is open.
-    await reportEl.$eval('a[data-action="save-json"]:not(.hidden)', saveJsonEl => (saveJsonEl as HTMLElement).click());
+    await reportEl.$eval('a[data-action="save-json"]:not(.hidden)', saveJsonEl => saveJsonEl.click());
 
     const jsonContent = await waitForJson();
     assert.strictEqual(jsonContent, JSON.stringify(lhr, null, 2));

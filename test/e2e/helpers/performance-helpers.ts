@@ -358,7 +358,7 @@ export async function enableCSSSelectorStats(devToolsPage: DevToolsPage = getBro
   // Wait for the checkbox to load
   const toggle = await devToolsPage.waitForElementWithTextContent(CSS_SELECTOR_STATS_TITLE) as
       puppeteer.ElementHandle<HTMLInputElement>;
-  await devToolsPage.waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
+  await devToolsPage.waitForFunction(() => toggle.evaluate(e => {
     if (e.disabled) {
       return false;
     }

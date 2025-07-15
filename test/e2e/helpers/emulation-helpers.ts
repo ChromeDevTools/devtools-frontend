@@ -77,7 +77,7 @@ export const startEmulationWithDualScreenPage = async () => {
 };
 
 export const getButtonDisabled = async (spanButton: puppeteer.ElementHandle<HTMLButtonElement>) => {
-  return await spanButton.evaluate((e: HTMLButtonElement) => {
+  return await spanButton.evaluate(e => {
     return e.disabled;
   });
 };

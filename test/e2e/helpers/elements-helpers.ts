@@ -941,7 +941,7 @@ export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNo
   });
 
   const crumbs = await $$(crumbsSelector);
-  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate((node: Element) => {
+  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate(node => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
@@ -952,7 +952,7 @@ export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNo
 
 export const getSelectedBreadcrumbTextContent = async () => {
   const selectedCrumb = await waitFor('li.crumb.selected > a > devtools-node-text');
-  const text = selectedCrumb.evaluate((node: Element) => {
+  const text = selectedCrumb.evaluate(node => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }

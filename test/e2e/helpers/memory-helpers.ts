@@ -275,7 +275,7 @@ export async function waitForRetainerChain(expectedRetainers: string[]) {
 
 export async function changeViewViaDropdown(newPerspective: string) {
   const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
-  const dropdown = await waitFor(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
+  const dropdown = await waitFor(perspectiveDropdownSelector);
 
   const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
   const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));
@@ -287,7 +287,7 @@ export async function changeViewViaDropdown(newPerspective: string) {
 
 export async function changeAllocationSampleViewViaDropdown(newPerspective: string) {
   const perspectiveDropdownSelector = 'select[aria-label="Profile view mode"]';
-  const dropdown = await waitFor(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
+  const dropdown = await waitFor(perspectiveDropdownSelector);
   const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
   const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));
   if (!optionValue) {

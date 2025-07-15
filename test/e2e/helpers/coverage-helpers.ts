@@ -46,7 +46,7 @@ export async function getCoverageData(expectedCount: number, frontend?: DevTools
   frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
   const rows = await frontend.waitForMany(
       '.data-grid-data-grid-node', expectedCount, await frontend.waitFor('.coverage-results'));
-  return await Promise.all(rows.map(r => r.evaluate((r: Element) => ({
+  return await Promise.all(rows.map(r => r.evaluate(r => ({
                                                       url: r.querySelector('.url-column')?.textContent,
                                                       total: r.querySelector('.size-column')?.textContent,
                                                       unused: r.querySelector('.unused-size-column span')?.textContent,

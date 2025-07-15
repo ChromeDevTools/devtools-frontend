@@ -47,7 +47,7 @@ describe('The Console Tab', function() {
     await devToolsPage.click('[aria-label="Show console sidebar"]');
     const sideBar = await devToolsPage.waitFor('div[slot="sidebar"]');
     const entries = await devToolsPage.$$('li', sideBar);
-    const entriesText = await Promise.all(entries.map(e => e.evaluate((e: HTMLLIElement) => e.textContent)));
+    const entriesText = await Promise.all(entries.map(e => e.evaluate(e => e.textContent)));
     assert.deepEqual(entriesText, [
       '1 message',
       '<other>1',

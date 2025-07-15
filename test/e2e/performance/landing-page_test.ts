@@ -352,10 +352,10 @@ describe('The Performance panel landing page', () => {
 
     await (await waitFor<HTMLElement>(ADVANCED_DETAILS_SELECTOR)).evaluate(el => el.click());
 
-    const urlOverrideCheckbox = await waitForVisible<HTMLInputElement>(OVERRIDE_FIELD_CHECKBOX_SELECTOR);
+    const urlOverrideCheckbox = await waitForVisible(OVERRIDE_FIELD_CHECKBOX_SELECTOR);
     await urlOverrideCheckbox.evaluate(el => el.click());
 
-    const urlOverrideText = await waitForVisible<HTMLInputElement>(OVERRIDE_FIELD_TEXT_SELECTOR);
+    const urlOverrideText = await waitForVisible(OVERRIDE_FIELD_TEXT_SELECTOR);
     await urlOverrideText.evaluate(el => {
       el.value = 'https://example.com';
       el.dispatchEvent(new Event('change'));

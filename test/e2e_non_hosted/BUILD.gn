@@ -30,6 +30,7 @@ node_ts_library("tests") {
     "layers",
     "lighthouse",
     "media",
+    "memory",
     "network",
     "performance",
     "puppeteer",

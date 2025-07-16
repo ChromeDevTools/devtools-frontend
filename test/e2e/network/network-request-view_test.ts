@@ -660,7 +660,7 @@ describe('The Network Request view', () => {
     const SEARCH_RESULT = '.search-result';
     const {frontend} = getBrowserAndPages();
 
-    await triggerLocalFindDialog(frontend);
+    await triggerLocalFindDialog();
     await waitFor(SEARCH_QUERY);
     const inputElement = await $(SEARCH_QUERY);
     if (!inputElement) {

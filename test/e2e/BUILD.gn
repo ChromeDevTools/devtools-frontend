@@ -24,7 +24,6 @@ node_ts_library("tests") {
     "host",
     "issues",
     "lighthouse",
-    "memory",
     "network",
     "panels",
     "performance",

@@ -838,22 +838,64 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
   }
 }
 
+export const enum SelectFunction {
+  MIN = 'min',
+  MAX = 'max',
+  CLAMP = 'clamp',
+}
+export const enum ArithmeticFunction {
+  CALC = 'calc',
+  SIBLING_COUNT = 'sibling-count',
+  SIBLING_INDEX = 'sibling-index',
+}
+type MathFunction = SelectFunction|ArithmeticFunction;
+
 export class MathFunctionMatch implements Match {
   constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: string,
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: MathFunction,
       readonly args: CodeMirror.SyntaxNode[][]) {
+  }
+
+  isArithmeticFunctionCall(): boolean {
+    const func = this.func as ArithmeticFunction;
+    switch (func) {
+      case ArithmeticFunction.CALC:
+      case ArithmeticFunction.SIBLING_COUNT:
+      case ArithmeticFunction.SIBLING_INDEX:
+        return true;
+    }
+    // This assignment catches missed values in the switch above.
+    const catchFallback: never = func;  // eslint-disable-line @typescript-eslint/no-unused-vars
+    return false;
   }
 }
 
 // clang-format off
 export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
   // clang-format on
+  private static getFunctionType(callee: string|null): MathFunction|null {
+    const maybeFunc = callee as MathFunction | null;
+    switch (maybeFunc) {
+      case null:
+      case SelectFunction.MIN:
+      case SelectFunction.MAX:
+      case SelectFunction.CLAMP:
+      case ArithmeticFunction.CALC:
+      case ArithmeticFunction.SIBLING_COUNT:
+      case ArithmeticFunction.SIBLING_INDEX:
+        return maybeFunc;
+    }
+    // This assignment catches missed values in the switch above.
+    const catchFallback: never = maybeFunc;  // eslint-disable-line @typescript-eslint/no-unused-vars
+    return null;
+  }
+
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MathFunctionMatch|null {
     if (node.name !== 'CallExpression') {
       return null;
     }
-    const callee = matching.ast.text(node.getChild('Callee'));
-    if (!['min', 'max', 'clamp', 'calc'].includes(callee)) {
+    const callee = MathFunctionMatcher.getFunctionType(matching.ast.text(node.getChild('Callee')));
+    if (!callee) {
       return null;
     }
     const args = ASTUtils.callArgs(node);
@@ -861,7 +903,11 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
       return null;
     }
     const text = matching.ast.text(node);
-    return new MathFunctionMatch(text, node, callee, args);
+    const match = new MathFunctionMatch(text, node, callee, args);
+    if (!match.isArithmeticFunctionCall() && args.length === 0) {
+      return null;
+    }
+    return match;
   }
 }
 

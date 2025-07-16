@@ -1517,7 +1517,7 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
       if (evaluation) {
         return evaluation;
       }
-    } else if (match.func !== 'calc') {
+    } else if (!match.isArithmeticFunctionCall()) {
       void this.applyMathFunction(renderedArgs, match, context);
     }
 

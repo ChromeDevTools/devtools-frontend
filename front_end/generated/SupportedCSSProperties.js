@@ -325,12 +325,7 @@ export const generatedProperties = [
    "animation-range-start",
    "animation-timeline",
    "animation-timing-function",
-   "animation-trigger-behavior",
-   "animation-trigger-exit-range-end",
-   "animation-trigger-exit-range-start",
-   "animation-trigger-range-end",
-   "animation-trigger-range-start",
-   "animation-trigger-timeline",
+   "animation-trigger",
    "app-region",
    "appearance",
    "ascent-override",
@@ -888,57 +883,7 @@ export const generatedProperties = [
   "name": "animation-timing-function"
  },
  {
-  "longhands": [
-   "animation-trigger-timeline",
-   "animation-trigger-behavior",
-   "animation-trigger-range-start",
-   "animation-trigger-range-end",
-   "animation-trigger-exit-range-start",
-   "animation-trigger-exit-range-end"
-  ],
   "name": "animation-trigger"
- },
- {
-  "keywords": [
-   "once",
-   "repeat",
-   "alternate",
-   "state"
-  ],
-  "name": "animation-trigger-behavior"
- },
- {
-  "longhands": [
-   "animation-trigger-exit-range-start",
-   "animation-trigger-exit-range-end"
-  ],
-  "name": "animation-trigger-exit-range"
- },
- {
-  "name": "animation-trigger-exit-range-end"
- },
- {
-  "name": "animation-trigger-exit-range-start"
- },
- {
-  "longhands": [
-   "animation-trigger-range-start",
-   "animation-trigger-range-end"
-  ],
-  "name": "animation-trigger-range"
- },
- {
-  "name": "animation-trigger-range-end"
- },
- {
-  "name": "animation-trigger-range-start"
- },
- {
-  "keywords": [
-   "none",
-   "auto"
-  ],
-  "name": "animation-trigger-timeline"
  },
  {
   "keywords": [
@@ -4895,20 +4840,6 @@ export const generatedPropertyValues = {
    "jump-start",
    "step-start",
    "step-end"
-  ]
- },
- "animation-trigger-behavior": {
-  "values": [
-   "once",
-   "repeat",
-   "alternate",
-   "state"
-  ]
- },
- "animation-trigger-timeline": {
-  "values": [
-   "none",
-   "auto"
   ]
  },
  "app-region": {

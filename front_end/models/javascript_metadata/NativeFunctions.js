@@ -154,7 +154,7 @@ export const NativeFunctions = [
   {
     name: "set",
     signatures: [["key","value"]],
-    receivers: ["Map","WeakMap"]
+    receivers: ["Map","WeakMap","CrashReportStorage"]
   },
   {
     name: "set",
@@ -1975,6 +1975,11 @@ export const NativeFunctions = [
     name: "remove",
     signatures: [["start","end"]],
     receivers: ["SourceBuffer"]
+  },
+  {
+    name: "remove",
+    signatures: [["key"]],
+    receivers: ["CrashReportStorage"]
   },
   {
     name: "remove",

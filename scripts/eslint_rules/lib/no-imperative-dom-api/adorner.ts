@@ -5,19 +5,14 @@
  * @fileoverview A library to identify and templatize manually constructed Adorner.
  */
 
-import type {TSESTree} from '@typescript-eslint/utils';
-
-import {type Context, isIdentifier, isIdentifierChain} from './ast.ts';
+import {isIdentifier, isIdentifierChain, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
-type Identifier = TSESTree.Identifier;
-type Node = TSESTree.Node;
-
-export const adorner = {
-  create(context: Context) {
+export const adorner: RuleCreator = {
+  create(context) {
     const sourceCode = context.sourceCode;
     return {
-      propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
+      propertyAssignment(property, propertyValue, domFragment) {
         if (domFragment.tagName === 'devtools-adorner' && isIdentifier(property, 'data') &&
             propertyValue.type === 'ObjectExpression') {
           for (const property of propertyValue.properties) {

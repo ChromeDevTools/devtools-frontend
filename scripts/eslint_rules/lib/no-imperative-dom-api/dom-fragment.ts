@@ -135,7 +135,7 @@ export class DomFragment {
       return '${' + text + '}';
     }
 
-    function appendExpression(expression) {
+    function appendExpression(expression: string) {
       if (lineLength + expression.length + 1 > MAX_LINE_LENGTH) {
         components.push(`\n${' '.repeat(indent + 4)}`);
         lineLength = expression.length + indent + 4;

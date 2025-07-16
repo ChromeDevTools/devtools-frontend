@@ -6,23 +6,19 @@
  */
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
 import {ClassMember} from './class-member.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type Identifier = TSESTree.Identifier;
-type Node = TSESTree.Node;
-type CallExpression = TSESTree.CallExpression;
 type MemberExpression = TSESTree.MemberExpression;
-type AssignmentExpression = TSESTree.AssignmentExpression;
 
-export const widget = {
-  create: function(context: Context) {
+export const widget: RuleCreator = {
+  create: function(context) {
     const sourceCode = context.sourceCode;
+
     return {
-      methodCall(
-          property: Identifier, firstArg: Node, secondArg: Node|undefined, domFragment: DomFragment,
-          _call: CallExpression) {
+      methodCall(property, firstArg, secondArg, domFragment) {
         if (domFragment.tagName !== 'devtools-widget') {
           return false;
         }
@@ -35,8 +31,7 @@ export const widget = {
         }
         return false;
       },
-      propertyAssignment(
-          property: Identifier, value: Node, domFragment: DomFragment, _assignment: AssignmentExpression) {
+      propertyAssignment(property, value, domFragment) {
         if (domFragment.tagName !== 'devtools-widget') {
           return false;
         }
@@ -48,7 +43,7 @@ export const widget = {
         }
         return false;
       },
-      functionCall(call: CallExpression, _firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment) {
+      functionCall(call, _firstArg, _secondArg, domFragment) {
         if (isMemberExpression(call.callee, _ => true, n => isIdentifier(n, 'show'))) {
           let widget = (call.callee as MemberExpression).object;
           if (widget.type === 'CallExpression' &&

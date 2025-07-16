@@ -5,19 +5,14 @@
  * @fileoverview Library to identify and templatize manually calls to DevTools DOM API extensions.
  */
 
-import type {TSESTree} from '@typescript-eslint/utils';
+import {isIdentifier, type RuleCreator} from './ast.ts';
 
-import {type Context, isIdentifier} from './ast.ts';
-import type {DomFragment} from './dom-fragment.ts';
-
-type Node = TSESTree.Node;
-
-export const domApiDevtoolsExtensions = {
-  create: function(context: Context) {
+export const domApiDevtoolsExtensions: RuleCreator = {
+  create: function(context) {
     const sourceCode = context.sourceCode;
 
     return {
-      methodCall(property: Node, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: Node): boolean {
+      methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'createChild')) {
           if (firstArg?.type === 'Literal') {
             const childFragment = domFragment.appendChild(

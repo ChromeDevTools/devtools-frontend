@@ -22,30 +22,11 @@ import {uiFragment} from './no-imperative-dom-api/ui-fragment.ts';
 import {uiUtils} from './no-imperative-dom-api/ui-utils.ts';
 import {widget} from './no-imperative-dom-api/widget.ts';
 import {createRule} from './utils/ruleCreator.ts';
-type CallExpression = TSESTree.CallExpression;
 type Identifier = TSESTree.Identifier;
 type MemberExpression = TSESTree.MemberExpression;
-type NewExpression = TSESTree.NewExpression;
 type CallExpressionArgument = TSESTree.CallExpressionArgument;
 type Node = TSESTree.Node;
 type Range = TSESTree.Range;
-
-type Subrule = Partial<{
-  getEvent(event: Node): string | null,
-  propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment): boolean,
-  methodCall(property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression):
-      boolean,
-  propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean,
-  subpropertyAssignment(
-      property: Identifier, subproperty: Identifier, subpropertyValue: Node, domFragment: DomFragment): boolean,
-  functionCall(call: CallExpression, firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  MemberExpression: (node: MemberExpression) => void,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  NewExpression: (node: NewExpression) => void,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  CallExpression: (node: CallExpression) => void,
-}>;
 
 export default createRule({
   name: 'no-imperative-dom-api',
@@ -65,7 +46,7 @@ export default createRule({
   create: function(context) {
     const sourceCode = context.sourceCode;
 
-    const subrules: Subrule[] = [
+    const subrules = [
       adorner.create(context),
       ariaUtils.create(context),
       button.create(context),

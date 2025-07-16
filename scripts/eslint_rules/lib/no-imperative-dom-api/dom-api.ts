@@ -5,20 +5,14 @@
  * @fileoverview Library to identify and templatize manually DOM API calls.
  */
 
-import type {TSESTree} from '@typescript-eslint/utils';
-
-import {type Context, isIdentifier, isLiteral} from './ast.ts';
+import {isIdentifier, isLiteral, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
-type CallExpression = TSESTree.CallExpression;
-type Identifier = TSESTree.Identifier;
-type Node = TSESTree.Node;
-
-export const domApi = {
-  create: function(context: Context) {
+export const domApi: RuleCreator = {
+  create: function(context) {
     const sourceCode = context.sourceCode;
     return {
-      propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
+      propertyAssignment(property, propertyValue, domFragment) {
         if (isIdentifier(property, 'className')) {
           domFragment.classList.push(propertyValue);
           return true;
@@ -40,14 +34,14 @@ export const domApi = {
         }
         return false;
       },
-      propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean {
+      propertyMethodCall(property, method, firstArg, domFragment) {
         if (isIdentifier(property, 'classList') && isIdentifier(method, 'add')) {
           domFragment.classList.push(firstArg);
           return true;
         }
         return false;
       },
-      subpropertyAssignment(property: Identifier, subproperty: Node, subpropertyValue: Node, domFragment: DomFragment) {
+      subpropertyAssignment(property, subproperty, subpropertyValue, domFragment) {
         if (isIdentifier(property, 'style') && subproperty.type === 'Identifier') {
           const property = subproperty.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
           if (subpropertyValue.type !== 'SpreadElement') {
@@ -70,9 +64,7 @@ export const domApi = {
         }
         return false;
       },
-      methodCall(
-          property: Identifier, firstArg: Node, secondArg: Node|undefined, domFragment: DomFragment,
-          call: CallExpression) {
+      methodCall(property, firstArg, secondArg, domFragment, call) {
         if (isIdentifier(property, 'setAttribute')) {
           const attribute = firstArg;
           const value = secondArg;
@@ -133,15 +125,17 @@ export const domApi = {
         }
         return false;
       },
+
       MemberExpression(node) {
         if (isIdentifier(node.object, 'document') && isIdentifier(node.property, 'createElement') &&
             node.parent.type === 'CallExpression' && node.parent.callee === node) {
           const domFragment = DomFragment.getOrCreate(node.parent, sourceCode);
           if (node.parent.arguments.length >= 1 && node.parent.arguments[0].type === 'Literal') {
-            domFragment.tagName = node.parent.arguments[0].value;
+            domFragment.tagName = String(node.parent.arguments[0].value);
           }
         }
       },
+
     };
   }
 };

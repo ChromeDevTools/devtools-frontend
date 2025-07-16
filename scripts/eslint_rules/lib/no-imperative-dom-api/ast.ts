@@ -6,10 +6,30 @@
  */
 
 import type {TSESTree} from '@typescript-eslint/utils';
-import type {RuleContext} from '@typescript-eslint/utils/ts-eslint';
+import type {RuleContext, RuleListener} from '@typescript-eslint/utils/ts-eslint';
+
+import type {DomFragment} from './dom-fragment';
 
 type Node = TSESTree.Node;
-export type Context = RuleContext<'preferTemplateLiterals', []>;
+type CallExpression = TSESTree.CallExpression;
+type Identifier = TSESTree.Identifier;
+
+type Context = RuleContext<'preferTemplateLiterals', []>;
+type Subrule = Partial<{
+  getEvent(event: Node): string | null,
+  propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment): boolean,
+  methodCall(property: Identifier, firstArg: Node, secondArg: Node, domFragment: DomFragment, call: CallExpression):
+      boolean,
+  propertyMethodCall(property: Identifier, method: Node, firstArg: Node, domFragment: DomFragment): boolean,
+  subpropertyAssignment(
+      property: Identifier, subproperty: Identifier, subpropertyValue: Node, domFragment: DomFragment): boolean,
+  functionCall(call: CallExpression, firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean,
+
+}>&Pick<RuleListener, 'MemberExpression'|'NewExpression'|'CallExpression'>;
+
+export interface RuleCreator {
+  create(context: Context): Subrule;
+}
 
 export function isIdentifier(node: Node, name: string|string[]): boolean {
   return node.type === 'Identifier' && (Array.isArray(name) ? name.includes(node.name) : node.name === name);

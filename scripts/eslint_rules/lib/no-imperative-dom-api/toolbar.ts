@@ -7,37 +7,35 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {type Context, isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
-type NewExpression = TSESTree.NewExpression;
 
-export const toolbar = {
-  create(context: Context) {
+export const toolbar: RuleCreator = {
+  create(context) {
     const sourceCode = context.sourceCode;
     return {
-      getEvent(event: Node): string |
-          null {
-            switch (sourceCode.getText(event)) {
-              case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
-                return 'change';
-              case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
-                return 'submit';
-              case 'UI.Toolbar.ToolbarButton.Events.CLICK':
-                return 'click';
-              default:
-                return null;
-            }
-          },
-      methodCall(property: Node, firstArg: Node, _secondArg: Node, domFragment: DomFragment, _call: Node): boolean {
+      getEvent(event) {
+        switch (sourceCode.getText(event)) {
+          case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
+            return 'change';
+          case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
+            return 'submit';
+          case 'UI.Toolbar.ToolbarButton.Events.CLICK':
+            return 'click';
+          default:
+            return null;
+        }
+      },
+      methodCall(property, firstArg, _secondArg, domFragment) {
         if (isIdentifier(property, 'appendToolbarItem')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;
         }
         return false;
       },
-      NewExpression(node: NewExpression) {
+      NewExpression(node) {
         const toolbarItem =
             isMemberExpression(node.callee, n => isIdentifierChain(n, ['UI', 'Toolbar']), n => n.type === 'Identifier');
         if (!toolbarItem) {

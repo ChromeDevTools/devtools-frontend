@@ -63,10 +63,6 @@ function finalize(partialModel: PartialInsightModel<DuplicatedJavaScriptInsightM
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicatedJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {
-    if (!context.navigation) {
-      return false;
-    }
-
     if (script.frame !== context.frameId) {
       return false;
     }

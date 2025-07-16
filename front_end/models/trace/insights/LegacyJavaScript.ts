@@ -75,10 +75,6 @@ function finalize(partialModel: PartialInsightModel<LegacyJavaScriptInsightModel
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LegacyJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {
-    if (!context.navigation) {
-      return false;
-    }
-
     if (script.frame !== context.frameId) {
       return false;
     }

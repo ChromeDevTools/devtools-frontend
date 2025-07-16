@@ -63,14 +63,6 @@ import {
 } from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
 
-interface DecompressionStream extends GenericTransformStream {
-  readonly format: string;
-}
-declare const DecompressionStream: {
-  prototype: DecompressionStream,
-  new (format: string): DecompressionStream,
-};
-
 const UIStrings = {
   /**
    *@description Document title in Inspector Frontend Host of the DevTools window
@@ -331,28 +323,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   loadNetworkResource(
       url: string, _headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
-    // Read the first 3 bytes looking for the gzip signature in the file header
-    function isGzip(ab: ArrayBuffer): boolean {
-      const buf = new Uint8Array(ab);
-      if (!buf || buf.length < 3) {
-        return false;
-      }
-
-      // https://www.rfc-editor.org/rfc/rfc1952#page-6
-      return buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x08;
-    }
     fetch(url)
         .then(async result => {
-          const resultArrayBuf = await result.arrayBuffer();
-          let decoded: ReadableStream|ArrayBuffer = resultArrayBuf;
-          if (isGzip(resultArrayBuf)) {
-            const ds = new DecompressionStream('gzip');
-            const writer = ds.writable.getWriter();
-            void writer.write(resultArrayBuf);
-            void writer.close();
-            decoded = ds.readable;
-          }
-          const text = await new Response(decoded).text();
+          const respBuffer = await result.arrayBuffer();
+          const text = await Common.Gzip.arrayBufferToString(respBuffer);
           return text;
         })
         .then(function(text) {

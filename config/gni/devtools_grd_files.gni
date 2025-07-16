@@ -812,6 +812,7 @@ grd_files_unbundled_sources = [
   "front_end/core/common/Console.js",
   "front_end/core/common/Debouncer.js",
   "front_end/core/common/EventTarget.js",
+  "front_end/core/common/Gzip.js",
   "front_end/core/common/JavaScriptMetaData.js",
   "front_end/core/common/Lazy.js",
   "front_end/core/common/Linkifier.js",

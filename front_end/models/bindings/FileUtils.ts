@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -44,13 +44,6 @@ export interface ChunkedReader {
 
   error(): DOMError|null;
 }
-interface DecompressionStream extends GenericTransformStream {
-  readonly format: string;
-}
-declare const DecompressionStream: {
-  prototype: DecompressionStream,
-  new (format: string): DecompressionStream,
-};
 
 export class ChunkedFileReader implements ChunkedReader {
   #file: File|null;
@@ -84,11 +77,8 @@ export class ChunkedFileReader implements ChunkedReader {
     }
 
     if (this.#file?.type.endsWith('gzip')) {
-      // TypeScript can't tell if to use @types/node or lib.webworker.d.ts
-      // types, so we force it to here.
-      // crbug.com/1392092
-      const fileStream = this.#file.stream() as unknown as ReadableStream<Uint8Array>;
-      const stream = this.decompressStream(fileStream);
+      const fileStream = this.#file.stream();
+      const stream = Common.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     } else {
       this.#reader = new FileReader();
@@ -125,13 +115,6 @@ export class ChunkedFileReader implements ChunkedReader {
 
   error(): DOMException|null {
     return this.#errorInternal;
-  }
-
-  // Decompress gzip natively thanks to https://wicg.github.io/compression/
-  private decompressStream(stream: ReadableStream): ReadableStream {
-    const ds = new DecompressionStream('gzip');
-    const decompressionStream = stream.pipeThrough(ds);
-    return decompressionStream;
   }
 
   private onChunkLoaded(event: Event): void {

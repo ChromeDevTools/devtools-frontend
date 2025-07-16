@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../core/common/common.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Trace from '../models/trace/trace.js';
@@ -79,7 +80,7 @@ export class TraceLoader {
     // Required URLs differ across the component server and the unit tests, so try both.
     const urlForTest = new URL(`../panels/timeline/fixtures/traces/${name}`, import.meta.url);
 
-    const contents = await loadTraceFileFromURL(urlForTest);
+    const contents = await TraceLoader.loadTraceFileFromURL(urlForTest);
     fileContentsCache.set(name, contents);
     return contents;
   }
@@ -274,74 +275,28 @@ export class TraceLoader {
           .catch(e => console.error(e));
     });
   }
+
+  static async loadTraceFileFromURL(url: URL): Promise<Trace.Types.File.TraceFile> {
+    const contents = await fetchFileAsText(url);
+    const traceContents = JSON.parse(contents) as Trace.Types.File.TraceFile;
+    return traceContents;
+  }
+}
+
+export async function fetchFileAsText(url: URL): Promise<string> {
+  const response = await fetch(url);
+  if (response.status !== 200) {
+    throw new Error(`Unable to load ${url}`);
+  }
+
+  const buffer = await response.arrayBuffer();
+  const contents = await Common.Gzip.arrayBufferToString(buffer);
+  return contents;
 }
 
 // Below this point are private methods used in the TraceLoader class. These
 // are purposefully not exported, you should use one of the static methods
 // defined above.
-
-async function loadTraceFileFromURL(url: URL): Promise<Trace.Types.File.Contents> {
-  const response = await fetch(url);
-  if (response.status !== 200) {
-    throw new Error(`Unable to load ${url}`);
-  }
-
-  const contentType = response.headers.get('content-type');
-  const isGzipEncoded = contentType?.includes('gzip');
-  let buffer = await response.arrayBuffer();
-  if (isGzipEncoded) {
-    buffer = await decodeGzipBuffer(buffer);
-  }
-  const decoder = new TextDecoder('utf-8');
-  const contents = JSON.parse(decoder.decode(buffer)) as Trace.Types.File.Contents;
-  return contents;
-}
-
-interface CompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
-interface DecompressionStream extends ReadableWritablePair<Uint8Array, Uint8Array> {}
-declare const CompressionStream: {
-  prototype: CompressionStream,
-  new (type: string): CompressionStream,
-};
-
-declare const DecompressionStream: {
-  prototype: DecompressionStream,
-  new (type: string): DecompressionStream,
-};
-
-function codec(buffer: ArrayBuffer, codecStream: CompressionStream|DecompressionStream): Promise<ArrayBuffer> {
-  const {readable, writable} = new TransformStream();
-  const codecReadable = readable.pipeThrough(codecStream);
-
-  const writer = writable.getWriter();
-  void writer.write(buffer);
-  void writer.close();
-
-  // Wrap in a response for convenience.
-  const response = new Response(codecReadable);
-  return response.arrayBuffer();
-}
-
-function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
-  return codec(buffer, new DecompressionStream('gzip'));
-}
-
-export async function fetchFixture(url: URL): Promise<string> {
-  const response = await fetch(url);
-  if (response.status !== 200) {
-    throw new Error(`Unable to load ${url}`);
-  }
-
-  const contentType = response.headers.get('content-type');
-  const isGzipEncoded = contentType?.includes('gzip');
-  let buffer = await response.arrayBuffer();
-  if (isGzipEncoded) {
-    buffer = await decodeGzipBuffer(buffer);
-  }
-  const decoder = new TextDecoder('utf-8');
-  const contents = decoder.decode(buffer);
-  return contents;
-}
 
 /**
  * Wraps an async Promise with a timeout. We use this to break down and

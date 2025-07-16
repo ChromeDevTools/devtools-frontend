@@ -38,7 +38,7 @@ export default createRule({
           });
           return;
         }
-        let functionNode = node.parent as TSESTree.Node | undefined;
+        let functionNode: TSESTree.Node|undefined = node.parent;
         while (functionNode &&
                !['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(functionNode.type)) {
           functionNode = functionNode.parent;

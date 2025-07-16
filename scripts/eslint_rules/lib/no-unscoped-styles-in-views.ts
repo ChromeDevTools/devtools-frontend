@@ -66,7 +66,7 @@ export default createRule({
         }
 
         // 3. Find the enclosing function and check if it's a "view function".
-        let functionAncestor = node.parent as TSESTree.Node | undefined;
+        let functionAncestor: TSESTree.Node|undefined = node.parent;
         while (
             functionAncestor &&
             !['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(functionAncestor.type)) {

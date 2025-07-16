@@ -798,20 +798,20 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   // does not match. If no openResourceScheme is provided, it means the handler is
   // interested in all urls (except those handled by scheme-specific handlers, see
   // otherSchemeRegistrations).
-  static shouldHandleOpenResource =
-      (openResourceScheme: string|null, url: Platform.DevToolsPath.UrlString, otherSchemeRegistrations: Set<string>):
-          boolean => {
-            // If this is a scheme-specific handler, make sure the registered scheme is
-            // present in the url.
-            if (openResourceScheme) {
-              return url.startsWith(openResourceScheme);
-            }
+  static shouldHandleOpenResource(
+      openResourceScheme: string|null, url: Platform.DevToolsPath.UrlString,
+      otherSchemeRegistrations: Set<string>): boolean {
+    // If this is a scheme-specific handler, make sure the registered scheme is
+    // present in the url.
+    if (openResourceScheme) {
+      return url.startsWith(openResourceScheme);
+    }
 
-            // Global handlers (that register for no scheme) can handle all urls, with the
-            // exception of urls that scheme-specific handlers have registered for.
-            const scheme = URL.parse(url)?.protocol || '';
-            return !otherSchemeRegistrations.has(scheme);
-          };
+    // Global handlers (that register for no scheme) can handle all urls, with the
+    // exception of urls that scheme-specific handlers have registered for.
+    const scheme = URL.parse(url)?.protocol || '';
+    return !otherSchemeRegistrations.has(scheme);
+  }
 
   static uiLocation(link: Element): Workspace.UISourceCode.UILocation|null {
     const info = Linkifier.linkInfo(link);
@@ -874,11 +874,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
 
-    for (const registration of linkHandlers.values()) {
-      if (!registration?.handler) {
-        continue;
-      }
-      const {title, handler, filter: shouldHandleOpenResource} = registration;
+    for (const registration of linkHandlers.values().filter(r => r.handler)) {
+      const {title, handler, shouldHandleOpenResource} = registration;
       if (url && !shouldHandleOpenResource(url, specificSchemeHandlers)) {
         continue;
       }
@@ -1172,7 +1169,7 @@ export interface LinkHandlerRegistration {
   // The openResourceHandler handling the requests to open a resource.
   handler: LinkHandler;
   // A filter function used to determine whether the `handler` wants to handle the link clicks.
-  filter: LinkHandlerPredicate;
+  shouldHandleOpenResource: LinkHandlerPredicate;
 }
 
 export const enum Events {

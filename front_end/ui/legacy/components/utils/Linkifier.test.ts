@@ -412,7 +412,7 @@ describeWithMockConnection('Linkifier', () => {
         origin: urlString`foo-extension:abcdefghijklmnop`,
         scheme: urlString`foo-extension:`,
         handler,
-        filter: (url, schemes) =>
+        shouldHandleOpenResource: (url, schemes) =>
             Components.Linkifier.Linkifier.shouldHandleOpenResource(urlString`foo-extension:`, url, schemes),
       });
 
@@ -442,7 +442,8 @@ describeWithMockConnection('Linkifier', () => {
         origin: urlString`global:abcdefghijklmnop`,
         scheme: undefined,
         handler: () => {},
-        filter: (url, schemes) => Components.Linkifier.Linkifier.shouldHandleOpenResource(null, url, schemes),
+        shouldHandleOpenResource: (url, schemes) =>
+            Components.Linkifier.Linkifier.shouldHandleOpenResource(null, url, schemes),
       });
 
       // Register a scheme-specific handler for the foo-extension: origin.
@@ -451,7 +452,7 @@ describeWithMockConnection('Linkifier', () => {
         origin: urlString`foo-extension:abcdefghijklmnop`,
         scheme: urlString`foo-extension:`,
         handler: () => {},
-        filter: (url, schemes) =>
+        shouldHandleOpenResource: (url, schemes) =>
             Components.Linkifier.Linkifier.shouldHandleOpenResource(urlString`foo-extension:`, url, schemes),
       });
 

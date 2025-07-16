@@ -832,7 +832,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       origin: extensionOrigin,
       scheme: message.urlScheme,
       handler: this.handleOpenURL.bind(this, port),
-      filter: (url: Platform.DevToolsPath.UrlString, schemes: Set<string>) =>
+      shouldHandleOpenResource: (url: Platform.DevToolsPath.UrlString, schemes: Set<string>) =>
           Components.Linkifier.Linkifier.shouldHandleOpenResource(extension.openResourceScheme, url, schemes),
     };
     if (message.handlerPresent) {

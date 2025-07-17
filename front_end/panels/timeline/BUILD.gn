@@ -41,6 +41,7 @@ devtools_pre_built("easter-egg") {
 generate_css("css_files") {
   sources = [
     "thirdPartyTreeView.css",
+    "timelineDetailsView.css",
     "timelineFlameChartView.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",

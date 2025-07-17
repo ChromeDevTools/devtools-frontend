@@ -1987,6 +1987,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/timeline/overlays/components/timeRangeOverlay.css.js",
   "front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js",
   "front_end/panels/timeline/thirdPartyTreeView.css.js",
+  "front_end/panels/timeline/timelineDetailsView.css.js",
   "front_end/panels/timeline/timelineFlameChartView.css.js",
   "front_end/panels/timeline/timelineFlamechartPopover.css.js",
   "front_end/panels/timeline/timelineHistoryManager.css.js",

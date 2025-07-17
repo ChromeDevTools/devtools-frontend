@@ -5,7 +5,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 import * as path from 'path';
-import type {Page, Target} from 'puppeteer-core';
+import type {Page, ScreenshotOptions, Target} from 'puppeteer-core';
 import puppeteer from 'puppeteer-core';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
@@ -59,23 +59,28 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
     const page = await browser.newPage();
 
     async function setupBindings(page: Page) {
-      await page.exposeFunction('assertScreenshot', async (elementSelector: string, filename: string) => {
-        try {
-          // Karma sometimes runs tests in an iframe or in the main frame.
-          const testFrame = page.frames()[1] ?? page.mainFrame();
-          const element = await testFrame.waitForSelector(elementSelector);
+      await page.exposeFunction(
+          'assertScreenshot',
+          async (
+              elementSelector: string,
+              filename: NonNullable<ScreenshotOptions['path']>,
+              ) => {
+            try {
+              // Karma sometimes runs tests in an iframe or in the main frame.
+              const testFrame = page.frames()[1] ?? page.mainFrame();
+              const element = await testFrame.waitForSelector(elementSelector);
 
-          await assertElementScreenshotUnchanged(element, filename, {
-            captureBeyondViewport: false,
+              await assertElementScreenshotUnchanged(element, filename, {
+                captureBeyondViewport: false,
+              });
+              return undefined;
+            } catch (error) {
+              if (error instanceof ScreenshotError) {
+                ScreenshotError.errors.push(error);
+              }
+              return `ScreenshotError: ${error.message}`;
+            }
           });
-          return undefined;
-        } catch (error) {
-          if (error instanceof ScreenshotError) {
-            ScreenshotError.errors.push(error);
-          }
-          return `ScreenshotError: ${error.message}`;
-        }
-      });
     }
 
     async function disableAnimations(page: Page) {

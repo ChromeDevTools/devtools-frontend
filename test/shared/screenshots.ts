@@ -68,7 +68,10 @@ const DEFAULT_MS_BETWEEN_RETRIES = 150;
 const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0.1;
 
 export const assertElementScreenshotUnchanged = async (
-    element: puppeteer.ElementHandle|null, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+    element: puppeteer.ElementHandle|null,
+    fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
+    options: Partial<puppeteer.ScreenshotOptions> = {},
+    ) => {
   if (!element) {
     assert.fail(`Given element for test ${fileName} was not found.`);
   }
@@ -95,8 +98,8 @@ function getFrontend() {
 }
 
 const assertScreenshotUnchangedWithRetries = async (
-    elementOrPage: puppeteer.ElementHandle|puppeteer.Page, fileName: string, maximumDiffThreshold: number,
-    maximumRetries: number, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+    elementOrPage: puppeteer.ElementHandle|puppeteer.Page, fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
+    maximumDiffThreshold: number, maximumRetries: number, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
   const frontend = getFrontend();
   try {
     await frontend?.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
@@ -107,7 +110,8 @@ const assertScreenshotUnchangedWithRetries = async (
      */
     const fileNameForPlatform = fileName.split('/').join(path.sep);
     const goldenScreenshotPath = path.join(GOLDENS_FOLDER, fileNameForPlatform);
-    const generatedScreenshotPath = path.join(generatedScreenshotFolder, fileNameForPlatform);
+    const generatedScreenshotPath =
+        path.join(generatedScreenshotFolder, fileNameForPlatform) as NonNullable<puppeteer.ScreenshotOptions['path']>;
 
     /**
      * Ensure that the directories for the golden/generated file exist. We need
@@ -133,7 +137,7 @@ const assertScreenshotUnchangedWithRetries = async (
 
 interface ScreenshotAssertionOptions {
   goldenScreenshotPath: string;
-  generatedScreenshotPath: string;
+  generatedScreenshotPath: NonNullable<puppeteer.ScreenshotOptions['path']>;
   screenshotOptions: Partial<puppeteer.ScreenshotOptions>;
   elementOrPage: puppeteer.ElementHandle|puppeteer.Page;
   fileName: string;
@@ -153,7 +157,7 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
     retryCount = 1,
   } = options;
   const screenshotOptions = {...defaultScreenshotOpts, ...options.screenshotOptions, path: generatedScreenshotPath};
-  await (elementOrPage as puppeteer.Page).screenshot(screenshotOptions);
+  await elementOrPage.screenshot(screenshotOptions);
 
   /**
    * The user can do UPDATE_GOLDEN=accordion/basic.png npm run screenshotstest

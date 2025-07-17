@@ -6,6 +6,7 @@ import path from 'path';
 
 import {isLitHtmlTemplateCall} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
+import {isWidgetScopedCall} from './utils/stylingHelpers.ts';
 
 type AssignmentExpression = TSESTree.AssignmentExpression;
 type TemplateElement = TSESTree.TemplateElement;
@@ -161,8 +162,19 @@ export default createRule<[], MessageIds>({
     };
 
     function isCheckboxStylesReference(elem: Node|null): boolean {
-      // Ensure elem is not null and is a MemberExpression before accessing properties
-      if (!elem || elem.type !== 'MemberExpression') {
+      // Ensure elem is not null.
+      if (!elem) {
+        return false;
+      }
+
+      // If this is a `widgetScoped(styles)` call, extract
+      // `elem` to be the `styles` directly
+      if (elem.type === 'CallExpression' && isWidgetScopedCall(elem)) {
+        elem = elem.arguments[0];
+      }
+
+      // Ensure this node is a MemberExpression before accessing properties
+      if (elem.type !== 'MemberExpression') {
         return false;
       }
 

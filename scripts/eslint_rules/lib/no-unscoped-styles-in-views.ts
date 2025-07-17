@@ -8,33 +8,14 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 import {isLitHtmlRenderCall, isLitHtmlTemplateCall, isViewFunction} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
+import {isWidgetScopedCall} from './utils/stylingHelpers.ts';
 
 type CallExpression = TSESTree.CallExpression;
-type Expression = TSESTree.Expression;
 
 function containsMeaningfulCss(text: string): boolean {
   const noComments = text.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '');
   const noWhitespace = noComments.trim();
   return noWhitespace.length > 0;
-}
-
-/**
- * Checks if an expression node is a call to `UI.Widget.widgetScoped(...)`.
- * @param expression The expression AST node to check.
- * @returns True if the expression is the specific widgetScoped call.
- */
-function isWidgetScopedCall(expression: Expression): boolean {
-  if (expression.type !== 'CallExpression') {
-    return false;
-  }
-  const callee = expression.callee;
-  // Checks for the direct `widgetScoped` call.
-  const isDirectCall = callee.type === 'Identifier' && callee.name === 'widgetScoped';
-  // Checks for the full `UI.Widget.widgetScoped` member expression chain.
-  const isCallThroughUIWidget = callee.type === 'MemberExpression' && callee.property.type === 'Identifier' &&
-      callee.property.name === 'widgetScoped' && callee.object.type === 'MemberExpression' &&
-      callee.object.property.type === 'Identifier' && callee.object.property.name === 'Widget';
-  return isDirectCall || isCallThroughUIWidget;
 }
 
 export default createRule({

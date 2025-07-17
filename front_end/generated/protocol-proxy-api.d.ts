@@ -716,6 +716,11 @@ declare namespace ProtocolProxyApi {
     invoke_getMatchedStylesForNode(params: Protocol.CSS.GetMatchedStylesForNodeRequest): Promise<Protocol.CSS.GetMatchedStylesForNodeResponse>;
 
     /**
+     * Returns the values of the default UA-defined environment variables used in env()
+     */
+    invoke_getEnvironmentVariables(): Promise<Protocol.CSS.GetEnvironmentVariablesResponse>;
+
+    /**
      * Returns all media queries parsed by the rendering engine.
      */
     invoke_getMediaQueries(): Promise<Protocol.CSS.GetMediaQueriesResponse>;

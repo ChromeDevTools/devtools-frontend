@@ -1408,6 +1408,13 @@ export namespace ProtocolMapping {
       returnType: Protocol.CSS.GetMatchedStylesForNodeResponse;
     };
     /**
+     * Returns the values of the default UA-defined environment variables used in env()
+     */
+    'CSS.getEnvironmentVariables': {
+      paramsType: [];
+      returnType: Protocol.CSS.GetEnvironmentVariablesResponse;
+    };
+    /**
      * Returns all media queries parsed by the rendering engine.
      */
     'CSS.getMediaQueries': {

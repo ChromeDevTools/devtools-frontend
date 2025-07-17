@@ -515,6 +515,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly summaryToolbarInternal: UI.Toolbar.Toolbar;
   private readonly filterBar: UI.FilterBar.FilterBar;
   private readonly textFilterSetting: Common.Settings.Setting<string>;
+  private networkRequestToNode: WeakMap<SDK.NetworkRequest.NetworkRequest, NetworkRequestNode>;
 
   constructor(
       filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
@@ -525,6 +526,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.element.id = 'network-container';
     this.element.classList.add('no-node-selected');
+
+    this.networkRequestToNode = new WeakMap();
 
     this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('network-invert-filter', false);
     this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('network-hide-data-url', false);
@@ -921,7 +924,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   nodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null {
-    return networkRequestToNode.get(request) || null;
+    return this.networkRequestToNode.get(request) || null;
   }
 
   headerHeight(): number {
@@ -1176,7 +1179,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     let nodeCount = 0;
     for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-      const node = networkRequestToNode.get(request);
+      const node = this.networkRequestToNode.get(request);
       if (!node) {
         continue;
       }
@@ -1442,7 +1445,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     while (this.staleRequests.size) {
       const request = this.staleRequests.values().next().value as SDK.NetworkRequest.NetworkRequest;
       this.staleRequests.delete(request);
-      let node = networkRequestToNode.get(request);
+      let node = this.networkRequestToNode.get(request);
       if (!node) {
         node = this.createNodeForRequest(request);
       }
@@ -1542,6 +1545,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.mainRequestLoadTime = -1;
     this.mainRequestDOMContentLoadedTime = -1;
 
+    this.networkRequestToNode = new WeakMap();
+
     this.dataGrid.rootNode().removeChildren();
     this.updateSummaryBar();
     this.scheduleRefresh();
@@ -1560,7 +1565,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private createNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode {
     const node = new NetworkRequestNode(this, request);
-    networkRequestToNode.set(request, node);
+    this.networkRequestToNode.set(request, node);
     filteredNetworkRequests.add(node);
 
     for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource()) {
@@ -1587,7 +1592,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       void {
     const {request} = event.data;
     this.staleRequests.delete(request);
-    const node = networkRequestToNode.get(request);
+    const node = this.networkRequestToNode.get(request);
     if (node) {
       this.removeNodeAndMaybeAncestors(node);
     }
@@ -2126,7 +2131,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private reveal(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null {
     this.removeAllNodeHighlights();
-    const node = networkRequestToNode.get(request);
+    const node = this.networkRequestToNode.get(request);
     if (!node?.dataGrid) {
       return null;
     }
@@ -2542,7 +2547,6 @@ export function computeStackTraceText(stackTrace: Protocol.Runtime.StackTrace): 
 }
 
 const filteredNetworkRequests = new WeakSet<NetworkRequestNode>();
-const networkRequestToNode = new WeakMap<SDK.NetworkRequest.NetworkRequest, NetworkRequestNode>();
 
 export function isRequestFilteredOut(request: NetworkRequestNode): boolean {
   return filteredNetworkRequests.has(request);

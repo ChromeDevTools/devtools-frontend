@@ -87,8 +87,8 @@ export class PerformanceInsightFormatter {
 
     if (lcpRequest) {
       parts.push(`${theLcpElement} is an image fetched from \`${lcpRequest.args.data.url}\`.`);
-      const request = TraceEventFormatter.networkRequest(
-          lcpRequest, this.#parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
+      const request = TraceEventFormatter.networkRequests(
+          [lcpRequest], this.#parsedTrace, {verbose: true, customTitle: 'LCP resource network request'});
       parts.push(request);
     } else {
       parts.push(`${theLcpElement} is text and was not fetched from the network.`);
@@ -178,8 +178,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
     }
 
     if (Trace.Insights.Models.RenderBlocking.isRenderBlocking(this.#insight)) {
-      const requestSummary = this.#insight.renderBlockingRequests.map(
-          r => TraceEventFormatter.networkRequest(r, this.#parsedTrace, {verbose: false}));
+      const requestSummary = TraceEventFormatter.networkRequests(
+          this.#insight.renderBlockingRequests, this.#parsedTrace, {verbose: false});
 
       if (requestSummary.length === 0) {
         return 'There are no network requests that are render blocking.';
@@ -187,7 +187,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
 
       return `Here is a list of the network requests that were render blocking on this page and their duration:
 
-${requestSummary.join('\n\n')}`;
+${requestSummary}`;
     }
 
     if (Trace.Insights.Models.DocumentLatency.isDocumentLatency(this.#insight)) {
@@ -214,7 +214,7 @@ ${requestSummary.join('\n\n')}`;
 
       return `${this.#lcpMetricSharedContext()}
 
-${TraceEventFormatter.networkRequest(documentRequest, this.#parsedTrace, {
+${TraceEventFormatter.networkRequests([documentRequest], this.#parsedTrace, {
         verbose: true,
         customTitle: 'Document network request'
       })}
@@ -267,15 +267,16 @@ ${shiftsFormatted.join('\n')}`;
     }
 
     if (Trace.Insights.Models.ModernHTTP.isModernHTTP(this.#insight)) {
-      const requestSummary = this.#insight.http1Requests.map(
-          request => TraceEventFormatter.networkRequest(request, this.#parsedTrace, {verbose: true}));
+      const requestSummary = (this.#insight.http1Requests.length === 1) ?
+          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace, {verbose: true}) :
+          TraceEventFormatter.networkRequests(this.#insight.http1Requests, this.#parsedTrace);
 
       if (requestSummary.length === 0) {
         return 'There are no requests that were served over a legacy HTTP protocol.';
       }
 
       return `Here is a list of the network requests that were served over a legacy HTTP protocol:
-${requestSummary.join('\n')}`;
+${requestSummary}`;
     }
 
     return '';
@@ -443,6 +444,27 @@ export class TraceEventFormatter {
 - Score: ${shift.args.data?.weighted_score_delta.toFixed(4)}
 ${rootCauseText}`;
   }
+
+  // Stringify network requests for the LLM model.
+  static networkRequests(
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      options?: NetworkRequestFormatOptions): string {
+    if (requests.length === 0) {
+      return '';
+    }
+
+    // Use verbose format for a single network request. With the compressed format, a format description
+    // needs to be provided, which is not worth sending if only one network request is being stringified.
+    // For a single request, use `formatRequestVerbosely`, which formats with all fields specified and does not require a
+    // format description.
+    if (options?.verbose || requests.length === 1) {
+      return requests.map(request => this.#networkRequestVerbosely(request, parsedTrace, options?.customTitle))
+          .join('\n');
+    }
+
+    return this.#networkRequestsArrayCompressed(requests, parsedTrace);
+  }
+
   /**
    * This is the data passed to a network request when the Performance Insights
    * agent is asking for information. It is a slimmed down version of the
@@ -451,9 +473,9 @@ ${rootCauseText}`;
    * Security; be careful about adding new data here. If you are in doubt please
    * talk to jacktfranklin@.
    */
-  static networkRequest(
+  static #networkRequestVerbosely(
       request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      options: NetworkRequestFormatOptions): string {
+      customTitle?: string): string {
     const {
       url,
       statusCode,
@@ -466,7 +488,7 @@ ${rootCauseText}`;
       protocol
     } = request.args.data;
 
-    const titlePrefix = `## ${options.customTitle ?? 'Network request'}`;
+    const titlePrefix = `## ${customTitle ?? 'Network request'}`;
 
     // Note: unlike other agents, we do have the ability to include
     // cross-origins, hence why we do not sanitize the URLs here.
@@ -509,13 +531,6 @@ ${rootCauseText}`;
 - Duration: ${formatMicroToMilli(redirect.dur)}`;
     });
 
-    if (!options.verbose) {
-      return `${titlePrefix}: ${url}
-- Start time: ${formatMicroToMilli(startTimesForLifecycle.queuedAt)}
-- Duration: ${formatMicroToMilli(request.dur)}
-- MIME type: ${mimeType}${renderBlocking ? '\n- This request was render blocking' : ''}`;
-    }
-
     return `${titlePrefix}: ${url}
 Timings:
 - Queued at: ${formatMicroToMilli(startTimesForLifecycle.queuedAt)}
@@ -546,15 +561,53 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
     return index;
   }
 
-  // This is the data passed to a network request when the Performance Insights agent is asking for information on multiple requests.
-  static getNetworkRequestsNewFormat(
-      requests: Trace.Types.Events.SyntheticNetworkRequest[], parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
+  // A compact network requests format designed to save tokens when sending multiple network requests to the model.
+  // It creates a map that maps request URLs to IDs and references the IDs in the compressed format.
+  //
+  // Important: Do not use this method for stringifying a single network request. With this format, a format description
+  // needs to be provided, which is not worth sending if only one network request is being stringified.
+  // For a single request, use `formatRequestVerbosely`, which formats with all fields specified and does not require a
+  // format description.
+  static #networkRequestsArrayCompressed(
+      requests: readonly Trace.Types.Events.SyntheticNetworkRequest[],
+      parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
+    const formatDescription = `The format is as follows:
+    \`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiatorUrlIndex;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
+
+    - \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.
+    Timings (all in milliseconds, relative to navigation start):
+    - \`queuedTime\`: When the request was queued.
+    - \`requestSentTime\`: When the request was sent.
+    - \`downloadCompleteTime\`: When the download completed.
+    - \`processingCompleteTime\`: When main thread processing finished.
+    Durations (all in milliseconds):
+    - \`totalDuration\`: Total time from the request being queued until its main thread processing completed.
+    - \`downloadDuration\`: Time spent actively downloading the resource.
+    - \`mainThreadProcessingDuration\`: Time spent on the main thread after the download completed.
+    - \`statusCode\`: The HTTP status code of the response (e.g., 200, 404).
+    - \`mimeType\`: The MIME type of the resource (e.g., "text/html", "application/javascript").
+    - \`priority\`: The final network request priority (e.g., "VeryHigh", "Low").
+    - \`initialPriority\`: The initial network request priority.
+    - \`finalPriority\`: The final network request priority (redundant if \`priority\` is always final, but kept for clarity if \`initialPriority\` and \`priority\` differ).
+    - \`renderBlocking\`: 't' if the request was render-blocking, 'f' otherwise.
+    - \`protocol\`: The network protocol used (e.g., "h2", "http/1.1").
+    - \`fromServiceWorker\`: 't' if the request was served from a service worker, 'f' otherwise.
+    - \`initiatorUrlIndex\`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
+    - \`redirects\`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
+    \`[redirectUrlIndex|startTime|duration]\`, where: \`redirectUrlIndex\`: Numerical index for the redirect's URL. \`startTime\`: The start time of the redirect in milliseconds, relative to navigation start. \`duration\`: The duration of the redirect in milliseconds.
+    - \`responseHeaders\`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
+    The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
+
+    Network requests data:
+
+    `;
     const urlIdToIndex = new Map<string, number>();
     const allRequestsText = requests
                                 .map(request => {
                                   const urlIndex =
                                       TraceEventFormatter.#getOrAssignUrlIndex(urlIdToIndex, request.args.data.url);
-                                  return this.networkRequestNewFormat(urlIndex, request, parsedTrace, urlIdToIndex);
+                                  return this.#networkRequestCompressedFormat(
+                                      urlIndex, request, parsedTrace, urlIdToIndex);
                                 })
                                 .join('\n');
 
@@ -566,7 +619,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
                                   })
                                   .join(', ')}]`;
 
-    return urlsMapString + '\n\n' + allRequestsText;
+    return formatDescription + '\n\n' + urlsMapString + '\n\n' + allRequestsText;
   }
 
   /**
@@ -603,7 +656,7 @@ ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders ?? [
    * - `responseHeaders`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
    * The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
    */
-  static networkRequestNewFormat(
+  static #networkRequestCompressedFormat(
       urlIndex: number, request: Trace.Types.Events.SyntheticNetworkRequest,
       parsedTrace: Trace.Handlers.Types.ParsedTrace, urlIdToIndex: Map<string, number>): string {
     const {

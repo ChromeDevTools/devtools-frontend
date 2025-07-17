@@ -277,7 +277,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
     super(opts);
 
     this.declareFunction<Record<never, unknown>, {
-      requests: string[],
+      requests: string,
     }>('getNetworkActivitySummary', {
       description:
           'Returns a summary of network activity for the selected insight. If you want to get more detailed information on a network request, you can pass the URL of a request into `getNetworkRequestDetail`.',
@@ -304,13 +304,12 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
             activeInsight.insightSetBounds,
             activeInsight.parsedTrace,
         );
-        const formatted =
-            requests.map(r => TraceEventFormatter.networkRequest(r, activeInsight.parsedTrace, {verbose: false}));
+        const formatted = TraceEventFormatter.networkRequests(requests, activeInsight.parsedTrace);
 
-        const byteCount = Platform.StringUtilities.countWtf8Bytes(formatted.join('\n'));
+        const byteCount = Platform.StringUtilities.countWtf8Bytes(formatted);
         Host.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
 
-        if (this.#isFunctionResponseTooLarge(formatted.join('\n'))) {
+        if (this.#isFunctionResponseTooLarge(formatted)) {
           return {
             error: 'getNetworkActivitySummary response is too large. Try investigating using other functions',
           };
@@ -318,7 +317,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         const summaryFact: Host.AidaClient.RequestFact = {
           text:
               `This is the network summary for this insight. You can use this and not call getNetworkActivitySummary again:\n${
-                  formatted.join('\n')}`,
+                  formatted}`,
           metadata: {source: 'getNetworkActivitySummary()'}
         };
         const cacheForInsight = this.#functionCallCache.get(activeInsight) ?? {};
@@ -362,7 +361,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         if (!request) {
           return {error: 'Request not found'};
         }
-        const formatted = TraceEventFormatter.networkRequest(request, activeInsight.parsedTrace, {verbose: true});
+        const formatted = TraceEventFormatter.networkRequests([request], activeInsight.parsedTrace, {verbose: true});
 
         const byteCount = Platform.StringUtilities.countWtf8Bytes(formatted);
         Host.userMetrics.performanceAINetworkRequestDetailResponseSize(byteCount);

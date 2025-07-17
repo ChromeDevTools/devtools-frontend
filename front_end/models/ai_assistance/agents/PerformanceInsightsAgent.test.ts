@@ -244,10 +244,9 @@ Help me understand?`;
         return match;
       });
 
-      const expectedRequestsOutput =
-          requests.map(r => TraceEventFormatter.networkRequest(r, parsedTrace, {verbose: false}));
+      const expectedRequestsOutput = TraceEventFormatter.networkRequests(requests, parsedTrace);
 
-      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput.join('\n'));
+      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
       sinon.assert.calledWith(metricsSpy, expectedBytesSize);
 
       const expectedOutput = JSON.stringify({requests: expectedRequestsOutput});
@@ -291,7 +290,7 @@ Help me understand?`;
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
 
-      const expectedRequestOutput = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
+      const expectedRequestOutput = TraceEventFormatter.networkRequests([request], parsedTrace, {verbose: true});
       const expectedOutput = JSON.stringify({request: expectedRequestOutput});
 
       const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestOutput);

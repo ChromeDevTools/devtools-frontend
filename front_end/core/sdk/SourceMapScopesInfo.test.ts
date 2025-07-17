@@ -5,74 +5,56 @@
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {GeneratedRangeBuilder, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
+import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 const {SourceMapScopesInfo} = SDK.SourceMapScopesInfo;
+const {ScopeInfoBuilder} = ScopesCodec;
 
 describe('SourceMapScopesInfo', () => {
-  function parseFromMap(
-      sourceMap: SDK.SourceMap.SourceMap,
-      sourceMapJson: Pick<SDK.SourceMap.SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>):
-      SDK.SourceMapScopesInfo.SourceMapScopesInfo {
-    const {originalScopes, generatedRanges} = SDK.SourceMapScopes.decodeScopes(sourceMapJson);
-    return new SourceMapScopesInfo(sourceMap, originalScopes, generatedRanges);
-  }
-
   describe('findInlinedFunctions', () => {
     it('returns the single original function name if nothing was inlined', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(5, 0, {kind: 'function', name: 'foo'})
-                                  .end(10, 0)
-                                  .end(20, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(5, 0, {kind: 'function', key: 'foo', name: 'foo'})
+          .endScope(10, 0)
+          .endScope(20, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                  .end(0, 5)
-                                  .end(0, 5)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
+          .endRange(0, 5)
+          .endRange(0, 5);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       assert.deepEqual(info.findInlinedFunctions(0, 3), {originalFunctionName: 'foo', inlinedFunctions: []});
     });
 
     it('returns the names of the surrounding function plus all the inlined function names', () => {
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 0, {kind: 'function', name: 'foo'})
-                                  .end(20, 0)
-                                  .start(30, 0, {kind: 'function', name: 'bar'})
-                                  .end(40, 0)
-                                  .start(50, 0, {kind: 'function', name: 'baz'})
-                                  .end(60, 0)
-                                  .end(70, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', key: 'foo', name: 'foo'})
+          .endScope(20, 0)
+          .startScope(30, 0, {kind: 'function', key: 'bar', name: 'bar'})
+          .endScope(40, 0)
+          .startScope(50, 0, {kind: 'function', key: 'baz', name: 'baz'})
+          .endScope(60, 0)
+          .endScope(70, 0);
 
-      const generatedRanges =
-          new GeneratedRangeBuilder(names)
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-              .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 15, column: 0}})
-              .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 5}, callsite: {sourceIdx: 0, line: 35, column: 0}})
-              .end(0, 10)
-              .end(0, 10)
-              .end(0, 10)
-              .end(0, 10)
-              .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'foo', isStackFrame: true})
+          .startRange(0, 5, {scopeKey: 'bar', callSite: {sourceIndex: 0, line: 15, column: 0}})
+          .startRange(0, 5, {scopeKey: 'baz', callSite: {sourceIndex: 0, line: 35, column: 0}})
+          .endRange(0, 10)
+          .endRange(0, 10)
+          .endRange(0, 10)
+          .endRange(0, 10);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       assert.deepEqual(info.findInlinedFunctions(0, 4), {originalFunctionName: 'foo', inlinedFunctions: []});
       assert.deepEqual(info.findInlinedFunctions(0, 7), {
@@ -124,31 +106,26 @@ describe('SourceMapScopesInfo', () => {
       // 9:
       // 10: outer();
 
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(0, 14, {kind: 'function', name: 'inner'})
-                                  .end(2, 1)
-                                  .start(4, 14, {kind: 'function', name: 'outer'})
-                                  .start(5, 12, {kind: 'block'})
-                                  .end(7, 3)
-                                  .end(8, 1)
-                                  .end(11, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', key: 'inner', name: 'inner'})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', key: 'outer', name: 'outer'})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                  .end(0, 28)
-                                  .start(1, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isStackFrame: true})
-                                  .start(1, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
-                                  .end(1, 26)
-                                  .end(1, 27)
-                                  .end(3, 0)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'inner', isStackFrame: true})
+          .endRange(0, 28)
+          .startRange(1, 10, {scopeKey: 'outer', isStackFrame: true})
+          .startRange(1, 21, {scopeKey: 'block'})
+          .endRange(1, 26)
+          .endRange(1, 27)
+          .endRange(3, 0);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       {
         const callFrame = setUpCallFrame({line: 0, column: 13}, 'n');  // Pause on 'print'.
@@ -196,32 +173,26 @@ describe('SourceMapScopesInfo', () => {
       // 9:
       // 10: outer();
 
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(0, 14, {kind: 'function', name: 'inner'})
-                                  .end(2, 1)
-                                  .start(4, 14, {kind: 'function', name: 'outer'})
-                                  .start(5, 12, {kind: 'block'})
-                                  .end(7, 3)
-                                  .end(8, 1)
-                                  .end(11, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner'})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer'})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
 
-      const generatedRanges =
-          new GeneratedRangeBuilder(names)
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isStackFrame: true})
-              .start(0, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
-              .start(0, 22, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 4}})
-              .end(0, 36)
-              .end(0, 37)
-              .end(0, 38)
-              .end(2, 0)
-              .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'outer', isStackFrame: true})
+          .startRange(0, 21, {scopeKey: 'block'})
+          .startRange(0, 22, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 4}})
+          .endRange(0, 36)
+          .endRange(0, 37)
+          .endRange(0, 38)
+          .endRange(2, 0);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       {
         const callFrame = setUpCallFrame({line: 0, column: 22}, 'm');  // Pause on 'print'.
@@ -271,32 +242,26 @@ describe('SourceMapScopesInfo', () => {
       // 9:
       // 10: outer();
 
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(0, 14, {kind: 'function', name: 'inner'})
-                                  .end(2, 1)
-                                  .start(4, 14, {kind: 'function', name: 'outer'})
-                                  .start(5, 12, {kind: 'block'})
-                                  .end(7, 3)
-                                  .end(8, 1)
-                                  .end(11, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', key: 'inner'})
+          .endScope(2, 1)
+          .startScope(4, 14, {kind: 'function', name: 'outer', key: 'outer'})
+          .startScope(5, 12, {kind: 'block', key: 'block'})
+          .endScope(7, 3)
+          .endScope(8, 1)
+          .endScope(11, 0);
 
-      const generatedRanges =
-          new GeneratedRangeBuilder(names)
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 10, column: 0}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 4}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 4}})
-              .end(0, 14)
-              .end(0, 14)
-              .end(0, 14)
-              .end(1, 0)
-              .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 10, column: 0}})
+          .startRange(0, 0, {scopeKey: 'block'})
+          .startRange(0, 0, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 6, column: 4}})
+          .endRange(0, 14)
+          .endRange(0, 14)
+          .endRange(0, 14)
+          .endRange(1, 0);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       {
         const callFrame = setUpCallFrame({line: 0, column: 0}, '');  // Pause on 'print'.
@@ -315,68 +280,52 @@ describe('SourceMapScopesInfo', () => {
 
   describe('hasVariablesAndBindings', () => {
     it('returns false for scope info without variables or bindings', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 0, {kind: 'function', name: 'foo'})
-                                  .end(20, 0)
-                                  .end(30, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', name: 'foo', key: 'foo'})
+          .endScope(20, 0)
+          .endScope(30, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                  .end(0, 20)
-                                  .end(0, 30)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true})
+          .endRange(0, 20)
+          .endRange(0, 30);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       assert.isFalse(info.hasVariablesAndBindings());
     });
 
     it('returns false for scope info with variables but no bindings', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2']})
-                                  .end(20, 0)
-                                  .end(30, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
+          .endScope(20, 0)
+          .endScope(30, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
-                                  .end(0, 20)
-                                  .end(0, 30)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true})
+          .endRange(0, 20)
+          .endRange(0, 30);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       assert.isFalse(info.hasVariablesAndBindings());
     });
 
     it('returns true for scope info with variables and bindings', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2']})
-                                  .end(20, 0)
-                                  .end(30, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2'], key: 'foo'})
+          .endScope(20, 0)
+          .endScope(30, 0);
 
-      const generatedRanges =
-          new GeneratedRangeBuilder(names)
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true, bindings: ['a', 'b']})
-              .end(0, 20)
-              .end(0, 30)
-              .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10, {scopeKey: 'foo', isStackFrame: true, values: ['a', 'b']})
+          .endRange(0, 20)
+          .endRange(0, 30);
 
-      const info =
-          parseFromMap(sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sinon.createStubInstance(SDK.SourceMap.SourceMap), builder.build());
 
       assert.isTrue(info.hasVariablesAndBindings());
     });
@@ -418,18 +367,16 @@ describe('SourceMapScopesInfo', () => {
     }
 
     it('returns null when the inner-most generated range doesn\'t have an original scope', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, {kind: 'global'}).end(20, 0).build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10)  // Small range that doesn't map to anything.
-                                  .end(0, 20)
-                                  .end(0, 100)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 10)  // Small range that doesn't map to anything.
+          .endRange(0, 20)
+          .endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({generatedPausedPosition: {line: 0, column: 15}});
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -437,17 +384,15 @@ describe('SourceMapScopesInfo', () => {
     });
 
     it('returns the original global scope when paused in the global scope', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, {kind: 'global'}).end(20, 0).build()];
-
-      const generatedRanges =
-          new GeneratedRangeBuilder(names).start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}}).end(0, 100).build();
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'}).endScope(20, 0);
+      builder.startRange(0, 0, {scopeKey: 'global'}).endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
         generatedPausedPosition: {line: 0, column: 50},
         mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
       });
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -458,26 +403,22 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns the inner-most function scope as type "Local" and surrounding function scopes as type "Closure"',
        () => {
-         const names: string[] = [];
-         const originalScopes = [new OriginalScopeBuilder(names)
-                                     .start(0, 0, {kind: 'function', name: 'outer'})
-                                     .start(5, 0, {kind: 'function', name: 'inner'})
-                                     .end(15, 0)
-                                     .end(20, 0)
-                                     .build()];
+         const builder = new ScopeInfoBuilder();
+         builder.startScope(0, 0, {kind: 'function', name: 'outer', key: 'outer'})
+             .startScope(5, 0, {kind: 'function', name: 'inner', key: 'inner'})
+             .endScope(15, 0)
+             .endScope(20, 0);
 
-         const generatedRanges = new GeneratedRangeBuilder(names)
-                                     .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                     .start(0, 25, {definition: {sourceIdx: 0, scopeIdx: 1}})
-                                     .end(0, 75)
-                                     .end(0, 100)
-                                     .build();
+         builder.startRange(0, 0, {scopeKey: 'outer'})
+             .startRange(0, 25, {scopeKey: 'inner'})
+             .endRange(0, 75)
+             .endRange(0, 100);
 
          const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
            generatedPausedPosition: {line: 0, column: 50},
            mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
          });
-         const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+         const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
          const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -490,27 +431,23 @@ describe('SourceMapScopesInfo', () => {
        });
 
     it('drops inner block scopes if a return value is present to account for V8 oddity', () => {
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'function', name: 'someFn'})
-                                  .start(5, 0, {kind: 'block'})
-                                  .end(15, 0)
-                                  .end(20, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'function', name: 'someFn', key: 'func'})
+          .startScope(5, 0, {kind: 'block', key: 'block'})
+          .endScope(15, 0)
+          .endScope(20, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 25, {definition: {sourceIdx: 0, scopeIdx: 1}})
-                                  .end(0, 75)
-                                  .end(0, 100)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'func'})
+          .startRange(0, 25, {scopeKey: 'block'})
+          .endRange(0, 75)
+          .endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
         generatedPausedPosition: {line: 0, column: 50},
         mappedPausedPosition: {sourceIndex: 0, line: 10, column: 0},
         returnValue: new SDK.RemoteObject.LocalJSONObject(42),
       });
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -541,29 +478,24 @@ describe('SourceMapScopesInfo', () => {
       //         not the other. This requires us to be able to evaluate binding expressions in arbitrary
       //         CDP scopes to work well.
 
-      const names: string[] = [];
-      const originalScopes =
-          [new OriginalScopeBuilder(names)
-               .start(0, 0, {kind: 'global'})
-               .start(10, 0, {kind: 'function', name: 'someFn', variables: ['fooVariable', 'barVariable']})
-               .end(20, 0)
-               .end(30, 0)
-               .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 0, {kind: 'function', name: 'someFn', variables: ['fooVariable', 'barVariable'], key: 'func'})
+          .endScope(20, 0)
+          .endScope(30, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 20, {definition: {sourceIdx: 0, scopeIdx: 1}, bindings: [undefined, 'b']})
-                                  .start(0, 40, {definition: {sourceIdx: 0, scopeIdx: 1}, bindings: ['f', undefined]})
-                                  .end(0, 60)
-                                  .end(0, 80)
-                                  .end(0, 100)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 20, {scopeKey: 'func', values: [null, 'b']})
+          .startRange(0, 40, {scopeKey: 'func', values: ['f', null]})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
         generatedPausedPosition: {line: 0, column: 50},
         mappedPausedPosition: {sourceIndex: 0, line: 15, column: 0},
       });
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -610,28 +542,24 @@ describe('SourceMapScopesInfo', () => {
       //
       // Expectation: Report global scope and use bindings from the inner generated range for 'global'.
 
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable']})
-                                  .start(10, 0, {kind: 'function', name: 'someFn'})
-                                  .end(20, 0)
-                                  .end(30, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable'], key: 'global'})
+          .startScope(10, 0, {kind: 'function', name: 'someFn', key: 'func'})
+          .endScope(20, 0)
+          .endScope(30, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}, bindings: ['42', '"n"']})
-                                  .start(0, 20, {definition: {sourceIdx: 0, scopeIdx: 1}})
-                                  .start(0, 40, {definition: {sourceIdx: 0, scopeIdx: 0}, bindings: ['42', undefined]})
-                                  .end(0, 60)
-                                  .end(0, 80)
-                                  .end(0, 100)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global', values: ['42', '"n"']})
+          .startRange(0, 20, {scopeKey: 'func'})
+          .startRange(0, 40, {scopeKey: 'global', values: ['42', null]})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .endRange(0, 100);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
         generatedPausedPosition: {line: 0, column: 50},
         mappedPausedPosition: {sourceIndex: 0, line: 5, column: 0},
       });
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       const scopeChain = info.resolveMappedScopeChain(callFrame);
 
@@ -678,42 +606,30 @@ describe('SourceMapScopesInfo', () => {
       // Expectation: The scopes for the virtual call frame of outer are accurate.
       //              In particular we also add a block scope that must be there.
 
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global', variables: ['inner', 'outer']})
-                                  .start(0, 14, {kind: 'function', name: 'inner', variables: ['x']})
-                                  .end(3, 1)
-                                  .start(5, 14, {kind: 'function', name: 'outer', variables: ['y']})
-                                  .start(6, 9, {kind: 'block'})
-                                  .end(8, 3)
-                                  .end(9, 1)
-                                  .end(12, 0)
-                                  .build()];
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', variables: ['inner', 'outer'], key: 'global'})
+          .startScope(0, 14, {kind: 'function', name: 'inner', variables: ['x'], key: 'inner'})
+          .endScope(3, 1)
+          .startScope(5, 14, {kind: 'function', name: 'outer', variables: ['y'], key: 'outer'})
+          .startScope(6, 9, {kind: 'block', key: 'block'})
+          .endScope(8, 3)
+          .endScope(9, 1)
+          .endScope(12, 0);
 
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 0, {
-                                    definition: {sourceIdx: 0, scopeIdx: 3},
-                                    callsite: {sourceIdx: 0, line: 11, column: 0},
-                                    bindings: ['42'],
-                                  })
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 4}})
-                                  .start(0, 0, {
-                                    definition: {sourceIdx: 0, scopeIdx: 1},
-                                    callsite: {sourceIdx: 0, line: 7, column: 4},
-                                    bindings: ['42'],
-                                  })
-                                  .end(0, 19)
-                                  .end(0, 19)
-                                  .end(0, 19)
-                                  .end(0, 19)
-                                  .build();
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 0, {scopeKey: 'outer', callSite: {sourceIndex: 0, line: 11, column: 0}, values: ['42']})
+          .startRange(0, 0, {scopeKey: 'block'})
+          .startRange(0, 0, {scopeKey: 'inner', callSite: {sourceIndex: 0, line: 7, column: 4}, values: ['42']})
+          .endRange(0, 19)
+          .endRange(0, 19)
+          .endRange(0, 19)
+          .endRange(0, 19);
 
       const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
         generatedPausedPosition: {line: 0, column: 10},
         mappedPausedPosition: {sourceIndex: 0, line: 3, column: 2},
       });
-      const info = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      const info = new SourceMapScopesInfo(sourceMap, builder.build());
 
       {
         const scopeChain = info.resolveMappedScopeChain(callFrame);
@@ -775,31 +691,30 @@ describe('SourceMapScopesInfo', () => {
         }
         return null;
       });
-      const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, {kind: 'global'})
-                                  .start(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true})
-                                  .start(20, 15, {kind: 'block'})
-                                  .end(30, 3)
-                                  .end(40, 1)
-                                  .start(50, 10, {kind: 'function', isStackFrame: true})
-                                  .end(60, 1)
-                                  .end(70, 0)
-                                  .build()];
-      const scopeInfoWithMappings = parseFromMap(sourceMap, {names, originalScopes, generatedRanges: ''});
-      const generatedRanges = new GeneratedRangeBuilder(names)
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 20, {definition: {sourceIdx: 0, scopeIdx: 1}})
-                                  .start(0, 40, {definition: {sourceIdx: 0, scopeIdx: 2}})
-                                  .end(0, 60)
-                                  .end(0, 80)
-                                  .start(0, 100, {definition: {sourceIdx: 0, scopeIdx: 5}})
-                                  .end(0, 120)
-                                  .start(0, 140)
-                                  .end(0, 160)
-                                  .end(0, 180)
-                                  .build();
-      const scopeInfoWithRanges = parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+
+      const builder = new ScopeInfoBuilder();
+      builder.startScope(0, 0, {kind: 'global', key: 'global'})
+          .startScope(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true, key: 'authored'})
+          .startScope(20, 15, {kind: 'block', key: 'block'})
+          .endScope(30, 3)
+          .endScope(40, 1)
+          .startScope(50, 10, {kind: 'function', isStackFrame: true, key: 'unnamed'})
+          .endScope(60, 1)
+          .endScope(70, 0);
+
+      const scopeInfoWithMappings = new SourceMapScopesInfo(sourceMap, builder.build());
+
+      builder.startRange(0, 0, {scopeKey: 'global'})
+          .startRange(0, 20, {scopeKey: 'authored'})
+          .startRange(0, 40, {scopeKey: 'block'})
+          .endRange(0, 60)
+          .endRange(0, 80)
+          .startRange(0, 100, {scopeKey: 'unnamed'})
+          .endRange(0, 120)
+          .startRange(0, 140)
+          .endRange(0, 160)
+          .endRange(0, 180);
+      const scopeInfoWithRanges = new SourceMapScopesInfo(sourceMap, builder.build());
       return [scopeInfoWithRanges, scopeInfoWithMappings];
     })();
 

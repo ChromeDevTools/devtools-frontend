@@ -7,24 +7,24 @@ import * as Protocol from '../../generated/protocol.js';
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import type {SourceMap} from './SourceMap.js';
 import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
-import type {GeneratedRange, OriginalPosition, OriginalScope, Position,} from './SourceMapScopes.js';
+import type {GeneratedRange, OriginalPosition, OriginalScope, Position, ScopeInfo} from './SourceMapScopes.js';
 
 export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
-  readonly #originalScopes: Array<OriginalScope|undefined>;
+  readonly #originalScopes: Array<OriginalScope|null>;
   readonly #generatedRanges: GeneratedRange[];
 
   #cachedVariablesAndBindingsPresent: boolean|null = null;
 
-  constructor(sourceMap: SourceMap, originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
+  constructor(sourceMap: SourceMap, scopeInfo: ScopeInfo) {
     this.#sourceMap = sourceMap;
-    this.#originalScopes = originalScopes;
-    this.#generatedRanges = generatedRanges;
+    this.#originalScopes = scopeInfo.scopes;
+    this.#generatedRanges = scopeInfo.ranges;
   }
 
   addOriginalScopes(scopes: Array<OriginalScope|undefined>): void {
     for (const scope of scopes) {
-      this.#originalScopes.push(scope);
+      this.#originalScopes.push(scope ?? null);
     }
   }
 
@@ -142,7 +142,7 @@ export class SourceMapScopesInfo {
     // We check whether any original scope has a non-empty list of variables, and
     // generated ranges with a non-empty binding list.
 
-    function walkTree(nodes: Array<OriginalScope|undefined>|GeneratedRange[]): boolean {
+    function walkTree(nodes: Array<OriginalScope|null>|GeneratedRange[]): boolean {
       for (const node of nodes) {
         if (!node) {
           continue;

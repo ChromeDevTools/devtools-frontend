@@ -21,6 +21,7 @@ export type GeneratedRange = Codec.GeneratedRange;
 export type Position = Codec.Position;
 // For compatibility with the old type.
 export type BindingRange = Codec.SubRangeBinding;
+export type ScopeInfo = Codec.ScopeInfo;
 
 /** @returns 0 if both positions are equal, a negative number if a < b and a positive number if a > b */
 export function comparePositions(a: Position, b: Position): number {

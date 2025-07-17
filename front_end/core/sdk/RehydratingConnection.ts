@@ -93,34 +93,33 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
    */
   #onReceiveHostWindowPayload(event: MessageEvent): void {
     if (event.data.type === 'REHYDRATING_TRACE_FILE') {
-      const {traceFile} = event.data;
-      const reader = new FileReader();
-      reader.onload = async(): Promise<void> => {
-        await this.startHydration(reader.result as string);
-      };
-      reader.onerror = (): void => {
+      const traceJson = event.data.traceJson as string;
+      let trace;
+      try {
+        trace = JSON.parse(traceJson) as TraceFile;
+      } catch {
         this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
-      };
-      reader.readAsText(traceFile);
+        return;
+      }
+      void this.startHydration(trace);
     }
     this.#rehydratingWindow.removeEventListener('message', this.#onReceiveHostWindowPayloadBound);
   }
 
-  async startHydration(logPayload: string): Promise<boolean> {
+  async startHydration(trace: TraceFile): Promise<boolean> {
     // OnMessage should've been set before hydration, and the connection should
     // be initialized and not hydrated already.
     if (!this.onMessage || this.rehydratingConnectionState !== RehydratingConnectionState.INITIALIZED) {
       return false;
     }
 
-    const payload = JSON.parse(logPayload) as TraceFile;
-    if (!('traceEvents' in payload)) {
+    if (!('traceEvents' in trace)) {
       console.error('RehydratingConnection failed to initialize due to missing trace events in payload');
       return false;
     }
 
-    this.trace = payload;
-    const enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser(payload);
+    this.trace = trace;
+    const enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser(trace);
     const hydratingData = enhancedTracesParser.data();
 
     let sessionId = 0;

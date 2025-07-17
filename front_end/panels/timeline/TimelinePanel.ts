@@ -1538,25 +1538,20 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     if (this.state !== State.IDLE) {
       return;
     }
-    const maximumTraceFileLengthToDetermineEnhancedTraces = 5000;
-    // We are expecting to locate the enhanced traces version within the first 5000
-    // characters of the trace file if the given trace file is enhanced traces.
-    // Doing so can avoid serializing the whole trace while needing to serialize
-    // it again in rehydrated session for enhanced traces.
-    const blob = file.slice(0, maximumTraceFileLengthToDetermineEnhancedTraces);
-    const content = await blob.text();
+
+    const content = await Common.Gzip.fileToString(file);
     if (content.includes('enhancedTraceVersion')) {
       await window.scheduler.postTask(() => {
-        this.#launchRehydratedSession(file);
+        this.#launchRehydratedSession(content);
       }, {priority: 'background'});
     } else {
-      this.loader = await TimelineLoader.loadFromFile(file, this);
+      this.loader = TimelineLoader.loadFromParsedJsonFile(JSON.parse(content), this);
       this.prepareToLoadTimeline();
     }
     this.createFileSelector();
   }
 
-  #launchRehydratedSession(file: File): void {
+  #launchRehydratedSession(traceJson: string): void {
     let rehydratingWindow: Window|null = null;
     let pathToLaunch: string|null = null;
     const url = new URL(window.location.href);
@@ -1568,7 +1563,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     const hostWindow = window;
     function onMessageHandler(ev: MessageEvent): void {
       if (url && ev.data && ev.data.type === 'REHYDRATING_WINDOW_READY') {
-        rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceFile: file}, url.origin);
+        rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceJson}, url.origin);
       }
       hostWindow.removeEventListener('message', onMessageHandler);
     }

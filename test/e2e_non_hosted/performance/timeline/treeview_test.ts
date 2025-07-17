@@ -109,7 +109,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     await navigateToBottomUpTab(devToolsPage, 'url');
 
     // use group-by drop down and validate activities
-    const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle;
+    const timelineTree = await devToolsPage.$('.timeline-tree-view');
     await devToolsPage.waitForElementWithTextContent('h2_with_suffix', timelineTree);
     const dropdown = await devToolsPage.waitFor('select[aria-label="No grouping"]');
     await dropdown.evaluate(el => {

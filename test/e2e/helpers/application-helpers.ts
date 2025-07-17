@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as puppeteer from 'puppeteer-core';
-
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   $$,
@@ -241,7 +239,7 @@ export async function getStorageItemsData(
 }
 
 export async function filterStorageItems(filter: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const element = await devToolsPage.$('.toolbar-input-prompt') as puppeteer.ElementHandle;
+  const element = await devToolsPage.$('.toolbar-input-prompt');
   await expectVeEvents(
       [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar', [veImpression('TextField', 'filter')])],
       undefined, devToolsPage);

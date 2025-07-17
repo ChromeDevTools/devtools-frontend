@@ -24,16 +24,14 @@ export async function navigateToMemoryTab(devToolsPage = getBrowserAndPagesWrapp
 }
 
 export async function takeDetachedElementsProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const radioButton = await devToolsPage.$('//label[text()="Detached elements"]', undefined, 'xpath');
-  await devToolsPage.clickElement(radioButton);
+  await devToolsPage.click('xpath///label[text()="Detached elements"]');
   await devToolsPage.click('devtools-button[aria-label="Obtain detached elements"]');
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
 export async function takeAllocationProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const radioButton = await devToolsPage.$('//label[text()="Allocation sampling"]', undefined, 'xpath');
-  await devToolsPage.clickElement(radioButton);
+  await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
   await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
   await devToolsPage.click('devtools-button[aria-label="Stop heap profiling"]');
@@ -46,8 +44,7 @@ export async function takeAllocationTimelineProfile(
       recordStacks: false,
     },
     devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const radioButton = await devToolsPage.$('//label[text()="Allocations on timeline"]', undefined, 'xpath');
-  await devToolsPage.clickElement(radioButton);
+  await devToolsPage.click('xpath///label[text()="Allocations on timeline"]');
   if (recordStacks) {
     await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
   }
@@ -303,8 +300,9 @@ export async function focusTableRowWithName(text: string, devToolsPage = getBrow
 export async function focusTableRow(
     row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Click in a numeric cell, to avoid accidentally clicking a link.
-  const cell = await devToolsPage.waitFor('.numeric-column', row);
-  await devToolsPage.clickElement(cell);
+  await devToolsPage.click('.numeric-column', {
+    root: row,
+  });
 }
 
 export async function expandFocusedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
@@ -398,16 +396,19 @@ export async function getRemovedCountFromComparisonRow(
 export async function clickOnContextMenuForRetainer(
     retainerName: string, menuItem: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const retainersPane = await devToolsPage.waitFor('.retaining-paths-view');
-  const element = await devToolsPage.waitFor(`//span[text()="${retainerName}"]`, retainersPane, undefined, 'xpath');
-  // Push the click right a bit further to avoid the disclosure triangle.
-  await devToolsPage.clickElement(element, {clickOptions: {button: 'right', offset: {x: 35, y: 0}}});
-  const button = await devToolsPage.waitForAria(menuItem);
-  await devToolsPage.clickElement(button);
+  await devToolsPage.click(`xpath///span[text()="${retainerName}"]`, {
+    root: retainersPane,
+    clickOptions: {
+      button: 'right',
+      // Push the click right a bit further to avoid the disclosure triangle.
+      offset: {x: 35, y: 0},
+    },
+  });
+  await devToolsPage.click(`aria/${menuItem}`);
 }
 
 export async function restoreIgnoredRetainers(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
-  const element = await devToolsPage.waitFor('devtools-button[aria-label="Restore ignored retainers"]');
-  await devToolsPage.clickElement(element);
+  await devToolsPage.click('devtools-button[aria-label="Restore ignored retainers"]');
 }
 
 export async function setFilterDropdown(filter: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {

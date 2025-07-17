@@ -574,6 +574,7 @@ describe('The Memory Panel', function() {
     await expandFocusedRow(devToolsPage);
     // TODO: pressing arrowDown does not work while UI is rendering.
     await devToolsPage.drainTaskQueue();
+    await devToolsPage.drainTaskQueue();
     await devToolsPage.page.keyboard.press('ArrowDown');
     await clickOnContextMenuForRetainer('x', 'Reveal in Summary view', devToolsPage);
     await waitUntilRetainerChainSatisfies(

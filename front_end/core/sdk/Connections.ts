@@ -296,6 +296,7 @@ function createMainConnection(onConnectionLost: (message: Platform.UIString.Loca
     return new WebSocketConnection(ws, onConnectionLost);
   }
   if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
+    // Hosted mode (e.g. `http://localhost:9222/devtools/inspector.html`) but no WebSocket URL.
     return new StubConnection();
   }
 

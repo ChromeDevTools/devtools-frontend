@@ -486,6 +486,20 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     throw new Error('Soft context menu should be used');
   }
 
+  /**
+   * **Hosted mode** is when DevTools is loaded over `http(s)://` rather than from `devtools://`.
+   * It does **not** indicate whether the frontend is connected to a valid CDP target.
+   *
+   *  | Example case                                         | Mode           | Example URL                                                                   |
+   *  | :--------------------------------------------------- | :------------- | :---------------------------------------------------------------------------- |
+   *  | typical devtools: (un)docked w/ native CDP bindings  | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
+   *  | tab href is `devtools://…?ws=…`                      | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
+   *  | tab href is `devtools://…` but no connection         | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html`                               |
+   *  | tab href is `https://…?ws=` (connected)              | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../worker_app.html` |
+   *  | tab href is `http://…` but no connection             | **Hosted**     | `http://localhost:9222/devtools/inspector.html?ws=localhost:9222/...`         |
+   *
+   * See also `canDock` which has similar semantics.
+   */
   isHostedMode(): boolean {
     return true;
   }

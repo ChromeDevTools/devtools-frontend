@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var $byteLength = callBound('ArrayBuffer.prototype.byteLength', true);
 
 var isArrayBuffer = require('is-array-buffer');

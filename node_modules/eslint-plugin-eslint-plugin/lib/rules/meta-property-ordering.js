@@ -4,7 +4,8 @@
 
 'use strict';
 
-const { getKeyName, getRuleInfo } = require('../utils');
+const utils = require('../utils');
+const { getKeyName, getRuleInfo } = utils;
 
 const defaultOrder = [
   'type',
@@ -48,7 +49,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const ruleInfo = getRuleInfo(sourceCode);
     if (!ruleInfo) {
       return {};

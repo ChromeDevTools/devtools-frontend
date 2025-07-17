@@ -41,18 +41,18 @@ const getValueOfLiteralType_1 = require("./getValueOfLiteralType");
 const isTruthyLiteral = (type) => tsutils.isTrueLiteralType(type) ||
     (type.isLiteral() && !!(0, getValueOfLiteralType_1.getValueOfLiteralType)(type));
 const isPossiblyFalsy = (type) => tsutils
-    .unionTypeParts(type)
+    .unionConstituents(type)
     // Intersections like `string & {}` can also be possibly falsy,
     // requiring us to look into the intersection.
-    .flatMap(type => tsutils.intersectionTypeParts(type))
+    .flatMap(type => tsutils.intersectionConstituents(type))
     // PossiblyFalsy flag includes literal values, so exclude ones that
     // are definitely truthy
     .filter(t => !isTruthyLiteral(t))
     .some(type => tsutils.isTypeFlagSet(type, ts.TypeFlags.PossiblyFalsy));
 exports.isPossiblyFalsy = isPossiblyFalsy;
 const isPossiblyTruthy = (type) => tsutils
-    .unionTypeParts(type)
-    .map(type => tsutils.intersectionTypeParts(type))
+    .unionConstituents(type)
+    .map(type => tsutils.intersectionConstituents(type))
     .some(intersectionParts => 
 // It is possible to define intersections that are always falsy,
 // like `"" & { __brand: string }`.

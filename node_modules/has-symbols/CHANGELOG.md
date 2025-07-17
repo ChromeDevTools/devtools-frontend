@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/inspect-js/has-symbols/compare/v1.0.3...v1.1.0) - 2024-12-02
+
+### Commits
+
+- [actions] update workflows [`548c0bf`](https://github.com/inspect-js/has-symbols/commit/548c0bf8c9b1235458df7a1c0490b0064647a282)
+- [actions] further shard; update action deps [`bec56bb`](https://github.com/inspect-js/has-symbols/commit/bec56bb0fb44b43a786686b944875a3175cf3ff3)
+- [meta] use `npmignore` to autogenerate an npmignore file [`ac81032`](https://github.com/inspect-js/has-symbols/commit/ac81032809157e0a079e5264e9ce9b6f1275777e)
+- [New] add types [`6469cbf`](https://github.com/inspect-js/has-symbols/commit/6469cbff1866cfe367b2b3d181d9296ec14b2a3d)
+- [actions] update rebase action to use reusable workflow [`9c9d4d0`](https://github.com/inspect-js/has-symbols/commit/9c9d4d0d8938e4b267acdf8e421f4e92d1716d72)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`adb5887`](https://github.com/inspect-js/has-symbols/commit/adb5887ca9444849b08beb5caaa9e1d42320cdfb)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `tape` [`13ec198`](https://github.com/inspect-js/has-symbols/commit/13ec198ec80f1993a87710af1606a1970b22c7cb)
+- [Dev Deps] update `auto-changelog`, `core-js`, `tape` [`941be52`](https://github.com/inspect-js/has-symbols/commit/941be5248387cab1da72509b22acf3fdb223f057)
+- [Tests] replace `aud` with `npm audit` [`74f49e9`](https://github.com/inspect-js/has-symbols/commit/74f49e9a9d17a443020784234a1c53ce765b3559)
+- [Dev Deps] update `npmignore` [`9c0ac04`](https://github.com/inspect-js/has-symbols/commit/9c0ac0452a834f4c2a4b54044f2d6a89f17e9a70)
+- [Dev Deps] add missing peer dep [`52337a5`](https://github.com/inspect-js/has-symbols/commit/52337a5621cced61f846f2afdab7707a8132cc12)
+
 ## [v1.0.3](https://github.com/inspect-js/has-symbols/compare/v1.0.2...v1.0.3) - 2022-03-01
 
 ### Commits

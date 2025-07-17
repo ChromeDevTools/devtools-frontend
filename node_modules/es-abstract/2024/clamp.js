@@ -1,10 +1,8 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 var $TypeError = require('es-errors/type');
-var max = GetIntrinsic('%Math.max%');
-var min = GetIntrinsic('%Math.min%');
+var max = require('math-intrinsics/max');
+var min = require('math-intrinsics/min');
 
 // https://262.ecma-international.org/12.0/#clamping
 

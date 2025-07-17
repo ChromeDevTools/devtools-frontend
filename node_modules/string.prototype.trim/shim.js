@@ -1,14 +1,20 @@
 'use strict';
 
-var define = require('define-properties');
+var supportsDescriptors = require('has-property-descriptors')();
+var defineDataProperty = require('define-data-property');
+
 var getPolyfill = require('./polyfill');
 
 module.exports = function shimStringTrim() {
 	var polyfill = getPolyfill();
-	define(String.prototype, { trim: polyfill }, {
-		trim: function testTrim() {
-			return String.prototype.trim !== polyfill;
+
+	if (String.prototype.trim !== polyfill) {
+		if (supportsDescriptors) {
+			defineDataProperty(String.prototype, 'trim', polyfill, true);
+		} else {
+			defineDataProperty(String.prototype, 'trim', polyfill);
 		}
-	});
+	}
+
 	return polyfill;
 };

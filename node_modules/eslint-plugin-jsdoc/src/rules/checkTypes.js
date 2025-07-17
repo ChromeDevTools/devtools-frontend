@@ -89,12 +89,12 @@ const getMessage = (upperCase) => {
 };
 
 export default iterateJsdoc(({
-  jsdocNode,
-  sourceCode,
-  report,
-  utils,
-  settings,
   context,
+  jsdocNode,
+  report,
+  settings,
+  sourceCode,
+  utils,
 }) => {
   const jsdocTagsWithPossibleType = utils.filterTags((tag) => {
     return Boolean(utils.tagMightHaveTypePosition(tag.tag));
@@ -109,9 +109,9 @@ export default iterateJsdoc(({
      * }}
      */
     {
+      mode,
       preferredTypes: preferredTypesOriginal,
       structuredTags,
-      mode,
     } = settings;
 
   const injectObjectPreferredTypes = !('Object' in preferredTypesOriginal ||
@@ -177,9 +177,9 @@ export default iterateJsdoc(({
      *   })[]
      * }}
      */ {
+      exemptTagContexts = [],
       noDefaults,
       unifyParentAndChildTypeChecks,
-      exemptTagContexts = [],
     } = context.options[0] || {};
 
   /**
@@ -415,8 +415,8 @@ export default iterateJsdoc(({
     }
 
     const {
-      tag: tagName,
       name: nameInTag,
+      tag: tagName,
     } = jsdocTag;
 
     traverse(typeAst, (node, parentNode, property) => {
@@ -428,7 +428,7 @@ export default iterateJsdoc(({
          * @type {import('jsdoc-type-pratt-parser').NameResult}
          */ (node);
       if (![
-        'JsdocTypeName', 'JsdocTypeAny',
+        'JsdocTypeAny', 'JsdocTypeName',
       ].includes(type)) {
         return;
       }

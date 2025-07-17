@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/ljharb/safe-regex-test/compare/v1.0.3...v1.1.0) - 2024-12-12
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`b4a46bb`](https://github.com/ljharb/safe-regex-test/commit/b4a46bb30542251df8051aec52561ce2bb162f85)
+- [New] add types [`5cb24eb`](https://github.com/ljharb/safe-regex-test/commit/5cb24eb6d074fdae200446e172f1ab485460c34e)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`e225ca0`](https://github.com/ljharb/safe-regex-test/commit/e225ca081b77ea105b5e913a00473066efeb471d)
+- [Refactor] use `call-bound` directly [`9be3cd2`](https://github.com/ljharb/safe-regex-test/commit/9be3cd2f390f23c0075ec93e5abdace0ee5d9d9d)
+- [Deps] update `call-bind`, `is-regex` [`524b736`](https://github.com/ljharb/safe-regex-test/commit/524b73677e16de9dde27dfb8f30ac4760071bbda)
+- [Tests] replace `aud` with `npm audit` [`f3cd537`](https://github.com/ljharb/safe-regex-test/commit/f3cd5379e48152daeb51fdd09e15d3ec74797761)
+- [Dev Deps] add missing peer dep [`14da559`](https://github.com/ljharb/safe-regex-test/commit/14da559a0620b99a262ab9610dba13720915360f)
+
 ## [v1.0.3](https://github.com/ljharb/safe-regex-test/compare/v1.0.2...v1.0.3) - 2024-02-06
 
 ### Commits

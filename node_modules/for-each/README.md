@@ -30,10 +30,6 @@ forEach([1, 2, 3], function (value, index, array) {
 
 `npm install for-each`
 
-## Contributors
-
- - Raynos
-
 ## MIT Licenced
 
   [1]: https://secure.travis-ci.org/Raynos/for-each.png

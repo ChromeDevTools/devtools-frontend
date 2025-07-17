@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSourceFileOfNode = getSourceFileOfNode;
 const ts = __importStar(require("typescript"));
 /**
+ * @deprecated
  * Gets the source file for a given node
  */
 function getSourceFileOfNode(node) {

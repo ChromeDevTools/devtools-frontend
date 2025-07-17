@@ -1,9 +1,8 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-
-var isFinite = require('../../helpers/isFinite');
-var isNaN = require('../../helpers/isNaN');
+var isFinite = require('math-intrinsics/isFinite');
+var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/12.0/#sec-numeric-types-number-add
 

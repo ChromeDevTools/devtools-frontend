@@ -54,7 +54,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
 
     // ----------------------------------------------------------------------
     // Public

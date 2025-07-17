@@ -38,15 +38,15 @@ module.exports = {
     // Public
     // ----------------------------------------------------------------------
 
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
       return {};
     }
 
     return {
-      Program(node) {
-        const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+      Program() {
+        const scope = utils.getScope(context);
         const { scopeManager } = sourceCode;
 
         const metaNode = ruleInfo.meta;

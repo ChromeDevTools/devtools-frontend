@@ -1003,4 +1003,25 @@ module.exports = {
 
     return variable?.defs[0]?.type === 'Parameter';
   },
+
+  getSourceCode(context) {
+    // TODO: remove contet.getSourceCode() when dropping eslint < v9
+    return context.sourceCode || context.getSourceCode();
+  },
+
+  getScope(context) {
+    // TODO: remove contet.getScope() when dropping eslint < v9
+    const sourceCode = context.sourceCode || context.getSourceCode();
+    return sourceCode.getScope?.(sourceCode.ast) || context.getScope();
+  },
+
+  getparserServices(context) {
+    // TODO: remove context.parserServices when dropping eslint < v9
+    return (context.sourceCode || context).parserServices;
+  },
+
+  getFilename(context) {
+    // TODO: just use context.filename when dropping eslint < v9
+    return context.filename || context.getFilename();
+  },
 };

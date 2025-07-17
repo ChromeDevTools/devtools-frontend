@@ -70,6 +70,7 @@ let BidiBrowser = (() => {
             'network',
             'log',
             'script',
+            'input',
         ];
         static subscribeCdpEvents = [
             // Coverage
@@ -216,6 +217,12 @@ let BidiBrowser = (() => {
         }
         newPage() {
             return this.defaultBrowserContext().newPage();
+        }
+        installExtension(path) {
+            return this.#browserCore.installExtension(path);
+        }
+        async uninstallExtension(id) {
+            await this.#browserCore.uninstallExtension(id);
         }
         targets() {
             return [

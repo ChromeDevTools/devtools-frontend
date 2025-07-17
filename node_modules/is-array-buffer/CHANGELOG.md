@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.0.5](https://github.com/fengyuanchen/is-array-buffer/compare/v3.0.4...v3.0.5) - 2024-12-16
+
+### Commits
+
+- [types] use shared config [`6180b31`](https://github.com/fengyuanchen/is-array-buffer/commit/6180b3180cd15a49e6394cb6de0ae2667124d3f7)
+- [actions] split out node 10-20, and 20+ [`1ea4712`](https://github.com/fengyuanchen/is-array-buffer/commit/1ea471223e393bfc124fdecdbeb23fe08209514f)
+- [Dev Deps] update `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/get-intrinsic`, `@types/object-inspect`, `@types/tape`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`de2b6ab`](https://github.com/fengyuanchen/is-array-buffer/commit/de2b6aba5e88b382bd6707409aa39822707fed50)
+- [Deps] update `call-bind`, `get-intrinsic` [`55b80a1`](https://github.com/fengyuanchen/is-array-buffer/commit/55b80a10ae9151e1bd52382610d7330f37a1dc05)
+- [Deps] update `call-bind`, `get-intrinsic` [`184484a`](https://github.com/fengyuanchen/is-array-buffer/commit/184484ad7fd3a72426f78e2bce3246e8c23e9ccf)
+- [Dev Deps] update `available-typed-arrays`, `tape` [`81582a7`](https://github.com/fengyuanchen/is-array-buffer/commit/81582a72d6ddb28f67ad542edcd673d6c01cc2c0)
+- [Tests] add `@arethetypeswrong/cli` [`6d67841`](https://github.com/fengyuanchen/is-array-buffer/commit/6d6784170ec8a0b766428ce44be3157147860a09)
+- [Refactor] use `call-bound` directly [`dd0bad1`](https://github.com/fengyuanchen/is-array-buffer/commit/dd0bad194e4ff0e5413be23d69018fa961ce4af7)
+- [Tests] replace `aud` with `npm audit` [`99b62d1`](https://github.com/fengyuanchen/is-array-buffer/commit/99b62d1755b6965bbc236342215e28a10d6839a7)
+- [Dev Deps] remove obsolete DT package [`9fc6971`](https://github.com/fengyuanchen/is-array-buffer/commit/9fc69715867796c5854fd5377d90da6f01fb981e)
+- [Dev Deps] add missing peer dep [`a3b8dbb`](https://github.com/fengyuanchen/is-array-buffer/commit/a3b8dbb538c13abb8f1a4d4d9a682ec71c2f52f8)
+
 ## [v3.0.4](https://github.com/fengyuanchen/is-array-buffer/compare/v3.0.3...v3.0.4) - 2024-02-02
 
 ### Commits

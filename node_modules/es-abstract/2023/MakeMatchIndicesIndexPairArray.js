@@ -20,7 +20,7 @@ var isMatchRecordOrUndefined = function isMatchRecordOrUndefined(m) {
 	return typeof m === 'undefined' || isMatchRecord(m);
 };
 
-var MAX_ARRAY_LENGTH = Math.pow(2, 32) - 1;
+var MAX_ARRAY_LENGTH = require('math-intrinsics/constants/maxArrayLength');
 
 // https://262.ecma-international.org/13.0/#sec-getmatchindexpair
 

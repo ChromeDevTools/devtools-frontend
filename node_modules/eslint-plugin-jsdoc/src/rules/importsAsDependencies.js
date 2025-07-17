@@ -7,7 +7,9 @@ import {
 import {
   readFileSync,
 } from 'fs';
-import {isBuiltin as isBuiltinModule} from 'node:module';
+import {
+  isBuiltin as isBuiltinModule,
+} from 'node:module';
 import {
   join,
 } from 'path';

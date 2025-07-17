@@ -7,7 +7,7 @@ try {
 } catch (e) {}
 
 var noop = function () {}
-var ancient = /^v?\.0/.test(process.version)
+var ancient = typeof process === 'undefined' ? false : /^v?\.0/.test(process.version)
 
 var isFn = function (fn) {
   return typeof fn === 'function'

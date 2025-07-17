@@ -1,9 +1,7 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
 /** @type {import('.')} */
-var $defineProperty = GetIntrinsic('%Object.defineProperty%', true) || false;
+var $defineProperty = Object.defineProperty || false;
 if ($defineProperty) {
 	try {
 		$defineProperty({}, 'a', { value: 1 });

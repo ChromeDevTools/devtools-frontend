@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/inspect-js/is-generator-function/compare/v1.0.10...v1.1.0) - 2025-01-02
+
+### Commits
+
+- [actions] reuse common workflows [`7301651`](https://github.com/inspect-js/is-generator-function/commit/7301651ad24468ab17aee7a86a2dd2a6fcd58637)
+- [actions] split out node 10-20, and 20+ [`40f30a5`](https://github.com/inspect-js/is-generator-function/commit/40f30a5dee3e26cad236ce0afbd0567b6075af54)
+- [meta] use `npmignore` to autogenerate an npmignore file [`ec843a4`](https://github.com/inspect-js/is-generator-function/commit/ec843a4501d238fcde254c7e33c137ec997abfaa)
+- [New] add types [`6dd27c4`](https://github.com/inspect-js/is-generator-function/commit/6dd27c4b6a3ebaa42ddbf4e93c20e2b4d90bad07)
+- [actions] update codecov uploader [`717f85e`](https://github.com/inspect-js/is-generator-function/commit/717f85e8b080cdbdb160558b289ec9f043410bd2)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`4280e62`](https://github.com/inspect-js/is-generator-function/commit/4280e6260029ccdae8b299faadacafd0f8a2de78)
+- [actions] update rebase action to use reusable workflow [`895c2d0`](https://github.com/inspect-js/is-generator-function/commit/895c2d06a914b82913d3fae2df3071bde72cb584)
+- [Tests] use `for-each` [`3caee87`](https://github.com/inspect-js/is-generator-function/commit/3caee870b0509b91ad37e6a0562f261d7b5f4523)
+- [Robustness] use `call-bound` [`1eb55de`](https://github.com/inspect-js/is-generator-function/commit/1eb55def663c335222d970c5e62459f73aee20db)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `object-inspect`, `tape` [`5bbd4cd`](https://github.com/inspect-js/is-generator-function/commit/5bbd4cd8bcbd167a05ddf1cd285fd1fd2802801a)
+- [Robustness] use `safe-regex-test` [`5f8b992`](https://github.com/inspect-js/is-generator-function/commit/5f8b9921e4cf53c3cb4185a0f30a170fa2e0722f)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `npmignore`, `tape` [`c730f4c`](https://github.com/inspect-js/is-generator-function/commit/c730f4c056697653ba935b37b44bf9bfe1017331)
+- [Robustness] use `get-proto` [`6dfff38`](https://github.com/inspect-js/is-generator-function/commit/6dfff3821b8a42d0b0f70651abfe1d2e90afbb10)
+- [Tests] replace `aud` with `npm audit` [`725db70`](https://github.com/inspect-js/is-generator-function/commit/725db703352200f7400fa4b2b2058e2220a4c42b)
+- [Deps] update `has-tostringtag` [`5cc3c2d`](https://github.com/inspect-js/is-generator-function/commit/5cc3c2d34b77c3d7d50588225d4d4afa20aa3df2)
+- [Dev Deps] add missing peer dep [`869a507`](https://github.com/inspect-js/is-generator-function/commit/869a507790e8cf1452b355719a6c00efadbe4965)
+
 ## [v1.0.10](https://github.com/inspect-js/is-generator-function/compare/v1.0.9...v1.0.10) - 2021-08-05
 
 ### Commits

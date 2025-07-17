@@ -50,7 +50,7 @@ module.exports = {
     const catchNoFixerButFixableProperty =
       context.options[0] && context.options[0].catchNoFixerButFixableProperty;
 
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const { scopeManager } = sourceCode;
     const ruleInfo = utils.getRuleInfo(sourceCode);
     let contextIdentifiers;
@@ -79,8 +79,8 @@ module.exports = {
           usesFixFunctions = true;
         }
       },
-      'Program:exit'(ast) {
-        const scope = sourceCode.getScope?.(ast) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+      'Program:exit'() {
+        const scope = utils.getScope(context);
         const metaFixableProp =
           ruleInfo &&
           utils

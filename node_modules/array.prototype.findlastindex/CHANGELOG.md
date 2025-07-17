@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.6](https://github.com/es-shims/Array.prototype.findLastIndex/compare/v1.2.5...v1.2.6) - 2025-03-14
+
+### Commits
+
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `auto-changelog`, `es-value-fixtures`, `for-each`, `globalthis`, `has-strict-mode`, `object-inspect`, `tape` [`2012a88`](https://github.com/es-shims/Array.prototype.findLastIndex/commit/2012a880c41f74183bcfa55df7c800e48ca192e0)
+- [Deps] update `call-bind`, `es-abstract`, `es-object-atoms`, `es-shim-unscopables` [`1c9fd19`](https://github.com/es-shims/Array.prototype.findLastIndex/commit/1c9fd195dd01ff8546ef20ae11b5748b390e12de)
+- [Refactor] use `call-bound` directly [`78722d3`](https://github.com/es-shims/Array.prototype.findLastIndex/commit/78722d3b00af5523e4071d87d9d2746d61b705f3)
+- [Tests] replace `aud` with `npm audit` [`cb689c1`](https://github.com/es-shims/Array.prototype.findLastIndex/commit/cb689c1e11297a9202cd8f1c01299eb2aabde879)
+- [Dev Deps] add missing peer dep [`d3c92c4`](https://github.com/es-shims/Array.prototype.findLastIndex/commit/d3c92c4070999ee5d5716334e683a1acee54633b)
+
 ## [v1.2.5](https://github.com/es-shims/Array.prototype.findLastIndex/compare/v1.2.4...v1.2.5) - 2024-03-19
 
 ### Commits

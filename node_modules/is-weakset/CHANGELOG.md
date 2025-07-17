@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v2.0.4](https://github.com/inspect-js/is-weakset/compare/v2.0.3...v2.0.4) - 2024-12-16
+
+### Commits
+
+- [types] use shared config [`5fe9848`](https://github.com/inspect-js/is-weakset/commit/5fe98485c31c8269b90fe93b6f0d002259510786)
+- [actions] split out node 10-20, and 20+ [`bd400b9`](https://github.com/inspect-js/is-weakset/commit/bd400b94a77eddeea29f940a2e18708f760deaab)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/eslint-config`, `@types/object-inspect`, `auto-changelog`, `object-inspect`, `tape` [`8b290fc`](https://github.com/inspect-js/is-weakset/commit/8b290fc32cdd37e4464a2f3df192e71bf77a4636)
+- [Refactor] use `call-bound` directly [`265971b`](https://github.com/inspect-js/is-weakset/commit/265971b6c1cf9d01b4c48b7182e13b4d46e4825a)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/tsconfig`, `@types/tape` [`f39dc78`](https://github.com/inspect-js/is-weakset/commit/f39dc787ab85cd24f62013f1dd416e2f3bf2197a)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@types/get-intrinsic`, `object-inspect` [`ce6c6a9`](https://github.com/inspect-js/is-weakset/commit/ce6c6a936bbd40743021b6b96835d328dd924e1b)
+- [Deps] update `call-bind`, `get-intrinsic` [`ebd5d82`](https://github.com/inspect-js/is-weakset/commit/ebd5d822ca3b8479ebebc99d8f268a7c2a264f8e)
+- [Tests] replace `aud` with `npm audit` [`3eb16c8`](https://github.com/inspect-js/is-weakset/commit/3eb16c8b9e9b368f1e2a342867e10972e81b194b)
+- [Dev Deps] update `@arethetypeswrong/cli` [`9fe99f3`](https://github.com/inspect-js/is-weakset/commit/9fe99f3ebc084129576e4f467df8eef834b2f25f)
+- [Dev Deps] add missing peer dep [`a2fc30e`](https://github.com/inspect-js/is-weakset/commit/a2fc30ed83a6592c6ac56b425ebadc311dc96102)
+
 ## [v2.0.3](https://github.com/inspect-js/is-weakset/compare/v2.0.2...v2.0.3) - 2024-03-08
 
 ### Commits

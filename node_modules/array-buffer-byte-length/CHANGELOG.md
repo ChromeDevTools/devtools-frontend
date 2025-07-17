@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.2](https://github.com/inspect-js/array-buffer-byte-length/compare/v1.0.1...v1.0.2) - 2024-12-19
+
+### Commits
+
+- [types] use shared config [`b15321c`](https://github.com/inspect-js/array-buffer-byte-length/commit/b15321cf546dae5d3bc2b354fb8e2a4629d6afb3)
+- [actions] split out node 10-20, and 20+ [`fa1eb7d`](https://github.com/inspect-js/array-buffer-byte-length/commit/fa1eb7df107d382b47d7b9e7a07e1c4588e81cbd)
+- [Dev Deps] update `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/object-inspect`, `@types/tape`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`53e3f93`](https://github.com/inspect-js/array-buffer-byte-length/commit/53e3f93c456b7a8a8217a832b48c416962a176e0)
+- [Tests] replace `aud` with `npm audit` [`2d1b66f`](https://github.com/inspect-js/array-buffer-byte-length/commit/2d1b66ff6417b825f58adf859b540c2303d2dbde)
+- [Refactor] use `call-bound` directly [`433be34`](https://github.com/inspect-js/array-buffer-byte-length/commit/433be3427e20526d74ab1faaaf0117aaf967f406)
+- [Deps] update `call-bind`, `is-array-buffer` [`4ff7467`](https://github.com/inspect-js/array-buffer-byte-length/commit/4ff74673567dcae00e5a8c5d4d0f8c23b29c9a0a)
+- [Dev Deps] update `tape`, `typescript` [`42c9f19`](https://github.com/inspect-js/array-buffer-byte-length/commit/42c9f1998fe8630634388b6db2c0563be05c6897)
+- [Tests] add attw [`29a72f1`](https://github.com/inspect-js/array-buffer-byte-length/commit/29a72f12eb83dcfaef6a6bed0403e56699669f27)
+- [Deps] update `call-bind` [`1e9e902`](https://github.com/inspect-js/array-buffer-byte-length/commit/1e9e90292388a609aa0e722bddbc9313a575ef10)
+- [types] remove incorrect overload [`b509518`](https://github.com/inspect-js/array-buffer-byte-length/commit/b509518bc188f79c46aa851311f20c188faa0678)
+- [Dev Deps] add missing peer dep [`31962b6`](https://github.com/inspect-js/array-buffer-byte-length/commit/31962b631a173696ceef94e9d00edf13af87d305)
+
 ## [v1.0.1](https://github.com/inspect-js/array-buffer-byte-length/compare/v1.0.0...v1.0.1) - 2024-02-03
 
 ### Commits

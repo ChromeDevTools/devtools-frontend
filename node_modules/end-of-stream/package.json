@@ -1,6 +1,6 @@
 {
   "name": "end-of-stream",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "Call a callback when a readable/writable/duplex stream has completed or failed.",
   "repository": {
     "type": "git",

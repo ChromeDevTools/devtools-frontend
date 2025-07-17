@@ -114,16 +114,16 @@ const getTypelessInfo = (fields) => {
     return !type;
   });
   const maxNamedTagLength = Math.max(...fields.tags.map(({
-    tag,
     name,
+    tag,
   }) => {
     return name.length === 0 ? -1 : tag.length;
   }).filter((length) => {
     return length !== -1;
   })) + 1;
   const maxUnnamedTagLength = Math.max(...fields.tags.map(({
-    tag,
     name,
+    tag,
   }) => {
     return name.length === 0 ? tag.length : -1;
   }).filter((length) => {
@@ -159,11 +159,11 @@ const space = (len) => {
  */
 const alignTransform = ({
   customSpacings,
-  tags,
+  disableWrapIndent,
   indent,
   preserveMainDescriptionPostDelimiter,
+  tags,
   wrapIndent,
-  disableWrapIndent,
 }) => {
   let intoTags = false;
   /** @type {Width} */
@@ -281,17 +281,17 @@ const alignTransform = ({
     }
 
     switch (tokens.delimiter) {
-    case '/**':
-      tokens.start = indent;
-      break;
-    case '*':
-      tokens.start = indent + ' ';
-      break;
-    default:
-      tokens.delimiter = '';
+      case '*':
+        tokens.start = indent + ' ';
+        break;
+      case '/**':
+        tokens.start = indent;
+        break;
+      default:
+        tokens.delimiter = '';
 
-      // compensate delimiter
-      tokens.start = indent + '  ';
+        // compensate delimiter
+        tokens.start = indent + '  ';
     }
 
     if (!intoTags) {

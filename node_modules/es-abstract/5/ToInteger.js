@@ -1,12 +1,12 @@
 'use strict';
 
-var abs = require('./abs');
-var floor = require('./floor');
 var ToNumber = require('./ToNumber');
 
-var $isNaN = require('../helpers/isNaN');
-var $isFinite = require('../helpers/isFinite');
-var $sign = require('../helpers/sign');
+var abs = require('math-intrinsics/abs');
+var floor = require('math-intrinsics/floor');
+var $isNaN = require('math-intrinsics/isNaN');
+var $isFinite = require('math-intrinsics/isFinite');
+var $sign = require('math-intrinsics/sign');
 
 // http://262.ecma-international.org/5.1/#sec-9.4
 

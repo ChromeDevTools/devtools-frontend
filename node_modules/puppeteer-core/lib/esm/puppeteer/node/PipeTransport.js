@@ -30,7 +30,7 @@ export class PipeTransport {
         const pipeWriteEmitter = this.#subscriptions.use(
         // NodeJS event emitters don't support `*` so we need to typecast
         // As long as we don't use it we should be OK.
-        new EventEmitter(pipeRead));
+        new EventEmitter(pipeWrite));
         pipeWriteEmitter.on('error', debugError);
     }
     send(message) {

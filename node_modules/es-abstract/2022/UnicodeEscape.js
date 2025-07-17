@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 
 var $charCodeAt = callBound('String.prototype.charCodeAt');
 var $numberToString = callBound('Number.prototype.toString');

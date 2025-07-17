@@ -26,7 +26,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const { scopeManager } = sourceCode;
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
@@ -48,7 +48,7 @@ module.exports = {
       },
 
       CallExpression(node) {
-        const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < 9.0.0
+        const scope = utils.getScope(context);
         // Check for messageId properties used in known calls to context.report();
         if (
           node.callee.type === 'MemberExpression' &&

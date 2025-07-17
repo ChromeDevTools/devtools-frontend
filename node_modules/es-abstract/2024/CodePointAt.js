@@ -1,7 +1,7 @@
 'use strict';
 
 var $TypeError = require('es-errors/type');
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var isLeadingSurrogate = require('../helpers/isLeadingSurrogate');
 var isTrailingSurrogate = require('../helpers/isTrailingSurrogate');
 

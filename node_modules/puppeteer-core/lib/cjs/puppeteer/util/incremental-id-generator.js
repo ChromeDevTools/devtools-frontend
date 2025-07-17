@@ -12,6 +12,9 @@ exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
 function createIncrementalIdGenerator() {
     let id = 0;
     return () => {
+        if (id === Number.MAX_SAFE_INTEGER) {
+            id = 0;
+        }
         return ++id;
     };
 }

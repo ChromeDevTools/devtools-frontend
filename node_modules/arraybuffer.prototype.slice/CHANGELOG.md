@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.4](https://github.com/es-shims/ArrayBuffer.prototype.slice/compare/v1.0.3...v1.0.4) - 2024-12-15
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`5e59635`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/5e59635c948994b613c544b4e94fe93536d6b213)
+- [Deps] update `call-bind`, `es-abstract`, `get-intrinsic` [`0afbb59`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/0afbb5942574055a8a3afdf0f69f60313e3f1af2)
+- [Dev Deps] update `@es-shims/api`, `auto-changelog`, `es-value-fixtures`, `object-inspect`, `tape` [`d76caf4`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/d76caf4880ef358cf5384a6eb29d0f2f67e4d3a8)
+- [Deps] update `call-bind`, `es-abstract`, `es-errors`, `get-intrinsic` [`2b374a2`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/2b374a2d4078d9122ac30bdecd8a8fae740aa74c)
+- [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `object-inspect`, `tape` [`a24fd39`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/a24fd39370d891ea3439f9d7a1c42183c0aa1bf7)
+- [Tests] replace `aud` with `npm audit` [`c704fb0`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/c704fb0b1651ceb56b609a5b4646a993fc868219)
+- [Deps] remove unused dependency [`0274b32`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/0274b32ab1d345fbf70745a79dd7a44f844179bb)
+- [Dev Deps] add missing peer dep [`673f754`](https://github.com/es-shims/ArrayBuffer.prototype.slice/commit/673f754797dd0c40801cca2f32ff08b372448c6b)
+
 ## [v1.0.3](https://github.com/es-shims/ArrayBuffer.prototype.slice/compare/v1.0.2...v1.0.3) - 2024-02-04
 
 ### Commits

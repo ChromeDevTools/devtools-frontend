@@ -8,6 +8,7 @@ if (typeof Symbol === 'function' && typeof Symbol() === 'symbol') {
 		t.equal(typeof Symbol(), 'symbol');
 		t.end();
 	});
+	// @ts-expect-error TS is stupid and doesn't know about top level return
 	return;
 }
 

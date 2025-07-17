@@ -1,10 +1,15 @@
 'use strict';
 
+/** @typedef {`$${import('.').InternalSlot}`} SaltedInternalSlot */
+/** @typedef {{ [k in SaltedInternalSlot]?: unknown }} SlotsObject */
+
 var hasOwn = require('hasown');
+/** @type {import('side-channel').Channel<object, SlotsObject>} */
 var channel = require('side-channel')();
 
 var $TypeError = require('es-errors/type');
 
+/** @type {import('.')} */
 var SLOT = {
 	assert: function (O, slot) {
 		if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
@@ -26,7 +31,8 @@ var SLOT = {
 			throw new $TypeError('`slot` must be a string');
 		}
 		var slots = channel.get(O);
-		return slots && slots['$' + slot];
+		// eslint-disable-next-line no-extra-parens
+		return slots && slots[/** @type {SaltedInternalSlot} */ ('$' + slot)];
 	},
 	has: function (O, slot) {
 		if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
@@ -36,7 +42,8 @@ var SLOT = {
 			throw new $TypeError('`slot` must be a string');
 		}
 		var slots = channel.get(O);
-		return !!slots && hasOwn(slots, '$' + slot);
+		// eslint-disable-next-line no-extra-parens
+		return !!slots && hasOwn(slots, /** @type {SaltedInternalSlot} */ ('$' + slot));
 	},
 	set: function (O, slot, V) {
 		if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
@@ -50,7 +57,8 @@ var SLOT = {
 			slots = {};
 			channel.set(O, slots);
 		}
-		slots['$' + slot] = V;
+		// eslint-disable-next-line no-extra-parens
+		slots[/** @type {SaltedInternalSlot} */ ('$' + slot)] = V;
 	}
 };
 

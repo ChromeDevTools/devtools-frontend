@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/ljharb/side-channel/compare/v1.0.6...v1.1.0) - 2024-12-11
+
+### Commits
+
+- [Refactor] extract implementations to `side-channel-weakmap`, `side-channel-map`, `side-channel-list` [`ada5955`](https://github.com/ljharb/side-channel/commit/ada595549a5c4c6c853756d598846b180941c6da)
+- [New] add `channel.delete` [`c01d2d3`](https://github.com/ljharb/side-channel/commit/c01d2d3fd51dbb1ce6da72ad7916e61bd6172aad)
+- [types] improve types [`0c54356`](https://github.com/ljharb/side-channel/commit/0c5435651417df41b8cc1a5f7cdce8bffae68cde)
+- [readme] add content [`be24868`](https://github.com/ljharb/side-channel/commit/be248682ac294b0e22c883092c45985aa91c490a)
+- [actions] split out node 10-20, and 20+ [`c4488e2`](https://github.com/ljharb/side-channel/commit/c4488e241ef3d49a19fe266ac830a2e644305911)
+- [types] use shared tsconfig [`0e0d57c`](https://github.com/ljharb/side-channel/commit/0e0d57c2ff17c7b45c6cbd43ebcf553edc9e3adc)
+- [Dev Deps] update `@ljharb/eslint-config`, `@ljharb/tsconfig`, `@types/get-intrinsic`, `@types/object-inspect`, `@types/tape`, `auto-changelog`, `tape` [`fb4f622`](https://github.com/ljharb/side-channel/commit/fb4f622e64a99a1e40b6e5cd7691674a9dc429e4)
+- [Deps] update `call-bind`, `get-intrinsic`, `object-inspect` [`b78336b`](https://github.com/ljharb/side-channel/commit/b78336b886172d1b457d414ac9e28de8c5fecc78)
+- [Tests] replace `aud` with `npm audit` [`ee3ab46`](https://github.com/ljharb/side-channel/commit/ee3ab4690d954311c35115651bcfd45edd205aa1)
+- [Dev Deps] add missing peer dep [`c03e21a`](https://github.com/ljharb/side-channel/commit/c03e21a7def3b67cdc15ae22316884fefcb2f6a8)
+
 ## [v1.0.6](https://github.com/ljharb/side-channel/compare/v1.0.5...v1.0.6) - 2024-02-29
 
 ### Commits

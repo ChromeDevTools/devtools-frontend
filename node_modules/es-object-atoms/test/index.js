@@ -3,7 +3,8 @@
 var test = require('tape');
 
 var $Object = require('../');
-var ToObject = require('..//ToObject');
+var isObject = require('../isObject');
+var ToObject = require('../ToObject');
 var RequireObjectCoercible = require('..//RequireObjectCoercible');
 
 test('errors', function (t) {
@@ -19,6 +20,15 @@ test('errors', function (t) {
 
 	t.deepEqual(RequireObjectCoercible(true), true);
 	t.deepEqual(ToObject(true), Object(true));
+	t.deepEqual(ToObject(42), Object(42));
+	var f = function () {};
+	t.equal(ToObject(f), f);
+
+	t.equal(isObject(undefined), false);
+	t.equal(isObject(null), false);
+	t.equal(isObject({}), true);
+	t.equal(isObject([]), true);
+	t.equal(isObject(function () {}), true);
 
 	var obj = {};
 	t.equal(RequireObjectCoercible(obj), obj);

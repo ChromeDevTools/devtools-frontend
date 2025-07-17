@@ -4,7 +4,7 @@ var $TypeError = require('es-errors/type');
 
 var isPrefixOf = require('../helpers/isPrefixOf');
 
-// var callBound = require('call-bind/callBound');
+// var callBound = require('call-bound');
 
 // var $charAt = callBound('String.prototype.charAt');
 

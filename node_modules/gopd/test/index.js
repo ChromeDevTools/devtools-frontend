@@ -10,6 +10,7 @@ test('gOPD', function (t) {
 		var obj = { x: 1 };
 		st.ok('x' in obj, 'property exists');
 
+		// @ts-expect-error TS can't figure out narrowing from `skip`
 		var desc = gOPD(obj, 'x');
 		st.deepEqual(
 			desc,
@@ -25,7 +26,7 @@ test('gOPD', function (t) {
 		st.end();
 	});
 
-	t.test('not supported', { skip: gOPD }, function (st) {
+	t.test('not supported', { skip: !!gOPD }, function (st) {
 		st.notOk(gOPD, 'is falsy');
 
 		st.end();

@@ -61,14 +61,14 @@ const typedTagsUnnecessaryOutsideDeclare = new Set([
 ]);
 
 export default iterateJsdoc(({
-  sourceCode,
-  jsdoc,
-  report,
-  utils,
   context,
-  node,
-  settings,
+  jsdoc,
   jsdocNode,
+  node,
+  report,
+  settings,
+  sourceCode,
+  utils,
 }) => {
   const
     /**
@@ -87,8 +87,8 @@ export default iterateJsdoc(({
   /** @type {(string|undefined)[]} */
   let definedPreferredTags = [];
   const {
-    tagNamePreference,
     structuredTags,
+    tagNamePreference,
   } = settings;
   const definedStructuredTags = Object.keys(structuredTags);
   const definedNonPreferredTags = Object.keys(tagNamePreference);
@@ -146,7 +146,7 @@ export default iterateJsdoc(({
     }
 
     if (context.getFilename().endsWith('.d.ts') && [
-      'Program', null, undefined,
+      null, 'Program', undefined,
     ].includes(node?.parent?.type)) {
       return false;
     }

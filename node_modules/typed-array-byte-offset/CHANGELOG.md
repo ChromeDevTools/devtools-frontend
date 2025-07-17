@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.4](https://github.com/inspect-js/typed-array-byte-offset/compare/v1.0.3...v1.0.4) - 2024-12-18
+
+### Commits
+
+- [Tests] split out and enhance "no-proto" tests [`64d1a73`](https://github.com/inspect-js/typed-array-byte-offset/commit/64d1a73a0a7f20484ee817c4a6758121887e30d3)
+- [types] improve types [`21f484f`](https://github.com/inspect-js/typed-array-byte-offset/commit/21f484f55f9c6e3406b5eacbc937aa2e195da731)
+- [Tests] add `--disable-proto=delete` tests [`8f77f2a`](https://github.com/inspect-js/typed-array-byte-offset/commit/8f77f2af48e1522aae10e0429810907df9f9f6fc)
+- [actions] re-add a finisher; add perms [`59c1b7b`](https://github.com/inspect-js/typed-array-byte-offset/commit/59c1b7bfab826bceb43441c60affb1c1ad4e6cc7)
+- [Deps] update `call-bind`, `gopd`, `has-proto`, `reflect.getprototypeof` [`c0c30d5`](https://github.com/inspect-js/typed-array-byte-offset/commit/c0c30d57642858c8327b3d90b6104ccbb459d71a)
+- [Dev Deps] update `@arethetypeswrong/cli`, `@ljharb/tsconfig`, `@types/tape` [`2638bd5`](https://github.com/inspect-js/typed-array-byte-offset/commit/2638bd5d7000e6d902414aeac88c00a148f5b152)
+- [Deps] update `is-typed-array`, `reflect.getprototypeof` [`11540a5`](https://github.com/inspect-js/typed-array-byte-offset/commit/11540a577044442ce42d684d00d4686d7613bed4)
+- [Deps] update `is-typed-array` [`ad9cb70`](https://github.com/inspect-js/typed-array-byte-offset/commit/ad9cb70bcc09eaf535c24ce24a00716058833d64)
+- [Dev Deps] update `@types/tape` [`2838854`](https://github.com/inspect-js/typed-array-byte-offset/commit/2838854db6053003b0818a337f1e2f95ab383bce)
+
 ## [v1.0.3](https://github.com/inspect-js/typed-array-byte-offset/compare/v1.0.2...v1.0.3) - 2024-11-21
 
 ### Fixed

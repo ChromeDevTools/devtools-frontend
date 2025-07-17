@@ -69,10 +69,9 @@ module.exports = function ApplyStringOrNumericBinaryOperator(lval, opText, rval)
 	}
 	var lnum = ToNumeric(lval);
 	var rnum = ToNumeric(rval);
-	var T = Type(lnum);
-	if (T !== Type(rnum)) {
+	if (Type(lnum) !== Type(rnum)) {
 		throw new $TypeError('types of ' + lnum + ' and ' + rnum + ' differ');
 	}
-	var Operation = table[opText][T === 'BigInt' ? 1 : 0];
+	var Operation = table[opText][typeof lnum === 'bigint' ? 1 : 0];
 	return Operation(lnum, rnum);
 };

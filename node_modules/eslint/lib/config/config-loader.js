@@ -15,25 +15,25 @@ const findUp = require("find-up");
 const { pathToFileURL } = require("node:url");
 const debug = require("debug")("eslint:config-loader");
 const { FlatConfigArray } = require("./flat-config-array");
+const { WarningService } = require("../services/warning-service");
 
 //-----------------------------------------------------------------------------
 // Types
 //-----------------------------------------------------------------------------
 
-/**
- * @import { ConfigData, ConfigData as FlatConfigObject } from "../shared/types.js";
- */
+/** @typedef {import("../types").Linter.Config} Config */
 
 /**
  * @typedef {Object} ConfigLoaderOptions
  * @property {string|false|undefined} configFile The path to the config file to use.
  * @property {string} cwd The current working directory.
  * @property {boolean} ignoreEnabled Indicates if ignore patterns should be honored.
- * @property {FlatConfigArray} [baseConfig] The base config to use.
- * @property {Array<FlatConfigObject>} [defaultConfigs] The default configs to use.
+ * @property {Config|Array<Config>} [baseConfig] The base config to use.
+ * @property {Array<Config>} [defaultConfigs] The default configs to use.
  * @property {Array<string>} [ignorePatterns] The ignore patterns to use.
- * @property {FlatConfigObject|Array<FlatConfigObject>} [overrideConfig] The override config to use.
+ * @property {Config|Array<Config>} [overrideConfig] The override config to use.
  * @property {boolean} [hasUnstableNativeNodeJsTSConfigFlag] The flag to indicate whether the `unstable_native_nodejs_ts_config` flag is enabled.
+ * @property {WarningService} [warningService] The warning service to use.
  */
 
 //------------------------------------------------------------------------------
@@ -139,12 +139,13 @@ function isNativeTypeScriptSupportEnabled() {
  * @since 9.24.0
  */
 async function loadTypeScriptConfigFileWithJiti(filePath, fileURL, mtime) {
-	// eslint-disable-next-line no-use-before-define -- `ConfigLoader.loadJiti` can be overwritten for testing
-	const { createJiti } = await ConfigLoader.loadJiti().catch(() => {
-		throw new Error(
-			"The 'jiti' library is required for loading TypeScript configuration files. Make sure to install it.",
-		);
-	});
+	const { createJiti, version: jitiVersion } =
+		// eslint-disable-next-line no-use-before-define -- `ConfigLoader.loadJiti` can be overwritten for testing
+		await ConfigLoader.loadJiti().catch(() => {
+			throw new Error(
+				"The 'jiti' library is required for loading TypeScript configuration files. Make sure to install it.",
+			);
+		});
 
 	// `createJiti` was added in jiti v2.
 	if (typeof createJiti !== "function") {
@@ -157,11 +158,15 @@ async function loadTypeScriptConfigFileWithJiti(filePath, fileURL, mtime) {
 	 * Disabling `moduleCache` allows us to reload a
 	 * config file when the last modified timestamp changes.
 	 */
-
-	const jiti = createJiti(__filename, {
+	const jitiOptions = {
 		moduleCache: false,
-		interopDefault: false,
-	});
+	};
+
+	if (jitiVersion.startsWith("2.1.")) {
+		jitiOptions.interopDefault = false;
+	}
+
+	const jiti = createJiti(__filename, jitiOptions);
 	const config = await jiti.import(fileURL.href);
 
 	importedConfigFileModificationTime.set(filePath, mtime);
@@ -303,7 +308,9 @@ class ConfigLoader {
 	 * @param {ConfigLoaderOptions} options The options to use when loading configuration files.
 	 */
 	constructor(options) {
-		this.#options = options;
+		this.#options = options.warningService
+			? options
+			: { ...options, warningService: new WarningService() };
 	}
 
 	/**
@@ -394,8 +401,7 @@ class ConfigLoader {
 	 * This is the same logic used by the ESLint CLI executable to determine
 	 * configuration for each file it processes.
 	 * @param {string} filePath The path of the file or directory to retrieve config for.
-	 * @returns {Promise<ConfigData|undefined>} A configuration object for the file
-	 *      or `undefined` if there is no configuration data for the file.
+	 * @returns {Promise<FlatConfigArray>} A configuration object for the file.
 	 * @throws {Error} If no configuration for `filePath` exists.
 	 */
 	async loadConfigArrayForFile(filePath) {
@@ -415,8 +421,7 @@ class ConfigLoader {
 	 * This is the same logic used by the ESLint CLI executable to determine
 	 * configuration for each file it processes.
 	 * @param {string} dirPath The path of the directory to retrieve config for.
-	 * @returns {Promise<ConfigData|undefined>} A configuration object for the directory
-	 *      or `undefined` if there is no configuration data for the directory.
+	 * @returns {Promise<FlatConfigArray>} A configuration object for the directory.
 	 */
 	async loadConfigArrayForDirectory(dirPath) {
 		assertValidFilePath(dirPath);
@@ -440,8 +445,7 @@ class ConfigLoader {
 	 * intended to be used in locations where we know the config file has already
 	 * been loaded and we just need to get the configuration for a file.
 	 * @param {string} filePath The path of the file to retrieve a config object for.
-	 * @returns {ConfigData|undefined} A configuration object for the file
-	 *     or `undefined` if there is no configuration data for the file.
+	 * @returns {FlatConfigArray} A configuration object for the file.
 	 * @throws {Error} If `filePath` is not a non-empty string.
 	 * @throws {Error} If `filePath` is not an absolute path.
 	 * @throws {Error} If the config file was not already loaded.
@@ -460,8 +464,7 @@ class ConfigLoader {
 	 * intended to be used in locations where we know the config file has already
 	 * been loaded and we just need to get the configuration for a file.
 	 * @param {string} fileOrDirPath The path of the directory to retrieve a config object for.
-	 * @returns {ConfigData|undefined} A configuration object for the directory
-	 *     or `undefined` if there is no configuration data for the directory.
+	 * @returns {FlatConfigArray} A configuration object for the directory.
 	 * @throws {Error} If `dirPath` is not a non-empty string.
 	 * @throws {Error} If `dirPath` is not an absolute path.
 	 * @throws {Error} If the config file was not already loaded.
@@ -500,11 +503,12 @@ class ConfigLoader {
 
 	/**
 	 * Used to import the jiti dependency. This method is exposed internally for testing purposes.
-	 * @returns {Promise<Record<string, unknown>>} A promise that fulfills with a module object
-	 *      or rejects with an error if jiti is not found.
+	 * @returns {Promise<{createJiti: Function|undefined, version: string;}>} A promise that fulfills with an object containing the jiti module's createJiti function and version.
 	 */
-	static loadJiti() {
-		return import("jiti");
+	static async loadJiti() {
+		const { createJiti } = await import("jiti");
+		const version = require("jiti/package.json").version;
+		return { createJiti, version };
 	}
 
 	/**
@@ -567,6 +571,7 @@ class ConfigLoader {
 			overrideConfig,
 			hasUnstableNativeNodeJsTSConfigFlag = false,
 			defaultConfigs = [],
+			warningService,
 		} = options;
 
 		debug(
@@ -628,10 +633,7 @@ class ConfigLoader {
 			}
 
 			if (emptyConfig) {
-				globalThis.process?.emitWarning?.(
-					`Running ESLint with an empty config (from ${configFilePath}). Please double-check that this is what you want. If you want to run ESLint with an empty config, export [{}] to remove this warning.`,
-					"ESLintEmptyConfigWarning",
-				);
+				warningService.emitEmptyConfigWarning(configFilePath);
 			}
 		}
 
@@ -640,40 +642,13 @@ class ConfigLoader {
 
 		// append command line ignore patterns
 		if (ignorePatterns && ignorePatterns.length > 0) {
-			let relativeIgnorePatterns;
-
-			/*
-			 * If the config file basePath is different than the cwd, then
-			 * the ignore patterns won't work correctly. Here, we adjust the
-			 * ignore pattern to include the correct relative path. Patterns
-			 * passed as `ignorePatterns` are relative to the cwd, whereas
-			 * the config file basePath can be an ancestor of the cwd.
-			 */
-			if (basePath === cwd) {
-				relativeIgnorePatterns = ignorePatterns;
-			} else {
-				// relative path must only have Unix-style separators
-				const relativeIgnorePath = path
-					.relative(basePath, cwd)
-					.replace(/\\/gu, "/");
-
-				relativeIgnorePatterns = ignorePatterns.map(pattern => {
-					const negated = pattern.startsWith("!");
-					const basePattern = negated ? pattern.slice(1) : pattern;
-
-					return (
-						(negated ? "!" : "") +
-						path.posix.join(relativeIgnorePath, basePattern)
-					);
-				});
-			}
-
 			/*
 			 * Ignore patterns are added to the end of the config array
 			 * so they can override default ignores.
 			 */
 			configs.push({
-				ignores: relativeIgnorePatterns,
+				basePath: cwd,
+				ignores: ignorePatterns,
 			});
 		}
 
@@ -719,8 +694,11 @@ class LegacyConfigLoader extends ConfigLoader {
 	 * @param {ConfigLoaderOptions} options The options to use when loading configuration files.
 	 */
 	constructor(options) {
-		super(options);
-		this.#options = options;
+		const normalizedOptions = options.warningService
+			? options
+			: { ...options, warningService: new WarningService() };
+		super(normalizedOptions);
+		this.#options = normalizedOptions;
 	}
 
 	/**
@@ -789,8 +767,7 @@ class LegacyConfigLoader extends ConfigLoader {
 	 * This is the same logic used by the ESLint CLI executable to determine
 	 * configuration for each file it processes.
 	 * @param {string} dirPath The path of the directory to retrieve config for.
-	 * @returns {Promise<ConfigData|undefined>} A configuration object for the file
-	 *      or `undefined` if there is no configuration data for the file.
+	 * @returns {Promise<FlatConfigArray>} A configuration object for the file.
 	 */
 	async loadConfigArrayForDirectory(dirPath) {
 		assertValidFilePath(dirPath);
@@ -812,8 +789,7 @@ class LegacyConfigLoader extends ConfigLoader {
 	 * intended to be used in locations where we know the config file has already
 	 * been loaded and we just need to get the configuration for a file.
 	 * @param {string} dirPath The path of the directory to retrieve a config object for.
-	 * @returns {ConfigData|undefined} A configuration object for the file
-	 *     or `undefined` if there is no configuration data for the file.
+	 * @returns {FlatConfigArray} A configuration object for the file.
 	 * @throws {Error} If `dirPath` is not a non-empty string.
 	 * @throws {Error} If `dirPath` is not an absolute path.
 	 * @throws {Error} If the config file was not already loaded.

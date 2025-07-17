@@ -1,6 +1,7 @@
 'use strict';
 
-var $isFinite = require('../helpers/isFinite');
+var $isFinite = require('math-intrinsics/isFinite');
+
 var timeConstants = require('../helpers/timeConstants');
 var msPerSecond = timeConstants.msPerSecond;
 var msPerMinute = timeConstants.msPerMinute;

@@ -29,7 +29,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const { scopeManager } = sourceCode;
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
@@ -44,7 +44,7 @@ module.exports = {
      * @returns {boolean} whether this property should be considered to contain suggestions
      */
     function doesPropertyContainSuggestions(node) {
-      const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+      const scope = utils.getScope(context);
       const staticValue = getStaticValue(node.value, scope);
       if (
         !staticValue ||
@@ -95,8 +95,8 @@ module.exports = {
           ruleReportsSuggestions = true;
         }
       },
-      'Program:exit'(node) {
-        const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+      'Program:exit'() {
+        const scope = utils.getScope(context);
         const metaNode = ruleInfo && ruleInfo.meta;
         const hasSuggestionsProperty = utils
           .evaluateObjectProperties(metaNode, scopeManager)

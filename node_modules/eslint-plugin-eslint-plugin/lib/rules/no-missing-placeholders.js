@@ -31,7 +31,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const { scopeManager } = sourceCode;
 
     let contextIdentifiers;
@@ -48,7 +48,7 @@ module.exports = {
         contextIdentifiers = utils.getContextIdentifiers(scopeManager, ast);
       },
       CallExpression(node) {
-        const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < 9.0.0
+        const scope = utils.getScope(context);
         if (
           node.callee.type === 'MemberExpression' &&
           contextIdentifiers.has(node.callee.object) &&

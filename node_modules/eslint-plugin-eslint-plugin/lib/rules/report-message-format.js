@@ -63,7 +63,7 @@ module.exports = {
       }
     }
 
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
       return {};
@@ -75,7 +75,7 @@ module.exports = {
 
     return {
       Program(ast) {
-        const scope = sourceCode.getScope?.(ast) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+        const scope = utils.getScope(context);
         contextIdentifiers = utils.getContextIdentifiers(
           sourceCode.scopeManager,
           ast,
@@ -103,7 +103,7 @@ module.exports = {
           .forEach((it) => processMessageNode(it, scope));
       },
       CallExpression(node) {
-        const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+        const scope = utils.getScope(context);
         if (
           node.callee.type === 'MemberExpression' &&
           contextIdentifiers.has(node.callee.object) &&

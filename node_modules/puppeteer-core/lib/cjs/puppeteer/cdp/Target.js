@@ -235,7 +235,7 @@ class WorkerTarget extends CdpTarget {
             this.#workerPromise = (session
                 ? Promise.resolve(session)
                 : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
-                return new WebWorker_js_1.CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */);
+                return new WebWorker_js_1.CdpWebWorker(client, this._getTargetInfo().url, this._targetId, this.type(), () => { } /* consoleAPICalled */, () => { } /* exceptionThrown */, undefined /* networkManager */);
             });
         }
         return await this.#workerPromise;

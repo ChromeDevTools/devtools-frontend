@@ -13,6 +13,7 @@ var constructors = {
 	$Uint32Array: GetIntrinsic('%Uint32Array%', true),
 	$BigInt64Array: GetIntrinsic('%BigInt64Array%', true),
 	$BigUint64Array: GetIntrinsic('%BigUint64Array%', true),
+	$Float16Array: GetIntrinsic('%Float16Array%', true),
 	$Float32Array: GetIntrinsic('%Float32Array%', true),
 	$Float64Array: GetIntrinsic('%Float64Array%', true)
 };

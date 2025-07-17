@@ -1,6 +1,6 @@
 'use strict';
 
-var $BooleanValueOf = require('call-bind/callBound')('Boolean.prototype.valueOf');
+var $BooleanValueOf = require('call-bound')('Boolean.prototype.valueOf');
 
 // https://262.ecma-international.org/6.0/#sec-properties-of-the-boolean-prototype-object
 

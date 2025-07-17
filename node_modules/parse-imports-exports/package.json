@@ -1,0 +1,54 @@
+{
+  "name": "parse-imports-exports",
+  "version": "0.2.4",
+  "description": "Fast and easy parser for declarations of import and export in ECMAScript/TypeScript",
+  "author": "uid11",
+  "bugs": "https://github.com/joomcode/parse-imports-exports/issues",
+  "dependencies": {
+    "parse-statements": "1.0.11"
+  },
+  "devDependencies": {
+    "prettier": ">=3.5",
+    "typescript": ">=5.7"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
+    }
+  },
+  "files": [
+    "*.cjs",
+    "*.js",
+    "index.d.ts",
+    "types.d.ts"
+  ],
+  "homepage": "https://github.com/joomcode/parse-imports-exports#readme",
+  "keywords": [
+    "esm",
+    "export",
+    "import",
+    "parse",
+    "parser",
+    "typescript"
+  ],
+  "license": "MIT",
+  "packageManager": "npm@10",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joomcode/parse-imports-exports.git"
+  },
+  "scripts": {
+    "prettier": "prettier --cache --cache-strategy=content --write .",
+    "prebuild": "rm -fr ./build/*",
+    "build": "tsc",
+    "postbuild": "node ./build/convertEsmToCjs.js",
+    "prerelease": "npm test && cp LICENSE package.json README.md ./build/src && rm ./build/src/types.cjs ./build/src/types.js",
+    "release": "npm publish ./build/src",
+    "test": "export _START=$(date +%s%3N) && npm run prettier && npm run build && node ./build/spec/index.spec.js"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./index.d.ts"
+}

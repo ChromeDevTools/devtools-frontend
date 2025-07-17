@@ -1,0 +1,1 @@
+{"version":3,"file":"UserContextConfig.js","sourceRoot":"","sources":["../../../../../src/bidiMapper/modules/browser/UserContextConfig.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;GAeG;AAIH;;;GAGG;AACH,MAAM,OAAO,iBAAiB;IAC5B;;OAEG;IACM,aAAa,CAAS;IAC/B,QAAQ,CAAmC;IAC3C,gBAAgB,CAAiB;IACjC,WAAW,CAGF;IAET,YAAY,aAAqB;QAC/B,IAAI,CAAC,aAAa,GAAG,aAAa,CAAC;IACrC,CAAC;CACF"}

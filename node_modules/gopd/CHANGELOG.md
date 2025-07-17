@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.2.0](https://github.com/ljharb/gopd/compare/v1.1.0...v1.2.0) - 2024-12-03
+
+### Commits
+
+- [New] add `gOPD` entry point; remove `get-intrinsic` [`5b61232`](https://github.com/ljharb/gopd/commit/5b61232dedea4591a314bcf16101b1961cee024e)
+
+## [v1.1.0](https://github.com/ljharb/gopd/compare/v1.0.1...v1.1.0) - 2024-11-29
+
+### Commits
+
+- [New] add types [`f585e39`](https://github.com/ljharb/gopd/commit/f585e397886d270e4ba84e53d226e4f9ca2eb0e6)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `tape` [`0b8e4fd`](https://github.com/ljharb/gopd/commit/0b8e4fded64397a7726a9daa144a6cc9a5e2edfa)
+- [Dev Deps] update `aud`, `npmignore`, `tape` [`48378b2`](https://github.com/ljharb/gopd/commit/48378b2443f09a4f7efbd0fb6c3ee845a6cabcf3)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `tape` [`78099ee`](https://github.com/ljharb/gopd/commit/78099eeed41bfdc134c912280483689cc8861c31)
+- [Tests] replace `aud` with `npm audit` [`4e0d0ac`](https://github.com/ljharb/gopd/commit/4e0d0ac47619d24a75318a8e1f543ee04b2a2632)
+- [meta] add missing `engines.node` [`1443316`](https://github.com/ljharb/gopd/commit/14433165d07835c680155b3dfd62d9217d735eca)
+- [Deps] update `get-intrinsic` [`eee5f51`](https://github.com/ljharb/gopd/commit/eee5f51769f3dbaf578b70e2a3199116b01aa670)
+- [Deps] update `get-intrinsic` [`550c378`](https://github.com/ljharb/gopd/commit/550c3780e3a9c77b62565712a001b4ed64ea61f5)
+- [Dev Deps] add missing peer dep [`8c2ecf8`](https://github.com/ljharb/gopd/commit/8c2ecf848122e4e30abfc5b5086fb48b390dce75)
+
 ## [v1.0.1](https://github.com/ljharb/gopd/compare/v1.0.0...v1.0.1) - 2022-11-01
 
 ### Commits

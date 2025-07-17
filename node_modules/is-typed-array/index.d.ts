@@ -1,16 +1,9 @@
-type TypedArray =
-  | Int8Array
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int16Array
-  | Uint16Array
-  | Int32Array
-  | Uint32Array
-  | Float32Array
-  | Float64Array
-  | BigInt64Array
-  | BigUint64Array;
+import type { TypedArray } from 'which-typed-array';
 
-declare function isTypedArray(value: unknown): value is TypedArray;
+declare namespace isTypedArray {
+    export { TypedArray };
+}
+
+declare function isTypedArray(value: unknown): value is isTypedArray.TypedArray;
 
 export = isTypedArray;

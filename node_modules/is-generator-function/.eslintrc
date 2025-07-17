@@ -4,6 +4,6 @@
 	"extends": "@ljharb",
 
 	"rules": {
-		"no-new-func": 1
+		"no-new-func": 1,
 	},
 }

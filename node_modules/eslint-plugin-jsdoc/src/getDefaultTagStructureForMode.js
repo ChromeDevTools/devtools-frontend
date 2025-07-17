@@ -152,14 +152,14 @@ const getDefaultTagStructureForMode = (mode) => {
 
     [
       'class', new Map(/** @type {[string, string|boolean][]} */ ([
-        // Allows for "name"'s in signature, but indicated as optional
-        [
-          'namepathRole', 'namepath-defining',
-        ],
-
         // Not in use, but should be this value if using to power `empty-tags`
         [
           'nameAllowed', true,
+        ],
+
+        // Allows for "name"'s in signature, but indicated as optional
+        [
+          'namepathRole', 'namepath-defining',
         ],
 
         [
@@ -258,16 +258,16 @@ const getDefaultTagStructureForMode = (mode) => {
 
     [
       'event', new Map(/** @type {[string, string|boolean][]} */ ([
-        // The doc signature of `event` seems to require a "name"
-        [
-          'nameRequired', true,
-        ],
-
         // Appears to require a "name" in its signature, albeit somewhat
         //  different from other "name"'s (including as described
         //  at https://jsdoc.app/about-namepaths.html )
         [
           'namepathRole', 'namepath-defining',
+        ],
+
+        // The doc signature of `event` seems to require a "name"
+        [
+          'nameRequired', true,
         ],
       ])),
     ],
@@ -313,13 +313,13 @@ const getDefaultTagStructureForMode = (mode) => {
           'namepathRole', 'namepath-referencing',
         ],
 
+        [
+          'nameRequired', isJsdoc,
+        ],
+
         // Does not show curly brackets in either the signature or examples
         [
           'typeAllowed', isTypescriptOrClosure || isPermissive,
-        ],
-
-        [
-          'nameRequired', isJsdoc,
         ],
 
         // "namepath"
@@ -368,6 +368,14 @@ const getDefaultTagStructureForMode = (mode) => {
     ],
 
     [
+      'func', new Map(/** @type {[string, string|boolean][]} */ ([
+        // Allows for "name"'s in signature, but indicated as optional
+        [
+          'namepathRole', 'namepath-defining',
+        ],
+      ])),
+    ],
+    [
       'function', new Map(/** @type {[string, string|boolean][]} */ ([
         // Allows for "name"'s in signature, but indicated as optional
         [
@@ -380,14 +388,6 @@ const getDefaultTagStructureForMode = (mode) => {
 
         [
           'typeAllowed', false,
-        ],
-      ])),
-    ],
-    [
-      'func', new Map(/** @type {[string, string|boolean][]} */ ([
-        // Allows for "name"'s in signature, but indicated as optional
-        [
-          'namepathRole', 'namepath-defining',
         ],
       ])),
     ],
@@ -413,16 +413,26 @@ const getDefaultTagStructureForMode = (mode) => {
     ],
 
     [
+      'implements', new Map(/** @type {[string, string|boolean][]} */ ([
+        // Shows curly brackets in the doc signature and examples
+        // "typeExpression"
+        [
+          'typeRequired', true,
+        ],
+      ])),
+    ],
+
+    [
       'interface', new Map(/** @type {[string, string|boolean][]} */ ([
+        // Not in use, but should be this value if using to power `empty-tags`
+        [
+          'nameAllowed', isClosure,
+        ],
+
         // Allows for "name" in signature, but indicates as optional
         [
           'namepathRole',
           isJsdocTypescriptOrPermissive ? 'namepath-defining' : false,
-        ],
-
-        // Not in use, but should be this value if using to power `empty-tags`
-        [
-          'nameAllowed', isClosure,
         ],
 
         [
@@ -433,23 +443,13 @@ const getDefaultTagStructureForMode = (mode) => {
 
     [
       'internal', new Map(/** @type {[string, string|boolean][]} */ ([
-        // https://www.typescriptlang.org/tsconfig/#stripInternal
-        [
-          'namepathRole', false,
-        ],
         // Not in use, but should be this value if using to power `empty-tags`
         [
           'nameAllowed', false,
         ],
-      ])),
-    ],
-
-    [
-      'implements', new Map(/** @type {[string, string|boolean][]} */ ([
-        // Shows curly brackets in the doc signature and examples
-        // "typeExpression"
+        // https://www.typescriptlang.org/tsconfig/#stripInternal
         [
-          'typeRequired', true,
+          'namepathRole', false,
         ],
       ])),
     ],
@@ -531,7 +531,7 @@ const getDefaultTagStructureForMode = (mode) => {
     ],
 
     [
-      'memberof', new Map(/** @type {[string, string|boolean][]} */ ([
+      'memberof!', new Map(/** @type {[string, string|boolean][]} */ ([
         // Signature seems to require a "namepath" (and no counter-examples),
         //  though it allows an incomplete namepath ending with connecting symbol
         [
@@ -545,7 +545,7 @@ const getDefaultTagStructureForMode = (mode) => {
       ])),
     ],
     [
-      'memberof!', new Map(/** @type {[string, string|boolean][]} */ ([
+      'memberof', new Map(/** @type {[string, string|boolean][]} */ ([
         // Signature seems to require a "namepath" (and no counter-examples),
         //  though it allows an incomplete namepath ending with connecting symbol
         [
@@ -777,7 +777,7 @@ const getDefaultTagStructureForMode = (mode) => {
     ],
 
     [
-      'returns', new Map(/** @type {[string, string|boolean][]} */ ([
+      'return', new Map(/** @type {[string, string|boolean][]} */ ([
         // Shows curly brackets in the signature and in the examples
         [
           'typeAllowed', true,
@@ -785,7 +785,7 @@ const getDefaultTagStructureForMode = (mode) => {
       ])),
     ],
     [
-      'return', new Map(/** @type {[string, string|boolean][]} */ ([
+      'returns', new Map(/** @type {[string, string|boolean][]} */ ([
         // Shows curly brackets in the signature and in the examples
         [
           'typeAllowed', true,
@@ -859,13 +859,13 @@ const getDefaultTagStructureForMode = (mode) => {
           'namepathRole', isJsdoc ? 'namepath-referencing' : false,
         ],
 
-        [
-          'typeRequired', isTypescriptOrClosure,
-        ],
-
         // namepath
         [
           'typeOrNameRequired', isJsdoc,
+        ],
+
+        [
+          'typeRequired', isTypescriptOrClosure,
         ],
       ])),
     ],
@@ -948,7 +948,7 @@ const getDefaultTagStructureForMode = (mode) => {
     ],
 
     [
-      'yields', new Map(/** @type {[string, string|boolean][]} */ ([
+      'yield', new Map(/** @type {[string, string|boolean][]} */ ([
         // Shows curly brackets in the signature and in the examples
         [
           'typeAllowed', true,
@@ -956,7 +956,7 @@ const getDefaultTagStructureForMode = (mode) => {
       ])),
     ],
     [
-      'yield', new Map(/** @type {[string, string|boolean][]} */ ([
+      'yields', new Map(/** @type {[string, string|boolean][]} */ ([
         // Shows curly brackets in the signature and in the examples
         [
           'typeAllowed', true,

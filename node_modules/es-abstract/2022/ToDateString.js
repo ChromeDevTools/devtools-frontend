@@ -6,7 +6,7 @@ var $TypeError = require('es-errors/type');
 var $Date = GetIntrinsic('%Date%');
 var $String = GetIntrinsic('%String%');
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/6.0/#sec-todatestring
 

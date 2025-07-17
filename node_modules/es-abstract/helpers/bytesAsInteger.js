@@ -2,7 +2,8 @@
 
 var GetIntrinsic = require('get-intrinsic');
 
-var $pow = GetIntrinsic('%Math.pow%');
+var $pow = require('math-intrinsics/pow');
+
 var $Number = GetIntrinsic('%Number%');
 var $BigInt = GetIntrinsic('%BigInt%', true);
 

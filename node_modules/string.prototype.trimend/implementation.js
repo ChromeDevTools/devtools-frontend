@@ -1,6 +1,6 @@
 'use strict';
 
-var callBound = require('call-bind/callBound');
+var callBound = require('call-bound');
 var $replace = callBound('String.prototype.replace');
 
 var mvsIsWS = (/^\s$/).test('\u180E');

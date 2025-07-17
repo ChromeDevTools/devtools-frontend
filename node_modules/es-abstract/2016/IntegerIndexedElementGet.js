@@ -2,12 +2,11 @@
 
 var $SyntaxError = require('es-errors/syntax');
 var $TypeError = require('es-errors/type');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var GetValueFromBuffer = require('./GetValueFromBuffer');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var IsInteger = require('./IsInteger');
-
-var isNegativeZero = require('../helpers/isNegativeZero');
 
 var typedArrayLength = require('typed-array-length');
 var typedArrayBuffer = require('typed-array-buffer');

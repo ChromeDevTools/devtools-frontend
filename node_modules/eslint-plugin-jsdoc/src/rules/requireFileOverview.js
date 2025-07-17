@@ -23,10 +23,10 @@ const setDefaults = (state) => {
 };
 
 export default iterateJsdoc(({
+  context,
   jsdocNode,
   state,
   utils,
-  context,
 }) => {
   const {
     tags = defaultTags,
@@ -70,9 +70,9 @@ export default iterateJsdoc(({
     for (const [
       tagName,
       {
+        initialCommentsOnly = false,
         mustExist = false,
         preventDuplicates = false,
-        initialCommentsOnly = false,
       },
     ] of Object.entries(tags)) {
       const obj = utils.getPreferredTagNameObject({
@@ -144,8 +144,8 @@ export default iterateJsdoc(({
     type: 'suggestion',
   },
   nonComment ({
-    state,
     node,
+    state,
   }) {
     if (!state.hasNonComment) {
       state.hasNonComment = node.range[0];

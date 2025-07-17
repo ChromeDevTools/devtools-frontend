@@ -76,12 +76,11 @@ module.exports = {
      * @returns {boolean}
      */
     function isFix(node) {
-      const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: use context.sourceCode when dropping eslint < v9
       if (node.type === 'ArrayExpression' && node.elements.length === 0) {
         // An empty array is not a fix.
         return false;
       }
-      const scope = sourceCode.getScope?.(node) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < 9.0.0
+      const scope = utils.getScope(context);
       const staticValue = getStaticValue(node, scope);
       if (!staticValue) {
         // If we can't find a static value, assume it's a real fix value.
@@ -99,7 +98,7 @@ module.exports = {
 
     return {
       Program(ast) {
-        const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+        const sourceCode = utils.getSourceCode(context);
         contextIdentifiers = utils.getContextIdentifiers(
           sourceCode.scopeManager,
           ast,
@@ -149,7 +148,7 @@ module.exports = {
       // Ensure the current (arrow) fixer function returned a fix.
       'ArrowFunctionExpression:exit'(node) {
         if (funcInfo.shouldCheck) {
-          const sourceCode = context.sourceCode || context.getSourceCode();
+          const sourceCode = utils.getSourceCode(context);
           const loc = sourceCode.getTokenBefore(node.body).loc; // Show violation on arrow (=>).
           if (node.expression) {
             // When the return is implied (no curly braces around the body), we have to check the single body node directly.

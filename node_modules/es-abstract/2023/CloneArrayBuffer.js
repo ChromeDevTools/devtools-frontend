@@ -7,8 +7,7 @@ var IsConstructor = require('./IsConstructor');
 var IsDetachedBuffer = require('./IsDetachedBuffer');
 var OrdinarySetPrototypeOf = require('./OrdinarySetPrototypeOf');
 
-var isInteger = require('../helpers/isInteger');
-
+var isInteger = require('math-intrinsics/isInteger');
 var isArrayBuffer = require('is-array-buffer');
 var arrayBufferSlice = require('arraybuffer.prototype.slice');
 

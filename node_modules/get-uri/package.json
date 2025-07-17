@@ -1,6 +1,6 @@
 {
   "name": "get-uri",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "description": "Returns a `stream.Readable` from a URI string",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

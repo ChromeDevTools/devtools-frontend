@@ -39,7 +39,7 @@ module.exports = {
 
   create(context) {
     const shorthandOption = context.options[0] || 'as-needed';
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
 
     // ----------------------------------------------------------------------
     // Helpers

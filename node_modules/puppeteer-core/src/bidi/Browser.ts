@@ -57,6 +57,7 @@ export class BidiBrowser extends Browser {
     'network',
     'log',
     'script',
+    'input',
   ];
   static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[] = [
     // Coverage
@@ -239,6 +240,14 @@ export class BidiBrowser extends Browser {
 
   override newPage(): Promise<Page> {
     return this.defaultBrowserContext().newPage();
+  }
+
+  override installExtension(path: string): Promise<string> {
+    return this.#browserCore.installExtension(path);
+  }
+
+  override async uninstallExtension(id: string): Promise<void> {
+    await this.#browserCore.uninstallExtension(id);
   }
 
   override targets(): Target[] {

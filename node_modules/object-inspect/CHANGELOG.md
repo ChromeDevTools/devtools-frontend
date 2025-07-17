@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.13.4](https://github.com/inspect-js/object-inspect/compare/v1.13.3...v1.13.4) - 2025-02-04
+
+### Commits
+
+- [Fix] avoid being fooled by a `Symbol.toStringTag` [`fa5870d`](https://github.com/inspect-js/object-inspect/commit/fa5870da468a525d2f20193700f70752f506cbf7)
+- [Tests] fix tests in node v6.0 - v6.4 [`2abfe1b`](https://github.com/inspect-js/object-inspect/commit/2abfe1bc3c69f9293c07c5cd65a9d7d87a628b84)
+- [Dev Deps] update `es-value-fixtures`, `for-each`, `has-symbols` [`3edfb01`](https://github.com/inspect-js/object-inspect/commit/3edfb01cc8cce220fba0dfdfe2dc8bc955758cdd)
+
 ## [v1.13.3](https://github.com/inspect-js/object-inspect/compare/v1.13.2...v1.13.3) - 2024-11-09
 
 ### Commits

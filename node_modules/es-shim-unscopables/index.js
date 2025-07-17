@@ -8,6 +8,7 @@ var map = hasUnscopables && Array.prototype[Symbol.unscopables];
 
 var $TypeError = TypeError;
 
+/** @type {import('.')} */
 module.exports = function shimUnscopables(method) {
 	if (typeof method !== 'string' || !method) {
 		throw new $TypeError('method must be a non-empty string');
@@ -15,7 +16,7 @@ module.exports = function shimUnscopables(method) {
 	if (!hasOwn(Array.prototype, method)) {
 		throw new $TypeError('method must be on Array.prototype');
 	}
-	if (hasUnscopables) {
+	if (hasUnscopables && map) {
 		map[method] = true;
 	}
 };

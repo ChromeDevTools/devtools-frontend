@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.1.0](https://github.com/inspect-js/is-date-object/compare/v1.0.5...v1.1.0) - 2024-12-12
+
+### Commits
+
+- [actions] reuse common workflows [`35c5af0`](https://github.com/inspect-js/is-date-object/commit/35c5af06344e8707b82f0ae24821e0a2a0cfb02d)
+- [meta] use `npmignore` to autogenerate an npmignore file [`db6113c`](https://github.com/inspect-js/is-date-object/commit/db6113c3b98c9be87038d9b11a39166554f6c2b0)
+- [New] add types [`4f1d9b3`](https://github.com/inspect-js/is-date-object/commit/4f1d9b3d1908d5bfd536128fe8fa49e16fd48761)
+- [actions] split out node 10-20, and 20+ [`c9a1e4f`](https://github.com/inspect-js/is-date-object/commit/c9a1e4f1fd50277ef85f04ee293795e433436f8c)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `core-js`, `safe-publish-latest`, `tape` [`35a2864`](https://github.com/inspect-js/is-date-object/commit/35a2864ac5913ae6d14d80398cc5910abf4c528d)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`b670bca`](https://github.com/inspect-js/is-date-object/commit/b670bcafec01141b5f2ba6e3ea22bde4124d0a2e)
+- [actions] update rebase action to use reusable workflow [`d6bb341`](https://github.com/inspect-js/is-date-object/commit/d6bb34105613962581bfd7509ee7cc02110b6890)
+- [actions] update codecov uploader [`f850678`](https://github.com/inspect-js/is-date-object/commit/f8506786159dc9072c62c77e6609ad7db14551af)
+- [Robustness] use `call-bound` [`18ed326`](https://github.com/inspect-js/is-date-object/commit/18ed326470e86ffc66ea3cd3e642f44a7036948e)
+- [Dev Deps] update `@ljharb/eslint-config`, `auto-changelog`, `core-js`, `npmignore`, `tape` [`f0e792f`](https://github.com/inspect-js/is-date-object/commit/f0e792f7b13b0f9567fbb607fc90278e52377a0f)
+- [meta] add `exports` field [`342351f`](https://github.com/inspect-js/is-date-object/commit/342351f37f3ed823ea7d7da2aa32099e6eb00852)
+- [Tests] replace `aud` with `npm audit` [`9b9b9cf`](https://github.com/inspect-js/is-date-object/commit/9b9b9cf665114a211b682402e10486bf2c89bdfa)
+- [Deps] update `has-tostringtag` [`1bc37ab`](https://github.com/inspect-js/is-date-object/commit/1bc37ab6e8122aecc2a4283e1b3920c61c8d272e)
+- [meta] add `sideEffects` flag [`86d3a16`](https://github.com/inspect-js/is-date-object/commit/86d3a16d65376ac84d98c8aa55ff7b01cfd01ee9)
+- [Dev Deps] add missing peer dep [`fee274d`](https://github.com/inspect-js/is-date-object/commit/fee274dc177e09823cb69dbcb805cbd4be7a386e)
+
 ## [v1.0.5](https://github.com/inspect-js/is-date-object/compare/v1.0.4...v1.0.5) - 2021-08-05
 
 ### Commits

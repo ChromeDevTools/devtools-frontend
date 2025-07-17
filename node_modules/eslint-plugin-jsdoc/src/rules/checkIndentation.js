@@ -26,10 +26,10 @@ const maskCodeBlocks = (str) => {
 };
 
 export default iterateJsdoc(({
-  sourceCode,
+  context,
   jsdocNode,
   report,
-  context,
+  sourceCode,
 }) => {
   const options = context.options[0] || {};
   const /** @type {{excludeTags: string[]}} */ {

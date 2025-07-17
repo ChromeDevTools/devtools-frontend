@@ -7,7 +7,7 @@ var IsLessThan = require('./IsLessThan');
 var ToNumber = require('./ToNumber');
 var ToString = require('./ToString');
 
-var isNaN = require('../helpers/isNaN');
+var isNaN = require('math-intrinsics/isNaN');
 
 // https://262.ecma-international.org/14.0/#sec-comparearrayelements
 

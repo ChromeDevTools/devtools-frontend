@@ -1,6 +1,6 @@
 'use strict';
 
-var $StringValueOf = require('call-bind/callBound')('String.prototype.valueOf');
+var $StringValueOf = require('call-bound')('String.prototype.valueOf');
 
 // https://262.ecma-international.org/6.0/#sec-properties-of-the-string-prototype-object
 

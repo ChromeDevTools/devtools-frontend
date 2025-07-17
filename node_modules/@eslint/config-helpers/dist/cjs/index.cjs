@@ -36,7 +36,7 @@ const eslintrcKeys = [
 	"root",
 ];
 
-const allowedGlobalIgnoreKeys = new Set(["ignores", "name"]);
+const allowedGlobalIgnoreKeys = new Set(["basePath", "ignores", "name"]);
 
 /**
  * Gets the name of a config object.
@@ -138,7 +138,6 @@ function getPluginMember(id) {
  * @return {Config} The normalized config object.
  */
 function normalizePluginConfig(userNamespace, plugin, config) {
-	// @ts-ignore -- ESLint types aren't updated yet
 	const pluginNamespace = plugin.meta?.namespace;
 
 	// don't do anything if the plugin doesn't have a namespace or rules
@@ -207,6 +206,7 @@ function normalizePluginConfig(userNamespace, plugin, config) {
  * @param {Config|LegacyConfig|(Config|LegacyConfig)[]} pluginConfig The plugin config to normalize.
  * @param {string} pluginConfigName The name of the plugin config.
  * @return {InfiniteConfigArray} The normalized plugin config.
+ * @throws {TypeError} If the plugin config is a legacy config.
  */
 function deepNormalizePluginConfig(
 	userPluginNamespace,
@@ -241,6 +241,7 @@ function deepNormalizePluginConfig(
  * @param {Config} config The config object.
  * @param {string} pluginConfigName The name of the plugin config.
  * @return {InfiniteConfigArray} The plugin config.
+ * @throws {TypeError} If the plugin config is not found or is a legacy config.
  */
 function findPluginConfig(config, pluginConfigName) {
 	const { namespace: userPluginNamespace, name: configName } =
@@ -381,6 +382,12 @@ function extendConfig(baseConfig, baseConfigName, extension, extensionName) {
 
 	result.name = `${baseConfigName} > ${extensionName}`;
 
+	// @ts-ignore -- ESLint types aren't updated yet
+	if (baseConfig.basePath) {
+		// @ts-ignore -- ESLint types aren't updated yet
+		result.basePath = baseConfig.basePath;
+	}
+
 	return result;
 }
 
@@ -389,6 +396,7 @@ function extendConfig(baseConfig, baseConfigName, extension, extensionName) {
  * @param {ConfigWithExtends} config The config object.
  * @param {WeakMap<Config, string>} configNames The map of config objects to their names.
  * @return {Config[]} The flattened list of config objects.
+ * @throws {TypeError} If the `extends` property is not an array or if nested `extends` is found.
  */
 function processExtends(config, configNames) {
 	if (!config.extends) {
@@ -438,6 +446,10 @@ function processExtends(config, configNames) {
 		objectExtends,
 	)) {
 		const extension = /** @type {Config} */ (extendsElement);
+
+		if ("basePath" in extension) {
+			throw new TypeError("'basePath' in `extends` is not allowed.");
+		}
 
 		if ("extends" in extension) {
 			throw new TypeError("Nested 'extends' is not allowed.");
@@ -493,6 +505,7 @@ function processConfigList(configList, configNames) {
  * Helper function to define a config array.
  * @param {ConfigWithExtendsArray} args The arguments to the function.
  * @returns {Config[]} The config array.
+ * @throws {TypeError} If no arguments are provided or if an argument is not an object.
  */
 function defineConfig(...args) {
 	const configNames = new WeakMap();
@@ -545,6 +558,7 @@ let globalIgnoreCount = 0;
  * @param {string[]} ignorePatterns The ignore patterns.
  * @param {string} [name] The name of the global ignores config.
  * @returns {Config} The global ignores config.
+ * @throws {TypeError} If ignorePatterns is not an array or if it is empty.
  */
 function globalIgnores(ignorePatterns, name) {
 	if (!Array.isArray(ignorePatterns)) {

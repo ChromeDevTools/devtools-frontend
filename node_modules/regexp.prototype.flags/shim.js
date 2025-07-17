@@ -2,15 +2,15 @@
 
 var supportsDescriptors = require('define-properties').supportsDescriptors;
 var getPolyfill = require('./polyfill');
-var gOPD = Object.getOwnPropertyDescriptor;
+var gOPD = require('gopd');
 var defineProperty = Object.defineProperty;
-var TypeErr = TypeError;
-var getProto = Object.getPrototypeOf;
+var $TypeError = require('es-errors');
+var getProto = require('get-proto');
 var regex = /a/;
 
 module.exports = function shimFlags() {
 	if (!supportsDescriptors || !getProto) {
-		throw new TypeErr('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
+		throw new $TypeError('RegExp.prototype.flags requires a true ES5 environment that supports property descriptors');
 	}
 	var polyfill = getPolyfill();
 	var proto = getProto(regex);

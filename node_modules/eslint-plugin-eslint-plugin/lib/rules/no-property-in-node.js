@@ -1,5 +1,7 @@
 'use strict';
 
+const utils = require('../utils');
+
 const defaultTypedNodeSourceFileTesters = [
   /@types[/\\]estree[/\\]index\.d\.ts/,
   /@typescript-eslint[/\\]types[/\\]dist[/\\]generated[/\\]ast-spec\.d\.ts/,
@@ -88,7 +90,7 @@ module.exports = {
       'BinaryExpression[operator=in]'(node) {
         // TODO: Switch this to ESLintUtils.getParserServices with typescript-eslint@>=6
         // https://github.com/eslint-community/eslint-plugin-eslint-plugin/issues/269
-        const services = (context.sourceCode || context).parserServices;
+        const services = utils.getparserServices(context);
         if (!services.program) {
           throw new Error(
             'You have used a rule which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project" property for @typescript-eslint/parser.',

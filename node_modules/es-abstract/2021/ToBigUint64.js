@@ -3,7 +3,8 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
-var $pow = GetIntrinsic('%Math.pow%');
+
+var $pow = require('math-intrinsics/pow');
 
 var ToBigInt = require('./ToBigInt');
 var BigIntRemainder = require('./BigInt/remainder');

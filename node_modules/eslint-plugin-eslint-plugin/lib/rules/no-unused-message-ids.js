@@ -24,7 +24,7 @@ module.exports = {
   },
 
   create(context) {
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const { scopeManager } = sourceCode;
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
@@ -47,7 +47,7 @@ module.exports = {
         contextIdentifiers = utils.getContextIdentifiers(scopeManager, ast);
       },
 
-      'Program:exit'(ast) {
+      'Program:exit'() {
         if (hasSeenUnknownMessageId || !hasSeenViolationReport) {
           /*
           Bail out when the rule is likely to have false positives.
@@ -57,7 +57,7 @@ module.exports = {
           return;
         }
 
-        const scope = sourceCode.getScope?.(ast) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < 9.0.0
+        const scope = utils.getScope(context);
 
         const messageIdNodesUnused = messageIdNodes.filter(
           (node) => !messageIdsUsed.has(utils.getKeyName(node, scope)),

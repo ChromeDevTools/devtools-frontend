@@ -17,42 +17,27 @@ var valueToFloat32Bytes = require('../helpers/valueToFloat32Bytes');
 var valueToFloat64Bytes = require('../helpers/valueToFloat64Bytes');
 var integerToNBytes = require('../helpers/integerToNBytes');
 
-var keys = require('object-keys');
+var tableTAO = require('./tables/typed-array-objects');
 
 // https://262.ecma-international.org/15.0/#table-the-typedarray-constructors
-var TypeToSizes = {
-	__proto__: null,
-	INT8: 1,
-	UINT8: 1,
-	UINT8C: 1,
-	INT16: 2,
-	UINT16: 2,
-	INT32: 4,
-	UINT32: 4,
-	BIGINT64: 8,
-	BIGUINT64: 8,
-	FLOAT32: 4,
-	FLOAT64: 8
-};
-
 var TypeToAO = {
 	__proto__: null,
-	INT8: ToInt8,
-	UINT8: ToUint8,
-	UINT8C: ToUint8Clamp,
-	INT16: ToInt16,
-	UINT16: ToUint16,
-	INT32: ToInt32,
-	UINT32: ToUint32,
-	BIGINT64: ToBigInt64,
-	BIGUINT64: ToBigUint64
+	$INT8: ToInt8,
+	$UINT8: ToUint8,
+	$UINT8C: ToUint8Clamp,
+	$INT16: ToInt16,
+	$UINT16: ToUint16,
+	$INT32: ToInt32,
+	$UINT32: ToUint32,
+	$BIGINT64: ToBigInt64,
+	$BIGUINT64: ToBigUint64
 };
 
 // https://262.ecma-international.org/15.0/#sec-numerictorawbytes
 
 module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
-	if (typeof type !== 'string' || !hasOwnProperty(TypeToSizes, type)) {
-		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type: ' + keys(TypeToSizes));
+	if (typeof type !== 'string' || !hasOwnProperty(tableTAO.size, '$' + type)) {
+		throw new $TypeError('Assertion failed: `type` must be a TypedArray element type');
 	}
 	if (typeof value !== 'number' && typeof value !== 'bigint') {
 		throw new $TypeError('Assertion failed: `value` must be a Number or a BigInt');
@@ -67,9 +52,9 @@ module.exports = function NumericToRawBytes(type, value, isLittleEndian) {
 		return valueToFloat64Bytes(value, isLittleEndian);
 	} // step 3
 
-	var n = TypeToSizes[type]; // step 3.a
+	var n = tableTAO.size['$' + type]; // step 3.a
 
-	var convOp = TypeToAO[type]; // step 3.b
+	var convOp = TypeToAO['$' + type]; // step 3.b
 
 	var intValue = convOp(value); // step 3.c
 

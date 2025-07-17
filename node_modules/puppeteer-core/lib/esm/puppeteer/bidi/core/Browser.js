@@ -106,6 +106,8 @@ let Browser = (() => {
     let _removeIntercept_decorators;
     let _removePreloadScript_decorators;
     let _createUserContext_decorators;
+    let _installExtension_decorators;
+    let _uninstallExtension_decorators;
     return class Browser extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
@@ -115,6 +117,8 @@ let Browser = (() => {
             __esDecorate(this, null, _removeIntercept_decorators, { kind: "method", name: "removeIntercept", static: false, private: false, access: { has: obj => "removeIntercept" in obj, get: obj => obj.removeIntercept }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _createUserContext_decorators, { kind: "method", name: "createUserContext", static: false, private: false, access: { has: obj => "createUserContext" in obj, get: obj => obj.createUserContext }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _installExtension_decorators, { kind: "method", name: "installExtension", static: false, private: false, access: { has: obj => "installExtension" in obj, get: obj => obj.installExtension }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _uninstallExtension_decorators, { kind: "method", name: "uninstallExtension", static: false, private: false, access: { has: obj => "uninstallExtension" in obj, get: obj => obj.uninstallExtension }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
         static async from(session) {
@@ -248,6 +252,15 @@ let Browser = (() => {
             const { result: { userContext: context }, } = await this.session.send('browser.createUserContext', {});
             return this.#createUserContext(context);
         }
+        async installExtension(path) {
+            const { result: { extension }, } = await this.session.send('webExtension.install', {
+                extensionData: { type: 'path', path },
+            });
+            return extension;
+        }
+        async uninstallExtension(id) {
+            await this.session.send('webExtension.uninstall', { extension: id });
+        }
         [(_dispose_decorators = [inertIfDisposed], _close_decorators = [throwIfDisposed(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
@@ -261,6 +274,12 @@ let Browser = (() => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], _createUserContext_decorators = [throwIfDisposed(browser => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return browser.#reason;
+            })], _installExtension_decorators = [throwIfDisposed(browser => {
+                // SAFETY: By definition of `disposed`, `#reason` is defined.
+                return browser.#reason;
+            })], _uninstallExtension_decorators = [throwIfDisposed(browser => {
                 // SAFETY: By definition of `disposed`, `#reason` is defined.
                 return browser.#reason;
             })], disposeSymbol)]() {

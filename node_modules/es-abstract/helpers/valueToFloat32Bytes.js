@@ -1,14 +1,12 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
+var $abs = require('math-intrinsics/abs');
+var $floor = require('math-intrinsics/floor');
+var $pow = require('math-intrinsics/pow');
 
-var $abs = GetIntrinsic('%Math.abs%');
-var $floor = GetIntrinsic('%Math.floor%');
-var $pow = GetIntrinsic('%Math.pow%');
-
-var isFinite = require('./isFinite');
-var isNaN = require('./isNaN');
-var isNegativeZero = require('./isNegativeZero');
+var isFinite = require('math-intrinsics/isFinite');
+var isNaN = require('math-intrinsics/isNaN');
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 
 var maxFiniteFloat32 = 3.4028234663852886e+38; // roughly 2 ** 128 - 1
 

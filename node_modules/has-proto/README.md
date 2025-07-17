@@ -16,6 +16,25 @@ var hasProto = require('has-proto');
 var assert = require('assert');
 
 assert.equal(typeof hasProto(), 'boolean');
+
+var hasProtoAccessor = require('has-proto/accessor')();
+if (hasProtoAccessor) {
+	assert.equal([].__proto__, Array.prototype);
+} else {
+	assert(!('__proto__' in Object.prototype));
+}
+
+var hasProtoMutator = require('has-proto/mutator');
+var obj = {};
+assert('toString' in obj);
+
+obj.__proto__ = null;
+if (hasProtoMutator) {
+	assert(!('toString' in obj));
+} else {
+	assert('toString' in obj);
+	assert.equal(obj.__proto__, null);
+}
 ```
 
 ## Tests

@@ -1,3 +1,16 @@
+4.1.7 / 2024-12-18
+==================
+  * [Deps] add missing `es-object-atoms` (#86)
+
+4.1.6 / 2024-12-18
+==================
+  * [Refactor] use `call-bound` directly; use `es-object-atoms`
+  * [Deps] update `call-bind`, `has-symbols`
+  * [Dev Deps] update `@es-shims/api`, `@ljharb/eslint-config`, `hasown`, `mock-property`, `ses`, `tape`
+  * [actions] split out node 10-20, and 20+
+  * [actions] remove redundant finisher
+  * [Tests] replace `aud` with `npm audit`
+
 4.1.5 / 2023-11-30
 ==================
   * [meta] republish without testing HTML file (#85)

@@ -2,4 +2,4 @@
 
 // TODO; semver-major: remove
 
-module.exports = require('call-bind/callBound');
+module.exports = require('call-bound');

@@ -2,7 +2,7 @@
 
 var $TypeError = require('es-errors/type');
 
-var $isNaN = require('../helpers/isNaN');
+var $isNaN = require('math-intrinsics/isNaN');
 var padTimeComponent = require('../helpers/padTimeComponent');
 
 var HourFromTime = require('./HourFromTime');

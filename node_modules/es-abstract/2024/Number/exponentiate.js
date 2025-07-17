@@ -1,18 +1,16 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-// var isNegativeZero = require('is-negative-zero');
-
-var $pow = GetIntrinsic('%Math.pow%');
+// var isNegativeZero = require('math-intrinsics/isNegativeZero');
+var $pow = require('math-intrinsics/pow');
 
 var $TypeError = require('es-errors/type');
 
 /*
-var abs = require('../../helpers/abs');
-var isFinite = require('../../helpers/isFinite');
-var isNaN = require('../../helpers/isNaN');
+var abs = require('math-intrinsics/abs');
+var isFinite = require('math-intrinsics/isFinite');
+var isNaN = require('math-intrinsics/isNaN');
 
-var IsInteger = require('../IsInteger');
+var IsInteger = require('math-intrinsics/isInteger');
 */
 
 // https://262.ecma-international.org/11.0/#sec-numeric-types-number-exponentiate

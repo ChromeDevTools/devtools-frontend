@@ -1,7 +1,6 @@
 'use strict';
 
-var isNegativeZero = require('is-negative-zero');
-
+var isNegativeZero = require('math-intrinsics/isNegativeZero');
 var $TypeError = require('es-errors/type');
 
 var NumberSameValueZero = require('./sameValueZero');

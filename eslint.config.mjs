@@ -122,7 +122,7 @@ export default defineConfig([
 
       curly: 'error',
       '@stylistic/new-parens': 'error',
-      '@stylistic/func-call-spacing': 'error',
+      '@stylistic/function-call-spacing': 'error',
       '@stylistic/arrow-parens': ['error', 'as-needed'],
       '@stylistic/eol-last': 'error',
       'object-shorthand': ['error', 'properties'],
@@ -665,13 +665,10 @@ export default defineConfig([
     ],
 
     rules: {
-      // errors on it('test') with no body
-      'mocha/no-pending-tests': 'error',
-
       // errors on {describe, it}.only
       'mocha/no-exclusive-tests': 'error',
 
-      'mocha/no-async-describe': 'error',
+      'mocha/no-async-suite': 'error',
       'mocha/no-global-tests': 'error',
       'mocha/no-nested-tests': 'error',
 
@@ -715,22 +712,22 @@ export default defineConfig([
         {
           name: 'describeWithDevtoolsExtension',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithEnvironment',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithLocale',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
         {
           name: 'describeWithMockConnection',
           type: 'suite',
-          interfaces: ['BDD', 'TDD'],
+          interface: 'BDD',
         },
       ],
     },

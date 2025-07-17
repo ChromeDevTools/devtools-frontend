@@ -16,9 +16,9 @@ const stringOrDefault = (value, userDefault) => {
 };
 
 export default iterateJsdoc(({
+  context,
   jsdoc,
   report,
-  context,
   utils,
 }) => {
   const {

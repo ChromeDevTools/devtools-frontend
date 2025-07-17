@@ -55,7 +55,7 @@ module.exports = {
    */
   create(context) {
     const options = context.options[0] || {};
-    const filename = context.filename || context.getFilename(); // TODO: just use context.filename when dropping eslint < v9
+    const filename = utils.getFilename(context);
     const ruleName =
       filename === '<input>'
         ? undefined
@@ -77,15 +77,15 @@ module.exports = {
       );
     }
 
-    const sourceCode = context.sourceCode || context.getSourceCode(); // TODO: just use context.sourceCode when dropping eslint < v9
+    const sourceCode = utils.getSourceCode(context);
     const ruleInfo = utils.getRuleInfo(sourceCode);
     if (!ruleInfo) {
       return {};
     }
 
     return {
-      Program(ast) {
-        const scope = sourceCode.getScope?.(ast) || context.getScope(); // TODO: just use sourceCode.getScope() when we drop support for ESLint < v9.0.0
+      Program() {
+        const scope = utils.getScope(context);
         const { scopeManager } = sourceCode;
 
         const {

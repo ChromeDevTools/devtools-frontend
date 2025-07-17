@@ -61,8 +61,8 @@ const validatePropertyNamesDeep = (
   let lastRealProperty;
 
   return jsdocPropertyNames.some(({
-    name: jsdocPropertyName,
     idx,
+    name: jsdocPropertyName,
   }) => {
     const isPropertyPath = jsdocPropertyName.includes('.');
 

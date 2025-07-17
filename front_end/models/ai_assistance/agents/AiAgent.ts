@@ -408,6 +408,10 @@ export abstract class AiAgent<T> {
     this.#functionDeclarations.set(name, declaration as FunctionDeclaration<Record<string, unknown>, ReturnType>);
   }
 
+  protected clearDeclaredFunctions(): void {
+    this.#functionDeclarations.clear();
+  }
+
   protected formatParsedAnswer({answer}: ParsedAnswer): string {
     return answer;
   }

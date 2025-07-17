@@ -53,7 +53,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
     UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-    UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
+    UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, null);
     UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
   });
 
@@ -261,18 +261,20 @@ describeWithMockConnection('AI Assistance Panel', () => {
         action: 'drjones.network-floating-button'
       },
       {
-        flavor: TimelineUtils.AICallTree.AICallTree,
+        flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
-          return new AiAssistanceModel.CallTreeContext(sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+          return AiAssistanceModel.PerformanceTraceContext.fromCallTree(
+              sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
         },
         action: 'drjones.performance-panel-context'
       },
       {
-        flavor: TimelineUtils.InsightAIContext.ActiveInsight,
+        flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
-          const context = new AiAssistanceModel.InsightContext(
-              sinon.createStubInstance(TimelineUtils.InsightAIContext.ActiveInsight));
-          sinon.stub(AiAssistanceModel.InsightContext.prototype, 'getSuggestions')
+          // @ts-expect-error: don't need any data.
+          const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(null, null, null);
+          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight(activeInsight);
+          sinon.stub(AiAssistanceModel.PerformanceTraceContext.prototype, 'getSuggestions')
               .returns(Promise.resolve([{title: 'test suggestion'}]));
           return context;
         },
@@ -346,14 +348,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, view} = await createAiAssistancePanel({chatView});
 
       // Firstly, start a conversation and set a context
-      const context =
-          new AiAssistanceModel.CallTreeContext(sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
-      UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, context.getItem());
+      const context = AiAssistanceModel.PerformanceTraceContext.fromCallTree(
+          sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+      UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, context.getItem());
       panel.handleAction('drjones.performance-panel-context');
       await view.nextInput;
 
       // Now clear the context and check we cleared out the text
-      UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
+      UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, null);
       sinon.assert.callCount(chatView.clearTextInput, 1);
     });
   });
@@ -1296,14 +1298,16 @@ describeWithMockConnection('AI Assistance Panel', () => {
            UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, timelinePanel);
 
            const fakeCallTree = sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree);
-           UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, fakeCallTree);
+           const focus = TimelineUtils.AIContext.AgentFocus.fromCallTree(fakeCallTree);
+           UI.Context.Context.instance().setFlavor(TimelineUtils.AIContext.AgentFocus, focus);
+
            Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
            const {panel, view} =
                await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
            panel.handleAction('drjones.performance-panel-context');
 
-           assert.isFalse(view.input.isTextInputDisabled);
            assert.strictEqual(view.input.inputPlaceholder, 'Ask a question about the selected item and its call tree');
+           assert.isFalse(view.input.isTextInputDisabled);
          });
     });
 

@@ -1540,7 +1540,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         }
         const aiCallTree = Utils.AICallTree.AICallTree.fromEvent(selection.event, this.#parsedTrace);
         if (aiCallTree) {
-          UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+          const context = Utils.AIContext.AgentFocus.fromCallTree(aiCallTree);
+          UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
         }
       });
     }

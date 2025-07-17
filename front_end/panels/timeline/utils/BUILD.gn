@@ -8,6 +8,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("utils") {
   sources = [
     "AICallTree.ts",
+    "AIContext.ts",
     "EntityMapper.ts",
     "EntryName.ts",
     "EntryNodes.ts",

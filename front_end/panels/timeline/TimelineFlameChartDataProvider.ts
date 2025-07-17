@@ -264,7 +264,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return;
           }
           // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
-          UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+          const context = Utils.AIContext.AgentFocus.fromCallTree(aiCallTree);
+          UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
           return action.execute();
         }, {jslogContext: PERF_AI_ACTION_ID});
       }

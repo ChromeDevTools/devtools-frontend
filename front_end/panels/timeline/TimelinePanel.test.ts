@@ -169,19 +169,16 @@ describeWithEnvironment('TimelinePanel', function() {
 
   it('clears out AI related contexts when the user presses "Clear"', async () => {
     const context = UI.Context.Context.instance();
-    const {AICallTree, InsightAIContext} = Timeline.Utils;
+    const {AIContext, AICallTree} = Timeline.Utils;
 
     const callTree = sinon.createStubInstance(AICallTree.AICallTree);
-    const insight = sinon.createStubInstance(InsightAIContext.ActiveInsight);
-    context.setFlavor(AICallTree.AICallTree, callTree);
-    context.setFlavor(InsightAIContext.ActiveInsight, insight);
+    context.setFlavor(AIContext.AgentFocus, AIContext.AgentFocus.fromCallTree(callTree));
 
     const clearButton = timeline.element.querySelector('[aria-label="Clear"]');
     assert.isOk(clearButton);
     dispatchClickEvent(clearButton);
 
-    assert.isNull(context.flavor(AICallTree.AICallTree));
-    assert.isNull(context.flavor(InsightAIContext.ActiveInsight));
+    assert.isNull(context.flavor(AIContext.AgentFocus));
   });
 
   it('saves visual track config metadata to disk if the user has modified it', async function() {

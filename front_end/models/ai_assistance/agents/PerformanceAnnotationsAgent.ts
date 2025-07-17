@@ -6,16 +6,18 @@ import * as Host from '../../../core/host/host.js';
 import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 
 import {ResponseType} from './AiAgent.js';
-import {CallTreeContext, PerformanceAgent} from './PerformanceAgent.js';
+import {PerformanceAgent, PerformanceTraceContext} from './PerformanceAgent.js';
 
 export class PerformanceAnnotationsAgent extends PerformanceAgent {
-  override readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+  override get clientFeature(): Host.AidaClient.ClientFeature {
+    return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+  }
 
   /**
    * Used in the Performance panel to automatically generate a label for a selected entry.
    */
   async generateAIEntryLabel(callTree: TimelineUtils.AICallTree.AICallTree): Promise<string> {
-    const context = new CallTreeContext(callTree);
+    const context = PerformanceTraceContext.fromCallTree(callTree);
     const response = await Array.fromAsync(this.run(AI_LABEL_GENERATION_PROMPT, {selected: context}));
     const lastResponse = response.at(-1);
     if (lastResponse && lastResponse.type === ResponseType.ANSWER && lastResponse.complete === true) {

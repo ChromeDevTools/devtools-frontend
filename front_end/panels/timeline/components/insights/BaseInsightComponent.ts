@@ -177,7 +177,12 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
   #dispatchInsightToggle(): void {
     if (this.#selected) {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
-      UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, null);
+
+      // Clear agent (but only if currently focused on an insight).
+      const focus = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
+      if (focus && focus.data.type === 'insight') {
+        UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
+      }
       return;
     }
 
@@ -354,8 +359,9 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const context = new Utils.InsightAIContext.ActiveInsight(this.#model, this.data.bounds, this.#parsedTrace);
-    UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, context);
+    const activeInsight = new Utils.InsightAIContext.ActiveInsight(this.#model, this.data.bounds, this.#parsedTrace);
+    const context = Utils.AIContext.AgentFocus.fromInsight(activeInsight);
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
 
     // Trigger the AI Assistance panel to open.
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);

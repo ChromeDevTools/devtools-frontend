@@ -1945,8 +1945,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.flameChart.getNetworkDataProvider().reset();
     this.flameChart.reset();
     this.#changeView({mode: 'LANDING_PAGE'});
-    UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
-    UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, null);
+    UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
   }
 
   #hasActiveTrace(): boolean {

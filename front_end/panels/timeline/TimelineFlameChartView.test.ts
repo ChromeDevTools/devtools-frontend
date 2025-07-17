@@ -1068,7 +1068,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     });
   });
 
-  describe('updating the active AI call tree', () => {
+  describe('updating the active AI focus', () => {
     it('updates the UI Context with the active AI Call tree for the selected event', async function() {
       const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const mockViewDelegate = new MockViewDelegate();
@@ -1081,12 +1081,13 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       });
 
       assert.isOk(task);
-      UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
+      UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, null);
       const selection = Timeline.TimelineSelection.selectionFromEvent(task);
       flameChartView.setSelectionAndReveal(selection);
       await doubleRaf();  // the updating of the AI Call Tree is done in a rAF to not block.
-      const flavor = UI.Context.Context.instance().flavor(Utils.AICallTree.AICallTree);
-      assert.instanceOf(flavor, Utils.AICallTree.AICallTree);
+      const flavor = UI.Context.Context.instance().flavor(Utils.AIContext.AgentFocus);
+      assert.instanceOf(flavor, Utils.AIContext.AgentFocus);
+      assert.strictEqual(flavor.data.type, 'call-tree');
     });
   });
 

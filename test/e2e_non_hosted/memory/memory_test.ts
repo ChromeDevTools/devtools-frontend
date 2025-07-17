@@ -66,7 +66,7 @@ describe('The Memory Panel', function() {
   // through it. On bots with less CPU power, these can fail because the
   // rendering takes a long time, so we allow a much larger timeout.
   if (this.timeout() !== 0) {
-    this.timeout(20_000);
+    this.timeout(30_000);
   }
 
   setup({dockingMode: 'undocked'});

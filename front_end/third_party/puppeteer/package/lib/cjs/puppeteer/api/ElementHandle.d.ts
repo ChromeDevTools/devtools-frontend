@@ -60,6 +60,14 @@ export interface ClickOptions extends MouseClickOptions {
      * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
+    /**
+     * An experimental debugging feature. If true, inserts an element into the
+     * page to highlight the click location for 10 seconds. Might not work on all
+     * pages and does not persist across navigations.
+     *
+     * @experimental
+     */
+    debugHighlight?: boolean;
 }
 /**
  * @public

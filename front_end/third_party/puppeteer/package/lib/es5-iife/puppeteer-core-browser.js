@@ -2951,7 +2951,7 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
   /**
    * @internal
    */
-  const packageVersion = '24.13.0';
+  const packageVersion = '24.14.0';
 
   /**
    * @license
@@ -6717,7 +6717,44 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
           x,
           y
         } = await this.clickablePoint(options.offset);
-        await this.frame.page().mouse.click(x, y, options);
+        try {
+          await this.frame.page().mouse.click(x, y, options);
+        } finally {
+          if (options.debugHighlight) {
+            await this.frame.page().evaluate((x, y) => {
+              const highlight = document.createElement('div');
+              highlight.innerHTML = `<style>
+        @scope {
+          :scope {
+              position: fixed;
+              left: ${x}px;
+              top: ${y}px;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              animation: colorChange 10s 1 normal;
+              animation-fill-mode: forwards;
+          }
+
+          @keyframes colorChange {
+              from {
+                  background-color: red;
+              }
+              to {
+                  background-color: #FADADD00;
+              }
+          }
+        }
+      </style>`;
+              highlight.addEventListener('animationend', () => {
+                highlight.remove();
+              }, {
+                once: true
+              });
+              document.body.append(highlight);
+            }, x, y);
+          }
+        }
       }
       /**
        * Drags an element over the given element or point.
@@ -24608,8 +24645,8 @@ var Puppeteer = function (exports, _error, _suppressed, _PuppeteerURL, _LazyArg,
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '138.0.7204.94',
-    'chrome-headless-shell': '138.0.7204.94',
+    chrome: '138.0.7204.157',
+    'chrome-headless-shell': '138.0.7204.157',
     firefox: 'stable_140.0.4'
   });
 

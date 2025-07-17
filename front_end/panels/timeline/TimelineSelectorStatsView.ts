@@ -32,7 +32,7 @@ const UIStrings = {
   /**
    *@description Tooltip description 'Elapsed (ms)'
    */
-  elapsedExplanation: 'Elapsed time spent computing a style rule in micro seconds',
+  elapsedExplanation: 'Elapsed time spent matching a selector against the DOM in milliseconds.',
   /**
    *@description Column name and percentage of slow mach non-matches computing a style rule
    */
@@ -49,7 +49,7 @@ const UIStrings = {
   /**
    *@description Tooltip description 'Match attempts'
    */
-  matchAttemptsExplanation: 'Count of elements that the engine attempted to match against a style rule',
+  matchAttemptsExplanation: 'Count of nodes that the engine attempted to match against a style rule.',
   /**
    *@description Column name for count of elements that matched a style rule
    */
@@ -57,7 +57,7 @@ const UIStrings = {
   /**
    *@description Tooltip description 'Match count'
    */
-  matchCountExplanation: 'Count of elements that matched a style rule',
+  matchCountExplanation: 'Count of nodes that matched a style rule.',
   /**
    *@description Column name for a style rule's CSS selector text
    */
@@ -65,7 +65,7 @@ const UIStrings = {
   /**
    *@description Tooltip description 'Selector'
    */
-  selectorExplanation: 'CSS selector text of a style rule',
+  selectorExplanation: 'CSS selector text of a style rule.',
   /**
    *@description Column name for a style rule's CSS selector text
    */
@@ -74,7 +74,7 @@ const UIStrings = {
    *@description Tooltip description 'Style Sheet'
    */
   styleSheetIdExplanation:
-      'Links to the selector rule defintion in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don\'t have a link.',
+      'Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don\'t have a link.',
   /**
    *@description A context menu item in data grids to copy entire table to clipboard
    */
@@ -110,7 +110,7 @@ const UIStrings = {
    *@description Tooltip description 'Invalidation count'
    */
   invalidationCountExplanation:
-      'Aggregated count of invalidations on nodes and subsequently had style recalculated, all of which are matched by this selector. Note that a node can be invalidated multiple times.',
+      'Aggregated count of invalidations on nodes and subsequently had style recalculated, all of which are matched by this selector. Note that a node can be invalidated multiple times and by multiple selectors.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineSelectorStatsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

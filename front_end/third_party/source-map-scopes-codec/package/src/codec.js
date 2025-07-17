@@ -8,6 +8,7 @@ export var Tag = /*#__PURE__*/ function(Tag) {
   Tag[Tag["GENERATED_RANGE_START"] = 4] = "GENERATED_RANGE_START";
   Tag[Tag["GENERATED_RANGE_END"] = 5] = "GENERATED_RANGE_END";
   Tag[Tag["GENERATED_RANGE_BINDINGS"] = 6] = "GENERATED_RANGE_BINDINGS";
+  Tag[Tag["GENERATED_RANGE_SUBRANGE_BINDING"] = 7] = "GENERATED_RANGE_SUBRANGE_BINDING";
   Tag[Tag["GENERATED_RANGE_CALL_SITE"] = 8] = "GENERATED_RANGE_CALL_SITE";
   return Tag;
 }({});
@@ -18,6 +19,7 @@ export var EncodedTag = /*#__PURE__*/ function(EncodedTag) {
   EncodedTag["GENERATED_RANGE_START"] = "E";
   EncodedTag["GENERATED_RANGE_END"] = "F";
   EncodedTag["GENERATED_RANGE_BINDINGS"] = "G";
+  EncodedTag["GENERATED_RANGE_SUBRANGE_BINDING"] = "H";
   EncodedTag["GENERATED_RANGE_CALL_SITE"] = "I";
   return EncodedTag;
 }({});

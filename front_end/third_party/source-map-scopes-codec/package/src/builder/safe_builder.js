@@ -166,6 +166,10 @@ import { ScopeInfoBuilder } from "./builder.js";
     }) > 0) {
       throw new Error(`Range end (${line}, ${column}) must not precede range start (${range.start.line}, ${range.start.column})`);
     }
+    this.#verifyRangeValues(range, {
+      line,
+      column
+    });
     super.endRange(line, column);
     return this;
   }
@@ -194,6 +198,37 @@ import { ScopeInfoBuilder } from "./builder.js";
   #verifyRangePresent(op) {
     if (this.rangeStack.length === 0) {
       throw new Error(`Can't ${op} while no GeneratedRange is on the stack.`);
+    }
+  }
+  #verifyRangeValues(range, end) {
+    for (const value of range.values){
+      if (!Array.isArray(value)) {
+        continue;
+      }
+      const subRanges = value;
+      if (subRanges.length === 0) {
+        continue;
+      }
+      const first = subRanges.at(0);
+      if (comparePositions(first.from, range.start) !== 0) {
+        throw new Error(`Sub-range bindings must start at the generated range's start. Expected ${range.start.line}:${range.start.column}, but got ${first.from.line}:${first.from.column}`);
+      }
+      const last = subRanges.at(-1);
+      if (comparePositions(last.to, end) !== 0) {
+        throw new Error(`Sub-range bindings must end at the generated range's end. Expected ${end.line}:${end.column}, but got ${last.to.line}:${last.to.column}`);
+      }
+      for(let i = 0; i < subRanges.length; ++i){
+        const current = subRanges[i];
+        if (comparePositions(current.from, current.to) >= 0) {
+          throw new Error(`Sub-range binding 'from' (${current.from.line}:${current.from.column}) must precede 'to' (${current.to.line}:${current.to.column})`);
+        }
+        if (i > 0) {
+          const prev = subRanges[i - 1];
+          if (comparePositions(prev.to, current.from) !== 0) {
+            throw new Error(`Sub-range bindings must be sorted and not overlap. Found gap between ${prev.to.line}:${prev.to.column} and ${current.from.line}:${current.from.column}`);
+          }
+        }
+      }
     }
   }
 }

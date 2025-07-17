@@ -11,9 +11,13 @@ import {
 } from "../codec.js";
 import type {
   GeneratedRange,
+  IndexSourceMapJson,
   OriginalScope,
+  Position,
   ScopeInfo,
+  SourceMap,
   SourceMapJson,
+  SubRangeBinding,
 } from "../scopes.d.ts";
 import { TokenIterator } from "../vlq.js";
 
@@ -36,13 +40,62 @@ export const enum DecodeMode {
   LAX = 2,
 }
 
+export interface DecodeOptions {
+  mode: DecodeMode;
+
+  /**
+   * Offsets `start` and `end` of all generated ranges by the specified amount.
+   * Intended to be used when decoding sections of index source maps one-by-one.
+   *
+   * Has no effect when passing a {@link IndexSourceMapJson} directly to {@link decode}.
+   */
+  generatedOffset: Position;
+}
+
+export const DEFAULT_DECODE_OPTIONS: DecodeOptions = {
+  mode: DecodeMode.LAX,
+  generatedOffset: { line: 0, column: 0 },
+};
+
 export function decode(
+  sourceMap: SourceMap,
+  options: Partial<DecodeOptions> = DEFAULT_DECODE_OPTIONS,
+): ScopeInfo {
+  const opts = { ...DEFAULT_DECODE_OPTIONS, ...options };
+  if ("sections" in sourceMap) {
+    return decodeIndexMap(sourceMap, {
+      ...opts,
+      generatedOffset: { line: 0, column: 0 },
+    });
+  }
+  return decodeMap(sourceMap, opts);
+}
+
+function decodeMap(
   sourceMap: SourceMapJson,
-  options?: { mode: DecodeMode },
+  options: DecodeOptions,
 ): ScopeInfo {
   if (!sourceMap.scopes || !sourceMap.names) return { scopes: [], ranges: [] };
 
   return new Decoder(sourceMap.scopes, sourceMap.names, options).decode();
+}
+
+function decodeIndexMap(
+  sourceMap: IndexSourceMapJson,
+  options: DecodeOptions,
+): ScopeInfo {
+  const scopeInfo: ScopeInfo = { scopes: [], ranges: [] };
+
+  for (const section of sourceMap.sections) {
+    const { scopes, ranges } = decode(section.map, {
+      ...options,
+      generatedOffset: section.offset,
+    });
+    for (const scope of scopes) scopeInfo.scopes.push(scope);
+    for (const range of ranges) scopeInfo.ranges.push(range);
+  }
+
+  return scopeInfo;
 }
 
 const DEFAULT_SCOPE_STATE = {
@@ -74,11 +127,14 @@ class Decoder {
   readonly #rangeStack: GeneratedRange[] = [];
 
   #flatOriginalScopes: OriginalScope[] = [];
+  #subRangeBindingsForRange = new Map<number, [number, number, number][]>();
 
-  constructor(scopes: string, names: string[], options?: { mode: DecodeMode }) {
+  constructor(scopes: string, names: string[], options: DecodeOptions) {
     this.#encodedScopes = scopes;
     this.#names = names;
-    this.#mode = options?.mode ?? DecodeMode.LAX;
+    this.#mode = options.mode;
+    this.#rangeState.line = options.generatedOffset.line;
+    this.#rangeState.column = options.generatedOffset.column;
   }
 
   decode(): ScopeInfo {
@@ -167,6 +223,21 @@ class Decoder {
           }
 
           this.#handleGeneratedRangeBindingsItem(valueIdxs);
+          break;
+        }
+        case Tag.GENERATED_RANGE_SUBRANGE_BINDING: {
+          const variableIndex = iter.nextUnsignedVLQ();
+          const bindings: [number, number, number][] = [];
+
+          while (iter.hasNext() && iter.peek() !== ",") {
+            bindings.push([
+              iter.nextUnsignedVLQ(),
+              iter.nextUnsignedVLQ(),
+              iter.nextUnsignedVLQ(),
+            ]);
+          }
+
+          this.#recordGeneratedSubRangeBindingItem(variableIndex, bindings);
           break;
         }
         case Tag.GENERATED_RANGE_CALL_SITE: {
@@ -331,6 +402,7 @@ class Decoder {
     }
 
     this.#rangeStack.push(range);
+    this.#subRangeBindingsForRange.clear();
   }
 
   #handleGeneratedRangeBindingsItem(valueIdxs: number[]) {
@@ -349,6 +421,19 @@ class Decoder {
         range.values.push(this.#resolveName(valueIdx - 1));
       }
     }
+  }
+
+  #recordGeneratedSubRangeBindingItem(
+    variableIndex: number,
+    bindings: [number, number, number][],
+  ) {
+    if (this.#subRangeBindingsForRange.has(variableIndex)) {
+      this.#throwInStrictMode(
+        "Encountered multiple GENERATED_RANGE_SUBRANGE_BINDING items for the same variable",
+      );
+      return;
+    }
+    this.#subRangeBindingsForRange.set(variableIndex, bindings);
   }
 
   #handleGeneratedRangeCallSite(
@@ -392,12 +477,56 @@ class Decoder {
       column: this.#rangeState.column,
     };
 
+    this.#handleGeneratedRangeSubRangeBindings(range);
+
     if (this.#rangeStack.length > 0) {
       const parent = this.#rangeStack.at(-1)!;
       range.parent = parent;
       parent.children.push(range);
     } else {
       this.#ranges.push(range);
+    }
+  }
+
+  #handleGeneratedRangeSubRangeBindings(range: GeneratedRange) {
+    for (const [variableIndex, bindings] of this.#subRangeBindingsForRange) {
+      const value = range.values[variableIndex];
+      const subRanges: SubRangeBinding[] = [];
+      range.values[variableIndex] = subRanges;
+
+      let lastLine = range.start.line;
+      let lastColumn = range.start.column;
+
+      subRanges.push({
+        from: { line: lastLine, column: lastColumn },
+        to: { line: 0, column: 0 },
+        value: value as string | undefined,
+      });
+
+      for (const [binding, line, column] of bindings) {
+        lastLine += line;
+        if (line === 0) {
+          lastColumn += column;
+        } else {
+          lastColumn = column;
+        }
+
+        subRanges.push({
+          from: { line: lastLine, column: lastColumn },
+          to: { line: 0, column: 0 }, // This will be fixed in the post-processing step.
+          value: binding === 0 ? undefined : this.#resolveName(binding - 1),
+        });
+      }
+    }
+
+    for (const value of range.values) {
+      if (Array.isArray(value)) {
+        const subRanges = value;
+        for (let i = 0; i < subRanges.length - 1; ++i) {
+          subRanges[i].to = subRanges[i + 1].from;
+        }
+        subRanges[subRanges.length - 1].to = range.end;
+      }
     }
   }
 

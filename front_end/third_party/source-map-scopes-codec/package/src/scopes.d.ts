@@ -160,6 +160,19 @@ export interface OriginalPosition extends Position {
 }
 
 /**
+ * A standard source map, or index source map as per https://tc39.es/ecma426.
+ */
+export type SourceMap = SourceMapJson | IndexSourceMapJson;
+
+/**
+ * A standard index source map json object as per https://tc39.es/ecma426.
+ */
+export interface IndexSourceMapJson {
+  version: 3;
+  sections: Array<{ offset: Position; map: SourceMapJson }>;
+}
+
+/**
  * A standard source map json object as per https://tc39.es/ecma426.
  */
 export interface SourceMapJson {

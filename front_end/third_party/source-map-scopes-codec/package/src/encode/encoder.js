@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import { EncodedTag, GeneratedRangeFlags, OriginalScopeFlags } from "../codec.js";
 import { encodeSigned, encodeUnsigned } from "../vlq.js";
+import { comparePositions } from "../util.js";
 const DEFAULT_SCOPE_STATE = {
   line: 0,
   column: 0,
@@ -111,6 +112,7 @@ export class Encoder {
   #encodeGeneratedRange(range) {
     this.#encodeGeneratedRangeStart(range);
     this.#encodeGeneratedRangeBindings(range);
+    this.#encodeGeneratedRangeSubRangeBindings(range);
     this.#encodeGeneratedRangeCallSite(range);
     range.children.forEach((child)=>this.#encodeGeneratedRange(child));
     this.#encodeGeneratedRangeEnd(range);
@@ -145,6 +147,35 @@ export class Encoder {
     if (encodedDefinition !== undefined) this.#encodeSigned(encodedDefinition);
     this.#finishItem();
   }
+  #encodeGeneratedRangeSubRangeBindings(range) {
+    if (range.values.length === 0) return;
+    for(let i = 0; i < range.values.length; ++i){
+      const value = range.values[i];
+      if (!Array.isArray(value) || value.length <= 1) {
+        continue;
+      }
+      this.#encodeTag(EncodedTag.GENERATED_RANGE_SUBRANGE_BINDING).#encodeUnsigned(i);
+      let lastLine = range.start.line;
+      let lastColumn = range.start.column;
+      for(let j = 1; j < value.length; ++j){
+        const subRange = value[j];
+        const prevSubRange = value[j - 1];
+        if (comparePositions(prevSubRange.to, subRange.from) !== 0) {
+          throw new Error("Sub-range bindings must not have gaps");
+        }
+        const encodedLine = subRange.from.line - lastLine;
+        const encodedColumn = encodedLine === 0 ? subRange.from.column - lastColumn : subRange.from.column;
+        if (encodedLine < 0 || encodedColumn < 0) {
+          throw new Error("Sub-range bindings must be sorted");
+        }
+        lastLine = subRange.from.line;
+        lastColumn = subRange.from.column;
+        const binding = subRange.value === undefined ? 0 : this.#resolveNamesIdx(subRange.value) + 1;
+        this.#encodeUnsigned(binding).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn);
+      }
+      this.#finishItem();
+    }
+  }
   #encodeGeneratedRangeBindings(range) {
     if (range.values.length === 0) return;
     if (!range.originalScope) {
@@ -154,12 +185,14 @@ export class Encoder {
     }
     this.#encodeTag(EncodedTag.GENERATED_RANGE_BINDINGS);
     for (const val of range.values){
-      if (val === null || val == undefined) {
+      if (val === null || val === undefined) {
         this.#encodeUnsigned(0);
       } else if (typeof val === "string") {
         this.#encodeUnsigned(this.#resolveNamesIdx(val) + 1);
       } else {
-        throw new Error("Sub-range bindings not implemented yet!");
+        const initialValue = val[0];
+        const binding = initialValue.value === undefined ? 0 : this.#resolveNamesIdx(initialValue.value) + 1;
+        this.#encodeUnsigned(binding);
       }
     }
     this.#finishItem();

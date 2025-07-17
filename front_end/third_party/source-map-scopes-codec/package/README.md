@@ -62,7 +62,3 @@ const scopeInformation = new ScopeInfoBuilder()
 ```
 
 There is also a `SafeScopeInfoBuilder` that checks that scopes and ranges are well nested and some other integrity constraints (e.g. definition scopes are known).
-
-## Missing features
-
-The library is currently missing support for encoding/decoding sub-range bindings. It will be added in the next release.

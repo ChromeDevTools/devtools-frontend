@@ -1538,7 +1538,7 @@ export class NetworkRequestNode extends NetworkNode {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.network-floating-button');
       const aiButtonContainer = document.createElement('span');
       aiButtonContainer.classList.add('ai-button-container');
-      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title());
+      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title(), 'ask-ai');
       floatingButton.addEventListener('click', ev => {
         ev.stopPropagation();
         this.select();

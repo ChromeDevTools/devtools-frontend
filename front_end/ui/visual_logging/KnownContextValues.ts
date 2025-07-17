@@ -463,6 +463,7 @@ export const knownContextValues = new Set([
   'arial',
   'as',
   'ascent-override',
+  'ask-ai',
   'aspect-ratio',
   'asserted-events',
   'asus-zenbook-fold',

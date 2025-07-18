@@ -2932,13 +2932,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
       for (const modelName in insightsForNav.model) {
         const model = modelName as keyof Trace.Insights.Types.InsightModelsType;
-        const data = insightsForNav.model[model];
-        const activeInsight = new Utils.InsightAIContext.ActiveInsight(
-            data,
-            insightsForNav.bounds,
-            parsedTrace,
-        );
-        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(activeInsight);
+        const insight = insightsForNav.model[model];
+        const formatter = new AiAssistanceModel.PerformanceInsightFormatter(parsedTrace, insight);
         if (!formatter.insightIsSupported()) {
           // Not all Insights are integrated with "Ask AI" yet, let's avoid
           // filling up the response with those ones because there will be no
@@ -2948,7 +2943,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
         const formatted = formatter.formatInsight({headingLevel: 3});
 
-        if (data.state === 'pass') {
+        if (insight.state === 'pass') {
           responseTextForPassedInsights += `${formatted}\n\n`;
           continue;
         } else {
@@ -3042,8 +3037,8 @@ export class EventRevealer implements Common.Revealer.Revealer<SDK.TraceObject.R
   }
 }
 
-export class InsightRevealer implements Common.Revealer.Revealer<Utils.InsightAIContext.ActiveInsight> {
-  async reveal(revealable: Utils.InsightAIContext.ActiveInsight): Promise<void> {
+export class InsightRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableInsight> {
+  async reveal(revealable: Utils.Helpers.RevealableInsight): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('timeline');
     TimelinePanel.instance().revealInsight(revealable.insight);
   }

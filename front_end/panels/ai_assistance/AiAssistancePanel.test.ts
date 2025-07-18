@@ -272,8 +272,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         flavor: TimelineUtils.AIContext.AgentFocus,
         createContext: () => {
           // @ts-expect-error: don't need any data.
-          const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(null, null, null);
-          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight(activeInsight);
+          const context = AiAssistanceModel.PerformanceTraceContext.fromInsight(null, null, null);
           sinon.stub(AiAssistanceModel.PerformanceTraceContext.prototype, 'getSuggestions')
               .returns(Promise.resolve([{title: 'test suggestion'}]));
           return context;

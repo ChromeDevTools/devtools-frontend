@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsightOrError, getInsightSetOrError} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance.js';
-
-const {ActiveInsight} = TimelineUtils.InsightAIContext;
 
 /**
  * Asserts two strings are equal, and logs the first differing line if not equal.
@@ -35,9 +32,8 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
@@ -72,10 +68,9 @@ We can break this time down into the 4 phases that combine to make the LCP time:
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       const expected = `## Insight Title: LCP breakdown
 
@@ -102,10 +97,9 @@ We can break this time down into the 2 phases that combine to make the LCP time:
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'dpr.json.gz');
     assert.isOk(insights);
     const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insightSet = getInsightSetOrError(insights, firstNav);
     const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
 
-    const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+    const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
     const output = formatter.formatInsight().split('Timings:')[0];
     const expected = `## Insight Title: LCP breakdown
 
@@ -125,9 +119,8 @@ The LCP element (IMG) is an image fetched from \`https://creativetouchrotherham.
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('RenderBlocking', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const expected = `## Insight Title: Render blocking requests
@@ -148,9 +141,8 @@ There are no network requests that are render blocking.
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('RenderBlocking', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const expected = `## Insight Title: Render blocking requests
@@ -198,10 +190,9 @@ The format is as follows:
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
@@ -240,10 +231,9 @@ The result of the checks for this insight are:
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('DocumentLatency', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const request = insight.data?.documentRequest;
@@ -283,9 +273,8 @@ The result of the checks for this insight are:
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'layout-shifts-root-causes.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('CLSCulprits', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       const expected = `## Insight Title: Layout shift culprits
 
@@ -337,10 +326,9 @@ Layout shifts in this cluster:
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
       assert.isOk(insights);
-      const insightSet = getInsightSetOrError(insights);
       const insight = getInsightOrError('INPBreakdown', insights);
 
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const expected = `## Insight Title: INP breakdown
@@ -380,9 +368,8 @@ The longest interaction on the page was a \`click\` which had a total duration o
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('ModernHTTP', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
 
       const expected = `## Insight Title: Modern HTTP
@@ -409,9 +396,8 @@ There are no requests that were served over a legacy HTTP protocol.
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'http1.1.json.gz');
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-      const insightSet = getInsightSetOrError(insights, firstNav);
       const insight = getInsightOrError('ModernHTTP', insights, firstNav);
-      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, insightSet.bounds, parsedTrace));
+      const formatter = new PerformanceInsightFormatter(parsedTrace, insight);
       const output = formatter.formatInsight();
       const expected = `## Insight Title: Modern HTTP
 

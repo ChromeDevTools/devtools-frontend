@@ -8,7 +8,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
 
-const {getInsightToDebug} = Timeline.ExternalRequests;
+const {getInsightAgentFocusToDebug} = Timeline.ExternalRequests;
 
 describeWithEnvironment('ExternalRequests', () => {
   it('finds the insight by the title', async function() {
@@ -16,12 +16,12 @@ describeWithEnvironment('ExternalRequests', () => {
     const model = Trace.TraceModel.Model.createWithAllHandlers();
     await model.parse(events);
 
-    const result = await getInsightToDebug(model, 'LCP breakdown');
+    const result = await getInsightAgentFocusToDebug(model, 'LCP breakdown');
     if ('error' in result) {
       assert.fail(`Test failed: ${result.error}`);
     }
-    assert.instanceOf(result.insight, Timeline.Utils.InsightAIContext.ActiveInsight);
-    assert.strictEqual(result.insight.insight.insightKey, 'LCPBreakdown');
+    assert.instanceOf(result.focus, Timeline.Utils.AIContext.AgentFocus);
+    assert.strictEqual(result.focus.data.type === 'insight' && result.focus.data.insight.insightKey, 'LCPBreakdown');
   });
 
   it('errors if it cannot find the insight', async function() {
@@ -29,9 +29,9 @@ describeWithEnvironment('ExternalRequests', () => {
     const model = Trace.TraceModel.Model.createWithAllHandlers();
     await model.parse(events);
 
-    const result = await getInsightToDebug(model, 'FakeInsightTitle');
-    if ('insight' in result) {
-      assert.fail('Test should not find an insight.');
+    const result = await getInsightAgentFocusToDebug(model, 'FakeInsightTitle');
+    if ('focus' in result) {
+      assert.fail('Test should not find an focus.');
     }
     assert.strictEqual(result.error, 'Could not find matching insight for FakeInsightTitle');
   });

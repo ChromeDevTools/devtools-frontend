@@ -359,8 +359,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       return;
     }
 
-    const activeInsight = new Utils.InsightAIContext.ActiveInsight(this.#model, this.data.bounds, this.#parsedTrace);
-    const context = Utils.AIContext.AgentFocus.fromInsight(activeInsight);
+    const context = Utils.AIContext.AgentFocus.fromInsight(this.#parsedTrace, this.#model, this.data.bounds);
     UI.Context.Context.instance().setFlavor(Utils.AIContext.AgentFocus, context);
 
     // Trigger the AI Assistance panel to open.

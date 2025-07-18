@@ -173,10 +173,7 @@ function serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
   }
 
   if (focus.data.type === 'insight') {
-    // TODO(crbug.com/425269729): can likely remove ActiveInsight class.
-    const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(
-        focus.data.insight, focus.data.insightSetBounds, focus.data.parsedTrace);
-    const formatter = new PerformanceInsightFormatter(activeInsight);
+    const formatter = new PerformanceInsightFormatter(focus.data.parsedTrace, focus.data.insight);
     return formatter.formatInsight();
   }
 
@@ -184,8 +181,11 @@ function serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
 }
 
 export class PerformanceTraceContext extends ConversationContext<TimelineUtils.AIContext.AgentFocus> {
-  static fromInsight(insight: TimelineUtils.InsightAIContext.ActiveInsight): PerformanceTraceContext {
-    return new PerformanceTraceContext(TimelineUtils.AIContext.AgentFocus.fromInsight(insight));
+  static fromInsight(
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel,
+      insightSetBounds: Trace.Types.Timing.TraceWindowMicro): PerformanceTraceContext {
+    return new PerformanceTraceContext(
+        TimelineUtils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insightSetBounds));
   }
 
   static fromCallTree(callTree: TimelineUtils.AICallTree.AICallTree): PerformanceTraceContext {

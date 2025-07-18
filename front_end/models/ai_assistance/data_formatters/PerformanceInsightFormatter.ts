@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Trace from '../../trace/trace.js';
 
 import {
@@ -56,9 +55,10 @@ function getLCPData(parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: stri
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  constructor(activeInsight: TimelineUtils.InsightAIContext.ActiveInsight) {
-    this.#insight = activeInsight.insight;
-    this.#parsedTrace = activeInsight.parsedTrace;
+
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace, insight: Trace.Insights.Types.InsightModel) {
+    this.#insight = insight;
+    this.#parsedTrace = parsedTrace;
   }
 
   /**

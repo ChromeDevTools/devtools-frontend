@@ -9,18 +9,6 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Utils from './utils.js';
 
-describeWithEnvironment('InsightAIContext', () => {
-  it('gets the title from the provided insight', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    assert.isOk(insights);
-    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
-    const insightSet = getInsightSetOrError(insights, firstNav);
-    const insight = getInsightOrError('LCPBreakdown', insights, firstNav);
-    const aiContext = new Utils.InsightAIContext.ActiveInsight(insight, insightSet.bounds, parsedTrace);
-    assert.strictEqual(aiContext.title(), 'LCP breakdown');
-  });
-});
-
 describeWithEnvironment('AIQueries', () => {
   it('can query for network events relevant to the given insight', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');

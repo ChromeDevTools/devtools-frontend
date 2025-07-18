@@ -165,3 +165,9 @@ export function formatOriginWithEntity(
   originWithEntity = Platform.StringUtilities.trimEndWithMaxLength(originWithEntity, MAX_ORIGIN_LENGTH);
   return originWithEntity;
 }
+
+// Thin wrapper class to enable revealing an individual insight in Timeline panel.
+export class RevealableInsight {
+  constructor(public insight: Trace.Insights.Types.InsightModel) {
+  }
+}

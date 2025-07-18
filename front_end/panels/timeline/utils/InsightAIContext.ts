@@ -6,44 +6,6 @@ import * as Trace from '../../../models/trace/trace.js';
 
 import {AICallTree} from './AICallTree.js';
 
-/**
- * This class holds the Insight that is active when the user has entered the
- * Ask AI flow from the Insights sidebar.
- * Ideally we would just use the InsightModel instance itself, but we need to
- * also store a reference to the parsed trace as we use that to populate the
- * data provided to the LLM, so we use this class as a container for the insight
- * and the parsed trace.
- */
-export class ActiveInsight {
-  #insight: Trace.Insights.Types.InsightModel;
-  #insightSetBounds: Trace.Types.Timing.TraceWindowMicro;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-
-  constructor(
-      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace) {
-    this.#insight = insight;
-    this.#insightSetBounds = insightSetBounds;
-    this.#parsedTrace = parsedTrace;
-  }
-
-  get insight(): Readonly<Trace.Insights.Types.InsightModel> {
-    return this.#insight;
-  }
-
-  get insightSetBounds(): Readonly<Trace.Types.Timing.TraceWindowMicro> {
-    return this.#insightSetBounds;
-  }
-
-  get parsedTrace(): Trace.Handlers.Types.ParsedTrace {
-    return this.#parsedTrace;
-  }
-
-  title(): string {
-    return this.#insight.title;
-  }
-}
-
 export class AIQueries {
   /**
    * Returns the set of network requests that occurred within the timeframe of this Insight.

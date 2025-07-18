@@ -1169,9 +1169,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return Common.Revealer.reveal(trace);
       }
       if (focus.type === 'insight') {
-        const activeInsight =
-            new TimelineUtils.InsightAIContext.ActiveInsight(focus.insight, focus.insightSetBounds, focus.parsedTrace);
-        return Common.Revealer.reveal(activeInsight);
+        return Common.Revealer.reveal(focus.insight);
       }
       Platform.assertNever(focus, 'Unknown agent focus');
     }
@@ -1730,24 +1728,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     const timelinePanel = TimelinePanel.TimelinePanel.TimelinePanel.instance();
 
-    const insightOrError = await TimelinePanel.ExternalRequests.getInsightToDebug(
+    const focusOrError = await TimelinePanel.ExternalRequests.getInsightAgentFocusToDebug(
         timelinePanel.model,
         insightTitle,
     );
-    if ('error' in insightOrError) {
+    if ('error' in focusOrError) {
       return {
-        response: insightOrError.error,
+        response: focusOrError.error,
         devToolsLogs: [],
       };
     }
 
-    const focus = new TimelineUtils.AIContext.AgentFocus({
-      type: 'insight',
-      parsedTrace: insightOrError.insight.parsedTrace,
-      insight: insightOrError.insight.insight,
-      insightSetBounds: insightOrError.insight.insightSetBounds
-    });
-    const selectedContext = createPerformanceTraceContext(focus);
+    const selectedContext = createPerformanceTraceContext(focusOrError.focus);
     const runner = insightsAgent.run(prompt, {selected: selectedContext});
 
     const devToolsLogs: object[] = [];

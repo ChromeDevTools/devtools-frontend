@@ -7,7 +7,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Utils from './utils/utils.js';
 
 type InsightResponse = {
-  insight: Utils.InsightAIContext.ActiveInsight,
+  focus: Utils.AIContext.AgentFocus,
 }|{error: string};
 
 /**
@@ -18,7 +18,8 @@ type InsightResponse = {
  *   to figure out which insight to use if there are >1 navigations -it would need
  *   some extra input data to figure it out.
  */
-export async function getInsightToDebug(model: Trace.TraceModel.Model, insightTitle: string): Promise<InsightResponse> {
+export async function getInsightAgentFocusToDebug(
+    model: Trace.TraceModel.Model, insightTitle: string): Promise<InsightResponse> {
   const parsedTrace = model.parsedTrace();
   const latestInsights = model.traceInsights();
   if (!latestInsights || !parsedTrace) {
@@ -51,6 +52,6 @@ export async function getInsightToDebug(model: Trace.TraceModel.Model, insightTi
   }
 
   const insight = insights.model[matchingInsightKey];
-  const activeInsight = new Utils.InsightAIContext.ActiveInsight(insight, insights.bounds, parsedTrace);
-  return {insight: activeInsight};
+  const focus = Utils.AIContext.AgentFocus.fromInsight(parsedTrace, insight, insights.bounds);
+  return {focus};
 }

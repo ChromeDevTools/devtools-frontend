@@ -285,16 +285,12 @@ describeWithEnvironment('PerformanceAgent – insight focus', () => {
     const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
     const lcpBreakdown = getInsightOrError('LCPBreakdown', insights, firstNav);
     const insightSet = getInsightSetOrError(insights, firstNav);
-    const activeInsight =
-        new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-    const context = PerformanceTraceContext.fromInsight(activeInsight);
+    const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
     assert.strictEqual(context.getOrigin(), 'trace-658799706428-658804825864');
   });
 
   it('outputs the right title for the selected insight', async () => {
-    const mockInsight =
-        new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-    const context = PerformanceTraceContext.fromInsight(mockInsight);
+    const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
     assert.strictEqual(context.getTitle(), 'Insight: LCP breakdown');
   });
 
@@ -345,9 +341,7 @@ code
 
   describe('handleContextDetails', () => {
     it('outputs the right context for the initial query from the user', async () => {
-      const mockInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-      const context = PerformanceTraceContext.fromInsight(mockInsight);
+      const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
       const agent = createAgentForInsightConversation({
         aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
@@ -357,7 +351,7 @@ code
         }]])
       });
 
-      const expectedDetailText = new PerformanceInsightFormatter(mockInsight).formatInsight();
+      const expectedDetailText = new PerformanceInsightFormatter(FAKE_PARSED_TRACE, FAKE_LCP_MODEL).formatInsight();
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       assert.deepEqual(responses, [
@@ -394,10 +388,8 @@ code
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
-      const mockInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-      const context = PerformanceTraceContext.fromInsight(mockInsight);
-      const extraContext = new PerformanceInsightFormatter(mockInsight).formatInsight();
+      const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
+      const extraContext = new PerformanceInsightFormatter(FAKE_PARSED_TRACE, FAKE_LCP_MODEL).formatInsight();
 
       const finalQuery = await agent.enhanceQuery('What is this?', context);
       const expected = `${extraContext}
@@ -413,9 +405,7 @@ What is this?`;
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
 
-      const mockInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-      const context = PerformanceTraceContext.fromInsight(mockInsight);
+      const context = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
 
       await agent.enhanceQuery('What is this?', context);
       const finalQuery = await agent.enhanceQuery('Help me understand?', context);
@@ -429,12 +419,8 @@ Help me understand?`;
       const agent = createAgentForInsightConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
-      const mockInsight1 =
-          new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-      const mockInsight2 =
-          new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_INP_MODEL, FAKE_INSIGHT_SET_BOUNDS, FAKE_PARSED_TRACE);
-      const context1 = PerformanceTraceContext.fromInsight(mockInsight1);
-      const context2 = PerformanceTraceContext.fromInsight(mockInsight2);
+      const context1 = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_LCP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
+      const context2 = PerformanceTraceContext.fromInsight(FAKE_PARSED_TRACE, FAKE_INP_MODEL, FAKE_INSIGHT_SET_BOUNDS);
       const firstQuery = await agent.enhanceQuery('Q1', context1);
       const secondQuery = await agent.enhanceQuery('Q2', context1);
       const thirdQuery = await agent.enhanceQuery('Q3', context2);
@@ -457,9 +443,7 @@ Help me understand?`;
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const action = responses.find(response => response.type === ResponseType.ACTION);
@@ -512,9 +496,7 @@ Help me understand?`;
           [{explanation: 'done'}]
         ])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const titleResponse = responses.find(response => response.type === ResponseType.TITLE);
@@ -551,9 +533,7 @@ Help me understand?`;
         aidaClient: mockAidaClient(
             [[{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}], [{explanation: 'done'}]])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       const titleResponse = responses.find(response => response.type === ResponseType.TITLE);
@@ -591,9 +571,7 @@ Help me understand?`;
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
 
       // Make the first query to trigger the getNetworkActivitySummary function
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -635,9 +613,7 @@ Help me understand?`;
         aidaClient: mockAidaClient(
             [[{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}], [{explanation: 'done'}]])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
 
       // Make the first query to trigger the getMainThreadActivity function
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -675,12 +651,8 @@ Help me understand?`;
           [{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}],
         ])
       });
-      const lcpBreakdownActiveInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const lcpContext = PerformanceTraceContext.fromInsight(lcpBreakdownActiveInsight);
-      const renderBlockingActiveInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(renderBlocking, insightSet.bounds, parsedTrace);
-      const renderBlockingContext = PerformanceTraceContext.fromInsight(renderBlockingActiveInsight);
+      const lcpContext = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
+      const renderBlockingContext = PerformanceTraceContext.fromInsight(parsedTrace, renderBlocking, insightSet.bounds);
 
       // Populate the function calls for the LCP Context
       await Array.fromAsync(agent.run('test 1 LCP', {selected: lcpContext}));
@@ -704,9 +676,7 @@ Help me understand?`;
           [{explanation: '', functionCalls: [{name: 'getNetworkActivitySummary', args: {}}]}], [{explanation: 'done'}]
         ])
       });
-      const activeInsight =
-          new TimelineUtils.InsightAIContext.ActiveInsight(lcpBreakdown, insightSet.bounds, parsedTrace);
-      const context = PerformanceTraceContext.fromInsight(activeInsight);
+      const context = PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown, insightSet.bounds);
       // First query to populate the function calls
       await Array.fromAsync(agent.run('test 1', {selected: context}));
       // Second query should have two facts

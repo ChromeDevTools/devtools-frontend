@@ -91,7 +91,12 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
   override getColumns(): DataGrid.DataGrid.ColumnDescriptor[] {
     if (this.request.directSocketInfo?.type === SDK.NetworkRequest.DirectSocketType.UDP_BOUND) {
       return [
-        {id: 'data', title: i18nString(UIStrings.data), sortable: false, weight: 63},
+        {
+          id: 'data',
+          title: i18nString(UIStrings.data),
+          sortable: false,
+          weight: 63,
+        },
         {
           id: 'address',
           title: i18nString(UIStrings.address),
@@ -113,16 +118,21 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
           align: DataGrid.DataGrid.Align.RIGHT,
           weight: 5,
         },
-        {id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 7},
-      ] as DataGrid.DataGrid.ColumnDescriptor[];
+        {
+          id: 'time',
+          title: i18nString(UIStrings.time),
+          sortable: true,
+          weight: 7,
+        },
+      ];
     }
     return super.getColumns();
   }
 }
 
 class ResourceChunkNode extends DataGridItem {
+  #binaryView: BinaryResourceView|null = null;
   readonly chunk: SDK.NetworkRequest.DirectSocketChunk;
-  private binaryViewInternal: BinaryResourceView|null;
 
   constructor(chunk: SDK.NetworkRequest.DirectSocketChunk, boundSocket: boolean) {
     const time = new Date(chunk.timestamp * 1000);
@@ -148,7 +158,6 @@ class ResourceChunkNode extends DataGridItem {
     }
 
     this.chunk = chunk;
-    this.binaryViewInternal = null;
   }
 
   override createCells(element: Element): void {
@@ -168,15 +177,15 @@ class ResourceChunkNode extends DataGridItem {
   }
 
   override binaryView(): BinaryResourceView|null {
-    if (!this.binaryViewInternal) {
+    if (!this.#binaryView) {
       if (this.dataText().length > 0) {
-        this.binaryViewInternal = new BinaryResourceView(
+        this.#binaryView = new BinaryResourceView(
             TextUtils.StreamingContentData.StreamingContentData.from(
-                new TextUtils.ContentData.ContentData(this.dataText(), true, 'applicaiton/octet-stream')),
+                new TextUtils.ContentData.ContentData(this.dataText(), true, 'application/octet-stream')),
             Platform.DevToolsPath.EmptyUrlString, Common.ResourceType.resourceTypes.DirectSocket);
       }
     }
-    return this.binaryViewInternal;
+    return this.#binaryView;
   }
 
   override getTime(): number {

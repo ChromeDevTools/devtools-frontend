@@ -1,0 +1,46 @@
+# Accordion expansion test
+id: "action-agent-accordion-001"
+name: "Expand Accordion Section"
+description: "Test clicking to expand an accordion panel"
+enabled: true
+
+target:
+  url: "https://jqueryui.com/accordion/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click to expand the \"Section 2\" accordion panel"
+  reasoning: "Testing accordion expand/collapse interaction"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Section 2 accordion header"
+      - "Successfully clicked to expand the section"
+      - "Section 2 content became visible"
+      - "Other sections collapsed appropriately"
+      - "Accordion animation completed smoothly"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify Section 2 is now expanded and content visible"
+        - "Check if other accordion sections collapsed"
+        - "Confirm the expansion animation completed"
+        - "Ensure Section 2 header shows expanded state"
+
+metadata:
+  tags: ["action", "accordion", "expand", "collapse", "ui"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

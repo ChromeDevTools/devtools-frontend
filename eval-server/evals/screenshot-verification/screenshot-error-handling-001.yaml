@@ -1,0 +1,44 @@
+# Screenshot error handling test
+id: "screenshot-error-handling-001"
+name: "Screenshot Error Handling"
+description: "Test screenshot tool error handling and recovery"
+enabled: true
+
+target:
+  url: "https://httpstat.us/500"
+
+tool: "take_screenshot"
+timeout: 30000
+
+input:
+  fullPage: false
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Screenshot tool handled the error page gracefully"
+      - "Either successfully captured the error page or reported appropriate error"
+      - "No crashes or undefined behavior occurred"
+      - "Tool response is meaningful regardless of page loading issues"
+      - "Error handling demonstrates robustness of screenshot functionality"
+    visual_verification:
+      enabled: true
+      capture_before: false
+      capture_after: true
+      prompts:
+        - "If screenshot was taken, verify it shows the error page content"
+        - "Check that the tool handled the HTTP 500 error appropriately"
+        - "Confirm no blank or corrupted screenshots were produced"
+        - "Ensure error scenarios are handled professionally"
+
+metadata:
+  tags: ["screenshot", "error-handling", "robustness", "edge-case"]
+  priority: "normal"
+  timeout: 30000
+  retries: 1
+  flaky: true

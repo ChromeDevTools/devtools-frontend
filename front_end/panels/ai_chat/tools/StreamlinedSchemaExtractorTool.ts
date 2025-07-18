@@ -108,7 +108,7 @@ export class StreamlinedSchemaExtractorTool implements Tool<StreamlinedSchemaExt
       };
 
     } catch (error) {
-      logger.error('Execution Error:', error);
+      logger.error('Execution Error:', error instanceof Error ? error.message : String(error));
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -289,7 +289,7 @@ IMPORTANT: Only extract data that you can see in the accessibility tree above. D
           // Add delay before next attempt to prevent overloading the LLM
           await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY_MS));
         } else {
-          logger.error(`JSON extraction failed after ${attempt} attempts:`, error);
+          logger.error(`JSON extraction failed after ${attempt} attempts:`, error instanceof Error ? error.message : String(error));
           throw new Error(`Data extraction failed after ${attempt} attempts: ${error instanceof Error ? error.message : String(error)}`);
         }
       }
@@ -408,7 +408,7 @@ CRITICAL: Only use nodeIds that you can actually see in the accessibility tree a
       
       return result;
     } catch (error) {
-      logger.error(`Error in URL retry attempt ${attemptNumber}:`, error);
+      logger.error(`Error in URL retry attempt ${attemptNumber}:`, error instanceof Error ? error.message : String(error));
       return null;
     }
   }

@@ -1,0 +1,46 @@
+# Complex navigation test
+id: "action-agent-nav-001"
+name: "Navigate via Menu Click"
+description: "Test clicking navigation menu items to navigate between pages"
+enabled: true
+
+target:
+  url: "https://www.wikipedia.org"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click on the \"English\" language link to navigate to English Wikipedia"
+  reasoning: "Testing navigation through link clicks on a multilingual site"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Identified the correct language link among many options"
+      - "Successfully clicked the English link"
+      - "Navigation occurred to the English Wikipedia"
+      - "Used appropriate tools to verify navigation success"
+      - "Handled the multilingual page structure correctly"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify navigation from Wikipedia homepage to English Wikipedia"
+        - "Check if the page language and content changed to English"
+        - "Verify the URL changed to en.wikipedia.org"
+        - "Confirm the English Wikipedia main page is displayed"
+
+metadata:
+  tags: ["action", "navigation", "click", "wikipedia", "multilingual"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

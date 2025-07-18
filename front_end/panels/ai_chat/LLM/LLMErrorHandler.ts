@@ -35,7 +35,7 @@ const ERROR_SPECIFIC_RETRY_CONFIGS: ErrorRetryConfig = {
     baseDelayMs: 60000, // 60 seconds for rate limits
     maxDelayMs: 300000, // Max 5 minutes
     backoffMultiplier: 1, // No exponential backoff for rate limits
-    jitterMs: 5000, // Small jitter to avoid thundering herd
+    jitterMs: 1000, // Small jitter to avoid thundering herd
   },
   
   [ErrorType.NETWORK_ERROR]: {
@@ -228,10 +228,7 @@ export class LLMRetryManager {
         const result = await operation();
         
         if (attempt > 1 && this.config.enableLogging) {
-          logger.info(`Operation succeeded on attempt ${attempt}`, {
-            context: options.context,
-            totalTime: Date.now() - startTime,
-          });
+          logger.info(`Operation succeeded on attempt ${attempt}${options.context ? ` (context: ${options.context})` : ''} - total time: ${Date.now() - startTime}ms`);
         }
         
         return result;
@@ -240,11 +237,7 @@ export class LLMRetryManager {
         const errorType = LLMErrorClassifier.classifyError(lastError);
         
         if (this.config.enableLogging) {
-          logger.error(`Operation failed on attempt ${attempt}:`, {
-            error: lastError.message,
-            errorType,
-            context: options.context,
-          });
+          logger.error(`Operation failed on attempt ${attempt}: ${lastError instanceof Error ? lastError.message : String(lastError)} (type: ${errorType}${options.context ? `, context: ${options.context}` : ''})`);
         }
 
         // Check if we should retry this error type

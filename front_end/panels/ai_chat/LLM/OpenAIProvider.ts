@@ -301,7 +301,7 @@ export class OpenAIProvider extends LLMBaseProvider {
 
       if (!response.ok) {
         const errorData = await response.json();
-        logger.error('OpenAI API error:', errorData);
+        logger.error('OpenAI API error:', JSON.stringify(errorData));
         const error = new Error(`OpenAI API error: ${response.statusText} - ${errorData?.error?.message || 'Unknown error'}`);
         
         // Create tracing observation for API errors
@@ -319,7 +319,7 @@ export class OpenAIProvider extends LLMBaseProvider {
 
       return data;
     } catch (error) {
-      logger.error('OpenAI API request failed:', error);
+      logger.error('OpenAI API request failed:', error instanceof Error ? error.message : String(error));
       
       // Create tracing observation for network/fetch errors
       if (error instanceof Error) {

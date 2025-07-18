@@ -1,0 +1,70 @@
+# Bing Search results extraction test
+id: "bing-search-001"
+name: "Extract Bing Search Results"
+description: "Extract search results from Bing search page"
+enabled: true
+
+target:
+  url: "https://www.bing.com/search?q=web+scraping+best+practices"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 45000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      query:
+        type: "string"
+      searchResults:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            url:
+              type: "string"
+              format: "url"
+            snippet:
+              type: "string"
+            datePublished:
+              type: "string"
+          required:
+            - "title"
+            - "url"
+            - "snippet"
+      sidebarInfo:
+        type: "object"
+        properties:
+          title:
+            type: "string"
+          description:
+            type: "string"
+          source:
+            type: "string"
+    required:
+      - "searchResults"
+  instruction: "Extract search results including titles, URLs, snippets, and any sidebar information from Bing"
+  reasoning: "Testing extraction from Bing search results with different layout than Google"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Search results match the query intent"
+      - "Results include valid URLs and meaningful snippets"
+      - "Sidebar information is extracted when present"
+      - "No duplicate results in the list"
+
+metadata:
+  tags: ["search", "bing", "serp", "dynamic"]
+  priority: "high"
+  timeout: 45000
+  retries: 2
+  flaky: true
+  owner: "devtools-team"

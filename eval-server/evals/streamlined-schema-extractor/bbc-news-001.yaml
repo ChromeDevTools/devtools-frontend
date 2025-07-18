@@ -1,0 +1,69 @@
+# News article extraction test (Streamlined)
+id: "bbc-news-001"
+name: "Extract BBC News Article"
+description: "Extract article content and metadata from a BBC News page"
+enabled: true
+
+target:
+  url: "https://www.bbc.com/news/technology"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 30000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      headlines:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            summary:
+              type: "string"
+            url:
+              type: "string"
+              format: "url"
+            category:
+              type: "string"
+          required:
+            - "title"
+      mainStory:
+        type: "object"
+        properties:
+          headline:
+            type: "string"
+          summary:
+            type: "string"
+          url:
+            type: "string"
+            format: "url"
+    required:
+      - "headlines"
+  instruction: "Extract the main headlines and featured stories from the BBC Technology news section"
+  reasoning: "Testing extraction from a news aggregation page with multiple articles"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    include_url: true
+    criteria:
+      - "Headlines are current and relevant to technology news"
+      - "Article summaries provide meaningful context"
+      - "URLs link to valid BBC news articles"
+      - "Main story is properly identified"
+      - "All extracted content is in English"
+
+metadata:
+  tags: ["news", "bbc", "aggregation", "dynamic"]
+  priority: "high"
+  timeout: 30000
+  retries: 2
+  flaky: true
+  owner: "devtools-team"

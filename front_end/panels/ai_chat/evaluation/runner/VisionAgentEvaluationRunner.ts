@@ -11,6 +11,8 @@ import type { EvaluationConfig, TestResult, TestCase, ValidationConfig } from '.
 import type { ScreenshotData } from '../utils/EvaluationTypes.js';
 import { createLogger } from '../../core/Logger.js';
 import { TIMING_CONSTANTS } from '../../core/Constants.js';
+import { createTracingProvider, isTracingEnabled } from '../../tracing/TracingConfig.js';
+import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
 
 const logger = createLogger('VisionAgentEvaluationRunner');
 
@@ -43,6 +45,7 @@ export class VisionAgentEvaluationRunner {
   private screenshotTool: TakeScreenshotTool;
   private config: EvaluationConfig;
   private globalVisionEnabled: boolean;
+  private tracingProvider: TracingProvider;
 
   constructor(visionEnabled: boolean = false, judgeModel?: string) {
     // Get API key from AgentService
@@ -71,6 +74,7 @@ export class VisionAgentEvaluationRunner {
     this.llmEvaluator = new LLMEvaluator(this.config.evaluationApiKey, this.config.evaluationModel);
     this.screenshotTool = new TakeScreenshotTool();
     this.globalVisionEnabled = visionEnabled;
+    this.tracingProvider = createTracingProvider();
   }
 
   /**
@@ -95,6 +99,44 @@ export class VisionAgentEvaluationRunner {
     const startTime = Date.now();
     let beforeScreenshot: ScreenshotData | undefined;
     let afterScreenshot: ScreenshotData | undefined;
+    
+    // Create a trace for this test
+    const traceId = `test-${testCase.id}-${Date.now()}`;
+    const tracingContext: TracingContext = { 
+      traceId, 
+      sessionId: `vision-session-${Date.now()}`,
+      parentObservationId: undefined 
+    };
+    
+    try {
+      // Create a root trace for the test
+      if (isTracingEnabled()) {
+        await this.tracingProvider.initialize();
+        await this.tracingProvider.createSession(tracingContext.sessionId, {
+          type: 'vision-evaluation',
+          source: 'ui-dialog'
+        });
+        
+        await this.tracingProvider.createTrace(
+          traceId,
+          tracingContext.sessionId,
+          `Vision Agent Evaluation: ${testCase.name}`,
+          testCase.input,
+          {
+            testId: testCase.id,
+            testName: testCase.name,
+            agent: toolName,
+            visionEnabled: shouldUseVision,
+            url: testCase.url,
+            tags: testCase.metadata?.tags || []
+          },
+          'vision-agent-runner',
+          ['evaluation', 'vision', toolName]
+        );
+      }
+    } catch (error) {
+      logger.warn('Failed to create trace:', error);
+    }
     
     try {
       // Always create hooks for screenshot capture in VisionAgentEvaluationRunner
@@ -138,8 +180,8 @@ export class VisionAgentEvaluationRunner {
       // Always use evaluator with hooks in VisionAgentEvaluationRunner
       const evaluator = new GenericToolEvaluator(this.config, testHooks);
       
-      // Execute the agent action
-      const agentResult = await evaluator.runTest(testCase, agent as any);
+      // Execute the agent action with tracing context
+      const agentResult = await evaluator.runTest(testCase, agent as any, tracingContext);
 
       // Perform evaluation based on vision mode
       if (agentResult.status === 'passed' && agentResult.output && testCase.validation.type === 'llm-judge') {
@@ -212,10 +254,45 @@ export class VisionAgentEvaluationRunner {
         }
       };
 
+      // Update trace with final result
+      try {
+        if (isTracingEnabled()) {
+          await this.tracingProvider.finalizeTrace(traceId, {
+            output: agentResult,
+            statusMessage: agentResult.status,
+            metadata: {
+              ...(agentResult.validation?.llmJudge ? {
+                llmScore: agentResult.validation.llmJudge.score,
+                llmConfidence: agentResult.validation.llmJudge.confidence,
+                llmExplanation: agentResult.validation.llmJudge.explanation
+              } : {}),
+              toolsUsed: agentResult.output?.toolUsageStats?.toolsList || [],
+              toolCallCount: agentResult.output?.toolUsageStats?.totalCalls || 0,
+              duration: agentResult.duration
+            }
+          });
+        }
+      } catch (error) {
+        logger.warn('Failed to update trace:', error);
+      }
+
       return agentResult;
 
     } catch (error) {
       logger.error(`❌ Test failed with error:`, error);
+      
+      // Update trace with error
+      try {
+        if (isTracingEnabled()) {
+          await this.tracingProvider.finalizeTrace(traceId, {
+            error: error instanceof Error ? error.message : String(error),
+            statusMessage: 'error'
+          });
+        }
+      } catch (updateError) {
+        logger.warn('Failed to update trace with error:', updateError);
+      }
+      
       return {
         testId: testCase.id,
         status: 'error',

@@ -59,7 +59,7 @@ export class ErrorHandlingUtils {
     try {
       return await operation();
     } catch (error) {
-      logger.error(`[${context}] Operation failed:`, error);
+      logger.error(`[${context}] Operation failed:`, error instanceof Error ? error.message : String(error));
       return errorBuilder(error);
     }
   }

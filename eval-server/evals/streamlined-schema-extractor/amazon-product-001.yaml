@@ -1,0 +1,78 @@
+# E-commerce product extraction test (Streamlined)
+id: "amazon-product-001"
+name: "Extract Amazon Product Details"
+description: "Extract product information from an Amazon product page"
+enabled: true
+
+target:
+  url: "https://www.amazon.com/Obelisk-Climbing-Rustproof-Trellises-Clematis/dp/B0B4SBY6QD/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 60000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      product:
+        type: "object"
+        properties:
+          title:
+            type: "string"
+          brand:
+            type: "string"
+          price:
+            type: "object"
+            properties:
+              current:
+                type: "number"
+              currency:
+                type: "string"
+          rating:
+            type: "object"
+            properties:
+              average:
+                type: "number"
+              count:
+                type: "number"
+          images:
+            type: "array"
+            items:
+              type: "string"
+              format: "url"
+          features:
+            type: "array"
+            items:
+              type: "string"
+        required:
+          - "title"
+          - "price"
+      availability:
+        type: "string"
+    required:
+      - "product"
+  instruction: "Extract comprehensive product information including pricing, ratings, and key features"
+  reasoning: "Testing extraction from a dynamic e-commerce page with complex structure"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Product title is accurate and complete"
+      - "Price information is current and properly formatted"
+      - "Rating data includes both average and review count"
+      - "Image URLs are valid and accessible"
+      - "Key product features are captured"
+      - "All URLs are properly resolved (not node IDs)"
+
+metadata:
+  tags: ["ecommerce", "amazon", "product", "dynamic"]
+  priority: "high"
+  timeout: 60000
+  retries: 3
+  flaky: true
+  owner: "devtools-team"

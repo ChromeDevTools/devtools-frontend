@@ -1,0 +1,47 @@
+# Basic search interaction test
+id: "action-agent-click-001"
+name: "Search with Text Entry and Click"
+description: "Test entering text in search field and clicking search button"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 90000
+
+input:
+  objective: "Type \"DevTools automation\" in the search box and then click the \"Google Search\" button"
+  reasoning: "Testing multi-step interaction: text input followed by button click"
+  hint: "First fill the search input field, then find and click the search button"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully located the search input field"
+      - "Entered \"DevTools automation\" text in the search box"
+      - "Located the Google Search button after entering text"
+      - "Successfully clicked the search button"
+      - "Search was executed and results page loaded"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify text \"DevTools automation\" was entered in the search field"
+        - "Check if search results page loaded with relevant results"
+        - "Confirm the search was executed (URL changed to results page)"
+        - "Ensure search results are related to \"DevTools automation\""
+
+metadata:
+  tags: ["action", "multi-step", "search", "form-fill", "click", "google", "basic"]
+  priority: "high"
+  timeout: 90000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

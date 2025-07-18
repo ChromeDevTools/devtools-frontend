@@ -1,0 +1,72 @@
+# Real Estate Property Search - Web Task Agent
+id: "web-task-agent-realestate-001"
+name: "Real Estate Property Search"
+description: "Test property search workflow on real estate platforms"
+enabled: true
+
+target:
+  url: "https://www.zillow.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for houses for sale in Austin, Texas under $500k and extract property details"
+  reasoning: "User wants to find affordable housing options in a specific location"
+  extraction_schema:
+    type: "object"
+    properties:
+      properties:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            address:
+              type: "string"
+            price:
+              type: "string"
+            bedrooms:
+              type: "number"
+            bathrooms:
+              type: "number"
+            sqft:
+              type: "string"
+            lot_size:
+              type: "string"
+            year_built:
+              type: "string"
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Orchestrated location search via action_agent"
+      - "Delegated price filter setting to action_agent"
+      - "Coordinated property type selection through action_agent"
+      - "Applied search filters through proper action_agent calls"
+      - "Extracted property listings with schema_based_extractor"
+      - "Returned structured property data in readable text format (not JSON)"
+      - "Each property includes address, price, bedrooms, bathrooms, and other key details"
+      - "Properties are clearly numbered or organized for easy comparison"
+      - "Demonstrated complex real estate search workflow orchestration"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify Zillow search results for Austin, Texas properties"
+        - "Check that properties shown are under $500k"
+        - "Confirm property listings show price, beds, baths info"
+        - "Ensure search results match the specified criteria"
+
+metadata:
+  tags: ["web-task", "real-estate", "zillow", "property-search", "popular"]
+  priority: "high"
+  owner: "devtools-team"

@@ -1,0 +1,29 @@
+{
+  "name": "bo-eval-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for evaluating LLM agents with LLM-as-a-judge",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "cli": "node src/cli.js"
+  },
+  "keywords": ["websocket", "llm", "evaluation", "rpc"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.16.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1",
+    "openai": "^4.24.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

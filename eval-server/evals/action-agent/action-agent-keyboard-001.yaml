@@ -1,0 +1,46 @@
+# Keyboard tab navigation test
+id: "action-agent-keyboard-001"
+name: "Keyboard Tab Navigation"
+description: "Test using keyboard navigation to move between elements"
+enabled: true
+
+target:
+  url: "https://www.w3.org/WAI/ARIA/apg/patterns/menubar/examples/menubar-navigation/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Use Tab key to navigate between menu items and Enter to activate"
+  reasoning: "Testing keyboard-only navigation patterns"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Successfully used keyboard navigation"
+      - "Tab key moved focus between menu items"
+      - "Focus indicators were visible during navigation"
+      - "Enter key activated the focused menu item"
+      - "Keyboard navigation followed accessibility standards"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify focus indicators are visible on menu items"
+        - "Check if keyboard navigation moved focus correctly"
+        - "Confirm Enter key activated the focused item"
+        - "Ensure accessibility navigation patterns worked"
+
+metadata:
+  tags: ["action", "keyboard", "navigation", "accessibility", "focus"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

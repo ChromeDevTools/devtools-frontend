@@ -1,0 +1,46 @@
+# Search filter application test
+id: "action-agent-filter-001"
+name: "Apply Search Filters"
+description: "Test applying search filters to modify results"
+enabled: true
+
+target:
+  url: "https://www.w3schools.com/howto/howto_js_filter_lists.asp"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Type \"Anna\" in the search filter to filter the list"
+  reasoning: "Testing search filter application"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the search filter input"
+      - "Typed \"Anna\" in the filter field"
+      - "List items filtered to show only matching results"
+      - "Non-matching items were hidden or removed from view"
+      - "Filter functionality worked as expected"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify search input contains \"Anna\""
+        - "Check if list shows only items containing \"Anna\""
+        - "Confirm non-matching items are not visible"
+        - "Ensure filter functionality reduced the visible list items"
+
+metadata:
+  tags: ["action", "filter", "search", "list", "dynamic"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

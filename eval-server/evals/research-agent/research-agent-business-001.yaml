@@ -1,0 +1,39 @@
+# Business research test
+id: "research-agent-business-001"
+name: "Research Remote Work Productivity"
+description: "Research remote work impact on productivity and business outcomes"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 240000
+
+input:
+  query: "Remote work productivity statistics impact business outcomes 2024 studies"
+  reasoning: "Testing business research requiring statistical data and multiple perspectives"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Research includes statistical data and survey results"
+      - "Covers multiple perspectives (employee, employer, industry)"
+      - "Sources include business publications, research studies, and reports"
+      - "Information addresses both positive and negative impacts"
+      - "Data is recent and relevant to current work trends"
+      - "Research demonstrates understanding of business implications"
+      - "Statistics and claims are properly sourced"
+
+metadata:
+  tags: ["business", "statistics", "workplace", "comprehensive"]
+  priority: "high"
+  timeout: 240000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

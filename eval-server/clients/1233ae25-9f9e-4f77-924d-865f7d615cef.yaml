@@ -1,0 +1,12 @@
+client:
+  id: 1233ae25-9f9e-4f77-924d-865f7d615cef
+  name: DevTools Client 1233ae25
+  secret_key: hello
+  description: Auto-generated DevTools evaluation client
+settings:
+  max_concurrent_evaluations: 3
+  default_timeout: 45000
+  retry_policy:
+    max_retries: 2
+    backoff_multiplier: 2
+    initial_delay: 1000

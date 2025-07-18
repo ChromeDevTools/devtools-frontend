@@ -9,6 +9,8 @@ import { createLogger } from '../../core/Logger.js';
 import { SanitizationUtils } from '../utils/SanitizationUtils.js';
 import { ErrorHandlingUtils } from '../utils/ErrorHandlingUtils.js';
 import type { ToolExecutionResult } from '../utils/EvaluationTypes.js';
+import { createTracingProvider } from '../../tracing/TracingConfig.js';
+import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
 
 const logger = createLogger('GenericToolEvaluator');
 
@@ -29,17 +31,19 @@ export class GenericToolEvaluator {
   private navigateTool: NavigateURLTool;
   private config: EvaluationConfig;
   private hooks?: TestExecutionHooks;
+  private tracingProvider: TracingProvider;
 
   constructor(config: EvaluationConfig, hooks?: TestExecutionHooks) {
     this.config = config;
     this.navigateTool = new NavigateURLTool();
     this.hooks = hooks;
+    this.tracingProvider = createTracingProvider();
   }
 
   /**
    * Run a test case for any tool
    */
-  async runTest(testCase: TestCase, tool: Tool): Promise<TestResult> {
+  async runTest(testCase: TestCase, tool: Tool, tracingContext?: TracingContext): Promise<TestResult> {
     const startTime = Date.now();
 
     // Use withErrorHandling wrapper for better error management
@@ -56,7 +60,44 @@ export class GenericToolEvaluator {
             await this.hooks.beforeNavigation(testCase);
           }
           
+          // Create navigation span
+          const navSpanId = `nav-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          const navStartTime = new Date();
+          
+          if (tracingContext) {
+            try {
+              await this.tracingProvider.createObservation({
+                id: navSpanId,
+                name: 'Navigation',
+                type: 'span',
+                startTime: navStartTime,
+                input: { url: testCase.url },
+                metadata: {
+                  phase: 'navigation',
+                  url: testCase.url,
+                  testId: testCase.id || testCase.name
+                }
+              }, tracingContext.traceId);
+            } catch (error) {
+              logger.warn('Failed to create navigation span:', error);
+            }
+          }
+          
           const navResult = await this.navigateTool.execute({ url: testCase.url, reasoning: `Navigate to ${testCase.url} for test case ${testCase.name}` });
+          
+          // Update navigation span
+          if (tracingContext) {
+            try {
+              await this.tracingProvider.updateObservation(navSpanId, {
+                endTime: new Date(),
+                output: navResult,
+                error: (navResult && typeof navResult === 'object' && 'error' in navResult) ? String(navResult.error) : undefined
+              });
+            } catch (error) {
+              logger.warn('Failed to update navigation span:', error);
+            }
+          }
+          
           if ('error' in navResult) {
             throw new Error(`Navigation failed: ${navResult.error}`);
           }
@@ -71,6 +112,28 @@ export class GenericToolEvaluator {
         }
 
         // 2. Execute the tool with the input - wrapped with error handling
+        const toolSpanId = `tool-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const toolStartTime = new Date();
+        
+        if (tracingContext) {
+          try {
+            await this.tracingProvider.createObservation({
+              id: toolSpanId,
+              name: `Tool Execution: ${testCase.tool}`,
+              type: 'span',
+              startTime: toolStartTime,
+              input: testCase.input,
+              metadata: {
+                phase: 'tool-execution',
+                tool: testCase.tool,
+                testId: testCase.id || testCase.name
+              }
+            }, tracingContext.traceId);
+          } catch (error) {
+            logger.warn('Failed to create tool execution span:', error);
+          }
+        }
+        
         const toolResult = await ErrorHandlingUtils.withErrorHandling(
           async () => {
             return await tool.execute(testCase.input);
@@ -79,6 +142,19 @@ export class GenericToolEvaluator {
           logger,
           `GenericToolEvaluator.toolExecution:${testCase.tool}`
         );
+        
+        // Update tool execution span
+        if (tracingContext) {
+          try {
+            await this.tracingProvider.updateObservation(toolSpanId, {
+              endTime: new Date(),
+              output: toolResult,
+              error: (toolResult && typeof toolResult === 'object' && 'error' in toolResult) ? String(toolResult.error) : undefined
+            });
+          } catch (error) {
+            logger.warn('Failed to update tool execution span:', error);
+          }
+        }
 
 
         // Call afterToolExecution hook
@@ -151,7 +227,7 @@ export class GenericToolEvaluator {
   /**
    * Run a test with retry logic
    */
-  private async runTestWithRetries(testCase: TestCase, tool: Tool): Promise<TestResult> {
+  private async runTestWithRetries(testCase: TestCase, tool: Tool, tracingContext?: TracingContext): Promise<TestResult> {
     const maxRetries = testCase.metadata?.retries || this.config.retries || 1;
     let lastResult: TestResult | null = null;
     let lastError: unknown = null;
@@ -162,7 +238,7 @@ export class GenericToolEvaluator {
         await new Promise(resolve => setTimeout(resolve, 2000 * attempt)); // Exponential backoff
       }
 
-      lastResult = await this.runTest(testCase, tool);
+      lastResult = await this.runTest(testCase, tool, tracingContext);
       
       // Only retry on errors, not on test failures
       if (lastResult.status !== 'error') {

@@ -1,0 +1,106 @@
+# Google Flights search extraction test
+id: "google-flights-001"
+name: "Extract Google Flights Search Results"
+description: "Extract flight options from Google Flights search"
+enabled: true
+
+target:
+  url: "https://www.google.com/travel/flights/search?tfs=CBwQAhojEgoyMDI1LTEyLTI0agwIAhIIL20vMGQ5anJyBwgBEgNTRk8aIxIKMjAyNS0xMi0zMWoHCAESA1NGT3IMCAISCC9tLzBkOWpyQAFIAXABggELCP___________wGYAQE"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 60000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      searchCriteria:
+        type: "object"
+        properties:
+          origin:
+            type: "string"
+          destination:
+            type: "string"
+          departureDate:
+            type: "string"
+          returnDate:
+            type: "string"
+          tripType:
+            type: "string"
+          passengers:
+            type: "number"
+      flights:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            airline:
+              type: "string"
+            flightNumber:
+              type: "string"
+            departureTime:
+              type: "string"
+            arrivalTime:
+              type: "string"
+            duration:
+              type: "string"
+            stops:
+              type: "number"
+            price:
+              type: "object"
+              properties:
+                amount:
+                  type: "number"
+                currency:
+                  type: "string"
+            cabin:
+              type: "string"
+            bookingUrl:
+              type: "string"
+              format: "url"
+            legroom:
+              type: "string"
+            amenities:
+              type: "array"
+              items:
+                type: "string"
+          required:
+            - "airline"
+            - "departureTime"
+            - "arrivalTime"
+            - "price"
+      priceInsights:
+        type: "object"
+        properties:
+          trend:
+            type: "string"
+          recommendation:
+            type: "string"
+          averagePrice:
+            type: "number"
+    required:
+      - "flights"
+  instruction: "Extract flight options including airlines, times, prices, and amenities from Google Flights results"
+  reasoning: "Testing extraction from complex travel search interface with dynamic pricing"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Flight times are in proper format"
+      - "Prices are numeric values with currency"
+      - "Airlines and flight numbers are accurate"
+      - "Stop information is correctly identified"
+      - "Duration is in readable format"
+
+metadata:
+  tags: ["travel", "flights", "google", "booking"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: true
+  owner: "devtools-team"

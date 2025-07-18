@@ -1,0 +1,46 @@
+# Time picker test
+id: "action-agent-timepicker-001"
+name: "Select Time from Picker"
+description: "Test setting time using time picker controls"
+enabled: true
+
+target:
+  url: "https://timepicker.co/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Set the time to 2:30 PM using the time picker controls"
+  reasoning: "Testing time selection with hour/minute controls"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the time picker interface"
+      - "Set the hour to 2 (14 for 24-hour format)"
+      - "Set the minutes to 30"
+      - "Selected PM or appropriate time format"
+      - "Time input shows 2:30 PM or equivalent"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the time input displays 2:30 PM or 14:30"
+        - "Check if hour and minute were set correctly"
+        - "Confirm AM/PM selection if applicable"
+        - "Ensure the time picker interface was properly used"
+
+metadata:
+  tags: ["action", "timepicker", "time", "form", "clock"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

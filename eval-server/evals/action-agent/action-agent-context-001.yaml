@@ -1,0 +1,46 @@
+# Right click context menu test
+id: "action-agent-context-001"
+name: "Right Click Context Menu"
+description: "Test right-clicking to open context menu"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/context_menu"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Right-click on the context menu area to open the context menu"
+  reasoning: "Testing right-click context menu interaction"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the designated context menu area"
+      - "Performed right-click action correctly"
+      - "Context menu appeared with options"
+      - "Successfully triggered the right-click event"
+      - "Alert or confirmation appeared as expected"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify right-click was performed on correct area"
+        - "Check if context menu or alert appeared"
+        - "Confirm right-click event was properly triggered"
+        - "Ensure the expected response occurred"
+
+metadata:
+  tags: ["action", "context-menu", "right-click", "mouse", "menu"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

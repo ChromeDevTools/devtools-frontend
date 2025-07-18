@@ -1,0 +1,46 @@
+# Date picker test
+id: "action-agent-datepicker-001"
+name: "Select Date from Calendar"
+description: "Test clicking date input and selecting a specific date from calendar popup"
+enabled: true
+
+target:
+  url: "https://jqueryui.com/datepicker/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click the date input field and select March 15, 2024 from the calendar picker"
+  reasoning: "Testing interaction with calendar popup widgets"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located and clicked the date input field"
+      - "Calendar popup opened successfully"
+      - "Navigated to correct month/year if needed"
+      - "Selected the specific date (March 15, 2024)"
+      - "Date input field shows the selected date"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the date input field contains the selected date"
+        - "Check if the calendar widget opened and closed properly"
+        - "Confirm the correct date was highlighted and selected"
+        - "Ensure the date format matches expected output"
+
+metadata:
+  tags: ["action", "datepicker", "calendar", "form", "popup"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

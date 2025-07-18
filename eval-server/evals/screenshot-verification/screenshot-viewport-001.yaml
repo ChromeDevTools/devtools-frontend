@@ -1,0 +1,44 @@
+# Viewport screenshot verification test
+id: "screenshot-viewport-001"
+name: "Take Viewport Screenshot"
+description: "Test taking viewport screenshot and verify functionality"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+
+tool: "take_screenshot"
+timeout: 30000
+
+input:
+  fullPage: false
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Screenshot was successfully captured"
+      - "Data URL is properly formatted and contains image data"
+      - "Screenshot shows the viewport content correctly"
+      - "No errors occurred during screenshot capture"
+      - "Image data length indicates a valid screenshot was taken"
+    visual_verification:
+      enabled: true
+      capture_before: false
+      capture_after: true
+      prompts:
+        - "Verify the screenshot shows the Google homepage"
+        - "Check that the screenshot is not empty or corrupted"
+        - "Confirm the image quality is appropriate for verification"
+        - "Ensure the screenshot captures the current viewport accurately"
+
+metadata:
+  tags: ["screenshot", "viewport", "visual", "verification"]
+  priority: "high"
+  timeout: 30000
+  retries: 2
+  flaky: false

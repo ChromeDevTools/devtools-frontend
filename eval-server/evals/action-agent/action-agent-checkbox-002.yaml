@@ -1,0 +1,47 @@
+# Toggle checkbox test - using HTML form test site
+id: "action-agent-checkbox-002"
+name: "Check Extra Cheese Checkbox"
+description: "Test checking a specific checkbox using the check method"
+enabled: true
+
+target:
+  url: "https://httpbin.org/forms/post"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 45000
+
+input:
+  objective: "Find and check the \"Extra Cheese\" checkbox in the Pizza Toppings section"
+  reasoning: "Testing checkbox interaction functionality using check method"
+  hint: "Look for the Extra Cheese checkbox and use the check method to select it"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the Extra Cheese checkbox in the Pizza Toppings section"
+      - "Used the check method instead of click for better reliability"
+      - "Checkbox became checked (if it wasn't already)"
+      - "No errors occurred during checkbox interaction"
+      - "Form maintained its structure after checkbox selection"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the Extra Cheese checkbox is now checked (shows checkmark)"
+        - "Check that the checkbox shows proper visual feedback for checked state"
+        - "Confirm the form structure remained intact"
+        - "Ensure the checkbox for Extra Cheese was specifically targeted and checked"
+
+metadata:
+  tags: ["action", "checkbox", "check", "form", "httpbin"]
+  priority: "high"
+  timeout: 45000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

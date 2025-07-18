@@ -1,0 +1,40 @@
+# Tool orchestration test - focuses on how well the agent uses available tools
+id: "research-agent-tools-001"
+name: "Research Python Framework Comparison"
+description: "Research comparing Django vs Flask Python frameworks with focus on tool usage"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 240000
+
+input:
+  query: "Django vs Flask Python web framework comparison features performance"
+  reasoning: "Testing effective orchestration of navigation, extraction, and fetching tools"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Agent effectively used navigate_url to access search engines"
+      - "Schema-based extraction was used to gather structured search results"
+      - "Fetcher tool was used to collect content from multiple URLs"
+      - "Navigation strategy was logical and systematic"
+      - "Tool usage demonstrated purposeful research progression"
+      - "Information from different tools was effectively synthesized"
+      - "At least 3-5 different sources were accessed and processed"
+      - "Final handoff included comprehensive data from all tools"
+
+metadata:
+  tags: ["tool-orchestration", "systematic", "python", "frameworks"]
+  priority: "high"
+  timeout: 240000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

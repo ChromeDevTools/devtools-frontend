@@ -1,0 +1,106 @@
+# Macy's product listing extraction test
+id: "macys-001"
+name: "Extract Macy's Product Listings"
+description: "Extract fashion products from Macy's category page"
+enabled: true
+
+target:
+  url: "https://www.macys.com/shop/womens-clothing/womens-dresses"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 60000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      category:
+        type: "string"
+      totalProducts:
+        type: "number"
+      products:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            brand:
+              type: "string"
+            currentPrice:
+              type: "number"
+            originalPrice:
+              type: "number"
+            discount:
+              type: "string"
+            colors:
+              type: "array"
+              items:
+                type: "string"
+            sizes:
+              type: "array"
+              items:
+                type: "string"
+            rating:
+              type: "number"
+            reviewCount:
+              type: "number"
+            productUrl:
+              type: "string"
+              format: "url"
+            imageUrl:
+              type: "string"
+              format: "url"
+            promotions:
+              type: "array"
+              items:
+                type: "string"
+          required:
+            - "name"
+            - "brand"
+            - "currentPrice"
+      refinements:
+        type: "object"
+        properties:
+          brands:
+            type: "array"
+            items:
+              type: "string"
+          sizes:
+            type: "array"
+            items:
+              type: "string"
+          colors:
+            type: "array"
+            items:
+              type: "string"
+          priceRanges:
+            type: "array"
+            items:
+              type: "string"
+    required:
+      - "products"
+  instruction: "Extract fashion products including prices, sizes, colors, and promotional offers from Macy's"
+  reasoning: "Testing extraction from fashion e-commerce with complex product attributes"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Products are from the correct category"
+      - "Prices reflect current and sale prices"
+      - "Color and size options are captured"
+      - "Brand names are accurately extracted"
+      - "Promotional text is included when present"
+
+metadata:
+  tags: ["ecommerce", "macys", "fashion", "products"]
+  priority: "high"
+  timeout: 60000
+  retries: 3
+  flaky: true
+  owner: "devtools-team"

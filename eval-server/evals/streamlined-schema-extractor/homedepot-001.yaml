@@ -1,0 +1,92 @@
+# Home Depot product search extraction test
+id: "homedepot-001"
+name: "Extract Home Depot Product Search"
+description: "Extract product listings from Home Depot search results"
+enabled: true
+
+target:
+  url: "https://www.homedepot.com/s/power%2520drill"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 60000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      searchQuery:
+        type: "string"
+      totalResults:
+        type: "number"
+      products:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            brand:
+              type: "string"
+            price:
+              type: "number"
+            originalPrice:
+              type: "number"
+            savings:
+              type: "number"
+            rating:
+              type: "number"
+            reviewCount:
+              type: "number"
+            productUrl:
+              type: "string"
+              format: "url"
+            imageUrl:
+              type: "string"
+              format: "url"
+            availability:
+              type: "string"
+            features:
+              type: "array"
+              items:
+                type: "string"
+          required:
+            - "name"
+            - "price"
+            - "productUrl"
+      filters:
+        type: "object"
+        properties:
+          brands:
+            type: "array"
+            items:
+              type: "string"
+          priceRanges:
+            type: "array"
+            items:
+              type: "string"
+    required:
+      - "products"
+  instruction: "Extract product listings from Home Depot search results including prices, ratings, and availability"
+  reasoning: "Testing extraction from e-commerce search results with product cards and filters"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Products are relevant to the search query"
+      - "Prices are numeric values in USD"
+      - "Product URLs link to Home Depot product pages"
+      - "Ratings are on a 5-star scale"
+      - "Key product features are captured"
+
+metadata:
+  tags: ["ecommerce", "homedepot", "products", "search"]
+  priority: "high"
+  timeout: 60000
+  retries: 3
+  flaky: true
+  owner: "devtools-team"

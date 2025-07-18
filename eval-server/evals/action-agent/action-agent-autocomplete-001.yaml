@@ -1,0 +1,46 @@
+# Autocomplete search test
+id: "action-agent-autocomplete-001"
+name: "Use Autocomplete Search"
+description: "Test typing in autocomplete field and selecting from suggestions"
+enabled: true
+
+target:
+  url: "https://jqueryui.com/autocomplete/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Type \"Java\" in the autocomplete field and select \"JavaScript\" from suggestions"
+  reasoning: "Testing autocomplete/typeahead interaction patterns"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the autocomplete input field"
+      - "Typed \"Java\" to trigger suggestions"
+      - "Autocomplete dropdown appeared with suggestions"
+      - "Selected \"JavaScript\" from the suggestion list"
+      - "Input field shows the selected value"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify \"JavaScript\" appears in the input field"
+        - "Check if autocomplete suggestions appeared"
+        - "Confirm the correct suggestion was selected"
+        - "Ensure dropdown closed after selection"
+
+metadata:
+  tags: ["action", "autocomplete", "typeahead", "search", "suggestions"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

@@ -1,0 +1,47 @@
+# Multi-step form test
+id: "action-agent-multistep-001"
+name: "Complete Search and Submit"
+description: "Test filling a search form and then clicking the submit button"
+enabled: true
+
+target:
+  url: "https://www.bing.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Fill the search box with \"automated testing tools\" and then click the search button"
+  reasoning: "Testing multi-step form interaction combining fill and click actions"
+  hint: "This requires two actions: first fill the search field, then click the search button"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Recognized this requires multiple actions"
+      - "First filled the search input correctly"
+      - "Then located and clicked the search button"
+      - "Both actions completed successfully in sequence"
+      - "Search was initiated with the correct query"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the search input contains \"automated testing tools\" text"
+        - "Confirm the search was submitted and results page loaded"
+        - "Check that search results are related to the query"
+        - "Ensure the multi-step action completed fully with both fill and click"
+
+metadata:
+  tags: ["action", "multi-step", "form-fill", "click", "bing", "search"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

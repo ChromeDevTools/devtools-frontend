@@ -1,0 +1,46 @@
+# File upload test
+id: "action-agent-upload-001"
+name: "Upload File via Input"
+description: "Test clicking file input and uploading a test file"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/upload"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click the file input and upload a test file"
+  reasoning: "Testing file upload interaction through input elements"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the file input element"
+      - "Triggered file selection dialog"
+      - "Selected a file for upload"
+      - "File name appears in the input field"
+      - "Upload process initiated successfully"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify file name appears in the upload input field"
+        - "Check if file selection was successful"
+        - "Confirm upload button is available or file is ready"
+        - "Ensure no upload errors are displayed"
+
+metadata:
+  tags: ["action", "upload", "file", "input", "form"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

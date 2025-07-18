@@ -1,0 +1,47 @@
+# Visual comparison verification test
+id: "visual-comparison-001"
+name: "Visual Comparison Before and After Action"
+description: "Test visual verification by comparing screenshots before and after an action"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Take a screenshot, then type 'DevTools testing' in the search box, and take another screenshot to compare"
+  reasoning: "Testing visual verification workflow with before/after screenshot comparison"
+  hint: "Use take_screenshot tool before and after performing the search input action"
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Initial screenshot was taken before performing any actions"
+      - "Search text was successfully entered into the search field"
+      - "Second screenshot was taken after the text input"
+      - "Visual comparison shows the difference between before and after states"
+      - "Search field contains the entered text in the final screenshot"
+      - "Screenshots demonstrate successful action verification workflow"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare the before and after screenshots"
+        - "Verify the search field is empty in the first screenshot"
+        - "Confirm the search field contains 'DevTools testing' in the second screenshot"
+        - "Check that the visual changes accurately reflect the performed action"
+
+metadata:
+  tags: ["screenshot", "visual-comparison", "action-verification", "before-after"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false

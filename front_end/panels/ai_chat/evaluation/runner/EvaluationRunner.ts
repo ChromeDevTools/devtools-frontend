@@ -9,6 +9,8 @@ import { ToolRegistry } from '../../agent_framework/ConfigurableAgentTool.js';
 import type { EvaluationConfig, TestResult, TestCase } from '../framework/types.js';
 import { createLogger } from '../../core/Logger.js';
 import { TIMING_CONSTANTS } from '../../core/Constants.js';
+import { createTracingProvider, isTracingEnabled, getTracingConfig } from '../../tracing/TracingConfig.js';
+import type { TracingProvider, TracingContext } from '../../tracing/TracingProvider.js';
 
 const logger = createLogger('EvaluationRunner');
 
@@ -19,6 +21,8 @@ export class EvaluationRunner {
   private evaluator: GenericToolEvaluator;
   private llmEvaluator: LLMEvaluator;
   private config: EvaluationConfig;
+  private tracingProvider: TracingProvider;
+  private sessionId: string;
 
   constructor(judgeModel?: string) {
     // Get API key from AgentService
@@ -46,16 +50,105 @@ export class EvaluationRunner {
 
     this.evaluator = new GenericToolEvaluator(this.config);
     this.llmEvaluator = new LLMEvaluator(this.config.evaluationApiKey, this.config.evaluationModel);
+    
+    // Initialize tracing
+    this.tracingProvider = createTracingProvider();
+    this.sessionId = `evaluation-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    logger.info('EvaluationRunner created with tracing provider', {
+      sessionId: this.sessionId,
+      providerType: this.tracingProvider.constructor.name,
+      tracingEnabled: isTracingEnabled(),
+      tracingConfig: getTracingConfig()
+    });
+    
+    // Initialize tracing provider
+    this.initializeTracing();
+  }
+  
+  private async initializeTracing(): Promise<void> {
+    if (isTracingEnabled()) {
+      try {
+        logger.info('Initializing tracing for evaluation runner', {
+          sessionId: this.sessionId,
+          providerType: this.tracingProvider.constructor.name
+        });
+        
+        await this.tracingProvider.initialize();
+        await this.tracingProvider.createSession(this.sessionId, {
+          type: 'evaluation',
+          runner: 'EvaluationRunner',
+          timestamp: new Date().toISOString()
+        });
+        
+        logger.info('Tracing initialized successfully for evaluation runner');
+      } catch (error) {
+        logger.warn('Failed to initialize tracing for evaluation:', error);
+      }
+    } else {
+      logger.info('Tracing disabled, skipping initialization');
+    }
   }
 
   /**
    * Run a single test case
    */
   async runSingleTest(testCase: TestCase<any>): Promise<TestResult> {
+    const traceId = `eval-${testCase.id || testCase.name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const startTime = new Date();
 
     logger.debug(`[EvaluationRunner] Running test: ${testCase.name}`);
     logger.debug(`[EvaluationRunner] URL: ${testCase.url}`);
     logger.debug(`[EvaluationRunner] Tool: ${testCase.tool}`);
+
+    // Create tracing context
+    const tracingContext: TracingContext = {
+      sessionId: this.sessionId,
+      traceId,
+      parentObservationId: undefined
+    };
+
+    // Create trace for this evaluation
+    if (isTracingEnabled()) {
+      try {
+        logger.info('Creating trace for evaluation', {
+          traceId,
+          sessionId: this.sessionId,
+          testName: testCase.name,
+          tool: testCase.tool,
+          providerType: this.tracingProvider.constructor.name
+        });
+        
+        await this.tracingProvider.createTrace(
+          traceId,
+          this.sessionId,
+          `Evaluation: ${testCase.name}`,
+          {
+            testCase: {
+              id: testCase.id,
+              name: testCase.name,
+              tool: testCase.tool,
+              url: testCase.url,
+              description: testCase.description
+            }
+          },
+          {
+            type: 'evaluation',
+            tool: testCase.tool,
+            url: testCase.url,
+            testId: testCase.id || testCase.name
+          },
+          'evaluation-runner',
+          ['evaluation', testCase.tool, 'test']
+        );
+        
+        logger.info('Trace created successfully');
+      } catch (error) {
+        logger.error('Failed to create trace for evaluation:', error);
+      }
+    } else {
+      logger.info('Tracing disabled, skipping trace creation');
+    }
 
     // Get the tool instance from ToolRegistry based on what the test specifies
     const tool = ToolRegistry.getRegisteredTool(testCase.tool);
@@ -63,18 +156,55 @@ export class EvaluationRunner {
       throw new Error(`Tool "${testCase.tool}" not found in ToolRegistry. Ensure it is properly registered.`);
     }
 
-    const result = await this.evaluator.runTest(testCase, tool as any);
+    const result = await this.evaluator.runTest(testCase, tool as any, tracingContext);
     
     // Add LLM evaluation if test passed
     if (result.status === 'passed' && result.output && testCase.validation.type !== 'snapshot') {
       logger.debug(`[EvaluationRunner] Adding LLM evaluation...`);
       
+      // Create span for LLM evaluation
+      const llmSpanId = `llm-judge-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const llmStartTime = new Date();
+      
       try {
+        if (isTracingEnabled()) {
+          await this.tracingProvider.createObservation({
+            id: llmSpanId,
+            name: 'LLM Judge Evaluation',
+            type: 'generation',
+            startTime: llmStartTime,
+            input: {
+              output: result.output,
+              testCase: testCase.name,
+              validation: testCase.validation
+            },
+            model: this.config.evaluationModel,
+            metadata: {
+              tool: testCase.tool,
+              testId: testCase.id || testCase.name,
+              phase: 'llm-evaluation'
+            }
+          }, traceId);
+        }
+        
         const llmJudgment = await this.llmEvaluator.evaluate(
           result.output,
           testCase,
           testCase.validation
         );
+        
+        // Update LLM evaluation span with result
+        if (isTracingEnabled()) {
+          await this.tracingProvider.updateObservation(llmSpanId, {
+            endTime: new Date(),
+            output: llmJudgment,
+            metadata: {
+              score: llmJudgment.score,
+              passed: llmJudgment.passed,
+              explanation: llmJudgment.explanation
+            }
+          });
+        }
         
         if (result.validation) {
           result.validation.llmJudge = llmJudgment;
@@ -83,6 +213,31 @@ export class EvaluationRunner {
         }
       } catch (error) {
         console.warn('[EvaluationRunner] LLM evaluation failed:', error);
+        // Update span with error
+        if (isTracingEnabled()) {
+          try {
+            await this.tracingProvider.updateObservation(llmSpanId, {
+              endTime: new Date(),
+              error: error instanceof Error ? error.message : String(error)
+            });
+          } catch (tracingError) {
+            logger.warn('Failed to update LLM evaluation span with error:', tracingError);
+          }
+        }
+      }
+    }
+
+    // Finalize the trace
+    if (isTracingEnabled()) {
+      try {
+        await this.tracingProvider.finalizeTrace(traceId, {
+          status: result.status,
+          output: result.output,
+          duration: Date.now() - startTime.getTime(),
+          validation: result.validation
+        });
+      } catch (error) {
+        logger.warn('Failed to finalize trace:', error);
       }
     }
 

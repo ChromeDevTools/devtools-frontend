@@ -1,0 +1,39 @@
+# No-results edge case test
+id: "research-agent-edge-001"
+name: "Research Obscure Fictional Topic"
+description: "Test handling of queries with very limited or no reliable sources"
+enabled: true
+
+target:
+  url: "https://www.google.com"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "research_agent"
+timeout: 180000
+
+input:
+  query: "quantum bluetooth watermelon encryption algorithm 2024"
+  reasoning: "Testing edge case handling when query yields no meaningful results"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Agent recognizes when query yields limited or unreliable results"
+      - "Demonstrates appropriate search strategy modification"
+      - "Does not fabricate information when sources are unavailable"
+      - "Gracefully handles lack of substantive results"
+      - "Still attempts handoff to content writer with available information"
+      - "Maintains professional approach despite limited data"
+      - "Shows appropriate uncertainty when information is sparse"
+
+metadata:
+  tags: ["edge-case", "no-results", "error-handling", "fictional"]
+  priority: "high"
+  timeout: 180000
+  retries: 1
+  flaky: false
+  owner: "devtools-team"

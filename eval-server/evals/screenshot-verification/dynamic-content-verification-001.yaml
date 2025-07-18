@@ -1,0 +1,47 @@
+# Dynamic content visual verification test
+id: "dynamic-content-verification-001"
+name: "Dynamic Content Visual Verification"
+description: "Test visual verification of dynamic content loading using screenshots"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/dynamic_loading/1"
+
+tool: "action_agent"
+timeout: 90000
+
+input:
+  objective: "Take a screenshot, click the Start button, wait for content to load, then take another screenshot to verify the dynamic content appeared"
+  reasoning: "Testing visual verification of dynamic content changes using screenshot comparison"
+  hint: "Use take_screenshot before clicking Start, then again after the dynamic content loads"
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Initial screenshot captured the page before dynamic loading"
+      - "Start button was successfully clicked"
+      - "Agent waited for dynamic content to fully load"
+      - "Final screenshot shows the revealed dynamic content"
+      - "Visual comparison demonstrates successful content loading verification"
+      - "Screenshots show clear before/after difference in content visibility"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify dynamic content loading"
+        - "Confirm the first screenshot shows hidden content area"
+        - "Verify the second screenshot shows the revealed 'Hello World!' text"
+        - "Check that the loading animation or process is properly captured"
+
+metadata:
+  tags: ["screenshot", "dynamic-content", "visual-verification", "loading"]
+  priority: "high"
+  timeout: 90000
+  retries: 2
+  flaky: true

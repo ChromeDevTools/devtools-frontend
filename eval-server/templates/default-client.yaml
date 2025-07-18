@@ -1,0 +1,58 @@
+# Default client configuration template
+# This file is used as a template when creating new clients
+
+client:
+  id: "{CLIENT_ID}"
+  name: "{CLIENT_NAME}"
+  secret_key: "{SECRET_KEY}"  # Optional
+  description: "Auto-generated client configuration"
+
+settings:
+  max_concurrent_evaluations: 3
+  default_timeout: 30000
+  retry_policy:
+    max_retries: 2
+    backoff_multiplier: 2
+    initial_delay: 1000
+
+evaluations:
+  # Example evaluation - disabled by default
+  - id: "example-schema-extraction"
+    name: "Example Schema Extraction"
+    description: "A sample evaluation for schema extraction"
+    enabled: false
+    
+    target:
+      url: "https://example.com"
+      wait_for: "networkidle"
+      wait_timeout: 5000
+    
+    tool: "extract_schema_data"
+    timeout: 30000
+    
+    input:
+      schema:
+        type: "object"
+        properties:
+          title:
+            type: "string"
+            description: "Page title"
+          content:
+            type: "string"
+            description: "Main content"
+    
+    schedule:
+      type: "on_demand"
+    
+    validation:
+      type: "llm-judge"
+      llm_judge:
+        model: "gpt-4o-mini"
+        temperature: 0.3
+        criteria:
+          - "Title should be extracted correctly"
+          - "Content should be meaningful and not empty"
+    
+    metadata:
+      tags: ["example", "schema-extraction"]
+      priority: "normal"

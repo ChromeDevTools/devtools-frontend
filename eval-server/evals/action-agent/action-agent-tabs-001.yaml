@@ -1,0 +1,46 @@
+# Tab panel navigation test
+id: "action-agent-tabs-001"
+name: "Navigate Tab Panels"
+description: "Test clicking tab to switch between tab panels"
+enabled: true
+
+target:
+  url: "https://jqueryui.com/tabs/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click on the \"Nunc tincidunt\" tab to switch to that panel"
+  reasoning: "Testing tab panel navigation"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the \"Nunc tincidunt\" tab button"
+      - "Successfully clicked the tab"
+      - "Tab panel content switched to the selected tab"
+      - "Active tab visual state changed appropriately"
+      - "Content area updated to show the new panel"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the \"Nunc tincidunt\" tab is now active/highlighted"
+        - "Check if the content panel changed to show new content"
+        - "Confirm the tab switching animation completed"
+        - "Ensure the correct tab content is visible"
+
+metadata:
+  tags: ["action", "tabs", "navigation", "panels", "ui"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

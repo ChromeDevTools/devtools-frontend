@@ -1,0 +1,46 @@
+# Accessibility action test
+id: "action-agent-a11y-001"
+name: "Click Using ARIA Label"
+description: "Test clicking an element identified primarily by ARIA attributes"
+enabled: true
+
+target:
+  url: "https://www.w3.org/WAI/ARIA/apg/patterns/button/examples/button/"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 60000
+
+input:
+  objective: "Click the button with aria-label \"Print Page\""
+  reasoning: "Testing action selection using accessibility attributes"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Used accessibility tree to find elements"
+      - "Correctly identified element by ARIA label"
+      - "Successfully clicked the target button"
+      - "Demonstrated understanding of accessibility attributes"
+      - "No reliance on visual appearance alone"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Verify the Print Page button was successfully clicked"
+        - "Check if any print dialog or print preview appeared"
+        - "Confirm the button showed visual feedback (pressed state)"
+        - "Ensure the action was performed on the correct accessibility-labeled element"
+
+metadata:
+  tags: ["action", "accessibility", "aria", "click", "a11y"]
+  priority: "high"
+  timeout: 60000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

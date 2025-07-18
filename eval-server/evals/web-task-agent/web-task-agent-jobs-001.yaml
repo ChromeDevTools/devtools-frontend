@@ -1,0 +1,70 @@
+# Job Search Workflow - Web Task Agent
+id: "web-task-agent-jobs-001"
+name: "Job Search Workflow"
+description: "Test web task agent orchestrating job search on LinkedIn"
+enabled: true
+
+target:
+  url: "https://www.linkedin.com/jobs"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "web_task_agent"
+timeout: 180000
+
+input:
+  task: "Search for \"Software Engineer\" jobs in \"San Francisco\" and extract details for the first 5 results"
+  reasoning: "User wants to find job opportunities in tech industry"
+  extraction_schema:
+    type: "object"
+    properties:
+      jobs:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            company:
+              type: "string"
+            location:
+              type: "string"
+            salary:
+              type: "string"
+            description:
+              type: "string"
+            url:
+              type: "string"
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4o-mini"
+    temperature: 0.3
+    criteria:
+      - "Either used construct_direct_url for LinkedIn job search OR used traditional form interaction"
+      - "If using direct URL: constructed proper LinkedIn job search URL with keywords and location"
+      - "If using forms: delegated keyword and location input to action_agent"
+      - "Extracted job listings using schema_based_extractor"
+      - "Returned structured job data in readable text format (not JSON)"
+      - "Each job listing includes title, company, location, and other relevant fields"
+      - "Results are numbered or organized clearly for easy reading"
+      - "Demonstrated proper workflow orchestration for job search"
+      - "Never used direct browser interaction tools"
+    visual_verification:
+      enabled: true
+      capture_before_action: true
+      capture_after_action: true
+      verification_prompts:
+        - "Verify LinkedIn job search results are displayed"
+        - "Check that search shows Software Engineer jobs in San Francisco"
+        - "Confirm job listings include company names and titles"
+        - "Ensure at least 5 job results are visible"
+
+metadata:
+  tags: ["web-task", "jobs", "linkedin", "search", "career", "popular"]
+  priority: "high"
+  owner: "devtools-team"

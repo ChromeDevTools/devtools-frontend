@@ -1,0 +1,46 @@
+# Dynamic content interaction test
+id: "action-agent-dynamic-001"
+name: "Click Dynamic Load Button"
+description: "Test clicking a button that loads dynamic content"
+enabled: true
+
+target:
+  url: "https://the-internet.herokuapp.com/dynamic_loading/1"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 90000
+
+input:
+  objective: "Click the \"Start\" button to trigger dynamic content loading"
+  reasoning: "Testing interaction with dynamically loaded content"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Found and clicked the Start button"
+      - "Handled the dynamic loading process"
+      - "Recognized that content changes after clicking"
+      - "No timing issues with the dynamic content"
+      - "Successfully triggered the loading animation"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify dynamic content loaded after clicking Start"
+        - "Check if loading animation or spinner was displayed"
+        - "Confirm new content appeared that was previously hidden"
+        - "Verify the Start button state changed or was replaced after clicking"
+
+metadata:
+  tags: ["action", "dynamic", "click", "ajax", "loading"]
+  priority: "high"
+  timeout: 90000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

@@ -1,0 +1,66 @@
+# Simple structured data test (Streamlined)
+id: "github-repo-001"
+name: "Extract GitHub Repository Info"
+description: "Extract basic repository information from a GitHub page"
+enabled: true
+
+target:
+  url: "https://github.com/microsoft/TypeScript"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 30000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      language:
+        type: "string"
+      stars:
+        type: "number"
+      forks:
+        type: "number"
+      topics:
+        type: "array"
+        items:
+          type: "string"
+      readme:
+        type: "object"
+        properties:
+          summary:
+            type: "string"
+    required:
+      - "name"
+      - "description"
+  instruction: "Extract repository metadata and basic statistics"
+  reasoning: "Testing extraction from a well-structured GitHub repository page"
+
+validation:
+  type: "hybrid"
+  snapshot:
+    exclude_paths:
+      - "stars"
+      - "forks"
+    structure_only: false
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Repository name matches the GitHub page"
+      - "Description accurately reflects the project purpose"
+      - "Programming language is correctly identified"
+      - "Topic tags are relevant to the project"
+
+metadata:
+  tags: ["github", "repository", "structured"]
+  priority: "high"
+  timeout: 30000
+  retries: 1
+  flaky: false
+  owner: "devtools-team"

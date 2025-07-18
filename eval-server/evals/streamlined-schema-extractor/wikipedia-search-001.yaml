@@ -1,0 +1,77 @@
+# Wikipedia search results extraction test
+id: "wikipedia-search-001"
+name: "Extract Wikipedia Search Results"
+description: "Extract search results from Wikipedia search"
+enabled: true
+
+target:
+  url: "https://en.wikipedia.org/w/index.php?search=artificial+intelligence&title=Special:Search"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "extract_schema_streamlined"
+timeout: 30000
+
+input:
+  schema:
+    type: "object"
+    properties:
+      searchTerm:
+        type: "string"
+      resultCount:
+        type: "number"
+      searchResults:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            url:
+              type: "string"
+              format: "url"
+            snippet:
+              type: "string"
+            category:
+              type: "string"
+            wordCount:
+              type: "number"
+            lastEdited:
+              type: "string"
+          required:
+            - "title"
+            - "url"
+            - "snippet"
+      suggestedArticles:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            title:
+              type: "string"
+            url:
+              type: "string"
+              format: "url"
+    required:
+      - "searchResults"
+  instruction: "Extract Wikipedia search results including article titles, URLs, snippets, and metadata like word count or last edit date"
+  reasoning: "Testing extraction from Wikipedia's internal search with rich metadata"
+
+validation:
+  type: "llm_judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Search results are Wikipedia articles"
+      - "Each result has a valid Wikipedia URL"
+      - "Snippets contain relevant content highlights"
+      - "Metadata like word count is extracted when available"
+
+metadata:
+  tags: ["search", "wikipedia", "encyclopedia"]
+  priority: "high"
+  timeout: 30000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

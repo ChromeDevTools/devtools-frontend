@@ -1,0 +1,45 @@
+# Full page screenshot verification test
+id: "screenshot-fullpage-001"
+name: "Take Full Page Screenshot"
+description: "Test taking full page screenshot and verify functionality"
+enabled: true
+
+target:
+  url: "https://en.wikipedia.org/wiki/Chrome_DevTools"
+
+tool: "take_screenshot"
+timeout: 45000
+
+input:
+  fullPage: true
+
+schedule:
+  type: "on_demand"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4o"
+    criteria:
+      - "Full page screenshot was successfully captured"
+      - "Data URL contains valid image data"
+      - "Screenshot captures the entire page content including areas below the fold"
+      - "Image size is larger than viewport-only screenshot would be"
+      - "No errors occurred during full page capture"
+      - "Screenshot includes both header and footer content"
+    visual_verification:
+      enabled: true
+      capture_before: false
+      capture_after: true
+      prompts:
+        - "Verify the screenshot shows the complete Wikipedia article page"
+        - "Check that content above and below the fold is captured"
+        - "Confirm the image is taller than a typical viewport"
+        - "Ensure no content is cut off at the bottom"
+
+metadata:
+  tags: ["screenshot", "fullpage", "visual", "verification", "wikipedia"]
+  priority: "high"
+  timeout: 45000
+  retries: 2
+  flaky: false

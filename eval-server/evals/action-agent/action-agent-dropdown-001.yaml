@@ -1,0 +1,46 @@
+# Dropdown selection test
+id: "action-agent-dropdown-001"
+name: "Select Dropdown Option"
+description: "Test selecting an option from a dropdown menu"
+enabled: true
+
+target:
+  url: "https://www.w3schools.com/tags/tryit.asp?filename=tryhtml_select"
+  wait_for: "networkidle"
+  wait_timeout: 5000
+
+tool: "action_agent"
+timeout: 45000
+
+input:
+  objective: "Select \"Audi\" from the car brands dropdown menu"
+  reasoning: "Testing dropdown selection interaction"
+
+validation:
+  type: "llm-judge"
+  llm_judge:
+    model: "gpt-4.1-mini"
+    temperature: 0.3
+    criteria:
+      - "Located the dropdown/select element"
+      - "Identified the correct option to select"
+      - "Successfully selected the Audi option"
+      - "Dropdown value changed to the selected option"
+      - "Handled select element interaction properly"
+    visual_verification:
+      enabled: true
+      capture_before: true
+      capture_after: true
+      prompts:
+        - "Compare screenshots to verify the dropdown selection changed"
+        - "Confirm \"Audi\" is now displayed as the selected option"
+        - "Check if the dropdown is closed after selection"
+        - "Verify no other form elements were affected by the selection"
+
+metadata:
+  tags: ["action", "dropdown", "select", "form", "w3schools"]
+  priority: "high"
+  timeout: 45000
+  retries: 2
+  flaky: false
+  owner: "devtools-team"

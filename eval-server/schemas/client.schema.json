@@ -1,0 +1,337 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Client Configuration Schema",
+  "description": "Schema for validating client YAML configuration files",
+  "required": ["client", "settings", "evaluations"],
+  "properties": {
+    "client": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+          "description": "UUID v4 format client identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Human-readable client name"
+        },
+        "secret_key": {
+          "type": "string",
+          "description": "Optional authentication secret key"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional client description"
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "max_concurrent_evaluations": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        },
+        "default_timeout": {
+          "type": "integer",
+          "minimum": 5000,
+          "maximum": 300000,
+          "default": 30000,
+          "description": "Default timeout in milliseconds"
+        },
+        "retry_policy": {
+          "type": "object",
+          "properties": {
+            "max_retries": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5,
+              "default": 2
+            },
+            "backoff_multiplier": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 5,
+              "default": 2
+            },
+            "initial_delay": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 10000,
+              "default": 1000,
+              "description": "Initial delay in milliseconds"
+            }
+          }
+        }
+      }
+    },
+    "evaluations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/evaluation"
+      }
+    }
+  },
+  "definitions": {
+    "evaluation": {
+      "type": "object",
+      "required": ["id", "name", "tool", "input"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-_]+$",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Unique evaluation identifier"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Human-readable evaluation name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional evaluation description"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this evaluation is enabled"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "Target URL for the evaluation"
+            },
+            "wait_for": {
+              "type": "string",
+              "enum": ["load", "domcontentloaded", "networkidle"],
+              "default": "networkidle"
+            },
+            "wait_timeout": {
+              "type": "integer",
+              "minimum": 1000,
+              "maximum": 30000,
+              "default": 5000
+            }
+          }
+        },
+        "tool": {
+          "type": "string",
+          "enum": [
+            "extract_schema_data",
+            "extract_schema_streamlined", 
+            "research_agent",
+            "action_agent",
+            "web_task_agent"
+          ],
+          "description": "Tool to execute for this evaluation"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 5000,
+          "maximum": 300000,
+          "description": "Evaluation timeout in milliseconds"
+        },
+        "input": {
+          "type": "object",
+          "description": "Tool-specific input parameters"
+        },
+        "schedule": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["on_demand", "periodic", "once"]
+            },
+            "interval": {
+              "type": "integer",
+              "minimum": 60000,
+              "description": "Interval in milliseconds for periodic schedules"
+            },
+            "run_at": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO timestamp for one-time schedules"
+            }
+          },
+          "if": {
+            "properties": {
+              "type": { "const": "periodic" }
+            }
+          },
+          "then": {
+            "required": ["interval"]
+          },
+          "else": {
+            "if": {
+              "properties": {
+                "type": { "const": "once" }
+              }
+            },
+            "then": {
+              "required": ["run_at"]
+            }
+          }
+        },
+        "validation": {
+          "type": "object",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["llm-judge", "snapshot", "hybrid"]
+            },
+            "llm_judge": {
+              "$ref": "#/definitions/llm_judge_config"
+            },
+            "snapshot": {
+              "$ref": "#/definitions/snapshot_config"
+            },
+            "hybrid": {
+              "type": "object",
+              "properties": {
+                "weight_llm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "weight_snapshot": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "tags": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["low", "normal", "high"],
+              "default": "normal"
+            },
+            "owner": {
+              "type": "string",
+              "description": "Responsible team or person"
+            },
+            "created": {
+              "type": "string",
+              "format": "date"
+            },
+            "modified": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      }
+    },
+    "llm_judge_config": {
+      "type": "object",
+      "required": ["criteria"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "LLM model to use for evaluation"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 0.3
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "description": "List of evaluation criteria"
+        },
+        "visual_verification": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "capture_before": {
+              "type": "boolean",
+              "default": true
+            },
+            "capture_after": {
+              "type": "boolean",
+              "default": true
+            },
+            "prompts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "snapshot_config": {
+      "type": "object",
+      "properties": {
+        "structure_only": {
+          "type": "boolean",
+          "default": false,
+          "description": "Compare only structure, not values"
+        },
+        "exclude_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "JSONPath expressions for fields to exclude"
+        },
+        "sanitizers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "JSONPath to the field"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern to match"
+              },
+              "replacement": {
+                "type": "string",
+                "description": "Replacement string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

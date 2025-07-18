@@ -18254,6 +18254,7 @@ export namespace Preload {
   export const enum RuleSetErrorType {
     SourceIsNotJsonObject = 'SourceIsNotJsonObject',
     InvalidRulesSkipped = 'InvalidRulesSkipped',
+    InvalidRulesetLevelTag = 'InvalidRulesetLevelTag',
   }
 
   /**

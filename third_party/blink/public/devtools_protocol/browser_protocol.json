@@ -27810,7 +27810,8 @@
                     "type": "string",
                     "enum": [
                         "SourceIsNotJsonObject",
-                        "InvalidRulesSkipped"
+                        "InvalidRulesSkipped",
+                        "InvalidRulesetLevelTag"
                     ]
                 },
                 {

@@ -5,13 +5,11 @@
  * @fileoverview Rule to identify Lit render calls that are not inside of a
  * view function.
  */
-import type {Rule} from 'eslint';
+import type {TSESTree} from '@typescript-eslint/utils';
 import type {ArrowFunctionExpression, FunctionDeclaration, FunctionExpression} from 'estree';
 
-import {isLitHtmlRenderCall} from './utils/lit.ts';
+import {isLitHtmlRenderCall, isViewFunction} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
-
-type Node = Rule.Node;
 
 export default createRule({
   name: 'no-lit-render-outside-of-view',
@@ -40,12 +38,12 @@ export default createRule({
           });
           return;
         }
-        let functionNode = node.parent as Node | undefined;
+        let functionNode: TSESTree.Node|undefined = node.parent;
         while (functionNode &&
                !['FunctionDeclaration', 'FunctionExpression', 'ArrowFunctionExpression'].includes(functionNode.type)) {
           functionNode = functionNode.parent;
         }
-        if (!functionNode) {
+        if (!functionNode || !isViewFunction(functionNode)) {
           context.report({
             node,
             messageId: 'litRenderShouldBeInsideOfView',
@@ -55,14 +53,6 @@ export default createRule({
         type FunctionLike = FunctionDeclaration|FunctionExpression|ArrowFunctionExpression;
         const paramNames =
             (functionNode as FunctionLike).params.filter(p => p.type === 'Identifier').map(param => param.name);
-        if (paramNames.length !== 3 || !paramNames[0].toLowerCase().endsWith('input') ||
-            !paramNames[1].toLowerCase().endsWith('output') || !paramNames[2].toLowerCase().endsWith('target')) {
-          context.report({
-            node,
-            messageId: 'litRenderShouldBeInsideOfView',
-          });
-          return;
-        }
         const targetArgument = node.arguments[1];
         if (targetArgument.type !== 'Identifier' || targetArgument.name !== paramNames[2]) {
           context.report({

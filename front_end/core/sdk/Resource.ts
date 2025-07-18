@@ -163,11 +163,6 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return this.resourceType();
   }
 
-  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    const contentData = await this.requestContentData();
-    return TextUtils.ContentData.ContentData.asDeferredContent(contentData);
-  }
-
   async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.#contentData) {
       return this.#contentData;

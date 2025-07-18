@@ -38,6 +38,7 @@ import * as Root from '../root/root.js';
 
 import {
   type AidaClientResult,
+  type AidaCodeCompleteResult,
   type CanShowSurveyResult,
   type ChangeEvent,
   type ClickEvent,
@@ -61,14 +62,6 @@ import {
   type SyncInformation,
 } from './InspectorFrontendHostAPI.js';
 import {streamWrite as resourceLoaderStreamWrite} from './ResourceLoader.js';
-
-interface DecompressionStream extends GenericTransformStream {
-  readonly format: string;
-}
-declare const DecompressionStream: {
-  prototype: DecompressionStream,
-  new (format: string): DecompressionStream,
-};
 
 const UIStrings = {
   /**
@@ -330,28 +323,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
 
   loadNetworkResource(
       url: string, _headers: string, streamId: number, callback: (arg0: LoadNetworkResourceResult) => void): void {
-    // Read the first 3 bytes looking for the gzip signature in the file header
-    function isGzip(ab: ArrayBuffer): boolean {
-      const buf = new Uint8Array(ab);
-      if (!buf || buf.length < 3) {
-        return false;
-      }
-
-      // https://www.rfc-editor.org/rfc/rfc1952#page-6
-      return buf[0] === 0x1F && buf[1] === 0x8B && buf[2] === 0x08;
-    }
     fetch(url)
         .then(async result => {
-          const resultArrayBuf = await result.arrayBuffer();
-          let decoded: ReadableStream|ArrayBuffer = resultArrayBuf;
-          if (isGzip(resultArrayBuf)) {
-            const ds = new DecompressionStream('gzip');
-            const writer = ds.writable.getWriter();
-            void writer.write(resultArrayBuf);
-            void writer.close();
-            decoded = ds.readable;
-          }
-          const text = await new Response(decoded).text();
+          const respBuffer = await result.arrayBuffer();
+          const text = await Common.Gzip.arrayBufferToString(respBuffer);
           return text;
         })
         .then(function(text) {
@@ -511,6 +486,20 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     throw new Error('Soft context menu should be used');
   }
 
+  /**
+   * **Hosted mode** is when DevTools is loaded over `http(s)://` rather than from `devtools://`.
+   * It does **not** indicate whether the frontend is connected to a valid CDP target.
+   *
+   *  | Example case                                         | Mode           | Example URL                                                                   |
+   *  | :--------------------------------------------------- | :------------- | :---------------------------------------------------------------------------- |
+   *  | typical devtools: (un)docked w/ native CDP bindings  | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?targetType=tab&...`            |
+   *  | tab href is `devtools://…?ws=…`                      | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html?ws=localhost:9228/...`         |
+   *  | tab href is `devtools://…` but no connection         | **NOT Hosted** | `devtools://devtools/bundled/devtools_app.html`                               |
+   *  | tab href is `https://…?ws=` (connected)              | **Hosted**     | `https://chrome-devtools-frontend.appspot.com/serve_rev/@.../worker_app.html` |
+   *  | tab href is `http://…` but no connection             | **Hosted**     | `http://localhost:9222/devtools/inspector.html?ws=localhost:9222/...`         |
+   *
+   * See also `canDock` which has similar semantics.
+   */
   isHostedMode(): boolean {
     return true;
   }
@@ -530,6 +519,12 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   registerAidaClientEvent(_request: string, callback: (result: AidaClientResult) => void): void {
+    callback({
+      error: 'Not implemented',
+    });
+  }
+
+  aidaCodeComplete(_request: string, callback: (result: AidaCodeCompleteResult) => void): void {
     callback({
       error: 'Not implemented',
     });

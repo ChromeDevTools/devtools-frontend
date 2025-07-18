@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Trace from '../../../models/trace/trace.js';
 
 import {AICallTree} from './AICallTree.js';
@@ -15,15 +16,23 @@ import {AICallTree} from './AICallTree.js';
  */
 export class ActiveInsight {
   #insight: Trace.Insights.Types.InsightModel;
+  #insightSetBounds: Trace.Types.Timing.TraceWindowMicro;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
 
-  constructor(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(
+      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#insight = insight;
+    this.#insightSetBounds = insightSetBounds;
     this.#parsedTrace = parsedTrace;
   }
 
   get insight(): Readonly<Trace.Insights.Types.InsightModel> {
     return this.#insight;
+  }
+
+  get insightSetBounds(): Readonly<Trace.Types.Timing.TraceWindowMicro> {
+    return this.#insightSetBounds;
   }
 
   get parsedTrace(): Trace.Handlers.Types.ParsedTrace {
@@ -39,9 +48,10 @@ export class AIQueries {
   /**
    * Returns the set of network requests that occurred within the timeframe of this Insight.
    */
-  static networkRequests(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
-      readonly Trace.Types.Events.SyntheticNetworkRequest[] {
-    const bounds = insightBounds(insight, parsedTrace);
+  static networkRequests(
+      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace): readonly Trace.Types.Events.SyntheticNetworkRequest[] {
+    const bounds = insightBounds(insight, insightSetBounds);
 
     // Now we find network requests that:
     // 1. began within the bounds
@@ -81,8 +91,9 @@ export class AIQueries {
    * Returns an AI Call Tree representing the activity on the main thread for
    * the relevant time range of the given insight.
    */
-  static mainThreadActivity(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
-      AICallTree|null {
+  static mainThreadActivity(
+      insight: Trace.Insights.Types.InsightModel, insightSetBounds: Trace.Types.Timing.TraceWindowMicro,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree|null {
     /**
      * We cannot assume that there is one main thread as there are scenarios
      * where there can be multiple (see crbug.com/402658800) as an example.
@@ -118,7 +129,7 @@ export class AIQueries {
       return null;
     }
 
-    const bounds = insightBounds(insight, parsedTrace);
+    const bounds = insightBounds(insight, insightSetBounds);
     return AICallTree.fromTimeOnThread({
       thread: {
         pid: thread.pid,
@@ -131,68 +142,20 @@ export class AIQueries {
 }
 
 /**
- * Calculates the time bounds for the given insight that are relevant.
- * If the insight is attached to a navigation, this will be the start of that
- * navigation through to either the next navigation, or the end of the trace.
- * For some insights we change the bounds; for LCP insights we treat the max
- * bound as LCP time, as anything that happens after that cannot have impacted
- * it.
+ * Calculates the trace bounds for the given insight that are relevant.
+ *
+ * Uses the insight's overlays to determine the relevant trace bounds. If there are
+ * no overlays, falls back to the insight set's navigation bounds.
  */
-function insightBounds(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
-    Trace.Types.Timing.TraceWindowMicro {
-  // For Interactions, we know we only care about the time period of the interaction.
-  if (Trace.Insights.Models.INPBreakdown.isINPBreakdown(insight) && insight.longestInteractionEvent) {
-    return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-        insight.longestInteractionEvent.ts,
-        insight.longestInteractionEvent.ts + insight.longestInteractionEvent.dur as Trace.Types.Timing.Micro);
+function insightBounds(
+    insight: Trace.Insights.Types.InsightModel,
+    insightSetBounds: Trace.Types.Timing.TraceWindowMicro): Trace.Types.Timing.TraceWindowMicro {
+  const overlays = insight.createOverlays?.() ?? [];
+  const windows = overlays.map(Trace.Helpers.Timing.traceWindowFromOverlay).filter(bounds => !!bounds);
+  const overlaysBounds = Trace.Helpers.Timing.combineTraceWindowsMicro(windows);
+  if (overlaysBounds) {
+    return overlaysBounds;
   }
 
-  const navigationStart =
-      insight.navigationId ? parsedTrace.Meta.navigationsByNavigationId.get(insight.navigationId) : undefined;
-  const minBound = navigationStart?.ts ?? parsedTrace.Meta.traceBounds.min;
-
-  let maxBound = customMaxBoundForInsight(insight);
-  if (!maxBound) {
-    maxBound = parsedTrace.Meta.traceBounds.max;
-    if (navigationStart) {
-      const nextNavigation = getNextNavigation(navigationStart, parsedTrace);
-      if (nextNavigation) {
-        maxBound = nextNavigation.ts;
-      }
-    }
-  }
-  return Trace.Helpers.Timing.traceWindowFromMicroSeconds(minBound, maxBound);
-}
-
-/**
- * For a given navigation on the main frame, return the next navigation, if there was one.
- */
-function getNextNavigation(
-    navigation: Trace.Types.Events.NavigationStart,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Events.NavigationStart|null {
-  for (let i = 0; i < parsedTrace.Meta.mainFrameNavigations.length; i++) {
-    const currentNavigationStart = parsedTrace.Meta.mainFrameNavigations[i];
-    if (currentNavigationStart.args.data?.navigationId === navigation.args.data?.navigationId) {
-      return parsedTrace.Meta.mainFrameNavigations.at(i + 1) ?? null;
-    }
-  }
-  return null;
-}
-
-function customMaxBoundForInsight(insight: Trace.Insights.Types.InsightModel): Trace.Types.Timing.Micro|null {
-  // For insights that only care about LCP, the max time bound is the timestamp
-  // of the LCP event itself.
-  if (Trace.Insights.Models.LCPBreakdown.isLCPBreakdown(insight) && insight.lcpEvent) {
-    return insight.lcpEvent.ts;
-  }
-  if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(insight) && insight.lcpEvent) {
-    return insight.lcpEvent.ts;
-  }
-
-  // For the document request latency Insight, we care about anything that
-  // happened up to the end of the initial document request.
-  if (Trace.Insights.Models.DocumentLatency.isDocumentLatency(insight) && insight.data?.documentRequest) {
-    return insight.data.documentRequest.ts + insight.data.documentRequest.dur as Trace.Types.Timing.Micro;
-  }
-  return null;
+  return insightSetBounds;
 }

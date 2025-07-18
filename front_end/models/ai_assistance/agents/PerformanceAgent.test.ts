@@ -152,16 +152,8 @@ describeWithEnvironment('PerformanceAgent', () => {
 
 # Call tree:
 
-Node: 1 – Task
-dur: 3
-Children:
-  * 2 – Layout
-
-Node: 2 – Layout
-Selected: true
-dur: 3
-self: 3
-`.trim();
+1;Task;3;;;2
+2;Layout;3;3;;;S`.trim();
 
       assert.deepEqual(responses, [
         {

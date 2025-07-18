@@ -131,6 +131,8 @@ export class TimelineController implements Tracing.TracingManager.TracingManager
     }
     if (options.captureSelectorStats) {
       categoriesArray.push(disabledByDefault('blink.debug'));
+      // enable invalidation nodes
+      categoriesArray.push(disabledByDefault('devtools.timeline.invalidationTracking'));
     }
 
     await LiveMetrics.LiveMetrics.instance().disable();

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .emphasize .emphasis {
+            color: red;
+            font-weight: bold;
+        }
+        
+        article figure:nth-child(2n + 1) blockquote .emphasis {
+            color: gray;
+        }
+    </style>
+    <script>
+        window.addEventListener('load', () => {
+            document.getElementById("toggleEmphasis").addEventListener("click", () => {
+                const elements = document.querySelectorAll("article");
+                elements.forEach((element) => {
+                    element.classList.toggle("emphasize");
+                });
+            });
+            document.getElementById("addRemoveArticle").addEventListener("click",
+                () => {
+                    const element = document.querySelector("figure#added");
+                    if (element) {
+                        element.remove();
+                        return;
+                    }
+                    let f = document.createElement("figure");
+                    f.id = "added";
+                    f.innerHTML = `<blockquote>"Fortune <span class='emphasis'>favors</span> the bold"</blockquote><figcaption>- Virgil</figcaption>`;
+                    document.querySelector("article").prepend(f);
+                });
+        });
+    </script>
+</head>
+
+<body>
+    <button id="addRemoveArticle">add/remove article</button>
+    <button id="toggleEmphasis">toggle emphasis</button>
+    <article>
+
+        <figure>
+            <blockquote>
+                "Wherever you go, go with all your <span class="emphasis">heart</span>."
+            </blockquote>
+            <figcaption>— Confucius</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "The unexamined <span class="emphasis">life</span> is not worth living."
+            </blockquote>
+            <figcaption>— Socrates</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "A rolling <span class="emphasis">stone</span> gathers no <span class="emphasis">moss</span>."
+            </blockquote>
+            <figcaption>— Publilius Syrus</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "All the <span class="emphasis">world</span>'s a stage."
+            </blockquote>
+            <figcaption>— William Shakespeare</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "In the midst of <span class="emphasis">chaos</span>, there is also <span class="emphasis">opportunity</span>."
+            </blockquote>
+            <figcaption>— Sun Tzu</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "It is the mark of an <span class="emphasis">educated</span> mind to be able to entertain a
+                <span class="emphasis">thought</span> without accepting it."
+            </blockquote>
+            <figcaption>— Aristotle</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Better to remain <span class="emphasis">silent</span> and be thought a
+                <span class="emphasis">fool</span> than to speak out and remove all doubt."
+            </blockquote>
+            <figcaption>— Mark Twain</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "The <span class="emphasis">secret</span> of getting ahead is getting
+                <span class="emphasis">started</span>."
+            </blockquote>
+            <figcaption>— Mark Twain</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Government of the <span class="emphasis">people</span>, by the people, for the people, shall not perish from the Earth."
+            </blockquote>
+            <figcaption>— Abraham Lincoln</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "An <span class="emphasis">investment</span> in knowledge pays the best
+                <span class="emphasis">interest</span>."
+            </blockquote>
+            <figcaption>— Benjamin Franklin</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "The journey of a thousand miles begins with a single <span class="emphasis">step</span>."
+            </blockquote>
+            <figcaption>— Lao Tzu</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "The <span class="emphasis">unexamined</span> life is not worth living."
+            </blockquote>
+            <figcaption>— Socrates</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Wise men speak because they have something to <span class="emphasis">say</span>; fools because they have to say something."
+            </blockquote>
+            <figcaption>— Plato</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "You have <span class="emphasis">power</span> over your mind — not outside events. Realize this, and you will find <span class="emphasis">strength</span>."
+            </blockquote>
+            <figcaption>— Marcus Aurelius</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "It's not what happens to you, but how you <span class="emphasis">react</span> to it that matters."
+            </blockquote>
+            <figcaption>— Epictetus</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Let <span class="emphasis">food</span> be thy medicine and medicine be thy food."
+            </blockquote>
+            <figcaption>— Hippocrates</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "I saw the <span class="emphasis">angel</span> in the marble and carved until I set him free."
+            </blockquote>
+            <figcaption>— Michelangelo</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Where there is <span class="emphasis">shouting</span>, there is no
+                <span class="emphasis">true knowledge</span>."
+            </blockquote>
+            <figcaption>— Leonardo da Vinci</figcaption>
+        </figure>
+
+        <figure>
+            <blockquote>
+                "Some are born <span class="emphasis">great</span>, some achieve greatness, and some have greatness thrust upon them."
+            </blockquote>
+            <figcaption>— William Shakespeare</figcaption>
+        </figure>
+    </article>
+</body>
+
+</html>

@@ -28,7 +28,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const filename = context.getFilename();
+    const filename = context.filename;
     return {
       ImportDeclaration(node) {
         const importPath = path.normalize(`${node.source.value}`);

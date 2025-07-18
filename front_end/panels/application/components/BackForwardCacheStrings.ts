@@ -286,6 +286,10 @@ const UIStrings = {
    */
   sharedWorker: 'Pages that use SharedWorker are not currently eligible for back/forward cache.',
   /**
+   * @description Description text for not restored reason SharedWorkerMessage.
+   */
+  sharedWorkerMessage: 'The page was evicted from the cache because it received a message from a SharedWorker',
+  /**
    * @description Description text for not restored reason WebLocks.
    */
   webLocks: 'Pages that use WebLocks are not currently eligible for back/forward cache.',
@@ -626,6 +630,7 @@ export const NotRestoredReasonDescription = {
   IndexedDBConnection: {name: i18nLazyString(UIStrings.indexedDBConnection)},
   WebXR: {name: i18nLazyString(UIStrings.webXR)},
   SharedWorker: {name: i18nLazyString(UIStrings.sharedWorker)},
+  SharedWorkerMessage: {name: i18nLazyString(UIStrings.sharedWorkerMessage)},
   WebLocks: {name: i18nLazyString(UIStrings.webLocks)},
   WebHID: {name: i18nLazyString(UIStrings.webHID)},
   WebShare: {name: i18nLazyString(UIStrings.webShare)},

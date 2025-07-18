@@ -41,9 +41,9 @@ export function createContextForNavigation(
   };
 }
 
-export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightModels>(
-    insightName: InsightName, insights: Trace.Insights.Types.TraceInsightSets,
-    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightModels[InsightName] {
+export function getInsightSetOrError(
+    insights: Trace.Insights.Types.TraceInsightSets,
+    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightSet {
   let key;
   if (navigation) {
     if (!navigation.args.data?.navigationId) {
@@ -59,7 +59,14 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
         key}. If you are trying to load an Insight for a particular navigation, you must supply it as an argument to \`getInsightOrError\``);
   }
 
-  const insight = insightSets.model[insightName];
+  return insightSets;
+}
+
+export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightModels>(
+    insightName: InsightName, insights: Trace.Insights.Types.TraceInsightSets,
+    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightModels[InsightName] {
+  const insightSet = getInsightSetOrError(insights, navigation);
+  const insight = insightSet.model[insightName];
   if (insight instanceof Error) {
     throw insight;
   }

@@ -58,7 +58,7 @@ const LAYOUT_PANE_TABPANEL_SELECTOR = '[aria-label="Layout panel"]';
 const ADORNER_SELECTOR = 'devtools-adorner';
 export const INACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Enable grid mode"]';
 export const ACTIVE_GRID_ADORNER_SELECTOR = '[aria-label="Disable grid mode"]';
-const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = `${LAYOUT_PANE_TABPANEL_SELECTOR} .elements input[type=checkbox]`;
+const ELEMENT_CHECKBOX_IN_LAYOUT_PANE_SELECTOR = `${LAYOUT_PANE_TABPANEL_SELECTOR} .elements devtools-checkbox`;
 const ELEMENT_STYLE_SECTION_SELECTOR = '[aria-label="element.style, css selector"]';
 const STYLE_QUERY_RULE_TEXT_SELECTOR = '.query-text';
 export const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeitem"]';
@@ -145,8 +145,9 @@ export const toggleAdornerSetting =
   await expectVeEvents([veClick(`Menu > Toggle: ${type}`)], undefined, devToolsPage);
 };
 
-export const waitForSelectedNodeToBeExpanded = async () => {
-  await waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR}[aria-expanded="true"]`);
+export const waitForSelectedNodeToBeExpanded =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await devToolsPage.waitFor(`${SELECTED_TREE_ELEMENT_SELECTOR}[aria-expanded="true"]`);
 };
 
 export const waitForAdornerOnSelectedNode =
@@ -402,8 +403,9 @@ export const getAllPropertiesFromComputedPane = async (devToolsPage?: DevToolsPa
       .filter(prop => !!prop);
 };
 
-export const getPropertyFromComputedPane = async (name: string) => {
-  const properties = await $$(COMPUTED_PROPERTY_SELECTOR);
+export const getPropertyFromComputedPane =
+    async (name: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const properties = await devToolsPage.$$(COMPUTED_PROPERTY_SELECTOR);
   for (const property of properties) {
     const matchingProperty = await property.evaluate((node, name) => {
       const nameSlot = node.shadowRoot?.querySelector<HTMLSlotElement>('.property-name slot');
@@ -731,8 +733,10 @@ export const getColorSwatch = async (
   return swatches[index];
 };
 
-export const getColorSwatchColor = async (parent: puppeteer.ElementHandle<Element>, index: number) => {
-  const swatch = await getColorSwatch(parent, index);
+export const getColorSwatchColor = async (
+    parent: puppeteer.ElementHandle<Element>, index: number,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const swatch = await getColorSwatch(parent, index, devToolsPage);
   return await swatch.evaluate(node => (node as HTMLElement).style.backgroundColor);
 };
 
@@ -754,21 +758,23 @@ export const shiftClickColorSwatch = async (
       undefined, devToolsPage);
 };
 
-export const getElementStyleFontEditorButton = async () => {
-  const section = await waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
-  const result = await $(FONT_EDITOR_SELECTOR, section);
-  await expectVeEvents([veImpressionsUnder(
-      'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])]);
+export const getElementStyleFontEditorButton = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const section = await devToolsPage.waitFor(ELEMENT_STYLE_SECTION_SELECTOR);
+  const result = await devToolsPage.$(FONT_EDITOR_SELECTOR, section);
+  await expectVeEvents(
+      [veImpressionsUnder(
+          'Panel: elements > Pane: styles > Section: style-properties', [veImpression('Action', 'font-editor')])],
+      undefined, devToolsPage);
   return result;
 };
 
-export const getFontEditorButtons = async () => {
-  const buttons = await $$(FONT_EDITOR_SELECTOR);
+export const getFontEditorButtons = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const buttons = await devToolsPage.$$(FONT_EDITOR_SELECTOR);
   return buttons;
 };
 
-export const getHiddenFontEditorButtons = async () => {
-  const buttons = await $$(HIDDEN_FONT_EDITOR_SELECTOR);
+export const getHiddenFontEditorButtons = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const buttons = await devToolsPage.$$(HIDDEN_FONT_EDITOR_SELECTOR);
   return buttons;
 };
 
@@ -935,7 +941,7 @@ export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNo
   });
 
   const crumbs = await $$(crumbsSelector);
-  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate((node: Element) => {
+  const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate(node => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
@@ -946,7 +952,7 @@ export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNo
 
 export const getSelectedBreadcrumbTextContent = async () => {
   const selectedCrumb = await waitFor('li.crumb.selected > a > devtools-node-text');
-  const text = selectedCrumb.evaluate((node: Element) => {
+  const text = selectedCrumb.evaluate(node => {
     if (!node.shadowRoot) {
       assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
@@ -1117,26 +1123,29 @@ export const getPropertiesWithHints = async () => {
   return propertiesWithHints;
 };
 
-export const summonAndWaitForSearchBox = async () => {
-  await summonSearchBox();
-  await waitFor(SEARCH_BOX_SELECTOR);
-  await expectVeEvents([
-    veKeyDown(''),
-    veImpressionsUnder('Panel: elements', [veImpression(
-                                              'Toolbar', 'search',
-                                              [
-                                                veImpression('Action: close-search'),
-                                                veImpression('Action: select-next'),
-                                                veImpression('Action: select-previous'),
-                                                veImpression('TextField: search'),
-                                              ])]),
-  ]);
+export const summonAndWaitForSearchBox =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await summonSearchBox(devToolsPage);
+  await devToolsPage.waitFor(SEARCH_BOX_SELECTOR);
+  await expectVeEvents(
+      [
+        veKeyDown(''),
+        veImpressionsUnder('Panel: elements', [veImpression(
+                                                  'Toolbar', 'search',
+                                                  [
+                                                    veImpression('Action: close-search'),
+                                                    veImpression('Action: select-next'),
+                                                    veImpression('Action: select-previous'),
+                                                    veImpression('TextField: search'),
+                                                  ])]),
+      ],
+      undefined, devToolsPage);
 };
 
-export const assertSearchResultMatchesText = async (text: string) => {
+export const assertSearchResultMatchesText = async (text: string, devToolsPage?: DevToolsPage) => {
   await waitForFunction(async () => {
-    return await getTextContent(SEARCH_RESULTS_MATCHES) === text;
-  });
+    return await getTextContent(SEARCH_RESULTS_MATCHES, undefined, devToolsPage) === text;
+  }, undefined, undefined, devToolsPage);
 };
 
 export const goToResourceAndWaitForStyleSection = async (

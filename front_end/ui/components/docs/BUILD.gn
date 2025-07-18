@@ -39,7 +39,6 @@ group("docs") {
     "./recorder_control_button",
     "./recorder_create_recording_view",
     "./recorder_recording_list_view",
-    "./recorder_recording_view",
     "./recorder_select_button",
     "./recorder_split_view",
     "./report",

@@ -12,6 +12,7 @@ import * as ColorUtils from './ColorUtils.js';
 import * as Console from './Console.js';
 import * as Debouncer from './Debouncer.js';
 import * as EventTarget from './EventTarget.js';
+import * as Gzip from './Gzip.js';
 import * as JavaScriptMetaData from './JavaScriptMetaData.js';
 import * as Lazy from './Lazy.js';
 import * as Linkifier from './Linkifier.js';
@@ -52,6 +53,7 @@ export {
   Console,
   Debouncer,
   EventTarget,
+  Gzip,
   JavaScriptMetaData,
   Lazy,
   Linkifier,

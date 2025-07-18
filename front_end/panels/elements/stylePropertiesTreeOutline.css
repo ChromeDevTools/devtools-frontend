@@ -255,7 +255,7 @@ devtools-icon.icon-link {
     margin-left: 16px;
   }
 
-  :focus {
+  :focus-visible {
     border-radius: var(--sys-size-2);
     outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }

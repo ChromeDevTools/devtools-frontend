@@ -4,40 +4,43 @@
 
 import './Table.js';
 
-import type {UseModernHTTPInsightModel} from '../../../../models/trace/insights/ModernHTTP.js';
+import type {ModernHTTPInsightModel} from '../../../../models/trace/insights/ModernHTTP.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.ModernHTTP;
+const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.ModernHTTP;
 
 const {html} = Lit;
 
-export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> {
+export class ModernHTTP extends BaseInsightComponent<ModernHTTPInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-modern-http`;
   override internalName = 'modern-http';
 
-  mapToRow(req: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
-    return {values: [eventRef(req), req.args.data.protocol], overlays: [this.#createOverlayForRequest(req)]};
-  }
-
-  createAggregatedTableRow(remaining: Trace.Types.Events.SyntheticNetworkRequest[]): TableDataRow {
-    return {
-      values: [renderOthersLabel(remaining.length), ''],
-      overlays: remaining.map(req => this.#createOverlayForRequest(req)),
-    };
+  protected override hasAskAiSupport(): boolean {
+    return true;
   }
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.LCP ?? null;
   }
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    return this.model?.requests.map(req => this.#createOverlayForRequest(req)) ?? [];
+  override createOverlays(): Trace.Types.Overlays.Overlay[] {
+    return this.model?.http1Requests.map(req => createOverlayForRequest(req)) ?? [];
+  }
+
+  mapToRow(req: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
+    return {values: [eventRef(req), req.args.data.protocol], overlays: [createOverlayForRequest(req)]};
+  }
+
+  createAggregatedTableRow(remaining: Trace.Types.Events.SyntheticNetworkRequest[]): TableDataRow {
+    return {
+      values: [renderOthersLabel(remaining.length), ''],
+      overlays: remaining.map(req => createOverlayForRequest(req)),
+    };
   }
 
   override renderContent(): Lit.LitTemplate {
@@ -45,7 +48,7 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
       return Lit.nothing;
     }
 
-    const rows = createLimitedRows(this.model.requests, this);
+    const rows = createLimitedRows(this.model.http1Requests, this);
 
     if (!rows.length) {
       return html`<div class="insight-section">${i18nString(UIStrings.noOldProtocolRequests)}</div>`;
@@ -63,14 +66,6 @@ export class ModernHTTP extends BaseInsightComponent<UseModernHTTPInsightModel> 
         </devtools-performance-table>
       </div>`;
     // clang-format on
-  }
-
-  #createOverlayForRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Overlays.Overlays.EntryOutline {
-    return {
-      type: 'ENTRY_OUTLINE',
-      entry: request,
-      outlineReason: 'ERROR',
-    };
   }
 }
 

@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as LegacyJavaScriptLib from '../../../third_party/legacy-javascript/legacy-javascript.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
+import type * as Types from '../types/types.js';
 
 import {estimateCompressionRatioForScript, metricSavingsForWastedBytes} from './Common.js';
 import {
@@ -74,10 +75,6 @@ function finalize(partialModel: PartialInsightModel<LegacyJavaScriptInsightModel
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LegacyJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {
-    if (!context.navigation) {
-      return false;
-    }
-
     if (script.frame !== context.frameId) {
       return false;
     }
@@ -122,5 +119,14 @@ export function generateInsight(
     legacyJavaScriptResults: sorted,
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
     wastedBytes: wastedBytesByRequestId.values().reduce((acc, cur) => acc + cur, 0),
+  });
+}
+export function createOverlays(model: LegacyJavaScriptInsightModel): Types.Overlays.Overlay[] {
+  return [...model.legacyJavaScriptResults.keys()].map(script => script.request).filter(e => !!e).map(request => {
+    return {
+      type: 'ENTRY_OUTLINE',
+      entry: request,
+      outlineReason: 'ERROR',
+    };
   });
 }

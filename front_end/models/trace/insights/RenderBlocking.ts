@@ -243,3 +243,15 @@ export function generateInsight(
     ...savings,
   });
 }
+
+export function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline {
+  return {
+    type: 'ENTRY_OUTLINE',
+    entry: request,
+    outlineReason: 'ERROR',
+  };
+}
+
+export function createOverlays(model: RenderBlockingInsightModel): Types.Overlays.Overlay[] {
+  return model.renderBlockingRequests.map(request => createOverlayForRequest(request));
+}

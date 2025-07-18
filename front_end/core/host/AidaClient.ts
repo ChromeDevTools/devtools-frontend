@@ -6,7 +6,7 @@ import * as Common from '../common/common.js';
 import * as Root from '../root/root.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
+import type {AidaClientResult, AidaCodeCompleteResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Role {
@@ -169,25 +169,69 @@ export interface RequestFact {
 export type RpcGlobalId = string|number;
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface AidaRequest {
+export interface RequestMetadata {
+  string_session_id?: string;
+  user_tier?: UserTier;
+  disable_user_content_logging: boolean;
+  client_version: string;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface ConversationOptions {
+  temperature?: number;
+  model_id?: string;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface DoConversationRequest {
   client: string;
   current_message: Content;
   preamble?: string;
   historical_contexts?: Content[];
   function_declarations?: FunctionDeclaration[];
   facts?: RequestFact[];
-  options?: {
-    temperature?: number,
-    model_id?: string,
-  };
-  metadata: {
-    disable_user_content_logging: boolean,
-    client_version: string,
-    string_session_id?: string,
-    user_tier?: UserTier,
-  };
+  options?: ConversationOptions;
+  metadata: RequestMetadata;
   functionality_type?: FunctionalityType;
   client_feature?: ClientFeature;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface CompleteCodeOptions {
+  temperature?: number;
+  model_id?: string;
+  inference_language?: AidaInferenceLanguage;
+}
+/* eslint-enable @typescript-eslint/naming-convention */
+
+export enum EditType {
+  // Unknown edit type
+  EDIT_TYPE_UNSPECIFIED = 0,
+  // User typed code/text into file
+  ADD = 1,
+  // User deleted code/text from file
+  DELETE = 2,
+  // User pasted into file (this includes smart paste)
+  PASTE = 3,
+  // User performs an undo action
+  UNDO = 4,
+  // User performs a redo action
+  REDO = 5,
+  // User accepted a completion from AIDA
+  ACCEPT_COMPLETION = 6,
+}
+
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface CompletionRequest {
+  client: string;
+  prefix: string;
+  suffix?: string;
+  options?: CompleteCodeOptions;
+  metadata: RequestMetadata;
+  last_user_action?: EditType;
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -248,17 +292,29 @@ export interface FactualityMetadata {
   facts: FactualityFact[];
 }
 
-export interface AidaResponseMetadata {
+export interface ResponseMetadata {
   rpcGlobalId?: RpcGlobalId;
   attributionMetadata?: AttributionMetadata;
   factualityMetadata?: FactualityMetadata;
 }
 
-export interface AidaResponse {
+export interface DoConversationResponse {
   explanation: string;
-  metadata: AidaResponseMetadata;
+  metadata: ResponseMetadata;
   functionCalls?: [AidaFunctionCallResponse, ...AidaFunctionCallResponse[]];
   completed: boolean;
+}
+
+export interface CompletionResponse {
+  generatedSamples: GenerationSample[];
+  metadata: ResponseMetadata;
+}
+
+export interface GenerationSample {
+  generationString: string;
+  score: number;
+  sampleId: number;
+  attributionMetadata?: AttributionMetadata;
 }
 
 export const enum AidaAccessPreconditions {
@@ -270,7 +326,7 @@ export const enum AidaAccessPreconditions {
   SYNC_IS_PAUSED = 'sync-is-paused',
 }
 
-const enum AidaInferenceLanguage {
+export const enum AidaInferenceLanguage {
   CPP = 'CPP',
   PYTHON = 'PYTHON',
   KOTLIN = 'KOTLIN',
@@ -314,13 +370,13 @@ export class AidaAbortError extends Error {}
 export class AidaBlockError extends Error {}
 
 export class AidaClient {
-  static buildConsoleInsightsRequest(input: string): AidaRequest {
+  static buildConsoleInsightsRequest(input: string): DoConversationRequest {
     const disallowLogging = Root.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
     const chromeVersion = Root.Runtime.getChromeVersion();
     if (!chromeVersion) {
       throw new Error('Cannot determine Chrome version');
     }
-    const request: AidaRequest = {
+    const request: DoConversationRequest = {
       current_message: {parts: [{text: input}], role: Role.USER},
       client: CLIENT_NAME,
       functionality_type: FunctionalityType.EXPLAIN_ERROR,
@@ -366,7 +422,9 @@ export class AidaClient {
     return AidaAccessPreconditions.AVAILABLE;
   }
 
-  async * fetch(request: AidaRequest, options?: {signal?: AbortSignal}): AsyncGenerator<AidaResponse, void, void> {
+  async *
+      doConversation(request: DoConversationRequest, options?: {signal?: AbortSignal}):
+          AsyncGenerator<DoConversationResponse, void, void> {
     if (!InspectorFrontendHostInstance.doAidaConversation) {
       throw new Error('doAidaConversation is not available');
     }
@@ -407,7 +465,7 @@ export class AidaClient {
     const text = [];
     let inCodeChunk = false;
     const functionCalls: AidaFunctionCallResponse[] = [];
-    let metadata: AidaResponseMetadata = {rpcGlobalId: 0};
+    let metadata: ResponseMetadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
       let textUpdated = false;
       // The AIDA response is a JSON array of objects, split at the object
@@ -498,6 +556,53 @@ export class AidaClient {
     );
 
     return promise;
+  }
+
+  async completeCode(request: CompletionRequest): Promise<CompletionResponse|null> {
+    if (!InspectorFrontendHostInstance.aidaCodeComplete) {
+      throw new Error('aidaCodeComplete is not available');
+    }
+    const {promise, resolve} = Promise.withResolvers<AidaCodeCompleteResult>();
+    InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
+    const completeCodeResult = await promise;
+
+    if (completeCodeResult.error) {
+      throw new Error(`Cannot send request: ${completeCodeResult.error} ${completeCodeResult.detail || ''}`);
+    }
+    const response = completeCodeResult.response;
+    if (!response?.length) {
+      throw new Error('Empty response');
+    }
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(response);
+    } catch (error) {
+      throw new Error('Cannot parse response: ' + response, {cause: error});
+    }
+
+    const generatedSamples: GenerationSample[] = [];
+    let metadata: ResponseMetadata = {rpcGlobalId: 0};
+    if ('metadata' in parsedResponse) {
+      metadata = parsedResponse.metadata;
+    }
+
+    if ('generatedSamples' in parsedResponse) {
+      for (const generatedSample of parsedResponse.generatedSamples) {
+        const sample: GenerationSample = {
+          generationString: generatedSample.generationString,
+          score: generatedSample.score,
+          sampleId: generatedSample.sampleId,
+        };
+        if ('metadata' in generatedSample && 'attributionMetadata' in generatedSample.metadata) {
+          sample.attributionMetadata = generatedSample.metadata.attributionMetadata;
+        }
+        generatedSamples.push(sample);
+      }
+    } else {
+      return null;
+    }
+
+    return {generatedSamples, metadata};
   }
 }
 

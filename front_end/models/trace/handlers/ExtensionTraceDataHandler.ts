@@ -118,7 +118,7 @@ export function extractConsoleAPIExtensionEntries(): void {
         ph: Types.Events.Phase.COMPLETE,
       };
       const extensionEntry =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionTrackEntry>(unregisteredExtensionEntry);
       extensionTrackEntries.push(extensionEntry);
       continue;
@@ -137,8 +137,8 @@ export function extractConsoleAPIExtensionEntries(): void {
       rawSourceEvent: currentTimeStamp
     };
     const syntheticTimeStamp =
-        Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
-            .registerSyntheticEvent<Types.Events.SyntheticConsoleTimeStamp>(unregisteredSyntheticTimeStamp);
+        Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticConsoleTimeStamp>(
+            unregisteredSyntheticTimeStamp);
     syntheticConsoleEntriesForTimingsTrack.push(syntheticTimeStamp);
   }
 }
@@ -196,7 +196,7 @@ export function extractPerformanceAPIExtensionEntries(
 
     if (Types.Extensions.isExtensionPayloadMarker(extensionPayload)) {
       const extensionMarker =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionMarker>(
                   extensionSyntheticEntry as Omit<Types.Extensions.SyntheticExtensionMarker, '_tag'>);
       extensionMarkers.push(extensionMarker);
@@ -205,13 +205,47 @@ export function extractPerformanceAPIExtensionEntries(
 
     if (Types.Extensions.isExtensionPayloadTrackEntry(extensionSyntheticEntry.args)) {
       const extensionTrackEntry =
-          Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()
+          Helpers.SyntheticEvents.SyntheticEventsManager
               .registerSyntheticEvent<Types.Extensions.SyntheticExtensionTrackEntry>(
                   extensionSyntheticEntry as Omit<Types.Extensions.SyntheticExtensionTrackEntry, '_tag'>);
       extensionTrackEntries.push(extensionTrackEntry);
       continue;
     }
   }
+}
+
+function parseDetail(timingDetail: string, key: string): Types.Extensions.ExtensionDataPayload|
+    Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
+  try {
+    // Attempt to parse the detail as an object that might be coming from a
+    // DevTools Perf extension.
+    // Wrapped in a try-catch because timingDetail might either:
+    // 1. Not be `json.parse`-able (it should, but just in case...)
+    // 2.Not be an object - in which case the `in` check will error.
+    // If we hit either of these cases, we just ignore this mark and move on.
+    const detailObj = JSON.parse(timingDetail);
+    if (!(key in detailObj)) {
+      return null;
+    }
+    if (!Types.Extensions.isValidExtensionPayload(detailObj[key])) {
+      return null;
+    }
+    return detailObj[key];
+  } catch {
+    // No need to worry about this error, just discard this event and don't
+    // treat it as having any useful information for the purposes of extensions
+    return null;
+  }
+}
+
+function extensionPayloadForConsoleApi(timing: Types.Events.ConsoleTimeStamp):
+    Types.Extensions.ExtensionTrackEntryPayloadDeeplink|null {
+  if (!timing.args.data || !('devtools' in timing.args.data)) {
+    return null;
+  }
+
+  return parseDetail(`{"additionalContext": ${timing.args.data.devtools} }`, 'additionalContext') as
+      Types.Extensions.ExtensionTrackEntryPayloadDeeplink;
 }
 
 export function extensionDataInPerformanceTiming(
@@ -222,27 +256,9 @@ export function extensionDataInPerformanceTiming(
   if (!timingDetail) {
     return null;
   }
-  try {
-    // Attempt to parse the detail as an object that might be coming from a
-    // DevTools Perf extension.
-    // Wrapped in a try-catch because timingDetail might either:
-    // 1. Not be `json.parse`-able (it should, but just in case...)
-    // 2.Not be an object - in which case the `in` check will error.
-    // If we hit either of these cases, we just ignore this mark and move on.
-    const detailObj = JSON.parse(timingDetail);
-    if (!('devtools' in detailObj)) {
-      return null;
-    }
-    if (!Types.Extensions.isValidExtensionPayload(detailObj.devtools)) {
-      return null;
-    }
-    return detailObj.devtools;
-  } catch {
-    // No need to worry about this error, just discard this event and don't
-    // treat it as having any useful information for the purposes of extensions
-    return null;
-  }
+  return parseDetail(timingDetail, 'devtools') as Types.Extensions.ExtensionDataPayload;
 }
+
 /**
  * Extracts extension data from a `console.timeStamp` event.
  *
@@ -272,6 +288,13 @@ export function extensionDataInConsoleTimeStamp(timeStamp: Types.Events.ConsoleT
   if (trackName === '' || trackName === undefined) {
     return null;
   }
+
+  let additionalContext: Types.Extensions.ExtensionTrackEntryPayloadDeeplink|undefined;
+  const payload = extensionPayloadForConsoleApi(timeStamp);
+  if (payload) {
+    additionalContext = payload;
+  }
+
   return {
     // the color is defaulted to primary if it's value isn't one from
     // the defined palette (see ExtensionUI::extensionEntryColor) so
@@ -279,7 +302,8 @@ export function extensionDataInConsoleTimeStamp(timeStamp: Types.Events.ConsoleT
     color: String(timeStamp.args.data.color) as Types.Extensions.ExtensionTrackEntryPayload['color'],
     track: String(trackName),
     dataType: 'track-entry',
-    trackGroup: timeStamp.args.data.trackGroup !== undefined ? String(timeStamp.args.data.trackGroup) : undefined
+    trackGroup: timeStamp.args.data.trackGroup !== undefined ? String(timeStamp.args.data.trackGroup) : undefined,
+    additionalContext
   };
 }
 

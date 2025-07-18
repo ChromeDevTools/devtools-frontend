@@ -41,7 +41,7 @@ function extract(sourceFile: ts.SourceFile) {
   function isSkipCall(node: ts.Node) {
     if (node.getChildAt(0).kind === ts.SyntaxKind.PropertyAccessExpression) {
       const propAccess = node.getChildAt(0);
-      const skipCalls = new Set(['it.skip', 'describe.skip', 'itScreenshot.skip']);
+      const skipCalls = new Set(['it.skip', 'describe.skip']);
       if (skipCalls.has(propAccess.getText())) {
         return true;
       }
@@ -52,8 +52,7 @@ function extract(sourceFile: ts.SourceFile) {
   function isSkipOnPlatformsCall(node: ts.Node) {
     if (node.getChildAt(0).kind === ts.SyntaxKind.PropertyAccessExpression) {
       const propAccess = node.getChildAt(0);
-      const skipOnPlatformCalls =
-          new Set(['it.skipOnPlatforms', 'describe.skipOnPlatforms', 'itScreenshot.skipOnPlatforms']);
+      const skipOnPlatformCalls = new Set(['it.skipOnPlatforms', 'describe.skipOnPlatforms']);
       if (skipOnPlatformCalls.has(propAccess.getText())) {
         return true;
       }

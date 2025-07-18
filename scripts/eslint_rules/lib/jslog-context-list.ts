@@ -157,10 +157,20 @@ export default createRule({
         }
       },
       'Program:exit'() {
-        if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE || !valuesAdded) {
+        // Don't write to file if fail is enabled
+        if (process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE) {
           return;
         }
-        writeToFile();
+
+        if (
+            // If a new value is added write the update to file
+            valuesAdded ||
+            // If we are lint the KnownContextValues.ts file
+            // unconditionally write to it
+            // that ensures that manually added values are sorted
+            context.filename === ABSOLUTE_FILE_PATH) {
+          writeToFile();
+        }
       },
     };
   },

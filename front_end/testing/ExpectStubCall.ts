@@ -36,9 +36,10 @@ export function spyCall<T, Fn extends keyof T>(obj: T, method: Fn): Promise<{arg
 
   const original = obj[method] as (...args: Args<T[Fn]>) => Ret<T[Fn]>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  sinon.stub(obj, method).callsFake(function(this: any, ...args: any) {
+  const stub = sinon.stub(obj, method).callsFake(function(this: any, ...args: any) {
     const result = original.apply(this, args);
     resolve({args, result});
+    stub.restore();
   });
 
   return promise;

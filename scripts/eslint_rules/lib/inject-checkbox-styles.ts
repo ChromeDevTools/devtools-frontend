@@ -6,9 +6,11 @@ import path from 'path';
 
 import {isLitHtmlTemplateCall} from './utils/lit.ts';
 import {createRule} from './utils/ruleCreator.ts';
+import {isWidgetScopedCall} from './utils/stylingHelpers.ts';
 
 type AssignmentExpression = TSESTree.AssignmentExpression;
 type TemplateElement = TSESTree.TemplateElement;
+type Node = TSESTree.Node;
 
 // Define MessageIds used in the rule
 type MessageIds =|'missingCheckboxStylesImport'|'missingCheckboxStylesAdoption';
@@ -40,7 +42,7 @@ export default createRule<[], MessageIds>({
       missingCheckboxStylesImport:
           'When rendering a checkbox, ensure the common checkbox styles are imported from components/input/input.ts.',
       missingCheckboxStylesAdoption:
-          'When rendering a checkbox, ensure the common checkbox styles are adopted into the component shadow root.',
+          'When rendering a checkbox, ensure the common checkbox styles are adopted into the component shadow root or included in the template.',
     },
     schema: []
   },
@@ -53,6 +55,7 @@ export default createRule<[], MessageIds>({
     let adoptedStyleSheetsCallNode: AssignmentExpression|null = null;
     // Use a more specific type for the set elements if possible, otherwise Node or TemplateElement
     const litCheckboxElements = new Set<TemplateElement>();
+    let hasCheckboxStylesInTemplate = false;
     return {
       TaggedTemplateExpression(node) {
         // Assuming isLitHtmlTemplateCall is typed appropriately in utils.ts
@@ -67,6 +70,9 @@ export default createRule<[], MessageIds>({
         for (const quasiNode of litNodesContainingCheckbox) {
           // We store the node so we can use it as the basis for the ESLint error later.
           litCheckboxElements.add(quasiNode);
+        }
+        if (node.quasi.expressions.some(isCheckboxStylesReference)) {
+          hasCheckboxStylesInTemplate = true;
         }
       },
 
@@ -121,6 +127,10 @@ export default createRule<[], MessageIds>({
           return;
         }
 
+        if (hasCheckboxStylesInTemplate) {
+          return;
+        }
+
         if (!adoptedStyleSheetsCallNode) {
           for (const checkbox of litCheckboxElements) {
             context.report({
@@ -139,29 +149,8 @@ export default createRule<[], MessageIds>({
           return;
         }
 
-        const inputCheckboxStylesAdoptionReference = adoptedStyleSheetsCallNode.right.elements.find(elem => {
-          // Ensure elem is not null and is a MemberExpression before accessing properties
-          if (!elem || elem.type !== 'MemberExpression') {
-            return false;
-          }
-
-          // Ensure object and property are Identifiers before accessing name
-          if (elem.object.type !== 'Identifier' || elem.property.type !== 'Identifier') {
-            return false;
-          }
-
-          // Check that if we imported the styles as `Input`, that the reference here matches.
-          // Use non-null assertion for inputStylesImportedName as it's checked by foundInputStylesImport logic
-          if (elem.object.name !== inputStylesImportedName) {
-            return false;
-          }
-
-          if (elem.property.name !== 'checkboxStyles') {
-            return false;
-          }
-
-          return true;
-        });
+        const inputCheckboxStylesAdoptionReference =
+            adoptedStyleSheetsCallNode.right.elements.find(isCheckboxStylesReference);
 
         if (!inputCheckboxStylesAdoptionReference) {
           context.report({
@@ -171,5 +160,40 @@ export default createRule<[], MessageIds>({
         }
       }
     };
+
+    function isCheckboxStylesReference(elem: Node|null): boolean {
+      // Ensure elem is not null.
+      if (!elem) {
+        return false;
+      }
+
+      // If this is a `widgetScoped(styles)` call, extract
+      // `elem` to be the `styles` directly
+      if (elem.type === 'CallExpression' && isWidgetScopedCall(elem)) {
+        elem = elem.arguments[0];
+      }
+
+      // Ensure this node is a MemberExpression before accessing properties
+      if (elem.type !== 'MemberExpression') {
+        return false;
+      }
+
+      // Ensure object and property are Identifiers before accessing name
+      if (elem.object.type !== 'Identifier' || elem.property.type !== 'Identifier') {
+        return false;
+      }
+
+      // Check that if we imported the styles as `Input`, that the reference here matches.
+      // Use non-null assertion for inputStylesImportedName as it's checked by foundInputStylesImport logic
+      if (elem.object.name !== inputStylesImportedName) {
+        return false;
+      }
+
+      if (elem.property.name !== 'checkboxStyles') {
+        return false;
+      }
+
+      return true;
+    }
   }
 });

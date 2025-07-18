@@ -38,6 +38,7 @@ export class PatchingExecutor implements TargetExecutor {
       devtoolsPage: Page,
       preparationResult: TargetPreparationResult,
       exampleId: string,
+      randomize: boolean,
       commonLog: (text: string) => void,
       ): Promise<IndividualPromptRequestResponse[]> {
     commonLog(`[PatchingExecutor] Executing for exampleId: ${exampleId}`);

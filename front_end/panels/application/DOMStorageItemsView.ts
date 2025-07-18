@@ -118,7 +118,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
 
   override itemsCleared(): void {
     super.itemsCleared();
-    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemsCleared));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemsCleared));
   }
 
   private domStorageItemRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemRemovedEvent>):
@@ -132,7 +132,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
 
   override itemRemoved(key: string): void {
     super.itemRemoved(key);
-    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemDeleted));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.domStorageItemDeleted));
   }
 
   private domStorageItemAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemAddedEvent>): void {

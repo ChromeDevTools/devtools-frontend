@@ -1000,13 +1000,18 @@ export class ConsoleView extends UI.Widget.VBox implements
       return;
     }
 
-    const currentGroup = viewMessage.consoleGroup();
+    // Track any adjacent messages.
+    const originatingMessage = viewMessage.consoleMessage().originatingMessage();
+    const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
+    viewMessage.setAdjacentUserCommandResult(adjacent);
 
-    if (!currentGroup?.messagesHidden()) {
-      const originatingMessage = viewMessage.consoleMessage().originatingMessage();
-      const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
-      viewMessage.setAdjacentUserCommandResult(adjacent);
-      showGroup(currentGroup, this.visibleViewMessages);
+    // Ensure any parent groups for this message are shown.
+    const currentGroup = viewMessage.consoleGroup();
+    showGroup(currentGroup, this.visibleViewMessages);
+
+    // Determine whether this message should actually be visible.
+    const shouldShowMessage = !currentGroup?.messagesHidden();
+    if (shouldShowMessage) {
       this.visibleViewMessages.push(viewMessage);
       this.searchMessage(this.visibleViewMessages.length - 1);
     }
@@ -1094,7 +1099,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     if (hadFocus) {
       this.prompt.focus();
     }
-    UI.ARIAUtils.alert(i18nString(UIStrings.consoleCleared));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.consoleCleared));
   }
 
   private handleContextMenuEvent(event: Event): void {

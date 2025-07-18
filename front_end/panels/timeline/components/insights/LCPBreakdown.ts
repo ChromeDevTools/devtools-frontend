@@ -20,32 +20,25 @@ const {html} = Lit;
 export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-breakdown`;
   override internalName = 'lcp-by-phase';
-  #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
+  #overlay: Trace.Types.Overlays.TimespanBreakdown|null = null;
 
   protected override hasAskAiSupport(): boolean {
     return true;
   }
 
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
+  protected override createOverlays(): Trace.Types.Overlays.Overlay[] {
     this.#overlay = null;
 
     if (!this.model || !this.model.subparts || !this.model.lcpTs) {
       return [];
     }
 
-    const {subparts} = this.model;
-    const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    if (this.model.lcpRequest) {
-      overlays.push({type: 'ENTRY_OUTLINE', entry: this.model.lcpRequest, outlineReason: 'INFO'});
+    const overlays = this.model.createOverlays?.();
+    if (!overlays) {
+      return [];
     }
 
-    this.#overlay = {
-      type: 'TIMESPAN_BREAKDOWN',
-      sections: Object.values(subparts).map(
-          (subpart: Trace.Insights.Models.LCPBreakdown.Subpart) =>
-              ({bounds: subpart, label: subpart.label, showDuration: true})),
-    };
-    overlays.push(this.#overlay);
+    this.#overlay = overlays[0] as Trace.Types.Overlays.TimespanBreakdown;
     return overlays;
   }
 
@@ -90,7 +83,7 @@ export class LCPBreakdown extends BaseInsightComponent<LCPBreakdownInsightModel>
   }
 
   override toggleTemporaryOverlays(
-      overlays: Overlays.Overlays.TimelineOverlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
+      overlays: Trace.Types.Overlays.Overlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
     super.toggleTemporaryOverlays(overlays, {...options, updateTraceWindowPercentage: 0});
   }
 

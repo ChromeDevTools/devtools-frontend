@@ -126,8 +126,8 @@ describe('The styles pane', () => {
       }
 
       const popover = await waitFor(':popover-open devtools-css-variable-value-view');
-      const popoverContents = await popover.evaluate((e: Element|null) => {
-        return e?.deepInnerText();
+      const popoverContents = await popover.evaluate(e => {
+        return e.deepInnerText();
       });
 
       await hover(ELEMENTS_PANEL_SELECTOR);

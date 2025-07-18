@@ -10,7 +10,6 @@ import {describeWithEnvironment, updateHostConfig} from '../../../../testing/Env
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type {TimelineOverlay} from '../../overlays/OverlaysImpl.js';
 import * as Utils from '../../utils/utils.js';
 
 import * as Insights from './insights.js';
@@ -26,7 +25,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       return false;
     }
 
-    override createOverlays(): TimelineOverlay[] {
+    override createOverlays(): Trace.Types.Overlays.Overlay[] {
       return [];
     }
     override renderContent(): Lit.LitTemplate {
@@ -38,7 +37,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     override hasAskAiSupport() {
       return true;
     }
-    override createOverlays(): TimelineOverlay[] {
+    override createOverlays(): Trace.Types.Overlays.Overlay[] {
       return [];
     }
     override renderContent(): Lit.LitTemplate {
@@ -112,7 +111,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     function makeTestComponent(opts: {wastedBytes?: number, timeSavings?: number}) {
       class TestInsight extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
         override internalName = 'test-insight';
-        override createOverlays(): TimelineOverlay[] {
+        override createOverlays(): Trace.Types.Overlays.Overlay[] {
           return [];
         }
 
@@ -223,6 +222,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       state: 'fail',
       frameId: '123',
     } as const;
+    const FAKE_INSIGHT_SET_BOUNDS =
+        Trace.Helpers.Timing.traceWindowFromMicroSeconds(0 as Trace.Types.Timing.Micro, 0 as Trace.Types.Timing.Micro);
     async function renderComponent({insightHasAISupport}: {insightHasAISupport: boolean}):
         Promise<TestInsightComponentNoAISupport|TestInsightComponentWithAISupport> {
       const component =
@@ -231,6 +232,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       component.model = FAKE_LCP_MODEL;
       // We don't need a real trace for these tests.
       component.parsedTrace = FAKE_PARSED_TRACE;
+      component.bounds = FAKE_INSIGHT_SET_BOUNDS;
       renderElementIntoDOM(component);
 
       await RenderCoordinator.done();

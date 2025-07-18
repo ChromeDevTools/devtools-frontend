@@ -308,11 +308,6 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
     return this.#firstHeader().originalContentProvider().contentType();
   }
 
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    console.assert(this.headers.size > 0);
-    return this.#firstHeader().originalContentProvider().requestContent();
-  }
-
   requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     console.assert(this.headers.size > 0);
     return this.#firstHeader().originalContentProvider().requestContentData();

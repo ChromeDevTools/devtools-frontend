@@ -83,7 +83,7 @@ export class SRIMessageSignatureIssue extends Issue<string> {
     }
     if (this.#issueDetails.error === Protocol.Audits.SRIMessageSignatureError.ValidationFailedIntegrityMismatch) {
       description.substitutions?.set('PLACEHOLDER_integrityAssertions', () => {
-        const prefix = '\n<li>';
+        const prefix = '\n* ';
         return prefix + this.details().integrityAssertions.join(prefix);
       });
     }

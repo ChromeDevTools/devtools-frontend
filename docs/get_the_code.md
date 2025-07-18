@@ -46,27 +46,18 @@ it'll automatically create and initialize it.
 You can disable type checking (via TypeScript) by using the `devtools_skip_typecheck`
 argument in your GN configuration. This uses [esbuild](https://esbuild.github.io/)
 instead of `tsc` to compile the TypeScript files and generally results in much
-shorter build times. To switch the `Default` target to esbuild, use
-
-```bash
-gn gen out/Default --args="devtools_skip_typecheck=true"
-```
-
-or if you don't want to change the default target, use something like
-
-```bash
-gn gen out/fast-build --args="devtools_skip_typecheck=true"
-```
-
-and use `npm run build -- -t fast-build` to build this target.
+shorter build times.
 
 Additionally, we now bundle files together by default in all builds, which has
 a build time cost. If you want an even fast fast build, you might want to opt
-out of bundling by setting `devtools_bundle` to `false`:
+out of bundling by setting `devtools_bundle` to `false`
 
 ```bash
 gn gen out/fast-build --args="devtools_skip_typecheck=true devtools_bundle=false"
 ```
+
+and use `npm run build -- -t fast-build` to build this target (you can of course
+also just change the `Default` target to skip bundling and type checking).
 
 
 ### Rebuilding automatically
@@ -202,7 +193,7 @@ npm start -- -u
 Just like with Chrome itself, you can also control the set of enabled and disabled features using
 
 ```bash
-npm start -- --enable-features=DevToolsAutomaticFileSystems
+npm start -- --enable-features=DevToolsWellKnown
 npm start -- --disable-features=DevToolsWellKnown --enable-features=DevToolsFreestyler:multimodal/true
 ```
 

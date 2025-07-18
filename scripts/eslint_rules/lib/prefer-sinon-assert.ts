@@ -6,7 +6,37 @@ import type {TSESTree} from '@typescript-eslint/utils';
 
 import {createRule} from './utils/ruleCreator.ts';
 
-export default createRule({
+function isAssert(calleeNode: TSESTree.Expression) {
+  if (calleeNode.type === 'Identifier' && calleeNode.name === 'assert') {
+    return true;
+  }
+  if (calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
+      calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier') {
+    return ['isNotFalse', 'isOk', 'isTrue', 'ok'].includes(calleeNode.property.name);
+  }
+  return false;
+}
+
+function isAssertFalsy(node: TSESTree.Expression) {
+  if (node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier') {
+    return ['isFalse', 'isNotOk', 'isNotTrue', 'notOk'].includes(node.property.name);
+  }
+  return false;
+}
+
+function isAssertEquality(node: TSESTree.Expression) {
+  if (node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier') {
+    return ['deepEqual', 'equal', 'strictEqual'].includes(node.property.name);
+  }
+  return false;
+}
+
+type MessageIds = 'useSinonAssertInsteadOfAssert'|'useSinonAssertCalledInsteadOfAssert'|
+    'useSinonAssertNotCalledInsteadOfAssert'|'useSinonAssertCallCountInsteadOfAssert';
+
+export default createRule<unknown[], MessageIds>({
   name: 'prefer-sinon-assert',
   meta: {
     type: 'suggestion',
@@ -30,34 +60,12 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    function isAssert(calleeNode) {
-      if (calleeNode.type === 'Identifier' && calleeNode.name === 'assert') {
-        return true;
-      }
-      if (calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier') {
-        return ['isNotFalse', 'isOk', 'isTrue', 'ok'].includes(calleeNode.property.name);
-      }
-      return false;
-    }
-
-    function isAssertFalsy(calleeNode) {
-      if (calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier') {
-        return ['isFalse', 'isNotOk', 'isNotTrue', 'notOk'].includes(calleeNode.property.name);
-      }
-      return false;
-    }
-
-    function isAssertEquality(calleeNode) {
-      if (calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier') {
-        return ['deepEqual', 'equal', 'strictEqual'].includes(calleeNode.property.name);
-      }
-      return false;
-    }
-
-    function reportError(node, methodName: string, firstArgNodes: TSESTree.Node|TSESTree.Node[], messageId) {
+    function reportError(
+        node: TSESTree.CallExpression,
+        methodName: string,
+        firstArgNodes: TSESTree.Node|TSESTree.Node[],
+        messageId: MessageIds,
+    ) {
       context.report({
         node,
         messageId,

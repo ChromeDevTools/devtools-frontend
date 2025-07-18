@@ -325,12 +325,7 @@ export const generatedProperties = [
    "animation-range-start",
    "animation-timeline",
    "animation-timing-function",
-   "animation-trigger-exit-range-end",
-   "animation-trigger-exit-range-start",
-   "animation-trigger-range-end",
-   "animation-trigger-range-start",
-   "animation-trigger-timeline",
-   "animation-trigger-type",
+   "animation-trigger",
    "app-region",
    "appearance",
    "ascent-override",
@@ -382,6 +377,7 @@ export const generatedProperties = [
    "border-right-color",
    "border-right-style",
    "border-right-width",
+   "border-shape",
    "border-start-end-radius",
    "border-start-start-radius",
    "border-top-color",
@@ -513,8 +509,8 @@ export const generatedProperties = [
    "inset-block-start",
    "inset-inline-end",
    "inset-inline-start",
-   "interest-target-hide-delay",
-   "interest-target-show-delay",
+   "interest-hide-delay",
+   "interest-show-delay",
    "interpolate-size",
    "isolation",
    "item-tolerance",
@@ -725,6 +721,13 @@ export const generatedProperties = [
    "text-wrap-mode",
    "text-wrap-style",
    "timeline-scope",
+   "timeline-trigger-behavior",
+   "timeline-trigger-exit-range-end",
+   "timeline-trigger-exit-range-start",
+   "timeline-trigger-name",
+   "timeline-trigger-range-end",
+   "timeline-trigger-range-start",
+   "timeline-trigger-timeline",
    "top",
    "touch-action",
    "transform",
@@ -880,57 +883,7 @@ export const generatedProperties = [
   "name": "animation-timing-function"
  },
  {
-  "longhands": [
-   "animation-trigger-timeline",
-   "animation-trigger-type",
-   "animation-trigger-range-start",
-   "animation-trigger-range-end",
-   "animation-trigger-exit-range-start",
-   "animation-trigger-exit-range-end"
-  ],
   "name": "animation-trigger"
- },
- {
-  "longhands": [
-   "animation-trigger-exit-range-start",
-   "animation-trigger-exit-range-end"
-  ],
-  "name": "animation-trigger-exit-range"
- },
- {
-  "name": "animation-trigger-exit-range-end"
- },
- {
-  "name": "animation-trigger-exit-range-start"
- },
- {
-  "longhands": [
-   "animation-trigger-range-start",
-   "animation-trigger-range-end"
-  ],
-  "name": "animation-trigger-range"
- },
- {
-  "name": "animation-trigger-range-end"
- },
- {
-  "name": "animation-trigger-range-start"
- },
- {
-  "keywords": [
-   "none",
-   "auto"
-  ],
-  "name": "animation-trigger-timeline"
- },
- {
-  "keywords": [
-   "once",
-   "repeat",
-   "alternate",
-   "state"
-  ],
-  "name": "animation-trigger-type"
  },
  {
   "keywords": [
@@ -1426,6 +1379,12 @@ export const generatedProperties = [
    "thick"
   ],
   "name": "border-right-width"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "border-shape"
  },
  {
   "inherited": true,
@@ -2762,16 +2721,16 @@ export const generatedProperties = [
  },
  {
   "longhands": [
-   "interest-target-show-delay",
-   "interest-target-hide-delay"
+   "interest-show-delay",
+   "interest-hide-delay"
   ],
-  "name": "interest-target-delay"
+  "name": "interest-delay"
  },
  {
-  "name": "interest-target-hide-delay"
+  "name": "interest-hide-delay"
  },
  {
-  "name": "interest-target-show-delay"
+  "name": "interest-show-delay"
  },
  {
   "inherited": true,
@@ -2790,7 +2749,8 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "normal"
+   "normal",
+   "infinite"
   ],
   "name": "item-tolerance"
  },
@@ -3047,6 +3007,15 @@ export const generatedProperties = [
    "alpha"
   ],
   "name": "mask-type"
+ },
+ {
+  "longhands": [
+   "grid-template-areas",
+   "grid-template-columns",
+   "masonry-direction",
+   "masonry-fill"
+  ],
+  "name": "masonry"
  },
  {
   "keywords": [
@@ -3820,11 +3789,6 @@ export const generatedProperties = [
   "name": "scroll-margin-top"
  },
  {
-  "keywords": [
-   "none",
-   "after",
-   "before"
-  ],
   "name": "scroll-marker-group"
  },
  {
@@ -4157,8 +4121,8 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
-   "normal",
-   "no-autospace"
+   "no-autospace",
+   "normal"
   ],
   "name": "text-autospace"
  },
@@ -4392,6 +4356,49 @@ export const generatedProperties = [
  },
  {
   "name": "timeline-scope"
+ },
+ {
+  "longhands": [
+   "timeline-trigger-name",
+   "timeline-trigger-timeline",
+   "timeline-trigger-behavior",
+   "timeline-trigger-range-start",
+   "timeline-trigger-range-end",
+   "timeline-trigger-exit-range-start",
+   "timeline-trigger-exit-range-end"
+  ],
+  "name": "timeline-trigger"
+ },
+ {
+  "keywords": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
+  ],
+  "name": "timeline-trigger-behavior"
+ },
+ {
+  "name": "timeline-trigger-exit-range-end"
+ },
+ {
+  "name": "timeline-trigger-exit-range-start"
+ },
+ {
+  "name": "timeline-trigger-name"
+ },
+ {
+  "name": "timeline-trigger-range-end"
+ },
+ {
+  "name": "timeline-trigger-range-start"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "timeline-trigger-timeline"
  },
  {
   "keywords": [
@@ -4835,20 +4842,6 @@ export const generatedPropertyValues = {
    "step-end"
   ]
  },
- "animation-trigger-timeline": {
-  "values": [
-   "none",
-   "auto"
-  ]
- },
- "animation-trigger-type": {
-  "values": [
-   "once",
-   "repeat",
-   "alternate",
-   "state"
-  ]
- },
  "app-region": {
   "values": [
    "none",
@@ -5051,6 +5044,11 @@ export const generatedPropertyValues = {
    "thin",
    "medium",
    "thick"
+  ]
+ },
+ "border-shape": {
+  "values": [
+   "none"
   ]
  },
  "border-style": {
@@ -5883,7 +5881,8 @@ export const generatedPropertyValues = {
  },
  "item-tolerance": {
   "values": [
-   "normal"
+   "normal",
+   "infinite"
   ]
  },
  "left": {
@@ -6417,13 +6416,6 @@ export const generatedPropertyValues = {
    "nearest"
   ]
  },
- "scroll-marker-group": {
-  "values": [
-   "none",
-   "after",
-   "before"
-  ]
- },
  "scroll-padding-block-end": {
   "values": [
    "auto"
@@ -6606,8 +6598,8 @@ export const generatedPropertyValues = {
  },
  "text-autospace": {
   "values": [
-   "normal",
-   "no-autospace"
+   "no-autospace",
+   "normal"
   ]
  },
  "text-box-trim": {
@@ -6741,6 +6733,20 @@ export const generatedPropertyValues = {
    "balance",
    "pretty",
    "stable"
+  ]
+ },
+ "timeline-trigger-behavior": {
+  "values": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
+  ]
+ },
+ "timeline-trigger-timeline": {
+  "values": [
+   "none",
+   "auto"
   ]
  },
  "top": {

@@ -1111,12 +1111,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this.deselectAllGroups();
-      UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}));
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.sHovered, {PH1: groupName}));
     } else {
       this.selectedGroupIndex = groupIndex;
       this.flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this.draw();
-      UI.ARIAUtils.alert(i18nString(UIStrings.sSelected, {PH1: groupName}));
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.sSelected, {PH1: groupName}));
     }
   }
 
@@ -1227,7 +1227,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const groupName = groups[groupIndex].name;
       const content = group.expanded ? i18nString(UIStrings.sExpanded, {PH1: groupName}) :
                                        i18nString(UIStrings.sCollapsed, {PH1: groupName});
-      UI.ARIAUtils.alert(content);
+      UI.ARIAUtils.LiveAnnouncer.alert(content);
     }
   }
 
@@ -1699,7 +1699,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.expandGroup(this.keyboardFocusedGroup, true /* setExpanded */);
     const eventName = this.dataProvider.entryTitle(firstEntryIndex);
     if (eventName) {
-      UI.ARIAUtils.alert(i18nString(UIStrings.eventSelectedFromGroup, {
+      UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.eventSelectedFromGroup, {
         PH1: eventName,
         PH2: group.name,
       }));
@@ -2377,11 +2377,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             // Draw a rectangle over the event, starting at the X value of the
             // event's start time + the startDuration of the candy striping.
             const barXStart = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
-
-            // If a custom end time was passed in, that is when we stop striping, else we stripe until the very end of the entry.
-            const stripingEndTime = decoration.endAtTime ? Trace.Helpers.Timing.microToMilli(decoration.endAtTime) :
-                                                           entryStartTime + duration;
-            const barXEnd = this.timeToPositionClipped(stripingEndTime);
+            // We stripe until the very end of the entry.
+            const barXEnd = this.timeToPositionClipped(entryStartTime + duration);
             this.#drawEventRect(context, timelineData, entryIndex, {
               startX: barXStart,
               width: barXEnd - barXStart,
@@ -3422,8 +3419,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.timelineLevels = levelIndexes;
     const groups = this.rawTimelineData.groups || [];
     for (let i = 0; i < groups.length; ++i) {
-      const expanded = groups[i].expanded ?? this.#persistedGroupConfig?.[i].expanded ?? false;
-      const hidden = groups[i].hidden ?? this.#persistedGroupConfig?.[i].hidden ?? false;
+      const expanded = groups[i].expanded ?? this.#persistedGroupConfig?.[i]?.expanded ?? false;
+      const hidden = groups[i].hidden ?? this.#persistedGroupConfig?.[i]?.hidden ?? false;
       groups[i].expanded = expanded;
       groups[i].hidden = hidden;
     }
@@ -4103,12 +4100,9 @@ export const enum FlameChartDecorationType {
  **/
 export type FlameChartDecoration = {
   type: FlameChartDecorationType.CANDY,
-  // We often only want to highlight problem parts of events, so this time sets
-  // the minimum time at which the candystriping will start. If you want to
-  // candystripe the entire event, set this to 0.
+  /** Relative to entry's ts. We often only want to highlight problem parts of events, so this time sets the minimum
+   * time at which the candystriping will start. If you want to candystripe the entire event, set this to 0. */
   startAtTime: Trace.Types.Timing.Micro,
-  // Optionally set the end time for the striping. If this is not provided, the entire entry will be striped.
-  endAtTime?: Trace.Types.Timing.Micro,
 }|{
   type: FlameChartDecorationType.WARNING_TRIANGLE,
   customStartTime?: Trace.Types.Timing.Micro,

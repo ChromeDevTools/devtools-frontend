@@ -45,6 +45,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
+const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -104,9 +105,31 @@ let BidiBrowser = (() => {
                     'goog:prerenderingDisabled': true,
                 },
             });
-            await session.subscribe(session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
+            await session.subscribe((session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
                 ? BidiBrowser.subscribeModules
-                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]);
+                : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]).filter(module => {
+                if (!opts.networkEnabled) {
+                    return (module !== 'network' &&
+                        module !== 'goog:cdp.Network.requestWillBeSent');
+                }
+                return true;
+            }));
+            try {
+                await session.send('network.addDataCollector', {
+                    dataTypes: ["response" /* Bidi.Network.DataType.Response */],
+                    // Buffer size of 20 MB is equivalent to the CDP:
+                    maxEncodedDataSize: 20 * 1000 * 1000, // 20 MB
+                });
+            }
+            catch (err) {
+                if (err instanceof Errors_js_1.ProtocolError) {
+                    // Ignore protocol errors, as the data collectors can be not implemented.
+                    (0, util_js_1.debugError)(err);
+                }
+                else {
+                    throw err;
+                }
+            }
             const browser = new BidiBrowser(session.browser, opts);
             browser.#initialize();
             return browser;
@@ -121,6 +144,7 @@ let BidiBrowser = (() => {
         #browserContexts = new WeakMap();
         #target = new Target_js_1.BidiBrowserTarget(this);
         #cdpConnection;
+        #networkEnabled;
         constructor(browserCore, opts) {
             super();
             this.#process = opts.process;
@@ -128,6 +152,7 @@ let BidiBrowser = (() => {
             this.#browserCore = browserCore;
             this.#defaultViewport = opts.defaultViewport;
             this.#cdpConnection = opts.cdpConnection;
+            this.#networkEnabled = opts.networkEnabled;
         }
         #initialize() {
             // Initializing existing contexts.
@@ -203,8 +228,8 @@ let BidiBrowser = (() => {
         process() {
             return this.#process ?? null;
         }
-        async createBrowserContext(_options) {
-            const userContext = await this.#browserCore.createUserContext();
+        async createBrowserContext(options = {}) {
+            const userContext = await this.#browserCore.createUserContext(options);
             return this.#createBrowserContext(userContext);
         }
         async version() {
@@ -254,6 +279,9 @@ let BidiBrowser = (() => {
             return {
                 pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
             };
+        }
+        isNetworkEnabled() {
+            return this.#networkEnabled;
         }
     };
 })();

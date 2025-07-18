@@ -491,7 +491,6 @@ export class MainImpl {
 
     const automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
       forceNew: true,
-      hostConfig: Root.Runtime.hostConfig,
       inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
       projectSettingsModel,
     });
@@ -554,8 +553,8 @@ export class MainImpl {
       Timeline.TimelinePanel.LoadTimelineHandler.instance().handleQueryParam(value);
     }
 
-    // Initialize ARIAUtils.alert Element
-    UI.ARIAUtils.getOrCreateAlertElement();
+    // Initialize elements for the live announcer functionality for a11y.
+    UI.ARIAUtils.LiveAnnouncer.initializeAnnouncerElements();
     UI.DockController.DockController.instance().announceDockLocation();
 
     // Allow UI cycles to repaint prior to creating connection.
@@ -593,19 +592,23 @@ export class MainImpl {
       await runtimeModel?.addBinding({name: binding});
       runtimeModel?.addEventListener(SDK.RuntimeModel.Events.BindingCalled, event => {
         if (event.data.name === binding) {
-          VisualLogging.setVeDebuggingEnabled(event.data.payload === 'true', (query: string) => {
-            VisualLogging.setVeDebuggingEnabled(false);
-            void runtimeModel?.defaultExecutionContext()?.evaluate(
-                {
-                  expression: `window.inspect(${JSON.stringify(query)})`,
-                  includeCommandLineAPI: false,
-                  silent: true,
-                  returnByValue: false,
-                  generatePreview: false,
-                },
-                /* userGesture */ false,
-                /* awaitPromise */ false);
-          });
+          if (event.data.payload === 'true' || event.data.payload === 'false') {
+            VisualLogging.setVeDebuggingEnabled(event.data.payload === 'true', (query: string) => {
+              VisualLogging.setVeDebuggingEnabled(false);
+              void runtimeModel?.defaultExecutionContext()?.evaluate(
+                  {
+                    expression: `window.inspect(${JSON.stringify(query)})`,
+                    includeCommandLineAPI: false,
+                    silent: true,
+                    returnByValue: false,
+                    generatePreview: false,
+                  },
+                  /* userGesture */ false,
+                  /* awaitPromise */ false);
+            });
+          } else {
+            VisualLogging.setHighlightedVe(event.data.payload === 'null' ? null : event.data.payload);
+          }
         }
       });
     }
@@ -1026,6 +1029,12 @@ type ExternalRequestInput = {
   args: {prompt: string, selector: string},
 }|{
   kind: 'PERFORMANCE_RELOAD_GATHER_INSIGHTS',
+}|{
+  kind: 'PERFORMANCE_ANALYZE_INSIGHT',
+  args: {insightTitle: string, prompt: string},
+}|{
+  kind: 'NETWORK_DEBUGGER',
+  args: {requestUrl: string, prompt: string},
 };
 
 interface ExternalRequestResponse {
@@ -1039,14 +1048,39 @@ export async function handleExternalRequest(input: ExternalRequestInput): Promis
       const TimelinePanel = await import('../../panels/timeline/timeline.js');
       return await TimelinePanel.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
     }
+    case 'PERFORMANCE_ANALYZE_INSIGHT': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT,
+        prompt: input.args.prompt,
+        insightTitle: input.args.insightTitle,
+      });
+    }
+    case 'NETWORK_DEBUGGER': {
+      const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
+      const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
+      const panelInstance = await AiAssistance.AiAssistancePanel.instance();
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.NETWORK,
+        prompt: input.args.prompt,
+        requestUrl: input.args.requestUrl,
+      });
+    }
     case 'LIVE_STYLE_DEBUGGER': {
       const AiAssistance = await import('../../panels/ai_assistance/ai_assistance.js');
       const AiAssistanceModel = await import('../../models/ai_assistance/ai_assistance.js');
       const panelInstance = await AiAssistance.AiAssistancePanel.instance();
-      return await panelInstance.handleExternalRequest(
-          input.args.prompt, AiAssistanceModel.ConversationType.STYLING, input.args.selector);
+      return await panelInstance.handleExternalRequest({
+        conversationType: AiAssistanceModel.ConversationType.STYLING,
+        prompt: input.args.prompt,
+        selector: input.args.selector,
+      });
     }
   }
+  // @ts-expect-error
+  throw new Error(`Debugging with an agent of type '${input.kind}' is not implemented yet.`);
 }
 
 // @ts-expect-error

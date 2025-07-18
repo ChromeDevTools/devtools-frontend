@@ -6,7 +6,6 @@
 import commonStyle from './common.css';
 import {adoptStyleSheet} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
-import {DistancesOverlay} from './tool_distances.js';
 // @ts-expect-error Importing CSS is handled in Rollup.
 import highlightGridStyle from './tool_grid.css';
 // @ts-expect-error Importing CSS is handled in Rollup.
@@ -41,7 +40,6 @@ gridStyleSheet.replaceSync(gridStyle);
 
 const highlightOverlay = new HighlightOverlay(window, [highlightStyle, gridStyleSheet]);
 const persistentOverlay = new PersistentOverlay(window, [highlightGridStyle, gridStyleSheet]);
-const distancesOverlay = new DistancesOverlay(window);
 const pausedOverlay = new PausedOverlay(window, pausedStyle);
 const screenshotOverlay = new ScreenshotOverlay(window, screenshotStyle);
 const sourceOrderOverlay = new SourceOrderOverlay(window, sourceOrderStyle);
@@ -49,7 +47,6 @@ const viewportSizeOverlay = new ViewportSizeOverlay(window);
 const windowControlsOverlay = new WindowControlsOverlay(window, [wcoStyle]);
 
 interface Overlays {
-  distances: DistancesOverlay;
   highlight: HighlightOverlay;
   persistent: PersistentOverlay;
   paused: PausedOverlay;
@@ -63,7 +60,6 @@ type PlatformName = string;
 
 // Key in this object is the name the backend refers to a particular overlay by.
 const overlays: Overlays = {
-  distances: distancesOverlay,
   highlight: highlightOverlay,
   persistent: persistentOverlay,
   paused: pausedOverlay,

@@ -169,7 +169,7 @@ class SourceMapScopeRemoteObject extends RemoteObjectImpl {
     if (typeof expressionOrSubRanges === 'string') {
       return expressionOrSubRanges;
     }
-    if (expressionOrSubRanges === undefined) {
+    if (expressionOrSubRanges === null) {
       return null;
     }
 

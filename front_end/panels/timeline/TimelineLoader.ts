@@ -76,6 +76,24 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
+  static loadFromParsedJsonFile(contents: ParsedJSONFile, client: Client): TimelineLoader {
+    const loader = new TimelineLoader(client);
+
+    window.setTimeout(async () => {
+      client.loadingStarted();
+      try {
+        loader.#processParsedFile(contents);
+        await loader.close();
+      } catch (e: unknown) {
+        await loader.close();
+        const message = e instanceof Error ? e.message : '';
+        return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: message}));
+      }
+    });
+
+    return loader;
+  }
+
   static loadFromEvents(events: Trace.Types.Events.Event[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {

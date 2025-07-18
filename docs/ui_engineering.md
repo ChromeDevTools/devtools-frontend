@@ -40,6 +40,30 @@ This will instantiate a `Widget` class with the web component as its `element` a
 
 For backwards compatibility, the first argument to `widgetConfig` can also be a factory function: `<devtools-widget .widgetConfig=${widgetConfig(element => new MyWidget(foo, bar, element))}>`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widgetConfig` are equivalent: `widgetConfig(MyWidget)` and `widgetConfig(element = new MyWidget(element))`.
 
+## Styling
+To prevent style conflicts in widgets without relying on shadow DOM, we use the CSS [`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope) at-rule for style encapsulation. This ensures that styles defined for a widget do not leak out and affect other components.
+
+To simplify this process, a helper function, `UI.Widget.widgetScoped`, is provided. This function automatically wraps the given CSS rules in an `@scope to (devtools-widget)` block. The to (devtools-widget) part is crucial, as it establishes a "lower boundary," preventing the styles from cascading into any nested child widgets (which are rendered as <devtools-widget> elements).
+
+```ts
+import {html} from 'lit-html';
+import * as UI from '../../ui/legacy/legacy.js';
+import myWidgetStyles from './myWidget.css.js';
+
+render(html`
+  <style>
+    ${UI.Widget.widgetScoped(myWidgetStyles)}
+  </style>
+  <div class="container">
+    <h3 class="title">My Widget</h3>
+    ...
+    <devtools-widget .widgetConfig=${widgetConfig(NestedWidget)}></devtools-widget>
+  </div>
+`, this.element);
+```
+
+In this example, styles like `.title` will apply within the parent widget but will not apply to any elements inside the nested `<devtools-widget>`.
+
 ## Examples
 
 ```html

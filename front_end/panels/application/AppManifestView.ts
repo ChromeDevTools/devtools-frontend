@@ -698,7 +698,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         };
         copyButton.className = 'inline-button';
         copyButton.addEventListener('click', () => {
-          UI.ARIAUtils.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
+          UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
         });
         suggestedIdNote.appendChild(

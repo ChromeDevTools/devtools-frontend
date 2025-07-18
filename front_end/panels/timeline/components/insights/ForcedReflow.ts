@@ -10,33 +10,31 @@ import type {ForcedReflowInsightModel} from '../../../../models/trace/insights/F
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.ForcedReflow;
+const {UIStrings, i18nString, createOverlayForEvents} = Trace.Insights.Models.ForcedReflow;
 
 const {html, nothing} = Lit;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
+  override internalName = 'forced-reflow';
 
   mapToRow(data: Trace.Insights.Models.ForcedReflow.BottomUpCallStack): TableDataRow {
     return {
       values: [this.#linkifyUrl(data.bottomUpData)],
-      overlays: this.#createOverlayForEvents(data.relatedEvents),
+      overlays: createOverlayForEvents(data.relatedEvents),
     };
   }
 
   createAggregatedTableRow(remaining: Trace.Insights.Models.ForcedReflow.BottomUpCallStack[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length)],
-      overlays: remaining.flatMap(r => this.#createOverlayForEvents(r.relatedEvents)),
+      overlays: remaining.flatMap(r => createOverlayForEvents(r.relatedEvents)),
     };
   }
-
-  override internalName = 'forced-reflow';
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame|null): Lit.LitTemplate {
     const style = 'display: flex; gap: 4px; padding: 4px 0; overflow: hidden; white-space: nowrap';
@@ -93,7 +91,7 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
                   this.#linkifyUrl(topLevelFunctionCallData.topLevelFunctionCall),
                   time(Trace.Types.Timing.Micro(topLevelFunctionCallData.totalReflowTime)),
                 ],
-                overlays: this.#createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
+                overlays: createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
               }],
             } as TableData}>
           </devtools-performance-table>
@@ -109,27 +107,6 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
         </devtools-performance-table>
       </div>`;
     // clang-format on
-  }
-
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model || !this.model.topLevelFunctionCallData) {
-      return [];
-    }
-
-    const allBottomUpEvents = [...this.model.aggregatedBottomUpData.values().flatMap(data => data.relatedEvents)];
-    return [
-      ...this.#createOverlayForEvents(this.model.topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
-      ...this.#createOverlayForEvents(allBottomUpEvents),
-    ];
-  }
-
-  #createOverlayForEvents(events: Trace.Types.Events.Event[], outlineReason: 'ERROR'|'INFO' = 'ERROR'):
-      Overlays.Overlays.TimelineOverlay[] {
-    return events.map(e => ({
-                        type: 'ENTRY_OUTLINE',
-                        entry: e,
-                        outlineReason,
-                      }));
   }
 }
 

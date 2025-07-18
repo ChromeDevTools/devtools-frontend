@@ -595,6 +595,11 @@ declare namespace ProtocolProxyApi {
     invoke_setWindowBounds(params: Protocol.Browser.SetWindowBoundsRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Set size of the browser contents resizing browser window as necessary.
+     */
+    invoke_setContentsSize(params: Protocol.Browser.SetContentsSizeRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Set dock tile details, platform-specific.
      */
     invoke_setDockTile(params: Protocol.Browser.SetDockTileRequest): Promise<Protocol.ProtocolResponseWithError>;
@@ -709,6 +714,11 @@ declare namespace ProtocolProxyApi {
      * Returns requested styles for a DOM node identified by `nodeId`.
      */
     invoke_getMatchedStylesForNode(params: Protocol.CSS.GetMatchedStylesForNodeRequest): Promise<Protocol.CSS.GetMatchedStylesForNodeResponse>;
+
+    /**
+     * Returns the values of the default UA-defined environment variables used in env()
+     */
+    invoke_getEnvironmentVariables(): Promise<Protocol.CSS.GetEnvironmentVariablesResponse>;
 
     /**
      * Returns all media queries parsed by the rendering engine.
@@ -1241,6 +1251,12 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getAnchorElement(params: Protocol.DOM.GetAnchorElementRequest): Promise<Protocol.DOM.GetAnchorElementResponse>;
 
+    /**
+     * When enabling, this API force-opens the popover identified by nodeId
+     * and keeps it open until disabled.
+     */
+    invoke_forceShowPopover(params: Protocol.DOM.ForceShowPopoverRequest): Promise<Protocol.DOM.ForceShowPopoverResponse>;
+
   }
   export interface DOMDispatcher {
     /**
@@ -1682,6 +1698,11 @@ declare namespace ProtocolProxyApi {
     invoke_setVisibleSize(params: Protocol.Emulation.SetVisibleSizeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_setDisabledImageTypes(params: Protocol.Emulation.SetDisabledImageTypesRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
+     * Override the value of navigator.connection.saveData
+     */
+    invoke_setDataSaverOverride(params: Protocol.Emulation.SetDataSaverOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_setHardwareConcurrencyOverride(params: Protocol.Emulation.SetHardwareConcurrencyOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
@@ -3252,8 +3273,6 @@ declare namespace ProtocolProxyApi {
     invoke_dispatchPeriodicSyncEvent(params: Protocol.ServiceWorker.DispatchPeriodicSyncEventRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
-
-    invoke_inspectWorker(params: Protocol.ServiceWorker.InspectWorkerRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_setForceUpdateOnPageLoad(params: Protocol.ServiceWorker.SetForceUpdateOnPageLoadRequest): Promise<Protocol.ProtocolResponseWithError>;
 

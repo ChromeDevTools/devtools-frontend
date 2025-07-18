@@ -20,7 +20,7 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const sourceCode = context.sourceCode;
 
     function checkCommentAndReportError(comment) {
       const trimmed = comment.value.trim();

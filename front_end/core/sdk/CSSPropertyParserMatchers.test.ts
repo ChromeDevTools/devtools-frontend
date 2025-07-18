@@ -53,8 +53,8 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
       });
   sinon.stub(SDK.CSSPropertyParser.BottomUpTreeMatching.prototype, 'getComputedTextRange')
       .callsFake(function(
-          this: SDK.CSSPropertyParser.BottomUpTreeMatching, from: CodeMirror.SyntaxNode,
-          to: CodeMirror.SyntaxNode): string {
+          this: SDK.CSSPropertyParser.BottomUpTreeMatching, from: CodeMirror.SyntaxNode|undefined,
+          to: CodeMirror.SyntaxNode|undefined): string {
         injectChunk(this);
         return getComputedTextRange.call(this, from, to);
       });
@@ -680,31 +680,31 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
   it('match color channels for relative colors', () => {
     function expectedColor(channel: string) {
       switch (channel) {
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.L:
+        case Common.Color.ColorChannel.L:
           return new Common.Color.Lab(0.5, 0, 0.0, null, 'lab(0.5 0 0)');
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.A:
+        case Common.Color.ColorChannel.A:
           return new Common.Color.Lab(1, 0.5, 0, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.C:
+        case Common.Color.ColorChannel.C:
           return new Common.Color.LCH(1, 0.5, 0, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.H:
+        case Common.Color.ColorChannel.H:
           return new Common.Color.LCH(1, 1, 0.5, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.R:
+        case Common.Color.ColorChannel.R:
           return new Common.Color.Legacy([0.5, 0, 0], Common.Color.Format.RGB);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.G:
+        case Common.Color.ColorChannel.G:
           return new Common.Color.Legacy([0, 0.5, 0], Common.Color.Format.RGB);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.B:
+        case Common.Color.ColorChannel.B:
           return new Common.Color.Legacy([0, 0, 0.5], Common.Color.Format.RGB);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.ALPHA:
+        case Common.Color.ColorChannel.ALPHA:
           return new Common.Color.Legacy([0, 0, 0, 0.5], Common.Color.Format.RGBA);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.S:
+        case Common.Color.ColorChannel.S:
           return new Common.Color.HSL(0.8, 0.5, 0.9, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.W:
+        case Common.Color.ColorChannel.W:
           return new Common.Color.HWB(0, 0.5, 0, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.X:
+        case Common.Color.ColorChannel.X:
           return new Common.Color.ColorFunction(Common.Color.Format.XYZ_D50, 0.5, 0, 0, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.Y:
+        case Common.Color.ColorChannel.Y:
           return new Common.Color.ColorFunction(Common.Color.Format.XYZ_D50, 0, 0.5, 0, null);
-        case SDK.CSSPropertyParserMatchers.RelativeColorChannel.Z:
+        case Common.Color.ColorChannel.Z:
           return new Common.Color.ColorFunction(Common.Color.Format.XYZ_D50, 0, 0, 0.5, null);
         default:
           throw new Error('Unexpected channel');

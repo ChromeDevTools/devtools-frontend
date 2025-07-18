@@ -44,6 +44,7 @@ export class NodeMainImpl implements Common.Runnable.Runnable {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     void SDK.Connections.initMainConnection(async () => {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
+          // TODO: Use SDK.Target.Type.NODE rather thatn BROWSER once DevTools is loaded appropriately in that case.
           'main', i18nString(UIStrings.main), SDK.Target.Type.BROWSER, null);
       target.setInspectedURL('Node.js' as Platform.DevToolsPath.UrlString);
     }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);

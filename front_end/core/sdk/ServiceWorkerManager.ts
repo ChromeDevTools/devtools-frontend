@@ -221,10 +221,6 @@ export class ServiceWorkerManager extends SDKModel<EventTypes> {
     await this.#agent.invoke_stopWorker({versionId});
   }
 
-  async inspectWorker(versionId: string): Promise<void> {
-    await this.#agent.invoke_inspectWorker({versionId});
-  }
-
   workerRegistrationUpdated(registrations: Protocol.ServiceWorker.ServiceWorkerRegistration[]): void {
     for (const payload of registrations) {
       let registration = this.#registrationsInternal.get(payload.registrationId);

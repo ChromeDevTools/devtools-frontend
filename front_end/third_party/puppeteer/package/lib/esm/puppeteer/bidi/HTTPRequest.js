@@ -236,6 +236,9 @@ export class BidiHTTPRequest extends HTTPRequest {
     timing() {
         return this.#request.timing();
     }
+    getResponseContent() {
+        return this.#request.getResponseContent();
+    }
 }
 _a = BidiHTTPRequest;
 function getBidiHeaders(rawHeaders) {

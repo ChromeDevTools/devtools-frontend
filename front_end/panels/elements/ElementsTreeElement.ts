@@ -37,8 +37,10 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as Elements from '../../models/elements/elements.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -57,7 +59,7 @@ import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {type ElementsTreeOutline, MappedCharToEntity, type UpdateRecord} from './ElementsTreeOutline.js';
+import {type ElementsTreeOutline, MappedCharToEntity} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {getRegisteredDecorators, type MarkerDecorator, type MarkerDecoratorRegistration} from './MarkerDecorator.js';
 
@@ -183,6 +185,14 @@ const UIStrings = {
    *@description ARIA label for Elements Tree adorners
    */
   disableGridMode: 'Disable grid mode',
+  /**
+   * @description ARIA label for an elements tree adorner
+   */
+  forceOpenPopover: 'Keep this popover open',
+  /**
+   * @description ARIA label for an elements tree adorner
+   */
+  stopForceOpenPopover: 'Stop keeping this popover open',
   /**
    *@description Label of the adorner for flex elements in the Elements panel
    */
@@ -554,7 +564,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
     if (this.contentElement && !this.aiButtonContainer) {
       this.aiButtonContainer = this.contentElement.createChild('span', 'ai-button-container');
-      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title());
+      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title(), 'ask-ai');
       floatingButton.addEventListener('click', ev => {
         ev.stopPropagation();
         this.select(true, false);
@@ -855,12 +865,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           i18nString(UIStrings.copyFullXpath), this.copyFullXPath.bind(this), {jslogContext: 'copy-full-xpath'});
     }
 
-    if (!isShadowRoot) {
-      menuItem = copyMenu.clipboardSection().appendItem(
-          i18nString(UIStrings.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal),
-          {jslogContext: 'copy-element'});
-      menuItem.setShortcut(createShortcut('C', modifier));
+    menuItem = copyMenu.clipboardSection().appendItem(
+        i18nString(UIStrings.copyElement),
+        treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal, true), {jslogContext: 'copy-element'});
+    menuItem.setShortcut(createShortcut('C', modifier));
 
+    if (!isShadowRoot) {
       // Duplicate element, disabled on root element and ShadowDOM.
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === '#document';
       menuItem = contextMenu.editSection().appendItem(
@@ -1427,7 +1437,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return tags.length === 1 ? null : tags[tags.length - 1];
   }
 
-  updateTitle(updateRecord?: UpdateRecord|null): void {
+  updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord|null): void {
     // If we are editing, return early to prevent canceling the edit.
     // After editing is committed updateTitle will be called.
     if (this.editing) {
@@ -1609,8 +1619,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private buildAttributeDOM(
-      parentElement: Element|DocumentFragment, name: string, value: string, updateRecord: UpdateRecord|null,
-      forceValue?: boolean, node?: SDK.DOMModel.DOMNode): HTMLElement {
+      parentElement: Element|DocumentFragment, name: string, value: string,
+      updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null, forceValue?: boolean,
+      node?: SDK.DOMModel.DOMNode): HTMLElement {
     const closingPunctuationRegex = /[\/;:\)\]\}]/g;
     let highlightIndex = 0;
     let highlightCount = 0;
@@ -1799,7 +1810,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   private buildTagDOM(
       parentElement: DocumentFragment, tagName: string, isClosingTag: boolean, isDistinctTreeElement: boolean,
-      updateRecord: UpdateRecord|null): void {
+      updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null): void {
     const node = this.nodeInternal;
     const classes = ['webkit-html-tag'];
     if (isClosingTag && isDistinctTreeElement) {
@@ -1838,7 +1849,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private nodeTitleInfo(updateRecord: UpdateRecord|null): DocumentFragment {
+  private nodeTitleInfo(updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null): DocumentFragment {
     const node = this.nodeInternal;
     const titleDOM = document.createDocumentFragment();
     const updateSearchHighlight = (): void => {
@@ -2267,26 +2278,60 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     for (const styleAdorner of this.tagTypeContext.styleAdorners) {
       this.removeAdorner(styleAdorner, this.tagTypeContext);
     }
-    if (!layout) {
-      return;
-    }
-
-    if (layout.isGrid) {
-      this.pushGridAdorner(this.tagTypeContext, layout.isSubgrid);
-    }
-    if (layout.isFlex) {
-      this.pushFlexAdorner(this.tagTypeContext);
-    }
-    if (layout.hasScroll) {
-      this.pushScrollSnapAdorner(this.tagTypeContext);
-    }
-    if (layout.isContainer) {
-      this.pushContainerAdorner(this.tagTypeContext);
+    if (layout) {
+      if (layout.isGrid) {
+        this.pushGridAdorner(this.tagTypeContext, layout.isSubgrid);
+      }
+      if (layout.isFlex) {
+        this.pushFlexAdorner(this.tagTypeContext);
+      }
+      if (layout.hasScroll) {
+        this.pushScrollSnapAdorner(this.tagTypeContext);
+      }
+      if (layout.isContainer) {
+        this.pushContainerAdorner(this.tagTypeContext);
+      }
     }
 
     if (node.isMediaNode()) {
       this.pushMediaAdorner(this.tagTypeContext);
     }
+
+    if (node.attributes().find(attr => attr.name === 'popover')) {
+      this.pushPopoverAdorner(this.tagTypeContext);
+    }
+  }
+
+  pushPopoverAdorner(context: OpeningTagContext): void {
+    if (!Root.Runtime.hostConfig.devToolsAllowPopoverForcing?.enabled) {
+      return;
+    }
+    const node = this.node();
+    const nodeId = node.id;
+
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.POPOVER);
+    const adorner = this.adorn(config);
+    const onClick = async(): Promise<void> => {
+      const {nodeIds} = await node.domModel().agent.invoke_forceShowPopover({nodeId, enable: adorner.isActive()});
+      for (const closedPopoverNodeId of nodeIds) {
+        const node = this.node().domModel().nodeForId(closedPopoverNodeId);
+        const treeElement = node && this.treeOutline?.treeElementByNode.get(node);
+        if (!treeElement || !isOpeningTag(treeElement.tagTypeContext)) {
+          return;
+        }
+        const adorner = treeElement.tagTypeContext.adorners.values().find(adorner => adorner.name === config.name);
+        adorner?.toggle(false);
+      }
+    };
+    adorner.addInteraction(onClick, {
+      isToggle: true,
+      shouldPropagateOnKeydown: false,
+      ariaLabelDefault: i18nString(UIStrings.forceOpenPopover),
+      ariaLabelActive: i18nString(UIStrings.stopForceOpenPopover),
+    });
+
+    context.styleAdorners.add(adorner);
   }
 
   pushGridAdorner(context: OpeningTagContext, isSubgrid: boolean): void {

@@ -49,7 +49,7 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
             mochaGlobals.describe = customDescribe(defaultImplementation.suite, '', thisSuite);
             // @ts-expect-error Custom interface.
             mochaGlobals.setup = function(suiteSettings: SuiteSettings) {
-              StateProvider.instance.registerSettingsCallback(thisSuite, suiteSettings);
+              StateProvider.instance.registerSuiteSettings(thisSuite, suiteSettings);
             };
             // @ts-expect-error Custom interface.
             mochaGlobals.it = customIt(defaultImplementation.test, thisSuite, thisSuite.file || '', mochaRoot);
@@ -67,7 +67,7 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
         });
 
         if (!suite.isPending()) {
-          suite.beforeAll(async function(this: Mocha.Context) {
+          suite.beforeEach(async function(this: Mocha.Context) {
             this.timeout(0);
             await StateProvider.instance.resolveBrowser(suite);
           });
@@ -76,14 +76,11 @@ function devtoolsTestInterface(rootSuite: Mocha.Suite) {
       };
     }
 
-    const describe = withAugmentedTitle(suiteImplementation.create);
+    const describe = withAugmentedTitle(suiteImplementation.create.bind(suiteImplementation));
     // @ts-expect-error Custom interface.
-    describe.only = withAugmentedTitle(suiteImplementation.only);
+    describe.only = withAugmentedTitle(suiteImplementation.only.bind(suiteImplementation));
     // @ts-expect-error Custom interface.
-    describe.skip = withAugmentedTitle(function(opts: CreateOptions) {
-      opts.pending = true;
-      return suiteImplementation.create(opts);
-    });
+    describe.skip = withAugmentedTitle(suiteImplementation.skip.bind(suiteImplementation));
     return describe;
   }
 }
@@ -112,10 +109,23 @@ function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: s
   function createTest(title: string, itBodyFn?: Mocha.AsyncFunc) {
     const test = new Mocha.Test(
         title,
-        suite.isPending() || !itBodyFn ? undefined : InstrumentedTestFunction.instrument(itBodyFn, 'test', suite));
+        suite.isPending() || !itBodyFn ? undefined : InstrumentedTestFunction.instrument(itBodyFn, 'test', suite),
+    );
     test.file = file;
-    suite.addTest(test);
-    return test;
+
+    // Creates a proxy that changes the duration to return
+    // our own timing.
+    const proxyTest = new Proxy(test, {
+      get(target, property, receiver) {
+        if (property === 'duration' && target.realDuration) {
+          return Reflect.get(target, 'realDuration', receiver) ?? Reflect.get(target, property, receiver);
+        }
+        return Reflect.get(target, property, receiver);
+      },
+    });
+
+    suite.addTest(proxyTest);
+    return proxyTest;
   }
 
   // Regular mocha it returns the test instance.

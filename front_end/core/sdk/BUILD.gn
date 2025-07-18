@@ -103,6 +103,7 @@ devtools_module("sdk") {
     "../../generated:protocol",
     "../../models/cpu_profile:bundle",
     "../../models/text_utils:bundle",
+    "../../third_party/source-map-scopes-codec:bundle",
   ]
 }
 

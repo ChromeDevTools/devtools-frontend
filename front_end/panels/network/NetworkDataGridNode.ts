@@ -101,6 +101,26 @@ const UIStrings = {
    */
   origin: 'origin',
   /**
+   * @description Reason why a request was blocked shown in the Network panel
+   */
+  coepFrameResourceNeedsCoepHeader: 'COEP-framed resource needs COEP header',
+  /**
+   * @description Reason why a request was blocked shown in the Network panel
+   */
+  coopSandboxedIframeCannotNavigateToCoopPage: 'Sandboxed iframe\'s popup cannot navigate to COOP page',
+  /**
+   * @description Reason why a request was blocked shown in the Network panel
+   */
+  corpNotSameOrigin: 'CORP not "same-origin"',
+  /**
+   * @description Reason why a request was blocked shown in the Network panel
+   */
+  corpNotSameSite: 'CORP not "same-site"',
+  /**
+   * @description Reason why a request was blocked shown in the Network panel
+   */
+  corpNotSameOriginAfterDefaultedToSameOriginByCoep: 'CORP not "same-origin" after defaulted to "same-origin" by COEP',
+  /**
    *@description Noun. Shown in a table cell as the reason why a network request failed. "integrity" here refers to the integrity of the network request itself in a cryptographic sense: signature verification might have failed, for instance.
    */
   integrity: 'integrity',
@@ -1227,23 +1247,23 @@ export class NetworkRequestNode extends NetworkNode {
           break;
         case Protocol.Network.BlockedReason.CoepFrameResourceNeedsCoepHeader:
           displayShowHeadersLink = true;
-          reason = i18n.i18n.lockedString('CoepFrameResourceNeedsCoepHeader');
+          reason = i18nString(UIStrings.coepFrameResourceNeedsCoepHeader);
           break;
         case Protocol.Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage:
           displayShowHeadersLink = true;
-          reason = i18n.i18n.lockedString('CoopSandboxedIframeCannotNavigateToCoopPage');
+          reason = i18nString(UIStrings.coopSandboxedIframeCannotNavigateToCoopPage);
           break;
         case Protocol.Network.BlockedReason.CorpNotSameOrigin:
           displayShowHeadersLink = true;
-          reason = i18n.i18n.lockedString('NotSameOrigin');
+          reason = i18nString(UIStrings.corpNotSameOrigin);
           break;
         case Protocol.Network.BlockedReason.CorpNotSameSite:
           displayShowHeadersLink = true;
-          reason = i18n.i18n.lockedString('NotSameSite');
+          reason = i18nString(UIStrings.corpNotSameSite);
           break;
         case Protocol.Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep:
           displayShowHeadersLink = true;
-          reason = i18n.i18n.lockedString('NotSameOriginAfterDefaultedToSameOriginByCoep');
+          reason = i18nString(UIStrings.corpNotSameOriginAfterDefaultedToSameOriginByCoep);
           break;
         case Protocol.Network.BlockedReason.SriMessageSignatureMismatch:
           displayShowHeadersLink = true;
@@ -1518,7 +1538,7 @@ export class NetworkRequestNode extends NetworkNode {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.network-floating-button');
       const aiButtonContainer = document.createElement('span');
       aiButtonContainer.classList.add('ai-button-container');
-      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title());
+      const floatingButton = Buttons.FloatingButton.create('smart-assistant', action.title(), 'ask-ai');
       floatingButton.addEventListener('click', ev => {
         ev.stopPropagation();
         this.select();

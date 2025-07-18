@@ -83,7 +83,7 @@ export default createRule({
       }
       const importStart = valueImportNode.range[0];
       // Find the 'type' keyword after 'import'. It should be the first token after 'import'.
-      const sourceCode = context.sourceCode ?? context.getSourceCode();
+      const sourceCode = context.sourceCode;
       const importToken = sourceCode.getFirstToken(valueImportNode);
       const typeToken = importToken ? sourceCode.getTokenAfter(importToken) : null;
 

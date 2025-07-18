@@ -11,16 +11,6 @@ import {ScreenshotError} from './screenshot-error.js';
 import {TestConfig} from './test_config.js';
 
 declare global {
-  /*
-  * For tests containing screenshots.
-  */
-  let itScreenshot: {
-    (title: string, fn: Mocha.AsyncFunc): void,
-
-    skip: (title: string, fn: Mocha.AsyncFunc) => void,
-
-    skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void,
-  };
   namespace Mocha {
     export interface TestFunction {
       skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;

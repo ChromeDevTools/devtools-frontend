@@ -1200,6 +1200,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @param {string} request
+   * @param {function(!InspectorFrontendHostAPI.AidaCompleteCodeResult): void} cb
+   */
+  aidaCodeComplete(request, cb) {
+    DevToolsAPI.sendMessageToEmbedder('aidaCodeComplete', [request], cb);
+  }
+
+  /**
+   * @param {string} request
    * @param {function(!InspectorFrontendHostAPI.AidaClientResult): void} cb
    */
   registerAidaClientEvent(request, cb) {

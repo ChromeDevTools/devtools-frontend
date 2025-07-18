@@ -138,7 +138,7 @@ Step-by-step guide on how to merge:
 1. The cherry-pick CL is created
    ([example](https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/1928913)).
 1. Get it reviewed if necessary.
-1. Once merge request approval is granted (see step 1), click the hamburger menu on the cherry-pick CL and select “Submit”. (Setting the Commit-Queue bit (+2) has no effect because these branches don’t have a commit queue.)
+1. Once merge request approval, set Commit-Queue bit (+2) and wait for the CL to land. (Branches have a commit queue too)
 1. Done.
 
 ### Merge conflicts

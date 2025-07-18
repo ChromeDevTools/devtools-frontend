@@ -42,10 +42,6 @@ class MockStreamingContentProvider implements TextUtils.ContentProvider.Streamin
     return this.#contentType;
   }
 
-  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return this.#content.content().asDeferedContent();
-  }
-
   addChunk(chunk: string): void {
     this.#content.addChunk(chunk);
   }

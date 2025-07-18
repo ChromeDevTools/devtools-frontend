@@ -102,8 +102,9 @@ export async function selectMode(
   await selectRadioOption(mode, 'lighthouse.mode', devToolsPage);
 }
 
-export async function selectDevice(device: 'mobile'|'desktop') {
-  await selectRadioOption(device, 'lighthouse.device-type');
+export async function selectDevice(
+    device: 'mobile'|'desktop', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await selectRadioOption(device, 'lighthouse.device-type', devToolsPage);
 }
 
 export async function setToolbarCheckboxWithText(enabled: boolean, textContext: string) {
@@ -118,8 +119,9 @@ export async function setToolbarCheckboxWithText(enabled: boolean, textContext: 
   }, enabled);
 }
 
-export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools') {
-  const toolbarHandle = await waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
+export async function setThrottlingMethod(
+    throttlingMethod: 'simulate'|'devtools', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {
     const selectElem = toolbar.querySelector('select')!;
     const optionElem = selectElem.querySelector(`option[value="${throttlingMethod}"]`) as HTMLOptionElement;
@@ -167,12 +169,12 @@ export async function waitForStorageUsage(
   await devToolsPage.click('#tab-lighthouse');
 }
 
-export async function waitForTimespanStarted() {
-  await waitForElementWithTextContent('Timespan started');
+export async function waitForTimespanStarted(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForElementWithTextContent('Timespan started');
 }
 
-export async function endTimespan() {
-  const endTimespanBtn = await waitForElementWithTextContent('End timespan');
+export async function endTimespan(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const endTimespanBtn = await devToolsPage.waitForElementWithTextContent('End timespan');
   await endTimespanBtn.click();
 }
 
@@ -212,20 +214,18 @@ export async function getTargetViewport(inspectedPage = getBrowserAndPagesWrappe
                                       }));
 }
 
-export async function getServiceWorkerCount() {
-  const {target} = await getBrowserAndPages();
-  return await target.evaluate(async () => {
+export async function getServiceWorkerCount(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  return await inspectedPage.evaluate(async () => {
     return (await navigator.serviceWorker.getRegistrations()).length;
   });
 }
 
-export async function registerServiceWorker() {
-  const {target} = getBrowserAndPages();
-  await target.evaluate(async () => {
+export async function registerServiceWorker(inspectedPage = getBrowserAndPagesWrappers().inspectedPage) {
+  await inspectedPage.evaluate(async () => {
     // @ts-expect-error Custom function added to global scope.
     await window.registerServiceWorker();
   });
-  assert.strictEqual(await getServiceWorkerCount(), 1);
+  assert.strictEqual(await getServiceWorkerCount(inspectedPage), 1);
 }
 
 export async function interceptNextFileSave(): Promise<() => Promise<string>> {
@@ -254,10 +254,10 @@ export async function interceptNextFileSave(): Promise<() => Promise<string>> {
 export async function renderHtmlInIframe(html: string) {
   const {target} = getBrowserAndPages();
   return (await target.evaluateHandle(async html => {
-           const iframe = document.createElement('iframe');
-           iframe.srcdoc = html;
-           document.documentElement.append(iframe);
-           await new Promise(resolve => iframe.addEventListener('load', resolve));
-           return iframe.contentDocument;
-         }, html)).asElement() as ElementHandle<Document>;
+    const iframe = document.createElement('iframe');
+    iframe.srcdoc = html;
+    document.documentElement.append(iframe);
+    await new Promise(resolve => iframe.addEventListener('load', resolve));
+    return iframe.contentDocument!;
+  }, html));
 }

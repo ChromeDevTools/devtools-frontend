@@ -117,21 +117,6 @@ function devtoolsTestInterface(suite: Mocha.Suite) {
           }
           return context.it(title, fn);
         };
-        function screenshotTestTitle(title: string) {
-          return '[screenshot]: ' + title;
-        }
-        // @ts-expect-error Custom interface.
-        context.itScreenshot = function(title: string, fn: Mocha.AsyncFunc) {
-          return context.it(screenshotTestTitle(title), fn);
-        };
-        // @ts-expect-error Custom interface.
-        context.itScreenshot.skipOnPlatforms = function(platforms: Platform[], title: string, fn: Mocha.AsyncFunc) {
-          return context.it.skipOnPlatforms(platforms, screenshotTestTitle(title), fn);
-        };
-        // @ts-expect-error Custom interface.
-        context.itScreenshot.skip = function(title: string) {
-          return context.it.skip(screenshotTestTitle(title));
-        };
       },
   );
 }

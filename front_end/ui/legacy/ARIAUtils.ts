@@ -365,61 +365,89 @@ export function setPositionInSet(element: Element, position: number): void {
   element.setAttribute('aria-posinset', position.toString());
 }
 
-function hideFromLayout(element: HTMLElement): void {
-  element.style.position = 'absolute';
-  element.style.left = '-999em';
-  element.style.width = '100em';
-  element.style.overflow = 'hidden';
+export const enum AnnouncerRole {
+  ALERT = 'alert',
+  STATUS = 'status',
 }
+export class LiveAnnouncer {
+  static #announcerElementsByRole: Record<AnnouncerRole, WeakMap<HTMLElement, HTMLElement>> = {
+    [AnnouncerRole.ALERT]: new WeakMap<HTMLElement, HTMLElement>(),
+    [AnnouncerRole.STATUS]: new WeakMap<HTMLElement, HTMLElement>(),
+  };
 
-const alertElements = new WeakMap<HTMLElement, HTMLElement>();
-function createAlertElement(container: HTMLElement): HTMLDivElement {
-  const element = container.createChild('div');
-  hideFromLayout(element);
-  element.setAttribute('role', 'alert');
-  element.setAttribute('aria-atomic', 'true');
-  return element;
-}
-
-export function getOrCreateAlertElement(container: HTMLElement = document.body, opts?: {force: boolean}): HTMLElement {
-  const existingAlertElement = alertElements.get(container);
-  if (existingAlertElement && existingAlertElement.isConnected && !opts?.force) {
-    return existingAlertElement;
+  static #hideFromLayout(element: HTMLElement): void {
+    element.style.position = 'absolute';
+    element.style.left = '-999em';
+    element.style.width = '100em';
+    element.style.overflow = 'hidden';
   }
 
-  const newAlertElement = createAlertElement(container);
-  alertElements.set(container, newAlertElement);
-  return newAlertElement;
-}
-
-/**
- * Used only in tests to clear any left over alerts between test runs.
- */
-export function removeAlertElement(container: HTMLElement): void {
-  const alertElement = alertElements.get(container);
-  if (alertElement) {
-    alertElement.remove();
-    alertElements.delete(container);
+  static #createAnnouncerElement(container: HTMLElement, role: AnnouncerRole): HTMLDivElement {
+    const element = container.createChild('div');
+    LiveAnnouncer.#hideFromLayout(element);
+    element.setAttribute('role', role);
+    element.setAttribute('aria-atomic', 'true');
+    return element;
   }
-}
 
-/**
- * Announces the provided message using a dedicated ARIA alert element (`role="alert"`).
- * Ensures messages are announced even if identical to the previous message by appending
- * a non-breaking space ('\u00A0') when necessary. This works around screen reader
- * optimizations that might otherwise silence repeated identical alerts. The element's
- * `aria-atomic="true"` attribute ensures the entire message is announced upon change.
- *
- * The alert element is associated with the currently active dialog's content element
- * if a dialog is showing, otherwise defaults to an element associated with the document body.
- * Messages longer than 10000 characters will be trimmed.
- *
- * @param message The message to be announced.
- */
-export function alert(message: string): void {
-  const dialog = Dialog.getInstance();
-  const element = getOrCreateAlertElement(dialog?.isShowing() ? dialog.contentElement : undefined);
+  static #removeAnnouncerElement(container: HTMLElement, role: AnnouncerRole): void {
+    const element = LiveAnnouncer.#announcerElementsByRole[role].get(container);
+    if (element) {
+      element.remove();
+      LiveAnnouncer.#announcerElementsByRole[role].delete(container);
+    }
+  }
 
-  const announcedMessage = element.textContent === message ? `${message}\u00A0` : message;
-  element.textContent = Platform.StringUtilities.trimEndWithMaxLength(announcedMessage, 10000);
+  /**
+   * Announces the provided message using a dedicated ARIA alert element (`role="alert"`).
+   * Ensures messages are announced even if identical to the previous message by appending
+   * a non-breaking space ('\u00A0') when necessary. This works around screen reader
+   * optimizations that might otherwise silence repeated identical alerts. The element's
+   * `aria-atomic="true"` attribute ensures the entire message is announced upon change.
+   *
+   * The alert element is associated with the currently active dialog's content element
+   * if a dialog is showing, otherwise defaults to an element associated with the document body.
+   * Messages longer than 10000 characters will be trimmed.
+   *
+   * @param message The message to be announced.
+   */
+  static #announce(message: string, role: AnnouncerRole): void {
+    const dialog = Dialog.getInstance();
+    const element =
+        LiveAnnouncer.getOrCreateAnnouncerElement(dialog?.isShowing() ? dialog.contentElement : undefined, role);
+
+    const announcedMessage = element.textContent === message ? `${message}\u00A0` : message;
+    element.textContent = Platform.StringUtilities.trimEndWithMaxLength(announcedMessage, 10000);
+  }
+
+  static getOrCreateAnnouncerElement(container: HTMLElement = document.body, role: AnnouncerRole, opts?: {
+    force: boolean,
+  }): HTMLElement {
+    const existingAnnouncerElement = LiveAnnouncer.#announcerElementsByRole[role].get(container);
+    if (existingAnnouncerElement && existingAnnouncerElement.isConnected && !opts?.force) {
+      return existingAnnouncerElement;
+    }
+
+    const newAnnouncerElement = LiveAnnouncer.#createAnnouncerElement(container, role);
+    LiveAnnouncer.#announcerElementsByRole[role].set(container, newAnnouncerElement);
+    return newAnnouncerElement;
+  }
+
+  static initializeAnnouncerElements(container: HTMLElement = document.body): void {
+    LiveAnnouncer.getOrCreateAnnouncerElement(container, AnnouncerRole.ALERT);
+    LiveAnnouncer.getOrCreateAnnouncerElement(container, AnnouncerRole.STATUS);
+  }
+
+  static removeAnnouncerElements(container: HTMLElement = document.body): void {
+    LiveAnnouncer.#removeAnnouncerElement(container, AnnouncerRole.ALERT);
+    LiveAnnouncer.#removeAnnouncerElement(container, AnnouncerRole.ALERT);
+  }
+
+  static alert(message: string): void {
+    LiveAnnouncer.#announce(message, AnnouncerRole.ALERT);
+  }
+
+  static status(message: string): void {
+    LiveAnnouncer.#announce(message, AnnouncerRole.STATUS);
+  }
 }

@@ -68,7 +68,21 @@ describeWithMockConnection('MainMenuItem', () => {
       sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
 
       await handleExternalRequest({kind: 'LIVE_STYLE_DEBUGGER', args: {prompt: 'test', selector: '#test'}});
-      sinon.assert.calledWith(panel.handleExternalRequest, 'test', AiAssistanceModel.ConversationType.STYLING, '#test');
+      sinon.assert.calledWith(
+          panel.handleExternalRequest,
+          {prompt: 'test', conversationType: AiAssistanceModel.ConversationType.STYLING, selector: '#test'});
+    });
+
+    it('throws an error for file assistance requests', async () => {
+      const panel = sinon.createStubInstance(AiAssistance.AiAssistancePanel);
+      sinon.stub(AiAssistance.AiAssistancePanel, 'instance').callsFake(() => Promise.resolve(panel));
+      try {
+        // @ts-expect-error
+        await handleExternalRequest({kind: 'FILE_DEBUGGER', args: {prompt: 'test'}});
+        assert.fail('Expected `handleExternalRequest` to throw');
+      } catch (err) {
+        assert.strictEqual(err.message, 'Debugging with an agent of type \'FILE_DEBUGGER\' is not implemented yet.');
+      }
     });
   });
 });

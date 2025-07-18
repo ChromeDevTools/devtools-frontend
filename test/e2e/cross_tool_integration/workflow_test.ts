@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, closeAllCloseableTabs, goToResource, timeout, waitFor} from '../../shared/helper.js';
+import {click, closeAllCloseableTabs, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
 import {navigateToConsoleTab, waitForConsoleInfoMessageAndClickOnLink} from '../helpers/console-helpers.js';
 import {
   clickOnContextMenuItemFromTab,
@@ -57,14 +57,15 @@ describe('A user can navigate across', function() {
     // `default.html` below.
     const statusIndicator = await waitFor('.timeline-status-dialog .progress .indicator');
     const statusIndicatorValues = new Set<number>();
-    do {
+    await waitForFunction(async () => {
       const indicatorValue = await statusIndicator.evaluate(n => Number(n.getAttribute('aria-valuenow')));
       if (statusIndicatorValues.has(indicatorValue)) {
         await timeout(50);
       } else {
         statusIndicatorValues.add(indicatorValue);
       }
-    } while (statusIndicatorValues.size <= 2);
+      return statusIndicatorValues.size > 1;
+    });
 
     await stopRecording();
 

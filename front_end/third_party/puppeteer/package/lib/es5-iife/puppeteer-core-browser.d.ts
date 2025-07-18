@@ -388,6 +388,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * @experimental
      */
     abstract get debugInfo(): DebugInfo;
+
 }
 
 /**
@@ -856,6 +857,14 @@ export declare interface ClickOptions extends MouseClickOptions {
      * Offset for the clickable point relative to the top-left corner of the border box.
      */
     offset?: Offset;
+    /**
+     * An experimental debugging feature. If true, inserts an element into the
+     * page to highlight the click location for 10 seconds. Might not work on all
+     * pages and does not persist across navigations.
+     *
+     * @experimental
+     */
+    debugHighlight?: boolean;
 }
 
 /**
@@ -1011,6 +1020,15 @@ export declare interface ConnectOptions {
      * @defaultValue `false`
      */
     acceptInsecureCerts?: boolean;
+    /**
+     * Experimental setting to disable monitoring network events by default. When
+     * set to `false`, parts of Puppeteer that depend on network events would not
+     * work such as HTTPRequest and HTTPResponse.
+     *
+     * @experimental
+     * @defaultValue `true`
+     */
+    networkEnabled?: boolean;
     /**
      * Sets the viewport for each page.
      *
@@ -5516,6 +5534,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     waitForResponse(urlOrPredicate: string | AwaitablePredicate<HTTPResponse>, options?: WaitTimeoutOptions): Promise<HTTPResponse>;
     /**
      * Waits for the network to be idle.
+     *
+     * @remarks The function will always wait at least the
+     * set {@link WaitForNetworkIdleOptions.idleTime | IdleTime}.
      *
      * @param options - Options to configure waiting behavior.
      * @returns A promise which resolves once the network is idle.

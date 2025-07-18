@@ -314,13 +314,12 @@ describeWithEnvironment('TimelinePanel', function() {
     }
   });
 
-  describe('handleExternalRequest', () => {
+  describe('handleExternalRecordRequest', () => {
     it('returns information on the insights found in the recording', async function() {
       const uiView = UI.ViewManager.ViewManager.instance({forceNew: true});
       sinon.stub(uiView, 'showView');
 
       const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
-      // const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       await timeline.loadingComplete(events, null, null);
 
       sinon.stub(timeline, 'recordReload').callsFake(() => {
@@ -328,7 +327,7 @@ describeWithEnvironment('TimelinePanel', function() {
       });
 
       const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
-      assert.include(response, 'Insights from this recording');
+      assert.include(response, '# Trace recording results');
       const EXPECTED_INSIGHT_TITLES = [
         'LCP breakdown',
         'LCP request discovery',
@@ -336,13 +335,37 @@ describeWithEnvironment('TimelinePanel', function() {
         'Document request latency',
       ];
       for (const title of EXPECTED_INSIGHT_TITLES) {
-        assert.include(response, title);
+        assert.include(response, `### Insight Title: ${title}`);
       }
 
-      assert.include(response, `- Time to first byte: 7.94 ms (6.1% of total LCP time)
-- Resource load delay: 33.16 ms (25.7% of total LCP time)
-- Resource load duration: 14.70 ms (11.4% of total LCP time)
-- Element render delay: 73.41 ms (56.8% of total LCP time)`);
+      assert.include(response, `- Time to first byte: 7.94 ms (6.1% of total LCP time)
+- Resource load delay: 33.16 ms (25.7% of total LCP time)
+- Resource load duration: 14.70 ms (11.4% of total LCP time)
+- Element render delay: 73.41 ms (56.8% of total LCP time)`);
+    });
+
+    it('includes information on passing insights under a separate heading', async function() {
+      const uiView = UI.ViewManager.ViewManager.instance({forceNew: true});
+      sinon.stub(uiView, 'showView');
+
+      const events = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz') as Trace.Types.Events.Event[];
+      await timeline.loadingComplete(events, null, null);
+
+      sinon.stub(timeline, 'recordReload').callsFake(() => {
+        timeline.dispatchEventToListeners(Timeline.TimelinePanel.Events.RECORDING_COMPLETED, {traceIndex: 0});
+      });
+
+      const {response} = await Timeline.TimelinePanel.TimelinePanel.handleExternalRecordRequest();
+      assert.include(response, '# Trace recording results');
+
+      assert.include(response, '## Non-passing insights:');
+      const EXPECTED_INSIGHT_TITLES = [
+        'INP breakdown',
+        'Layout shift culprits',
+      ];
+      for (const title of EXPECTED_INSIGHT_TITLES) {
+        assert.include(response, `### Insight Title: ${title}`);
+      }
     });
   });
 });

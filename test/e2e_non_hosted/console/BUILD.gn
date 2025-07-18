@@ -6,10 +6,33 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("console") {
   sources = [
+    "alert-toString-exception_test.ts",
+    "command-line-api_test.ts",
+    "console-accessors_test.ts",
+    "console-autocomplete_test.ts",
+    "console-clear_test.ts",
+    "console-context-selector_test.ts",
+    "console-errors_test.ts",
+    "console-eval-blocked-by-CSP_test.ts",
+    "console-eval-fake_test.ts",
     "console-eval-global_test.ts",
+    "console-expand-recursively_test.ts",
+    "console-fetch-logging_test.ts",
+    "console-filter_test.ts",
+    "console-ignore-list_test.ts",
+    "console-last-result_test.ts",
+    "console-live-expressions_test.ts",
+    "console-log_test.ts",
+    "console-message-format_test.ts",
+    "console-repl-mode_test.ts",
+    "console-stack-trace_test.ts",
     "console-time_test.ts",
+    "console-truncate-long-messages_test.ts",
+    "console-trusted-types_test.ts",
+    "console-uncaught-promise_test.ts",
     "dom-warnings_test.ts",
     "filter_test.ts",
+    "issues-toolbar_test.ts",
     "search_test.ts",
   ]
 

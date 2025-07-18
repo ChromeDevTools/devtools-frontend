@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Deprecation from '../../../generated/Deprecation.js';
+/* eslint-disable rulesdir/es-modules-import */
+// @ts-expect-error
+import ISSUE_DESCRIPTIONS from '../../../models/issues_manager/description_list.json' with {type : 'json'};
+/* eslint-enable rulesdir/es-modules-import */
+import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -367,6 +374,72 @@ console.log('test')
     it('renders basic escaped tag inside codespan', () => {
       const codeBlock = renderString('`<123>`', 'code');
       assert.strictEqual(codeBlock.innerText, '<123>');
+    });
+  });
+});
+
+// eslint-disable-next-line rulesdir/l10n-filename-matches
+const strDeprecation = i18n.i18n.registerUIStrings('generated/Deprecation.ts', Deprecation.UIStrings);
+const i18nDeprecationString = i18n.i18n.getLocalizedString.bind(undefined, strDeprecation);
+
+describeWithEnvironment('Issue description smoke test', () => {
+  // These tests load all the markdown issue descriptions and render each of them once, to make sure
+  // syntax and links are valid.
+  (ISSUE_DESCRIPTIONS as string[]).forEach(descriptionFile => {
+    it(`renders ${descriptionFile} without throwing`, async () => {
+      let descriptionContent = await IssuesManager.MarkdownIssueDescription.getMarkdownFileContent(descriptionFile);
+      descriptionContent = descriptionContent.replaceAll(
+          /\{(PLACEHOLDER_[a-zA-Z][a-zA-Z0-9]*)\}/g, '$1');  // Identity substitute placeholders.
+      const issueDescription =
+          IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromRawMarkdown(descriptionContent, {
+            file: descriptionFile,
+            links: [],
+          });
+
+      assert.isNotEmpty(issueDescription.title, 'Title of a markdown description must never be empty');
+
+      if (issueDescription.markdown.length === 0) {
+        // Some markdown descriptions only have a title and no text. In that case
+        // we don't have anything to render anyway.
+        return;
+      }
+
+      const component = new MarkdownView.MarkdownView.MarkdownView();
+      renderElementIntoDOM(component);
+      component.data = {tokens: issueDescription.markdown};
+
+      assert.isNotEmpty(component.shadowRoot!.deepTextContent());
+    });
+  });
+
+  Object.keys(Deprecation.DEPRECATIONS_METADATA).forEach(deprecation => {
+    // TODO(crbug.com/430801230): Re-enable these tests once the descriptions are fixed on the chromium side.
+    if ([
+          'CanRequestURLHTTPContainingNewline', 'CookieWithTruncatingChar', 'H1UserAgentFontSizeInSection',
+          'RequestedSubresourceWithEmbeddedCredentials'
+        ].includes(deprecation)) {
+      return;
+    }
+
+    it(`renders the deprecation description for ${deprecation} without throwing`, async () => {
+      const description = (Deprecation.UIStrings as Record<string, string>)[deprecation];
+      const issueDescription = await IssuesManager.MarkdownIssueDescription.createIssueDescriptionFromMarkdown({
+        file: 'deprecation.md',
+        links: [],
+        substitutions: new Map([
+          ['PLACEHOLDER_title', 'Deprecated feature used'],
+          ['PLACEHOLDER_message', i18nDeprecationString(description)],
+        ]),
+      });
+
+      assert.isNotEmpty(issueDescription.title);
+      assert.isNotEmpty(issueDescription.markdown);
+
+      const component = new MarkdownView.MarkdownView.MarkdownView();
+      renderElementIntoDOM(component);
+      component.data = {tokens: issueDescription.markdown};
+
+      assert.isNotEmpty(component.shadowRoot!.deepTextContent());
     });
   });
 });

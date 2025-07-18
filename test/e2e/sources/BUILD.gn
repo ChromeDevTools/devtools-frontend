@@ -14,17 +14,12 @@ node_ts_library("sources") {
     "can-show-multiple-workers_test.ts",
     "debug-raw-wasm_test.ts",
     "header-overrides_test.ts",
-    "icon-row-bucket_test.ts",
     "ignore-list_test.ts",
-    "inline-variable_test.ts",
-    "live-edit-moving-breakpoint_test.ts",
     "navigator-view_test.ts",
     "overrides_test.ts",
-    "restart-frame_test.ts",
     "snippets_test.ts",
     "syntax-highlighting_test.ts",
     "watch-expressions_test.ts",
-    "worker-relative-sourcemap_test.ts",
   ]
 
   deps = [

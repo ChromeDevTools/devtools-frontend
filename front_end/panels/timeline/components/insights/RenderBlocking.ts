@@ -6,18 +6,18 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {RenderBlockingInsightModel} from '../../../../models/trace/insights/RenderBlocking.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import {createLimitedRows, renderOthersLabel, type TableDataRow} from './Table.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.RenderBlocking;
+const {UIStrings, i18nString, createOverlayForRequest} = Trace.Insights.Models.RenderBlocking;
 
 const {html} = Lit;
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-render-blocking-requests`;
+  override internalName = 'render-blocking-requests';
 
   mapToRow(request: Trace.Types.Events.SyntheticNetworkRequest): TableDataRow {
     return {
@@ -25,37 +25,19 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
         eventRef(request),
         i18n.TimeUtilities.formatMicroSecondsTime(request.dur),
       ],
-      overlays: [this.#createOverlayForRequest(request)],
+      overlays: [createOverlayForRequest(request)],
     };
   }
 
   createAggregatedTableRow(remaining: Trace.Types.Events.SyntheticNetworkRequest[]): TableDataRow {
     return {
       values: [renderOthersLabel(remaining.length), ''],
-      overlays: remaining.map(r => this.#createOverlayForRequest(r)),
+      overlays: remaining.map(r => createOverlayForRequest(r)),
     };
   }
-
-  override internalName = 'render-blocking-requests';
 
   protected override hasAskAiSupport(): boolean {
     return !!this.model;
-  }
-
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    return this.model.renderBlockingRequests.map(request => this.#createOverlayForRequest(request));
-  }
-
-  #createOverlayForRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Overlays.Overlays.EntryOutline {
-    return {
-      type: 'ENTRY_OUTLINE',
-      entry: request,
-      outlineReason: 'ERROR',
-    };
   }
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {

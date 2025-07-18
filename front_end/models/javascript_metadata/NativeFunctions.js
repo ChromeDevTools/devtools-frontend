@@ -154,7 +154,7 @@ export const NativeFunctions = [
   {
     name: "set",
     signatures: [["key","value"]],
-    receivers: ["Map","WeakMap"]
+    receivers: ["Map","WeakMap","CrashReportStorage"]
   },
   {
     name: "set",
@@ -1477,7 +1477,7 @@ export const NativeFunctions = [
   {
     name: "item",
     signatures: [["index"]],
-    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","HTMLCollection","SpeechGrammarList","SpeechRecognitionPhraseList"]
+    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","HTMLCollection","SpeechGrammarList"]
   },
   {
     name: "item",
@@ -1978,6 +1978,11 @@ export const NativeFunctions = [
   },
   {
     name: "remove",
+    signatures: [["key"]],
+    receivers: ["CrashReportStorage"]
+  },
+  {
+    name: "remove",
     signatures: [["?options"]],
     receivers: ["FileSystemHandle"]
   },
@@ -2306,23 +2311,11 @@ export const NativeFunctions = [
   },
   {
     name: "createElement",
-    signatures: [["localName","?options"],["tagName","?options"]],
-    receivers: ["Document"]
-  },
-  {
-    name: "createElement",
-    signatures: [["localName","?options"]],
-    receivers: ["ShadowRoot"]
+    signatures: [["localName","?options"],["tagName","?options"]]
   },
   {
     name: "createElementNS",
-    signatures: [["namespaceURI","qualifiedName","?options"],["namespace","qualifiedName","?options"]],
-    receivers: ["Document"]
-  },
-  {
-    name: "createElementNS",
-    signatures: [["namespaceURI","qualifiedName","?options"]],
-    receivers: ["ShadowRoot"]
+    signatures: [["namespaceURI","qualifiedName","?options"],["namespace","qualifiedName","?options"]]
   },
   {
     name: "createEvent",
@@ -3836,7 +3829,7 @@ export const NativeFunctions = [
   {
     name: "removeItem",
     signatures: [["index"]],
-    receivers: ["SVGLengthList","SVGNumberList","SVGPointList","SVGStringList","SVGTransformList","SpeechRecognitionPhraseList"]
+    receivers: ["SVGLengthList","SVGNumberList","SVGPointList","SVGStringList","SVGTransformList"]
   },
   {
     name: "removeItem",
@@ -6500,6 +6493,10 @@ export const NativeFunctions = [
     signatures: [["?data"]]
   },
   {
+    name: "pseudo",
+    signatures: [["type"]]
+  },
+  {
     name: "parseHTMLUnsafe",
     signatures: [["html","?options"]]
   },
@@ -7495,7 +7492,7 @@ export const NativeFunctions = [
   },
   {
     name: "drawElement",
-    signatures: [["element","x","y","?dwidth","?dheight"]]
+    signatures: [["element","x","y","?options"],["element","x","y","dwidth","dheight","?options"]]
   },
   {
     name: "setHitTestRegions",
@@ -8534,24 +8531,12 @@ export const NativeFunctions = [
     signatures: [["string","?weight"]]
   },
   {
-    name: "SpeechRecognitionContext",
-    signatures: [["phrases"]]
-  },
-  {
     name: "SpeechRecognitionErrorEvent",
     signatures: [["type","?eventInitDict"]]
   },
   {
     name: "SpeechRecognitionEvent",
     signatures: [["type","?initDict"]]
-  },
-  {
-    name: "SpeechRecognitionPhraseList",
-    signatures: [["phrases"]]
-  },
-  {
-    name: "addItem",
-    signatures: [["item"]]
   },
   {
     name: "SpeechRecognitionPhrase",

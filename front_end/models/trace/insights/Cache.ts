@@ -250,3 +250,15 @@ export function generateInsight(
     wastedBytes: totalWastedBytes,
   });
 }
+
+export function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline {
+  return {
+    type: 'ENTRY_OUTLINE',
+    entry: request,
+    outlineReason: 'ERROR',
+  };
+}
+
+export function createOverlays(model: CacheInsightModel): Types.Overlays.Overlay[] {
+  return model.requests.map(req => createOverlayForRequest(req.request));
+}

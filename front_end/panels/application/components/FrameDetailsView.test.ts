@@ -207,8 +207,8 @@ describeWithMockConnection('FrameDetailsView', () => {
       '/ad-script2.$script',
       'Yes\xA0Localhost is always a secure context',
       'Yes',
-      'None',
-      'SameOrigin',
+      'none',
+      'same-origin',
       `HTTP header
 base-uri: 'self'
 object-src: 'none'

@@ -71,6 +71,10 @@ const UIStrings = {
    * @description Tooltip text shown in the Elements panel when an element has an error.
    */
   interactiveContentAttributesSelectDescendant: 'Element with invalid attributes within a <select> element',
+  /**
+   * @description Tooltip text shown in the Elements panel when an element has an error.
+   */
+  interactiveContentSummaryDescendant: 'Interactive element inside of a <summary> element',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementIssueUtils.ts', UIStrings);
@@ -91,7 +95,7 @@ export function getElementIssueDetails(issue: IssuesManager.Issue.Issue): Elemen
       attribute: issueDetails.violatingNodeAttribute,
     };
   }
-  if (issue instanceof IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue) {
+  if (issue instanceof IssuesManager.ElementAccessibilityIssue.ElementAccessibilityIssue) {
     const issueDetails = issue.details();
     if (issue.isInteractiveContentAttributesSelectDescendantIssue()) {
       return {
@@ -100,7 +104,7 @@ export function getElementIssueDetails(issue: IssuesManager.Issue.Issue): Elemen
       };
     }
     return {
-      tooltip: getTooltipFromSelectElementAccessibilityIssue(issueDetails.selectElementAccessibilityIssueReason),
+      tooltip: getTooltipFromElementAccessibilityIssue(issueDetails.elementAccessibilityIssueReason),
       nodeId: issueDetails.nodeId,
     };
   }
@@ -135,19 +139,20 @@ function getTooltipFromGenericIssue(errorType: Protocol.Audits.GenericIssueError
   }
 }
 
-function getTooltipFromSelectElementAccessibilityIssue(reason: Protocol.Audits.SelectElementAccessibilityIssueReason):
-    string {
+function getTooltipFromElementAccessibilityIssue(reason: Protocol.Audits.ElementAccessibilityIssueReason): string {
   switch (reason) {
-    case Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild:
+    case Protocol.Audits.ElementAccessibilityIssueReason.DisallowedSelectChild:
       return i18nString(UIStrings.disallowedSelectChild);
-    case Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedOptGroupChild:
+    case Protocol.Audits.ElementAccessibilityIssueReason.DisallowedOptGroupChild:
       return i18nString(UIStrings.disallowedOptGroupChild);
-    case Protocol.Audits.SelectElementAccessibilityIssueReason.NonPhrasingContentOptionChild:
+    case Protocol.Audits.ElementAccessibilityIssueReason.NonPhrasingContentOptionChild:
       return i18nString(UIStrings.nonPhrasingContentOptionChild);
-    case Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild:
+    case Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild:
       return i18nString(UIStrings.interactiveContentOptionChild);
-    case Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentLegendChild:
+    case Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentLegendChild:
       return i18nString(UIStrings.interactiveContentLegendChild);
+    case Protocol.Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant:
+      return i18nString(UIStrings.interactiveContentSummaryDescendant);
     default:
       return '';
   }

@@ -287,7 +287,7 @@ export class GeneratedRangeBuilder {
     }
 
     for (const bindings of options?.bindings ?? []) {
-      if (bindings === undefined || typeof bindings === 'string') {
+      if (bindings === undefined || bindings === null || typeof bindings === 'string') {
         this.#encodedRange += encodeVlq(this.#nameIdx(bindings));
         continue;
       }
@@ -336,8 +336,8 @@ export class GeneratedRangeBuilder {
     }
   }
 
-  #nameIdx(name?: string): number {
-    if (name === undefined) {
+  #nameIdx(name?: string|null): number {
+    if (name === undefined || name === null) {
       return -1;
     }
 

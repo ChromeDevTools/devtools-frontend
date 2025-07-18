@@ -10,7 +10,6 @@ node_ts_library("elements") {
     "add-view-transition-pseudo-styles_test.ts",
     "at-function-sections_test.ts",
     "at-property-sections_test.ts",
-    "color-picker_test.ts",
     "css-hints_test.ts",
     "dom-breakpoints_test.ts",
     "element-breadcrumbs_test.ts",
@@ -18,14 +17,12 @@ node_ts_library("elements") {
     "layout-pane_test.ts",
     "oopif-elements_test.ts",
     "reveal-correct-node_test.ts",
-    "search-elements_test.ts",
     "selection-after-delete_test.ts",
     "shadowroot-styles_test.ts",
     "sidebar-event-listeners-remove_test.ts",
     "sidebar-event-listeners_test.ts",
     "style-pane-properties_test.ts",
     "styles-disable-inherited_test.ts",
-    "switch-panels-while-editing-as-html_test.ts",
   ]
 
   deps = [

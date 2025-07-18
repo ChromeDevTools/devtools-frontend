@@ -54,6 +54,7 @@ template("ts_library") {
                              "deps",
                              "public_deps",
                              "inputs",
+                             "data_deps",
                            ])
 
     inputs += [

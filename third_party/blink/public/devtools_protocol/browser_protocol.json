@@ -1966,19 +1966,20 @@
                     ]
                 },
                 {
-                    "id": "SelectElementAccessibilityIssueReason",
+                    "id": "ElementAccessibilityIssueReason",
                     "type": "string",
                     "enum": [
                         "DisallowedSelectChild",
                         "DisallowedOptGroupChild",
                         "NonPhrasingContentOptionChild",
                         "InteractiveContentOptionChild",
-                        "InteractiveContentLegendChild"
+                        "InteractiveContentLegendChild",
+                        "InteractiveContentSummaryDescendant"
                     ]
                 },
                 {
-                    "id": "SelectElementAccessibilityIssueDetails",
-                    "description": "This issue warns about errors in the select element content model.",
+                    "id": "ElementAccessibilityIssueDetails",
+                    "description": "This issue warns about errors in the select or summary element content model.",
                     "type": "object",
                     "properties": [
                         {
@@ -1986,8 +1987,8 @@
                             "$ref": "DOM.BackendNodeId"
                         },
                         {
-                            "name": "selectElementAccessibilityIssueReason",
-                            "$ref": "SelectElementAccessibilityIssueReason"
+                            "name": "elementAccessibilityIssueReason",
+                            "$ref": "ElementAccessibilityIssueReason"
                         },
                         {
                             "name": "hasDisallowedAttributes",
@@ -2111,7 +2112,7 @@
                         "FederatedAuthUserInfoRequestIssue",
                         "PropertyRuleIssue",
                         "SharedDictionaryIssue",
-                        "SelectElementAccessibilityIssue",
+                        "ElementAccessibilityIssue",
                         "SRIMessageSignatureIssue",
                         "UserReidentificationIssue"
                     ]
@@ -2233,9 +2234,9 @@
                             "$ref": "SharedDictionaryIssueDetails"
                         },
                         {
-                            "name": "selectElementAccessibilityIssueDetails",
+                            "name": "elementAccessibilityIssueDetails",
                             "optional": true,
-                            "$ref": "SelectElementAccessibilityIssueDetails"
+                            "$ref": "ElementAccessibilityIssueDetails"
                         },
                         {
                             "name": "sriMessageSignatureIssueDetails",
@@ -3419,6 +3420,30 @@
                             "name": "bounds",
                             "description": "New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined\nwith 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.",
                             "$ref": "Bounds"
+                        }
+                    ]
+                },
+                {
+                    "name": "setContentsSize",
+                    "description": "Set size of the browser contents resizing browser window as necessary.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "windowId",
+                            "description": "Browser window id.",
+                            "$ref": "WindowID"
+                        },
+                        {
+                            "name": "width",
+                            "description": "The window contents width in DIP. Assumes current width if omitted.\nMust be specified if 'height' is omitted.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "height",
+                            "description": "The window contents height in DIP. Assumes current height if omitted.\nMust be specified if 'width' is omitted.",
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 },
@@ -5341,6 +5366,17 @@
                     ]
                 },
                 {
+                    "name": "getEnvironmentVariables",
+                    "description": "Returns the values of the default UA-defined environment variables used in env()",
+                    "experimental": true,
+                    "returns": [
+                        {
+                            "name": "environmentVariables",
+                            "type": "object"
+                        }
+                    ]
+                },
+                {
                     "name": "getMediaQueries",
                     "description": "Returns all media queries parsed by the rendering engine.",
                     "returns": [
@@ -7152,6 +7188,13 @@
                             "description": "JavaScript object id of the node wrapper.",
                             "optional": true,
                             "$ref": "Runtime.RemoteObjectId"
+                        },
+                        {
+                            "name": "includeShadowDOM",
+                            "description": "Include all shadow roots. Equals to false if not specified.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -7858,6 +7901,33 @@
                             "name": "nodeId",
                             "description": "The anchor element of the given anchor query.",
                             "$ref": "NodeId"
+                        }
+                    ]
+                },
+                {
+                    "name": "forceShowPopover",
+                    "description": "When enabling, this API force-opens the popover identified by nodeId\nand keeps it open until disabled.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the popover HTMLElement",
+                            "$ref": "NodeId"
+                        },
+                        {
+                            "name": "enable",
+                            "description": "If true, opens the popover and keeps it open. If false, closes the\npopover if it was previously force-opened.",
+                            "type": "boolean"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "nodeIds",
+                            "description": "List of popovers that were closed in order to respect popover stacking order.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "NodeId"
+                            }
                         }
                     ]
                 }
@@ -10487,6 +10557,19 @@
                             "items": {
                                 "$ref": "DisabledImageType"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "setDataSaverOverride",
+                    "description": "Override the value of navigator.connection.saveData",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "dataSaverEnabled",
+                            "description": "Override value. Omitting the parameter disables the override.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -14761,7 +14844,7 @@
                     "experimental": true,
                     "type": "string",
                     "enum": [
-                        "Local",
+                        "Loopback",
                         "Private",
                         "Public",
                         "Unknown"
@@ -17609,7 +17692,6 @@
                         "searchForNode",
                         "searchForUAShadowDOM",
                         "captureAreaScreenshot",
-                        "showDistances",
                         "none"
                     ]
                 }
@@ -18256,6 +18338,7 @@
                         "accelerometer",
                         "all-screens-capture",
                         "ambient-light-sensor",
+                        "aria-notify",
                         "attribution-reporting",
                         "autoplay",
                         "bluetooth",
@@ -19550,18 +19633,6 @@
                     ]
                 },
                 {
-                    "id": "AutoResponseMode",
-                    "description": "Enum of possible auto-response for permission / prompt dialogs.",
-                    "experimental": true,
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "autoAccept",
-                        "autoReject",
-                        "autoOptOut"
-                    ]
-                },
-                {
                     "id": "NavigationType",
                     "description": "The type of a frameNavigated event.",
                     "experimental": true,
@@ -19657,6 +19728,7 @@
                         "BroadcastChannel",
                         "WebXR",
                         "SharedWorker",
+                        "SharedWorkerMessage",
                         "WebLocks",
                         "WebHID",
                         "WebShare",
@@ -20339,6 +20411,13 @@
                             "description": "User friendly error message, present if and only if navigation has failed.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "isDownload",
+                            "description": "Whether the navigation resulted in a download.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -21000,7 +21079,14 @@
                     "parameters": [
                         {
                             "name": "mode",
-                            "$ref": "AutoResponseMode"
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "autoAccept",
+                                "autoChooseToAuthAnotherWay",
+                                "autoReject",
+                                "autoOptOut"
+                            ]
                         }
                     ]
                 },
@@ -21011,7 +21097,12 @@
                     "parameters": [
                         {
                             "name": "mode",
-                            "$ref": "AutoResponseMode"
+                            "type": "string",
+                            "enum": [
+                                "none",
+                                "autoAccept",
+                                "autoReject"
+                            ]
                         }
                     ]
                 },
@@ -22505,15 +22596,6 @@
                 },
                 {
                     "name": "enable"
-                },
-                {
-                    "name": "inspectWorker",
-                    "parameters": [
-                        {
-                            "name": "versionId",
-                            "type": "string"
-                        }
-                    ]
                 },
                 {
                     "name": "setForceUpdateOnPageLoad",

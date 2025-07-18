@@ -16,25 +16,14 @@ describeWithEnvironment('SelectorStatsInsights', function() {
     assert.strictEqual(insight.totalMatchAttempts, 2444);
     assert.strictEqual(insight.totalMatchCount, 465);
 
-    const topElapsedMs = insight.topElapsedMs;
-    const topMatchAttempts = insight.topMatchAttempts;
+    const topSelectorElapsedMs = insight.topSelectorElapsedMs;
+    const topSelectorMatchAttempts = insight.topSelectorMatchAttempts;
 
-    assert.lengthOf(topElapsedMs, 3);
-    assert.lengthOf(topMatchAttempts, 3);
+    assert.isNull(topSelectorElapsedMs);
+    assert.isNotNull(topSelectorMatchAttempts);
 
-    assert.strictEqual(topElapsedMs[0].selector, ':root');
-    assert.strictEqual(topElapsedMs[0]['elapsed (us)'], 14);
-    assert.strictEqual(topElapsedMs[1].selector, 'abbr[title]');
-    assert.strictEqual(topElapsedMs[1]['elapsed (us)'], 8);
-    assert.strictEqual(topElapsedMs[2].selector, 'div');
-    assert.strictEqual(topElapsedMs[2]['elapsed (us)'], 7);
-
-    assert.strictEqual(topMatchAttempts[0].selector, '.HG1dvd > *');
-    assert.strictEqual(topMatchAttempts[0].match_attempts, 169);
-    assert.strictEqual(topMatchAttempts[1].selector, '.gb_Bd > :only-child');
-    assert.strictEqual(topMatchAttempts[1].match_attempts, 169);
-    assert.strictEqual(topMatchAttempts[2].selector, 'div');
-    assert.strictEqual(topMatchAttempts[2].match_attempts, 140);
+    assert.strictEqual(topSelectorMatchAttempts.selector, '.gb_Bd > :only-child');
+    assert.strictEqual(topSelectorMatchAttempts.match_attempts, 169);
   });
 
   it('generates slow selectors by frame ID', async function() {
@@ -47,24 +36,13 @@ describeWithEnvironment('SelectorStatsInsights', function() {
     assert.strictEqual(insight.totalMatchAttempts, 32);
     assert.strictEqual(insight.totalMatchCount, 16);
 
-    const topElapsedMs = insight.topElapsedMs;
-    const topMatchAttempts = insight.topMatchAttempts;
+    const topSelectorElapsedMs = insight.topSelectorElapsedMs;
+    const topSelectorMatchAttempts = insight.topSelectorMatchAttempts;
 
-    assert.lengthOf(topElapsedMs, 3);
-    assert.lengthOf(topMatchAttempts, 3);
+    assert.isNull(topSelectorElapsedMs);
+    assert.isNotNull(topSelectorMatchAttempts);
 
-    assert.strictEqual(topElapsedMs[0].selector, 'h1');
-    assert.strictEqual(topElapsedMs[0]['elapsed (us)'], 2);
-    assert.strictEqual(topElapsedMs[1].selector, ':root');
-    assert.strictEqual(topElapsedMs[1]['elapsed (us)'], 2);
-    assert.strictEqual(topElapsedMs[2].selector, 'iframe');
-    assert.strictEqual(topElapsedMs[2]['elapsed (us)'], 2);
-
-    assert.strictEqual(topMatchAttempts[0].selector, 'iframe');
-    assert.strictEqual(topMatchAttempts[0].match_attempts, 4);
-    assert.strictEqual(topMatchAttempts[1].selector, 'html::spelling-error');
-    assert.strictEqual(topMatchAttempts[1].match_attempts, 3);
-    assert.strictEqual(topMatchAttempts[2].selector, ':root');
-    assert.strictEqual(topMatchAttempts[2].match_attempts, 3);
+    assert.strictEqual(topSelectorMatchAttempts.selector, 'iframe');
+    assert.strictEqual(topSelectorMatchAttempts.match_attempts, 4);
   });
 });

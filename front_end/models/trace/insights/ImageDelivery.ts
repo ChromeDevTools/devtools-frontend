@@ -328,3 +328,15 @@ export function generateInsight(
     wastedBytes: optimizableImages.reduce((total, img) => total + img.byteSavings, 0),
   });
 }
+
+export function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline {
+  return {
+    type: 'ENTRY_OUTLINE',
+    entry: request,
+    outlineReason: 'ERROR',
+  };
+}
+
+export function createOverlays(model: ImageDeliveryInsightModel): Types.Overlays.Overlay[] {
+  return model.optimizableImages.map(image => createOverlayForRequest(image.request));
+}

@@ -16,6 +16,10 @@ new RuleTester().run('no-new-lit-element-components', rule, {
       code: 'class A extends LitElement {}',
       filename: 'front_end/panels/recorder/test.ts',
     },
+    {
+      code: 'class A extends LitElement {}',
+      filename: '/usr/local/domain/home/user/devtools/devtools-frontend/front_end/panels/recorder/test.ts',
+    },
   ],
   invalid: [
     {

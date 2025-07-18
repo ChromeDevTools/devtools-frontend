@@ -7,15 +7,14 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain} from './ast.ts';
+import {isIdentifier, isIdentifierChain, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
-type Identifier = TSESTree.Identifier;
-type Node = TSESTree.Node;
-type CallExpression = TSESTree.CallExpression;
 
-export const splitWidget = {
+type Node = TSESTree.Node;
+
+export const splitWidget: RuleCreator = {
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
 
     function setVertical(domFragment: DomFragment, vertical: Node) {
       if (vertical.type === 'Literal' && vertical.value === true) {
@@ -56,9 +55,7 @@ export const splitWidget = {
     }
 
     return {
-      methodCall(
-          property: Identifier, firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment,
-          _call: CallExpression) {
+      methodCall(property, firstArg, _secondArg, domFragment) {
         if (domFragment.tagName !== 'devtools-split-view') {
           return false;
         }
@@ -88,15 +85,14 @@ export const splitWidget = {
         }
         return false;
       },
-      getEvent(event: Node): string |
-          null {
-            switch (sourceCode.getText(event)) {
-              case 'UI.SplitWidget.Events.SHOW_MODE_CHANGED':
-                return 'change';
-              default:
-                return null;
-            }
-          },
+      getEvent(event) {
+        switch (sourceCode.getText(event)) {
+          case 'UI.SplitWidget.Events.SHOW_MODE_CHANGED':
+            return 'change';
+          default:
+            return null;
+        }
+      },
       NewExpression(node) {
         if (isIdentifierChain(node.callee, ['UI', 'SplitWidget', 'SplitWidget'])) {
           const domFragment = DomFragment.getOrCreate(node, sourceCode);

@@ -87,7 +87,7 @@ function getFieldMessage(view: Element): HTMLElement|null {
 
 function getLiveMetricsTitle(view: Element): HTMLElement {
   // There may be multiple, but this should always be the first one.
-  return view.shadowRoot!.querySelector('.live-metrics > .section-title') as HTMLElement;
+  return view.shadowRoot!.querySelector('.live-metrics > .section-title')!;
 }
 
 function getInpInteractionLink(view: Element): HTMLElement|null {

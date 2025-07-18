@@ -36,6 +36,7 @@ interface Config {
   copyScreenshotGoldens: boolean;
   retries: number;
   configureChrome: (executablePath: string) => void;
+  cpuThrottle: number;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -120,6 +121,7 @@ export const TestConfig: Config = {
   copyScreenshotGoldens: false,
   retries: options['retries'],
   configureChrome,
+  cpuThrottle: options['cpu-throttle'],
 };
 
 export function loadTests(testDirectory: string) {

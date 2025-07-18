@@ -91,4 +91,40 @@ describeWithEnvironment('RequestResponseView', () => {
     component.detach();
   });
 
+  it('forwards calls to reveal position to the SearchableContainer', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
+        null, null, null);
+    request.setContentDataProvider(
+        () => Promise.resolve(new TextUtils.ContentData.ContentData(
+            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
+            true, 'application/wasm')));
+    request.mimeType = 'application/wasm';
+    request.finished = true;
+
+    // This is required, as it otherwise tries to create and wait for a worker to fetch and disassemble wasm
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sinon.stub(SourceFrame.ResourceSourceFrame.ResourceSourceFrame.prototype as any, 'setContentDataOrError')
+        .callsFake(() => {});
+    const component = new Network.RequestResponseView.RequestResponseView(request);
+    assert.deepEqual(component.getMimeTypeForDisplay(), 'application/wasm');
+    renderElementIntoDOM(component);
+
+    await component.updateComplete;
+
+    const widget = component.contentElement.querySelector('devtools-widget') as
+            UI.Widget.WidgetElement<SourceFrame.ResourceSourceFrame.SearchableContainer>|
+        null;
+    const searchableContainer = widget?.getWidget();
+    assert.instanceOf(searchableContainer, SourceFrame.ResourceSourceFrame.SearchableContainer);
+    const searchableSpy = sinon.spy(searchableContainer, 'revealPosition');
+    try {
+      await component.revealPosition(0);
+      sinon.assert.calledOnce(searchableSpy);
+    } catch {
+      assert.fail('Revealing a position should not throw.');
+    }
+
+    component.detach();
+  });
 });

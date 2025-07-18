@@ -10,7 +10,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
-import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
@@ -25,19 +24,6 @@ const {html} = Lit;
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName = 'dom-size';
-
-  override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.model) {
-      return [];
-    }
-
-    const entries = [...this.model.largeStyleRecalcs, ...this.model.largeLayoutUpdates];
-    return entries.map(entry => ({
-                         type: 'ENTRY_OUTLINE',
-                         entry,
-                         outlineReason: 'ERROR',
-                       }));
-  }
 
   #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): Lit.LitTemplate {
     const rows: TableData['rows'] = [];

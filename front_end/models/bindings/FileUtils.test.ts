@@ -9,14 +9,6 @@ import * as Bindings from './bindings.js';
 const ChunkedFileReader = Bindings.FileUtils.ChunkedFileReader;
 const StringOutputStream = Common.StringOutputStream.StringOutputStream;
 
-interface CompressionStream extends GenericTransformStream {
-  readonly format: string;
-}
-declare const CompressionStream: {
-  prototype: CompressionStream,
-  new (format: string): CompressionStream,
-};
-
 describe('FileUtils', () => {
   describe('ChunkedFileReader', () => {
     it('re-assembles chunks including multibyte characters', async () => {
@@ -45,8 +37,7 @@ describe('FileUtils', () => {
     it('can decompress gzipped data', async () => {
       async function getAsCompressedFile(text: string) {
         const blob = new Blob([text], {type: 'text/plain'});
-        // https://github.com/wicg/compression/blob/main/explainer.md#deflate-compress-an-arraybuffer
-        const cstream = blob.stream().pipeThrough(new CompressionStream('gzip'));
+        const cstream = Common.Gzip.compressStream(blob.stream());
         const creader = cstream.getReader();
         const values: string[] = [];
 

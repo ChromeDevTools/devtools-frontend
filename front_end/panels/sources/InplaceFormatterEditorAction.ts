@@ -7,6 +7,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -119,9 +120,11 @@ export class InplaceFormatterEditorAction implements EditorAction {
     if (uiSourceCode.isDirty()) {
       void this.contentLoaded(uiSourceCode, sourceFrame, uiSourceCode.workingCopy());
     } else {
-      void uiSourceCode.requestContent().then(deferredContent => {
-        void this.contentLoaded(uiSourceCode, sourceFrame, deferredContent.content || '');
-      });
+      void uiSourceCode.requestContentData()
+          .then(contentDataOrError => TextUtils.ContentData.ContentData.textOr(contentDataOrError, ''))
+          .then(content => {
+            void this.contentLoaded(uiSourceCode, sourceFrame, content);
+          });
     }
   }
 

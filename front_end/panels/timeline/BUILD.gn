@@ -41,6 +41,7 @@ devtools_pre_built("easter-egg") {
 generate_css("css_files") {
   sources = [
     "thirdPartyTreeView.css",
+    "timelineDetailsView.css",
     "timelineFlameChartView.css",
     "timelineFlamechartPopover.css",
     "timelineHistoryManager.css",
@@ -67,6 +68,7 @@ devtools_module("timeline") {
     "EventsSerializer.ts",
     "EventsTimelineTreeView.ts",
     "ExtensionTrackAppender.ts",
+    "ExternalRequests.ts",
     "FreshRecording.ts",
     "GPUTrackAppender.ts",
     "Initiators.ts",
@@ -197,6 +199,7 @@ ts_library("unittests") {
     "CountersGraph.test.ts",
     "EntriesFilter.test.ts",
     "EventsSerializer.test.ts",
+    "ExternalRequests.test.ts",
     "FreshRecording.test.ts",
     "Initiators.test.ts",
     "ModificationsManager.test.ts",

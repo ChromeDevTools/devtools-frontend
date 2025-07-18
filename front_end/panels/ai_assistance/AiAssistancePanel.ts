@@ -7,7 +7,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -220,6 +220,24 @@ const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
+interface ExternalStylingRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.STYLING;
+  prompt: string;
+  selector?: string;
+}
+
+interface ExternalNetworkRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.NETWORK;
+  prompt: string;
+  requestUrl: string;
+}
+
+interface ExternalPerformanceInsightsRequestParameters {
+  conversationType: AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT;
+  prompt: string;
+  insightTitle: string;
+}
+
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
@@ -295,7 +313,7 @@ type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => 
 function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
   // clang-format off
   return html`
-    <div class="toolbar-container" role="toolbar" .jslogContext=${VisualLogging.toolbar()}>
+    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
       ${input.showChatActions
         ? html`<devtools-button
@@ -311,7 +329,8 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
           aria-label=${i18nString(UIStrings.history)}
           .iconName=${'history'}
           .jslogContext=${'freestyler.history'}
-          .populateMenuCall=${input.populateHistoryMenu}></devtools-menu-button>`
+          .populateMenuCall=${input.populateHistoryMenu}
+        ></devtools-menu-button>`
           : Lit.nothing}
         ${input.showDeleteHistoryAction
           ? html`<devtools-button
@@ -439,42 +458,46 @@ function agentToConversationType(agent: AiAssistanceModel.AiAgent<unknown>): AiA
   throw new Error('Provided agent does not have a corresponding conversation type');
 }
 
-// TODO(crbug.com/416134018): Add piercing of shadow roots and handling of child frames
-async function inspectElementBySelector(selector: string): Promise<void> {
-  const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-  const runtimeModel = primaryPageTarget?.model(SDK.RuntimeModel.RuntimeModel);
-  const executionContext = runtimeModel?.defaultExecutionContext();
-  if (!executionContext) {
-    throw new Error('Could not find execution context for executing code');
+async function inspectElementBySelector(selector: string): Promise<SDK.DOMModel.DOMNode|null> {
+  const whitespaceTrimmedQuery = selector.trim();
+  if (!whitespaceTrimmedQuery.length) {
+    return null;
   }
 
-  // `inspect()` is not available in `callFunctionOn()`, but it is in `evaluate()`.
-  // We therefore get a reference to `inspect()` via `evaluate()` and then pass
-  // this reference as an argument to `callFunctionOn()`.
-  const inspectReference = await executionContext.evaluate(
-      {
-        expression: 'window.inspect',
-        includeCommandLineAPI: true,
-        returnByValue: false,
-      },
-      /* userGesture */ false,
-      /* awaitPromise */ false,
-  );
-  if ('error' in inspectReference || inspectReference.exceptionDetails) {
-    throw new Error('Cannot find \'window.inspect\'');
-  }
+  const showUAShadowDOM = Common.Settings.Settings.instance().moduleSetting('show-ua-shadow-dom').get();
+  const domModels = SDK.TargetManager.TargetManager.instance().models(SDK.DOMModel.DOMModel, {scoped: true});
 
-  const inspectResult = await executionContext.callFunctionOn({
-    functionDeclaration: 'async function (inspect, selector) { return inspect(document.querySelector(selector)); }',
-    arguments: [{objectId: inspectReference.object.objectId}, {value: selector}],
-    userGesture: false,
-    awaitPromise: true,
-    returnByValue: false,
-  });
-  if ('error' in inspectResult || inspectResult.exceptionDetails ||
-      SDK.RemoteObject.RemoteObject.isNullOrUndefined(inspectResult.object)) {
-    throw new Error(`Could not find an element matching the '${selector}' selector. Please try a different selector.`);
+  const performSearchPromises =
+      domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
+  const resultCounts = await Promise.all(performSearchPromises);
+
+  // If the selector matches multiple times, this returns the first match.
+  const index = resultCounts.findIndex(value => value > 0);
+  if (index >= 0) {
+    return await domModels[index].searchResult(0);
   }
+  return null;
+}
+
+async function inspectNetworkRequestByUrl(selector: string): Promise<SDK.NetworkRequest.NetworkRequest|null> {
+  const networkManagers =
+      SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager, {scoped: true});
+
+  const results = networkManagers
+                      .map(networkManager => {
+                        let request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}`);
+                        if (!request && selector.at(-1) === '/') {
+                          request =
+                              networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector.slice(0, -1)}`);
+                        } else if (!request && selector.at(-1) !== '/') {
+                          request = networkManager.requestForURL(Platform.DevToolsPath.urlString`${selector}/`);
+                        }
+                        return request;
+                      })
+                      .filter(req => !!req);
+  const request = results.at(0);
+
+  return request ?? null;
 }
 
 let panelInstance: AiAssistancePanel;
@@ -550,6 +573,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#toggleSearchElementAction =
           UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     }
+    AiAssistanceModel.AiHistoryStorage.instance().addEventListener(
+        AiAssistanceModel.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
   }
 
   #getChatUiState(): ChatViewState {
@@ -1264,7 +1289,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     contextMenu.footerSection().appendItem(
         i18nString(UIStrings.clearChatHistory),
         () => {
-          this.#clearHistory();
+          void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
         },
         {
           disabled: historyEmpty,
@@ -1272,9 +1297,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
   }
 
-  #clearHistory(): void {
+  #onHistoryDeleted(): void {
     this.#historicalConversations = [];
-    void AiAssistanceModel.AiHistoryStorage.instance().deleteAll();
     this.#updateConversationState();
   }
 
@@ -1287,7 +1311,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#historicalConversations.filter(conversation => conversation !== this.#conversation);
     void AiAssistanceModel.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
-    UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.chatDeleted));
   }
 
   async #openConversation(conversation: AiAssistanceModel.Conversation): Promise<void> {
@@ -1301,7 +1325,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #handleNewChatRequest(): void {
     this.#updateConversationState();
-    UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
   }
 
   async #handleTakeScreenshot(): Promise<void> {
@@ -1491,9 +1515,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           selected: context,
         },
         multimodalInput);
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
   async *
@@ -1531,6 +1553,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       this.#isLoading = true;
+      let announcedAnswerLoading = false;
+      let announcedAnswerReady = false;
       for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
@@ -1640,6 +1664,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
           }
+
+          // Announce as status update to screen readers when:
+          // * Context is received (e.g. Analyzing the prompt)
+          // * Answer started streaming
+          // * Answer finished streaming
+          switch (data.type) {
+            case AiAssistanceModel.ResponseType.CONTEXT:
+              UI.ARIAUtils.LiveAnnouncer.status(data.title);
+              break;
+            case AiAssistanceModel.ResponseType.ANSWER: {
+              if (!data.complete && !announcedAnswerLoading) {
+                announcedAnswerLoading = true;
+                UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.answerLoading));
+              } else if (data.complete && !announcedAnswerReady) {
+                announcedAnswerReady = true;
+                UI.ARIAUtils.LiveAnnouncer.status(lockedString(UIStringsNotTranslate.answerReady));
+              }
+            }
+          }
         }
       }
 
@@ -1650,8 +1693,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  async handleExternalRequest(prompt: string, conversationType: AiAssistanceModel.ConversationType, selector?: string):
-      Promise<{response: string, devToolsLogs: object[]}> {
+  /**
+   * Handles an external request using the given prompt and uses the
+   * conversation type to use the correct agent. Note that the `selector` param
+   * is contextual; for styling it is a literal CSS selector, but for
+   * Performance Insights it is the name of the Insight that forms the
+   * context of the conversation.
+   */
+  async handleExternalRequest(
+      parameters: ExternalStylingRequestParameters|ExternalNetworkRequestParameters|
+      ExternalPerformanceInsightsRequestParameters,
+      ): Promise<{response: string, devToolsLogs: object[]}> {
     try {
       Snackbars.Snackbar.Snackbar.show({message: i18nString(UIStrings.externalRequestReceived)});
       const disabledReasons = AiAssistanceModel.getDisabledReasons(this.#aidaAvailability);
@@ -1663,12 +1715,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         throw new Error(disabledReasons.join(' '));
       }
 
-      void VisualLogging.logFunctionCall(`start-conversation-${conversationType}`, 'external');
-      switch (conversationType) {
+      void VisualLogging.logFunctionCall(`start-conversation-${parameters.conversationType}`, 'external');
+      switch (parameters.conversationType) {
         case AiAssistanceModel.ConversationType.STYLING:
-          return await this.handleExternalStylingRequest(prompt, selector);
-        default:
-          throw new Error(`Debugging with an agent of type '${conversationType}' is not implemented yet.`);
+          return await this.handleExternalStylingRequest(parameters.prompt, parameters.selector);
+        case AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT:
+          if (!parameters.insightTitle) {
+            throw new Error('The insightTitle parameter is required for debugging a Performance Insight.');
+          }
+          return await this.handleExternalPerformanceInsightsRequest(parameters.prompt, parameters.insightTitle);
+        case AiAssistanceModel.ConversationType.NETWORK:
+          if (!parameters.requestUrl) {
+            throw new Error('The url is required for debugging a network request.');
+          }
+          return await this.handleExternalNetworkRequest(parameters.prompt, parameters.requestUrl);
       }
     } catch (error) {
       // Puppeteer would append the stack trace to the error message. Callers of
@@ -1677,6 +1737,48 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       error.stack = '';
       throw error;
     }
+  }
+
+  async handleExternalPerformanceInsightsRequest(prompt: string, insightTitle: string):
+      Promise<{response: string, devToolsLogs: object[]}> {
+    const insightsAgent = this.#createAgent(AiAssistanceModel.ConversationType.PERFORMANCE_INSIGHT);
+    const externalConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(insightsAgent),
+        [],
+        insightsAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    this.#historicalConversations.push(externalConversation);
+
+    const timelinePanel = TimelinePanel.TimelinePanel.TimelinePanel.instance();
+
+    const insightOrError = await TimelinePanel.ExternalRequests.getInsightToDebug(
+        timelinePanel.model,
+        insightTitle,
+    );
+    if ('error' in insightOrError) {
+      return {
+        response: insightOrError.error,
+        devToolsLogs: [],
+      };
+    }
+
+    const selectedContext = createPerfInsightContext(insightOrError.insight);
+    const runner = insightsAgent.run(prompt, {selected: selectedContext});
+
+    const devToolsLogs: object[] = [];
+    for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
+        return {response: data.text, devToolsLogs};
+      }
+    }
+    throw new Error('Something went wrong. No answer was generated.');
   }
 
   async handleExternalStylingRequest(prompt: string, selector = 'body'):
@@ -1691,11 +1793,54 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     this.#historicalConversations.push(externalConversation);
 
-    await inspectElementBySelector(selector);
+    const node = await inspectElementBySelector(selector);
+    if (node) {
+      await node.setAsInspectedNode();
+    }
     const runner = stylingAgent.run(
         prompt,
         {
-          selected: this.#getConversationContext(externalConversation),
+          selected: createNodeContext(node),
+        },
+    );
+    const devToolsLogs: object[] = [];
+    for await (const data of runner) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== AiAssistanceModel.ResponseType.ANSWER || data.complete) {
+        void externalConversation.addHistoryItem(data);
+        devToolsLogs.push(data);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.SIDE_EFFECT) {
+        data.confirm(true);
+      }
+      if (data.type === AiAssistanceModel.ResponseType.ANSWER && data.complete) {
+        return {response: data.text, devToolsLogs};
+      }
+    }
+    throw new Error('Something went wrong. No answer was generated.');
+  }
+
+  async handleExternalNetworkRequest(prompt: string, requestUrl: string):
+      Promise<{response: string, devToolsLogs: object[]}> {
+    const networkAgent =
+        this.#createAgent(AiAssistanceModel.ConversationType.NETWORK) as AiAssistanceModel.NetworkAgent;
+    const externalConversation = new AiAssistanceModel.Conversation(
+        agentToConversationType(networkAgent),
+        [],
+        networkAgent.id,
+        /* isReadOnly */ true,
+        /* isExternal */ true,
+    );
+    this.#historicalConversations.push(externalConversation);
+
+    const request = await inspectNetworkRequestByUrl(requestUrl);
+    if (!request) {
+      throw new Error(`Can't find request with the given selector ${requestUrl}`);
+    }
+    const runner = networkAgent.run(
+        prompt,
+        {
+          selected: createRequestContext(request),
         },
     );
     const devToolsLogs: object[] = [];

@@ -1184,12 +1184,11 @@ export class StylePropertiesSection {
       elementToSelectorIndex.set(span, i);
       span.textContent = selectors[i].text;
       if (specificityTooltipId && selector.specificity) {
-        span.setAttribute('aria-details', specificityTooltipId);
+        span.setAttribute('aria-describedby', specificityTooltipId);
         const PH1 = `(${selector.specificity.a},${selector.specificity.b},${selector.specificity.c})`;
         const tooltip = this.#specificityTooltips.appendChild(new Tooltips.Tooltip.Tooltip({
           id: specificityTooltipId,
           anchor: span,
-          variant: 'rich',
           jslogContext: 'elements.css-selector-specificity',
         }));
         tooltip.textContent = i18nString(UIStrings.specificity, {PH1});

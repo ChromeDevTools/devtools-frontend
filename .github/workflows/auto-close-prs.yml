@@ -1,0 +1,30 @@
+name: Auto-close PRs
+
+permissions:
+  pull-requests: write
+  issues: write
+
+on:
+  schedule:
+    # Run everyday at: https://crontab.guru/#0_6_*_*_*.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-close:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github
+      - name: Close open pull requests
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PRS=$(gh pr list --state=open --repo=ChromeDevTools/devtools-frontend --json number --jq '.[].number')
+          for PR in $PRS; do
+            # See https://cli.github.com/manual/gh_pr_close
+            gh pr close --comment "Auto-closing the pull request because we do not accept PRs via the GitHub mirror. See README.md on how to contribute to DevTools." $PR
+          done

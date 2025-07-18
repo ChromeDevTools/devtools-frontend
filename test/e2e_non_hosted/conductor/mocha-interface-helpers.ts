@@ -11,12 +11,12 @@ import {TestConfig} from '../../conductor/test_config.js';
 
 import {StateProvider} from './state-provider.js';
 
-async function takeScreenshots(state: E2E.State): Promise<{target?: string, frontend?: string}> {
+async function takeScreenshots(state: E2E.State): Promise<{inspectedPage?: string, devToolsPage?: string}> {
   try {
     const {devToolsPage, inspectedPage} = state;
-    const targetScreenshot = await inspectedPage.screenshot();
-    const frontendScreenshot = await devToolsPage.screenshot();
-    return {target: targetScreenshot, frontend: frontendScreenshot};
+    const inspectedPageScreenshot = await inspectedPage.screenshot();
+    const devToolsPageScreenshot = await devToolsPage.screenshot();
+    return {inspectedPage: inspectedPageScreenshot, devToolsPage: devToolsPageScreenshot};
   } catch (err) {
     console.error('Error taking a screenshot', err);
     return {};
@@ -39,12 +39,17 @@ async function finalizeTestError(state: ExtendedState|undefined, error: Error): 
 }
 
 export async function screenshotError(state: E2E.State, error: Error) {
+  if (!state.browser.connected) {
+    console.error('Browser was disconnected, skipping screenshots');
+    return error;
+  }
+
   console.error('Taking screenshots for the error:', error);
   if (!TestConfig.debug) {
     try {
       const screenshotTimeout = 5_000;
       let timer: ReturnType<typeof setTimeout>;
-      const {target, frontend} = await Promise.race([
+      const {inspectedPage, devToolsPage} = await Promise.race([
         takeScreenshots(state).then(result => {
           clearTimeout(timer);
           return result;
@@ -53,10 +58,10 @@ export async function screenshotError(state: E2E.State, error: Error) {
           timer = setTimeout(resolve, screenshotTimeout);
         }).then(() => {
           console.error(`Could not take screenshots within ${screenshotTimeout}ms.`);
-          return {target: undefined, frontend: undefined};
+          return {inspectedPage: undefined, devToolsPage: undefined};
         }),
       ]);
-      return ScreenshotError.fromBase64Images(error, target, frontend);
+      return ScreenshotError.fromBase64Images(error, inspectedPage, devToolsPage);
     } catch (e) {
       console.error('Unexpected error saving screenshots', e);
       return e;
@@ -69,12 +74,19 @@ type ExtendedState = Awaited<ReturnType<typeof StateProvider.instance.getState>>
 
 export class InstrumentedTestFunction {
   /**
+   * We track the initial timeouts for each context if we reset it back
+   * Mocha check timing of the full executed function and fails
+   * the test.
+   * https://github.com/mochajs/mocha/blob/main/lib/runnable.js#L307
+   */
+  static timeoutByContext = new WeakMap<Mocha.Context, number>();
+  /**
    * We track the initial timeouts for each functions because mocha
    * does not reset test timeout for retries.
    */
   static timeoutByTestFunction = new WeakMap<Mocha.AsyncFunc, number>();
 
-  abortController = new AbortController();
+  #abortController = new AbortController();
   state: ExtendedState|undefined;
   fn: Mocha.AsyncFunc;
   label: string;
@@ -89,16 +101,22 @@ export class InstrumentedTestFunction {
   }
 
   async #executeTest(context: Mocha.Context) {
-    AsyncScope.abortSignal = this.abortController.signal;
-    this.state = this.suite ? await StateProvider.instance.getState(this.suite) : undefined;
+    this.#abortController = new AbortController();
+    AsyncScope.abortSignal = this.#abortController.signal;
+
     if (this.state) {
       // eslint-disable-next-line no-debugger
       debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
     }
+    const start = performance.now();
     const testResult =
         await (this.state === undefined ?
                    this.fn.call(context) :
                    (this.fn as unknown as E2E.TestAsyncCallbackWithState).call(undefined, this.state.state));
+
+    if (context.test) {
+      (context.test as Mocha.Test).realDuration = Math.ceil(performance.now() - start);
+    }
     dumpCollectedErrors();
     return testResult;
   }
@@ -108,7 +126,9 @@ export class InstrumentedTestFunction {
     // including all error and timeout handling that still might rely
     // on the browserContext and pages.
     try {
-      await this.state?.browsingContext.close();
+      if (this.state?.state.browser.connected) {
+        await this.state?.browsingContext.close();
+      }
     } catch (e) {
       console.error('Unexpected error during cleanup', e);
     }
@@ -133,48 +153,55 @@ export class InstrumentedTestFunction {
     return err;
   }
 
-  async #timeoutHandler(context: Mocha.Context) {
-    this.abortController.abort();
-    const err = this.#buildErrorFromTimedoutScopeStacks(context);
-    return await finalizeTestError(this.state, err);
-  }
-
-  #calculateTimeoutValue(context: Mocha.Context) {
-    this.originalContextTimeout = context.timeout();
+  #setupTimeout(context: Mocha.Context) {
+    this.originalContextTimeout = InstrumentedTestFunction.timeoutByContext.get(context) ?? context.timeout();
     this.actualTimeout = InstrumentedTestFunction.timeoutByTestFunction.get(this.fn) ?? this.originalContextTimeout;
+    InstrumentedTestFunction.timeoutByContext.set(context, this.originalContextTimeout);
     InstrumentedTestFunction.timeoutByTestFunction.set(this.fn, this.actualTimeout);
+    // Disable mocha test timeout.
+    // This way we rely only on our timeouts
+    context.timeout(0);
   }
 
   async #executeWithTimeout(context: Mocha.Context) {
-    this.#calculateTimeoutValue(context);
-    // Disable mocha test timeout.
-    context.timeout(0);
+    // This needs to be the first thing we do
+    // Else we may hit Mocha's timeouts
+    this.#setupTimeout(context);
+    // Get the state before starting the test timeouts
+    this.state = this.suite ? await StateProvider.instance.getState(this.suite) : undefined;
 
-    let timeout: NodeJS.Timeout|undefined = undefined;
+    let cleanupTimeoutPromise: (() => void)|undefined = undefined;
     let timeoutPromise: Promise<never>|undefined = undefined;
+
+    const executionPromise = this.#executeTest(context);
+
     if (this.actualTimeout !== 0) {
       timeoutPromise = new Promise<never>((_, reject) => {
-        timeout = setTimeout(async () => {
-          reject(await this.#timeoutHandler(context));
+        const timeout = setTimeout(async () => {
+          reject(this.#buildErrorFromTimedoutScopeStacks(context));
         }, this.actualTimeout);
+        cleanupTimeoutPromise = () => {
+          clearTimeout(timeout);
+          // Don't keep the Promise as pending
+          reject();
+        };
       });
     }
-    const executionPromise = this.#executeTest(context).catch(async err => {
-      clearTimeout(timeout);
-      // Suppress errors after the test was aborted.
-      if (this.abortController.signal.aborted) {
-        return;
-      }
-      throw await finalizeTestError(this.state, err);
-    });
-
     const racePromise = timeoutPromise ? Promise.race([executionPromise, timeoutPromise]) : executionPromise;
 
-    return await racePromise.finally(async () => {
-      clearTimeout(timeout);
-      await this.#clearState();
-      context.timeout(this.originalContextTimeout);
-    });
+    return await racePromise
+        .then(
+            () => {
+              this.#abortController.abort();
+            },
+            async err => {
+              this.#abortController.abort();
+              throw await finalizeTestError(this.state, err);
+            })
+        .finally(async () => {
+          cleanupTimeoutPromise?.();
+          await this.#clearState();
+        });
   }
 
   static instrument(fn: Mocha.AsyncFunc, label: string, suite?: Mocha.Suite) {

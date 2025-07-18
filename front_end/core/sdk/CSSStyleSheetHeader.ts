@@ -163,10 +163,6 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
     return Common.ResourceType.resourceTypes.Stylesheet;
   }
 
-  requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return this.requestContentData().then(TextUtils.ContentData.ContentData.asDeferredContent.bind(undefined));
-  }
-
   async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     const cssText = await this.#cssModelInternal.getStyleSheetText(this.id);
     if (cssText === null) {

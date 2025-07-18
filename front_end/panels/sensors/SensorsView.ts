@@ -636,7 +636,7 @@ export class SensorsView extends UI.Widget.VBox {
     this.deviceOrientation = deviceOrientation;
     this.applyDeviceOrientation();
 
-    UI.ARIAUtils.alert(i18nString(
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(
         UIStrings.deviceOrientationSetToAlphaSBeta,
         {PH1: deviceOrientation.alpha, PH2: deviceOrientation.beta, PH3: deviceOrientation.gamma}));
   }

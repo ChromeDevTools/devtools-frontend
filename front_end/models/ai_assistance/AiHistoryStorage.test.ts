@@ -334,6 +334,7 @@ describe('AiHistoryStorage', () => {
     await storage.upsertImage(serializedImage1);
     await storage.upsertImage(serializedImage2);
     await storage.upsertHistoryEntry(agent4);
+    const historyDeletedPromise = storage.once('AiHistoryDeleted' as AiAssistance.Events.HISTORY_DELETED);
     await storage.deleteAll();
     assert.deepEqual(
         storage.getHistory(),
@@ -343,6 +344,7 @@ describe('AiHistoryStorage', () => {
         storage.getImageHistory(),
         [],
     );
+    await historyDeletedPromise;
   });
 
   it('should limit the amount of stored images', async () => {

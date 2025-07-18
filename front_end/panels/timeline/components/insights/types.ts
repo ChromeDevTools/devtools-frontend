@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Overlays from '../../overlays/overlays.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 
 export interface ActiveInsight {
   name: string;
   insightSetKey: string;
-  createOverlayFn: (() => Overlays.Overlays.TimelineOverlay[]);
+  createOverlayFn: (() => Trace.Types.Overlays.Overlay[]);
 }

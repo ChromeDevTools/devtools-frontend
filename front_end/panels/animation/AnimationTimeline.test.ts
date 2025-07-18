@@ -12,6 +12,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Elements from '../elements/elements.js';
 
 import * as Animation from './animation.js';
@@ -503,6 +504,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     const waitForAnimationGroupSelectedPromise = new ManualPromise();
     const waitForScheduleRedrawAfterAnimationGroupUpdated = new ManualPromise();
 
+    let toolbarViewStub: ViewFunctionStub<typeof Animation.AnimationTimeline.AnimationTimeline>;
     let domModel: SDK.DOMModel.DOMModel;
     let animationModel: SDK.AnimationModel.AnimationModel;
     let contentDocument: SDK.DOMModel.DOMDocument;
@@ -510,7 +512,8 @@ describeWithMockConnection('AnimationTimeline', () => {
       stubbedAnimationDOMNode = stubAnimationDOMNode();
       stubAnimationGroup();
 
-      view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
+      toolbarViewStub = createViewFunctionStub(Animation.AnimationTimeline.AnimationTimeline);
+      view = new Animation.AnimationTimeline.AnimationTimeline(toolbarViewStub);
       view.markAsRoot();
       renderElementIntoDOM(view);
 
@@ -580,20 +583,10 @@ describeWithMockConnection('AnimationTimeline', () => {
     it('should disable global controls after a scroll driven animation is selected', async () => {
       const preview = await waitFor('.animation-buffer-preview', view.element.shadowRoot!) as HTMLElement;
       preview.click();
-      await waitForAnimationGroupSelectedPromise.wait();
 
-      const playbackRateButtons = [...view.element.shadowRoot!.querySelectorAll('.animation-playback-rate-button')];
-      assert.isTrue(
-          playbackRateButtons.every(button => button.getAttribute('disabled')),
-          'All the playback rate buttons are disabled');
+      const toolbarViewInput = await toolbarViewStub.nextInput;
 
-      const timelineToolbar = view.element.shadowRoot!.querySelector('.animation-timeline-toolbar')!;
-      const pauseAllButton = await waitFor('[aria-label=\'Pause all\']', timelineToolbar) as HTMLButtonElement;
-      assert.isTrue(pauseAllButton.disabled, 'Pause all button is disabled');
-
-      const controlsToolbar = view.element.shadowRoot!.querySelector('.animation-controls-toolbar')!;
-      const replayButton = await waitFor('[aria-label=\'Replay timeline\']', controlsToolbar) as HTMLButtonElement;
-      assert.isTrue(replayButton.disabled, 'Replay button is disabled');
+      assert.isTrue(toolbarViewInput.playbackRateButtonsDisabled);
       cancelAllPendingRaf();
     });
 

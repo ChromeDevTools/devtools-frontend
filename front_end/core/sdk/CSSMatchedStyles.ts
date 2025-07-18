@@ -37,6 +37,7 @@ import {
 import {
   CSSFontPaletteValuesRule,
   CSSFunctionRule,
+  CSSKeyframeRule,
   CSSKeyframesRule,
   CSSPositionTryRule,
   CSSPropertyRule,
@@ -827,12 +828,29 @@ export class CSSMatchedStyles {
   }
 
   computeCSSVariable(style: CSSStyleDeclaration, variableName: string): CSSVariableValue|null {
+    if (style.parentRule instanceof CSSKeyframeRule) {
+      // The resolution of the variables inside of a CSS keyframe rule depends on where this keyframe rule is used.
+      // So, we need to find the style with active CSS property `animation-name` that equals to the keyframe's name.
+      const keyframeName = style.parentRule.parentRuleName();
+      const activeStyle = this.#mainDOMCascade?.styles().find(searchStyle => {
+        return searchStyle.allProperties().some(
+            property => property.name === 'animation-name' && property.value === keyframeName &&
+                this.#mainDOMCascade?.propertyState(property) === PropertyState.ACTIVE);
+      });
+
+      if (!activeStyle) {
+        return null;
+      }
+
+      style = activeStyle;
+    }
+
     const domCascade = this.#styleToDOMCascade.get(style);
     return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
   }
 
-  resolveProperty(name: string, startingPoint: CSSStyleDeclaration): CSSProperty|null {
-    return this.#styleToDOMCascade.get(startingPoint)?.resolveProperty(name, startingPoint) ?? null;
+  resolveProperty(name: string, ownerStyle: CSSStyleDeclaration): CSSProperty|null {
+    return this.#styleToDOMCascade.get(ownerStyle)?.resolveProperty(name, ownerStyle) ?? null;
   }
 
   resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): CSSValueSource|null {
@@ -1059,15 +1077,6 @@ function* forEach<T>(array: T[], startAfter?: T): Generator<T> {
   }
 }
 
-function* forEachInclusive<T>(array: T[], startAt?: T): Generator<T> {
-  if (startAt === undefined || array.includes(startAt)) {
-    if (startAt !== undefined) {
-      yield startAt;
-    }
-    yield* forEach(array, startAt);
-  }
-}
-
 class DOMInheritanceCascade {
   readonly #propertiesState = new Map<CSSProperty, PropertyState>();
   readonly #availableCSSVariables = new Map<NodeCascade, Map<string, CSSVariableValue|null>>();
@@ -1116,20 +1125,20 @@ class DOMInheritanceCascade {
     return null;
   }
 
-  resolveProperty(name: string, startAt: CSSStyleDeclaration): CSSProperty|null {
-    const cascade = this.#styleToNodeCascade.get(startAt);
+  resolveProperty(name: string, ownerStyle: CSSStyleDeclaration): CSSProperty|null {
+    const cascade = this.#styleToNodeCascade.get(ownerStyle);
     if (!cascade) {
       return null;
     }
 
-    for (const style of forEachInclusive(cascade.styles, startAt)) {
+    for (const style of cascade.styles) {
       const candidate = style.allProperties().findLast(candidate => candidate.name === name);
       if (candidate) {
         return candidate;
       }
     }
 
-    return this.#findPropertyInParentCascadeIfInherited({name, ownerStyle: startAt});
+    return this.#findPropertyInParentCascadeIfInherited({name, ownerStyle});
   }
 
   #findPropertyInParentCascade(property: {name: string, ownerStyle: CSSStyleDeclaration}): CSSProperty|null {
@@ -1288,8 +1297,13 @@ class DOMInheritanceCascade {
           }
 
           // Variable reference is not resolved, use the fallback.
-          if (match.fallback.length === 0 ||
-              match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
+          if (!match.fallback) {
+            return null;
+          }
+          if (match.fallback.length === 0) {
+            return '';
+          }
+          if (match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
             return null;
           }
           return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);

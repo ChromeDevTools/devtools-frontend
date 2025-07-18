@@ -156,7 +156,7 @@ export async function evaluateScriptSnippet(uiSourceCode: Workspace.UISourceCode
 
   const runtimeModel = executionContext.runtimeModel;
   const consoleModel = executionContext.target().model(SDK.ConsoleModel.ConsoleModel);
-  await uiSourceCode.requestContent();
+  await uiSourceCode.requestContentData();
   uiSourceCode.commitWorkingCopy();
   const expression = uiSourceCode.workingCopy();
   Common.Console.Console.instance().show();

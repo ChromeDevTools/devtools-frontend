@@ -53,7 +53,7 @@ export class TimelineMiniMap extends
   constructor() {
     super();
     this.registerRequiredCSS(miniMapStyles);
-    this.element.classList.add('timeline-minimap');
+    this.element.classList.add('timeline-minimap', 'no-trace-active');
     this.#breadcrumbsUI = new TimelineComponents.BreadcrumbsUI.BreadcrumbsUI();
     this.element.prepend(this.#breadcrumbsUI);
 
@@ -269,7 +269,15 @@ export class TimelineMiniMap extends
     return this.#controls;
   }
 
-  setData(data: OverviewData): void {
+  setData(data: OverviewData|null): void {
+    this.element.classList.toggle('no-trace-active', data === null);
+
+    if (data === null) {
+      this.#data = null;
+      this.#controls = [];
+      return;
+    }
+
     if (this.#data?.parsedTrace === data.parsedTrace) {
       return;
     }

@@ -31,7 +31,7 @@ export class BaseVariableMatch implements Match {
       readonly text: string,
       readonly node: CodeMirror.SyntaxNode,
       readonly name: string,
-      readonly fallback: CodeMirror.SyntaxNode[],
+      readonly fallback: CodeMirror.SyntaxNode[]|undefined,
       readonly matching: BottomUpTreeMatching,
       readonly computedTextCallback: (match: BaseVariableMatch, matching: BottomUpTreeMatching) => string | null,
   ) {
@@ -72,7 +72,7 @@ export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
       return null;
     }
 
-    let fallback: CodeMirror.SyntaxNode[] = [];
+    let fallback;
     if (fallbackOrRParenNodes.length > 1) {
       if (fallbackOrRParenNodes.shift()?.name !== ',') {
         return null;
@@ -81,9 +81,6 @@ export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
         return null;
       }
       fallback = fallbackOrRParenNodes;
-      if (fallback.length === 0) {
-        return null;
-      }
       if (fallback.some(n => n.name === ',')) {
         return null;
       }
@@ -104,7 +101,7 @@ export class VariableMatch extends BaseVariableMatch {
       text: string,
       node: CodeMirror.SyntaxNode,
       name: string,
-      fallback: CodeMirror.SyntaxNode[],
+      fallback: CodeMirror.SyntaxNode[]|undefined,
       matching: BottomUpTreeMatching,
       readonly matchedStyles: CSSMatchedStyles,
       readonly style: CSSStyleDeclaration,
@@ -117,8 +114,14 @@ export class VariableMatch extends BaseVariableMatch {
   }
 
   fallbackValue(): string|null {
-    if (this.fallback.length === 0 ||
-        this.matching.hasUnresolvedVarsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
+    // Fallback can be missing but it can be also be empty: var(--v,)
+    if (!this.fallback) {
+      return null;
+    }
+    if (this.fallback.length === 0) {
+      return '';
+    }
+    if (this.matching.hasUnresolvedVarsRange(this.fallback[0], this.fallback[this.fallback.length - 1])) {
       return null;
     }
     return this.matching.getComputedTextRange(this.fallback[0], this.fallback[this.fallback.length - 1]);
@@ -426,38 +429,22 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
   }
 }
 
-export const enum RelativeColorChannel {
-  A = 'a',
-  ALPHA = 'alpha',
-  B = 'b',
-  C = 'c',
-  G = 'g',
-  H = 'h',
-  L = 'l',
-  R = 'r',
-  S = 's',
-  W = 'w',
-  X = 'x',
-  Y = 'y',
-  Z = 'z',
-}
-
-function isRelativeColorChannelName(channel: string): channel is RelativeColorChannel {
-  const maybeChannel = channel as RelativeColorChannel;
+function isRelativeColorChannelName(channel: string): channel is Common.Color.ColorChannel {
+  const maybeChannel = channel as Common.Color.ColorChannel;
   switch (maybeChannel) {
-    case RelativeColorChannel.A:
-    case RelativeColorChannel.ALPHA:
-    case RelativeColorChannel.B:
-    case RelativeColorChannel.C:
-    case RelativeColorChannel.G:
-    case RelativeColorChannel.H:
-    case RelativeColorChannel.L:
-    case RelativeColorChannel.R:
-    case RelativeColorChannel.S:
-    case RelativeColorChannel.W:
-    case RelativeColorChannel.X:
-    case RelativeColorChannel.Y:
-    case RelativeColorChannel.Z:
+    case Common.Color.ColorChannel.A:
+    case Common.Color.ColorChannel.ALPHA:
+    case Common.Color.ColorChannel.B:
+    case Common.Color.ColorChannel.C:
+    case Common.Color.ColorChannel.G:
+    case Common.Color.ColorChannel.H:
+    case Common.Color.ColorChannel.L:
+    case Common.Color.ColorChannel.R:
+    case Common.Color.ColorChannel.S:
+    case Common.Color.ColorChannel.W:
+    case Common.Color.ColorChannel.X:
+    case Common.Color.ColorChannel.Y:
+    case Common.Color.ColorChannel.Z:
       return true;
   }
   // This assignment catches missed values in the switch above.
@@ -466,37 +453,37 @@ function isRelativeColorChannelName(channel: string): channel is RelativeColorCh
 }
 
 export class RelativeColorChannelMatch implements Match {
-  constructor(readonly text: RelativeColorChannel, readonly node: CodeMirror.SyntaxNode) {
+  constructor(readonly text: Common.Color.ColorChannel, readonly node: CodeMirror.SyntaxNode) {
   }
 
   getColorChannelValue(relativeColor: RelativeColor): number|null {
     const color = Common.Color.parse(relativeColor.baseColor.text)?.as(relativeColor.colorSpace);
     if (color instanceof Common.Color.ColorFunction) {
       switch (this.text) {
-        case RelativeColorChannel.R:
+        case Common.Color.ColorChannel.R:
           return color.isXYZ() ? null : color.p0;
-        case RelativeColorChannel.G:
+        case Common.Color.ColorChannel.G:
           return color.isXYZ() ? null : color.p1;
-        case RelativeColorChannel.B:
+        case Common.Color.ColorChannel.B:
           return color.isXYZ() ? null : color.p2;
-        case RelativeColorChannel.X:
+        case Common.Color.ColorChannel.X:
           return color.isXYZ() ? color.p0 : null;
-        case RelativeColorChannel.Y:
+        case Common.Color.ColorChannel.Y:
           return color.isXYZ() ? color.p1 : null;
-        case RelativeColorChannel.Z:
+        case Common.Color.ColorChannel.Z:
           return color.isXYZ() ? color.p2 : null;
-        case RelativeColorChannel.ALPHA:
+        case Common.Color.ColorChannel.ALPHA:
           return color.alpha;
       }
     } else if (color instanceof Common.Color.Legacy) {
       switch (this.text) {
-        case RelativeColorChannel.R:
+        case Common.Color.ColorChannel.R:
           return color.rgba()[0];
-        case RelativeColorChannel.G:
+        case Common.Color.ColorChannel.G:
           return color.rgba()[1];
-        case RelativeColorChannel.B:
+        case Common.Color.ColorChannel.B:
           return color.rgba()[2];
-        case RelativeColorChannel.ALPHA:
+        case Common.Color.ColorChannel.ALPHA:
           return color.rgba()[3];
       }
     } else if (color && this.text in color) {
@@ -695,7 +682,7 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
       return null;
     }
 
-    if (parentNode.name === 'CallExpression' && node.name === 'Callee' && text.startsWith('--')) {
+    if (parentNode.name === 'CallExpression' && node.name === 'VariableName') {
       return new LinkableNameMatch(text, node, LinkableNameProperties.FUNCTION);
     }
 
@@ -851,22 +838,64 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
   }
 }
 
+export const enum SelectFunction {
+  MIN = 'min',
+  MAX = 'max',
+  CLAMP = 'clamp',
+}
+export const enum ArithmeticFunction {
+  CALC = 'calc',
+  SIBLING_COUNT = 'sibling-count',
+  SIBLING_INDEX = 'sibling-index',
+}
+type MathFunction = SelectFunction|ArithmeticFunction;
+
 export class MathFunctionMatch implements Match {
   constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: string,
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: MathFunction,
       readonly args: CodeMirror.SyntaxNode[][]) {
+  }
+
+  isArithmeticFunctionCall(): boolean {
+    const func = this.func as ArithmeticFunction;
+    switch (func) {
+      case ArithmeticFunction.CALC:
+      case ArithmeticFunction.SIBLING_COUNT:
+      case ArithmeticFunction.SIBLING_INDEX:
+        return true;
+    }
+    // This assignment catches missed values in the switch above.
+    const catchFallback: never = func;  // eslint-disable-line @typescript-eslint/no-unused-vars
+    return false;
   }
 }
 
 // clang-format off
 export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
   // clang-format on
+  private static getFunctionType(callee: string|null): MathFunction|null {
+    const maybeFunc = callee as MathFunction | null;
+    switch (maybeFunc) {
+      case null:
+      case SelectFunction.MIN:
+      case SelectFunction.MAX:
+      case SelectFunction.CLAMP:
+      case ArithmeticFunction.CALC:
+      case ArithmeticFunction.SIBLING_COUNT:
+      case ArithmeticFunction.SIBLING_INDEX:
+        return maybeFunc;
+    }
+    // This assignment catches missed values in the switch above.
+    const catchFallback: never = maybeFunc;  // eslint-disable-line @typescript-eslint/no-unused-vars
+    return null;
+  }
+
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MathFunctionMatch|null {
     if (node.name !== 'CallExpression') {
       return null;
     }
-    const callee = matching.ast.text(node.getChild('Callee'));
-    if (!['min', 'max', 'clamp', 'calc'].includes(callee)) {
+    const callee = MathFunctionMatcher.getFunctionType(matching.ast.text(node.getChild('Callee')));
+    if (!callee) {
       return null;
     }
     const args = ASTUtils.callArgs(node);
@@ -874,7 +903,11 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
       return null;
     }
     const text = matching.ast.text(node);
-    return new MathFunctionMatch(text, node, callee, args);
+    const match = new MathFunctionMatch(text, node, callee, args);
+    if (!match.isArithmeticFunctionCall() && args.length === 0) {
+      return null;
+    }
+    return match;
   }
 }
 
@@ -957,7 +990,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
             continue;
           }
           if ((varNodes[0].name === 'StringLiteral' && !hasLeadingLineNames) ||
-              (varNodes[0].name === 'LineNames' && !needClosingLineNames)) {
+              (varNodes[0].name === 'BracketedValue' && !needClosingLineNames)) {
             // The variable value either starts with a string, or with a line name that belongs to a new row;
             // therefore we start a new line with the variable.
             lines.push(curLine);
@@ -981,7 +1014,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
           }
           needClosingLineNames = true;
           hasLeadingLineNames = false;
-        } else if (curNode.name === 'LineNames') {
+        } else if (curNode.name === 'BracketedValue') {
           if (!varParsingMode) {
             if (needClosingLineNames) {
               curLine.push(curNode);

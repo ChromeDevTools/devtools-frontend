@@ -24,7 +24,7 @@ const component = new ConsoleInsight(
     {
       async *
           // eslint-disable-next-line require-yield
-          fetch() {
+          doConversation() {
             throw new Error('Could not connect to the server');
           },
       registerClientEvent: () => Promise.resolve({}),

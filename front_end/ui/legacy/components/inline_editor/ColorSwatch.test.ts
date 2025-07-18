@@ -18,21 +18,15 @@ import type * as UI from '../../legacy.js';
 import * as InlineEditor from './inline_editor.js';
 
 function assertSwatch(
-    swatch: InlineEditor.ColorSwatch.ColorSwatch,
-    expected: {backgroundColor?: string, colorTextInSlot?: string, tooltip?: string}) {
+    swatch: InlineEditor.ColorSwatch.ColorSwatch, expected: {backgroundColor?: string, tooltip?: string}) {
   const swatchEl = swatch.shadowRoot!.querySelector('.color-swatch');
   assert.instanceOf(swatchEl, HTMLElement);
   const swatchInnerEl = swatch.shadowRoot!.querySelector('.color-swatch-inner');
   assert.instanceOf(swatchInnerEl, HTMLElement);
-  const slotEl = swatch.shadowRoot!.querySelector('slot');
-  assert.instanceOf(slotEl, HTMLElement);
 
   if (expected.backgroundColor) {
     assert.strictEqual(
         swatchInnerEl.style.backgroundColor, expected.backgroundColor, 'The swatch has the correct color');
-  }
-  if (expected.colorTextInSlot) {
-    assert.strictEqual(slotEl.textContent, expected.colorTextInSlot, 'The slot shows the correct default color');
   }
   if (expected.tooltip) {
     assert.strictEqual(swatchEl.getAttribute('title'), expected.tooltip, 'The tooltip is correct');
@@ -58,14 +52,12 @@ describeWithLocale('ColorSwatch', () => {
 
     assertSwatch(swatch, {
       backgroundColor: 'red',
-      colorTextInSlot: 'red',
     });
 
     swatch.renderColor(new Common.Color.Legacy([1, .5, .2, .5], Common.Color.Format.RGBA));
 
     assertSwatch(swatch, {
       backgroundColor: 'rgba(255, 128, 51, 0.5)',
-      colorTextInSlot: 'rgb(255 128 51 / 50%)',
     });
   });
 

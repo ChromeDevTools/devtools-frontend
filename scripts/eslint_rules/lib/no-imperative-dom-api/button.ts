@@ -7,14 +7,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain} from './ast.ts';
+import {isIdentifier, isIdentifierChain, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
+
 type Identifier = TSESTree.Identifier;
 type Node = TSESTree.Node;
 
-export const button = {
+export const button: RuleCreator = {
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
     return {
       propertyAssignment(property: Identifier, propertyValue: Node, domFragment: DomFragment) {
         if (domFragment.tagName === 'devtools-button') {

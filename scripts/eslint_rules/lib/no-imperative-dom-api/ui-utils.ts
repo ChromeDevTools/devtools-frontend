@@ -7,17 +7,17 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
-type CallExpression = TSESTree.CallExpression;
 type Node = TSESTree.Node;
 
-export const uiUtils = {
+export const uiUtils: RuleCreator = {
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
+
     return {
-      CallExpression(node: CallExpression) {
+      CallExpression(node) {
         let func = isMemberExpression(
             node.callee, n => isIdentifierChain(n, ['UI', 'UIUtils', 'CheckboxLabel']),
             n => isIdentifier(n, ['create', 'createWithStringLiteral']));
@@ -178,7 +178,7 @@ export const uiUtils = {
           }
         }
       },
-      functionCall(call: CallExpression, _firstArg: Node, secondArg: Node, domFragment: DomFragment): boolean {
+      functionCall(call, _firstArg, secondArg, domFragment) {
         if (isIdentifierChain(call.callee, ['UI', 'SettingsUI', 'bindCheckbox'])) {
           let setting = secondArg;
           if (setting.type === 'CallExpression' &&

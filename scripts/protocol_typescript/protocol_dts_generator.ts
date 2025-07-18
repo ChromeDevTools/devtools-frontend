@@ -207,7 +207,7 @@ const emitInlineEnums = (prefix: string, propertyTypes?: Protocol.PropertyType[]
     if (isPropertyInlineEnum(type)) {
       emitLine();
       const enumName = prefix + toTitleCase(type.name);
-      emitEnum(enumName, (type as Protocol.StringType).enum);
+      emitEnum(enumName, (type as Protocol.StringType).enum ?? []);
     }
   }
 };
@@ -221,7 +221,7 @@ const identifierTypesOverride = new Map([
 function isIdentifierTypeName(identifierName: string): boolean {
   const looksLikeIdentifierName = identifierName.endsWith('Id') || identifierName.endsWith('ID');
   const override = identifierTypesOverride.get(identifierName);
-  return looksLikeIdentifierName && override !== false || override;
+  return looksLikeIdentifierName && override !== false || override || false;
 }
 
 const emitDomainType = (domain: Protocol.Domain, type: Protocol.DomainType) => {

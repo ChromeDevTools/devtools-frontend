@@ -16,6 +16,7 @@ import {CookieIssue, CookieIssueSubCategory} from './CookieIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {DeprecationIssue} from './DeprecationIssue.js';
+import {ElementAccessibilityIssue} from './ElementAccessibilityIssue.js';
 import {FederatedAuthRequestIssue} from './FederatedAuthRequestIssue.js';
 import {GenericIssue} from './GenericIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
@@ -26,7 +27,6 @@ import {MixedContentIssue} from './MixedContentIssue.js';
 import {PartitioningBlobURLIssue} from './PartitioningBlobURLIssue.js';
 import {PropertyRuleIssue} from './PropertyRuleIssue.js';
 import {QuirksModeIssue} from './QuirksModeIssue.js';
-import {SelectElementAccessibilityIssue} from './SelectElementAccessibilityIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SharedDictionaryIssue} from './SharedDictionaryIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
@@ -133,8 +133,8 @@ const issueCodeHandlers = new Map<
     CookieDeprecationMetadataIssue.fromInspectorIssue,
   ],
   [
-    Protocol.Audits.InspectorIssueCode.SelectElementAccessibilityIssue,
-    SelectElementAccessibilityIssue.fromInspectorIssue,
+    Protocol.Audits.InspectorIssueCode.ElementAccessibilityIssue,
+    ElementAccessibilityIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,

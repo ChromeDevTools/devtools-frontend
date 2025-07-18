@@ -46,6 +46,7 @@ import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
 import * as ElementsTreeElement from './ElementsTreeElement.js';
 import * as ElementsTreeElementHighlighter from './ElementsTreeElementHighlighter.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
+import * as ElementsTreeOutlineRenderer from './ElementsTreeOutlineRenderer.js';
 import * as EventListenersWidget from './EventListenersWidget.js';
 import * as InspectElementModeController from './InspectElementModeController.js';
 import * as LayersWidget from './LayersWidget.js';
@@ -82,6 +83,7 @@ export {
   ElementsTreeElement,
   ElementsTreeElementHighlighter,
   ElementsTreeOutline,
+  ElementsTreeOutlineRenderer,
   EventListenersWidget,
   InspectElementModeController,
   LayersWidget,

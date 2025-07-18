@@ -229,7 +229,7 @@
     },
     {
       name: "H1UserAgentFontSizeInSection",
-      message: "Found an <h1> tag within an <article>, <aside>, <nav>, or <section> which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
+      message: "Found an `&lt;h1&gt;` tag within an `&lt;article&gt;`, `&lt;aside&gt;`, `&lt;nav&gt;`, or `&lt;section&gt;` which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
       translation_note: "This warning occurs when a site uses <h1> inside <article>, <aside>, <nav>, or <section>. It means the behavior (font size) may change in a future Chrome release, when some special rules are removed from the browser.",
       web_features: [
         "kH1UserAgentFontSizeInSectionApplied",
@@ -268,9 +268,9 @@
       message: "The website requested a subresource from a network that it could only access because of its users' privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them.",
       translation_note: "This warning occurs when an insecure context (e.g., HTTP) requests a private resource (not on open internet). This is done to mitigate the potential for CSRF and other attacks.",
       web_features: [
-        "kAddressSpacePrivateNonSecureContextEmbeddedLocal",
-        "kAddressSpacePublicNonSecureContextEmbeddedLocal",
-        "kAddressSpacePublicNonSecureContextEmbeddedPrivate",
+        "kAddressSpaceLocalNonSecureContextEmbeddedLoopbackV2",
+        "kAddressSpacePublicNonSecureContextEmbeddedLocalV2",
+        "kAddressSpacePublicNonSecureContextEmbeddedLoopbackV2",
       ],
       chrome_status_feature: 5436853517811712,
       milestone: 92,
@@ -385,6 +385,15 @@
       ],
       chrome_status_feature: 5137515594383360,
       milestone: 108,
+    },
+    {
+      name: "OverrideFlashEmbedwithHTML",
+      message: "Legacy flash video embed has been rewritten to HTML iframe. Flash is long gone, this rewriting hack is deprecated and may be removed in the future.",
+      translation_note: "Warning displayed to developers when they use a Flash Embed URLS to let them know that the browser will not automatically link to their equivalent HTML5 link.",
+      web_features: [
+        "kOverrideFlashEmbedwithHTML",
+      ],
+      milestone: 140,
     },
     {
       name: "PaymentInstruments",
@@ -585,15 +594,6 @@
         "kV8SharedArrayBufferConstructedInExtensionWithoutIsolation",
       ],
       milestone: 96,
-    },
-    {
-      name: "WebGPUAdapterIsFallbackAdapter",
-      message: "The GPUAdapter `isFallbackAdapter` attribute is deprecated, instead use the GPUAdapterInfo `isFallbackAdapter` attribute.",
-      translation_note: "This warning occurs when the website attempts to use the deprecated GPUAdapter `isFallbackAdapter` attribute.",
-      web_features: [
-        "kV8GPUAdapter_IsFallbackAdapter_AttributeGetter",
-      ],
-      chrome_status_feature: 4870179714236416,
     },
     {
       name: "XHRJSONEncodingDetection",

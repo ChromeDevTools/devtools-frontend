@@ -7,19 +7,16 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
-type Identifier = TSESTree.Identifier;
-type Node = TSESTree.Node;
-type CallExpression = TSESTree.CallExpression;
 
-export const dataGrid = {
+type Identifier = TSESTree.Identifier;
+
+export const dataGrid: RuleCreator = {
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
     return {
-      methodCall(
-          property: Identifier, firstArg: Node, _secondArg: Node|undefined, domFragment: DomFragment,
-          _call: CallExpression) {
+      methodCall(property, firstArg, _secondArg, domFragment) {
         if (domFragment.tagName !== 'devtools-data-grid') {
           return false;
         }
@@ -46,18 +43,17 @@ export const dataGrid = {
         }
         return false;
       },
-      getEvent(event: Node): string |
-          null {
-            switch (sourceCode.getText(event)) {
-              case 'DataGrid.DataGrid.Events.SELECTED_NODE':
-              case 'DataGrid.DataGrid.Events.DESELECTED_NODE':
-                return 'select';
-              case 'DataGrid.DataGrid.Events.SORTING_CHANGED':
-                return 'sort';
-              default:
-                return null;
-            }
-          },
+      getEvent(event) {
+        switch (sourceCode.getText(event)) {
+          case 'DataGrid.DataGrid.Events.SELECTED_NODE':
+          case 'DataGrid.DataGrid.Events.DESELECTED_NODE':
+            return 'select';
+          case 'DataGrid.DataGrid.Events.SORTING_CHANGED':
+            return 'sort';
+          default:
+            return null;
+        }
+      },
       NewExpression(node) {
         if (isIdentifierChain(node.callee, ['DataGrid', 'DataGrid', 'DataGridImpl']) ||
             isIdentifierChain(node.callee, ['DataGrid', 'ViewportDataGrid', 'ViewportDataGrid']) ||
@@ -93,13 +89,15 @@ export const dataGrid = {
                 const columnFragment = columnsFragment.appendChild(column, sourceCode);
                 columnFragment.tagName = 'th';
                 for (const property of column.properties) {
-                  if (property.type !== 'Property' || isIdentifier(property.value, 'undefined')) {
+                  if (property.type !== 'Property' || isIdentifier(property.value, 'undefined') ||
+                      property.key.type !== 'Identifier') {
                     continue;
                   }
+
                   if (isIdentifier(property.key, ['id', 'weight', 'width'])) {
                     columnFragment.attributes.push({key: property.key.name, value: property.value});
                   } else if (isIdentifier(property.key, 'align')) {
-                    const value: Node|string|null = isMemberExpression(
+                    const value = isMemberExpression(
                         property.value, n => isIdentifierChain(n, ['DataGrid', 'DataGrid', 'Align']),
                         n => n.type === 'Identifier');
                     columnFragment.attributes.push({
@@ -111,7 +109,7 @@ export const dataGrid = {
                   } else if (isIdentifier(property.key, 'fixedWidth')) {
                     columnFragment.booleanAttributes.push({key: 'fixed', value: property.value});
                   } else if (isIdentifier(property.key, 'dataType')) {
-                    const value: Node|string|null = isMemberExpression(
+                    const value = isMemberExpression(
                         property.value, n => isIdentifierChain(n, ['DataGrid', 'DataGrid', 'DataType']),
                         n => n.type === 'Identifier');
                     columnFragment.attributes.push({
@@ -137,7 +135,7 @@ export const dataGrid = {
           }
         }
       },
-      CallExpression(node: CallExpression) {
+      CallExpression(node) {
         if (node.callee.type !== 'MemberExpression' ||
             !isIdentifier(node.callee.property, ['createTD', 'createTDWithClass', 'createCell'])) {
           return;

@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import stylisticPlugin from '@stylistic/eslint-plugin';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
-import {defineConfig, globalIgnores} from 'eslint/config';
 import globals from 'globals';
-import {join} from 'path';
+import { join } from 'path';
 import typescriptEslint from 'typescript-eslint';
 
 import rulesdirPlugin from './scripts/eslint_rules/rules-dir.mjs';
@@ -25,7 +25,7 @@ export default defineConfig([
     // Don't include third party code
     'third_party/',
 
-    'front_end/diff/diff_match_patch.jD',
+    'front_end/diff/diff_match_patch.js',
     'front_end/models/javascript_metadata/NativeFunctions.js',
     // All of these scripts are auto-generated so don't lint them.
     'front_end/generated/ARIAProperties.js',
@@ -193,7 +193,7 @@ export default defineConfig([
       radix: 'error',
       'valid-typeof': 'error',
       'no-return-assign': ['error', 'always'],
-      'no-implicit-coercion': ['error', {allow: ['!!']}],
+      'no-implicit-coercion': ['error', { allow: ['!!'] }],
 
       'no-array-constructor': 'error',
 
@@ -305,11 +305,11 @@ export default defineConfig([
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
@@ -554,12 +554,12 @@ export default defineConfig([
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],
@@ -635,6 +635,7 @@ export default defineConfig([
         },
       ],
       'rulesdir/enforce-ui-strings-as-const': 'error',
+      'rulesdir/no-new-lit-element-components': 'error',
     },
   },
   {
@@ -731,11 +732,6 @@ export default defineConfig([
           type: 'suite',
           interfaces: ['BDD', 'TDD'],
         },
-        {
-          name: 'itScreenshot',
-          type: 'testCase',
-          interfaces: ['BDD', 'TDD'],
-        },
       ],
     },
   },
@@ -784,7 +780,7 @@ export default defineConfig([
     },
   },
   {
-    name: 'Front end component docs',
+    name: 'Front-end component docs',
     files: ['front_end/ui/components/docs/**/*.ts'],
     rules: {
       // This makes the component doc examples very verbose and doesn't add
@@ -806,10 +802,18 @@ export default defineConfig([
       'rulesdir/no-imports-in-directory': [
         'error',
         {
-          bannedImportPaths: [{
-            bannedPath: join(import.meta.dirname, 'front_end', 'core', 'sdk', 'sdk.js'),
-            allowTypeImports: true,
-          }],
+          bannedImportPaths: [
+            {
+              bannedPath: join(
+                import.meta.dirname,
+                'front_end',
+                'core',
+                'sdk',
+                'sdk.js',
+              ),
+              allowTypeImports: true,
+            },
+          ],
         },
       ],
     },

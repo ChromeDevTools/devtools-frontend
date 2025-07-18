@@ -1,6 +1,6 @@
 # A `signature-input` header has a member whose value is not an Inner List.
 
-The value of each member of a [`signature-input`](aignatureInputHeader) header's
+The value of each member of a [`signature-input`](signatureInputHeader) header's
 [Dictionary][sfDictionary] must be an [Inner List](sfInnerList) containing the
 set of components over which a signature is generated.
 

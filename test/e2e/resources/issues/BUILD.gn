@@ -26,6 +26,7 @@ copy_to_gen("issues") {
     "select-element-accessibility-issue-InteractiveContentLegendChild.html",
     "select-element-accessibility-issue-InteractiveContentOptionChild.html",
     "select-element-accessibility-issue-NonPhrasingContentOptionChild.html",
+    "summary-element-accessibility-issue-InteractiveContentSummaryDescendant.html",
     "wasm-co-iframe.html",
     "wasm-co-sharing.html",
   ]

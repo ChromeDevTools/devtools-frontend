@@ -233,6 +233,7 @@ export class DOMNode {
     return [
       Protocol.DOM.PseudoType.ViewTransition,
       Protocol.DOM.PseudoType.ViewTransitionGroup,
+      Protocol.DOM.PseudoType.ViewTransitionGroupChildren,
       Protocol.DOM.PseudoType.ViewTransitionImagePair,
       Protocol.DOM.PseudoType.ViewTransitionOld,
       Protocol.DOM.PseudoType.ViewTransitionNew,
@@ -361,6 +362,7 @@ export class DOMNode {
     return [
       ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransition) || [],
       ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransitionGroup) || [],
+      ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransitionGroupChildren) || [],
       ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransitionImagePair) || [],
       ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransitionOld) || [],
       ...this.#pseudoElements.get(Protocol.DOM.PseudoType.ViewTransitionNew) || [],
@@ -546,8 +548,8 @@ export class DOMNode {
     return response.getError() ? null : this.childrenInternal;
   }
 
-  async getOuterHTML(): Promise<string|null> {
-    const {outerHTML} = await this.#agent.invoke_getOuterHTML({nodeId: this.id});
+  async getOuterHTML(includeShadowDOM = false): Promise<string|null> {
+    const {outerHTML} = await this.#agent.invoke_getOuterHTML({nodeId: this.id, includeShadowDOM});
     return outerHTML;
   }
 

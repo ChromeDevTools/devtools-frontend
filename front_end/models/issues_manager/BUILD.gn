@@ -21,6 +21,7 @@ devtools_module("issues_manager") {
     "CorsIssue.ts",
     "CrossOriginEmbedderPolicyIssue.ts",
     "DeprecationIssue.ts",
+    "ElementAccessibilityIssue.ts",
     "FederatedAuthRequestIssue.ts",
     "FederatedAuthUserInfoRequestIssue.ts",
     "GenericIssue.ts",
@@ -37,7 +38,6 @@ devtools_module("issues_manager") {
     "QuirksModeIssue.ts",
     "RelatedIssue.ts",
     "SRIMessageSignatureIssue.ts",
-    "SelectElementAccessibilityIssue.ts",
     "SharedArrayBufferIssue.ts",
     "SharedDictionaryIssue.ts",
     "SourceFrameIssuesManager.ts",
@@ -191,6 +191,7 @@ devtools_issue_description_files = [
   "selectElementAccessibilityInteractiveContentLegendChild.md",
   "selectElementAccessibilityInteractiveContentOptionChild.md",
   "selectElementAccessibilityNonPhrasingContentOptionChild.md",
+  "summaryElementAccessibilityInteractiveContentSummaryDescendant.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",
   "stylesheetRequestFailed.md",
@@ -251,6 +252,10 @@ devtools_pre_built("descriptions") {
     sources += [ "descriptions/$file" ]
     data += [ "$target_gen_dir/descriptions/$file" ]
   }
+
+  write_file("$target_gen_dir/description_list.json",
+             devtools_issue_description_files,
+             "json")
 }
 
 devtools_entrypoint("bundle") {
@@ -272,6 +277,7 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/docs/issue_counter/*",
     "../../ui/components/issue_counter/*",
+    "../../ui/components/markdown_view/*",
     "../../ui/legacy/components/cookie_table/*",
   ]
 
@@ -284,6 +290,7 @@ ts_library("unittests") {
   sources = [
     "CheckFormsIssuesTrigger.test.ts",
     "DeprecationIssue.test.ts",
+    "ElementAccessibilityIssue.test.ts",
     "FederatedAuthUserInfoRequestIssue.test.ts",
     "GenericIssue.test.ts",
     "Issue.test.ts",
@@ -294,7 +301,6 @@ ts_library("unittests") {
     "PropertyRuleIssue.test.ts",
     "RelatedIssue.test.ts",
     "SRIMessageSignatureIssue.test.ts",
-    "SelectElementAccessibilityIssue.test.ts",
     "SharedDictionaryIssue.test.ts",
     "StylesheetLoadingIssue.test.ts",
   ]

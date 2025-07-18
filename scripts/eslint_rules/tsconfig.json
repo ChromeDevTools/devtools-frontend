@@ -8,6 +8,7 @@
     "checkJs": true,
     "noEmit": true,
     "noImplicitAny": false,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true
   }
 }

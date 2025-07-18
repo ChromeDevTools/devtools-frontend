@@ -653,7 +653,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const stackTableState =
           expand ? i18nString(UIStrings.stackMessageExpanded) : i18nString(UIStrings.stackMessageCollapsed);
       UI.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${stackTableState}`);
-      UI.ARIAUtils.alert(stackTableState);
+      UI.ARIAUtils.LiveAnnouncer.alert(stackTableState);
       UI.ARIAUtils.setExpanded(clickableElement, expand);
       this.traceExpanded = expand;
     };

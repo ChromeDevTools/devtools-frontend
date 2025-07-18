@@ -2,12 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
+
 import {createRule} from './utils/ruleCreator.ts';
 
 const FALSY_ASSERTIONS = new Set(['isFalse', 'isNotOk', 'isNotTrue', 'notOk']);
 const TRUTHY_ASSERTIONS = new Set(['isNotFalse', 'isOk', 'isTrue', 'ok']);
 
-export default createRule({
+type MessageIds =
+    'useAssertIsOk'|'useAssertIsOkInsteadOfNegation'|'useAssertIsNotOk'|'useAssertIsNotOkInsteadOfNegation';
+
+function isAssertOk(node: TSESTree.Expression) {
+  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier' && node.property.name === 'ok';
+}
+
+function isAssertNotOk(node: TSESTree.Expression) {
+  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier' && node.property.name === 'notOk';
+}
+
+function isTruthyAssertion(node: TSESTree.Expression) {
+  if (node.type === 'Identifier' && node.name === 'assert') {
+    return true;
+  }
+  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier' && TRUTHY_ASSERTIONS.has(node.property.name);
+}
+
+function isFalsyAssertion(node: TSESTree.Expression) {
+  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+      node.property.type === 'Identifier' && FALSY_ASSERTIONS.has(node.property.name);
+}
+
+export default createRule<unknown[], MessageIds>({
   name: 'prefer-assert-is-ok',
   meta: {
     type: 'suggestion',
@@ -26,34 +54,12 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    function isAssertOk(calleeNode) {
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          calleeNode.property.name === 'ok';
-    }
-
-    function isAssertNotOk(calleeNode) {
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          calleeNode.property.name === 'notOk';
-    }
-
-    function isTruthyAssertion(calleeNode) {
-      if (calleeNode.type === 'Identifier' && calleeNode.name === 'assert') {
-        return true;
-      }
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          TRUTHY_ASSERTIONS.has(calleeNode.property.name);
-    }
-
-    function isFalsyAssertion(calleeNode) {
-      return calleeNode.type === 'MemberExpression' && calleeNode.object.type === 'Identifier' &&
-          calleeNode.object.name === 'assert' && calleeNode.property.type === 'Identifier' &&
-          FALSY_ASSERTIONS.has(calleeNode.property.name);
-    }
-
-    function reportError(node, calleeText, firstArgNode, messageId) {
+    function reportError(
+        node: TSESTree.CallExpression,
+        calleeText: string,
+        firstArgNode: TSESTree.CallExpressionArgument,
+        messageId: MessageIds,
+    ) {
       context.report({
         node,
         messageId,
@@ -69,26 +75,29 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (node.arguments.length >= 1) {
-          const [argumentNode] = node.arguments;
-          if (argumentNode.type === 'UnaryExpression' && argumentNode.operator === '!') {
-            if (isTruthyAssertion(node.callee)) {
-              reportError(node, 'assert.isNotOk', argumentNode.argument, 'useAssertIsNotOkInsteadOfNegation');
-              return;
-            }
-            if (isFalsyAssertion(node.callee)) {
-              reportError(node, 'assert.isOk', argumentNode.argument, 'useAssertIsOkInsteadOfNegation');
-              return;
-            }
-          }
+        if (node.arguments.length < 1) {
+          return;
+        }
 
-          if (isAssertOk(node.callee)) {
-            reportError(node, 'assert.isOk', argumentNode, 'useAssertIsOk');
-          } else if (isAssertNotOk(node.callee)) {
-            reportError(node, 'assert.isNotOk', argumentNode, 'useAssertIsNotOk');
+        const [argumentNode] = node.arguments;
+        if (argumentNode.type === 'UnaryExpression' && argumentNode.operator === '!') {
+          if (isTruthyAssertion(node.callee)) {
+            reportError(node, 'assert.isNotOk', argumentNode.argument, 'useAssertIsNotOkInsteadOfNegation');
+            return;
+          }
+          if (isFalsyAssertion(node.callee)) {
+            reportError(node, 'assert.isOk', argumentNode.argument, 'useAssertIsOkInsteadOfNegation');
+            return;
           }
         }
+
+        if (isAssertOk(node.callee)) {
+          reportError(node, 'assert.isOk', argumentNode, 'useAssertIsOk');
+        } else if (isAssertNotOk(node.callee)) {
+          reportError(node, 'assert.isNotOk', argumentNode, 'useAssertIsNotOk');
+        }
       }
+
     };
   },
 });

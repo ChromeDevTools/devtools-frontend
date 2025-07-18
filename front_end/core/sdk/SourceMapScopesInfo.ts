@@ -7,24 +7,24 @@ import * as Protocol from '../../generated/protocol.js';
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import type {SourceMap} from './SourceMap.js';
 import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
-import type {GeneratedRange, OriginalPosition, OriginalScope, Position,} from './SourceMapScopes.js';
+import type {GeneratedRange, OriginalPosition, OriginalScope, Position, ScopeInfo} from './SourceMapScopes.js';
 
 export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
-  readonly #originalScopes: Array<OriginalScope|undefined>;
+  readonly #originalScopes: Array<OriginalScope|null>;
   readonly #generatedRanges: GeneratedRange[];
 
   #cachedVariablesAndBindingsPresent: boolean|null = null;
 
-  constructor(sourceMap: SourceMap, originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]) {
+  constructor(sourceMap: SourceMap, scopeInfo: ScopeInfo) {
     this.#sourceMap = sourceMap;
-    this.#originalScopes = originalScopes;
-    this.#generatedRanges = generatedRanges;
+    this.#originalScopes = scopeInfo.scopes;
+    this.#generatedRanges = scopeInfo.ranges;
   }
 
   addOriginalScopes(scopes: Array<OriginalScope|undefined>): void {
     for (const scope of scopes) {
-      this.#originalScopes.push(scope);
+      this.#originalScopes.push(scope ?? null);
     }
   }
 
@@ -66,9 +66,9 @@ export class SourceMapScopesInfo {
     for (let i = rangeChain.length - 1; i >= 0; --i) {
       const range = rangeChain[i];
 
-      if (range.callsite) {
+      if (range.callSite) {
         // Record the name and call-site if the range corresponds to an inlined function.
-        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callsite});
+        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callSite});
       }
       if (range.isStackFrame) {
         // We arrived at an actual generated JS function, don't go further.
@@ -142,7 +142,7 @@ export class SourceMapScopesInfo {
     // We check whether any original scope has a non-empty list of variables, and
     // generated ranges with a non-empty binding list.
 
-    function walkTree(nodes: Array<OriginalScope|undefined>|GeneratedRange[]): boolean {
+    function walkTree(nodes: Array<OriginalScope|null>|GeneratedRange[]): boolean {
       for (const node of nodes) {
         if (!node) {
           continue;
@@ -152,7 +152,7 @@ export class SourceMapScopesInfo {
           return true;
         }
 
-        if ('values' in node && node.values.some(v => v !== undefined)) {
+        if ('values' in node && node.values.some(v => v !== null)) {
           return true;
         }
 
@@ -236,7 +236,7 @@ export class SourceMapScopesInfo {
     // Drop ranges in the chain until we reach our desired inlined range.
     for (let inlineIndex = 0; inlineIndex < callFrame.inlineFrameIndex;) {
       const range = rangeChain.pop();
-      if (range?.callsite) {
+      if (range?.callSite) {
         ++inlineIndex;
       }
     }

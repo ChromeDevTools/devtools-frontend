@@ -134,7 +134,7 @@ export class FeatureSet {
  *
  * @param {Error} error the `Error` from the failed `autoninja` invocation.
  * @param {string} outDir the absolute path to the `target` out directory.
- * @param {string} target the targe relative to `//out`.
+ * @param {string} target the target relative to `//out`.
  * @return {string} the human readable error message.
  */
 function buildErrorMessageForNinja(error, outDir, target) {
@@ -177,6 +177,7 @@ ${output}
   return `Failed to build \`${target}' in \`${outDir}' (${message.substring(0, message.indexOf('\n'))})`;
 }
 
+/** @enum */
 export const BuildStep = {
   GN: 'gn',
   AUTONINJA: 'autoninja',
@@ -186,7 +187,7 @@ export class BuildError extends Error {
   /**
    * Constructs a new `BuildError` with the given parameters.
    *
-   * @param {keyof BuildStep} step the build step that failed.
+   * @param {BuildStep} step the build step that failed.
    * @param {Object} options additional options for the `BuildError`.
    * @param {Error} options.cause the actual cause for the build error.
    * @param {string} options.outDir the absolute path to the `target` out directory.
@@ -211,8 +212,8 @@ export class BuildError extends Error {
  */
 
 /**
- * @param {string} target
- * @return {Promise<void>}
+ * @param {string} target the target relative to `//out`.
+ * @return {Promise<Map<string, string>>} the GN args for the `target`.
  */
 export async function prepareBuild(target) {
   const outDir = path.join(rootPath(), 'out', target);
@@ -229,6 +230,8 @@ export async function prepareBuild(target) {
       throw new BuildError(BuildStep.GN, {cause, outDir, target});
     }
   }
+
+  return await gnArgsForTarget(target);
 }
 
 /** @type Map<string, Promise<Map<string, string>>> */
@@ -279,15 +282,22 @@ function gnRefsForTarget(target, filename) {
 }
 
 async function computeBuildTargetsForFiles(target, filenames) {
-  if (filenames && filenames.length && filenames.every(filename => path.extname(filename) === '.css')) {
+  const SUPPORTED_EXTENSIONS = ['.css', '.ts'];
+  if (filenames && filenames.length &&
+      filenames.every(filename => SUPPORTED_EXTENSIONS.includes(path.extname(filename)))) {
     if (isInChromiumDirectory().isInChromium) {
       filenames = filenames.map(filename => path.join('third_party', 'devtools-frontend', 'src', filename));
     }
     const gnArgs = await gnArgsForTarget(target);
-    if (gnArgs.get('is_debug') === 'true') {
+    if (gnArgs.get('devtools_bundle') === 'false') {
       try {
         const gnRefs = (await Promise.all(filenames.map(filename => gnRefsForTarget(target, filename)))).flat();
         if (gnRefs.length) {
+          // If there are any changes to TypeScript files, we need to also rebuild the
+          // `en-US.json`, as otherwise the changes to `UIStrings` aren't picked up.
+          if (filenames.some(filename => path.extname(filename) === '.ts')) {
+            gnRefs.push('collect_strings');
+          }
           return gnRefs;
         }
       } catch (error) {

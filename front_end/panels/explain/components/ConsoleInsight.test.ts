@@ -36,7 +36,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   function getTestAidaClient() {
     return {
       async *
-          fetch() {
+          doConversation() {
             yield {explanation: 'test', metadata: {rpcGlobalId: 0}, completed: true};
           },
       registerClientEvent: sinon.spy(),
@@ -177,7 +177,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     function getAidaClientWithTimeout() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: 'test',
                 metadata: {
@@ -289,7 +289,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     function getAidaClientWithMetadata() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: 'test',
                 metadata: {
@@ -325,7 +325,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     function getAidaClientWithMetadata() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: 'This is not a real answer, it is just a test.',
                 metadata: {
@@ -394,7 +394,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     function getAidaClientWithMetadata() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: `before
 
@@ -467,7 +467,7 @@ after
     function getAidaClientWithMetadata() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: 'This is not a real answer, it is just a test.',
                 metadata: {
@@ -523,7 +523,7 @@ after
     function getAidaClientWithMetadata() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: 'This is not a real answer, it is just a test.',
                 metadata: {
@@ -674,7 +674,7 @@ Response status: 404`,
     function getAidaClientForConsentReminder() {
       return {
         async *
-            fetch() {
+            doConversation() {
               await new Promise(resolve => setTimeout(resolve, 2000));
               yield {
                 explanation: `Some text with \`code\`. Some code:
@@ -761,7 +761,7 @@ Response status: 404`,
     function getAidaClientForInsight() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: `## Result
 
@@ -851,7 +851,7 @@ Response status: 404`,
     function getAidaClientForInsight() {
       return {
         async *
-            fetch() {
+            doConversation() {
               yield {
                 explanation: `## Result
 

@@ -46,6 +46,8 @@ import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 
+type IDBKeyValue = number|string|Date|IDBKeyValue[];
+
 const {html} = Lit;
 
 const UIStrings = {
@@ -633,6 +635,29 @@ export class IDBDataView extends UI.View.SimpleView {
     this.needsRefresh.setVisible(true);
   }
 
+  private async resolveArrayKey(key: SDK.RemoteObject.RemoteObject): Promise<IDBKeyValue> {
+    const {properties} = await key.getOwnProperties(false /* generatePreview */);
+    if (!properties) {
+      return [];
+    }
+    const result: IDBKeyValue = [];
+    const propertyPromises = properties.filter(property => !isNaN(Number(property.name))).map(async property => {
+      const value = property.value;
+      if (!value) {
+        return;
+      }
+      let propertyValue;
+      if (value.subtype === 'array') {
+        propertyValue = await this.resolveArrayKey(value);
+      } else {
+        propertyValue = value.value;
+      }
+      result[Number(property.name)] = propertyValue;
+    });
+    await Promise.all(propertyPromises);
+    return result;
+  }
+
   private async deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<unknown>|null): Promise<void> {
     if (!node) {
       node = this.dataGrid.selectedNode;
@@ -641,9 +666,7 @@ export class IDBDataView extends UI.View.SimpleView {
       }
     }
     const key = (this.isIndex ? node.data['primary-key'] : node.data.key as SDK.RemoteObject.RemoteObject);
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const keyValue = (key.value as string | number | any[] | Date);
+    const keyValue: IDBKeyValue = key.subtype === 'array' ? await this.resolveArrayKey(key) : key.value;
     await this.model.deleteEntries(this.databaseId, this.objectStore.name, window.IDBKeyRange.only(keyValue));
     this.refreshObjectStoreCallback();
   }

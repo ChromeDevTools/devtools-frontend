@@ -52,7 +52,7 @@ override renderContent(): LitHtml.LitTemplate {
 
 If your component should render overlays when it is expanded, you will need to define those in the `createOverlays` method.
 
-This should return an array of `Overlays.Overlays.TimelineOverlay` objects. When your insight is expanded/collapsed, they will automatically be created / destroyed.
+This should return an array of `Trace.Types.Overlays.TimelineOverlay` objects. When your insight is expanded/collapsed, they will automatically be created / destroyed.
 
 ## 4. Custom styling
 

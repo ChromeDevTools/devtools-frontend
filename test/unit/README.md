@@ -193,9 +193,16 @@ npm run test -- $TESTPATH --on-diff=update
 
 ### Generating and/or updating screenshots via CQ bots
 
-This feature is not yet available in unit tests (b/408113752).
+> Ensure you are a member of the g/devtools-dev group, otherwise the
+> `update_goldens.py` tool will not work.
 
-### Known issues
+After the try jobs completed on a CL (`git cl upload && git cl try`),
+you can fetch screenshots created on the bots by runng in the
+`update_goldens.py`:
 
-Currently, screenshot diffs are not shown as images on resultsdb pages
-(b/408112810).
+```sh
+scripts/tools/update_goldens.py
+```
+
+The command is expected to fetch images from the bots and apply them to
+your local source code. You need to review and commit them to your CL.

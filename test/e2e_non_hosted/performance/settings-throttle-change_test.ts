@@ -31,7 +31,7 @@ describe('The Performance panel', function() {
   it('can change network throttling conditions and logs the change event', async ({devToolsPage, inspectedPage}) => {
     await setupPerformancePanel(devToolsPage, inspectedPage);
     const veRoot = 'Panel: timeline > Pane: timeline-settings-pane';
-    const networkDropdownVeName = 'DropDown: preferred-network-condition';
+    const networkDropdownVeName = 'DropDown: active-network-condition-key';
 
     // Initial state: No throttling, then change to "3G"
     const select = await devToolsPage.waitForAria<HTMLSelectElement>('Network conditions');

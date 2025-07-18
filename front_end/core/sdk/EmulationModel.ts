@@ -12,6 +12,12 @@ import {Events, OverlayModel} from './OverlayModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 
+export const enum DataSaverOverride {
+  UNSET = 'unset',
+  ENABLED = 'enabled',
+  DISABLED = 'disabled',
+}
+
 export class EmulationModel extends SDKModel<void> {
   readonly #emulationAgent: ProtocolProxyApi.EmulationApi;
   readonly #deviceOrientationAgent: ProtocolProxyApi.DeviceOrientationApi;
@@ -367,6 +373,13 @@ export class EmulationModel extends SDKModel<void> {
 
   private setDisabledImageTypes(imageTypes: Protocol.Emulation.DisabledImageType[]): void {
     void this.#emulationAgent.invoke_setDisabledImageTypes({imageTypes});
+  }
+
+  async setDataSaverOverride(dataSaverOverride: DataSaverOverride): Promise<void> {
+    const dataSaverEnabled = dataSaverOverride === DataSaverOverride.UNSET ? undefined :
+        dataSaverOverride === DataSaverOverride.ENABLED                    ? true :
+                                                                             false;
+    await this.#emulationAgent.invoke_setDataSaverOverride({dataSaverEnabled});
   }
 
   async setCPUThrottlingRate(rate: number): Promise<void> {

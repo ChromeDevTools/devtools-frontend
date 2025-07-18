@@ -287,7 +287,8 @@ export class CookieItemsView extends UI.Widget.VBox {
       this.#toolbar.setDeleteAllGlyph('clear-list');
     }
     this.cookiesTable.setCookies(this.shownCookies, this.model.getCookieToBlockedReasonsMap());
-    UI.ARIAUtils.alert(i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this.shownCookies.length}));
+    UI.ARIAUtils.LiveAnnouncer.alert(
+        i18nString(UIStrings.numberOfCookiesShownInTableS, {PH1: this.shownCookies.length}));
     this.#toolbar.setCanFilter(true);
     this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
     this.#toolbar.setCanDeleteSelected(Boolean(this.cookiesTable.selectedCookie()));

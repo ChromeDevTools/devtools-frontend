@@ -13,12 +13,12 @@ import { Connection } from './Connection.js';
  * @internal
  */
 export async function _connectToCdpBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, } = options;
     const connection = new Connection(url, connectionTransport, slowMo, protocolTimeout);
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
         return connection.send('Browser.close').catch(debugError);
-    }, targetFilter, isPageTarget);
+    }, targetFilter, isPageTarget, undefined, networkEnabled);
     return browser;
 }
 //# sourceMappingURL=BrowserConnector.js.map

@@ -113,8 +113,10 @@ def copy_files(options):
             content = infile.read()
 
         # Replace IFTTT tags with skipped versions.
-        content = content.replace('LINT.IfChange', 'LINT_SKIP.IfChange')
-        content = content.replace('LINT.ThenChange', 'LINT_SKIP.ThenChange')
+        # Escape "L" as "\x4C" to avoid presubmit failures.
+        content = content.replace('\x4CINT.IfChange', '\x4CINT_SKIP.IfChange')
+        content = content.replace('\x4CINT.ThenChange',
+                                  '\x4CINT_SKIP.ThenChange')
 
         with open(to_path_full, 'w', encoding='utf-8') as outfile:
             outfile.write(content)
@@ -196,6 +198,34 @@ def update_deps_revision(options):
                 }, f)
 
 
+def update_readme_revision(options):
+    print('updating README.chromium revision')
+    readme_path = os.path.join(options.devtools_dir, 'front_end',
+                               'third_party', 'chromium', 'README.chromium')
+
+    old_content = ""
+    with open(readme_path, 'r', encoding='utf-8') as f:
+        old_content = f.read()
+
+    old_revision = ""
+    for line in old_content.splitlines():
+        if line.startswith('Revision:'):
+            old_revision = line.split(':', 1)[1].strip()
+            break
+
+    new_revision = subprocess.check_output(
+        ['git', 'log', '-1', '--pretty=format:%H'],
+        cwd=options.chromium_dir,
+        text=True).strip()
+
+    # Replace the old revision with the new revision.
+    print(f'-> from {old_revision} to {new_revision}')
+    patched_content = old_content.replace(f'Revision: {old_revision}',
+                                          f'Revision: {new_revision}')
+    with open(readme_path, 'w', encoding='utf-8') as f:
+        f.write(patched_content)
+
+
 if __name__ == '__main__':
     OPTIONS = parse_options(sys.argv[1:])
     if OPTIONS.ref == ReferenceMode.Tot:
@@ -209,3 +239,4 @@ if __name__ == '__main__':
         run_git_cl_format(OPTIONS)
         run_eslint(OPTIONS)
         update_deps_revision(OPTIONS)
+        update_readme_revision(OPTIONS)

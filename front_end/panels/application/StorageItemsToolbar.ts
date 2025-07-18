@@ -136,7 +136,7 @@ export class StorageItemsToolbar extends
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
         this.dispatchEventToListeners(StorageItemsToolbar.Events.REFRESH);
-        UI.ARIAUtils.alert(i18nString(UIStrings.refreshedStatus));
+        UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.refreshedStatus));
       },
       onDeleteAll: () => this.dispatchEventToListeners(StorageItemsToolbar.Events.DELETE_ALL),
       onDeleteSelected: () => this.dispatchEventToListeners(StorageItemsToolbar.Events.DELETE_SELECTED),

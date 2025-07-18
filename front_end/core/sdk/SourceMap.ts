@@ -197,7 +197,7 @@ export class SourceMap {
     if (sourceIdx >= 0) {
       if (!this.#scopesInfo) {
         // First time seeing this sourcemap, create an new empty scopesInfo object
-        this.#scopesInfo = new SourceMapScopesInfo(this, [], []);
+        this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
       }
       if (!this.#scopesInfo.hasOriginalScopes(sourceIdx)) {
         const originalScopes = buildOriginalScopes(ranges);
@@ -558,7 +558,7 @@ export class SourceMap {
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
       if (!this.#scopesInfo) {
-        this.#scopesInfo = new SourceMapScopesInfo(this, [], []);
+        this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
       }
       if (map.originalScopes && map.generatedRanges) {
         const {originalScopes, generatedRanges} = decodeScopes(map, {line: baseLineNumber, column: baseColumnNumber});

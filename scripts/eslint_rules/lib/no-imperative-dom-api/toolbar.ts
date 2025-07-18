@@ -7,29 +7,28 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
-import {isIdentifier, isIdentifierChain, isMemberExpression} from './ast.ts';
+import {isIdentifier, isIdentifierChain, isMemberExpression, type RuleCreator} from './ast.ts';
 import {DomFragment} from './dom-fragment.ts';
 
 type Node = TSESTree.Node;
 
-export const toolbar = {
+export const toolbar: RuleCreator = {
   create(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode;
     return {
-      getEvent(event: Node): string |
-          null {
-            switch (sourceCode.getText(event)) {
-              case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
-                return 'change';
-              case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
-                return 'submit';
-              case 'UI.Toolbar.ToolbarButton.Events.CLICK':
-                return 'click';
-              default:
-                return null;
-            }
-          },
-      methodCall(property: Node, firstArg: Node, _secondArg: Node, domFragment: DomFragment, _call: Node): boolean {
+      getEvent(event) {
+        switch (sourceCode.getText(event)) {
+          case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
+            return 'change';
+          case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
+            return 'submit';
+          case 'UI.Toolbar.ToolbarButton.Events.CLICK':
+            return 'click';
+          default:
+            return null;
+        }
+      },
+      methodCall(property, firstArg, _secondArg, domFragment) {
         if (isIdentifier(property, 'appendToolbarItem')) {
           domFragment.appendChild(firstArg, sourceCode);
           return true;

@@ -17,9 +17,12 @@ ts_e2e_library("sources") {
     "icon-row-bucket_test.ts",
     "inline-breakpoint_test.ts",
     "inline-scripts_test.ts",
+    "inline-variable_test.ts",
     "link-to-correct-source-line_test.ts",
+    "live-edit-moving-breakpoint_test.ts",
     "pause-button_test.ts",
     "popover_test.ts",
+    "restart-frame_test.ts",
     "script-in-multiple-workers_test.ts",
     "scroll-into-view_test.ts",
     "sourcemap-without-mappings_test.ts",
@@ -27,6 +30,7 @@ ts_e2e_library("sources") {
     "sources-list_test.ts",
     "sourceurl_test.ts",
     "text-editor_test.ts",
+    "worker-relative-sourcemap_test.ts",
   ]
 
   deps = [

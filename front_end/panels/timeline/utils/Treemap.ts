@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 
@@ -20,28 +21,12 @@ export type TreemapData = TreemapNode[];
 type SourceData = Omit<TreemapNode, 'name'|'children'>;
 
 /**
- * Takes an UTF-8 string and returns a base64 encoded string. The UTF-8 bytes are
- * gzipped before base64'd using CompressionStream.
+ * Takes an UTF-8, gzips then base64's it.
  */
 async function toCompressedBase64(string: string): Promise<string> {
-  let bytes = new TextEncoder().encode(string);
-
-  const cs = new CompressionStream('gzip');
-  const writer = cs.writable.getWriter();
-  void writer.write(bytes);
-  void writer.close();
-  const compAb = await new Response(cs.readable).arrayBuffer();
-  bytes = new Uint8Array(compAb);
-
-  let binaryString = '';
-  // This is ~25% faster than building the string one character at a time.
-  // https://jsbench.me/2gkoxazvjl
-  const chunkSize = 5000;
-  for (let i = 0; i < bytes.length; i += chunkSize) {
-    binaryString += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-  }
-
-  return btoa(binaryString);
+  const compAb = await Common.Gzip.compress(string);
+  const strb64 = await Common.Base64.encode(compAb);
+  return strb64;
 }
 
 /**

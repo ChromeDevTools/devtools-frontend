@@ -1031,19 +1031,20 @@ experimental domain Audits
       # Additional information about the Partitioning Blob URL issue.
       PartitioningBlobURLInfo partitioningBlobURLInfo
 
-  type SelectElementAccessibilityIssueReason extends string
+  type ElementAccessibilityIssueReason extends string
     enum
       DisallowedSelectChild
       DisallowedOptGroupChild
       NonPhrasingContentOptionChild
       InteractiveContentOptionChild
       InteractiveContentLegendChild
+      InteractiveContentSummaryDescendant
 
-  # This issue warns about errors in the select element content model.
-  type SelectElementAccessibilityIssueDetails extends object
+  # This issue warns about errors in the select or summary element content model.
+  type ElementAccessibilityIssueDetails extends object
     properties
       DOM.BackendNodeId nodeId
-      SelectElementAccessibilityIssueReason selectElementAccessibilityIssueReason
+      ElementAccessibilityIssueReason elementAccessibilityIssueReason
       boolean hasDisallowedAttributes
 
   type StyleSheetLoadingIssueReason extends string
@@ -1120,7 +1121,7 @@ experimental domain Audits
       FederatedAuthUserInfoRequestIssue
       PropertyRuleIssue
       SharedDictionaryIssue
-      SelectElementAccessibilityIssue
+      ElementAccessibilityIssue
       SRIMessageSignatureIssue
       UserReidentificationIssue
 
@@ -1151,7 +1152,7 @@ experimental domain Audits
       optional PropertyRuleIssueDetails propertyRuleIssueDetails
       optional FederatedAuthUserInfoRequestIssueDetails federatedAuthUserInfoRequestIssueDetails
       optional SharedDictionaryIssueDetails sharedDictionaryIssueDetails
-      optional SelectElementAccessibilityIssueDetails selectElementAccessibilityIssueDetails
+      optional ElementAccessibilityIssueDetails elementAccessibilityIssueDetails
       optional SRIMessageSignatureIssueDetails sriMessageSignatureIssueDetails
       optional UserReidentificationIssueDetails userReidentificationIssueDetails
 
@@ -1746,6 +1747,18 @@ domain Browser
       # New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined
       # with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
       Bounds bounds
+
+  # Set size of the browser contents resizing browser window as necessary.
+  experimental command setContentsSize
+    parameters
+      # Browser window id.
+      WindowID windowId
+      # The window contents width in DIP. Assumes current width if omitted.
+      # Must be specified if 'height' is omitted.
+      optional integer width
+      # The window contents height in DIP. Assumes current height if omitted.
+      # Must be specified if 'width' is omitted.
+      optional integer height
 
   # Set dock tile details, platform-specific.
   experimental command setDockTile
@@ -2545,6 +2558,11 @@ experimental domain CSS
       experimental optional DOM.NodeId parentLayoutNodeId
       # A list of CSS at-function rules referenced by styles of this node.
       experimental optional array of CSSFunctionRule cssFunctionRules
+
+  # Returns the values of the default UA-defined environment variables used in env()
+  experimental command getEnvironmentVariables
+    returns
+      object environmentVariables
 
   # Returns all media queries parsed by the rendering engine.
   command getMediaQueries
@@ -3385,6 +3403,8 @@ domain DOM
       optional BackendNodeId backendNodeId
       # JavaScript object id of the node wrapper.
       optional Runtime.RemoteObjectId objectId
+      # Include all shadow roots. Equals to false if not specified.
+      experimental optional boolean includeShadowDOM
     returns
       # Outer HTML markup.
       string outerHTML
@@ -3517,7 +3537,8 @@ domain DOM
         # Get the popover target for a given element. In this case, this given
         # element can only be an HTMLFormControlElement (<input>, <button>).
         PopoverTarget
-        # Get the interest target for a given element.
+        # Get the interestfor target (the attribute used to be named
+        # `interesttarget`) for for a given element.
         InterestTarget
         # Get the commandfor target for a given element. In this case, this given
         # element can only be an HTMLButtonElement.
@@ -3734,6 +3755,19 @@ domain DOM
     returns
       # The anchor element of the given anchor query.
       NodeId nodeId
+
+  # When enabling, this API force-opens the popover identified by nodeId
+  # and keeps it open until disabled.
+  experimental command forceShowPopover
+    parameters
+      # Id of the popover HTMLElement
+      NodeId nodeId
+      # If true, opens the popover and keeps it open. If false, closes the
+      # popover if it was previously force-opened.
+      boolean enable
+    returns
+      # List of popovers that were closed in order to respect popover stacking order.
+      array of NodeId nodeIds
 
   # Fired when `Element`'s attribute is modified.
   event attributeModified
@@ -4871,6 +4905,13 @@ domain Emulation
     parameters
       # Image types to disable.
       array of DisabledImageType imageTypes
+
+
+  # Override the value of navigator.connection.saveData
+  experimental command setDataSaverOverride
+    parameters
+      # Override value. Omitting the parameter disables the override.
+      optional boolean dataSaverEnabled
 
   experimental command setHardwareConcurrencyOverride
     parameters
@@ -7669,7 +7710,7 @@ domain Network
 
   experimental type IPAddressSpace extends string
     enum
-      Local
+      Loopback
       Private
       Public
       Unknown
@@ -8251,7 +8292,6 @@ experimental domain Overlay
       searchForNode
       searchForUAShadowDOM
       captureAreaScreenshot
-      showDistances
       none
 
   # Disables domain notifications.
@@ -8587,6 +8627,7 @@ domain Page
       accelerometer
       all-screens-capture
       ambient-light-sensor
+      aria-notify
       attribution-reporting
       autoplay
       bluetooth
@@ -9411,6 +9452,8 @@ domain Page
       optional Network.LoaderId loaderId
       # User friendly error message, present if and only if navigation has failed.
       optional string errorText
+      # Whether the navigation resulted in a download.
+      experimental optional boolean isDownload
 
   # Navigates current page to the given history entry.
   command navigateToHistoryEntry
@@ -9720,25 +9763,25 @@ domain Page
   # Clears seeded compilation cache.
   experimental command clearCompilationCache
 
-  # Enum of possible auto-response for permission / prompt dialogs.
-  experimental type AutoResponseMode extends string
-    enum
-      none
-      autoAccept
-      autoReject
-      autoOptOut
-
   # Sets the Secure Payment Confirmation transaction mode.
   # https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
   experimental command setSPCTransactionMode
     parameters
-      AutoResponseMode mode
+      enum mode
+        none
+        autoAccept
+        autoChooseToAuthAnotherWay
+        autoReject
+        autoOptOut
 
   # Extensions for Custom Handlers API:
   # https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
   experimental command setRPHRegistrationMode
     parameters
-      AutoResponseMode mode
+      enum mode
+        none
+        autoAccept
+        autoReject
 
   # Generates a report for testing.
   experimental command generateTestReport
@@ -10060,6 +10103,7 @@ domain Page
       BroadcastChannel
       WebXR
       SharedWorker
+      SharedWorkerMessage
       WebLocks
       WebHID
       WebShare
@@ -10635,10 +10679,6 @@ experimental domain ServiceWorker
       string tag
 
   command enable
-
-  command inspectWorker
-    parameters
-      string versionId
 
   command setForceUpdateOnPageLoad
     parameters

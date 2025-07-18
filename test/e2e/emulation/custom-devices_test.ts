@@ -98,6 +98,15 @@ describe('Custom devices', () => {
     await tabForward();  // Focus full version.
     await typeText('1.1.2345');
 
+    // Focus on form factors checkbox
+    for (let i = 0; i < 7; ++i) {
+      await tabForward();
+      // Enable form factors Desktop and XR
+      if (i === 0 || i === 4) {
+        await pressKey('Space');
+      }
+    }
+
     await tabForward();  // Focus platform.
     await typeText('Cyborg');
 
@@ -141,6 +150,12 @@ describe('Custom devices', () => {
     assert.strictEqual(await targetTextContent('#res-architecture'), 'Bipedal');
     assert.strictEqual(await targetTextContent('#res-model'), 'C-1-Gardener');
     assert.strictEqual(await targetTextContent('#res-ua-full-version'), '1.1.2345');
+    assert.strictEqual(await targetTextContent('#res-num-full-version-list'), '1');
+    assert.strictEqual(await targetTextContent('#res-full-version-list-0-name'), 'Ready Rover');
+    assert.strictEqual(await targetTextContent('#res-full-version-list-0-version'), '2.4.9');
+    assert.strictEqual(await targetTextContent('#res-num-form-factors'), '2');
+    assert.strictEqual(await targetTextContent('#res-form-factors-0'), 'Desktop');
+    assert.strictEqual(await targetTextContent('#res-form-factors-1'), 'XR');
 
     // Focus the first item in the device list, which should be the custom entry,
     // and then click the edit button that should appear.
@@ -164,6 +179,10 @@ describe('Custom devices', () => {
     // Change the value.
     await typeText('1.1.5');
 
+    // Move to form factor Desktop checkbox, uncheck it.
+    await tabForward();
+    await pressKey('Space');
+
     // Save the changes.
     await pressKey('Enter');
 
@@ -183,6 +202,11 @@ describe('Custom devices', () => {
     assert.strictEqual(await targetTextContent('#res-architecture'), 'Bipedal');
     assert.strictEqual(await targetTextContent('#res-model'), 'C-1-Gardener');
     assert.strictEqual(await targetTextContent('#res-ua-full-version'), '1.1.5');
+    assert.strictEqual(await targetTextContent('#res-num-full-version-list'), '1');
+    assert.strictEqual(await targetTextContent('#res-full-version-list-0-name'), 'Ready Rover');
+    assert.strictEqual(await targetTextContent('#res-full-version-list-0-version'), '2.4.9');
+    assert.strictEqual(await targetTextContent('#res-num-form-factors'), '1');
+    assert.strictEqual(await targetTextContent('#res-form-factors-0'), 'XR');
   });
 
   it('can add and properly display a device with a custom resolution', async () => {

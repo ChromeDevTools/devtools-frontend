@@ -1264,6 +1264,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Set size of the browser contents resizing browser window as necessary.
+     */
+    'Browser.setContentsSize': {
+      paramsType: [Protocol.Browser.SetContentsSizeRequest];
+      returnType: void;
+    };
+    /**
      * Set dock tile details, platform-specific.
      */
     'Browser.setDockTile': {
@@ -1399,6 +1406,13 @@ export namespace ProtocolMapping {
     'CSS.getMatchedStylesForNode': {
       paramsType: [Protocol.CSS.GetMatchedStylesForNodeRequest];
       returnType: Protocol.CSS.GetMatchedStylesForNodeResponse;
+    };
+    /**
+     * Returns the values of the default UA-defined environment variables used in env()
+     */
+    'CSS.getEnvironmentVariables': {
+      paramsType: [];
+      returnType: Protocol.CSS.GetEnvironmentVariablesResponse;
     };
     /**
      * Returns all media queries parsed by the rendering engine.
@@ -2046,6 +2060,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.DOM.GetAnchorElementResponse;
     };
     /**
+     * When enabling, this API force-opens the popover identified by nodeId
+     * and keeps it open until disabled.
+     */
+    'DOM.forceShowPopover': {
+      paramsType: [Protocol.DOM.ForceShowPopoverRequest];
+      returnType: Protocol.DOM.ForceShowPopoverResponse;
+    };
+    /**
      * Returns event listeners of the given object.
      */
     'DOMDebugger.getEventListeners': {
@@ -2492,6 +2514,13 @@ export namespace ProtocolMapping {
     };
     'Emulation.setDisabledImageTypes': {
       paramsType: [Protocol.Emulation.SetDisabledImageTypesRequest];
+      returnType: void;
+    };
+    /**
+     * Override the value of navigator.connection.saveData
+     */
+    'Emulation.setDataSaverOverride': {
+      paramsType: [Protocol.Emulation.SetDataSaverOverrideRequest?];
       returnType: void;
     };
     'Emulation.setHardwareConcurrencyOverride': {
@@ -3910,10 +3939,6 @@ export namespace ProtocolMapping {
     };
     'ServiceWorker.enable': {
       paramsType: [];
-      returnType: void;
-    };
-    'ServiceWorker.inspectWorker': {
-      paramsType: [Protocol.ServiceWorker.InspectWorkerRequest];
       returnType: void;
     };
     'ServiceWorker.setForceUpdateOnPageLoad': {

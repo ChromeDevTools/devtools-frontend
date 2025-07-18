@@ -7,6 +7,4 @@ assertions made by the request's initiator. Verificiation failed.
 
 The following are the keys specified by the request's initiator:
 
-<ul>
-  {PLACEHOLDER_integrityAssertions}
-</ul>
+{PLACEHOLDER_integrityAssertions}

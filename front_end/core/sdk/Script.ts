@@ -293,11 +293,6 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     return this.#contentPromise;
   }
 
-  async requestContent(): Promise<TextUtils.ContentProvider.DeferredContent> {
-    const contentData = await this.requestContentData();
-    return TextUtils.ContentData.ContentData.asDeferredContent(contentData);
-  }
-
   private async requestContentInternal(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (!this.scriptId) {
       return {error: i18nString(UIStrings.scriptRemovedOrDeleted)};

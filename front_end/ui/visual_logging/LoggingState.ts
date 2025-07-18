@@ -65,9 +65,11 @@ export function registerParentProvider(name: string, provider: ParentProvider): 
   parentProviders.set(name, provider);
 }
 
-const parentMap = new WeakMap<Element, Element>();
-registerParentProvider('mapped', (e: Element) => parentMap.get(e));
+/** MUST NOT BE EXPORTED */
+const PARENT = Symbol('veParent');
+type ElementWithParent = Element&{[PARENT]?: Element};
+registerParentProvider('mapped', (e: ElementWithParent) => e[PARENT]);
 
-export function setMappedParent(element: Element, parent: Element): void {
-  parentMap.set(element, parent);
+export function setMappedParent(element: ElementWithParent, parent: Element): void {
+  element[PARENT] = parent;
 }

@@ -249,7 +249,7 @@ describe('The Network Tab', function() {
     });
 
     await step('Wait for the Initiator Address Space column to have the expected values', async () => {
-      const expectedValues = JSON.stringify(['Initiator Address Space', '', 'Local']);
+      const expectedValues = JSON.stringify(['Initiator Address Space', '', 'Loopback']);
       await waitForFunction(async () => {
         const initiatorAddressSpaceValues = await frontend.$$eval(
             'pierce/.initiator-address-space-column',
@@ -279,7 +279,7 @@ describe('The Network Tab', function() {
     });
 
     await step('Wait for the Remote Address Space column to have the expected values', async () => {
-      const expectedValues = JSON.stringify(['Remote Address Space', 'Local', 'Local']);
+      const expectedValues = JSON.stringify(['Remote Address Space', 'Loopback', 'Loopback']);
       await waitForFunction(async () => {
         const remoteAddressSpaceValues = await frontend.$$eval(
             'pierce/.remote-address-space-column',

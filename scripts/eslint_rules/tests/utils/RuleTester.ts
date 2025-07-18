@@ -8,19 +8,21 @@ import {RuleTester} from '@typescript-eslint/rule-tester';
 // Add the mocha hooks to the rule tester.
 RuleTester.afterAll = after;
 
-function createTypedRuleTester() {
-  return new RuleTester({
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      parser: tsParser,
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ['*.ts'],
-        },
+/**
+ * Provide this when you have a rule that needs to use TypeScript
+ * typechecking resolutions in EsLint rule.
+ */
+const typeCheckingOptions = {
+  languageOptions: {
+    ecmaVersion: 'latest' as const,
+    sourceType: 'module' as const,
+    parser: tsParser,
+    parserOptions: {
+      projectService: {
+        allowDefaultProject: ['*.ts'],
       },
     },
-  });
-}
+  },
+};
 
-export {RuleTester, createTypedRuleTester};
+export {RuleTester, typeCheckingOptions};

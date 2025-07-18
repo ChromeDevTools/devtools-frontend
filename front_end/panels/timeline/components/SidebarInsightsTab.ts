@@ -71,6 +71,10 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
+  get activeInsight(): ActiveInsight|null {
+    return this.#activeInsight;
+  }
+
   set activeInsight(active: ActiveInsight|null) {
     if (active === this.#activeInsight) {
       return;

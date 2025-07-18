@@ -221,10 +221,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.#requestContentPromise;
   }
 
-  async requestContent(options: {cachedWasmOnly?: boolean} = {}): Promise<TextUtils.ContentProvider.DeferredContent> {
-    return TextUtils.ContentData.ContentData.asDeferredContent(await this.requestContentData(options));
-  }
-
   async #requestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.#content) {
       throw new Error('Called UISourceCode#requestContentImpl even though content is available for ' + this.#url);

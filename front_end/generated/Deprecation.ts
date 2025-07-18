@@ -69,7 +69,7 @@ export const UIStrings = {
   /**
    * @description This warning occurs when a site uses <h1> inside <article>, <aside>, <nav>, or <section>. It means the behavior (font size) may change in a future Chrome release, when some special rules are removed from the browser.
    */
-  H1UserAgentFontSizeInSection: "Found an <h1> tag within an <article>, <aside>, <nav>, or <section> which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
+  H1UserAgentFontSizeInSection: "Found an `&lt;h1&gt;` tag within an `&lt;article&gt;`, `&lt;aside&gt;`, `&lt;nav&gt;`, or `&lt;section&gt;` which does not have a specified font-size. The size of this heading text will be changing in this browser in the near future. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements#specifying_a_uniform_font_size_for_h1 for more information.",
   /**
    * @description A deprecation warning shown to developers in the DevTools Issues tab when code tries to use the deprecated hostCandidate field, guiding developers to use the equivalent information in the .address and .port fields instead.
    */
@@ -130,6 +130,10 @@ export const UIStrings = {
    * @description Warning displayed to developers that use overflow:visible for replaced elements. This declaration was earlier ignored but will now change the element's painting based on whether the overflow value allows the element to paint outside its bounds.
    */
   OverflowVisibleOnReplacedElement: "Specifying `overflow: visible` on img, video and canvas tags may cause them to produce visual content outside of the element bounds. See https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md.",
+  /**
+   * @description Warning displayed to developers when they use a Flash Embed URLS to let them know that the browser will not automatically link to their equivalent HTML5 link.
+   */
+  OverrideFlashEmbedwithHTML: "Legacy flash video embed has been rewritten to HTML iframe. Flash is long gone, this rewriting hack is deprecated and may be removed in the future.",
   /**
    * @description Warning displayed to developers when they use the PaymentInstruments API to let them know this API is deprecated.
    */
@@ -223,10 +227,6 @@ export const UIStrings = {
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.",
   /**
-   * @description This warning occurs when the website attempts to use the deprecated GPUAdapter `isFallbackAdapter` attribute.
-   */
-  WebGPUAdapterIsFallbackAdapter: "The GPUAdapter `isFallbackAdapter` attribute is deprecated, instead use the GPUAdapterInfo `isFallbackAdapter` attribute.",
-  /**
    * @description Warning displayed to developers that they are using `XMLHttpRequest` API in a way that they expect an unsupported character encoding `UTF-16` could be used in the server reply.
    */
   XHRJSONEncodingDetection: "UTF-16 is not supported by response json in `XMLHttpRequest`",
@@ -313,6 +313,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
     "chromeStatusFeature": 5137515594383360,
     "milestone": 108
   },
+  "OverrideFlashEmbedwithHTML": {
+    "milestone": 140
+  },
   "PaymentInstruments": {
     "chromeStatusFeature": 5099285054488576
   },
@@ -352,9 +355,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96
-  },
-  "WebGPUAdapterIsFallbackAdapter": {
-    "chromeStatusFeature": 4870179714236416
   },
   "XHRJSONEncodingDetection": {
     "milestone": 93

@@ -12,10 +12,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AddDebugInfoURLDialog} from './AddSourceMapURLDialog.js';
 import {Plugin} from './Plugin.js';
@@ -170,6 +172,12 @@ class ColorSwatchWidget extends CodeMirror.WidgetType {
       this.#text = insert;
       this.#color = swatch.getColor() as Common.Color.Color;
     });
+    swatch.addEventListener(InlineEditor.ColorSwatch.ColorFormatChangedEvent.eventName, event => {
+      const insert = event.data.color.getAuthoredText() ?? event.data.color.asString();
+      view.dispatch({changes: {from: this.#from, to: this.#from + this.#text.length, insert}});
+      this.#text = insert;
+      this.#color = swatch.getColor() as Common.Color.Color;
+    });
     swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, event => {
       event.consume(true);
       view.dispatch({
@@ -200,23 +208,25 @@ class CurveSwatchWidget extends CodeMirror.WidgetType {
   }
 
   toDOM(view: CodeMirror.EditorView): HTMLElement {
-    const swatch = InlineEditor.Swatches.BezierSwatch.create();
-    swatch.setBezierText(this.text);
-    UI.Tooltip.Tooltip.install(swatch.iconElement(), i18nString(UIStrings.openCubicBezierEditor));
-    swatch.iconElement().addEventListener('click', (event: MouseEvent) => {
+    const container = document.createElement('span');
+    const bezierText = container.createChild('span');
+    const icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
+    bezierText.append(this.text);
+    UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.openCubicBezierEditor));
+    icon.addEventListener('click', (event: MouseEvent) => {
       event.consume(true);
       view.dispatch({
         effects: setTooltip.of({
           type: TooltipType.CURVE,
-          pos: view.posAtDOM(swatch),
+          pos: view.posAtDOM(icon),
           text: this.text,
-          swatch,
+          swatch: icon,
           curve: this.curve,
         }),
       });
     }, false);
-    swatch.hideText(true);
-    return swatch;
+    return icon;
   }
 
   override ignoreEvent(): boolean {
@@ -240,7 +250,7 @@ type ActiveTooltip = {
   pos: number,
   text: string,
   curve: UI.Geometry.CubicBezier,
-  swatch: InlineEditor.Swatches.BezierSwatch,
+  swatch: IconButton.Icon.Icon,
 };
 
 function createCSSTooltip(active: ActiveTooltip): CodeMirror.Tooltip {
@@ -349,8 +359,7 @@ function computeSwatchDeco(state: CodeMirror.EditorState, from: number, to: numb
 }
 
 const cssSwatchPlugin = CodeMirror.ViewPlugin.fromClass(class {
-decorations:
-  CodeMirror.DecorationSet;
+  decorations: CodeMirror.DecorationSet;
 
   constructor(view: CodeMirror.EditorView) {
     this.decorations = computeSwatchDeco(view.state, view.viewport.from, view.viewport.to);

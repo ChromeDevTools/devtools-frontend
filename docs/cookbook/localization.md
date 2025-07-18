@@ -21,19 +21,21 @@ import * as i18n from '../i18n/i18n.js';
 // at the top of example.js file, after import statements
 const UIStrings = {
   /**
-    * @description A string that is already added
-    */
-  alreadyAddedString: 'Someone already created a "UIStrings = {}" and added this string',
+   * @description A string that is already added
+   */
+  alreadyAddedString:
+    'Someone already created a "UIStrings = {}" and added this string',
   /**
-    * @description This is an example description for my new string
-    */
+   * @description This is an example description for my new string
+   */
   addThisString: 'The new string I want to add',
   /**
-    * @description This is an example description for my new string with placeholder
-    * @example {example for placeholder} PH1
-    */
+   * @description This is an example description for my new
+   * string with placeholder
+   * @example {example for placeholder} PH1
+   */
   addAnotherString: 'Another new string I want to add, with {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -44,39 +46,44 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const message1 = i18nString(UIStrings.addThisString);
 console.log(message1); // The new string I want to add
 
-const message2 = i18nString(UIStrings.addAnotherString, {PH1: 'a placeholder'});
-console.log(message2); // Another new string I want to add, with a placeholder
+const message2 = i18nString(UIStrings.addAnotherString, {
+  PH1: 'a placeholder',
+});
+// Another new string I want to add, with a placeholder
+console.log(message2);
 ```
 
 1.  If there is already `UIStrings = {}` declared in the file, add your string
     to it. If there isn't `UIStrings = {}` in the file, create one and add your
     string, also register the new UIStrings into the `en-US.json` by adding:
 
-    1.  `const str_ = i18n.i18n.registerUIStrings({the current fileName.js,
-        relative to front_end}, UIStrings);`
-    1.  `const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);`
+    ```js
+    // Filename should be relative to front_end folder
+    const str_ = i18n.i18n.registerUIStrings('<filename>', UIStrings);
+    const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+    ```
 
-2.  Add description and examples for placeholder(if any):
+2.  Add description and examples for placeholder (if any):
 
-    1.  To specify the description, use `@description …` `@description This is
-        an example description for my new string`
-    2.  To specify an example for placeholder, use `@example {…} …` `@example
-        {example for placeholder} PH1`
+    1.  To specify the description, use `@description …` `@description This is an example description for my new string`
+    2.  To specify an example for placeholder, use `@example {…} …` `@example {example for placeholder} PH1`
     3.  To distinguish messages with the same content, use `@meaning …`
-        `@meaning This is an example meaning to differentiate this message from
-        the other message with same content`
+        `@meaning This is an example meaning to differentiate this message from the other message with same content`
 
 3.  Make sure your string is localizable:
 
-    1.  Do not assume word order by using concatenation. Use the whole string. ❌
-        `javascript 'Add' + 'breakpoint'` ✔️ `javascript 'Add breakpoint'` or ❌
-        `javascript let description = 'first part' if (condition) description +=
-        ' second part'` ✔️ `javascript let description if (condition)
-        description = 'first part second part' else description = 'first part'`
+    1.  Do not assume word order by using concatenation. Use the whole string.
+
+    - ❌ `javascript 'Add' + 'breakpoint'`
+    - ✔️ `javascript 'Add breakpoint'` or
+    - ❌ `javascript let description = 'first part' if (condition) description +=' second part'`
+    - ✔️ `javascript let description if (condition) description = 'first part second part' else description = 'first part'`
+
     2.  Use placeholder over concatenation. This is so that the translators can
         adjust variable order based on what works in another language. For
-        example: ❌ `javascript 'Check ' + title + ' for more information.'` ✔️
-        `javascript 'Check {PH1} for more information.', {PH1: title}`
+        example:
+        - ❌ `javascript 'Check ' + title + ' for more information.'`
+        - ✔️ `javascript 'Check {PH1} for more information.', {PH1: title}`
     3.  If your string contains <b>leading or trailing white space</b>, it's
         usually an indication that it's half of a sentence. This decreases
         localizability as it's essentially concatenating. Modify it so that it
@@ -88,38 +95,35 @@ console.log(message2); // Another new string I want to add, with a placeholder
 
         ❌ Not localized
 
-        -   Numbers: 1, 1.23, 1.2e3, etc.
-        -   Application data: error codes, enums, database names, rgba, urls,
-            etc.
+        - Numbers: 1, 1.23, 1.2e3, etc.
+        - Application data: error codes, enums, database names, rgba, urls,
+          etc.
 
         ✔️ Can be localized
 
-        -   Words and sentences
-        -   Punctuation
-        -   Units of measurement: kb/s, mph, etc.
+        - Words and sentences
+        - Punctuation
+        - Units of measurement: kb/s, mph, etc.
 
 4.  The following commands would add the new strings to `en-US.json`:
 
-    -   `git cl presubmit --upload`, or
-    -   `node third_party/i18n/collect-strings.js` under the DevTools src folder
+    - `git cl presubmit --upload`, or
+    - `node third_party/i18n/collect-strings.js` under the DevTools src folder
 
 5.  Strings containing possible plurals have a special format in ICU. This is
     because plurals work quite differently in other languages, e.g. special
     forms for two or three items.
 
-    ❌ `javascript if (count === 1) { str = '1 breakpoint'; } else { str = '{n}
-    breakpoints', {n: count}; }`
+    ❌ `javascript if (count === 1) { str = '1 breakpoint'; } else { str = '{n} breakpoints', {n: count}; }`
 
-    ✔️ `javascript '{n, plural, =1 {# breakpoint} other {# breakpoints}}', {n:
-    count};`
+    ✔️ `javascript '{n, plural, =1 {# breakpoint} other {# breakpoints}}', {n:count};`
 
-    -   '#' is replaced with the value of `n`
-    -   'n' is a naming convention, but any name can be used
-    -   Nesting placeholders inside of plurals is allowed
-    -   Put the entire string within the plural switch, e.g. `{# breakpoints
-        were found}`, not `{# breakpoints} were found`
-    -   Always provide the `=1` and the `other` case, even if they are the same
-        for English.
+    - `#` is replaced with the value of `n`
+    - `n` is a naming convention, but any name can be used
+    - Nesting placeholders inside of plurals is allowed
+    - Put the entire string within the plural switch, e.g. `{# breakpoints were found}`, not `{# breakpoints} were found`
+    - Always provide the `=1` and the `other` case, even if they are the same
+      for English.
 
 ### Modifying a string
 
@@ -146,14 +150,17 @@ object for placeholders (if any)
 
 const UIStrings = {
   /**
-    * @description This is an example description for my new string with placeholder
-    * @example {example for placeholder} PH1
-    * @example {example 2 for placeholder 2} PH2
-    */
+   * @description This is an example description for my new string with placeholder
+   * @example {example for placeholder} PH1
+   * @example {example 2 for placeholder 2} PH2
+   */
   addAnotherString: 'Another new string I want to add, with {PH1} and {PH2}',
-};
+} as const;
 
-message = i18nString(UIStrings.addAnotherString, {PH1: 'a placeholder', PH2: 'another placeholder'});
+message = i18nString(UIStrings.addAnotherString, {
+  PH1: 'a placeholder',
+  PH2: 'another placeholder',
+});
 ```
 
 ### i18nLazyString
@@ -221,7 +228,7 @@ This call is a named cast. Use it in places where a localized string is expected
 but the term you want to use does not require translation. Instead of locking
 the whole phrase or using a placeholder-only phrase, use `lockedString`.
 
-```javascript
+```js
 someFunctionRequiringALocalizedString(i18n.i18n.lockedString('HTTP'));
 ```
 
@@ -239,7 +246,7 @@ const UIStrings = {
    * @description Tooltip text that appears when hovering over the 'Focusable' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane.
    */
   computedPropertyTooltip: 'If true, this element can receive focus.',
-};
+} as const;
 ```
 
 **Bad description**:
@@ -250,39 +257,39 @@ const UIStrings = {
    * @description Elements pane 'Focusable' tooltip.
    */
   computedPropertyTooltip: 'If true, this element can receive focus.',
-};
+} as const;
 ```
 
 ### What information should I provide in the message description?
 
--   The type of UI element where the text is displayed. Is it regular text, a
-    label, button text, a tooltip, a link, or an accessible label? Button text
-    is often imperative i.e. a command to do something, which is important to
-    know in some languages.
--   *When*: What triggers the string and/or what is the result? What page or
-    text comes before and after? e.g. "Status text while waiting for X", "Shown
-    when the audit is finished and X error was encountered".
--   What do the placeholders stand for? Placeholder examples are sent to
-    translators, but extra information in the description will help too. e.g.
-    "Total time in ms that the profile took to complete", "The CSS property name
-    that is being edited"
--   Is this a verb or a noun? Many words in English can be both, e.g. 'request',
-    'address', 'change', 'display', 'increase'. Particularly if the string is
-    short, this can be hard to guess. If it's an adjective, what does it refer
-    to? This is important for inflection in some languages, where the ending of
-    the adjective must change for gender or case.
--   Explain or name any complex terms, e.g. "Trust Tokens are a web API -
-    https://web.dev/trust-tokens/"
--   Where is the text located? e.g. A table header in the Sources panel, a
-    context-menu item in the Network panel. Many strings in the code base have
-    *only* the location, which is not the most important context.
+- The type of UI element where the text is displayed. Is it regular text, a
+  label, button text, a tooltip, a link, or an accessible label? Button text
+  is often imperative i.e. a command to do something, which is important to
+  know in some languages.
+- _When_: What triggers the string and/or what is the result? What page or
+  text comes before and after? e.g. "Status text while waiting for X", "Shown
+  when the audit is finished and X error was encountered".
+- What do the placeholders stand for? Placeholder examples are sent to
+  translators, but extra information in the description will help too. e.g.
+  "Total time in ms that the profile took to complete", "The CSS property name
+  that is being edited"
+- Is this a verb or a noun? Many words in English can be both, e.g. 'request',
+  'address', 'change', 'display', 'increase'. Particularly if the string is
+  short, this can be hard to guess. If it's an adjective, what does it refer
+  to? This is important for inflection in some languages, where the ending of
+  the adjective must change for gender or case.
+- Explain or name any complex terms, e.g. "Trust Tokens are a web API -
+  https://web.dev/trust-tokens/"
+- Where is the text located? e.g. A table header in the Sources panel, a
+  context-menu item in the Network panel. Many strings in the code base have
+  _only_ the location, which is not the most important context.
 
 ## How to prevent a term being localized
 
 Any text within the backticks will not be translated. For example, if the
 'robots.txt' in string 'Requesting for robots.txt …' should not be translated:
 
-```javascript
+```js
 // in example.js file
 
 import * as i18n from '../i18n/i18n.js';
@@ -291,7 +298,7 @@ const UIStrings = {
    * @description Example description. Note: "robots.txt" is a canonical filename and should not be translated.
    */
   requestMessage: 'Requesting for `robots.txt` …',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('example.js', UIStrings);
 
 const message = i18nString(UIStrings.requestMessage);

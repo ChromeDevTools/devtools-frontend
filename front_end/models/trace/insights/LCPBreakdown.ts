@@ -114,12 +114,15 @@ function determineSubparts(
     lcpEvent: Types.Events.LargestContentfulPaintCandidate,
     lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPSubparts|null {
   const docReqTiming = docRequest.args.data.timing;
-  if (!docReqTiming) {
-    throw new Error('no timing for document request');
+
+  let firstDocByteTs;
+  if (docReqTiming) {
+    firstDocByteTs = Types.Timing.Micro(
+        Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
+        Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
+  } else {
+    firstDocByteTs = docRequest.ts;  // file:
   }
-  const firstDocByteTs = Types.Timing.Micro(
-      Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
-      Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart));
 
   const ttfb = Helpers.Timing.traceWindowFromMicroSeconds(nav.ts, firstDocByteTs) as Subpart;
   ttfb.label = i18nString(UIStrings.timeToFirstByte);
@@ -233,4 +236,23 @@ export function generateInsight(
     lcpRequest,
     subparts: determineSubparts(context.navigation, docRequest, lcpEvent, lcpRequest) ?? undefined,
   });
+}
+
+export function createOverlays(model: LCPBreakdownInsightModel): Types.Overlays.Overlay[] {
+  if (!model.subparts || !model.lcpTs) {
+    return [];
+  }
+
+  const overlays: Types.Overlays.Overlay[] = [
+    {
+      type: 'TIMESPAN_BREAKDOWN',
+      sections: Object.values(model.subparts)
+                    .map((subpart: Subpart) => ({bounds: subpart, label: subpart.label, showDuration: true})),
+    },
+  ];
+  if (model.lcpRequest) {
+    overlays.push({type: 'ENTRY_OUTLINE', entry: model.lcpRequest, outlineReason: 'INFO'});
+  }
+
+  return overlays;
 }

@@ -149,7 +149,7 @@ describeWithEnvironment('SourcesView', () => {
       const uiSourceCodeFrame = widget;
 
       // Skip creating the DebuggerPlugin, which times out and simulate DOM attach/showing.
-      sinon.stub(uiSourceCodeFrame, 'loadPlugins' as keyof typeof uiSourceCodeFrame).callsFake(() => {});
+      sinon.stub(uiSourceCodeFrame, 'loadPlugins' as keyof typeof uiSourceCodeFrame);
       uiSourceCodeFrame.wasShown();
 
       await contentLoadedPromise;

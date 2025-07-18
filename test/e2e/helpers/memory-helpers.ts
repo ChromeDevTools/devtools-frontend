@@ -6,19 +6,9 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {
-  $,
-  $$,
-  click,
-  clickElement,
-  getBrowserAndPages,
-  pasteText,
   platform,
-  waitFor,
-  waitForAria,
-  waitForElementWithTextContent,
-  waitForFunction,
-  waitForNone,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'devtools-button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
@@ -27,114 +17,112 @@ export const MEMORY_TAB_ID = '#tab-heap-profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
 const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
-export async function navigateToMemoryTab() {
-  await click(MEMORY_TAB_ID);
-  await waitFor(MEMORY_PANEL_CONTENT);
-  await waitFor(PROFILE_TREE_SIDEBAR);
+export async function navigateToMemoryTab(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(MEMORY_TAB_ID);
+  await devToolsPage.waitFor(MEMORY_PANEL_CONTENT);
+  await devToolsPage.waitFor(PROFILE_TREE_SIDEBAR);
 }
 
-export async function takeDetachedElementsProfile() {
-  const radioButton = await $('//label[text()="Detached elements"]', undefined, 'xpath');
-  await clickElement(radioButton);
-  await click('devtools-button[aria-label="Obtain detached elements"]');
-  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+export async function takeDetachedElementsProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('xpath///label[text()="Detached elements"]');
+  await devToolsPage.click('devtools-button[aria-label="Obtain detached elements"]');
+  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeAllocationProfile() {
-  const radioButton = await $('//label[text()="Allocation sampling"]', undefined, 'xpath');
-  await clickElement(radioButton);
-  await click('devtools-button[aria-label="Start heap profiling"]');
+export async function takeAllocationProfile(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
+  await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
-  await click('devtools-button[aria-label="Stop heap profiling"]');
-  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+  await devToolsPage.click('devtools-button[aria-label="Stop heap profiling"]');
+  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeAllocationTimelineProfile({recordStacks}: {recordStacks: boolean} = {
-  recordStacks: false,
-}) {
-  const radioButton = await $('//label[text()="Allocations on timeline"]', undefined, 'xpath');
-  await clickElement(radioButton);
+export async function takeAllocationTimelineProfile(
+    {recordStacks}: {recordStacks: boolean} = {
+      recordStacks: false,
+    },
+    devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('xpath///label[text()="Allocations on timeline"]');
   if (recordStacks) {
-    await click('[title="Allocation stack traces (more overhead)"]');
+    await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
   }
-  await click('devtools-button[aria-label="Start recording heap profile"]');
+  await devToolsPage.click('devtools-button[aria-label="Start recording heap profile"]');
   await new Promise(r => setTimeout(r, 200));
-  await click('devtools-button[aria-label="Stop recording heap profile"]');
-  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await waitFor('.heap-snapshot-sidebar-tree-item.selected');
+  await devToolsPage.click('devtools-button[aria-label="Stop recording heap profile"]');
+  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot(name = 'Snapshot 1') {
-  await click(NEW_HEAP_SNAPSHOT_BUTTON);
-  await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
-  await waitForFunction(async () => {
-    const selected = await waitFor('.heap-snapshot-sidebar-tree-item.selected');
-    const title = await waitFor('span.title', selected);
+export async function takeHeapSnapshot(name = 'Snapshot 1', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click(NEW_HEAP_SNAPSHOT_BUTTON);
+  await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
+  await devToolsPage.waitForFunction(async () => {
+    const selected = await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
+    const title = await devToolsPage.waitFor('span.title', selected);
     return (await title.evaluate(e => e.textContent)) === name ? title : undefined;
   });
 }
 
-export async function waitForHeapSnapshotData() {
-  await waitFor('#profile-views');
-  await waitFor('#profile-views .data-grid');
+export async function waitForHeapSnapshotData(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitFor('#profile-views');
+  await devToolsPage.waitFor('#profile-views .data-grid');
   const rowCountMatches = async () => {
-    const rows = await getDataGridRows('#profile-views table.data');
+    const rows = await getDataGridRows('#profile-views table.data', devToolsPage);
     if (rows.length > 0) {
       return rows;
     }
     return undefined;
   };
-  return await waitForFunction(rowCountMatches);
+  return await devToolsPage.waitForFunction(rowCountMatches);
 }
 
-export async function waitForNonEmptyHeapSnapshotData() {
-  const rows = await waitForHeapSnapshotData();
+export async function waitForNonEmptyHeapSnapshotData(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const rows = await waitForHeapSnapshotData(devToolsPage);
   assert.isTrue(rows.length > 0);
 }
 
-export async function getDataGridRows(selector: string) {
+export async function getDataGridRows(selector: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // The grid in Memory Tab contains a tree
-  const grid = await waitFor(selector);
-  return await $$('.data-grid-data-grid-node', grid);
+  const grid = await devToolsPage.waitFor(selector);
+  return await devToolsPage.$$('.data-grid-data-grid-node', grid);
 }
 
-export async function setClassFilter(text: string) {
-  const classFilter = await waitFor(CLASS_FILTER_INPUT);
+export async function setClassFilter(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const classFilter = await devToolsPage.waitFor(CLASS_FILTER_INPUT);
   await classFilter.focus();
-  void pasteText(text);
+  void devToolsPage.pasteText(text);
 }
 
-export async function triggerLocalFindDialog(frontend: puppeteer.Page) {
+export async function triggerLocalFindDialog(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   switch (platform) {
     case 'mac':
-      await frontend.keyboard.down('Meta');
+      await devToolsPage.page.keyboard.down('Meta');
       break;
 
     default:
-      await frontend.keyboard.down('Control');
+      await devToolsPage.page.keyboard.down('Control');
   }
 
-  await frontend.keyboard.press('f');
+  await devToolsPage.page.keyboard.press('f');
 
   switch (platform) {
     case 'mac':
-      await frontend.keyboard.up('Meta');
+      await devToolsPage.page.keyboard.up('Meta');
       break;
 
     default:
-      await frontend.keyboard.up('Control');
+      await devToolsPage.page.keyboard.up('Control');
   }
 }
 
-export async function setSearchFilter(text: string) {
-  const {frontend} = getBrowserAndPages();
-  const grid = await waitFor('#profile-views table.data');
+export async function setSearchFilter(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const grid = await devToolsPage.waitFor('#profile-views table.data');
   await grid.focus();
-  await triggerLocalFindDialog(frontend);
+  await triggerLocalFindDialog(devToolsPage);
   const SEARCH_QUERY = '[aria-label="Find"]';
-  const inputElement = await waitFor(SEARCH_QUERY);
+  const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
   if (!inputElement) {
     assert.fail('Unable to find search input field');
   }
@@ -142,42 +130,43 @@ export async function setSearchFilter(text: string) {
   await inputElement.type(text);
 }
 
-export async function waitForSearchResultNumber(results: number) {
+export async function waitForSearchResultNumber(
+    results: number, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const findMatch = async () => {
-    const currentMatch = await waitFor('.search-results-matches');
+    const currentMatch = await devToolsPage.waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
     if (currentTextContent?.endsWith(` ${results}`)) {
       return currentMatch;
     }
     return undefined;
   };
-  return await waitForFunction(findMatch);
+  return await devToolsPage.waitForFunction(findMatch);
 }
 
-export async function findSearchResult(searchResult: string, pollIntrerval = 500) {
-  const {frontend} = getBrowserAndPages();
-  const match = await waitFor('#profile-views table.data');
-  const matches = await waitFor(' .search-results-matches');
+export async function findSearchResult(
+    searchResult: string, pollIntrerval = 500, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const match = await devToolsPage.waitFor('#profile-views table.data');
+  const matches = await devToolsPage.waitFor(' .search-results-matches');
   const matchesText = await matches.evaluate(async element => {
     return element.textContent;
   });
   if (matchesText === '1 of 1') {
-    await waitForElementWithTextContent(searchResult, match);
+    await devToolsPage.waitForElementWithTextContent(searchResult, match);
   } else {
-    await waitForFunction(async () => {
-      const selectedBefore = await waitFor(SELECTED_RESULT);
-      await click('[aria-label="Show next result"]');
+    await devToolsPage.waitForFunction(async () => {
+      const selectedBefore = await devToolsPage.waitFor(SELECTED_RESULT);
+      await devToolsPage.click('[aria-label="Show next result"]');
       // Wait until the click has taken effect by checking that the selected
       // result has changed. This is done to prevent the assertion afterwards
       // from happening before the next result is fully loaded.
-      await waitForFunction(async () => {
-        const selectedAfter = await waitFor(SELECTED_RESULT);
-        return await frontend.evaluate((b, a) => {
+      await devToolsPage.waitForFunction(async () => {
+        const selectedAfter = await devToolsPage.waitFor(SELECTED_RESULT);
+        return await devToolsPage.page.evaluate((b, a) => {
           return b !== a;
         }, selectedBefore, selectedAfter);
       });
       const result = Promise.race([
-        waitForElementWithTextContent(searchResult, match),
+        devToolsPage.waitForElementWithTextContent(searchResult, match),
         new Promise(resolve => {
           setTimeout(resolve, pollIntrerval, false);
         }),
@@ -211,9 +200,10 @@ interface RetainerChainEntry {
   retainerClassName: string;
 }
 
-export async function assertRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
+export async function assertRetainerChainSatisfies(
+    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Give some time for the expansion to finish.
-  const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
+  const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data', devToolsPage);
   const retainerChain = [];
   for (let i = 0; i < retainerGridElements.length; ++i) {
     const retainer = retainerGridElements[i];
@@ -237,8 +227,9 @@ export async function assertRetainerChainSatisfies(p: (retainerChain: RetainerCh
   return p(retainerChain);
 }
 
-export async function waitUntilRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
-  await waitForFunction(assertRetainerChainSatisfies.bind(null, p));
+export async function waitUntilRetainerChainSatisfies(
+    p: (retainerChain: RetainerChainEntry[]) => boolean, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, p, devToolsPage));
 }
 
 export function appearsInOrder(targetArray: string[], inputArray: string[]) {
@@ -266,18 +257,20 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
   return false;
 }
 
-export async function waitForRetainerChain(expectedRetainers: string[]) {
-  await waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
+export async function waitForRetainerChain(
+    expectedRetainers: string[], devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);
-  }));
+  }, devToolsPage));
 }
 
-export async function changeViewViaDropdown(newPerspective: string) {
+export async function changeViewViaDropdown(
+    newPerspective: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
-  const dropdown = await waitFor(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
+  const dropdown = await devToolsPage.waitFor(perspectiveDropdownSelector);
 
-  const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
+  const optionToSelect = await devToolsPage.waitForElementWithTextContent(newPerspective, dropdown);
   const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));
   if (!optionValue) {
     throw new Error(`Could not find heap snapshot perspective option: ${newPerspective}`);
@@ -285,10 +278,13 @@ export async function changeViewViaDropdown(newPerspective: string) {
   await dropdown.select(optionValue);
 }
 
-export async function changeAllocationSampleViewViaDropdown(newPerspective: string) {
+export async function changeAllocationSampleViewViaDropdown(
+    newPerspective: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const perspectiveDropdownSelector = 'select[aria-label="Profile view mode"]';
-  const dropdown = await waitFor(perspectiveDropdownSelector) as puppeteer.ElementHandle<HTMLSelectElement>;
-  const optionToSelect = await waitForElementWithTextContent(newPerspective, dropdown);
+  const dropdown = await devToolsPage.waitFor(
+      perspectiveDropdownSelector,
+  );
+  const optionToSelect = await devToolsPage.waitForElementWithTextContent(newPerspective, dropdown);
   const optionValue = await optionToSelect.evaluate(opt => opt.getAttribute('value'));
   if (!optionValue) {
     throw new Error(`Could not find heap snapshot perspective option: ${newPerspective}`);
@@ -296,21 +292,22 @@ export async function changeAllocationSampleViewViaDropdown(newPerspective: stri
   await dropdown.select(optionValue);
 }
 
-export async function focusTableRowWithName(text: string) {
-  const row = await waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
-  await focusTableRow(row);
+export async function focusTableRowWithName(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await devToolsPage.waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+  await focusTableRow(row, devToolsPage);
 }
 
-export async function focusTableRow(row: puppeteer.ElementHandle<Element>) {
+export async function focusTableRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Click in a numeric cell, to avoid accidentally clicking a link.
-  const cell = await waitFor('.numeric-column', row);
-  await clickElement(cell);
+  await devToolsPage.click('.numeric-column', {
+    root: row,
+  });
 }
 
-export async function expandFocusedRow() {
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.press('ArrowRight');
-  await waitFor('.selected.data-grid-data-grid-node.expanded');
+export async function expandFocusedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.page.keyboard.press('ArrowRight');
+  await devToolsPage.waitFor('.selected.data-grid-data-grid-node.expanded');
 }
 
 function parseByteString(str: string): number {
@@ -327,8 +324,9 @@ function parseByteString(str: string): number {
   return number;
 }
 
-async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
-  const numericData = await $$('.numeric-column>.profile-multiple-values>span', row);
+async function getSizesFromRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const numericData = await devToolsPage.$$('.numeric-column>.profile-multiple-values>span', row);
   assert.lengthOf(numericData, 4);
   function readNumber(e: Element): string {
     return e.textContent as string;
@@ -339,74 +337,86 @@ async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
   return {shallowSize, retainedSize};
 }
 
-export async function getSizesFromSelectedRow() {
-  const row = await waitFor('.selected.data-grid-data-grid-node');
-  return await getSizesFromRow(row);
+export async function getSizesFromSelectedRow(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await devToolsPage.waitFor('.selected.data-grid-data-grid-node');
+  return await getSizesFromRow(row, devToolsPage);
 }
 
-export async function getCategoryRow(text: string, wait = true) {
+export async function getCategoryRow(
+    text: string, wait = true, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `//td[text()="${text}"]/ancestor::tr`;
-  return await (wait ? waitFor(selector, undefined, undefined, 'xpath') : $(selector, undefined, 'xpath'));
+  return await (wait ? devToolsPage.waitFor(selector, undefined, undefined, 'xpath') :
+                       devToolsPage.$(selector, undefined, 'xpath'));
 }
 
-export async function getSizesFromCategoryRow(text: string) {
-  const row = await getCategoryRow(text);
-  return await getSizesFromRow(row);
+export async function getSizesFromCategoryRow(text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await getCategoryRow(text, undefined, devToolsPage);
+  return await getSizesFromRow(row, devToolsPage);
 }
 
-export async function getDistanceFromCategoryRow(text: string) {
-  const row = await getCategoryRow(text);
-  const numericColumns = await $$('.numeric-column', row);
+export async function getDistanceFromCategoryRow(
+    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await getCategoryRow(text, undefined, devToolsPage);
+  const numericColumns = await devToolsPage.$$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent as string, 10));
 }
 
-export async function getCountFromCategoryRowWithName(text: string) {
-  const row = await getCategoryRow(text);
-  return await getCountFromCategoryRow(row);
+export async function getCountFromCategoryRowWithName(
+    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await getCategoryRow(text, undefined, devToolsPage);
+  return await getCountFromCategoryRow(row, devToolsPage);
 }
 
-export async function getCountFromCategoryRow(row: puppeteer.ElementHandle<Element>) {
-  const countSpan = await waitFor('.objects-count', row);
+export async function getCountFromCategoryRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const countSpan = await devToolsPage.waitFor('.objects-count', row);
   return await countSpan.evaluate(e => parseInt((e.textContent ?? '').substring(1), 10));
 }
 
-export async function getAddedCountFromComparisonRowWithName(text: string) {
-  const row = await getCategoryRow(text);
-  return await getAddedCountFromComparisonRow(row);
+export async function getAddedCountFromComparisonRowWithName(
+    text: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const row = await getCategoryRow(text, undefined, devToolsPage);
+  return await getAddedCountFromComparisonRow(row, devToolsPage);
 }
 
-export async function getAddedCountFromComparisonRow(row: puppeteer.ElementHandle<Element>) {
-  const addedCountCell = await waitFor('.addedCount-column', row);
+export async function getAddedCountFromComparisonRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const addedCountCell = await devToolsPage.waitFor('.addedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
   return parseByteString(countText);
 }
 
-export async function getRemovedCountFromComparisonRow(row: puppeteer.ElementHandle<Element>) {
-  const addedCountCell = await waitFor('.removedCount-column', row);
+export async function getRemovedCountFromComparisonRow(
+    row: puppeteer.ElementHandle<Element>, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const addedCountCell = await devToolsPage.waitFor('.removedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
   return parseByteString(countText);
 }
 
-export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {
-  const retainersPane = await waitFor('.retaining-paths-view');
-  const element = await waitFor(`//span[text()="${retainerName}"]`, retainersPane, undefined, 'xpath');
-  // Push the click right a bit further to avoid the disclosure triangle.
-  await clickElement(element, {clickOptions: {button: 'right', offset: {x: 35, y: 0}}});
-  const button = await waitForAria(menuItem);
-  await clickElement(button);
+export async function clickOnContextMenuForRetainer(
+    retainerName: string, menuItem: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const retainersPane = await devToolsPage.waitFor('.retaining-paths-view');
+  await devToolsPage.click(`xpath///span[text()="${retainerName}"]`, {
+    root: retainersPane,
+    clickOptions: {
+      button: 'right',
+      // Push the click right a bit further to avoid the disclosure triangle.
+      offset: {x: 35, y: 0},
+    },
+  });
+  await devToolsPage.click(`aria/${menuItem}`);
 }
 
-export async function restoreIgnoredRetainers() {
-  const element = await waitFor('devtools-button[aria-label="Restore ignored retainers"]');
-  await clickElement(element);
+export async function restoreIgnoredRetainers(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.click('devtools-button[aria-label="Restore ignored retainers"]');
 }
 
-export async function setFilterDropdown(filter: string) {
-  const select = await waitFor('devtools-toolbar select[aria-label="Filter"]');
+export async function setFilterDropdown(filter: string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const select = await devToolsPage.waitFor('devtools-toolbar select[aria-label="Filter"]');
   await select.select(filter);
 }
 
-export async function checkExposeInternals() {
-  const element = await waitForElementWithTextContent('Internals with implementation details');
-  await clickElement(element);
+export async function checkExposeInternals(devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  const element = await devToolsPage.waitForElementWithTextContent('Internals with implementation details');
+  await devToolsPage.clickElement(element);
 }

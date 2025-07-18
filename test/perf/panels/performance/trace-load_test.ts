@@ -31,7 +31,7 @@ async function timeFixture(fixture: string): Promise<number> {
       window.perfDuration = ev.duration;
     }, {once: true});
   });
-  const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');
+  const uploadProfileHandle = await waitFor('input[type=file]');
   await uploadProfileHandle.uploadFile(path.join(GEN_DIR, `front_end/panels/timeline/fixtures/traces/${fixture}.gz`));
   // We use wait for function to avoid long running evaluation calls to
   // avoid protocol-level timeouts.

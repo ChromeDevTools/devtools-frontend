@@ -224,7 +224,7 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
           veImpression('Action', 'export-har'),
           veImpression('Toggle', 'network-log.preserve-log'),
           veImpression('Toggle', 'cache-disabled'),
-          veImpression('DropDown', 'preferred-network-condition'),
+          veImpression('DropDown', 'active-network-condition-key'),
         ]),
     veImpression('Timeline', 'network-overview'),
     veImpression('Toggle', 'network-settings'),

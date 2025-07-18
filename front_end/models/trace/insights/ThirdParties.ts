@@ -88,3 +88,39 @@ export function generateInsight(
     entitySummaries,
   });
 }
+
+export function createOverlaysForSummary(summary: Extras.ThirdParties.EntitySummary): Types.Overlays.Overlay[] {
+  const overlays = [];
+  for (const event of summary.relatedEvents) {
+    // The events found for a third party can be vast, as they gather every
+    // single main thread task along with everything else on the page. If the
+    // main thread is busy with large icicles, we can easily create tens of
+    // thousands of overlays. Therefore, only create overlays for events of at least 1ms.
+    if (event.dur === undefined || event.dur < 1_000) {
+      continue;
+    }
+
+    const overlay: Types.Overlays.Overlay = {
+      type: 'ENTRY_OUTLINE',
+      entry: event,
+      outlineReason: 'INFO',
+    };
+    overlays.push(overlay);
+  }
+  return overlays;
+}
+
+export function createOverlays(model: ThirdPartiesInsightModel): Types.Overlays.Overlay[] {
+  const overlays: Types.Overlays.Overlay[] = [];
+  const summaries = model.entitySummaries ?? [];
+  for (const summary of summaries) {
+    if (summary.entity === model.firstPartyEntity) {
+      continue;
+    }
+
+    const summaryOverlays = createOverlaysForSummary(summary);
+    overlays.push(...summaryOverlays);
+  }
+
+  return overlays;
+}

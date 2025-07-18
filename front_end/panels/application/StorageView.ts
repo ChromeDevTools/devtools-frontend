@@ -438,7 +438,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       this.clearButton.focus();
     }, 500);
 
-    UI.ARIAUtils.alert(i18nString(UIStrings.SiteDataCleared));
+    UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.SiteDataCleared));
   }
 
   static clear(

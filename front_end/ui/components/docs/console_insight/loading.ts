@@ -23,7 +23,7 @@ const component = new ConsoleInsight(
     },
     {
       async *
-          fetch() {
+          doConversation() {
             await new Promise(_resolve => {});
             yield {
               explanation: `## Result

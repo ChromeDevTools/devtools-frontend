@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 /* eslint-disable rulesdir/no-imperative-dom-api */
 
+/* The following disable is needed until all the partial view functions are part of one view function */
+/* eslint-disable rulesdir/no-lit-render-outside-of-view */
+
 import '../../ui/legacy/legacy.js';
 
 import * as Common from '../../core/common/common.js';
@@ -11,7 +14,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
@@ -93,9 +98,9 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
-const playbackRates = new WeakMap<HTMLElement, number>();
+const {render, html, Directives: {classMap}} = Lit;
+const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
 const DEFAULT_TIMELINE_CONTROLS_WIDTH = 150;
@@ -104,8 +109,117 @@ const MAX_TIMELINE_CONTROLS_WIDTH = 720;
 const ANIMATION_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/css/animations' as Platform.DevToolsPath.UrlString;
 
-let animationTimelineInstance: AnimationTimeline;
+interface ToolbarViewInput {
+  selectedPlaybackRate: number;
+  playbackRateButtonsDisabled: boolean;
+  allPaused: boolean;
+  onClearClick: () => void;
+  onTogglePauseAllClick: () => void;
+  onSetPlaybackRateClick: (playbackRate: number) => void;
+}
 
+type ToolbarView = (input: ToolbarViewInput, output: undefined, target: HTMLElement) => void;
+// clang-format off
+const DEFAULT_TOOLBAR_VIEW: ToolbarView = (input: ToolbarViewInput, output: undefined, target: HTMLElement): void => {
+  const renderPlaybackRateControl = (): Lit.LitTemplate => {
+    const focusNextPlaybackRateButton = (eventTarget: EventTarget|null, focusPrevious?: boolean): void => {
+      const currentPlaybackRateButton = (eventTarget as HTMLElement);
+      const currentPlaybackRate = Number(currentPlaybackRateButton.dataset.playbackRate);
+      if (Number.isNaN(currentPlaybackRate)) {
+        return;
+      }
+
+      const currentIndex = GlobalPlaybackRates.indexOf(currentPlaybackRate);
+      const nextIndex = focusPrevious ? currentIndex - 1 : currentIndex + 1;
+      if (nextIndex < 0 || nextIndex >= GlobalPlaybackRates.length) {
+        return;
+      }
+      const nextPlaybackRate = GlobalPlaybackRates[nextIndex];
+      const nextPlaybackRateButton = target.querySelector(`[data-playback-rate="${nextPlaybackRate}"]`) as HTMLButtonElement | undefined;
+      if (!nextPlaybackRateButton) {
+        return;
+      }
+
+      currentPlaybackRateButton.tabIndex = -1;
+      nextPlaybackRateButton.tabIndex = 0;
+      nextPlaybackRateButton.focus();
+    };
+
+    const handleKeyDown = (event: Event): void => {
+      const keyboardEvent = (event as KeyboardEvent);
+      switch (keyboardEvent.key) {
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          focusNextPlaybackRateButton(event.target, /* focusPrevious */ true);
+          break;
+        case 'ArrowRight':
+        case 'ArrowDown':
+          focusNextPlaybackRateButton(event.target);
+          break;
+      }
+    };
+
+    return html`
+      <div class="animation-playback-rate-control" role="listbox" aria-label=${i18nString(UIStrings.playbackRates)} @keydown=${handleKeyDown}>
+        ${GlobalPlaybackRates.map(playbackRate => {
+          const isSelected = input.selectedPlaybackRate === playbackRate;
+          const textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) : i18nString(UIStrings.pause);
+          return html`
+            <button class="animation-playback-rate-button" jslog=${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({
+              click: true,
+              keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight',
+            })}
+            data-playback-rate=${playbackRate}
+            .disabled=${input.playbackRateButtonsDisabled}
+            class=${classMap({
+              'animation-playback-rate-button': true,
+              selected: isSelected,
+            })}
+            tabindex=${isSelected ? 0 : -1}
+            role="option"
+            title=${i18nString(UIStrings.setSpeedToS, {PH1: textContent})}
+            @click=${() => input.onSetPlaybackRateClick(playbackRate)}>
+            ${textContent}
+          </button>
+          `;
+        })}
+      </div>
+    `;
+  };
+  render(html`
+    <div class="animation-timeline-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
+      <devtools-toolbar class="animation-timeline-toolbar" role="presentation">
+        <devtools-button
+          title=${i18nString(UIStrings.clearAll)}
+          aria-label=${i18nString(UIStrings.clearAll)}
+          .iconName=${'clear'}
+          .jslogContext=${'animations.clear'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onClearClick}>
+        </devtools-button>
+        <div class="toolbar-divider"></div>
+        <devtools-button
+          title=${i18nString(UIStrings.pauseAll)}
+          aria-label=${i18nString(UIStrings.pauseAll)}
+          jslog=${
+            /* Do not use `.jslogContext` here because we want this to be reported as Toggle */
+            VisualLogging.toggle().track({click: true}).context('animations.pause-resume-all')
+          }
+          .iconName=${'pause'}
+          .toggledIconName=${'resume'}
+          .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+          .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+          .toggled=${input.allPaused}
+          @click=${input.onTogglePauseAllClick}>
+        </devtools-button>
+      </devtools-toolbar>
+      ${renderPlaybackRateControl()}
+    </div>
+  `, target, {host: target});
+};
+// clang-format on
+
+let animationTimelineInstance: AnimationTimeline;
 export class AnimationTimeline extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.AnimationModel.AnimationModel> {
   #gridWrapper: HTMLElement;
@@ -113,7 +227,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #playbackRate: number;
   #allPaused: boolean;
   #animationsContainer: HTMLElement;
-  #playbackRateButtons!: HTMLElement[];
   #previewContainer!: HTMLElement;
   #timelineScrubber!: HTMLElement;
   #currentTime!: HTMLElement;
@@ -146,10 +259,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #createPreviewForCollectedGroupsThrottler = new Common.Throttler.Throttler(10);
   #animationGroupUpdatedThrottler = new Common.Throttler.Throttler(10);
 
-  private constructor() {
+  /** Container & state for rendering `toolbarView` */
+  #toolbarViewContainer: HTMLElement;
+  #toolbarView: ToolbarView;
+  #playbackRateButtonsDisabled = false;
+
+  constructor(toolbarView: ToolbarView = DEFAULT_TOOLBAR_VIEW) {
     super(true);
     this.registerRequiredCSS(animationTimelineStyles);
 
+    this.#toolbarView = toolbarView;
     this.element.classList.add('animations-timeline');
     this.element.setAttribute('jslog', `${VisualLogging.panel('animations').track({resize: true})}`);
 
@@ -161,6 +280,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#playbackRate = 1;
     this.#allPaused = false;
     this.#animationGroupPausedBeforeScrub = false;
+    this.#toolbarViewContainer = this.contentElement.createChild('div');
     this.createHeader();
     this.#animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     this.#animationsContainer.setAttribute('jslog', `${VisualLogging.section('animations')}`);
@@ -194,6 +314,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.nodeChanged, this);
 
     this.#setupTimelineControlsResizer();
+    this.performToolbarViewUpdate();
   }
 
   static instance(opts?: {forceNew: boolean}): AnimationTimeline {
@@ -324,51 +445,35 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return this.#timelineScrubber;
   }
 
+  private performToolbarViewUpdate(): void {
+    this.#toolbarView(
+        {
+          selectedPlaybackRate: this.#playbackRate,
+          playbackRateButtonsDisabled: this.#playbackRateButtonsDisabled,
+          allPaused: this.#allPaused,
+          onClearClick: () => {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupsCleared);
+            this.reset();
+          },
+          onTogglePauseAllClick: () => {
+            this.#allPaused = !this.#allPaused;
+            Host.userMetrics.actionTaken(
+                this.#allPaused ? Host.UserMetrics.Action.AnimationsPaused : Host.UserMetrics.Action.AnimationsResumed,
+            );
+            this.setPlaybackRate(this.#playbackRate);
+            if (this.#pauseButton) {
+              this.#pauseButton.setTitle(
+                  this.#allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
+            }
+          },
+          onSetPlaybackRateClick: (playbackRate: number) => {
+            this.setPlaybackRate(playbackRate);
+          }
+        },
+        undefined, this.#toolbarViewContainer);
+  }
+
   private createHeader(): HTMLElement {
-    const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
-    toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    toolbarContainer.role = 'toolbar';
-    const topToolbar = toolbarContainer.createChild('devtools-toolbar', 'animation-timeline-toolbar');
-    topToolbar.role = 'presentation';
-    this.#clearButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'animations.clear');
-    this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupsCleared);
-      this.reset();
-    });
-    topToolbar.appendToolbarItem(this.#clearButton);
-    topToolbar.appendSeparator();
-
-    this.#pauseButton =
-        new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'pause', 'resume', 'animations.pause-resume-all');
-    this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.togglePauseAll();
-    });
-    topToolbar.appendToolbarItem(this.#pauseButton);
-
-    const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
-    playbackRateControl.addEventListener('keydown', this.handlePlaybackRateControlKeyDown.bind(this));
-    UI.ARIAUtils.markAsListBox(playbackRateControl);
-    UI.ARIAUtils.setLabel(playbackRateControl, i18nString(UIStrings.playbackRates));
-
-    this.#playbackRateButtons = [];
-    for (const playbackRate of GlobalPlaybackRates) {
-      const button = playbackRateControl.createChild('button', 'animation-playback-rate-button');
-      button.textContent = playbackRate ? i18nString(UIStrings.playbackRatePlaceholder, {PH1: playbackRate * 100}) :
-                                          i18nString(UIStrings.pause);
-      button.setAttribute(
-          'jslog', `${VisualLogging.action().context(`animations.playback-rate-${playbackRate * 100}`).track({
-            click: true,
-            keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight',
-          })}`);
-      playbackRates.set(button, playbackRate);
-      button.addEventListener('click', this.setPlaybackRate.bind(this, playbackRate));
-      UI.ARIAUtils.markAsOption(button);
-      UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.setSpeedToS, {PH1: button.textContent}));
-      button.tabIndex = -1;
-      this.#playbackRateButtons.push(button);
-    }
-    this.updatePlaybackControls();
     this.#previewContainer = this.contentElement.createChild('div', 'animation-timeline-buffer');
     this.#previewContainer.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
     UI.ARIAUtils.markAsListBox(this.#previewContainer);
@@ -398,46 +503,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     return container;
   }
 
-  private handlePlaybackRateControlKeyDown(event: Event): void {
-    const keyboardEvent = (event as KeyboardEvent);
-    switch (keyboardEvent.key) {
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        this.focusNextPlaybackRateButton(event.target, /* focusPrevious */ true);
-        break;
-      case 'ArrowRight':
-      case 'ArrowDown':
-        this.focusNextPlaybackRateButton(event.target);
-        break;
-    }
-  }
-
-  private focusNextPlaybackRateButton(target: EventTarget|null, focusPrevious?: boolean): void {
-    const button = (target as HTMLElement);
-    const currentIndex = this.#playbackRateButtons.indexOf(button);
-    const nextIndex = focusPrevious ? currentIndex - 1 : currentIndex + 1;
-    if (nextIndex < 0 || nextIndex >= this.#playbackRateButtons.length) {
-      return;
-    }
-    const nextButton = this.#playbackRateButtons[nextIndex];
-    nextButton.tabIndex = 0;
-    nextButton.focus();
-    if (target) {
-      (target as HTMLElement).tabIndex = -1;
-    }
-  }
-
-  private togglePauseAll(): void {
-    this.#allPaused = !this.#allPaused;
-    Host.userMetrics.actionTaken(
-        this.#allPaused ? Host.UserMetrics.Action.AnimationsPaused : Host.UserMetrics.Action.AnimationsResumed,
-    );
-    this.setPlaybackRate(this.#playbackRate);
-    if (this.#pauseButton) {
-      this.#pauseButton.setTitle(this.#allPaused ? i18nString(UIStrings.resumeAll) : i18nString(UIStrings.pauseAll));
-    }
-  }
-
   private setPlaybackRate(playbackRate: number): void {
     if (playbackRate !== this.#playbackRate) {
       Host.userMetrics.animationPlaybackRateChanged(
@@ -457,15 +522,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.#scrubberPlayer.playbackRate = this.effectivePlaybackRate();
     }
 
-    this.updatePlaybackControls();
-  }
-
-  private updatePlaybackControls(): void {
-    for (const button of this.#playbackRateButtons) {
-      const selected = this.#playbackRate === playbackRates.get(button);
-      button.classList.toggle('selected', selected);
-      button.tabIndex = selected ? 0 : -1;
-    }
+    this.performToolbarViewUpdate();
   }
 
   private controlButtonToggle(): void {
@@ -837,22 +894,18 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       this.setDuration(scrollRange);
       this.setCurrentTimeText(scrollOffset);
       this.setTimelineScrubberPosition(scrollOffset);
-
-      this.#playbackRateButtons.forEach(button => {
-        button.setAttribute('disabled', 'true');
-      });
-
       if (this.#pauseButton) {
         this.#pauseButton.setEnabled(false);
       }
+      this.#playbackRateButtonsDisabled = true;
+      this.performToolbarViewUpdate();
     } else {
       this.setDuration(group.finiteDuration());
-      this.#playbackRateButtons.forEach(button => {
-        button.removeAttribute('disabled');
-      });
       if (this.#pauseButton) {
         this.#pauseButton.setEnabled(true);
       }
+      this.#playbackRateButtonsDisabled = false;
+      this.performToolbarViewUpdate();
     }
 
     // Wait for all animations to be added and nodes to be resolved

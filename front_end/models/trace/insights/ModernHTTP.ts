@@ -39,15 +39,20 @@ export const UIStrings = {
   /**
    * @description Text explaining that there were not requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
    */
-  noOldProtocolRequests: 'No requests used HTTP/1.1'
+  noOldProtocolRequests:
+      'No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source.'
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ModernHTTP.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type UseModernHTTPInsightModel = InsightModel<typeof UIStrings, {
-  requests: Types.Events.SyntheticNetworkRequest[],
+export type ModernHTTPInsightModel = InsightModel<typeof UIStrings, {
+  http1Requests: Types.Events.SyntheticNetworkRequest[],
 }>;
+
+export function isModernHTTP(model: InsightModel): model is ModernHTTPInsightModel {
+  return model.insightKey === InsightKeys.MODERN_HTTP;
+}
 
 /**
  * Determines whether a network request is a "static resource" that would benefit from H2 multiplexing.
@@ -99,10 +104,10 @@ function isMultiplexableStaticAsset(
  * [2] https://www.twilio.com/blog/2017/10/http2-issues.html
  * [3] https://www.cachefly.com/http-2-is-not-a-magic-bullet/
  */
-export function determineNonHttp2Resources(
+export function determineHttp1Requests(
     requests: Types.Events.SyntheticNetworkRequest[], entityMappings: Handlers.Helpers.EntityMappings,
     firstPartyEntity: Handlers.Helpers.Entity|null): Types.Events.SyntheticNetworkRequest[] {
-  const nonHttp2Resources: Types.Events.SyntheticNetworkRequest[] = [];
+  const http1Requests: Types.Events.SyntheticNetworkRequest[] = [];
 
   const groupedByOrigin = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
   for (const record of requests) {
@@ -146,10 +151,10 @@ export function determineNonHttp2Resources(
     }
 
     seenURLs.add(request.args.data.url);
-    nonHttp2Resources.push(request);
+    http1Requests.push(request);
   }
 
-  return nonHttp2Resources;
+  return http1Requests;
 }
 
 /**
@@ -193,12 +198,12 @@ function computeWasteWithGraph(
 }
 
 function computeMetricSavings(
-    nonHttp2Requests: Types.Events.SyntheticNetworkRequest[], context: InsightSetContext): MetricSavings|undefined {
+    http1Requests: Types.Events.SyntheticNetworkRequest[], context: InsightSetContext): MetricSavings|undefined {
   if (!context.navigation || !context.lantern) {
     return;
   }
 
-  const urlsToChange = new Set(nonHttp2Requests.map(r => r.args.data.url));
+  const urlsToChange = new Set(http1Requests.map(r => r.args.data.url));
 
   const fcpGraph = context.lantern.metrics.firstContentfulPaint.optimisticGraph;
   const lcpGraph = context.lantern.metrics.largestContentfulPaint.optimisticGraph;
@@ -209,21 +214,21 @@ function computeMetricSavings(
   };
 }
 
-function finalize(partialModel: PartialInsightModel<UseModernHTTPInsightModel>): UseModernHTTPInsightModel {
+function finalize(partialModel: PartialInsightModel<ModernHTTPInsightModel>): ModernHTTPInsightModel {
   return {
-    insightKey: InsightKeys.IMAGE_DELIVERY,
+    insightKey: InsightKeys.MODERN_HTTP,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    state: partialModel.requests.length > 0 ? 'fail' : 'pass',
+    state: partialModel.http1Requests.length > 0 ? 'fail' : 'pass',
     ...partialModel,
-    relatedEvents: partialModel.requests,
+    relatedEvents: partialModel.http1Requests,
   };
 }
 
 export function generateInsight(
-    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): UseModernHTTPInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ModernHTTPInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
@@ -231,10 +236,22 @@ export function generateInsight(
   const entityMappings = parsedTrace.NetworkRequests.entityMappings;
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity = Handlers.Helpers.getEntityForUrl(firstPartyUrl, entityMappings.createdEntityCache);
-  const nonHttp2Requests = determineNonHttp2Resources(contextRequests, entityMappings, firstPartyEntity ?? null);
+  const http1Requests = determineHttp1Requests(contextRequests, entityMappings, firstPartyEntity ?? null);
 
   return finalize({
-    requests: nonHttp2Requests,
-    metricSavings: computeMetricSavings(nonHttp2Requests, context),
+    http1Requests,
+    metricSavings: computeMetricSavings(http1Requests, context),
   });
+}
+
+export function createOverlayForRequest(request: Types.Events.SyntheticNetworkRequest): Types.Overlays.EntryOutline {
+  return {
+    type: 'ENTRY_OUTLINE',
+    entry: request,
+    outlineReason: 'ERROR',
+  };
+}
+
+export function createOverlays(model: ModernHTTPInsightModel): Types.Overlays.Overlay[] {
+  return model.http1Requests.map(req => createOverlayForRequest(req)) ?? [];
 }

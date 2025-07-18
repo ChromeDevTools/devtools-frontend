@@ -45,7 +45,19 @@ const timeFormatter = new Intl.NumberFormat('en-US', {
 // Prepare the build target if not initialized.
 const spinner = ora('Preparing…').start();
 try {
-  await prepareBuild(target);
+  const gnArgs = await prepareBuild(target);
+  if (watch) {
+    if (gnArgs.get('devtools_bundle') !== 'false') {
+      spinner.info(
+          'Using watch mode with full rebuilds. Use `gn gen out/' + target +
+          ' --args="devtools_bundle=false"` to enable fast rebuilds.');
+    } else {
+      spinner.warn(
+          'Using watch mode with fast rebuilds (since `devtools_bundle=false`' +
+          ' for //out/' + target + '). Be aware that fast rebuilds are a best' +
+          ' effort and might not work reliably in all cases.');
+    }
+  }
   spinner.clear();
 } catch (error) {
   spinner.fail(error.message);

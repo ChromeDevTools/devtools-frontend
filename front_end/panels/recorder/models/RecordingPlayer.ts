@@ -47,8 +47,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   breakpointIndexes: Set<number>;
   steppingOver = false;
   aborted = false;
-  #stopPromise = Promise.withResolvers<void>();
-  #abortPromise = Promise.withResolvers<void>();
+  #stopResolver = Promise.withResolvers<void>();
+  #abortResolver = Promise.withResolvers<void>();
   #runner?: PuppeteerReplay.Runner;
 
   constructor(
@@ -69,8 +69,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   #resolveAndRefreshStopPromise(): void {
-    this.#stopPromise.resolve();
-    this.#stopPromise = Promise.withResolvers();
+    this.#stopResolver.resolve();
+    this.#stopResolver = Promise.withResolvers();
   }
 
   static async connectPuppeteer(): Promise<{
@@ -180,22 +180,22 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async stop(): Promise<void> {
-    await Promise.race([this.#stopPromise, this.#abortPromise]);
+    await Promise.race([this.#stopResolver.promise, this.#abortResolver.promise]);
   }
 
   get abortPromise(): Promise<void> {
-    return this.#abortPromise.promise;
+    return this.#abortResolver.promise;
   }
 
   abort(): void {
     this.aborted = true;
-    this.#abortPromise.resolve();
+    this.#abortResolver.resolve();
     this.#runner?.abort();
   }
 
   disposeForTesting(): void {
-    this.#stopPromise.resolve();
-    this.#abortPromise.resolve();
+    this.#stopResolver.resolve();
+    this.#abortResolver.resolve();
   }
 
   continue(): void {

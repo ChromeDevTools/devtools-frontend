@@ -5,6 +5,7 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 
+import type {ExtensionTrackEntryPayloadDeeplink} from './Extensions.js';
 import type {Micro, Milli, Seconds, TraceWindowMicro} from './Timing.js';
 
 // Trace Events.
@@ -140,9 +141,13 @@ export interface Sample extends Event {
 /**
  * A fake trace event created to support CDP.Profiler.Profiles in the
  * trace engine.
+ *
+ * Do not extend the SyntheticBased interface because this one doesn't have a raw trace event but a raw cpu profile.
+ * Also we won't manage this event through SyntheticEventsManager.
  */
-export interface SyntheticCpuProfile extends Instant, SyntheticBased<Phase.INSTANT> {
+export interface SyntheticCpuProfile extends Complete {
   name: Name.CPU_PROFILE;
+  id: ProfileID;
   args: Args&{
     data: ArgsData & {
       cpuProfile: Protocol.Profiler.Profile,
@@ -740,6 +745,8 @@ export interface LargestContentfulPaintCandidate extends Mark {
       nodeId: Protocol.DOM.BackendNodeId,
       loadingAttr: string,
       type?: string,
+      // Landed in Chromium M140: crrev.com/c/6702010
+      nodeName?: string,
     },
   };
 }
@@ -763,6 +770,8 @@ export interface LargestTextPaintCandidate extends Mark {
       candidateIndex: number,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       DOMNodeId: Protocol.DOM.BackendNodeId,
+      // Added in crbug.com/413284569
+      nodeName?: string,
     },
   };
 }
@@ -1201,6 +1210,7 @@ export function isScheduleStyleInvalidationTracking(event: Event): event is Sche
 
 export const enum StyleRecalcInvalidationReason {
   ANIMATION = 'Animation',
+  RELATED_STYLE_RULE = 'Related style rule',
 }
 
 export interface StyleRecalcInvalidationTracking extends Instant {
@@ -1231,6 +1241,8 @@ export interface StyleInvalidatorInvalidationTracking extends Instant {
       subtree: boolean,
       nodeName?: string,
       extraData?: string,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      selectors?: Array<{selector: string, style_sheet_id: string}>,
     },
   };
 }
@@ -1285,6 +1297,9 @@ export interface ScheduleStyleRecalculation extends Instant {
   args: Args&{
     data: {
       frame: string,
+      reason?: StyleRecalcInvalidationReason,
+      subtree?: boolean,
+      nodeId?: Protocol.DOM.BackendNodeId,
     },
   };
 }
@@ -1464,6 +1479,9 @@ export interface ConsoleTimeStamp extends Event {
       track?: string|number,
       trackGroup?: string|number,
       color?: string|number,
+      devtools?: {
+        link: ExtensionTrackEntryPayloadDeeplink,
+      },
       sampleTraceId?: number,
     },
   };
@@ -1867,17 +1885,19 @@ export function isDecodeImage(event: Event): event is DecodeImage {
   return event.name === Name.DECODE_IMAGE;
 }
 
+export const enum InvalidationEventType {
+  StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
+  StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
+}
+
 export interface SelectorTiming {
   'elapsed (us)': number;
-
   fast_reject_count: number;
-
   match_attempts: number;
   selector: string;
-
   style_sheet_id: string;
-
   match_count: number;
+  invalidation_count: number;
 }
 
 export enum SelectorTimingsKey {
@@ -1888,6 +1908,7 @@ export enum SelectorTimingsKey {
   MatchCount = 'match_count',
   Selector = 'selector',
   StyleSheetId = 'style_sheet_id',
+  InvalidationCount = 'invalidation_count',
 }
 
 export interface SelectorStats {

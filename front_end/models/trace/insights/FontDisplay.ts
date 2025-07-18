@@ -105,3 +105,11 @@ export function generateInsight(
     metricSavings: {FCP: savings},
   });
 }
+
+export function createOverlays(model: FontDisplayInsightModel): Types.Overlays.Overlay[] {
+  return model.fonts.map(font => ({
+                           type: 'ENTRY_OUTLINE',
+                           entry: font.request,
+                           outlineReason: font.wastedTime ? 'ERROR' : 'INFO',
+                         }));
+}

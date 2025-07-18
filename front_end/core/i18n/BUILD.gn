@@ -90,6 +90,7 @@ ts_library("unittests") {
   sources = [
     "ByteUtilities.test.ts",
     "DevToolsLocale.test.ts",
+    "NumberFormatter.test.ts",
     "i18n.test.ts",
     "time-utilities.test.ts",
   ]

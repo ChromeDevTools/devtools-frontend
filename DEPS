@@ -15,16 +15,16 @@ vars = {
   'build_revision': 'e13953ced04ed05f45aa3c961bd6d802aced74ec',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': 'f7862e515c44313f6942517fef6d7718d92283d3',
+  'buildtools_revision': 'b9050718cd8ee119996c515e8abe9ba65a4f4367',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '5cc29c7a217801cfa7b7b0aa23144300b49b750d',
+  'depot_tools_revision': '5e6b39291412822ad5f14c1dccf9a4c6d062ad1f',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '6d1ae0f13aae6ad381ca31b17b88a0f5af29ca94',
+  'inspector_protocol_revision': 'bdc11c1d3130b92e0986f38f2e58f93cc5a674a8',
 
-  # Keeping track of the last time we rollerd the browser protocol files.
-  'chromium_browser_protocol_revision' : '9a6cdde91b579b777f10c566efb8b25d7552f21e',
+  # Keeping track of the last time we rolled the browser protocol files.
+  'chromium_browser_protocol_revision' : '1b4f8aac5b4658583e1deab8084ae14c0800f90e',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '37f6e68a107df43b7d7e044fd36a13cbae3413f2',
@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:97b68a0bb62b7528bc3491c7949d6804223c2b82',
+  'gn_version': 'git_revision:c4748415f12ac92d2781608b8b84fcc0e33e5ff9',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -49,7 +49,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '139.0.7247.0',
+  'chrome': '140.0.7296.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.
@@ -59,7 +59,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:4ac6aa83563aed91e78947b2b466eb6d49d51a21',
+  'siso_version': 'git_revision:dcd000e47f19677c7a5e02550abafa9eadbd4923',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

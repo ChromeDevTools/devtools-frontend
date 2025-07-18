@@ -73,7 +73,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "ThrottlingManager.test.ts" ]
+  sources = [
+    "ThrottlingManager.test.ts",
+    "ThrottlingSettingsTab.test.ts",
+  ]
 
   deps = [
     ":bundle",

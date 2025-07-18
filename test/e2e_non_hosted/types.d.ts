@@ -48,6 +48,10 @@ declare global {
       beforeEach: undefined;
       afterEach: undefined;
     }
+
+    export interface Test {
+      realDuration?: number;
+    }
   }
   namespace E2E {
     export type HarnessSettings = BrowserSettings&DevtoolsSettings;

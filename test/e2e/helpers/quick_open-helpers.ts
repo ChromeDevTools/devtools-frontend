@@ -2,12 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  drainFrontendTaskQueue,
-  getBrowserAndPages,
-  platform,
-  waitFor
-} from '../../shared/helper.js';
+import {platform} from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
@@ -82,13 +77,13 @@ export const openFileWithQuickOpen =
   );
 };
 
-export async function runCommandWithQuickOpen(command: string): Promise<void> {
-  const {frontend} = getBrowserAndPages();
-  await openCommandMenu();
-  await frontend.keyboard.type(command);
+export async function runCommandWithQuickOpen(
+    command: string, devtoolsPage = getBrowserAndPagesWrappers().devToolsPage): Promise<void> {
+  await openCommandMenu(devtoolsPage);
+  await devtoolsPage.page.keyboard.type(command);
   // TODO: it should actually wait for rendering to finish.
-  await drainFrontendTaskQueue();
-  await frontend.keyboard.press('Enter');
+  await devtoolsPage.drainTaskQueue();
+  await devtoolsPage.page.keyboard.press('Enter');
 }
 
 export const openGoToLineQuickOpen = async (devtoolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
@@ -141,9 +136,9 @@ export const closeDrawer = async (devToolsPage = getBrowserAndPagesWrappers().de
   await devToolsPage.click('[aria-label="Close drawer"]');
 };
 
-export const getSelectedItemText = async () => {
-  const quickOpenElement = await waitFor(QUICK_OPEN_SELECTOR);
-  const selectedRow = await waitFor(QUICK_OPEN_SELECTED_ITEM_SELECTOR, quickOpenElement);
+export const getSelectedItemText = async (devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const quickOpenElement = await devToolsPage.waitFor(QUICK_OPEN_SELECTOR);
+  const selectedRow = await devToolsPage.waitFor(QUICK_OPEN_SELECTED_ITEM_SELECTOR, quickOpenElement);
   const textContent = await selectedRow.getProperty('textContent');
   if (!textContent) {
     assert.fail('Quick open: could not get selected item textContent');

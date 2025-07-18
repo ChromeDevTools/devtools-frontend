@@ -20,14 +20,15 @@ const DEFAULT_FEATURE_SET = new FeatureSet();
 process.platform === 'darwin' && DEFAULT_FEATURE_SET.disable('MediaRouter');
 DEFAULT_FEATURE_SET.enable('DevToolsAiAssistancePerformanceAgent', {insights_enabled: true});
 DEFAULT_FEATURE_SET.enable('DevToolsAiGeneratedTimelineLabels');
-DEFAULT_FEATURE_SET.enable('DevToolsAutomaticFileSystems');
 DEFAULT_FEATURE_SET.enable('DevToolsCssValueTracing');
-DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {patching: true, user_tier: 'TESTERS'});
+DEFAULT_FEATURE_SET.enable('DevToolsFreestyler', {
+  user_tier: 'TESTERS',
+  function_calling: true,
+});
 DEFAULT_FEATURE_SET.enable('DevToolsWellKnown');
 
 // The unstable feature set (can be enabled via `--enable-unstable-features`).
 const UNSTABLE_FEATURE_SET = new FeatureSet();
-UNSTABLE_FEATURE_SET.enable('DevToolsFreestyler', {multimodal: true});
 
 const argv = yargs(hideBin(process.argv))
                  .option('browser', {

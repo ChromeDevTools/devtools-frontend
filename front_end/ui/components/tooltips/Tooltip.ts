@@ -145,10 +145,12 @@ const proposedRectForSimpleTooltip =
     };
 
 export type TooltipVariant = 'simple'|'rich';
+export type PaddingMode = 'small'|'large';
 
 export interface TooltipProperties {
   id: string;
   variant?: TooltipVariant;
+  padding?: PaddingMode;
   anchor?: HTMLElement;
   jslogContext?: string;
 }
@@ -156,14 +158,17 @@ export interface TooltipProperties {
 /**
  * @attr id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
  * @attr hover-delay - Hover length in ms before the tooltip is shown and hidden.
- * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background, `"rich"` for interactive
- *                 content, background according to theme's surface.
+ * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
+ *                 `"rich"` for interactive content, background according to theme's surface.
+ * @attr padding - Which padding to use, defaults to `"small"`. Use `"large"` for richer content.
  * @attr use-click - If present, the tooltip will be shown on click instead of on hover.
- * @attr use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus. Requires a hotkey to
- *                    open when fosed (Alt-down). When `"use-click"` is present as well, use-click takes precedence.
+ * @attr use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus.
+ *                    Requires a hotkey to open when fosed (Alt-down). When `"use-click"` is present
+ *                    as well, use-click takes precedence.
  * @prop {String} id - reflects the `"id"` attribute.
  * @prop {Number} hoverDelay - reflects the `"hover-delay"` attribute.
  * @prop {String} variant - reflects the `"variant"` attribute.
+ * @prop {Boolean} padding - reflects the `"padding"` attribute.
  * @prop {Boolean} useClick - reflects the `"click"` attribute.
  * @prop {Boolean} useHotkey - reflects the `"use-hotkey"` attribute.
  */
@@ -211,7 +216,7 @@ export class Tooltip extends HTMLElement {
   }
 
   get hoverDelay(): number {
-    return this.hasAttribute('hover-delay') ? Number(this.getAttribute('hover-delay')) : 200;
+    return this.hasAttribute('hover-delay') ? Number(this.getAttribute('hover-delay')) : 300;
   }
   set hoverDelay(delay: number) {
     this.setAttribute('hover-delay', delay.toString());
@@ -222,6 +227,13 @@ export class Tooltip extends HTMLElement {
   }
   set variant(variant: TooltipVariant) {
     this.setAttribute('variant', variant);
+  }
+
+  get padding(): PaddingMode {
+    return this.getAttribute('padding') === 'large' ? 'large' : 'small';
+  }
+  set padding(padding: PaddingMode) {
+    this.setAttribute('padding', padding);
   }
 
   get jslogContext(): string|null {
@@ -238,21 +250,25 @@ export class Tooltip extends HTMLElement {
 
   constructor(properties?: TooltipProperties) {
     super();
-    if (properties) {
-      this.id = properties.id;
+    const {id, variant, padding, jslogContext, anchor} = properties ?? {};
+    if (id) {
+      this.id = id;
     }
-    if (properties?.variant) {
-      this.variant = properties.variant;
+    if (variant) {
+      this.variant = variant;
     }
-    if (properties?.jslogContext) {
-      this.jslogContext = properties.jslogContext;
+    if (padding) {
+      this.padding = padding;
     }
-    if (properties?.anchor) {
-      const ref = properties.anchor.getAttribute('aria-details') ?? properties.anchor.getAttribute('aria-describedby');
-      if (ref !== properties.id) {
+    if (jslogContext) {
+      this.jslogContext = jslogContext;
+    }
+    if (anchor) {
+      const ref = anchor.getAttribute('aria-details') ?? anchor.getAttribute('aria-describedby');
+      if (ref !== id) {
         throw new Error('aria-details or aria-describedby must be set on the anchor');
       }
-      this.#anchor = properties.anchor;
+      this.#anchor = anchor;
     }
   }
 
@@ -281,7 +297,7 @@ export class Tooltip extends HTMLElement {
     Lit.render(html`
       <style>${tooltipStyles}</style>
       <!-- Wrapping it into a container, so that the tooltip doesn't disappear when the mouse moves from the anchor to the tooltip. -->
-      <div class="container">
+      <div class="container ${this.padding === 'large' ? 'large-padding' : ''}">
         <slot></slot>
       </div>
     `, this.#shadow, {host: this});

@@ -5,11 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("lighthouse") {
-  sources = [
-    "navigation_test.ts",
-    "snapshot_test.ts",
-    "timespan_test.ts",
-  ]
+  sources = [ "navigation_test.ts" ]
 
   deps = [
     "../../shared",

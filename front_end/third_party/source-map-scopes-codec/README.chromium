@@ -1,0 +1,31 @@
+Name: source-map-scopes-codec
+Short Name: source-map-scopes-codec
+URL: https://github.com/ChromeDevTools/source-map-scopes-codec
+Version: 0.3.1
+Revision: a171786509be39fab374b8c8b85063b172065fb1
+License: BSD-3-Clause
+License File: LICENSE
+Security Critical: no
+Shipped: yes
+Update Mechanism: Manual (https://crbug.com/430416494)
+
+Description:
+This library hosts a production ready implementation of the source map "Scopes" proposal.
+
+To update this package run:
+
+```sh
+npx jsr info @chrome-devtools/source-map-scopes-codec
+```
+
+to retrieve the tarball URL.
+
+then (use the URL shown by the above command)
+
+```sh
+rm -rf package
+wget -qO- https://npm.jsr.io/\~/11/@jsr/chrome-devtools__source-map-scopes-codec/0.3.1.tgz | tar xzf -
+```
+
+Modifications:
+Added a BUILD.gn file to package/src as esbuild would place output files otherwise in the wrong location.

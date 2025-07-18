@@ -82,7 +82,7 @@ const UIStrings = {
   selectorTypeXPath: 'XPath',
   /**
    * @description The label for the input that allows specifying selector types
-   * that should be used during the recordering.
+   * that should be used during the recording.
    */
   selectorTypes: 'Selector types to record',
   /**

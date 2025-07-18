@@ -76,7 +76,7 @@ const UIStrings = {
    *@example {&lt;unnamed&gt;} PH2
    *@example {5} PH3
    */
-  stickyAncenstorLayersS: '{PH1}: {PH2} ({PH3})',
+  stickyAncestorLayersS: '{PH1}: {PH2} ({PH3})',
   /**
    *@description Sticky box rect element text content in Layer Details View of the Layers panel
    *@example {10} PH1
@@ -263,7 +263,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
     const node = layer.nodeForSelfOrAncestor();
     const name = node ? node.simpleSelector() : i18nString(UIStrings.unnamed);
-    return i18nString(UIStrings.stickyAncenstorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
+    return i18nString(UIStrings.stickyAncestorLayersS, {PH1: title, PH2: name, PH3: layer.id()});
   }
 
   private createStickyAncestorChild(title: string, layer: SDK.LayerTreeBase.Layer|null): void {

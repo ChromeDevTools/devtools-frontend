@@ -155,7 +155,7 @@ enum SelectedProjectType {
   /**
    * The selected project is a disconnected automatic workspace project
    */
-  AUTOMATIC_DISCONNECTED = 'automaticDisconncted',
+  AUTOMATIC_DISCONNECTED = 'automaticDisconnected',
   /**
    * The selected project is a connected automatic workspace project
    */

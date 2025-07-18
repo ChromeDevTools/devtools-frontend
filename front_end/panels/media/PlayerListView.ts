@@ -113,7 +113,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   }
 
   private setMediaElementFrameTitle(playerID: string, frameTitle: string, isHostname: boolean): void {
-    // Only remove the title from the set if we arent setting a hostname title.
+    // Only remove the title from the set if we aren't setting a hostname title.
     // Otherwise, if it has a non-hostname title, and the requested new title is
     // a hostname, just drop it.
     if (this.playerEntriesWithHostnameFrameTitle.has(playerID)) {

@@ -929,7 +929,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
   validate = (): UI.ListWidget.ValidatorResult => {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === 'brands' || metaDataKey === 'fullVersionList') {
-        // for sturctured fields, check each individual brand/version
+        // for structured fields, check each individual brand/version
         const isBrandValid = this.#metaData.brands?.every(({brand, version}) => {
           const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
               brand, i18nString(UIStrings.notRepresentable));

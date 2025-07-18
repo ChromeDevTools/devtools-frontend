@@ -220,7 +220,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     });
 
     const rootNode = this.dataGrid.rootNode();
-    const exisitingNodes = new Set<GridNode>();
+    const existingNodes = new Set<GridNode>();
     for (const pair of dataByUrl) {
       const url = (pair[0]);
       const size = (pair[1].size);
@@ -237,12 +237,12 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         this.gridNodeByUrl.set(url, node);
         rootNode.appendChild(node);
       }
-      exisitingNodes.add(node);
+      existingNodes.add(node);
     }
 
     for (const node of rootNode.children.slice()) {
       const gridNode = node as GridNode;
-      if (!exisitingNodes.has(gridNode)) {
+      if (!existingNodes.has(gridNode)) {
         gridNode.remove();
       }
       this.gridNodeByUrl.delete(gridNode.url);

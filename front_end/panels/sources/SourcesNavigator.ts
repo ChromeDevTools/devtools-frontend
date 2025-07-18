@@ -115,7 +115,7 @@ const UIStrings = {
   /**
    * @description An error message logged to the Console panel when the user uses
    *              the "Save as…" context menu in the Sources panel and the operation
-   *              failes.
+   *              fails.
    */
   saveAsFailed: 'Failed to save file to disk.',
   /**

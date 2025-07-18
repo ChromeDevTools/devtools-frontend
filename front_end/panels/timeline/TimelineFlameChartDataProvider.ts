@@ -1095,7 +1095,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       context.lineTo(end, y);
     }
 
-    // The left whisker starts at the enty timestamp, and continues until the start of the box (processingStart).
+    // The left whisker starts at the entry timestamp, and continues until the start of the box (processingStart).
     const leftWhiskerX = timeToPixel(entry.ts);
     // The right whisker ends at (entry.ts + entry.dur). We draw the line from the end of the box (processingEnd).
     const rightWhiskerX = timeToPixel(Trace.Types.Timing.Micro(entry.ts + entry.dur));

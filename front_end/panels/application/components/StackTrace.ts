@@ -20,7 +20,7 @@ const {html} = Lit;
 
 const UIStrings = {
   /**
-   *@description Error message stating that something went wrong when tring to render stack trace
+   *@description Error message stating that something went wrong when trying to render stack trace
    */
   cannotRenderStackTrace: 'Cannot render stack trace',
   /**
@@ -180,8 +180,7 @@ export class StackTrace extends HTMLElement {
         if ('functionName' in item) {
           expandableRows.push(html`
           <devtools-stack-trace-row data-stack-trace-row .data=${{
-            stackTraceRowItem:
-              item,
+            stackTraceRowItem: item,
           }}></devtools-stack-trace-row>`);
         }
         if ('asyncDescription' in item) {

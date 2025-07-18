@@ -34,7 +34,7 @@ export interface OverviewData {
 /**
  * This component wraps the generic PerfUI Overview component and configures it
  * specifically for the Performance Panel, including injecting the CSS we use
- * to customise how the components render within the Performance Panel.
+ * to customize how the components render within the Performance Panel.
  *
  * It is also responsible for listening to events from the OverviewPane to
  * update the visible trace window, and when this happens it will update the

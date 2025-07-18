@@ -31,7 +31,7 @@ const UIStrings = {
    */
   addParameter: 'Add a parameter',
   /**
-   *@description The title of a button that reset the value of a paremeters to its default value.
+   *@description The title of a button that reset the value of a parameters to its default value.
    */
   resetDefaultValue: 'Reset to default value',
   /**
@@ -130,11 +130,11 @@ interface ViewInput {
   onParameterValueBlur: (event: Event) => void;
 }
 
-export type View = (input: ViewInput, output: object, targer: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 const splitDescription = (description: string): [string, string] => {
   // If the description is too long we make the UI a bit better by highlighting the first sentence
-  // which contains the most informations.
+  // which contains the most information.
   // The number 150 has been chosen arbitrarily
   if (description.length > 150) {
     const [firstSentence, restOfDescription] = description.split('.');

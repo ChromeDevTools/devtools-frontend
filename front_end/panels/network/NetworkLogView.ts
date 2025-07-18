@@ -1919,15 +1919,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   async #handleCreateResponseHeaderOverrideClick(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const requestLocation =
         NetworkForward.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, {name: '', value: ''});
-    const networkPersistanceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    if (networkPersistanceManager.project()) {
+    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    if (networkPersistenceManager.project()) {
       Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
-      await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
+      await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
       await Common.Revealer.reveal(requestLocation);
     } else {  // If folder for local overrides has not been provided yet
       UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
-        await networkPersistanceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
+        await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
         await Common.Revealer.reveal(requestLocation);
       });
     }

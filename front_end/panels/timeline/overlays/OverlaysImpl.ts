@@ -1177,7 +1177,7 @@ export class Overlays extends EventTarget {
         // Adjust the y position: we need to move it down from the top Y
         // position to the Y position of the first visible pixel. The
         // adjustment is totalHeight - height because if the totalHeight is 17,
-        // and the visibleHeight is 5, we need to draw the overay at 17-5=12px
+        // and the visibleHeight is 5, we need to draw the overlay at 17-5=12px
         // vertically from the top of the event.
         y = y + totalHeight - height;
       }
@@ -1291,7 +1291,7 @@ export class Overlays extends EventTarget {
         // Adjust the y position: we need to move it down from the top Y
         // position to the Y position of the first visible pixel. The
         // adjustment is totalHeight - height because if the totalHeight is 17,
-        // and the visibleHeight is 5, we need to draw the overay at 17-5=12px
+        // and the visibleHeight is 5, we need to draw the overlay at 17-5=12px
         // vertically from the top of the event.
         y = y + totalHeight - height;
       }

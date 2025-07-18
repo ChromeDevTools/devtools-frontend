@@ -24,7 +24,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  *   - 1 to check if device is powerful enough
  *   - up to 9 for each preset (uses bisect, so likely to be fewer)
  *
- * Therefore, the maxium duration for the calibration is 5 seconds.
+ * Therefore, the maximum duration for the calibration is 5 seconds.
  */
 const benchmarkDurationMs = 250;
 
@@ -47,7 +47,7 @@ function truncate(n: number): number {
  *
  * Utilizes a benchmark from Lighthouse (LH BenchmarkIndex) to assess performance. This CPU benchmark serves as
  * a simple alias for device performance - but since results aren't exactly linear with clock speed a "bisect"
- * is run to find the ideal DevTools CPU throttling rate to recieve the same results on the benchmark.
+ * is run to find the ideal DevTools CPU throttling rate to receive the same results on the benchmark.
  *
  * @see go/cpq:adaptive-throttling
  * @see https://github.com/connorjclark/devtools-throttling-benchmarks/blob/main/calibrate.js

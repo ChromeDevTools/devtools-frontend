@@ -817,19 +817,19 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       urlField.appendChild(link);
 
       const shortcutIcons = shortcut.icons || [];
-      let hasShorcutIconLargeEnough = false;
+      let hasShortcutIconLargeEnough = false;
       for (const shortcutIcon of shortcutIcons) {
         const {imageResourceErrors: shortcutIconErrors} =
             await this.appendImageResourceToSection(url, shortcutIcon, shortcutSection, /** isScreenshot= */ false);
         imageErrors.push(...shortcutIconErrors);
-        if (!hasShorcutIconLargeEnough && shortcutIcon.sizes) {
+        if (!hasShortcutIconLargeEnough && shortcutIcon.sizes) {
           const shortcutIconSize = shortcutIcon.sizes.match(/^(\d+)x(\d+)$/);
           if (shortcutIconSize && shortcutIconSize[1] >= 96 && shortcutIconSize[2] >= 96) {
-            hasShorcutIconLargeEnough = true;
+            hasShortcutIconLargeEnough = true;
           }
         }
       }
-      if (!hasShorcutIconLargeEnough) {
+      if (!hasShortcutIconLargeEnough) {
         imageErrors.push(i18nString(UIStrings.shortcutSShouldIncludeAXPixel, {PH1: shortcutIndex}));
       }
       shortcutIndex++;

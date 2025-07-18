@@ -191,7 +191,7 @@ const UIStrings = {
   /**
    *  Description text for PrerenderFinalStatus::kUaChangeRequiresReload.
    */
-  prerenderFinalStatusUaChangeRequiresReload: 'Changing User Agent occured in prerendering navigation.',
+  prerenderFinalStatusUaChangeRequiresReload: 'Changing User Agent occurred in prerendering navigation.',
   /**
    *  Description text for PrerenderFinalStatus::kBlockedByClient.
    */

@@ -98,7 +98,6 @@ const str_ =
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: Protocol.Preload.PreloadEnabledStateUpdatedEvent = {
     disabledByPreference: false,
@@ -179,11 +178,11 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     return html`
       <div id='contents'>
         <devtools-report>
-          ${this.#maybeDisalebByPreference()}
-          ${this.#maybeDisalebByDataSaver()}
-          ${this.#maybeDisalebByBatterySaver()}
-          ${this.#maybeDisalebByHoldbackPrefetchSpeculationRules()}
-          ${this.#maybeDisalebByHoldbackPrerenderSpeculationRules()}
+          ${this.#maybeDisableByPreference()}
+          ${this.#maybeDisableByDataSaver()}
+          ${this.#maybeDisableByBatterySaver()}
+          ${this.#maybeDisableByHoldbackPrefetchSpeculationRules()}
+          ${this.#maybeDisableByHoldbackPrerenderSpeculationRules()}
         </devtools-report>
         <div id='footer'>
           ${learnMoreLink}
@@ -208,7 +207,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     `;
   }
 
-  #maybeDisalebByPreference(): Lit.LitTemplate {
+  #maybeDisableByPreference(): Lit.LitTemplate {
     const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
     preloadingSettingLink.href = 'chrome://settings/performance' as Platform.DevToolsPath.UrlString;
     preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPagesSettings);
@@ -221,26 +220,26 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
         this.#data.disabledByPreference, i18nString(UIStrings.headerDisabledByPreference), description);
   }
 
-  #maybeDisalebByDataSaver(): Lit.LitTemplate {
+  #maybeDisableByDataSaver(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByDataSaver, i18nString(UIStrings.headerDisabledByDataSaver),
         i18nString(UIStrings.descriptionDisabledByDataSaver));
   }
 
-  #maybeDisalebByBatterySaver(): Lit.LitTemplate {
+  #maybeDisableByBatterySaver(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByBatterySaver, i18nString(UIStrings.headerDisabledByBatterySaver),
         i18nString(UIStrings.descriptionDisabledByBatterySaver));
   }
 
-  #maybeDisalebByHoldbackPrefetchSpeculationRules(): Lit.LitTemplate {
+  #maybeDisableByHoldbackPrefetchSpeculationRules(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByHoldbackPrefetchSpeculationRules,
         i18nString(UIStrings.headerDisabledByHoldbackPrefetchSpeculationRules),
         i18nString(UIStrings.descriptionDisabledByHoldbackPrefetchSpeculationRules));
   }
 
-  #maybeDisalebByHoldbackPrerenderSpeculationRules(): Lit.LitTemplate {
+  #maybeDisableByHoldbackPrerenderSpeculationRules(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByHoldbackPrerenderSpeculationRules,
         i18nString(UIStrings.headerDisabledByHoldbackPrerenderSpeculationRules),

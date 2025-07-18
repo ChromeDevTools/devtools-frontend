@@ -112,10 +112,10 @@ describeWithEnvironment('Initiators', () => {
     });
 
     it('will walk forward to find the events initiated by the selected entry', async function() {
-      const initatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [], []);
-      assert.lengthOf(initatorsData, 1);
-      assert.strictEqual(initatorsData[0].event, functionCallByRAF);
-      assert.strictEqual(initatorsData[0].initiator, rAFCall);
+      const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [], []);
+      assert.lengthOf(initiatorsData, 1);
+      assert.strictEqual(initiatorsData[0].event, functionCallByRAF);
+      assert.strictEqual(initiatorsData[0].initiator, rAFCall);
     });
 
     it('will return the closest expandable ancestor as an initiator in a pair if the initiator itself is hidden',
@@ -126,8 +126,8 @@ describeWithEnvironment('Initiators', () => {
          const rAFParent = parsedTrace.Renderer.entryToNode.get(rAFCall)?.parent;
          assert.exists(rAFParent);
 
-         // Find the initatorData objects starting at the rAF
-         // call. We expect to find one initatorData here:
+         // Find the initiatorData objects starting at the rAF
+         // call. We expect to find one initiatorData here:
          // rAF callback initiated by rAF -> Parent of rAF because rAF is hidden
          const initiatorsData =
              Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [rAFCall], [rAFParent?.entry]);

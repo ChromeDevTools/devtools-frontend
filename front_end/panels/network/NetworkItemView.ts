@@ -285,7 +285,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     // Only select the initial tab the first time the view is shown after construction.
     // When the view is re-shown (without re-constructing) users or revealers might have changed
     // the selected tab in the mean time. Show the previously selected tab in that
-    // case instead, by simply doing nohting.
+    // case instead, by simply doing nothing.
     if (this.#initialTab) {
       this.selectTabInternal(this.#initialTab);
       this.#initialTab = undefined;

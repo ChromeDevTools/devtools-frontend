@@ -971,9 +971,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       // Build the following hierarchy
       //       |-----------------v8.run--------------------|
-      //        |--V8.ParseFuntion--||---------f1-------|
-      //                             |---f2---||---f3---|
-      //                             |measure|  |mark|
+      //        |--V8.ParseFunction--||---------f1-------|
+      //                              |---f2---||---f3---|
+      //                              |measure|  |mark|
       const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500, '', pid, tid);
       const v8Run = makeCompleteEvent('v8.run', 10, 490, '', pid, tid);
       const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1, '', pid, tid);
@@ -1190,7 +1190,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
              value:
                  'connect @ socketsbay.com/test-websockets:314:25\n(anonymous) @ socketsbay.com/test-websockets:130:129'
            },
-           // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
+           // The 2 entries under "Initiator for" are displayed as separate links and in the UI it is obvious they are separate
            {title: 'Initiator for', value: 'Send WebSocket handshake Receive WebSocket handshake'},
          ];
          assert.deepEqual(

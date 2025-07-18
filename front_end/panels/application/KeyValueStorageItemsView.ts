@@ -47,7 +47,7 @@ type VBox = UI.Widget.VBox;
 
 const UIStrings = {
   /**
-   *@description Text that shows in the Applicaiton Panel if no value is selected for preview
+   *@description Text that shows in the Application Panel if no value is selected for preview
    */
   noPreviewSelected: 'No value selected',
   /**

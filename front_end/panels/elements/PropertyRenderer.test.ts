@@ -22,7 +22,7 @@ describeWithEnvironment('PropertyRenderer', () => {
     }
 
     it('parses text', () => {
-      // Prevent normaliztaion to get an accurate representation of the parser result.
+      // Prevent normalization to get an accurate representation of the parser result.
       sinon.stub(Element.prototype, 'normalize');
       assert.deepEqual(
           textFragments(Array.from(renderValueElement('--p', 'var(--v)').valueElement.childNodes)),

@@ -33,7 +33,7 @@ const UIStrings = {
    */
   speculativeLoadingStatusForThisPage: 'Speculative loading status for this page',
   /**
-   *@description Label for failure reason of preloeading
+   *@description Label for failure reason of preloading
    */
   detailsFailureReason: 'Failure reason',
   /**
@@ -141,7 +141,6 @@ export const enum UsedKind {
 // TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
 // This also shows summary of speculations initiated by this page.
 export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: UsedPreloadingViewData = {
     pageURL: '' as Platform.DevToolsPath.UrlString,

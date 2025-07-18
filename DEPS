@@ -63,12 +63,12 @@ vars = {
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
-# If you need to add a new host, contact chrome infrastracture team.
+# If you need to add a new host, contact chrome infrastructure team.
 allowed_hosts = [
   'chromium.googlesource.com',
   'chrome-infra-packages.appspot.com',
 
-  # TODO(b/337061377): Move into a separate alllowed gcs bucket list.
+  # TODO(b/337061377): Move into a separate allowed gcs bucket list.
   'chromium-nodejs',
 ]
 

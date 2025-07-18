@@ -521,7 +521,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     const byOverlayButton = !document.hasFocus();
-    // In the overlary we show two buttons: resume and step over. Both trigger
+    // In the overlay we show two buttons: resume and step over. Both trigger
     // the Debugger.resumed event. The latter however will trigger
     // Debugger.paused shortly after, while the former won't. Here we guess
     // which one was clicked by checking if we are paused again after 0.5s.

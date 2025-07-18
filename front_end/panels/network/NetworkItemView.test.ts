@@ -76,7 +76,7 @@ describeWithEnvironment('NetworkItemView', () => {
     request.statusCode = 200;
   });
 
-  it('shows indicator for overriden headers and responses', () => {
+  it('shows indicator for overridden headers and responses', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
     request.responseHeaders = [{name: 'foo', value: 'overridden'}];
@@ -92,7 +92,7 @@ describeWithEnvironment('NetworkItemView', () => {
     assert.isNotNull(responseIndicator);
   });
 
-  it('shows indicator for overriden headers', () => {
+  it('shows indicator for overridden headers', () => {
     request.setWasIntercepted(true);
     request.responseHeaders = [{name: 'foo', value: 'overridden'}];
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
@@ -107,7 +107,7 @@ describeWithEnvironment('NetworkItemView', () => {
     assert.isNull(responseIndicator);
   });
 
-  it('shows indicator for overriden content', () => {
+  it('shows indicator for overridden content', () => {
     request.setWasIntercepted(true);
     request.hasOverriddenContent = true;
 

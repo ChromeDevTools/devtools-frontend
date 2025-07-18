@@ -92,7 +92,7 @@ const UIStrings = {
    */
   inheritedFroms: 'Inherited from ',
   /**
-   *@description Text of an inherited psuedo element in Styles Sidebar Pane of the Elements panel
+   *@description Text of an inherited pseudo element in Styles Sidebar Pane of the Elements panel
    *@example {highlight} PH1
    */
   inheritedFromSPseudoOf: 'Inherited from ::{PH1} pseudo of ',

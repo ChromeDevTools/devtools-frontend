@@ -91,11 +91,11 @@ const UIStrings = {
    */
   allocationStack: 'Allocation stack',
   /**
-   *@description Screen reader label for a select box that chooses the perspective in the Memory panel when vieweing a Heap Snapshot
+   *@description Screen reader label for a select box that chooses the perspective in the Memory panel when viewing a Heap Snapshot
    */
   perspective: 'Perspective',
   /**
-   *@description Screen reader label for a select box that chooses the snapshot to use as a base in the Memory panel when vieweing a Heap Snapshot
+   *@description Screen reader label for a select box that chooses the snapshot to use as a base in the Memory panel when viewing a Heap Snapshot
    */
   baseSnapshot: 'Base snapshot',
   /**

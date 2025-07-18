@@ -295,7 +295,7 @@ describeWithEnvironment('Overlays', () => {
         await overlays.update();
       });
 
-      // When an annotation overlay is remomved, this event is dispatched to the Modifications Manager.
+      // When an annotation overlay is removed, this event is dispatched to the Modifications Manager.
       overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, async event => {
         const {overlay, action} = (event as Overlays.Overlays.AnnotationOverlayActionEvent);
         if (action === 'Remove') {

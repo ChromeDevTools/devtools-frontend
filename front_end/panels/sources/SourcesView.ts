@@ -426,7 +426,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const widget = this.sourceViewByUISourceCode.get(uiSourceCode);
     if (widget) {
       if (this.#sourceViewTypeForWidget(widget) !== this.#sourceViewTypeForUISourceCode(uiSourceCode)) {
-        // Remove the exisiting editor tab and create a new one of the correct type.
+        // Remove the existing editor tab and create a new one of the correct type.
         this.removeUISourceCodes([uiSourceCode]);
         this.showSourceLocation(uiSourceCode);
       }

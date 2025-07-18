@@ -54,7 +54,7 @@
 }
 
 .metrics .position {
-  /* This border is different from the ones displayed between the box-moodel
+  /* This border is different from the ones displayed between the box-model
   regions because it is displayed against the pane background, so needs to be
   visible in both light and dark theme. We therefore use a theme variable. */
   border: 1px var(--sys-color-token-subtle) dotted;

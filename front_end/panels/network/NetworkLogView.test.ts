@@ -125,7 +125,7 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   // Note this isn't an ideal test as the internal headers are generated rather than explicitly added,
-  // are only added on HTTP/2 and HTTP/3, have a preceeding colon like `:authority` but it still tests
+  // are only added on HTTP/2 and HTTP/3, have a preceding colon like `:authority` but it still tests
   // the stripping function.
   it('generates a valid curl command while stripping internal headers', async () => {
     const request = createNetworkRequest(urlString`http://localhost`, {
@@ -584,10 +584,10 @@ describeWithMockConnection('NetworkLogView', () => {
 
     // set up overrides
     r2.originalResponseHeaders = [{name: 'content-type', value: 'x'}];
-    r2.responseHeaders = [{name: 'content-type', value: 'overriden'}];
+    r2.responseHeaders = [{name: 'content-type', value: 'overridden'}];
     r3.hasOverriddenContent = true;
     r4.originalResponseHeaders = [{name: 'age', value: 'x'}];
-    r4.responseHeaders = [{name: 'age', value: 'overriden'}];
+    r4.responseHeaders = [{name: 'age', value: 'overridden'}];
     r4.hasOverriddenContent = true;
 
     return {urlNotOverridden, urlHeaderOverridden, urlContentOverridden, urlHeaderAndContentOverridden};
@@ -782,10 +782,10 @@ describeWithMockConnection('NetworkLogView', () => {
 url-header-und-content-overridden`]);
     copyText.resetHistory();
 
-    const copyAllCurlComnmands = findMenuItemWithLabel(
+    const copyAllCurlCommands = findMenuItemWithLabel(
         footerSection, Host.Platform.isWin() ? 'Copy all listed as cURL (bash)' : 'Copy all listed as cURL');
-    assert.isDefined(copyAllCurlComnmands);
-    contextMenu.invokeHandler(copyAllCurlComnmands.id());
+    assert.isDefined(copyAllCurlCommands);
+    contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`curl 'url-header-overridden' ;
@@ -831,7 +831,7 @@ url-content-overridden
 url-header-und-content-overridden`]);
     copyText.resetHistory();
 
-    contextMenu.invokeHandler(copyAllCurlComnmands.id());
+    contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
     assert.deepEqual(copyText.lastCall.args, [`curl 'url-not-overridden' ;
@@ -992,7 +992,7 @@ describeWithEnvironment('NetworkLogView', () => {
     try {
       createNetworkLogView();
     } catch {
-      assert.fail('Creating the network view without registring the actions shouldn\'t fail.');
+      assert.fail('Creating the network view without registering the actions shouldn\'t fail.');
     }
   });
 });

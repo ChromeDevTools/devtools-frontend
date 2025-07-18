@@ -42,10 +42,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const dontCompleteIn = new Set(['ColorLiteral', 'NumberLiteral', 'StringLiteral', 'Comment', 'Important']);
+const doNotCompleteIn = new Set(['ColorLiteral', 'NumberLiteral', 'StringLiteral', 'Comment', 'Important']);
 
 function findPropertyAt(node: CodeMirror.SyntaxNode, pos: number): CodeMirror.SyntaxNode|null {
-  if (dontCompleteIn.has(node.name)) {
+  if (doNotCompleteIn.has(node.name)) {
     return null;
   }
   for (let cur: CodeMirror.SyntaxNode|null = node; cur; cur = cur.parent) {

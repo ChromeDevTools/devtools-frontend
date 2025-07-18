@@ -63,7 +63,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
   /**
    * Playback events are {kPlay, kPause, kSuspended, kEnded, and kWebMediaPlayerDestroyed}
-   * once destroyed, a player cannot recieve more events of any kind.
+   * once destroyed, a player cannot receive more events of any kind.
    */
   private onPlaybackEvent(event: PlayerEvent, normalizedTime: number): void {
     switch (event.event) {
@@ -83,7 +83,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
       case 'kPause':
         // Don't change ticking state - the player is still active even during
-        // video pause. It may recieve buffering events, seeks, etc.
+        // video pause. It may receive buffering events, seeks, etc.
         this.ensureNoPreviousPlaybackEvent(normalizedTime);
 
         // Disabled until Closure is gone.

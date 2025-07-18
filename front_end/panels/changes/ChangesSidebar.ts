@@ -45,7 +45,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.workspaceDiff = workspaceDiff;
     this.workspaceDiff.modifiedUISourceCodes().forEach(this.addUISourceCode.bind(this));
     this.workspaceDiff.addEventListener(
-        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeMofiedStatusChanged, this);
+        WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeModifiedStatusChanged, this);
   }
 
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
@@ -57,7 +57,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dispatchEventToListeners(Events.SELECTED_UI_SOURCE_CODE_CHANGED);
   }
 
-  private uiSourceCodeMofiedStatusChanged(
+  private uiSourceCodeModifiedStatusChanged(
       event: Common.EventTarget.EventTargetEvent<WorkspaceDiff.WorkspaceDiff.ModifiedStatusChangedEvent>): void {
     if (event.data.isModified) {
       this.addUISourceCode(event.data.uiSourceCode);

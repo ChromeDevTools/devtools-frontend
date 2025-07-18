@@ -77,7 +77,7 @@ describeWithEnvironment('RuleSetDetailsView', () => {
 }
 `,
       url: 'https://example.com/speculationrules.json',
-      requestId: 'reqeustId' as Protocol.Network.RequestId,
+      requestId: 'requestId' as Protocol.Network.RequestId,
     };
     const component = await renderRuleSetDetailsView(data, false);
     assert.isUndefined(component.shadowRoot?.getElementById('error-message-text')?.textContent);

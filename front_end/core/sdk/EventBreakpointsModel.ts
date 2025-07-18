@@ -33,7 +33,7 @@ export const enum InstrumentationNames {
   CANVAS_CONTEXT_CREATED = 'canvasContextCreated',
   GEOLOCATION_GET_CURRENT_POSITION = 'Geolocation.getCurrentPosition',
   GEOLOCATION_WATCH_POSITION = 'Geolocation.watchPosition',
-  NOTIFCATION_REQUEST_PERMISSION = 'Notification.requestPermission',
+  NOTIFICATION_REQUEST_PERMISSION = 'Notification.requestPermission',
   DOM_WINDOW_CLOSE = 'DOMWindow.close',
   DOCUMENT_WRITE = 'Document.write',
   AUDIO_CONTEXT_CREATED = 'audioContextCreated',
@@ -102,7 +102,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
       InstrumentationNames.GEOLOCATION_WATCH_POSITION,
     ]);
     this.createInstrumentationBreakpoints(Category.NOTIFICATION, [
-      InstrumentationNames.NOTIFCATION_REQUEST_PERMISSION,
+      InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION,
     ]);
     this.createInstrumentationBreakpoints(Category.PARSE, [
       InstrumentationNames.ELEMENT_SET_INNER_HTML,

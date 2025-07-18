@@ -478,14 +478,14 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     this.updateBackgroundColor();
   }
 
-  override select(supressSelectedEvent?: boolean): void {
-    super.select(supressSelectedEvent);
+  override select(suppressSelectedEvent?: boolean): void {
+    super.select(suppressSelectedEvent);
     this.updateBackgroundColor();
     this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ true);
   }
 
-  override deselect(supressSelectedEvent?: boolean): void {
-    super.deselect(supressSelectedEvent);
+  override deselect(suppressSelectedEvent?: boolean): void {
+    super.deselect(suppressSelectedEvent);
     this.updateBackgroundColor();
     this.parentViewInternal.updateNodeSelectedClass(/* isSelected */ false);
   }
@@ -1120,8 +1120,8 @@ export class NetworkRequestNode extends NetworkNode {
     return array ? String(array.length) : '';
   }
 
-  override select(supressSelectedEvent?: boolean): void {
-    super.select(supressSelectedEvent);
+  override select(suppressSelectedEvent?: boolean): void {
+    super.select(suppressSelectedEvent);
     this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
   }
 
@@ -1574,8 +1574,8 @@ export class NetworkGroupNode extends NetworkNode {
     }
   }
 
-  override select(supressSelectedEvent?: boolean): void {
-    super.select(supressSelectedEvent);
+  override select(suppressSelectedEvent?: boolean): void {
+    super.select(suppressSelectedEvent);
     const firstChildNode = (this.traverseNextNode(false, undefined, true) as NetworkNode);
     const request = firstChildNode?.request();
     if (request) {

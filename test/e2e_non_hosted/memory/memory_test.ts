@@ -154,14 +154,14 @@ describe('The Memory Panel', function() {
     await devToolsPage.waitForFunction(async () => {
       const pendingActivitiesSpan =
           await devToolsPage.waitFor('//span[text()="Pending activities"]', undefined, undefined, 'xpath');
-      const pendingActiviesRow =
+      const pendingActivitiesRow =
           await devToolsPage.waitFor('ancestor-or-self::tr', pendingActivitiesSpan, undefined, 'xpath');
       try {
         await devToolsPage.clickElement(pendingActivitiesSpan);
       } catch {
         return false;
       }
-      const res = await pendingActiviesRow.evaluate(x => x.classList.toString());
+      const res = await pendingActivitiesRow.evaluate(x => x.classList.toString());
       return res.includes('selected');
     });
     await devToolsPage.page.keyboard.press('ArrowRight');
@@ -176,8 +176,8 @@ describe('The Memory Panel', function() {
     });
     await devToolsPage.page.keyboard.press('ArrowRight');
     await devToolsPage.waitForFunction(async () => {
-      const pendingActiviesChildren = await devToolsPage.waitForElementsWithTextContent('MediaQueryList');
-      return pendingActiviesChildren.length === 2;
+      const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('MediaQueryList');
+      return pendingActivitiesChildren.length === 2;
     });
   });
 
@@ -252,8 +252,8 @@ describe('The Memory Panel', function() {
 
         // check that we found two V8EventListener objects
         await devToolsPage.waitForFunction(async () => {
-          const pendingActiviesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
-          return pendingActiviesChildren.length === 2;
+          const pendingActivitiesChildren = await devToolsPage.waitForElementsWithTextContent('V8EventListener');
+          return pendingActivitiesChildren.length === 2;
         });
 
         // Now we want to get the two rows below the "shared in leaking()" row and assert on them.

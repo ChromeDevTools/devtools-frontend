@@ -14845,7 +14845,7 @@
                     "type": "string",
                     "enum": [
                         "Loopback",
-                        "Private",
+                        "Local",
                         "Public",
                         "Unknown"
                     ]

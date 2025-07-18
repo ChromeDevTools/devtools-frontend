@@ -696,7 +696,7 @@ inspectorBackend.registerEnum("Network.SignedExchangeErrorField", {SignatureSig:
 inspectorBackend.registerEnum("Network.ContentEncoding", {Deflate: "deflate", Gzip: "gzip", Br: "br", Zstd: "zstd"});
 inspectorBackend.registerEnum("Network.DirectSocketDnsQueryType", {Ipv4: "ipv4", Ipv6: "ipv6"});
 inspectorBackend.registerEnum("Network.PrivateNetworkRequestPolicy", {Allow: "Allow", BlockFromInsecureToMorePrivate: "BlockFromInsecureToMorePrivate", WarnFromInsecureToMorePrivate: "WarnFromInsecureToMorePrivate", PreflightBlock: "PreflightBlock", PreflightWarn: "PreflightWarn", PermissionBlock: "PermissionBlock", PermissionWarn: "PermissionWarn"});
-inspectorBackend.registerEnum("Network.IPAddressSpace", {Loopback: "Loopback", Private: "Private", Public: "Public", Unknown: "Unknown"});
+inspectorBackend.registerEnum("Network.IPAddressSpace", {Loopback: "Loopback", Local: "Local", Public: "Public", Unknown: "Unknown"});
 inspectorBackend.registerEnum("Network.CrossOriginOpenerPolicyValue", {SameOrigin: "SameOrigin", SameOriginAllowPopups: "SameOriginAllowPopups", RestrictProperties: "RestrictProperties", UnsafeNone: "UnsafeNone", SameOriginPlusCoep: "SameOriginPlusCoep", RestrictPropertiesPlusCoep: "RestrictPropertiesPlusCoep", NoopenerAllowPopups: "NoopenerAllowPopups"});
 inspectorBackend.registerEnum("Network.CrossOriginEmbedderPolicyValue", {None: "None", Credentialless: "Credentialless", RequireCorp: "RequireCorp"});
 inspectorBackend.registerEnum("Network.ContentSecurityPolicySource", {HTTP: "HTTP", Meta: "Meta"});

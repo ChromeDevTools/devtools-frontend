@@ -9926,7 +9926,7 @@ export namespace Network {
 
   export const enum IPAddressSpace {
     Loopback = 'Loopback',
-    Private = 'Private',
+    Local = 'Local',
     Public = 'Public',
     Unknown = 'Unknown',
   }

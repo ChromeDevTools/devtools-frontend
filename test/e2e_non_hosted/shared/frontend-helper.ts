@@ -601,7 +601,7 @@ export interface DevtoolsSettings {
 export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
   enabledDevToolsExperiments: [],
   devToolsSettings: {
-    isUnderTest: true,
+    veLogsTestMode: true,
   },
   dockingMode: 'right',
 };
@@ -621,7 +621,10 @@ async function setDevToolsSettings(devToolsPata: DevToolsPage, settings: Record<
   return await devToolsPata.evaluate(`(async () => {
       const Common = await import('./core/common/common.js');
       ${rawValues.map(([settingName, value]) => {
-    return `Common.Settings.Settings.instance().createSetting('${settingName}', ${value});`;
+    // Creating the setting might not be enough if it already exists, so we
+    // create it and then forcibly set the value.
+    return `const setting = Common.Settings.Settings.instance().createSetting('${settingName}', ${value});
+        setting.set(${value});`;
   })}
     })()`);
 }

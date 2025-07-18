@@ -162,8 +162,15 @@ export class MainImpl {
 
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync-preferences').get());
     const veLogging = config.devToolsVeLogging;
+
+    // Used by e2e_non_hosted to put VE Logs into "test mode".
+    const veLogsTestMode = Common.Settings.Settings.instance().createSetting('veLogsTestMode', false).get();
+
     if (veLogging?.enabled) {
-      if (veLogging?.testing) {
+      // Note: as of https://crrev.com/c/6734500 landing, veLogging.testing is hard-coded to false.
+      // But the e2e tests (test/conductor/frontend_tab.ts) use this to enable this flag for e2e tests.
+      // TODO(crbug.com/432411398): remove the host config for VE logs + find a better way to set this up in e2e tests.
+      if (veLogging?.testing || veLogsTestMode) {
         VisualLogging.setVeDebugLoggingEnabled(true, VisualLogging.DebugLoggingFormat.TEST);
         const options = {
           processingThrottler: new Common.Throttler.Throttler(0),

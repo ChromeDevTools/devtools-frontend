@@ -52,6 +52,11 @@ import {type Calculator, TimelineGrid} from './TimelineGrid.js';
  */
 const KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 
+/**
+ * The adjustments needed for the subtitle font (based off of the default font).
+ */
+const SUBTITLE_FONT_SIZE_AND_STYLE = 'italic 10px';
+
 const UIStrings = {
   /**
    *@description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
@@ -121,6 +126,7 @@ export const ARROW_SIDE = 8;
 const EXPANSION_ARROW_INDENT = HEADER_LEFT_PADDING + ARROW_SIDE / 2;
 const HEADER_LABEL_X_PADDING = 3;
 const HEADER_LABEL_Y_PADDING = 2;
+const PADDING_BETWEEN_TITLE_AND_SUBTITLE = 6;
 
 // The width of each of the edit mode icons.
 export const EDIT_ICON_WIDTH = 16;
@@ -310,6 +316,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #tooltipPopoverYAdjustment = 0;
 
   #font: string;
+  #subtitleFont: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number|null = null;
   #inTrackConfigEditMode = false;
@@ -328,6 +335,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       optionalConfig: OptionalFlameChartConfig = {}) {
     super(true);
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
+    this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChartStyles);
     this.registerRequiredCSS(UI.inspectorCommonStyles);
 
@@ -2765,6 +2773,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const titleStart = iconsWidth + EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 +
           HEADER_LABEL_X_PADDING;
       context.fillText(group.name, titleStart, offset + group.style.height - this.textBaseline);
+      if (group.subtitle) {
+        const titleMetrics = context.measureText(group.name);
+        context.font = this.#subtitleFont;
+        context.fillText(
+            group.subtitle, titleStart + titleMetrics.width + PADDING_BETWEEN_TITLE_AND_SUBTITLE,
+            offset + group.style.height - this.textBaseline);
+        context.font = this.#font;
+      }
       if (this.#inTrackConfigEditMode && group.hidden) {
         // Draw a strikethrough line for the hidden tracks.
         context.fillRect(
@@ -4362,6 +4378,7 @@ export interface EventTypes {
 
 export interface Group {
   name: Common.UIString.LocalizedString;
+  subtitle?: Common.UIString.LocalizedString;
   startLevel: number;
   expanded?: boolean;
   hidden?: boolean;

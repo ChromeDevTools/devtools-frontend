@@ -2772,13 +2772,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       //                                                                        ^ titleStart
       const titleStart = iconsWidth + EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 +
           HEADER_LABEL_X_PADDING;
-      context.fillText(group.name, titleStart, offset + group.style.height - this.textBaseline);
+      const y = offset + group.style.height - this.textBaseline;
+      context.fillText(group.name, titleStart, y);
       if (group.subtitle) {
         const titleMetrics = context.measureText(group.name);
         context.font = this.#subtitleFont;
-        context.fillText(
-            group.subtitle, titleStart + titleMetrics.width + PADDING_BETWEEN_TITLE_AND_SUBTITLE,
-            offset + group.style.height - this.textBaseline);
+        context.fillText(group.subtitle, titleStart + titleMetrics.width + PADDING_BETWEEN_TITLE_AND_SUBTITLE, y - 1);
         context.font = this.#font;
       }
       if (this.#inTrackConfigEditMode && group.hidden) {

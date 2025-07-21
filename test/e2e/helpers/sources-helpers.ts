@@ -12,7 +12,6 @@ import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js'
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $$,
-  assertNotNullOrUndefined,
   click,
   clickMoreTabsButton,
   drainFrontendTaskQueue,
@@ -243,7 +242,7 @@ export async function getToolbarText() {
 export async function addBreakpointForLine(
     index: number|string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   await devToolsPage.clickElement(breakpointLine);
@@ -254,7 +253,7 @@ export async function addBreakpointForLine(
 export async function removeBreakpointForLine(
     index: number|string, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => await isBreakpointSet(index, devToolsPage));
   await devToolsPage.clickElement(breakpointLine);
@@ -264,7 +263,7 @@ export async function removeBreakpointForLine(
 export async function addLogpointForLine(
     index: number, condition: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const breakpointLine = await getLineNumberElement(index, devToolsPage);
-  assertNotNullOrUndefined(breakpointLine);
+  assert.isOk(breakpointLine);
 
   await devToolsPage.waitForFunction(async () => !(await isBreakpointSet(index, devToolsPage)));
   await devToolsPage.clickElement(breakpointLine, {clickOptions: {button: 'right'}});
@@ -498,7 +497,7 @@ export async function waitForSourceFiles<T>(
   await devToolsPage.waitForFunction(async () => {
     const files = await devToolsPage.evaluate(
         eventHandlerId => window.__sourceFileEvents.get(eventHandlerId)?.files, eventHandlerId);
-    assertNotNullOrUndefined(files);
+    assert.isOk(files);
     return await waitCondition(files);
   });
 
@@ -806,7 +805,7 @@ export class WasmLocationLabels {
       const labelLine = m.originalLine;
       const labelColumn = m.originalColumn;
       const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
-      assertNotNullOrUndefined(sourceLine);
+      assert.isOk(sourceLine);
       entry.push({
         label: m.source,
         moduleOffset: m.generatedColumn,
@@ -824,7 +823,7 @@ export class WasmLocationLabels {
     const pausedLine = this.#mappings.get(label)!.find(
         line => pauseLocation === `${path.basename(this.#wasm)}:0x${line.moduleOffset.toString(16)}` ||
             pauseLocation === `${path.basename(this.#source)}:${line.sourceLine}`);
-    assertNotNullOrUndefined(pausedLine);
+    assert.isOk(pausedLine);
     return pausedLine;
   }
 

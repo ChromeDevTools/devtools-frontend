@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Cookie Deprecation Metadata issue', () => {
   it('should display correct information', async ({devToolsPage}) => {
@@ -46,7 +47,7 @@ describe('Cookie Deprecation Metadata issue', () => {
     await expandIssue(devToolsPage);
     const issueElement =
         await getIssueByTitle('Third-party websites are allowed to read cookies on this page', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section =
         await getResourcesElement('2 websites allowed to access cookies', issueElement, undefined, devToolsPage);
     await ensureResourceSectionIsExpanded(section, devToolsPage);

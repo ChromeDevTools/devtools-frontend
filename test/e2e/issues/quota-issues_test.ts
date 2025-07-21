@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assert} from 'chai';
+
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -40,7 +42,7 @@ describe('Quota Issues', () => {
 
     await expandIssue();
     const issueElement = await getIssueByTitle('Deprecated feature used');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [

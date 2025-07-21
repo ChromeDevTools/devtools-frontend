@@ -39,7 +39,6 @@ import {
   waitUntilRetainerChainSatisfies,
 } from '../../e2e/helpers/memory-helpers.js';
 import {
-  assertNotNullOrUndefined,
   step,
 } from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
@@ -390,7 +389,7 @@ describe('The Memory Panel', function() {
           break;
         }
       }
-      assertNotNullOrUndefined(row);
+      assert.isOk(row);
       // Expand the constructor sub-tree.
       await devToolsPage.clickElement(row);
       await devToolsPage.page.keyboard.press('ArrowRight');
@@ -405,7 +404,7 @@ describe('The Memory Panel', function() {
         return {objectElement, objectName};
       });
       let element = objectElement;
-      assertNotNullOrUndefined(element);
+      assert.isOk(element);
       // Verify we have the object with the matching name.
       assert.strictEqual(objectName, entry.constructor);
       // Get the right property of the object if required.
@@ -435,7 +434,7 @@ describe('The Memory Panel', function() {
           }
           return undefined;
         });
-        assertNotNullOrUndefined(element);
+        assert.isOk(element);
       }
 
       // Verify the link to the source code.

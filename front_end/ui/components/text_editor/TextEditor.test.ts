@@ -4,7 +4,6 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -212,7 +211,7 @@ describeWithEnvironment('TextEditor', () => {
       });
 
       const actualSuggestion = editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState);
-      assertNotNullOrUndefined(actualSuggestion);
+      assert.isOk(actualSuggestion);
       assert.strictEqual(actualSuggestion.text, text);
       editor.remove();
     });
@@ -224,13 +223,13 @@ describeWithEnvironment('TextEditor', () => {
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
       editor.dispatch({
         changes: {from: 0, insert: 'he'},
         selection: {anchor: 2},
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
       editor.remove();
     });
 
@@ -241,7 +240,7 @@ describeWithEnvironment('TextEditor', () => {
       editor.dispatch({
         effects: TextEditor.Config.setAiAutoCompleteSuggestion.of('hello'),
       });
-      assertNotNullOrUndefined(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
+      assert.isOk(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
 
       editor.dispatch({changes: {from: 0, insert: 'a'}, selection: {anchor: 1}});
       assert.isNull(editor.editor.state.field(TextEditor.Config.aiAutoCompleteSuggestionState));
@@ -332,6 +331,5 @@ describeWithMockConnection('TextEditor autocompletion', () => {
     const result =
         await TextEditor.JavaScript.javascriptCompletionSource(new CodeMirror.CompletionContext(state, 1, false));
     assert.isNull(result);
-
   });
 });

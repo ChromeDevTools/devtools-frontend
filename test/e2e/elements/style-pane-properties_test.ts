@@ -7,7 +7,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
-  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   goToHtml,
@@ -554,7 +553,7 @@ describe('The Styles pane', () => {
     await click('aria/overrule[role="button"]');
 
     const treeElement = await waitFor('[data-node-key="2: overrule"]');
-    assertNotNullOrUndefined(treeElement);
+    assert.isOk(treeElement);
   });
 
   it('can display inherited CSS highlight pseudo styles', async () => {

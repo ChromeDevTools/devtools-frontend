@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assert} from 'chai';
+
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -46,10 +48,10 @@ describe('User Reidentification issue', () => {
     });
     await expandIssue();
     const issueElement = await getIssueByTitle('Resources suspected of tracking users are blocked');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 requests', issueElement);
     await ensureResourceSectionIsExpanded(section);
-    assertNotNullOrUndefined(section);
+    assert.isOk(section);
     const expectedTableRows = [
       ['script.js'],
       ['script2.js'],

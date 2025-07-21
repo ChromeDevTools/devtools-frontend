@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
+import {goToResource, waitFor} from '../../shared/helper.js';
 import {
   getHiddenIssuesRow,
   getHiddenIssuesRowBody,
@@ -75,7 +75,7 @@ describe('Hide issues row', () => {
     isHidden = await hiddenIssuesRowBody?.evaluate(node => node.classList.contains('hidden'));
     assert.isFalse(isHidden);
     const firstChild = await hiddenIssuesRowBody?.$eval('.issue', node => node.classList.toString());
-    assertNotNullOrUndefined(firstChild);
+    assert.isOk(firstChild);
     assert.include(firstChild, 'hidden-issue');
   });
 

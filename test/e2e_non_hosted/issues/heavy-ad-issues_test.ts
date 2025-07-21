@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -10,7 +12,6 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../../e2e/helpers/issues-helpers.js';
-import {assertNotNullOrUndefined} from '../../shared/helper.js';
 
 describe('Heavy Ad issue', () => {
   it('should display correct information', async ({devToolsPage, inspectedPage}) => {
@@ -44,7 +45,7 @@ describe('Heavy Ad issue', () => {
     });
     await expandIssue(devToolsPage);
     const issueElement = await getIssueByTitle('An ad on your site has exceeded resource limits', devToolsPage);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 resources', issueElement, undefined, devToolsPage);
     await ensureResourceSectionIsExpanded(section, devToolsPage);
     const expectedTableRows = [

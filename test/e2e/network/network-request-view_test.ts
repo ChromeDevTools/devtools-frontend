@@ -9,7 +9,6 @@ import {expectError} from '../../conductor/events.js';
 import {
   $,
   $$,
-  assertNotNullOrUndefined,
   click,
   getBrowserAndPages,
   getResourcesPath,
@@ -157,7 +156,7 @@ describe('The Network Request view', () => {
 
     const names = await getAllRequestNames();
     const name = names.find(v => v?.startsWith('data:'));
-    assertNotNullOrUndefined(name);
+    assert.isOk(name);
     await selectRequestByName(name);
 
     const styleSrcError = expectError(`Refused to load the stylesheet '${stylesheet}'`);
@@ -191,7 +190,7 @@ describe('The Network Request view', () => {
 
     const names = await getAllRequestNames();
     const name = names.find(v => v?.startsWith('data:'));
-    assertNotNullOrUndefined(name);
+    assert.isOk(name);
     await selectRequestByName(name);
 
     const networkView = await waitFor('.network-item-view');

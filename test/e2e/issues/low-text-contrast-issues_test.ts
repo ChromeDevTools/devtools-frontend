@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, enableExperiment, goToResource} from '../../shared/helper.js';
+import {assert} from 'chai';
+
+import {enableExperiment, goToResource} from '../../shared/helper.js';
 import {
   assertIssueTitle,
   expandIssue,
@@ -21,7 +23,7 @@ describe('Low contrast issues', () => {
     const issueTitle = 'Users may have difficulties reading text content due to insufficient color contrast';
     await assertIssueTitle(issueTitle);
     const issueElement = await getIssueByTitle(issueTitle);
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('3 elements', issueElement);
     const expectedTableRows = [
       [

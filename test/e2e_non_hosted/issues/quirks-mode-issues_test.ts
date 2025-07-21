@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {
   assertIssueTitle,
   expandIssue,
@@ -13,7 +15,7 @@ import {
 } from '../../e2e/helpers/issues-helpers.js';
 import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
-import {assertNotNullOrUndefined, matchStringArray} from '../../shared/helper.js';
+import {matchStringArray} from '../../shared/helper.js';
 
 const triggerQuirksModeIssueInIssuesTab =
     async (path: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) => {
@@ -23,7 +25,7 @@ const triggerQuirksModeIssueInIssuesTab =
   const issueTitle = 'Page layout may be unexpected due to Quirks Mode';
   await assertIssueTitle(issueTitle, devToolsPage);
   const issueElement = await getIssueByTitle(issueTitle, devToolsPage);
-  assertNotNullOrUndefined(issueElement);
+  assert.isOk(issueElement);
   return issueElement;
 };
 

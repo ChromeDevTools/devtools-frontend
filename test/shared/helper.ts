@@ -486,17 +486,6 @@ export const waitForClass = async (element: puppeteer.ElementHandle<Element>, cl
   return await devToolsPage.waitForClass(element, classname);
 };
 
-/**
- * This is useful to keep TypeScript happy in a test - if you have a value
- * that's potentially `null` you can use this function to assert that it isn't,
- * and satisfy TypeScript that the value is present.
- */
-export function assertNotNullOrUndefined<T>(val: T): asserts val is NonNullable<T> {
-  if (val === null || val === undefined) {
-    throw new Error(`Expected given value to not be null/undefined but it was: ${val}`);
-  }
-}
-
 export {getBrowserAndPages, getDevToolsFrontendHostname, getTestServerPort, reloadDevTools};
 
 export function matchString(actual: string, expected: string|RegExp): true|string {

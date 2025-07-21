@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
+import {assert} from 'chai';
+
+import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -61,7 +63,7 @@ describe('Cors Private Network issue', () => {
 
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
 
@@ -135,7 +137,7 @@ describe('Cors Private Network issue', () => {
 
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure private network requests are made from secure contexts');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [
@@ -209,7 +211,7 @@ describe('Cors Private Network issue', () => {
     await expandIssue();
     const issueElement =
         await getIssueByTitle('Ensure private network requests are only made to resources that allow them');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('2 requests', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [
@@ -267,7 +269,7 @@ describe('Cors Private Network issue', () => {
 
     await expandIssue();
     const issueElement = await getIssueByTitle('Ensure preflight responses are valid');
-    assertNotNullOrUndefined(issueElement);
+    assert.isOk(issueElement);
     const section = await getResourcesElement('1 request', issueElement, '.cors-issue-affected-resource-label');
     await ensureResourceSectionIsExpanded(section);
     const expectedTableRows = [

@@ -90,6 +90,8 @@ devtools_module("ai_chat") {
     "tracing/TracingProvider.ts",
     "tracing/LangfuseProvider.ts",
     "tracing/TracingConfig.ts",
+    "auth/PKCEUtils.ts",
+    "auth/OpenRouterOAuth.ts",
   ]
 
   deps = [
@@ -185,6 +187,8 @@ _ai_chat_sources = [
     "tracing/TracingProvider.ts",
     "tracing/LangfuseProvider.ts",
     "tracing/TracingConfig.ts",
+    "auth/PKCEUtils.ts",
+    "auth/OpenRouterOAuth.ts",
 ]
 
 # Construct the expected JS output paths for the metadata

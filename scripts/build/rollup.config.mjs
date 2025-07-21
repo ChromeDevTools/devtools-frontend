@@ -17,6 +17,7 @@ export default commandLineArgs => ({
   output: [{
     format: 'esm',
     sourcemap: Boolean(commandLineArgs.configSourcemaps),
+    inlineDynamicImports: true,
   }],
   plugins: [
     terser(),

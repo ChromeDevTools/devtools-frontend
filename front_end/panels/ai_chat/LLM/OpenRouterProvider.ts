@@ -436,8 +436,19 @@ export class OpenRouterProvider extends LLMBaseProvider {
         }
       },
       {
-        id: 'google/gemini-pro-1.5',
-        name: 'Gemini Pro 1.5',
+        id: 'google/gemini-2.5-pro',
+        name: 'Gemini Pro 2.5',
+        provider: 'openrouter' as LLMProvider,
+        capabilities: {
+          functionCalling: true,
+          reasoning: false,
+          vision: true,
+          structured: true
+        }
+      },
+      {
+        id: 'google/gemini-2.5-flash',
+        name: 'Gemini Pro 2.5 Flash',
         provider: 'openrouter' as LLMProvider,
         capabilities: {
           functionCalling: true,
@@ -485,10 +496,37 @@ export class OpenRouterProvider extends LLMBaseProvider {
    * Validate that required credentials are available for OpenRouter
    */
   validateCredentials(): {isValid: boolean, message: string, missingItems?: string[]} {
+    logger.debug('=== VALIDATING OPENROUTER CREDENTIALS ===');
+    logger.debug('Timestamp:', new Date().toISOString());
+    
     const storageKeys = this.getCredentialStorageKeys();
+    logger.debug('Storage keys:', storageKeys);
+    
     const apiKey = localStorage.getItem(storageKeys.apiKey!);
+    logger.debug('API key check:');
+    logger.debug('- Storage key used:', storageKeys.apiKey);
+    logger.debug('- API key exists:', !!apiKey);
+    logger.debug('- API key length:', apiKey?.length || 0);
+    logger.debug('- API key prefix:', apiKey?.substring(0, 8) + '...' || 'none');
+    
+    // Also check OAuth-related storage for debugging
+    const authMethod = localStorage.getItem('openrouter_auth_method');
+    const oauthToken = localStorage.getItem('openrouter_oauth_token');
+    logger.debug('OAuth-related storage:');
+    logger.debug('- Auth method:', authMethod);
+    logger.debug('- OAuth token exists:', !!oauthToken);
+    
+    // Check all OpenRouter-related localStorage keys
+    const allKeys = Object.keys(localStorage);
+    const openRouterKeys = allKeys.filter(key => key.includes('openrouter') || key.includes('ai_chat'));
+    logger.debug('All OpenRouter-related storage keys:');
+    openRouterKeys.forEach(key => {
+      const value = localStorage.getItem(key);
+      logger.debug(`- ${key}:`, value?.substring(0, 50) + (value && value.length > 50 ? '...' : '') || 'null');
+    });
     
     if (!apiKey) {
+      logger.warn('❌ OpenRouter API key missing');
       return {
         isValid: false,
         message: 'OpenRouter API key is required. Please add your API key in Settings.',
@@ -496,6 +534,7 @@ export class OpenRouterProvider extends LLMBaseProvider {
       };
     }
     
+    logger.info('✅ OpenRouter credentials validation passed');
     return {
       isValid: true,
       message: 'OpenRouter credentials are configured correctly.'
@@ -506,8 +545,10 @@ export class OpenRouterProvider extends LLMBaseProvider {
    * Get the storage keys this provider uses for credentials
    */
   getCredentialStorageKeys(): {apiKey: string} {
-    return {
+    const keys = {
       apiKey: 'ai_chat_openrouter_api_key'
     };
+    logger.debug('OpenRouter credential storage keys:', keys);
+    return keys;
   }
 }

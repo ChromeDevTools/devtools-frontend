@@ -655,6 +655,8 @@ grd_files_bundled_sources = [
   "front_end/panels/ai_chat/tracing/TracingProvider.js",
   "front_end/panels/ai_chat/tracing/LangfuseProvider.js",
   "front_end/panels/ai_chat/tracing/TracingConfig.js",
+  "front_end/panels/ai_chat/auth/PKCEUtils.js",
+  "front_end/panels/ai_chat/auth/OpenRouterOAuth.js",
   "front_end/panels/ai_chat/ai_chat-meta.js",
   "front_end/panels/ai_chat/ai_chat.js",
   "front_end/panels/ai_chat/ai_chat_impl.js",

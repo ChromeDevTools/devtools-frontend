@@ -1660,3 +1660,150 @@ devtools-snackbar.bookmark-notification .container {
     opacity: 100%;
   }
 }
+
+/* OAuth Login UI Styles */
+.oauth-login-container {
+  max-width: 500px;
+  width: 100%;
+  padding: 40px 32px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.oauth-welcome {
+  margin-bottom: 32px;
+}
+
+.oauth-welcome h2 {
+  margin: 0 0 12px 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.oauth-welcome p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.oauth-login-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.provider-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.oauth-login-button {
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  box-shadow: 0 4px 12px var(--color-primary-shadow);
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oauth-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--color-primary-shadow);
+}
+
+.oauth-login-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px var(--color-primary-shadow);
+}
+
+.oauth-button-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-on-primary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.oauth-icon {
+  flex-shrink: 0;
+}
+
+/* OpenAI specific button styling */
+.oauth-login-button.openai {
+  background: var(--color-background);
+  border: 2px solid #000000;
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.oauth-login-button.openai:hover {
+  background: #f8f8f8;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.oauth-login-button.openai:active {
+  background: #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
+}
+
+.oauth-login-button.openai .oauth-button-content {
+  color: #000000;
+}
+
+.oauth-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--color-background-elevation-1);
+  border-radius: 8px;
+  border: 1px solid var(--color-primary-container-border);
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.benefit-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.oauth-alternative {
+  margin-top: 8px;
+}
+
+.oauth-alternative p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.manual-setup-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.manual-setup-link:hover {
+  color: var(--primary-color-hover);
+  text-decoration: underline;
+}

@@ -108,6 +108,7 @@ copy_to_gen_with_grd("embedder-scripts") {
   ]
 }
 
+
 group("unittests") {
   deps = [
     "Images:optimize_images",

@@ -1,7 +1,7 @@
 Name: Dependencies sourced from the upstream `chromium` repository
 URL: https://source.chromium.org/chromium/chromium/src/+/main:components/variations/proto/devtools/
 Version: N/A
-Revision: 17e3614108b597e205f22d3486ada914e4dd6249
+Revision: 28d9874ca72f9951478e153b30e1b2a55bceb9f9
 Update Mechanism: Manual (https://crbug.com/428069060)
 License: BSD-3-Clause
 License File: LICENSE

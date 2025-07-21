@@ -7180,6 +7180,14 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
+    name: "registerTool",
+    signatures: [["params"]]
+  },
+  {
+    name: "unregisterTool",
+    signatures: [["tool_name"]]
+  },
+  {
     name: "SnapEvent",
     signatures: [["type","?eventInitDict"]]
   },

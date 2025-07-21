@@ -55,6 +55,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Snackbar from '../../ui/components/snackbars/snackbars.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -397,6 +398,9 @@ export class MainImpl {
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
+    isolatedFileSystemManager.addEventListener(
+        Persistence.IsolatedFileSystemManager.Events.FileSystemError,
+        event => Snackbar.Snackbar.Snackbar.show({message: event.data}));
 
     const defaultThemeSetting = 'systemPreferred';
     const themeSetting = Common.Settings.Settings.instance().createSetting('ui-theme', defaultThemeSetting);

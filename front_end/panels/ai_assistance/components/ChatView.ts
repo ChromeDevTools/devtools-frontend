@@ -529,8 +529,9 @@ export class ChatView extends HTMLElement {
       return;
     }
 
-    // Go to a new line only when Shift + Enter is pressed.
-    if (ev.key === 'Enter' && !ev.shiftKey) {
+    // Go to a new line on Shift+Enter. On Enter, submit unless the
+    // user is in IME composition.
+    if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
       ev.preventDefault();
       if (!ev.target?.value || this.#props.imageInput?.isLoading) {
         return;

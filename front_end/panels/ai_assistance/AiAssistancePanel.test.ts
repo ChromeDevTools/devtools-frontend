@@ -1604,61 +1604,69 @@ describeWithMockConnection('AI Assistance Panel', () => {
                               .resolves({searchId: 'uniqueId', resultCount: 0, getError: () => undefined});
     });
 
-    it('can be blocked by a setting', async () => {
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
+    describe('can be blocked', () => {
+      beforeEach(() => {
+        // These tests log the error to the console.
+        // we don't need that noise in the test output.
+        sinon.stub(console, 'error');
       });
-      try {
-        await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
-        });
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(
-            err.message, 'For AI features to be available, you need to enable AI assistance in DevTools settings.');
-      }
-    });
 
-    it('can be blocked by feature availability', async () => {
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
-      });
-      try {
-        await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
+      it('by a setting', async () => {
+        Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
+        const {panel} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation}]]),
         });
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(
-            err.message, 'This feature is only available when you sign into Chrome with your Google account.');
-      }
-    });
+        try {
+          await panel.handleExternalRequest({
+            prompt: 'Please help me debug this problem',
+            conversationType: AiAssistanceModel.ConversationType.STYLING
+          });
+          assert.fail('Expected `handleExternalRequest` to throw');
+        } catch (err) {
+          assert.strictEqual(
+              err.message, 'For AI features to be available, you need to enable AI assistance in DevTools settings.');
+        }
+      });
 
-    it('can be blocked by user age', async () => {
-      updateHostConfig({
-        aidaAvailability: {
-          blockedByAge: true,
-        },
-        devToolsFreestyler: {
-          enabled: true,
-        },
-      });
-      const {panel} = await createAiAssistancePanel({
-        aidaClient: mockAidaClient([[{explanation}]]),
-      });
-      try {
-        await panel.handleExternalRequest({
-          prompt: 'Please help me debug this problem',
-          conversationType: AiAssistanceModel.ConversationType.STYLING
+      it('by feature availability', async () => {
+        const {panel} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation}]]),
+          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED,
         });
-        assert.fail('Expected `handleExternalRequest` to throw');
-      } catch (err) {
-        assert.strictEqual(err.message, 'This feature is only available to users who are 18 years of age or older.');
-      }
+        try {
+          await panel.handleExternalRequest({
+            prompt: 'Please help me debug this problem',
+            conversationType: AiAssistanceModel.ConversationType.STYLING
+          });
+          assert.fail('Expected `handleExternalRequest` to throw');
+        } catch (err) {
+          assert.strictEqual(
+              err.message, 'This feature is only available when you sign into Chrome with your Google account.');
+        }
+      });
+
+      it('by user age', async () => {
+        updateHostConfig({
+          aidaAvailability: {
+            blockedByAge: true,
+          },
+          devToolsFreestyler: {
+            enabled: true,
+          },
+        });
+        const {panel} = await createAiAssistancePanel({
+          aidaClient: mockAidaClient([[{explanation}]]),
+        });
+        try {
+          await panel.handleExternalRequest({
+            prompt: 'Please help me debug this problem',
+            conversationType: AiAssistanceModel.ConversationType.STYLING
+          });
+          assert.fail('Expected `handleExternalRequest` to throw');
+        } catch (err) {
+          assert.strictEqual(err.message, 'This feature is only available to users who are 18 years of age or older.');
+        }
+      });
     });
 
     it('returns an explanation for styling assistance requests', async () => {
@@ -1868,6 +1876,9 @@ STOP`,
     });
 
     it('errors for performance insight requests with no insightTitle', async () => {
+      // Suppress console noise in test output
+      sinon.stub(console, 'error');
+
       const {panel} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation}]]),
       });

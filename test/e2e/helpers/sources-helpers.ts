@@ -505,7 +505,7 @@ export async function waitForSourceFiles<T>(
   await devToolsPage.evaluate((eventName, eventHandlerId) => {
     const handler = window.__sourceFileEvents.get(eventHandlerId);
     if (!handler) {
-      throw new Error('handler unexpectandly unregistered');
+      throw new Error('handler unexpectedly unregistered');
     }
     window.__sourceFileEvents.delete(eventHandlerId);
     window.removeEventListener(eventName, handler.handler);

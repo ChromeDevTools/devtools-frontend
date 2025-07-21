@@ -93,11 +93,8 @@ export interface ActionResponse {
   canceled: boolean;
 }
 
-export interface QueryResponse {
+export interface QueryingResponse {
   type: ResponseType.QUERYING;
-  query?: string;
-  imageInput?: Host.AidaClient.Part;
-  imageId?: string;
 }
 
 export interface UserQuery {
@@ -108,7 +105,7 @@ export interface UserQuery {
 }
 
 export type ResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|SideEffectResponse|
-    ThoughtResponse|TitleResponse|QueryResponse|ContextResponse|UserQuery;
+    ThoughtResponse|TitleResponse|QueryingResponse|ContextResponse|UserQuery;
 
 export type FunctionCallResponseData =
     TitleResponse|ThoughtResponse|ActionResponse|SideEffectResponse|SuggestionsResponse;

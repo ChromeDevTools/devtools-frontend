@@ -1250,7 +1250,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.strictEqual(swatches[1].model().spreadRadius().asCSSText(), '8px');
     });
 
-    class StubSyntaxnode implements CodeMirror.SyntaxNode {
+    class StubSyntaxNode implements CodeMirror.SyntaxNode {
       parent: CodeMirror.SyntaxNode|null = null;
       firstChild: CodeMirror.SyntaxNode|null = null;
       lastChild: CodeMirror.SyntaxNode|null = null;
@@ -1300,10 +1300,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('shadow model renders text properties, authored properties, and computed text properties correctly', () => {
       const renderingContext = sinon.createStubInstance(Elements.PropertyRenderer.RenderingContext);
       const expansionContext = sinon.createStubInstance(Elements.PropertyRenderer.RenderingContext);
-      const y = new StubSyntaxnode();
-      const spread = new StubSyntaxnode();
-      const blur = new StubSyntaxnode();
-      const variable = new StubSyntaxnode();
+      const y = new StubSyntaxNode();
+      const spread = new StubSyntaxNode();
+      const blur = new StubSyntaxNode();
+      const variable = new StubSyntaxNode();
       const properties = [
         {
           value: '10px',

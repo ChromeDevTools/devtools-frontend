@@ -51,7 +51,7 @@ import {
   StylesSidebarPane,
 } from './StylesSidebarPane.js';
 
-const {html, nothing, render} = Lit;
+const {html, nothing, render, Directives: {classMap}} = Lit;
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -159,6 +159,41 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
+// clang-format off
+export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.EnvFunctionMatch) {
+  // clang-format on
+  constructor(
+      readonly treeElement: StylePropertyTreeElement|null,
+      readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, readonly computedStyles: Map<string, string>) {
+    super();
+  }
+  override render(match: SDK.CSSPropertyParserMatchers.EnvFunctionMatch, context: RenderingContext): Node[] {
+    const [, fallbackNodes] = ASTUtils.callArgs(match.node);
+    if (match.value) {
+      const substitution = context.tracing?.substitution();
+      if (substitution) {
+        if (match.varNameIsValid) {
+          return [document.createTextNode(match.value)];
+        }
+        return Renderer.render(fallbackNodes, substitution.renderingContext(context)).nodes;
+      }
+    }
+
+    const span = document.createElement('span');
+    const func =
+        this.treeElement?.getTracingTooltip('env', match.node, this.matchedStyles, this.computedStyles, context) ??
+        'env';
+    const valueClass = classMap({'inactive-value': !match.varNameIsValid});
+    const fallbackClass = classMap({'inactive-value': match.varNameIsValid});
+    render(
+        html`${func}(<span class=${valueClass}>${match.varName}</span>${
+            fallbackNodes ?
+                html`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` :
+                nothing})`,
+        span, {host: span});
+    return [span];
+  }
+}
 // clang-format off
 export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridMatch) {
   // clang-format on
@@ -1733,6 +1768,7 @@ export function getPropertyRenderers(
     new AnchorFunctionRenderer(stylesPane),
     new PositionAnchorRenderer(stylesPane),
     new FlexGridRenderer(stylesPane, treeElement),
+    new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles),
     new PositionTryRenderer(matchedStyles),
     new LengthRenderer(stylesPane, propertyName, treeElement),
     new MathFunctionRenderer(stylesPane, matchedStyles, computedStyles, propertyName, treeElement),

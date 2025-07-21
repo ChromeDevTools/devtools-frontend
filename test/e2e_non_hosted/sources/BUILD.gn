@@ -12,6 +12,7 @@ ts_e2e_library("sources") {
     "can-pretty-print-sourcecode_test.ts",
     "can-show-wasm-scopes_test.ts",
     "color-swatch_test.ts",
+    "debug-raw-wasm_test.ts",
     "debugger-sidebar_test.ts",
     "eval_test.ts",
     "icon-row-bucket_test.ts",

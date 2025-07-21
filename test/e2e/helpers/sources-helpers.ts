@@ -14,18 +14,13 @@ import {
   $$,
   click,
   clickMoreTabsButton,
-  drainFrontendTaskQueue,
   getBrowserAndPages,
-  getPendingEvents,
   platform,
   pressKey,
   setCheckBox,
-  step,
   typeText,
   waitFor,
   waitForAria,
-  waitForFunction,
-  waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
@@ -322,14 +317,13 @@ export async function disableInlineBreakpointForLine(
   }
 }
 
-export async function checkBreakpointDidNotActivate() {
-  await step('check that the script did not pause', async () => {
-    // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
+export async function checkBreakpointDidNotActivate(
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
 
-    // TODO: it should actually wait for rendering to finish.
-    await drainFrontendTaskQueue();
-    await waitForNone(PAUSE_INDICATOR_SELECTOR);
-  });
+  // TODO: it should actually wait for rendering to finish.
+  await devToolsPage.drainTaskQueue();
+  await devToolsPage.waitForNone(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function getBreakpointDecorators(
@@ -340,10 +334,10 @@ export async function getBreakpointDecorators(
       breakpointDecorators.map(breakpointDecorator => breakpointDecorator.evaluate(n => Number(n.textContent))));
 }
 
-export async function getNonBreakableLines() {
+export async function getNonBreakableLines(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = '.cm-nonBreakableLine';
-  await waitFor(selector);
-  const unbreakableLines = await $$(selector);
+  await devToolsPage.waitFor(selector);
+  const unbreakableLines = await devToolsPage.$$(selector);
   return await Promise.all(
       unbreakableLines.map(unbreakableLine => unbreakableLine.evaluate(n => Number(n.textContent))));
 }
@@ -364,10 +358,10 @@ export async function getCallFrameNames(devToolsPage: DevToolsPage = getBrowserA
   return results;
 }
 
-export async function getCallFrameLocations() {
+export async function getCallFrameLocations(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = '.call-frame-item:not(.hidden) .call-frame-location';
-  await waitFor(selector);
-  const items = await $$(selector);
+  await devToolsPage.waitFor(selector);
+  const items = await devToolsPage.$$(selector);
   const promises = items.map(handle => handle.evaluate(el => el.textContent as string));
   const results = [];
   for (const promise of promises) {
@@ -376,10 +370,11 @@ export async function getCallFrameLocations() {
   return results;
 }
 
-export async function switchToCallFrame(index: number) {
+export async function switchToCallFrame(
+    index: number, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const selector = `.call-frame-item[aria-posinset="${index}"]`;
-  await click(selector);
-  await waitFor(selector + '[aria-selected="true"]');
+  await devToolsPage.click(selector);
+  await devToolsPage.waitFor(selector + '[aria-selected="true"]');
 }
 
 export async function retrieveTopCallFrameScriptLocation(
@@ -608,44 +603,41 @@ export async function readIgnoreListedSources(): Promise<string[]> {
   return results.map(item => item.replace(/localhost:[0-9]+/, 'localhost:XXXX'));
 }
 
-async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
-  const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
+async function hasPausedEvents(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage):
+    Promise<boolean> {
+  const events = await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
   return Boolean(events?.length);
 }
 
-export async function stepThroughTheCode() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F9');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepThroughTheCode(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F9');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepIn() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F11');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepIn(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F11');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepOver() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.press('F10');
-  await waitForFunction(() => hasPausedEvents(frontend));
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+export async function stepOver(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.press('F10');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
-export async function stepOut() {
-  const {frontend} = getBrowserAndPages();
-  await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  await frontend.keyboard.down('Shift');
-  await frontend.keyboard.press('F11');
-  await frontend.keyboard.up('Shift');
-  await waitForFunction(() => hasPausedEvents(frontend));
+export async function stepOut(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  await devToolsPage.getPendingEvents(DEBUGGER_PAUSED_EVENT);
+  await devToolsPage.page.keyboard.down('Shift');
+  await devToolsPage.page.keyboard.press('F11');
+  await devToolsPage.page.keyboard.up('Shift');
+  await devToolsPage.waitForFunction(() => hasPausedEvents(devToolsPage));
 
-  await waitFor(PAUSE_INDICATOR_SELECTOR);
+  await devToolsPage.waitFor(PAUSE_INDICATOR_SELECTOR);
 }
 
 export async function openNestedWorkerFile(

@@ -432,6 +432,14 @@ export class CSSModel extends SDKModel<EventTypes> {
     };
   }
 
+  async getEnvironmentVariales(): Promise<Record<string, string>> {
+    const response = await this.agent.invoke_getEnvironmentVariables();
+    if (response.getError()) {
+      return {};
+    }
+    return response.environmentVariables;
+  }
+
   async getBackgroundColors(nodeId: Protocol.DOM.NodeId): Promise<ContrastInfo|null> {
     const response = await this.agent.invoke_getBackgroundColors({nodeId});
     if (response.getError()) {

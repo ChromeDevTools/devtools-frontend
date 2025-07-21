@@ -183,7 +183,8 @@ export class TracingContext {
     this.#highlighting = highlighting;
     this.#hasMoreSubstitutions =
         matchedResult?.hasMatches(
-            SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch) ??
+            SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch,
+            SDK.CSSPropertyParserMatchers.EnvFunctionMatch) ??
         false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;

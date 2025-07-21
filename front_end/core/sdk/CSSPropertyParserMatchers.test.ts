@@ -732,4 +732,35 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
         new SDK.CSSPropertyParserMatchers.ColorMatch(expected.getAuthoredText() ?? expected.asString(), match.node);
     assert.isNull(match.getColorChannelValue({baseColor, colorSpace: expected.format()}));
   });
+
+  it('match env() functions', () => {
+    // Matched when the var resolves
+    for (const good of ['env(a)', 'env(a, d)', 'env(a /* aa */, b c)', 'env(a, b, c)']) {
+      const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+      matchedStyles.environmentVariable.callsFake(name => name === 'a' ? 'A' : 'B');
+      const {match, text} =
+          matchSingleValue('--env', good, new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(matchedStyles));
+      assert.exists(match, text);
+      assert.strictEqual(match.varName, 'a');
+      assert.strictEqual(match.value, 'A');
+    }
+    // Matched when the var is not resolved
+    for (const good of ['env(a)', 'env(a, d)', 'env(a /* aa */, b c)', 'env(a, b, c)']) {
+      const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+      matchedStyles.environmentVariable.callsFake(name => name === 'a' ? undefined : 'B');
+      const {match, text} =
+          matchSingleValue('--env', good, new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(matchedStyles));
+      assert.exists(match, text);
+      assert.strictEqual(match.varName, 'a');
+      assert.oneOf(match.value, [null, 'd', 'b c', 'b, c']);
+    }
+    // Not matched
+    for (const bad of ['env', 'env()']) {
+      const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+      const {match, ast, text} =
+          matchSingleValue('--env', bad, new SDK.CSSPropertyParserMatchers.EnvFunctionMatcher(matchedStyles));
+      assert.notExists(match, text);
+      assert.exists(ast, text);
+    }
+  });
 });

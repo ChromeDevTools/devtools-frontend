@@ -35,8 +35,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       SDK.CSSMatchedStyles.CSSVariableValue|null>;
   let cssModel: SDK.CSSModel.CSSModel;
 
-  const environmentVariables = {a: 'A'};
-
   beforeEach(async () => {
     const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
@@ -51,16 +49,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       '--empty': '',
     };
 
-    matchedStyles = await getMatchedStylesWithBlankRule({
-      cssModel: new SDK.CSSModel.CSSModel(createTarget()),
-      range: {
-        startLine: 0,
-        startColumn: 0,
-        endLine: 0,
-        endColumn: 1,
-      },
-      getEnvironmentVariablesCallback: () => ({environmentVariables})
-    });
+    matchedStyles = await getMatchedStylesWithBlankRule(
+        new SDK.CSSModel.CSSModel(createTarget()), undefined, {startLine: 0, startColumn: 0, endLine: 0, endColumn: 1});
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
     fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name) => {
       const value = mockVariableMap[name];
@@ -2068,33 +2058,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.deepEqual(
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')),
           [false, true, false, false, false]);
-    });
-  });
-
-  describe('EnvFunctionRenderer', () => {
-    it('strikes out non-selected values', async () => {
-      const stylePropertyTreeElement = getTreeElement('--env', 'env(a, b) env(c, b)');
-      stylePropertyTreeElement.updateTitle();
-
-      const args = stylePropertyTreeElement.valueElement?.querySelectorAll('span')
-                       .values()
-                       .filter(span => ['a', 'b', 'c'].includes(span.textContent ?? ''))
-                       .toArray();
-      assert.exists(args);
-      assert.lengthOf(args, 4);
-      assert.deepEqual(
-          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, true, true, false]);
-    });
-
-    it('shows a value tracing tooltip', async () => {
-      const stylePropertyTreeElement = getTreeElement('--env', 'env(a, b) env(c, b)');
-      stylePropertyTreeElement.updateTitle();
-      assert.exists(stylePropertyTreeElement.valueElement);
-      const tooltips = stylePropertyTreeElement.valueElement.querySelectorAll('devtools-tooltip');
-      assert.lengthOf(tooltips, 2);
-      const anchors = stylePropertyTreeElement.valueElement.querySelectorAll('.tracing-anchor');
-      assert.lengthOf(anchors, 2);
-      assert.deepEqual(anchors.values().map(anchor => anchor.textContent).toArray(), ['env', 'env']);
     });
   });
 

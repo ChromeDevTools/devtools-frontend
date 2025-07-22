@@ -151,19 +151,6 @@ declare global {
   interface HTMLElementTagNameMap {
     'devtools-recorder-controller': RecorderController;
   }
-
-  interface FileSystemWritableFileStream extends WritableStream {
-    write(data: unknown): Promise<void>;
-    close(): Promise<void>;
-  }
-
-  interface FileSystemHandle {
-    createWritable(): Promise<FileSystemWritableFileStream>;
-  }
-
-  interface Window {
-    showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
-  }
 }
 
 interface StoredRecording {

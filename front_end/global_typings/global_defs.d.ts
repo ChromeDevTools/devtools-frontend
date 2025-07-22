@@ -56,8 +56,19 @@ interface Scheduler {
 
 interface Window {
   readonly scheduler: Scheduler;
+
+  showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
 }
 
 interface WorkerGlobalScope {
   readonly scheduler?: Scheduler;
+}
+
+interface FileSystemWritableFileStream extends WritableStream {
+  write(data: unknown): Promise<void>;
+  close(): Promise<void>;
+}
+
+interface FileSystemHandle {
+  createWritable(): Promise<FileSystemWritableFileStream>;
 }

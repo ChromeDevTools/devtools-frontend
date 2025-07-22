@@ -42,21 +42,6 @@ import * as UI from '../../legacy.js';
 
 import imageViewStyles from './imageView.css.js';
 
-declare global {
-  interface FileSystemWritableFileStream extends WritableStream {
-    write(data: unknown): Promise<void>;
-    close(): Promise<void>;
-  }
-
-  interface FileSystemHandle {
-    createWritable(): Promise<FileSystemWritableFileStream>;
-  }
-
-  interface Window {
-    showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
-  }
-}
-
 const UIStrings = {
   /**
    *@description Text in Image View of the Sources panel

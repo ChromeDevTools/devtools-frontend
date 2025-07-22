@@ -69,6 +69,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   private aidaClient?: Host.AidaClient.AidaClient;
   private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
+  private placeholderCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
   private teaserContainer?: HTMLDivElement;
   private aiCodeCompletionThrottler?: Common.Throttler.Throttler;
   private aiCodeCompletionSetting =
@@ -156,7 +157,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       this.teaserContainer = document.createElement('div');
       const teaser = new AiCodeCompletionTeaser();
       teaser.show(this.teaserContainer, undefined, true);
-      extensions.push(TextEditor.Config.aiAutoCompleteSuggestion, CodeMirror.placeholder(this.teaserContainer));
+      extensions.push(
+          TextEditor.Config.aiAutoCompleteSuggestion,
+          this.placeholderCompartment.of(CodeMirror.placeholder(this.teaserContainer)));
     }
 
     const doc = this.initialText;
@@ -203,7 +206,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return this.eagerPreviewElement;
   }
 
-  private onTextChanged(): void {
+  private onTextChanged(docContentChanged?: boolean): void {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
     if (this.eagerEvalSetting.get()) {
@@ -212,7 +215,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           this.requestPreviewBound,
           asSoonAsPossible ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
     }
-    if (this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+    if (docContentChanged && this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+      // Only trigger when doc content changes.
+      // This ensures that it is not triggered when user is going through the options in existing completion menu.
       this.triggerAiCodeCompletion();
     }
     this.updatePromptIcon();
@@ -335,7 +340,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       },
     ];
 
-    if (this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+    if (this.isAiCodeCompletionEnabled()) {
       keymap.push({
         key: 'Tab',
         run: (): boolean => {
@@ -409,6 +414,12 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         changes: {from: 0, to: this.editor.state.doc.length},
         scrollIntoView: true,
       });
+      if (this.teaserContainer) {
+        this.editor.dispatch({
+          effects: this.placeholderCompartment.reconfigure([]),
+        });
+        this.teaserContainer = undefined;
+      }
     } else if (this.editor.state.doc.length) {
       CodeMirror.insertNewlineAndIndent(this.editor.editor);
     } else {
@@ -463,7 +474,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   private editorUpdate(update: CodeMirror.ViewUpdate): void {
     if (update.docChanged ||
         CodeMirror.selectedCompletion(update.state) !== CodeMirror.selectedCompletion(update.startState)) {
-      this.onTextChanged();
+      const docContentChanged = update.state.doc !== update.startState.doc;
+      this.onTextChanged(docContentChanged);
     } else if (update.selectionSet) {
       this.updatePromptIcon();
     }

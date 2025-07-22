@@ -131,6 +131,7 @@ function moveCompletionSelectionIfNotConservative(
     if (CM.completionStatus(view.state) !== 'active') {
       return false;
     }
+    view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
     if (view.state.field(conservativeCompletion, false)) {
       view.dispatch({effects: disableConservativeCompletion.of(null)});
       announceSelectedCompletionInfo(view);
@@ -147,6 +148,7 @@ function moveCompletionSelectionBackwardWrapper(): ((view: CM.EditorView) => boo
     if (CM.completionStatus(view.state) !== 'active') {
       return false;
     }
+    view.dispatch({effects: setAiAutoCompleteSuggestion.of(null)});
     CM.moveCompletionSelection(false)(view);
     announceSelectedCompletionInfo(view);
     return true;
@@ -505,9 +507,15 @@ export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggesti
       return value;
     }
 
-    // If a change happened before the position from which suggestion was generated, set to null.
     const from = tr.changes.mapPos(value.from);
     const {head} = tr.state.selection.main;
+
+    // If deletion occurs, set to null.
+    if (from === head && tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+      return null;
+    }
+
+    // If a change happened before the position from which suggestion was generated, set to null.
     if (tr.changes.touchesRange(0, from - 1) || head < from) {
       return null;
     }

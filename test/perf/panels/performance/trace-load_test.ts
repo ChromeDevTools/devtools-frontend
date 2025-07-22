@@ -49,7 +49,8 @@ async function timeFixture(fixture: string): Promise<number> {
 
 describe('Performance panel trace load performance', () => {
   const allTestValues: Array<{name: string, values: number[]}> = [];
-  describe('Large CPU profile load benchmark', () => {
+  // Skipped because this throws range errors
+  describe.skip('[crbug.com/433466849] Large CPU profile load benchmark', () => {
     beforeEach(async () => {
       // Reload devtools to get a fresh version of the panel on each
       // run and prevent a skew due to caching, etc.

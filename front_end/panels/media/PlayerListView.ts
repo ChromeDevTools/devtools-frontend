@@ -167,7 +167,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       return;
     }
     if (candidate.length >= max) {
-      candidate = candidate.substring(0, max - 3) + '...';
+      candidate = candidate.substring(0, max - 1) + '…';
     }
     func.bind(this)(playerID, candidate);
   }
@@ -239,7 +239,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     // since the site is free to set the title to _anything_, it might just be
     // junk, or it might be super long. If it's empty, or 1 character, It's
     // preferable to just drop it. Titles longer than 20 will have the first
-    // 17 characters kept and an elipsis appended.
+    // 17 characters kept and an ellipsis appended.
     if (property.name === PlayerPropertyKeys.FRAME_TITLE && property.value) {
       this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, property.value, 1, 20);
       return;

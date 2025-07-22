@@ -146,7 +146,7 @@ class ResourceChunkNode extends DataGridItem {
     const length = i18n.ByteUtilities.bytesToString(Platform.StringUtilities.base64ToSize(chunk.data));
     const maxDisplayLen = 30;
     if (chunk.data.length > maxDisplayLen) {
-      description = chunk.data.substring(0, maxDisplayLen) + '...';
+      description = chunk.data.substring(0, maxDisplayLen) + '…';
     } else {
       description = chunk.data;
     }

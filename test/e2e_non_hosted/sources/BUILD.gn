@@ -9,6 +9,7 @@ ts_e2e_library("sources") {
     "breakpoint-csp-violations_test.ts",
     "breakpoints-sidebarpane_test.ts",
     "can-handle-special-characters_test.ts",
+    "can-open-linear-memory-inspector_test.ts",
     "can-pretty-print-sourcecode_test.ts",
     "can-show-wasm-scopes_test.ts",
     "color-swatch_test.ts",

@@ -648,10 +648,12 @@ export async function openNestedWorkerFile(
   await devToolsPage.click(selectors.fileSelector);
 }
 
-export async function inspectMemory(variableName: string) {
+export async function inspectMemory(
+    variableName: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   await openSoftContextMenuAndClickOnItem(
       `[data-object-property-name-for-test="${variableName}"]`,
       'Open in Memory inspector panel',
+      devToolsPage,
   );
 }
 

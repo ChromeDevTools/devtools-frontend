@@ -958,7 +958,7 @@ export class ChatView extends HTMLElement {
                             </clipPath>
                           </defs>
                         </svg>
-                        <span>Sign in with OpenRouter</span>
+                        <span>Connect via OpenRouter</span>
                       </div>
                     </button>
                     

@@ -208,3 +208,5 @@ export class TypeToAllowDialog {
     return result;
   }
 }
+
+export {AiCodeCompletionTeaser} from './AiCodeCompletionTeaser.js';

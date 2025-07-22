@@ -3,18 +3,38 @@
 # found in the LICENSE file.
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "common.css" ]
+  sources = [
+    "aiCodeCompletionTeaser.css",
+    "common.css",
+  ]
+}
+
+devtools_module("ai_code_completion_teaser") {
+  sources = [ "AiCodeCompletionTeaser.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/i18n:bundle",
+    "../../core/platform:bundle",
+    "../../ui/components/snackbars:bundle",
+    "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
+    "../../ui/visual_logging:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
   entrypoint = "common.ts"
 
   deps = [
+    ":ai_code_completion_teaser",
     ":css_files",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -28,4 +48,15 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_panels_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "AiCodeCompletionTeaser.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

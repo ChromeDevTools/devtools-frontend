@@ -1,0 +1,27 @@
+/*
+ * Copyright 2025 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.ai-code-completion-teaser {
+    pointer-events: all;
+    align-items: center;
+    font-style: italic;
+
+    .ai-code-completion-teaser-dismiss {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .ai-code-completion-teaser-action {
+        display: inline-flex;
+        gap: var(--sys-size-2);
+
+        span {
+            border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+            border-radius: var(--sys-shape-corner-extra-small);
+            padding: 0 var(--sys-size-3);
+        }
+    }
+}

@@ -166,6 +166,7 @@ group("unittests") {
     "panels/autofill:unittests",
     "panels/browser_debugger:unittests",
     "panels/changes:unittests",
+    "panels/common:unittests",
     "panels/console:unittests",
     "panels/console_counters:unittests",
     "panels/coverage:unittests",

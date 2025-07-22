@@ -44,7 +44,7 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
     return new Elements.StylePropertiesSection.StylePropertiesSection(
         stylesSidebarPane, matchedStyles, style,
         /* sectionIdx */ 0, /* computedStyles */ null,
-        /* parentsComputedStyles */ null, sectionName);
+        /* parentsComputedStyles */ null, /* computedStyleExtraFields */ null, sectionName);
   }
 
   function createBlockAndSection(
@@ -143,7 +143,7 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
     style.allProperties.returns([shorthandProperty, longhandProperty]);
 
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-        stylesSidebarPane, matchedStyles, style, 0, null, null);
+        stylesSidebarPane, matchedStyles, style, 0, null, null, null);
     sinon.stub(stylesSidebarPane, 'allSections').returns([section]);
 
     const highlighter = new Elements.StylePropertyHighlighter.StylePropertyHighlighter(stylesSidebarPane);

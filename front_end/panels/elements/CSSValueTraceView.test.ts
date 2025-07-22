@@ -77,7 +77,7 @@ async function showTrace(
       property, null, matchedStyles, new Map(),
       Elements.StylePropertyTreeElement.getPropertyRenderers(
           property.name, property.ownerStyle, treeElement.parentPane(), matchedStyles, treeElement,
-          treeElement.getComputedStyles() ?? new Map()),
+          treeElement.getComputedStyles() ?? new Map(), treeElement.getComputedStyleExtraFields()),
       false, 0, false);
   return await viewFunction.nextInput;
 }

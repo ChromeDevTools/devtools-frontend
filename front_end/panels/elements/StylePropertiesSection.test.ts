@@ -29,7 +29,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
-        matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
+        matchedStyles.nodeStyles()[0], 0, new Map(), new Map(), null);
     section.renderSelectors([{text: '.child', specificity}], [true], new WeakMap());
     const selectorElement = section.element.querySelector('.selector');
     assert.strictEqual(selectorElement?.textContent, '.child');
@@ -40,7 +40,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
-        matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
+        matchedStyles.nodeStyles()[0], 0, new Map(), new Map(), null);
     section.renderSelectors(
         [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '.item', specificity: {a: 0, b: 2, c: 0}}], [true],
         new WeakMap());
@@ -161,7 +161,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       const declaration = matchedStyles.nodeStyles()[0];
       assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-          stylesSidebarPane, matchedStyles, declaration, 0, null, null);
+          stylesSidebarPane, matchedStyles, declaration, 0, null, null, null);
       assert.strictEqual(section.element.textContent, 'div {  & ul {    body {      div {      }    }  }}');
     }
 
@@ -184,7 +184,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       const declaration = matchedStyles.nodeStyles()[0];
       assert.exists(declaration);
       const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-          stylesSidebarPane, matchedStyles, declaration, 0, null, null);
+          stylesSidebarPane, matchedStyles, declaration, 0, null, null, null);
       assert.strictEqual(section.element.textContent, 'div {  body {    }}');
     }
   });

@@ -379,6 +379,13 @@ export class CSSModel extends SDKModel<EventTypes> {
     return await this.#styleLoader.computedStylePromise(nodeId);
   }
 
+  async getComputedStyleExtraFields(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.ComputedStyleExtraFields> {
+    if (!this.isEnabled()) {
+      await this.enable();
+    }
+    return await this.#styleLoader.extraFieldsPromise(nodeId);
+  }
+
   async getLayoutPropertiesFromComputedStyle(nodeId: Protocol.DOM.NodeId): Promise<LayoutProperties|null> {
     const styles = await this.getComputedStyle(nodeId);
     if (!styles) {
@@ -1051,31 +1058,47 @@ class CSSDispatcher implements ProtocolProxyApi.CSSDispatcher {
   }
 }
 
+interface ComputedStyleWithExtraFields {
+  style: Map<string, string>|null;
+  extraFields: Protocol.CSS.ComputedStyleExtraFields;
+}
+
 class ComputedStyleLoader {
   #cssModel: CSSModel;
-  #nodeIdToPromise = new Map<number, Promise<Map<string, string>|null>>();
+  #nodeIdToPromise = new Map<number, Promise<ComputedStyleWithExtraFields>>();
   constructor(cssModel: CSSModel) {
     this.#cssModel = cssModel;
   }
 
-  computedStylePromise(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {
+  #getResponsePromise(nodeId: Protocol.DOM.NodeId): Promise<ComputedStyleWithExtraFields> {
     let promise = this.#nodeIdToPromise.get(nodeId);
     if (promise) {
       return promise;
     }
-    promise = this.#cssModel.getAgent().invoke_getComputedStyleForNode({nodeId}).then(({computedStyle}) => {
-      this.#nodeIdToPromise.delete(nodeId);
-      if (!computedStyle?.length) {
-        return null;
-      }
-      const result = new Map<string, string>();
-      for (const property of computedStyle) {
-        result.set(property.name, property.value);
-      }
-      return result;
-    });
+    promise =
+        this.#cssModel.getAgent().invoke_getComputedStyleForNode({nodeId}).then(({computedStyle, extraFields}) => {
+          this.#nodeIdToPromise.delete(nodeId);
+          if (!computedStyle?.length) {
+            return {style: null, extraFields};
+          }
+          const result = new Map<string, string>();
+          for (const property of computedStyle) {
+            result.set(property.name, property.value);
+          }
+          return {style: result, extraFields};
+        });
     this.#nodeIdToPromise.set(nodeId, promise);
     return promise;
+  }
+
+  async computedStylePromise(nodeId: Protocol.DOM.NodeId): Promise<Map<string, string>|null> {
+    const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+    return computedStyleWithExtraFields.style;
+  }
+
+  async extraFieldsPromise(nodeId: Protocol.DOM.NodeId): Promise<Protocol.CSS.ComputedStyleExtraFields> {
+    const computedStyleWithExtraFields = await this.#getResponsePromise(nodeId);
+    return computedStyleWithExtraFields.extraFields;
   }
 }
 

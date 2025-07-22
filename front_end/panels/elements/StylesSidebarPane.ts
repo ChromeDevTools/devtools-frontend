@@ -576,14 +576,17 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const nodeId = this.node()?.id;
     const parentNodeId = this.matchedStyles?.getParentLayoutNodeId();
 
-    const [computedStyles, parentsComputedStyles] =
-        await Promise.all([this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId)]);
+    const [computedStyles, parentsComputedStyles, computedStyleExtraFields] = await Promise.all([
+      this.fetchComputedStylesFor(nodeId), this.fetchComputedStylesFor(parentNodeId),
+      this.fetchComputedStyleExtraFieldsFor(nodeId)
+    ]);
 
     if (signal.aborted) {
       return;
     }
 
-    await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles);
+    await this.innerRebuildUpdate(
+        signal, this.matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
 
     if (signal.aborted) {
       return;
@@ -631,6 +634,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       return null;
     }
     return await node.domModel().cssModel().getComputedStyle(nodeId);
+  }
+
+  private async fetchComputedStyleExtraFieldsFor(nodeId: Protocol.DOM.NodeId|undefined):
+      Promise<Protocol.CSS.ComputedStyleExtraFields|null> {
+    const node = this.node();
+    if (node === null || nodeId === undefined) {
+      return null;
+    }
+    return await node.domModel().cssModel().getComputedStyleExtraFields(nodeId);
   }
 
   override onResize(): void {
@@ -914,7 +926,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   private async innerRebuildUpdate(
       signal: AbortSignal, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null,
-      computedStyles: Map<string, string>|null, parentsComputedStyles: Map<string, string>|null): Promise<void> {
+      computedStyles: Map<string, string>|null, parentsComputedStyles: Map<string, string>|null,
+      computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null): Promise<void> {
     // ElementsSidebarPane's throttler schedules this method. Usually,
     // rebuild is suppressed while editing (see onCSSModelChanged()), but we need a
     // 'force' flag since the currently running throttler process cannot be canceled.
@@ -940,7 +953,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     const blocks = await this.rebuildSectionsForMatchedStyleRules(
-        (matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), computedStyles, parentsComputedStyles);
+        (matchedStyles as SDK.CSSMatchedStyles.CSSMatchedStyles), computedStyles, parentsComputedStyles,
+        computedStyleExtraFields);
 
     if (signal.aborted) {
       return;
@@ -1023,13 +1037,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   rebuildSectionsForMatchedStyleRulesForTest(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>|null,
-      parentsComputedStyles: Map<string, string>|null): Promise<SectionBlock[]> {
-    return this.rebuildSectionsForMatchedStyleRules(matchedStyles, computedStyles, parentsComputedStyles);
+      parentsComputedStyles: Map<string, string>|null,
+      computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null): Promise<SectionBlock[]> {
+    return this.rebuildSectionsForMatchedStyleRules(
+        matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
   }
 
   private async rebuildSectionsForMatchedStyleRules(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>|null,
-      parentsComputedStyles: Map<string, string>|null): Promise<SectionBlock[]> {
+      parentsComputedStyles: Map<string, string>|null,
+      computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields|null): Promise<SectionBlock[]> {
     if (this.idleCallbackManager) {
       this.idleCallbackManager.discard();
     }
@@ -1077,8 +1094,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
           style.type === SDK.CSSStyleDeclaration.Type.Animation;
       if (lastBlock && (!isTransitionOrAnimationStyle || style.allProperties().length > 0)) {
         this.idleCallbackManager.schedule(() => {
-          const section =
-              new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles);
+          const section = new StylePropertiesSection(
+              this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
           lastBlock.sections.push(section);
         });
@@ -1151,7 +1168,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         const lastBlock = blocks[blocks.length - 1];
         this.idleCallbackManager.schedule(() => {
           const section = new HighlightPseudoStylePropertiesSection(
-              this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles);
+              this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
           sectionIdx++;
           lastBlock.sections.push(section);
         });

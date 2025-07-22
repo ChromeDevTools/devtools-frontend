@@ -126,7 +126,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
     const property = addProperty(name, value, longhandProperties);
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
-        stylesSidebarPane, matchedStyles, property.ownerStyle, 0, null, null);
+        stylesSidebarPane, matchedStyles, property.ownerStyle, 0, null, null, null);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesPane: stylesSidebarPane,
       section,
@@ -333,7 +333,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
             Elements.StylePropertyTreeElement.getPropertyRenderers(
-                property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map()),
+                property.name, matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map(), null),
             context);
 
         const colorSwatch = valueElement.querySelector('devtools-color-swatch');
@@ -968,7 +968,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           .showTrace(
               property, null, matchedStyles, new Map(),
               Elements.StylePropertyTreeElement.getPropertyRenderers(
-                  property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+                  property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map(), null),
               false, 0, false);
 
       await promise;
@@ -2045,7 +2045,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
-              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map(), null),
           false, 0, false);
 
       sinon.assert.calledOnce(evaluationSpy);
@@ -2064,7 +2064,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await view.showTrace(
           property, null, matchedStyles, new Map(),
           Elements.StylePropertyTreeElement.getPropertyRenderers(
-              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()),
+              property.name, property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map(), null),
           false, 0, false);
 
       sinon.assert.calledOnce(resolveValuesStub);
@@ -2084,7 +2084,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')),
           [false, false, false, true, false]);
 
-      stylePropertyTreeElement.setComputedStyles(new Map([['appearance', 'base-select']]));
+      stylePropertyTreeElement.setComputedStyleExtraFields({isAppearanceBase: true});
       stylePropertyTreeElement.updateTitle();
 
       args = stylePropertyTreeElement.valueElement?.querySelectorAll('span') as NodeListOf<HTMLSpanElement>;

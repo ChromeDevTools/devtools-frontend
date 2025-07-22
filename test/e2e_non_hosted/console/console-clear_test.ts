@@ -37,7 +37,7 @@ describe('The Console Tab', function() {
     const clearResult = await devToolsPage.evaluate(() => {
       const result = document.querySelector('.console-user-command-result');
       if (!result) {
-        assert.fail('Could not find user command result in the DOM.');
+        throw new Error('Could not find user command result in the DOM.');
       }
       return result.textContent;
     });

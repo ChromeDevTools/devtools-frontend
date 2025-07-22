@@ -693,9 +693,7 @@ export async function getValuesForScope(
 
 export async function getPausedMessages(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const messageElement = await devToolsPage.page.waitForSelector('.paused-message');
-  if (!messageElement) {
-    assert.fail('getPausedMessages: did not find .paused-message element.');
-  }
+  assert.isOk(messageElement, 'getPausedMessages: did not find .paused-message element.');
   const statusMain = await devToolsPage.waitFor('.status-main', messageElement);
   const statusSub = await devToolsPage.waitFor('.status-sub', messageElement);
   return {

@@ -33,9 +33,7 @@ async function goToTestPageAndSelectTestElement(
 
 async function assertColorSwatch(
     container: puppeteer.ElementHandle|undefined, expectedColor: string, devToolsPage: DevToolsPage) {
-  if (!container) {
-    assert.fail('Container not found');
-  }
+  assert.isOk(container, 'Container not found');
   const swatch = await getColorSwatch(container, 0, devToolsPage);
   assert.isTrue(Boolean(swatch), 'Color swatch found');
 
@@ -44,9 +42,7 @@ async function assertColorSwatch(
 }
 
 async function assertNoColorSwatch(container: puppeteer.ElementHandle|undefined, devToolsPage: DevToolsPage) {
-  if (!container) {
-    assert.fail('Container not found');
-  }
+  assert.isOk(container, 'Container not found');
   const swatch = await getColorSwatch(container, 0, devToolsPage);
   assert.isUndefined(swatch, 'No color swatch found');
 }
@@ -130,9 +126,7 @@ describe('The color swatch', () => {
 
     await waitForCSSPropertyValue('#inspected', 'color', 'red', undefined, devToolsPage);
     const property = await getCSSPropertyInRule('#inspected', 'color', undefined, devToolsPage);
-    if (!property) {
-      assert.fail('Property not found');
-    }
+    assert.isOk(property, 'Property not found');
     await shiftClickColorSwatch(
         property, 0, 'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
         devToolsPage);
@@ -147,9 +141,7 @@ describe('The color swatch', () => {
 
     await waitForCSSPropertyValue('#inspected', 'background-color', 'var(--variable)', undefined, devToolsPage);
     const property = await getCSSPropertyInRule('#inspected', 'background-color', undefined, devToolsPage);
-    if (!property) {
-      assert.fail('Property not found');
-    }
+    assert.isOk(property, 'Property not found');
     await shiftClickColorSwatch(
         property, 0,
         'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: background-color > Value',

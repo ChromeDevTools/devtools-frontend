@@ -54,9 +54,7 @@ async function openMoreFiltersDropdown() {
 async function getFilter(label: string, root?: ElementHandle) {
   const filter = await $textContent(label, root);
 
-  if (!filter) {
-    assert.fail(`Could not find ${label} filter.`);
-  }
+  assert.isOk(filter, `Could not find ${label} filter.`);
   return filter;
 }
 

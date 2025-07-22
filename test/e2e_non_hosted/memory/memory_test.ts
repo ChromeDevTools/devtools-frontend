@@ -233,9 +233,7 @@ describe('The Memory Panel', function() {
           return findPromises.find(result => result !== null);
         });
 
-        if (!sharedInLeakingElementRow) {
-          assert.fail('Could not find data-grid row with "shared in leaking()" text.');
-        }
+        assert.isOk(sharedInLeakingElementRow, 'Could not find data-grid row with "shared in leaking()" text.');
 
         const textOfEl = await sharedInLeakingElementRow.evaluate(e => e.textContent || '');
         // Double check we got the right element to avoid a confusing text failure
@@ -260,14 +258,10 @@ describe('The Memory Panel', function() {
         // So the best way to get at them is to grab the two subsequent siblings of the "shared in leaking()" row.
         const nextRow = (await sharedInLeakingElementRow.evaluateHandle(e => e.nextSibling)).asElement() as
             puppeteer.ElementHandle<HTMLElement>;
-        if (!nextRow) {
-          assert.fail('Could not find row below "shared in leaking()" row');
-        }
+        assert.isOk(nextRow, 'Could not find row below "shared in leaking()" row');
         const nextNextRow =
             (await nextRow.evaluateHandle(e => e.nextSibling)).asElement() as puppeteer.ElementHandle<HTMLElement>;
-        if (!nextNextRow) {
-          assert.fail('Could not find 2nd row below "shared in leaking()" row');
-        }
+        assert.isOk(nextNextRow, 'Could not find 2nd row below "shared in leaking()" row');
 
         const childText =
             await Promise.all([nextRow, nextNextRow].map(async row => await row.evaluate(r => r.innerText)));

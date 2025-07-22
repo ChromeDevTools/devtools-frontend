@@ -131,9 +131,7 @@ describe('The Performance tool, Bottom-up panel', function() {
     await toggleCaseSensitive(devToolsPage);
     await setFilter('h2_', devToolsPage);
     const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-    if (!rootActivity) {
-      assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
-    }
+    assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
 
     const initialActivities = await enumerateTreeItems(devToolsPage);
     assert.deepEqual(initialActivities, [expectedActivities.at(0)]);
@@ -158,9 +156,7 @@ describe('The Performance tool, Bottom-up panel', function() {
 
     const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
     const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-    if (!rootActivity) {
-      assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
-    }
+    assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
     await expandNodeRecursively(rootActivity, devToolsPage);
     // Wait for all nodes
     await devToolsPage.waitForMany('td.activity-column', 7);

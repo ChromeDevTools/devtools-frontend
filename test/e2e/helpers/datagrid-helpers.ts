@@ -48,9 +48,7 @@ export async function getDataGridColumnNames(
 
 export async function getDataGrid(root?: ElementHandle, devToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   const dataGrid = await devToolsPage.waitFor('devtools-data-grid', root);
-  if (!dataGrid) {
-    assert.fail('Could not find data-grid');
-  }
+  assert.isOk(dataGrid, 'Could not find data-grid');
   await devToolsPage.waitForFunction(async () => {
     const height = await dataGrid.evaluate(elem => elem.clientHeight);
     // Give it a chance to fully render into the page.

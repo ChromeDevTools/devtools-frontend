@@ -111,9 +111,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
       dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
-      if (!timingsTrackGroup) {
-        assert.fail('Could not find Timings track flame chart group');
-      }
+      assert.isOk(timingsTrackGroup, 'Could not find Timings track flame chart group');
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       const allTimingEvents = [
         ...parsedTrace.UserTimings.consoleTimings,
@@ -130,9 +128,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
       dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
-      if (!timingsTrackGroup) {
-        assert.fail('Could not find Timings track flame chart group');
-      }
+      assert.isOk(timingsTrackGroup, 'Could not find Timings track flame chart group');
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
       assert.strictEqual(groupTreeEvents?.length, 6);
       const allEventsAreSync = groupTreeEvents?.every(event => !Trace.Types.Events.isPhaseAsync(event.ph));

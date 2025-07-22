@@ -105,9 +105,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
         // This file contains events in the timings track that can be assembled as a tree
         await initTrackAppender(this, 'sync-like-timings.json.gz');
         const timingsGroupEvents = tracksAppender.groupEventsForTreeView(flameChartData.groups[0]);
-        if (!timingsGroupEvents) {
-          assert.fail('Could not find events for group');
-        }
+        assert.isOk(timingsGroupEvents, 'Could not find events for group');
         const allTimingEvents = [
           ...parsedTrace.UserTimings.consoleTimings,
           ...parsedTrace.UserTimings.timestampEvents,
@@ -119,9 +117,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       it('returns all the events of a flame chart group with one level', () => {
         const gpuGroupEvents =
             tracksAppender.groupEventsForTreeView(flameChartData.groups[1]) as readonly Trace.Types.Events.Event[];
-        if (!gpuGroupEvents) {
-          assert.fail('Could not find events for group');
-        }
+        assert.isOk(gpuGroupEvents, 'Could not find events for group');
         assert.deepEqual(gpuGroupEvents, parsedTrace.GPU.mainGPUThreadTasks);
       });
     });

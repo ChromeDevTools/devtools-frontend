@@ -812,9 +812,7 @@ export const focusCSSPropertyValue =
   await devToolsPage.waitForFunction(async () => {
     property = await getCSSPropertyInRule(selector, propertyName, undefined, devToolsPage);
     const value = property ? await devToolsPage.$(CSS_PROPERTY_VALUE_SELECTOR, property) : null;
-    if (!value) {
-      assert.fail(`Could not find property ${propertyName} in rule ${selector}`);
-    }
+    assert.isOk(value, `Could not find property ${propertyName} in rule ${selector}`);
     return await value.evaluate(node => {
       return node.classList.contains('text-prompt') && node.hasAttribute('contenteditable');
     });
@@ -845,9 +843,7 @@ export async function editCSSProperty(
     // Wait until the value element is not a text-prompt anymore.
     const property = await getCSSPropertyInRule(selector, propertyName, undefined, devToolsPage);
     const value = property ? await devToolsPage.$(CSS_PROPERTY_VALUE_SELECTOR, property) : null;
-    if (!value) {
-      assert.fail(`Could not find property ${propertyName} in rule ${selector}`);
-    }
+    assert.isOk(value, `Could not find property ${propertyName} in rule ${selector}`);
     return await value.evaluate(node => {
       return !node.classList.contains('text-prompt') && !node.hasAttribute('contenteditable');
     });
@@ -866,9 +862,7 @@ export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHa
   await waitForFunction(async () => {
     // Wait until the value element has been marked as a text-prompt.
     const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
-    if (!queryText) {
-      assert.fail('Could not find any query in the given styles section');
-    }
+    assert.isOk(queryText, 'Could not find any query in the given styles section');
     const check = await queryText.evaluate(node => {
       return node.classList.contains('being-edited') && node.hasAttribute('contenteditable');
     });
@@ -883,9 +877,7 @@ export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHa
   await waitForFunction(async () => {
     // Wait until the value element is not a text-prompt anymore.
     const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
-    if (!queryText) {
-      assert.fail('Could not find any query in the given styles section');
-    }
+    assert.isOk(queryText, 'Could not find any query in the given styles section');
     const check = await queryText.evaluate(node => {
       return !node.classList.contains('being-edited') && !node.hasAttribute('contenteditable');
     });
@@ -923,9 +915,7 @@ export async function waitForCSSPropertyValue(
 export async function waitForPropertyToHighlight(ruleSelector: string, propertyName: string) {
   await waitForFunction(async () => {
     const property = await getCSSPropertyInRule(ruleSelector, propertyName);
-    if (!property) {
-      assert.fail(`Could not find property ${propertyName} in rule ${ruleSelector}`);
-    }
+    assert.isOk(property, `Could not find property ${propertyName} in rule ${ruleSelector}`);
     // StylePropertyHighlighter temporarily highlights the property using the Web Animations API, so the only way to
     // know it's happening is by listing all animations.
     const animationCount = await property.evaluate(node => (node as HTMLElement).getAnimations().length);
@@ -943,10 +933,11 @@ export const getBreadcrumbsTextContent = async ({expectedNodeCount}: {expectedNo
   const crumbs = await $$(crumbsSelector);
   const crumbsAsText: string[] = await Promise.all(crumbs.map(node => node.evaluate(node => {
     if (!node.shadowRoot) {
-      assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
+      throw new Error('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
     return Array.from(node.shadowRoot.querySelectorAll('span') || []).map(span => span.textContent).join('');
   })));
+
   return crumbsAsText;
 };
 
@@ -954,7 +945,7 @@ export const getSelectedBreadcrumbTextContent = async () => {
   const selectedCrumb = await waitFor('li.crumb.selected > a > devtools-node-text');
   const text = selectedCrumb.evaluate(node => {
     if (!node.shadowRoot) {
-      assert.fail('Found breadcrumbs node that unexpectedly has no shadowRoot.');
+      throw new Error('Found breadcrumbs node that unexpectedly has no shadowRoot.');
     }
     return Array.from(node.shadowRoot.querySelectorAll('span') || []).map(span => span.textContent).join('');
   });

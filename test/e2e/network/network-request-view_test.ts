@@ -662,9 +662,7 @@ describe('The Network Request view', () => {
     await triggerLocalFindDialog();
     await waitFor(SEARCH_QUERY);
     const inputElement = await $(SEARCH_QUERY);
-    if (!inputElement) {
-      assert.fail('Unable to find search input field');
-    }
+    assert.isOk(inputElement, 'Unable to find search input field');
 
     await inputElement.focus();
     await inputElement.type('Cache-Control');

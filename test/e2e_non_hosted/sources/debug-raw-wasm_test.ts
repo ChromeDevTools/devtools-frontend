@@ -343,9 +343,7 @@ describe('Raw-Wasm', () => {
     const messageElement = await devToolsPage.waitFor('.paused-message');
     const statusMain = await devToolsPage.waitFor('.status-main', messageElement);
 
-    if (!statusMain) {
-      assert.fail('Unable to find .status-main element');
-    }
+    assert.isOk(statusMain, 'Unable to find .status-main element');
 
     const pauseMessage = await statusMain.evaluate(n => n.textContent);
 

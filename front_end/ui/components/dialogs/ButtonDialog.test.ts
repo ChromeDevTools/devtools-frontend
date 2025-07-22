@@ -35,9 +35,7 @@ describeWithEnvironment('ButtonDialog', () => {
   function getButtonFromButtonDialog(buttonDialog: Dialogs.ButtonDialog.ButtonDialog): Buttons.Button.Button {
     assert.isNotNull(buttonDialog.shadowRoot);
     const button = buttonDialog.shadowRoot.querySelector('devtools-button');
-    if (!button) {
-      assert.fail('devtools-button not found');
-    }
+    assert.isOk(button, 'devtools-button not found');
     assert.instanceOf(button, HTMLElement);
     return button;
   }
@@ -45,9 +43,7 @@ describeWithEnvironment('ButtonDialog', () => {
   function getDialogFromButtonDialog(buttonDialog: Dialogs.ButtonDialog.ButtonDialog): Dialogs.Dialog.Dialog {
     assert.isNotNull(buttonDialog.shadowRoot);
     const dialog = buttonDialog.shadowRoot.querySelector('devtools-dialog');
-    if (!dialog) {
-      assert.fail('devtools-dialog not found');
-    }
+    assert.isOk(dialog, 'devtools-dialog not found');
     assert.instanceOf(dialog, HTMLElement);
     return dialog;
   }

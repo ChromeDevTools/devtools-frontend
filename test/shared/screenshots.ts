@@ -72,9 +72,7 @@ export const assertElementScreenshotUnchanged = async (
     fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
     options: Partial<puppeteer.ScreenshotOptions> = {},
     ) => {
-  if (!element) {
-    assert.fail(`Given element for test ${fileName} was not found.`);
-  }
+  assert.isOk(element, `Given element for test ${fileName} was not found.`);
   // Only assert screenshots on Linux. We don't observe platform-specific differences enough to justify
   // the costs of asserting 3 platforms per screenshot.
   if (platform !== 'linux') {

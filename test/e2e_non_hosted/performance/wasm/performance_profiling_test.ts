@@ -111,9 +111,7 @@ describe('The Performance panel', function() {
 
         const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
         const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-        if (!rootActivity) {
-          assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
-        }
+        assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
         await rootActivity.click();
         await expandAndCheckActivityTree(expectedActivities, devToolsPage);
       });
@@ -137,9 +135,7 @@ describe('The Performance panel', function() {
 
         const timelineTree = await devToolsPage.$('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
         const rootActivity = await devToolsPage.waitForElementWithTextContent(expectedActivities[0], timelineTree);
-        if (!rootActivity) {
-          assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
-        }
+        assert.isOk(rootActivity, `Could not find ${expectedActivities[0]} in DevTools.`);
         await rootActivity.click();
         await expandAndCheckActivityTree(expectedActivities, devToolsPage);
       });

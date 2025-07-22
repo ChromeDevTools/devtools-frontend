@@ -100,9 +100,7 @@ describe('Expression evaluation', () => {
       return await getWatchExpressionsValues(devToolsPage);
     });
 
-    if (!watchExpressions) {
-      assert.fail('No watch expressions found');
-    }
+    assert.isOk(watchExpressions, 'No watch expressions found');
     const cleanWatchExpressions = watchExpressions.map(expression => expression.replace(/["]+/g, '\''));
     assert.deepEqual(cleanWatchExpressions[0], message);
     await devToolsPage.reload();

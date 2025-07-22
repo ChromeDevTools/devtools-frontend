@@ -42,9 +42,7 @@ async function waitForTopCallFrameChanged(previousCallFrame: string, updatedCall
 
 async function assertScriptLocation(expectedLocation: string) {
   const scriptLocation = await retrieveTopCallFrameWithoutResuming();
-  if (!scriptLocation) {
-    assert.fail('Unable to retrieve script location for call frame');
-  }
+  assert.isOk(scriptLocation, 'Unable to retrieve script location for call frame');
   assert.isTrue(isEqualOrAbbreviation(scriptLocation, expectedLocation));
 }
 

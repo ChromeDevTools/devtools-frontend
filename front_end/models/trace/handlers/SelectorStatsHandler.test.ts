@@ -29,9 +29,7 @@ describe('SelectorStatsHandler', () => {
     });
     assert.isOk(updateLayoutEvent);
 
-    if (!Trace.Types.Events.isUpdateLayoutTree(updateLayoutEvent)) {
-      assert.fail('Event was of the wrong type.');
-    }
+    assert.isOk(Trace.Types.Events.isUpdateLayoutTree(updateLayoutEvent), 'Event was of the wrong type.');
 
     const selectorInfo = data.dataForUpdateLayoutEvent.get(updateLayoutEvent);
     assert.isOk(selectorInfo);

@@ -258,12 +258,13 @@ export const waitForAndClickTreeElementWithPartialText = async (text: string, de
   await devToolsPage.waitForFunction(async () => await clickTreeElementWithPartialText(text, devToolsPage));
 };
 
-export const waitForElementWithPartialText = async (text: string) => {
-  return await waitForFunction(async () => await elementWithPartialText(text));
+export const waitForElementWithPartialText =
+    async (text: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  return await devToolsPage.waitForFunction(async () => await elementWithPartialText(text, devToolsPage));
 };
 
-const elementWithPartialText = async (text: string, devToolsPage?: DevToolsPage) => {
-  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+const elementWithPartialText =
+    async (text: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   const tree = await devToolsPage.waitFor('Page DOM[role="tree"]', undefined, undefined, 'aria');
   const elements = await devToolsPage.$$('[role="treeitem"]', tree, 'aria');
   for (const handle of elements) {
@@ -316,8 +317,7 @@ export const navigateToSidePane = async (paneName: string, devToolsPage?: DevToo
 };
 
 export const waitForElementsStyleSection =
-    async (expectedNodeText: string|null = '<body', devToolsPage?: DevToolsPage) => {
-  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+    async (expectedNodeText: string|null = '<body', devToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
   // Wait for the file to be loaded and selectors to be shown
   await devToolsPage.waitFor('.styles-selector');
   await expectVeEvents(

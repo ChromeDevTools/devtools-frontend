@@ -92,7 +92,6 @@ export class TimelineDetailsPane extends
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;
-  #layoutShiftDetails: TimelineComponents.LayoutShiftDetails.LayoutShiftDetails;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #thirdPartyTree = new ThirdPartyTreeViewWidget();
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
@@ -168,8 +167,6 @@ export class TimelineDetailsPane extends
 
     this.#networkRequestDetails =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
-
-    this.#layoutShiftDetails = new TimelineComponents.LayoutShiftDetails.LayoutShiftDetails();
 
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
 
@@ -300,6 +297,8 @@ export class TimelineDetailsPane extends
     this.#traceInsightsSets = data.traceInsightsSets;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
     this.#summaryContent.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    this.#summaryContent.traceInsightsSets = this.#traceInsightsSets;
+    this.#summaryContent.parsedTrace = this.#parsedTrace;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
@@ -312,7 +311,7 @@ export class TimelineDetailsPane extends
     await this.setSelection(null);
   }
 
-  private async setSummaryContent(node: Node): Promise<void> {
+  private async setSummaryContent(node?: Node): Promise<void> {
     const allTabs = this.tabbedPane.otherTabs(Tab.Details);
     for (let i = 0; i < allTabs.length; ++i) {
       if (!this.rangeDetailViews.has(allTabs[i])) {
@@ -320,7 +319,7 @@ export class TimelineDetailsPane extends
       }
     }
 
-    this.#summaryContent.node = node;
+    this.#summaryContent.node = node ?? null;
     this.#summaryContent.requestUpdate();
     await this.#summaryContent.updateComplete;
   }
@@ -448,11 +447,10 @@ export class TimelineDetailsPane extends
     this.#summaryContent.requestUpdate();
 
     // Special case: if the user selects a layout shift or a layout shift cluster,
-    // render the new layout shift details component.
+    // That component is rendered within the summary content component, so we don't have to do anything.
+    // TODO: once we push more of the rendering into the Summary component, this special case can be removed.
     if (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event)) {
-      const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
-      this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);
-      return await this.setSummaryContent(this.#layoutShiftDetails);
+      return await this.setSummaryContent();
     }
 
     // Otherwise, build the generic trace event details UI.
@@ -644,28 +642,53 @@ interface SummaryViewInput {
   node: Node|null;
   selectedEvent: Trace.Types.Events.Event|null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null;
+}
+
+function eventIsLayoutShiftRelated(e: Trace.Types.Events.Event|null): e is Trace.Types.Events.SyntheticLayoutShift|
+    Trace.Types.Events.SyntheticLayoutShiftCluster {
+  if (e === null) {
+    return false;
+  }
+  return Trace.Types.Events.isSyntheticLayoutShift(e) || Trace.Types.Events.isSyntheticLayoutShiftCluster(e);
 }
 
 type View = (input: SummaryViewInput, output: object, target: HTMLElement) => void;
 const SUMMARY_DEFAULT_VIEW: View = (input, _output, target) => {
+  const traceRecordingIsFresh = input.parsedTrace ? Tracker.instance().recordingIsFresh(input.parsedTrace) : false;
+
+  // clang-format off
   render(
       html`
         <style>${detailsViewStyles}</style>
         ${input.node ?? nothing}
-        <devtools-widget .widgetConfig=${
+        ${eventIsLayoutShiftRelated(input.selectedEvent) ? html`
+          <devtools-widget data-layout-shift-details .widgetConfig=${
+            UI.Widget.widgetConfig(TimelineComponents.LayoutShiftDetails.LayoutShiftDetails, {
+              event: input.selectedEvent,
+              traceInsightsSets: input.traceInsightsSets,
+              parsedTrace: input.parsedTrace,
+              isFreshRecording: traceRecordingIsFresh,
+            })}></devtools-widget>
+          ` : nothing}
+        <devtools-widget data-related-insight-chips .widgetConfig=${
           UI.Widget.widgetConfig(TimelineComponents.RelatedInsightChips.RelatedInsightChips, {
             activeEvent: input.selectedEvent,
             eventToInsightsMap: input.eventToRelatedInsightsMap,
           })}></devtools-widget>
       `,
       target, {host: input});
+  // clang-format on
 };
 
-class SummaryView extends UI.Widget.VBox {
+class SummaryView extends UI.Widget.Widget {
   #view: View;
   node: Node|null = null;
   selectedEvent: Trace.Types.Events.Event|null = null;
   eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
 
   constructor(element?: HTMLElement, view = SUMMARY_DEFAULT_VIEW) {
     super(false, false, element);
@@ -678,6 +701,8 @@ class SummaryView extends UI.Widget.VBox {
           node: this.node,
           selectedEvent: this.selectedEvent,
           eventToRelatedInsightsMap: this.eventToRelatedInsightsMap,
+          parsedTrace: this.parsedTrace,
+          traceInsightsSets: this.traceInsightsSets,
         },
         {}, this.contentElement);
   }

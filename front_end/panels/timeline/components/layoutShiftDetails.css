@@ -16,6 +16,8 @@
     width: var(--sys-size-6);
     height: var(--sys-size-6);
     border: var(--sys-size-1) solid var(--sys-color-divider);
+    /* so the border adds onto the width/height */
+    box-sizing: content-box;
     display: inline-block;
     margin-right: var(--sys-size-3);
   }
@@ -59,6 +61,10 @@
   padding: 0;
   font: inherit;
   text-align: left;
+}
+
+.parent-cluster-link {
+  margin-left: var(--sys-size-2);
 }
 
 .timeline-link.invalid-link {

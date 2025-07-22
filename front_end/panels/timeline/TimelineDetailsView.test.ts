@@ -108,7 +108,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
     // tests for its contents so no need to duplicate those here.
-    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    const layoutShiftDetails = detailsContentElement.querySelector('[data-layout-shift-details]');
     assert.isNotNull(layoutShiftDetails);
   });
 
@@ -131,7 +131,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
     // tests for its contents so no need to duplicate those here.
-    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    const layoutShiftDetails = detailsContentElement.querySelector('[data-layout-shift-details]');
     assert.isNotNull(layoutShiftDetails);
   });
 

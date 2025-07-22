@@ -25,7 +25,6 @@ node_ts_library("tests") {
     "issues",
     "lighthouse",
     "network",
-    "panels",
     "performance",
     "security",
     "sources",

@@ -1135,30 +1135,6 @@ const DEFAULT_COLUMNS = [
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'vary'),
   },
   {
-    id: 'request-header-content-type',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Content-Type'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'Content-Type'),
-  },
-  {
-    id: 'request-header-referer',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Referer'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'referer'),
-  },
-  {
-    id: 'request-header-origin',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('Origin'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'origin'),
-  },
-  {
-    id: 'request-header-user-agent',
-    isRequestHeader: true,
-    title: i18n.i18n.lockedLazyString('User-Agent'),
-    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'user-agent'),
-  },
-  {
     id: 'request-header-accept',
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Accept'),
@@ -1177,6 +1153,24 @@ const DEFAULT_COLUMNS = [
     sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'accept-language'),
   },
   {
+    id: 'request-header-content-type',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Content-Type'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'Content-Type'),
+  },
+  {
+    id: 'request-header-origin',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Origin'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'origin'),
+  },
+  {
+    id: 'request-header-referer',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('Referer'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'referer'),
+  },
+  {
     id: 'request-header-sec-fetch-dest',
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Sec-Fetch-Dest'),
@@ -1187,6 +1181,12 @@ const DEFAULT_COLUMNS = [
     isRequestHeader: true,
     title: i18n.i18n.lockedLazyString('Sec-Fetch-Mode'),
     sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'sec-fetch-mode'),
+  },
+  {
+    id: 'request-header-user-agent',
+    isRequestHeader: true,
+    title: i18n.i18n.lockedLazyString('User-Agent'),
+    sortingFunction: NetworkRequestNode.RequestHeaderStringComparator.bind(null, 'user-agent'),
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {

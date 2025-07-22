@@ -804,8 +804,10 @@ export class NetworkLogViewColumns {
 
   private addCustomHeader(headerTitle: string, headerId?: string, index?: number): Descriptor|null {
     if (!headerId) {
-      headerId = headerTitle.toLowerCase();
+      headerId = headerTitle;
     }
+    headerId = headerId.toLowerCase();
+
     if (index === undefined) {
       index = this.columns.length - 1;
     }

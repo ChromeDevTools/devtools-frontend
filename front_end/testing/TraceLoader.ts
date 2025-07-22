@@ -85,6 +85,13 @@ export class TraceLoader {
     return contents;
   }
 
+  static async traceFile(context: Mocha.Context|Mocha.Suite|null, name: string): Promise<Trace.Types.File.TraceFile> {
+    const contents = await TraceLoader.fixtureContents(context, name);
+    const traceEvents = 'traceEvents' in contents ? contents.traceEvents : contents;
+    const metadata = 'metadata' in contents ? contents.metadata : {};
+    return {traceEvents, metadata} as Trace.Types.File.TraceFile;
+  }
+
   /**
    * Load an array of raw events from the trace file.
    **/

@@ -7120,6 +7120,10 @@ export const NativeFunctions = [
     signatures: [["options_bounds","children_updated"]]
   },
   {
+    name: "PatchEvent",
+    signatures: [["type","init"]]
+  },
+  {
     name: "allowsFeature",
     signatures: [["feature","?origin"]]
   },

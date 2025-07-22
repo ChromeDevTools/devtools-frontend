@@ -189,12 +189,10 @@ export class EntryLabelOverlay extends HTMLElement {
   #callTree: Utils.AICallTree.AICallTree|null = null;
   // Creates or gets the setting if it exists.
   #aiAnnotationsEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
-  #agent = new AiAssistanceModels.PerformanceAnnotationsAgent(
-      {
-        aidaClient: new Host.AidaClient.AidaClient(),
-        serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
-      },
-      AiAssistanceModels.ConversationType.PERFORMANCE);
+  #agent = new AiAssistanceModels.PerformanceAnnotationsAgent({
+    aidaClient: new Host.AidaClient.AidaClient(),
+    serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
+  });
   /**
    * We track this because when the user is in this flow we don't want the
    * empty annotation label to be removed on blur, as we take them to the flow &

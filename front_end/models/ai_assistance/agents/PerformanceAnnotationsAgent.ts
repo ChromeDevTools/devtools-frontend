@@ -3,14 +3,82 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 
-import {ResponseType} from './AiAgent.js';
-import {PerformanceAgent, PerformanceTraceContext} from './PerformanceAgent.js';
+import {AiAgent, type ContextResponse, type ConversationContext, type RequestOptions, ResponseType} from './AiAgent.js';
+import {callTreePreamble, PerformanceTraceContext} from './PerformanceAgent.js';
 
-export class PerformanceAnnotationsAgent extends PerformanceAgent {
-  override get clientFeature(): Host.AidaClient.ClientFeature {
+const UIStringsNotTranslated = {
+  analyzingCallTree: 'Analyzing call tree',
+  /**
+   *@description Shown when the agent is investigating network activity
+   */
+} as const;
+const lockedString = i18n.i18n.lockedString;
+
+export class PerformanceAnnotationsAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus> {
+  override preamble = callTreePreamble;
+
+  get clientFeature(): Host.AidaClient.ClientFeature {
     return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
+  }
+
+  get userTier(): string|undefined {
+    return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+  }
+
+  get options(): RequestOptions {
+    const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+
+    return {
+      temperature,
+      modelId,
+    };
+  }
+
+  async *
+      handleContextDetails(context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
+          AsyncGenerator<ContextResponse, void, void> {
+    if (!context) {
+      return;
+    }
+
+    const focus = context.getItem();
+    if (focus.data.type !== 'call-tree') {
+      throw new Error('unexpected context');
+    }
+
+    const callTree = focus.data.callTree;
+
+    yield {
+      type: ResponseType.CONTEXT,
+      title: lockedString(UIStringsNotTranslated.analyzingCallTree),
+      details: [
+        {
+          title: 'Selected call tree',
+          text: callTree.serialize(),
+        },
+      ],
+    };
+  }
+
+  override async enhanceQuery(query: string, context: ConversationContext<TimelineUtils.AIContext.AgentFocus>|null):
+      Promise<string> {
+    if (!context) {
+      return query;
+    }
+
+    const focus = context.getItem();
+    if (focus.data.type !== 'call-tree') {
+      throw new Error('unexpected context');
+    }
+
+    const callTree = focus.data.callTree;
+    const contextString = callTree.serialize();
+    return `${contextString}\n\n# User request\n\n${query}`;
   }
 
   /**

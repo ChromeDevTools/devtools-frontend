@@ -24,7 +24,10 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":ai_code_completion" ]
 
-  visibility = [ ":*" ]
+  visibility = [
+    ":*",
+    "../../panels/console/*",
+  ]
 
   visibility += devtools_models_visibility
 }

@@ -3,11 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
+import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import {
   createTarget,
   registerNoopActions,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
@@ -27,6 +30,12 @@ describeWithMockConnection('ConsoleContextSelector', () => {
   let editor: TextEditor.TextEditor.TextEditor;
 
   beforeEach(() => {
+    sinon.stub(Host.AidaClient.HostConfigTracker.instance(), 'pollAidaAvailability').callsFake(async () => {});
+    updateHostConfig({
+      devToolsAiCodeCompletion: {
+        enabled: true,
+      },
+    });
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
 
     const keymapOf = sinon.spy(CodeMirror.keymap, 'of');
@@ -42,6 +51,12 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     const targetContext = createExecutionContext(target);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, targetContext);
     evaluateOnTarget = sinon.stub(target.runtimeAgent(), 'invoke_evaluate');
+
+    Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
+  });
+
+  afterEach(async () => {
+    sinon.restore();
   });
 
   let id = 0;
@@ -138,5 +153,40 @@ describeWithMockConnection('ConsoleContextSelector', () => {
 
     sinon.assert.notCalled(evaluateOnAnotherTarget);
     sinon.assert.notCalled(evaluateOnTarget);
+  });
+
+  it('updates aiCodeCompletion when FRE setting is updated', () => {
+    assert.isUndefined(consolePrompt['aiCodeCompletion']);
+    const setting = Common.Settings.Settings.instance().settingForTest('ai-code-completion-fre-completed');
+    setting.set(true);
+    assert.exists(consolePrompt['aiCodeCompletion']);
+    setting.set(false);
+    assert.isUndefined(consolePrompt['aiCodeCompletion']);
+  });
+
+  it('sends console history in the request to AIDA', () => {
+    const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
+      completeCode: Promise.resolve(null),
+    });
+    consolePrompt.setAidaClientForTest(mockAidaClient);
+    Common.Settings.Settings.instance().settingForTest('ai-code-completion-fre-completed').set(true);
+    const onTextChangedSpy = sinon.spy(
+        consolePrompt['aiCodeCompletion'] as AiCodeCompletion.AiCodeCompletion.AiCodeCompletion, 'onTextChanged');
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    const message = new SDK.ConsoleModel.ConsoleMessage(
+        target.model(SDK.RuntimeModel.RuntimeModel),
+        Protocol.Log.LogEntrySource.Javascript,
+        null,
+        'let x = 1;',
+        {type: SDK.ConsoleModel.FrontendMessageType.Command},
+    );
+    consoleModel.addMessage(message);
+
+    editor.state = {doc: 'console.log();', selection: {main: {head: 12}}} as unknown as CodeMirror.EditorState;
+    consolePrompt.triggerAiCodeCompletion();
+
+    sinon.assert.calledOnce(onTextChangedSpy);
+    assert.deepEqual(onTextChangedSpy.firstCall.args, ['let x = 1;\n\nconsole.log(', ');']);
   });
 });

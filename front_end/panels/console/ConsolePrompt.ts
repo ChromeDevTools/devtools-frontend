@@ -8,6 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -16,6 +17,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import {AiCodeCompletionTeaser} from '../common/common.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
 import consolePromptStyles from './consolePrompt.css.js';
@@ -64,6 +66,13 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   #editorHistory: TextEditor.TextEditorHistory.TextEditorHistory;
   #selfXssWarningShown = false;
   #javaScriptCompletionCompartment: CodeMirror.Compartment = new CodeMirror.Compartment();
+
+  private aidaClient?: Host.AidaClient.AidaClient;
+  private aiCodeCompletion?: AiCodeCompletion.AiCodeCompletion.AiCodeCompletion;
+  private teaserContainer?: HTMLDivElement;
+  private aiCodeCompletionThrottler?: Common.Throttler.Throttler;
+  private aiCodeCompletionSetting =
+      Common.Settings.Settings.instance().createSetting('ai-code-completion-fre-completed', false);
 
   #getJavaScriptCompletionExtensions(): CodeMirror.Extension {
     if (this.#selfXssWarningShown) {
@@ -142,6 +151,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       CodeMirror.autocompletion({aboveCursor: true}),
       this.#javaScriptCompletionCompartment.of(this.#getJavaScriptCompletionExtensions()),
     ];
+
+    if (this.isAiCodeCompletionEnabled()) {
+      this.teaserContainer = document.createElement('div');
+      const teaser = new AiCodeCompletionTeaser();
+      teaser.show(this.teaserContainer, undefined, true);
+      extensions.push(TextEditor.Config.aiAutoCompleteSuggestion, CodeMirror.placeholder(this.teaserContainer));
+    }
+
     const doc = this.initialText;
     const editorState = CodeMirror.EditorState.create({doc, extensions});
 
@@ -168,6 +185,10 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
                                 change: true,
                                 keydown: 'Enter|ArrowUp|ArrowDown|PageUp',
                               })}`);
+    if (this.isAiCodeCompletionEnabled()) {
+      this.aiCodeCompletionSetting.addChangeListener(this.onAiCodeCompletionSettingChanged.bind(this));
+      this.onAiCodeCompletionSettingChanged();
+    }
   }
 
   private eagerSettingChanged(): void {
@@ -191,8 +212,39 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           this.requestPreviewBound,
           asSoonAsPossible ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
     }
+    if (this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+      this.triggerAiCodeCompletion();
+    }
     this.updatePromptIcon();
     this.dispatchEventToListeners(Events.TEXT_CHANGED);
+  }
+
+  triggerAiCodeCompletion(): void {
+    const {doc, selection} = this.editor.state;
+    const query = doc.toString();
+    const cursor = selection.main.head;
+    const currentExecutionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+    let prefix = query.substring(0, cursor);
+    if (currentExecutionContext) {
+      const consoleModel = currentExecutionContext.target().model(SDK.ConsoleModel.ConsoleModel);
+      if (consoleModel) {
+        let lastMessage = '';
+        let consoleMessages = '';
+        for (const message of consoleModel.messages()) {
+          if (message.type !== SDK.ConsoleModel.FrontendMessageType.Command || message.messageText === lastMessage) {
+            continue;
+          }
+          lastMessage = message.messageText;
+          consoleMessages = consoleMessages + message.messageText + '\n\n';
+        }
+        prefix = consoleMessages + prefix;
+      }
+    }
+    let suffix = query.substring(cursor);
+    if (suffix === '') {
+      suffix = '\n';
+    }
+    this.aiCodeCompletion?.onTextChanged(prefix, suffix);
   }
 
   private async requestPreview(): Promise<void> {
@@ -257,16 +309,14 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   private editorKeymap(): readonly CodeMirror.KeyBinding[] {
-    return [
+    const keymap = [
       {key: 'ArrowUp', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD)},
       {key: 'ArrowDown', run: () => this.#editorHistory.moveHistory(Direction.FORWARD)},
       {mac: 'Ctrl-p', run: () => this.#editorHistory.moveHistory(Direction.BACKWARD, true)},
       {mac: 'Ctrl-n', run: () => this.#editorHistory.moveHistory(Direction.FORWARD, true)},
       {
         key: 'Escape',
-        run: () => {
-          return TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState);
-        },
+        run: () => this.runOnEscape(),
       },
       {
         key: 'Ctrl-Enter',
@@ -284,6 +334,30 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         shift: CodeMirror.insertNewlineAndIndent,
       },
     ];
+
+    if (this.aiCodeCompletion && this.isAiCodeCompletionEnabled()) {
+      keymap.push({
+        key: 'Tab',
+        run: (): boolean => {
+          return TextEditor.Config.acceptAiAutoCompleteSuggestion(this.editor.editor);
+        },
+      });
+    }
+
+    return keymap;
+  }
+
+  private runOnEscape(): boolean {
+    if (TextEditor.JavaScript.closeArgumentsHintsTooltip(this.editor.editor, this.#argumentHintsState)) {
+      return true;
+    }
+    if (this.aiCodeCompletion && TextEditor.Config.setAiAutoCompleteSuggestion) {
+      this.editor.dispatch({
+        effects: TextEditor.Config.setAiAutoCompleteSuggestion.of(null),
+      });
+      return true;
+    }
+    return false;
   }
 
   private async enterWillEvaluate(forceEvaluate?: boolean): Promise<boolean> {
@@ -399,7 +473,32 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.editor.focus();
   }
 
+  private setAiCodeCompletion(): void {
+    if (!this.aidaClient) {
+      this.aidaClient = new Host.AidaClient.AidaClient();
+    }
+    this.aiCodeCompletionThrottler = new Common.Throttler.Throttler(3000);
+    this.aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+        {aidaClient: this.aidaClient}, this.editor, this.aiCodeCompletionThrottler);
+  }
+
+  private onAiCodeCompletionSettingChanged(): void {
+    if (this.aiCodeCompletionSetting.get() && this.isAiCodeCompletionEnabled()) {
+      this.setAiCodeCompletion();
+    } else if (this.aiCodeCompletion) {
+      this.aiCodeCompletion = undefined;
+    }
+  }
+
+  private isAiCodeCompletionEnabled(): boolean {
+    return Boolean(Root.Runtime.hostConfig.devToolsAiCodeCompletion?.enabled);
+  }
+
   private editorSetForTest(): void {
+  }
+
+  setAidaClientForTest(aidaClient: Host.AidaClient.AidaClient): void {
+    this.aidaClient = aidaClient;
   }
 }
 

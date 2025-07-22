@@ -204,6 +204,7 @@ export interface CompleteCodeOptions {
   temperature?: number;
   model_id?: string;
   inference_language?: AidaInferenceLanguage;
+  stop_sequences?: string[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

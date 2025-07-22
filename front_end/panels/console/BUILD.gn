@@ -41,6 +41,7 @@ devtools_module("console") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
+    "../../models/ai_code_completion:bundle",
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
@@ -56,6 +57,7 @@ devtools_module("console") {
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../common:bundle",
     "../console_counters:bundle",
     "../security:bundle",
   ]

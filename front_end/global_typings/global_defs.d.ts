@@ -57,18 +57,12 @@ interface Scheduler {
 interface Window {
   readonly scheduler: Scheduler;
 
-  showSaveFilePicker(opts: unknown): Promise<FileSystemHandle>;
+  // Chromium only feature so not exposed on TypeScript lib.dom
+  showSaveFilePicker(opts: {
+    suggestedName: string,
+  }): Promise<FileSystemFileHandle>;
 }
 
 interface WorkerGlobalScope {
   readonly scheduler?: Scheduler;
-}
-
-interface FileSystemWritableFileStream extends WritableStream {
-  write(data: unknown): Promise<void>;
-  close(): Promise<void>;
-}
-
-interface FileSystemHandle {
-  createWritable(): Promise<FileSystemWritableFileStream>;
 }

@@ -12,17 +12,22 @@ generate_css("css_files") {
   sources = [
     "aiCodeCompletionTeaser.css",
     "common.css",
+    "freDialog.css",
   ]
 }
 
-devtools_module("ai_code_completion_teaser") {
-  sources = [ "AiCodeCompletionTeaser.ts" ]
+devtools_module("common") {
+  sources = [
+    "AiCodeCompletionTeaser.ts",
+    "FreDialog.ts",
+  ]
 
   deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/snackbars:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
@@ -34,12 +39,11 @@ devtools_entrypoint("bundle") {
   entrypoint = "common.ts"
 
   deps = [
-    ":ai_code_completion_teaser",
+    ":common",
     ":css_files",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/lit:bundle",
   ]
 
   visibility = [

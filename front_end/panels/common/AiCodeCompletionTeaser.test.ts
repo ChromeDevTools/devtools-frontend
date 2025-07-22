@@ -5,16 +5,21 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as AiCodeCompletionTeaser from './AiCodeCompletionTeaser.js';
+import * as FreDialog from './FreDialog.js';
 
 describeWithEnvironment('AiCodeCompletionTeaser', () => {
+  let showFreDialogStub: sinon.SinonStub<Parameters<typeof FreDialog.FreDialog.show>, Promise<boolean>>;
+
   beforeEach(() => {
+    showFreDialogStub = sinon.stub(FreDialog.FreDialog, 'show');
     sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
         .resolves(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
   });
@@ -63,7 +68,7 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     widget.detach();
   });
 
-  it('should call action on ctrl+i', async () => {
+  it('should open FRE dialog on ctrl+i', async () => {
     const {widget} = await createTeaser();
     const onActionSpy = sinon.spy(widget, 'onAction');
 
@@ -72,6 +77,38 @@ describeWithEnvironment('AiCodeCompletionTeaser', () => {
     document.body.dispatchEvent(event);
 
     sinon.assert.calledOnce(onActionSpy);
+    sinon.assert.called(showFreDialogStub);
+    widget.detach();
+  });
+
+  it('should FRE text include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING', async () => {
+    updateHostConfig(
+        {aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING}});
+
+    const {widget} = await createTeaser();
+    const event = Host.Platform.isMac() ? new KeyboardEvent('keydown', {key: 'i', metaKey: true}) :
+                                          new KeyboardEvent('keydown', {key: 'i', ctrlKey: true});
+    document.body.dispatchEvent(event);
+
+    sinon.assert.called(showFreDialogStub);
+    assert.exists(showFreDialogStub.lastCall.args[0].reminderItems.find(
+        reminderItem =>
+            reminderItem.content.toString().includes('This data will not be used to improve Google’s AI models.')));
+    widget.detach();
+  });
+
+  it('should FRE text not include no logging case when the enterprise policy value is ALLOW', async () => {
+    updateHostConfig({aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW}});
+
+    const {widget} = await createTeaser();
+    const event = Host.Platform.isMac() ? new KeyboardEvent('keydown', {key: 'i', metaKey: true}) :
+                                          new KeyboardEvent('keydown', {key: 'i', ctrlKey: true});
+    document.body.dispatchEvent(event);
+
+    sinon.assert.called(showFreDialogStub);
+    assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
+        reminderItem =>
+            reminderItem.content.toString().includes('This data will not be used to improve Google’s AI models.')));
     widget.detach();
   });
 

@@ -767,6 +767,7 @@ export const knownContextValues = new Set([
   'code',
   'code-disclaimer',
   'code-format',
+  'code-snippets-explainer.ai-code-completion-teaser',
   'code-snippets-explainer.console-insights',
   'code-snippets-explainer.freestyler',
   'code-snippets-explainer.patch-widget',

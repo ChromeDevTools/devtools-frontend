@@ -552,7 +552,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const rule = property.ownerStyle.parentRule;
 
     if (rule) {
-      const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
+      const header = rule.header;
       if (header && !header.isAnonymousInlineStyleSheet()) {
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.navigateToSelectorSource), () => {
           StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);

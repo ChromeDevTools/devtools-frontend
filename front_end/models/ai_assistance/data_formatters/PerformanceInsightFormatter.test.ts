@@ -153,32 +153,6 @@ This insight identifies network requests that were render blocking. Render block
 ## Detailed analysis:
 Here is a list of the network requests that were render blocking on this page and their duration:
 
-The format is as follows:
-    \`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiatorUrlIndex;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
-
-    - \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.
-    Timings (all in milliseconds, relative to navigation start):
-    - \`queuedTime\`: When the request was queued.
-    - \`requestSentTime\`: When the request was sent.
-    - \`downloadCompleteTime\`: When the download completed.
-    - \`processingCompleteTime\`: When main thread processing finished.
-    Durations (all in milliseconds):
-    - \`totalDuration\`: Total time from the request being queued until its main thread processing completed.
-    - \`downloadDuration\`: Time spent actively downloading the resource.
-    - \`mainThreadProcessingDuration\`: Time spent on the main thread after the download completed.
-    - \`statusCode\`: The HTTP status code of the response (e.g., 200, 404).
-    - \`mimeType\`: The MIME type of the resource (e.g., "text/html", "application/javascript").
-    - \`priority\`: The final network request priority (e.g., "VeryHigh", "Low").
-    - \`initialPriority\`: The initial network request priority.
-    - \`finalPriority\`: The final network request priority (redundant if \`priority\` is always final, but kept for clarity if \`initialPriority\` and \`priority\` differ).
-    - \`renderBlocking\`: 't' if the request was render-blocking, 'f' otherwise.
-    - \`protocol\`: The network protocol used (e.g., "h2", "http/1.1").
-    - \`fromServiceWorker\`: 't' if the request was served from a service worker, 'f' otherwise.
-    - \`initiatorUrlIndex\`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
-    - \`redirects\`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
-    \`[redirectUrlIndex|startTime|duration]\`, where: \`redirectUrlIndex\`: Numerical index for the redirect's URL. \`startTime\`: The start time of the redirect in milliseconds, relative to navigation start. \`duration\`: The duration of the redirect in milliseconds.
-    - \`responseHeaders\`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
-    The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 
     Network requests data:\n\n    \n\nallUrls = [0: https://code.jquery.com/jquery-3.7.1.js, 1: http://localhost:8000/, 2: http://localhost:8000/render-blocking-stylesheet.css, 3: http://localhost:8000/render-blocking-script.js]\n\n0;581.40 ms;584.53 ms;1,942.70 ms;1,944.05 ms;1,362.65 ms;775.53 ms;1.35 ms;200;application/javascript;High;High;High;t;h2;f;1;[];[content-encoding: gzip|etag: <redacted>|age: 3975412|x-cache: <redacted>|date: Fri, 07 Mar 2025 15:02:28 GMT|content-type: application/javascript; charset=utf-8|vary: Accept-Encoding|x-cache-hits: <redacted>|last-modified: Fri, 18 Oct 1991 12:00:00 GMT|x-served-by: <redacted>|cache-control: public, max-age=31536000, stale-while-revalidate=604800|x-timer: <redacted>|via: 1.1 varnish, 1.1 varnish|accept-ranges: bytes|access-control-allow-origin: *|content-length: <redacted>|server: nginx]\n2;581.60 ms;583.11 ms;1,192.93 ms;1,193.16 ms;611.56 ms;0.19 ms;0.23 ms;200;text/css;VeryHigh;VeryHigh;VeryHigh;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/css|Last-Modified: Fri, 07 Mar 2025 14:58:07 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]\n3;581.56 ms;583.25 ms;1,176.60 ms;1,177.86 ms;596.30 ms;0.36 ms;1.27 ms;200;text/javascript;High;High;High;t;http/1.0;f;1;[];[Content-Length: <redacted>|Date: Fri, 07 Mar 2025 15:02:28 GMT|Content-type: text/javascript|Last-Modified: Fri, 07 Mar 2025 15:00:28 GMT|Server: SimpleHTTP/0.6 Python/3.9.6]\n\n## External resources:\n- https://web.dev/articles/lcp\n- https://web.dev/articles/optimize-lcp`;
       assertStringEquals(output, expected);
@@ -413,32 +387,6 @@ To pass this insight, ensure your server supports and prioritizes a modern HTTP 
 
 ## Detailed analysis:
 Here is a list of the network requests that were served over a legacy HTTP protocol:
-The format is as follows:
-    \`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiatorUrlIndex;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
-
-    - \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.
-    Timings (all in milliseconds, relative to navigation start):
-    - \`queuedTime\`: When the request was queued.
-    - \`requestSentTime\`: When the request was sent.
-    - \`downloadCompleteTime\`: When the download completed.
-    - \`processingCompleteTime\`: When main thread processing finished.
-    Durations (all in milliseconds):
-    - \`totalDuration\`: Total time from the request being queued until its main thread processing completed.
-    - \`downloadDuration\`: Time spent actively downloading the resource.
-    - \`mainThreadProcessingDuration\`: Time spent on the main thread after the download completed.
-    - \`statusCode\`: The HTTP status code of the response (e.g., 200, 404).
-    - \`mimeType\`: The MIME type of the resource (e.g., "text/html", "application/javascript").
-    - \`priority\`: The final network request priority (e.g., "VeryHigh", "Low").
-    - \`initialPriority\`: The initial network request priority.
-    - \`finalPriority\`: The final network request priority (redundant if \`priority\` is always final, but kept for clarity if \`initialPriority\` and \`priority\` differ).
-    - \`renderBlocking\`: 't' if the request was render-blocking, 'f' otherwise.
-    - \`protocol\`: The network protocol used (e.g., "h2", "http/1.1").
-    - \`fromServiceWorker\`: 't' if the request was served from a service worker, 'f' otherwise.
-    - \`initiatorUrlIndex\`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
-    - \`redirects\`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
-    \`[redirectUrlIndex|startTime|duration]\`, where: \`redirectUrlIndex\`: Numerical index for the redirect's URL. \`startTime\`: The start time of the redirect in milliseconds, relative to navigation start. \`duration\`: The duration of the redirect in milliseconds.
-    - \`responseHeaders\`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
-    The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
 
     Network requests data:
 

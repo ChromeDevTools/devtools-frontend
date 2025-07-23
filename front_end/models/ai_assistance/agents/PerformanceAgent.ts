@@ -167,6 +167,35 @@ The 'calculatePosition' function, taking 80ms, is a potential bottleneck.
 Consider optimizing the position calculation logic or reducing the frequency of calls to improve animation performance.
 `;
 
+// Network requests format description that is sent to the model as a fact.
+const networkDataFormatDescription = `The format is as follows:
+    \`urlIndex;queuedTime;requestSentTime;downloadCompleteTime;processingCompleteTime;totalDuration;downloadDuration;mainThreadProcessingDuration;statusCode;mimeType;priority;initialPriority;finalPriority;renderBlocking;protocol;fromServiceWorker;initiatorUrlIndex;redirects:[[redirectUrlIndex|startTime|duration]];responseHeaders:[header1Value|header2Value|...]\`
+
+    - \`urlIndex\`: Numerical index for the request's URL, referencing the "All URLs" list.
+    Timings (all in milliseconds, relative to navigation start):
+    - \`queuedTime\`: When the request was queued.
+    - \`requestSentTime\`: When the request was sent.
+    - \`downloadCompleteTime\`: When the download completed.
+    - \`processingCompleteTime\`: When main thread processing finished.
+    Durations (all in milliseconds):
+    - \`totalDuration\`: Total time from the request being queued until its main thread processing completed.
+    - \`downloadDuration\`: Time spent actively downloading the resource.
+    - \`mainThreadProcessingDuration\`: Time spent on the main thread after the download completed.
+    - \`statusCode\`: The HTTP status code of the response (e.g., 200, 404).
+    - \`mimeType\`: The MIME type of the resource (e.g., "text/html", "application/javascript").
+    - \`priority\`: The final network request priority (e.g., "VeryHigh", "Low").
+    - \`initialPriority\`: The initial network request priority.
+    - \`finalPriority\`: The final network request priority (redundant if \`priority\` is always final, but kept for clarity if \`initialPriority\` and \`priority\` differ).
+    - \`renderBlocking\`: 't' if the request was render-blocking, 'f' otherwise.
+    - \`protocol\`: The network protocol used (e.g., "h2", "http/1.1").
+    - \`fromServiceWorker\`: 't' if the request was served from a service worker, 'f' otherwise.
+    - \`initiatorUrlIndex\`: Numerical index for the URL of the resource that initiated this request, or empty string if no initiator.
+    - \`redirects\`: A comma-separated list of redirects, enclosed in square brackets. Each redirect is formatted as
+    \`[redirectUrlIndex|startTime|duration]\`, where: \`redirectUrlIndex\`: Numerical index for the redirect's URL. \`startTime\`: The start time of the redirect in milliseconds, relative to navigation start. \`duration\`: The duration of the redirect in milliseconds.
+    - \`responseHeaders\`: A list separated by '|' of values for specific, pre-defined response headers, enclosed in square brackets.
+    The order of headers corresponds to an internal fixed list. If a header is not present, its value will be empty.
+`;
+
 function serializeFocus(focus: TimelineUtils.AIContext.AgentFocus): string {
   if (focus.data.type === 'call-tree') {
     return focus.data.callTree.serialize();
@@ -374,6 +403,13 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
     getNetworkActivitySummary?: Host.AidaClient.RequestFact,
     getMainThreadActivity?: Host.AidaClient.RequestFact,
   }>();
+
+  /*
+  * Since don't know for sure if the model will request the network requests information,
+  * add the format description to facts once the network requests need to be sent.
+  */
+  #networkDataDescriptionFact:
+      Host.AidaClient.RequestFact = {text: networkDataFormatDescription, metadata: {source: 'devtools'}};
 
   get preamble(): string {
     if (this.#conversationType === ConversationType.PERFORMANCE) {
@@ -593,6 +629,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
         cacheForInsight.getNetworkActivitySummary = summaryFact;
         this.#functionCallCache.set(insight, cacheForInsight);
 
+        this.addFact(this.#networkDataDescriptionFact);
         return {result: {requests: formatted}};
       },
     });
@@ -639,6 +676,7 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AIContext.AgentFocus
             error: 'getNetworkRequestDetail response is too large. Try investigating using other functions',
           };
         }
+        this.addFact(this.#networkDataDescriptionFact);
         return {result: {request: formatted}};
       },
     });

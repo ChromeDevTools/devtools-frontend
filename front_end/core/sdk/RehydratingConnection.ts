@@ -163,7 +163,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
     await Common.Revealer.reveal(trace);
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
     this.rehydratingConnectionState = RehydratingConnectionState.INITIALIZED;
   }

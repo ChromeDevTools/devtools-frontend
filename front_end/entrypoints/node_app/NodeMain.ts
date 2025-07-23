@@ -149,7 +149,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
 export class NodeConnection implements ProtocolClient.InspectorBackend.Connection {
   readonly #targetAgent: ProtocolProxyApi.TargetApi;
   readonly #sessionId: Protocol.Target.SessionID;
-  onMessage: ((arg0: (Object|string)) => void)|null;
+  onMessage: ((arg0: Object|string) => void)|null;
   #onDisconnect: ((arg0: string) => void)|null;
   constructor(targetAgent: ProtocolProxyApi.TargetApi, sessionId: Protocol.Target.SessionID) {
     this.#targetAgent = targetAgent;
@@ -158,7 +158,7 @@ export class NodeConnection implements ProtocolClient.InspectorBackend.Connectio
     this.#onDisconnect = null;
   }
 
-  setOnMessage(onMessage: (arg0: (Object|string)) => void): void {
+  setOnMessage(onMessage: (arg0: Object|string) => void): void {
     this.onMessage = onMessage;
   }
 

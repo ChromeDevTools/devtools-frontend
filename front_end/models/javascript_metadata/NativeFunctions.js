@@ -7535,6 +7535,10 @@ export const NativeFunctions = [
     signatures: [["type","init"]]
   },
   {
+    name: "userAgentAllowsProtocol",
+    signatures: [["protocol"]]
+  },
+  {
     name: "FederatedCredential",
     signatures: [["data"]]
   },

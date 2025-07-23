@@ -96,8 +96,8 @@ export async function waitForSourcesPanel(devToolsPage: DevToolsPage = getBrowse
 export async function openSourcesPanel(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
   // Locate the button for switching to the sources tab.
   await devToolsPage.click('#tab-sources');
-
   await waitForSourcesPanel(devToolsPage);
+  return await devToolsPage.waitForAria('sources');
 }
 
 export async function openFileInSourcesPanel(

@@ -27,6 +27,7 @@ ts_e2e_library("sources") {
     "restart-frame_test.ts",
     "script-in-multiple-workers_test.ts",
     "scroll-into-view_test.ts",
+    "snippets_test.ts",
     "sourcemap-without-mappings_test.ts",
     "sourcemap_test.ts",
     "sources-list_test.ts",

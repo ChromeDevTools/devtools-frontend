@@ -9,7 +9,6 @@ node_ts_library("emulation") {
     "custom-devices_test.ts",
     "dual-screen_test.ts",
     "foldable-device_test.ts",
-    "media-query-inspector_test.ts",
   ]
 
   deps = [

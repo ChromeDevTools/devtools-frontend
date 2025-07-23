@@ -8,7 +8,6 @@ import type {InspectedPage} from '../../e2e_non_hosted/shared/target-helper.js';
 import {
   $,
   clickElement,
-  getBrowserAndPages,
   goToResource,
 } from '../../shared/helper.js';
 import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
@@ -61,14 +60,13 @@ export const openDeviceToolbar = async (
 
 export const showMediaQueryInspector =
     async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
-  const inspector = await $(MEDIA_QUERY_INSPECTOR_SELECTOR);
+  const inspector = await devToolsPage.$(MEDIA_QUERY_INSPECTOR_SELECTOR);
   if (inspector) {
     return;
   }
   await devToolsPage.click(DEVICE_TOOLBAR_OPTIONS_SELECTOR);
-  const {frontend} = getBrowserAndPages();
-  await frontend.keyboard.press('ArrowDown');
-  await frontend.keyboard.press('Enter');
+  await devToolsPage.page.keyboard.press('ArrowDown');
+  await devToolsPage.page.keyboard.press('Enter');
   await devToolsPage.waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 

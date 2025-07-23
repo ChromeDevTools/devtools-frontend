@@ -329,35 +329,40 @@ export const waitForElementsStyleSection =
   }
 };
 
-export const waitForElementsDOMBreakpointsSection = async () => {
-  let domBreakpointsPane = await $('DOM Breakpoints', undefined, 'aria');
+export const waitForElementsDOMBreakpointsSection =
+    async (devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  let domBreakpointsPane = await devToolsPage.$('DOM Breakpoints', undefined, 'aria');
   if (!domBreakpointsPane) {
-    const elementsPanel = await waitForAria('Elements panel');
-    await clickMoreTabsButton(elementsPanel);
-    domBreakpointsPane = await waitForAria('DOM Breakpoints');
+    const elementsPanel = await devToolsPage.waitForAria('Elements panel');
+    await clickMoreTabsButton(elementsPanel, devToolsPage);
+    domBreakpointsPane = await devToolsPage.waitForAria('DOM Breakpoints');
   }
-  await click(DOM_BREAKPOINTS_SECTION_SELECTOR);
-  await waitFor(DOM_BREAKPOINTS_LIST_SELECTOR);
+  await devToolsPage.click(DOM_BREAKPOINTS_SECTION_SELECTOR);
+  await devToolsPage.waitFor(DOM_BREAKPOINTS_LIST_SELECTOR);
 };
 
-export async function getDOMBreakpoints() {
-  return await $$('.breakpoint-entry');
+export async function getDOMBreakpoints(devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) {
+  return await devToolsPage.$('.breakpoint-entry');
 }
 
-export const isDOMBreakpointEnabled = async (breakpoint: puppeteer.ElementHandle<Element>) => {
-  const checkbox = await waitFor('input[type="checkbox"]', breakpoint);
-  return await checkbox!.evaluate(node => node.checked);
+export const isDOMBreakpointEnabled = async (
+    breakpoint: puppeteer.ElementHandle<Element>,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const checkbox = await devToolsPage.waitFor('input[type="checkbox"]', breakpoint);
+  return await checkbox!.evaluate(node => (node as HTMLInputElement).checked);
 };
 
-export const setDOMBreakpointOnSelectedNode = async (type: string) => {
-  await openSubMenu(SELECTED_TREE_ELEMENT_SELECTOR, 'Break on');
-  const breakpointToggle = await waitFor(`[aria-label="${type}, unchecked"]`);
+export const setDOMBreakpointOnSelectedNode =
+    async (type: string, devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  await openSubMenu(SELECTED_TREE_ELEMENT_SELECTOR, 'Break on', devToolsPage);
+  const breakpointToggle = await devToolsPage.waitFor(`[aria-label="${type}, unchecked"]`);
   await breakpointToggle.click();
 };
 
-export const toggleDOMBreakpointCheckbox =
-    async (breakpoint: puppeteer.ElementHandle<Element>, wantChecked: boolean) => {
-  const checkbox = await waitFor('input[type="checkbox"]', breakpoint);
+export const toggleDOMBreakpointCheckbox = async (
+    breakpoint: puppeteer.ElementHandle<Element>, wantChecked: boolean,
+    devToolsPage: DevToolsPage = getBrowserAndPagesWrappers().devToolsPage) => {
+  const checkbox = await devToolsPage.waitFor('input[type="checkbox"]', breakpoint);
   const checked = await checkbox!.evaluate(box => (box as HTMLInputElement).checked);
   if (checked !== wantChecked) {
     await checkbox!.click();

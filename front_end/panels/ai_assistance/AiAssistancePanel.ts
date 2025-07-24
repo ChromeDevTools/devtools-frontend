@@ -295,6 +295,9 @@ async function getEmptyStateSuggestions(
         {title: 'Help me optimize my page load performance', jslogContext: 'performance-insights-default'},
       ];
     }
+
+    default:
+      Platform.assertNever(conversationType, 'Unknown conversation type');
   }
 }
 
@@ -1234,7 +1237,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     let agent = this.#conversationAgent;
     if (!this.#conversation || !this.#conversationAgent || this.#conversation.type !== targetConversationType ||
-        this.#conversation?.isEmpty || targetConversationType === AiAssistanceModel.ConversationType.PERFORMANCE) {
+        this.#conversation?.isEmpty || targetConversationType === AiAssistanceModel.ConversationType.PERFORMANCE ||
+        (agent instanceof AiAssistanceModel.PerformanceAgent &&
+         agent.getConversationType() !== targetConversationType)) {
       agent = this.#createAgent(targetConversationType);
     }
     this.#updateConversationState(agent);

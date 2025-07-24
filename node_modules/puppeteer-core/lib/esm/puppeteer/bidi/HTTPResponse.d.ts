@@ -27,6 +27,6 @@ export declare class BidiHTTPResponse extends HTTPResponse {
     frame(): Frame | null;
     fromServiceWorker(): boolean;
     securityDetails(): SecurityDetails | null;
-    content(): never;
+    content(): Promise<Uint8Array>;
 }
 //# sourceMappingURL=HTTPResponse.d.ts.map

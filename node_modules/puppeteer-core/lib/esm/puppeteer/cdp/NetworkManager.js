@@ -41,12 +41,18 @@ export class NetworkManager extends EventEmitter {
         [CDPSessionEvent.Disconnected, this.#removeClient],
     ];
     #clients = new Map();
-    constructor(frameManager) {
+    #networkEnabled = true;
+    constructor(frameManager, networkEnabled) {
         super();
         this.#frameManager = frameManager;
+        this.#networkEnabled = networkEnabled ?? true;
+    }
+    #canIgnoreError(error) {
+        return (isErrorLike(error) &&
+            (isTargetClosedError(error) || error.message.includes('Not supported')));
     }
     async addClient(client) {
-        if (this.#clients.has(client)) {
+        if (!this.#networkEnabled || this.#clients.has(client)) {
             return;
         }
         const subscriptions = new DisposableStack();
@@ -68,7 +74,7 @@ export class NetworkManager extends EventEmitter {
             ]);
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -106,7 +112,7 @@ export class NetworkManager extends EventEmitter {
             });
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -168,7 +174,7 @@ export class NetworkManager extends EventEmitter {
             });
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -190,7 +196,7 @@ export class NetworkManager extends EventEmitter {
             });
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -231,7 +237,7 @@ export class NetworkManager extends EventEmitter {
             }
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;
@@ -247,7 +253,7 @@ export class NetworkManager extends EventEmitter {
             });
         }
         catch (error) {
-            if (isErrorLike(error) && isTargetClosedError(error)) {
+            if (this.#canIgnoreError(error)) {
                 return;
             }
             throw error;

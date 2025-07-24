@@ -13,8 +13,8 @@ import { TargetManager } from './TargetManager.js';
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
-        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, networkEnabled);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -31,9 +31,11 @@ export class CdpBrowser extends BrowserBase {
     #isPageTargetCallback;
     #defaultContext;
     #contexts = new Map();
+    #networkEnabled = true;
     #targetManager;
-    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, networkEnabled = true) {
         super();
+        this.#networkEnabled = networkEnabled;
         this.#defaultViewport = defaultViewport;
         this.#process = process;
         this.#connection = connection;
@@ -244,6 +246,9 @@ export class CdpBrowser extends BrowserBase {
         return {
             pendingProtocolErrors: this.#connection.getPendingProtocolErrors(),
         };
+    }
+    isNetworkEnabled() {
+        return this.#networkEnabled;
     }
 }
 //# sourceMappingURL=Browser.js.map

@@ -153,8 +153,8 @@ let BidiHTTPResponse = (() => {
             }
             return this.#securityDetails ?? null;
         }
-        content() {
-            throw new Errors_js_1.UnsupportedOperation();
+        async content() {
+            return await this.#request.getResponseContent();
         }
     };
 })();

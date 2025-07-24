@@ -379,5 +379,9 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * @experimental
      */
     abstract get debugInfo(): DebugInfo;
+    /**
+     * @internal
+     */
+    abstract isNetworkEnabled(): boolean;
 }
 //# sourceMappingURL=Browser.d.ts.map

@@ -16,12 +16,12 @@ const Connection_js_1 = require("./Connection.js");
  * @internal
  */
 async function _connectToCdpBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = util_js_1.DEFAULT_VIEWPORT, downloadBehavior, targetFilter, _isPageTarget: isPageTarget, slowMo = 0, protocolTimeout, } = options;
     const connection = new Connection_js_1.Connection(url, connectionTransport, slowMo, protocolTimeout);
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
     const browser = await Browser_js_1.CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
         return connection.send('Browser.close').catch(util_js_1.debugError);
-    }, targetFilter, isPageTarget);
+    }, targetFilter, isPageTarget, undefined, networkEnabled);
     return browser;
 }
 //# sourceMappingURL=BrowserConnector.js.map

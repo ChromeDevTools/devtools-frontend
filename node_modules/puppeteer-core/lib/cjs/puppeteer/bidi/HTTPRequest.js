@@ -239,6 +239,9 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     timing() {
         return this.#request.timing();
     }
+    getResponseContent() {
+        return this.#request.getResponseContent();
+    }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;
 _a = BidiHTTPRequest;

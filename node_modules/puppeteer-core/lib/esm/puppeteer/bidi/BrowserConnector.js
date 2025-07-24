@@ -15,7 +15,7 @@ import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
  * @internal
  */
 export async function _connectToBiDiBrowser(connectionTransport, url, options) {
-    const { acceptInsecureCerts = false, defaultViewport = DEFAULT_VIEWPORT } = options;
+    const { acceptInsecureCerts = false, networkEnabled = true, defaultViewport = DEFAULT_VIEWPORT, } = options;
     const { bidiConnection, cdpConnection, closeCallback } = await getBiDiConnection(connectionTransport, url, options);
     const BiDi = await import(/* webpackIgnore: true */ './bidi.js');
     const bidiBrowser = await BiDi.BidiBrowser.create({
@@ -25,6 +25,7 @@ export async function _connectToBiDiBrowser(connectionTransport, url, options) {
         process: undefined,
         defaultViewport: defaultViewport,
         acceptInsecureCerts: acceptInsecureCerts,
+        networkEnabled,
         capabilities: options.capabilities,
     });
     return bidiBrowser;

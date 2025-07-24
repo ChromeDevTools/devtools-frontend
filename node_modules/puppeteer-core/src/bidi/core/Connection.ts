@@ -39,7 +39,7 @@ export interface Commands {
   };
 
   'browser.createUserContext': {
-    params: Bidi.EmptyParams;
+    params: Bidi.Browser.CreateUserContextParameters;
     returnType: Bidi.Browser.CreateUserContextResult;
   };
   'browser.getUserContexts': {
@@ -159,9 +159,17 @@ export interface Commands {
     returnType: Bidi.Storage.SetCookieParameters;
   };
 
+  'network.addDataCollector': {
+    params: Bidi.Network.AddDataCollectorParameters;
+    returnType: Bidi.Network.AddDataCollectorResult;
+  };
   'network.addIntercept': {
     params: Bidi.Network.AddInterceptParameters;
     returnType: Bidi.Network.AddInterceptResult;
+  };
+  'network.getData': {
+    params: Bidi.Network.GetDataParameters;
+    returnType: Bidi.Network.GetDataResult;
   };
   'network.removeIntercept': {
     params: Bidi.Network.RemoveInterceptParameters;

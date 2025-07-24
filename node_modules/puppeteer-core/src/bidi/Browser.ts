@@ -21,6 +21,7 @@ import type {Page} from '../api/Page.js';
 import type {Target} from '../api/Target.js';
 import type {Connection as CdpConnection} from '../cdp/Connection.js';
 import type {SupportedWebDriverCapabilities} from '../common/ConnectOptions.js';
+import {ProtocolError} from '../common/Errors.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {debugError} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
@@ -44,6 +45,7 @@ export interface BidiBrowserOptions {
   defaultViewport: Viewport | null;
   acceptInsecureCerts?: boolean;
   capabilities?: SupportedWebDriverCapabilities;
+  networkEnabled: boolean;
 }
 
 /**
@@ -91,11 +93,34 @@ export class BidiBrowser extends Browser {
     });
 
     await session.subscribe(
-      session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
+      (session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
         ? BidiBrowser.subscribeModules
-        : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents],
+        : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
+      ).filter(module => {
+        if (!opts.networkEnabled) {
+          return (
+            module !== 'network' &&
+            module !== 'goog:cdp.Network.requestWillBeSent'
+          );
+        }
+        return true;
+      }) as [string, ...string[]],
     );
 
+    try {
+      await session.send('network.addDataCollector', {
+        dataTypes: [Bidi.Network.DataType.Response],
+        // Buffer size of 20 MB is equivalent to the CDP:
+        maxEncodedDataSize: 20 * 1000 * 1000, // 20 MB
+      });
+    } catch (err) {
+      if (err instanceof ProtocolError) {
+        // Ignore protocol errors, as the data collectors can be not implemented.
+        debugError(err);
+      } else {
+        throw err;
+      }
+    }
     const browser = new BidiBrowser(session.browser, opts);
     browser.#initialize();
     return browser;
@@ -111,6 +136,7 @@ export class BidiBrowser extends Browser {
   #browserContexts = new WeakMap<UserContext, BidiBrowserContext>();
   #target = new BidiBrowserTarget(this);
   #cdpConnection?: CdpConnection;
+  #networkEnabled: boolean;
 
   private constructor(browserCore: BrowserCore, opts: BidiBrowserOptions) {
     super();
@@ -119,6 +145,7 @@ export class BidiBrowser extends Browser {
     this.#browserCore = browserCore;
     this.#defaultViewport = opts.defaultViewport;
     this.#cdpConnection = opts.cdpConnection;
+    this.#networkEnabled = opts.networkEnabled;
   }
 
   #initialize() {
@@ -218,9 +245,9 @@ export class BidiBrowser extends Browser {
   }
 
   override async createBrowserContext(
-    _options?: BrowserContextOptions,
+    options: BrowserContextOptions = {},
   ): Promise<BidiBrowserContext> {
-    const userContext = await this.#browserCore.createUserContext();
+    const userContext = await this.#browserCore.createUserContext(options);
     return this.#createBrowserContext(userContext);
   }
 
@@ -278,5 +305,9 @@ export class BidiBrowser extends Browser {
     return {
       pendingProtocolErrors: this.connection.getPendingProtocolErrors(),
     };
+  }
+
+  override isNetworkEnabled(): boolean {
+    return this.#networkEnabled;
   }
 }

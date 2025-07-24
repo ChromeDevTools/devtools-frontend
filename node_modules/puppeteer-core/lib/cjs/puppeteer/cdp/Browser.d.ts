@@ -19,8 +19,8 @@ import { TargetManager } from './TargetManager.js';
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean): Promise<CdpBrowser>;
-    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, networkEnabled?: boolean);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;
@@ -43,5 +43,6 @@ export declare class CdpBrowser extends BrowserBase {
     disconnect(): Promise<void>;
     get connected(): boolean;
     get debugInfo(): DebugInfo;
+    isNetworkEnabled(): boolean;
 }
 //# sourceMappingURL=Browser.d.ts.map

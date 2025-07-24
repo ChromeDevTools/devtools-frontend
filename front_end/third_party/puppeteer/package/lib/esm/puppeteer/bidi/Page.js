@@ -359,7 +359,7 @@ let BidiPage = (() => {
             return await this.#cdpEmulationManager.emulateMediaFeatures(features);
         }
         async emulateTimezone(timezoneId) {
-            return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
+            return await this.#frame.browsingContext.setTimezoneOverride(timezoneId);
         }
         async emulateIdleState(overrides) {
             return await this.#cdpEmulationManager.emulateIdleState(overrides);

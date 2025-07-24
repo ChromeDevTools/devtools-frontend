@@ -72,6 +72,7 @@ let BrowsingContext = (() => {
     let _addIntercept_decorators;
     let _removePreloadScript_decorators;
     let _setGeolocationOverride_decorators;
+    let _setTimezoneOverride_decorators;
     let _getCookies_decorators;
     let _setCookie_decorators;
     let _setFiles_decorators;
@@ -108,6 +109,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _addIntercept_decorators, { kind: "method", name: "addIntercept", static: false, private: false, access: { has: obj => "addIntercept" in obj, get: obj => obj.addIntercept }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setGeolocationOverride_decorators, { kind: "method", name: "setGeolocationOverride", static: false, private: false, access: { has: obj => "setGeolocationOverride" in obj, get: obj => obj.setGeolocationOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setTimezoneOverride_decorators, { kind: "method", name: "setTimezoneOverride", static: false, private: false, access: { has: obj => "setTimezoneOverride" in obj, get: obj => obj.setTimezoneOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setFiles_decorators, { kind: "method", name: "setFiles", static: false, private: false, access: { has: obj => "setFiles" in obj, get: obj => obj.setFiles }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -398,6 +400,17 @@ let BrowsingContext = (() => {
                 contexts: [this.id],
             });
         }
+        async setTimezoneOverride(timezoneId) {
+            if (timezoneId?.startsWith('GMT')) {
+                // CDP requires `GMT` prefix before timezone offset, while BiDi does not. Remove the
+                // `GMT` for interop between CDP and BiDi.
+                timezoneId = timezoneId?.replace('GMT', '');
+            }
+            await this.userContext.browser.session.send('emulation.setTimezoneOverride', {
+                timezone: timezoneId ?? null,
+                contexts: [this.id],
+            });
+        }
         async getCookies(options = {}) {
             const { result: { cookies }, } = await this.#session.send('storage.getCookies', {
                 ...options,
@@ -479,6 +492,9 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _setGeolocationOverride_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setTimezoneOverride_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _getCookies_decorators = [(0, decorators_js_1.throwIfDisposed)(context => {

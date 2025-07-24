@@ -1362,6 +1362,7 @@ export interface AnimationFrame extends PairableAsync {
   name: Name.ANIMATION_FRAME;
   args?: AnimationFrameArgs;
 }
+
 export type AnimationFrameArgs = Args&{
   animation_frame_timing_info: {
     blocking_duration_ms: number,
@@ -2546,6 +2547,10 @@ export interface FireAnimationFrame extends Complete {
   };
 }
 
+export function isFireAnimationFrame(event: Event): event is FireAnimationFrame {
+  return event.name === Name.FIRE_ANIMATION_FRAME;
+}
+
 export interface RequestAnimationFrame extends Instant {
   name: Name.REQUEST_ANIMATION_FRAME;
   args: Args&{
@@ -2597,6 +2602,10 @@ export interface RequestIdleCallback extends Instant {
     },
 
   };
+}
+
+export function isRequestIdleCallback(event: Event): event is RequestIdleCallback {
+  return event.name === Name.REQUEST_IDLE_CALLBACK;
 }
 
 export interface WebSocketCreate extends Instant {

@@ -187,15 +187,6 @@ def run_npm_command():
     ]):
         return True
 
-    # To minimize disk usage for Chrome DevTools node_modules, always try to dedupe dependencies.
-    # We need to perform this every time, as the order of dependencies added could lead to a
-    # non-optimal dependency tree, resulting in unnecessary disk usage.
-    if exec_command([
-            'npm',
-            'dedupe',
-    ]):
-        return True
-
     if remove_package_json_entries():
         return True
 

@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {TSESTree} from '@typescript-eslint/utils';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 import {createRule} from './utils/ruleCreator.ts';
+
+type Node = TSESTree.Node;
 
 // @ts-expect-error
 const filename = fileURLToPath(import.meta.url);
@@ -73,7 +76,7 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     let valuesAdded = false;
-    const checkValue = (value, node) => {
+    const checkValue = (value: unknown, node: Node) => {
       if (typeof value !== 'string') {
         return;
       }
@@ -95,9 +98,19 @@ export default createRule({
       }
     };
 
-    const checkPropertyValue = (propertyName, node) => {
-      for (const property of node?.properties || []) {
-        if (property.key?.name === propertyName || property.key?.value === propertyName) {
+    const checkPropertyValue = (propertyName: string, node: TSESTree.CallExpressionArgument) => {
+      if (!('properties' in node)) {
+        return;
+      }
+
+      for (const property of node.properties) {
+        if (property.type === 'RestElement' || property.type === 'SpreadElement' || !('value' in property.value)) {
+          continue;
+        }
+
+        if ('name' in property.key && property.key.name === propertyName) {
+          checkValue(property.value?.value, node);
+        } else if ('value' in property.key && property.key.value === propertyName) {
           checkValue(property.value?.value, node);
         }
       }
@@ -138,7 +151,9 @@ export default createRule({
         if (node.id.type === 'Identifier' && node.id.name === 'generatedProperties' &&
             node.init?.type === 'ArrayExpression') {
           for (const element of node.init.elements) {
-            checkPropertyValue('name', element);
+            if (element) {
+              checkPropertyValue('name', element);
+            }
           }
         }
         if (node.id.type === 'Identifier' && node.id.name === 'generatedAliasesFor' &&
